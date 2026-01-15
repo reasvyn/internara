@@ -108,7 +108,7 @@ This project is built upon the Laravel ecosystem and several key packages:
 | **v0.2.0-alpha** | `ARC01-CORE` | ✅ _Completed_   | Core & Shared Systems     |
 | **v0.1.1-alpha** | `ARC01-INIT` | ✅ _Completed_   | Project Initiation        |
 
-### Support Status
+### Version Supports
 
 | Version  | Security | Bug Fixes | Status                 |
 | :------- | :------- | :-------- | :--------------------- |
