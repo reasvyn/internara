@@ -38,6 +38,6 @@ trait HasSchoolRelation
     {
         $schoolService = app()->make(SchoolServiceContract::class);
 
-        return $schoolService->linkFromRelatedModel($this, 'school_id');
+        return $schoolService->defineBelongsTo($this, 'school_id');
     }
 }

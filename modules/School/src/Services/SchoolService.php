@@ -155,15 +155,6 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
         return parent::first($filters, $columns);
     }
 
-    public function registerFromRelatedModel(
-        Model $model,
-        ?string $foreignKey = null,
-        ?string $ownerKey = null,
-        ?string $relation = null,
-    ): BelongsTo {
-        return $model->belongsTo(get_class($this->model), $foreignKey, $ownerKey, $relation);
-    }
-
     protected function handleSchoolLogo(
         School &$school,
         UploadedFile|string|null $logo = null,

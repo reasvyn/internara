@@ -7,14 +7,34 @@ namespace Modules\School\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Modules\Department\Models\Concerns\HasDepartmentsRelation;
+use Modules\Internship\Models\Concerns\HasInternshipsRelation;
 use Modules\School\Database\Factories\SchoolFactory;
+use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class School extends Model implements HasMedia
 {
+    use HasDepartmentsRelation;
     use HasFactory;
+    use HasInternshipsRelation;
+    use HasUuid;
     use InteractsWithMedia;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.

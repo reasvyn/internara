@@ -438,5 +438,5 @@ structures, particularly regarding the omission of the `app` segment in namespac
 
 **Navigation**
 
-[← Previous: Workflow Developer Guide](modular-monolith-workflow.md) |
+[← Previous: Release Guidelines](release-guidelines.md) |
 [Next: Testing Guide →](testing-guide.md)

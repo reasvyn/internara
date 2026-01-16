@@ -70,6 +70,21 @@ and development documentation, always refer to the project’s `/docs` directory
   change must be accompanied by comprehensive documentation in the `docs/` directory. Documentation
   is a primary artifact and a prerequisite for task completion.
 
+- **Release Management** For all versioning, changelog updates, and release protocols, strict
+  adherence to the **[Release Guidelines](docs/main/release-guidelines.md)** is mandatory.
+
+- **Proactive Renaming & Restructuring** You are authorized to propose renaming files, folders,
+  classes, methods, interfaces, traits, attributes, parameters, keys, or even entire modules if the
+  current naming is inaccurate or suboptimal.
+    - **Mandatory Approval:** You must explicitly ask for and receive user approval before applying
+      these changes.
+    - **Thoroughness:** Changes must be comprehensive. Do not leave residual code, old imports, or
+      dead references.
+    - **Breaking Changes:** Mark such changes as **BREAKING CHANGES** in your plan if they impact
+      backward compatibility.
+    - **Documentation Update:** You must immediately update any related documentation to reflect
+      these changes.
+
 - **Cross-check Project Documentation** Always cross-reference and adhere to existing project
   documentation (especially within the `/docs` directory). For comprehensive navigation, prioritize:
     - [docs/table-of-contents.md](docs/table-of-contents.md)

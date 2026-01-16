@@ -323,4 +323,38 @@ abstract class EloquentQuery implements EloquentQueryContract
     {
         return Arr::only($data, $this->model->getFillable());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function defineBelongsTo(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $ownerKey = null,
+        ?string $relation = null,
+    ): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+        return $related->belongsTo(get_class($this->model), $foreignKey, $ownerKey, $relation);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function defineHasMany(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $related->hasMany(get_class($this->model), $foreignKey, $localKey);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function defineHasOne(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): \Illuminate\Database\Eloquent\Relations\HasOne {
+        return $related->hasOne(get_class($this->model), $foreignKey, $localKey);
+    }
 }

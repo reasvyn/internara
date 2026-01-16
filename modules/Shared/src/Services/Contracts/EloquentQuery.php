@@ -219,4 +219,55 @@ interface EloquentQuery
      * @return static
      */
     public function setSortable(array $columns = []): self;
+
+    /**
+     * Define a polymorphic-style inverse one-to-one or many relationship from the service's model perspective.
+     * This acts as a wrapper for $relatedModel->belongsTo(ServiceBoundModel::class).
+     *
+     * @param Model $related The model instance that "belongs to" the service's model.
+     * @param string|null $foreignKey The foreign key on the related model.
+     * @param string|null $ownerKey The owner key on the service's model.
+     * @param string|null $relation The relation name.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function defineBelongsTo(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $ownerKey = null,
+        ?string $relation = null,
+    ): \Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+    /**
+     * Define a one-to-many relationship from the service's model perspective.
+     * This acts as a wrapper for $relatedModel->hasMany(ServiceBoundModel::class).
+     * Note: This is usually inverted logic. Typically services manage the parent.
+     *
+     * @param Model $related The model instance that "has many" of the service's model.
+     * @param string|null $foreignKey
+     * @param string|null $localKey
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function defineHasMany(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): \Illuminate\Database\Eloquent\Relations\HasMany;
+
+    /**
+     * Define a one-to-one relationship from the service's model perspective.
+     * This acts as a wrapper for $relatedModel->hasOne(ServiceBoundModel::class).
+     *
+     * @param Model $related The model instance that "has one" of the service's model.
+     * @param string|null $foreignKey
+     * @param string|null $localKey
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function defineHasOne(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): \Illuminate\Database\Eloquent\Relations\HasOne;
 }

@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Modules\Profile\Models\Concerns\HasProfileRelation;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\User\Database\Factories\UserFactory;
@@ -26,6 +27,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     use HasFactory;
+    use HasProfileRelation;
     use HasRoles;
     use HasStatus;
     use HasUuid;
@@ -88,14 +90,6 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             ->take(2)
             ->map(fn (string $word) => Str::substr($word, 0, 1))
             ->implode('');
-    }
-
-    /**
-     * Get the user's profile.
-     */
-    public function profile(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(\Modules\Profile\Models\Profile::class);
     }
 
     /**

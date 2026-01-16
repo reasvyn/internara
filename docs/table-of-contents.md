@@ -15,6 +15,7 @@ Comprehensive guides on architecture, workflows, and conventions.
 
 - **[Overview](main/main-documentation-overview.md)**
 - **[Table of Contents](main/table-of-contents.md)**
+- **[Release Guidelines](main/release-guidelines.md)**
 
 ### Versions
 

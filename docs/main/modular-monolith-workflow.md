@@ -203,4 +203,4 @@ Basic commands for module testing include:
 **Navigation**
 
 [← Previous: Permission UI Components](permission-ui-components.md) |
-[Next: Artisan Commands Reference →](artisan-commands-reference.md)
+[Next: Release Guidelines →](release-guidelines.md)

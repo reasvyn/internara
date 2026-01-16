@@ -41,16 +41,5 @@ interface SchoolService extends EloquentQuery
      *
      * @return LengthAwarePaginator Paginated list of schools.
      */
-    public function list(
-        array $filters = [],
-        int $perPage = 10,
-        array $columns = ['*'],
-    ): LengthAwarePaginator;
 
-    public function registerFromRelatedModel(
-        Model $model,
-        ?string $foreignKey = null,
-        ?string $ownerKey = null,
-        ?string $relation = null,
-    ): BelongsTo;
 }

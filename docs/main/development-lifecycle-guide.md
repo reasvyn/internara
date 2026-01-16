@@ -1,212 +1,216 @@
-# Development Lifecycle & Versioning Strategy Guide
+# Development Lifecycle & Versioning Strategy
 
-This document is the **authoritative standard** for versioning and documenting releases within the
-Internara project. It enforces a **Lifecycle Documentation Standard**, ensuring every version
-document captures the complete engineering context: **Pre-Production** (Planning), **Production**
-(Execution), and **Post-Production** (Verification).
+This guide is the **authoritative standard** for how we plan, build, and document releases in the Internara project. It is designed to ensure that every version tells a complete engineering story—from the initial problem definition to the final quality verification.
 
-Strict adherence to this guide is mandatory to maintain historical clarity and architectural
-integrity.
+Adherence to this guide is mandatory. It ensures our history is clear, our architecture is respected, and our future is predictable.
 
 ---
 
 ## 1. Versioning Guidelines
 
-Internara uses a hybrid approach combining Semantic Versioning (SemVer) with a descriptive Series
-Code.
+Internara employs a robust hybrid versioning strategy. We combine standard Semantic Versioning for technical compatibility with a unique "Series Code" to track development themes and stages.
 
 ### 1.1. Semantic Versioning (SemVer)
 
-We follow the standard `MAJOR.MINOR.PATCH` format:
+We strictly follow [SemVer 2.0.0](https://semver.org/).
 
-- **`MAJOR`**: Incompatible API changes or architectural shifts.
-- **`MINOR`**: New, backward-compatible functionality.
-- **`PATCH`**: Backward-compatible bug fixes.
+| Type | Format | Description |
+| :--- | :--- | :--- |
+| **MAJOR** | `X.0.0` | **Incompatible** API changes or architectural shifts. Requires a migration guide. |
+| **MINOR** | `0.Y.0` | **New Functionality** that is backward-compatible. Used for new modules or features. |
+| **PATCH** | `0.0.Z` | **Bug Fixes** or minor refinements. Safe to update immediately. |
 
-### 1.2. Series Code
+### 1.2. The Series Code
 
-Each development cycle is identified by a `SERIES-CODE`.
+While SemVer tells us *what* changed technically, the Series Code tells us *why* and *where* we are in the project timeline. This code is appended to our internal release notes and documentation.
 
-- **Format:** `{codename}-{scope}-{sequence}`
-- **Example:** `ARC01-INIT`, `BRC02-FEAT`, `RCX01-SEC-01`
+**Format:** `{CODENAME}-{SCOPE}-{SEQUENCE}`
 
-#### Components:
+#### Components Breakdown
 
-- **`{codename}`**: A unique, abstract identifier in **ALL CAPS**. It must start with the initial(s)
-  of the development stage:
-    - `A` for **Alpha**.
-    - `B` for **Beta**.
-    - `RC` for **Release Candidate**.
-    - `S` for **Stable**.
-    - Followed by a random and unique alphanumeric code of sufficient length (abstract).
-- **`{scope}`**: The primary focus of the cycle:
-    - `INIT`: Initiation & Setup.
-    - `FND`: Foundational (architecture, core setup).
-    - `FEAT`: Feature-driven.
-    - `RFT`: Refactor.
-    - `SEC`: Security.
-- **`{sequence}`** (Optional): A sequence added for special development or release cases (e.g.,
-  sub-cycles or specific release variants).
+1.  **`{CODENAME}`** (Context & Stage)
+    A unique, abstract identifier (ALL CAPS). It typically starts with the stage initial:
+    - **A**...: **Alpha** (Feature incomplete, unstable).
+    - **B**...: **Beta** (Feature complete, stabilization phase).
+    - **RC**...: **Release Candidate** (Production ready, freezing).
+    - **S**...: **Stable** (Production).
+    - *Example:* `ARC01` (Alpha Release Cycle 01).
+
+2.  **`{SCOPE}`** (Focus Area)
+    Identifies the primary engineering focus:
+    - `INIT`: **Initiation** (Project setup, tooling, repo creation).
+    - `FND`: **Foundational** (Core architecture, base services, shared traits).
+    - `FEAT`: **Feature-Driven** (User-facing functionality, new modules).
+    - `RFT`: **Refactoring** (Code cleanup, performance, technical debt).
+    - `SEC`: **Security** (Vulnerability patches, audits).
+
+3.  **`{SEQUENCE}`** (Optional)
+    Used for sub-cycles or specific variations (e.g., `01`, `hotfix`).
+
+**Full Example:** `ARC01-INIT` (Alpha Cycle 1, Initiation focus).
 
 ---
 
 ## 2. The Lifecycle Documentation Standard
 
-Every version document (e.g., `v0.1.x.md`) must be structured to reflect the engineering lifecycle.
-Do not simply list features; tell the story of **Why**, **How**, and **Proof**.
+In Internara, **documentation is code**. It is not an afterthought. Every version release (e.g., `v0.4.0-alpha`) must be accompanied by a dedicated document in `docs/versions/` that captures the full engineering context.
 
-### Documentation Maintenance Principle
+> **The Golden Rule:** Do not just list *what* you did. Tell the story of **Why** you did it, **How** you did it, and **Proof** that it works.
 
-**Prioritize Updates Over Creation:** Always prioritize updating existing documentation files to
-reflect changes or new features rather than creating new ones. New documentation files should only
-be introduced for entirely new domains, major architectural shifts, or distinct technical topics
-that cannot be logically integrated into existing guides. This prevents information fragmentation
-and ensures a "single source of truth" for each topic.
+### 📜 Documentation Maintenance Principle
+
+**"Update First, Create Second"**
+
+Before creating a new documentation file, always ask: *"Does a file for this topic already exist?"*
+
+-   **Update:** If you modify the User module, update `modules/User/README.md` or `docs/main/modules/user.md`.
+-   **Create:** Only create new files for entirely new domains, architectural layers, or distinct technical concepts.
+-   **Why?** This prevents "documentation rot" and fragmentation. We want a **Single Source of Truth**.
 
 ---
 
 ### Phase 1: Pre-Production (The Planning Context)
 
-This section defines the "Rules of Engagement" established _before_ code was written.
+This phase occurs **before** any code is written. It defines the "Rules of Engagement".
 
-#### Section: `Goals & Architectural Philosophy`
+#### 1. Goals & Architectural Philosophy
 
-- **Purpose:** To explain the _problems_ necessitating this version and the _strategies_ chosen to
-  solve them.
-- **What to Write:**
-    - **Problem Keypoints:** Bullet points describing the pain points (e.g., "Codebase is becoming
-      coupled," "Setup takes too long").
-    - **Architectural Pillars:** The high-level concepts used as solutions (e.g., "Service-Oriented
-      Architecture," "TALL Stack").
-- **Detailed Explanation:** Don't just say "We used Modular Monolith." Explain _why_ (e.g., "To
-  enforce strict boundaries between domains.").
+-   **Purpose:** Contextualize the release. Why are we doing this?
+-   **Problem Keypoints:** List specific pain points.
+    -   *Example:* "The current 'User' module is tightly coupled with 'Auth', making reuse difficult."
+-   **Architectural Pillars:** High-level strategies to solve these problems.
+    -   *Example:* "Decouple User and Auth into separate modules communicating via Interfaces."
+-   **Detailed Explanation:** Elaborate on the *why*. Justify your architectural choices.
 
-#### Section: `Architectural Constraints` (Crucial)
+#### 2. Architectural Constraints (The "Must Nots")
 
-- **Purpose:** To define the immutable boundaries set to prevent scope creep and architectural
-  decay.
-- **What to Write:** Explicit "Must" and "Must Not" rules.
-- **Examples:**
-    - "No business logic is allowed in Controllers."
-    - "Modules must not import concrete classes from other modules; use Interfaces only."
-    - "The `app/` directory must remain empty except for providers."
+-   **Purpose:** Prevent scope creep and architectural decay (entropy).
+-   **Content:** Explicit, non-negotiable rules for this specific version.
+-   **Examples:**
+    -   "No logic allowed in Controllers; delegate strictly to Services."
+    -   "Modules must not access other modules' database tables directly."
+    -   "The `app/` directory must remain empty except for ServiceProviders."
 
 ---
 
 ### Phase 2: Production (The Execution)
 
-This section details the _actual work_ performed. Depending on the release type (`INIT` vs `FEAT`),
-use one of the formats below.
+This phase details the actual implementation. Choose the format that best fits the release type.
 
-#### Option A: `Scope of Work` (For Setup/Refactor/Init)
+#### Format A: `Scope of Work` (Infrastructure/Refactor)
+*Best for: `INIT`, `RFT`, `SEC` scopes.*
 
-Use this for versions focused on infrastructure, tooling, or refactoring (`INIT`, `RFT`).
+A categorized checklist of concrete technical tasks.
 
-- **Format:** Categorized checks of concrete tasks.
-- **Detail Level:** High. Mention specific packages, configurations, and commands used.
-- **Example:**
-    - **Environment Setup:** "Install Laravel v12, Configure SQLite."
-    - **Tooling:** "Install Pest, Configure Pint with strict preset."
+-   **Environment:** "Install Laravel 12, Configure SQLite."
+-   **Tooling:** "Setup Pest PHP, Configure Pint."
+-   **Refactor:** "Move `User` model to `Modules/User/src/Models`."
 
-#### Option B: `System & Feature Keystones` (For Features/Foundation)
+#### Format B: `System & Feature Keystones` (Feature/Foundation)
+*Best for: `FEAT`, `FND` scopes.*
 
-Use this for versions delivering tangible value or modules (`FEAT`, `FND`).
+Group work into logical "Keystones" (Major achievements).
 
-- **Format:** Group related work into logical "Keystones".
-- **Required Sub-Sections per Keystone:**
-    1.  **Goal:** The user-centric objective (e.g., "To manage user roles").
-    2.  **Implementation:**
-        - **Approach:** Technical strategy (e.g., "Uses `spatie/laravel-permission` with UUID
-          support").
-        - **Analysis:** Verification of code placement (e.g., "Models located in `Modules/User`").
-    3.  **Developer Impact:** How this helps the team (e.g., "Reduces boilerplate for auth checks").
+1.  **Keystone Title** (e.g., "Role-Based Access Control")
+    -   **Goal:** User-centric objective (e.g., "Allow admins to manage permissions").
+    -   **Implementation:** Technical strategy (e.g., "Implement `spatie/laravel-permission` with custom Policy gates").
+    -   **Developer Impact:** How this helps the team (e.g., "Simplifies auth checks to `$user->can('edit')`").
 
 ---
 
 ### Phase 3: Post-Production (Verification & Future)
 
-This section provides the _proof_ of quality and the bridge to the next version.
+This phase provides the **proof of quality** and sets the stage for what comes next.
 
-#### Section: `Quality Assurance & Verification`
+#### 1. Quality Assurance & Verification
 
-- **Purpose:** To prove that the implementation works and meets the project's high standards.
-- **What to Write:**
-    - **Tooling Setup:** Confirm that testing (Pest) and linting (Pint) tools are active.
-    - **Verification Checks:** A list of specific checks performed to validate the release (e.g.,
-      "Run `php artisan test`: All Green", "Verify storage link functionality").
+Prove the system works.
 
-#### Section: `Security Issues`
+-   **Tooling Setup:** Confirm test suites and linters are active.
+-   **Verification Checks:** Specific actions taken to validate the release.
+    -   *Example:* "Ran `php artisan test --filter=User`: 100% Pass."
+    -   *Example:* "Manually verified login flow with 2FA enabled."
 
-- **Purpose:** To document known vulnerabilities addressed or discovered.
-- **What to Write:** Severity, Impact, and Description of any security-related findings. If none,
-  state "No critical issues identified."
+#### 2. Security Issues
 
-#### Section: `Documentation Checks`
+Transparently document security findings.
 
-- **Purpose:** To ensure that all architectural changes, new features, and technical conventions
-  introduced in this version are accurately reflected in the project's documentation.
-- **What to Write:**
-    - Verification that new features have corresponding documentation in `docs/main/`.
-    - Confirmation that all cross-module communication or shared utilities are documented.
-    - Ensuring the Version History and TOCs are updated.
+-   **Status:** "No critical issues identified" OR list specific vulnerabilities found and fixed (Severity, Impact, Fix).
 
-#### Section: `Roadmap & Next Steps`
+#### 3. Documentation Checks
 
-- **Purpose:** To define the transition to the next version and strictly limit future scope.
-- **What to Write:** Categorized high-level objectives for the immediate next release:
-    - **Must Have:** Critical features or technical requirements that define the core value.
-    - **Should Have:** Important but non-critical improvements or side features (medium priority).
-    - **Won't Have:** Explicit exclusions to prevent scope creep or premature implementation.
+Ensure the "Single Source of Truth" is up to date.
+
+-   **Checklist:**
+    -   New features documented in `docs/main/`?
+    -   `README.md` updated with version status?
+    -   `CHANGELOG.md` reflects all new production work?
+    -   `SECURITY.md` reviewed for protocol updates?
+    -   Architecture guide updated?
+    -   TOCs (Table of Contents) updated?
+
+#### 4. Roadmap & Next Steps
+
+Strictly define the boundaries of the *next* iteration to prevent scope creep *now*.
+
+-   **Must Have:** Critical path items for the next version.
+-   **Should Have:** Important but deferrable improvements.
+-   **Won't Have:** Explicitly out of scope for the next version.
 
 ---
 
-## 3. Standard Document Template
+## 3. Standard Version Document Template
 
-Copy and paste this template for every new version document.
+Copy this template for every new version document in `docs/versions/`.
 
 ```markdown
 # Overview: Version vX.X.X (Codename)
 
 ## 1. Version Details
 
-- **Name**:
-- **Series Code**:
-- **Status**:
-- **Description**:
+- **Name**: `vX.X.X`
+- **Series Code**: `[CODENAME]-[SCOPE]-[SEQ]`
+- **Status**: `In Progress` / `Released`
+- **Description**: Brief summary of this release's intent.
 
 ---
 
 ## 2. Goals & Architectural Philosophy (Pre-Production)
 
-### Problem Keypoints
+### Problem Keypoints (Why we are doing this)
 
-- [ ] ...
+- [ ] Current Issue A...
+- [ ] Current Issue B...
 
-### Architectural Pillars
+### Architectural Pillars (How we solve it)
 
-- [ ] ...
+- [ ] Strategy A...
+- [ ] Strategy B...
 
 ### Architectural Constraints (The Rules)
 
 _Immutable rules defined for this version._
 
-1.  ...
-2.  ...
+1.  **Constraint 1:** Description...
+2.  **Constraint 2:** Description...
 
 ---
 
 ## 3. Scope of Work / Keystones (Production)
 
-_(Choose Option A or B based on release type)_
+_(Select Format A or B below, delete the other)_
 
-### Option A: Scope of Work
+### Format A: Scope of Work (Infrastructure/Refactor)
 
-- [ ] Task 1
-- [ ] Task 2
+#### Infrastructure & Setup
+- [ ] Task...
 
-### Option B: System Keystones
+#### Refactoring
+- [ ] Task...
 
-#### Keystone 1: Title
+### Format B: System Keystones (Features)
+
+#### Keystone 1: [Feature Name]
 
 - **Goal**:
 - **Implementation**:
@@ -216,25 +220,28 @@ _(Choose Option A or B based on release type)_
 
 ## 4. Quality Assurance & Finalization (Post-Production)
 
-### 4.1. Quality Tooling Setup
+### 4.1. Quality Tooling & Tests
 
-- [ ] ...
+- [ ] Pest Tests passed.
+- [ ] Pint/Prettier formatting applied.
 
 ### 4.2. Verification Checks
 
-- [ ] ...
+- [ ] Verify A...
+- [ ] Verify B...
 
-### 4.3. Documentation Checks
+### 4.3. Documentation Integrity
 
 - [ ] New features documented in `docs/main/`.
-- [ ] All technical conventions updated.
+- [ ] `README.md`, `CHANGELOG.md`, and `SECURITY.md` updated.
+- [ ] Technical conventions updated.
 - [ ] Root TOC and Module TOCs updated.
 
-### 4.4. Security Issues
+### 4.4. Security Audit
 
-- ...
+- [ ] Status: ...
 
-### 4.5. Roadmap & Next Steps
+### 4.5. Roadmap & Next Steps (vNext)
 
 #### Must Have
 
@@ -253,4 +260,4 @@ _(Choose Option A or B based on release type)_
 
 **Navigation**
 
-[← Previous: Versions Overview](../versions/versions-overview.md)
+[← Previous: Development Conventions](development-conventions.md) | [Next: Release Guidelines](release-guidelines.md)
