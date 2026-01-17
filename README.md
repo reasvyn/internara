@@ -105,8 +105,8 @@ This project is built upon the Laravel ecosystem and several key packages:
 | :------------- | :----------- | :--------- | :------------------------ |
 | `v0.4.0-alpha` | `ARC01-INST` | `Released` | Institutional & Academic  |
 | `v0.3.0-alpha` | `ARC01-USER` | `Released` | User Management & Profile |
-| `v0.2.0-alpha` | `ARC01-CORE` | `Released`      | RBAC & Shared Services    |
-| `v0.1.1-alpha` | `ARC01-INIT` | `Released`      | Project Initialization    |
+| `v0.2.0-alpha` | `ARC01-CORE` | `Released` | RBAC & Shared Services    |
+| `v0.1.1-alpha` | `ARC01-INIT` | `Released` | Project Initialization    |
 
 ### Version Supports
 
