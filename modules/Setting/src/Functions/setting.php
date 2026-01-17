@@ -6,19 +6,25 @@ use Modules\Setting\Facades\Setting;
 
 if (! function_exists('setting')) {
     /**
-     * Get application settings.
+     * Get or set application settings.
+     *
+     * If $key is null, it returns the Setting service instance.
+     * If $key is an array, it sets settings based on the key-value pairs.
+     * If $key is a string, it retrieves the setting value.
      */
     function setting(
         string|array|null $key = null,
         mixed $default = null,
         bool $skipCache = false,
     ): mixed {
-        $settingFacade = app(Setting::class);
-
         if ($key === null) {
-            return $settingFacade::getFacadeRoot();
+            return Setting::getFacadeRoot();
         }
 
-        return $settingFacade::getValue($key, $default, $skipCache);
+        if (is_array($key) && \Illuminate\Support\Arr::isAssoc($key)) {
+            return Setting::setValue($key);
+        }
+
+        return Setting::getValue($key, $default, $skipCache);
     }
 }

@@ -10,7 +10,7 @@ use Livewire\Form;
 
 class SchoolForm extends Form
 {
-    public ?int $id = null;
+    public ?string $id = null;
 
     public ?string $name = null;
 

@@ -2,7 +2,7 @@
 
 This document provides a practical, step-by-step guide for developers on how to implement new
 features within the modular architecture of the Internara application. It builds upon the
-foundational concepts introduced in the [Architecture Guide](architecture.md).
+foundational concepts introduced in the [Architecture Guide](architecture-guide.md).
 
 ---
 
@@ -28,7 +28,7 @@ Internara's modular architecture enforces a strict separation of concerns, with 
 as a self-contained unit for a specific business domain. This workflow guide operates under these
 foundational principles. For a comprehensive overview of architectural principles, including the
 Isolation Principle and Namespace Conventions, refer to the
-**[Architecture Guide](architecture.md)**, the
+**[Architecture Guide](architecture-guide.md)**, the
 **[Development Conventions](development-conventions.md)**, and the
 **[Foundational Module Philosophy Guide](foundational-module-philosophy.md)**.
 
@@ -68,17 +68,17 @@ php artisan module:make-model User User --migration
 The service encapsulates all business logic. First, create the contract (interface), then the
 implementation.
 
-**1. Create the Service Interface** Generate the contract in `src/Contracts/Services/`:
+**1. Create the Service Interface** Generate the contract in `src/Services/Contracts/`:
 
 ```bash
-php artisan module:make-interface Services/UserService User
+php artisan module:make-interface Services/Contracts/UserService User
 ```
 
 For services based on `EloquentQuery`, this interface should extend the base contract.
 
 ```php
-// modules/User/src/Contracts/Services/UserService.php
-<?php namespace Modules\User\Contracts\Services;
+// modules/User/src/Services/Contracts/UserService.php
+<?php namespace Modules\User\Services\Contracts;
 
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
@@ -184,7 +184,7 @@ This workflow is reserved for complex scenarios where strict decoupling from Elo
 
 Testing is an integral part of the development workflow. All tests **must** be written using Pest.
 For a comprehensive guide on the project's testing philosophy, framework usage, directory structure,
-and detailed examples, refer to the **[Testing Guide](testing.md)**.
+and detailed examples, refer to the **[Testing Guide](testing-guide.md)**.
 
 Basic commands for module testing include:
 

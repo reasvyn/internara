@@ -18,7 +18,7 @@ Thank you for considering contributing to Internara! We welcome contributions fr
 
 - Follow the **PSR-12** coding standard.
 - Use **Pest** for testing.
-- Adhere to the **Modular Monolith** architecture described in `docs/master/architecture.md`.
+- Adhere to the **Modular Monolith** architecture described in `docs/main/architecture-guide.md`.
 - Ensure your code is formatted using **Laravel Pint** (`vendor/bin/pint`).
 
 ## Reporting Bugs

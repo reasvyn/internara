@@ -327,6 +327,22 @@ abstract class EloquentQuery implements EloquentQueryContract
     /**
      * {@inheritdoc}
      */
+    public function factory(): \Illuminate\Database\Eloquent\Factories\Factory
+    {
+        $modelClass = get_class($this->model);
+
+        if (method_exists($modelClass, 'factory')) {
+            return $modelClass::factory();
+        }
+
+        throw new \RuntimeException(
+            "Model [{$modelClass}] does not support factories (Missing HasFactory trait).",
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function defineBelongsTo(
         Model $related,
         ?string $foreignKey = null,

@@ -28,8 +28,21 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
     public function __construct(User $user)
     {
         $this->setModel($user);
-        $this->setBaseQuery($user->superAdmin());
         $this->setSearchable(['name', 'email', 'username']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function query(
+        array $filters = [],
+        array $columns = ['*'],
+    ): \Illuminate\Database\Eloquent\Builder {
+        if (! $this->baseQuery) {
+            $this->setBaseQuery($this->model->superAdmin());
+        }
+
+        return parent::query($filters, $columns);
     }
 
     /**

@@ -7,27 +7,30 @@ specific business model and architecture.
 ## Purpose
 
 - **Infrastructure:** Manages project-wide settings and foundational services.
+- **Localization Middleware:** Handles persistence of user language preferences.
 - **Tooling:** Provides custom Artisan commands to speed up development.
-- **Identity:** Defines the technical identity of the application.
 
 ## Key Features
 
-### 1. Development Tooling
+### 1. Localization Infrastructure
+
+- **SetLocale Middleware:** Automatically sets the application locale based on user session or
+  preference.
+- **Fail-safe Logic:** Ensures the application defaults to a safe locale (`id` or `en`) if no
+  preference is found.
+
+### 2. Development Tooling
 
 - **Custom Generators:** Extended commands for creating modular classes, interfaces, and traits.
     - `php artisan module:make-class`
     - `php artisan module:make-interface`
     - `php artisan module:make-trait`
 
-### 2. Application Identity
-
-- **[App Info Command](../../main/artisan-commands-reference.md#1-application-app-commands)**:
-  Displays application version, author, and environment details via `php artisan app:info`.
-
 ### 3. Core Functions
 
-- **Setting Helper:** Provides a global `setting()` function to access application configuration
-  with ease.
+- **Fail-safe Setting Helper:** Provides a global `setting()` function with a direct-read fallback
+  from `modules_statuses.json` to prevent fatal errors during early bootstrapping or when the
+  database is unavailable.
 
 ---
 

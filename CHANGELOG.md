@@ -7,13 +7,44 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [v0.4.x-alpha] - In Progress
+## [v0.4.0-alpha] - 2026-01-17 (ARC01-INST)
 
-### Added
+### 🚀 Overview
 
-- New roadmap for the **Institutional & Academic Phase** (`ARC01-INST`).
-- Unified codebase formatting with **Prettier** and **Laravel Pint**.
-- Automated documentation formatting script (`npm run format`).
+Establishes the institutional and academic core of the application, featuring decoupled
+school/department management, industry placement tracking, and localized user interfaces.
+
+### ✨ Added
+
+- **Internship Placements:** Full CRUD for managing industry partner slots and internship programs.
+- **Language Switcher:** Global UI component and middleware for real-time locale switching (EN/ID).
+- **School & Department Management:** Comprehensive administrative tools for managing institutional
+  identity and academic structures.
+- **Academic Integration:** Linked user profiles directly to departments for institutional context.
+- **Security Policies:** Granular access control for School, Department, and Internship modules.
+
+### 🛠 Changed
+
+- **Database Decoupling:** Removed physical foreign key constraints across module boundaries to
+  ensure true modular isolation and portability.
+- **UUID Standard:** Migrated all institutional entities (School, Department, Internship) to UUID
+  primary keys.
+- **Modular Relations:** Standardized inter-module relationships via Service-driven Traits.
+- **Setting Helper:** Refactored `setting()` for reliable multi-module fallback and performance.
+- **Terminology:** Reverted "Serial Code" back to "Series Code" to better represent development
+  cycles.
+
+### 🐛 Fixed
+
+- **Migration Integrity:** Resolved foreign key mismatch errors in SQLite by fixing primary key
+  definitions.
+- **Service Consistency:** Unified parameter naming and method visibility across core services.
+
+### ⚠️ Breaking Changes
+
+- **Schema Update:** Tables `schools` and `departments` now use UUIDs.
+- **Relational Integrity:** Constraints are now managed at the application layer; direct
+  database-level cascading deletes across modules are disabled.
 
 ---
 
@@ -26,19 +57,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Email Verification:** Mandatory verification for Student and Teacher roles to secure the
   platform.
 - **Role-Based Redirection:** Intelligent post-login redirection based on user roles.
-- **Institution-Centric Notifications:** Customized email verification and welcome templates
-  sounding from the school/brand.
-- **Contextual Onboarding:** Integrated welcome notifications for new accounts.
-- **Scaffolding Refinement:** Enhanced `module:make-class` generator with `--interface` support.
+- **Institution-Centric Notifications:** Customized email verification and welcome templates.
 
 ### Fixed
 
 - **Security Hardening:** Remediated Authentication Bypass in email verification.
-- **Access Control:** Fixed IDOR vulnerabilities in User Management via explicit Policy enforcement.
+- **Access Control:** Fixed IDOR vulnerabilities via explicit Policy enforcement.
 - **Privacy:** Implemented email masking in application logs to prevent PII leaks.
-- **Infrastructure:** Mass-fix of namespace inconsistencies in School, Department, and Internship
-  modules.
-- **Localization:** Repaired invalid JSON structure in `id.json` translation file.
 
 ---
 
@@ -49,8 +74,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **RBAC Infrastructure:** Full integration of `spatie/laravel-permission` within a modular context.
 - **Shared Traits:** Foundational traits for **UUID** support and **Status** management.
 - **EloquentQuery Service:** Base service for standardized CRUD and query orchestration.
-- **Custom Generators:** Added `module:make-class`, `module:make-interface`, and
-  `module:make-trait`.
 
 ---
 
@@ -59,12 +82,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - **Project Genesis:** Initial environment setup with Laravel 12 and PHP 8.4.
-- **Modular Monolith:** Implementation of `nwidart/laravel-modules` with a custom `src/` structure.
-- **TALL Stack Foundation:** Integration of Tailwind CSS v4, Alpine.js, and Livewire v3.
+- **Modular Monolith:** Implementation of `nwidart/laravel-modules`.
 - **UI Module:** Centralized design system using **DaisyUI** and **MaryUI**.
-- **Quality Tooling:** Initial configuration for **Pest PHP** and **Laravel Pint**.
 
-[v0.4.x-alpha]: https://github.com/reasnov/internara/compare/v0.3.0-alpha...main
+[v0.4.0-alpha]: https://github.com/reasnov/internara/compare/v0.3.0-alpha...v0.4.0-alpha
 [v0.3.0-alpha]: https://github.com/reasnov/internara/compare/v0.2.0-alpha...v0.3.0-alpha
 [v0.2.0-alpha]: https://github.com/reasnov/internara/compare/v0.1.1-alpha...v0.2.0-alpha
 [v0.1.1-alpha]: https://github.com/reasnov/internara/releases/tag/v0.1.1-alpha

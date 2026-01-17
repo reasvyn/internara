@@ -14,10 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->text('description')->nullable();
-            $table->foreignUuid('school_id')->nullable()->constrained('schools')->cascadeOnDelete();
+            $table->uuid('school_id')->nullable()->index();
             $table->timestamps();
         });
     }

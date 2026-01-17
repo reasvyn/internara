@@ -13,8 +13,8 @@ assessments and reporting.
 
 ### 1. [Versioning Strategy & Documentation Guide](versions-guide.md)
 
-Detailed guidelines on Internara's Semantic Versioning, Series Codes (e.g., `ARC01-ALPHA`), and the
-standard format for documenting releases.
+Detailed guidelines on Internara's Semantic Versioning, Series Codes (e.g., `ARC01-CORE`), and the
+standard lifecycle documentation structure.
 
 ---
 
@@ -22,6 +22,9 @@ standard format for documenting releases.
 
 ### Newest Releases
 
+- **v0.4.0-alpha** ([Documentation v0.4.x-alpha](v0.4.x-alpha.md)): **Institutional & Academic
+  Phase**. Implementation of School, Department management, and foundational Internship registration
+  workflows.
 - **v0.3.0-alpha** ([Documentation v0.3.x-alpha](v0.3.x-alpha.md)): **User & Profile Management
   Phase**. Implementation of User management, profile systems, auth refinements, and security
   hardening.
@@ -35,9 +38,8 @@ standard format for documenting releases.
 
 ### In Progress
 
-- **[v0.4.x-alpha (ARC01-INST)](v0.4.x-alpha.md)**: **Institutional & Academic Phase**.
-  Implementation of School, Department management, and foundational Internship registration
-  workflows.
+- **[v0.5.x-alpha (ARC01-OPER)](v0.5.x-alpha.md)**: **Operational & Activity Tracking Phase**.
+  Implementation of Daily Journal (Logbook), Attendance System, and Supervisor Matching.
 
 ---
 

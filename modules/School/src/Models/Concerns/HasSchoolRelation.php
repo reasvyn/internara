@@ -12,7 +12,7 @@ use Modules\School\Services\Contracts\SchoolService as SchoolServiceContract;
  */
 trait HasSchoolRelation
 {
-    protected function changeSchoolId(mixed $schoolId = null): bool
+    public function changeSchoolId(mixed $schoolId = null): bool
     {
         $schoolService = app()->make(SchoolServiceContract::class);
 

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\School\Services\Contracts;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Modules\School\Models\School;
 use Modules\Shared\Services\Contracts\EloquentQuery;
@@ -41,5 +39,4 @@ interface SchoolService extends EloquentQuery
      *
      * @return LengthAwarePaginator Paginated list of schools.
      */
-
 }

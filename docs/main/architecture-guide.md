@@ -20,8 +20,10 @@ architecture, helping you build features efficiently and maintain a robust codeb
     - [4.1 The Golden Rule of Layered Communication](#41-the-golden-rule-of-layered-communication)
     - [4.2 Interface-First & Knowledge Hiding](#42-interface-first--knowledge-hiding)
 5.  [Inter-Module Communication: The Golden Rule](#5-inter-module-communication-the-golden-rule)
-    - [5.1 Pattern 1: Service-to-Service Calls (Synchronous)](#51-pattern-1-service-to-service-calls-synchronous)
-    - [5.2 Pattern 2: Events & Listeners (Decoupled Actions)](#52-pattern-2-events--listeners-decoupled-actions)
+    - [5.1 Database Isolation Principle](#51-database-isolation-principle)
+    - [5.2 Pattern 1: Service-to-Service Calls (Synchronous)](#52-pattern-1-service-to-service-calls-synchronous)
+    - [5.3 Pattern 2: Events & Listeners (Decoupled Actions)](#53-pattern-2-events--listeners-decoupled-actions)
+    - [5.4 Pattern 3: Standard Framework Interfaces (Policies/Gates)](#54-pattern-3-standard-framework-interfaces-policiesgates)
 6.  [Practical Guide: Module Usage](#6-practical-guide-module-usage)
     - [6.1 Accessing Module Resources](#61-accessing-module-resources)
     - [6.2 Essential Module Artisan Commands](#62-essential-module-artisan-commands)
@@ -278,9 +280,21 @@ The most critical rule for maintaining a loosely coupled and maintainable modula
 > modules **must** happen through shared interfaces (contracts), events, or framework standards
 > (Gates/Policies).
 
-This rule is non-negotiable. It is the foundation for a scalable and maintainable application.
+### 5.1. Database Isolation Principle
 
-### 5.1. Pattern 1: Service-to-Service Calls (Synchronous)
+To achieve true decoupling, the isolation principle extends to the database schema. **Cross-module
+foreign key constraints are strictly forbidden.**
+
+- **Manual Indexes Only:** When a table in `Module A` references an entity in `Module B`, use a
+  simple data column (e.g., `$table->uuid('module_b_id')->index();`) instead of
+  `$table->foreignUuid()->constrained();`.
+- **Application-Level Integrity:** Data integrity must be guarded by the **Service Layer**. Before
+  saving a record, the Service should use the related module's Interface to verify that the provided
+  ID exists.
+- **No Cascading Deletes:** Automated cascading deletes across modules are replaced by event-driven
+  cleanup or explicit logic within Services.
+
+### 5.2. Pattern 1: Service-to-Service Calls (Synchronous)
 
 Use this pattern when an action in `Module A` **immediately** requires a result or a direct
 interaction with `Module B`.
@@ -295,15 +309,12 @@ interaction with `Module B`.
 - **How it Works:**
     1.  `Module B` defines a `Service Interface` (e.g.,
         `Modules\User\Services\Contracts\UserService`) and provides a concrete implementation.
-- **How it Works:**
-    1.  `Module B` defines a `Service Interface` (e.g.,
-        `Modules\User\Contracts\Services\UserService`) and provides a concrete implementation.
     2.  `Module A` (e.g., `InternshipService`) _type-hints_ `Module B`'s `Service Interface` in its
         constructor.
     3.  Laravel's Service Container automatically injects the concrete `UserService` implementation
         without `InternshipService` knowing the specific class.
 
-### 5.2. Pattern 2: Events & Listeners (Decoupled Actions)
+### 5.3. Pattern 2: Events & Listeners (Decoupled Actions)
 
 This is the preferred approach for handling side effects.
 
@@ -320,7 +331,7 @@ This is the preferred approach for handling side effects.
     3.  The `Internship` module remains completely unaware of which other modules react to its
         event, ensuring strong decoupling.
 
-### 5.3 Pattern 3: Standard Framework Interfaces (Policies/Gates)
+### 5.4 Pattern 3: Standard Framework Interfaces (Policies/Gates)
 
 Use this pattern for cross-cutting concerns like authorization.
 

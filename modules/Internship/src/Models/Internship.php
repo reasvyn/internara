@@ -7,6 +7,7 @@ namespace Modules\Internship\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Internship\Database\Factories\InternshipFactory;
 use Modules\School\Models\Concerns\HasSchoolRelation;
 
@@ -49,11 +50,27 @@ class Internship extends Model
      * @var array
      */
     protected $casts = [
-        'year' => 'year',
+        'year' => 'integer', // Changed from year to integer for better compatibility
         'semester' => 'string',
         'date_start' => 'date',
         'date_finish' => 'date',
     ];
+
+    /**
+     * Get the placements available for this internship program.
+     */
+    public function placements(): HasMany
+    {
+        return $this->hasMany(InternshipPlacement::class);
+    }
+
+    /**
+     * Get all student registrations for this internship program.
+     */
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(InternshipRegistration::class);
+    }
 
     /**
      * Create a new factory instance for the model.

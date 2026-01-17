@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+use Modules\Internship\Livewire\InternshipManager;
+use Modules\Internship\Livewire\PlacementManager;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +16,20 @@ declare(strict_types=1);
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/internships', InternshipManager::class)
+        ->middleware('can:internship.view')
+        ->name('internship.index');
+
+    Route::get('/internships/placements', PlacementManager::class)
+        ->middleware('can:internship.update')
+        ->name('internship.placement.index');
+
+    Route::get(
+        '/internships/registrations',
+        \Modules\Internship\Livewire\RegistrationManager::class,
+    )
+        ->middleware('can:internship.update')
+        ->name('internship.registration.index');
+});

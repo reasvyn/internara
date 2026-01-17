@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\School\Services\Contracts\SchoolService;
 
 class InternshipFactory extends Factory
 {
@@ -18,6 +19,14 @@ class InternshipFactory extends Factory
      */
     public function definition(): array
     {
-        return [];
+        return [
+            'title' => $this->faker->unique()->sentence(3),
+            'description' => $this->faker->paragraph,
+            'year' => (int) date('Y'),
+            'semester' => 'Ganjil',
+            'date_start' => now()->toDateString(),
+            'date_finish' => now()->addMonths(3)->toDateString(),
+            'school_id' => app(SchoolService::class)->factory(),
+        ];
     }
 }

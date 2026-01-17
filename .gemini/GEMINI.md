@@ -176,6 +176,28 @@ Namespaces **must omit the `src` segment**:
 
 ---
 
+## GitHub Operations (gh-cli)
+
+You are authorized and encouraged to use the **GitHub CLI (`gh`)** to manage the project's presence
+on GitHub. This ensures that the development process is transparent and well-integrated with
+GitHub's ecosystem.
+
+### Scope of Operations
+
+- **Pull Requests (PR):** Create, list, check status, and draft PRs for completed tasks. Every
+  significant change or version completion should be accompanied by a PR.
+- **Issues:** Create and manage issues to track bugs, features, and technical debt.
+- **Repository Management:** Monitor repository status and perform necessary repository-level
+  configurations.
+- **GitHub Project:** Actively manage tasks within the **'Internara Project'** (GitHub Project).
+  Ensure issues and PRs are correctly linked to the project board.
+    - **Project ID:** `PVT_kwHOA9rvKM4A7HFm` (Number: 2)
+- **Workflows:** Monitor GitHub Actions workflows to ensure CI/CD pipelines are passing.
+- **Documentation Synchronization:** Ensure all local documentation updates are pushed and
+  synchronized with the GitHub repository, maintaining it as the central source of truth.
+
+---
+
 ## Leveraging Laravel Boost Tools
 
 Use the integrated Laravel Boost tools to support efficient development:

@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "format": "prettier --write \"**/*.{php,blade.php,js,css,md}\""
+        "lint": "prettier --write \"**/*.{php,blade.php,js,css,md}\""
     },
     "dependencies": {
         "autoprefixer": "^10.4.20",

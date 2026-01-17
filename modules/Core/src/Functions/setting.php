@@ -7,43 +7,57 @@ use Illuminate\Support\Facades\Log;
 /**
  * This file provides a global fallback for the setting() helper function.
  *
- * It is loaded by the AppServiceProvider and defines a safe, non-functional
- * version of setting() if the real function from the Settings module is not
- * available. This prevents fatal errors across the application if the
- * Settings module is disabled.
+ * It defines a safe, non-functional version of setting() ONLY if the Setting
+ * module is disabled or missing.
  */
-if (
-    class_exists('\\Modules\\Settings\\Providers\\SettingsServiceProvider') &&
-    ! function_exists('setting')
-) {
+if (! function_exists('setting')) {
     /**
-     * Fallback for the setting() helper function.
-     *
-     * This ensures that calls to setting() do not cause a fatal error if the
-     * Settings module is disabled. It logs a warning and returns the default
-     * value.
+     * Check if the Setting module is enabled by reading the statuses file directly.
+     * This is necessary because this file is loaded early via composer autoload.
      */
-    function setting(string|array $key = '', mixed $default = null): mixed
-    {
-        static $hasLogged = false;
-        if (! $hasLogged) {
-            Log::warning(
-                'The setting() helper was called, but the Settings module is not available. A fallback was used.',
-            );
-            $hasLogged = true;
-        }
+    $isSettingModuleActive = (function () {
+        $statusPath = base_path('modules_statuses.json');
 
-        if (is_array($key)) {
-            // Cannot set settings if the module is down
+        if (! file_exists($statusPath)) {
             return false;
         }
 
-        if (empty($key)) {
-            // Cannot return the repository instance
-            return null;
-        }
+        $statuses = json_decode(file_get_contents($statusPath), true);
 
-        // Return the default value when getting a setting
-        return $default;
+        return isset($statuses['Setting']) && $statuses['Setting'] === true;
+    })();
+
+    if (! $isSettingModuleActive) {
+        /**
+         * Fallback for the setting() helper function.
+         */
+        function setting(
+            string|array|null $key = null,
+            mixed $default = null,
+            bool $skipCache = false,
+        ): mixed {
+            static $hasLogged = false;
+
+            if (! $hasLogged && ! app()->runningInConsole()) {
+                try {
+                    Log::warning(
+                        'The setting() helper was called, but the Setting module is disabled or missing. A fallback was used.',
+                    );
+                    $hasLogged = true;
+                } catch (\Throwable) {
+                    // Log might not be available yet
+                }
+            }
+
+            if (is_array($key)) {
+                return false;
+            }
+
+            if ($key === null) {
+                return null;
+            }
+
+            return $default;
+        }
     }
 }

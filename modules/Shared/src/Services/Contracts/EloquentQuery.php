@@ -221,6 +221,14 @@ interface EloquentQuery
     public function setSortable(array $columns = []): self;
 
     /**
+     * Get a new factory instance for the model.
+     *
+     *
+     * @throws \RuntimeException If the model does not have a factory.
+     */
+    public function factory(): \Illuminate\Database\Eloquent\Factories\Factory;
+
+    /**
      * Define a polymorphic-style inverse one-to-one or many relationship from the service's model perspective.
      * This acts as a wrapper for $relatedModel->belongsTo(ServiceBoundModel::class).
      *
@@ -228,8 +236,6 @@ interface EloquentQuery
      * @param string|null $foreignKey The foreign key on the related model.
      * @param string|null $ownerKey The owner key on the service's model.
      * @param string|null $relation The relation name.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function defineBelongsTo(
         Model $related,
@@ -244,10 +250,6 @@ interface EloquentQuery
      * Note: This is usually inverted logic. Typically services manage the parent.
      *
      * @param Model $related The model instance that "has many" of the service's model.
-     * @param string|null $foreignKey
-     * @param string|null $localKey
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function defineHasMany(
         Model $related,
@@ -260,10 +262,6 @@ interface EloquentQuery
      * This acts as a wrapper for $relatedModel->hasOne(ServiceBoundModel::class).
      *
      * @param Model $related The model instance that "has one" of the service's model.
-     * @param string|null $foreignKey
-     * @param string|null $localKey
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function defineHasOne(
         Model $related,

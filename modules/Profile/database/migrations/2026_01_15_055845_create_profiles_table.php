@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('user_id')->unique();
+            $table->string('user_id')->unique()->index();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->text('bio')->nullable();
@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('nip')->nullable()->unique()->comment('For Teachers');
             $table->string('nisn')->nullable()->unique()->comment('For Students');
 
-            $table->timestamps();
+            $table->uuid('department_id')->nullable()->index();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

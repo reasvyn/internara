@@ -258,9 +258,9 @@ simplify usage, it follows a flatter structure.
   directly without any subdirectory prefix. ```blade {{-- CORRECT --}} <x-ui::navbar />
   <x-ui::button />
 
-                        {{-- INCORRECT --}}
-                        <x-ui::ui.navbar />
-                        ```
+                            {{-- INCORRECT --}}
+                            <x-ui::ui.navbar />
+                            ```
 
     This convention keeps component tags clean and acknowledges that the `UI` module itself is the
     designated "ui" library for the project.

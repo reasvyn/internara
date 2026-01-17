@@ -69,7 +69,11 @@ class UIServiceProvider extends ServiceProvider
     {
         return [
             'navbar.brand' => 'ui::components.brand',
-            'navbar.actions' => ['ui::components.user-menu', 'ui::components.theme-toggle'],
+            'navbar.actions' => [
+                'livewire:ui::language-switcher',
+                'ui::components.user-menu',
+                'ui::components.theme-toggle',
+            ],
             'footer.app-credit' => 'ui::components.app-credit',
         ];
     }

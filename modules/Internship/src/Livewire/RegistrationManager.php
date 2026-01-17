@@ -1,0 +1,126 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Internship\Livewire;
+
+use Livewire\Component;
+use Modules\Internship\Livewire\Forms\RegistrationForm;
+use Modules\Internship\Services\Contracts\InternshipPlacementService;
+use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\User\Services\Contracts\UserService;
+
+class RegistrationManager extends Component
+{
+    use ManagesRecords;
+
+    public RegistrationForm $form;
+
+    public function boot(InternshipRegistrationService $registrationService): void
+    {
+        $this->service = $registrationService;
+        $this->eventPrefix = 'registration';
+    }
+
+    public function mount(): void
+    {
+        $this->authorize('internship.update');
+    }
+
+    /**
+     * Get internships for the dropdown.
+     */
+    public function getInternshipsProperty(): \Illuminate\Support\Collection
+    {
+        return app(InternshipService::class)->all(['id', 'title']);
+    }
+
+    /**
+     * Get placements for the dropdown.
+     */
+    public function getPlacementsProperty(): \Illuminate\Support\Collection
+    {
+        return app(InternshipPlacementService::class)->all(['id', 'company_name']);
+    }
+
+    /**
+     * Get students for the dropdown.
+     */
+    public function getStudentsProperty(): \Illuminate\Support\Collection
+    {
+        return app(UserService::class)->get(['roles.name' => 'student'], ['id', 'name']);
+    }
+
+    /**
+     * Override save to use register method with validation.
+     */
+    public function save(): void
+    {
+        $this->form->validate();
+
+        try {
+            /** @var InternshipRegistrationService $service */
+            $service = $this->service;
+
+            if ($this->form->id) {
+                $service->update($this->form->id, $this->form->except('id'));
+            } else {
+                $service->register($this->form->all());
+            }
+
+            $this->formModal = false;
+            $this->dispatch(
+                'notify',
+                message: __('shared::messages.record_saved'),
+                type: 'success',
+            );
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
+    }
+
+    public function render()
+    {
+        return view('internship::livewire.registration-manager');
+    }
+
+    /**
+     * Approve a registration.
+     */
+    public function approve(string $id): void
+    {
+        try {
+            /** @var InternshipRegistrationService $service */
+            $service = $this->service;
+            $service->approve($id);
+            $this->dispatch(
+                'notify',
+                message: __('internship::ui.registration_approved'),
+                type: 'success',
+            );
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
+    }
+
+    /**
+     * Reject a registration.
+     */
+    public function reject(string $id): void
+    {
+        try {
+            /** @var InternshipRegistrationService $service */
+            $service = $this->service;
+            $service->reject($id);
+            $this->dispatch(
+                'notify',
+                message: __('internship::ui.registration_rejected'),
+                type: 'warning',
+            );
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
+    }
+}

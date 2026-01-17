@@ -74,7 +74,32 @@ $this->setBaseQuery(User::active()->with('profile'));
 | `save(array $attributes, array $values)`                                | `updateOrCreate` implementation.                                        |
 | `delete(mixed $id, bool $force)`                                        | Deletes a record. Supports soft/force delete.                           |
 | `destroy(mixed $ids, bool $force)`                                      | Deletes multiple records.                                               |
+| `factory()`                                                             | Returns a new Model Factory instance.                                   |
 | `remember(string $key, mixed $ttl, Closure $callback, bool $skipCache)` | Caching wrapper.                                                        |
+
+---
+
+## Model Factories & Low-Coupling
+
+To maintain strict modular isolation and low-coupling, direct access to `Model::factory()` is
+discouraged when interacting with models from other modules (e.g., in Seeders or Tests).
+
+### The Rule
+
+Always access model factories through their respective **Service Contract**.
+
+- **Incorrect (High-Coupling):** `\Modules\User\Models\User::factory()->create();`
+- **Correct (Low-Coupling):**
+  `app(\Modules\User\Services\Contracts\UserService::class)->factory()->create();`
+
+### Why?
+
+1.  **Abstraction:** The Service layer remains the only authoritative entry point for a module.
+2.  **Flexibility:** If a module decides to change its persistence layer (e.g., swapping Eloquent
+    for another ORM), the factory method can be updated within the Service without breaking external
+    callers.
+3.  **Consistency:** Ensures that even test data generation follows the same architectural
+    boundaries as production code.
 
 ---
 

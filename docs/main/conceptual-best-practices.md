@@ -14,8 +14,9 @@ scalability by enforcing strict separation of concerns and clear communication p
 
 For a comprehensive understanding of Internara's modular structure, layered architecture (UI,
 Services, Models), inter-module communication, and more, refer to the
-**[Architecture Guide](architecture.md)**. For specific details on module roles and portability
-standards, refer to the **[Foundational Module Philosophy](foundational-module-philosophy.md)**.
+**[Architecture Guide](architecture-guide.md)**. For specific details on module roles and
+portability standards, refer to the
+**[Foundational Module Philosophy](foundational-module-philosophy.md)**.
 
 ---
 
@@ -43,7 +44,7 @@ Key principles include:
 
 Internara adopts a robust testing philosophy to ensure code quality and application stability. For a
 comprehensive guide on testing strategies, framework usage, and conventions, refer to the
-**[Testing Guide](testing.md)**.
+**[Testing Guide](testing-guide.md)**.
 
 Key testing principles include:
 

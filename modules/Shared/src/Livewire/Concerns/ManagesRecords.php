@@ -7,13 +7,14 @@ namespace Modules\Shared\Livewire\Concerns;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
+use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
  * @mixin \Livewire\Component
  */
 trait ManagesRecords
 {
-    protected EloquentService $service;
+    protected EloquentQuery $service;
 
     public string $eventPrefix = '';
 
@@ -29,6 +30,12 @@ trait ManagesRecords
     #[Url(except: 15)]
     public int $perPage = 15;
 
+    public bool $formModal = false;
+
+    public bool $confirmModal = false;
+
+    public ?string $recordId = null;
+
     /**
      * Get the unique prefix for events.
      */
@@ -43,7 +50,7 @@ trait ManagesRecords
     protected function getListeners(): array
     {
         return [
-            $this->getEventPrefix().':destroy-record' => 'destroy',
+            $this->getEventPrefix().':destroy-record' => 'remove',
         ];
     }
 
@@ -56,6 +63,8 @@ trait ManagesRecords
         $this->perPage = 15;
         $this->sortBy = 'created_at';
         $this->sortDir = 'desc';
+        $this->formModal = false;
+        $this->confirmModal = false;
     }
 
     /**
@@ -77,26 +86,36 @@ trait ManagesRecords
     }
 
     /**
-     * Dispatch event to open the form modal for adding a new record.
+     * Open the form modal for adding a new record.
      */
     public function add(): void
     {
+        $this->form->reset();
+        $this->formModal = true;
         $this->dispatch($this->getEventPrefix().':open-modal', 'form-modal');
     }
 
     /**
-     * Dispatch event to open the form modal for editing a record.
+     * Open the form modal for editing a record.
      */
     public function edit(mixed $id): void
     {
-        $this->dispatch($this->getEventPrefix().':open-modal', 'form-modal', ['id' => $id]);
+        $record = $this->service->find($id);
+
+        if ($record) {
+            $this->form->fill($record);
+            $this->formModal = true;
+            $this->dispatch($this->getEventPrefix().':open-modal', 'form-modal', ['id' => $id]);
+        }
     }
 
     /**
-     * Dispatch event to show a confirmation modal for removing a record.
+     * Show a confirmation modal for removing a record.
      */
     public function discard(mixed $id): void
     {
+        $this->recordId = (string) $id;
+        $this->confirmModal = true;
         $this->dispatch($this->getEventPrefix().':show-confirm-modal', 'confirm-modal', [
             'id' => $id,
         ]);
@@ -107,18 +126,31 @@ trait ManagesRecords
      */
     public function save(): void
     {
-        $this->service->save(['id' => $this->form->id], $this->form->all());
+        $this->form->validate();
 
+        $this->service->save(['id' => $this->form->id], $this->form->except('id'));
+
+        $this->formModal = false;
         $this->dispatch($this->getEventPrefix().':close-modal', 'form-modal');
-        $this->dispatch('notify', message: __('records::messages.record_saved'));
+        $this->dispatch('notify', message: __('shared::messages.record_saved'), type: 'success');
     }
 
     /**
      * Listener for the delete confirmation event.
      */
-    public function remove(mixed $id): void
+    public function remove(mixed $id = null): void
     {
-        $this->service->delete($id);
-        $this->dispatch('notify', message: __('records::messages.record_deleted'));
+        $id = $id ?: $this->recordId;
+
+        if ($id) {
+            $this->service->delete($id);
+            $this->confirmModal = false;
+            $this->recordId = null;
+            $this->dispatch(
+                'notify',
+                message: __('shared::messages.record_deleted'),
+                type: 'success',
+            );
+        }
     }
 }

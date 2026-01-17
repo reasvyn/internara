@@ -3,7 +3,7 @@
 This document outlines the coding and development conventions for the Internara project. Adhering to
 these guidelines ensures consistency, maintainability, and high code quality across the application.
 These conventions supplement the broader guidelines found in the root `GEMINI.md` file and align
-with the principles detailed in the [Architecture Guide](architecture.md).
+with the principles detailed in the [Architecture Guide](architecture-guide.md).
 
 ---
 
@@ -108,7 +108,7 @@ and consistent business rule enforcement.
 ## 4. Modular Architecture (Laravel Modules) Conventions
 
 Adhere strictly to the modular monolith architecture principles detailed in the
-**[Architecture Guide](architecture.md)**.
+**[Architecture Guide](architecture-guide.md)**.
 
 ### 4.1 General Module Rules
 
@@ -122,6 +122,22 @@ Adhere strictly to the modular monolith architecture principles detailed in the
   Repositories) must be nested within that domain's directory (e.g., `src/Services/Contracts/`).
   Top-level `src/Contracts` is only for generic, module-wide contracts.
 
+#### 4.1.1 Database Isolation Principle (Cross-Module Relations)
+
+To maintain low coupling and ensure modules remain truly portable, **physical foreign key
+constraints (`FOREIGN KEY`) MUST NOT be used across module boundaries.**
+
+- **Rationale:** Hard foreign keys create tight coupling at the database level, making it impossible
+  to run a module's migrations without its "parent" module being present.
+- **Rule:** For cross-module relationships (e.g., `Internship` table referencing `School` table),
+  store the foreign ID as a simple `uuid` or `unsignedBigInteger` column and create a manual index.
+- **Integrity Enforcement:** Referential integrity **MUST** be managed at the **Application Layer**
+  (Models and Services).
+    - Use Services to validate existence before creation.
+    - Use appropriate deletion logic (e.g., manual cleanup or soft deletes) within Services.
+- **Exceptions:** Foreign keys are allowed and encouraged for tables **within the same module**
+  (e.g., `internship_placements` referencing `internships`).
+
 ### 4.2 Service Layer Conventions
 
 - **Role:** Services orchestrate business logic and interact with Models.
@@ -130,6 +146,9 @@ Adhere strictly to the modular monolith architecture principles detailed in the
     - Services must implement an interface (contract) that extends
       `Modules\Shared\Services\Contracts\EloquentQuery`.
     - Initialize the associated Model in the constructor using `$this->setModel(new YourModel())`.
+- **Factory Access:** **(Mandatory)** Direct access to `Model::factory()` from outside the module is
+  forbidden. Always use the Service contract: `app(ServiceContract::class)->factory()`. This ensures
+  low-coupling and architectural integrity even in tests and seeders.
 
 ### 4.3 Inter-Module Communication
 

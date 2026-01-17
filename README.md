@@ -1,6 +1,6 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.4.x--alpha-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.4.0--alpha-blue?style=flat-square)
 ![Status](https://img.shields.io/badge/status-active--development-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
@@ -101,18 +101,21 @@ This project is built upon the Laravel ecosystem and several key packages:
 
 ### Version History
 
-| Version          | Series Code  | Status           | Key Focus                 |
-| :--------------- | :----------- | :--------------- | :------------------------ |
-| **v0.4.x-alpha** | `ARC01-INST` | 🛠️ _In Progress_ | Institutional & Academic  |
-| **v0.3.0-alpha** | `ARC01-USER` | ✅ _Completed_   | User & Profile Management |
-| **v0.2.0-alpha** | `ARC01-CORE` | ✅ _Completed_   | Core & Shared Systems     |
-| **v0.1.1-alpha** | `ARC01-INIT` | ✅ _Completed_   | Project Initiation        |
+| Version        | Series Code  | Status     | Key Focus                 |
+| :------------- | :----------- | :--------- | :------------------------ |
+| `v0.4.0-alpha` | `ARC01-INST` | `Released` | Institutional & Academic  |
+| `v0.3.0-alpha` | `ARC01-USER` | `Released` | User Management & Profile |
+| `v0.2.0-alpha` | `ARC01-CORE` | `Released`      | RBAC & Shared Services    |
+| `v0.1.1-alpha` | `ARC01-INIT` | `Released`      | Project Initialization    |
 
 ### Version Supports
 
 | Version  | Security | Bug Fixes | Status                 |
 | :------- | :------- | :-------- | :--------------------- |
 | **v0.x** | ✅       | ✅        | **Active Development** |
+
+For more details on our security audit protocols and reporting, please see
+[SECURITY.md](SECURITY.md).
 
 ## Documentation
 
@@ -132,6 +135,9 @@ efficient onboarding. All guides are located within the [`/docs`](/docs) directo
   core architectural principles, development workflows, coding conventions, and available tools.
 - **[Version History](docs/versions/versions-overview.md)**: Details on specific application
   releases and their scope.
+- **[Changelog](CHANGELOG.md)**: A comprehensive record of all notable changes made to the project.
+- **[Security Policy](SECURITY.md)**: Protocols for security audits and instructions for reporting
+  vulnerabilities.
 
 For more detailed guides on architecture, conventions, testing, and more, please explore the
 `docs/main` directory.

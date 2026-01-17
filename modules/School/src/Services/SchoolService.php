@@ -7,7 +7,6 @@ namespace Modules\School\Services;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
 use Modules\Exception\AppException;
@@ -140,7 +139,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     {
         $school = parent::save($attributes, $values);
         $allData = array_merge($attributes, $values);
-        $this->handleSchoolLogo($school, $allData['file_logo'] ?? null);
+        $this->handleSchoolLogo($school, $allData['logo_file'] ?? null);
 
         return $school;
     }

@@ -6,16 +6,24 @@ namespace Modules\Department\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
+use Modules\Department\Livewire\Forms\DepartmentForm;
 use Modules\Shared\Livewire\Concerns\ManagesRecords;
 
 class DepartmentManager extends Component
 {
     use ManagesRecords;
 
-    public function mount(
+    public DepartmentForm $form;
+
+    public function boot(
         \Modules\Department\Services\Contracts\DepartmentService $departmentService,
     ): void {
         $this->service = $departmentService;
+    }
+
+    public function mount(): void
+    {
+        $this->authorize('department.view');
     }
 
     public function render(): View

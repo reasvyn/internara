@@ -48,9 +48,9 @@ Internara project.
 
 ## Sub-Sections
 
-- **[Package Integration Overview](packages/overview.md)**: Configuration and usage of core
+- **[Package Integration Overview](packages/packages-overview.md)**: Configuration and usage of core
   dependencies like Livewire, Laravel Modules, and Spatie packages.
-- **[Advanced Guides Overview](advanced/overview.md)**: Advanced development scenarios and
+- **[Advanced Guides Overview](advanced/advanced-overview.md)**: Advanced development scenarios and
   customizations.
 
 ---

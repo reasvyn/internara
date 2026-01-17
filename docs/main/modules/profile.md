@@ -1,29 +1,36 @@
 # Profile Module
 
-The `Profile` module handles extended user information and role-specific data. it utilizes a
-polymorphic relationship to store details that are not required for core authentication but are
-essential for the application's business logic.
+The `Profile` module handles extended user information and academic integration. It serves as the
+primary store for data that distinguishes users beyond their core authentication credentials.
 
 ## Purpose
 
-- **Information Management:** Stores PII like phone numbers, addresses, and bios.
-- **Polymorphism:** Adapts fields based on user roles (e.g., NIP for Teachers, NISN for Students).
-- **Self-Service:** Empowers users to manage their own presence and security settings.
+- **Academic Context:** Links users to their respective institutional structures (Departments).
+- **Specialized Identification:** Stores role-specific identifiers like **NIP** (for Teachers) and
+  **NISN** (for Students).
+- **Personal Information:** Manages PII such as phone numbers, addresses, and bios.
 
-## Key Features
+## Core Components
 
-### 1. Unified Profile
+### 1. Profile Model
 
-- A single entry point for users to manage basic info and avatar.
+- Stores extended user attributes.
+- Uses `HasUserRelation` to link back to the core `User` model.
+- Integrated with `HasDepartmentRelation` (from the Department module) to provide academic context.
+- Uses **UUIDs** for secure identification.
 
-### 2. Specialized Fields
+### 2. Academic Integration
 
-- **Teacher Data**: Field for Employee ID (NIP).
-- **Student Data**: Field for National Student ID (NISN).
+- **Department ID:** The profile stores a `department_id` which is validated against the
+  `DepartmentService`.
+- **Relationship Trait:** Utilizes the `HasDepartmentRelation` trait for a decoupled link to the
+  Department module.
 
-### 3. Security Settings
+## Technical Details
 
-- Self-service password updates and session management.
+- **Mass Assignable:** Includes `department_id`, `nip`, `nisn`, `phone`, `address`, and `bio`.
+- **Database Isolation:** Adheres to the project convention of manual indexes for cross-module
+  relationships (e.g., `user_id`, `department_id`).
 
 ---
 

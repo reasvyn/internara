@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+use Modules\Department\Livewire\DepartmentManager;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +15,7 @@ declare(strict_types=1);
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::middleware(['auth', 'verified', 'can:department.view'])->group(function () {
+    Route::get('/departments', DepartmentManager::class)->name('department.index');
+});

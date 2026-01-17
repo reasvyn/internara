@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Department\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Department\Models\Department;
+use Modules\Department\Policies\DepartmentPolicy;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -18,16 +20,20 @@ class DepartmentServiceProvider extends ServiceProvider
     protected string $nameLower = 'department';
 
     /**
+     * The policy mappings for the module.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected array $policies = [
+        Department::class => DepartmentPolicy::class,
+    ];
+
+    /**
      * Boot the application events.
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
     }
 
     /**
@@ -35,7 +41,7 @@ class DepartmentServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }

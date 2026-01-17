@@ -22,8 +22,8 @@ class SchoolFactory extends Factory
             'name' => $this->faker->company,
             'address' => $this->faker->address,
             'email' => $this->faker->unique()->companyEmail,
-            'phone' => $this->faker->phoneNumber,
-            'fax' => $this->faker->phoneNumber, // Assuming fax can also be a phone number
+            'phone' => $this->faker->numerify('08##########'), // 12 digits
+            'fax' => $this->faker->numerify('021#######'), // 10 digits
             'principal_name' => $this->faker->name,
         ];
     }

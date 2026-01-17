@@ -24,7 +24,7 @@ class UserServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [
+    protected array $policies = [
         User::class => UserPolicy::class,
     ];
 
@@ -33,12 +33,7 @@ class UserServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
     }
 
     /**
@@ -46,7 +41,8 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
+
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }
@@ -62,14 +58,5 @@ class UserServiceProvider extends ServiceProvider
             \Modules\User\Services\Contracts\UserService::class => \Modules\User\Services\UserService::class,
             \Modules\User\Services\Contracts\SuperAdminService::class => \Modules\User\Services\SuperAdminService::class,
         ];
-    }
-
-    /**
-     * Register the module policies.
-     */
-    protected function registerPolicies(): void
-    {
-        // Policies are automatically registered via the $policies property.
-        // This method is intentionally empty but required for Laravel's policy discovery.
     }
 }

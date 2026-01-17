@@ -11,9 +11,9 @@ return [
     |--------------------------------------------------------------------------
     */
     'info' => [
-        'version' => env('APP_VERSION', 'v0.3.x-alpha'),
-        'series_code' => env('APP_SERIES_CODE', 'ARC01-USER'),
-        'status' => env('APP_STATUS', 'Active Development'),
+        'version' => env('APP_VERSION', 'v0.4.0-alpha'),
+        'series_code' => env('APP_SERIES_CODE', 'ARC01-INST'),
+        'status' => 'In Progress',
     ],
 
     /*

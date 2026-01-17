@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Shared\Providers\Concerns;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\UI\Facades\SlotRegistry;
 use RecursiveDirectoryIterator;
@@ -33,6 +34,7 @@ trait ManagesModuleProvider
      */
     protected function bootModule(): void
     {
+        $this->registerPolicies();
         $this->registerConfig();
         $this->registerTranslations();
         $this->registerViews();
@@ -40,6 +42,18 @@ trait ManagesModuleProvider
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerViewSlots();
+    }
+
+    /**
+     * Register the module's policies.
+     */
+    public function registerPolicies(): void
+    {
+        if (property_exists($this, 'policies')) {
+            foreach ($this->policies as $model => $policy) {
+                Gate::policy($model, $policy);
+            }
+        }
     }
 
     /**

@@ -12,14 +12,14 @@ Internara follows **Semantic Versioning (SemVer 2.0.0)** with specific stage suf
 
 ### Format: `vX.Y.Z-stage`
 
--   **Major (X):** Breaking changes to the core architecture or API.
--   **Minor (Y):** New features (backward compatible) or significant module additions.
--   **Patch (Z):** Bug fixes, hotfixes, or minor refinements.
--   **Stage:**
-    -   `alpha`: In-development, feature incomplete, potential breaking changes.
-    -   `beta`: Feature complete, testing phase, stable APIs.
-    -   `rc`: Release Candidate.
-    -   *(none)*: Production stable.
+- **Major (X):** Breaking changes to the core architecture or API.
+- **Minor (Y):** New features (backward compatible) or significant module additions.
+- **Patch (Z):** Bug fixes, hotfixes, or minor refinements.
+- **Stage:**
+    - `alpha`: In-development, feature incomplete, potential breaking changes.
+    - `beta`: Feature complete, testing phase, stable APIs.
+    - `rc`: Release Candidate.
+    - _(none)_: Production stable.
 
 **Example:** `v0.4.0-alpha`
 
@@ -27,25 +27,48 @@ Internara follows **Semantic Versioning (SemVer 2.0.0)** with specific stage suf
 
 ## 2. Pre-Release Checklist (The "Definition of Done")
 
-Before tagging a release or merging to the `main` branch for a release, the following checks **must**
-be passed:
+Before tagging a release or merging to the `main` branch for a release, the following checks
+**must** be passed:
 
 ### A. Code Quality & Security
+
 - [ ] **Tests:** All Unit and Feature tests must pass (`php artisan test`).
-- [ ] **Linting:** Code must be formatted using Pint/Prettier (`npm run format` & `./vendor/bin/pint`).
+- [ ] **Linting:** Code must be formatted using Pint/Prettier (`npm run format` &
+      `./vendor/bin/pint`).
 - [ ] **Static Analysis:** No critical issues found by Larastan (level 5+).
 - [ ] **Debug Cleanup:** No `dd()`, `dump()`, `console.log()`, or commented-out "dead code" remains.
 - [ ] **Secrets:** No hardcoded secrets or API keys in the codebase.
 
 ### B. Documentation
-- [ ] **Version Document:** A dedicated file exists in `docs/versions/` (e.g., `v0.4.0-alpha.md`) detailing the scope.
-- [ ] **README.md:** Updated with the new version status and any major changes in the project overview.
-- [ ] **CHANGELOG.md:** Updated with all changes since the last version using the standard template.
-- [ ] **SECURITY.md:** Reviewed and updated if there are changes to security protocols or contacts.
+
 - [ ] **PHPDoc:** All new classes and methods have comprehensive PHPDoc.
-- [ ] **Architecture:** If architecture changed, `docs/main/architecture-guide.md` is updated.
+- [ ] **Mandatory Synchronization:** All artifacts listed in the
+      [Mandatory Documentation Artifacts](#21-mandatory-documentation-artifacts) section are updated
+      and consistent.
+
+### 2.1 Mandatory Documentation Artifacts
+
+The following documents **must** be synchronized and updated before every release to maintain the
+"Single Source of Truth":
+
+1.  **`docs/versions/vX.Y.Z-stage.md`**: Dedicated release document telling the "Engineering Story"
+    (Goals, Keystones, Verification).
+2.  **`README.md`**: Update the "Version History" table and the "Current Status" indicator.
+3.  **`CHANGELOG.md`**: Move the "In Progress" work to a permanent version entry using the standard
+    template.
+4.  **`docs/versions/table-of-contents.md`**: Add the new version link to the versions TOC.
+5.  **`docs/versions/versions-overview.md`**: Update the release history list and the current
+    operational phase details.
+6.  **`docs/main/modules/{module-name}.md`**: Ensure technical guides for new or modified modules
+    are complete (no stubs).
+7.  **`docs/main/architecture-guide.md`**: Update if there are any shifts in communication patterns
+    or system layers.
+8.  **`docs/main/development-conventions.md`**: Update if new coding standards or mandatory patterns
+    were introduced.
+9.  **`SECURITY.md`**: Verify security protocols are still accurate for the new feature set.
 
 ### C. Build & Assets
+
 - [ ] **Frontend:** Assets compile successfully (`npm run build`).
 - [ ] **Migrations:** All migrations run cleanly (`php artisan migrate:fresh --seed` works).
 
@@ -62,13 +85,15 @@ be passed:
     ```bash
     git push origin main --tags
     ```
-4.  **GitHub Release:** Create a release on GitHub matching the tag, pasting the content from the **Release Message Template**.
+4.  **GitHub Release:** Create a release on GitHub matching the tag, pasting the content from the
+    **Release Message Template**.
 
 ---
 
 ## 4. Post-Release Checklist
 
-- [ ] **Update Current Version:** Update the status in `README.md` and `docs/versions/versions-overview.md`.
+- [ ] **Update Current Version:** Update the status in `README.md` and
+      `docs/versions/versions-overview.md`.
 - [ ] **New Iteration:** Create a new "In Progress" section in `CHANGELOG.md` for the next version.
 - [ ] **Cleanup:** Remove any temporary branches used for the release features.
 
@@ -82,42 +107,18 @@ Use the following template for `CHANGELOG.md` entries and GitHub Release descrip
 ## [vX.Y.Z-stage] - YYYY-MM-DD (SERIES-CODE)
 
 ### 🚀 Overview
-Brief, one-sentence summary of the release's primary goal (e.g., "Introduces the School and Department management modules.").
 
-### ✨ Added
-- **Feature Name:** Description of the feature.
-- **Module Name:** Description of the new module.
-- **Component:** Description of the UI component.
-
-### 🛠 Changed
-- Refactored `ClassName` to use `NewPattern`.
-- Updated dependency `package-name` to `vX.X`.
-
-### 🐛 Fixed
-- Resolved issue where [Problem Description].
-- Fixed IDOR vulnerability in [Module Name].
-
-### ⚠️ Breaking Changes
-- **Method Renamed:** `OldClass::method()` is now `NewClass::method()`.
-- **Config:** `config/file.php` structure has changed.
-
-### 📚 Documentation
-- [Full Release Notes & Architecture Guide](docs/versions/vX.Y.Z-stage.md)
-
----
-*Commit: [ShortHash]*
+Brief, one-sentence summary of the release's primary goal (e.g., "Introduces the School and
+Department management modules.").
 ```
 
 ### Series Codes Reference
+
 - **INIT:** Project Initialization
-- **CORE:** Core Architecture & Shared Services
-- **USER:** User Management & RBAC
-- **INST:** Institutional (School/Dept)
-- **ACAD:** Academic (Internship/Curriculum)
-- **IND:** Industry Partner Management
 
 ---
 
 **Navigation**
 
-[← Previous: Workflow Developer Guide](modular-monolith-workflow.md) | [Next: Artisan Commands Reference →](artisan-commands-reference.md)
+[← Previous: Workflow Developer Guide](modular-monolith-workflow.md) |
+[Next: Artisan Commands Reference →](artisan-commands-reference.md)

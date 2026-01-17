@@ -32,7 +32,6 @@ Modules dedicated to visual elements and user interaction.
 
 - **[UI](ui.md)**: Global design system, assets, and shared Blade components.
 - **[Dashboard](dashboard.md)**: Role-based landing pages, widgets, and analytics.
-- **[FormBuilder](formbuilder.md)**: Dynamic form rendering for assessments and journals.
 
 ## 4. Domain Modules
 

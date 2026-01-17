@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Department\Models\Concerns\HasDepartmentRelation;
+use Modules\Profile\Database\Factories\ProfileFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\User\Models\Concerns\HasUserRelation;
 
@@ -15,6 +18,8 @@ use Modules\User\Models\Concerns\HasUserRelation;
  */
 class Profile extends Model
 {
+    use HasDepartmentRelation;
+    use HasFactory;
     use HasUserRelation;
     use HasUuid;
 
@@ -23,5 +28,13 @@ class Profile extends Model
      *
      * @var list<string>
      */
-    protected $fillable = ['user_id', 'phone', 'address', 'bio', 'nip', 'nisn'];
+    protected $fillable = ['user_id', 'department_id', 'phone', 'address', 'bio', 'nip', 'nisn'];
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): ProfileFactory
+    {
+        return ProfileFactory::new();
+    }
 }

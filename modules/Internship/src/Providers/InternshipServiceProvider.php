@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Modules\Internship\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Internship\Models\Internship;
+use Modules\Internship\Models\InternshipPlacement;
+use Modules\Internship\Models\InternshipRegistration;
+use Modules\Internship\Policies\InternshipPolicy;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -18,16 +22,22 @@ class InternshipServiceProvider extends ServiceProvider
     protected string $nameLower = 'internship';
 
     /**
+     * The policy mappings for the module.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected array $policies = [
+        Internship::class => InternshipPolicy::class,
+        InternshipPlacement::class => InternshipPolicy::class, // Reusing policy for simplicity or create specific ones if needed
+        InternshipRegistration::class => InternshipPolicy::class,
+    ];
+
+    /**
      * Boot the application events.
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
     }
 
     /**
@@ -35,7 +45,7 @@ class InternshipServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }
@@ -49,6 +59,8 @@ class InternshipServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Internship\Services\Contracts\InternshipService::class => \Modules\Internship\Services\InternshipService::class,
+            \Modules\Internship\Services\Contracts\InternshipPlacementService::class => \Modules\Internship\Services\InternshipPlacementService::class,
+            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class => \Modules\Internship\Services\InternshipRegistrationService::class,
         ];
     }
 }
