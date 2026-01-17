@@ -21,6 +21,9 @@ class JournalForm extends Form
     public string $character_values = '';
     public string $reflection = '';
     public string $mood = 'neutral';
+    
+    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile[] */
+    public $attachments = [];
 
     /**
      * Set the form values from an existing entry.
@@ -53,6 +56,7 @@ class JournalForm extends Form
             'character_values' => ['nullable', 'string', 'max:255'],
             'reflection' => ['nullable', 'string'],
             'mood' => ['required', 'string', 'in:happy,neutral,tired,inspired,focused'],
+            'attachments.*' => ['nullable', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf,doc,docx'], // 5MB limit
         ];
     }
 }

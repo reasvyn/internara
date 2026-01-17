@@ -18,7 +18,12 @@ Attendance tracking with geolocation, and Supervisor matching relationships.
 
 - **UI Refactor:** Centralized design system wrappers in the `UI` module (including Table, Modal, Header, Tabs, etc.).
 - **Supervisor Matching:** Formal relationship between Students, Academic Teachers, and Industry Mentors.
-- **Journal Module:** Core implementation of daily student logbooks with "Dual-Authority Approval" policy.
+- **Journal Module:** 
+  - Core implementation of daily student logbooks with "Dual-Authority Approval" policy.
+  - Added **"Save as Draft"** functionality for students.
+  - Implemented **"Week at a Glance"** visual tracking sidebar for student progress.
+  - Added **Private Media Attachments** support for journal entries with temporary URL generation.
+  - Built comprehensive **Journal Detail Modal** for supervisor review.
 - **Mentor Role:** New system role for industry supervisors with dedicated dashboard.
 
 ### 🛠 Changed

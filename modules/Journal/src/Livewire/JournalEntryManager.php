@@ -6,19 +6,27 @@ namespace Modules\Journal\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Modules\Journal\Livewire\Forms\JournalForm;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 
 class JournalEntryManager extends Component
 {
+    use WithFileUploads;
+
     public JournalForm $form;
 
     protected JournalService $journalService;
 
-    public function boot(JournalService $journalService): void
-    {
+    protected InternshipRegistrationService $registrationService;
+
+    public function boot(
+        JournalService $journalService,
+        InternshipRegistrationService $registrationService
+    ): void {
         $this->journalService = $journalService;
+        $this->registrationService = $registrationService;
     }
 
     public function mount(?string $id = null): void
@@ -29,36 +37,44 @@ class JournalEntryManager extends Component
             $this->form->setEntry($entry);
         } else {
             $this->authorize('create', \Modules\Journal\Models\JournalEntry::class);
-            $this->form->date = now()->format('Y-m-d');
+            $this->form->date = request()->query('date', now()->format('Y-m-d'));
         }
     }
 
-    public function save(): void
+    public function save(bool $asDraft = false): void
     {
         $this->form->validate();
 
         try {
             if ($this->form->id) {
-                $this->journalService->update($this->form->id, $this->form->except('entry'));
+                $entry = $this->journalService->update($this->form->id, $this->form->except('entry', 'attachments'));
             } else {
                 // Find active registration for current student
-                $registration = app(InternshipRegistrationService::class)->first([
+                $registration = $this->registrationService->first([
                     'student_id' => auth()->id(),
-                    'latest_status' => 'active' // Assuming active is the status for current placement
+                    'latest_status' => 'active' 
                 ]);
 
                 if (!$registration) {
                     throw new \Exception(__('internship::messages.no_active_registration'));
                 }
 
-                $data = $this->form->except('entry');
+                $data = $this->form->except('entry', 'attachments');
                 $data['student_id'] = auth()->id();
                 $data['registration_id'] = $registration->id;
 
-                $this->journalService->create($data);
+                $entry = $this->journalService->create($data);
             }
 
-            $this->dispatch('notify', message: __('shared::messages.record_saved'), type: 'success');
+            // Set status
+            $status = $asDraft ? 'draft' : 'submitted';
+            $entry->setStatus($status, $asDraft ? 'Journal saved as draft.' : 'Journal submitted.');
+
+            if (!empty($this->form->attachments)) {
+                $this->journalService->attachMedia($entry->id, $this->form->attachments);
+            }
+
+            $this->dispatch('notify', message: $asDraft ? __('shared::messages.record_saved') : __('shared::messages.record_submitted'), type: 'success');
             $this->redirect(route('journal.index'), navigate: true);
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');

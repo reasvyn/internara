@@ -44,6 +44,8 @@ class JournalEntryFactory extends Factory
 
         return [
             'id' => Str::uuid()->toString(),
+            'registration_id' => (string) Str::uuid(),
+            'student_id' => (string) Str::uuid(),
             'date' => now(),
             'work_topic' => $this->faker->randomElement($topics),
             'activity_description' => $this->faker->paragraph(),

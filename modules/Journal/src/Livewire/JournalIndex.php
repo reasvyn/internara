@@ -7,6 +7,7 @@ namespace Modules\Journal\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Url;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Models\User;
 
@@ -14,24 +15,43 @@ class JournalIndex extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $search = '';
+
+    #[Url]
+    public string $date = '';
+
+    public bool $journalDetailModal = false;
+
+    public ?JournalEntry $selectedEntry = null;
+
+    protected JournalService $journalService;
+
+    /**
+     * Inject dependencies.
+     */
+    public function boot(JournalService $journalService): void
+    {
+        $this->journalService = $journalService;
+    }
 
     /**
      * Get the journals based on user role.
      */
     public function getJournalsProperty()
     {
-        /** @var JournalService $service */
-        $service = app(JournalService::class);
         $user = auth()->user();
-        $filters = ['search' => $this->search, 'sort_by' => 'date', 'sort_dir' => 'desc'];
+        $filters = [
+            'search' => $this->search,
+            'date' => $this->date,
+            'sort_by' => 'date',
+            'sort_dir' => 'desc'
+        ];
 
         if ($user->hasRole('student')) {
             $filters['student_id'] = $user->id;
         } elseif ($user->hasRole(['teacher', 'mentor'])) {
-            // For supervisors, we filter via registration relationship
-            // This requires a more complex query than simple EloquentQuery filter
-            $query = $service->query($filters);
+            $query = $this->journalService->query($filters);
             $query->whereHas('registration', function ($q) use ($user) {
                 $q->where('teacher_id', $user->id)
                   ->orWhere('mentor_id', $user->id);
@@ -39,7 +59,92 @@ class JournalIndex extends Component
             return $query->paginate(10);
         }
 
-        return $service->paginate($filters, 10);
+        return $this->journalService->paginate($filters, 10);
+    }
+
+    /**
+     * Get the current week's journal status for students.
+     */
+    public function getWeekGlanceProperty(): array
+    {
+        if (!auth()->user()->hasRole('student')) {
+            return [];
+        }
+
+        $startOfWeek = now()->startOfWeek();
+        $endOfWeek = now()->endOfWeek();
+        
+        $entries = $this->journalService->query([
+            'student_id' => auth()->id(),
+            'start_date' => $startOfWeek->format('Y-m-d'),
+            'end_date' => $endOfWeek->format('Y-m-d'),
+        ])->get()->keyBy(fn($e) => $e->date->format('Y-m-d'));
+
+        $days = [];
+        for ($date = $startOfWeek->copy(); $date <= $endOfWeek; $date->addDay()) {
+            if ($date->isWeekend()) continue;
+
+            $key = $date->format('Y-m-d');
+            $entry = $entries->get($key);
+            
+            $days[] = [
+                'date' => $date->copy(),
+                'label' => $date->translatedFormat('D'),
+                'day' => $date->format('d'),
+                'status' => $entry ? ($entry->latestStatus()?->name ?? 'draft') : 'empty',
+                'id' => $entry?->id,
+            ];
+        }
+
+        return $days;
+    }
+
+    /**
+     * Show journal detail in modal.
+     */
+    public function showDetail(string $id): void
+    {
+        $this->selectedEntry = $this->journalService->find($id);
+        
+        $this->authorize('view', $this->selectedEntry);
+        
+        $this->journalDetailModal = true;
+    }
+
+    /**
+     * Approve a journal entry.
+     */
+    public function approve(string $id): void
+    {
+        $entry = $this->journalService->find($id);
+
+        $this->authorize('validate', $entry);
+
+        $this->journalService->approve($id);
+
+        if ($this->selectedEntry && $this->selectedEntry->id === $id) {
+            $this->selectedEntry = $this->journalService->find($id);
+        }
+
+        $this->dispatch('notify', message: __('shared::messages.record_approved'), type: 'success');
+    }
+
+    /**
+     * Reject a journal entry.
+     */
+    public function reject(string $id, string $reason = 'Rejected by supervisor'): void
+    {
+        $entry = $this->journalService->find($id);
+
+        $this->authorize('validate', $entry);
+
+        $this->journalService->reject($id, $reason);
+
+        if ($this->selectedEntry && $this->selectedEntry->id === $id) {
+            $this->selectedEntry = $this->journalService->find($id);
+        }
+
+        $this->dispatch('notify', message: __('shared::messages.record_rejected'), type: 'error');
     }
 
     public function render(): View

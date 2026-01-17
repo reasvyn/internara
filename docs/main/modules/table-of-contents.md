@@ -40,6 +40,7 @@ The business logic heart of the application.
 - **[School](school.md)**: Educational institution identity and settings.
 - **[Department](department.md)**: Academic departments and specializations.
 - **[Internship](internship.md)**: Core internship lifecycle and registration.
+- **[Journal](journal.md)**: Student activity tracking and daily logbooks.
 
 ---
 

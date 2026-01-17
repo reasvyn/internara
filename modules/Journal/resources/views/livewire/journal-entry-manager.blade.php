@@ -65,6 +65,14 @@
                         rows="3"
                     />
 
+                    <x-ui::file-upload 
+                        label="{{ __('Lampiran (Opsional)') }}" 
+                        wire:model="form.attachments" 
+                        multiple 
+                        accept="image/*,application/pdf,.doc,.docx"
+                        hint="{{ __('Maksimal 5MB per file (JPG, PNG, PDF, DOCX)') }}"
+                    />
+
                     <x-slot:actions>
                         <x-ui::button 
                             label="{{ __('Batal') }}" 
@@ -72,10 +80,16 @@
                             class="btn-ghost" 
                         />
                         <x-ui::button 
-                            label="{{ __('Simpan Jurnal') }}" 
-                            type="submit" 
+                            label="{{ __('Simpan sebagai Draf') }}" 
+                            wire:click="save(true)" 
+                            class="btn-outline" 
+                            spinner="save(true)" 
+                        />
+                        <x-ui::button 
+                            label="{{ __('Kirim Jurnal') }}" 
+                            wire:click="save(false)" 
                             class="btn-primary" 
-                            spinner="save" 
+                            spinner="save(false)" 
                         />
                     </x-slot:actions>
                 </x-ui::form>

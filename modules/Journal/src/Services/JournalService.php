@@ -30,6 +30,24 @@ class JournalService extends EloquentQuery implements Contract
     /**
      * @inheritDoc
      */
+    protected function applyFilters(&$query, array &$filters): void
+    {
+        if (isset($filters['date'])) {
+            $query->whereDate('date', $filters['date']);
+            unset($filters['date']);
+        }
+
+        if (isset($filters['start_date']) && isset($filters['end_date'])) {
+            $query->whereBetween('date', [$filters['start_date'], $filters['end_date']]);
+            unset($filters['start_date'], $filters['end_date']);
+        }
+
+        parent::applyFilters($query, $filters);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function update(mixed $id, array $data): JournalEntry
     {
         $entry = $this->find($id);
@@ -79,5 +97,19 @@ class JournalService extends EloquentQuery implements Contract
         $entry->setStatus('rejected', $reason);
         
         return $entry;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function attachMedia(mixed $id, array $files): void
+    {
+        $entry = $this->find($id);
+
+        foreach ($files as $file) {
+            $entry->addMedia($file->getRealPath())
+                ->usingFileName($file->getClientOriginalName())
+                ->toMediaCollection('attachments', 'private');
+        }
     }
 }

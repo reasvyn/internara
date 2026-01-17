@@ -30,4 +30,12 @@ interface JournalService extends EloquentQuery
      * Reject a journal entry with a reason.
      */
     public function reject(mixed $id, string $reason): JournalEntry;
+
+    /**
+     * Attach media files to a journal entry.
+     * 
+     * @param mixed $id
+     * @param array<\Livewire\Features\SupportFileUploads\TemporaryUploadedFile> $files
+     */
+    public function attachMedia(mixed $id, array $files): void;
 }
