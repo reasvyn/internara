@@ -123,5 +123,5 @@ _(Further instructions for initial admin user creation or setup wizard will go h
 
 **Navigation**
 
-[← Previous: Main Documentation Overview](main-documentation-overview.md) |
+[← Previous: Table of Contents](table-of-contents.md) |
 [Next: Architecture Guide →](architecture-guide.md)

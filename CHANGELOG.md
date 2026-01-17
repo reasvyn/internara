@@ -7,6 +7,30 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [v0.5.0-alpha] - Unreleased (ARC01-OPER)
+
+### 🚀 Overview
+
+Focuses on the operational and activity tracking phase, introducing Daily Journals (Logbook),
+Attendance tracking with geolocation, and Supervisor matching relationships.
+
+### ✨ Added
+
+- **UI Refactor:** Centralized design system wrappers in the `UI` module (including Table, Modal, Header, Tabs, etc.).
+- **Supervisor Matching:** Formal relationship between Students, Academic Teachers, and Industry Mentors.
+- **Journal Module:** Core implementation of daily student logbooks with "Dual-Authority Approval" policy.
+- **Mentor Role:** New system role for industry supervisors with dedicated dashboard.
+
+### 🛠 Changed
+
+- **UI Standardization:** Refactored all feature modules (`Auth`, `User`, `Profile`, `Internship`, `School`, `Department`) to use centralized `UI` components instead of direct MaryUI/DaisyUI classes.
+- **Card Styling:** Standardized `x-ui::card` with default borders, rounded corners, and shadows.
+- **UI Route Integrity:** Added missing route files and service provider fixes for the `UI` module.
+- **Unified Dashboards:** All role-specific dashboards now use a consistent local layout.
+- **Expanded Registrations:** `InternshipRegistration` now tracks assigned Teacher and Mentor.
+
+---
+
 ## [v0.4.0-alpha] - 2026-01-17 (ARC01-INST)
 
 ### 🚀 Overview

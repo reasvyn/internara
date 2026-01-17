@@ -34,9 +34,7 @@ Internara project.
   seeded during system setup.
 - **[Permission UI Components](permission-ui-components.md)**: Documentation for shared UI elements
   related to authorization.
-- **[Workflow Developer Guide](modular-monolith-workflow.md)**: A practical, step-by-step guide for
-  creating new features within a module, including concrete Artisan commands and code examples for
-  Models, Entities, Repositories, Services, and UI components.
+- **[Development Workflow](development-workflow.md)**: A practical, step-by-step guide to implementing features within the architecture, from creating modules to writing services and tests.
 - **[Testing Guide](testing-guide.md)**: A comprehensive guide covering the project's testing
   philosophy, Pest framework usage, test directory structure, writing tests, and running tests.
 - **[Artisan Commands Reference](artisan-commands-reference.md)**: A comprehensive list of all
@@ -58,4 +56,4 @@ Internara project.
 **Navigation**
 
 [← Previous: Project Overview](../project-overview.md) |
-[Next: Installation Guide →](installation-guide.md)
+[Next: Table of Contents](table-of-contents.md)

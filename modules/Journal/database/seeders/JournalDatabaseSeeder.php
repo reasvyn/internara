@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Modules\UI\Database\Seeders;
+namespace Modules\Journal\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class UIDatabaseSeeder extends Seeder
+class JournalDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.

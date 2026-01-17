@@ -87,5 +87,5 @@ Key UI/UX design principles include:
 
 **Navigation**
 
-[← Previous: Foundational Module Philosophy](foundational-module-philosophy.md) |
+[← Previous: Service Binding & Auto-Discovery](service-binding-auto-discovery.md) |
 [Next: Development Conventions →](development-conventions.md)

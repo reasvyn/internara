@@ -132,5 +132,5 @@ class InternshipPolicy
 
 **Navigation**
 
-[← Previous: Service Binding & Auto-Discovery](service-binding-auto-discovery.md) |
-[Next: Permission Seeders →](permission-seeders.md)
+[← Previous: Development Workflow](development-workflow.md) |
+[Next: Exception Handling Guidelines →](exception-handling-guidelines.md)

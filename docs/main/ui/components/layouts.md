@@ -27,8 +27,40 @@ The root layout component. Every page in the application ultimately extends this
 ### Internal Structure
 
 - Includes `<x-ui::layouts.base.head>` for scripts, styles, and meta-tags.
-- Includes `<x-mary-toast />` for global notification support.
+- Includes `<x-ui::toast />` for global notification support.
 - Provides a `@stack('scripts')` for page-specific JS.
+
+---
+
+## `main`
+
+The primary content orchestrator. Handles sidebars, actions, and footer slots.
+
+- **Usage:**
+```blade
+<x-ui::main>
+    <x-slot:actions>
+        <x-ui::button label="Action" />
+    </x-slot:actions>
+    Content...
+</x-ui::main>
+```
+
+---
+
+## `header`
+
+Page header component with support for title, subtitle, middle, and actions slots.
+
+- **Usage:** `<x-ui::header title="Users" subtitle="Manage your users" />`
+
+---
+
+## `toast`
+
+Global notification component.
+
+- **Usage:** `<x-ui::toast />` (Included automatically in `layouts.base`).
 
 ---
 

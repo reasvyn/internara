@@ -120,5 +120,5 @@ Department management modules.").
 
 **Navigation**
 
-[← Previous: Workflow Developer Guide](modular-monolith-workflow.md) |
-[Next: Artisan Commands Reference →](artisan-commands-reference.md)
+[← Previous: Artisan Commands Reference](artisan-commands-reference.md) |
+[Next: Package Integration Overview →](packages/packages-overview.md)

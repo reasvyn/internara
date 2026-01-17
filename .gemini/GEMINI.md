@@ -89,13 +89,12 @@ and development documentation, always refer to the project’s `/docs` directory
   documentation (especially within the `/docs` directory). For comprehensive navigation, prioritize:
     - [docs/table-of-contents.md](docs/table-of-contents.md)
     - [docs/main/architecture-guide.md](docs/main/architecture-guide.md)
-    - [docs/main/modular-monolith-workflow.md](docs/main/modular-monolith-workflow.md)
-    - [docs/main/main-documentation-overview.md](docs/main/main-documentation-overview.md)
+    - [docs/main/development-workflow.md](docs/main/development-workflow.md)
     - [docs/main/development-conventions.md](docs/main/development-conventions.md)
-    - [docs/main/development-lifecycle-guide.md](docs/main/development-lifecycle-guide.md)
+    - [docs/main/software-lifecycle.md](docs/main/software-lifecycle.md)
+    - [docs/main/main-documentation-overview.md](docs/main/main-documentation-overview.md)
     - [docs/versions/versions-overview.md](docs/versions/versions-overview.md)
-    - [docs/versions/v0.1.x-alpha.md](docs/versions/v0.1.x-alpha.md)
-
+    
 ---
 
 ## Standard Project Workflow
@@ -151,7 +150,16 @@ and development documentation, always refer to the project’s `/docs` directory
 
 ## Foundational Technical Context
 
-...
+### Stack & Versions
+- **PHP:** 8.4+
+- **Laravel:** v12
+- **TALL Stack:** Tailwind CSS v4, Alpine.js, Laravel 12, Livewire 3 (with Volt).
+- **Testing:** Pest v4.
+
+### Modular Structure
+- **Root:** `modules/` (not `app/Modules`).
+- **Isolation:** Modules must be portable. No hard dependencies on other modules' concrete classes.
+- **Database:** UUIDs for primary keys. No physical foreign keys between modules (use indexed UUID columns).
 
 ### Namespace Convention
 
@@ -172,7 +180,11 @@ Namespaces **must omit the `src` segment**:
 
 ### Service Layer
 
-...
+- **Role:** The "Brain" of the application. Orchestrates all business logic.
+- **Pattern:** **Interface-First**. Always type-hint interfaces, never concrete classes, when injecting services across modules.
+- **Base Class:** Services performing CRUD should extend `Modules\Shared\Services\EloquentQuery`.
+- **Constraint:** Never call `env()`. Use `setting()` for application layer and `config()` for infrastucture layer.
+- **Validation:** Services accept DTOs or validated arrays, not `Request` objects.
 
 ---
 
@@ -207,3 +219,5 @@ Use the integrated Laravel Boost tools to support efficient development:
 - **Debugging:** `tinker`, `database-query`, `browser-logs`, `last_error`.
 - **Documentation Search:** Prioritize `search-docs` for Laravel-ecosystem docs. Use
   `search_file_content` or `glob` for project-local docs under `/docs`.
+
+for more info: [AGENTS.md](../AGENTS.md)

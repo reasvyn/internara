@@ -12,7 +12,7 @@ class AdminDashboard extends Component
     public function render(): View
     {
         return view('dashboard::livewire.admin-dashboard')->layout(
-            'ui::components.layouts.base.with-navbar',
+            'dashboard::components.layouts.dashboard',
             [
                 'title' => 'Dasbor Admin',
             ],

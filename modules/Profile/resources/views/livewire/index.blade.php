@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header
+    <x-ui::header
         title="{{ __('My Profile') }}"
         subtitle="{{ __('Manage your personal information and security.') }}"
         separator
@@ -8,13 +8,13 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-1">
-            <x-mary-card shadow class="text-center">
-                <x-mary-file wire:model="avatar" accept="image/*" crop-after-change>
+            <x-ui::card shadow class="text-center">
+                <x-ui::file wire:model="avatar" accept="image/*" crop-after-change>
                     <img
                         src="{{ auth()->user()->avatar_url ?? '/avatar.png' }}"
                         class="h-40 w-40 mx-auto rounded-full object-cover border-4 border-base-200"
                     />
-                </x-mary-file>
+                </x-ui::file>
 
                 <div class="mt-4">
                     <h2 class="text-xl font-bold">{{ $name }}</h2>
@@ -27,46 +27,46 @@
 
                 <div class="mt-6 text-left space-y-2 text-sm opacity-70">
                     <div class="flex items-center gap-2">
-                        <x-mary-icon name="o-envelope" />
+                        <x-ui::icon name="o-envelope" />
                         {{ $email }}
                     </div>
                     <div class="flex items-center gap-2">
-                        <x-mary-icon name="o-at-symbol" />
+                        <x-ui::icon name="o-at-symbol" />
                         {{ $username }}
                     </div>
                 </div>
-            </x-mary-card>
+            </x-ui::card>
         </div>
 
         <div class="lg:col-span-2">
-            <x-mary-tabs wire:model="activeTab" class="bg-base-100 rounded-lg shadow">
-                <x-mary-tab name="info-tab" label="{{ __('Basic Info') }}" icon="o-user">
-                    <x-mary-form wire:submit="saveInfo">
+            <x-ui::tabs wire:model="activeTab" class="bg-base-100 rounded-lg shadow">
+                <x-ui::tab name="info-tab" label="{{ __('Basic Info') }}" icon="o-user">
+                    <x-ui::form wire:submit="saveInfo">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-input
+                            <x-ui::input
                                 label="{{ __('Full Name') }}"
                                 wire:model="name"
                                 required
                             />
-                            <x-mary-input
+                            <x-ui::input
                                 label="{{ __('Username') }}"
                                 wire:model="username"
                                 required
                             />
-                            <x-mary-input
+                            <x-ui::input
                                 label="{{ __('Email') }}"
                                 wire:model="email"
                                 type="email"
                                 required
                             />
-                            <x-mary-input label="{{ __('Phone') }}" wire:model="phone" />
+                            <x-ui::input label="{{ __('Phone') }}" wire:model="phone" />
                         </div>
-                        <x-mary-textarea
+                        <x-ui::textarea
                             label="{{ __('Address') }}"
                             wire:model="address"
                             rows="3"
                         />
-                        <x-mary-textarea
+                        <x-ui::textarea
                             label="{{ __('Bio') }}"
                             wire:model="bio"
                             rows="2"
@@ -74,7 +74,7 @@
                         />
 
                         <x-slot:actions>
-                            <x-mary-button
+                            <x-ui::button
                                 label="{{ __('Update Info') }}"
                                 type="submit"
                                 icon="o-check"
@@ -82,18 +82,18 @@
                                 spinner="saveInfo"
                             />
                         </x-slot>
-                    </x-mary-form>
-                </x-mary-tab>
+                    </x-ui::form>
+                </x-ui::tab>
 
                 @if (auth()->user()->hasAnyRole(['teacher', 'student']))
-                    <x-mary-tab
+                    <x-ui::tab
                         name="special-tab"
                         label="{{ __('Special Fields') }}"
                         icon="o-academic-cap"
                     >
-                        <x-mary-form wire:submit="saveSpecialFields">
+                        <x-ui::form wire:submit="saveSpecialFields">
                             @if (auth()->user()->hasRole('teacher'))
-                                <x-mary-input
+                                <x-ui::input
                                     label="{{ __('NIP (Employee ID)') }}"
                                     wire:model="nip"
                                     required
@@ -102,7 +102,7 @@
                             @endif
 
                             @if (auth()->user()->hasRole('student'))
-                                <x-mary-input
+                                <x-ui::input
                                     label="{{ __('NISN (National Student ID)') }}"
                                     wire:model="nisn"
                                     required
@@ -111,7 +111,7 @@
                             @endif
 
                             <x-slot:actions>
-                                <x-mary-button
+                                <x-ui::button
                                     label="{{ __('Save Fields') }}"
                                     type="submit"
                                     icon="o-check"
@@ -119,20 +119,20 @@
                                     spinner="saveSpecialFields"
                                 />
                             </x-slot>
-                        </x-mary-form>
-                    </x-mary-tab>
+                        </x-ui::form>
+                    </x-ui::tab>
                 @endif
 
-                <x-mary-tab name="security-tab" label="{{ __('Security') }}" icon="o-key">
-                    <x-mary-form wire:submit="savePassword">
+                <x-ui::tab name="security-tab" label="{{ __('Security') }}" icon="o-key">
+                    <x-ui::form wire:submit="savePassword">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-input
+                            <x-ui::input
                                 label="{{ __('New Password') }}"
                                 wire:model="password"
                                 type="password"
                                 required
                             />
-                            <x-mary-input
+                            <x-ui::input
                                 label="{{ __('Confirm Password') }}"
                                 wire:model="password_confirmation"
                                 type="password"
@@ -141,7 +141,7 @@
                         </div>
 
                         <x-slot:actions>
-                            <x-mary-button
+                            <x-ui::button
                                 label="{{ __('Update Password') }}"
                                 type="submit"
                                 icon="o-lock-closed"
@@ -149,9 +149,9 @@
                                 spinner="savePassword"
                             />
                         </x-slot>
-                    </x-mary-form>
-                </x-mary-tab>
-            </x-mary-tabs>
+                    </x-ui::form>
+                </x-ui::tab>
+            </x-ui::tabs>
         </div>
     </div>
 </div>

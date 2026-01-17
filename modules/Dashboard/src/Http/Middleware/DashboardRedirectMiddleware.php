@@ -29,6 +29,11 @@ class DashboardRedirectMiddleware
                 if (! $request->routeIs('dashboard.teacher')) {
                     return redirect()->route('dashboard.teacher');
                 }
+            } elseif ($user->hasRole('mentor')) {
+                // If the user is a mentor and is not already on the mentor dashboard route, redirect them.
+                if (! $request->routeIs('dashboard.mentor')) {
+                    return redirect()->route('dashboard.mentor');
+                }
             } elseif ($user->hasRole('student')) {
                 // If the user is a student, they should be on the main 'dashboard' route.
                 // If they are on it, let them pass. If not, redirect them.

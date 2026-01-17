@@ -11,14 +11,16 @@
                 </div>
             </div>
 
-            <x-mary-table :headers="[
+            <x-ui::table :headers="[
                 ['key' => 'student.name', 'label' => __('internship::ui.student')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
                 ['key' => 'placement.company_name', 'label' => __('internship::ui.placement')],
+                ['key' => 'teacher.name', 'label' => __('internship::ui.teacher')],
+                ['key' => 'mentor.name', 'label' => __('internship::ui.mentor')],
                 ['key' => 'status', 'label' => __('internship::ui.status')],
             ]" :rows="$this->records" with-pagination>
                 @scope('cell_status', $registration)
-                    <x-mary-badge :label="$registration->getStatusLabel()" :class="'badge-' . $registration->getStatusColor()" />
+                    <x-ui::badge :label="$registration->getStatusLabel()" :class="'badge-' . $registration->getStatusColor()" />
                 @endscope
 
                 @scope('actions', $registration)
@@ -33,12 +35,12 @@
                         <x-ui::button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $registration->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
                     </div>
                 @endscope
-            </x-mary-table>
+            </x-ui::table>
         </x-ui::card>
     </x-ui::main>
 
     {{-- Form Modal --}}
-    <x-mary-modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">
+    <x-ui::modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">
         <x-ui::form wire:submit="save">
             <x-ui::select 
                 label="{{ __('internship::ui.student') }}" 
@@ -62,19 +64,36 @@
                 required 
             />
 
+            <hr class="my-4 opacity-20" />
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <x-ui::select 
+                    label="{{ __('internship::ui.teacher') }}" 
+                    wire:model="form.teacher_id" 
+                    :options="$this->teachers" 
+                    placeholder="{{ __('internship::ui.select_teacher') }}"
+                />
+                <x-ui::select 
+                    label="{{ __('internship::ui.mentor') }}" 
+                    wire:model="form.mentor_id" 
+                    :options="$this->mentors" 
+                    placeholder="{{ __('internship::ui.select_mentor') }}"
+                />
+            </div>
+
             <x-slot:actions>
                 <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
                 <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
-    </x-mary-modal>
+    </x-ui::modal>
 
     {{-- Confirm Delete Modal --}}
-    <x-mary-modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+    <x-ui::modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
         <p>{{ __('internship::ui.delete_registration_confirm') }}</p>
         <x-slot:actions>
             <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
             <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
         </x-slot:actions>
-    </x-mary-modal>
+    </x-ui::modal>
 </div>

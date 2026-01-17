@@ -482,5 +482,6 @@ class UserDashboardTest extends TestCase
 
 **Navigation**
 
-[← Previous: Artisan Commands Reference](artisan-commands-reference.md) | [Next: Package Integration Overview →](packages/packages-overview.md)
+[← Previous: UI/UX Development Guide](ui-ux-development-guide.md) |
+[Next: Artisan Commands Reference →](artisan-commands-reference.md)
 ```

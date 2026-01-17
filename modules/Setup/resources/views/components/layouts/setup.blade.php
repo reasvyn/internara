@@ -1,7 +1,7 @@
 @props(['title' => null])
 
 <x-ui::layouts.base :$title>
-    <x-mary-nav {{ $attributes }}>
+    <x-ui::nav {{ $attributes }}>
         <x-slot:brand>
             @isset($hamburger)
                 {{ $hamburger }}
@@ -19,7 +19,7 @@
         <x-slot:actions class="flex items-center space-x-2">
             <x-ui::theme-toggle />
         </x-slot>
-    </x-mary-nav>
+    </x-ui::nav>
 
     <main class="flex flex-1 flex-col items-center justify-center">
         {{ $slot }}

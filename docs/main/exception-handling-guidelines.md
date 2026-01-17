@@ -103,10 +103,10 @@ two main categories:
         - **Example**: `exceptions::messages.service_unavailable`
     - **Domain-Specific Shared Errors**: For common errors related to broad domains like data
       records or user management.
-        - **`Records` Module**: For generic data record operations (e.g., record not found, creation
+        - **`Shared` Module**: For generic data record operations (e.g., record not found, creation
           failed, unique violation).
-            - **Location**: `modules/Records/lang/{locale}/exceptions.php`
-            - **Example**: `records::exceptions.not_found`
+            - **Location**: `modules/Shared/lang/{locale}/exceptions.php`
+            - **Example**: `shared::exceptions.not_found`
         - **`User` Module**: For errors specific to users, authentication, or SuperAdmins.
             - **Location**: `modules/User/lang/{locale}/exceptions.php`
             - **Example**: `user::exceptions.super_admin_exists`
@@ -123,7 +123,7 @@ To call a translation from a specific module, we use **namespaced keys**.
 
 - **Format**: `{module_name}::exceptions.{key_name}`
 - **Examples**:
-    - `records::exceptions.not_found`
+    - `shared::exceptions.not_found`
     - `user::exceptions.super_admin_cannot_be_deleted`
 
 ### 3.3. How to Throw a Localized `AppException`
@@ -191,13 +191,13 @@ To pass dynamic data to your translated message, use the `$replace` parameter.
 
 ```php
 throw new AppException(
-    userMessage: 'records::exceptions.not_found',
+    userMessage: 'shared::exceptions.not_found',
     replace: ['id' => $userId, 'record' => 'User'],
     code: 404,
 );
 ```
 
-**Language file (`modules/Records/lang/en/exceptions.php`):**
+**Language file (`modules/Shared/lang/en/exceptions.php`):**
 
 ```php
 <?php
@@ -212,7 +212,7 @@ return [
 **4. Example Throwing `RecordNotFoundException`**
 
 You can throw `RecordNotFoundException` directly. By default, it uses
-`records::exceptions.not_found`. You can also pass replacement parameters or a specific translation
+`shared::exceptions.not_found`. You can also pass replacement parameters or a specific translation
 key.
 
 ```php
@@ -231,7 +231,7 @@ throw new \Modules\Exception\RecordNotFoundException(
 );
 ```
 
-You would need to define the `not_found` key in `modules/Records/lang/{locale}/exceptions.php` and
+You would need to define the `not_found` key in `modules/Shared/lang/{locale}/exceptions.php` and
 `user_not_found` in `modules/User/lang/{locale}/exceptions.php` respectively.
 
 ---
@@ -263,5 +263,5 @@ rendered and logged. Our custom exceptions are designed to integrate seamlessly 
 
 **Navigation**
 
-[← Previous: UI/UX Development Guide](ui-ux-development-guide.md) |
-[Next: ManagesModuleProvider Trait →](module-provider-concerns.md)
+[← Previous: Role & Permission Management Guide](role-permission-management.md) |
+[Next: UI/UX Development Guide →](ui-ux-development-guide.md)

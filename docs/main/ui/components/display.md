@@ -4,7 +4,7 @@ Components used for data presentation and visual decoration.
 
 ## `card`
 
-A standard container for grouping related content.
+A standard container for grouping related content. Standardized with default borders, rounded corners, and shadow.
 
 - **Usage:**
 
@@ -14,7 +14,37 @@ A standard container for grouping related content.
 </x-ui::card>
 ```
 
-- **Technical Note:** Thin wrapper around `x-mary-card`.
+---
+
+## `badge`
+
+Small status or label indicator.
+
+- **Usage:** `<x-ui::badge label="Active" class="badge-primary" />`
+
+---
+
+## `avatar`
+
+Displays a user profile image or placeholder.
+
+- **Usage:** `<x-ui::avatar image="/path/to/img.jpg" class="!w-10" />`
+
+---
+
+## `table`
+
+Data grid component with support for pagination and custom slots.
+
+- **Usage:**
+
+```blade
+<x-ui::table :headers="$headers" :rows="$rows" with-pagination>
+    @scope('cell_name', $user)
+        <strong>{{ $user->name }}</strong>
+    @endscope
+</x-ui::table>
+```
 
 ---
 
@@ -28,6 +58,32 @@ A helper component to render SVG icons from the **Iconify** library via Blade Ic
 
 ```blade
 <x-ui::icon name="tabler-settings" class="w-5 h-5 text-primary" />
+```
+
+---
+
+## `alert`
+
+Displays important feedback or messages to the user. Supports DaisyUI status classes.
+
+- **Usage:**
+```blade
+<x-ui::alert icon="o-exclamation-triangle" class="alert-warning">
+    Please check your input.
+</x-ui::alert>
+```
+
+---
+
+## `sidebar`
+
+A vertical navigation container. Designed to be used within the `sidebar` slot of `x-ui::main`.
+
+- **Usage:**
+```blade
+<x-ui::sidebar drawer="my-drawer" collapsible>
+    <x-ui::menu-item title="Home" icon="o-home" link="/" />
+</x-ui::sidebar>
 ```
 
 ---

@@ -1,3 +1,1 @@
-<div {{ $attributes->class(['w-full']) }}>
-    <x-mary-input {{ $attributes }} />
-</div>
+<x-mary-input {{ $attributes }} />

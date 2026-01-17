@@ -1,0 +1,1 @@
+<x-mary-choices {{ $attributes }} />

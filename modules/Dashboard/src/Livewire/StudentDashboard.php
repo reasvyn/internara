@@ -12,7 +12,7 @@ class StudentDashboard extends Component
     public function render(): View
     {
         return view('dashboard::livewire.student-dashboard')->layout(
-            'ui::components.layouts.base.with-navbar',
+            'dashboard::components.layouts.dashboard',
             [
                 'title' => 'Dasbor Siswa',
             ],

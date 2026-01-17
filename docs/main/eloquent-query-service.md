@@ -156,5 +156,5 @@ class UserService extends EloquentQuery implements Contract
 
 **Navigation**
 
-[← Previous: Architecture Guide](architecture-guide.md) |
-[Next: Module Structure Overview →](foundational-module-philosophy.md)
+[← Previous: Module Inventory](modules/table-of-contents.md) |
+[Next: Shared Model Traits →](shared-traits.md)

@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <x-mary-table :headers="[
+            <x-ui::table :headers="[
                 ['key' => 'title', 'label' => __('internship::ui.title')],
                 ['key' => 'year', 'label' => __('internship::ui.year')],
                 ['key' => 'semester', 'label' => __('internship::ui.semester')],
@@ -31,12 +31,12 @@
                         <x-ui::button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $program->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
                     </div>
                 @endscope
-            </x-mary-table>
+            </x-ui::table>
         </x-ui::card>
     </x-ui::main>
 
     {{-- Form Modal --}}
-    <x-mary-modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_program') : __('internship::ui.add_program') }}">
+    <x-ui::modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_program') : __('internship::ui.add_program') }}">
         <x-ui::form wire:submit="save">
             <x-ui::input label="{{ __('internship::ui.title') }}" wire:model="form.title" required />
             <x-ui::textarea label="{{ __('shared::ui.description') }}" wire:model="form.description" />
@@ -61,14 +61,14 @@
                 <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
-    </x-mary-modal>
+    </x-ui::modal>
 
     {{-- Confirm Delete Modal --}}
-    <x-mary-modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+    <x-ui::modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
         <p>{{ __('internship::ui.delete_program_confirm') }}</p>
         <x-slot:actions>
             <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
             <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
         </x-slot:actions>
-    </x-mary-modal>
+    </x-ui::modal>
 </div>

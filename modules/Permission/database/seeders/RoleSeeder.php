@@ -18,6 +18,7 @@ class RoleSeeder extends Seeder
             'super-admin' => ['Full system ownership', 'Core'],
             'admin' => ['General management', 'Core'],
             'teacher' => ['Student supervisor', 'Core'],
+            'mentor' => ['Industry mentor', 'Core'],
             'student' => ['Internship participant', 'Core'],
         ];
 

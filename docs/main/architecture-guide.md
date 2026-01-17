@@ -85,7 +85,7 @@ maintainability, and scalability.
       `Models`, and other subdirectories within a module's `src` folder.
 
 For a complete, step-by-step example of creating a new feature within this architecture, refer to
-the **[Modular Monolith Developer Guide](modular-monolith-workflow.md)**.
+the **[Development Workflow Guide](development-workflow.md)**.
 
 ## 2. The TALL Stack
 
@@ -349,4 +349,4 @@ Use this pattern for cross-cutting concerns like authorization.
 **Navigation**
 
 [← Previous: Installation Guide](installation-guide.md) |
-[Next: EloquentQuery Base Service →](eloquent-query-service.md)
+[Next: Module Inventory →](modules/table-of-contents.md)

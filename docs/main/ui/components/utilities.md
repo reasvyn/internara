@@ -21,6 +21,23 @@ A button that allows users to toggle between Light and Dark themes.
 
 ---
 
+## `modal`
+
+A dialog component for focused user interaction.
+
+- **Usage:**
+```blade
+<x-ui::modal wire:model="myModal" title="Confirm Action">
+    <p>Are you sure?</p>
+    <x-slot:actions>
+        <x-ui::button label="Cancel" wire:click="$set('myModal', false)" />
+        <x-ui::button label="Confirm" class="btn-primary" />
+    </x-slot:actions>
+</x-ui::modal>
+```
+
+---
+
 ## `user-menu`
 
 A dropdown component for user-specific actions (Profile, Logout).

@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <x-mary-table :headers="[
+            <x-ui::table :headers="[
                 ['key' => 'company_name', 'label' => __('internship::ui.company_name')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
                 ['key' => 'slots', 'label' => __('internship::ui.slots')],
@@ -23,12 +23,12 @@
                         <x-ui::button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $placement->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
                     </div>
                 @endscope
-            </x-mary-table>
+            </x-ui::table>
         </x-ui::card>
     </x-ui::main>
 
     {{-- Form Modal --}}
-    <x-mary-modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_placement') : __('internship::ui.add_placement') }}">
+    <x-ui::modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_placement') : __('internship::ui.add_placement') }}">
         <x-ui::form wire:submit="save">
             <x-ui::select 
                 label="{{ __('internship::ui.program') }}" 
@@ -52,14 +52,14 @@
                 <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
-    </x-mary-modal>
+    </x-ui::modal>
 
     {{-- Confirm Delete Modal --}}
-    <x-mary-modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+    <x-ui::modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
         <p>{{ __('internship::ui.delete_placement_confirm') }}</p>
         <x-slot:actions>
             <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
             <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
         </x-slot:actions>
-    </x-mary-modal>
+    </x-ui::modal>
 </div>

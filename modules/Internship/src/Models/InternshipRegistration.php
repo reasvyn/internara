@@ -38,7 +38,7 @@ class InternshipRegistration extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['internship_id', 'placement_id', 'student_id'];
+    protected $fillable = ['internship_id', 'placement_id', 'student_id', 'teacher_id', 'mentor_id'];
 
     /**
      * Create a new factory instance for the model.
@@ -56,6 +56,28 @@ class InternshipRegistration extends Model
         return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
             $this,
             'student_id',
+        );
+    }
+
+    /**
+     * Get the teacher (user) associated with the registration.
+     */
+    public function teacher(): BelongsTo
+    {
+        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+            $this,
+            'teacher_id',
+        );
+    }
+
+    /**
+     * Get the mentor (user) associated with the registration.
+     */
+    public function mentor(): BelongsTo
+    {
+        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+            $this,
+            'mentor_id',
         );
     }
 

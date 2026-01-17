@@ -77,5 +77,5 @@ class Internship extends Model
 
 **Navigation**
 
-[← Previous: Development Conventions](development-conventions.md) |
-[Next: UI/UX Development Guide →](ui-ux-development-guide.md)
+[← Previous: EloquentQuery Base Service](eloquent-query-service.md) |
+[Next: ManagesModuleProvider Trait →](module-provider-concerns.md)

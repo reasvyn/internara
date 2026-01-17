@@ -26,4 +26,13 @@ interface UserService extends EloquentQuery
      * Toggle the status of a user.
      */
     public function toggleStatus(mixed $id): User;
+
+    /**
+     * Check if a user has a specific role.
+     *
+     * @param string $userId
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole(string $userId, string $role): bool;
 }

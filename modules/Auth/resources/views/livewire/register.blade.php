@@ -1,5 +1,5 @@
 <x-ui::card
-    class="border-base-300 w-full max-w-lg rounded-xl border text-center shadow-lg"
+    class="w-full max-w-lg text-center"
     title="Daftar Akun Siswa Internara"
     subtitle="Isi data diri Anda untuk memulai perjalanan magang."
 >

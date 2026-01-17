@@ -112,5 +112,5 @@ class UserServiceProvider extends ServiceProvider
 
 **Navigation**
 
-[← Previous: Exception Handling Guide](exception-handling-guidelines.md) |
+[← Previous: Shared Model Traits](shared-traits.md) |
 [Next: Service Binding & Auto-Discovery →](service-binding-auto-discovery.md)

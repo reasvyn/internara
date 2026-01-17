@@ -139,4 +139,4 @@ attempts by the `BindServiceProvider` for that specific interface.
 **Navigation**
 
 [← Previous: ManagesModuleProvider Trait](module-provider-concerns.md) |
-[Next: Role & Permission Management Guide →](role-permission-management.md)
+[Next: Conceptual Best Practices →](conceptual-best-practices.md)

@@ -4,7 +4,7 @@
     <div class="flex flex-1 flex-col">
         <x-ui::navbar sticky full-width />
 
-        <x-mary-main with-nav full-width>
+        <x-ui::main with-nav full-width>
             <x-slot:content>
                 {{ $slot }}
             </x-slot:content>
@@ -14,6 +14,6 @@
 
                 <x-ui::footer />
             </x-slot:footer>
-        </x-mary-main>
+        </x-ui::main>
     </div>
 </x-ui::layouts.base>

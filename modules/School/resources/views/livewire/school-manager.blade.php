@@ -1,6 +1,6 @@
 <div class="flex size-full flex-col items-center justify-center">
     <x-ui::card
-        class="border-base-300 w-full max-w-prose rounded-xl border text-center shadow-lg"
+        class="w-full max-w-prose text-center"
         title="{{ __('school::ui.title') }}"
         subtitle="{{ __('school::ui.subtitle') }}"
     >

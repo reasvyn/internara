@@ -54,6 +54,22 @@ class RegistrationManager extends Component
     }
 
     /**
+     * Get teachers for the dropdown.
+     */
+    public function getTeachersProperty(): \Illuminate\Support\Collection
+    {
+        return app(UserService::class)->get(['roles.name' => 'teacher'], ['id', 'name']);
+    }
+
+    /**
+     * Get mentors for the dropdown.
+     */
+    public function getMentorsProperty(): \Illuminate\Support\Collection
+    {
+        return app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']);
+    }
+
+    /**
      * Override save to use register method with validation.
      */
     public function save(): void

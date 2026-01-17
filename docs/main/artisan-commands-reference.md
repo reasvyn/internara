@@ -438,4 +438,5 @@ structures, particularly regarding the omission of the `app` segment in namespac
 
 **Navigation**
 
-[← Previous: Release Guidelines](release-guidelines.md) | [Next: Testing Guide →](testing-guide.md)
+[← Previous: Testing Guide](testing-guide.md) |
+[Next: Release Guidelines →](release-guidelines.md)

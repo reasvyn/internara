@@ -200,4 +200,18 @@ class UserService extends EloquentQuery implements Contract
     {
         return isset($avatar) ? $user->setAvatar($avatar) : false;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasRole(string $userId, string $role): bool
+    {
+        $user = $this->find($userId);
+
+        if (! $user) {
+            return false;
+        }
+
+        return $user->hasRole($role);
+    }
 }

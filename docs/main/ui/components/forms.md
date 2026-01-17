@@ -32,6 +32,40 @@ Wrapper for `<x-mary-textarea>`.
 
 - **Usage:** `<x-ui::textarea label="Bio" wire:model="bio" />`
 
+### `select`
+
+Wrapper for `<x-mary-select>`.
+
+- **Usage:** `<x-ui::select label="Option" :options="$options" wire:model="selected" />`
+
+### `radio`
+
+Wrapper for `<x-mary-radio>`.
+
+- **Usage:** `<x-ui::radio label="Choice" :options="$options" wire:model="choice" />`
+
+### `choices`
+
+Advanced multi-select and tagging component.
+
+- **Usage:** `<x-ui::choices label="Tags" wire:model="tags" :options="$options" />`
+
+---
+
+## `form`
+
+A wrapper for standard HTML forms, integrated with MaryUI features like `wire:submit` and validation.
+
+- **Usage:**
+```blade
+<x-ui::form wire:submit="save">
+    <x-ui::input label="Name" wire:model="name" />
+    <x-slot:actions>
+        <x-ui::button label="Save" type="submit" class="btn-primary" />
+    </x-slot:actions>
+</x-ui::form>
+```
+
 ---
 
 ## Custom Components

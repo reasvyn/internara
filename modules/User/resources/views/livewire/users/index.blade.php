@@ -1,24 +1,24 @@
 <div>
-    <x-mary-header
+    <x-ui::header
         title="{{ __('User Management') }}"
         subtitle="{{ __('Manage all system users and their roles.') }}"
         separator
         progress-indicator
     >
         <x-slot:actions>
-            <x-mary-button
+            <x-ui::button
                 label="{{ __('New User') }}"
                 icon="o-plus"
                 class="btn-primary"
                 link="/users/create"
             />
         </x-slot>
-    </x-mary-header>
+    </x-ui::header>
 
-    <x-mary-card>
+    <x-ui::card>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div class="w-full md:w-1/3">
-                <x-mary-input
+                <x-ui::input
                     placeholder="{{ __('Search users...') }}"
                     icon="o-magnifying-glass"
                     wire:model.live.debounce.300ms="search"
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <x-mary-table
+        <x-ui::table
             :headers="$headers"
             :rows="$users"
             :sort-by="$sortBy"
@@ -36,7 +36,7 @@
         >
             @scope('cell_name', $user)
                 <div class="flex items-center gap-3">
-                    <x-mary-avatar :image="$user->avatar_url" class="!w-9" />
+                    <x-ui::avatar :image="$user->avatar_url" class="!w-9" />
                     <div>
                         <div class="font-bold">{{ $user->name }}</div>
                         <div class="text-xs opacity-50">{{ $user->username }}</div>
@@ -57,7 +57,7 @@
             @endscope
 
             @scope('cell_status', $user)
-                <x-mary-badge
+                <x-ui::badge
                     :label="$user->getStatusLabel()"
                     :class="$user->getStatusColor()"
                     class="badge-outline"
@@ -73,7 +73,7 @@
             @scope('actions', $user)
                 <div class="flex items-center gap-2">
                     @if (! $user->hasRole('super-admin'))
-                        <x-mary-button
+                        <x-ui::button
                             icon="{{ $user->latestStatus()?->name === 'active' ? 'o-lock-closed' : 'o-lock-open' }}"
                             class="btn-ghost btn-sm {{ $user->latestStatus()?->name === 'active' ? 'text-warning' : 'text-success' }}"
                             wire:click="toggleStatus('{{ $user->id }}')"
@@ -81,14 +81,14 @@
                         />
                     @endif
 
-                    <x-mary-button
+                    <x-ui::button
                         icon="o-pencil"
                         class="btn-ghost btn-sm"
                         link="/users/{{ $user->id }}/edit"
                         tooltip="{{ __('Edit') }}"
                     />
                     @if (! $user->hasRole('super-admin'))
-                        <x-mary-button
+                        <x-ui::button
                             icon="o-trash"
                             class="btn-ghost btn-sm text-error"
                             wire:click="delete('{{ $user->id }}')"
@@ -98,6 +98,6 @@
                     @endif
                 </div>
             @endscope
-        </x-mary-table>
-    </x-mary-card>
+        </x-ui::table>
+    </x-ui::card>
 </div>

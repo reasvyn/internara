@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Dashboard\Livewire\AdminDashboard;
+use Modules\Dashboard\Livewire\MentorDashboard;
 use Modules\Dashboard\Livewire\StudentDashboard;
 use Modules\Dashboard\Livewire\TeacherDashboard;
 
@@ -28,6 +29,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/teacher', TeacherDashboard::class)
         ->middleware(['verified', 'role:teacher'])
         ->name('dashboard.teacher');
+
+    // Mentor Dashboard
+    Route::get('/dashboard/mentor', MentorDashboard::class)
+        ->middleware(['verified', 'role:mentor'])
+        ->name('dashboard.mentor');
 
     // Admin & SuperAdmin Dashboard
     Route::get('/dashboard/admin', AdminDashboard::class)

@@ -1,27 +1,27 @@
 # UI Module
 
-The `UI` module is the source of truth for the application's visual language and shared frontend
-components. It encapsulates common layouts, interactive elements, and design tokens.
+The `UI` module is the **"Headless"** source of truth for the application's visual language and shared frontend components. It encapsulates common layouts, interactive elements, and design tokens, but **does not** contain business logic, routes, or database tables.
 
 ## Purpose
 
 - **Design System:** Enforces a consistent look and feel across all modules using Tailwind CSS,
   DaisyUI, and MaryUI.
-- **Component Reusability:** Provides a library of high-quality, pre-built Blade and Livewire
-  components.
-- **Localization UI:** Manages global interface elements for language switching.
+- **Component Library:** Provides a comprehensive library of pre-built Blade and Livewire
+  components (e.g., `<x-ui::button>`, `<x-ui::card>`).
+- **No Side Effects:** This module is strictly for presentation. It does not handle HTTP requests or store data.
 
 ## Key Features
 
 ### 1. Global Components
 
-- **Navbar & Sidebar:** Standardized navigation structures.
-- **LanguageSwitcher (Livewire):** A persistent UI component allowing users to toggle between
-  English and Indonesian in real-time.
+- **Core Elements:** Buttons, Inputs, Cards, Modals, Badges.
+- **Layouts:** Navbar, Sidebar, App Shell.
+- **LanguageSwitcher:** A persistent UI component allowing users to toggle between English and Indonesian.
 
 ### 2. Design System Tokens
 
 - Centralized configuration for DaisyUI themes and Tailwind extensions.
+- Light/Dark mode compatibility built-in.
 
 ### 3. Slot System
 

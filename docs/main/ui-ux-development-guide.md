@@ -193,14 +193,10 @@ To maintain consistency and accelerate development, a clear component hierarchy 
 
 When new UI functionality is required, developers must follow this order of preference:
 
-1.  **Use Existing `UI` Module Components:** First, check if a suitable Blade or Livewire component
-    already exists within the `UI` module (`modules/UI/resources/views/components`).
-2.  **Use `MaryUI` Components:** If no suitable component is found in the `UI` module, the next
-    choice **must** be a component from the [MaryUI](https://mary-ui.com/) library. MaryUI is the
-    project's designated component kit for building upon DaisyUI with Livewire.
-3.  **Create a New `UI` Module Component:** Only if neither of the above options provides the
-    necessary functionality should a new, custom component be created. All new components must be
-    placed within the `UI` module.
+1.  **Use `UI` Module Core Components (Mandatory):** Always use the standardized wrapper components provided by the `UI` module (e.g., `<x-ui::button>`, `<x-ui::input>`). **Direct use of `x-mary-` or `x-daisy-` components in feature modules is strictly forbidden.** These wrappers ensure global consistency and theming support.
+2.  **Use Existing `UI` Module Composites:** Check if a suitable higher-level component (like a Navbar or Sidebar) already exists in `modules/UI/resources/views/components`.
+3.  **Use `MaryUI` Components (Via Wrapper):** If a required MaryUI component is not yet wrapped in the `UI` module, **you must first create a wrapper for it** in `modules/UI/resources/views/components/` before using it in your feature module.
+4.  **Create a New `UI` Module Component:** Only if neither of the above options provides the necessary functionality should a new, custom component be created. All new components must be placed within the `UI` module.
 
 ### 6.2. Common Components
 
@@ -444,5 +440,5 @@ passed from your Laravel controllers.
 
 **Navigation**
 
-[← Previous: Utilities](ui/components/utilities.md) |
-[Next: Exception Handling Guidelines →](exception-handling-guidelines.md)
+[← Previous: Exception Handling Guidelines](exception-handling-guidelines.md) |
+[Next: Testing Guide →](testing-guide.md)

@@ -1,1 +1,1 @@
-<x-mary-theme-toggle />
+<x-mary-theme-toggle {{ $attributes }} />

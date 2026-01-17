@@ -43,4 +43,4 @@ To add color support for new roles, modify the `getRoleColor` method within the 
 **Navigation**
 
 [← Previous: Policy Patterns](policy-patterns.md) |
-[Next: Workflow Developer Guide →](modular-monolith-workflow.md)
+[Next: Development Workflow →](development-workflow.md)
