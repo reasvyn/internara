@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/teacher",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Teacher\\": "src/",
+            "Modules\\Teacher\\Database\\Factories\\": "database/factories/",
+            "Modules\\Teacher\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Teacher\\Tests\\": "tests/"
+        }
+    }
+}

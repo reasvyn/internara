@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/mentor",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Mentor\\": "src/",
+            "Modules\\Mentor\\Database\\Factories\\": "database/factories/",
+            "Modules\\Mentor\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Mentor\\Tests\\": "tests/"
+        }
+    }
+}

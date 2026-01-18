@@ -26,17 +26,21 @@ class RedirectService implements Contract
         }
 
         if ($user->hasAnyRole(['super-admin', 'admin'])) {
-            return route('dashboard.admin');
+            return route('admin.dashboard');
         }
 
         if ($user->hasRole('teacher')) {
-            return route('dashboard.teacher');
+            return route('teacher.dashboard');
+        }
+
+        if ($user->hasRole('mentor')) {
+            return route('mentor.dashboard');
         }
 
         if ($user->hasRole('student')) {
-            return route('dashboard');
+            return route('student.dashboard');
         }
 
-        return route('dashboard');
+        return route('student.dashboard');
     }
 }

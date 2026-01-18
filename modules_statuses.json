@@ -4,7 +4,6 @@
     "Support": true,
     "Exception": true,
     "UI": true,
-    "Dashboard": true,
     "Setup": true,
     "Setting": true,
     "Notification": true,
@@ -19,10 +18,12 @@
     "Assignment": false,
     "Assessment": false,
     "Media": true,
-    "Student": false,
-    "Teacher": false,
+    "Student": true,
+    "Teacher": true,
     "TestModule": true,
     "Profile": true,
     "Journal": true,
-    "Attendance": true
+    "Attendance": true,
+    "Admin": true,
+    "Mentor": true
 }

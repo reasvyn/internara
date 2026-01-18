@@ -1,0 +1,11 @@
+{
+    "name": "Mentor",
+    "alias": "mentor",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Mentor\\Providers\\MentorServiceProvider"
+    ],
+    "files": []
+}

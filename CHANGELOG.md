@@ -12,6 +12,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### 🚀 Overview
 Focuses on a streamlined manual assessment system and formal finalization of the internship period.
 
+### ✨ Added
+- **RBAC Workspaces:**
+    - Decomposed the monolithic `Dashboard` into four specialized modules: `Admin`, `Student`, `Teacher`, and `Mentor`.
+    - Implemented role-based routing (`/admin`, `/student`, `/teacher`, `/mentor`).
+    - Established clear workspace boundaries while keeping User identity centralized.
+
+### 🛠 Changed
+- **Module Deprecation:** Removed the `Dashboard` module entirely.
+- **Routing Logic:** Updated `RedirectService` to route users to their new dedicated workspace URLs.
+
 ---
 
 ## [v0.5.0-alpha] - 2026-01-18 (ARC01-OPER-01)
