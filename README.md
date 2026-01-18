@@ -1,6 +1,6 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.5.x--alpha-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.6.x--alpha-blue?style=flat-square)
 ![Status](https://img.shields.io/badge/status-active--development-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
@@ -48,6 +48,7 @@ This project is built upon the Laravel ecosystem and several key packages:
 - [spatie/laravel-permission](https://spatie.be/docs/laravel-permission/v6/introduction)
 - [spatie/laravel-model-status](https://github.com/spatie/laravel-model-status)
 - [robsontenorio/mary](https://mary-ui.com/)
+- [secondnetwork/blade-tabler-icons](https://github.com/secondnetwork/blade-tabler-icons)
 
 ## Installation
 
@@ -107,13 +108,14 @@ This project is built upon the Laravel ecosystem and several key packages:
 
 ### Version History
 
-| Version        | Series Code  | Status        | Key Focus                    |
-| :------------- | :----------- | :------------ | :--------------------------- |
-| `v0.5.x-alpha` | `ARC01-OPER` | `In Progress` | Operational & Activity Track |
-| `v0.4.0-alpha` | `ARC01-INST` | `Released`    | Institutional & Academic     |
-| `v0.3.0-alpha` | `ARC01-USER` | `Released`    | User Management & Profile    |
-| `v0.2.0-alpha` | `ARC01-CORE` | `Released`    | RBAC & Shared Services       |
-| `v0.1.1-alpha` | `ARC01-INIT` | `Released`    | Project Initialization       |
+| Version        | Series Code     | Status        | Key Focus                    |
+| :------------- | :-------------- | :------------ | :--------------------------- |
+| `v0.6.x-alpha` | `ARC01-FEAT-01` | `In Progress` | Assessment & Finalization    |
+| `v0.5.0-alpha` | `ARC01-OPER-01` | `Released`    | Operational & Activity Track |
+| `v0.4.0-alpha` | `ARC01-INST-01` | `Released`    | Institutional & Academic     |
+| `v0.3.0-alpha` | `ARC01-USER-01` | `Released`    | User Management & Profile    |
+| `v0.2.0-alpha` | `ARC01-CORE-01` | `Released`    | RBAC & Shared Services       |
+| `v0.1.1-alpha` | `ARC01-INIT-01` | `Released`    | Project Initialization       |
 
 For more details on our security audit protocols and reporting, please see
 [SECURITY.md](SECURITY.md).
