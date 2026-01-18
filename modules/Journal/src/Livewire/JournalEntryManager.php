@@ -7,9 +7,9 @@ namespace Modules\Journal\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Journal\Livewire\Forms\JournalForm;
 use Modules\Journal\Services\Contracts\JournalService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 
 class JournalEntryManager extends Component
 {
@@ -23,7 +23,7 @@ class JournalEntryManager extends Component
 
     public function boot(
         JournalService $journalService,
-        InternshipRegistrationService $registrationService
+        InternshipRegistrationService $registrationService,
     ): void {
         $this->journalService = $journalService;
         $this->registrationService = $registrationService;
@@ -47,15 +47,18 @@ class JournalEntryManager extends Component
 
         try {
             if ($this->form->id) {
-                $entry = $this->journalService->update($this->form->id, $this->form->except('entry', 'attachments'));
+                $entry = $this->journalService->update(
+                    $this->form->id,
+                    $this->form->except('entry', 'attachments'),
+                );
             } else {
                 // Find active registration for current student
                 $registration = $this->registrationService->first([
                     'student_id' => auth()->id(),
-                    'latest_status' => 'active' 
+                    'latest_status' => 'active',
                 ]);
 
-                if (!$registration) {
+                if (! $registration) {
                     throw new \Exception(__('internship::messages.no_active_registration'));
                 }
 
@@ -70,11 +73,17 @@ class JournalEntryManager extends Component
             $status = $asDraft ? 'draft' : 'submitted';
             $entry->setStatus($status, $asDraft ? 'Journal saved as draft.' : 'Journal submitted.');
 
-            if (!empty($this->form->attachments)) {
+            if (! empty($this->form->attachments)) {
                 $this->journalService->attachMedia($entry->id, $this->form->attachments);
             }
 
-            $this->dispatch('notify', message: $asDraft ? __('shared::messages.record_saved') : __('shared::messages.record_submitted'), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: $asDraft
+                    ? __('shared::messages.record_saved')
+                    : __('shared::messages.record_submitted'),
+                type: 'success',
+            );
             $this->redirect(route('journal.index'), navigate: true);
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
@@ -83,8 +92,11 @@ class JournalEntryManager extends Component
 
     public function render(): View
     {
-        return view('journal::livewire.journal-entry-manager')->layout('dashboard::components.layouts.dashboard', [
-            'title' => $this->form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru'),
-        ]);
+        return view('journal::livewire.journal-entry-manager')->layout(
+            'dashboard::components.layouts.dashboard',
+            [
+                'title' => $this->form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru'),
+            ],
+        );
     }
 }

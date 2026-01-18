@@ -17,7 +17,7 @@ class MentorDashboard extends Component
     {
         /** @var InternshipRegistrationService $service */
         $service = app(InternshipRegistrationService::class);
-        
+
         return $service->get(['mentor_id' => auth()->id()]);
     }
 

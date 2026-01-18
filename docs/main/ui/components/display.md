@@ -4,7 +4,8 @@ Components used for data presentation and visual decoration.
 
 ## `card`
 
-A standard container for grouping related content. Standardized with default borders, rounded corners, and shadow.
+A standard container for grouping related content. Standardized with default borders, rounded
+corners, and shadow.
 
 - **Usage:**
 
@@ -67,8 +68,9 @@ A helper component to render SVG icons from the **Iconify** library via Blade Ic
 Displays important feedback or messages to the user. Supports DaisyUI status classes.
 
 - **Usage:**
+
 ```blade
-<x-ui::alert icon="o-exclamation-triangle" class="alert-warning">
+<x-ui::alert icon="tabler.alert-triangle" class="alert-warning">
     Please check your input.
 </x-ui::alert>
 ```
@@ -80,9 +82,10 @@ Displays important feedback or messages to the user. Supports DaisyUI status cla
 A vertical navigation container. Designed to be used within the `sidebar` slot of `x-ui::main`.
 
 - **Usage:**
+
 ```blade
 <x-ui::sidebar drawer="my-drawer" collapsible>
-    <x-ui::menu-item title="Home" icon="o-home" link="/" />
+    <x-ui::menu-item title="Home" icon="tabler.home" link="/" />
 </x-ui::sidebar>
 ```
 

@@ -1,6 +1,8 @@
 # Software Development Life Cycle (SDLC)
 
-This document outlines the standard Software Development Life Cycle (SDLC) adopted by the Internara project. It provides a high-level framework for delivering high-quality software, ensuring that every release is planned, designed, built, and tested according to industry best practices.
+This document outlines the standard Software Development Life Cycle (SDLC) adopted by the Internara
+project. It provides a high-level framework for delivering high-quality software, ensuring that
+every release is planned, designed, built, and tested according to industry best practices.
 
 ---
 
@@ -8,14 +10,17 @@ This document outlines the standard Software Development Life Cycle (SDLC) adopt
 
 **Goal:** Define **"What"** we are building and **"Why"**.
 
-In this phase, we analyze the needs of our stakeholders (Students, Teachers, Industry Mentors) and translate them into actionable technical requirements.
+In this phase, we analyze the needs of our stakeholders (Students, Teachers, Industry Mentors) and
+translate them into actionable technical requirements.
 
 - **Activities:**
-    - **Problem Identification:** Analyzing user pain points (e.g., "Manual attendance is unreliable").
+    - **Problem Identification:** Analyzing user pain points (e.g., "Manual attendance is
+      unreliable").
     - **Scope Definition:** Grouping requirements into "Keystones" for a specific version.
-    - **Feasibility Study:** Assessing technical constraints (e.g., Geolocation accuracy).
+    - **Feasibility Study:** Assessing technical constraints.
 - **Output:**
-    - A **Version Plan** document (e.g., `docs/versions/v0.5.x-alpha.md`) detailing Goals, Pillars, and Constraints.
+    - A **Version Plan** document (e.g., `docs/versions/v0.5.x-alpha.md`) detailing Goals, Pillars,
+      and Constraints.
 
 ## 2. Phase 2: System Design
 
@@ -24,8 +29,10 @@ In this phase, we analyze the needs of our stakeholders (Students, Teachers, Ind
 Before coding, we establish the architectural blueprint to ensure scalability and maintainability.
 
 - **Activities:**
-    - **Architectural Design:** Deciding module boundaries and communication patterns (Interfaces/Events).
-    - **Database Schema:** Designing Eloquent models and migrations with strict isolation rules (No cross-module FKs).
+    - **Architectural Design:** Deciding module boundaries and communication patterns
+      (Interfaces/Events).
+    - **Database Schema:** Designing Eloquent models and migrations with strict isolation rules (No
+      cross-module FKs).
     - **UI/UX Design:** Planning the interface using the `UI` module components (MaryUI/DaisyUI).
 - **Output:**
     - Implementation Rules in the Version Plan.
@@ -42,34 +49,36 @@ This is the execution phase where code is written following the project's strict
     - **Adherence to Standards:** Following PSR standards, Strict Typing, and Project Conventions.
     - **Refactoring:** Improving code structure without altering behavior.
 - **Reference:**
-    - Strictly follow the **[Development Workflow](development-workflow.md)** for the step-by-step coding process.
+    - Strictly follow the **[Development Workflow](development-workflow.md)** for the step-by-step
+      coding process.
 
-## 4. Phase 4: Testing & Quality Assurance
+## 4. Phase 4: Verification & Artifact Synchronization
 
-**Goal:** Ensure the software is bug-free and meets requirements.
+**Goal:** Ensure the system is robust and that documentation accurately reflects the reality of the
+code.
 
-Verification is not an optional step; it is a gatekeeper for release.
+Verification is an iterative loop. Any fix identified during testing must trigger a new cycle of QA
+and Artifact Synchronization.
 
 - **Activities:**
     - **Unit & Feature Testing:** Writing `Pest` tests for Services and Livewire components.
-    - **Static Analysis:** Running `composer lint` (Pint/Prettier) to enforce style.
-    - **Manual Verification:** Validating UI flows and user experience.
-    - **Security Audit:** Checking for IDOR, XSS, and Logic flaws.
+    - **Iterative Sync:** Updating technical artifacts (docs/CHANGELOG) after every code tweak.
+    - **Security & Privacy Deep-Dive:** Analytical review of data boundaries.
 - **Output:**
-    - Passed Test Suite (Green Build).
-    - Completed QA Checklist in the Version Plan.
+    - Deep analytical verification notes in the Version Plan.
+    - Synchronized technical artifacts across the `docs/` directory.
 
-## 5. Phase 5: Release & Deployment
+## 5. Phase 5: Release & Evolution
 
-**Goal:** Deliver the software to the users.
+**Goal:** Package the engineered story for deployment.
 
-Once verified, the version is packaged and documented for distribution.
+The version is finalized through an analytical narrative that bridges the current state with the
+next iteration.
 
 - **Activities:**
-    - **Versioning:** Assigning a Semantic Version (e.g., `v0.5.0-alpha`) and Series Code.
-    - **Changelog:** Updating `CHANGELOG.md` with user-facing notes.
-    - **Documentation:** Finalizing technical docs in `docs/main/`.
-    - **Merging:** Merging the development branch into the main branch.
+    - **Narrative Versioning:** Finalizing the deep analytical report for the release.
+    - **Unified Release:** Executing the release protocol as the final step of the development
+      workflow.
 - **Reference:**
     - Follow the **[Release Guidelines](release-guidelines.md)** for the deployment protocol.
 

@@ -10,8 +10,8 @@ Internara project.
   Repositories, Entities), and module communication best practices.
 - **[EloquentQuery Base Service](eloquent-query-service.md)**: Technical reference for the
   standardized service layer implementation used for model interactions.
-- **[Module Inventory](modules/table-of-contents.md)**: Comprehensive list and purpose of all
-  modules within the Internara architecture.
+- **[Module Inventory](modules/table-of-contents.md)**: Comprehensive list and technical guides for
+  all modules, now located within their respective directories.
 - **[ManagesModuleProvider Trait](module-provider-concerns.md)**: Guide on the standardized
   bootstrapping process for modular service providers.
 - **[Shared Model Traits](shared-traits.md)**: Reference for reusable Eloquent traits like UUID and
@@ -34,7 +34,9 @@ Internara project.
   seeded during system setup.
 - **[Permission UI Components](permission-ui-components.md)**: Documentation for shared UI elements
   related to authorization.
-- **[Development Workflow](development-workflow.md)**: A practical, step-by-step guide to implementing features within the architecture, from creating modules to writing services and tests.
+- **[Development Workflow](development-workflow.md)**: A practical, step-by-step guide to
+  implementing features within the architecture, from creating modules to writing services and
+  tests.
 - **[Testing Guide](testing-guide.md)**: A comprehensive guide covering the project's testing
   philosophy, Pest framework usage, test directory structure, writing tests, and running tests.
 - **[Artisan Commands Reference](artisan-commands-reference.md)**: A comprehensive list of all

@@ -1,13 +1,13 @@
 <div>
     <x-ui::main title="{{ __('internship::ui.registration_title') }}" subtitle="{{ __('internship::ui.registration_subtitle') }}">
         <x-slot:actions>
-            <x-ui::button label="{{ __('internship::ui.add_registration') }}" icon="o-plus" class="btn-primary" wire:click="add" />
+            <x-ui::button label="{{ __('internship::ui.add_registration') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
 
         <x-ui::card>
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
-                    <x-ui::input placeholder="{{ __('internship::ui.search_registration') }}" icon="o-magnifying-glass" wire:model.live.debounce.300ms="search" clearable />
+                    <x-ui::input placeholder="{{ __('internship::ui.search_registration') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
                 </div>
             </div>
 
@@ -26,13 +26,13 @@
                 @scope('actions', $registration)
                     <div class="flex gap-2">
                         @if($registration->latestStatus()?->name !== 'active')
-                            <x-ui::button icon="o-check" class="btn-ghost btn-sm text-success" wire:click="approve('{{ $registration->id }}')" tooltip="{{ __('shared::ui.approve') }}" />
+                            <x-ui::button icon="tabler.check" class="btn-ghost btn-sm text-success" wire:click="approve('{{ $registration->id }}')" tooltip="{{ __('shared::ui.approve') }}" />
                         @endif
                         @if($registration->latestStatus()?->name !== 'inactive')
-                            <x-ui::button icon="o-x-mark" class="btn-ghost btn-sm text-warning" wire:click="reject('{{ $registration->id }}')" tooltip="{{ __('shared::ui.reject') }}" />
+                            <x-ui::button icon="tabler.x" class="btn-ghost btn-sm text-warning" wire:click="reject('{{ $registration->id }}')" tooltip="{{ __('shared::ui.reject') }}" />
                         @endif
-                        <x-ui::button icon="o-pencil" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $registration->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
-                        <x-ui::button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $registration->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
+                        <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $registration->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
+                        <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $registration->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
                     </div>
                 @endscope
             </x-ui::table>

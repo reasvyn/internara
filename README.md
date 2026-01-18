@@ -97,7 +97,13 @@ This project is built upon the Laravel ecosystem and several key packages:
     php artisan serve
     ```
 
-## Version History & Support
+## Version Support & History
+
+### Version Supports
+
+| Version  | Security | Bug Fixes | Status                 |
+| :------- | :------- | :-------- | :--------------------- |
+| **v0.x** | ✅       | ✅        | **Active Development** |
 
 ### Version History
 
@@ -105,15 +111,9 @@ This project is built upon the Laravel ecosystem and several key packages:
 | :------------- | :----------- | :------------ | :--------------------------- |
 | `v0.5.x-alpha` | `ARC01-OPER` | `In Progress` | Operational & Activity Track |
 | `v0.4.0-alpha` | `ARC01-INST` | `Released`    | Institutional & Academic     |
-| `v0.3.0-alpha` | `ARC01-USER` | `Released`           | User Management & Profile    |
-| `v0.2.0-alpha` | `ARC01-CORE` | `Released`           | RBAC & Shared Services       |
-| `v0.1.1-alpha` | `ARC01-INIT` | `Released`           | Project Initialization       |
-
-### Version Supports
-
-| Version  | Security | Bug Fixes | Status                 |
-| :------- | :------- | :-------- | :--------------------- |
-| **v0.x** | ✅       | ✅        | **Active Development** |
+| `v0.3.0-alpha` | `ARC01-USER` | `Released`    | User Management & Profile    |
+| `v0.2.0-alpha` | `ARC01-CORE` | `Released`    | RBAC & Shared Services       |
+| `v0.1.1-alpha` | `ARC01-INIT` | `Released`    | Project Initialization       |
 
 For more details on our security audit protocols and reporting, please see
 [SECURITY.md](SECURITY.md).
@@ -130,8 +130,8 @@ efficient onboarding. All guides are located within the [`/docs`](/docs) directo
   structure.
 - **[Architecture Guide](docs/main/architecture-guide.md)**: Detailed technical overview of the
   Modular Monolith structure, layers, and communication rules.
-- **[Development Workflow](docs/main/development-workflow.md)**: **(Crucial)**
-  Step-by-step developer guide for implementing new features (Models, Services, UI).
+- **[Development Workflow](docs/main/development-workflow.md)**: **(Crucial)** Step-by-step
+  developer guide for implementing new features (Models, Services, UI).
 - **[Main Documentation Overview](docs/main/main-documentation-overview.md)**: A deeper dive into
   core architectural principles, development workflows, coding conventions, and available tools.
 - **[Version History](docs/versions/versions-overview.md)**: Details on specific application

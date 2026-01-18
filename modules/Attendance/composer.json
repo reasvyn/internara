@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/attendance",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Attendance\\": "src/",
+            "Modules\\Attendance\\Database\\Factories\\": "database/factories/",
+            "Modules\\Attendance\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Attendance\\Tests\\": "tests/"
+        }
+    }
+}

@@ -67,11 +67,21 @@ and development documentation, always refer to the project’s `/docs` directory
   parameters, and return values.
 
 - **Mandatory Documentation** Every new feature, standardized pattern, or significant technical
-  change must be accompanied by comprehensive documentation in the `docs/` directory. Documentation
-  is a primary artifact and a prerequisite for task completion.
+  change must be accompanied by comprehensive documentation. Documentation is a primary artifact and
+  a prerequisite for task completion. Internara follows a **Doc-as-Code** principle with **Iterative
+  Artifact Synchronization**.
+
+- **Iterative Sync Cycle** Every technical modification triggers a full cycle of Quality Assurance
+  (Testing, Linting, Security) and Documentation Synchronization. Implementation is only complete
+  when all related artifacts (READMEs, Technical Guides, Changelog) reflect the new system state.
+
+- **Analytical Versioning** Version notes MUST be written as **Deep Analytical Narratives** instead
+  of checklists. They must describe the technical rationale, implementation deep-dive, and
+  architectural impact of every milestone.
 
 - **Release Management** For all versioning, changelog updates, and release protocols, strict
-  adherence to the **[Release Guidelines](docs/main/release-guidelines.md)** is mandatory.
+  adherence to the **[Release Guidelines](docs/main/release-guidelines.md)** is mandatory. This
+  includes maintaining the `RELEASE_NOTES.md` and `app_info.json` artifacts at the root.
 
 - **Proactive Renaming & Restructuring** You are authorized to propose renaming files, folders,
   classes, methods, interfaces, traits, attributes, parameters, keys, or even entire modules if the
@@ -94,7 +104,14 @@ and development documentation, always refer to the project’s `/docs` directory
     - [docs/main/software-lifecycle.md](docs/main/software-lifecycle.md)
     - [docs/main/main-documentation-overview.md](docs/main/main-documentation-overview.md)
     - [docs/versions/versions-overview.md](docs/versions/versions-overview.md)
-    
+
+## Pinned Commands
+
+Quick reference for essential project verification:
+
+- **Identity & Status:** `php artisan app:info` (Run this to verify current version, series code,
+  and tech stack).
+
 ---
 
 ## Standard Project Workflow
@@ -151,15 +168,18 @@ and development documentation, always refer to the project’s `/docs` directory
 ## Foundational Technical Context
 
 ### Stack & Versions
+
 - **PHP:** 8.4+
 - **Laravel:** v12
 - **TALL Stack:** Tailwind CSS v4, Alpine.js, Laravel 12, Livewire 3 (with Volt).
 - **Testing:** Pest v4.
 
 ### Modular Structure
+
 - **Root:** `modules/` (not `app/Modules`).
 - **Isolation:** Modules must be portable. No hard dependencies on other modules' concrete classes.
-- **Database:** UUIDs for primary keys. No physical foreign keys between modules (use indexed UUID columns).
+- **Database:** UUIDs for primary keys. No physical foreign keys between modules (use indexed UUID
+  columns).
 
 ### Namespace Convention
 
@@ -181,9 +201,11 @@ Namespaces **must omit the `src` segment**:
 ### Service Layer
 
 - **Role:** The "Brain" of the application. Orchestrates all business logic.
-- **Pattern:** **Interface-First**. Always type-hint interfaces, never concrete classes, when injecting services across modules.
+- **Pattern:** **Interface-First**. Always type-hint interfaces, never concrete classes, when
+  injecting services across modules.
 - **Base Class:** Services performing CRUD should extend `Modules\Shared\Services\EloquentQuery`.
-- **Constraint:** Never call `env()`. Use `setting()` for application layer and `config()` for infrastucture layer.
+- **Constraint:** Never call `env()`. Use `setting()` for application layer and `config()` for
+  infrastucture layer.
 - **Validation:** Services accept DTOs or validated arrays, not `Request` objects.
 
 ---

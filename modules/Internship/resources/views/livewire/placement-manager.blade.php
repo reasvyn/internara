@@ -1,13 +1,13 @@
 <div>
     <x-ui::main title="{{ __('internship::ui.placement_title') }}" subtitle="{{ __('internship::ui.placement_subtitle') }}">
         <x-slot:actions>
-            <x-ui::button label="{{ __('internship::ui.add_placement') }}" icon="o-plus" class="btn-primary" wire:click="add" />
+            <x-ui::button label="{{ __('internship::ui.add_placement') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
 
         <x-ui::card>
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
-                    <x-ui::input placeholder="{{ __('internship::ui.search_placement') }}" icon="o-magnifying-glass" wire:model.live.debounce.300ms="search" clearable />
+                    <x-ui::input placeholder="{{ __('internship::ui.search_placement') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
                 </div>
             </div>
 
@@ -19,8 +19,8 @@
             ]" :rows="$this->records" with-pagination>
                 @scope('actions', $placement)
                     <div class="flex gap-2">
-                        <x-ui::button icon="o-pencil" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
-                        <x-ui::button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $placement->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
+                        <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
+                        <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $placement->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
                     </div>
                 @endscope
             </x-ui::table>

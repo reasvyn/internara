@@ -1,0 +1,11 @@
+{
+    "name": "Internara",
+    "version": "0.5.0-alpha",
+    "series_code": "ARC01-OPER-01",
+    "status": "Released",
+    "author": {
+        "name": "Reas Vyn",
+        "github": "reasnov",
+        "email": "reasnov.official@gmail.com"
+    }
+}

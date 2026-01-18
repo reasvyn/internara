@@ -29,10 +29,6 @@ interface UserService extends EloquentQuery
 
     /**
      * Check if a user has a specific role.
-     *
-     * @param string $userId
-     * @param string $role
-     * @return bool
      */
     public function hasRole(string $userId, string $role): bool;
 }

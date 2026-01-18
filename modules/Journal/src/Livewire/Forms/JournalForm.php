@@ -12,16 +12,23 @@ class JournalForm extends Form
     public ?JournalEntry $entry = null;
 
     public ?string $id = null;
+
     public ?string $registration_id = null;
+
     public ?string $student_id = null;
+
     public string $date = '';
+
     public string $work_topic = '';
+
     public string $activity_description = '';
+
     public string $basic_competence = '';
+
     public string $character_values = '';
+
     public string $reflection = '';
-    public string $mood = 'neutral';
-    
+
     /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile[] */
     public $attachments = [];
 
@@ -40,7 +47,6 @@ class JournalForm extends Form
         $this->basic_competence = $entry->basic_competence ?? '';
         $this->character_values = $entry->character_values ?? '';
         $this->reflection = $entry->reflection ?? '';
-        $this->mood = $entry->mood;
     }
 
     /**
@@ -55,7 +61,6 @@ class JournalForm extends Form
             'basic_competence' => ['nullable', 'string', 'max:255'],
             'character_values' => ['nullable', 'string', 'max:255'],
             'reflection' => ['nullable', 'string'],
-            'mood' => ['required', 'string', 'in:happy,neutral,tired,inspired,focused'],
             'attachments.*' => ['nullable', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf,doc,docx'], // 5MB limit
         ];
     }

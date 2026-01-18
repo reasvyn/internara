@@ -2,7 +2,7 @@
     <x-ui::header title="{{ __('Jurnal Harian') }}" subtitle="{{ __('Catat dan pantau aktivitas magang setiap hari.') }}">
         <x-slot:actions>
             @can('create', \Modules\Journal\Models\JournalEntry::class)
-                <x-ui::button label="{{ __('Buat Jurnal Baru') }}" icon="o-plus" class="btn-primary" link="{{ route('journal.create') }}" />
+                <x-ui::button label="{{ __('Buat Jurnal Baru') }}" icon="tabler.plus" class="btn-primary" link="{{ route('journal.create') }}" />
             @endcan
         </x-slot:actions>
     </x-ui::header>
@@ -26,9 +26,9 @@
                                 </div>
                                 
                                 @if($day['status'] === 'empty')
-                                    <x-ui::button icon="o-plus" class="btn-ghost btn-xs" link="{{ route('journal.create', ['date' => $day['date']->format('Y-m-d')]) }}" />
+                                    <x-ui::button icon="tabler.plus" class="btn-ghost btn-xs" link="{{ route('journal.create', ['date' => $day['date']->format('Y-m-d')]) }}" />
                                 @else
-                                    <x-ui::button icon="o-eye" class="btn-ghost btn-xs" link="{{ route('journal.index', ['date' => $day['date']->format('Y-m-d')]) }}" />
+                                    <x-ui::button icon="tabler.eye" class="btn-ghost btn-xs" link="{{ route('journal.index', ['date' => $day['date']->format('Y-m-d')]) }}" />
                                 @endif
                             </div>
                         @endforeach
@@ -40,12 +40,12 @@
         <x-ui::card>
             <div class="mb-4 flex flex-col md:flex-row gap-4">
                 <div class="flex-grow">
-                    <x-ui::input placeholder="{{ __('Cari topik atau kompetensi...') }}" icon="o-magnifying-glass" wire:model.live.debounce.300ms="search" clearable />
+                    <x-ui::input placeholder="{{ __('Cari topik atau kompetensi...') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
                 </div>
                 @if($date)
                     <div class="flex items-center gap-2">
                         <x-ui::badge :label="__('Tanggal: :date', ['date' => \Carbon\Carbon::parse($date)->translatedFormat('d M Y')])" class="badge-primary" />
-                        <x-ui::button icon="o-x-mark" class="btn-ghost btn-xs" wire:click="$set('date', '')" />
+                        <x-ui::button icon="tabler.x" class="btn-ghost btn-xs" wire:click="$set('date', '')" />
                     </div>
                 @endif
             </div>
@@ -67,16 +67,16 @@
 
                 @scope('actions', $entry)
                     <div class="flex gap-2">
-                        <x-ui::button icon="o-eye" class="btn-ghost btn-sm text-info" tooltip="{{ __('Lihat Detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
+                        <x-ui::button icon="tabler.eye" class="btn-ghost btn-sm text-info" tooltip="{{ __('Lihat Detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
                         
                         @can('update', $entry)
-                            <x-ui::button icon="o-pencil" class="btn-ghost btn-sm text-warning" tooltip="{{ __('Edit') }}" link="{{ route('journal.edit', $entry->id) }}" />
+                            <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-warning" tooltip="{{ __('Edit') }}" link="{{ route('journal.edit', $entry->id) }}" />
                         @endcan
 
                         @can('validate', $entry)
                             @if($entry->latestStatus()?->name !== 'approved')
-                                <x-ui::button icon="o-check" class="btn-ghost btn-sm text-success" tooltip="{{ __('Setujui') }}" wire:click="approve('{{ $entry->id }}')" wire:confirm="{{ __('Setujui jurnal ini?') }}" />
-                                <x-ui::button icon="o-x-mark" class="btn-ghost btn-sm text-error" tooltip="{{ __('Tolak') }}" wire:click="reject('{{ $entry->id }}')" wire:confirm="{{ __('Tolak jurnal ini?') }}" />
+                                <x-ui::button icon="tabler.check" class="btn-ghost btn-sm text-success" tooltip="{{ __('Setujui') }}" wire:click="approve('{{ $entry->id }}')" wire:confirm="{{ __('Setujui jurnal ini?') }}" />
+                                <x-ui::button icon="tabler.x" class="btn-ghost btn-sm text-error" tooltip="{{ __('Tolak') }}" wire:click="reject('{{ $entry->id }}')" wire:confirm="{{ __('Tolak jurnal ini?') }}" />
                             @endif
                         @endcan
                     </div>
@@ -90,18 +90,6 @@
             <div class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <x-ui::badge :label="$selectedEntry->getStatusLabel()" :class="'badge-' . $selectedEntry->getStatusColor()" />
-                    <div class="text-right">
-                        @php
-                            $moods = [
-                                'happy' => '😊 Senang',
-                                'neutral' => '😐 Biasa Saja',
-                                'tired' => '😫 Lelah',
-                                'inspired' => '💡 Terinspirasi',
-                                'focused' => '🎯 Fokus',
-                            ];
-                        @endphp
-                        <span class="text-sm font-medium">{{ $moods[$selectedEntry->mood] ?? $selectedEntry->mood }}</span>
-                    </div>
                 </div>
 
                 <div>
@@ -138,7 +126,7 @@
                         <div class="grid grid-cols-2 gap-2">
                             @foreach($selectedEntry->getMedia('attachments') as $media)
                                 <a href="{{ $media->getTemporaryUrl(now()->addMinutes(5)) }}" target="_blank" class="flex items-center gap-2 p-2 rounded-lg border border-base-300 hover:bg-base-200 transition-colors">
-                                    <x-ui::icon name="o-paper-clip" class="w-4 h-4" />
+                                    <x-ui::icon name="tabler.paperclip" class="w-4 h-4" />
                                     <span class="text-xs truncate">{{ $media->file_name }}</span>
                                 </a>
                             @endforeach

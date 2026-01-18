@@ -25,68 +25,54 @@ Internara follows **Semantic Versioning (SemVer 2.0.0)** with specific stage suf
 
 ---
 
-## 2. Pre-Release Checklist (The "Definition of Done")
+## 2. The "Definition of Done" & Pre-Release Standard
 
-Before tagging a release or merging to the `main` branch for a release, the following checks
-**must** be passed:
+Before tagging a release, the system must undergo an iterative cycle of verification and
+documentation. Every technical change **requires** a subsequent artifact synchronization.
 
-### A. Code Quality & Security
+### A. Continuous Quality & Security Cycle
 
-- [ ] **Tests:** All Unit and Feature tests must pass (`php artisan test`).
-- [ ] **Linting:** Code must be formatted using Pint/Prettier (`npm run format` &
-      `./vendor/bin/pint`).
-- [ ] **Static Analysis:** No critical issues found by Larastan (level 5+).
-- [ ] **Debug Cleanup:** No `dd()`, `dump()`, `console.log()`, or commented-out "dead code" remains.
-- [ ] **Secrets:** No hardcoded secrets or API keys in the codebase.
+- **Repeated Testing:** All Unit and Feature tests must pass (`php artisan test`). This must be
+  rerun after any post-development refinement.
+- **Iterative Linting:** Code must be formatted using Pint/Prettier after every change.
+- **Deep Clean:** No `dd()`, `dump()`, or dead code.
+- **Security Posture:** Explicit verification of IDOR protection and PII handling.
 
-### B. Documentation
+### B. Analytical Documentation (Mandatory)
 
-- [ ] **PHPDoc:** All new classes and methods have comprehensive PHPDoc.
-- [ ] **Mandatory Synchronization:** All artifacts listed in the
-      [Mandatory Documentation Artifacts](#21-mandatory-documentation-artifacts) section are updated
-      and consistent.
+The Internara project rejects superficial checklists. Releases are documented through **deep
+descriptive analysis** in the version notes.
 
-### 2.1 Mandatory Documentation Artifacts
+- **Analytical Narrative:** Version documents (`docs/versions/vX.X.X.md`) must describe the
+  _technical rationale_ and _architectural impact_ of every keystone.
+- **Continuous Synchronization:** All artifacts listed below must be updated immediately as changes
+  occur, not just at the end of the release cycle.
 
-The following documents **must** be synchronized and updated before every release to maintain the
-"Single Source of Truth":
+### 2.1 Mandatory Documentation Artifacts (The Artifact Sync)
 
-1.  **`docs/versions/vX.Y.Z-stage.md`**: Dedicated release document telling the "Engineering Story"
-    (Goals, Keystones, Verification).
-2.  **`README.md`**: Update the "Version History" table and the "Current Status" indicator.
-3.  **`CHANGELOG.md`**: Move the "In Progress" work to a permanent version entry using the standard
-    template.
-4.  **`docs/versions/table-of-contents.md`**: Add the new version link to the versions TOC.
-5.  **`docs/versions/versions-overview.md`**: Update the release history list and the current
-    operational phase details.
-6.  **`docs/main/modules/{module-name}.md`**: Ensure technical guides for new or modified modules
-    are complete (no stubs).
-7.  **`docs/main/architecture-guide.md`**: Update if there are any shifts in communication patterns
-    or system layers.
-8.  **`docs/main/development-conventions.md`**: Update if new coding standards or mandatory patterns
-    were introduced.
-9.  **`SECURITY.md`**: Verify security protocols are still accurate for the new feature set.
+The following documents must be synchronized iteratively to maintain the "Single Source of Truth":
 
-### C. Build & Assets
-
-- [ ] **Frontend:** Assets compile successfully (`npm run build`).
-- [ ] **Migrations:** All migrations run cleanly (`php artisan migrate:fresh --seed` works).
+1.  **`docs/versions/vX.Y.Z-stage.md`**: Deep analytical narrative of the version's evolution.
+2.  **`app_info.json`**: Static application metadata (name, version, series_code, author).
+3.  **`RELEASE_NOTES.md`**: Root-level highlights and links to deep analytical narratives.
+4.  **`README.md`**: Update version indicators and project status.
+5.  **`CHANGELOG.md`**: User-facing summary of technical additions and fixes.
+6.  **`docs/versions/versions-overview.md`**: Historical context update.
+7.  **`docs/main/modules/{module-name}.md`**: Comprehensive technical guides for modules.
+8.  **`docs/main/architecture-guide.md` & `development-conventions.md`**: Updated to reflect shifts
+    in patterns.
 
 ---
 
-## 3. The Release Process
+## 3. The Release Workflow (Unified Alur Kerja)
 
-1.  **Final Commit:** Ensure all changes are staged and committed.
-2.  **Tagging:** Create a git tag for the version.
-    ```bash
-    git tag -a v0.4.0-alpha -m "Release v0.4.0-alpha: Institutional Phase"
-    ```
-3.  **Push:** Push the commit and the tag.
-    ```bash
-    git push origin main --tags
-    ```
-4.  **GitHub Release:** Create a release on GitHub matching the tag, pasting the content from the
-    **Release Message Template**.
+The release process is the final step of the **[Development Workflow](development-workflow.md)**.
+
+1.  **Final Sync Cycle:** Perform one last QA and Artifact Sync cycle.
+2.  **Commit All:** Stage and commit all changes (including documentation).
+3.  **Tagging:** Create a git tag using SemVer.
+4.  **GitHub Protocol:** Push tags and create a formal GitHub Release using the analytical narrative
+    as the description basis.
 
 ---
 

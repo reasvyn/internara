@@ -7,32 +7,61 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [v0.5.0-alpha] - Unreleased (ARC01-OPER)
+## [v0.5.0-alpha] - 2026-01-18 (ARC01-OPER-01)
 
 ### 🚀 Overview
 
 Focuses on the operational and activity tracking phase, introducing Daily Journals (Logbook),
-Attendance tracking with geolocation, and Supervisor matching relationships.
+Attendance tracking, and Supervisor matching relationships.
 
 ### ✨ Added
 
-- **UI Refactor:** Centralized design system wrappers in the `UI` module (including Table, Modal, Header, Tabs, etc.).
-- **Supervisor Matching:** Formal relationship between Students, Academic Teachers, and Industry Mentors.
-- **Journal Module:** 
-  - Core implementation of daily student logbooks with "Dual-Authority Approval" policy.
-  - Added **"Save as Draft"** functionality for students.
-  - Implemented **"Week at a Glance"** visual tracking sidebar for student progress.
-  - Added **Private Media Attachments** support for journal entries with temporary URL generation.
-  - Built comprehensive **Journal Detail Modal** for supervisor review.
+- **Supervisor Matching:** Formal relationship between Students, Academic Teachers, and Industry
+  Mentors.
+- **Journal Module:**
+    - Core implementation of daily student logbooks with "Dual-Authority Approval" policy.
+    - Added **"Save as Draft"** functionality for students.
+    - Implemented **"Week at a Glance"** visual tracking sidebar for student progress.
+    - Added **Private Media Attachments** support for journal entries with temporary URL generation.
+    - Built comprehensive **Journal Detail Modal** for supervisor review.
+    - Implemented **Strict Journal Locking**; prevents updates or deletions once approved or
+      verified.
+- **Attendance Module:**
+    - Daily check-in/out system with automated status determination (Present/Late).
+    - Integrated with global application settings for dynamic late thresholds.
+    - Enforced **Double Check-in Prevention** via database unique constraints and service logic.
 - **Mentor Role:** New system role for industry supervisors with dedicated dashboard.
+- **Academic Year Scoping:** Added `academic_year` column to all operational tables
+  (`registrations`, `journals`, `attendance`) to ensure multi-year data integrity.
 
 ### 🛠 Changed
 
-- **UI Standardization:** Refactored all feature modules (`Auth`, `User`, `Profile`, `Internship`, `School`, `Department`) to use centralized `UI` components instead of direct MaryUI/DaisyUI classes.
+- **UI Consolidation:**
+    - Merged `file-upload` and `file` components into a single interactive `x-ui::file` component.
+    - Integrated `x-mary-file` as the internal engine for the UI module to support robust file
+      handling and image cropping.
+    - Added support for slots in the file component to maintain backward compatibility with custom
+      previews (e.g., Avatars).
+- **Icon Standardization:**
+    - Unified the entire application to use **Tabler Icons** (`tabler.name` format) for better
+      consistency and performance.
+    - Updated all feature modules (`Attendance`, `Department`, `Internship`, `Journal`, `Dashboard`,
+      `User`, `Profile`) to follow the new naming standard.
+- **UI Standardization:** Refactored all feature modules to use centralized `UI` components instead
+  of direct MaryUI/DaisyUI classes.
 - **Card Styling:** Standardized `x-ui::card` with default borders, rounded corners, and shadows.
 - **UI Route Integrity:** Added missing route files and service provider fixes for the `UI` module.
 - **Unified Dashboards:** All role-specific dashboards now use a consistent local layout.
 - **Expanded Registrations:** `InternshipRegistration` now tracks assigned Teacher and Mentor.
+
+### 🐛 Fixed
+
+- **View Compatibility:** Resolved `Undefined variable $logo_url` in `SchoolManager` by
+  standardizing form data binding.
+- **Icon Rendering:** Fixed `SvgNotFound` exceptions by standardizing on the `tabler.name` format
+  compatible with MaryUI's default icon handler.
+- **Service Signatures:** Fixed method signature mismatch in `JournalService::delete` to ensure
+  inheritance compatibility with `EloquentQuery`.
 
 ---
 

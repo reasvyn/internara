@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Journal\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -53,6 +55,13 @@ class JournalServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Journal\Services\Contracts\JournalService::class => \Modules\Journal\Services\JournalService::class,
+        ];
+    }
+
+    protected function viewSlots(): array
+    {
+        return [
+            'navbar.items' => 'journal::components.nav-link',
         ];
     }
 }

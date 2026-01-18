@@ -21,6 +21,19 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
     }
 
     /**
+     * {@inheritDoc}
+     */
+    protected function applyFilters(&$query, array &$filters): void
+    {
+        if (isset($filters['latest_status'])) {
+            $query->currentStatus($filters['latest_status']);
+            unset($filters['latest_status']);
+        }
+
+        parent::applyFilters($query, $filters);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function register(array $data): InternshipRegistration
@@ -45,6 +58,9 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
                 code: 422,
             );
         }
+
+        // 3. Inject active academic year
+        $data['academic_year'] = setting('active_academic_year', '2025/2026');
 
         return $this->create($data);
     }

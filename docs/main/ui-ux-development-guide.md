@@ -193,10 +193,18 @@ To maintain consistency and accelerate development, a clear component hierarchy 
 
 When new UI functionality is required, developers must follow this order of preference:
 
-1.  **Use `UI` Module Core Components (Mandatory):** Always use the standardized wrapper components provided by the `UI` module (e.g., `<x-ui::button>`, `<x-ui::input>`). **Direct use of `x-mary-` or `x-daisy-` components in feature modules is strictly forbidden.** These wrappers ensure global consistency and theming support.
-2.  **Use Existing `UI` Module Composites:** Check if a suitable higher-level component (like a Navbar or Sidebar) already exists in `modules/UI/resources/views/components`.
-3.  **Use `MaryUI` Components (Via Wrapper):** If a required MaryUI component is not yet wrapped in the `UI` module, **you must first create a wrapper for it** in `modules/UI/resources/views/components/` before using it in your feature module.
-4.  **Create a New `UI` Module Component:** Only if neither of the above options provides the necessary functionality should a new, custom component be created. All new components must be placed within the `UI` module.
+1.  **Use `UI` Module Core Components (Mandatory):** Always use the standardized wrapper components
+    provided by the `UI` module (e.g., `<x-ui::button>`, `<x-ui::input>`). **Direct use of `x-mary-`
+    or `x-daisy-` components in feature modules is strictly forbidden.** These wrappers ensure
+    global consistency and theming support.
+2.  **Use Existing `UI` Module Composites:** Check if a suitable higher-level component (like a
+    Navbar or Sidebar) already exists in `modules/UI/resources/views/components`.
+3.  **Use `MaryUI` Components (Via Wrapper):** If a required MaryUI component is not yet wrapped in
+    the `UI` module, **you must first create a wrapper for it** in
+    `modules/UI/resources/views/components/` before using it in your feature module.
+4.  **Create a New `UI` Module Component:** Only if neither of the above options provides the
+    necessary functionality should a new, custom component be created. All new components must be
+    placed within the `UI` module.
 
 ### 6.2. Common Components
 
@@ -207,26 +215,21 @@ Use DaisyUI components for all standard UI elements. Below are examples for comm
 - **Secondary:** `<button class="btn btn-secondary">Action</button>`
 - **[View Docs](https://daisyui.com/components/button/)**
 
-- **Forms & Inputs:** Wrap inputs in `form-control` for proper spacing and labeling.
+### 6.3. Icon Standardization
 
-```html
-<div class="form-control w-full max-w-xs">
-    <label class="label">
-        <span class="label-text">Username</span>
-    </label>
-    <input type="text" placeholder="Type here" class="input input-bordered w-full max_w_xs" />
-</div>
-```
+Internara has standardized on **Tabler Icons** for all UI elements to ensure visual consistency and
+professional aesthetic.
 
-- **[View Docs](https://daisyui.com/components/input/)**
+- **Library:** [Tabler Icons](https://tabler-icons.io/) via `secondnetwork/blade-tabler-icons`.
+- **Convention:** When using icons in MaryUI components or the `x-ui::icon` wrapper, always use the
+  dot-notation format: `tabler.{icon-name}` (e.g., `tabler.plus`, `tabler.search`).
+- **Mandatory Prefix:** The `tabler.` prefix is mandatory to ensure the correct icon set is loaded.
+- **Direct Usage:** For non-MaryUI contexts, use the provided wrapper:
+    ```blade
+    <x-ui::icon name="tabler.settings" class="w-5 h-5" />
+    ```
 
-- **Modals:** Use the `modal` component for dialogs that require user focus.
-- **[View Docs](https://daisyui.com/components/modal/)**
-
-- **Alerts:** Use `alert` with status colors for feedback.
-- **[View Docs](https://daisyui.com/components/alert/)**
-
-### 6.3. MaryUI Components
+### 6.4. MaryUI Components
 
 For complex UI interactions within Livewire, prefer MaryUI wrappers where available.
 
@@ -254,9 +257,9 @@ simplify usage, it follows a flatter structure.
   directly without any subdirectory prefix. ```blade {{-- CORRECT --}} <x-ui::navbar />
   <x-ui::button />
 
-                              {{-- INCORRECT --}}
-                              <x-ui::ui.navbar />
-                              ```
+                                    {{-- INCORRECT --}}
+                                    <x-ui::ui.navbar />
+                                    ```
 
     This convention keeps component tags clean and acknowledges that the `UI` module itself is the
     designated "ui" library for the project.

@@ -1,5 +1,1 @@
-@props([
-    'name',
-])
-
-@svg($name, $attributes)
+<x-mary-icon {{ $attributes }} />

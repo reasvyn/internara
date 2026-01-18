@@ -14,26 +14,26 @@
                         <x-ui::input
                             label="{{ __('Full Name') }}"
                             wire:model="name"
-                            icon="o-user"
+                            icon="tabler.user"
                             required
                         />
                         <x-ui::input
                             label="{{ __('Username') }}"
                             wire:model="username"
-                            icon="o-at-symbol"
+                            icon="tabler.at"
                             required
                         />
                         <x-ui::input
                             label="{{ __('Email Address') }}"
                             wire:model="email"
-                            icon="o-envelope"
+                            icon="tabler.mail"
                             type="email"
                             required
                         />
                         <x-ui::input
                             label="{{ __('Password') }}"
                             wire:model="password"
-                            icon="o-key"
+                            icon="tabler.key"
                             type="password"
                             hint="{{ $user ? __('Leave blank to keep current password.') : '' }}"
                         />
@@ -46,7 +46,7 @@
                                 ['id' => 'pending', 'name' => __('Pending')],
                                 ['id' => 'inactive', 'name' => __('Inactive')],
                             ]"
-                            icon="o-swatches"
+                            icon="tabler.palette"
                             required
                         />
 
@@ -54,7 +54,7 @@
                             <x-ui::input
                                 label="{{ __('NIP') }}"
                                 wire:model="nip"
-                                icon="o-identification"
+                                icon="tabler.id"
                                 hint="{{ __('Required for Teachers') }}"
                             />
                         @endif
@@ -63,7 +63,7 @@
                             <x-ui::input
                                 label="{{ __('NISN') }}"
                                 wire:model="nisn"
-                                icon="o-academic-cap"
+                                icon="tabler.school"
                                 hint="{{ __('Required for Students') }}"
                             />
                         @endif
@@ -76,7 +76,7 @@
                             :options="$roles"
                             option-label="name"
                             option-value="name"
-                            icon="o-shield-check"
+                            icon="tabler.shield-check"
                             hint="{{ __('Select one or more roles for this user.') }}"
                             compact
                         />
@@ -101,13 +101,12 @@
 
         <x-slot:actions>
             <x-ui::button label="{{ __('Cancel') }}" link="/users" class="btn-ghost" />
-            <x-ui::button
-                label="{{ __('Save User') }}"
-                type="submit"
-                icon="o-check"
-                class="btn-primary"
-                spinner="save"
-            />
-        </x-slot>
+                            <x-ui::button
+                            label="{{ __('Save User') }}"
+                            type="submit"
+                            icon="tabler.check"
+                            class="btn-primary"
+                            spinner="save"
+                        />        </x-slot>
     </x-ui::form>
 </div>

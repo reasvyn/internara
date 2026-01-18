@@ -18,12 +18,57 @@ class AppSettingSeeder extends Seeder
      */
     public function run(): void
     {
+        $infoPath = base_path('app_info.json');
+        $info = file_exists($infoPath) ? json_decode(file_get_contents($infoPath), true) : [];
+
         $rawSettings = [
             [
                 'key' => 'app_name',
-                'value' => config('app.name', 'Internara'),
+                'value' => $info['name'] ?? config('app.name', 'Internara'),
                 'type' => 'string',
                 'description' => 'Application name',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'app_version',
+                'value' => $info['version'] ?? 'Unknown',
+                'type' => 'string',
+                'description' => 'Application version',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'app_series_code',
+                'value' => $info['series_code'] ?? 'Unknown',
+                'type' => 'string',
+                'description' => 'Application series code',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'app_status',
+                'value' => $info['status'] ?? 'Unknown',
+                'type' => 'string',
+                'description' => 'Application development status',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'app_author_name',
+                'value' => $info['author']['name'] ?? 'Unknown',
+                'type' => 'string',
+                'description' => 'Application author name',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'app_author_github',
+                'value' => $info['author']['github'] ?? 'Unknown',
+                'type' => 'string',
+                'description' => 'Application author github',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'app_author_email',
+                'value' => $info['author']['email'] ?? 'Unknown',
+                'type' => 'string',
+                'description' => 'Application author email',
                 'group' => 'system',
             ],
             [
@@ -70,6 +115,27 @@ class AppSettingSeeder extends Seeder
                 'type' => 'string',
                 'description' => 'The title of the site',
                 'group' => 'general',
+            ],
+            [
+                'key' => 'active_academic_year',
+                'value' => '2025/2026',
+                'type' => 'string',
+                'description' => 'The current active academic year for operational data.',
+                'group' => 'operational',
+            ],
+            [
+                'key' => 'attendance_check_in_start',
+                'value' => '07:00',
+                'type' => 'string',
+                'description' => 'Earliest allowed check-in time.',
+                'group' => 'operational',
+            ],
+            [
+                'key' => 'attendance_late_threshold',
+                'value' => '08:00',
+                'type' => 'string',
+                'description' => 'Time after which a student is marked as late.',
+                'group' => 'operational',
             ],
         ];
 

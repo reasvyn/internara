@@ -22,8 +22,9 @@ standard lifecycle documentation structure.
 
 ### Newest Releases
 
-- **v0.5.x-alpha** ([Documentation v0.5.x-alpha](v0.5.x-alpha.md)): **Operational & Activity Tracking
-  Phase**. Implementation of Daily Journal (Logbook), Attendance System, and Supervisor Matching.
+- **v0.5.x-alpha** ([Documentation v0.5.x-alpha](v0.5.x-alpha.md)): **Operational & Activity
+  Tracking Phase**. Implementation of Daily Journal (Logbook), Attendance System, and Supervisor
+  Matching.
 - **v0.4.0-alpha** ([Documentation v0.4.x-alpha](v0.4.x-alpha.md)): **Institutional & Academic
   Phase**. Implementation of School, Department management, and foundational Internship registration
   workflows.
@@ -142,78 +143,48 @@ This phase occurs **before** any code is written. It defines the "Rules of Engag
 
 ---
 
-### Phase 2: Production (The Execution)
+### Phase 2: Production (Deep Analytical Narrative)
 
-This phase details the actual implementation. Choose the format that best fits the release type.
+This phase details the implementation through a lens of engineering analysis. Instead of checklists,
+every milestone is documented as a narrative of technical choices.
 
-#### Format A: `Scope of Work` (Infrastructure/Refactor)
+#### 1. System & Feature Keystones (Analysis)
 
-_Best for: `INIT`, `RFT`, `SEC` scopes._
+Group work into logical "Keystones". For each keystone, provide:
 
-A categorized checklist of concrete technical tasks.
+- **Technical Rationale:** Why was this specific approach chosen? What alternatives were considered
+  and rejected?
+- **Implementation Deep-Dive:** Describe the core logic flow, key classes involved, and how
+  conventions (e.g., Interface-first) were applied.
+- **Architectural Evolution:** Explain how this change impacts the system's state or prepares it for
+  future versions.
 
-- **Environment:** "Install Laravel 12, Configure SQLite."
-- **Tooling:** "Setup Pest PHP, Configure Pint."
-- **Refactor:** "Move `User` model to `Modules/User/src/Models`."
+### Phase 3: Post-Production (Continuous Verification & Proof)
 
-#### Format B: `System & Feature Keystones` (Feature/Foundation)
+This phase provides the **analytical proof** of quality. It is an iterative cycle of verification
+and artifact synchronization.
 
-_Best for: `FEAT`, `FND` scopes._
+#### 1. Quality Assurance Analysis
 
-Group work into logical "Keystones" (Major achievements).
+Analyze the results of the verification cycle.
 
-1.  **Keystone Title** (e.g., "Role-Based Access Control")
-    - **Goal:** User-centric objective (e.g., "Allow admins to manage permissions").
-    - **Implementation:** Technical strategy (e.g., "Implement `spatie/laravel-permission` with
-      custom Policy gates").
-    - **Developer Impact:** How this helps the team (e.g., "Simplifies auth checks to
-      `$user->can('edit')`").
+- **Test Suite Evaluation:** Narrative analysis of test coverage and the stability of the logic
+  introduced.
+- **Refactor & Optimization Log:** Describe why certain codes were refactored and the
+  performance/readability gains achieved.
 
----
+#### 2. Artifact Synchronization Protocol
 
-### Phase 3: Post-Production (Verification & Future)
+Every technical change triggers a full documentation sync. This section analyzes the update status
+of:
 
-This phase provides the **proof of quality** and sets the stage for what comes next.
-
-#### 1. Quality Assurance & Verification
-
-Prove the system works.
-
-- **Tooling Setup:** Confirm test suites and linters are active.
-- **Verification Checks:** Specific actions taken to validate the release.
-    - _Example:_ "Ran `php artisan test --filter=User`: 100% Pass."
-    - _Example:_ "Manually verified login flow with 2FA enabled."
-
-#### 2. Security Issues
-
-Transparently document security findings.
-
-- **Status:** "No critical issues identified" OR list specific vulnerabilities found and fixed
-  (Severity, Impact, Fix).
-
-#### 3. Documentation Checks
-
-Ensure the "Single Source of Truth" is up to date.
-
-- **Checklist:**
-    - New features documented in `docs/main/`?
-    - `README.md` updated with version status?
-    - `CHANGELOG.md` reflects all new production work?
-    - `SECURITY.md` reviewed for protocol updates?
-    - Architecture guide updated?
-    - TOCs (Table of Contents) updated?
-
-#### 4. Roadmap & Next Steps
-
-Strictly define the boundaries of the _next_ iteration to prevent scope creep _now_.
-
-- **Must Have:** Critical path items for the next version.
-- **Should Have:** Important but deferrable improvements.
-- **Won't Have:** Explicitly out of scope for the next version.
+- Modular Guides (e.g., `docs/main/modules/`)
+- Architecture Guide & Development Conventions
+- `CHANGELOG.md` and `README.md`
 
 ---
 
-## 3. Standard Version Document Template
+## 3. Standard Version Document Template (Narrative Format)
 
 Copy this template for every new version document in `docs/versions/`.
 
@@ -225,91 +196,62 @@ Copy this template for every new version document in `docs/versions/`.
 - **Name**: `vX.X.X`
 - **Series Code**: `[CODENAME]-[SCOPE]-[SEQ]`
 - **Status**: `In Progress` / `Released`
-- **Description**: Brief summary of this release's intent.
+- **Current Operational Context**: Brief analysis of the system's mission in this version.
 
 ---
 
 ## 2. Goals & Architectural Philosophy (Pre-Production)
 
-### Problem Keypoints (Why we are doing this)
+### Problem Analysis (The "Why")
 
-- [ ] Current Issue A...
-- [ ] Current Issue B...
+Detailed prose describing the architectural debt or business needs being addressed.
 
-### Architectural Pillars (How we solve it)
+### Architectural Pillars (The "How")
 
-- [ ] Strategy A...
-- [ ] Strategy B...
+Narrative description of the strategies chosen to solve the identified problems.
 
 ### Architectural Constraints (The Rules)
 
-_Immutable rules defined for this version._
-
-1.  **Constraint 1:** Description...
-2.  **Constraint 2:** Description...
+Non-negotiable rules for this version, explained through their technical necessity.
 
 ---
 
-## 3. Scope of Work / Keystones (Production)
+## 3. Production Keystones (Analytical Narrative)
 
-_(Select Format A or B below, delete the other)_
+### Keystone 1: [Feature Name]
 
-### Format A: Scope of Work (Infrastructure/Refactor)
+#### Technical Rationale
 
-#### Infrastructure & Setup
+Describe the reasoning behind the design.
 
-- [ ] Task...
+#### Implementation Deep-Dive
 
-#### Refactoring
+Detail the engineering work, logic flow, and key modules/interfaces involved.
 
-- [ ] Task...
+#### Architectural Impact
 
-### Format B: System Keystones (Features)
-
-#### Keystone 1: [Feature Name]
-
-- **Goal**:
-- **Implementation**:
-- **Developer Impact**:
+Analyze how this evolves the project's foundation.
 
 ---
 
-## 4. Quality Assurance & Finalization (Post-Production)
+## 4. Quality Assurance & Artifact Sync (Post-Production)
 
-### 4.1. Quality Tooling & Tests
+### 4.1. Verification Analysis
 
-- [ ] Pest Tests passed by run `composer test`.
-- [ ] Pint/Prettier formatting applied by run `composer lint`.
+Analyze test results and manual verification outcomes. Provide proof of stability.
 
-### 4.2. Verification Checks
+### 4.2. Continuous Documentation Sync
 
-- [ ] Verify A...
-- [ ] Verify B...
+Narrative summary of which technical artifacts (docs/CHANGELOG/README) were updated to maintain the
+Single Source of Truth.
 
-### 4.3. Documentation Integrity
+### 4.3. Security & Privacy Audit
 
-- [ ] New features documented in `docs/main/`.
-- [ ] `README.md`, `CHANGELOG.md`, and `SECURITY.md` updated.
-- [ ] Technical conventions updated.
-- [ ] Root TOC and Module TOCs updated.
+Summary of the security posture after the changes.
 
-### 4.4. Security Audit
+### 4.4. Roadmap Strategy (vNext)
 
-- [ ] Status: ...
-
-### 4.5. Roadmap & Next Steps (vNext)
-
-#### Must Have
-
-- ...
-
-#### Should Have
-
-- ...
-
-#### Won't Have
-
-- ...
+Analytical preview of the next iteration's boundaries.
 ```
 
 ---

@@ -30,7 +30,8 @@ Rules to follow while writing code.
 
 - **[Development Conventions](development-conventions.md)**: Coding standards, namespace rules, and
   directory structures.
-- **[Development Lifecycle & Versioning Strategy](../versions/versions-overview.md#development-lifecycle--versioning-strategy)**: The authoritative guide on versioning and release management.
+- **[Development Lifecycle & Versioning Strategy](../versions/versions-overview.md#development-lifecycle--versioning-strategy)**:
+  The authoritative guide on versioning and release management.
 - **[Shared Model Traits](shared-traits.md)**: Reusable behaviors for Eloquent models (UUID,
   Status).
 - **[UI/UX Development Guide](ui-ux-development-guide.md)**: Global design principles and standards.
@@ -57,8 +58,10 @@ Deep dives into specific architectural components.
 
 Practical guides for building features.
 
-- **[Software Development Life Cycle](software-lifecycle.md)**: Standard SDLC phases tailored for Internara.
-- **[Development Workflow](development-workflow.md)**: Standard operating procedures for planning, coding, and verifying features.
+- **[Software Development Life Cycle](software-lifecycle.md)**: Standard SDLC phases tailored for
+  Internara.
+- **[Development Workflow](development-workflow.md)**: Standard operating procedures for planning,
+  coding, and verifying features.
 - **[Artisan Commands Reference](artisan-commands-reference.md)**: Reference for generating modules
   and components.
 

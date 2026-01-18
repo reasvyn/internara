@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Policies;
 
-use Modules\User\Models\User;
-use Modules\Journal\Models\JournalEntry;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Journal\Models\JournalEntry;
+use Modules\User\Models\User;
 
 class JournalPolicy
 {
@@ -24,6 +24,7 @@ class JournalPolicy
 
         // Teacher or Mentor assigned to this registration can view
         $registration = $entry->registration;
+
         return $user->id === $registration->teacher_id || $user->id === $registration->mentor_id;
     }
 
@@ -50,7 +51,7 @@ class JournalPolicy
     public function validate(User $user, JournalEntry $entry): bool
     {
         $registration = $entry->registration;
-        
+
         // Either assigned Teacher OR assigned Mentor can validate
         return $user->id === $registration->teacher_id || $user->id === $registration->mentor_id;
     }
@@ -60,7 +61,8 @@ class JournalPolicy
      */
     public function delete(User $user, JournalEntry $entry): bool
     {
-        // Only student can delete their own draft
+        // Only student can delete their own draft.
+        // Cannot delete once submitted or approved.
         return $user->id === $entry->student_id && $entry->latestStatus()?->name === 'draft';
     }
 }

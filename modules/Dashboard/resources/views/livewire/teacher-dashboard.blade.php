@@ -9,7 +9,7 @@
                         <div class="text-sm opacity-80">{{ __('Total Siswa Bimbingan') }}</div>
                         <div class="text-3xl font-bold">{{ $this->students->count() }}</div>
                     </div>
-                    <x-ui::icon name="o-users" class="w-10 h-10 opacity-20" />
+                    <x-ui::icon name="tabler.users" class="w-10 h-10 opacity-20" />
                 </div>
             </x-ui::card>
         </div>
@@ -25,7 +25,7 @@
                 @endscope
                 
                 @scope('actions', $registration)
-                    <x-ui::button label="{{ __('Detail') }}" icon="o-eye" class="btn-sm btn-ghost" link="#" />
+                    <x-ui::button label="{{ __('Detail') }}" icon="tabler.eye" class="btn-sm btn-ghost" link="#" />
                 @endscope
             </x-ui::table>
         </x-ui::card>

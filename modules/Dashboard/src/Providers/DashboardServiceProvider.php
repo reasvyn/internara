@@ -22,12 +22,14 @@ class DashboardServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
+    }
+
+    protected function viewSlots(): array
+    {
+        return [
+            'navbar.items' => 'dashboard::components.nav-link',
+        ];
     }
 
     /**

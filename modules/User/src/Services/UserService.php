@@ -202,7 +202,7 @@ class UserService extends EloquentQuery implements Contract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function hasRole(string $userId, string $role): bool
     {

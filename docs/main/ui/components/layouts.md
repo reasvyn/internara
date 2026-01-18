@@ -37,11 +37,12 @@ The root layout component. Every page in the application ultimately extends this
 The primary content orchestrator. Handles sidebars, actions, and footer slots.
 
 - **Usage:**
+
 ```blade
 <x-ui::main>
     <x-slot:actions>
         <x-ui::button label="Action" />
-    </x-slot:actions>
+    </x-slot>
     Content...
 </x-ui::main>
 ```

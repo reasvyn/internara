@@ -11,31 +11,30 @@ use Modules\User\Services\Contracts\UserService;
 
 /**
  * Class SupervisorService
- * 
+ *
  * Implementation for managing supervisor matching.
  */
 class SupervisorService extends EloquentQuery implements Contract
 {
     /**
      * SupervisorService constructor.
-     *
-     * @param UserService $userService
      */
-    public function __construct(
-        protected UserService $userService
-    ) {
-        $this->setModel(new InternshipRegistration());
+    public function __construct(protected UserService $userService)
+    {
+        $this->setModel(new InternshipRegistration);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function assignTeacher(InternshipRegistration|string $registration, string $teacherId): bool
-    {
+    public function assignTeacher(
+        InternshipRegistration|string $registration,
+        string $teacherId,
+    ): bool {
         $registration = $this->resolveRegistration($registration);
 
         // Validate that the user has the 'teacher' role
-        if (!$this->userService->hasRole($teacherId, 'teacher')) {
+        if (! $this->userService->hasRole($teacherId, 'teacher')) {
             return false;
         }
 
@@ -43,14 +42,16 @@ class SupervisorService extends EloquentQuery implements Contract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
-    public function assignMentor(InternshipRegistration|string $registration, string $mentorId): bool
-    {
+    public function assignMentor(
+        InternshipRegistration|string $registration,
+        string $mentorId,
+    ): bool {
         $registration = $this->resolveRegistration($registration);
 
         // Validate that the user has the 'mentor' role
-        if (!$this->userService->hasRole($mentorId, 'mentor')) {
+        if (! $this->userService->hasRole($mentorId, 'mentor')) {
             return false;
         }
 
@@ -59,12 +60,10 @@ class SupervisorService extends EloquentQuery implements Contract
 
     /**
      * Resolve registration instance from object or ID.
-     *
-     * @param InternshipRegistration|string $registration
-     * @return InternshipRegistration
      */
-    protected function resolveRegistration(InternshipRegistration|string $registration): InternshipRegistration
-    {
+    protected function resolveRegistration(
+        InternshipRegistration|string $registration,
+    ): InternshipRegistration {
         if (is_string($registration)) {
             return InternshipRegistration::findOrFail($registration);
         }

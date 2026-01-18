@@ -15,19 +15,6 @@
                             wire:model="form.date" 
                             required 
                         />
-                        
-                        <x-ui::select 
-                            label="{{ __('Suasana Hati (Mood)') }}" 
-                            wire:model="form.mood" 
-                            :options="[
-                                ['id' => 'happy', 'name' => '😊 Senang'],
-                                ['id' => 'neutral', 'name' => '😐 Biasa Saja'],
-                                ['id' => 'tired', 'name' => '😫 Lelah'],
-                                ['id' => 'inspired', 'name' => '💡 Terinspirasi'],
-                                ['id' => 'focused', 'name' => '🎯 Fokus'],
-                            ]"
-                            required
-                        />
                     </div>
 
                     <x-ui::input 
@@ -65,14 +52,13 @@
                         rows="3"
                     />
 
-                    <x-ui::file-upload 
-                        label="{{ __('Lampiran (Opsional)') }}" 
-                        wire:model="form.attachments" 
-                        multiple 
-                        accept="image/*,application/pdf,.doc,.docx"
-                        hint="{{ __('Maksimal 5MB per file (JPG, PNG, PDF, DOCX)') }}"
-                    />
-
+                                    <x-ui::file
+                                        label="{{ __('journal::journal.field.attachments') }}"
+                                        wire:model="attachments"
+                                        multiple
+                                        accept="image/*,application/pdf"
+                                        :preview="$attachment_urls"
+                                    />
                     <x-slot:actions>
                         <x-ui::button 
                             label="{{ __('Batal') }}" 

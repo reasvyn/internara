@@ -17,7 +17,7 @@ class TeacherDashboard extends Component
     {
         /** @var InternshipRegistrationService $service */
         $service = app(InternshipRegistrationService::class);
-        
+
         return $service->get(['teacher_id' => auth()->id()]);
     }
 

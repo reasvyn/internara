@@ -28,11 +28,12 @@ The navbar uses `@slotRender` to allow other modules to inject content:
 A utility navigation component often used for smaller, secondary navigation sets or within layouts.
 
 - **Usage:**
+
 ```blade
 <x-ui::nav>
     <x-slot:actions>
         <x-ui::button label="Login" />
-    </x-slot:actions>
+    </x-slot>
 </x-ui::nav>
 ```
 
@@ -70,10 +71,11 @@ Renders the application name from the system settings.
 A dropdown menu component.
 
 - **Usage:**
+
 ```blade
 <x-ui::dropdown label="Actions">
-    <x-ui::menu-item title="Edit" icon="o-pencil" />
-    <x-ui::menu-item title="Delete" icon="o-trash" />
+    <x-ui::menu-item title="Edit" icon="tabler.edit" />
+    <x-ui::menu-item title="Delete" icon="tabler.trash" />
 </x-ui::dropdown>
 ```
 
@@ -84,14 +86,11 @@ A dropdown menu component.
 Navigation tabs for switching between views.
 
 - **Usage:**
+
 ```blade
 <x-ui::tabs wire:model="selectedTab">
-    <x-ui::tab name="tab1" label="Overview" icon="o-home">
-        Content 1
-    </x-ui::tab>
-    <x-ui::tab name="tab2" label="Settings" icon="o-cog">
-        Content 2
-    </x-ui::tab>
+    <x-ui::tab name="tab1" label="Overview" icon="tabler.home">Content 1</x-ui::tab>
+    <x-ui::tab name="tab2" label="Settings" icon="tabler.settings">Content 2</x-ui::tab>
 </x-ui::tabs>
 ```
 

@@ -38,7 +38,13 @@ class InternshipRegistration extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['internship_id', 'placement_id', 'student_id', 'teacher_id', 'mentor_id'];
+    protected $fillable = [
+        'internship_id',
+        'placement_id',
+        'student_id',
+        'teacher_id',
+        'mentor_id',
+    ];
 
     /**
      * Create a new factory instance for the model.

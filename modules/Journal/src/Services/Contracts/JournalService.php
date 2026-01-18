@@ -9,9 +9,9 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
  * Interface JournalService
- * 
+ *
  * Handles the business logic for student Daily Journals.
- * 
+ *
  * @extends EloquentQuery<JournalEntry>
  */
 interface JournalService extends EloquentQuery
@@ -33,8 +33,7 @@ interface JournalService extends EloquentQuery
 
     /**
      * Attach media files to a journal entry.
-     * 
-     * @param mixed $id
+     *
      * @param array<\Livewire\Features\SupportFileUploads\TemporaryUploadedFile> $files
      */
     public function attachMedia(mixed $id, array $files): void;

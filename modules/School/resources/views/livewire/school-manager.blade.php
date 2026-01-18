@@ -47,13 +47,13 @@
                     placeholder="{{ __('school::ui.principal_name') }}"
                     wire:model="form.principal_name"
                 />
-                <x-ui::file-upload
-                    class="col-span-full"
-                    label="{{ __('school::ui.logo') }}"
-                    hint="{{ __('school::ui.logo_hint') }}"
-                    wire:model="form.logo_file"
-                    :preview="$form->logo_url"
-                />
+            <x-ui::file
+                label="{{ __('school::school.field.logo') }}"
+                wire:model="form.logo_file"
+                accept="image/*"
+                crop-after-change
+                :preview="$form->logo_url"
+            />
             </div>
 
             <div class="flex flex-col items-center gap-8">

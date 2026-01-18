@@ -23,5 +23,6 @@
     "Teacher": false,
     "TestModule": true,
     "Profile": true,
-    "Journal": true
+    "Journal": true,
+    "Attendance": true
 }

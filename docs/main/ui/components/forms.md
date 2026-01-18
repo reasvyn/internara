@@ -54,15 +54,17 @@ Advanced multi-select and tagging component.
 
 ## `form`
 
-A wrapper for standard HTML forms, integrated with MaryUI features like `wire:submit` and validation.
+A wrapper for standard HTML forms, integrated with MaryUI features like `wire:submit` and
+validation.
 
 - **Usage:**
+
 ```blade
 <x-ui::form wire:submit="save">
     <x-ui::input label="Name" wire:model="name" />
     <x-slot:actions>
         <x-ui::button label="Save" type="submit" class="btn-primary" />
-    </x-slot:actions>
+    </x-slot>
 </x-ui::form>
 ```
 
@@ -70,39 +72,42 @@ A wrapper for standard HTML forms, integrated with MaryUI features like `wire:su
 
 ## Custom Components
 
-### `file-upload`
+### File Upload
 
-A feature-rich file uploader with drag-and-drop and real-time previews.
-
-- **File Location:** `modules/UI/resources/views/components/file-upload.blade.php`
-
-### Props
-
-| Prop       | Type     | Default | Description                                         |
-| :--------- | :------- | :------ | :-------------------------------------------------- |
-| `label`    | `string` | `null`  | Label displayed above the dropzone.                 |
-| `name`     | `string` | `file`  | The HTML name of the input.                         |
-| `multiple` | `bool`   | `false` | Whether to allow multiple file uploads.             |
-| `accept`   | `string` | `*`     | Mime-types or extensions (e.g., `image/*`, `.pdf`). |
-| `preview`  | `array`  | `[]`    | Initial URLs to display as existing files.          |
-| `hint`     | `string` | `null`  | Helper text shown in the empty state.               |
-
-### Usage
+Standardized file upload component with drag-and-drop, preview, and cropping support.
 
 ```blade
-<x-ui::file-upload
-    label="Profile Picture"
-    wire:model="avatar"
+<x-ui::file
+    label="Logo"
+    wire:model="logo"
     accept="image/*"
-    hint="Max size 2MB"
+    crop-after-change
+    :preview="$logo_url"
 />
 ```
 
-### Technical Notes
+For multiple files:
 
-- **Alpine.js:** Manages local state for previews and drag-over effects.
-- **DataTransfer API:** Syncs selected files back to the hidden input for Livewire compatibility.
-- **Blob URLs:** Uses `URL.createObjectURL` for zero-latency image previews.
+```blade
+<x-ui::file
+    label="Attachments"
+    wire:model="attachments"
+    multiple
+    accept="image/*,application/pdf"
+    :preview="$attachment_urls"
+/>
+```
+
+### Custom Previews (Slots)
+
+The `file` component supports a default slot to render custom previews or placeholders (e.g., for
+profile avatars).
+
+```blade
+<x-ui::file wire:model="avatar" accept="image/*" crop-after-change>
+    <img src="{{ $avatar_url }}" class="h-40 w-40 rounded-full object-cover" />
+</x-ui::file>
+```
 
 ---
 

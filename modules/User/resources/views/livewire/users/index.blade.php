@@ -6,25 +6,19 @@
         progress-indicator
     >
         <x-slot:actions>
-            <x-ui::button
-                label="{{ __('New User') }}"
-                icon="o-plus"
-                class="btn-primary"
-                link="/users/create"
-            />
+            <x-ui::button label="{{ __('New User') }}" link="/users/create" icon="tabler.plus" class="btn-primary" />
         </x-slot>
     </x-ui::header>
 
     <x-ui::card>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div class="w-full md:w-1/3">
-                <x-ui::input
-                    placeholder="{{ __('Search users...') }}"
-                    icon="o-magnifying-glass"
-                    wire:model.live.debounce.300ms="search"
-                    clearable
-                />
-            </div>
+                                    <x-ui::input
+                                        placeholder="{{ __('Search users...') }}"
+                                        wire:model.live.debounce="search"
+                                        icon="tabler.search"
+                                        clearable
+                                    />            </div>
         </div>
 
         <x-ui::table
@@ -73,28 +67,28 @@
             @scope('actions', $user)
                 <div class="flex items-center gap-2">
                     @if (! $user->hasRole('super-admin'))
-                        <x-ui::button
-                            icon="{{ $user->latestStatus()?->name === 'active' ? 'o-lock-closed' : 'o-lock-open' }}"
-                            class="btn-ghost btn-sm {{ $user->latestStatus()?->name === 'active' ? 'text-warning' : 'text-success' }}"
-                            wire:click="toggleStatus('{{ $user->id }}')"
-                            tooltip="{{ $user->latestStatus()?->name === 'active' ? __('Deactivate') : __('Activate') }}"
-                        />
+                                <x-ui::button
+                                    icon="{{ $user->latestStatus()?->name === 'active' ? 'tabler.lock' : 'tabler.lock-open' }}"
+                                    wire:click="toggleStatus('{{ $user->id }}')"
+                                    spinner
+                                    class="btn-ghost btn-sm text-warning"
+                                    title="{{ $user->latestStatus()?->name === 'active' ? __('Deactivate') : __('Activate') }}"
+                                />
                     @endif
 
-                    <x-ui::button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
-                        link="/users/{{ $user->id }}/edit"
-                        tooltip="{{ __('Edit') }}"
-                    />
+                                <x-ui::button
+                                    icon="tabler.edit"
+                                    link="/users/{{ $user->id }}/edit"
+                                    class="btn-ghost btn-sm text-info"
+                                />
                     @if (! $user->hasRole('super-admin'))
-                        <x-ui::button
-                            icon="o-trash"
-                            class="btn-ghost btn-sm text-error"
-                            wire:click="delete('{{ $user->id }}')"
-                            wire:confirm="{{ __('Are you sure you want to delete this user?') }}"
-                            tooltip="{{ __('Delete') }}"
-                        />
+                                <x-ui::button
+                                    icon="tabler.trash"
+                                    wire:click="delete('{{ $user->id }}')"
+                                    wire:confirm="{{ __('Are you sure you want to delete this user?') }}"
+                                    spinner
+                                    class="btn-ghost btn-sm text-error"
+                                />
                     @endif
                 </div>
             @endscope

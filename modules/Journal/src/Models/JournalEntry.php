@@ -48,7 +48,6 @@ class JournalEntry extends Model implements HasMedia
         'basic_competence',
         'character_values',
         'reflection',
-        'mood',
     ];
 
     /**
@@ -65,7 +64,10 @@ class JournalEntry extends Model implements HasMedia
      */
     public function registration(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Internship\Models\InternshipRegistration::class, 'registration_id');
+        return $this->belongsTo(
+            \Modules\Internship\Models\InternshipRegistration::class,
+            'registration_id',
+        );
     }
 
     /**
@@ -92,7 +94,6 @@ class JournalEntry extends Model implements HasMedia
      */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('attachments')
-            ->useDisk('private');
+        $this->addMediaCollection('attachments')->useDisk('private');
     }
 }

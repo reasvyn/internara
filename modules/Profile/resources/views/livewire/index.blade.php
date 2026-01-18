@@ -27,11 +27,11 @@
 
                 <div class="mt-6 text-left space-y-2 text-sm opacity-70">
                     <div class="flex items-center gap-2">
-                        <x-ui::icon name="o-envelope" />
+                        <x-ui::icon name="tabler.mail" />
                         {{ $email }}
                     </div>
                     <div class="flex items-center gap-2">
-                        <x-ui::icon name="o-at-symbol" />
+                        <x-ui::icon name="tabler.at" />
                         {{ $username }}
                     </div>
                 </div>
@@ -40,7 +40,7 @@
 
         <div class="lg:col-span-2">
             <x-ui::tabs wire:model="activeTab" class="bg-base-100 rounded-lg shadow">
-                <x-ui::tab name="info-tab" label="{{ __('Basic Info') }}" icon="o-user">
+                <x-ui::tab name="info-tab" label="{{ __('Basic Info') }}" icon="tabler.user">
                     <x-ui::form wire:submit="saveInfo">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <x-ui::input
@@ -77,7 +77,7 @@
                             <x-ui::button
                                 label="{{ __('Update Info') }}"
                                 type="submit"
-                                icon="o-check"
+                                icon="tabler.check"
                                 class="btn-primary"
                                 spinner="saveInfo"
                             />
@@ -89,7 +89,7 @@
                     <x-ui::tab
                         name="special-tab"
                         label="{{ __('Special Fields') }}"
-                        icon="o-academic-cap"
+                        icon="tabler.school"
                     >
                         <x-ui::form wire:submit="saveSpecialFields">
                             @if (auth()->user()->hasRole('teacher'))
@@ -114,7 +114,7 @@
                                 <x-ui::button
                                     label="{{ __('Save Fields') }}"
                                     type="submit"
-                                    icon="o-check"
+                                    icon="tabler.check"
                                     class="btn-primary"
                                     spinner="saveSpecialFields"
                                 />
@@ -123,7 +123,7 @@
                     </x-ui::tab>
                 @endif
 
-                <x-ui::tab name="security-tab" label="{{ __('Security') }}" icon="o-key">
+                <x-ui::tab name="security-tab" label="{{ __('Security') }}" icon="tabler.key">
                     <x-ui::form wire:submit="savePassword">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <x-ui::input
@@ -144,7 +144,7 @@
                             <x-ui::button
                                 label="{{ __('Update Password') }}"
                                 type="submit"
-                                icon="o-lock-closed"
+                                icon="tabler.lock"
                                 class="btn-error"
                                 spinner="savePassword"
                             />
