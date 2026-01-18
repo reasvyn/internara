@@ -52,7 +52,6 @@ Documentation is code. Update the following artifacts iteratively:
 - **Analytical Version Note:** Update `docs/versions/{current}.md` with technical rationales and
   deep-dives (No checklists).
 - **Application Info:** Update `app_info.json` at root with latest version and series code.
-- **Release Notes:** Update `RELEASE_NOTES.md` at root with high-level highlights.
 - **Changelog:** Add entries to `CHANGELOG.md` under the unreleased version.
 - **Technical Guides:** Synchronize module-specific docs in `docs/main/modules/` and architectural
   guides.

@@ -81,7 +81,7 @@ and development documentation, always refer to the project’s `/docs` directory
 
 - **Release Management** For all versioning, changelog updates, and release protocols, strict
   adherence to the **[Release Guidelines](docs/main/release-guidelines.md)** is mandatory. This
-  includes maintaining the `RELEASE_NOTES.md` and `app_info.json` artifacts at the root.
+  includes maintaining the `app_info.json` artifact at the root.
 
 - **Proactive Renaming & Restructuring** You are authorized to propose renaming files, folders,
   classes, methods, interfaces, traits, attributes, parameters, keys, or even entire modules if the
@@ -96,14 +96,17 @@ and development documentation, always refer to the project’s `/docs` directory
       these changes.
 
 - **Cross-check Project Documentation** Always cross-reference and adhere to existing project
-  documentation (especially within the `/docs` directory). For comprehensive navigation, prioritize:
+  documentation. For comprehensive navigation, prioritize:
     - [docs/table-of-contents.md](docs/table-of-contents.md)
     - [docs/main/architecture-guide.md](docs/main/architecture-guide.md)
     - [docs/main/development-workflow.md](docs/main/development-workflow.md)
+    - [docs/main/release-guidelines.md](docs/main/release-guidelines.md)
     - [docs/main/development-conventions.md](docs/main/development-conventions.md)
     - [docs/main/software-lifecycle.md](docs/main/software-lifecycle.md)
     - [docs/main/main-documentation-overview.md](docs/main/main-documentation-overview.md)
     - [docs/versions/versions-overview.md](docs/versions/versions-overview.md)
+    - **Module Guides:** Located in `modules/{ModuleName}/README.md` (Refer to
+      [docs/main/modules/table-of-contents.md](docs/main/modules/table-of-contents.md) for index).
 
 ## Pinned Commands
 

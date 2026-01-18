@@ -52,14 +52,16 @@ descriptive analysis** in the version notes.
 
 The following documents must be synchronized iteratively to maintain the "Single Source of Truth":
 
-1.  **`docs/versions/vX.Y.Z-stage.md`**: Deep analytical narrative of the version's evolution.
-2.  **`app_info.json`**: Static application metadata (name, version, series_code, author).
-3.  **`RELEASE_NOTES.md`**: Root-level highlights and links to deep analytical narratives.
+1.  **`docs/versions/vX.Y.Z-stage.md`**: Deep analytical narrative of the version's evolution
+    (Developer-focused).
+2.  **`docs/versions/releases/vX.Y.Z-stage.md`**: **Public Release Notes** written in plain,
+    non-technical language (User-focused).
+3.  **`app_info.json`**: Static application metadata (name, version, series_code, author).
 4.  **`README.md`**: Update version indicators and project status.
-5.  **`CHANGELOG.md`**: User-facing summary of technical additions and fixes.
-6.  **`docs/versions/versions-overview.md`**: Historical context update.
-7.  **`docs/main/modules/{module-name}.md`**: Comprehensive technical guides for modules.
-8.  **`docs/main/architecture-guide.md` & `development-conventions.md`**: Updated to reflect shifts
+6.  **`CHANGELOG.md`**: User-facing summary of technical additions and fixes.
+7.  **`docs/versions/versions-overview.md`**: Historical context update.
+8.  **`docs/main/modules/{module-name}.md`**: Comprehensive technical guides for modules (READMEs).
+9.  **`docs/main/architecture-guide.md` & `development-conventions.md`**: Updated to reflect shifts
     in patterns.
 
 ---
@@ -71,31 +73,56 @@ The release process is the final step of the **[Development Workflow](developmen
 1.  **Final Sync Cycle:** Perform one last QA and Artifact Sync cycle.
 2.  **Commit All:** Stage and commit all changes (including documentation).
 3.  **Tagging:** Create a git tag using SemVer.
-4.  **GitHub Protocol:** Push tags and create a formal GitHub Release using the analytical narrative
-    as the description basis.
+4.  **Push Tags:** Push the new tag to the remote repository: `git push origin [tag-name]`.
+5.  **GitHub Release (Approval Required):** Formally publish the version on GitHub. **This step
+    MUST only be performed after obtaining explicit user approval.**
+    - **Note:** Use the **Public Release Note** as the body for the GitHub Release to ensure
+      readability for all users.
+    - **Command Example:**
+      ```bash
+      gh release create v0.5.0-alpha --title "Release v0.5.0-alpha: Operational Phase" --notes-file docs/versions/releases/v0.5.0-alpha.md --prerelease
+      ```
 
 ---
 
-## 4. Post-Release Checklist
+## 4. Standard Release Note Templates
 
-- [ ] **Update Current Version:** Update the status in `README.md` and
-      `docs/versions/versions-overview.md`.
-- [ ] **New Iteration:** Create a new "In Progress" section in `CHANGELOG.md` for the next version.
-- [ ] **Cleanup:** Remove any temporary branches used for the release features.
+### 4.1. Technical Narrative (Internal/Dev)
+*See [Versions Overview](../versions/versions-overview.md) for the deep analytical template.*
+
+### 4.2. Public Release Note (External/Non-Dev)
+This document MUST be written in plain language. Avoid jargon like "polymorphism", "middleware", or
+"interfaces". Focus on the "What" and "How it helps".
+
+```markdown
+# What's New in Internara vX.Y.Z (Codename)
+
+## 🌟 Overview
+A short, inspiring summary of what this update brings to the user's experience.
+
+## ✨ Key Highlights
+- **Feature Name:** Describe the feature and why it makes the user's life easier.
+- **Improved Experience:** Describe UI changes or speed improvements.
+
+## 🛠 Stability & Fixes
+- Fixed an issue where [Problem] occurred when [Action].
+- Improved security to better protect your [Data].
+
+## 📚 Learn More
+- [Read Technical Deep-Dive ->](../../vX.Y.Z-alpha.md)
+```
 
 ---
 
-## 5. Standard Release Message Template
+## 5. Standard Release Message Template (Changelog)
 
-Use the following template for `CHANGELOG.md` entries and GitHub Release descriptions.
+Use the following template for `CHANGELOG.md` entries.
 
 ```markdown
 ## [vX.Y.Z-stage] - YYYY-MM-DD (SERIES-CODE)
 
 ### 🚀 Overview
-
-Brief, one-sentence summary of the release's primary goal (e.g., "Introduces the School and
-Department management modules.").
+Brief, one-sentence summary of the release's primary goal.
 ```
 
 ### Series Codes Reference
