@@ -7,6 +7,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### 🚀 Overview
+Focuses on a streamlined manual assessment system and formal finalization of the internship period.
+
+---
+
 ## [v0.5.0-alpha] - 2026-01-18 (ARC01-OPER-01)
 
 ### 🚀 Overview

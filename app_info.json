@@ -1,8 +1,8 @@
 {
     "name": "Internara",
-    "version": "0.5.0-alpha",
-    "series_code": "ARC01-OPER-01",
-    "status": "Released",
+    "version": "0.6.0-alpha",
+    "series_code": "ARC01-FEAT-01",
+    "status": "In Progress",
     "author": {
         "name": "Reas Vyn",
         "github": "reasnov",
