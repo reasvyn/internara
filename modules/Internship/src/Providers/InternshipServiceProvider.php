@@ -62,6 +62,7 @@ class InternshipServiceProvider extends ServiceProvider
             \Modules\Internship\Services\Contracts\InternshipPlacementService::class => \Modules\Internship\Services\InternshipPlacementService::class,
             \Modules\Internship\Services\Contracts\InternshipRegistrationService::class => \Modules\Internship\Services\InternshipRegistrationService::class,
             \Modules\Internship\Services\Contracts\SupervisorService::class => \Modules\Internship\Services\SupervisorService::class,
+            \Modules\Internship\Services\Contracts\PlacementService::class => \Modules\Internship\Services\PlacementService::class,
         ];
     }
 }

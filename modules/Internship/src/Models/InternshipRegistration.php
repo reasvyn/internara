@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Internship\Database\Factories\InternshipRegistrationFactory;
+use Modules\Internship\Models\Concerns\HasRequirements;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\User\Models\Concerns\HasUserRelation;
@@ -15,6 +16,7 @@ use Modules\User\Models\Concerns\HasUserRelation;
 class InternshipRegistration extends Model
 {
     use HasFactory;
+    use HasRequirements;
     use HasStatus;
     use HasUserRelation; // For student relation
     use HasUuid;
@@ -44,6 +46,7 @@ class InternshipRegistration extends Model
         'student_id',
         'teacher_id',
         'mentor_id',
+        'academic_year',
     ];
 
     /**

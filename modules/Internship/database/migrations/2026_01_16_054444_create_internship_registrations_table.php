@@ -18,8 +18,9 @@ return new class extends Migration
             $table->foreignUuid('internship_id')->constrained('internships')->cascadeOnDelete();
             $table
                 ->foreignUuid('placement_id')
+                ->nullable()
                 ->constrained('internship_placements')
-                ->cascadeOnDelete();
+                ->nullOnDelete();
             $table->uuid('student_id')->index();
             $table->timestamps();
         });
