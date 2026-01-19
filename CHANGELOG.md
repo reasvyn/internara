@@ -15,7 +15,7 @@ Initial work on Administrative Automation.
 
 ---
 
-## [v0.7.0-alpha] - 2026-01-19 (ARC01-FEAT-02)
+## [v0.7.0-alpha] - 2026-01-19 (ARC01-ORCH-01)
 
 ### 🚀 Overview
 
