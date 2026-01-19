@@ -155,7 +155,7 @@ class JournalIndex extends Component
     public function render(): View
     {
         return view('journal::livewire.journal-index')->layout(
-            'dashboard::components.layouts.dashboard',
+            'ui::components.layouts.dashboard',
             [
                 'title' => __('Jurnal Harian'),
             ],

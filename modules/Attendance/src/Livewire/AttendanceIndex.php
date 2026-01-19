@@ -80,7 +80,7 @@ class AttendanceIndex extends Component
     public function render(): View
     {
         return view('attendance::livewire.attendance-index')->layout(
-            'dashboard::components.layouts.dashboard',
+            'ui::components.layouts.dashboard',
             [
                 'title' => __('Log Presensi'),
             ],

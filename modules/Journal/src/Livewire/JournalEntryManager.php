@@ -93,7 +93,7 @@ class JournalEntryManager extends Component
     public function render(): View
     {
         return view('journal::livewire.journal-entry-manager')->layout(
-            'dashboard::components.layouts.dashboard',
+            'ui::components.layouts.dashboard',
             [
                 'title' => $this->form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru'),
             ],
