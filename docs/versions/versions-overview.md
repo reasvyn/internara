@@ -22,16 +22,15 @@ standard lifecycle documentation structure.
 
 ### Newest Releases
 
-- **v0.6.x-alpha** ([Documentation v0.6.x-alpha](v0.6.x-alpha.md)): **Assessment & Finalization
+- **v0.6.0-alpha** ([Documentation v0.6.x-alpha](v0.6.x-alpha.md)): **Assessment & Finalization
   Phase**.
 
-    Implementation of Multi-Perspective Assessment Engine and PDF Certificate generation.
+    Finalization of the core internship cycle with role-specific workspaces, unified assessment
+    logic, and automated PDF reporting with QR verification.
 
-- **v0.5.0-alpha** ([Documentation v0.5.x-alpha](v0.5.x-alpha.md)): \*\*Operational & Activity
-  Tracking
-
-    Phase\*\*. Implementation of Daily Journal (Logbook), Attendance System, and Supervisor
-    Matching.
+- **v0.5.0-alpha** ([Documentation v0.5.x-alpha](v0.5.x-alpha.md)): **Operational & Activity
+  Tracking Phase**. Implementation of Daily Journal (Logbook), Attendance System, and Supervisor
+  Matching.
 
 - **v0.4.0-alpha** ([Documentation v0.4.x-alpha](v0.4.x-alpha.md)): **Institutional & Academic
   Phase**. Implementation of School, Department management, and foundational Internship registration

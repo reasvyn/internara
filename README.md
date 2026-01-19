@@ -1,6 +1,6 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.6.x--alpha-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.6.0--alpha-blue?style=flat-square)
 ![Status](https://img.shields.io/badge/status-active--development-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
@@ -108,10 +108,10 @@ This project is built upon the Laravel ecosystem and several key packages:
 
 ### Version History
 
-| Version        | Series Code     | Status        | Key Focus                    |
-| :------------- | :-------------- | :------------ | :--------------------------- |
-| `v0.6.x-alpha` | `ARC01-FEAT-01` | `In Progress` | Assessment & Finalization    |
-| `v0.5.0-alpha` | `ARC01-OPER-01` | `Released`    | Operational & Activity Track |
+| Version        | Series Code     | Status     | Key Focus                    |
+| :------------- | :-------------- | :--------- | :--------------------------- |
+| `v0.6.0-alpha` | `ARC01-FEAT-01` | `Released` | Assessment & Finalization    |
+| `v0.5.0-alpha` | `ARC01-OPER-01` | `Released` | Operational & Activity Track |
 | `v0.4.0-alpha` | `ARC01-INST-01` | `Released`    | Institutional & Academic     |
 | `v0.3.0-alpha` | `ARC01-USER-01` | `Released`    | User Management & Profile    |
 | `v0.2.0-alpha` | `ARC01-CORE-01` | `Released`    | RBAC & Shared Services       |
