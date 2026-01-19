@@ -24,7 +24,7 @@
             @endscope
             
             @scope('actions', $registration)
-                <x-ui::button label="{{ __('Detail') }}" icon="tabler.eye" class="btn-sm btn-ghost" link="#" />
+                <x-ui::button label="{{ __('Assess') }}" icon="tabler.clipboard-check" class="btn-sm btn-ghost" link="{{ route('teacher.assess', $registration->id) }}" />
             @endscope
         </x-ui::table>
     </x-ui::card>

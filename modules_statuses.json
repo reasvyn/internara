@@ -16,7 +16,7 @@
     "Internship": true,
     "Logbook": true,
     "Assignment": false,
-    "Assessment": false,
+    "Assessment": true,
     "Media": true,
     "Student": true,
     "Teacher": true,

@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/assessment",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Assessment\\": "src/",
+            "Modules\\Assessment\\Database\\Factories\\": "database/factories/",
+            "Modules\\Assessment\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Assessment\\Tests\\": "tests/"
+        }
+    }
+}

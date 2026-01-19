@@ -17,6 +17,10 @@ Focuses on a streamlined manual assessment system and formal finalization of the
     - Decomposed the monolithic `Dashboard` into four specialized modules: `Admin`, `Student`, `Teacher`, and `Mentor`.
     - Implemented role-based routing (`/admin`, `/student`, `/teacher`, `/mentor`).
     - Established clear workspace boundaries while keeping User identity centralized.
+- **Assessment Module:**
+    - Unified scoring system for Industry Mentors and Academic Teachers.
+    - Automated score averaging and feedback collection.
+    - Integrated assessment triggers directly into actor dashboards.
 
 ### 🛠 Changed
 - **Module Deprecation:** Removed the `Dashboard` module entirely.
@@ -25,6 +29,7 @@ Focuses on a streamlined manual assessment system and formal finalization of the
 ### 🐛 Fixed
 - **Layout References:** Fixed 500 errors in `Attendance` and `Journal` modules by updating references from the deleted `Dashboard` layout to `UI` layout.
 - **Icon Naming:** Resolved `SvgNotFound` exceptions by enforcing `tabler.name` convention across all new modules and components.
+- **Model Stability:** Resolved environment-specific Signal 4 (Illegal Instruction) crashes by migrating `decimal:2` casts to `float` in the `Assessment` model.
 
 ---
 
