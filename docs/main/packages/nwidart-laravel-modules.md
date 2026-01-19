@@ -1,72 +1,64 @@
-# Laravel Modules Integration
+# Laravel Modules: The Modular Engine
 
-This document details the integration and customization of the `nwidart/laravel-modules` package,
-which serves as the foundation of Internara's **Modular Monolith** architecture. It is responsible
-for managing the lifecycle, structure, and auto-discovery of all modules within the application. For
-a comprehensive overview of the modular architecture, refer to the
-**[Architecture Guide](../architecture-guide.md)**.
+Internara utilizes the `nwidart/laravel-modules` package as the foundational engine for our
+**Modular Monolith** architecture. It provides the directory structure, autoloader logic, and CLI
+tools necessary to manage isolated business domains effectively.
 
 ---
 
-## Custom Configuration for `nwidart/laravel-modules`
+## 1. Structural Customizations
 
-We have modified the default behavior of this package in `config/modules.php` to align with
-Internara's architectural standards and conventions.
+We have modified the default behavior of this package to align with our engineering standards.
 
-### 1. Source Directory (`src/`)
+### 1.1 Source Directory (`src/`)
 
-Our domain logic resides in `src/` instead of the default `app/` folder.
+Unlike the default `app/` folder, our logic resides in a clean `src/` directory.
 
-- **Config:** `'paths.app_folder' => 'src/'`
-- **Example:** `modules/User/src/Models/User.php`
+- **Config**: `'paths.app_folder' => 'src/'`
+- **Impact**: All models, services, and components are located at `modules/{Module}/src/`.
 
-### 2. Namespace Convention
+### 1.2 Namespace Convention (Omit `src`)
 
-The `src` segment is intentionally omitted from the module namespaces, as detailed in the
-**[Development Conventions Guide](../development-conventions.md)**.
+We have configured the autoloader to ignore the `src` segment in the namespace.
 
-- **Convention:** `Modules\User\Models\User`
-- **Path:** `modules/User/src/Models/User.php`
-
-### 3. Custom Generator
-
-The module generator is configured to pre-create Internara's preferred layers:
-
-- `Contracts/` (Interfaces)
-- `Services/` (Business Logic)
-- `Models/` (Persistence) For advanced module generation, refer to the
-  **[Custom Module Generator](../advanced/custom-module-generator.md)**.
+- **Path**: `modules/User/src/Models/User.php`
+- **Namespace**: `Modules\User\Models\User` (✅ Correct)
 
 ---
 
-## Core Commands
+## 2. Modular Scaffolding
 
-Always use the module-specific Artisan commands provided by this package to ensure correct namespace
-and path generation. For a complete list of all Artisan commands, refer to the
-**[Artisan Commands Reference Guide](../artisan-commands-reference.md)**.
+Our custom generators pre-configure every module with Internara's standard layers:
+
+- `Contracts/`: For interface definitions.
+- `Services/`: For business logic orchestration.
+- `Models/`: For persistence logic.
+- `Livewire/`: For UI components.
+
+### Essential Commands
+
+Always use the `module:` prefix to ensure paths and namespaces are generated correctly.
 
 ```bash
-# Generate a new module
-php artisan module:make <ModuleName>
+# Create a new module
+php artisan module:make MyModule
 
-# Generate resources within a module
-php artisan module:make-model <ModelName> <ModuleName>
-php artisan module:make-service <ServiceName> <ModuleName>
-php artisan module:make-test <TestName> <ModuleName>
+# Add resources to a module
+php artisan module:make-service MyService MyModule
+php artisan module:make-model MyModel MyModule --migration
 ```
 
 ---
 
-## Inter-Module Communication
+## 3. Strict Isolation Enforcement
 
-Directly referencing models or concrete classes from other modules is **strictly forbidden**. You
-must use the Service layer and type-hint the interfaces defined in the module's `Contracts/`
-directory. For a comprehensive explanation of inter-module communication principles, refer to the
-**[Architecture Guide](../architecture-guide.md)**.
+The package is configured to prevent accidental leakage between modules.
+
+- **Zero-Foreign-Key**: No physical database constraints are allowed across modules.
+- **Service Dependency**: Cross-module calls MUST be done via **Contracts** injected into Service
+  classes.
 
 ---
 
-**Navigation**
-
-[← Previous: Laravel Livewire Integration](laravel-livewire.md) |
-[Next: Laravel Modules Livewire Integration →](mhmiton-laravel-modules-livewire.md)
+_Refer to the **[Architecture Guide](../architecture-guide.md)** for a deep-dive into the
+communication rules enforced by this modular engine._

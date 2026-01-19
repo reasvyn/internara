@@ -31,7 +31,3 @@ specific business model and architecture.
 - **Fail-safe Setting Helper:** Provides a global `setting()` function with a direct-read fallback
   from `modules_statuses.json` to prevent fatal errors during early bootstrapping or when the
   database is unavailable.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

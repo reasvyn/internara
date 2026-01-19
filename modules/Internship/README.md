@@ -41,7 +41,3 @@ internship lifecycle, from placement availability to student registration and tr
 
 - Tables in this module reference `School`, `Department`, and `User` modules using manual indexes on
   UUID/ID columns, adhering to the **Database Isolation Principle**.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

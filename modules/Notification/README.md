@@ -13,7 +13,3 @@ various channels (Database, Mail, etc.).
 
 - **Modular Notifications**: Pre-defined notification classes for common lifecycle events (e.g.,
   account activation, internship approval).
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

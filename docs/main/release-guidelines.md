@@ -1,144 +1,83 @@
-# Release Guidelines & Protocols
+# Release Guidelines: Navigating the Product Lifecycle
 
-This document establishes the strict protocols for versioning, preparing, and deploying releases for
-the Internara project. Adherence to these guidelines ensures stability, traceability, and accurate
-documentation.
-
----
-
-## 1. Versioning Strategy
-
-Internara follows **Semantic Versioning (SemVer 2.0.0)** with specific stage suffixes.
-
-### Format: `vX.Y.Z-stage`
-
-- **Major (X):** Breaking changes to the core architecture or API.
-- **Minor (Y):** New features (backward compatible) or significant module additions.
-- **Patch (Z):** Bug fixes, hotfixes, or minor refinements.
-- **Stage:**
-    - `alpha`: In-development, feature incomplete, potential breaking changes.
-    - `beta`: Feature complete, testing phase, stable APIs.
-    - `rc`: Release Candidate.
-    - _(none)_: Production stable.
-
-**Example:** `v0.4.0-alpha`
+This document defines the protocols for versioning, changelog maintenance, and the final release of
+software within the Internara project. These standards ensure that our development history is
+descriptive, analytical, and professional.
 
 ---
 
-## 2. The "Definition of Done" & Pre-Release Standard
+## 1. Versioning Standard
 
-Before tagging a release, the system must undergo an iterative cycle of verification and
-documentation. Every technical change **requires** a subsequent artifact synchronization.
+We strictly adhere to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
-### A. Continuous Quality & Security Cycle
-
-- **Repeated Testing:** All Unit and Feature tests must pass (`php artisan test`). This must be
-  rerun after any post-development refinement.
-- **Iterative Linting:** Code must be formatted using Pint/Prettier after every change.
-- **Deep Clean:** No `dd()`, `dump()`, or dead code.
-- **Security Posture:** Explicit verification of IDOR protection and PII handling.
-
-### B. Analytical Documentation (Mandatory)
-
-The Internara project rejects superficial checklists. Releases are documented through **deep
-descriptive analysis** in the version notes.
-
-- **Analytical Narrative:** Version documents (`docs/versions/vX.X.X.md`) must describe the
-  _technical rationale_ and _architectural impact_ of every keystone.
-- **Continuous Synchronization:** All artifacts listed below must be updated immediately as changes
-  occur, not just at the end of the release cycle.
-
-### 2.1 Mandatory Documentation Artifacts (The Artifact Sync)
-
-The following documents must be synchronized iteratively to maintain the "Single Source of Truth":
-
-1.  **`docs/versions/vX.Y.Z-stage.md`**: Deep analytical narrative of the version's evolution
-    (Developer-focused).
-2.  **`docs/versions/releases/vX.Y.Z-stage.md`**: **Public Release Notes** written in plain,
-    non-technical language (User-focused).
-3.  **`app_info.json`**: Static application metadata (name, version, series_code, author).
-4.  **`README.md`**: Update version indicators and project status.
-5.  **`CHANGELOG.md`**: User-facing summary of technical additions and fixes.
-6.  **`docs/versions/versions-overview.md`**: Historical context update.
-7.  **`docs/main/modules/{module-name}.md`**: Comprehensive technical guides for modules (READMEs).
-8.  **`docs/main/architecture-guide.md` & `development-conventions.md`**: Updated to reflect shifts
-    in patterns.
+- **MAJOR**: Incompatible API changes or significant architectural shifts.
+- **MINOR**: New functionality in a backward-compatible manner.
+- **PATCH**: Backward-compatible bug fixes or security patches.
+- **Pre-releases**: During Alpha/Beta, we append a suffix (e.g., `v0.6.0-alpha`).
 
 ---
 
-## 3. The Release Workflow (Unified Alur Kerja)
+## 2. Artifact: `app_info.json`
 
-The release process is the final step of the **[Development Workflow](development-workflow.md)**.
+The `app_info.json` file at the project root is the **Machine-Readable Identity** of the
+application. It must be updated manually when a version milestone is reached.
 
-1.  **Final Sync Cycle:** Perform one last QA and Artifact Sync cycle.
-2.  **Commit All:** Stage and commit all changes (including documentation).
-3.  **Tagging:** Create a git tag using SemVer.
-4.  **Push Tags:** Push the new tag to the remote repository: `git push origin [tag-name]`.
-5.  **GitHub Release (Approval Required):** Formally publish the version on GitHub. **This step MUST
-    only be performed after obtaining explicit user approval.**
-    - **Note:** Use the **Public Release Note** as the body for the GitHub Release to ensure
-      readability for all users.
-    - **Command Example:**
-        ```bash
-        gh release create v0.5.0-alpha --title "Release v0.5.0-alpha: Operational Phase" --notes-file docs/versions/releases/v0.5.0-alpha.md --prerelease
-        ```
+**Required Fields:**
+
+- `version`: The SemVer string.
+- `series_code`: The unique identifier for the current development series (e.g., `ARC01-FEAT-01`).
+- `status`: The release state (`Stable`, `Beta`, `Released`).
 
 ---
 
-## 4. Standard Release Note Templates
+## 3. Changelog Management (`CHANGELOG.md`)
 
-### 4.1. Technical Narrative (Internal/Dev)
+Our changelog is more than a list of commits; it is a human-readable history of progress.
 
-_See [Versions Overview](../versions/versions-overview.md) for the deep analytical template._
+### 3.1 Structure
 
-### 4.2. Public Release Note (External/Non-Dev)
+Follow the **[Keep a Changelog](https://keepachangelog.com/)** standard:
 
-This document MUST be written in plain language. Avoid jargon like "polymorphism", "middleware", or
-"interfaces". Focus on the "What" and "How it helps".
+- `[Unreleased]`: For changes not yet part of a tagged version.
+- `Added`: For new features.
+- `Changed`: For changes in existing functionality.
+- `Deprecated`: For soon-to-be-removed features.
+- `Removed`: For now-removed features.
+- `Fixed`: For bug fixes.
+- `Security`: In case of vulnerabilities.
 
-```markdown
-# What's New in Internara vX.Y.Z (Codename)
+### 3.2 Tone
 
-## 🌟 Overview
-
-A short, inspiring summary of what this update brings to the user's experience.
-
-## ✨ Key Highlights
-
-- **Feature Name:** Describe the feature and why it makes the user's life easier.
-- **Improved Experience:** Describe UI changes or speed improvements.
-
-## 🛠 Stability & Fixes
-
-- Fixed an issue where [Problem] occurred when [Action].
-- Improved security to better protect your [Data].
-
-## 📚 Learn More
-
-- [Read Technical Deep-Dive ->](../../vX.Y.Z-alpha.md)
-```
+Keep entries technical but accessible. Focus on the **Impact** of the change.
 
 ---
 
-## 5. Standard Release Message Template (Changelog)
+## 4. Deep Analytical Narratives (`docs/versions/`)
 
-Use the following template for `CHANGELOG.md` entries.
+For every major or minor version, we produce a **Deep Analytical Narrative** instead of a simple
+checklist. This document serves as the "Post-Mortem" and "Technical Bible" for that release.
 
-```markdown
-## [vX.Y.Z-stage] - YYYY-MM-DD (SERIES-CODE)
+**Each narrative must include:**
 
-### 🚀 Overview
-
-Brief, one-sentence summary of the release's primary goal.
-```
-
-### Series Codes Reference
-
-- **INIT:** Project Initialization
+1.  **Version Details**: Metadata and status.
+2.  **Goals & Philosophy**: The strategic "Why" behind the release.
+3.  **Production Keystones**: Detailed implementation deep-dives for major features.
+4.  **Verification Analysis**: Results of tests, security audits, and linting.
+5.  **Roadmap Strategy**: High-level direction for the next version.
 
 ---
 
-**Navigation**
+## 5. The Release Checklist
 
-[← Previous: Artisan Commands Reference](artisan-commands-reference.md) |
-[Next: Package Integration Overview →](packages/packages-overview.md)
+Before marking a version as `Released`:
+
+1.  **Iterative Sync**: Ensure all code, tests, and documentation are synchronized.
+2.  **App Info**: Update `app_info.json`.
+3.  **Changelog**: Move entries from `[Unreleased]` to the version header.
+4.  **Verify**: Run `php artisan app:info` to confirm identity.
+5.  **Tag**: Create a Git tag matching the version string.
+
+---
+
+_Consistent release management allows our team and users to understand the evolution of Internara
+with minimal friction. Documentation is the bridge between code and product._

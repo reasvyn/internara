@@ -1,31 +1,29 @@
-# Package Integration - Table of Contents
+# Package Integration - Documentation Index
 
-This index lists documentation for specific third-party packages, grouped by their role in the
-system.
-
-## Overview
-
-- **[Packages Overview](packages-overview.md)**: Implementation philosophy for external
-  dependencies.
-
-## Foundation
-
-- **[Laravel Framework](laravel-framework.md)**: Core framework setup.
-- **[Laravel Modules](nwidart-laravel-modules.md)**: The modular architecture engine.
-
-## Frontend & UI
-
-- **[Livewire](laravel-livewire.md)**: Reactive UI framework.
-- **[Modules Livewire Extension](mhmiton-laravel-modules-livewire.md)**: Integration for modular
-  components (`module::component`).
-
-## System Features
-
-- **[Laravel Permission](spatie-laravel-permission.md)**: RBAC implementation.
-- **[Activity Log](spatie-laravel-activitylog.md)**: Audit trails and logging.
-- **[Media Library](spatie-laravel-medialibrary.md)**: File and media management.
-- **[Model Status](spatie-laravel-model-status.md)**: State management for models.
+Internara utilizes several best-in-class Laravel packages. This section explains how we have wrapped
+and configured these dependencies to work within our Modular Monolith.
 
 ---
 
-[← Back to Main TOC](../table-of-contents.md)
+## 1. Foundation & Structure
+
+- **[Packages Overview](packages-overview.md)**: A map of our core dependencies.
+- **[Laravel Framework](laravel-framework.md)**: Standards for using core Laravel features.
+- **[Laravel Modules](nwidart-laravel-modules.md)**: The engine driving our modularity.
+
+## 2. Reactivity & State
+
+- **[Laravel Livewire](laravel-livewire.md)**: Patterns for our reactive frontend.
+- **[Modules Livewire](mhmiton-laravel-modules-livewire.md)**: The cross-module discovery bridge.
+- **[Model Status](spatie-laravel-model-status.md)**: Standardized entity lifecycles.
+
+## 3. Security & Assets
+
+- **[Laravel Permission](spatie-laravel-permission.md)**: Technical details of our RBAC system.
+- **[Activity Log](spatie-laravel-activitylog.md)**: Implementing modular audit trails.
+- **[Media Library](spatie-laravel-medialibrary.md)**: Robust file and attachment handling.
+
+---
+
+_Modules should ideally rely on the abstractions provided in these guides rather than interacting
+with package APIs directly._

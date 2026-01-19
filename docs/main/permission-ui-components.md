@@ -1,46 +1,60 @@
-# Permission UI Components
+# Permission UI Components: Shared Elements
 
-The `Permission` module provides shared UI components to standardize how authorization data (roles
-and permissions) is presented across the application.
+The `Permission` module provides several pre-built UI components to simplify the management of
+access control within the Internara dashboard. These components are designed to be reused across
+different administrative interfaces.
 
-## Available Components
+---
 
-### 1. `RoleBadge` (Livewire)
+## 1. Role & Permission Selectors
 
-A small, reactive component to display a user's role as a stylized badge.
+Used in user creation or editing forms to assign access levels.
 
-#### Features:
+### 1.1 `x-permission::role-select`
 
-- **Color Coding:** Automatically assigns colors based on role (e.g., Error for `super-admin`,
-  Primary for `admin`).
-- **Size Support:** Supports standard DaisyUI sizes (`xs`, `sm`, `md`, `lg`).
-- **Flexible Input:** Accepts either a `Role` model instance or a string name.
+A multi-select component that lists all available system roles.
 
-#### Usage:
+- **Props**: `wire:model`, `label`, `placeholder`.
+
+### 1.2 `x-permission::permission-list`
+
+A checkbox-style list for selecting individual granular permissions.
+
+- **Usage**: Typically used in advanced role management views.
+
+---
+
+## 2. Conditional Display
+
+While not a standalone "component," we utilize custom Blade directives to hide or show UI elements
+based on access.
+
+### 2.1 The `@can` Directive
+
+The standard way to protect buttons or sections.
 
 ```blade
-{{-- Passing a string --}}
-<livewire:permission::role-badge role="super-admin" size="sm" />
-
-{{-- Passing a Role model --}}
-<livewire:permission::role-badge :role="$user->roles->first()" size="md" />
+@can('user.delete')
+    <x-ui::button label="Delete" icon="tabler.trash" color="error" />
+@endcan
 ```
 
----
+### 2.2 The `x-permission::gate` Component
 
-## Technical Details
-
-- **Namespace:** `Modules\Permission\Livewire\RoleBadge`
-- **Blade View:** `permission::livewire.role-badge`
-- **Styles:** Uses **DaisyUI** `badge` classes.
-
-## Customization
-
-To add color support for new roles, modify the `getRoleColor` method within the `RoleBadge` class.
+A specialized component for wrapping larger sections of the UI that require complex authorization
+checks.
 
 ---
 
-**Navigation**
+## 3. Best Practices for UI Authorization
 
-[← Previous: Policy Patterns](policy-patterns.md) |
-[Next: Development Workflow →](development-workflow.md)
+1.  **Fail Silently**: If a user doesn't have access, hide the element entirely rather than showing
+    a "Disabled" state (unless necessary for UX clarity).
+2.  **Breadcrumbs & Nav**: Ensure that sidebar links are also protected via `@can`.
+3.  **Localize**: Always use translation keys for any error messages or labels related to
+    permissions.
+
+---
+
+_Leveraging these shared components ensures that Internara's administrative interface remains
+consistent and that security logic is not duplicated across views._

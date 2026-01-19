@@ -14,7 +14,3 @@ assigned students.
 
 - **Student Overview:** Lists all students currently under supervision.
 - **Status Tracking:** Visual indicators of student internship status.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

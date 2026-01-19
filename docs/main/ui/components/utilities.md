@@ -1,53 +1,56 @@
-# UI Components: Utilities
+# UI Components: System Utilities
 
-Utility components provide specialized functionality like theme switching and dynamic slot
-rendering.
-
-## `slot-render`
-
-A class-based component used to render dynamic UI content registered by modules.
-
-- **Component Tag:** `<x-ui::slot-render name="slot.name" />`
-- **Blade Directive:** `@slotRender('slot.name')`
+Utility components handle technical UI concerns like theme persistence, dialog modals, and the
+dynamic injection of content from various modules.
 
 ---
 
-## `theme-toggle`
+## 1. `x-ui::slot-render` (Modular Injection)
 
-A button that allows users to toggle between Light and Dark themes.
+This is the core of our "Pluggable UI" system. It renders content that has been registered via the
+`SlotManager`.
 
-- **Usage:** `<x-ui::theme-toggle />`
-- **Technical Note:** Integrated with DaisyUI themes and persists user preference.
+- **Usage**: `<x-ui::slot-render name="navbar.actions" />`
+- **Why?**: It allows the `Notification` module to add a bell icon to the `UI` module's navbar
+  without any hard dependencies.
 
 ---
 
-## `modal`
+## 2. `x-ui::modal` (Focused Interaction)
 
-A dialog component for focused user interaction.
+A high-level wrapper for DaisyUI dialogs.
 
-- **Usage:**
+- **Example**:
 
 ```blade
-<x-ui::modal wire:model="myModal" title="Confirm Action">
-    <p>Are you sure?</p>
+<x-ui::modal wire:model="showModal" title="Confirm Delete" separator>
+    <div>Are you sure? This action is permanent.</div>
     <x-slot:actions>
-        <x-ui::button label="Cancel" wire:click="$set('myModal', false)" />
-        <x-ui::button label="Confirm" class="btn-primary" />
+        <x-ui::button label="Cancel" @click="$wire.showModal = false" />
+        <x-ui::button label="Confirm" primary spinner="delete" />
     </x-slot>
 </x-ui::modal>
 ```
 
 ---
 
-## `user-menu`
+## 3. `x-ui::theme-toggle` (User Preference)
 
-A dropdown component for user-specific actions (Profile, Logout).
+A simple button that toggles between light and dark themes.
 
-- **Usage:** `<x-ui::user-menu />`
-- **Slot Registration:** Typically registered to the `navbar.actions` slot.
+- **Persistence**: Preferences are stored in the browser's local storage and synchronized via
+  Alpine.js.
 
 ---
 
-**Navigation**
+## 4. `x-ui::user-menu` (Account Access)
 
-[← Display](display.md) | [Back to TOC](../table-of-contents.md)
+A dropdown component typically placed in the navbar.
+
+- **Features**: Links to Profile settings and the Logout trigger.
+- **Note**: Handled via the `Auth` and `Profile` modules through the `navbar.actions` slot.
+
+---
+
+_Utilities are the "Glue" of our design system. They enable complex technical patterns while keeping
+the template code clean and semantic._

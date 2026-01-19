@@ -1,160 +1,107 @@
-# EloquentQuery Base Service
+# EloquentQuery: The Standardized Service Layer
 
-The `EloquentQuery` base service is a core architectural component of Internara. it provides a
-standardized, boilerplate-free implementation for services that primarily perform database
-operations on a single Eloquent model.
-
-## Purpose
-
-- **Standardization:** Ensures all domain services have a consistent API for CRUD and querying.
-- **Efficiency:** Reduces repetitive code by providing common logic for pagination, filtering,
-  searching, and caching.
-- **Security:** Enforces mass-assignment protection and safe querying patterns.
-- **Abstraction:** Decouples the UI and Business Logic layers from direct Eloquent builder
-  manipulation.
+To maintain consistency and reduce boilerplate across our modular domain services, Internara
+utilizes the `EloquentQuery` base service. This pattern centralizes standard CRUD operations while
+providing a flexible architecture for complex business orchestration.
 
 ---
 
-## Core Features
+## 1. Core Philosophy
 
-### 1. Automatic Pagination & Filtering
+In a Modular Monolith, services often repeat basic logic (Find, Create, Update). `EloquentQuery`
+abstracts this away, allowing developers to focus on **unique business rules** rather than
+repetitive Eloquent calls.
 
-The `paginate()` and `get()` methods automatically handle common query parameters:
+### Why use this pattern?
 
-- `sort_by`: The column to sort by.
-- `sort_dir`: The direction (`asc` or `desc`).
-- `search`: A string to search across designated columns.
-- Other keys in the `$filters` array are applied as exact matches (`where`).
-
-### 2. Searchable & Sortable Columns
-
-Modules can explicitly define which columns are available for searching and sorting:
-
-```php
-$this->setSearchable(['name', 'email']);
-$this->setSortable(['created_at', 'name']);
-```
-
-### 3. Integrated Caching
-
-The `remember()` method provides a clean way to cache query results:
-
-```php
-return $this->remember('cache-key', now()->addHour(), function ($service) {
-    return $service->all();
-});
-```
-
-### 4. Base Query Extension
-
-You can set a base query (e.g., with global scopes or eager loading) that all subsequent queries
-will build upon:
-
-```php
-$this->setBaseQuery(User::active()->with('profile'));
-```
+- **DRY (Don't Repeat Yourself)**: Common query patterns are inherited.
+- **Predictable APIs**: All domain services share a consistent method signature.
+- **Easy Mocking**: Centralized data access makes unit testing logic easier.
 
 ---
 
-## Technical Reference
+## 2. Standard Implementation
 
-### Interface: `Modules\Shared\Services\Contracts\EloquentQuery`
+Every domain service that manages an Eloquent model should extend this base class.
 
-| Method                                                                  | Description                                                             |
-| :---------------------------------------------------------------------- | :---------------------------------------------------------------------- |
-| `all(array $columns = ['*'])`                                           | Returns all records.                                                    |
-| `paginate(array $filters, int $perPage, array $columns)`                | Returns a paginated result set based on filters.                        |
-| `get(array $filters, array $columns)`                                   | Returns a collection based on filters.                                  |
-| `first(array $filters, array $columns)`                                 | Returns the first record matching filters, or null.                     |
-| `firstOrFail(array $filters, array $columns)`                           | Returns the first record or throws `ModelNotFoundException`.            |
-| `find(mixed $id, array $columns)`                                       | Finds a record by its primary key.                                      |
-| `exists(array $filters)`                                                | Checks if a record exists matching filters.                             |
-| `create(array $data)`                                                   | Creates a new record (respects `$fillable`).                            |
-| `update(mixed $id, array $data)`                                        | Updates a record (respects `$fillable`). Throws exception if not found. |
-| `save(array $attributes, array $values)`                                | `updateOrCreate` implementation.                                        |
-| `delete(mixed $id, bool $force)`                                        | Deletes a record. Supports soft/force delete.                           |
-| `destroy(mixed $ids, bool $force)`                                      | Deletes multiple records.                                               |
-| `factory()`                                                             | Returns a new Model Factory instance.                                   |
-| `remember(string $key, mixed $ttl, Closure $callback, bool $skipCache)` | Caching wrapper.                                                        |
-
----
-
-## Model Factories & Low-Coupling
-
-To maintain strict modular isolation and low-coupling, direct access to `Model::factory()` is
-discouraged when interacting with models from other modules (e.g., in Seeders or Tests).
-
-### The Rule
-
-Always access model factories through their respective **Service Contract**.
-
-- **Incorrect (High-Coupling):** `\Modules\User\Models\User::factory()->create();`
-- **Correct (Low-Coupling):**
-  `app(\Modules\User\Services\Contracts\UserService::class)->factory()->create();`
-
-### Why?
-
-1.  **Abstraction:** The Service layer remains the only authoritative entry point for a module.
-2.  **Flexibility:** If a module decides to change its persistence layer (e.g., swapping Eloquent
-    for another ORM), the factory method can be updated within the Service without breaking external
-    callers.
-3.  **Consistency:** Ensures that even test data generation follows the same architectural
-    boundaries as production code.
-
----
-
-## Implementation Example
-
-### 1. Define the Contract
-
-```php
-namespace Modules\User\Services\Contracts;
-
-use Modules\Shared\Services\Contracts\EloquentQuery;
-
-/**
- * @extends EloquentQuery<\Modules\User\Models\User>
- */
-interface UserService extends EloquentQuery
-{
-    // Custom business methods...
-}
-```
-
-### 2. Implement the Service
+### 2.1 Basic Service Setup
 
 ```php
 namespace Modules\User\Services;
 
 use Modules\Shared\Services\EloquentQuery;
-use Modules\User\Services\Contracts\UserService as Contract;
 use Modules\User\Models\User;
 
-class UserService extends EloquentQuery implements Contract
+class UserService extends EloquentQuery
 {
-    public function __construct()
+    /**
+     * Define the model handled by this service.
+     */
+    protected function model(): string
     {
-        $this->setModel(new User());
-        $this->setSearchable(['name', 'email']);
-        $this->setSortable(['created_at']);
+        return User::class;
     }
 }
 ```
 
 ---
 
-## Best Practices
+## 3. Available Inherited Methods
 
-1.  **Always use the Contract:** Type-hint the interface in your controllers or other services, not
-    the concrete class.
-2.  **Initialize in Constructor:** Set the model and searchable/sortable columns in the
-    `__construct` method.
-3.  **Use `setBaseQuery` for Eager Loading:** If a service almost always needs certain
-    relationships, define them in a base query.
+The following methods are automatically available once you extend `EloquentQuery`.
+
+| Method                            | Description                                       |
+| :-------------------------------- | :------------------------------------------------ |
+| `all(array $columns = ['*'])`     | Returns a collection of all records.              |
+| `paginate(int $perPage = 15)`     | Returns a paginated result set.                   |
+| `create(array $data)`             | Validates and persists a new record.              |
+| `update(string $id, array $data)` | Updates an existing record by its UUID.           |
+| `delete(string $id)`              | Deletes a record by its UUID.                     |
+| `find(string $id)`                | Retrieves a single record or throws an exception. |
+| `query()`                         | Returns a fresh Eloquent query builder instance.  |
 
 ---
 
-**Navigation**
+## 4. Advanced Usage & Customization
 
-[← Previous: Module Inventory](modules/table-of-contents.md) |
-[Next: Shared Model Traits →](shared-traits.md)
+While `EloquentQuery` provides the basics, most services will require custom orchestration.
+
+### 4.1 Extending Standard Logic
+
+You should override methods only when you need to inject cross-module logic or complex events.
+
+```php
+public function create(array $data): Model
+{
+    // 1. Perform custom validation or logic
+    $data['password'] = Hash::make($data['password']);
+
+    // 2. Call parent to handle persistence
+    $user = parent::create($data);
+
+    // 3. Dispatch events or trigger cross-module side effects
+    event(new UserCreated($user));
+
+    return $user;
+}
+```
+
+### 4.2 Building Complex Scopes
+
+Use the `query()` method to keep your service methods expressive.
+
+```php
+public function getActiveStudentsInDepartment(string $departmentId)
+{
+    return $this->query()
+        ->where('department_id', $departmentId)
+        ->where('is_active', true)
+        ->get();
+}
+```
+
+---
+
+_The `EloquentQuery` pattern is our primary tool for keeping the service layer lean and
+maintainable. Always check the `Modules\Shared\Services\EloquentQuery` source for the latest utility
+methods._

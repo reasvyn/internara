@@ -22,7 +22,3 @@ The `Setting` module works in tandem with the `Core` module's `setting()` helper
 **direct-read fallback** that uses `modules_statuses.json`. This ensures that critical system checks
 can be performed even before the Service Provider or Database is fully operational, preventing
 collisions and fatal errors during complex bootstrapping sequences.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

@@ -1,7 +1,7 @@
 # Internara
 
 ![Version](https://img.shields.io/badge/version-v0.6.0--alpha-blue?style=flat-square)
-![Status](https://img.shields.io/badge/status-active--development-orange?style=flat-square)
+![Status](https://img.shields.io/badge/status-stable-brightgreen?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -19,7 +19,7 @@ lifecycle, from registration and journal logging to final reporting and evaluati
   Livewire 3) for a blazing-fast and interactive user experience.
 - **Robust Infrastructure:**
     - **Automated DI:** Self-binding service layer using `EloquentQuery` patterns.
-    - **Modular Tooling:** Custom Artisan generators for Classes, Interfaces, and Traits that
+    - **Modular Tooling:** Custom Artisan generators for Classes, Contracts, and Concerns that
       respect modular namespace conventions.
     - **Standardized States:** Integrated status management across all domain models.
 - **Role-Based Access Control:** Secure access management using `spatie/laravel-permission` with
@@ -112,10 +112,10 @@ This project is built upon the Laravel ecosystem and several key packages:
 | :------------- | :-------------- | :--------- | :--------------------------- |
 | `v0.6.0-alpha` | `ARC01-FEAT-01` | `Released` | Assessment & Finalization    |
 | `v0.5.0-alpha` | `ARC01-OPER-01` | `Released` | Operational & Activity Track |
-| `v0.4.0-alpha` | `ARC01-INST-01` | `Released`    | Institutional & Academic     |
-| `v0.3.0-alpha` | `ARC01-USER-01` | `Released`    | User Management & Profile    |
-| `v0.2.0-alpha` | `ARC01-CORE-01` | `Released`    | RBAC & Shared Services       |
-| `v0.1.1-alpha` | `ARC01-INIT-01` | `Released`    | Project Initialization       |
+| `v0.4.0-alpha` | `ARC01-INST-01` | `Released` | Institutional & Academic     |
+| `v0.3.0-alpha` | `ARC01-USER-01` | `Released` | User Management & Profile    |
+| `v0.2.0-alpha` | `ARC01-CORE-01` | `Released` | RBAC & Shared Services       |
+| `v0.1.1-alpha` | `ARC01-INIT-01` | `Released` | Project Initialization       |
 
 For more details on our security audit protocols and reporting, please see
 [SECURITY.md](SECURITY.md).

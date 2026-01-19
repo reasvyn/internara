@@ -21,7 +21,3 @@ authorization checks.
   module-specific authorization.
 - **[UI Components](../../docs/main/permission-ui-components.md)**: Shared elements like the
   `RoleBadge`.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

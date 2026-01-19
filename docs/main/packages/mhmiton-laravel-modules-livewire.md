@@ -1,61 +1,36 @@
-# Laravel Modules Livewire Integration
+# Modules Livewire: The Component Bridge
 
-This document outlines the specific integration and usage patterns for the
-`mhmiton/laravel-modules-livewire` package within the Internara project. This essential package
-enables the seamless discovery and rendering of Livewire components directly from within Internara's
-modular structure, allowing for modular UI development. For a general understanding of Livewire
-integration and modular architecture principles, refer to the
-**[Livewire Integration Guide](../packages/laravel-livewire.md)** and the
-**[Architecture Guide](../architecture-guide.md)**.
+The `mhmiton/laravel-modules-livewire` package is a critical piece of Internara's modular
+infrastructure. It allows Livewire components located within a module's `src/Livewire` directory to
+be discovered and rendered using a clean, semantic syntax.
 
 ---
 
-## Usage Patterns Specific to `mhmiton/laravel-modules-livewire`
+## 1. Modular Syntax
 
-To maintain the modular boundary, always reference Livewire components using the **Module Alias**
-syntax as enabled by this package.
+Without this bridge, Livewire would only look in the `app/` directory. This package enables the
+`module::` prefix.
 
-### 1. Embedding in Blade
-
-Use the `@livewire` directive with the module prefix. This is the standard and required method for
-embedding interactive components.
-
-```blade
-{{-- CORRECT --}}
-@livewire('user::profile-manager')
-
-{{-- DEPRECATED for interactive components --}}
-<livewire:user::profile-manager />
-```
-
-The tag-based syntax should be avoided for interactive components as per project conventions.
-
-### 2. Component Discovery
-
-Components enabled by this package must be located in `modules/{Module}/src/Livewire/`.
-
-- **Class:** `Modules\User\Livewire\ProfileManager`
-- **Path:** `modules/User/src/Livewire/ProfileManager.php`
-
-### 3. Event Dispatching
-
-When dispatching events between modules via Livewire using this package, ensure the event names are
-descriptive to avoid collisions:
-
-```php
-$this->dispatch('user::profile-updated', userId: $this->user->id);
-```
+- **Convention**: Always use the `@livewire` directive for interactive components.
+- **Example**: `@livewire('internship::application-form')`
+- **Path**: `modules/Internship/src/Livewire/ApplicationForm.php`
 
 ---
 
-## Configuration
+## 2. Component Discovery
 
-This package is configured in `config/modules-livewire.php`. It automatically scans the
-`src/Livewire` directory of every enabled module for component discovery.
+The package is configured to scan the `src/Livewire` folder of every **Enabled** module. If a module
+is disabled in `modules_statuses.json`, its components will not be discoverable.
+
+### Event Namespacing
+
+When dispatching events between modules, prefix the event name with the module alias to prevent
+collisions.
+
+- **Correct**: `$this->dispatch('user::updated')`
+- **Incorrect**: `$this->dispatch('updated')`
 
 ---
 
-**Navigation**
-
-[← Previous: Laravel Modules Integration](nwidart-laravel-modules.md) |
-[Next: Spatie Laravel Permission Integration →](spatie-laravel-permission.md)
+_This bridge ensures that our UI remains as modular as our backend logic. Refer to the
+**[Livewire Integration Guide](laravel-livewire.md)** for general component best practices._

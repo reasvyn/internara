@@ -1,105 +1,67 @@
-# Spatie Laravel MediaLibrary Integration
+# Spatie MediaLibrary: Modular Asset Management
 
-This document outlines the integration of the `spatie/laravel-medialibrary` package within the
-Internara project, detailing its setup, custom configurations, and usage conventions. This package
-is essential for managing file uploads and associated media with various Eloquent models, aligning
-with Internara's modular architecture.
+Internara utilizes `spatie/laravel-medialibrary` to handle all file uploads and media processing.
+This package is integrated into our `Media` module, providing a unified API for attaching documents,
+images, and other assets to domain models.
 
 ---
 
-## 1. Overview
+## 1. Architectural Customizations
 
-The `spatie/laravel-medialibrary` package provides a robust and flexible way to attach all sorts of
-files to Eloquent models. It handles storage, retrieves media, and can perform image manipulations.
+Our integration is designed to support diverse primary key types and modular isolation.
 
-## 2. Installation and Setup
+### 1.1 Polymorphic UUID Support
 
-The package was installed via Composer, and its vendor assets (migrations, configuration) were
-published.
+The default Spatie migration uses incrementing integers for `model_id`. We have modified this to a
+string column to support both **UUIDs** and **Big Integers**.
 
-## 3. Customization and Integration within the `Media` Module
+- **Migration**: `modules/Media/database/migrations/..._create_media_table.php`
+- **Cast**: The `model_id` attribute is explicitly cast to `string`.
 
-The `spatie/laravel-medialibrary` package is integrated within a dedicated `Media` module to
-maintain the project's modular architecture.
+### 1.2 Custom Media Model
 
-### 3.1. Media Model (`modules/Media/src/Models/Media.php`)
+We extend the base `Media` model to add a `module` attribute, allowing us to group assets by their
+business domain (e.g., "Internship", "User").
 
-The default `Media` model provided by the package has been extended and customized within
-`modules/Media/src/Models/Media.php`:
+---
 
-- **`$fillable` Properties:** The `$fillable` array has been explicitly defined to include all mass
-  assignable fields from the `media` table migration.
-- **`module` Column:** A custom `module` field has been added to track which module a specific media
-  item belongs to.
-- **`model_id` Casting:** The `model_id` attribute is explicitly cast to `string`
-  (`protected $casts = ['model_id' => 'string'];`). This is crucial for supporting polymorphic
-  relationships with models that use either **UUIDs** (stored as `char(36)`) or **big integers**
-  (which are stringified from `bigint`) as their primary keys, aligning with the
-  **[Development Conventions Guide](../development-conventions.md#uuid-usage-convention)**.
+## 2. Using Media in Your Module
 
-### 3.2. Media Table Migration (`modules/Media/database/migrations/2026_01_06_234237_create_media_table.php`)
-
-The `create_media_table.php` migration has been modified to ensure compatibility with models using
-diverse primary key types:
-
-- **Explicit `model_type` and `model_id`:** The default `$table->morphs('model');` has been replaced
-  with explicit string column definitions
-  (`$table->string('model_type'); $table->string('model_id', 36);`). This change allows the
-  `model_id` column to correctly store both UUID strings and string representations of `bigint` IDs,
-  maintaining flexibility for polymorphic relations.
-
-## 4. Usage Conventions
-
-To utilize the `MediaLibrary` effectively:
-
-- **Implement `HasMedia`:** Any Eloquent model that needs to associate with media must implement the
-  `Spatie\MediaLibrary\HasMedia` interface and use the `Spatie\MediaLibrary\InteractsWithMedia`
-  trait.
-- **Register Media Collections:** Within your model, define media collections using the
-  `registerMediaCollections()` method.
-- **Attaching Media:** Use the `addMedia()` method provided by the trait to attach files.
-- **Retrieving Media:** Media can be retrieved via the `getMedia()` method.
-
-**Example of an Eloquent Model using MediaLibrary:**
+### 2.1 Apply the InteractsWithMedia Concern
 
 ```php
-<?php
-
-namespace Modules\User\Models;
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media; // Import the custom Media model if needed
 
-class User extends Authenticatable implements HasMedia
+class Student extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
-    // ... other model properties ...
-
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('avatars')->singleFile();
-        $this->addMediaCollection('documents');
-    }
-
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')->width(100)->height(100);
+        $this->addMediaCollection('certificates')->singleFile();
     }
 }
 ```
 
-- **Using the Custom `Media` Model:** If you need to leverage the custom `module` field or any other
-  customizations in the `Media` model, ensure you are interacting with `Modules\Media\Models\Media`
-  rather than the base `Spatie\MediaLibrary\MediaCollections\Models\Media`. You may need to specify
-  this in the `media-library.php` config or by overriding `getMediaModel()` in your `HasMedia`
-  models.
+### 2.2 Attaching Files
+
+```php
+$student->addMedia($file)->toMediaCollection('certificates');
+```
 
 ---
 
-**Navigation**
+## 3. UI Integration
 
-[← Previous: Spatie Laravel Activitylog Integration](spatie-laravel-activitylog.md) |
-[Next: Spatie Laravel Model Status Integration →](spatie-laravel-model-status.md)
+For a seamless user experience, use the `x-ui::file` component. It is pre-configured to handle
+temporary Livewire uploads and display existing MediaLibrary items.
+
+```blade
+<x-ui::file label="Upload Document" wire:model="file" />
+```
+
+---
+
+_MediaLibrary is essential for student logbooks and certification. Always define clear **Media
+Collections** in your models to keep your assets organized._

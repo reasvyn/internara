@@ -35,7 +35,3 @@ as the primary source for branding and institutional data within the platform.
 
 - **Media Collection:** Uses a dedicated media collection `logo` for institutional branding.
 - **Authorization:** Standard `school.manage` permission required for institutional updates.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

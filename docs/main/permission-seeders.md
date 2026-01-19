@@ -1,57 +1,61 @@
-# Permission Seeders
+# Permission Seeders: Bootstrapping Access
 
-The `Permission` module provides foundational seeders to establish the initial security structure of
-Internara.
-
-## Core Seeders
-
-### 1. `Modules\Permission\Database\Seeders\PermissionSeeder`
-
-Registers granular permissions for all core modules. Permissions follow the `{module}.{action}`
-pattern.
-
-**Included Permissions:**
-
-- **Core:** `core.manage`, `core.view-dashboard`
-- **User:** `user.view`, `user.create`, `user.update`, `user.delete`, `user.manage`
-- **School:** `school.view`, `school.update`, `school.manage`
-- **Department:** `department.view`, `department.create`, `department.update`, `department.delete`
-- **Internship:** `internship.view`, `internship.create`, `internship.update`, `internship.approve`
+This guide explains how Internara manages the initial population of roles and permissions via
+modular seeders. This process is critical for setting up new environments and ensuring that system
+access is consistent across all installations.
 
 ---
 
-### 2. `Modules\Permission\Database\Seeders\RoleSeeder`
+## 1. The Seeding Architecture
 
-Defines standard system roles and assigns the appropriate permissions to them.
+Permissions are not defined in a single monolithic file. Instead, they are distributed across the
+modules that "own" the functionality.
 
-**Available Roles:**
-
-- **`super-admin`**: Has all permissions (via global bypass and explicit seeding).
-- **`admin`**: General administrative management. Can manage users, school profile, and departments.
-- **`teacher`**: Responsible for supervising and approving internships.
-- **`student`**: Can view and apply for internships.
+- **Core Module**: Seeds the foundational roles (Super Admin, Teacher, Student).
+- **Domain Modules**: Seed permissions specific to their functionality (e.g., `attendance.view`).
 
 ---
 
-## Usage
+## 2. Implementing a Module Seeder
 
-To reset and seed the permissions system, run:
+Every module that introduces new permissions should have a seeder class in its `database/seeders`
+directory.
 
-```bash
-php artisan db:seed --class="Modules\Permission\Database\Seeders\PermissionDatabaseSeeder"
+### 2.1 Standard Pattern
+
+Use the `PermissionService` to ensure that permissions are created idempotently.
+
+```php
+namespace Modules\Attendance\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Modules\Permission\Services\Contracts\PermissionServiceInterface;
+
+class AttendancePermissionSeeder extends Seeder
+{
+    public function run(PermissionServiceInterface $service): void
+    {
+        $permissions = ['attendance.view', 'attendance.check-in', 'attendance.report'];
+
+        foreach ($permissions as $name) {
+            $service->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+        }
+    }
+}
 ```
 
-## Best Practices for Domain Modules
+---
 
-When creating a new domain module, you should:
+## 3. Synchronizing Access
 
-1.  **Add Permissions:** Update `PermissionSeeder` with your module's specific actions.
-2.  **Update Roles:** Assign those permissions to existing roles in `RoleSeeder` if applicable.
-3.  **Use Policies:** Enforce these permissions using Laravel Policies in your module.
+After adding new permissions to a seeder, run the synchronization command to update the database and
+refresh the cache.
+
+```bash
+php artisan permission:sync
+```
 
 ---
 
-**Navigation**
-
-[← Previous: Role & Permission Management Guide](role-permission-management.md) |
-[Next: Policy Patterns →](policy-patterns.md)
+_Seeders are the foundation of our RBAC system. Always ensure that your seeder logic is
+idempotent—running it multiple times should not create duplicate records or cause errors._

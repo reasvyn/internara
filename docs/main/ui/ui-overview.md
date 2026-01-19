@@ -1,52 +1,65 @@
-# UI Module Overview
+# UI Module: The Internara Design System
 
 The `UI` module is the central repository for all shared frontend assets, global Blade components,
-and Livewire UI elements within Internara. it serves as the project's internal design system,
-ensuring visual consistency and accelerating development.
-
-## Purpose
-
-- **Consistency:** Maintains a unified look and feel across all modules (Shared, Core, and Domain).
-- **Reusability:** Provides a library of battle-tested components, reducing code duplication.
-- **Efficiency:** Allows developers to build complex interfaces quickly by leveraging existing UI
-  blocks.
-- **Centralization:** Acts as the single source of truth for global layouts, CSS, and interactive
-  assets.
+and Livewire interface elements. It acts as the project's internal design system, ensuring that
+whether you are in the `Admin` or `Student` module, the experience remains cohesive and
+high-quality.
 
 ---
 
-## Technical Stack
+## 1. Our UI Architecture
 
-The UI module is built upon the **TALL Stack** with several key additions:
+We follow a "Layered Design" approach, where each tool has a specific role:
 
-- **Tailwind CSS v4:** Utility-first styling.
-- **DaisyUI:** Semantic component classes.
-- **MaryUI:** Enhanced Livewire components.
-- **Iconify:** Universal icon framework.
-
----
-
-## Core Strategy
-
-Internara's UI strategy follows a specific preference hierarchy for components:
-
-1.  **Project-Specific Components:** Components tailored for Internara, located in
-    `modules/UI/resources/views/components`.
-2.  **MaryUI Components:** High-level wrappers for DaisyUI.
-3.  **DaisyUI Components:** Raw semantic components for custom building blocks.
+- **Tailwind CSS 4**: The utility-first engine for layout, spacing, and colors.
+- **DaisyUI 5**: Provides the semantic "base" components (e.g., `.btn`, `.modal`, `.card`).
+- **MaryUI 2**: Supplies interactive Livewire components like data tables and form selectors.
+- **UI Module**: Provides the "Internara-flavored" wrappers that unify these tools.
 
 ---
 
-## Directory Structure
+## 2. The Component Hierarchy
 
-- `resources/css/`: Global stylesheets and Tailwind entry points.
-- `resources/js/`: Shared JavaScript logic and Alpine.js integrations.
-- `resources/views/components/`: Global Blade components.
-- `resources/views/layouts/`: Primary application layouts (App, Guest).
-- `src/View/Components/`: Class-based Blade components.
+When building an interface, you should choose components in this order of priority:
+
+1.  **Internara Components (`x-ui::`)**: These are our project-specific components (e.g.,
+    `x-ui::button`). They wrap MaryUI/DaisyUI with our specific styles and defaults.
+2.  **MaryUI Components (`x-mary-`)**: Use these for complex Livewire interactions that haven't been
+    wrapped yet.
+3.  **DaisyUI Classes**: Use raw DaisyUI classes for simple, static HTML elements.
 
 ---
 
-**Navigation**
+## 3. Core Directory Layout
 
-[← Back to TOC](table-of-contents.md) | [Next: Layouts →](components/layouts.md)
+For developers, understanding where assets reside is crucial:
+
+- `resources/css/app.css`: The main entry point for Tailwind. Custom theme variables are here.
+- `resources/views/layouts/`:
+    - `dashboard.blade.php`: The primary layout for all authenticated workspaces.
+    - `guest.blade.php`: Used for login, registration, and public verification pages.
+- `resources/views/components/`: Individual components categorized by purpose (Forms, Display,
+  etc.).
+
+---
+
+## 4. Branding & Visual Standards
+
+### 4.1 Icons
+
+We have standardized on **Tabler Icons**. Always use the `tabler.name` format. Example:
+`<x-ui::icon name="tabler.user" />`.
+
+### 4.2 Colors
+
+Use theme-aware classes instead of hardcoded hex values:
+
+- `primary`: For main actions.
+- `secondary`: For supporting elements.
+- `error`: For destructive actions (Delete buttons).
+- `base-100` to `base-300`: For background layering.
+
+---
+
+_The UI module is designed to be "Developer-First." By leveraging these components, you can build
+beautiful, responsive modules in minutes without writing a single line of custom CSS._

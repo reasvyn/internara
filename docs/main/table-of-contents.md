@@ -32,7 +32,7 @@ Rules to follow while writing code.
   directory structures.
 - **[Development Lifecycle & Versioning Strategy](../versions/versions-overview.md#development-lifecycle--versioning-strategy)**:
   The authoritative guide on versioning and release management.
-- **[Shared Model Traits](shared-traits.md)**: Reusable behaviors for Eloquent models (UUID,
+- **[Shared Model Concerns](shared-concerns.md)**: Reusable behaviors for Eloquent models (UUID,
   Status).
 - **[UI/UX Development Guide](ui-ux-development-guide.md)**: Global design principles and standards.
 - **[UI Module TOC](ui/table-of-contents.md)**: Index of shared UI components and design system.
@@ -76,7 +76,3 @@ Practical guides for building features.
   packages.
 - **[Advanced Guides TOC](advanced/table-of-contents.md)**: Custom module generation and advanced
   topics.
-
----
-
-[← Back to Root TOC](../table-of-contents.md)

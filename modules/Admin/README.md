@@ -14,7 +14,3 @@ system configurations and provides a comprehensive overview of the entire platfo
 
 - **System Overview:** Displays critical metrics and system alerts.
 - **Navigation Hub:** Central point for accessing all administrative functions.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

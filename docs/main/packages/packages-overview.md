@@ -1,66 +1,70 @@
-# Package Integration Overview
+# Package Integration: The Internara Ecosystem
 
-Internara leverages several key Laravel packages to achieve its **Modular Monolith** architecture
-and reactive UI. This directory documents the specific configurations, extensions, and usage
-patterns for these core dependencies.
-
----
-
-## Core Packages
-
-### 1. [Laravel/framework](laravel-framework.md)
-
-The core backend framework providing the application's foundational structure, security, and
-tooling.
-
-### 2. [Livewire/livewire](laravel-livewire.md)
-
-The primary framework for building dynamic, reactive user interfaces with PHP.
-
-### 3. [nwidart/laravel-modules](nwidart-laravel-modules.md)
-
-The backbone of our modular architecture. It allows us to encapsulate business domains into
-self-contained modules under the `modules/` directory.
-
-### 4. [mhmiton/laravel-modules-livewire](mhmiton-laravel-modules-livewire.md)
-
-An extension that enables seamless discovery and usage of Livewire components within modules,
-supporting the `module::component` syntax.
-
-### 5. [spatie/laravel-permission](spatie-laravel-permission.md)
-
-Used for Role-Based Access Control (RBAC). We have refactored this into a portable `Permission`
-module with support for configurable ID types (UUID or Integer) and module-specific ownership.
-
-### 6. [spatie/laravel-activitylog](spatie-laravel-activitylog.md)
-
-Integrated for robust system monitoring and user activity logging, aligning with the `Log` module's
-functionality and supporting Internara's modular architecture.
-
-### 7. [spatie/laravel-model-status](spatie-laravel-model-status.md)
-
-Used for flexible and standardized management of model statuses, enhancing workflow capabilities
-across various entities within Internara.
+Internara is built on the shoulders of giants. We leverage several high-quality Laravel packages to
+achieve our **Modular Monolith** architecture and reactive UI. This directory documents how we
+configure and wrap these dependencies to maintain our strict architectural standards.
 
 ---
 
-## Implementation Philosophy
+## 1. Core Architectural Drivers
 
-We do not use these packages "out of the box" in a standard way. Instead, we wrap or configure them
-to:
+### 1.1 [nwidart/laravel-modules](nwidart-laravel-modules.md)
 
-- **Enforce Isolation:** Modules should not leak implementation details. All logic, from database
-  migrations to UI components, remains within the module's directory.
-- **Support Portability:** Modules (especially `Permission`) are designed to be plug-and-play. They
-  use "Runtime Configuration Injection" to configure their dependencies without requiring the
-  developer to modify global application config files.
-- **Maintain Clean Namespaces:** Our custom configuration omits the `src` segment from namespaces
-  for better readability and a more professional class structure.
-- **Zero-Manual-Setup:** A well-designed module should work immediately upon being enabled, handling
-  its own service bindings and dependency overrides.
+The foundational engine for our modularity. It provides the directory structure and autoloader logic
+that allows us to treat each folder in `modules/` as a mini-application.
+
+### 1.2 [mhmiton/laravel-modules-livewire](mhmiton-laravel-modules-livewire.md)
+
+A critical bridge that enables Livewire component discovery across modular boundaries. This allows
+for the `module::component` syntax in our views.
 
 ---
 
-**Navigation**
+## 2. Security & Identity
 
-[← Previous: Testing Guide](../testing-guide.md) | [Next: Laravel Framework →](laravel-framework.md)
+### 2.1 [spatie/laravel-permission](spatie-laravel-permission.md)
+
+The engine behind our **RBAC** system. We have wrapped this package into a portable `Permission`
+module, adding full **UUID** support and cross-module synchronization logic.
+
+### 2.2 [spatie/laravel-activitylog](spatie-laravel-activitylog.md)
+
+Powers our audit trails. It is integrated into the `Log` module to ensure all critical business
+actions are tracked and attributed to specific users.
+
+---
+
+## 3. UI & State Management
+
+### 3.1 [Livewire/livewire](laravel-livewire.md)
+
+The primary driver for our interactive frontend. It allows us to manage complex state and reactive
+updates using pure PHP logic.
+
+### 3.2 [spatie/laravel-model-status](spatie-laravel-model-status.md)
+
+Powers our **HasStatuses** concern. It provides a standardized way to manage entity lifecycles
+(e.g., Pending -> Approved) with a built-in audit trail.
+
+### 3.3 [spatie/laravel-medialibrary](spatie-laravel-medialibrary.md)
+
+Handles all file attachments and image processing. It is integrated with our `UI` file component to
+provide seamless uploads and previews.
+
+---
+
+## 4. Our "Zero-Leak" Philosophy
+
+We do not use these packages in a standard way. Our configuration rules ensure:
+
+- **Isolation**: Package configuration is injected at runtime by the module, preventing leakage into
+  the global `config/` directory.
+- **Portability**: Modules remain plug-and-play. Disabling a module also disables its corresponding
+  package integrations.
+- **Consistency**: All packages are configured to respect our **Namespace Convention** (omitting the
+  `src` segment).
+
+---
+
+_Refer to the individual guide for each package to understand its specific implementation patterns
+and best practices within Internara._

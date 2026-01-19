@@ -1,81 +1,82 @@
-# Foundational Module Philosophy
+# Foundational Module Philosophy: Structural Hierarchy
 
-This document provides a detailed overview of the foundational `Core`, `Shared`, `Support`, and `UI`
-modules. These modules define the structural hierarchy and portability standards that govern the
-Internara application.
-
----
-
-## 1. Portability & Role Hierarchy
-
-To maintain a clean modular monolith, we categorize foundational modules based on their relationship
-to the business logic and their requirement for portability.
-
-| Module      | Role                               | Portability                                  |
-| :---------- | :--------------------------------- | :------------------------------------------- |
-| **Core**    | Base Architecture & Business Rules | **Non-Portable** (Business-Specific)         |
-| **UI**      | UI Foundation & Assets             | **Non-Portable** (Business-Specific UI)      |
-| **Support** | Infrastructure Utilities for Core  | **Non-Portable** (Business-Specific Support) |
-| **Shared**  | Universal Toolbox & Base Classes   | **Mandatory Portable** (Strictly Mandatory)  |
+To maintain a resilient and scalable Modular Monolith, Internara categorizes its foundational
+modules based on their relationship to business logic and their level of **Portability**. This
+philosophy ensures that we don't accidentally "tangle" universal utilities with specific business
+rules.
 
 ---
 
-## 2. Shared Module (The Portable Foundation)
+## 1. Portability & Hierarchy Matrix
 
-The `Shared` module is the "toolbox" of the application. It contains components that are completely
-agnostic of Internara's specific business rules.
+We classify modules into four distinct roles. This classification dictates what a module can depend
+on and whether it can be easily reused in another project.
 
-- **Requirement:** Every component in this module must be portable enough to function in a
-  completely different project without modification.
-- **Key Principle:** Business modules (such as `User`) should only depend on the `Shared` module if
-  they aim to remain portable.
-
-## 3. Core Module (The Business Architecture)
-
-The `Core` module encapsulates the essential architectural building blocks and business rules that
-are **specific to the Internara business domain**.
-
-- **Purpose:** It provides the foundational data and contracts that define _what_ Internara is,
-  serving as the central "glue" that binds the system together.
-- **Portability:** This module is **not portable** as it is intrinsically tied to the application's
-  business logic.
-
-## 4. Support Module (The Infrastructure Support)
-
-The `Support` module handles specialized integrations and abstracts away infrastructure-level
-complexity.
-
-- **Purpose:** To provide tools and abstract complex processes for the `Core` and domain modules to
-  consume, keeping them clean from infrastructure-specific code.
-- **Portability:** This module is **non-portable** as it is designed specifically to support the
-  Internara `Core` architecture.
-
-## 5. UI Module (The Frontend Foundation)
-
-The `UI` module is the definitive source of truth for all frontend assets and standards within the
-Internara application.
-
-- **Purpose:** To encapsulate the application's visual identity, including all core styling,
-  JavaScript, global Blade/Livewire components, and frontend build configurations.
-- **Portability:** This module is **non-portable** as it defines the specific look, feel, and brand
-  identity of the Internara application.
+| Category    | Role                  | Portability                   | Example                     |
+| :---------- | :-------------------- | :---------------------------- | :-------------------------- |
+| **Shared**  | Universal Toolbox     | **High (Mandatory Portable)** | `HasUuid`, `EloquentQuery`  |
+| **Core**    | Business Blueprint    | **Low (Business-Specific)**   | `AcademicYear`, `BaseRoles` |
+| **Support** | Infrastructure Bridge | **Low (Project-Specific)**    | `ModuleGenerators`          |
+| **UI**      | Design System         | **Low (Brand-Specific)**      | `DashboardLayout`, `Toasts` |
 
 ---
 
-## 6. Domain Module (The Business Heart)
+## 2. Shared Module: The Portable Foundation
 
-Domain modules (e.g., `User`, `Internship`) represent distinct business areas.
+The `Shared` module is the "Engine Room." It contains components that are **completely agnostic** of
+Internara's domain.
 
-- **Standard:** They should strive to be **Portable** by only depending on the `Shared` module and
-  external framework packages.
-- **Constraint:** They use the data provided by `Core` (like Roles/Permissions) via standard Laravel
-  interfaces (Gates/Policies) to avoid hard-coding dependencies on the physical `Core` module. For
-  details, refer to the
-  **[Role and Permission Management Guide](../role-permission-management.md)**.
+- **Requirement**: Components here must be project-independent. If you move `Shared` to a new
+  Laravel project, it should work out of the box.
+- **Contents**:
+    - **Concerns**: `HasUuid`, `HasStatuses`, `HasAuditLog`.
+    - **Base Classes**: `EloquentQuery`, `BaseServiceContract`.
+    - **Utilities**: String formatters, geometric calculators, etc.
+
+## 3. Core Module: The Business Blueprint
+
+The `Core` module is the "Glue." it encapsulates the architectural building blocks that define
+**what Internara is**.
+
+- **Purpose**: It provides the foundational data (e.g., Roles, Settings) that domain modules need to
+  function.
+- **Contents**:
+    - Global Permission definitions.
+    - Academic Year scoping logic.
+    - System-wide constants.
+
+## 4. Support Module: The Infrastructure Bridge
+
+The `Support` module handles **Development & Operational** utilities.
+
+- **Purpose**: To provide tools that keep domain modules clean from infrastructure "noise."
+- **Contents**:
+    - Custom Artisan Generators.
+    - Vite module loaders.
+    - Deployment scripts and environment auditors.
+
+## 5. UI Module: The Visual Identity
+
+The `UI` module is the "Skin." It is the single source of truth for the Internara design system.
+
+- **Purpose**: Encapsulates styling (Tailwind), interactivity (Alpine/Livewire), and accessibility.
+- **Contents**:
+    - Standardized Layouts (`Auth`, `Dashboard`).
+    - Design System Components (`Button`, `Card`, `Modal`).
+    - Branding assets (Logos, Icons).
 
 ---
 
-**Navigation**
+## 6. Domain Modules: The Heart of the App
 
-[← Previous: EloquentQuery Base Service](eloquent-query-service.md) |
-[Next: Best Practices Guide →](conceptual-best-practices.md)
+Modules like `User`, `Internship`, or `Attendance` represent the actual business functionality.
+
+- **Best Practice**: Domain modules should strive for **High Portability**.
+- **Dependency Rule**: They should primarily depend on `Shared`. If they need `Core` data, they must
+  access it through **Contracts** or framework-level **Policies/Gates** to avoid tight coupling with
+  the concrete `Core` implementation.
+
+---
+
+_Understanding this hierarchy prevents "Spaghetti Modularity." By respecting these boundaries, we
+ensure that Internara remains clean, testable, and future-proof._

@@ -42,7 +42,3 @@ verification from supervisors.
 - **Media Collection:** `attachments` (stored in the `private` disk).
 - **Authorization:** Managed via `JournalPolicy`, ensuring data is only accessible to the student
   and their assigned supervisors.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

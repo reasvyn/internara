@@ -14,7 +14,3 @@ provides transparency and accountability across the entire application.
 - **Activity Logging**: Integration with `spatie/laravel-activitylog` to track model changes and
   custom events.
 - **System Monitoring**: Captures critical logs for administrative review.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

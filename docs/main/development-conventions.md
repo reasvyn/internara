@@ -1,121 +1,90 @@
-# Development Conventions
+# Development Conventions: Engineering Standards
 
-This document outlines the **mandatory** coding and development conventions for the Internara
-project. These rules ensure consistency, maintainability, and high code quality.
-
-For the high-level philosophy behind these rules, refer to the
-**[Conceptual Best Practices](conceptual-best-practices.md)** guide.
+To ensure that the Internara codebase remains clean, predictable, and accessible to all developers,
+we adhere to a strict set of coding conventions. Consistency is the foundation of our
+maintainability.
 
 ---
 
-**Table of Contents**
+## 1. PSR Compliance & Formatting
 
-- [1. General Conventions](#1-general-conventions)
-- [2. PHP Conventions](#2-php-conventions)
-- [3. Laravel Conventions](#3-laravel-conventions)
-- [4. Modular Architecture (Laravel Modules)](#4-modular-architecture-laravel-modules)
-- [5. Role & Permission Conventions](#5-role--permission-conventions)
-- [6. Exception Handling Conventions](#6-exception-handling-conventions)
-- [7. UI, View & Component Conventions](#7-ui-view--component-conventions)
-- [8. Testing (Pest) Conventions](#8-testing-pest-conventions)
+We follow the standard PHP recommendations to ensure interoperability and readability.
 
----
-
-## 1. General Conventions
-
-- **Language:** English only for all code, comments, and commits.
-- **Naming:**
-    - **Variables/Methods:** `camelCase` (e.g., `isVerified`).
-    - **Classes/Modules:** `PascalCase` (e.g., `UserService`).
-    - **Setters:** Use `set{Property}` (e.g., `setAvatar`). Avoid `change` or `update` prefix for
-      simple state mutations.
-- **Directory Structure:** **Do not create new root directories.** Follow the
-  `modules/{Module}/src/` structure strictly.
-
-## 2. PHP Conventions
-
-- **Strict Types:** `declare(strict_types=1);` is recommended for new files.
-- **Constructor Promotion:** Use PHP 8 constructor property promotion.
-- **Return Types:** **Mandatory** for all methods. Use `void` if nothing is returned.
-- **Enums:** Keys should be `TitleCase`.
-- **Interfaces:** Name by capability, not implementation.
-    - **Bad:** `UserRepositoryInterface`, `IUserRepository`.
-    - **Good:** `UserRepository`.
-
-## 3. Laravel Conventions
-
-- **Eloquent:**
-    - Use `Model::query()` for starting chains.
-    - Use `casts()` method (Laravel 11+) over `$casts` property.
-    - **No Logic in Models:** Keep models lightweight. Move business logic to Services.
-- **Config:** Use `config('key')`. **Never** use `env()` outside of config files.
-- **Controllers:** Keep them "skinny". Validate input (FormRequest) $\rightarrow$ Call Service
-  $\rightarrow$ Return Response.
-
-### 3.1. Account Status (Standardized)
-
-- **`active`**: Operational.
-- **`inactive`**: Administratively disabled.
-- **`pending`**: Awaiting verification.
-
-## 4. Modular Architecture (Laravel Modules)
-
-**Golden Rule:** A module must be portable. It should not "know" about the existence of other
-modules' concrete classes.
-
-### 4.1. Namespace Rules
-
-- Omit `src` from the namespace.
-- **File:** `modules/User/src/Services/UserService.php`
-- **Namespace:** `Modules\User\Services`
-
-### 4.2. Database Isolation
-
-- **No Cross-Module Foreign Keys:** Never use `$table->foreign()->constrained()` between modules.
-- **Constraint:** Use `uuid('other_module_id')->index()` instead.
-- **Integrity:** Enforce referential integrity in the **Service Layer**.
-
-### 4.3. Service Layer
-
-- **Pattern:** Interface-First.
-- **Base Class:** Extend `Modules\Shared\Services\EloquentQuery` for CRUD operations.
-- **Injection:** Always type-hint the **Interface**, not the concrete class.
-
-## 5. Role & Permission Conventions
-
-- **Format:** `module.action` (e.g., `user.create`).
-- **Authorization:** Use Policies (`$user->can('user.create')`). Never check Roles directly in code
-  (`hasRole('admin')` is forbidden in business logic).
-
-## 6. Exception Handling Conventions
-
-- **Custom Exceptions:** Extend `Modules\Exception\AppException`.
-- **Translation:** Use `{module}::exceptions.{key}` for messages.
-
-## 7. UI, View & Component Conventions
-
-### 7.1. The UI Module
-
-- **Source of Truth:** All generic components (`Button`, `Card`, `Input`) reside in `Modules\UI`.
-- **Usage:** `<x-ui::button variant="primary" />`.
-- **Constraint:** Do not create custom buttons/inputs in Feature modules. Use the `UI` library.
-
-### 7.2. Cross-Module Injection
-
-- **Slots:** Use `@slotRender('sidebar.items')` to allow other modules to inject content.
-- **Registry:** Register slots in the `Boot` method of your ServiceProvider.
-
-## 8. Testing (Pest) Conventions
-
-- **Framework:** **Pest** is mandatory.
-- **Location:** `modules/{Module}/tests/`.
-- **Coverage:**
-    - **Unit:** Test Services and isolated logic.
-    - **Feature:** Test Livewire components and End-to-End flows.
+- **PSR-12**: All PHP code must adhere to the PSR-12 Extended Coding Style Guide.
+- **Strict Typing**: Use strict typing (`declare(strict_types=1);`) where possible to prevent
+  unexpected type coercion.
+- **Pint**: We use **Laravel Pint** for automated linting. Always run `./vendor/bin/pint` before
+  committing changes.
 
 ---
 
-**Navigation**
+## 2. Modular Namespace Convention (The `src` Rule)
 
-[← Previous: Conceptual Best Practices](conceptual-best-practices.md) |
-[Next: Software Development Life Cycle →](software-lifecycle.md)
+A critical rule in Internara is the handling of the `src` directory within modules.
+
+- **Directory Structure**: Module logic is located in `modules/{ModuleName}/src/`.
+- **Namespace Rule**: The `src` segment **MUST be omitted** from the namespace definition.
+- **Why?** This keeps namespaces short, semantic, and aligned with standard Laravel conventions if
+  the module were to be moved.
+
+**Example:**
+
+- **Path**: `modules/User/src/Services/UserService.php`
+- **Namespace**: `namespace Modules\User\Services;` (✅ Correct)
+- **Namespace**: `namespace Modules\User\src\Services;` (❌ Incorrect)
+
+---
+
+## 3. Naming Standards
+
+### 3.1 PHP Classes & Files
+
+- **Controllers/Livewire**: PascalCase (e.g., `StudentList`).
+- **Services**: PascalCase with `Service` suffix (e.g., `InternshipService`).
+- **Models**: PascalCase, singular (e.g., `JournalEntry`).
+- **Contracts (Interfaces)**: PascalCase with `Interface` suffix, located in `Contracts/` (e.g.,
+  `UserServiceInterface`).
+- **Concerns (Traits)**: PascalCase, ideally prefixed with `Has` or `Can` (e.g., `HasStatuses`).
+
+### 3.2 Database & Migrations
+
+- **Tables**: Snake_case, plural (e.g., `internship_registrations`).
+- **Columns**: Snake_case (e.g., `academic_year`).
+- **Foreign Keys**: Must be simple UUID columns, no physical constraints across modules.
+
+---
+
+## 4. Multi-Language Support
+
+Internara is built for a global audience. **Hardcoding strings in views or controllers is
+prohibited.**
+
+- **Locales**: Supported: English (`en`) and Indonesian (`id`).
+- **Translations**: Always use the `__()` helper or `@lang` directive.
+- **Keys**: Organize keys by module (e.g., `__('user::messages.created')`).
+
+---
+
+## 5. Domain Logic & Service Layer
+
+- **Service Injection**: When cross-module communication is needed, type-hint the **Contract**, not
+  the concrete service.
+- **EloquentQuery**: CRUD services must extend `Modules\Shared\Services\EloquentQuery` to reuse
+  standard logic.
+- **No `env()`**: Never call `env()` directly in the code. Use `config()` for infrastructure
+  settings and `setting()` for application-level data.
+
+---
+
+## 6. Documentation (PHPDoc)
+
+Every class and method must include a professional PHPDoc in English.
+
+- **Intent**: Briefly describe _why_ the method exists.
+- **Parameters**: Clearly type-hint all `@param` tags.
+- **Return**: Clearly define the `@return` type.
+
+---
+
+_Adherence to these conventions is not optional. They are verified during the **Iterative Sync
+Cycle** and are a prerequisite for feature completion._

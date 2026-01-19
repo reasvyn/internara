@@ -1,65 +1,79 @@
-# Development Workflow
+# Development Workflow: Feature Engineering Lifecycle
 
-This document serves as the **Standard Operating Procedure (SOP)** for all development activities
-within the Internara project. It integrates high-level version planning with the specific technical
+This document serves as the **Standard Operating Procedure (SOP)** for all engineering activities
+within the Internara project. It bridges high-level version planning with the granular technical
 steps required to build features in our Modular Monolith architecture.
 
 **The Golden Rule:** Never start coding without a plan. Never finish without **Artifact
 Synchronization**.
 
-> **Mandate:** Every technical modification triggers a full cycle of Quality Assurance and
-> Documentation Synchronization. Implementation is only complete when all related artifacts reflect
-> the new system state.
+---
+
+## 🛠 Phase 1: Pre-Development (Context & Planning)
+
+Before writing code, you must establish the "Why" and "What" through analytical contextualization.
+
+### 1.1 Review Historical Context
+
+- **Action**: Read the deep analytical narratives of the **current and two previous versions** in
+  `docs/versions/`.
+- **Goal**: Understand the technical rationale and architectural evolution to ensure your
+  implementation is sustainable.
+
+### 1.2 Formulate Implementation Plan
+
+- **Action**: Construct a step-by-step plan that breaks down complexity.
+- **Goal**: Identify cross-module dependencies and required **Interfaces (Contracts)** early.
 
 ---
 
-**Table of Contents**
+## 💻 Phase 2: Development Execution (Implementation)
 
-- [1. Phase 1: Pre-Development (Context & Planning)](#1-phase-1-pre-development-context--planning)
-- [2. Phase 2: Development Execution (Implementation)](#2-phase-2-development-execution-implementation)
-- [3. Phase 3: Post-Development (Verification & Artifact Sync)](#3-phase-3-post-development-verification--artifact-sync)
+Follow the downward flow of the Internara Layered Architecture.
+
+### 2.1 The Data Layer (Eloquent Models)
+
+- **Primary Keys**: Always use UUIDs via the `HasUuid` trait.
+- **Module Boundaries**: Do not use physical foreign keys for cross-module relations. Use indexed
+  UUID columns.
+- **State Management**: Use `HasStatuses` for entities with lifecycles.
+
+### 2.2 The Logic Layer (Services)
+
+- **Brain of the Feature**: Services orchestrate all business rules.
+- **Base Class**: CRUD services should extend `Modules\Shared\Services\EloquentQuery`.
+- **Decoupling**: If you need data from another module, type-hint its **Interface**, never the
+  concrete service.
+
+### 2.3 The UI Layer (Livewire & Volt)
+
+- **Thin Components**: Livewire components handle UI logic and state. Business logic must reside in
+  Services.
+- **Dependency Injection**: Always inject services in the `boot()` method.
+- **Design System**: Use standardized components from the `UI` module (MaryUI/DaisyUI).
 
 ---
 
-## 1. Phase 1: Pre-Development (Context & Planning)
+## ✅ Phase 3: Post-Development (Verification & Artifact Sync)
 
-Before writing a single line of code, you must establish the "Why" and "What" through analytical
-contextualization.
-
-### 1.1. Review Previous Version Context
-
-- **Action:** Read the deep analytical narrative of the immediately preceding version.
-- **Goal:** Understand the technical rationale and architectural impact of previous choices to
-  ensure continuity.
-
----
-
-## 3. Phase 3: Post-Development (Verification & Artifact Sync)
-
-A feature is not "Done" until it passes the **Iterative Sync Cycle**. If any step below results in a
-code change, the entire cycle must be repeated.
+A feature is not "Done" until it passes the **Iterative Sync Cycle**.
 
 ### 3.1 Iterative QA Cycle
 
-- **Testing (Pest):** Run tests for the specific module and the entire suite.
-- **Security Audit:** Verify IDOR, XSS, and authorization gates through analytical review.
-- **Quality & Linting:** Run `npm run lint` and `vendor/bin/pint`.
+- **Testing (Pest)**: Run unit and feature tests. `php artisan test --parallel`.
+- **Security Audit**: Manually verify IDOR, XSS, and authorization gates (`$user->can()`).
+- **Quality & Linting**: Run `vendor/bin/pint` and `npm run lint`.
 
 ### 3.2 Continuous Artifact Synchronization
 
-Documentation is code. Update the following artifacts iteratively:
+Documentation is treated as code (**Doc-as-Code**). Update the following artifacts:
 
-- **Analytical Version Note:** Update `docs/versions/{current}.md` with technical rationales and
-  deep-dives (No checklists).
-- **Application Info:** Update `app_info.json` at root with latest version and series code.
-- **Changelog:** Add entries to `CHANGELOG.md` under the unreleased version.
-- **Technical Guides:** Synchronize module-specific docs in `docs/main/modules/` and architectural
-  guides.
-- **Readme:** Ensure `README.md` version indicators are accurate.
+- **Analytical Version Note**: Update `docs/versions/{version}.md` with technical narratives.
+- **Application Info**: Update `app_info.json` if milestone reached.
+- **Changelog**: Add detailed entries under the `[Unreleased]` or current version section.
+- **Technical Guides**: Synchronize module-specific READMEs and architectural docs.
 
 ---
 
-**Navigation**
-
-[← Previous: Software Development Life Cycle](software-lifecycle.md) |
-[Next: Role & Permission Management Guide →](role-permission-management.md)
+_By adhering to this workflow, we ensure that Internara remains a professional, predictable, and
+high-quality project. Documentation is as important as the code itself._

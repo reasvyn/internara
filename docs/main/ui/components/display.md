@@ -1,102 +1,67 @@
-# UI Components: Display
+# UI Components: Data Display
 
-Components used for data presentation and visual decoration.
+Display components are designed to present complex data in a readable, professional manner. They
+follow the Internara aesthetic of high-contrast layering and semantic grouping.
 
-## `card`
+---
 
-A standard container for grouping related content. Standardized with default borders, rounded
-corners, and shadow.
+## 1. `x-ui::card` (Information Grouping)
 
-- **Usage:**
+The primary container for UI sections.
+
+- **Example**:
 
 ```blade
-<x-ui::card title="User Stats" subtitle="Updated hourly">
-    <p>Stats content...</p>
+<x-ui::card title="Student Profile" subtitle="Academic record for 2025" shadow separator>
+    <div class="p-4">Content here...</div>
 </x-ui::card>
 ```
 
----
-
-## `badge`
-
-Small status or label indicator.
-
-- **Usage:** `<x-ui::badge label="Active" class="badge-primary" />`
+- **Feature**: Supports `shadow`, `separator`, and `border` props for visual hierarchy.
 
 ---
 
-## `avatar`
+## 2. `x-ui::table` (Data Grids)
 
-Displays a user profile image or placeholder.
+A high-level wrapper for MaryUI data tables.
 
-- **Usage:** `<x-ui::avatar image="/path/to/img.jpg" class="!w-10" />`
-
----
-
-## `table`
-
-Data grid component with support for pagination and custom slots.
-
-- **Usage:**
+- **Example**:
 
 ```blade
-<x-ui::table :headers="$headers" :rows="$rows" with-pagination>
-    @scope('cell_name', $user)
-        <strong>{{ $user->name }}</strong>
+<x-ui::table :headers="$headers" :rows="$students" with-pagination>
+    @scope('cell_status', $student)
+        <x-ui::badge :label="$student->status" />
     @endscope
 </x-ui::table>
 ```
 
----
-
-## `icon`
-
-A helper component to render SVG icons from the **Iconify** library via Blade Icons.
-
-- **Props:**
-    - `name`: The icon name (e.g., `tabler-home`, `tabler-user`).
-- **Usage:**
-
-```blade
-<x-ui::icon name="tabler-settings" class="w-5 h-5 text-primary" />
-```
+- **Convention**: Always use `@scope` for custom column rendering.
 
 ---
 
-## `alert`
+## 3. `x-ui::badge` & `x-ui::avatar` (Indicators)
 
-Displays important feedback or messages to the user. Supports DaisyUI status classes.
-
-- **Usage:**
-
-```blade
-<x-ui::alert icon="tabler.alert-triangle" class="alert-warning">
-    Please check your input.
-</x-ui::alert>
-```
+- **Badge**: Used for statuses (e.g., `<x-ui::badge label="Approved" success />`).
+- **Avatar**: Used for user identity (e.g., `<x-ui::avatar :image="$user->avatar_url" />`).
 
 ---
 
-## `sidebar`
+## 4. `x-ui::icon` (Tabler Set)
 
-A vertical navigation container. Designed to be used within the `sidebar` slot of `x-ui::main`.
+We use the **Tabler Icon** library exclusively.
 
-- **Usage:**
-
-```blade
-<x-ui::sidebar drawer="my-drawer" collapsible>
-    <x-ui::menu-item title="Home" icon="tabler.home" link="/" />
-</x-ui::sidebar>
-```
+- **Standard**: `<x-ui::icon name="tabler.settings" class="w-5 h-5 text-primary" />`.
+- **Note**: The `tabler.` prefix is required by our SVG loader.
 
 ---
 
-## `app-credit`
+## 5. `x-ui::alert` (Feedback)
 
-Renders a small credit tag, typically used in the footer.
+Used for critical warnings or inline instructions.
+
+- **Usage**: `<x-ui::alert icon="tabler.info-circle" title="Notice" info>Content</x-ui::alert>`.
 
 ---
 
-**Navigation**
-
-[← Navigation](navigation.md) | [Next: Utilities →](utilities.md)
+_Display components should be used to minimize cognitive load. Use cards to group related fields and
+badges to highlight state changes._

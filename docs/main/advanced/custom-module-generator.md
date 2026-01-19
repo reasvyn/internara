@@ -1,135 +1,65 @@
-# Custom Module Generator
+# Custom Module Scaffolding: Enforcing Standards
 
-This document outlines the strategies for customizing module generation within the Internara
-project. While `laravel-modules` provides flexible configuration options, advanced use cases may
-require a custom generator command.
-
----
-
-**Table of Contents**
-
-1.  [Overview](#1-overview)
-2.  [Strategy 1: Configuration & Stubs (Current Approach)](#2-strategy-1-configuration--stubs-current-approach)
-3.  [Strategy 2: The Base Module Pattern (Advanced)](#3-strategy-2-the-base-module-pattern-advanced)
+To maintain structural integrity across our Modular Monolith, Internara utilizes custom generation
+logic. This ensures that every new module starts with the correct directory tree, naming
+conventions, and strict-typing boilerplate.
 
 ---
 
-## 1. Overview
+## 1. Strategy 1: Configuration & Stubs (Standard)
 
-Standardizing the structure of new modules is crucial for the **Modular Monolith** architecture.
-Internara uses a modified directory structure (using `src/` instead of `app/`) to align with package
-development standards. We achieve this primarily through configuration, but developers should be
-aware of advanced generation techniques.
+This is our primary method. We leverage the native capabilities of `nwidart/laravel-modules` and
+customize it via the `config/modules.php` file.
 
-## 2. Strategy 1: Configuration & Stubs (Current Approach)
+### 1.1 Custom Path Mapping
 
-This is the primary method used in Internara. We leverage the native capabilities of
-`nwidart/laravel-modules` to adjust paths and scaffold files.
-
-### 2.1 Configuration
-
-The `config/modules.php` file controls the default generation paths. Key customizations include:
-
-- **`app_folder`**: Set to `src/` to house domain logic.
-- **`generator`**: Customized to map default layers (Controllers, Models, etc.) to the `src/`
-  directory.
+We override the default generator paths to align with our package-style structure:
 
 ```php
 // config/modules.php
-'paths' => [
-    'app_folder' => 'src/',
-    'generator' => [
-        'model' => ['path' => 'src/Models', 'generate' => false],
-        'controller' => ['path' => 'src/Http/Controllers', 'generate' => false],
-        // ...
-    ],
+'generator' => [
+    'model' => ['path' => 'src/Models', 'generate' => true],
+    'service' => ['path' => 'src/Services', 'generate' => true],
+    'contract' => ['path' => 'src/Services/Contracts', 'generate' => true],
 ],
 ```
 
-### 2.2 Stubs
+### 1.2 The `src` Convention
 
-We publish and modify stubs to ensure generated files follow our strict **Strict Typing** and
-**PHPDoc** conventions.
-
-- **Location:** `stubs/modules/*.stub`
-- **Usage:** The generator automatically uses these files when running `php artisan module:make`.
-
-## 3. Strategy 2: The Base Module Pattern (Advanced)
-
-For highly specific module structures that exceed the capabilities of the default configuration
-(e.g., pre-creating specific `README.md`, `LICENSE`, or complex directory trees), the **Base
-Module** pattern is recommended.
-
-### 3.1 Concept
-
-Instead of generating a module from scratch using stubs, we maintain a "Template Module" (or Base
-Module) that contains the exact desired structure. Creating a new module becomes a process of
-**Cloning** this template and **Renaming** the contents.
-
-### 3.2 Implementation Steps
-
-1.  **Create a Base Module:** Create a folder `stubs/base-module` that looks exactly like a finished
-    module. Use placeholders for names.
-    - `composer.json`: ` "name": "internara/{module}"`
-    - `src/Providers/{Module}ServiceProvider.php`
-
-2.  **Create a Custom Command:** Generate a command like `make:module-custom`.
-
-    ```bash
-    php artisan make:command MakeCustomModule
-    ```
-
-3.  **Command Logic:** The command should perform the following actions:
-    - **Copy:** Copy `stubs/base-module` to `modules/{TargetName}`.
-    - **Replace:** Recursively search and replace placeholders (e.g., `{Module}`, `{module}`,
-      `{MODULE_NAMESPACE}`) in file names and contents.
-    - **Rename:** Rename specific files like `Service.php` to `TargetService.php`.
-
-### 3.3 Recommended Placeholders
-
-When creating a Base Module, use distinct placeholders to handle casing:
-
-| Placeholder | Description     | Example (Target: UserProfile) |
-| :---------- | :-------------- | :---------------------------- |
-| `{Module}`  | StudlyCase name | `UserProfile`                 |
-| `{module}`  | Lowercase name  | `userprofile`                 |
-| `{module-}` | Kebab-case name | `user-profile`                |
-| `{module_}` | Snake_case name | `user_profile`                |
-
-### 3.4 Example Command Logic Snippet
-
-```php
-// app/Console/Commands/MakeCustomModule.php
-
-protected function handle()
-{
-    $name = $this->argument('name');
-    $source = base_path('stubs/base-module');
-    $destination = base_path("modules/$name");
-
-    // 1. Copy
-    File::copyDirectory($source, $destination);
-
-    // 2. Replace Content
-    $files = File::allFiles($destination);
-    foreach ($files as $file) {
-        $content = File::get($file);
-        $content = str_replace('{Module}', $name, $content);
-        $content = str_replace('{module}', strtolower($name), $content);
-        File::put($file, $content);
-    }
-
-    // 3. Rename Files
-    // ... logic to rename files like {Module}ServiceProvider.php
-}
-```
-
-This strategy ensures that every new module starts with a perfect, project-compliant structure
-without manual adjustment.
+By setting `'app_folder' => 'src/'`, we ensure that all domain logic is isolated from the module's
+root assets (like `composer.json` or `vite.config.js`).
 
 ---
 
-**Navigation**
+## 2. Strategy 2: Custom Stubs (Visual Standards)
 
-[← Previous: Advanced Guides Overview](advanced-overview.md) |
-[Next: Versions Overview →](../../versions/versions-overview.md)
+We have published and modified the default stubs to enforce our **PHPDoc** and **Strict Typing**
+requirements.
+
+- **Location**: `stubs/modules/*.stub`
+- **Impact**: Any class generated via `php artisan module:make-*` will automatically include
+  Internara's standard header comments and type hints.
+
+---
+
+## 3. Strategy 3: The Base Module Pattern (Advanced)
+
+For scenarios where a module requires a non-standard starting point (e.g., pre-integrated
+third-party APIs), we use the **Base Module Pattern**.
+
+### 3.1 The Concept
+
+Instead of generating from stubs, we maintain a "Template" module. Creating a new feature becomes a
+process of **Cloning** and **Analytical Renaming**.
+
+### 3.2 Implementation Steps
+
+1.  **Draft**: Create a perfect module in `stubs/base-module`.
+2.  **Placeholder**: Use `{Module}` and `{module}` placeholders in filenames and content.
+3.  **Command**: Run a custom Artisan command that clones the folder and performs a recursive
+    search-and-replace on the placeholders.
+
+---
+
+_Custom scaffolding prevents "Configuration Drift." By automating the start of a module's life, we
+ensure that our architecture remains pure as the project grows._

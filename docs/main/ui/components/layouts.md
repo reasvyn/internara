@@ -1,90 +1,85 @@
-# UI Components: Layouts
+# UI Components: Structural Layouts
 
-Layout components provide the structural foundation for all pages in Internara. They ensure
-consistent HTML boilerplate, head meta-tags, and global asset loading.
+Layout components are the scaffolding of the Internara application. They manage the global HTML
+structure, meta-tags, responsive containers, and modular UI injection points.
 
-## `layouts.base`
+---
 
-The root layout component. Every page in the application ultimately extends this.
+## 1. `x-ui::layouts.base` (The Root)
 
-- **File Location:** `modules/UI/resources/views/components/layouts/base.blade.php`
-- **Prefix:** `ui::layouts.base`
+Every page in Internara ultimately resides within this component.
 
-### Usage
+- **Role**: Manages the `<head>` section, global styles, and system-wide toasts.
+- **Usage**:
 
 ```blade
-<x-ui::layouts.base title="Dashboard">
-    <div>Your content here</div>
+<x-ui::layouts.base title="Your Page Title">
+    {{ $slot }}
 </x-ui::layouts.base>
 ```
 
-### Props
+### Key Features:
 
-| Prop    | Type     | Default | Description                                  |
-| :------ | :------- | :------ | :------------------------------------------- |
-| `title` | `string` | `null`  | The page title displayed in the browser tab. |
-
-### Internal Structure
-
-- Includes `<x-ui::layouts.base.head>` for scripts, styles, and meta-tags.
-- Includes `<x-ui::toast />` for global notification support.
-- Provides a `@stack('scripts')` for page-specific JS.
+- **Automatic Head Management**: Includes SEO meta-tags and Vite asset loading.
+- **Flash Feedback**: Automatically includes the `<x-ui::toast />` component for system alerts.
+- **Script Stacking**: Supports `@stack('scripts')` for page-specific JavaScript.
 
 ---
 
-## `main`
+## 2. `x-ui::main` (Content Orchestrator)
 
-The primary content orchestrator. Handles sidebars, actions, and footer slots.
+This component defines the layout of an internal workspace page.
 
-- **Usage:**
+- **Role**: Handles responsive sidebar behavior and main content positioning.
+- **Usage**:
 
 ```blade
 <x-ui::main>
-    <x-slot:actions>
-        <x-ui::button label="Action" />
+    <x-slot:sidebar>
+        <!-- Navigation menu here -->
     </x-slot>
-    Content...
+
+    <x-slot:actions>
+        <x-ui::button label="Create Record" icon="tabler.plus" />
+    </x-slot>
+
+    {{ $slot }}
 </x-ui::main>
 ```
 
----
+### Supported Slots:
 
-## `header`
-
-Page header component with support for title, subtitle, middle, and actions slots.
-
-- **Usage:** `<x-ui::header title="Users" subtitle="Manage your users" />`
+- `sidebar`: The left-side navigation area (hidden on mobile, accessible via burger menu).
+- `actions`: A top-right area for primary page buttons.
+- `middle`: A central area in the header for search bars or tabs.
 
 ---
 
-## `toast`
+## 3. `x-ui::header` (Page Identity)
 
-Global notification component.
+Displays the title and context of the current view.
 
-- **Usage:** `<x-ui::toast />` (Included automatically in `layouts.base`).
-
----
-
-## `layouts.base.with-navbar`
-
-A specialized layout that includes the global navigation bar and a responsive main content area.
-
-- **File Location:** `modules/UI/resources/views/components/layouts/base/with-navbar.blade.php`
-
-### Usage
-
-```blade
-<x-ui::layouts.base.with-navbar title="Settings">
-    <div class="p-6">Settings Content</div>
-</x-ui::layouts.base.with-navbar>
-```
-
-### Slots
-
-- `default`: The main content of the page, wrapped in a `<main>` tag with appropriate spacing.
+- **Usage**: `<x-ui::header title="Student List" subtitle="Manage internship registrations" />`
+- **Logic**: Integrates with the `x-ui::main` component to ensure titles are responsive.
 
 ---
 
-**Navigation**
+## 4. `x-ui::toast` (Feedback Layer)
 
-[← Back to TOC](../table-of-contents.md) | [Next: Forms →](forms.md)
+A non-blocking notification system.
+
+- **Usage**: Handled automatically via `layouts.base`.
+- **Trigger**: In Livewire, use `$this->success('Message')` or `$this->error('Message')`.
+
+---
+
+## 5. `x-ui::layouts.guest` (Public Context)
+
+Used for non-authenticated pages like Login, Registration, or Certificate Verification.
+
+- **Role**: Provides a clean, focused container without navigation sidebars.
+
+---
+
+_Layouts are designed to be consistent across all modules. If you need to add a global element (like
+a help button), modify it in the `UI` module layouts to ensure it propagates everywhere._

@@ -1,30 +1,38 @@
-# Advanced Guides Overview
+# Advanced Engineering: Extending Internara
 
-This directory contains documentation for advanced development scenarios and customization within
-the Internara project. These guides are intended for developers who need to extend the core
-functionality of the modular architecture or customize the development workflow.
-
----
-
-## Guides in this Section
-
-### 1. [Custom Module Generator](custom-module-generator.md)
-
-Explains how to customize the generation of new modules, including the use of custom stubs and the
-"Base Module" cloning pattern for highly specific module structures.
+This directory contains documentation for advanced development scenarios, architectural extensions,
+and complex customizations. These guides are intended for senior developers who need to evolve the
+system's core or build highly specialized domain modules.
 
 ---
 
-## When to use these guides
+## 1. Advanced Guides Index
 
-Refer to these documents only after you have a solid understanding of the core architecture and
-standard workflows defined in the [Master Documentation](../main-documentation-overview.md).
-Advanced techniques should be used sparingly and only when the default conventions are insufficient
-for a specific business requirement.
+### 1.1 [Custom Module Scaffolding](custom-module-generator.md)
+
+Explains how to override the default Laravel Modules generators to enforce Internara's specific
+directory structure and strict-typing rules.
+
+### 1.2 Performance & Caching (Roadmap)
+
+Future guide on optimizing modular auto-discovery and hydration cycles in high-traffic environments.
 
 ---
 
-**Navigation**
+## 2. When to Use Advanced Guides
 
-[← Previous: Spatie Laravel Model Status Integration](../packages/spatie-laravel-model-status.md) |
-[Next: Custom Module Generator →](custom-module-generator.md)
+Refer to these documents only after you have mastered the
+**[Core Architecture](../architecture-guide.md)** and standard
+**[Development Workflow](../development-workflow.md)**.
+
+### Best Practices:
+
+- **Pragmatic Minimalism**: Only use advanced patterns if the standard conventions are insufficient
+  for the business requirement.
+- **Maintainability First**: Advanced customizations must be fully documented and covered by
+  comprehensive tests.
+
+---
+
+_The goal of our advanced engineering is to make the system more resilient and automated, never more
+complex for complexity's sake._

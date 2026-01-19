@@ -1,116 +1,65 @@
-# Policy Patterns
+# Policy Patterns: Authorization Logic
 
-Internara follows a standardized pattern for creating and using Laravel Policies to ensure
-consistent authorization logic across all modules.
-
-## Principles
-
-1.  **Permission-Based:** Policies should primarily check for **Permissions** (e.g., `user.create`)
-    rather than hard-coding **Roles** (e.g., `admin`).
-2.  **Module Isolation:** Policies for a specific module's models must reside within that module's
-    `src/Policies` directory.
-3.  **Naming Convention:** Permissions checked within a Policy must follow the `{module}.{action}`
-    format.
-4.  **Implicit Manage Check:** Most policies should check for a general `.manage` permission as a
-    fallback for full module control.
+In Internara, **Policies** are the primary mechanism for enforcing authorization. Every Eloquent
+model **must** have a Policy. This guide outlines the standard patterns for implementing secure and
+readable access control logic.
 
 ---
 
-## Technical Pattern
+## 1. Pattern: Permission + Ownership
 
-### 1. Permission Naming
-
-- `{module}.view`
-- `{module}.create`
-- `{module}.update`
-- `{module}.delete`
-- `{module}.manage` (Super permission for the module)
-
-### 2. Policy Implementation Example
+This is the most common pattern. A user can only manage a resource if they have the system-wide
+permission **AND** they are the owner of that specific record.
 
 ```php
-namespace Modules\User\Policies;
-
-use Modules\User\Models\User;
-
-class UserPolicy
+public function update(User $user, Journal $journal)
 {
-    public function viewAny(User $user): bool
-    {
-        return $user->can('user.view') || $user->can('user.manage');
-    }
-
-    public function view(User $user, User $model): bool
-    {
-        // Allow if it's the owner or has permission
-        return $user->id === $model->id || $user->can('user.view') || $user->can('user.manage');
-    }
-
-    public function create(User $user): bool
-    {
-        return $user->can('user.create') || $user->can('user.manage');
-    }
-
-    public function update(User $user, User $model): bool
-    {
-        return $user->id === $model->id || $user->can('user.update') || $user->can('user.manage');
-    }
-
-    public function delete(User $user, User $model): bool
-    {
-        return $user->can('user.delete') || $user->can('user.manage');
-    }
+    // Permission check AND Ownership check
+    return $user->can('journal.update') && $user->id === $journal->user_id;
 }
 ```
 
 ---
 
-## Registration
+## 2. Pattern: Super Supervisor
 
-Policies are automatically discovered by Laravel if they follow the standard naming convention
-(`Model` -> `ModelPolicy`). However, in a modular context, it is best practice to explicitly
-register them in the module's `AuthServiceProvider` or a dedicated `registerPolicies` method in the
-main `ServiceProvider`.
-
----
-
-## Usage in Controllers and Livewire
-
-### Using the `authorize` helper:
+Allowing a teacher or mentor to view or edit records for students assigned directly to them.
 
 ```php
-$this->authorize('update', $userModel);
-```
-
-### Using Blade directives:
-
-```blade
-@can('update', $user)
-    <button wire:click="edit">Edit</button>
-@endcan
-```
-
-### Using Service Layer (Recommended)
-
-While UI layers check for authorization to show/hide elements, the **Service Layer** must also
-enforce these rules for data integrity.
-
-```php
-public function update(mixed $id, array $data): Model
+public function view(User $user, Journal $journal)
 {
-    $model = $this->find($id);
+    // Check if the user is the assigned academic supervisor
+    $isSupervisor = $journal->registration->teacher_id === $user->id;
 
-    if (Gate::denies('update', $model)) {
-        throw new AuthorizationException();
-    }
-
-    // ... logic
+    return $user->can('journal.view') && $isSupervisor;
 }
 ```
 
 ---
 
-**Navigation**
+## 3. Pattern: The "Super Admin" Bypass
 
-[← Previous: Permission Seeders](permission-seeders.md) |
-[Next: Permission UI Components →](permission-ui-components.md)
+Super Admins bypass all policies. This is typically handled in the `AuthServiceProvider`'s `before`
+method, but it's important to remember when designing your logic.
+
+```php
+Gate::before(function ($user, $ability) {
+    return $user->hasRole('super-admin') ? true : null;
+});
+```
+
+---
+
+## 4. Best Practices
+
+1.  **Keep it Thin**: Policies should only contain authorization logic. Complex queries to determine
+    relationships should be moved to a Service.
+2.  **Explicit Naming**: Match policy method names to standard CRUD actions (`view`, `create`,
+    `update`, `delete`, `restore`, `forceDelete`).
+3.  **Default to Deny**: If a condition isn't met, return `false`.
+
+---
+
+_Consistent use of Policies ensures that Internara's security posture remains strong as new features
+are added. Never authorize an action directly in a Controller or Livewire component without a Policy
+check._

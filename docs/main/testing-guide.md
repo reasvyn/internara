@@ -151,10 +151,3 @@ test('it throws translated exception when deleting super-admin', function () {
     expect(fn() => $service->delete($superAdmin))->toThrow(AppException::class, $expectedMessage);
 });
 ```
-
----
-
-**Navigation**
-
-[← Previous: UI/UX Development Guide](ui-ux-development-guide.md) |
-[Next: Artisan Commands Reference →](artisan-commands-reference.md)

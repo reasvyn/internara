@@ -7,11 +7,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### 🚀 Overview
+
+Focuses on **Administrative Automation** and advanced reporting.
+
+---
+
 ## [v0.6.0-alpha] - 2026-01-19 (ARC01-FEAT-01)
 
 ### 🚀 Overview
 
-Completes the foundational internship cycle by implementing role-based workspaces, a unified 
+Completes the foundational internship cycle by implementing role-based workspaces, a unified
 assessment engine, and professional PDF reporting with public verification.
 
 ### ✨ Added
@@ -37,8 +45,9 @@ assessment engine, and professional PDF reporting with public verification.
 
 - **Module Deprecation:** Removed the `Dashboard` module entirely.
 - **Routing Logic:** Updated `RedirectService` to route users to their new dedicated workspace URLs.
-- **Global Documentation:** Synchronized the `Testing Guide` with the comprehensive technical library.
-- **Arch Definition:** Formally defined the `app/` directory as an Infrastructure Module in the 
+- **Global Documentation:** Synchronized the `Testing Guide` with the comprehensive technical
+  library.
+- **Arch Definition:** Formally defined the `app/` directory as an Infrastructure Module in the
   `Architecture Guide`.
 
 ### 🐛 Fixed
@@ -49,7 +58,7 @@ assessment engine, and professional PDF reporting with public verification.
   all new modules and components.
 - **Model Stability:** Resolved environment-specific Signal 4 (Illegal Instruction) crashes by
   migrating `decimal:2` casts to `float` in the `Assessment` model.
-- **Policy Integrity:** Created `InternshipRegistrationPolicy` to allow students to view their own 
+- **Policy Integrity:** Created `InternshipRegistrationPolicy` to allow students to view their own
   academic records.
 
 ---
@@ -134,7 +143,7 @@ school/department management, industry placement tracking, and localized user in
   ensure true modular isolation and portability.
 - **UUID Standard:** Migrated all institutional entities (School, Department, Internship) to UUID
   primary keys.
-- **Modular Relations:** Standardized inter-module relationships via Service-driven Traits.
+- **Modular Relations:** Standardized inter-module relationships via Service-driven Concerns.
 - **Setting Helper:** Refactored `setting()` for reliable multi-module fallback and performance.
 - **Terminology:** Reverted "Serial Code" back to "Series Code" to better represent development
   cycles.
@@ -177,7 +186,7 @@ school/department management, industry placement tracking, and localized user in
 ### Added
 
 - **RBAC Infrastructure:** Full integration of `spatie/laravel-permission` within a modular context.
-- **Shared Traits:** Foundational traits for **UUID** support and **Status** management.
+- **Shared Concerns:** Foundational concerns for **UUID** support and **Status** management.
 - **EloquentQuery Service:** Base service for standardized CRUD and query orchestration.
 
 ---
@@ -190,6 +199,7 @@ school/department management, industry placement tracking, and localized user in
 - **Modular Monolith:** Implementation of `nwidart/laravel-modules`.
 - **UI Module:** Centralized design system using **DaisyUI** and **MaryUI**.
 
+[Unreleased]: https://github.com/reasnov/internara/compare/v0.6.0-alpha...main
 [v0.6.0-alpha]: https://github.com/reasnov/internara/compare/v0.5.0-alpha...v0.6.0-alpha
 [v0.5.0-alpha]: https://github.com/reasnov/internara/compare/v0.4.0-alpha...v0.5.0-alpha
 [v0.4.0-alpha]: https://github.com/reasnov/internara/compare/v0.3.0-alpha...v0.4.0-alpha

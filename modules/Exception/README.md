@@ -27,7 +27,3 @@ presented safely to the user.
 ### 3. Multi-language Messages
 
 - Centralized translation files in `lang/` for common error states.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

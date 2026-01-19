@@ -1,56 +1,42 @@
 # Module Inventory - Table of Contents
 
-This document provides a comprehensive list of all modules within the Internara project, categorized
-by their architectural role.
-
-## 1. Foundation Modules
-
-Core infrastructure and project-agnostic utilities.
-
-- **[Shared](../../../modules/Shared/README.md)**: Universal traits, helpers, and base services.
-- **[Core](../../../modules/Core/README.md)**: Project-specific infrastructure and Artisan
-  generators.
-- **[Support](../../../modules/Support/README.md)**: Infrastructure integration and third-party
-  wrappers.
-- **[Exception](../../../modules/Exception/README.md)**: Centralized error handling and
-  localization.
-
-## 2. System Services
-
-Cross-cutting concerns and shared business services.
-
-- **[Auth](../../../modules/Auth/README.md)**: Authentication, registration, and email verification.
-- **[Permission](../../../modules/Permission/README.md)**: Role-Based Access Control (RBAC).
-- **[Profile](../../../modules/Profile/README.md)**: User profile management and polymorphic data.
-- **[User](../../../modules/User/README.md)**: Centralized user identity and administrative
-  management.
-- **[Setting](../../../modules/Setting/README.md)**: Global application configuration management.
-- **[Log](../../../modules/Log/README.md)**: User activity and system monitoring.
-- **[Media](../../../modules/Media/README.md)**: File upload and media library management.
-- **[Notification](../../../modules/Notification/README.md)**: Centralized system notifications.
-- **[Setup](../../../modules/Setup/README.md)**: Initial deployment and configuration wizard.
-
-## 3. UI & Presentation
-
-Modules dedicated to visual elements and user interaction.
-
-- **[UI](../../../modules/UI/README.md)**: Global design system, assets, and shared Blade
-  components.
-- **[Dashboard](../../../modules/Dashboard/README.md)**: Role-based landing pages, widgets, and
-  analytics.
-
-## 4. Domain Modules
-
-The business logic heart of the application.
-
-- **[School](../../../modules/School/README.md)**: Educational institution identity and settings.
-- **[Department](../../../modules/Department/README.md)**: Academic departments and specializations.
-- **[Internship](../../../modules/Internship/README.md)**: Core internship lifecycle and
-  registration.
-- **[Journal](../../../modules/Journal/README.md)**: Student activity tracking and daily logbooks.
-- **[Attendance](../../../modules/Attendance/README.md)**: Presence tracking and clock-in/out
-  logging.
+This index provides a comprehensive map of all application modules within Internara. Each link leads
+to the module's dedicated README, which details its purpose, data schema, and unique business logic.
 
 ---
 
-[← Back to Main Documentation](../table-of-contents.md)
+## 1. Core & Infrastructure Modules
+
+Modules that define the foundation of the system.
+
+- **[Core](../../../modules/Core/README.md)**: The central "glue" and global constants.
+- **[Shared](../../../modules/Shared/README.md)**: Universal **Concerns** and base services.
+- **[Support](../../../modules/Support/README.md)**: Development and CLI utilities.
+- **[UI](../../../modules/UI/README.md)**: The project's design system and layouts.
+
+## 2. Security & Identity
+
+- **[Auth](../../../modules/Auth/README.md)**: Authentication logic and session management.
+- **[User](../../../modules/User/README.md)**: User account management and role bridging.
+- **[Permission](../../../modules/Permission/README.md)**: The modular RBAC engine.
+- **[Profile](../../../modules/Profile/README.md)**: Specialized student and teacher identities.
+
+## 3. Business Domain Modules
+
+The functional heart of the internship management cycle.
+
+- **[Internship](../../../modules/Internship/README.md)**: Placement and registration logic.
+- **[Journal](../../../modules/Journal/README.md)**: Daily student logbooks and approvals.
+- **[Attendance](../../../modules/Attendance/README.md)**: Real-time student tracking.
+- **[Assessment](../../../modules/Assessment/README.md)**: Unified grading and scoring engine.
+
+## 4. Operational Support
+
+- **[Media](../../../modules/Media/README.md)**: File attachment and processing orchestration.
+- **[Log](../../../modules/Log/README.md)**: Audit trails and activity monitoring.
+- **[Notification](../../../modules/Notification/README.md)**: Multi-channel alerting system.
+
+---
+
+_New modules should be added to this index as soon as they are scaffolded via the
+**[Development Workflow](../development-workflow.md)**._

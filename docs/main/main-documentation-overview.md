@@ -3,59 +3,50 @@
 This document serves as the central entry point for the primary developer documentation within the
 Internara project.
 
-## Core Documentation
+## Core Engineering Guides
 
-- **[Architecture Guide](architecture-guide.md)**: Provides a high-level, developer-friendly guide
-  to Internara's modular architecture, explaining the core concepts, layers (UI, Services,
-  Repositories, Entities), and module communication best practices.
-- **[EloquentQuery Base Service](eloquent-query-service.md)**: Technical reference for the
-  standardized service layer implementation used for model interactions.
-- **[Module Inventory](modules/table-of-contents.md)**: Comprehensive list and technical guides for
-  all modules, now located within their respective directories.
-- **[ManagesModuleProvider Trait](module-provider-concerns.md)**: Guide on the standardized
-  bootstrapping process for modular service providers.
-- **[Shared Model Traits](shared-traits.md)**: Reference for reusable Eloquent traits like UUID and
-  Status management.
-- **[Service Binding & Auto-Discovery](service-binding-auto-discovery.md)**: Detailed documentation
-  on the automated dependency injection system, configuration, caching, and manual overrides.
-- **[Module Structure Overview](foundational-module-philosophy.md)**: Provides an overview of the
-  Core, Shared, Support, and Domain modules, detailing their purpose and contents.
-- **[Best Practices Guide](conceptual-best-practices.md)**: A conceptual overview of core
-  architectural principles, development conventions, testing philosophy.
-- **[UI Module TOC](ui/table-of-contents.md)**: Comprehensive guide detailing UI/UX principles,
-  shared components, and technical specifications for frontend implementation.
-- **[Development Conventions](development-conventions.md)**: Outlines the coding and development
-  conventions for the project, ensuring consistency and maintainability, including important
-  namespace conventions for modular development.
-- **[Role & Permission Management Guide](role-permission-management.md)**: The primary guide for
-  creating, managing, and using Roles and Permissions, detailing the conventions and separation of
-  concerns between modules.
-- **[Permission Seeders](permission-seeders.md)**: Details on the foundational roles and permissions
-  seeded during system setup.
-- **[Permission UI Components](permission-ui-components.md)**: Documentation for shared UI elements
-  related to authorization.
-- **[Development Workflow](development-workflow.md)**: A practical, step-by-step guide to
-  implementing features within the architecture, from creating modules to writing services and
-  tests.
-- **[Testing Guide](testing-guide.md)**: A comprehensive guide covering the project's testing
-  philosophy, Pest framework usage, test directory structure, writing tests, and running tests.
-- **[Artisan Commands Reference](artisan-commands-reference.md)**: A comprehensive list of all
-  available Artisan commands within the Internara application, categorized for easy reference.
-- **[Installation Guide](installation-guide.md)**: Provides step-by-step instructions to set up the
-  Internara application for local development.
-- **[Exception Handling Guide](exception-handling-guidelines.md)**: Details the philosophy, key
-  classes, and best practices for managing exceptions consistently across the application.
+- **[Architecture Guide](architecture-guide.md)**: A deep-dive into Internara's Modular Monolith
+  architecture, explaining layers (UI, Services, Data) and the **Isolation Principle**.
+- **[Feature Implementation Workflow](development-workflow.md)**: The standard operating procedure
+  for building features, from planning to artifact synchronization.
+- **[EloquentQuery Base Service](eloquent-query-service.md)**: Technical reference for our
+  standardized service layer that reduces CRUD boilerplate.
+- **[Shared Model Concerns](shared-concerns.md)**: Documentation for reusable Eloquent behaviors
+  like **UUID** identity and **Status** management.
+- **[Service Binding & Auto-Discovery](service-binding-auto-discovery.md)**: How the application
+  automatically maps **Contracts** to concrete implementations.
+- **[Module Provider Concerns](module-provider-concerns.md)**: Detailed guide on how modular service
+  providers bootstrap their respective domains.
 
-## Sub-Sections
+## Standards & Conventions
 
-- **[Package Integration Overview](packages/packages-overview.md)**: Configuration and usage of core
-  dependencies like Livewire, Laravel Modules, and Spatie packages.
-- **[Advanced Guides Overview](advanced/advanced-overview.md)**: Advanced development scenarios and
-  customizations.
+- **[Development Conventions](development-conventions.md)**: The authoritative guide on naming
+  conventions, namespace rules (omitting `src`), and directory structures.
+- **[Best Practices Guide](conceptual-best-practices.md)**: A conceptual overview of our engineering
+  philosophy (Interface-First, Separation of Concerns).
+- **[UI/UX Development Guide](ui-ux-development-guide.md)**: Global design principles and technical
+  specifications for building interfaces with MaryUI/DaisyUI.
+- **[Exception Handling Guide](exception-handling-guidelines.md)**: How we manage errors and user
+  feedback consistently across the system.
+
+## Authorization & Security
+
+- **[Role & Permission Management](role-permission-management.md)**: The primary guide for
+  implementing RBAC using Policies and the modular Permission system.
+- **[Policy Patterns](policy-patterns.md)**: Standardized logic for protecting resources.
+- **[Permission Seeders](permission-seeders.md)**: How foundational roles are defined and persisted.
+- **[Permission UI Components](permission-ui-components.md)**: Shared interface elements for
+  managing access.
+
+## Operations & Setup
+
+- **[Installation Guide](installation-guide.md)**: Step-by-step instructions for local setup.
+- **[Artisan Commands Reference](artisan-commands-reference.md)**: A catalog of custom modular
+  generators and utility commands.
+- **[Software Lifecycle](software-lifecycle.md)**: Our internal SDLC phases from concept to Released
+  status.
 
 ---
 
-**Navigation**
-
-[← Previous: Project Overview](../project-overview.md) |
-[Next: Table of Contents](table-of-contents.md)
+_New to the project? Start with the **[Architecture Guide](architecture-guide.md)** and then follow
+the **[Development Workflow](development-workflow.md)** to build your first feature._

@@ -84,7 +84,7 @@ and development documentation, always refer to the project’s `/docs` directory
   includes maintaining the `app_info.json` artifact at the root.
 
 - **Proactive Renaming & Restructuring** You are authorized to propose renaming files, folders,
-  classes, methods, interfaces, traits, attributes, parameters, keys, or even entire modules if the
+  classes, methods, contracts, concerns, attributes, parameters, keys, or even entire modules if the
   current naming is inaccurate or suboptimal.
     - **Mandatory Approval:** You must explicitly ask for and receive user approval before applying
       these changes.
@@ -204,11 +204,11 @@ Namespaces **must omit the `src` segment**:
 ### Service Layer
 
 - **Role:** The "Brain" of the application. Orchestrates all business logic.
-- **Pattern:** **Interface-First**. Always type-hint interfaces, never concrete classes, when
+- **Pattern:** **Contract-First**. Always type-hint contracts, never concrete classes, when
   injecting services across modules.
 - **Base Class:** Services performing CRUD should extend `Modules\Shared\Services\EloquentQuery`.
 - **Constraint:** Never call `env()`. Use `setting()` for application layer and `config()` for
-  infrastucture layer.
+  infrastructure layer.
 - **Validation:** Services accept DTOs or validated arrays, not `Request` objects.
 
 ---

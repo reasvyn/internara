@@ -1,118 +1,79 @@
-# Laravel Livewire Integration
+# Laravel Livewire: Reactive Modular UI
 
-Livewire is the primary framework for building dynamic, reactive user interfaces in the Internara
-application. It allows us to create modern, interactive components primarily using PHP, which aligns
-with our goal of a simplified, full-stack development experience. For general development
-conventions [Development Conventions Guide](../development-conventions.md)\*\*.
-
----
-
-## Table of Contents
-
-1.  [Livewire-Specific Architectural Patterns](#1-livewire-specific-architectural-patterns)
-2.  [Livewire Cross-Module Communication Mechanisms](#2-livewire-cross-module-communication-mechanisms)
-3.  [Dependency Injection in Livewire Components](#3-dependency-injection-in-livewire-components)
+Livewire is the primary framework for building interactive user interfaces in Internara. By
+leveraging the TALL stack, we maintain a simplified, full-stack development experience while
+achieving SPA-like reactivity.
 
 ---
 
-## 1. Livewire-Specific Architectural Patterns
+## 1. Architectural Role in Modules
 
-Our use of Livewire is heavily integrated with our modular architecture and follows strict
-conventions. For a comprehensive understanding of the project's overall modular architecture, refer
-to the **[Architecture Guide](../architecture-guide.md)**.
+In our layered architecture, Livewire acts as the **Presentation Layer**.
 
-- **Modular Components:** Livewire components reside within their respective modules
-  (`modules/{ModuleName}/src/Livewire`). We use the `mhmiton/laravel-modules-livewire` package to
-  enable component discovery via the `module::component` syntax (e.g.,
-  `@livewire('user::profile-form')`).
-- **Thin Components (No Business Logic):** Livewire components **must not** contain any business
-  logic. Their role is strictly limited to handling UI events, managing component state, and
-  delegating all business operations to dedicated **Service classes**. This reinforces the layered
-  architecture detailed in the **[Architecture Guide](../architecture-guide.md)**.
-- **Volt for Single-File Components:** Where appropriate, we use **Volt** to create single-file
-  Livewire components.
-- **UI Libraries:** All Livewire components are styled using a combination of **Tailwind CSS**,
-  **DaisyUI**, and the **MaryUI** component library.
-  [UI/UX Development Guide](../ui-ux-development-guide.md).
+### 1.1 Strict Gating (Thin Components)
 
----
+Livewire components **must not** contain business logic. Their responsibilities are:
 
-## 2. Livewire Cross-Module Communication Mechanisms
+- Capturing user input.
+- Managing local UI state (e.g., toggling modals).
+- Delegating data processing to **Service** classes.
+- Rendering views using **MaryUI** and **DaisyUI** components.
 
-To maintain the isolation of our modules, Livewire components communicate across module boundaries
-using one of two approved methods. For the general principles of inter-module communication, refer
-to the **[Architecture Guide](../architecture-guide.md)**.
+### 1.2 Modular Discovery
 
-1.  **Event-Based Rendering (Browser Events):** This is the preferred method for dynamic,
-    client-side interactions. A component in one module can dispatch a browser event
-    (`$this->dispatch()`), and a component in another module can listen for that event
-    (`#[On('event-name')]`) to refresh its state or trigger an action.
-2.  **Slot Injection (`@slotRender`):** For server-rendered UI, the application uses a custom slot
-    system. This allows a module to register a Livewire component to a named "slot," which is then
-    rendered by a layout in another module (typically the `UI` module). This is used for less
-    dynamic content. For details on the slot system, refer to the
-    **[UI/UX Development Guide](../ui-ux-development-guide.md)**.
+We use the `module::component` syntax. This is made possible by the
+`mhmiton/laravel-modules-livewire` bridge.
+
+- **Example**: `@livewire('user::profile-form')` points to
+  `modules/User/src/Livewire/ProfileForm.php`.
 
 ---
 
-## 3. Dependency Injection in Livewire Components
+## 2. Dependency Injection: The `boot()` Rule
 
-When performing Dependency Injection (DI) into Livewire components, it is crucial to use the
-`boot()` method instead of the class constructor. This approach is necessitated by Livewire's
-internal mechanisms for component hydration and property management. For the general convention on
-DI in Livewire, refer to the **[Development Conventions Guide](../development-conventions.md)**.
+A critical convention in Internara: **Never use the constructor for Dependency Injection in Livewire
+components.**
 
-**Why use `boot()` for DI?** Livewire's lifecycle involves hydrating component properties (e.g.,
-public properties bound to the view) _after_ the constructor has run. Injecting dependencies
-directly into the constructor can interfere with this hydration process or lead to unexpected
-behavior if those dependencies are needed during hydration. The `boot()` method is executed after
-the component's properties have been fully hydrated, making it the ideal place to resolve and inject
-any required services.
+### Why?
 
-**Best Practice:** Always type-hint interfaces for your dependencies to maintain loose coupling.
+Livewire's hydration cycle recreates the component instance on every request. Injecting dependencies
+in the constructor can lead to stale objects or hydration failures.
 
-**Example:**
+### The Correct Way
+
+Use the `boot()` method to inject your **Contracts**.
 
 ```php
-<?php
+protected UserServiceInterface $userService;
 
-namespace Modules\User\Livewire;
-
-use Livewire\Component;
-use Modules\User\Contracts\Services\UserService; // Injecting an interface
-
-class UserProfileEditor extends Component
+public function boot(UserServiceInterface $userService): void
 {
-    public $userId;
-    protected UserService $userService; // Declare the property for the injected service
-
-    // Avoid constructor injection for services in Livewire components
-    // public function __construct(UserService $userService) { ... }
-
-    public function boot(UserService $userService): void
-    {
-        // Resolve and assign the service here, after properties are hydrated
-        $this->userService = $userService;
-    }
-
-    public function mount(string $userId): void
-    {
-        $this->userId = $userId;
-        // You can now use $this->userService here
-        $user = $this->userService->getUser($this->userId);
-        // ...
-    }
-
-    public function render()
-    {
-        return view('user::livewire.user-profile-editor');
-    }
+    $this->userService = $userService;
 }
 ```
 
 ---
 
-**Navigation**
+## 3. Inter-Module Communication
 
-[← Previous: Laravel Framework Integration](laravel-framework.md) |
-[Next: Laravel Modules Integration →](nwidart-laravel-modules.md)
+To maintain modular isolation, Livewire components should never reference other components from
+different modules directly. Use these approved patterns:
+
+### 3.1 Browser Events (Client-Side)
+
+The preferred method for dynamic updates.
+
+- **Trigger**: `$this->dispatch('user-updated')`.
+- **Listen**: `#[On('user-updated')]` in another module's component.
+
+### 3.2 UI Slots (Server-Side)
+
+For static or layout-level injection.
+
+- **Usage**: Modules register their components to a named slot (e.g., `navbar.actions`).
+- **Render**: The `UI` module renders these slots via `@slotRender`.
+
+---
+
+_Livewire is our most powerful UI tool. Following these conventions ensures that your interfaces
+remain fast, secure, and easy to test._

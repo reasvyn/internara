@@ -34,7 +34,3 @@ projects.
 
 - **[ManagesModuleProvider](../../docs/main/module-provider-concerns.md)**: A trait to automate
   module bootstrapping.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

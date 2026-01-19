@@ -15,7 +15,3 @@ mobile-friendly to facilitate quick feedback from busy professionals.
 
 - **Intern Overview:** Displays interns assigned to the mentor's company/department.
 - **Activity Monitoring:** Quick view of intern attendance and journals.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

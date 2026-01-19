@@ -1,142 +1,58 @@
-# Service Binding and Auto-Discovery
+# Service Binding & Auto-Discovery
 
-Internara provides a robust and flexible Service Binding mechanism powered by the
-`BindServiceProvider`. This system automates the registration of dependency injection bindings while
-offering complete control through configuration.
-
-## Features
-
-- **Auto-Discovery:** Automatically binds interfaces to their implementation based on naming
-  conventions.
-- **High Performance:** Discovery results are cached (configurable TTL) to prevent I/O overhead in
-  production.
-- **Configurable Patterns:** Customize how implementations are guessed (e.g., `UserRepository`
-  (Interface) -> `UserRepository` or `Repositories\EloquentUserRepository`).
-- **Security:** Block sensitive namespaces from being auto-bound.
-- **Contextual Binding:** Define dependencies based on the consuming class.
-- **Singleton Support:** Toggle between singleton or transient bindings globally.
-
-## Configuration
-
-All configurations are managed in `config/bindings.php`.
-
-### 1. Enabling/Disabling Auto-Bind
-
-```php
-'autobind' => true,
-```
-
-### 2. Caching
-
-In production, discovery results are cached. In `local` environment, cache is disabled (TTL = 0) for
-developer experience.
-
-```php
-'cache_ttl' => 1440, // Minutes (24 hours)
-```
-
-### 3. Singleton Mode
-
-If your services are stateless, you can enable singleton mode to save memory.
-
-```php
-'bind_as_singleton' => false,
-```
-
-### 4. Custom Patterns
-
-Define how the system should find the concrete class for a given interface. Placeholders:
-
-- `{{root}}`: The root namespace (e.g., `Modules\User` or `App`).
-- `{{short}}`: The interface name without `Interface` or `Contract` suffix.
-
-```php
-'patterns' => [
-    '{{root}}\Services\{{short}}Service',
-    '{{root}}\Services\{{short}}',
-    '{{root}}\Repositories\Eloquent\{{short}}Repository',
-],
-```
-
-### 5. Ignored Namespaces
-
-Prevent auto-binding for specific namespaces (e.g., internal secrets).
-
-```php
-'ignored_namespaces' => [
-    'Modules\Core',
-    'App\Services\Secret',
-],
-```
-
-## Manual & Contextual Binding
-
-### Manual Binding
-
-For cross-module bindings or exceptions to the rule, use the `default` array in the config.
-
-```php
-'default' => [
-    'Modules\Auth\Contracts\UserService' => 'Modules\User\Services\UserService',
-],
-```
-
-### Contextual Binding
-
-Define what implementation to use based on the class that needs it.
-
-```php
-'contextual' => [
-    [
-        'when'  => 'App\Http\Controllers\PhotoController',
-        'needs' => 'App\Contracts\Filesystem',
-        'give'  => 'App\Services\LocalFilesystem',
-    ],
-],
-```
-
-Alternatively, you can define complex logic in the `BindServiceProvider::contextualBindings()`
-method.
-
-## How Auto-Discovery Works
-
-1.  The provider scans `App/Contracts` and `Modules/*/src/Contracts`.
-2.  It parses PHP files to find Interface definitions.
-3.  It determines the **Root Namespace** (e.g., `Modules\User`).
-4.  It generates candidate class names using the configured `patterns`.
-5.  If a candidate class exists and implements the interface, it is registered.
-
-> **Note:** Auto-discovery works best when the Interface and the Implementation share the same Root
-> Namespace. For cross-module dependencies, use Manual Binding.
+To facilitate easy cross-module communication and minimize Service Provider clutter, Internara
+utilizes an **Auto-Discovery** system for its service layer. This system automatically maps
+**Contracts** (Interfaces) to their concrete implementations based on directory structure.
 
 ---
 
-## Interaction with `ManagesModuleProvider` Trait
+## 1. How It Works
 
-While the `BindServiceProvider` excels at auto-discovering bindings based on conventions, modules
-often require explicit control over their service bindings (e.g., for custom implementations,
-singletons, or more complex resolution logic).
+The system scans the following directories for PHP classes:
 
-The `Modules\Shared\Providers\Concerns\ManagesModuleProvider` trait (used by all standard module
-service providers) offers a structured way to explicitly declare these bindings within a module's
-`bindings()` method.
+- `app/Services`
+- `modules/{ModuleName}/src/Services`
 
-- **Auto-Discovery (by `BindServiceProvider`)**: Ideal for simple `Interface -> Implementation`
-  bindings that follow strict naming conventions.
-- **Explicit Declaration (by `ManagesModuleProvider` trait)**: Use this for:
-    - Custom bindings that don't fit auto-discovery patterns.
-    - Ensuring specific singletons.
-    - Resolving ambiguities.
-    - Decoupling intra-module dependencies where auto-discovery might be overridden or is less
-      clear.
+### 1.1 The Directory Pattern
 
-When a module uses the `ManagesModuleProvider` trait and explicitly binds an interface in its
-`bindings()` method, that explicit binding will take precedence over any potential auto-discovery
-attempts by the `BindServiceProvider` for that specific interface.
+The auto-discovery engine expects a specific layout:
+
+1.  **Contract**: Stored in `Services/Contracts/` (e.g., `UserServiceInterface.php`).
+2.  **Implementation**: Stored directly in `Services/` (e.g., `UserService.php`).
+
+If a class in `Services/` implements an interface found in its own `Contracts/` subdirectory, the
+binding is registered automatically in the Laravel Service Container.
 
 ---
 
-**Navigation**
+## 2. Configuration & Overrides
 
-[← Previous: ManagesModuleProvider Trait](module-provider-concerns.md) |
-[Next: Conceptual Best Practices →](conceptual-best-practices.md)
+While auto-discovery handles 90% of cases, manual control is sometimes necessary.
+
+### 2.1 The `config/bindings.php` File
+
+Use this file to manually register complex bindings or override auto-discovered ones.
+
+- **Example**: Mapping a Contract to different implementations based on environment.
+
+### 2.2 Caching
+
+For production performance, the discovered bindings are cached.
+
+- **Refresh Cache**: `php artisan app:refresh-bindings` (Custom command).
+
+---
+
+## 3. Benefits for Developers
+
+- **Zero-Config Injection**: Simply create your Contract and Service, and you can immediately
+  type-hint the Contract in your constructors.
+- **Decoupling**: Encourages the use of Contracts, making the code easier to test and refactor.
+- **Clean Providers**: Module Service Providers remain focused on booting components rather than
+  endless binding lists.
+
+---
+
+_Always follow the directory naming standard to ensure your services are discovered. If your service
+isn't binding, verify that the Contract is in the `Contracts/` folder and the implementation
+properly `implements` it._

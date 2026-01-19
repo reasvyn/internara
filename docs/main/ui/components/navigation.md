@@ -1,107 +1,62 @@
-# UI Components: Navigation
+# UI Components: Navigation & Branding
 
-These components handle application navigation, branding, and modular UI injection.
-
-## `navbar`
-
-The primary navigation bar. It is designed to be extensible via the `SlotManager`.
-
-- **Prefix:** `ui::navbar`
-
-### Usage
-
-```blade
-<x-ui::navbar />
-```
-
-### Extension Points (Slots)
-
-The navbar uses `@slotRender` to allow other modules to inject content:
-
-1. `navbar.brand`: Where the logo or app name is rendered.
-2. `navbar.actions`: Where user menus, theme togglers, or notifications are rendered.
+These components handle the user's journey through the Internara platform, including modular
+injection of menu items and visual branding.
 
 ---
 
-## `nav`
+## 1. `x-ui::navbar` (Global Access)
 
-A utility navigation component often used for smaller, secondary navigation sets or within layouts.
+The top bar found in all dashboard layouts.
 
-- **Usage:**
+- **Dynamic Content**: The navbar is extensible via the **`SlotManager`**. Modules can inject
+  actions or branding without modifying the core UI module.
+- **Slots**:
+    - `navbar.brand`: Displays the application logo and title.
+    - `navbar.actions`: Contains user menus, notifications, and theme togglers.
+
+---
+
+## 2. `x-ui::sidebar` (Workspace Menu)
+
+The vertical menu used for role-specific navigation.
+
+- **Usage**:
 
 ```blade
-<x-ui::nav>
-    <x-slot:actions>
-        <x-ui::button label="Login" />
-    </x-slot>
-</x-ui::nav>
+<x-ui::sidebar drawer="main-drawer" collapsible>
+    <x-ui::menu-item title="Dashboard" icon="tabler.home" link="/admin" />
+    <x-ui::menu-sub title="Management" icon="tabler.users">
+        <x-ui::menu-item title="Users" link="/admin/users" />
+    </x-ui::menu-sub>
+</x-ui::sidebar>
 ```
 
 ---
 
-## `footer`
+## 3. `x-ui::brand` (Application Identity)
 
-The global application footer.
+Renders the "Internara" logo and title linked to the homepage.
 
-- **Prefix:** `ui::footer`
-
-### Usage
-
-```blade
-<x-ui::footer />
-```
-
-### Extension Points (Slots)
-
-1. `footer.app-credit`: Allows modules to add additional credits or links to the footer.
+- **Source**: Pulls the application name from `setting('brand_name')`.
 
 ---
 
-## `brand`
+## 4. `x-ui::tabs` (In-Page Navigation)
 
-Renders the application name from the system settings.
+Used for switching between views within a single component.
 
-- **Usage:** `<x-ui::brand />`
-- **Output:** A link to `/` containing the `brand_name` setting.
-
----
-
-## `dropdown`
-
-A dropdown menu component.
-
-- **Usage:**
+- **Example**:
 
 ```blade
-<x-ui::dropdown label="Actions">
-    <x-ui::menu-item title="Edit" icon="tabler.edit" />
-    <x-ui::menu-item title="Delete" icon="tabler.trash" />
-</x-ui::dropdown>
-```
-
----
-
-## `tabs` & `tab`
-
-Navigation tabs for switching between views.
-
-- **Usage:**
-
-```blade
-<x-ui::tabs wire:model="selectedTab">
-    <x-ui::tab name="tab1" label="Overview" icon="tabler.home">Content 1</x-ui::tab>
-    <x-ui::tab name="tab2" label="Settings" icon="tabler.settings">Content 2</x-ui::tab>
+<x-ui::tabs wire:model="activeTab">
+    <x-ui::tab name="info" label="General Info" icon="tabler.info-circle" />
+    <x-ui::tab name="history" label="Log History" icon="tabler.history" />
 </x-ui::tabs>
 ```
 
 ---
 
-## `sidebar`
-
-_(Currently placeholder)_ - Intended for vertical navigation layouts.
-
----
-
-**Navigation**
-
-[← Forms](forms.md) | [Next: Display →](display.md)
+_Navigation components are the only parts of the UI that interact directly with modular boundaries
+via slots. Refer to **[Module Provider Concerns](../module-provider-concerns.md)** to learn how to
+inject menu items from your module._

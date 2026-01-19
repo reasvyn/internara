@@ -13,7 +13,3 @@ The `Media` module provides centralized management for file uploads and digital 
 
 - **Model Integration**: Pre-configured traits for domain models to interact with the media library.
 - **Avatar & Logo Support**: Specialized handling for profile pictures and institution logos.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

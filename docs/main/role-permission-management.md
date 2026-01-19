@@ -1,136 +1,85 @@
-# Role-Based Access Control (RBAC)
+# Role & Permission Management: Security RBAC
 
-Internara implements a robust RBAC system powered by `spatie/laravel-permission`, encapsulated
-within the `Permission` module. This system ensures secure and granular access control across all
-domain modules.
-
-## Core Concepts
-
-- **Roles:** Groups of permissions (e.g., `super-admin`, `admin`, `teacher`, `student`).
-- **Permissions:** Granular abilities mapped to module actions (e.g., `user.create`,
-  `internship.approve`).
-- **Isolation:** Domain modules do not interact with the `Permission` models directly. They use
-  standard Laravel `Gate` and `Policy` systems.
+Internara implements a robust **Role-Based Access Control (RBAC)** system using the
+`spatie/laravel-permission` package. We have customized this implementation to support **UUIDs** and
+modular isolation, ensuring that access management is both granular and scalable.
 
 ---
 
-## Technical Implementation
+## 1. Roles vs. Permissions
 
-### 1. Modular Configuration
+We distinguish between roles (who you are) and permissions (what you can do).
 
-The `Permission` module overrides Spatie's default models at runtime within its
-`PermissionServiceProvider` to use custom, modularized models:
+### 1.1 Fundamental Roles
 
-```php
-config([
-    'permission.models.role' => \Modules\Permission\Models\Role::class,
-    'permission.models.permission' => \Modules\Permission\Models\Permission::class,
-]);
-```
+Defined in the `Core` module seeders:
 
-### 2. UUID Support
+- **Super Admin**: Full system access, bypasses all gates.
+- **Admin**: School-level administrative access.
+- **Teacher**: Academic supervision and grading.
+- **Mentor**: Industry-side log review and assessment.
+- **Student**: Daily journals, attendance, and record viewing.
 
-Both `Role` and `Permission` models use the `HasUuid` trait, allowing for secure, non-sequential
-identifiers if configured via `permission.model_key_type`.
+### 1.2 Granular Permissions
 
-### 3. SuperAdmin Bypass
+Permissions follow a **Module-Action** naming convention:
 
-The system grants absolute access to the `super-admin` role using a global `Gate::before` check
-defined in the `PermissionServiceProvider`:
-
-```php
-Gate::before(function (User $user, string $ability) {
-    return $user->hasRole('super-admin') ? true : null;
-});
-```
-
-## Role Definitions (v0.3.x Scope)
-
-### 1. SuperAdmin
-
-- **Purpose:** System Owner.
-- **Scope:** Absolute access to all modules.
-- **Protection:** Cannot be deleted or have its role changed via standard UI.
-- **Verification:** Automatically marked as **Verified** upon creation/registration.
-
-### 2. Admin
-
-- **Purpose:** School/Organization Administrator.
-- **Scope:** Manages users, school settings, departments, and foundational data.
-- **Limitations:** Cannot manage SuperAdmin accounts.
-- **Verification:** Automatically marked as **Verified** upon creation by another administrator.
-
-### 3. Teacher
-
-- **Purpose:** Internship Supervisor.
-- **Scope:** Manages assigned students, reviews journals, and performs assessments.
-- **Special Fields:** Requires **NIP** (Nomor Induk Pegawai).
-
-### 4. Student
-
-- **Purpose:** Internship Participant.
-- **Scope:** Manages own internship application, logs daily journals, and views assessments.
-- **Special Fields:** Requires **NISN** (Nomor Induk Siswa Nasional).
+- `user.view`, `user.create`, `user.update`
+- `attendance.check-in`, `journal.approve`
 
 ---
 
-## Development Workflow
+## 2. Implementation in Modules
 
-### Defining Permissions
+Access control must be enforced at every layer of the application.
 
-Permissions should follow the `{module}.{action}` naming convention. Example: `school.update`,
-`department.delete`.
+### 2.1 The UI Layer (Livewire)
 
-### Protecting Routes
-
-Use Laravel's built-in middleware in your module's `RouteServiceProvider` or route files:
-
-```php
-Route::get('/settings', Settings::class)->middleware('permission:system.settings');
-```
-
-### Protecting Actions (Policies)
-
-Always create a Policy for your domain models.
-
-```php
-namespace Modules\Internship\Policies;
-
-use Modules\User\Models\User;
-use Modules\Internship\Models\Internship;
-
-class InternshipPolicy
-{
-    public function update(User $user, Internship $internship): bool
-    {
-        return $user->can('internship.update');
-    }
-}
-```
-
-### Checking Permissions in UI (Livewire/Blade)
+Use the `@can` Blade directive or `$this->authorize()` in Livewire components.
 
 ```blade
 @can('user.create')
-    <button wire:click="create">Add User</button>
+    <x-ui::button label="Create User" />
 @endcan
+```
+
+### 2.2 The Service Layer
+
+Services should check permissions before performing destructive operations.
+
+```php
+if (!auth()->user()->can('user.delete')) {
+    throw new AuthorizationException();
+}
 ```
 
 ---
 
-## Best Practices
+## 3. Mandatory Policies
 
-1.  **Check Permissions, Not Roles:** Always use `$user->can('permission.name')` instead of
-    `$user->hasRole('role.name')` in your business logic. Roles should only be used for high-level
-    grouping.
-2.  **Seed Centrally:** Define all foundational roles and permissions in the `Permission` module
-    seeders to maintain a single source of truth.
-3.  **Modular Ownership:** When creating permissions, assign them to a `module` (using the `module`
-    column in the permissions table) to keep the system organized.
+Every Eloquent model **must** have a corresponding Policy class. This centralizes authorization
+logic and allows for complex ownership checks.
+
+**Example: `JournalPolicy`**
+
+```php
+public function update(User $user, Journal $journal)
+{
+    // Check both permission AND ownership
+    return $user->can('journal.update') && $user->id === $journal->user_id;
+}
+```
 
 ---
 
-**Navigation**
+## 4. Seeding & Syncing
 
-[← Previous: Development Workflow](development-workflow.md) |
-[Next: Exception Handling Guidelines →](exception-handling-guidelines.md)
+Permissions are defined within each module's `Database/Seeders` directory.
+
+- Use the **`PermissionService`** to safely register and assign permissions during installation.
+- **Command**: `php artisan permission:sync` (Custom command to refresh all modular permissions).
+
+---
+
+_Security is a shared responsibility. Always default to "Deny" and explicitly grant only the
+permissions necessary for a role to perform its function._

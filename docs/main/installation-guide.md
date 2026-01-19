@@ -1,127 +1,89 @@
-# Installation Guide
+# Installation Guide: Setting Up Internara
 
-This guide provides step-by-step instructions to set up the Internara application for local
-development.
+Welcome! This guide will walk you through the process of setting up a local development environment
+for the Internara project. By following these steps, you'll have a fully functional Modular Monolith
+running on your machine.
 
 ---
 
-## 1. Prerequisites
+## 🛠 1. System Requirements
 
-Before you begin, ensure you have the following installed on your system:
+Ensure your machine meets the following prerequisites:
 
-- **PHP:** Version 8.2 or higher
-- **Composer:** Latest stable version
-- **Node.js & NPM:** Latest LTS version
-- **Git:** Latest stable version
-- **Database:** MySQL 8+, PostgreSQL, or SQLite
-- **Web Server:** Nginx or Apache (optional, for local development)
+- **PHP 8.4+** (Required for latest Laravel features).
+- **Composer** (PHP dependency manager).
+- **Node.js & NPM** (For building the TALL stack assets).
+- **SQLite, MySQL, or PostgreSQL** (SQLite is recommended for local development).
 
-### Key Third-Party Packages
+---
 
-This project relies on several key packages that are automatically installed via Composer:
-
-- [nwidart/laravel-modules](https://nwidart.com/laravel-modules/v11/introduction)
-- [spatie/laravel-permission](https://spatie.be/docs/laravel-permission/v6/introduction)
-- [robsontenorio/mary](https://mary-ui.com/)
-
-## 2. Setup Instructions
-
-Follow these steps to get Internara up and running on your local machine:
+## 🚀 2. Step-by-Step Setup
 
 ### Step 1: Clone the Repository
 
-Clone the project repository from your version control system:
-
 ```bash
-git clone <repository-url>
+git clone https://github.com/reasnov/internara.git
 cd internara
 ```
 
 ### Step 2: Install PHP Dependencies
 
-Install the Composer dependencies:
-
 ```bash
 composer install
 ```
 
-### Step 3: Install JavaScript Dependencies
-
-Install the NPM dependencies and build the assets:
+### Step 3: Install Node.js Dependencies
 
 ```bash
 npm install
-npm run build
 ```
 
 ### Step 4: Environment Configuration
 
-Copy the example environment file and generate an application key:
+Create your local environment file and generate the application key.
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Then, open the `.env` file and configure your database connection and other environment variables.
+_Note: If using SQLite, ensure you create the database file: `touch database/database.sqlite`._
 
-```dotenv
-# .env
+### Step 5: Run Migrations & Seeders
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=internara_db
-DB_USERNAME=root
-DB_PASSWORD=
-
-# You may also want to configure your APP_URL
-APP_URL=http://localhost:8000
-```
-
-### Step 5: Database Setup
-
-Run the database migrations and seed the database with initial data. This will create all necessary
-tables and populate them with default roles, permissions, and possibly some dummy data.
+This will set up the core schema and create the default roles/permissions.
 
 ```bash
 php artisan migrate --seed
 ```
 
-### Step 6: Link Storage
+### Step 6: Build Assets
 
-Create a symbolic link for the storage directory:
+Compile the Tailwind CSS and Alpine.js assets.
 
 ```bash
-php artisan storage:link
+npm run build
 ```
 
-### Step 7: Start the Development Server
+### Step 7: Start Development Servers
 
-Serve the application using Laravel Artisan and start the Vite development server for hot module
-reloading:
+In two separate terminals, run the PHP server and the Vite dev server for hot-reloading.
 
 ```bash
-php artisan serve &
+php artisan serve
+# and
 npm run dev
 ```
 
-The application should now be accessible at `http://localhost:8000` (or the `APP_URL` you
-configured).
+---
+
+## ✅ 3. Post-Installation Verification
+
+1.  Open `http://localhost:8000` in your browser.
+2.  Run `php artisan app:info` to verify that the application version and identity are correct.
+3.  Check the `storage/logs/laravel.log` for any initialization errors.
 
 ---
 
-## 3. Initial Application Setup
-
-After installation, navigate to the application in your browser. If a setup wizard is available,
-follow its instructions. Otherwise, you may need to manually create an initial admin user or run a
-specific seeder if not already covered by `migrate --seed`.
-
-_(Further instructions for initial admin user creation or setup wizard will go here if applicable)_
-
----
-
-**Navigation**
-
-[← Previous: Table of Contents](table-of-contents.md) |
-[Next: Architecture Guide →](architecture-guide.md)
+_You are now ready to build! Refer to the **[Architecture Guide](architecture-guide.md)** to
+understand how the system is structured before you start coding._

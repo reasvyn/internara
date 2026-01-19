@@ -1,35 +1,32 @@
-# Spatie Laravel Permission Integration
+# Spatie Permissions: Modular RBAC
 
-This document details the specific technical customizations made to the `spatie/laravel-permission`
-package within Internara's dedicated `Permission` module. For a complete guide on how to create,
-manage, and use roles and permissions according to project conventions, please refer to the
-**[Role & Permission Management Guide](../role-permission-management.md)**.
+Internara uses the `spatie/laravel-permission` package to power our **Role-Based Access Control**
+system. We have heavily customized this integration to support modularity, portability, and UUID
+identity.
 
 ---
 
-## Architectural Enhancements for `spatie/laravel-permission`
+## 1. Modular Customizations
 
-Our integration of this package is highly customized for portability and to fit Internara's modular
-architecture.
+To ensure the system works within our architecture, we've implemented three major enhancements:
 
-### 1. Configurable ID Types
+### 1.1 Support for UUIDs
 
-The `Permission` module supports both **UUID** and **Integer** primary keys for its models. This is
-controlled via the `model_key_type` setting in `modules/Permission/config/config.php` and is
-designed to match the primary key type of the `User` model, aligning with the project's
-**[Development Conventions Guide](../development-conventions.md#uuid-usage-convention)**.
+All permission-related models (Role, Permission) are configured to use **UUIDs** as primary keys,
+matching our application-wide identity standard.
 
-### 2. Module Ownership
+### 1.2 Module Ownership
 
-We have added a nullable `module` column to the `roles` and `permissions` tables. This allows us to
-identify which module "owns" a specific role or permission, which is useful for filtering and
-organization.
+We added a `module` column to the `roles` and `permissions` tables. This allows us to:
 
-### 3. Runtime Configuration
+- Identify which module "owns" a permission.
+- Automatically clean up permissions when a module is uninstalled.
+- Group permissions in the UI for better administrative oversight.
 
-To ensure the `Permission` module is portable ("plug-and-play"), it does not require manual changes
-to the global `config/permission.php` file. Instead, it overrides the necessary configurations at
-runtime via its own `PermissionServiceProvider`:
+### 1.3 Runtime Configuration Injection
+
+To keep the `Permission` module portable, it overrides Spatie's global config at runtime. This means
+you don't need to touch `config/permission.php` manually.
 
 ```php
 protected function overrideSpatieConfig(): void
@@ -41,11 +38,18 @@ protected function overrideSpatieConfig(): void
 }
 ```
 
-This ensures our custom `Role` and `Permission` models are always used.
+---
+
+## 2. Integration Best Practices
+
+1.  **Use Policies**: Never check permissions directly in a view. Wrap them in a **Policy** to
+    handle ownership logic.
+2.  **Sync via CLI**: After adding permissions to a module seeder, run
+    `php artisan permission:sync`.
+3.  **Role Hierarchy**: Base roles are defined in the `Core` module. Avoid creating new roles within
+    domain modules unless absolutely necessary.
 
 ---
 
-**Navigation**
-
-[← Previous: Laravel Modules Livewire Integration](mhmiton-laravel-modules-livewire.md) |
-[Next: Spatie Activity Log Integration →](spatie-laravel-activitylog.md)
+_Refer to the **[Role & Permission Guide](../role-permission-management.md)** for a practical guide
+on how to implement authorization in your features._

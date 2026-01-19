@@ -82,10 +82,3 @@ Key UI/UX design principles include:
 - **Stability Target:** Critical bugs in the full internship cycle must be **100% free** before
   internal testing.
 - **Default Localization Language:** Indonesian (`id`).
-
----
-
-**Navigation**
-
-[← Previous: Service Binding & Auto-Discovery](service-binding-auto-discovery.md) |
-[Next: Development Conventions →](development-conventions.md)

@@ -35,7 +35,3 @@ providing the necessary academic context for students and teachers.
 - A shared trait provided by this module (located in `Models\Concerns`) that allows other models
   (like `Profile`) to establish a decoupled relationship with a Department.
 - Communication is handled via the `DepartmentService` interface.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

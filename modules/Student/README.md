@@ -14,7 +14,3 @@ providing a personalized interface for managing their internship lifecycle.
 
 - **Overview:** Displays active internship program status.
 - **Quick Actions:** Shortcuts for daily tasks like attendance and journal logging.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

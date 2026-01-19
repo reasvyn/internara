@@ -46,7 +46,3 @@ a simple check-in/check-out workflow with automatic status determination.
 - **Model:** `AttendanceLog` (UUID).
 - **Validation:** Enforced at the service layer to prevent duplicate entries and invalid state
   transitions.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

@@ -31,7 +31,3 @@ but **does not** contain business logic, routes, or database tables.
 
 - Implements a cross-module UI injection system (Slot Registry) that allows modules to register
   their own elements (like sidebar links) into global layouts without tight coupling.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

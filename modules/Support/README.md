@@ -16,7 +16,3 @@ requirements but don't belong in the core business logic.
 - **Infrastructure Providers:** Registers project-wide service providers for external packages.
 - **Third-Party Wrappers:** Contains specific configurations or classes that adapt external tools to
   Internara's standards.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

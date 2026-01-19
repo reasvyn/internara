@@ -31,7 +31,3 @@ primary store for data that distinguishes users beyond their core authentication
 - **Mass Assignable:** Includes `department_id`, `nip`, `nisn`, `phone`, `address`, and `bio`.
 - **Database Isolation:** Adheres to the project convention of manual indexes for cross-module
   relationships (e.g., `user_id`, `department_id`).
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

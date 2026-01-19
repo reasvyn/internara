@@ -21,7 +21,3 @@ accounts, administrative operations, and high-level account security.
 - **[Administrative CRUD](../../docs/versions/v0.3.x-alpha.md#31-the-user-module-administrative)**:
   Livewire-based index and form for account management.
 - **Status Toggle**: Quick activation/deactivation of accounts directly from the UI.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)

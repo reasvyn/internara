@@ -8,7 +8,7 @@ Thank you for considering contributing to Internara! We welcome contributions fr
 2.  **Clone your fork** locally.
 3.  **Create a new branch** for your feature or bug fix (`git checkout -b feature/amazing-feature`).
 4.  **Make your changes**. Please adhere to the coding conventions outlined in
-    `docs/master/conventions.md`.
+    `docs/main/development-conventions.md`.
 5.  **Run tests** to ensure your changes don't break existing functionality (`php artisan test`).
 6.  **Commit your changes** with descriptive commit messages.
 7.  **Push to your fork** (`git push origin feature/amazing-feature`).

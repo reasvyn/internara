@@ -15,7 +15,3 @@ of the Internara application.
   Ensures the setup wizard can only be accessed before the application is marked as "installed".
 - **Setup Wizard**: A guided process for configuring basic school info and creating the first
   SuperAdmin.
-
----
-
-**Navigation** [← Back to Module TOC](../../docs/main/modules/table-of-contents.md)
