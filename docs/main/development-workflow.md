@@ -23,7 +23,8 @@ Before writing code, you must establish the "Why" and "What" through analytical 
 ### 1.2 Formulate Implementation Plan
 
 - **Action**: Construct a step-by-step plan that breaks down complexity.
-- **Goal**: Identify cross-module dependencies and required **Interfaces (Contracts)** early.
+- **Location**: Store the plan in `docs/internal/plans/vX.X.x-alpha.md`.
+- **Goal**: Identify cross-module dependencies and required **Contracts** early.
 
 ---
 
@@ -33,7 +34,7 @@ Follow the downward flow of the Internara Layered Architecture.
 
 ### 2.1 The Data Layer (Eloquent Models)
 
-- **Primary Keys**: Always use UUIDs via the `HasUuid` trait.
+- **Primary Keys**: Always use UUIDs via the `HasUuid` concern.
 - **Module Boundaries**: Do not use physical foreign keys for cross-module relations. Use indexed
   UUID columns.
 - **State Management**: Use `HasStatuses` for entities with lifecycles.
@@ -42,7 +43,7 @@ Follow the downward flow of the Internara Layered Architecture.
 
 - **Brain of the Feature**: Services orchestrate all business rules.
 - **Base Class**: CRUD services should extend `Modules\Shared\Services\EloquentQuery`.
-- **Decoupling**: If you need data from another module, type-hint its **Interface**, never the
+- **Decoupling**: If you need data from another module, type-hint its **Contract**, never the
   concrete service.
 
 ### 2.3 The UI Layer (Livewire & Volt)
@@ -68,7 +69,8 @@ A feature is not "Done" until it passes the **Iterative Sync Cycle**.
 
 Documentation is treated as code (**Doc-as-Code**). Update the following artifacts:
 
-- **Analytical Version Note**: Update `docs/versions/{version}.md` with technical narratives.
+- **Main README**: Update the root `README.md` to reflect overall project status and metrics.
+- **Analytical Version Note**: Update or create the narrative in `docs/versions/{status}/vX.X.X.md` (where status is releases, unreleases, or archived).
 - **Application Info**: Update `app_info.json` if milestone reached.
 - **Changelog**: Add detailed entries under the `[Unreleased]` or current version section.
 - **Technical Guides**: Synchronize module-specific READMEs and architectural docs.

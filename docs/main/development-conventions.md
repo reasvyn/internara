@@ -42,9 +42,12 @@ A critical rule in Internara is the handling of the `src` directory within modul
 - **Controllers/Livewire**: PascalCase (e.g., `StudentList`).
 - **Services**: PascalCase with `Service` suffix (e.g., `InternshipService`).
 - **Models**: PascalCase, singular (e.g., `JournalEntry`).
-- **Contracts (Interfaces)**: PascalCase with `Interface` suffix, located in `Contracts/` (e.g.,
-  `UserServiceInterface`).
-- **Concerns (Traits)**: PascalCase, ideally prefixed with `Has` or `Can` (e.g., `HasStatuses`).
+- **Contracts (Interfaces)**: PascalCase, named by capability. **No `Interface` suffix**.
+    - **Service Contracts**: Located in `Services/Contracts/` (e.g., `UserService`).
+    - **General Contracts**: Located in `Contracts/` (e.g., `PermissionManager`).
+- **Concerns (Traits)**: PascalCase, ideally prefixed with `Has` or `Can`.
+    - **Model Concerns**: Located in `Models/Concerns/` (e.g., `HasUuid`).
+    - **General Concerns**: Located in `Concerns/` (e.g., `HandlesAppException`).
 
 ### 3.2 Database & Migrations
 

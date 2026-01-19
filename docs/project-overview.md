@@ -82,10 +82,16 @@ The primary source for developers. This section covers the "How-To" of our syste
 
 ### 3.2. Versioning & Technical Narratives (`docs/versions/`)
 
-We treat every version release as a technical milestone.
+Analytical records of the system's state at specific milestones, organized into subdirectories
+(`releases/`, `unreleases/`).
 
 - **[Version Overview](versions/versions-overview.md)**: Tracks support status and release history.
-- **Release Narratives**: Deep-dives into the technical "Why" behind every major feature set.
+- **Version Notes**: Deep-dives into the technical "Why" behind every version.
+
+### 3.3. Engineering Plans (`docs/internal/plans/`)
+
+Pre-development architectural blueprints and implementation roadmaps for future or active development
+series.
 
 ### 3.3. Quality Assurance (`docs/tests/`)
 

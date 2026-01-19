@@ -23,19 +23,24 @@ To ensure system stability and security, we maintain a clear support schedule.
 
 These documents capture the final "as-built" technical narrative for each specific release.
 
+### In Progress (Active Development)
+
+- **[v0.7.0-alpha](unreleases/v0.7.0-alpha.md)**: **Administrative Automation**. Focusing on bulk
+  operations, queue-based certificate generation, and national reporting exports.
+
 ### Latest Release
 
-- **[v0.6.0-alpha](v0.6.0-alpha.md)**: **Assessment & Workspaces Phase**. Finalized the core
+- **[v0.6.0-alpha](releases/v0.6.0-alpha.md)**: **Assessment & Workspaces Phase**. Finalized the core
   internship cycle by implementing role-specific workspaces, unified assessment logic, and
   professional PDF reporting with QR-code verification.
 
 ### Historical Archive
 
-- **v0.5.0-alpha**: **Operational Phase**. Daily Journals, Attendance, and Supervisor Matching.
-- **v0.4.0-alpha**: **Institutional Phase**. Schools, Departments, and Placement management.
-- **v0.3.0-alpha**: **User Phase**. Multi-role profiles and security hardening.
-- **v0.2.0-alpha**: **Core Phase**. RBAC Infrastructure and Shared Eloquent Concerns.
-- **v0.1.1-alpha**: **Genesis Phase**. Initial environment and Modular Monolith setup.
+- **[v0.5.0-alpha](releases/v0.5.0-alpha.md)**: **Operational Phase**. Daily Journals, Attendance, and Supervisor Matching.
+- **[v0.4.0-alpha](releases/v0.4.0-alpha.md)**: **Institutional Phase**. Schools, Departments, and Placement management.
+- **[v0.3.0-alpha](releases/v0.3.0-alpha.md)**: **User Phase**. Multi-role profiles and security hardening.
+- **[v0.2.0-alpha](releases/v0.2.0-alpha.md)**: **Core Phase**. RBAC Infrastructure and Shared Eloquent Concerns.
+- **[v0.1.1-alpha](releases/v0.1.1-alpha.md)**: **Genesis Phase**. Initial environment and Modular Monolith setup.
 
 ---
 

@@ -52,10 +52,12 @@ Keep entries technical but accessible. Focus on the **Impact** of the change.
 
 ---
 
-## 4. Deep Analytical Narratives (`docs/versions/`)
+## 4. Analytical Version Notes (`docs/versions/{subdir}/`)
 
-For every major or minor version, we produce a **Deep Analytical Narrative** instead of a simple
-checklist. This document serves as the "Post-Mortem" and "Technical Bible" for that release.
+For every version (unreleased, archived, or released), we produce an **Analytical Version Note**
+(Deep Analytical Narrative). This document resides in `docs/versions/releases/` or
+`docs/versions/unreleases/` and serves as the "Technical Bible" for that specific state. Note that
+this is distinct from **Engineering Plans** which reside in `docs/internal/plans/`.
 
 **Each narrative must include:**
 
@@ -72,7 +74,7 @@ checklist. This document serves as the "Post-Mortem" and "Technical Bible" for t
 Before marking a version as `Released`:
 
 1.  **Iterative Sync**: Ensure all code, tests, and documentation are synchronized.
-2.  **App Info**: Update `app_info.json`.
+2.  **Core Artifacts**: Update `app_info.json` and the root `README.md`.
 3.  **Changelog**: Move entries from `[Unreleased]` to the version header.
 4.  **Verify**: Run `php artisan app:info` to confirm identity.
 5.  **Tag**: Create a Git tag matching the version string.

@@ -38,6 +38,13 @@ Internara project.
 - **[Permission UI Components](permission-ui-components.md)**: Shared interface elements for
   managing access.
 
+## Core Project Artifacts
+
+- **[Main README](../../README.md)**: The authoritative high-level entry point and status dashboard.
+- **[Changelog](../../CHANGELOG.md)**: A comprehensive and human-readable record of all notable
+  changes.
+- **[App Info](../../app_info.json)**: The machine-readable identity of the application.
+
 ## Operations & Setup
 
 - **[Installation Guide](installation-guide.md)**: Step-by-step instructions for local setup.

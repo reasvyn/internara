@@ -104,10 +104,10 @@ The strength of a Modular Monolith lies in how modules _don't_ talk to each othe
 
 ### 4.3 Pattern 1: Service-to-Service (Synchronous)
 
-If `Module A` needs data from `Module B`, it must type-hint a **Contract (Interface)**.
+If `Module A` needs data from `Module B`, it must type-hint a **Contract**.
 
-- **Example**: `AuthService` needs to create a user. It injects `UserServiceInterface`, not
-  `UserService`.
+- **Example**: `AuthService` needs to create a user. It injects `UserService`, not the concrete
+  `UserServiceProvider` implementation.
 
 ### 4.4 Pattern 2: Events & Listeners (Asynchronous)
 
