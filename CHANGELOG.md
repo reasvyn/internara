@@ -22,6 +22,10 @@ Focuses on a streamlined manual assessment system and formal finalization of the
 - **Module Deprecation:** Removed the `Dashboard` module entirely.
 - **Routing Logic:** Updated `RedirectService` to route users to their new dedicated workspace URLs.
 
+### 🐛 Fixed
+- **Layout References:** Fixed 500 errors in `Attendance` and `Journal` modules by updating references from the deleted `Dashboard` layout to `UI` layout.
+- **Icon Naming:** Resolved `SvgNotFound` exceptions by enforcing `tabler.name` convention across all new modules and components.
+
 ---
 
 ## [v0.5.0-alpha] - 2026-01-18 (ARC01-OPER-01)
