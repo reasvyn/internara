@@ -37,5 +37,5 @@ test('unverified users are redirected from dashboard to verification notice', fu
     $user = User::factory()->create(['email_verified_at' => null]);
     $user->assignRole('student');
 
-    $this->actingAs($user)->get('/dashboard')->assertRedirect('/auth/email/verify');
+    $this->actingAs($user)->get('/student')->assertRedirect('/auth/email/verify');
 });

@@ -15,7 +15,13 @@ interface AssessmentService extends EloquentQuery
     /**
      * Submit an evaluation for an internship registration.
      */
-    public function submitEvaluation(string $registrationId, string $evaluatorId, string $type, array $data, ?string $feedback = null): Assessment;
+    public function submitEvaluation(
+        string $registrationId,
+        string $evaluatorId,
+        string $type,
+        array $data,
+        ?string $feedback = null,
+    ): Assessment;
 
     /**
      * Get the aggregated score card for a registration.

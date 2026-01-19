@@ -7,29 +7,50 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [Unreleased]
+## [v0.6.0-alpha] - 2026-01-19 (ARC01-FEAT-01)
 
 ### 🚀 Overview
-Focuses on a streamlined manual assessment system and formal finalization of the internship period.
+
+Completes the foundational internship cycle by implementing role-based workspaces, a unified 
+assessment engine, and professional PDF reporting with public verification.
 
 ### ✨ Added
+
 - **RBAC Workspaces:**
-    - Decomposed the monolithic `Dashboard` into four specialized modules: `Admin`, `Student`, `Teacher`, and `Mentor`.
+    - Decomposed the monolithic `Dashboard` into four specialized modules: `Admin`, `Student`,
+      `Teacher`, and `Mentor`.
     - Implemented role-based routing (`/admin`, `/student`, `/teacher`, `/mentor`).
     - Established clear workspace boundaries while keeping User identity centralized.
 - **Assessment Module:**
     - Unified scoring system for Industry Mentors and Academic Teachers.
     - Automated score averaging and feedback collection.
     - Integrated assessment triggers directly into actor dashboards.
+- **Automated PDF Reporting:**
+    - Professional **Certificate of Completion** generation with digital signatures.
+    - **Internship Transcript** generation with detailed score breakdown.
+    - Contextual download triggers for Students (post-assessment) and Admins.
+- **Artifact Verification:**
+    - Integrated **QR-Code Verification** on all generated certificates.
+    - Implemented **Signed URL** verification landing pages for external parties.
 
 ### 🛠 Changed
+
 - **Module Deprecation:** Removed the `Dashboard` module entirely.
 - **Routing Logic:** Updated `RedirectService` to route users to their new dedicated workspace URLs.
+- **Global Documentation:** Synchronized the `Testing Guide` with the comprehensive technical library.
+- **Arch Definition:** Formally defined the `app/` directory as an Infrastructure Module in the 
+  `Architecture Guide`.
 
 ### 🐛 Fixed
-- **Layout References:** Fixed 500 errors in `Attendance` and `Journal` modules by updating references from the deleted `Dashboard` layout to `UI` layout.
-- **Icon Naming:** Resolved `SvgNotFound` exceptions by enforcing `tabler.name` convention across all new modules and components.
-- **Model Stability:** Resolved environment-specific Signal 4 (Illegal Instruction) crashes by migrating `decimal:2` casts to `float` in the `Assessment` model.
+
+- **Layout References:** Fixed 500 errors in `Attendance` and `Journal` modules by updating
+  references from the deleted `Dashboard` layout to `UI` layout.
+- **Icon Naming:** Resolved `SvgNotFound` exceptions by enforcing `tabler.name` convention across
+  all new modules and components.
+- **Model Stability:** Resolved environment-specific Signal 4 (Illegal Instruction) crashes by
+  migrating `decimal:2` casts to `float` in the `Assessment` model.
+- **Policy Integrity:** Created `InternshipRegistrationPolicy` to allow students to view their own 
+  academic records.
 
 ---
 
@@ -169,6 +190,8 @@ school/department management, industry placement tracking, and localized user in
 - **Modular Monolith:** Implementation of `nwidart/laravel-modules`.
 - **UI Module:** Centralized design system using **DaisyUI** and **MaryUI**.
 
+[v0.6.0-alpha]: https://github.com/reasnov/internara/compare/v0.5.0-alpha...v0.6.0-alpha
+[v0.5.0-alpha]: https://github.com/reasnov/internara/compare/v0.4.0-alpha...v0.5.0-alpha
 [v0.4.0-alpha]: https://github.com/reasnov/internara/compare/v0.3.0-alpha...v0.4.0-alpha
 [v0.3.0-alpha]: https://github.com/reasnov/internara/compare/v0.2.0-alpha...v0.3.0-alpha
 [v0.2.0-alpha]: https://github.com/reasnov/internara/compare/v0.1.1-alpha...v0.2.0-alpha

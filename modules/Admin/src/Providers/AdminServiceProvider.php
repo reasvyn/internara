@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Admin\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -12,6 +14,7 @@ class AdminServiceProvider extends ServiceProvider
     use PathNamespace;
 
     protected string $name = 'Admin';
+
     protected string $nameLower = 'admin';
 
     /**

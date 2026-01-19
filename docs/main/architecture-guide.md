@@ -8,7 +8,7 @@ architecture, helping you build features efficiently and maintain a robust codeb
 **Table of Contents**
 
 1.  [Core Architectural Principles](#1-core-architectural-principles)
-    - [1.1 Global Application Layer](#11-global-application-layer)
+    - [1.1 Global Application & Infrastructure Layer (The "App" Module)](#11-global-application--infrastructure-layer-the-app-module)
     - [1.2 Modular Domain Layer](#12-modular-domain-layer)
 2.  [The TALL Stack](#2-the-tall-stack)
 3.  [The Layered Architecture](#3-the-layered-architecture)
@@ -35,21 +35,26 @@ architecture, helping you build features efficiently and maintain a robust codeb
 Internara is structured with a clear separation between **Global Application Concerns** (framework &
 infrastructure) and **Modular Domain Concerns**.
 
-### 1.1 Global Application Layer
+### 1.1 Global Application & Infrastructure Layer (The "App" Module)
 
-This layer encompasses elements fundamental to the entire Laravel application's operation and are
-_not_ directly tied to a specific business module. These include:
+The `app/` directory at the project root functions as the **Infrastructure Layer** and **Framework
+Integration Endpoint**. Unlike `modules/` which focus on business domains, `app/` handles the
+technical aspects underlying the entire system.
 
-- **Framework Configuration:** Global configuration files (e.g., `config/app.php`,
-  `config/database.php`).
-- **Environment Settings:** `.env` file and related environment-specific configurations.
-- **Core Application Providers:** Global service providers (e.g.,
-  `app/Providers/AppServiceProvider.php`, `app/Providers/BindServiceProvider.php`) responsible for
-  application-wide services, infrastructure integrations, and global fallbacks.
-- **Framework Integrations:** Top-level integrations that affect how the Laravel framework operates
-  across all modules.
+Despite its distinct role, **`app/` is treated like the "App" module** regarding development
+standards for specific parts:
 
-These elements reside in the application's root directory, `config/` directory, or `app/` directory.
+- **Infrastructure & Framework Integration**: Home for Service Providers, Middleware, Artisan
+  Commands, and other framework integrations not tied to a specific domain.
+- **Service Parity**: Infrastructure-level Services (e.g., `AuditLogService` or
+  `GlobalSettingService`) **must** follow the **Interface-First** convention (using
+  `app/Services/Contracts`) and are registered via **Auto-Discovery** within the `App` namespace.
+- **Base Layers**: Houses _base classes_ or _traits_ extended by all modules (e.g., `BaseService`,
+  `BaseModel`).
+- **Namespace Standard**: All components under `app/` use the `App\` root namespace, which is
+  treated equally to the `Modules\` namespace by the binding system.
+
+---
 
 ### 1.2 Modular Domain Layer
 

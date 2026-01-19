@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Assessment\Tests\Feature\Services;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,7 +14,11 @@ uses(RefreshDatabase::class);
 test('submitEvaluation creates assessment and calculates score', function () {
     // Arrange
     $user = User::factory()->create();
-    $registration = app(InternshipRegistrationService::class)->factory()->create();
+    $registration = app(InternshipRegistrationService::class)
+        ->factory()
+        ->create([
+            'teacher_id' => $user->id,
+        ]);
     $service = app(AssessmentService::class);
 
     $data = [
@@ -26,7 +32,7 @@ test('submitEvaluation creates assessment and calculates score', function () {
         $user->id,
         'teacher',
         $data,
-        'Great job!'
+        'Great job!',
     );
 
     // Assert
@@ -39,15 +45,54 @@ test('submitEvaluation creates assessment and calculates score', function () {
     expect($assessment->isFinalized())->toBeTrue();
 });
 
+test('it throws exception for unauthorized evaluator', function () {
+    // Arrange
+    $user = User::factory()->create();
+    $registration = app(InternshipRegistrationService::class)
+        ->factory()
+        ->create([
+            'teacher_id' => User::factory()->create()->id, // Different teacher
+        ]);
+    $service = app(AssessmentService::class);
+
+    // Act & Assert
+    expect(
+        fn () => $service->submitEvaluation(
+            $registration->id,
+            $user->id,
+            'teacher',
+            ['a' => 100],
+            '',
+        ),
+    )->toThrow(\Modules\Exception\AppException::class);
+});
+
 test('getScoreCard returns both assessments', function () {
     // Arrange
     $service = app(AssessmentService::class);
-    $registration = app(InternshipRegistrationService::class)->factory()->create();
     $teacher = User::factory()->create();
     $mentor = User::factory()->create();
+    $registration = app(InternshipRegistrationService::class)
+        ->factory()
+        ->create([
+            'teacher_id' => $teacher->id,
+            'mentor_id' => $mentor->id,
+        ]);
 
-    $service->submitEvaluation($registration->id, $teacher->id, 'teacher', ['a' => 100], 'Teacher note');
-    $service->submitEvaluation($registration->id, $mentor->id, 'mentor', ['b' => 80], 'Mentor note');
+    $service->submitEvaluation(
+        $registration->id,
+        $teacher->id,
+        'teacher',
+        ['a' => 100],
+        'Teacher note',
+    );
+    $service->submitEvaluation(
+        $registration->id,
+        $mentor->id,
+        'mentor',
+        ['b' => 80],
+        'Mentor note',
+    );
 
     // Act
     $scoreCard = $service->getScoreCard($registration->id);

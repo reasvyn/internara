@@ -6,20 +6,44 @@
             <x-ui::card title="{{ __('Program Magang Saya') }}" shadow separator>
                 @php
                     $registration = app(\Modules\Internship\Services\Contracts\InternshipRegistrationService::class)->first([
-                        'student_id' => auth()->id(),
-                        'latest_status' => 'active'
+                        'student_id' => auth()->id()
                     ]);
                 @endphp
 
                 @if($registration)
-                    <div class="flex items-center gap-4">
-                        <div class="bg-primary/10 p-3 rounded-xl">
-                            <x-ui::icon name="tabler.briefcase" class="w-8 h-8 text-primary" />
+                    <div class="flex flex-col gap-6">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-primary/10 p-3 rounded-xl">
+                                <x-ui::icon name="tabler.briefcase" class="w-8 h-8 text-primary" />
+                            </div>
+                            <div>
+                                <div class="font-bold text-lg">{{ $registration->placement->company_name }}</div>
+                                <div class="text-sm opacity-70">{{ $registration->internship->name }}</div>
+                            </div>
                         </div>
-                        <div>
-                            <div class="font-bold text-lg">{{ $registration->placement->company_name }}</div>
-                            <div class="text-sm opacity-70">{{ $registration->internship->name }}</div>
-                        </div>
+
+                        <hr class="opacity-50">
+
+                        @php
+                            $scoreCard = app(\Modules\Assessment\Services\Contracts\AssessmentService::class)->getScoreCard($registration->id);
+                        @endphp
+
+                        @if($scoreCard['final_grade'])
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-base-200 p-4 rounded-lg text-center">
+                                    <div class="text-xs uppercase opacity-70">{{ __('Nilai Akhir') }}</div>
+                                    <div class="text-3xl font-black text-primary">{{ number_format($scoreCard['final_grade'], 2) }}</div>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <x-ui::button label="{{ __('Unduh Sertifikat') }}" icon="tabler.certificate" class="btn-primary btn-sm" link="{{ route('assessment.certificate', $registration->id) }}" />
+                                    <x-ui::button label="{{ __('Unduh Transkrip') }}" icon="tabler.file-description" class="btn-outline btn-sm" link="{{ route('assessment.transcript', $registration->id) }}" />
+                                </div>
+                            </div>
+                        @else
+                            <x-ui::alert icon="tabler.info-circle" class="alert-info">
+                                {{ __('Penilaian Anda sedang dalam proses oleh pembimbing.') }}
+                            </x-ui::alert>
+                        @endif
                     </div>
                 @else
                     <x-ui::alert icon="tabler.alert-triangle" class="alert-warning">

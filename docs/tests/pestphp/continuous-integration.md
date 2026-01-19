@@ -1,0 +1,257 @@
+---
+title: Continuous Integration
+description:
+    Up until now, we have only discussed running tests from the command line on your local machine.
+    But, you can also run your tests from a CI platform of your choice. As `pestphp/pest` is
+    included in your Composer development dependencies, you can easily execute the `vendor/bin/pest
+    --ci` command within your CI platform's deployment pipeline.
+---
+
+# Continuous Integration
+
+Up until now, we have only discussed running tests from the command line on your local machine. But,
+you can also run your tests from a CI platform of your choice. As `pestphp/pest` is included in your
+Composer development dependencies, you can easily execute the `vendor/bin/pest --ci` command within
+your CI platform's deployment pipeline.
+
+## Example With GitHub Actions
+
+If your application uses [GitHub Actions](https://github.com/features/actions) as its CI platform,
+the following guidelines will assist you in configuring Pest so that your application is
+automatically tested when someone pushes a commit to your GitHub repository.
+
+To get started, create a `tests.yml` file within the `your-project/.github/workflows` directory. The
+file should have the following contents:
+
+```yaml
+name: Tests
+
+on: ['push', 'pull_request']
+
+jobs:
+    ci:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.3
+                  tools: composer:v2
+                  coverage: xdebug
+
+            - name: Install Dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Tests
+              run: ./vendor/bin/pest --ci
+```
+
+Naturally, you may customize the script above according to your requirements. For example, you may
+need to set up a database if your tests require one.
+
+Once you have created your `tests.yml` file, commit and push the `tests.yml` file so GitHub Actions
+can run your tests. Keep in mind that once you make this commit, your test suite will execute on all
+new pull requests and commits.
+
+### Using Browser Testing with GitHub Actions
+
+If you want to use [Browser Testing](/docs/browser-testing) with GitHub Actions, be sure to add a
+step that installs [Playwright](https://playwright.dev/docs/ci#github-actions) before running your
+tests. Here is an example of how to do this:
+
+```yaml
+- uses: actions/setup-node@v4
+  with:
+      node-version: lts/*
+
+- name: Install dependencies
+  run: npm ci
+
+- name: Install Playwright Browsers
+  run: npx playwright install --with-deps
+
+- name: Run Browser Tests
+  run: ./vendor/bin/pest --ci --parallel
+```
+
+> Note: Be sure to run your browser tests in parallel to speed up the execution time. You can do
+> this by adding the `--parallel` flag to the Pest command.
+
+## Example With GitLab CI/CD Pipelines
+
+If your application uses [GitLab CI/CD Pipelines](https://docs.gitlab.com/ee/ci/pipelines/) as its
+CI platform, the following guidelines will assist you in configuring Pest so that your application
+is automatically tested when someone pushes a commit to your GitLab repository.
+
+To get started, add the following configuration to your `.gitlab-ci.yml` file. The file should have
+the following contents:
+
+```yaml
+stages:
+    - build
+    - test
+
+build:vendors:
+    stage: build
+    only:
+        refs:
+            - merge_requests
+            - push
+    cache:
+        key:
+            files:
+                - composer.lock
+        policy: pull-push
+    image: composer:2
+    script:
+        - composer install --no-interaction --prefer-dist --optimize-autoloader
+
+tests:
+    stage: test
+    only:
+        refs:
+            - merge_requests
+            - push
+    cache:
+        key:
+            files:
+                - composer.lock
+        policy: pull
+    image: php:8.2
+    script:
+        - ./vendor/bin/pest --ci
+```
+
+Naturally, you may customize the script above according to your requirements. For example, you may
+need to set up a database if your tests require one.
+
+Once you have created your `.gitlab-ci.yml` file, commit and push the `.gitlab-ci.yml` file so
+Gitlab CI/CD Pipelines can run your tests. Keep in mind that once you make this commit, your test
+suite will execute on all new merge requests and commits.
+
+## Example with Bitbucket Pipelines
+
+If your application uses
+[Bitbucket CI/CD Pipelines](https://bitbucket.org/product/features/pipelines) as its CI platform,
+the following guidelines will assist you in configuring Pest so that your application is
+automatically tested when someone pushes a commit to your Bitbucket repository.
+
+To get started, add the following configuration to your `bitbucket-pipelines.yml` file. The file
+should have the following contents:
+
+```yaml
+image: composer:2
+
+pipelines:
+    default:
+        - parallel:
+              - step:
+                    name: Test
+                    script:
+                        - composer install --no-interaction --prefer-dist --optimize-autoloader
+                        - ./vendor/bin/pest
+                    caches:
+                        - composer
+```
+
+Naturally, you may customize the script above according to your requirements. For example, you may
+need to set up a database if your tests require one.
+
+Once you have created your `bitbucket-pipelines.yml` file, commit and push the
+`bitbucket-pipelines.yml` file so Bitbucket Pipelines can run your tests. Keep in mind that once you
+make this commit, your test suite will execute on all new pull requests and commits.
+
+## Example with Chipper CI
+
+If your application uses [Chipper CI](https://chipperci.com) as its CI platform, the following
+guidelines will assist you in configuring Pest so that your application is automatically tested when
+someone pushes a commit to your git repository.
+
+To get started, add the following configuration to your `.chipperci.yml` file. The file should have
+the following contents:
+
+```yaml
+version: 1
+
+environment:
+    php: 8.3
+    node: 16
+
+# Optional services
+services:
+#  - mysql: 8
+#  - redis:
+
+# Build all commits
+on:
+    push:
+        branches: .*
+
+pipeline:
+    - name: Setup
+      cmd: |
+          cp -v .env.example .env
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          php artisan key:generate
+
+    - name: Compile Assets
+      cmd: |
+          npm ci --no-audit
+          npm run build
+
+    - name: Test
+      cmd: pest
+```
+
+In addition to handling Composer and NPM caches, Chipper CI automatically adds `vendor/bin` to your
+PATH, so simply running the `pest --ci` command will work when running tests.
+
+Naturally, you may customize the scripts above according to your requirements. For example, you may
+need to define a [database service](https://chipperci.com/docs/builds/databases/) if your tests
+require one.
+
+Once you have created your `.chipperci.yml` file, commit and push the `.chipperci.yml` file so
+Chipper CI can run your tests. Keep in mind that once you make this commit, your test suite will
+execute on all new commits.
+
+## Sharding Your Tests
+
+If you have a large test suite, you may want to consider sharding your tests across multiple CI jobs
+to speed up the execution time. Pest supports test sharding out of the box, allowing you to split
+your tests into smaller groups that can be run in parallel.
+
+To shard your tests, you can use the `--shard` option when running Pest. For example, if you want to
+run the first shard of your tests, you can use the following command:
+
+```bash
+./vendor/bin/pest --shard=1/5
+```
+
+To implement test sharding in your CI configuration, you can create multiple jobs that run different
+shards of your test suite. Here is an example of how to do this with GitHub Actions:
+
+```yml
+strategy:
+    matrix:
+        shard: [1, 2, 3, 4, 5]
+
+name: Tests (Shard ${{ matrix.shard }}/5)
+
+steps:
+    - name: Run tests
+      run: pest --parallel --shard ${{ matrix.shard }}/5
+```
+
+This configuration will create five jobs, each running a different shard of your test suite. You can
+adjust the number of shards based on the size of your test suite and the resources available in your
+CI environment.
+
+---
+
+Great job setting up Continuous Integration for your project to ensure codebase stability! Now,
+let's take a deeper dive into Pest's concepts by exploring it's test configuration capabilities:
+[Configuring Pest →](/docs/configuring-tests)

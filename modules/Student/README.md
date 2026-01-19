@@ -1,6 +1,7 @@
 # Student Module
 
-The `Student` module serves as the dedicated workspace for students within Internara. It focuses on providing a personalized interface for managing their internship lifecycle.
+The `Student` module serves as the dedicated workspace for students within Internara. It focuses on
+providing a personalized interface for managing their internship lifecycle.
 
 ## Purpose
 
@@ -10,6 +11,7 @@ The `Student` module serves as the dedicated workspace for students within Inter
 ## Key Features
 
 ### 1. Dashboard
+
 - **Overview:** Displays active internship program status.
 - **Quick Actions:** Shortcuts for daily tasks like attendance and journal logging.
 

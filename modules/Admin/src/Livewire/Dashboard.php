@@ -14,11 +14,8 @@ class Dashboard extends Component
      */
     public function render(): View
     {
-        return view('admin::livewire.dashboard')->layout(
-            'ui::components.layouts.dashboard',
-            [
-                'title' => __('Dasbor Admin'),
-            ],
-        );
+        return view('admin::livewire.dashboard')->layout('ui::components.layouts.dashboard', [
+            'title' => __('Dasbor Admin'),
+        ]);
     }
 }

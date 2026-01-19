@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\UI\Livewire;
 
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
 class LanguageSwitcher extends Component
@@ -21,19 +19,16 @@ class LanguageSwitcher extends Component
     /**
      * Change the application locale.
      */
-    public function changeLocale(string $locale): void
+    public function changeLanguage(string $locale): void
     {
-        if (! array_key_exists($locale, $this->locales)) {
+        if (! in_array($locale, ['en', 'id'])) {
             return;
         }
 
-        Session::put('locale', $locale);
-        App::setLocale($locale);
+        app()->setLocale($locale);
+        session()->put('locale', $locale);
 
-        $this->dispatch('locale_changed', locale: $locale);
-
-        // Refresh page to apply changes across the application
-        $this->redirect(request()->header('Referer') ?: route('dashboard'));
+        $this->redirect(request()->header('Referer') ?: '/', navigate: true);
     }
 
     public function render()

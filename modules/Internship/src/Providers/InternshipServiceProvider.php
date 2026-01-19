@@ -28,8 +28,8 @@ class InternshipServiceProvider extends ServiceProvider
      */
     protected array $policies = [
         Internship::class => InternshipPolicy::class,
-        InternshipPlacement::class => InternshipPolicy::class, // Reusing policy for simplicity or create specific ones if needed
-        InternshipRegistration::class => InternshipPolicy::class,
+        InternshipPlacement::class => InternshipPolicy::class,
+        InternshipRegistration::class => \Modules\Internship\Policies\InternshipRegistrationPolicy::class,
     ];
 
     /**

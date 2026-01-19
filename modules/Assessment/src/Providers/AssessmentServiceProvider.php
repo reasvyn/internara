@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Assessment\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -12,6 +14,7 @@ class AssessmentServiceProvider extends ServiceProvider
     use PathNamespace;
 
     protected string $name = 'Assessment';
+
     protected string $nameLower = 'assessment';
 
     /**
@@ -46,6 +49,7 @@ class AssessmentServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Assessment\Services\Contracts\AssessmentService::class => \Modules\Assessment\Services\AssessmentService::class,
+            \Modules\Assessment\Services\Contracts\CertificateService::class => \Modules\Assessment\Services\CertificateService::class,
         ];
     }
 }

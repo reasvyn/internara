@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Teacher\Tests\Feature\Livewire;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,14 +21,16 @@ beforeEach(function () {
 test('teacher can view assessment page', function () {
     $teacher = User::factory()->create();
     $teacher->assignRole('teacher');
-    
+
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = app(InternshipRegistrationService::class)->factory()->create([
-        'teacher_id' => $teacher->id,
-        'student_id' => $student->id,
-    ]);
+    $registration = app(InternshipRegistrationService::class)
+        ->factory()
+        ->create([
+            'teacher_id' => $teacher->id,
+            'student_id' => $student->id,
+        ]);
 
     $this->actingAs($teacher)
         ->get(route('teacher.assess', $registration->id))
@@ -36,14 +40,16 @@ test('teacher can view assessment page', function () {
 test('teacher can submit assessment', function () {
     $teacher = User::factory()->create();
     $teacher->assignRole('teacher');
-    
+
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = app(InternshipRegistrationService::class)->factory()->create([
-        'teacher_id' => $teacher->id,
-        'student_id' => $student->id,
-    ]);
+    $registration = app(InternshipRegistrationService::class)
+        ->factory()
+        ->create([
+            'teacher_id' => $teacher->id,
+            'student_id' => $student->id,
+        ]);
 
     Livewire::actingAs($teacher)
         ->test(AssessInternship::class, ['registrationId' => $registration->id])

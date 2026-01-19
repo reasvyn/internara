@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Student\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -12,6 +14,7 @@ class StudentServiceProvider extends ServiceProvider
     use PathNamespace;
 
     protected string $name = 'Student';
+
     protected string $nameLower = 'student';
 
     /**

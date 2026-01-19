@@ -20,19 +20,19 @@ standard lifecycle documentation structure.
 
 ## Release History
 
-
-
 ### Newest Releases
 
+- **v0.6.x-alpha** ([Documentation v0.6.x-alpha](v0.6.x-alpha.md)): **Assessment & Finalization
+  Phase**.
 
+    Implementation of Multi-Perspective Assessment Engine and PDF Certificate generation.
 
-- **v0.6.x-alpha** ([Documentation v0.6.x-alpha](v0.6.x-alpha.md)): **Assessment & Finalization Phase**.
+- **v0.5.0-alpha** ([Documentation v0.5.x-alpha](v0.5.x-alpha.md)): \*\*Operational & Activity
+  Tracking
 
-  Implementation of Multi-Perspective Assessment Engine and PDF Certificate generation.
+    Phase\*\*. Implementation of Daily Journal (Logbook), Attendance System, and Supervisor
+    Matching.
 
-- **v0.5.0-alpha** ([Documentation v0.5.x-alpha](v0.5.x-alpha.md)): **Operational & Activity Tracking
-
-  Phase**. Implementation of Daily Journal (Logbook), Attendance System, and Supervisor Matching.
 - **v0.4.0-alpha** ([Documentation v0.4.x-alpha](v0.4.x-alpha.md)): **Institutional & Academic
   Phase**. Implementation of School, Department management, and foundational Internship registration
   workflows.
@@ -197,13 +197,13 @@ of:
 Copy this template for every new version document in `docs/versions/`.
 
 ```markdown
-# Overview: Version vX.X.X (Codename)
+# Overview: Version vX.X.X (series-code)
 
 ## 1. Version Details
 
-- **Name**: `vX.X.X`
 - **Series Code**: `[CODENAME]-[SCOPE]-[SEQ]`
-- **Status**: `In Progress` / `Released`
+- **Scope**: `INITIAL`
+- **Status**: `In Progress` / `Stable`
 - **Current Operational Context**: Brief analysis of the system's mission in this version.
 
 ---

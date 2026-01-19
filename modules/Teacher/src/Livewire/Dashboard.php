@@ -27,11 +27,8 @@ class Dashboard extends Component
      */
     public function render(): View
     {
-        return view('teacher::livewire.dashboard')->layout(
-            'ui::components.layouts.dashboard',
-            [
-                'title' => __('Dasbor Guru'),
-            ],
-        );
+        return view('teacher::livewire.dashboard')->layout('ui::components.layouts.dashboard', [
+            'title' => __('Dasbor Guru'),
+        ]);
     }
 }

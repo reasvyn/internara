@@ -11,19 +11,37 @@ use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 class EvaluateIntern extends Component
 {
     public string $registrationId;
+
     public array $criteria = [
         'work_quality' => 0,
         'initiative' => 0,
         'punctuality' => 0,
         'communication' => 0,
     ];
+
     public string $feedback = '';
+
+    protected AssessmentService $assessmentService;
+
+    /**
+     * Inject dependencies in boot method.
+     */
+    public function boot(AssessmentService $assessmentService): void
+    {
+        $this->assessmentService = $assessmentService;
+    }
 
     public function mount(string $registrationId)
     {
         $this->registrationId = $registrationId;
-        
-        $assessment = app(AssessmentService::class)->first([
+
+        // Authorization check for viewing
+        $registration = app(InternshipRegistrationService::class)->find($registrationId);
+        if (! $registration || $registration->mentor_id !== auth()->id()) {
+            abort(403, 'You are not authorized to evaluate this intern.');
+        }
+
+        $assessment = $this->assessmentService->first([
             'registration_id' => $registrationId,
             'type' => 'mentor',
         ]);
@@ -34,22 +52,22 @@ class EvaluateIntern extends Component
         }
     }
 
-    public function save(AssessmentService $assessmentService)
+    public function save()
     {
         $this->validate([
             'criteria.*' => 'required|numeric|min:0|max:100',
             'feedback' => 'nullable|string|max:1000',
         ]);
 
-        $assessmentService->submitEvaluation(
+        $this->assessmentService->submitEvaluation(
             $this->registrationId,
             auth()->id(),
             'mentor',
             $this->criteria,
-            $this->feedback
+            $this->feedback,
         );
 
-        $this->dispatch('notify', message: 'Evaluation submitted successfully!', type: 'success');
+        $this->dispatch('notify', message: __('assessment::messages.submitted'), type: 'success');
         $this->redirect(route('mentor.dashboard'), navigate: true);
     }
 
@@ -58,7 +76,7 @@ class EvaluateIntern extends Component
         $registration = app(InternshipRegistrationService::class)->find($this->registrationId);
 
         return view('mentor::livewire.evaluate-intern', [
-            'registration' => $registration
+            'registration' => $registration,
         ])->layout('ui::components.layouts.dashboard', ['title' => 'Evaluate Intern']);
     }
 }

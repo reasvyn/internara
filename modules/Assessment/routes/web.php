@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
+use Modules\Assessment\Http\Controllers\AssessmentPdfController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/assessment/certificate/{registration}', [
+        AssessmentPdfController::class,
+        'certificate',
+    ])->name('assessment.certificate');
+    Route::get('/assessment/transcript/{registration}', [
+        AssessmentPdfController::class,
+        'transcript',
+    ])->name('assessment.transcript');
+});
 
+// Public Signed Route for Verification
+Route::get('/assessment/verify/{registration}', [AssessmentPdfController::class, 'verify'])
+    ->name('assessment.verify')
+    ->middleware('signed');

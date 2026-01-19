@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
@@ -17,9 +19,7 @@ test('student can access student dashboard', function () {
     $student->assignRole('student');
     $student->markEmailAsVerified();
 
-    $this->actingAs($student)
-        ->get(route('student.dashboard'))
-        ->assertStatus(200);
+    $this->actingAs($student)->get(route('student.dashboard'))->assertStatus(200);
 });
 
 test('student cannot access admin dashboard', function () {
@@ -27,9 +27,7 @@ test('student cannot access admin dashboard', function () {
     $student->assignRole('student');
     $student->markEmailAsVerified();
 
-    $this->actingAs($student)
-        ->get(route('admin.dashboard'))
-        ->assertStatus(403);
+    $this->actingAs($student)->get(route('admin.dashboard'))->assertStatus(403);
 });
 
 test('admin cannot access student dashboard', function () {
@@ -37,12 +35,9 @@ test('admin cannot access student dashboard', function () {
     $admin->assignRole('admin');
     $admin->markEmailAsVerified();
 
-    $this->actingAs($admin)
-        ->get(route('student.dashboard'))
-        ->assertStatus(403);
+    $this->actingAs($admin)->get(route('student.dashboard'))->assertStatus(403);
 });
 
 test('guest is redirected to login', function () {
-    $this->get(route('student.dashboard'))
-        ->assertRedirect(route('login'));
+    $this->get(route('student.dashboard'))->assertRedirect(route('login'));
 });
