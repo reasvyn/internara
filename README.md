@@ -97,7 +97,7 @@ This project is built upon the Laravel ecosystem and several key packages:
 
 | Version        | Series Code     | Status           | Key Focus                    |
 | :------------- | :-------------- | :--------------- | :--------------------------- |
-| `v0.7.0-alpha` | `ARC01-ORCH-01` | `Active Support` | Administrative Orchestration |
+| `v0.7.0-alpha` | `ARC01-ORCH-01` | `In-progress`    | Administrative Orchestration |
 | `v0.6.0-alpha` | `ARC01-FEAT-01` | `Released`       | Assessment & Finalization    |
 | `v0.5.0-alpha` | `ARC01-OPER-01` | `Released`       | Operational & Activity Track |
 | `v0.4.0-alpha` | `ARC01-INST-01` | `Released`       | Institutional & Academic     |
