@@ -34,8 +34,8 @@ Tracking the evolution of the system from initialization to current production.
 
 - **[Versions Overview](versions/versions-overview.md)**: Release history, support status, and
   roadmap.
-- **[Active Version: v0.6.0-alpha](versions/v0.6.0-alpha.md)**: The definitive narrative for the
-  latest stable release.
+- **[Active Version: v0.7.0-alpha](versions/v0.7.0-alpha.md)**: The definitive narrative for the
+  current active support release.
 
 ---
 

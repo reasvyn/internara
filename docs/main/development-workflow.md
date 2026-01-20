@@ -70,7 +70,8 @@ A feature is not "Done" until it passes the **Iterative Sync Cycle**.
 Documentation is treated as code (**Doc-as-Code**). Update the following artifacts:
 
 - **Main README**: Update the root `README.md` to reflect overall project status and metrics.
-- **Analytical Version Note**: Update or create the narrative in `docs/versions/{status}/vX.X.X.md` (where status is releases, unreleases, or archived).
+- **Analytical Version Note**: Update or create the narrative in `docs/versions/vX.X.X.md` (or 
+  `docs/versions/archived/` for older milestones).
 - **Application Info**: Update `app_info.json` if milestone reached.
 - **Changelog**: Add detailed entries under the `[Unreleased]` or current version section.
 - **Technical Guides**: Synchronize module-specific READMEs and architectural docs.

@@ -54,12 +54,14 @@ We utilize a simple promotion strategy to maintain stability.
 
 ## 3. Version Advancement
 
-When a development series reaches its goals (e.g., `ARC01-FEAT-01`), it is advanced to the next
-state.
+When a development series reaches its goals (e.g., `ARC01-ORCH-01`), it is advanced following the 
+**[Release Guidelines](release-guidelines.md)**.
 
-1.  **Freeze**: Development stops for the version.
-2.  **Audit**: Final security and performance review.
-3.  **Release**: The version is tagged and documented as `Released`.
+1.  **Freeze**: Development stops for the current version.
+2.  **Audit**: Final security, performance, and documentation sync.
+3.  **Tag**: The version is tagged and documented. 
+    - For **Alpha** stages, the version enters **Released (Snapshot)** status.
+    - For **Stable** stages, the version may enter **Active Support** or **Maintenance**.
 
 ---
 
