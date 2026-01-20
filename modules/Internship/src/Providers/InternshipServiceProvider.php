@@ -63,6 +63,25 @@ class InternshipServiceProvider extends ServiceProvider
             \Modules\Internship\Services\Contracts\InternshipRegistrationService::class => \Modules\Internship\Services\InternshipRegistrationService::class,
             \Modules\Internship\Services\Contracts\SupervisorService::class => \Modules\Internship\Services\SupervisorService::class,
             \Modules\Internship\Services\Contracts\PlacementService::class => \Modules\Internship\Services\PlacementService::class,
+            \Modules\Internship\Services\Contracts\InternshipRequirementService::class => \Modules\Internship\Services\InternshipRequirementService::class,
+        ];
+    }
+
+    /**
+     * Define the view slots for the module.
+     *
+     * @return array<string, array>
+     */
+    protected function viewSlots(): array
+    {
+        return [
+            'sidebar.menu' => [
+                'ui::components.menu-item' => [
+                    'title' => __('internship::ui.requirement_title'),
+                    'icon' => 'tabler.checklist',
+                    'link' => '/internships/requirements',
+                ],
+            ],
         ];
     }
 }

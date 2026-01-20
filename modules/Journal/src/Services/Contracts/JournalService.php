@@ -37,4 +37,9 @@ interface JournalService extends EloquentQuery
      * @param array<\Livewire\Features\SupportFileUploads\TemporaryUploadedFile> $files
      */
     public function attachMedia(mixed $id, array $files): void;
+
+    /**
+     * Get the total count of journal entries for a specific registration.
+     */
+    public function getJournalCount(string $registrationId, ?string $status = null): int;
 }

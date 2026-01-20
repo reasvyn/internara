@@ -42,6 +42,7 @@ class InternshipPlacement extends Model
         'contact_number',
         'slots',
         'internship_id',
+        'mentor_id',
     ];
 
     /**
@@ -58,6 +59,17 @@ class InternshipPlacement extends Model
     public function internship(): BelongsTo
     {
         return $this->belongsTo(Internship::class);
+    }
+
+    /**
+     * Get the mentor (user) associated with the placement.
+     */
+    public function mentor(): BelongsTo
+    {
+        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+            $this,
+            'mentor_id',
+        );
     }
 
     /**

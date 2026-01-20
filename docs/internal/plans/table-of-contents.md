@@ -7,7 +7,7 @@ series starts here as an "Architectural Blueprint."
 
 ## 1. Planning Methodology
 
-- **[Version Plans Guide](version-plans-guide.md)**: Standards for drafting and auditing plans.
+- **[Development Plans Guide](dev-plans-guide.md)**: Standards for drafting and auditing plans.
 
 ## 2. Active & Recent Plans
 

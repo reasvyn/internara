@@ -17,6 +17,21 @@
             <x-mary-toast />
         </div>
 
+        <script>
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('notify', (data) => {
+                    const payload = Array.isArray(data) ? data[0] : data;
+                    
+                    Livewire.dispatch('toast', {
+                        type: payload.type || 'info',
+                        title: payload.type === 'error' ? '{{ __("Error") }}' : '{{ __("Success") }}',
+                        description: payload.message,
+                        icon: payload.type === 'error' ? 'tabler.alert-circle' : 'tabler.check'
+                    });
+                });
+            });
+        </script>
+
         @stack('scripts')
     </body>
 </html>

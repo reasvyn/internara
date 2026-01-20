@@ -50,4 +50,31 @@ return [
     'delete_registration_confirm' => 'Apakah Anda yakin ingin menghapus pendaftaran ini?',
     'registration_approved' => 'Pendaftaran siswa berhasil disetujui.',
     'registration_rejected' => 'Pendaftaran siswa berhasil ditolak.',
+
+    // Requirements
+    'requirement_title' => 'Prasyarat Magang',
+    'requirement_subtitle' => 'Tentukan prasyarat wajib dan opsional bagi siswa.',
+    'add_requirement' => 'Tambah Prasyarat',
+    'edit_requirement' => 'Edit Prasyarat',
+    'search_requirement' => 'Cari prasyarat...',
+    'requirement_name' => 'Nama Prasyarat',
+    'requirement_type' => 'Tipe',
+    'mandatory' => 'Wajib',
+    'active' => 'Aktif',
+    'academic_year' => 'Tahun Ajaran',
+    'document' => 'Dokumen',
+    'skill' => 'Kemampuan',
+    'condition' => 'Syarat/Kondisi',
+    'delete_requirement_confirm' => 'Apakah Anda yakin ingin menghapus prasyarat ini? Seluruh unggahan siswa terkait juga akan terhapus.',
+
+    // Submissions
+    'requirements' => 'Prasyarat & Berkas',
+    'requirements_subtitle' => 'Lengkapi seluruh persyaratan wajib untuk melanjutkan proses magang Anda.',
+    'upload_document' => 'Unggah Dokumen',
+    'self_rating' => 'Skor Penilaian Diri',
+    'i_agree_confirm' => 'Saya mengerti dan menyetujui persyaratan ini.',
+    'submit_requirement' => 'Kirim',
+    'requirement_submitted' => 'Persyaratan berhasil dikirim.',
+    'view_current_document' => 'Lihat Dokumen Terkirim',
+    'all_mandatory_requirements_cleared' => 'Seluruh persyaratan wajib telah diverifikasi. Anda siap untuk penempatan!',
 ];

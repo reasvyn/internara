@@ -32,4 +32,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     )
         ->middleware('can:internship.update')
         ->name('internship.registration.index');
+
+    Route::get(
+        '/internships/requirements',
+        \Modules\Internship\Livewire\RequirementManager::class,
+    )
+        ->middleware('can:internship.update')
+        ->name('internship.requirement.index');
 });

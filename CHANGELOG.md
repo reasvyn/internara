@@ -15,17 +15,40 @@ Initial work on Administrative Automation.
 
 ---
 
-## [v0.7.0-alpha] - 2026-01-19 (ARC01-ORCH-01)
+## [v0.7.0-alpha] - 2026-01-20 (ARC01-ORCH-01)
 
 ### 🚀 Overview
 
-Focuses on **Administrative Orchestration**, expanding beyond simple automation to include 
+Focuses on **Administrative Orchestration**, expanding beyond simple automation to include
 intelligent student-industry matching, proactive activity monitoring, and high-volume data management.
 
 ### ✨ Added
 
-- **Version Initialization:** Upgraded system version to `v0.7.0-alpha`.
-- **Engineering Plan:** Established the architectural blueprint for the `v0.7.x` series.
+- **Requirement Engine:**
+    - Standardized `RequirementType` and `SubmissionStatus` Enums.
+    - Implemented `InternshipRequirementService` with full lifecycle management (Submit, Verify, Reject).
+    - Created `RequirementSubmissionManager` for student-facing prerequisite fulfillment.
+    - Added mandatory requirement validation to the internship registration approval workflow.
+- **Participation-Driven Assessment:**
+    - Created `ComplianceService` to calculate automated student scores based on `Attendance` and `Journal` evidence.
+    - Integrated real-time participation metrics into Mentor and Teacher evaluation forms.
+- **Admin Console & Notifications:**
+    - Implemented `JobMonitor` to manage background queues and failed jobs.
+    - Bridged `notify` events to `mary-toast` globally via the base layout.
+- **Stakeholder Management:**
+    - Created centralized `UserManager` for all system roles (Student, Teacher, Mentor, Admin).
+    - Implemented "Just-in-Time" mentor creation workflow directly within Internship Placements.
+    - Restricted Admin account management exclusively to SuperAdmins.
+
+### 🛠 Changed
+
+- **Architectural Refinement:**
+    - Moved `jobs` and related queue migrations from `Shared` to `Core` module for better infrastructure isolation.
+    - Standardized requirement submission status checks to use Enums across all modules.
+- **Schema Update:**
+    - Added `mentor_id` to `internship_placements` table to support default mentor assignment.
+- **Service API:**
+    - Expanded `AttendanceService` and `JournalService` contracts with aggregation methods for compliance reporting.
 
 ---
 

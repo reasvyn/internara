@@ -43,6 +43,20 @@ class InternshipRequirement extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'type' => \Modules\Internship\Enums\RequirementType::class,
+            'is_mandatory' => 'boolean',
+            'is_active' => 'boolean',
+        ];
+    }
+
+    /**
      * Get the submissions for this requirement.
      */
     public function submissions(): HasMany

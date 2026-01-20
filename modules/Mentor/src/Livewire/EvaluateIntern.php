@@ -21,6 +21,8 @@ class EvaluateIntern extends Component
 
     public string $feedback = '';
 
+    public array $complianceMetrics = [];
+
     protected AssessmentService $assessmentService;
 
     /**
@@ -40,6 +42,10 @@ class EvaluateIntern extends Component
         if (! $registration || $registration->mentor_id !== auth()->id()) {
             abort(403, 'You are not authorized to evaluate this intern.');
         }
+
+        // Load compliance metrics
+        $this->complianceMetrics = app(\Modules\Assessment\Services\Contracts\ComplianceService::class)
+            ->calculateScore($registrationId);
 
         $assessment = $this->assessmentService->first([
             'registration_id' => $registrationId,

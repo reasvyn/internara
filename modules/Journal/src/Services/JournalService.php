@@ -127,17 +127,28 @@ class JournalService extends EloquentQuery implements Contract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function attachMedia(mixed $id, array $files): void
     {
         $entry = $this->find($id);
 
         foreach ($files as $file) {
-            $entry
-                ->addMedia($file->getRealPath())
-                ->usingFileName($file->getClientOriginalName())
-                ->toMediaCollection('attachments', 'private');
+            $entry->addMedia($file)->toMediaCollection('attachments');
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getJournalCount(string $registrationId, ?string $status = null): int
+    {
+        $query = $this->model->newQuery()->where('registration_id', $registrationId);
+
+        if ($status) {
+            $query->currentStatus($status);
+        }
+
+        return $query->count();
     }
 }

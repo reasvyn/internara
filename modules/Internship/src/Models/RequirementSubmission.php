@@ -47,6 +47,19 @@ class RequirementSubmission extends Model implements HasMedia
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => \Modules\Internship\Enums\SubmissionStatus::class,
+            'verified_at' => 'datetime',
+        ];
+    }
+
+    /**
      * Get the registration associated with the submission.
      */
     public function registration(): BelongsTo

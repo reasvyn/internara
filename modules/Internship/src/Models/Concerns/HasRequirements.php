@@ -46,7 +46,7 @@ trait HasRequirements
 
         $verifiedSubmissionsCount = $this->requirementSubmissions()
             ->whereIn('requirement_id', $mandatoryRequirements->pluck('id'))
-            ->where('status', 'verified')
+            ->where('status', \Modules\Internship\Enums\SubmissionStatus::VERIFIED)
             ->count();
 
         return $verifiedSubmissionsCount === $mandatoryRequirements->count();
@@ -69,7 +69,7 @@ trait HasRequirements
         }
 
         $verified = $this->requirementSubmissions()
-            ->where('status', 'verified')
+            ->where('status', \Modules\Internship\Enums\SubmissionStatus::VERIFIED)
             ->count();
 
         return round(($verified / $totalActive) * 100, 2);

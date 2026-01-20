@@ -55,4 +55,4 @@ The focus of the current development series is **Administrative Automation**.
 ---
 
 _For detailed technical planning of future iterations, refer to the
-**[Internal Plans](../internal/plans/version-plans-guide.md)** index._
+**[Development Plans](../internal/plans/dev-plans-guide.md)** index._

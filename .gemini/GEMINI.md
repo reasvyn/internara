@@ -221,6 +221,10 @@ GitHub's ecosystem.
 
 ### Scope of Operations
 
+- **GitHub Synchronization:** When instructed to "synchronize Github" (or "sinkronisasi Github"),
+  this must encompass a full synchronization of the **GitHub Repository, Pull Requests (PR), Issues,
+  Tags, Releases, and GitHub Project** state to ensure consistency between the local and remote
+  environments.
 - **Pull Requests (PR):** Create, list, check status, and draft PRs for completed tasks. Every
   significant change or version completion should be accompanied by a PR.
 - **Issues:** Create and manage issues to track bugs, features, and technical debt.

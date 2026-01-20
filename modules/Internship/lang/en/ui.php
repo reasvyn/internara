@@ -50,4 +50,31 @@ return [
     'delete_registration_confirm' => 'Are you sure you want to delete this registration?',
     'registration_approved' => 'Student registration has been approved.',
     'registration_rejected' => 'Student registration has been rejected.',
+
+    // Requirements
+    'requirement_title' => 'Internship Requirements',
+    'requirement_subtitle' => 'Define mandatory and optional prerequisites for students.',
+    'add_requirement' => 'Add Requirement',
+    'edit_requirement' => 'Edit Requirement',
+    'search_requirement' => 'Search requirement...',
+    'requirement_name' => 'Requirement Name',
+    'requirement_type' => 'Type',
+    'mandatory' => 'Mandatory',
+    'active' => 'Active',
+    'academic_year' => 'Academic Year',
+    'document' => 'Document',
+    'skill' => 'Skill',
+    'condition' => 'Condition',
+    'delete_requirement_confirm' => 'Are you sure you want to delete this requirement? All related student submissions will also be deleted.',
+
+    // Submissions
+    'requirements' => 'Prerequisites & Requirements',
+    'requirements_subtitle' => 'Fulfill all mandatory items to proceed with your internship.',
+    'upload_document' => 'Upload Document',
+    'self_rating' => 'Self-Assessment Score',
+    'i_agree_confirm' => 'I understand and agree to this condition.',
+    'submit_requirement' => 'Submit',
+    'requirement_submitted' => 'Requirement successfully submitted.',
+    'view_current_document' => 'View Submitted Document',
+    'all_mandatory_requirements_cleared' => 'All mandatory requirements have been verified. You are ready for placement!',
 ];

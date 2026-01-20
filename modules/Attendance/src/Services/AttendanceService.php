@@ -114,13 +114,27 @@ class AttendanceService extends EloquentQuery implements Contract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTodayLog(string $studentId): ?AttendanceLog
     {
-        return $this->first([
-            'student_id' => $studentId,
-            'date' => now()->format('Y-m-d'),
-        ]);
+        return $this->model->newQuery()
+            ->where('student_id', $studentId)
+            ->whereDate('date', today())
+            ->first();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttendanceCount(string $registrationId, ?string $status = null): int
+    {
+        $query = $this->model->newQuery()->where('registration_id', $registrationId);
+
+        if ($status) {
+            $query->currentStatus($status);
+        }
+
+        return $query->count();
     }
 }

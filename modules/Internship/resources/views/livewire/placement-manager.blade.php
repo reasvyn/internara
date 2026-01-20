@@ -47,9 +47,38 @@
 
             <x-ui::input label="{{ __('internship::ui.quota') }}" type="number" wire:model="form.slots" required min="1" />
 
+            <div class="flex items-end gap-2">
+                <div class="flex-1">
+                    <x-ui::select 
+                        label="{{ __('internship::ui.mentor') }}" 
+                        wire:model="form.mentor_id" 
+                        :options="$this->mentors" 
+                        placeholder="{{ __('internship::ui.select_mentor') }}"
+                    />
+                </div>
+                <x-ui::button icon="tabler.user-plus" class="btn-outline" wire:click="addMentor" tooltip="{{ __('Add New Mentor') }}" />
+            </div>
+
             <x-slot:actions>
                 <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
                 <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+            </x-slot:actions>
+        </x-ui::form>
+    </x-ui::modal>
+
+    {{-- JIT Mentor Modal --}}
+    <x-ui::modal wire:model="mentorModal" title="{{ __('Add New Industry Mentor') }}">
+        <x-ui::form wire:submit="saveMentor">
+            <x-ui::input label="{{ __('Full Name') }}" wire:model="mentorForm.name" required />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <x-ui::input label="{{ __('Email') }}" type="email" wire:model="mentorForm.email" required />
+                <x-ui::input label="{{ __('Username') }}" wire:model="mentorForm.username" required />
+            </div>
+            <x-ui::input label="{{ __('Password') }}" type="password" wire:model="mentorForm.password" required />
+
+            <x-slot:actions>
+                <x-ui::button label="{{ __('Cancel') }}" wire:click="$set('mentorModal', false)" />
+                <x-ui::button label="{{ __('Create and Assign') }}" type="submit" class="btn-primary" spinner="saveMentor" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

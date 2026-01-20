@@ -20,6 +20,8 @@ class PlacementForm extends Form
 
     public ?string $contact_number = null;
 
+    public ?string $mentor_id = null;
+
     public int $slots = 1;
 
     /**
@@ -33,6 +35,7 @@ class PlacementForm extends Form
             'company_address' => ['nullable', 'string', 'max:1000'],
             'contact_person' => ['nullable', 'string', 'max:255'],
             'contact_number' => ['nullable', 'string', 'max:20'],
+            'mentor_id' => ['nullable', 'uuid'],
             'slots' => ['required', 'integer', 'min:1'],
         ];
     }

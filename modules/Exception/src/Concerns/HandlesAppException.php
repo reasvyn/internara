@@ -100,11 +100,19 @@ trait HandlesAppException
     {
         $this->reportException($exception);
 
+        $message = __('An unexpected error occurred.');
+        $type = 'error';
+
         if ($this->isAppException($exception)) {
-            return ['event' => 'error', 'message' => $exception->getUserMessage()];
+            $message = $exception->getUserMessage();
         }
 
-        return ['event' => 'error', 'message' => __('An unexpected error occurred.')];
+        // If the component uses MaryUI Toast or has the trait, we dispatch the event.
+        if (method_exists($this, 'dispatch')) {
+            $this->dispatch('toast', type: $type, title: $type === 'error' ? __('Error') : __('Success'), description: $message, icon: 'tabler.alert-circle');
+        }
+
+        return ['event' => $type, 'message' => $message];
     }
 
     /**

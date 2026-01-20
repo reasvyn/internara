@@ -34,4 +34,9 @@ interface AttendanceService extends EloquentQuery
      * Get the attendance log for a student for a specific date.
      */
     public function getTodayLog(string $studentId): ?AttendanceLog;
+
+    /**
+     * Get the total count of attendance days for a specific registration.
+     */
+    public function getAttendanceCount(string $registrationId, ?string $status = null): int;
 }

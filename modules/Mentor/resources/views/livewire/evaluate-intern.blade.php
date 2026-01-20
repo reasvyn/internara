@@ -2,6 +2,45 @@
     <x-ui::header title="{{ __('Evaluate Intern') }}" subtitle="{{ $registration->student->name }}" />
 
     <x-ui::main>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <x-ui::card class="bg-base-200">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-primary/10 rounded-lg">
+                        <x-ui::icon name="tabler.calendar-check" class="w-8 h-8 text-primary" />
+                    </div>
+                    <div>
+                        <div class="text-xs opacity-70">{{ __('Attendance') }}</div>
+                        <div class="text-xl font-bold">{{ $complianceMetrics['attendance_score'] }}%</div>
+                        <div class="text-[10px]">{{ $complianceMetrics['attended_days'] }} / {{ $complianceMetrics['total_days'] }} {{ __('days') }}</div>
+                    </div>
+                </div>
+            </x-ui::card>
+            <x-ui::card class="bg-base-200">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-secondary/10 rounded-lg">
+                        <x-ui::icon name="tabler.book" class="w-8 h-8 text-secondary" />
+                    </div>
+                    <div>
+                        <div class="text-xs opacity-70">{{ __('Journal Completion') }}</div>
+                        <div class="text-xl font-bold">{{ $complianceMetrics['journal_score'] }}%</div>
+                        <div class="text-[10px]">{{ $complianceMetrics['approved_journals'] }} / {{ $complianceMetrics['total_days'] }} {{ __('entries') }}</div>
+                    </div>
+                </div>
+            </x-ui::card>
+            <x-ui::card class="bg-base-200">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-accent/10 rounded-lg">
+                        <x-ui::icon name="tabler.chart-pie" class="w-8 h-8 text-accent" />
+                    </div>
+                    <div>
+                        <div class="text-xs opacity-70">{{ __('Compliance Score') }}</div>
+                        <div class="text-xl font-bold">{{ $complianceMetrics['final_score'] }}%</div>
+                        <div class="text-[10px]">{{ __('Participation weight: 50%') }}</div>
+                    </div>
+                </div>
+            </x-ui::card>
+        </div>
+
         <x-ui::card title="{{ __('Industry Assessment') }}" shadow separator>
             <x-ui::form wire:submit="save">
                 <div class="space-y-4">

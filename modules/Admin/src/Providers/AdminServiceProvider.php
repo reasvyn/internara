@@ -37,6 +37,32 @@ class AdminServiceProvider extends ServiceProvider
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/admin',
                 ],
+                'ui::components.menu-item:students' => [
+                    'title' => __('Students'),
+                    'icon' => 'tabler.users',
+                    'link' => '/admin/students',
+                ],
+                'ui::components.menu-item:teachers' => [
+                    'title' => __('Teachers'),
+                    'icon' => 'tabler.school',
+                    'link' => '/admin/teachers',
+                ],
+                'ui::components.menu-item:mentors' => [
+                    'title' => __('Industry Mentors'),
+                    'icon' => 'tabler.briefcase',
+                    'link' => '/admin/mentors',
+                ],
+                'ui::components.menu-item:administrators' => [
+                    'title' => __('Administrators'),
+                    'icon' => 'tabler.shield-lock',
+                    'link' => '/admin/administrators',
+                    'permission' => 'super-admin', // Custom check in some implementations or handled by route
+                ],
+                'ui::components.menu-item:job-monitor' => [
+                    'title' => __('Job Monitor'),
+                    'icon' => 'tabler.activity',
+                    'link' => '/admin/jobs',
+                ],
             ],
         ];
     }

@@ -79,6 +79,14 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
             );
         }
 
+        // Check if mandatory requirements are cleared
+        if (! $registration->hasClearedAllMandatoryRequirements()) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.mandatory_requirements_not_met',
+                code: 422,
+            );
+        }
+
         $registration->setStatus('active', 'Approved by administrator');
 
         return $registration;

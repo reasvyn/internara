@@ -1,4 +1,4 @@
-# Engineering Plans: Managing Evolution
+# Development Plans: Managing Evolution
 
 This directory contains the high-level planning documents for Internara's development cycles. These
 guides bridge the gap between abstract requirements and actual implementation, serving as the
