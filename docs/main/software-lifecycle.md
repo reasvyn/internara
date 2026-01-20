@@ -1,69 +1,182 @@
-# Software Lifecycle: From Concept to Release
+# Software Development Lifecycle (SDLC)
 
-Internara follows a structured lifecycle tailored for a Modular Monolith environment. This process
-ensures that every feature is not only functional but also architecturally sound and fully
-documented.
+This document defines the **Software Development Lifecycle (SDLC)** of Internara as a product.
+It describes how the system evolves from concept to formally released artifacts, independent of
+day-to-day development workflows or implementation techniques.
 
----
-
-## 1. Lifecycle Phases
-
-### 1.1 Discovery & Planning
-
-Before any code is written, we define the **Domain Boundary**.
-
-- **Deliverable**: A technical plan in `docs/internal/plans/` (if significant) or an agreed-upon
-  architecture for the feature.
-- **Goal**: Identify which module(s) are affected and if new **Contracts** are needed.
-
-### 1.2 Iterative Implementation
-
-Build follows the **Downward Flow** (Model -> Service -> UI).
-
-- **Drafting**: Use `Volt` or `Livewire` components to prototype the interaction.
-- **Refinement**: Refactor common logic into Services and apply **Shared Model Concerns**.
-
-### 1.3 Quality Assurance (QA)
-
-No feature is merged without verification.
-
-- **Testing**: Minimum 80% coverage for new logic.
-- **Linting**: Consistent style via `Laravel Pint`.
-- **Security**: Manual audit for access control and PII handling.
-
-### 1.4 Artifact Synchronization
-
-The final, crucial step of the development phase.
-
-- **Sync**: Code, Tests, and Documentation must match the current state.
-- **Narrative**: Write the implementation deep-dive in the version notes.
+The SDLC exists to ensure that every release is **traceable, classifiable, and governable**.
 
 ---
 
-## 2. Environment Promotion
+## 1. SDLC Scope & Principles
 
-We utilize a simple promotion strategy to maintain stability.
+Internara’s SDLC governs:
 
-| Environment    | Purpose                              | Branch                 |
-| :------------- | :----------------------------------- | :--------------------- |
-| **Local**      | Development & Feature drafting.      | `feature/*` or `fix/*` |
-| **Staging**    | Final integration & QA verification. | `develop`              |
-| **Production** | The stable, public-facing release.   | `main`                 |
+* **When** a version is considered releasable
+* **How** a version is classified after release
+* **What guarantees** (if any) apply to a released artifact
 
----
+The SDLC explicitly **does not** define:
 
-## 3. Version Advancement
-
-When a development series reaches its goals (e.g., `ARC01-ORCH-01`), it is advanced following the 
-**[Release Guidelines](release-guidelines.md)**.
-
-1.  **Freeze**: Development stops for the current version.
-2.  **Audit**: Final security, performance, and documentation sync.
-3.  **Tag**: The version is tagged and documented. 
-    - For **Alpha** stages, the version enters **Released (Snapshot)** status.
-    - For **Stable** stages, the version may enter **Active Support** or **Maintenance**.
+* Coding practices
+* Development workflows
+* Branching or environment strategies
+* Tooling or implementation details
 
 ---
 
-_This lifecycle ensures that Internara grows sustainably. We prioritize stability and clarity over
-rushed feature deployment._
+## 2. Lifecycle Phases
+
+These phases describe the **product-level evolution** of a version, not engineering activities.
+
+### 2.1 Conceptualization
+
+A version begins as a **conceptual milestone**, defined by intended business value or architectural
+direction.
+
+* Scope is identified
+* Version lineage (Series Code) is established
+* No release artifact exists yet
+
+**Output**: A defined version intent
+**Status**: `Planned`
+
+---
+
+### 2.2 Construction
+
+The version is under active construction toward its intended scope.
+
+* Features may be incomplete
+* Internal iteration is expected
+* The version is not yet considered a published artifact
+
+**Output**: An internally coherent system state
+**Status**: `In Progress`
+
+---
+
+### 2.3 Qualification
+
+The version reaches **scope closure**.
+
+* Intended features for the milestone are complete
+* The system is internally consistent
+* Documentation accurately reflects behavior
+
+This phase determines **eligibility for release**, not stability.
+
+**Output**: A releasable artifact candidate
+**Status**: `Stabilizing`
+
+---
+
+### 2.4 Release
+
+The version is formally published as a **versioned artifact**.
+
+* The version is tagged
+* Release notes and analytical documentation are finalized
+* The artifact becomes externally referable
+
+Release does **not** imply:
+
+* Production readiness
+* Long-term support
+* Absence of defects
+
+**Output**: A published version
+**Status**: `Released`
+
+---
+
+### 2.5 Post-Release Lifecycle
+
+After release, the version transitions through post-publication states:
+
+| State      | Meaning                                |
+| ---------- | -------------------------------------- |
+| Active     | Still relevant and possibly referenced |
+| Deprecated | Discouraged for continued use          |
+| Archived   | Preserved for historical reference     |
+| EOL        | No longer maintained                   |
+
+These states reflect **product policy decisions**, not technical quality.
+
+---
+
+## 3. Lifecycle Classification Axes
+
+Every released version is classified across **three orthogonal axes**.
+
+### 3.1 Stage (Maturity)
+
+Describes the **quality and stability expectation** of the artifact.
+
+* Experimental
+* Alpha
+* Beta
+* Release Candidate (RC)
+* Stable
+* LTS
+
+---
+
+### 3.2 Support Policy
+
+Defines **what guarantees apply after release**.
+
+* Snapshot (no guarantees)
+* Bugfix Only
+* Security Only
+* Full Support
+* EOL
+
+---
+
+### 3.3 Status
+
+Represents the **current operational state** of the version.
+
+* Planned
+* In Progress
+* Stabilizing
+* Released
+* Deprecated
+* Archived
+
+> These axes are independent and may change without altering the version identifier.
+
+---
+
+## 4. Release Eligibility (SDLC Perspective)
+
+From an SDLC standpoint, a version is eligible for release when:
+
+1. The intended milestone scope is internally complete
+2. The system state is coherent and documented
+3. The artifact can be uniquely identified and referenced
+
+No requirement exists for:
+
+* Feature completeness across the product
+* Stability guarantees
+* Backward compatibility
+
+Those concerns are expressed via **Stage** and **Policy**, not release permission.
+
+---
+
+## 5. SDLC Artifacts
+
+The SDLC is reflected through the following artifacts:
+
+* **Version Identifier** (SemVer)
+* **Series Code** (lineage context)
+* **Analytical Version Notes** (as-built narrative)
+* **Versions Overview** (Single Source of Truth for lifecycle classification)
+
+---
+
+*Internara’s SDLC treats releases as **governed product milestones**, not accidental byproducts of
+development. This separation enables clarity, historical integrity, and scalable project growth.*

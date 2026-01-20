@@ -1,135 +1,165 @@
 # Release Guidelines: Navigating the Product Lifecycle
 
-This document defines the protocols for versioning, changelog maintenance, and the final release of
-software within the Internara project. These standards ensure that our development history is
-descriptive, analytical, and professional.
+This document defines the protocols for versioning, lifecycle classification, support policies, and
+release artifacts within the Internara project. These standards ensure that our development history
+is analytically precise, semantically consistent, and operationally unambiguous.
 
 ---
 
 ## 1. Versioning Standard
 
-We strictly adhere to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
+Internara adheres to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
-- **MAJOR**: Incompatible API changes or significant architectural shifts.
-- **MINOR**: New functionality in a backward-compatible manner.
-- **PATCH**: Backward-compatible bug fixes or security patches.
-- **Pre-releases**: During Alpha/Beta, we append a suffix (e.g., `v0.6.0-alpha`).
+* **MAJOR**: Incompatible API changes or fundamental architectural shifts.
+* **MINOR**: Backward-compatible feature additions or scope expansion.
+* **PATCH**: Backward-compatible bug fixes or security patches.
+* **Pre-release Identifiers**: During non-production stages, versions may include a qualifier
+  (e.g., `v0.6.0-alpha`, `v1.0.0-beta.1`) to indicate maturity—not support guarantees.
+
+> Version numbers identify **artifacts**, not their operational state or support level.
 
 ---
 
-## 2. Version Lifecycle & Policies
+## 2. Lifecycle Classification Model
 
-To manage expectations, we distinguish between the **maturity stage** of a release and its **support
-policy**.
+Internara explicitly separates **maturity**, **support policy**, and **operational status** to avoid
+semantic overlap and lifecycle ambiguity.
+
+---
 
 ### 2.1 Development Stages (Maturity)
 
-These stages define the completeness and stability of the features.
+Stages describe the **quality and completeness** of a version. They do not imply whether a version
+is currently being worked on or supported.
 
-1.  **Planned**: Conceptual phase. Scope is defined, but implementation hasn't started.
-2.  **In Progress**: Active development. Code is being written.
-3.  **Alpha**: Feature exploration. The system is functional but APIs and features may change
-    drastically.
-4.  **Beta**: Feature complete (Feature Freeze). Focus shifts entirely to bug fixing and
-    stabilization.
-5.  **Release Candidate (RC)**: A potential final product. No code changes allowed except for
-    critical blockers.
-6.  **Stable**: Production-ready release.
+| Stage                  | Definition                                                      |
+| ---------------------- | --------------------------------------------------------------- |
+| Experimental           | Architectural or conceptual validation.                         |
+| Alpha                  | Core features incomplete; breaking changes are expected.        |
+| Beta                   | Feature complete; focus on stabilization and defect resolution. |
+| Release Candidate (RC) | Potential final release; only critical fixes allowed.           |
+| Stable                 | Production-ready with defined guarantees.                       |
+| LTS                    | Stable release designated for long-term use.                    |
 
-### 2.2 Support Policies (Maintenance)
+---
 
-These policies define the guarantee of updates and patches for a specific release.
+### 2.2 Support Policies (Maintenance Contract)
 
--   **Snapshot Policy**:
-    -   **Definition**: A "point-in-time" release provided as-is.
-    -   **Guarantee**: **Zero**. No hotfixes, no security patches.
-    -   **Strategy**: **Fix-Forward**. Bugs found in this version will only be addressed in the
-        *next* release.
-    -   *Typical Usage*: Alpha releases, Nightly builds, or experimental branches.
+Policies define **what the project guarantees** after a version is released.
 
--   **Standard Support**:
-    -   **Definition**: A supported release meant for usage.
-    -   **Guarantee**: Receives bug fixes and security patches until the next minor/major version.
-    -   *Typical Usage*: Beta (critical bugs only), Stable releases.
+| Policy        | Definition                             | Guarantee      |
+| ------------- | -------------------------------------- | -------------- |
+| Snapshot      | Point-in-time release provided as-is.  | None           |
+| Bugfix Only   | Maintenance without feature additions. | Bug fixes      |
+| Security Only | Critical vulnerability patches only.   | Security fixes |
+| Full Support  | Active maintenance and improvements.   | Bug + Security |
+| EOL           | End of life.                           | None           |
 
--   **LTS (Long Term Support)**:
-    -   **Definition**: An enterprise-grade release.
-    -   **Guarantee**: Receives critical security patches for an extended period, regardless of newer
-        versions.
+> Support Policy is a **contract**, independent of Stage and Status.
 
--   **EOL (End of Life)**:
-    -   **Definition**: Obsolete.
-    -   **Guarantee**: None. The version is no longer maintained.
+---
+
+### 2.3 Version Status (Operational State)
+
+Status reflects the **current reality** of a version at a given time.
+
+| Status      | Meaning                                     |
+| ----------- | ------------------------------------------- |
+| Planned     | Identified but not yet implemented.         |
+| In Progress | Under active development.                   |
+| Stabilizing | Feature-frozen, hardening phase.            |
+| Released    | Publicly tagged and distributed.            |
+| Deprecated  | Still accessible but no longer recommended. |
+| Archived    | Closed and historically preserved.          |
+
+> Status is dynamic and may change without altering the version number.
 
 ---
 
 ## 3. Artifact: `app_info.json`
 
-The `app_info.json` file at the project root is the **Machine-Readable Identity** of the
-application. It must be updated manually when a version milestone is reached.
+The `app_info.json` file represents the **machine-readable identity** of the application and must
+remain semantically strict.
 
 **Required Fields:**
 
-- `version`: The SemVer string.
-- `series_code`: The unique identifier for the current development series (e.g., `ARC01-FEAT-01`).
-- `status`: The release state (`Active Support`, `Released`, `EOL`).
+* `version`
+  The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
+
+* `series_code`
+  The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
+
+* `stage`
+  The maturity classification (`Alpha`, `Beta`, `Stable`, etc.).
+
+* `status`
+  The current operational state (`In Progress`, `Released`, `Deprecated`, etc.).
+
+> Support policy is **not embedded** in runtime artifacts and is documented centrally.
 
 ---
 
 ## 4. Changelog Management (`CHANGELOG.md`)
 
-Our changelog is more than a list of commits; it is a human-readable history of progress.
+The changelog provides a **human-readable delta narrative**, not a substitute for Git history.
 
 ### 4.1 Structure
 
-Follow the **[Keep a Changelog](https://keepachangelog.com/)** standard:
+Internara follows **Keep a Changelog** conventions:
 
-- `[Unreleased]`: For changes not yet part of a tagged version.
-- `Added`: For new features.
-- `Changed`: For changes in existing functionality.
-- `Deprecated`: For soon-to-be-removed features.
-- `Removed`: For now-removed features.
-- `Fixed`: For bug fixes.
-- `Security`: In case of vulnerabilities.
+* `[Unreleased]`
+* `Added`
+* `Changed`
+* `Deprecated`
+* `Removed`
+* `Fixed`
+* `Security`
 
-### 4.2 Tone
+### 4.2 Editorial Principle
 
-Keep entries technical but accessible. Focus on the **Impact** of the change.
+Entries must describe **impact and intent**, not implementation minutiae. Low-level details belong
+to commit history and analytical version notes.
 
 ---
 
 ## 5. Analytical Version Notes (`docs/versions/`)
 
-For every version (unreleased or released), we produce an **Analytical Version Note** (Deep 
-Analytical Narrative). This document resides directly in `docs/versions/` and serves as the 
-"Technical Bible" for that specific milestone. Note that this is distinct from **Engineering 
-Plans** which reside in `docs/internal/plans/`.
+For each significant milestone, Internara produces an **Analytical Version Note**—a static,
+post-facto technical narrative describing the version *as built*.
 
-**Status Policy**: Individual version notes **must not** contain dynamic lifecycle status or 
-support policy information. This data is managed exclusively in the 
-**[Versions Overview](../versions/versions-overview.md)** to ensure a Single Source of Truth.
+These documents:
 
-**Each narrative must include:**
+* Reside in `docs/versions/`
+* Are immutable once the version is released
+* Do **not** contain lifecycle status or support policy information
 
-1.  **Metadata**: **Series Code** and date.
-2.  **Goals & Philosophy**: The strategic "Why" behind the milestone.
-3.  **Production Keystones**: Detailed implementation deep-dives for major features.
-4.  **Verification Analysis**: Results of tests, security audits, and linting.
-5.  **Roadmap Strategy**: High-level direction for the next version.
+Lifecycle classification is managed exclusively in
+**Versions Overview** to maintain a Single Source of Truth.
 
----
+**Each note must include:**
 
-## 6. The Release Checklist
-
-Before marking a version as `Released`:
-
-1.  **Iterative Sync**: Ensure all code, tests, and documentation are synchronized.
-2.  **Core Artifacts**: Update `app_info.json` and the root `README.md`.
-3.  **Changelog**: Move entries from `[Unreleased]` to the version header.
-4.  **Verify**: Run `php artisan app:info` to confirm identity.
-5.  **Tag**: Create a Git tag matching the version string.
+1. **Metadata**: Version, Series Code, release date.
+2. **Strategic Context**: The rationale behind the milestone.
+3. **Production Keystones**: Architectural and implementation deep-dives.
+4. **Verification Analysis**: Testing, validation, and risk assessment.
+5. **Forward Outlook**: Constraints and direction for the next iteration.
 
 ---
 
-_Consistent release management allows our team and users to understand the evolution of Internara
-with minimal friction. Documentation is the bridge between code and product._
+## 6. Release Eligibility Criteria
+
+A version may be marked as `Released` when the following minimum conditions are met:
+
+1. **Scope Closure**: The intended milestone scope is internally complete.
+2. **Artifact Consistency**: Codebase, documentation, and metadata are synchronized.
+3. **Changelog Resolution**: `[Unreleased]` entries are reconciled.
+4. **Identity Verification**: Application identity reflects the intended version and stage.
+5. **Tagging**: A Git tag is created matching the version identifier.
+
+> A release does **not** imply stability, completeness, or long-term support—only that the artifact
+> has been formally published.
+
+---
+
+*Consistent lifecycle semantics transform releases from ad-hoc events into traceable,
+governable system milestones.*

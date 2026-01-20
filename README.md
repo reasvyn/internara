@@ -1,148 +1,191 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.7.0--alpha-blue?style=flat-square)
-![Status](https://img.shields.io/badge/status-in--progress-yellow?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.7.x--alpha-blue?style=flat-square)
+![Lifecycle](https://img.shields.io/badge/lifecycle-active--development-yellow?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
 ![Laravel](https://img.shields.io/badge/Laravel-v12-ff2d20?style=flat-square&logo=laravel)
 
-**Internara** is an open-source internship management system built with **Laravel 12**, **Livewire
-3**, and a **Modular Monolith** architecture. It is designed to streamline the entire internship
-lifecycle, from registration and journal logging to final reporting and evaluation.
+**Internara** is an open-source internship management system built with **Laravel 12**, **Livewire 3**,
+and a **Modular Monolith** architecture.
+
+The system is designed to manage the **full internship lifecycle**, from registration and daily
+journals to structured assessment, certification, and institutional reporting.
+
+---
 
 ## Features
 
-- **Modular Monolith Architecture:** Built using `nwidart/laravel-modules` to isolate business domains (User, Internship, School, etc.) into self-contained, scalable modules.
-- **Comprehensive Lifecycle Management:** End-to-end handling of the internship process—from student registration and daily logbooks (Journals) to final assessments and certification.
-- **Role-Based Workspaces:** Dedicated, secure dashboards for **Admins**, **Students**, **Academic Teachers**, and **Industry Mentors**.
-- **Administrative Automation:** Intelligent features like **Participation-Driven Scoring**, **Requirement Verification**, and background job monitoring to streamline operations.
-- **Modern TALL Stack:** Blazing-fast reactive UI built with **Laravel 12**, **Livewire 3**, **Tailwind CSS 4**, and **Alpine.js**.
-- **Robust Security:** Integrated Role-Based Access Control (RBAC), UUIDs for all models, and strict privacy boundaries.
+- **Modular Monolith Architecture**  
+  Built using `nwidart/laravel-modules` to isolate business domains (User, Internship, School, etc.)
+  into self-contained modules with explicit boundaries.
+
+- **End-to-End Internship Lifecycle**  
+  Covers registration, journals, attendance, assessment, certification, and reporting.
+
+- **Role-Based Workspaces**  
+  Dedicated, secure workspaces for **Admins**, **Students**, **Academic Teachers**, and
+  **Industry Mentors**.
+
+- **Administrative Automation**  
+  Participation-driven scoring, requirement verification, batch operations, and background job
+  orchestration.
+
+- **Modern TALL Stack**  
+  Laravel 12, Livewire 3, Tailwind CSS 4, and Alpine.js.
+
+- **Security-Oriented Design**  
+  RBAC, UUID-based entities, and strict inter-module access rules.
+
+---
 
 ## Requirements
 
-- PHP 8.4 or higher
-- Composer
-- Node.js & NPM
-- SQLite (default for development), MySQL, or PostgreSQL
+- PHP 8.4 or higher  
+- Composer  
+- Node.js & NPM  
+- SQLite (development), MySQL, or PostgreSQL  
 
-### Key Third-Party Packages
-
-This project is built upon the Laravel ecosystem and several key packages:
-
-- [nwidart/laravel-modules](https://nwidart.com/laravel-modules/v11/introduction)
-- [spatie/laravel-permission](https://spatie.be/docs/laravel-permission/v6/introduction)
-- [spatie/laravel-model-status](https://github.com/spatie/laravel-model-status)
-- [robsontenorio/mary](https://mary-ui.com/)
-- [secondnetwork/blade-tabler-icons](https://github.com/secondnetwork/blade-tabler-icons)
+---
 
 ## Installation
 
-1.  **Clone the repository:**
+1. **Clone the repository**
 
-    ```bash
-    git clone https://github.com/reasnov/internara.git
-    cd internara
-    ```
+   ```bash
+   git clone https://github.com/reasnov/internara.git
+   cd internara
+````
 
-2.  **Install PHP dependencies:**
+2. **Install PHP dependencies**
 
-    ```bash
-    composer install
-    ```
+   ```bash
+   composer install
+   ```
 
-3.  **Install Node.js dependencies:**
+3. **Install Node.js dependencies**
 
-    ```bash
-    npm install
-    ```
+   ```bash
+   npm install
+   ```
 
-4.  **Configure environment:**
+4. **Configure environment**
 
-    ```bash
-    cp .env.example .env
-    php artisan key:generate
-    ```
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-    Update your `.env` file with your database credentials.
+   Update `.env` with your database configuration.
 
-5.  **Run migrations and seeders:**
+5. **Run migrations and seeders**
 
-    ```bash
-    php artisan migrate --seed
-    ```
+   ```bash
+   php artisan migrate --seed
+   ```
 
-6.  **Build assets:**
+6. **Build frontend assets**
 
-    ```bash
-    npm run build
-    ```
+   ```bash
+   npm run build
+   ```
 
-7.  **Start the development server:**
+7. **Start development server**
 
-    ```bash
-    php artisan serve
-    ```
+   ```bash
+   php artisan serve
+   ```
 
-## Version Support & History
+---
 
-### Version Supports
+## Versioning & Lifecycle Policy
 
-| Version  | Security | Bug Fixes | Status            |
-| :------- | :------- | :-------- | :---------------- |
-| **v0.x** | ❌       | ❌        | **Alpha**         |
+Internara adopts **Analytical Versioning**, where each released version is documented with a
+post-release **technical narrative** describing architectural decisions and final implementation
+state.
 
-### Version History
+### Current Version Series
 
-| Version        | Series Code     | Status           | Key Focus                    |
+* **Active Series:** `v0.7.x`
+* **Stage:** Alpha
+* **Lifecycle Status:** Active Development
+* **Support Policy:** Snapshot (no security updates or bug-fix guarantees)
+
+> Alpha releases are exploratory by design. APIs, schemas, and workflows may change between versions.
+
+---
+
+### Version Support Matrix
+
+| Version Series | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
+| :------------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
+| **v0.7.x**     | Alpha | Snapshot       | ❌                | ❌         | Active Development |
+| **v0.6.x**     | Alpha | Snapshot       | ❌                | ❌         | Released           |
+| **v0.5.x**     | Alpha | EOL            | ❌                | ❌         | Archived           |
+| **v0.4.x**     | Alpha | EOL            | ❌                | ❌         | Archived           |
+
+---
+
+### Release History (Analytical Narratives)
+
+Each release links to a **Deep Analytical Narrative**, capturing the system state *as built*.
+
+| Version        | Series Code     | Lifecycle Status | Primary Focus                |
 | :------------- | :-------------- | :--------------- | :--------------------------- |
-| `v0.7.0-alpha` | `ARC01-ORCH-01` | `In-progress`    | Administrative Orchestration |
-| `v0.6.0-alpha` | `ARC01-FEAT-01` | `Released`       | Assessment & Finalization    |
-| `v0.5.0-alpha` | `ARC01-OPER-01` | `Released`       | Operational & Activity Track |
-| `v0.4.0-alpha` | `ARC01-INST-01` | `Released`       | Institutional & Academic     |
-| `v0.3.0-alpha` | `ARC01-USER-01` | `Released`       | User Management & Profile    |
-| `v0.2.0-alpha` | `ARC01-CORE-01` | `Released`       | RBAC & Shared Services       |
-| `v0.1.1-alpha` | `ARC01-INIT-01` | `Released`       | Project Initialization       |
+| `v0.7.0-alpha` | `ARC01-ORCH-01` | Active           | Administrative Automation    |
+| `v0.6.0-alpha` | `ARC01-FEAT-01` | Released         | Assessment & Workspaces      |
+| `v0.5.0-alpha` | `ARC01-OPER-01` | Archived         | Operational Activities       |
+| `v0.4.0-alpha` | `ARC01-INST-01` | Archived         | Institutional Management     |
+| `v0.3.0-alpha` | `ARC01-USER-01` | Archived         | User & Role Management       |
+| `v0.2.0-alpha` | `ARC01-CORE-01` | Archived         | RBAC & Shared Infrastructure |
+| `v0.1.1-alpha` | `ARC01-INIT-01` | Archived         | Project Genesis              |
 
-For more details on our security audit protocols and reporting, please see
-[SECURITY.md](SECURITY.md).
+For lifecycle definitions and SDLC context, see
+**[Application Versions Overview](docs/versions/versions-overview.md)**.
+
+---
 
 ## Documentation
 
-This project maintains comprehensive developer documentation to ensure consistency, clarity, and
-efficient onboarding. All guides are located within the [`/docs`](/docs) directory.
+Internara maintains structured, SDLC-aligned documentation under the [`/docs`](/docs) directory.
 
-### Key Documents
+### Key References
 
-- **[Project Overview](docs/project-overview.md)**: The best starting point for a high-level
-  understanding of the project's vision, core principles, technology stack, and documentation
-  structure.
-- **[Architecture Guide](docs/main/architecture-guide.md)**: Detailed technical overview of the
-  Modular Monolith structure, layers, and communication rules.
-- **[Development Workflow](docs/main/development-workflow.md)**: **(Crucial)** Step-by-step
-  developer guide for implementing new features (Models, Services, UI).
-- **[Main Documentation Overview](docs/main/main-documentation-overview.md)**: A deeper dive into
-  core architectural principles, development workflows, coding conventions, and available tools.
-- **[Version History](docs/versions/versions-overview.md)**: Details on specific application
-  releases and their scope.
-- **[Changelog](CHANGELOG.md)**: A comprehensive record of all notable changes made to the project.
-- **[Security Policy](SECURITY.md)**: Protocols for security audits and instructions for reporting
-  vulnerabilities.
+* **[Project Overview](docs/project-overview.md)**
+  Vision, principles, and documentation structure.
 
-For more detailed guides on architecture, conventions, testing, and more, please explore the
-`docs/main` directory.
+* **[Architecture Guide](docs/main/architecture-guide.md)**
+  Modular Monolith layers, boundaries, and communication rules.
+
+* **[Development Workflow](docs/main/development-workflow.md)**
+  Engineering SOP for feature implementation.
+
+* **[Application Versions Overview](docs/versions/versions-overview.md)**
+  Version lifecycle, support policy, and release lineage.
+
+* **[Changelog](CHANGELOG.md)**
+  Incremental changes per release.
+
+* **[Security Policy](SECURITY.md)**
+  Security audit scope and vulnerability reporting.
+
+---
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to
-contribute to this project.
+Contributions are welcome.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull requests.
+
+---
 
 ## License
 
-This project is open-sourced software licensed under the [MIT license](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
+
+---
 
 ## Credits
 
-- **Author:** [Reas Vyn](https://github.com/reasnov)
-- **Email:** reasnov.official@gmail.com
+* **Author:** [Reas Vyn](https://github.com/reasnov)
+* **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)
