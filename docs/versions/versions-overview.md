@@ -12,8 +12,8 @@ To ensure system stability and security, we maintain a clear support schedule.
 
 | Version    | Stage | Security | Bug Fixes | Status                 |
 | :--------- | :---- | :------- | :-------- | :--------------------- |
-| **v0.7.x** | Alpha | ✅       | ✅        | **Active Development** |
-| **v0.6.x** | Alpha | ✅       | ✅        | **Released**           |
+| **v0.7.x** | Alpha | ❌       | ❌        | **Active Support (Snapshot)** |
+| **v0.6.x** | Alpha | ❌       | ❌        | **Released (Snapshot)**       |
 | **v0.5.x** | Alpha | ❌       | ❌        | EOL (End of Life)      |
 | **v0.4.x** | Alpha | ❌       | ❌        | EOL (End of Life)      |
 
