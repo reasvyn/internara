@@ -56,7 +56,7 @@ journals to structured assessment, certification, and institutional reporting.
    ```bash
    git clone https://github.com/reasnov/internara.git
    cd internara
-````
+   ```
 
 2. **Install PHP dependencies**
 
