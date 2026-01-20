@@ -89,9 +89,9 @@ This project is built upon the Laravel ecosystem and several key packages:
 
 ### Version Supports
 
-| Version  | Security | Bug Fixes | Status                 |
-| :------- | :------- | :-------- | :--------------------- |
-| **v0.x** | ❌       | ❌        | **Snapshot (Alpha)**   |
+| Version  | Security | Bug Fixes | Status            |
+| :------- | :------- | :-------- | :---------------- |
+| **v0.x** | ❌       | ❌        | **Alpha**         |
 
 ### Version History
 
