@@ -14,8 +14,8 @@ To ensure system stability and security, we maintain a clear support schedule.
 | :--------- | :---- | :------------- | :------- | :-------- | :--------------------- |
 | **v0.7.x** | Alpha | Snapshot       | ❌       | ❌        | **Active Development** |
 | **v0.6.x** | Alpha | Snapshot       | ❌       | ❌        | **Released**           |
-| **v0.5.x** | Alpha | EOL            | ❌       | ❌        | Archived               |
-| **v0.4.x** | Alpha | EOL            | ❌       | ❌        | Archived               |
+| **v0.5.x** | Alpha | EOL            | ❌       | ❌        | Deprecated             |
+| **v0.4.x** | Alpha | EOL            | ❌       | ❌        | Deprecated             |
 
 ---
 
