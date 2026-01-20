@@ -11,8 +11,9 @@ series starts here as an "Architectural Blueprint."
 
 ## 2. Active & Recent Plans
 
-- **[v0.6.x (Assessment)](v0.6.x-alpha.md)**: Finalizing the core internship cycle.
-- **v0.7.x (Automation)**: _In Draft Phase._
+- **[v0.8.x-alpha: Flexible Assignment & Final Reporting](v0.8.x-alpha.md)** (Planned)
+- **[v0.7.x-alpha: Administrative Orchestration](v0.7.x-alpha.md)** (In Progress)
+- **[v0.6.x-alpha: Assessment & Workspaces](v0.6.x-alpha.md)** (Released)
 
 ## 3. Historical Archive
 
