@@ -48,6 +48,8 @@ A critical rule in Internara is the handling of the `src` directory within modul
 - **Concerns (Traits)**: PascalCase, ideally prefixed with `Has` or `Can`.
     - **Model Concerns**: Located in `Models/Concerns/` (e.g., `HasUuid`).
     - **General Concerns**: Located in `Concerns/` (e.g., `HandlesAppException`).
+- **Enums**: PascalCase, located in `src/Enums/`. Used for standardizing types, statuses, and fixed 
+  options.
 
 ### 3.2 Database & Migrations
 

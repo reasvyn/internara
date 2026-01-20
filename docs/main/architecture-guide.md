@@ -12,38 +12,25 @@ Internara is built as a collection of self-contained business domains (Modules) 
 Laravel application. We prioritize **Pragmatic Modularity**: enough isolation to manage complexity,
 but enough integration to maintain high development velocity.
 
-### 1.1 The "Infrastructure" Layer (`app/`)
+### 1.1 The "Infrastructure" Layer (`app/` & `modules/Core`)
 
-The root `app/` directory is treated as a specialized **Infrastructure Module**. It handles
-cross-cutting technical concerns not tied to any specific business domain:
+The root `app/` directory and the `Core` module handle cross-cutting technical concerns:
 
 - **Service Providers**: Bootstrapping the framework and modular auto-discovery.
 - **Base Classes**: Abstract definitions extended by modules (e.g., `BaseModel`, `BaseService`).
-- **Middleware & Console**: Global HTTP and CLI entry points.
-- **Infrastructure Services**: Technical services like `AuditLog` or `Settings` that follow the
-  **Interface-First** principle.
-
-### 1.2 The "Modular Domain" Layer (`modules/`)
-
-This is where the business happens. Each directory under `modules/` is a self-contained mini-app.
-
-- **Portability**: Each module should, in theory, be extractable with minimal friction.
-- **Self-Containment**: A module owns its UI (Livewire), Logic (Services), and Data (Models).
-- **Namespacing**: We omit the `src` segment in namespaces (e.g., `Modules\User\Services`).
+- **Infrastructure Migrations**: The `Core` module houses foundational system migrations such as 
+  `jobs`, `failed_jobs`, and `cache` tables.
+- **Infrastructure Services**: Technical services like `AuditLog` or `Settings`.
 
 ---
 
 ## 2. The TALL Stack: Our UI Engine
 
-We use the TALL stack to build modern, interactive interfaces without the overhead of a JavaScript
-SPA.
-
-- **Laravel 12**: The robust core.
-- **Livewire 3 (with Volt)**: The bridge between PHP and reactivity. Volt allows us to build
-  **Single File Components** (SFIs) for simpler features.
-- **Tailwind CSS 4**: Semantic, utility-first styling.
-- **Alpine.js**: Lightweight client-side "sprinkles" for DOM manipulation.
-- **MaryUI & DaisyUI**: Our design system, providing standardized accessible components.
+### 2.1 Global Notification Bridge
+To ensure a consistent user experience, we implement a **Global Notification Bridge** in the base 
+layout. This bridge listens for `notify` events dispatched from individual components and 
+translates them into `mary-toast` notifications. This ensures that background job feedback or 
+service-level exceptions reach the user regardless of their current view.
 
 ---
 

@@ -25,11 +25,17 @@ lifecycle, from registration and journal logging to final reporting and evaluati
 - **Role-Based Access Control:** Secure access management using `spatie/laravel-permission` with
   full UUID support and modular isolation.
 - **Internship Lifecycle Management:**
+    - **Requirement Engine:** Dynamic prerequisite validation (Documents, Skills, Conditions) with student-facing submission center.
+    - **Automated Grading:** Participation-driven scoring bridge connecting Attendance and Journal data to formal Assessments.
     - **Registration:** Students can browse and apply for available placements.
     - **Journals:** Daily log entries for students to track their progress.
     - **Assignments:** Teachers can assign tasks and review submissions.
     - **Assessments:** Comprehensive evaluation system with customizable aspects and indicators.
     - **Reporting:** Automated and manual reporting tools for final grades.
+- **Administrative Orchestration:**
+    - **Job Monitor:** Real-time visibility into background queue processing and failed job management.
+    - **JIT Workflows:** "Just-in-Time" stakeholder onboarding directly within operational flows.
+    - **Global Notifications:** Centralized notification bridge for non-intrusive system feedback.
 - **Minimalist UI:** Designed with **MaryUI** and **DaisyUI** for a clean, professional, and
   accessible interface.
 
