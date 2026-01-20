@@ -13,31 +13,12 @@ lifecycle, from registration and journal logging to final reporting and evaluati
 
 ## Features
 
-- **Modular Architecture:** Built using `nwidart/laravel-modules` for a scalable and maintainable
-  codebase, isolating business domains into self-contained modules.
-- **Modern Tech Stack:** Leveraging the **TALL Stack** (Tailwind CSS v4, Alpine.js, Laravel 12,
-  Livewire 3) for a blazing-fast and interactive user experience.
-- **Robust Infrastructure:**
-    - **Automated DI:** Self-binding service layer using `EloquentQuery` patterns.
-    - **Modular Tooling:** Custom Artisan generators for Classes, Contracts, and Concerns that
-      respect modular namespace conventions.
-    - **Standardized States:** Integrated status management across all domain models.
-- **Role-Based Access Control:** Secure access management using `spatie/laravel-permission` with
-  full UUID support and modular isolation.
-- **Internship Lifecycle Management:**
-    - **Requirement Engine:** Dynamic prerequisite validation (Documents, Skills, Conditions) with student-facing submission center.
-    - **Automated Grading:** Participation-driven scoring bridge connecting Attendance and Journal data to formal Assessments.
-    - **Registration:** Students can browse and apply for available placements.
-    - **Journals:** Daily log entries for students to track their progress.
-    - **Assignments:** Teachers can assign tasks and review submissions.
-    - **Assessments:** Comprehensive evaluation system with customizable aspects and indicators.
-    - **Reporting:** Automated and manual reporting tools for final grades.
-- **Administrative Orchestration:**
-    - **Job Monitor:** Real-time visibility into background queue processing and failed job management.
-    - **JIT Workflows:** "Just-in-Time" stakeholder onboarding directly within operational flows.
-    - **Global Notifications:** Centralized notification bridge for non-intrusive system feedback.
-- **Minimalist UI:** Designed with **MaryUI** and **DaisyUI** for a clean, professional, and
-  accessible interface.
+- **Modular Monolith Architecture:** Built using `nwidart/laravel-modules` to isolate business domains (User, Internship, School, etc.) into self-contained, scalable modules.
+- **Comprehensive Lifecycle Management:** End-to-end handling of the internship process—from student registration and daily logbooks (Journals) to final assessments and certification.
+- **Role-Based Workspaces:** Dedicated, secure dashboards for **Admins**, **Students**, **Academic Teachers**, and **Industry Mentors**.
+- **Administrative Automation:** Intelligent features like **Participation-Driven Scoring**, **Requirement Verification**, and background job monitoring to streamline operations.
+- **Modern TALL Stack:** Blazing-fast reactive UI built with **Laravel 12**, **Livewire 3**, **Tailwind CSS 4**, and **Alpine.js**.
+- **Robust Security:** Integrated Role-Based Access Control (RBAC), UUIDs for all models, and strict privacy boundaries.
 
 ## Requirements
 
