@@ -17,7 +17,39 @@ We strictly adhere to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
 ---
 
-## 2. Artifact: `app_info.json`
+## 2. Version Lifecycle Statuses
+
+To manage expectations regarding stability and maintenance, every release progresses through a
+defined lifecycle.
+
+### 2.1 Pre-Release Phase (Development)
+
+1.  **Planned**: The version is conceptual. Scope is defined in an Engineering Plan, but no code
+    has been finalized.
+2.  **In Progress**: Active development is ongoing. Features are being implemented.
+3.  **Alpha (Snapshot)**: Feature exploration. The system is functional but unstable.
+    *   **Policy**: **Fix-Forward**. No patches are released for Alpha versions. Bugs are fixed in
+        the next minor release.
+4.  **Beta**: Feature complete (Feature Freeze). Focus shifts entirely to bug fixing and
+    stabilization.
+5.  **Release Candidate (RC)**: A potential final product. No code changes are allowed unless they
+    fix critical, release-blocking bugs.
+
+### 2.2 Production Phase (Release & Support)
+
+Once a version tag is created without a suffix (e.g., `v1.0.0`), it enters the production lifecycle:
+
+1.  **Active Support**: The current primary version. Receives new features (minor updates), bug
+    fixes, and security patches.
+2.  **Maintenance**: No new features. Receives regular bug fixes and security patches.
+3.  **LTS (Long Term Support)**: (Optional) A designated stable version that receives critical
+    security patches for an extended period, even after newer versions are released.
+4.  **EOL (End of Life)**: The version is obsolete. No further updates or security patches will be
+    provided.
+
+---
+
+## 3. Artifact: `app_info.json`
 
 The `app_info.json` file at the project root is the **Machine-Readable Identity** of the
 application. It must be updated manually when a version milestone is reached.
@@ -26,15 +58,15 @@ application. It must be updated manually when a version milestone is reached.
 
 - `version`: The SemVer string.
 - `series_code`: The unique identifier for the current development series (e.g., `ARC01-FEAT-01`).
-- `status`: The release state (`Stable`, `Beta`, `Released`).
+- `status`: The release state (`Active Support`, `Released`, `EOL`).
 
 ---
 
-## 3. Changelog Management (`CHANGELOG.md`)
+## 4. Changelog Management (`CHANGELOG.md`)
 
 Our changelog is more than a list of commits; it is a human-readable history of progress.
 
-### 3.1 Structure
+### 4.1 Structure
 
 Follow the **[Keep a Changelog](https://keepachangelog.com/)** standard:
 
@@ -46,13 +78,13 @@ Follow the **[Keep a Changelog](https://keepachangelog.com/)** standard:
 - `Fixed`: For bug fixes.
 - `Security`: In case of vulnerabilities.
 
-### 3.2 Tone
+### 4.2 Tone
 
 Keep entries technical but accessible. Focus on the **Impact** of the change.
 
 ---
 
-## 4. Analytical Version Notes (`docs/versions/{subdir}/`)
+## 5. Analytical Version Notes (`docs/versions/{subdir}/`)
 
 For every version (unreleased, archived, or released), we produce an **Analytical Version Note**
 (Deep Analytical Narrative). This document resides in `docs/versions/releases/` or
@@ -69,7 +101,7 @@ this is distinct from **Engineering Plans** which reside in `docs/internal/plans
 
 ---
 
-## 5. The Release Checklist
+## 6. The Release Checklist
 
 Before marking a version as `Released`:
 
