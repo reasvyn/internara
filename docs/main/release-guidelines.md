@@ -98,17 +98,21 @@ Keep entries technical but accessible. Focus on the **Impact** of the change.
 
 ---
 
-## 5. Analytical Version Notes (`docs/versions/{subdir}/`)
+## 5. Analytical Version Notes (`docs/versions/`)
 
-For every version (unreleased, archived, or released), we produce an **Analytical Version Note**
-(Deep Analytical Narrative). This document resides in `docs/versions/releases/` or
-`docs/versions/unreleases/` and serves as the "Technical Bible" for that specific state. Note that
-this is distinct from **Engineering Plans** which reside in `docs/internal/plans/`.
+For every version (unreleased or released), we produce an **Analytical Version Note** (Deep 
+Analytical Narrative). This document resides directly in `docs/versions/` and serves as the 
+"Technical Bible" for that specific milestone. Note that this is distinct from **Engineering 
+Plans** which reside in `docs/internal/plans/`.
+
+**Status Policy**: Individual version notes **must not** contain dynamic lifecycle status or 
+support policy information. This data is managed exclusively in the 
+**[Versions Overview](../versions/versions-overview.md)** to ensure a Single Source of Truth.
 
 **Each narrative must include:**
 
-1.  **Version Details**: Metadata and status.
-2.  **Goals & Philosophy**: The strategic "Why" behind the release.
+1.  **Metadata**: **Series Code** and date.
+2.  **Goals & Philosophy**: The strategic "Why" behind the milestone.
 3.  **Production Keystones**: Detailed implementation deep-dives for major features.
 4.  **Verification Analysis**: Results of tests, security audits, and linting.
 5.  **Roadmap Strategy**: High-level direction for the next version.
