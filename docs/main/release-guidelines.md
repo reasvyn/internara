@@ -17,35 +17,49 @@ We strictly adhere to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
 ---
 
-## 2. Version Lifecycle Statuses
+## 2. Version Lifecycle & Policies
 
-To manage expectations regarding stability and maintenance, every release progresses through a
-defined lifecycle.
+To manage expectations, we distinguish between the **maturity stage** of a release and its **support
+policy**.
 
-### 2.1 Pre-Release Phase (Development)
+### 2.1 Development Stages (Maturity)
 
-1.  **Planned**: The version is conceptual. Scope is defined in an Engineering Plan, but no code
-    has been finalized.
-2.  **In Progress**: Active development is ongoing. Features are being implemented.
-3.  **Alpha (Snapshot)**: Feature exploration. The system is functional but unstable.
-    *   **Policy**: **Fix-Forward**. No patches are released for Alpha versions. Bugs are fixed in
-        the next minor release.
+These stages define the completeness and stability of the features.
+
+1.  **Planned**: Conceptual phase. Scope is defined, but implementation hasn't started.
+2.  **In Progress**: Active development. Code is being written.
+3.  **Alpha**: Feature exploration. The system is functional but APIs and features may change
+    drastically.
 4.  **Beta**: Feature complete (Feature Freeze). Focus shifts entirely to bug fixing and
     stabilization.
-5.  **Release Candidate (RC)**: A potential final product. No code changes are allowed unless they
-    fix critical, release-blocking bugs.
+5.  **Release Candidate (RC)**: A potential final product. No code changes allowed except for
+    critical blockers.
+6.  **Stable**: Production-ready release.
 
-### 2.2 Production Phase (Release & Support)
+### 2.2 Support Policies (Maintenance)
 
-Once a version tag is created without a suffix (e.g., `v1.0.0`), it enters the production lifecycle:
+These policies define the guarantee of updates and patches for a specific release.
 
-1.  **Active Support**: The current primary version. Receives new features (minor updates), bug
-    fixes, and security patches.
-2.  **Maintenance**: No new features. Receives regular bug fixes and security patches.
-3.  **LTS (Long Term Support)**: (Optional) A designated stable version that receives critical
-    security patches for an extended period, even after newer versions are released.
-4.  **EOL (End of Life)**: The version is obsolete. No further updates or security patches will be
-    provided.
+-   **Snapshot Policy**:
+    -   **Definition**: A "point-in-time" release provided as-is.
+    -   **Guarantee**: **Zero**. No hotfixes, no security patches.
+    -   **Strategy**: **Fix-Forward**. Bugs found in this version will only be addressed in the
+        *next* release.
+    -   *Typical Usage*: Alpha releases, Nightly builds, or experimental branches.
+
+-   **Standard Support**:
+    -   **Definition**: A supported release meant for usage.
+    -   **Guarantee**: Receives bug fixes and security patches until the next minor/major version.
+    -   *Typical Usage*: Beta (critical bugs only), Stable releases.
+
+-   **LTS (Long Term Support)**:
+    -   **Definition**: An enterprise-grade release.
+    -   **Guarantee**: Receives critical security patches for an extended period, regardless of newer
+        versions.
+
+-   **EOL (End of Life)**:
+    -   **Definition**: Obsolete.
+    -   **Guarantee**: None. The version is no longer maintained.
 
 ---
 

@@ -10,12 +10,12 @@ documented with technical rationale and implementation deep-dives.
 
 To ensure system stability and security, we maintain a clear support schedule.
 
-| Version    | Stage | Security | Bug Fixes | Status                 |
-| :--------- | :---- | :------- | :-------- | :--------------------- |
-| **v0.7.x** | Alpha | ❌       | ❌        | **Active Support (Snapshot)** |
-| **v0.6.x** | Alpha | ❌       | ❌        | **Released (Snapshot)**       |
-| **v0.5.x** | Alpha | ❌       | ❌        | EOL (End of Life)      |
-| **v0.4.x** | Alpha | ❌       | ❌        | EOL (End of Life)      |
+| Version    | Stage | Support Policy | Security | Bug Fixes | Status                 |
+| :--------- | :---- | :------------- | :------- | :-------- | :--------------------- |
+| **v0.7.x** | Alpha | Snapshot       | ❌       | ❌        | **Active Development** |
+| **v0.6.x** | Alpha | Snapshot       | ❌       | ❌        | **Released**           |
+| **v0.5.x** | Alpha | EOL            | ❌       | ❌        | Archived               |
+| **v0.4.x** | Alpha | EOL            | ❌       | ❌        | Archived               |
 
 ---
 
