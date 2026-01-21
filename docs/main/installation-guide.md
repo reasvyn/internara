@@ -1,89 +1,66 @@
-# Installation Guide: Setting Up Internara
+# Installation Guide: Getting Started with Internara
 
-Welcome! This guide will walk you through the process of setting up a local development environment
-for the Internara project. By following these steps, you'll have a fully functional Modular Monolith
-running on your machine.
+Welcome to Internara! This guide is designed to help you—whether you are a school administrator, an institution IT staff member, or a curious user—set up the Internara platform on your local machine or server.
 
 ---
 
 ## 🛠 1. System Requirements
 
-Ensure your machine meets the following prerequisites:
+Before you begin, ensure your environment meets the following requirements:
 
-- **PHP 8.4+** (Required for latest Laravel features).
-- **Composer** (PHP dependency manager).
-- **Node.js & NPM** (For building the TALL stack assets).
-- **SQLite, MySQL, or PostgreSQL** (SQLite is recommended for local development).
+- **PHP 8.4 or higher**: The primary engine that runs the application.
+- **Composer**: A tool used to manage the system's internal components.
+- **Node.js & NPM**: Required for building and displaying the user interface.
+- **Database**: Internara supports SQLite (easiest for testing), MySQL, or PostgreSQL.
 
 ---
 
-## 🚀 2. Step-by-Step Setup
+## 🚀 2. Step-by-Step Installation
 
-### Step 1: Clone the Repository
-
+### Step 1: Obtain the Application Files
+Download the application code to your computer:
 ```bash
 git clone https://github.com/reasnov/internara.git
 cd internara
 ```
 
-### Step 2: Install PHP Dependencies
-
+### Step 2: Install System Components
+Run these commands to install all necessary background tools:
 ```bash
 composer install
-```
-
-### Step 3: Install Node.js Dependencies
-
-```bash
 npm install
 ```
 
-### Step 4: Environment Configuration
-
-Create your local environment file and generate the application key.
-
+### Step 3: Setup Application Settings
+Create your configuration file and generate a secure access key:
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
+*Note: You can customize your application name and database connection inside the `.env` file.*
 
-_Note: If using SQLite, ensure you create the database file: `touch database/database.sqlite`._
-
-### Step 5: Run Migrations & Seeders
-
-This will set up the core schema and create the default roles/permissions.
-
+### Step 4: Prepare the Database
+Run this command to create the data tables and set up initial roles (like the Admin account):
 ```bash
 php artisan migrate --seed
 ```
 
-### Step 6: Build Assets
-
-Compile the Tailwind CSS and Alpine.js assets.
-
+### Step 5: Build the Interface
+Compile the visual elements so the application looks and works correctly:
 ```bash
 npm run build
 ```
 
-### Step 7: Start Development Servers
+---
 
-In two separate terminals, run the PHP server and the Vite dev server for hot-reloading.
+## ✅ 3. Final Verification
 
+Once finished, you can start the application with:
 ```bash
 php artisan serve
-# and
-npm run dev
 ```
+Open your browser and go to `http://localhost:8000`. If you see the Internara welcome page, your installation was successful!
 
 ---
 
-## ✅ 3. Post-Installation Verification
-
-1.  Open `http://localhost:8000` in your browser.
-2.  Run `php artisan app:info` to verify that the application version and identity are correct.
-3.  Check the `storage/logs/laravel.log` for any initialization errors.
-
----
-
-_You are now ready to build! Refer to the **[Architecture Guide](architecture-guide.md)** to
-understand how the system is structured before you start coding._
+_Need further assistance? Contact your IT team or visit our GitHub page to report any issues._
