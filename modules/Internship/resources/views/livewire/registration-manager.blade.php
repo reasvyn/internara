@@ -1,6 +1,7 @@
 <div>
     <x-ui::main title="{{ __('internship::ui.registration_title') }}" subtitle="{{ __('internship::ui.registration_subtitle') }}">
         <x-slot:actions>
+            <x-ui::button label="{{ __('Bulk Penempatan') }}" icon="tabler.layers-intersect" class="btn-outline" wire:click="openBulkPlace" />
             <x-ui::button label="{{ __('internship::ui.add_registration') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
 
@@ -19,7 +20,7 @@
                 ['key' => 'teacher.name', 'label' => __('internship::ui.teacher')],
                 ['key' => 'mentor.name', 'label' => __('internship::ui.mentor')],
                 ['key' => 'status', 'label' => __('internship::ui.status')],
-            ]" :rows="$this->records" with-pagination>
+            ]" :rows="$this->records" wire:model="selectedIds" selectable with-pagination>
                 @scope('cell_requirements', $registration)
                     @php
                         $percentage = $registration->getRequirementCompletionPercentage();
@@ -111,5 +112,28 @@
             <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
             <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
         </x-slot:actions>
+    </x-ui::modal>
+
+    {{-- Bulk Placement Modal --}}
+    <x-ui::modal wire:model="bulkPlaceModal" title="{{ __('Penempatan Massal') }}">
+        <div class="mb-4">
+            <p class="text-sm opacity-70">{{ __(':count siswa terpilih akan ditempatkan di lokasi yang sama.', ['count' => count($selectedIds)]) }}</p>
+            <p class="text-xs text-warning mt-1">{{ __('Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.') }}</p>
+        </div>
+
+        <x-ui::form wire:submit="executeBulkPlace">
+            <x-ui::select 
+                label="{{ __('Lokasi Penempatan') }}" 
+                wire:model="targetPlacementId" 
+                :options="$this->placements" 
+                placeholder="{{ __('Pilih Industri Partner') }}"
+                required 
+            />
+
+            <x-slot:actions>
+                <x-ui::button label="{{ __('Batal') }}" wire:click="$set('bulkPlaceModal', false)" />
+                <x-ui::button label="{{ __('Proses Penempatan') }}" type="submit" class="btn-primary" spinner="executeBulkPlace" />
+            </x-slot:actions>
+        </x-ui::form>
     </x-ui::modal>
 </div>

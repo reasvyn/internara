@@ -93,10 +93,8 @@ trait HandlesAppException
 
     /**
      * Handle an exception for Livewire components.
-     *
-     * @return array{event: string, message: string}
      */
-    protected function handleAppExceptionInLivewire(Throwable $exception): array
+    protected function handleAppExceptionInLivewire(Throwable $exception): void
     {
         $this->reportException($exception);
 
@@ -107,18 +105,10 @@ trait HandlesAppException
             $message = $exception->getUserMessage();
         }
 
-        // If the component uses MaryUI Toast or has the trait, we dispatch the event.
-        if (method_exists($this, 'dispatch')) {
-            $this->dispatch(
-                'toast',
-                type: $type,
-                title: $type === 'error' ? __('Error') : __('Success'),
-                description: $message,
-                icon: 'tabler.alert-circle',
-            );
+        // Use the standardized Notifier service
+        if (interface_exists(\Modules\Notification\Contracts\Notifier::class)) {
+            app(\Modules\Notification\Contracts\Notifier::class)->notify($message, $type);
         }
-
-        return ['event' => $type, 'message' => $message];
     }
 
     /**

@@ -18,6 +18,12 @@ class RegistrationManager extends Component
 
     public RegistrationForm $form;
 
+    public array $selectedIds = [];
+
+    public ?string $targetPlacementId = null;
+
+    public bool $bulkPlaceModal = false;
+
     public function boot(InternshipRegistrationService $registrationService): void
     {
         $this->service = $registrationService;
@@ -115,6 +121,45 @@ class RegistrationManager extends Component
     public function render()
     {
         return view('internship::livewire.registration-manager');
+    }
+
+    /**
+     * Open the bulk placement modal.
+     */
+    public function openBulkPlace(): void
+    {
+        if (empty($this->selectedIds)) {
+            $this->dispatch('notify', message: __('Pilih setidaknya satu siswa.'), type: 'warning');
+
+            return;
+        }
+
+        $this->bulkPlaceModal = true;
+    }
+
+    /**
+     * Execute bulk placement.
+     */
+    public function executeBulkPlace(): void
+    {
+        if (! $this->targetPlacementId) {
+            $this->dispatch('notify', message: __('Pilih lokasi penempatan.'), type: 'error');
+
+            return;
+        }
+
+        try {
+            $pairings = array_fill_keys($this->selectedIds, $this->targetPlacementId);
+            $count = app(\Modules\Internship\Services\Contracts\PlacementService::class)->bulkMatch($pairings);
+
+            $this->bulkPlaceModal = false;
+            $this->selectedIds = [];
+            $this->targetPlacementId = null;
+
+            $this->dispatch('notify', message: __(':count siswa berhasil ditempatkan.', ['count' => $count]), type: 'success');
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
     }
 
     /**

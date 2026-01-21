@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Notifications\Providers;
+namespace Modules\Notification\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
@@ -22,12 +22,7 @@ class NotificationsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
     }
 
     /**
@@ -35,7 +30,7 @@ class NotificationsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }
@@ -48,7 +43,7 @@ class NotificationsServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            // 'SomeContract::class' => 'SomeConcrete::class'
+            \Modules\Notification\Contracts\Notifier::class => \Modules\Notification\Services\NotifierService::class,
         ];
     }
 }
