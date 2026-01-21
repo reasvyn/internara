@@ -11,7 +11,7 @@ series starts here as an "Architectural Blueprint."
 
 ## 2. Active, Planned & Legacy Series
 
-- **[v0.8.0 (Reporting & Intelligence)](v0.8.0-alpha.md)** - *Planned*
+- **[v0.8.0 (Reporting & Intelligence)](v0.8.0-alpha.md)** - *Active*
 - **[v0.7.0 (Administrative Orchestration)](v0.7.0-alpha.md)** - *Released*
 - **[v0.5.0 (Operational Layer)](v0.5.0-alpha.md)** - *EOL (End of Life)*
 
