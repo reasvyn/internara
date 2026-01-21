@@ -18,7 +18,53 @@ class AssessmentService extends EloquentQuery implements Contract
         $this->setSearchable(['type', 'academic_year']);
         $this->setSortable(['created_at', 'score']);
     }
-...
+
+    public function submitEvaluation(
+        string $registrationId,
+        string $evaluatorId,
+        string $type,
+        array $data,
+        ?string $feedback = null,
+    ): Assessment {
+        // Authorization: Verify evaluator is assigned to this registration
+        $registration = app(
+            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+        )->find($registrationId);
+
+        if (! $registration) {
+            throw new AppException('assessment::messages.invalid_registration', code: 404);
+        }
+
+        $isAuthorized = match ($type) {
+            'teacher' => $registration->teacher_id === $evaluatorId,
+            'mentor' => $registration->mentor_id === $evaluatorId,
+            default => false,
+        };
+
+        if (! $isAuthorized) {
+            throw new AppException('assessment::messages.unauthorized', code: 403);
+        }
+
+        // Calculate average score
+        $scores = array_filter($data, fn ($value) => is_numeric($value));
+        $finalScore = count($scores) > 0 ? array_sum($scores) / count($scores) : 0;
+
+        return $this->save(
+            [
+                'registration_id' => $registrationId,
+                'type' => $type,
+            ],
+            [
+                'evaluator_id' => $evaluatorId,
+                'content' => $data,
+                'score' => $finalScore,
+                'feedback' => $feedback,
+                // Automatically finalize on submission for the 'Streamlined' workflow
+                'finalized_at' => now(),
+            ],
+        );
+    }
+
     public function getScoreCard(string $registrationId): array
     {
         $assessments = $this->query(['registration_id' => $registrationId])
@@ -31,7 +77,10 @@ class AssessmentService extends EloquentQuery implements Contract
             'mentor' => $assessments->get('mentor'),
             'teacher' => $assessments->get('teacher'),
             'compliance' => $compliance,
-            'final_grade' => $this->calculateFinalGrade($assessments, $compliance['final_score'] ?? 0),
+            'final_grade' => $this->calculateFinalGrade(
+                $assessments,
+                $compliance['final_score'] ?? 0,
+            ),
         ];
     }
 
@@ -45,11 +94,6 @@ class AssessmentService extends EloquentQuery implements Contract
         }
 
         // Formula: Mentor (40%) + Teacher (40%) + Compliance (20%)
-        return round(
-            ($mentor->score * 0.4) +
-            ($teacher->score * 0.4) +
-            ($complianceScore * 0.2),
-            2
-        );
+        return round($mentor->score * 0.4 + $teacher->score * 0.4 + $complianceScore * 0.2, 2);
     }
 }

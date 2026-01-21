@@ -1,7 +1,7 @@
 # Software Development Lifecycle (SDLC)
 
-This document defines the **Software Development Lifecycle (SDLC)** of Internara as a product.
-It describes how the system evolves from concept to formally released artifacts, independent of
+This document defines the **Software Development Lifecycle (SDLC)** of Internara as a product. It
+describes how the system evolves from concept to formally released artifacts, independent of
 day-to-day development workflows or implementation techniques.
 
 The SDLC exists to ensure that every release is **traceable, classifiable, and governable**.
@@ -12,16 +12,16 @@ The SDLC exists to ensure that every release is **traceable, classifiable, and g
 
 Internara’s SDLC governs:
 
-* **When** a version is considered releasable
-* **How** a version is classified after release
-* **What guarantees** (if any) apply to a released artifact
+- **When** a version is considered releasable
+- **How** a version is classified after release
+- **What guarantees** (if any) apply to a released artifact
 
 The SDLC explicitly **does not** define:
 
-* Coding practices
-* Development workflows
-* Branching or environment strategies
-* Tooling or implementation details
+- Coding practices
+- Development workflows
+- Branching or environment strategies
+- Tooling or implementation details
 
 ---
 
@@ -34,12 +34,11 @@ These phases describe the **product-level evolution** of a version, not engineer
 A version begins as a **conceptual milestone**, defined by intended business value or architectural
 direction.
 
-* Scope is identified
-* Version lineage (Series Code) is established
-* No release artifact exists yet
+- Scope is identified
+- Version lineage (Series Code) is established
+- No release artifact exists yet
 
-**Output**: A defined version intent
-**Status**: `Planned`
+**Output**: A defined version intent **Status**: `Planned`
 
 ---
 
@@ -47,12 +46,11 @@ direction.
 
 The version is under active construction toward its intended scope.
 
-* Features may be incomplete
-* Internal iteration is expected
-* The version is not yet considered a published artifact
+- Features may be incomplete
+- Internal iteration is expected
+- The version is not yet considered a published artifact
 
-**Output**: An internally coherent system state
-**Status**: `In Progress`
+**Output**: An internally coherent system state **Status**: `In Progress`
 
 ---
 
@@ -60,14 +58,13 @@ The version is under active construction toward its intended scope.
 
 The version reaches **scope closure**.
 
-* Intended features for the milestone are complete
-* The system is internally consistent
-* Documentation accurately reflects behavior
+- Intended features for the milestone are complete
+- The system is internally consistent
+- Documentation accurately reflects behavior
 
 This phase determines **eligibility for release**, not stability.
 
-**Output**: A releasable artifact candidate
-**Status**: `Stabilizing`
+**Output**: A releasable artifact candidate **Status**: `Stabilizing`
 
 ---
 
@@ -75,18 +72,17 @@ This phase determines **eligibility for release**, not stability.
 
 The version is formally published as a **versioned artifact**.
 
-* The version is tagged
-* Release notes and analytical documentation are finalized
-* The artifact becomes externally referable
+- The version is tagged
+- Release notes and analytical documentation are finalized
+- The artifact becomes externally referable
 
 Release does **not** imply:
 
-* Production readiness
-* Long-term support
-* Absence of defects
+- Production readiness
+- Long-term support
+- Absence of defects
 
-**Output**: A published version
-**Status**: `Released`
+**Output**: A published version **Status**: `Released`
 
 ---
 
@@ -113,12 +109,12 @@ Every released version is classified across **three orthogonal axes**.
 
 Describes the **quality and stability expectation** of the artifact.
 
-* Experimental
-* Alpha
-* Beta
-* Release Candidate (RC)
-* Stable
-* LTS
+- Experimental
+- Alpha
+- Beta
+- Release Candidate (RC)
+- Stable
+- LTS
 
 ---
 
@@ -126,11 +122,11 @@ Describes the **quality and stability expectation** of the artifact.
 
 Defines **what guarantees apply after release**.
 
-* Snapshot (no guarantees)
-* Bugfix Only
-* Security Only
-* Full Support
-* EOL
+- Snapshot (no guarantees)
+- Bugfix Only
+- Security Only
+- Full Support
+- EOL
 
 ---
 
@@ -138,12 +134,12 @@ Defines **what guarantees apply after release**.
 
 Represents the **current operational state** of the version.
 
-* Planned
-* In Progress
-* Stabilizing
-* Released
-* Deprecated
-* Archived
+- Planned
+- In Progress
+- Stabilizing
+- Released
+- Deprecated
+- Archived
 
 > These axes are independent and may change without altering the version identifier.
 
@@ -159,9 +155,9 @@ From an SDLC standpoint, a version is eligible for release when:
 
 No requirement exists for:
 
-* Feature completeness across the product
-* Stability guarantees
-* Backward compatibility
+- Feature completeness across the product
+- Stability guarantees
+- Backward compatibility
 
 Those concerns are expressed via **Stage** and **Policy**, not release permission.
 
@@ -171,12 +167,12 @@ Those concerns are expressed via **Stage** and **Policy**, not release permissio
 
 The SDLC is reflected through the following artifacts:
 
-* **Version Identifier** (SemVer)
-* **Series Code** (lineage context)
-* **Analytical Version Notes** (as-built narrative)
-* **Versions Overview** (Single Source of Truth for lifecycle classification)
+- **Version Identifier** (SemVer)
+- **Series Code** (lineage context)
+- **Analytical Version Notes** (as-built narrative)
+- **Versions Overview** (Single Source of Truth for lifecycle classification)
 
 ---
 
-*Internara’s SDLC treats releases as **governed product milestones**, not accidental byproducts of
-development. This separation enables clarity, historical integrity, and scalable project growth.*
+_Internara’s SDLC treats releases as **governed product milestones**, not accidental byproducts of
+development. This separation enables clarity, historical integrity, and scalable project growth._

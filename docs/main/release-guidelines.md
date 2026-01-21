@@ -10,11 +10,11 @@ is analytically precise, semantically consistent, and operationally unambiguous.
 
 Internara adheres to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
-* **MAJOR**: Incompatible API changes or fundamental architectural shifts.
-* **MINOR**: Backward-compatible feature additions or scope expansion.
-* **PATCH**: Backward-compatible bug fixes or security patches.
-* **Pre-release Identifiers**: During non-production stages, versions may include a qualifier
-  (e.g., `v0.6.0-alpha`, `v1.0.0-beta.1`) to indicate maturity—not support guarantees.
+- **MAJOR**: Incompatible API changes or fundamental architectural shifts.
+- **MINOR**: Backward-compatible feature additions or scope expansion.
+- **PATCH**: Backward-compatible bug fixes or security patches.
+- **Pre-release Identifiers**: During non-production stages, versions may include a qualifier (e.g.,
+  `v0.6.0-alpha`, `v1.0.0-beta.1`) to indicate maturity—not support guarantees.
 
 > Version numbers identify **artifacts**, not their operational state or support level.
 
@@ -72,7 +72,9 @@ Status reflects the **current reality** of a version at a given time.
 | Deprecated  | Still accessible but no longer recommended. |
 | Archived    | Closed and historically preserved.          |
 
-> **Note on Archiving:** The `Archived` status is applied based on **explicit developer decision**, not solely by lifecycle age. A version may remain visible in the main index if it serves as a critical reference.
+> **Note on Archiving:** The `Archived` status is applied based on **explicit developer decision**,
+> not solely by lifecycle age. A version may remain visible in the main index if it serves as a
+> critical reference.
 
 ---
 
@@ -83,17 +85,13 @@ remain semantically strict.
 
 **Required Fields:**
 
-* `version`
-  The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
+- `version` The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
 
-* `series_code`
-  The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
+- `series_code` The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
 
-* `stage`
-  The maturity classification (`Alpha`, `Beta`, `Stable`, etc.).
+- `stage` The maturity classification (`Alpha`, `Beta`, `Stable`, etc.).
 
-* `status`
-  The current operational state (`In Progress`, `Released`, `Deprecated`, etc.).
+- `status` The current operational state (`In Progress`, `Released`, `Deprecated`, etc.).
 
 > Support policy is **not embedded** in runtime artifacts and is documented centrally.
 
@@ -107,13 +105,13 @@ The changelog provides a **human-readable delta narrative**, not a substitute fo
 
 Internara follows **Keep a Changelog** conventions:
 
-* `[Unreleased]`
-* `Added`
-* `Changed`
-* `Deprecated`
-* `Removed`
-* `Fixed`
-* `Security`
+- `[Unreleased]`
+- `Added`
+- `Changed`
+- `Deprecated`
+- `Removed`
+- `Fixed`
+- `Security`
 
 ### 4.2 Editorial Principle
 
@@ -124,20 +122,22 @@ to commit history and analytical version notes.
 
 ## 5. User-Facing Release Notes (`docs/versions/`)
 
-For each significant milestone, Internara produces a **Release Note**—a human-centric narrative describing the version's value.
+For each significant milestone, Internara produces a **Release Note**—a human-centric narrative
+describing the version's value.
 
 These documents:
 
-* Reside in `docs/versions/`
-* Are immutable once the version is released
-* Must be written in **friendly, accessible language** suitable for non-technical stakeholders
+- Reside in `docs/versions/`
+- Are immutable once the version is released
+- Must be written in **friendly, accessible language** suitable for non-technical stakeholders
 
-Lifecycle classification is managed exclusively in
-**Versions Overview** to maintain a Single Source of Truth.
+Lifecycle classification is managed exclusively in **Versions Overview** to maintain a Single Source
+of Truth.
 
 **Writing Principle: "Benefits over Features"**
-*   **Don't say:** "Implemented Polymorphic ComplianceAggregator."
-*   **Do say:** "Grading is now automated based on attendance and journal data."
+
+- **Don't say:** "Implemented Polymorphic ComplianceAggregator."
+- **Do say:** "Grading is now automated based on attendance and journal data."
 
 **Structure:**
 
@@ -164,5 +164,5 @@ A version may be marked as `Released` when the following minimum conditions are 
 
 ---
 
-*Consistent lifecycle semantics transform releases from ad-hoc events into traceable,
-governable system milestones.*
+_Consistent lifecycle semantics transform releases from ad-hoc events into traceable, governable
+system milestones._

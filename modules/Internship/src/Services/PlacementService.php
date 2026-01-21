@@ -39,7 +39,8 @@ class PlacementService extends EloquentQuery implements Contract
      */
     public function getEligibleRegistrations(string $academicYear): Collection
     {
-        return $this->model->newQuery()
+        return $this->model
+            ->newQuery()
             ->where('academic_year', $academicYear)
             ->whereNull('placement_id')
             ->get()

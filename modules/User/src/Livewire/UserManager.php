@@ -56,10 +56,7 @@ class UserManager extends Component
             $filters['roles.name'] = $this->targetRole;
         }
 
-        return $this->service->paginate(
-            array_filter($filters),
-            $this->perPage,
-        );
+        return $this->service->paginate(array_filter($filters), $this->perPage);
     }
 
     /**
@@ -79,8 +76,12 @@ class UserManager extends Component
     public function getDepartmentsProperty(): \Illuminate\Support\Collection
     {
         if (class_exists(\Modules\Department\Services\Contracts\DepartmentService::class)) {
-            return app(\Modules\Department\Services\Contracts\DepartmentService::class)->all(['id', 'name']);
+            return app(\Modules\Department\Services\Contracts\DepartmentService::class)->all([
+                'id',
+                'name',
+            ]);
         }
+
         return collect();
     }
 
@@ -93,7 +94,7 @@ class UserManager extends Component
 
         if ($user) {
             $this->form->fill($user->toArray());
-            
+
             // Populate profile data based on role
             if ($user->hasRole('student') && $user->studentProfile) {
                 $this->form->profile = [
@@ -116,7 +117,9 @@ class UserManager extends Component
     public function render()
     {
         return view('user::livewire.user-manager', [
-            'title' => $this->targetRole ? ucfirst($this->targetRole).' Management' : 'User Management',
+            'title' => $this->targetRole
+                ? ucfirst($this->targetRole).' Management'
+                : 'User Management',
         ]);
     }
 }

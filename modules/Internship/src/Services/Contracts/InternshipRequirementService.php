@@ -30,10 +30,17 @@ interface InternshipRequirementService extends EloquentQuery
     /**
      * Verify a requirement submission.
      */
-    public function verify(string $submissionId, string $adminId): \Modules\Internship\Models\RequirementSubmission;
+    public function verify(
+        string $submissionId,
+        string $adminId,
+    ): \Modules\Internship\Models\RequirementSubmission;
 
     /**
      * Reject a requirement submission with notes.
      */
-    public function reject(string $submissionId, string $adminId, string $notes): \Modules\Internship\Models\RequirementSubmission;
+    public function reject(
+        string $submissionId,
+        string $adminId,
+        string $notes,
+    ): \Modules\Internship\Models\RequirementSubmission;
 }

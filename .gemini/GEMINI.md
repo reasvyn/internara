@@ -75,8 +75,10 @@ and development documentation, always refer to the project’s `/docs` directory
   (Testing, Linting, Security) and Documentation Synchronization. Implementation is only complete
   when all related artifacts (READMEs, Technical Guides, Changelog) reflect the new system state.
 
-- **User-Facing Release Notes** Version notes MUST be written as **Friendly, User-Centric Narratives** instead
-  of technical checklists. They must describe the **value and benefits** of every milestone using accessible language, minimizing jargon. Refer to `docs/main/release-guidelines.md` for the strict format (Metadata -> Overview -> Highlights).
+- **User-Facing Release Notes** Version notes MUST be written as **Friendly, User-Centric
+  Narratives** instead of technical checklists. They must describe the **value and benefits** of
+  every milestone using accessible language, minimizing jargon. Refer to
+  `docs/main/release-guidelines.md` for the strict format (Metadata -> Overview -> Highlights).
 
 - **Release Management** For all versioning, changelog updates, and release protocols, strict
   adherence to the **[Release Guidelines](docs/main/release-guidelines.md)** is mandatory. This

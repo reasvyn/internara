@@ -82,14 +82,15 @@ class RegistrationManager extends Component
 
             // Keystone Verification: Ensure student has cleared requirements before placement
             if ($this->form->placement_id) {
-                $isEligible = app(\Modules\Internship\Services\Contracts\PlacementService::class)
-                    ->isEligibleForPlacement($this->form->id ?? 'new'); // 'new' is dummy, eligibility check usually needs student_id context for new records
-                
+                $isEligible = app(
+                    \Modules\Internship\Services\Contracts\PlacementService::class,
+                )->isEligibleForPlacement($this->form->id ?? 'new'); // 'new' is dummy, eligibility check usually needs student_id context for new records
+
                 // For existing records, we can check the ID
-                if ($this->form->id && !$isEligible) {
+                if ($this->form->id && ! $isEligible) {
                     throw new \Modules\Exception\AppException(
                         __('Siswa belum melengkapi persyaratan wajib untuk ditempatkan.'),
-                        code: 422
+                        code: 422,
                     );
                 }
             }

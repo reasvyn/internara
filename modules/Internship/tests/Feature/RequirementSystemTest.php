@@ -21,7 +21,9 @@ beforeEach(function () {
     // Setup base data
     $this->student = User::factory()->create()->assignRole('student');
     $this->internship = Internship::factory()->create();
-    $this->placement = InternshipPlacement::factory()->create(['internship_id' => $this->internship->id]);
+    $this->placement = InternshipPlacement::factory()->create([
+        'internship_id' => $this->internship->id,
+    ]);
 
     $this->registration = InternshipRegistration::create([
         'internship_id' => $this->internship->id,
@@ -54,7 +56,10 @@ it('determines eligibility based on mandatory requirements', function () {
     expect($this->placementService->isEligibleForPlacement($this->registration->id))->toBeFalse();
 
     // 3. Verify the submission
-    $this->registration->requirementSubmissions()->first()->update(['status' => 'verified']);
+    $this->registration
+        ->requirementSubmissions()
+        ->first()
+        ->update(['status' => 'verified']);
 
     // Now should be eligible
     expect($this->placementService->isEligibleForPlacement($this->registration->id))->toBeTrue();

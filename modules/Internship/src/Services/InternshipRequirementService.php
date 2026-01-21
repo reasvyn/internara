@@ -25,7 +25,8 @@ class InternshipRequirementService extends EloquentQuery implements Contract
      */
     public function getActiveForYear(string $academicYear)
     {
-        return $this->model->newQuery()
+        return $this->model
+            ->newQuery()
             ->where('academic_year', $academicYear)
             ->where('is_active', true)
             ->get();
@@ -56,7 +57,7 @@ class InternshipRequirementService extends EloquentQuery implements Contract
                 'status' => \Modules\Internship\Enums\SubmissionStatus::PENDING,
                 'verified_at' => null,
                 'verified_by' => null,
-            ]
+            ],
         );
 
         if ($file && $requirement->type === \Modules\Internship\Enums\RequirementType::DOCUMENT) {
@@ -69,8 +70,10 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function verify(string $submissionId, string $adminId): \Modules\Internship\Models\RequirementSubmission
-    {
+    public function verify(
+        string $submissionId,
+        string $adminId,
+    ): \Modules\Internship\Models\RequirementSubmission {
         $submission = \Modules\Internship\Models\RequirementSubmission::findOrFail($submissionId);
 
         $submission->update([
@@ -85,8 +88,11 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function reject(string $submissionId, string $adminId, string $notes): \Modules\Internship\Models\RequirementSubmission
-    {
+    public function reject(
+        string $submissionId,
+        string $adminId,
+        string $notes,
+    ): \Modules\Internship\Models\RequirementSubmission {
         $submission = \Modules\Internship\Models\RequirementSubmission::findOrFail($submissionId);
 
         $submission->update([

@@ -7,6 +7,7 @@ namespace Modules\UI\Core;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Modules\UI\Core\Contracts\SlotRegistry as SlotRegistryContract;
 
 /**
@@ -52,6 +53,16 @@ class SlotRegistry implements SlotRegistryContract
      */
     public function register(string $slot, string|Closure|View $view, array $data = []): void
     {
+        // Strip unique suffix if present (e.g., ui::component#unique-id)
+        if (is_string($view) && str_contains($view, '#')) {
+            $view = explode('#', $view)[0];
+        }
+
+        // Trace and Log potential invalid component names (e.g. containing colon outside of namespace)
+        if (is_string($view) && str_contains($view, ':') && ! str_contains($view, '::') && ! str_starts_with($view, 'livewire:')) {
+            Log::warning("Slot Injection: Registering potentially invalid component name [{$view}] into slot [{$slot}]. Ensure it's a valid Blade component or view alias.");
+        }
+
         $this->slots[$slot][] = [
             'view' => $view,
             'data' => $data,

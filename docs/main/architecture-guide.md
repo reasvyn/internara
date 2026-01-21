@@ -18,7 +18,7 @@ The root `app/` directory and the `Core` module handle cross-cutting technical c
 
 - **Service Providers**: Bootstrapping the framework and modular auto-discovery.
 - **Base Classes**: Abstract definitions extended by modules (e.g., `BaseModel`, `BaseService`).
-- **Infrastructure Migrations**: The `Core` module houses foundational system migrations such as 
+- **Infrastructure Migrations**: The `Core` module houses foundational system migrations such as
   `jobs`, `failed_jobs`, and `cache` tables.
 - **Infrastructure Services**: Technical services like `AuditLog` or `Settings`.
 
@@ -27,10 +27,11 @@ The root `app/` directory and the `Core` module handle cross-cutting technical c
 ## 2. The TALL Stack: Our UI Engine
 
 ### 2.1 Global Notification Bridge
-To ensure a consistent user experience, we implement a **Global Notification Bridge** in the base 
-layout. This bridge listens for `notify` events dispatched from individual components and 
-translates them into `mary-toast` notifications. This ensures that background job feedback or 
-service-level exceptions reach the user regardless of their current view.
+
+To ensure a consistent user experience, we implement a **Global Notification Bridge** in the base
+layout. This bridge listens for `notify` events dispatched from individual components and translates
+them into `mary-toast` notifications. This ensures that background job feedback or service-level
+exceptions reach the user regardless of their current view.
 
 ---
 

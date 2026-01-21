@@ -7,8 +7,8 @@
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
 ![Laravel](https://img.shields.io/badge/Laravel-v12-ff2d20?style=flat-square&logo=laravel)
 
-**Internara** is an open-source internship management system built with **Laravel 12**, **Livewire 3**,
-and a **Modular Monolith** architecture.
+**Internara** is an open-source internship management system built with **Laravel 12**, **Livewire
+3**, and a **Modular Monolith** architecture.
 
 The system is designed to manage the **full internship lifecycle**, from registration and daily
 journals to structured assessment, certification, and institutional reporting.
@@ -25,8 +25,8 @@ journals to structured assessment, certification, and institutional reporting.
   Covers registration, journals, attendance, assessment, certification, and reporting.
 
 - **Role-Based Workspaces**  
-  Dedicated, secure workspaces for **Admins**, **Students**, **Academic Teachers**, and
-  **Industry Mentors**.
+  Dedicated, secure workspaces for **Admins**, **Students**, **Academic Teachers**, and **Industry
+  Mentors**.
 
 - **Administrative Automation**  
   Participation-driven scoring, requirement verification, batch operations, and background job
@@ -42,10 +42,10 @@ journals to structured assessment, certification, and institutional reporting.
 
 ## Requirements
 
-- PHP 8.4 or higher  
-- Composer  
-- Node.js & NPM  
-- SQLite (development), MySQL, or PostgreSQL  
+- PHP 8.4 or higher
+- Composer
+- Node.js & NPM
+- SQLite (development), MySQL, or PostgreSQL
 
 ---
 
@@ -53,49 +53,49 @@ journals to structured assessment, certification, and institutional reporting.
 
 1. **Clone the repository**
 
-   ```bash
-   git clone https://github.com/reasnov/internara.git
-   cd internara
-   ```
+    ```bash
+    git clone https://github.com/reasnov/internara.git
+    cd internara
+    ```
 
 2. **Install PHP dependencies**
 
-   ```bash
-   composer install
-   ```
+    ```bash
+    composer install
+    ```
 
 3. **Install Node.js dependencies**
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 4. **Configure environment**
 
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
-   Update `.env` with your database configuration.
+    Update `.env` with your database configuration.
 
 5. **Run migrations and seeders**
 
-   ```bash
-   php artisan migrate --seed
-   ```
+    ```bash
+    php artisan migrate --seed
+    ```
 
 6. **Build frontend assets**
 
-   ```bash
-   npm run build
-   ```
+    ```bash
+    npm run build
+    ```
 
 7. **Start development server**
 
-   ```bash
-   php artisan serve
-   ```
+    ```bash
+    php artisan serve
+    ```
 
 ---
 
@@ -107,12 +107,13 @@ state.
 
 ### Current Version Series
 
-* **Active Series:** `v0.7.x`
-* **Stage:** Alpha
-* **Lifecycle Status:** Active Development
-* **Support Policy:** Snapshot (no security updates or bug-fix guarantees)
+- **Active Series:** `v0.7.x`
+- **Stage:** Alpha
+- **Lifecycle Status:** Active Development
+- **Support Policy:** Snapshot (no security updates or bug-fix guarantees)
 
-> Alpha releases are exploratory by design. APIs, schemas, and workflows may change between versions.
+> Alpha releases are exploratory by design. APIs, schemas, and workflows may change between
+> versions.
 
 ---
 
@@ -120,12 +121,13 @@ state.
 
 | Version Series | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
 | :------------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
-| **v0.7.x**     | Alpha | Snapshot       | ❌                | ❌         | Active Development |
-| **v0.6.x**     | Alpha | Snapshot       | ❌                | ❌         | Released           |
-| **v0.5.x**     | Alpha | EOL            | ❌                | ❌         | EOL (End of Life)  |
-| **v0.4.x**     | Alpha | EOL            | ❌                | ❌         | Archived           |
+| **v0.7.x**     | Alpha | Snapshot       | ❌               | ❌        | Active Development |
+| **v0.6.x**     | Alpha | Snapshot       | ❌               | ❌        | Released           |
+| **v0.5.x**     | Alpha | EOL            | ❌               | ❌        | EOL (End of Life)  |
+| **v0.4.x**     | Alpha | EOL            | ❌               | ❌        | Archived           |
 
-For a complete history and analytical narratives, see **[Application Versions Overview](docs/versions/versions-overview.md)**.
+For a complete history and analytical narratives, see
+**[Application Versions Overview](docs/versions/versions-overview.md)**.
 
 ---
 
@@ -135,30 +137,27 @@ Internara maintains structured, SDLC-aligned documentation under the [`/docs`](/
 
 ### Key References
 
-* **[Project Overview](docs/project-overview.md)**
-  Vision, principles, and documentation structure.
+- **[Project Overview](docs/project-overview.md)** Vision, principles, and documentation structure.
 
-* **[Architecture Guide](docs/main/architecture-guide.md)**
-  Modular Monolith layers, boundaries, and communication rules.
+- **[Architecture Guide](docs/main/architecture-guide.md)** Modular Monolith layers, boundaries, and
+  communication rules.
 
-* **[Development Workflow](docs/main/development-workflow.md)**
-  Engineering SOP for feature implementation.
+- **[Development Workflow](docs/main/development-workflow.md)** Engineering SOP for feature
+  implementation.
 
-* **[Application Versions Overview](docs/versions/versions-overview.md)**
-  Version lifecycle, support policy, and release lineage.
+- **[Application Versions Overview](docs/versions/versions-overview.md)** Version lifecycle, support
+  policy, and release lineage.
 
-* **[Changelog](CHANGELOG.md)**
-  Incremental changes per release.
+- **[Changelog](CHANGELOG.md)** Incremental changes per release.
 
-* **[Security Policy](SECURITY.md)**
-  Security audit scope and vulnerability reporting.
+- **[Security Policy](SECURITY.md)** Security audit scope and vulnerability reporting.
 
 ---
 
 ## Contributing
 
-Contributions are welcome.
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull requests.
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting pull
+requests.
 
 ---
 
@@ -170,5 +169,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Credits
 
-* **Author:** [Reas Vyn](https://github.com/reasnov)
-* **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)
+- **Author:** [Reas Vyn](https://github.com/reasnov)
+- **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)

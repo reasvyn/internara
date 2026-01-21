@@ -57,26 +57,40 @@ class SlotManager implements SlotManagerContract
     public function render(string $slot): string
     {
         return collect($this->registry->getSlotsFor($slot))
-            ->map(function ($item) {
-                $view = $item['view'];
-                $data = $item['data'];
+            ->map(function ($item) use ($slot) {
+                try {
+                    $view = $item['view'];
+                    $data = $item['data'];
 
-                if ($view instanceof Closure) {
-                    return $view($data);
-                }
+                    if ($view instanceof Closure) {
+                        return $view($data);
+                    }
 
-                if ($view instanceof View) {
-                    return $view->with($data)->render();
-                }
+                    if ($view instanceof View) {
+                        return $view->with($data)->render();
+                    }
 
-                if (is_string($view) && Str::startsWith($view, 'livewire:')) {
-                    $component = Str::after($view, 'livewire:');
+                    if (is_string($view) && Str::startsWith($view, 'livewire:')) {
+                        $component = Str::after($view, 'livewire:');
 
-                    return $this->livewireManager->mount($component, $data, uniqid($component));
-                }
+                        return $this->livewireManager->mount($component, $data, uniqid($component));
+                    }
 
-                if (is_string($view)) {
-                    return $this->viewFactory->make($view, $data)->render();
+                    if (is_string($view)) {
+                        return $this->viewFactory->make($view, $data)->render();
+                    }
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Slot Injection Error: Failed to render component ['.(is_string($item['view']) ? $item['view'] : 'Closure')."] in slot [{$slot}]. Error: {$e->getMessage()}", [
+                        'exception' => $e,
+                        'slot' => $slot,
+                        'data' => $item['data'],
+                    ]);
+
+                    // Return a placeholder or empty string in production,
+                    // maybe a small warning icon in local/debug mode?
+                    if (config('app.debug')) {
+                        return "<!-- Slot Render Error: {$item['view']} -->";
+                    }
                 }
 
                 // Return empty string for unrenderable types to avoid errors.

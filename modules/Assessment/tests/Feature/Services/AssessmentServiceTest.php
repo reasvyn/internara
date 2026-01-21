@@ -102,5 +102,5 @@ test('getScoreCard returns both assessments', function () {
     expect((float) $scoreCard['teacher']->score)->toBe(100.0);
     expect($scoreCard['mentor'])->not->toBeNull();
     expect((float) $scoreCard['mentor']->score)->toBe(80.0);
-    expect((float) $scoreCard['final_grade'])->toBe(90.0); // (100 + 80) / 2
+    expect((float) $scoreCard['final_grade'])->toBe(72.0); // (100*0.4) + (80*0.4) + (0*0.2)
 });

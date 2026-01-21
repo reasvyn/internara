@@ -14,7 +14,7 @@ class ComplianceService implements Contract
 {
     public function __construct(
         protected AttendanceService $attendanceService,
-        protected JournalService $journalService
+        protected JournalService $journalService,
     ) {}
 
     /**
@@ -31,7 +31,10 @@ class ComplianceService implements Contract
         // to today's date if date_finish is in the future.
         $effectiveTotalDays = min(
             $totalDays,
-            $this->calculateWorkingDays($internship->date_start, Carbon::now()->min($internship->date_finish))
+            $this->calculateWorkingDays(
+                $internship->date_start,
+                Carbon::now()->min($internship->date_finish),
+            ),
         );
 
         if ($effectiveTotalDays <= 0) {
@@ -47,7 +50,7 @@ class ComplianceService implements Contract
         return [
             'attendance_score' => round($attendanceScore, 2),
             'journal_score' => round($journalScore, 2),
-            'final_score' => round(($attendanceScore * 0.5) + ($journalScore * 0.5), 2),
+            'final_score' => round($attendanceScore * 0.5 + $journalScore * 0.5, 2),
             'total_days' => $effectiveTotalDays,
             'attended_days' => $attendedDays,
             'approved_journals' => $approvedJournals,
@@ -63,7 +66,10 @@ class ComplianceService implements Contract
             return 0;
         }
 
-        return (int) $start->diffInDaysFiltered(fn (Carbon $date) => ! $date->isWeekend(), $end->addDay());
+        return (int) $start->diffInDaysFiltered(
+            fn (Carbon $date) => ! $date->isWeekend(),
+            $end->addDay(),
+        );
     }
 
     /**

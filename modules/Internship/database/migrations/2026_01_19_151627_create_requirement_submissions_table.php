@@ -15,8 +15,14 @@ return new class extends Migration
     {
         Schema::create('requirement_submissions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
-            $table->foreignUuid('requirement_id')->constrained('internship_requirements')->cascadeOnDelete();
+            $table
+                ->foreignUuid('registration_id')
+                ->constrained('internship_registrations')
+                ->cascadeOnDelete();
+            $table
+                ->foreignUuid('requirement_id')
+                ->constrained('internship_requirements')
+                ->cascadeOnDelete();
             $table->text('value')->nullable(); // For skills or conditions
             $table->string('status')->default('pending'); // pending, verified, rejected
             $table->text('notes')->nullable(); // Admin feedback
@@ -25,7 +31,10 @@ return new class extends Migration
             $table->timestamps();
 
             // A student should only have one submission per requirement per registration
-            $table->unique(['registration_id', 'requirement_id'], 'registration_requirement_unique');
+            $table->unique(
+                ['registration_id', 'requirement_id'],
+                'registration_requirement_unique',
+            );
         });
     }
 

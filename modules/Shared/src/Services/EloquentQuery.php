@@ -306,9 +306,18 @@ abstract class EloquentQuery implements EloquentQueryContract
             unset($filters['search']);
         }
 
-        // Apply remaining simple "where" filters for exact matches.
+        // Apply remaining filters
         if (! empty($filters)) {
-            $query->where($filters);
+            foreach ($filters as $key => $value) {
+                if (is_string($key) && str_contains($key, '.')) {
+                    $segments = explode('.', $key);
+                    $column = array_pop($segments);
+                    $relation = implode('.', $segments);
+                    $query->whereRelation($relation, $column, $value);
+                } else {
+                    $query->where($key, $value);
+                }
+            }
         }
     }
 

@@ -38,18 +38,24 @@ class RequirementSubmissionManager extends Component
 
         // Ensure user is authorized (student owning the registration or admin)
         // For now, using basic check, in production use Policies
-        if (auth()->id() !== $registration->student_id && ! auth()->user()->can('internship.update')) {
+        if (
+            auth()->id() !== $registration->student_id &&
+            ! auth()->user()->can('internship.update')
+        ) {
             abort(403);
         }
 
-        $requirements = app(InternshipRequirementService::class)->getActiveForYear($registration->academic_year);
+        $requirements = app(InternshipRequirementService::class)->getActiveForYear(
+            $registration->academic_year,
+        );
         $submissions = $registration->requirementSubmissions()->get()->keyBy('requirement_id');
 
         foreach ($requirements as $requirement) {
             if (isset($submissions[$requirement->id])) {
                 $this->values[$requirement->id] = $submissions[$requirement->id]->value;
             } else {
-                $this->values[$requirement->id] = $requirement->type === RequirementType::CONDITION ? '0' : '';
+                $this->values[$requirement->id] =
+                    $requirement->type === RequirementType::CONDITION ? '0' : '';
             }
         }
     }
@@ -66,14 +72,13 @@ class RequirementSubmissionManager extends Component
         $value = $this->values[$requirementId] ?? null;
 
         try {
-            $requirementService->submit(
-                $this->registrationId,
-                $requirementId,
-                $value,
-                $file
-            );
+            $requirementService->submit($this->registrationId, $requirementId, $value, $file);
 
-            $this->dispatch('notify', message: __('internship::ui.requirement_submitted'), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: __('internship::ui.requirement_submitted'),
+                type: 'success',
+            );
             $this->loadData();
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
@@ -82,8 +87,12 @@ class RequirementSubmissionManager extends Component
 
     public function render()
     {
-        $registration = InternshipRegistration::with('requirementSubmissions.requirement')->findOrFail($this->registrationId);
-        $requirements = app(InternshipRequirementService::class)->getActiveForYear($registration->academic_year);
+        $registration = InternshipRegistration::with(
+            'requirementSubmissions.requirement',
+        )->findOrFail($this->registrationId);
+        $requirements = app(InternshipRequirementService::class)->getActiveForYear(
+            $registration->academic_year,
+        );
         $submissions = $registration->requirementSubmissions()->get()->keyBy('requirement_id');
 
         return view('internship::livewire.requirement-submission-manager', [

@@ -118,7 +118,8 @@ class AttendanceService extends EloquentQuery implements Contract
      */
     public function getTodayLog(string $studentId): ?AttendanceLog
     {
-        return $this->model->newQuery()
+        return $this->model
+            ->newQuery()
             ->where('student_id', $studentId)
             ->whereDate('date', today())
             ->first();

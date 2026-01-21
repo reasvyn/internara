@@ -44,8 +44,9 @@ class EvaluateIntern extends Component
         }
 
         // Load compliance metrics
-        $this->complianceMetrics = app(\Modules\Assessment\Services\Contracts\ComplianceService::class)
-            ->calculateScore($registrationId);
+        $this->complianceMetrics = app(
+            \Modules\Assessment\Services\Contracts\ComplianceService::class,
+        )->calculateScore($registrationId);
 
         $assessment = $this->assessmentService->first([
             'registration_id' => $registrationId,

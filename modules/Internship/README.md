@@ -23,8 +23,8 @@ internship lifecycle, from placement availability to student registration and tr
 ### 2. Services
 
 - **InternshipPlacementService:** Manages industry quotas, slot allocation, and placement details.
-- **InternshipRegistrationService:** Handles student applications and enforces mandatory
-  requirement verification before approval.
+- **InternshipRegistrationService:** Handles student applications and enforces mandatory requirement
+  verification before approval.
 - **InternshipRequirementService:** Orchestrates the lifecycle of prerequisite submissions and
   verifications.
 

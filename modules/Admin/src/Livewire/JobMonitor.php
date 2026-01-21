@@ -48,7 +48,11 @@ class JobMonitor extends Component
     public function flush(): void
     {
         Artisan::call('queue:flush');
-        $this->dispatch('notify', message: __('admin::ui.all_failed_jobs_flushed'), type: 'success');
+        $this->dispatch(
+            'notify',
+            message: __('admin::ui.all_failed_jobs_flushed'),
+            type: 'success',
+        );
     }
 
     public function render()

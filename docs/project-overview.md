@@ -90,8 +90,8 @@ Analytical records of the system's state at specific milestones, organized into 
 
 ### 3.3. Engineering Plans (`docs/internal/plans/`)
 
-Pre-development architectural blueprints and implementation roadmaps for future or active development
-series.
+Pre-development architectural blueprints and implementation roadmaps for future or active
+development series.
 
 ### 3.3. Quality Assurance (`docs/tests/`)
 

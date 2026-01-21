@@ -80,7 +80,6 @@ class RequirementSubmission extends Model implements HasMedia
      */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('document')
-            ->singleFile();
+        $this->addMediaCollection('document')->singleFile();
     }
 }
