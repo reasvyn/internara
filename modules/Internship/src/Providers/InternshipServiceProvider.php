@@ -38,6 +38,13 @@ class InternshipServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootModule();
+
+        // Register Report Providers
+        if (class_exists(\Modules\Report\Services\ReportService::class)) {
+            app(\Modules\Report\Services\ReportService::class)->registerProvider(
+                new \Modules\Internship\Reports\InternshipClassReportProvider()
+            );
+        }
     }
 
     /**

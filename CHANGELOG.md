@@ -13,6 +13,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 Focuses on **Reporting & Intelligence**, building the aggregated reporting engine and placement history tracking.
 
+### ✨ Added
+
+- **Reporting Engine (Keystone 1):**
+    - Created the `Report` module to handle asynchronous PDF generation.
+    - Defined the `ExportableDataProvider` contract in `Shared` for cross-module data extraction.
+    - Implemented `ReportService` with support for both synchronous and queued generation.
+    - Integrated `GenerateReportJob` for high-performance background processing.
+    - Created `InternshipClassReportProvider` as the first concrete implementation for class-wide status reports.
+    - Added a generic PDF template for standardized institutional reporting.
+
 ---
 
 ## [v0.7.0-alpha] - 2026-01-21 (ARC01-ORCH-01)

@@ -22,5 +22,6 @@
     "Journal": true,
     "Attendance": true,
     "Admin": true,
-    "Mentor": true
+    "Mentor": true,
+    "Report": true
 }
