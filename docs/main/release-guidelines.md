@@ -158,10 +158,41 @@ A version may be marked as `Released` when the following minimum conditions are 
 2. **Artifact Consistency**: Codebase, documentation, and metadata are synchronized.
 3. **Changelog Resolution**: `[Unreleased]` entries are reconciled.
 4. **Identity Verification**: Application identity reflects the intended version and stage.
-5. **Tagging**: A Git tag is created matching the version identifier.
+1. **Tagging**: A Git tag is created matching the version identifier.
 
 > A release does **not** imply stability, completeness, or long-term support—only that the artifact
 > has been formally published.
+
+---
+
+## 7. Handling EOL & Archived Releases
+
+Versions transitioned to **EOL (End of Life)** or **Archived** status require specific technical
+handling to maintain historical integrity and manage user expectations.
+
+### 7.1 GitHub Mechanics
+
+- **Tag Preservation**: Tags for EOL/Archived versions are **immutable** and must never be deleted.
+  They serve as critical historical checkpoints.
+- **Release Description**: The GitHub Release notes for these versions must be updated to include a
+  prominent status banner at the top (e.g., `**Status: EOL - No longer maintained**`).
+- **Latest Label**: EOL/Archived versions must never hold the "Latest" tag on GitHub. The "Latest"
+  label is reserved for the most recent stable or active release.
+
+### 7.2 Issue & PR Management
+
+- **Submission Policy**: New Issues or Pull Requests targeting EOL versions will be closed.
+- **Resolution**: Users will be directed to the latest active version series via a standardized,
+  polite response.
+- **Traceability**: Issues related to historical versions are labeled accordingly before closure to
+  preserve project context.
+
+### 7.3 Artifact Synchronization
+
+- **Local Storage**: Formal engineering plans for Archived versions are moved to the
+  `docs/internal/plans/archived/` directory.
+- **Narrative Visibility**: User-facing release notes for EOL versions remain in the main directory
+  for immediate accessibility, while Archived narratives may be moved to `docs/versions/archived/`.
 
 ---
 
