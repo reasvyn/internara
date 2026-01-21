@@ -14,11 +14,27 @@
             <x-ui::table :headers="[
                 ['key' => 'student.name', 'label' => __('internship::ui.student')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
+                ['key' => 'requirements', 'label' => __('internship::ui.requirements')],
                 ['key' => 'placement.company_name', 'label' => __('internship::ui.placement')],
                 ['key' => 'teacher.name', 'label' => __('internship::ui.teacher')],
                 ['key' => 'mentor.name', 'label' => __('internship::ui.mentor')],
                 ['key' => 'status', 'label' => __('internship::ui.status')],
             ]" :rows="$this->records" with-pagination>
+                @scope('cell_requirements', $registration)
+                    @php
+                        $percentage = $registration->getRequirementCompletionPercentage();
+                        $cleared = $registration->hasClearedAllMandatoryRequirements();
+                    @endphp
+                    <div class="flex items-center gap-2">
+                        <div class="radial-progress text-primary text-[10px]" style="--value:{{ $percentage }}; --size: 1.5rem; --thickness: 2px;">
+                            {{ floor($percentage) }}%
+                        </div>
+                        @if($cleared)
+                             <x-ui::icon name="tabler.circle-check" class="w-4 h-4 text-success" />
+                        @endif
+                    </div>
+                @endscope
+
                 @scope('cell_status', $registration)
                     <x-ui::badge :label="$registration->getStatusLabel()" :class="'badge-' . $registration->getStatusColor()" />
                 @endscope
