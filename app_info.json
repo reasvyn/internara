@@ -2,7 +2,7 @@
     "name": "Internara",
     "version": "0.7.0-alpha",
     "series_code": "ARC01-ORCH-01",
-    "status": "Active Development",
+    "support_policy": "Snapshot",
     "author": {
         "name": "Reas Vyn",
         "github": "reasnov",

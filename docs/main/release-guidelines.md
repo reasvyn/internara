@@ -85,15 +85,16 @@ remain semantically strict.
 
 **Required Fields:**
 
-- `version` The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
+* `version`
+  The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
 
-- `series_code` The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
+* `series_code`
+  The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
 
-- `stage` The maturity classification (`Alpha`, `Beta`, `Stable`, etc.).
+* `support_policy`
+  The maintenance contract level (`Snapshot`, `Full Support`, `EOL`, etc.).
 
-- `status` The current operational state (`In Progress`, `Released`, `Deprecated`, etc.).
-
-> Support policy is **not embedded** in runtime artifacts and is documented centrally.
+> Operational status is managed centrally in Versions Overview.
 
 ---
 

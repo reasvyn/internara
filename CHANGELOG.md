@@ -9,13 +9,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### 🚀 Overview
-
-Initial work on Administrative Automation.
-
 ---
 
-## [v0.7.0-alpha] - 2026-01-20 (ARC01-ORCH-01)
+## [v0.7.0-alpha] - 2026-01-21 (ARC01-ORCH-01)
 
 ### 🚀 Overview
 
@@ -37,11 +33,17 @@ management.
     - Integrated real-time participation metrics into Mentor and Teacher evaluation forms.
 - **Admin Console & Notifications:**
     - Implemented `JobMonitor` to manage background queues and failed jobs.
-    - Bridged `notify` events to `mary-toast` globally via the base layout.
+    - **Notifier System:** Standardized `Notifier` contract in `Notification` module for
+      system-wide UI feedback.
+    - **Exception Integration:** Bridged `AppException` to automatically dispatch toast
+      notifications via the Notifier service.
 - **Stakeholder Management:**
     - Created centralized `UserManager` for all system roles (Student, Teacher, Mentor, Admin).
     - Implemented "Just-in-Time" mentor creation workflow directly within Internship Placements.
     - Restricted Admin account management exclusively to SuperAdmins.
+- **Bulk Placement Engine:**
+    - Added multi-select capabilities to the `RegistrationManager` table.
+    - Implemented **Bulk Placement Modal** for batch assigning students to industry partners.
 
 ### 🛠 Changed
 
@@ -49,11 +51,13 @@ management.
     - Moved `jobs` and related queue migrations from `Shared` to `Core` module for better
       infrastructure isolation.
     - Standardized requirement submission status checks to use Enums across all modules.
+    - Enhanced `SlotRegistry` and `SlotManager` with robust error logging and crash prevention.
 - **Schema Update:**
     - Added `mentor_id` to `internship_placements` table to support default mentor assignment.
 - **Service API:**
     - Expanded `AttendanceService` and `JournalService` contracts with aggregation methods for
       compliance reporting.
+    - Updated `EloquentQuery` to support relationship filtering via dot-notation (SQLite compatible).
 
 ---
 
