@@ -68,6 +68,25 @@
             <x-ui::input label="{{ __('Password') }}" type="password" wire:model="form.password" 
                 placeholder="{{ $form->id ? __('Leave blank to keep current password') : '' }}" />
 
+            {{-- Role-Specific Profile Fields --}}
+            @if($targetRole === 'student')
+                <x-ui::input label="{{ __('NISN') }}" wire:model="form.profile.identity_number" placeholder="Nomor Induk Siswa Nasional" />
+            @elseif($targetRole === 'teacher')
+                <x-ui::input label="{{ __('NIP') }}" wire:model="form.profile.identity_number" placeholder="Nomor Induk Pegawai" />
+            @endif
+
+            @if(in_array($targetRole, ['student', 'teacher']))
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-ui::select 
+                        label="{{ __('Department') }}" 
+                        wire:model="form.profile.department_id" 
+                        :options="$this->departments" 
+                        placeholder="{{ __('Select Department') }}"
+                    />
+                    <x-ui::input label="{{ __('Phone') }}" wire:model="form.profile.phone" />
+                </div>
+            @endif
+
             @if(!$targetRole)
                 <x-ui::choices
                     label="{{ __('Roles') }}"

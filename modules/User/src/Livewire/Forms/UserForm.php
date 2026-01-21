@@ -22,6 +22,8 @@ class UserForm extends Form
     public array $roles = [];
 
     public string $status = 'active';
+    
+    public array $profile = [];
 
     public function rules(): array
     {
@@ -32,6 +34,10 @@ class UserForm extends Form
             'password' => [$this->id ? 'nullable' : 'required', 'string', 'min:8'],
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', Rule::in(['active', 'inactive'])],
+            'profile' => ['nullable', 'array'],
+            'profile.identity_number' => ['nullable', 'string'], // NISN or NIP
+            'profile.department_id' => ['nullable', 'exists:departments,id'],
+            'profile.phone' => ['nullable', 'string'],
         ];
     }
 }

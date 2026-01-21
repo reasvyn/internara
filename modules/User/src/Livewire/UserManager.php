@@ -76,6 +76,43 @@ class UserManager extends Component
         $this->formModal = true;
     }
 
+    public function getDepartmentsProperty(): \Illuminate\Support\Collection
+    {
+        if (class_exists(\Modules\Department\Services\Contracts\DepartmentService::class)) {
+            return app(\Modules\Department\Services\Contracts\DepartmentService::class)->all(['id', 'name']);
+        }
+        return collect();
+    }
+
+    /**
+     * Open the form modal for editing a record.
+     */
+    public function edit(mixed $id): void
+    {
+        $user = $this->service->find($id);
+
+        if ($user) {
+            $this->form->fill($user->toArray());
+            
+            // Populate profile data based on role
+            if ($user->hasRole('student') && $user->studentProfile) {
+                $this->form->profile = [
+                    'identity_number' => $user->studentProfile->nisn,
+                    'department_id' => $user->studentProfile->department_id,
+                    'phone' => $user->studentProfile->phone,
+                ];
+            } elseif ($user->hasRole('teacher') && $user->teacherProfile) {
+                $this->form->profile = [
+                    'identity_number' => $user->teacherProfile->nip,
+                    'department_id' => $user->teacherProfile->department_id,
+                    'phone' => $user->teacherProfile->phone,
+                ];
+            }
+
+            $this->formModal = true;
+        }
+    }
+
     public function render()
     {
         return view('user::livewire.user-manager', [
