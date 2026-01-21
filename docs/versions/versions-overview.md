@@ -4,19 +4,18 @@ This document provides a **strategic overview of Internara’s application versi
 release lineage, lifecycle status, and support posture.
 
 Internara adopts **Analytical Versioning**, where each released version is accompanied by a
-post-release technical narrative that documents architectural decisions and realized outcomes.
+post-release narrative that documents what was delivered and why.
 
 ---
 
 ## 1. Version Lifecycle Model
 
-Each version series progresses through clearly defined **lifecycle stages**, independent from
-development activity.
+Each version series progresses through clearly defined **lifecycle stages**.
 
 ### Lifecycle Stages
 
 * **Alpha**
-  Early-stage product validation. APIs, schemas, and workflows are subject to change.
+  Early-stage product validation. Features and designs may evolve.
 
 * **Beta** *(future)*
   Feature-complete with stabilization focus.
@@ -29,10 +28,10 @@ development activity.
 ### Support Policy Definitions
 
 * **Snapshot**
-  No ongoing maintenance. Code is preserved as-is for reference and continuity.
+  No ongoing maintenance. Code is preserved as-is for reference.
 
 * **Supported** *(future)*
-  Receives bug fixes and security updates within policy constraints.
+  Receives bug fixes and security updates.
 
 * **EOL (End of Life)**
   No maintenance, fixes, or security updates.
@@ -41,76 +40,59 @@ development activity.
 
 ## 2. Version Support Matrix
 
-This table represents the **authoritative SDLC state** of each version series.
+This table represents the **authoritative status** of each version series.
 
 | Version    | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
 | :--------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
 | **v0.7.x** | Alpha | Snapshot       | ❌                | ❌         | Active Development |
 | **v0.6.x** | Alpha | Snapshot       | ❌                | ❌         | Released           |
-| **v0.5.x** | Alpha | EOL            | ❌                | ❌         | Archived           |
+| **v0.5.x** | Alpha | EOL            | ❌                | ❌         | EOL (End of Life)  |
 | **v0.4.x** | Alpha | EOL            | ❌                | ❌         | Archived           |
 
-### Notes
+---
 
-* **Stage** reflects maturity level
-* **Lifecycle Status** reflects current SDLC position
-* *Active Development* and *Released* are **SDLC states**, not quality indicators
+## 3. Release Narratives
+
+Each released version has a dedicated **Version Note** documenting the milestones.
+
+### In Progress & Active Support
+
+* **[v0.7.0-alpha](v0.7.0-alpha.md)** — *Administrative Automation*
+  Transforming Internara into a powerful assistant that automates prerequisite checks and grading.
+
+* **[v0.6.0-alpha](v0.6.0-alpha.md)** — *Assessment & Workspaces*
+  Finalized the internship lifecycle with role-specific workspaces and verifiable certificates.
 
 ---
 
-## 3. Analytical Release Narratives
+### Legacy Releases (No Support)
 
-Each released version has a dedicated **Analytical Narrative** documenting the final system state.
-
-These documents serve as the **single source of truth** for:
-
-* Architectural outcomes
-* Domain evolution
-* Trade-offs and constraints
-
----
-
-### In Progress (Active Development)
-
-* **[v0.7.0-alpha](v0.7.0-alpha.md)**
-  **Administrative Automation Phase**
-  Focused on bulk operations, queue-driven certificate generation, and national reporting exports.
-
----
-
-### Latest Released Version
-
-* **[v0.6.0-alpha](v0.6.0-alpha.md)**
-  **Assessment & Workspaces Phase**
-  Finalized the internship lifecycle with role-specific workspaces, unified assessment logic, and
-  verifiable PDF reporting using QR codes.
+* **[v0.5.0-alpha](v0.5.0-alpha.md)** — *Operational Layer*
+  The foundation of student tracking: Daily Journals and Attendance.
 
 ---
 
 ### Historical Archive
 
-These versions are preserved for architectural traceability.
+These versions are preserved for historical reference.
 
-* **[v0.5.0-alpha](archived/v0.5.0-alpha.md)** — *Operational Phase*
-  Daily Journals, Attendance, and Supervisor Matching.
-
-* **[v0.4.0-alpha](archived/v0.4.0-alpha.md)** — *Institutional Phase*
+* **[v0.4.0-alpha](archived/v0.4.0-alpha.md)** — *Institutional Foundation*
   Schools, Departments, and Placement Management.
 
-* **[v0.3.0-alpha](archived/v0.3.0-alpha.md)** — *User Phase*
+* **[v0.3.0-alpha](archived/v0.3.0-alpha.md)** — *Identity & Security*
   Multi-role Profiles and Security Hardening.
 
-* **[v0.2.0-alpha](archived/v0.2.0-alpha.md)** — *Core Phase*
-  RBAC Infrastructure and Shared Eloquent Concerns.
+* **[v0.2.0-alpha](archived/v0.2.0-alpha.md)** — *Core Engine*
+  RBAC Infrastructure and Universal Tools.
 
-* **[v0.1.1-alpha](archived/v0.1.1-alpha.md)** — *Genesis Phase*
+* **[v0.1.1-alpha](archived/v0.1.1-alpha.md)** — *Genesis*
   Initial Environment and Modular Monolith Foundation.
 
 ---
 
 ## 4. Immediate Roadmap (Current Series: v0.7.x)
 
-The **v0.7.x** series concentrates on **Administrative Automation** and operational scalability.
+The **v0.7.x** series concentrates on **Administrative Automation**.
 
 Planned direction includes:
 
@@ -123,17 +105,15 @@ Planned direction includes:
 * **Infrastructure Hardening**
   Evaluation and preparation for Livewire v4 migration.
 
-This roadmap is **directional**, not contractual, and may evolve as architectural findings emerge.
-
 ---
 
 ## 5. Relationship to Engineering Plans
 
-This document provides **SDLC visibility only**.
+This document provides **User-Facing Visibility**.
 
-For architectural intent, constraints, exit criteria, and forward-looking analysis, refer to:
+For architectural intent, constraints, and technical deep-dives, refer to:
 
-* **[Engineering Plans Index](../internal/plans/dev-plans-guide.md)**
+* **[Engineering Plans Index](../internal/plans/table-of-contents.md)**
 
-> Version Overviews describe **when and where a version exists**.
-> Engineering Plans describe **why and how it was shaped**.
+> Version Overviews describe **what the user gets**.
+> Engineering Plans describe **how we built it**.

@@ -7,19 +7,21 @@ series starts here as an "Architectural Blueprint."
 
 ## 1. Planning Methodology
 
-- **[Development Plans Guide](dev-plans-guide.md)**: Standards for drafting and auditing plans.
+- **[Engineering Plans Guidelines](plans-guidelines.md)**: Standards for drafting and auditing plans.
 
-## 2. Active & Recent Plans
+## 2. Active, Planned & Legacy Series
 
-- **[v0.8.x-alpha: Flexible Assignment & Final Reporting](v0.8.x-alpha.md)** (Planned)
-- **[v0.7.x-alpha: Administrative Orchestration](v0.7.x-alpha.md)** (In Progress)
-- **[v0.6.x-alpha: Assessment & Workspaces](v0.6.x-alpha.md)** (Released)
+- **[v0.8.0 (Reporting & Intelligence)](v0.8.0-alpha.md)** - *Planned*
+- **[v0.7.0 (Administrative Orchestration)](v0.7.0-alpha.md)** - *Active*
+- **[v0.6.0 (Assessment & Workspaces)](v0.6.0-alpha.md)** - *Released*
+- **[v0.5.0 (Operational Layer)](v0.5.0-alpha.md)** - *EOL (End of Life)*
 
-## 3. Historical Archive
+## 3. Historical Archive (Archived)
 
-- **[v0.5.x (Operations)](v0.3.x-alpha.md)**
-- **[v0.4.x (Institutional)](v0.2.x-alpha.md)**
-- **[v0.3.x (User)](v0.1.x-alpha.md)**
+- **[v0.4.0 (Institutional Foundation)](archived/v0.4.0-alpha.md)**
+- **[v0.3.0 (Identity)](archived/v0.3.0-alpha.md)**
+- **[v0.2.0 (Core Engine)](archived/v0.2.0-alpha.md)**
+- **[v0.1.0 (Genesis)](archived/v0.1.0-alpha.md)**
 
 ---
 

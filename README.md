@@ -122,27 +122,10 @@ state.
 | :------------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
 | **v0.7.x**     | Alpha | Snapshot       | ❌                | ❌         | Active Development |
 | **v0.6.x**     | Alpha | Snapshot       | ❌                | ❌         | Released           |
-| **v0.5.x**     | Alpha | EOL            | ❌                | ❌         | Archived           |
+| **v0.5.x**     | Alpha | EOL            | ❌                | ❌         | EOL (End of Life)  |
 | **v0.4.x**     | Alpha | EOL            | ❌                | ❌         | Archived           |
 
----
-
-### Release History (Analytical Narratives)
-
-Each release links to a **Deep Analytical Narrative**, capturing the system state *as built*.
-
-| Version        | Series Code     | Lifecycle Status | Primary Focus                |
-| :------------- | :-------------- | :--------------- | :--------------------------- |
-| `v0.7.0-alpha` | `ARC01-ORCH-01` | Active           | Administrative Automation    |
-| `v0.6.0-alpha` | `ARC01-FEAT-01` | Released         | Assessment & Workspaces      |
-| `v0.5.0-alpha` | `ARC01-OPER-01` | Archived         | Operational Activities       |
-| `v0.4.0-alpha` | `ARC01-INST-01` | Archived         | Institutional Management     |
-| `v0.3.0-alpha` | `ARC01-USER-01` | Archived         | User & Role Management       |
-| `v0.2.0-alpha` | `ARC01-CORE-01` | Archived         | RBAC & Shared Infrastructure |
-| `v0.1.1-alpha` | `ARC01-INIT-01` | Archived         | Project Genesis              |
-
-For lifecycle definitions and SDLC context, see
-**[Application Versions Overview](docs/versions/versions-overview.md)**.
+For a complete history and analytical narratives, see **[Application Versions Overview](docs/versions/versions-overview.md)**.
 
 ---
 

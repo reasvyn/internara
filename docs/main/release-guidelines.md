@@ -72,7 +72,7 @@ Status reflects the **current reality** of a version at a given time.
 | Deprecated  | Still accessible but no longer recommended. |
 | Archived    | Closed and historically preserved.          |
 
-> Status is dynamic and may change without altering the version number.
+> **Note on Archiving:** The `Archived` status is applied based on **explicit developer decision**, not solely by lifecycle age. A version may remain visible in the main index if it serves as a critical reference.
 
 ---
 
@@ -122,27 +122,30 @@ to commit history and analytical version notes.
 
 ---
 
-## 5. Analytical Version Notes (`docs/versions/`)
+## 5. User-Facing Release Notes (`docs/versions/`)
 
-For each significant milestone, Internara produces an **Analytical Version Note**—a static,
-post-facto technical narrative describing the version *as built*.
+For each significant milestone, Internara produces a **Release Note**—a human-centric narrative describing the version's value.
 
 These documents:
 
 * Reside in `docs/versions/`
 * Are immutable once the version is released
-* Do **not** contain lifecycle status or support policy information
+* Must be written in **friendly, accessible language** suitable for non-technical stakeholders
 
 Lifecycle classification is managed exclusively in
 **Versions Overview** to maintain a Single Source of Truth.
 
-**Each note must include:**
+**Writing Principle: "Benefits over Features"**
+*   **Don't say:** "Implemented Polymorphic ComplianceAggregator."
+*   **Do say:** "Grading is now automated based on attendance and journal data."
 
-1. **Metadata**: Version, Series Code, release date.
-2. **Strategic Context**: The rationale behind the milestone.
-3. **Production Keystones**: Architectural and implementation deep-dives.
-4. **Verification Analysis**: Testing, validation, and risk assessment.
-5. **Forward Outlook**: Constraints and direction for the next iteration.
+**Structure:**
+
+1.  **Metadata**: Version, Series Code, release date.
+2.  **Overview**: A high-level summary of "What's New".
+3.  **Key Highlights**: The core value delivered to the user (use emojis and clear headers).
+4.  **Stability & Quality**: Brief mention of reliability improvements.
+5.  **Forward Outlook**: What users can expect next.
 
 ---
 
