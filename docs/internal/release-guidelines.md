@@ -189,7 +189,7 @@ handling to maintain historical integrity and manage user expectations.
 
 ### 7.3 Artifact Synchronization
 
-- **Local Storage**: Formal engineering plans for Archived versions are moved to the
+- **Local Storage**: Formal Application Blueprints for Archived versions are moved to the
   `docs/internal/plans/archived/` directory.
 - **Narrative Visibility**: User-facing release notes for EOL versions remain in the main directory
   for immediate accessibility, while Archived narratives may be moved to `docs/versions/archived/`.

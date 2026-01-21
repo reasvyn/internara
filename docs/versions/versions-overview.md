@@ -100,12 +100,10 @@ Planned direction includes:
 
 ---
 
-## 5. Relationship to Engineering Plans
-
-This document provides **User-Facing Visibility**.
+## 5. Relationship to Application Blueprints
 
 For architectural intent, constraints, and technical deep-dives, refer to:
 
-- **[Engineering Plans Index](../internal/plans/table-of-contents.md)**
+- **[Application Blueprints Index](../internal/blueprints/table-of-contents.md)**
 
-> Version Overviews describe **what the user gets**. Engineering Plans describe **how we built it**.
+> Version Overviews describe **what the user gets**. Application Blueprints describe **how we built it**.

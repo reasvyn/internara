@@ -140,7 +140,9 @@ Quick reference for essential project verification:
 4. **Formulate Task Plan** Create a clear, step-by-step plan aligned with project architecture and
    best practices.
 
-5. **Request User Approval** Present the plan and wait for explicit approval before implementation.
+5. **Blueprint Synchronization** Ensure that major architectural units are backed by an **Application Blueprint** in `docs/internal/blueprints/` before implementation begins.
+
+6. **Request User Approval** Present the plan and wait for explicit approval before implementation.
 
 6. **Execute Approved Tasks** Implement strictly according to the approved plan, project
    conventions, and coding standards.

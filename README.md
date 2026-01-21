@@ -96,7 +96,7 @@ Internara maintains structured documentation categorized by target audience.
 
 * **[Architecture Guide](docs/internal/architecture-guide.md)**: Modular Monolith layers and rules.
 * **[Development Workflow](docs/internal/development-workflow.md)**: Feature engineering lifecycle.
-* **[Engineering Index](docs/internal/table-of-contents.md)**: Complete list of technical standards.
+* **[Engineering Index](docs/internal/table-of-contents.md)**: Complete list of technical standards and blueprints.
 
 ---
 

@@ -1,4 +1,4 @@
-# Archived Engineering Plans - Documentation Index
+# Archived Application Blueprints - Documentation Index
 
 This directory contains historical pre-development blueprints for completed or deprecated version series.
 

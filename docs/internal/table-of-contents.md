@@ -21,9 +21,10 @@ This index lists all technical guides intended for internal developers and code 
 - **[Exception Handling Guidelines](exception-handling-guidelines.md)**: Standardized error reporting.
 - **[Writing Guide](writing-guide.md)**: Standards for technical documentation.
 
-## 3. Engineering Workflows
+## 3. Engineering Workflows & Blueprints
 
 - **[Development Workflow](development-workflow.md)**: Feature engineering lifecycle (Plan -> Build -> Sync).
+- **[Application Blueprints Index](blueprints/table-of-contents.md)**: Pre-development architectural blueprints.
 - **[Software Lifecycle](software-lifecycle.md)**: SDLC phases from concept to release.
 - **[Release Guidelines](release-guidelines.md)**: Versioning standards and deployment protocols.
 - **[Artisan Commands Reference](artisan-commands-reference.md)**: Catalog of modular generators.
