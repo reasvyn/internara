@@ -9,6 +9,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### 🚀 Overview
+
+Focuses on **Reporting & Intelligence**, building the aggregated reporting engine and placement history tracking.
+
 ---
 
 ## [v0.7.0-alpha] - 2026-01-21 (ARC01-ORCH-01)

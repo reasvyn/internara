@@ -1,7 +1,7 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.7.0--alpha-blue?style=flat-square)
-![Lifecycle](https://img.shields.io/badge/lifecycle-released-green?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.8.0--alpha-blue?style=flat-square)
+![Lifecycle](https://img.shields.io/badge/lifecycle-active--development-yellow?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -62,9 +62,9 @@ post-release narrative describing delivered value and system state.
 
 ### Current Version Series
 
-* **Active Series:** `v0.7.x`
-* **Current Release:** `v0.7.0-alpha`
-* **Lifecycle Status:** Released
+* **Active Series:** `v0.8.x`
+* **Current Release:** `v0.8.0-alpha`
+* **Lifecycle Status:** Active Development
 * **Support Policy:** Snapshot (no ongoing maintenance)
 
 ---
@@ -73,6 +73,7 @@ post-release narrative describing delivered value and system state.
 
 | Version Series | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
 | :------------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
+| **v0.8.x**     | Alpha | Snapshot       | ❌                | ❌         | Active Development |
 | **v0.7.x**     | Alpha | Snapshot       | ❌                | ❌         | Released           |
 | **v0.6.x**     | Alpha | Snapshot       | ❌                | ❌         | Released           |
 | **v0.5.x**     | Alpha | EOL            | ❌                | ❌         | EOL (End of Life)  |

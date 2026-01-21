@@ -1,7 +1,7 @@
 {
     "name": "Internara",
-    "version": "0.7.0-alpha",
-    "series_code": "ARC01-ORCH-01",
+    "version": "0.8.0-alpha",
+    "series_code": "ARC01-INTEL-01",
     "support_policy": "Snapshot",
     "author": {
         "name": "Reas Vyn",

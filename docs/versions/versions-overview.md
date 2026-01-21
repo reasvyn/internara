@@ -38,6 +38,7 @@ This table represents the **authoritative status** of each version series.
 
 | Version    | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
 | :--------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
+| **v0.8.x** | Alpha | Snapshot       | ❌                | ❌         | Active Development |
 | **v0.7.x** | Alpha | Snapshot       | ❌                | ❌         | Released           |
 | **v0.6.x** | Alpha | Snapshot       | ❌                | ❌         | Released           |
 | **v0.5.x** | Alpha | EOL            | ❌                | ❌         | EOL (End of Life)  |
@@ -48,6 +49,13 @@ This table represents the **authoritative status** of each version series.
 ## 3. Release Narratives
 
 Each released version has a dedicated **Version Note** documenting the milestones.
+
+### In Progress (Active Development)
+
+* **[v0.8.0-alpha](v0.8.0-alpha.md)** — *Reporting & Intelligence*
+  Building high-level analytical tools, asynchronous reporting, and placement lifecycle tracking.
+
+---
 
 ### Latest Released Version
 
@@ -63,8 +71,8 @@ These versions are preserved for historical reference.
 * **[v0.6.0-alpha](v0.6.0-alpha.md)** — *Assessment & Workspaces*
   Finalized the internship lifecycle with role-specific workspaces and verifiable certificates.
 
-- **[v0.5.0-alpha](v0.5.0-alpha.md)** — _Operational Layer_ The foundation of student tracking:
-  Daily Journals and Attendance.
+* **[v0.5.0-alpha](v0.5.0-alpha.md)** — *Operational Layer*
+  The foundation of student tracking: Daily Journals and Attendance.
 
 ---
 
