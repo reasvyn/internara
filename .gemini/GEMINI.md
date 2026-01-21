@@ -98,16 +98,17 @@ and development documentation, always refer to the project’s `/docs` directory
 
 - **Cross-check Project Documentation** Always cross-reference and adhere to existing project
   documentation. For comprehensive navigation, prioritize:
-    - [docs/table-of-contents.md](docs/table-of-contents.md)
-    - [docs/main/architecture-guide.md](docs/main/architecture-guide.md)
-    - [docs/main/development-workflow.md](docs/main/development-workflow.md)
-    - [docs/main/release-guidelines.md](docs/main/release-guidelines.md)
-    - [docs/main/development-conventions.md](docs/main/development-conventions.md)
-    - [docs/main/software-lifecycle.md](docs/main/software-lifecycle.md)
+    - [docs/main/table-of-contents.md](docs/main/table-of-contents.md)
     - [docs/main/main-documentation-overview.md](docs/main/main-documentation-overview.md)
+    - [docs/internal/table-of-contents.md](docs/internal/table-of-contents.md)
+    - [docs/internal/architecture-guide.md](docs/internal/architecture-guide.md)
+    - [docs/internal/development-workflow.md](docs/internal/development-workflow.md)
+    - [docs/internal/release-guidelines.md](docs/internal/release-guidelines.md)
+    - [docs/internal/development-conventions.md](docs/internal/development-conventions.md)
+    - [docs/internal/software-lifecycle.md](docs/internal/software-lifecycle.md)
     - [docs/versions/versions-overview.md](docs/versions/versions-overview.md)
     - **Module Guides:** Located in `modules/{ModuleName}/README.md` (Refer to
-      [docs/main/modules/table-of-contents.md](docs/main/modules/table-of-contents.md) for index).
+      [docs/internal/modules/table-of-contents.md](docs/internal/modules/table-of-contents.md) for index).
 
 ## Pinned Commands
 
