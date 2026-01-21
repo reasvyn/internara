@@ -1,7 +1,7 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.7.x--alpha-blue?style=flat-square)
-![Lifecycle](https://img.shields.io/badge/lifecycle-active--development-yellow?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.7.0--alpha-blue?style=flat-square)
+![Lifecycle](https://img.shields.io/badge/lifecycle-released-green?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -121,7 +121,7 @@ state.
 
 | Version Series | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
 | :------------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
-| **v0.7.x**     | Alpha | Snapshot       | ❌               | ❌        | Active Development |
+| **v0.7.x**     | Alpha | Snapshot       | ❌                | ❌         | Released           |
 | **v0.6.x**     | Alpha | Snapshot       | ❌               | ❌        | Released           |
 | **v0.5.x**     | Alpha | EOL            | ❌               | ❌        | EOL (End of Life)  |
 | **v0.4.x**     | Alpha | EOL            | ❌               | ❌        | Archived           |
