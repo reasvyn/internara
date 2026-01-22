@@ -38,11 +38,11 @@ This table represents the **authoritative status** of each version series.
 
 | Version    | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
 | :--------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
-| **v0.8.x** | Alpha | Snapshot       | ❌                | ❌         | Active Development |
-| **v0.7.x** | Alpha | Snapshot       | ❌                | ❌         | Released           |
-| **v0.6.x** | Alpha | Snapshot       | ❌                | ❌         | Released           |
-| **v0.5.x** | Alpha | EOL            | ❌                | ❌         | EOL (End of Life)  |
-| **v0.4.x** | Alpha | EOL            | ❌                | ❌         | Archived           |
+| **v0.8.x** | Alpha | Snapshot       | ❌               | ❌        | Active Development |
+| **v0.7.x** | Alpha | Snapshot       | ❌               | ❌        | Released           |
+| **v0.6.x** | Alpha | Snapshot       | ❌               | ❌        | Released           |
+| **v0.5.x** | Alpha | EOL            | ❌               | ❌        | EOL (End of Life)  |
+| **v0.4.x** | Alpha | EOL            | ❌               | ❌        | Archived           |
 
 ---
 
@@ -52,15 +52,15 @@ Each released version has a dedicated **Version Note** documenting the milestone
 
 ### In Progress (Active Development)
 
-* **[v0.8.0-alpha](v0.8.0-alpha.md)** — *Reporting & Intelligence*
-  Building high-level analytical tools, asynchronous reporting, and placement lifecycle tracking.
+- **[v0.8.0-alpha](v0.8.0-alpha.md)** — _Reporting & Intelligence_ Building high-level analytical
+  tools, asynchronous reporting, and placement lifecycle tracking.
 
 ---
 
 ### Latest Released Version
 
-* **[v0.7.0-alpha](v0.7.0-alpha.md)** — *Administrative Automation*
-  Transforming Internara into a powerful assistant that automates prerequisite checks and grading.
+- **[v0.7.0-alpha](v0.7.0-alpha.md)** — _Administrative Automation_ Transforming Internara into a
+  powerful assistant that automates prerequisite checks and grading.
 
 ---
 
@@ -68,11 +68,11 @@ Each released version has a dedicated **Version Note** documenting the milestone
 
 These versions are preserved for historical reference.
 
-* **[v0.6.0-alpha](v0.6.0-alpha.md)** — *Assessment & Workspaces*
-  Finalized the internship lifecycle with role-specific workspaces and verifiable certificates.
+- **[v0.6.0-alpha](v0.6.0-alpha.md)** — _Assessment & Workspaces_ Finalized the internship lifecycle
+  with role-specific workspaces and verifiable certificates.
 
-* **[v0.5.0-alpha](v0.5.0-alpha.md)** — *Operational Layer*
-  The foundation of student tracking: Daily Journals and Attendance.
+- **[v0.5.0-alpha](v0.5.0-alpha.md)** — _Operational Layer_ The foundation of student tracking:
+  Daily Journals and Attendance.
 
 ---
 
@@ -114,4 +114,5 @@ For architectural intent, constraints, and technical deep-dives, refer to:
 
 - **[Application Blueprints Index](../internal/blueprints/table-of-contents.md)**
 
-> Version Overviews describe **what the user gets**. Application Blueprints describe **how we built it**.
+> Version Overviews describe **what the user gets**. Application Blueprints describe **how we built
+> it**.

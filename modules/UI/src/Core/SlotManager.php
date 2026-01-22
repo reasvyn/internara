@@ -80,11 +80,16 @@ class SlotManager implements SlotManagerContract
                         return $this->viewFactory->make($view, $data)->render();
                     }
                 } catch (\Throwable $e) {
-                    \Illuminate\Support\Facades\Log::error('Slot Injection Error: Failed to render component ['.(is_string($item['view']) ? $item['view'] : 'Closure')."] in slot [{$slot}]. Error: {$e->getMessage()}", [
-                        'exception' => $e,
-                        'slot' => $slot,
-                        'data' => $item['data'],
-                    ]);
+                    \Illuminate\Support\Facades\Log::error(
+                        'Slot Injection Error: Failed to render component ['.
+                            (is_string($item['view']) ? $item['view'] : 'Closure').
+                            "] in slot [{$slot}]. Error: {$e->getMessage()}",
+                        [
+                            'exception' => $e,
+                            'slot' => $slot,
+                            'data' => $item['data'],
+                        ],
+                    );
 
                     // Return a placeholder or empty string in production,
                     // maybe a small warning icon in local/debug mode?

@@ -106,9 +106,11 @@ class AssessmentService extends EloquentQuery implements Contract
             return 0.0;
         }
 
-        return (float) $this->model->newQuery()
+        return (float) $this->model
+            ->newQuery()
             ->whereIn('registration_id', $registrationIds)
             ->where('type', $type)
-            ->avg('score') ?: 0.0;
+            ->avg('score') ?:
+            0.0;
     }
 }

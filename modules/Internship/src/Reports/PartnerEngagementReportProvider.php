@@ -41,22 +41,26 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
 
         $placements = $query->get();
 
-        $rows = $placements->map(function ($placement) {
-            $registrationIds = $placement->registrations->pluck('id')->toArray();
-            
-            $journalStats = app(\Modules\Journal\Services\Contracts\JournalService::class)
-                ->getEngagementStats($registrationIds);
-                
-            $avgScore = app(\Modules\Assessment\Services\Contracts\AssessmentService::class)
-                ->getAverageScore($registrationIds, 'mentor');
-            
-            return [
-                'Partner Name' => $placement->company_name,
-                'Total Interns' => count($registrationIds),
-                'Responsiveness' => $journalStats['responsiveness'] . '%',
-                'Avg Feedback' => number_format($avgScore, 2) . ' / 100',
-            ];
-        })->toArray();
+        $rows = $placements
+            ->map(function ($placement) {
+                $registrationIds = $placement->registrations->pluck('id')->toArray();
+
+                $journalStats = app(
+                    \Modules\Journal\Services\Contracts\JournalService::class,
+                )->getEngagementStats($registrationIds);
+
+                $avgScore = app(
+                    \Modules\Assessment\Services\Contracts\AssessmentService::class,
+                )->getAverageScore($registrationIds, 'mentor');
+
+                return [
+                    'Partner Name' => $placement->company_name,
+                    'Total Interns' => count($registrationIds),
+                    'Responsiveness' => $journalStats['responsiveness'].'%',
+                    'Avg Feedback' => number_format($avgScore, 2).' / 100',
+                ];
+            })
+            ->toArray();
 
         return [
             'headers' => ['Partner Name', 'Total Interns', 'Responsiveness', 'Avg Feedback'],

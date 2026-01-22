@@ -161,12 +161,17 @@ class JournalService extends EloquentQuery implements Contract
             return ['submitted' => 0, 'approved' => 0, 'responsiveness' => 0.0];
         }
 
-        $submitted = $this->model->newQuery()
+        $submitted = $this->model
+            ->newQuery()
             ->whereIn('registration_id', $registrationIds)
-            ->whereHas('statuses', fn ($q) => $q->whereIn('name', ['submitted', 'approved', 'verified']))
+            ->whereHas(
+                'statuses',
+                fn ($q) => $q->whereIn('name', ['submitted', 'approved', 'verified']),
+            )
             ->count();
 
-        $approved = $this->model->newQuery()
+        $approved = $this->model
+            ->newQuery()
             ->whereIn('registration_id', $registrationIds)
             ->currentStatus(['approved', 'verified'])
             ->count();

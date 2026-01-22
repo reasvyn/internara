@@ -85,14 +85,11 @@ remain semantically strict.
 
 **Required Fields:**
 
-* `version`
-  The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
+- `version` The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
 
-* `series_code`
-  The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
+- `series_code` The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
 
-* `support_policy`
-  The maintenance contract level (`Snapshot`, `Full Support`, `EOL`, etc.).
+- `support_policy` The maintenance contract level (`Snapshot`, `Full Support`, `EOL`, etc.).
 
 > Operational status is managed centrally in Versions Overview.
 
@@ -158,7 +155,7 @@ A version may be marked as `Released` when the following minimum conditions are 
 2. **Artifact Consistency**: Codebase, documentation, and metadata are synchronized.
 3. **Changelog Resolution**: `[Unreleased]` entries are reconciled.
 4. **Identity Verification**: Application identity reflects the intended version and stage.
-1. **Tagging**: A Git tag is created matching the version identifier.
+5. **Tagging**: A Git tag is created matching the version identifier.
 
 > A release does **not** imply stability, completeness, or long-term support—only that the artifact
 > has been formally published.

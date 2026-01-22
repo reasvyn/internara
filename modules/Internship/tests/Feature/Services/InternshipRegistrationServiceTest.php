@@ -145,7 +145,7 @@ test('it can reassign a placement and logs the change', function () {
     $updatedRegistration = app(InternshipRegistrationService::class)->reassignPlacement(
         $registration->id,
         $placement2->id,
-        'Moving to a better location'
+        'Moving to a better location',
     );
 
     expect($updatedRegistration->placement_id)->toBe($placement2->id);
@@ -158,10 +158,15 @@ test('it can reassign a placement and logs the change', function () {
     ]);
 
     // Check metadata
-    $history = \Modules\Internship\Models\PlacementHistory::where('registration_id', $registration->id)
+    $history = \Modules\Internship\Models\PlacementHistory::where(
+        'registration_id',
+        $registration->id,
+    )
         ->where('action', 'changed')
         ->first();
 
-    expect($history->metadata['old_placement_id'])->toBe($placement1->id)
-        ->and($history->metadata['new_placement_id'])->toBe($placement2->id);
+    expect($history->metadata['old_placement_id'])
+        ->toBe($placement1->id)
+        ->and($history->metadata['new_placement_id'])
+        ->toBe($placement2->id);
 });

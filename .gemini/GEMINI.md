@@ -108,7 +108,8 @@ and development documentation, always refer to the project’s `/docs` directory
     - [docs/internal/software-lifecycle.md](docs/internal/software-lifecycle.md)
     - [docs/versions/versions-overview.md](docs/versions/versions-overview.md)
     - **Module Guides:** Located in `modules/{ModuleName}/README.md` (Refer to
-      [docs/internal/modules/table-of-contents.md](docs/internal/modules/table-of-contents.md) for index).
+      [docs/internal/modules/table-of-contents.md](docs/internal/modules/table-of-contents.md) for
+      index).
 
 ## Pinned Commands
 
@@ -140,17 +141,18 @@ Quick reference for essential project verification:
 4. **Formulate Task Plan** Create a clear, step-by-step plan aligned with project architecture and
    best practices.
 
-5. **Blueprint Synchronization** Ensure that major architectural units are backed by an **Application Blueprint** in `docs/internal/blueprints/` before implementation begins.
+5. **Blueprint Synchronization** Ensure that major architectural units are backed by an
+   **Application Blueprint** in `docs/internal/blueprints/` before implementation begins.
 
 6. **Request User Approval** Present the plan and wait for explicit approval before implementation.
 
-6. **Execute Approved Tasks** Implement strictly according to the approved plan, project
+7. **Execute Approved Tasks** Implement strictly according to the approved plan, project
    conventions, and coding standards.
 
-7. **Report and Conclude** Provide a concise Keypoints Summary outlining actions taken, decisions
+8. **Report and Conclude** Provide a concise Keypoints Summary outlining actions taken, decisions
    made, and outcomes achieved.
 
-8. **Commit and Push All Changes (Mandatory)** When instructed to commit and push all, ensure _all_
+9. **Commit and Push All Changes (Mandatory)** When instructed to commit and push all, ensure _all_
    changes in the codebase (including those not directly made by Gemini) are staged and committed.
    Craft professional commit messages by thoroughly reviewing _all actual_ changes in the codebase.
 

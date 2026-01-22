@@ -1,6 +1,7 @@
 # Archived Application Blueprints - Documentation Index
 
-This directory contains historical pre-development blueprints for completed or deprecated version series.
+This directory contains historical pre-development blueprints for completed or deprecated version
+series.
 
 ---
 
@@ -13,4 +14,5 @@ This directory contains historical pre-development blueprints for completed or d
 
 ---
 
-_For active or planned engineering series, refer to the **[Strategy Index](../table-of-contents.md)**._
+_For active or planned engineering series, refer to the
+**[Strategy Index](../table-of-contents.md)**._

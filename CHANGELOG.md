@@ -9,42 +9,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-
-
 ### 🚀 Overview
-
-
 
 Focuses on **System Initialization & Setup**, including automated installation and mobile-optimized
 
 student experiences.
 
-
-
 ---
-
-
 
 ## [v0.8.0-alpha] - 2026-01-22 (ARC01-INTEL-01)
 
-
-
 ### 🚀 Overview
-
-
 
 Focuses on **Data Intelligence**, building tools to synthesize raw internship data into actionable
 
 insights for institutions and industry partners.
 
-
-
 ### ✨ Added
 
-
-
 - **Reporting Engine (Keystone 1):**
-
     - Created the `Report` module to handle asynchronous PDF generation.
 
     - Defined the `ExportableDataProvider` contract in `Shared` for cross-module data extraction.
@@ -55,53 +38,41 @@ insights for institutions and industry partners.
 
     - Created `InternshipClassReportProvider` for class-wide status reports.
 
-    - Added **Partner Engagement Analytics** report provider with responsiveness and feedback metrics.
+    - Added **Partner Engagement Analytics** report provider with responsiveness and feedback
+      metrics.
 
 - **Placement Lifecycle Tracking:**
-
     - Implemented **Placement History** log to track student journeys across sequential or
 
-      rotational programs.
+        rotational programs.
 
     - Created `PlacementLogger` service for transparent audit trails of placement reassignments.
 
     - Added `reassignPlacement` capability to `InternshipRegistrationService` with mandatory
 
-      logging.
+        logging.
 
 - **Analytical Dashboard:**
-
     - Implemented `AnalyticsAggregator` in `Core` module to orchestrate cross-module data synthesis.
 
     - Built **"At-Risk" identification** system to highlight students with low engagement or
 
-      poor assessment scores.
+        poor assessment scores.
 
     - Added institutional summary statistics (Total Interns, Active Partners, Placement Rate) to
 
-      the Admin Dashboard.
-
-
+        the Admin Dashboard.
 
 ### 🛠 Changed
 
-
-
 - **Service API Expansion:**
-
     - Enhanced `JournalService` with `getEngagementStats` for responsiveness tracking.
 
     - Enhanced `AssessmentService` with `getAverageScore` for partner feedback aggregation.
 
-
-
 ---
 
-
-
 ## [v0.7.0-alpha] - 2026-01-21 (ARC01-ORCH-01)
-
-
 
 ### 🚀 Overview
 
@@ -123,8 +94,8 @@ management.
     - Integrated real-time participation metrics into Mentor and Teacher evaluation forms.
 - **Admin Console & Notifications:**
     - Implemented `JobMonitor` to manage background queues and failed jobs.
-    - **Notifier System:** Standardized `Notifier` contract in `Notification` module for
-      system-wide UI feedback.
+    - **Notifier System:** Standardized `Notifier` contract in `Notification` module for system-wide
+      UI feedback.
     - **Exception Integration:** Bridged `AppException` to automatically dispatch toast
       notifications via the Notifier service.
 - **Stakeholder Management:**
@@ -147,7 +118,8 @@ management.
 - **Service API:**
     - Expanded `AttendanceService` and `JournalService` contracts with aggregation methods for
       compliance reporting.
-    - Updated `EloquentQuery` to support relationship filtering via dot-notation (SQLite compatible).
+    - Updated `EloquentQuery` to support relationship filtering via dot-notation (SQLite
+      compatible).
 
 ---
 

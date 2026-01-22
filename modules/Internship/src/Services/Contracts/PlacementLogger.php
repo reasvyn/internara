@@ -15,19 +15,17 @@ interface PlacementLogger
     /**
      * Log a placement event for a registration.
      *
-     * @param InternshipRegistration $registration
      * @param string $action The action performed (e.g. 'assigned', 'changed', 'completed')
      * @param string|null $reason Optional reason for the action
      * @param array<string, mixed> $metadata Optional structured data
      * @param string|null $placementId Optional specific placement ID to log
-     * @return PlacementHistory
      */
     public function log(
         InternshipRegistration $registration,
         string $action,
         ?string $reason = null,
         array $metadata = [],
-        ?string $placementId = null
+        ?string $placementId = null,
     ): PlacementHistory;
 
     /**
@@ -35,7 +33,7 @@ interface PlacementLogger
      */
     public function logAssignment(
         InternshipRegistration $registration,
-        ?string $reason = null
+        ?string $reason = null,
     ): PlacementHistory;
 
     /**
@@ -45,6 +43,6 @@ interface PlacementLogger
         InternshipRegistration $registration,
         string $oldPlacementId,
         string $newPlacementId,
-        ?string $reason = null
+        ?string $reason = null,
     ): PlacementHistory;
 }

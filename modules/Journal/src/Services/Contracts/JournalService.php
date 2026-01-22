@@ -47,6 +47,7 @@ interface JournalService extends EloquentQuery
      * Get engagement statistics for a set of registrations.
      *
      * @param array<string> $registrationIds
+     *
      * @return array{submitted: int, approved: int, responsiveness: float}
      */
     public function getEngagementStats(array $registrationIds): array;

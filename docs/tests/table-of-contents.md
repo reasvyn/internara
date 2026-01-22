@@ -19,4 +19,5 @@ This directory documents the project's automated testing infrastructure and stra
 
 ---
 
-_All tests in Internara must be written using **Pest v4**. Refer to the [Internal Engineering Index](../internal/table-of-contents.md) for more context._
+_All tests in Internara must be written using **Pest v4**. Refer to the
+[Internal Engineering Index](../internal/table-of-contents.md) for more context._

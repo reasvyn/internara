@@ -150,13 +150,19 @@ class RegistrationManager extends Component
 
         try {
             $pairings = array_fill_keys($this->selectedIds, $this->targetPlacementId);
-            $count = app(\Modules\Internship\Services\Contracts\PlacementService::class)->bulkMatch($pairings);
+            $count = app(\Modules\Internship\Services\Contracts\PlacementService::class)->bulkMatch(
+                $pairings,
+            );
 
             $this->bulkPlaceModal = false;
             $this->selectedIds = [];
             $this->targetPlacementId = null;
 
-            $this->dispatch('notify', message: __(':count siswa berhasil ditempatkan.', ['count' => $count]), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: __(':count siswa berhasil ditempatkan.', ['count' => $count]),
+                type: 'success',
+            );
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
         }

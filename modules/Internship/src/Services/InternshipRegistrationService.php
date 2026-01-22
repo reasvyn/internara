@@ -150,7 +150,7 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
             $registration,
             $oldPlacementId,
             $newPlacementId,
-            $reason ?: 'Placement reassignment'
+            $reason ?: 'Placement reassignment',
         );
 
         // 3. Update the registration

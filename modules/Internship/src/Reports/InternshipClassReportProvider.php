@@ -40,12 +40,16 @@ class InternshipClassReportProvider implements ExportableDataProvider
 
         return [
             'headers' => ['Student Name', 'Program', 'Placement', 'Status'],
-            'rows' => $registrations->map(fn ($reg) => [
-                'Student Name' => $reg->user->name,
-                'Program' => $reg->internship->title,
-                'Placement' => $reg->placement?->company_name ?? 'Not Assigned',
-                'Status' => $reg->getStatusLabel(),
-            ])->toArray(),
+            'rows' => $registrations
+                ->map(
+                    fn ($reg) => [
+                        'Student Name' => $reg->user->name,
+                        'Program' => $reg->internship->title,
+                        'Placement' => $reg->placement?->company_name ?? 'Not Assigned',
+                        'Status' => $reg->getStatusLabel(),
+                    ],
+                )
+                ->toArray(),
         ];
     }
 

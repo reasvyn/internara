@@ -7,7 +7,8 @@ This index lists all guides intended for general users, system administrators, a
 ## 1. Getting Started
 
 - **[Documentation Hub](main-documentation-overview.md)**: An overview of all available manuals.
-- **[Installation Guide](installation-guide.md)**: Step-by-step setup instructions for administrators.
+- **[Installation Guide](installation-guide.md)**: Step-by-step setup instructions for
+  administrators.
 
 ## 2. Product Information
 
@@ -21,4 +22,5 @@ This index lists all guides intended for general users, system administrators, a
 
 ---
 
-_For technical development guides, please refer to the **[Internal Engineering Index](../internal/table-of-contents.md)**._
+_For technical development guides, please refer to the
+**[Internal Engineering Index](../internal/table-of-contents.md)**._

@@ -43,10 +43,10 @@ class InternshipServiceProvider extends ServiceProvider
         if (class_exists(\Modules\Report\Services\ReportService::class)) {
             $reportService = app(\Modules\Report\Services\ReportService::class);
             $reportService->registerProvider(
-                new \Modules\Internship\Reports\InternshipClassReportProvider()
+                new \Modules\Internship\Reports\InternshipClassReportProvider,
             );
             $reportService->registerProvider(
-                new \Modules\Internship\Reports\PartnerEngagementReportProvider()
+                new \Modules\Internship\Reports\PartnerEngagementReportProvider,
             );
         }
     }

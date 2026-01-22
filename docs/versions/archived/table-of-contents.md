@@ -1,6 +1,7 @@
 # Archived Versions - Documentation Index
 
-This directory contains historical release narratives for versions that are no longer actively supported or maintained.
+This directory contains historical release narratives for versions that are no longer actively
+supported or maintained.
 
 ---
 

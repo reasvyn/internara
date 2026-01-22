@@ -18,13 +18,13 @@ class GenerateReportJob implements ShouldQueue
     public function __construct(
         protected string $providerIdentifier,
         protected array $filters,
-        protected string $jobId
+        protected string $jobId,
     ) {}
 
     public function handle(ReportGenerator $generator): void
     {
         $generator->generate($this->providerIdentifier, $this->filters);
-        
+
         // In a real implementation, we would notify the user or update a job status record
     }
 }

@@ -21,7 +21,7 @@ class PlacementLoggerService implements Contract
         string $action,
         ?string $reason = null,
         array $metadata = [],
-        ?string $placementId = null
+        ?string $placementId = null,
     ): PlacementHistory {
         return PlacementHistory::create([
             'registration_id' => $registration->id,
@@ -37,13 +37,9 @@ class PlacementLoggerService implements Contract
      */
     public function logAssignment(
         InternshipRegistration $registration,
-        ?string $reason = null
+        ?string $reason = null,
     ): PlacementHistory {
-        return $this->log(
-            $registration,
-            'assigned',
-            $reason ?: 'Initial placement assignment'
-        );
+        return $this->log($registration, 'assigned', $reason ?: 'Initial placement assignment');
     }
 
     /**
@@ -53,7 +49,7 @@ class PlacementLoggerService implements Contract
         InternshipRegistration $registration,
         string $oldPlacementId,
         string $newPlacementId,
-        ?string $reason = null
+        ?string $reason = null,
     ): PlacementHistory {
         return $this->log(
             $registration,
@@ -63,7 +59,7 @@ class PlacementLoggerService implements Contract
                 'old_placement_id' => $oldPlacementId,
                 'new_placement_id' => $newPlacementId,
             ],
-            $newPlacementId
+            $newPlacementId,
         );
     }
 }

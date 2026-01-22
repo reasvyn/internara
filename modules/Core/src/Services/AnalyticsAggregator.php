@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Core\Services;
 
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Core\Services\Contracts\AnalyticsAggregator as Contract;
 use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
-use Modules\Assessment\Services\Contracts\AssessmentService;
 
 class AnalyticsAggregator implements Contract
 {
@@ -23,10 +23,12 @@ class AnalyticsAggregator implements Contract
     public function getInstitutionalSummary(): array
     {
         $activeAcademicYear = setting('active_academic_year', '2025/2026');
-        
-        $totalInterns = $this->registrationService->query([
-            'academic_year' => $activeAcademicYear,
-        ])->count();
+
+        $totalInterns = $this->registrationService
+            ->query([
+                'academic_year' => $activeAcademicYear,
+            ])
+            ->count();
 
         // This is a bit of a shortcut, ideally we have a dedicated PlacementService count
         $activePartners = \Modules\Internship\Models\InternshipPlacement::count();
@@ -44,9 +46,12 @@ class AnalyticsAggregator implements Contract
     public function getAtRiskStudents(int $limit = 5): array
     {
         // For simplicity, we look at the most recent active registrations
-        $activeRegistrations = $this->registrationService->query([
-            'latest_status' => 'active'
-        ])->limit(20)->get();
+        $activeRegistrations = $this->registrationService
+            ->query([
+                'latest_status' => 'active',
+            ])
+            ->limit(20)
+            ->get();
 
         $atRisk = [];
 
@@ -62,7 +67,7 @@ class AnalyticsAggregator implements Contract
                 $riskReasons[] = 'Low mentor assessment score';
             }
 
-            if (!empty($riskReasons)) {
+            if (! empty($riskReasons)) {
                 $atRisk[] = [
                     'student_name' => $registration->user->name,
                     'reason' => implode(', ', $riskReasons),
@@ -70,7 +75,9 @@ class AnalyticsAggregator implements Contract
                 ];
             }
 
-            if (count($atRisk) >= $limit) break;
+            if (count($atRisk) >= $limit) {
+                break;
+            }
         }
 
         return $atRisk;

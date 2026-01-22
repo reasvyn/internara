@@ -15,19 +15,19 @@ return new class extends Migration
     {
         Schema::create('internship_placement_history', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            
+
             // Reference to the registration record
             $table->uuid('registration_id')->index();
-            
+
             // Reference to the placement (Industry Partner)
             $table->uuid('placement_id')->index();
-            
+
             // The action that triggered this log (assigned, changed, completed, etc)
             $table->string('action');
-            
+
             // Human readable reason for the change
             $table->text('reason')->nullable();
-            
+
             // Optional structured data (e.g., who made the change, old vs new values)
             $table->json('metadata')->nullable();
 

@@ -26,6 +26,7 @@ interface ExportableDataProvider
      * Get the structured data for the report based on provided filters.
      *
      * @param array<string, mixed> $filters
+     *
      * @return array<string, mixed>
      */
     public function getReportData(array $filters = []): array;

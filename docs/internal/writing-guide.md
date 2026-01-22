@@ -24,8 +24,10 @@ principles when adding or modifying documentation in Internara.
 ## 2. Formatting Conventions
 
 - **Markdown Only**: Use Markdown (`.md`) exclusively for all guides.
-- **Code Blocks**: Always use language hints (e.g., ` ```php `, ` ```bash `) for syntax highlighting.
-- **Table of Contents**: Required for any document exceeding 1,000 words or containing more than 4 major sections.
+- **Code Blocks**: Always use language hints (e.g., ` ```php `, ` ```bash `) for syntax
+  highlighting.
+- **Table of Contents**: Required for any document exceeding 1,000 words or containing more than 4
+  major sections.
 - **English Only**: All documentation must be written in English.
 
 ---
@@ -33,7 +35,8 @@ principles when adding or modifying documentation in Internara.
 ## 3. Directory Structure
 
 - `docs/main/`: Public guides for users and system administrators.
-- `docs/internal/`: Internal manuals for developers, including architecture, conventions, and roadmaps.
+- `docs/internal/`: Internal manuals for developers, including architecture, conventions, and
+  roadmaps.
 - `docs/versions/`: Post-release narratives documenting milestones.
 - `docs/tests/`: Technical guides for the testing suite.
 

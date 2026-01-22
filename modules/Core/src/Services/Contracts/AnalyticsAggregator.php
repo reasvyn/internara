@@ -21,7 +21,6 @@ interface AnalyticsAggregator
     /**
      * Identify students who are "At-Risk" based on engagement metrics.
      *
-     * @param int $limit
      * @return array<array{student_name: string, reason: string, risk_level: string}>
      */
     public function getAtRiskStudents(int $limit = 5): array;

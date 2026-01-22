@@ -11,8 +11,8 @@ use Modules\Shared\Models\Concerns\HasUuid;
 
 /**
  * Represents a log entry in the placement lifecycle.
- * 
- * This model tracks when a student is assigned to a placement, 
+ *
+ * This model tracks when a student is assigned to a placement,
  * when it changes, or when it is marked as completed.
  */
 class PlacementHistory extends Model
@@ -32,13 +32,7 @@ class PlacementHistory extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'registration_id',
-        'placement_id',
-        'action',
-        'reason',
-        'metadata',
-    ];
+    protected $fillable = ['registration_id', 'placement_id', 'action', 'reason', 'metadata'];
 
     /**
      * The attributes that should be cast.

@@ -33,7 +33,7 @@ class ReportService implements ReportGenerator
     public function queue(string $providerIdentifier, array $filters = []): string
     {
         $jobId = uniqid('report_');
-        
+
         GenerateReportJob::dispatch($providerIdentifier, $filters, $jobId);
 
         return $jobId;
@@ -51,7 +51,7 @@ class ReportService implements ReportGenerator
         }
 
         $data = $provider->getReportData($filters);
-        $fileName = "reports/{$providerIdentifier}_" . now()->format('YmdHis') . '.pdf';
+        $fileName = "reports/{$providerIdentifier}_".now()->format('YmdHis').'.pdf';
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('report::templates.generic', [
             'title' => $provider->getLabel(),
