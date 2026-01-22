@@ -27,4 +27,12 @@ interface AssessmentService extends EloquentQuery
      * Get the aggregated score card for a registration.
      */
     public function getScoreCard(string $registrationId): array;
+
+    /**
+     * Get the average score for a set of registrations.
+     *
+     * @param array<string> $registrationIds
+     * @param string $type The evaluator type (mentor, teacher)
+     */
+    public function getAverageScore(array $registrationIds, string $type = 'mentor'): float;
 }

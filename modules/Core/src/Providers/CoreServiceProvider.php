@@ -51,6 +51,8 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function bindings(): array
     {
-        return [];
+        return [
+            \Modules\Core\Services\Contracts\AnalyticsAggregator::class => \Modules\Core\Services\AnalyticsAggregator::class,
+        ];
     }
 }

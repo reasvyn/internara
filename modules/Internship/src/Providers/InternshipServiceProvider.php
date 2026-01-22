@@ -41,8 +41,12 @@ class InternshipServiceProvider extends ServiceProvider
 
         // Register Report Providers
         if (class_exists(\Modules\Report\Services\ReportService::class)) {
-            app(\Modules\Report\Services\ReportService::class)->registerProvider(
+            $reportService = app(\Modules\Report\Services\ReportService::class);
+            $reportService->registerProvider(
                 new \Modules\Internship\Reports\InternshipClassReportProvider()
+            );
+            $reportService->registerProvider(
+                new \Modules\Internship\Reports\PartnerEngagementReportProvider()
             );
         }
     }
@@ -71,6 +75,7 @@ class InternshipServiceProvider extends ServiceProvider
             \Modules\Internship\Services\Contracts\SupervisorService::class => \Modules\Internship\Services\SupervisorService::class,
             \Modules\Internship\Services\Contracts\PlacementService::class => \Modules\Internship\Services\PlacementService::class,
             \Modules\Internship\Services\Contracts\InternshipRequirementService::class => \Modules\Internship\Services\InternshipRequirementService::class,
+            \Modules\Internship\Services\Contracts\PlacementLogger::class => \Modules\Internship\Services\PlacementLoggerService::class,
         ];
     }
 

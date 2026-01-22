@@ -36,4 +36,13 @@ interface InternshipRegistrationService extends EloquentQuery
         string $registrationId,
         ?string $reason = null,
     ): \Modules\Internship\Models\InternshipRegistration;
+
+    /**
+     * Reassign a student to a different placement.
+     */
+    public function reassignPlacement(
+        string $registrationId,
+        string $newPlacementId,
+        ?string $reason = null,
+    ): \Modules\Internship\Models\InternshipRegistration;
 }

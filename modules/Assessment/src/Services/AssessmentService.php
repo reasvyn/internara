@@ -96,4 +96,19 @@ class AssessmentService extends EloquentQuery implements Contract
         // Formula: Mentor (40%) + Teacher (40%) + Compliance (20%)
         return round($mentor->score * 0.4 + $teacher->score * 0.4 + $complianceScore * 0.2, 2);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAverageScore(array $registrationIds, string $type = 'mentor'): float
+    {
+        if (empty($registrationIds)) {
+            return 0.0;
+        }
+
+        return (float) $this->model->newQuery()
+            ->whereIn('registration_id', $registrationIds)
+            ->where('type', $type)
+            ->avg('score') ?: 0.0;
+    }
 }

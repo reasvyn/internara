@@ -42,4 +42,12 @@ interface JournalService extends EloquentQuery
      * Get the total count of journal entries for a specific registration.
      */
     public function getJournalCount(string $registrationId, ?string $status = null): int;
+
+    /**
+     * Get engagement statistics for a set of registrations.
+     *
+     * @param array<string> $registrationIds
+     * @return array{submitted: int, approved: int, responsiveness: float}
+     */
+    public function getEngagementStats(array $registrationIds): array;
 }

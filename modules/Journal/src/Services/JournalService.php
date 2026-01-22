@@ -151,4 +151,32 @@ class JournalService extends EloquentQuery implements Contract
 
         return $query->count();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEngagementStats(array $registrationIds): array
+    {
+        if (empty($registrationIds)) {
+            return ['submitted' => 0, 'approved' => 0, 'responsiveness' => 0.0];
+        }
+
+        $submitted = $this->model->newQuery()
+            ->whereIn('registration_id', $registrationIds)
+            ->whereHas('statuses', fn ($q) => $q->whereIn('name', ['submitted', 'approved', 'verified']))
+            ->count();
+
+        $approved = $this->model->newQuery()
+            ->whereIn('registration_id', $registrationIds)
+            ->currentStatus(['approved', 'verified'])
+            ->count();
+
+        $responsiveness = $submitted > 0 ? ($approved / $submitted) * 100 : 0.0;
+
+        return [
+            'submitted' => $submitted,
+            'approved' => $approved,
+            'responsiveness' => round($responsiveness, 2),
+        ];
+    }
 }

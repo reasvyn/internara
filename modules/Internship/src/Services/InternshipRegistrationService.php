@@ -8,6 +8,7 @@ use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipRegistrationService as Contract;
+use Modules\Internship\Services\Contracts\PlacementLogger;
 use Modules\Shared\Services\EloquentQuery;
 
 class InternshipRegistrationService extends EloquentQuery implements Contract
@@ -15,6 +16,7 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
     public function __construct(
         InternshipRegistration $model,
         protected InternshipPlacementService $placementService,
+        protected PlacementLogger $logger,
     ) {
         $this->setModel($model);
         $this->setSortable(['created_at']);
@@ -62,7 +64,12 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
         // 3. Inject active academic year
         $data['academic_year'] = setting('active_academic_year', '2025/2026');
 
-        return $this->create($data);
+        $registration = $this->create($data);
+
+        // 4. Log initial assignment
+        $this->logger->logAssignment($registration);
+
+        return $registration;
     }
 
     /**
@@ -109,5 +116,46 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
         $registration->setStatus('inactive', $reason ?: 'Rejected by administrator');
 
         return $registration;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reassignPlacement(
+        string $registrationId,
+        string $newPlacementId,
+        ?string $reason = null,
+    ): InternshipRegistration {
+        $registration = $this->find($registrationId);
+
+        if (! $registration) {
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+                InternshipRegistration::class,
+                [$registrationId],
+            );
+        }
+
+        $oldPlacementId = $registration->placement_id;
+
+        // 1. Check slot availability for new placement
+        if (! $this->placementService->hasAvailableSlots($newPlacementId)) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.no_slots_available',
+                code: 422,
+            );
+        }
+
+        // 2. Log the change
+        $this->logger->logChange(
+            $registration,
+            $oldPlacementId,
+            $newPlacementId,
+            $reason ?: 'Placement reassignment'
+        );
+
+        // 3. Update the registration
+        return $this->update($registrationId, [
+            'placement_id' => $newPlacementId,
+        ]);
     }
 }

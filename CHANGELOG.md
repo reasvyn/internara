@@ -9,23 +9,99 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+
+
 ### 🚀 Overview
 
-Focuses on **Reporting & Intelligence**, building the aggregated reporting engine and placement history tracking.
 
-### ✨ Added
 
-- **Reporting Engine (Keystone 1):**
-    - Created the `Report` module to handle asynchronous PDF generation.
-    - Defined the `ExportableDataProvider` contract in `Shared` for cross-module data extraction.
-    - Implemented `ReportService` with support for both synchronous and queued generation.
-    - Integrated `GenerateReportJob` for high-performance background processing.
-    - Created `InternshipClassReportProvider` as the first concrete implementation for class-wide status reports.
-    - Added a generic PDF template for standardized institutional reporting.
+Focuses on **System Initialization & Setup**, including automated installation and mobile-optimized
+
+student experiences.
+
+
 
 ---
 
+
+
+## [v0.8.0-alpha] - 2026-01-22 (ARC01-INTEL-01)
+
+
+
+### 🚀 Overview
+
+
+
+Focuses on **Data Intelligence**, building tools to synthesize raw internship data into actionable
+
+insights for institutions and industry partners.
+
+
+
+### ✨ Added
+
+
+
+- **Reporting Engine (Keystone 1):**
+
+    - Created the `Report` module to handle asynchronous PDF generation.
+
+    - Defined the `ExportableDataProvider` contract in `Shared` for cross-module data extraction.
+
+    - Implemented `ReportService` with support for both synchronous and queued generation.
+
+    - Integrated `GenerateReportJob` for high-performance background processing.
+
+    - Created `InternshipClassReportProvider` for class-wide status reports.
+
+    - Added **Partner Engagement Analytics** report provider with responsiveness and feedback metrics.
+
+- **Placement Lifecycle Tracking:**
+
+    - Implemented **Placement History** log to track student journeys across sequential or
+
+      rotational programs.
+
+    - Created `PlacementLogger` service for transparent audit trails of placement reassignments.
+
+    - Added `reassignPlacement` capability to `InternshipRegistrationService` with mandatory
+
+      logging.
+
+- **Analytical Dashboard:**
+
+    - Implemented `AnalyticsAggregator` in `Core` module to orchestrate cross-module data synthesis.
+
+    - Built **"At-Risk" identification** system to highlight students with low engagement or
+
+      poor assessment scores.
+
+    - Added institutional summary statistics (Total Interns, Active Partners, Placement Rate) to
+
+      the Admin Dashboard.
+
+
+
+### 🛠 Changed
+
+
+
+- **Service API Expansion:**
+
+    - Enhanced `JournalService` with `getEngagementStats` for responsiveness tracking.
+
+    - Enhanced `AssessmentService` with `getAverageScore` for partner feedback aggregation.
+
+
+
+---
+
+
+
 ## [v0.7.0-alpha] - 2026-01-21 (ARC01-ORCH-01)
+
+
 
 ### 🚀 Overview
 
