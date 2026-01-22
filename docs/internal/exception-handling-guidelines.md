@@ -4,6 +4,10 @@ In Internara, exception handling is treated as a core business concern. We aim t
 feedback to users while ensuring that developers have the analytical data needed to resolve issues
 quickly.
 
+> **Governance Mandate:** Exception handling must ensure system integrity and security as defined
+> in the **[Internara Specs](../internal/internara-specs.md)**. Sensitive data must never be
+> exposed through error messages.
+
 ---
 
 ## 1. The Strategy: "Fail Fast & Gracefully"
@@ -22,51 +26,51 @@ should be caught by the UI layer to display a friendly notification.
 
 ### 1.3 System Errors (Unexpected)
 
-Database failures, network timeouts, etc. These are handled by the global Laravel handler, logged
-with full context, and presented to the user as a generic "System Error" in production.
+Database failures, network timeouts, etc. These are handled by the global Laravel handler and
+presented to the user as a generic "System Error" in production.
 
 ---
 
-## 2. Using Custom Exceptions
+## 2. Multi-Language & Standardized Messages
 
-Custom exceptions are located in the `Exception` module or within their respective feature modules.
+All exception messages **MUST** be localized.
 
-### 2.1 Defining an Exception
+- **Module-Specific Exceptions:** Use the `module::exceptions.key` pattern.
+  - *Example:* `__('journal::exceptions.locked')`
+- **General Exceptions:** Use the `exception::messages.key` pattern.
+  - *Example:* `__('exception::messages.unauthorized')`
 
-```php
-namespace Modules\Journal\Exceptions;
+---
 
-use Exception;
+## 3. Using Custom Exceptions
 
-class JournalLockedException extends Exception
-{
-    // ...
-}
-```
+Custom exceptions are located within their respective feature modules under `src/Exceptions/`.
 
-### 2.2 Catching in Livewire
+### 3.1 Catching in Livewire
 
 Always wrap Service calls in a try-catch block when an exception is expected.
 
 ```php
 try {
     $this->journalService->update($id, $data);
-    $this->success(__('journal::messages.updated'));
+    $this->success(__('journal::ui.updated'));
 } catch (JournalLockedException $e) {
-    $this->error(__('journal::messages.locked'));
+    $this->error(__('journal::exceptions.locked'));
+} catch (AuthorizationException $e) {
+    $this->error(__('exception::messages.unauthorized'));
 }
 ```
 
 ---
 
-## 3. Global Error Reporting & PII
+## 4. Global Error Reporting & Privacy
 
-To maintain privacy, certain data MUST NOT be logged in its raw form.
+To maintain privacy and comply with security specs:
 
 - **PII Masking**: The global logger automatically masks fields like `email`, `password`, and
-  `phone` before writing to the log file.
-- **Trace Context**: Ensure that logs include the `user_id` and `correlation_id` for easier
-  debugging across modular boundaries.
+  `phone` before writing to logs.
+- **Trace Context**: Logs include the `user_id` and `correlation_id` for traceability.
+- **No Hard-coding:** Error messages must never be hardcoded in English or Indonesian within the PHP code.
 
 ---
 

@@ -1,34 +1,27 @@
 # Application Versions Overview
 
 This document provides a **strategic overview of Internara’s application versions**, covering
-release lineage, lifecycle status, and support posture.
+release lineage, maturity stages, and support policies.
 
 Internara adopts **Analytical Versioning**, where each released version is accompanied by a
-post-release narrative that documents what was delivered and why.
+post-release narrative documented in accordance with the **[Release Guidelines](../internal/release-guidelines.md)**.
 
 ---
 
 ## 1. Version Lifecycle Model
 
-Each version series progresses through clearly defined **lifecycle stages**.
+We explicitly separate **Maturity (Stage)**, **Operational Status**, and **Support Policy**.
 
-### Lifecycle Stages
+### Maturity Stages
+- **Experimental**: Conceptual validation.
+- **Alpha**: Core features incomplete.
+- **Beta**: Feature complete, focus on stabilization.
+- **Stable**: Production-ready.
 
-- **Alpha** Early-stage product validation. Features and designs may evolve.
-
-- **Beta** _(future)_ Feature-complete with stabilization focus.
-
-- **Stable** _(future)_ Production-grade with defined support commitments.
-
----
-
-### Support Policy Definitions
-
-- **Snapshot** No ongoing maintenance. Code is preserved as-is for reference.
-
-- **Supported** _(future)_ Receives bug fixes and security updates.
-
-- **EOL (End of Life)** No maintenance, fixes, or security updates.
+### Support Policies
+- **Snapshot**: Point-in-time release provided as-is.
+- **Full Support**: Active maintenance and improvements.
+- **EOL (End of Life)**: No longer maintained.
 
 ---
 
@@ -36,83 +29,46 @@ Each version series progresses through clearly defined **lifecycle stages**.
 
 This table represents the **authoritative status** of each version series.
 
-| Version    | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status   |
-| :--------- | :---- | :------------- | :--------------- | :-------- | :----------------- |
-| **v0.8.x** | Alpha | Snapshot       | ❌               | ❌        | Active Development |
-| **v0.7.x** | Alpha | Snapshot       | ❌               | ❌        | Released           |
-| **v0.6.x** | Alpha | Snapshot       | ❌               | ❌        | Released           |
-| **v0.5.x** | Alpha | EOL            | ❌               | ❌        | EOL (End of Life)  |
-| **v0.4.x** | Alpha | EOL            | ❌               | ❌        | Archived           |
+| Version    | Maturity (Stage) | Support Policy | Status             |
+| :--------- | :--------------- | :------------- | :----------------- |
+| **v0.8.x** | Alpha            | Snapshot       | In Progress        |
+| **v0.7.x** | Alpha            | Snapshot       | Released           |
+| **v0.6.x** | Alpha            | Snapshot       | Released           |
+| **v0.5.x** | Alpha            | EOL            | Released (EOL)     |
+| **v0.4.x** | Alpha            | EOL            | Archived           |
 
 ---
 
 ## 3. Release Narratives
 
-Each released version has a dedicated **Version Note** documenting the milestones.
+### In Progress (Active Construction)
 
-### In Progress (Active Development)
-
-- **[v0.8.0-alpha](v0.8.0-alpha.md)** — _Reporting & Intelligence_ Building high-level analytical
-  tools, asynchronous reporting, and placement lifecycle tracking.
+- **[v0.8.0-alpha](v0.8.0-alpha.md)** — _Reporting & Intelligence_
+  Focus: Competency achievement reports and on-site student condition visualization.
 
 ---
 
 ### Latest Released Version
 
-- **[v0.7.0-alpha](v0.7.0-alpha.md)** — _Administrative Automation_ Transforming Internara into a
-  powerful assistant that automates prerequisite checks and grading.
+- **[v0.7.0-alpha](v0.7.0-alpha.md)** — _Administrative Automation_
+  Focus: Automated prerequisite checks and structured documentation management.
 
 ---
 
 ### Historical Archive
 
-These versions are preserved for historical reference.
+- **[v0.6.0-alpha](v0.6.0-alpha.md)** — _Assessment & Workspaces_
+  Introduced role-specific workspaces for Instructors, Staff, and Students.
 
-- **[v0.6.0-alpha](v0.6.0-alpha.md)** — _Assessment & Workspaces_ Finalized the internship lifecycle
-  with role-specific workspaces and verifiable certificates.
-
-- **[v0.5.0-alpha](v0.5.0-alpha.md)** — _Operational Layer_ The foundation of student tracking:
-  Daily Journals and Attendance.
+- **[v0.5.0-alpha](v0.5.0-alpha.md)** — _Operational Layer_
+  Foundational daily journals and attendance tracking.
 
 ---
 
-### Historical Archive
+## 4. Relationship to Planning Artifacts
 
-These versions are preserved for historical reference.
+- **Analytical Version Notes**: Document **outcome** (located here in `docs/versions/`).
+- **Application Blueprints**: Document **intent** (located in `docs/internal/blueprints/`).
 
-- **[v0.4.0-alpha](archived/v0.4.0-alpha.md)** — _Institutional Foundation_ Schools, Departments,
-  and Placement Management.
-
-- **[v0.3.0-alpha](archived/v0.3.0-alpha.md)** — _Identity & Security_ Multi-role Profiles and
-  Security Hardening.
-
-- **[v0.2.0-alpha](archived/v0.2.0-alpha.md)** — _Core Engine_ RBAC Infrastructure and Universal
-  Tools.
-
-- **[v0.1.1-alpha](archived/v0.1.1-alpha.md)** — _Genesis_ Initial Environment and Modular Monolith
-  Foundation.
-
----
-
-## 4. Immediate Roadmap (Current Series: v0.7.x)
-
-The **v0.7.x** series concentrates on **Administrative Automation**.
-
-Planned direction includes:
-
-- **Batch Operations** Bulk certificate issuance and state transitions.
-
-- **Advanced Reporting** Aggregated, institution-level performance metrics.
-
-- **Infrastructure Hardening** Evaluation and preparation for Livewire v4 migration.
-
----
-
-## 5. Relationship to Application Blueprints
-
-For architectural intent, constraints, and technical deep-dives, refer to:
-
-- **[Application Blueprints Index](../internal/blueprints/table-of-contents.md)**
-
-> Version Overviews describe **what the user gets**. Application Blueprints describe **how we built
-> it**.
+> **Source of Truth:** All versions must fulfill the requirements of the
+> **[Internara Specs](../internal/internara-specs.md)**.

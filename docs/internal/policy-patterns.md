@@ -4,6 +4,10 @@ In Internara, **Policies** are the primary mechanism for enforcing authorization
 model **must** have a Policy. This guide outlines the standard patterns for implementing secure and
 readable access control logic.
 
+> **Spec Alignment:** Authorization logic must enforce the **User Roles** defined in the
+> **[Internara Specs](../internal/internara-specs.md)**. Only designated roles (Instructor, Staff,
+> Industry Supervisor) may access specific resources.
+
 ---
 
 ## 1. Pattern: Permission + Ownership
@@ -21,17 +25,18 @@ public function update(User $user, Journal $journal)
 
 ---
 
-## 2. Pattern: Super Supervisor
+## 2. Pattern: Academic Supervision (Instructor & Industry Supervisor)
 
-Allowing a teacher or mentor to view or edit records for students assigned directly to them.
+Allowing an **Instructor** or **Industry Supervisor** to view or edit records for students assigned directly to them.
 
 ```php
 public function view(User $user, Journal $journal)
 {
-    // Check if the user is the assigned academic supervisor
-    $isSupervisor = $journal->registration->teacher_id === $user->id;
+    // Check if the user is the assigned academic supervisor OR industry mentor
+    $isInstructor = $journal->registration->instructor_id === $user->id;
+    $isMentor = $journal->registration->industry_supervisor_id === $user->id;
 
-    return $user->can('journal.view') && $isSupervisor;
+    return $user->can('journal.view') && ($isInstructor || $isMentor);
 }
 ```
 
@@ -39,8 +44,7 @@ public function view(User $user, Journal $journal)
 
 ## 3. Pattern: The "Super Admin" Bypass
 
-Super Admins bypass all policies. This is typically handled in the `AuthServiceProvider`'s `before`
-method, but it's important to remember when designing your logic.
+Super Admins bypass all policies. This is configured in the `AuthServiceProvider` but must be considered when testing.
 
 ```php
 Gate::before(function ($user, $ability) {
@@ -52,14 +56,10 @@ Gate::before(function ($user, $ability) {
 
 ## 4. Best Practices
 
-1.  **Keep it Thin**: Policies should only contain authorization logic. Complex queries to determine
-    relationships should be moved to a Service.
-2.  **Explicit Naming**: Match policy method names to standard CRUD actions (`view`, `create`,
-    `update`, `delete`, `restore`, `forceDelete`).
+1.  **Strict Typing**: Always type-hint the Model and User in policy methods.
+2.  **Explicit Naming**: Match policy method names to standard CRUD actions (`view`, `create`, `update`, `delete`).
 3.  **Default to Deny**: If a condition isn't met, return `false`.
 
 ---
 
-_Consistent use of Policies ensures that Internara's security posture remains strong as new features
-are added. Never authorize an action directly in a Controller or Livewire component without a Policy
-check._
+_Consistent use of Policies ensures that Internara's security posture remains strong. Never authorize an action directly in a Controller or Livewire component without a Policy check._

@@ -7,11 +7,11 @@ internships or contributing to its development, you will find the relevant guide
 
 ## 👥 1. For Users & Administrators (Public)
 
-These guides focus on how to use Internara and manage its core features.
+These guides focus on the vision, usage, and installation of Internara.
 
-- **[Installation Guide](installation-guide.md)**: How to set up and run Internara on your server.
-- **[Project Overview](../project-overview.md)**: The vision, goals, and key features of the
+- **[Project Overview](project-overview.md)**: The core vision, goals, and key features of the
   platform.
+- **[Installation Guide](installation-guide.md)**: How to set up and run Internara on your server.
 - **[Versions Overview](../versions/versions-overview.md)**: Track the latest updates and release
   history.
 
@@ -19,19 +19,14 @@ These guides focus on how to use Internara and manage its core features.
 
 ## 🛠 2. For Developers & Contributors (Internal)
 
-If you are a developer looking to understand the code, contribute features, or explore the
-architecture, refer to our internal engineering manuals.
+Internal manuals for developers looking to understand the code or contribute features.
 
-> **Note**: These documents are intended for technical staff and contributors.
-
-- **[Core Architecture](../internal/architecture-guide.md)**: Deep-dive into the Modular Monolith
-  structure.
-- **[Development Workflow](../internal/development-workflow.md)**: Our engineering standards and
-  procedures.
-- **[Technical Standards Index](../internal/table-of-contents.md)**: A complete list of internal
-  engineering guides.
+- **[Internara Specs](../internal/internara-specs.md)**: **Single Source of Truth** - The
+  authoritative specification for the entire project.
+- **[Technical Index](../internal/table-of-contents.md)**: A complete list of internal engineering
+  standards, architecture, and workflows.
 
 ---
 
-_Internara is built with clarity and maintainability in mind. We appreciate your interest in our
-documentation._
+_Internara is built with clarity and maintainability in mind. All documentation is treated as
+first-class code (Doc-as-Code)._

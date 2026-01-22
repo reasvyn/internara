@@ -1,57 +1,36 @@
 # Internship Module
 
-The `Internship` module is the core business heart of the application. It manages the entire
-internship lifecycle, from placement availability to student registration and tracking.
+The `Internship` module manages the lifecycle of student practical work, from placement 
+availability to official registration.
+
+> **Spec Alignment:** This module fulfills the **Administrative Management** requirements of the
+> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 1), centralizing 
+> student data, schedules, and locations.
 
 ## Purpose
 
-- **Capacity Tracking:** Manages industry placements and their limited quotas (slots).
-- **Registration Workflow:** Facilitates student applications for available placements.
-- **Workflow Orchestration:** Coordinates the process of matching students to industry partners.
+- **Placement Management:** Tracks industry locations and available quotas.
+- **Registration Orchestration:** Manages student applications and verification.
+- **Dynamic Prerequisites:** Enforces administrative requirements (Reports, Documents, Evaluations).
 
 ## Core Components
 
-### 1. Internship Models
-
-- **InternshipPlacement:** Represents an available internship opportunity at an industry partner,
-  including the number of available slots and an optional assigned **Mentor**.
-- **InternshipRegistration:** Records a student's application or placement in a specific internship.
-- **InternshipRequirement:** Defines dynamic prerequisites (Documents, Skills, or Conditions) for a
-  specific academic year.
-- **RequirementSubmission:** Stores student proofs and verification status for requirements.
+### 1. Models
+- **InternshipPlacement:** Location-specific opportunity with quota tracking.
+- **InternshipRegistration:** Student's official record (UUID identity).
+- **InternshipRequirement:** Dynamic prerequisites (e.g., Documents, Skills).
 
 ### 2. Services
+- **PlacementService:** Manages industry locations and slot allocation.
+- **RegistrationService:** Orchestrates student enrollment and requirement clearing.
+- **RequirementService:** Handles the lifecycle of prerequisite verification.
 
-- **InternshipPlacementService:** Manages industry quotas, slot allocation, and placement details.
-- **InternshipRegistrationService:** Handles student applications and enforces mandatory requirement
-  verification before approval.
-- **InternshipRequirementService:** Orchestrates the lifecycle of prerequisite submissions and
-  verifications.
+### 3. Key Features
+- **One-Student-One-Placement:** Enforces official standards while tracking history.
+- **Automated Validation:** Gated registrations ensuring all administrative criteria are met.
+- **i11n:** All requirement descriptions and placement data support localization.
+- **Mobile-First:** optimized interfaces for students to track their application status.
 
-### 3. Livewire Managers
+---
 
-- **PlacementManager:** Administrative interface for managing industry partners. Features
-  **Just-in-Time (JIT)** mentor creation and assignment.
-- **InternshipManager:** Handles the overall internship lifecycle and registration review.
-- **RequirementManager:** Administrative interface for defining dynamic prerequisites.
-- **RequirementSubmissionManager:** Student-facing interface for fulfilling requirements.
-
-## Technical Implementation
-
-### Prerequisite Validation
-
-- Registration approval is gated by the `hasClearedAllMandatoryRequirements` check.
-- Supports three types of requirements: `document` (file upload), `skill` (self-rating), and
-  `condition` (boolean checklist).
-
-### Capacity Validation
-
-- The `InternshipRegistrationService` performs application-level validation to prevent
-  over-allocation of slots.
-- It uses the `InternshipPlacementService` to verify current availability before confirming a
-  registration.
-
-### Decoupled Schema
-
-- Tables in this module reference `School`, `Department`, and `User` modules using manual indexes on
-  UUID/ID columns, adhering to the **Database Isolation Principle**.
+_The Internship module is the structural anchor of the Internara platform._

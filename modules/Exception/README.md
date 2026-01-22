@@ -1,29 +1,24 @@
 # Exception Module
 
-The `Exception` module centralizes all error handling and exception management within Internara. it
-ensures that every error, whether from domain logic or system failure, is handled consistently and
-presented safely to the user.
+The `Exception` module centralizes all error handling and exception management within Internara.
 
 ## Purpose
 
-- **Standardization:** Provides base exception classes for the entire application.
-- **Localization:** Manages user-friendly, translatable error messages.
-- **Security:** Prevents sensitive system information from leaking in production logs or responses.
+- **Standardization:** Provides base exception classes and translatable messages.
+- **i11n:** Manages the `exception::messages` namespace for global error feedback.
+- **Security:** Prevents sensitive data leakage in production.
 
 ## Key Features
 
 ### 1. Base Exception Classes
-
-- **[AppException](../../docs/main/exception-handling-guidelines.md#21-appexception-modulesexceptionappexception)**:
-  The foundational class for all domain errors.
-- **[RecordNotFoundException](../../docs/main/exception-handling-guidelines.md#22-recordnotfoundexception-modulesexceptionrecordnotfoundexception)**:
-  Standardized handling for missing data.
+- **AppException:** Foundational class for all domain errors.
+- **Standardized Keying:** 
+    - Module-specific: `module::exceptions.key`
+    - General: `exception::messages.key`
 
 ### 2. Standardized Logic
+- **Localization Bridge:** Ensures all exception messages are automatically localized (ID/EN) before being presented to the user.
 
-- **[HandlesAppException Trait](../../docs/main/exception-handling-guidelines.md#4-global-exception-handling-strategy)**:
-  Provides methods for consistent reporting and rendering across web and API requests.
+---
 
-### 3. Multi-language Messages
-
-- Centralized translation files in `lang/` for common error states.
+_The Exception module ensures system resilience and a professional, localized feedback loop._

@@ -1,67 +1,53 @@
 # UI Components: Data Display
 
-Display components are designed to present complex data in a readable, professional manner. They
-follow the Internara aesthetic of high-contrast layering and semantic grouping.
+Display components present complex data in a readable manner, following the **Minimalist** 
+aesthetic defined in the **[Internara Specs](../../internara-specs.md)**.
 
 ---
 
 ## 1. `x-ui::card` (Information Grouping)
 
-The primary container for UI sections.
+Primary container for UI sections.
 
-- **Example**:
-
-```blade
-<x-ui::card title="Student Profile" subtitle="Academic record for 2025" shadow separator>
-    <div class="p-4">Content here...</div>
-</x-ui::card>
-```
-
-- **Feature**: Supports `shadow`, `separator`, and `border` props for visual hierarchy.
+- **Design (Specs 5.1):** High-contrast layering with standardized rounded corners.
+- **Mobile-First:** Padding automatically scales down on small screens to maximize space.
 
 ---
 
 ## 2. `x-ui::table` (Data Grids)
 
-A high-level wrapper for MaryUI data tables.
+Standardized data tables for list views.
 
-- **Example**:
-
-```blade
-<x-ui::table :headers="$headers" :rows="$students" with-pagination>
-    @scope('cell_status', $student)
-        <x-ui::badge :label="$student->status" />
-    @endscope
-</x-ui::table>
-```
-
-- **Convention**: Always use `@scope` for custom column rendering.
+- **Mobile-First Strategy:** 
+    - Tables must support horizontal scrolling on mobile.
+    - **Card View:** Use conditional rendering to switch from a table to a list of cards on 
+      small screens (if the dataset is complex).
+- **i11n:** All column headers must be localized.
 
 ---
 
 ## 3. `x-ui::badge` & `x-ui::avatar` (Indicators)
 
-- **Badge**: Used for statuses (e.g., `<x-ui::badge label="Approved" success />`).
-- **Avatar**: Used for user identity (e.g., `<x-ui::avatar :image="$user->avatar_url" />`).
+- **Badge:** Status indicators (e.g., `Approved`, `Pending`). Colors follow the theme variables.
+- **Avatar:** User identity. Default placeholders must be visually consistent with the theme.
 
 ---
 
 ## 4. `x-ui::icon` (Tabler Set)
 
-We use the **Tabler Icon** library exclusively.
-
-- **Standard**: `<x-ui::icon name="tabler.settings" class="w-5 h-5 text-primary" />`.
-- **Note**: The `tabler.` prefix is required by our SVG loader.
+- **Library:** **Tabler Icons**.
+- **Usage:** Standardized stroke width and size.
+- **Color:** Icons should use the `primary` (Emerald Green) or `base-content` colors.
 
 ---
 
 ## 5. `x-ui::alert` (Feedback)
 
-Used for critical warnings or inline instructions.
+Used for instructions or critical warnings.
 
-- **Usage**: `<x-ui::alert icon="tabler.info-circle" title="Notice" info>Content</x-ui::alert>`.
+- **i11n:** All alert messages must be localized via `__('module::ui.key')` or `__('exception::messages.key')`.
 
 ---
 
-_Display components should be used to minimize cognitive load. Use cards to group related fields and
-badges to highlight state changes._
+_Display components minimize cognitive load, helping Instructors and Staff quickly identify 
+student progress and competency achievements._

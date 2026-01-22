@@ -1,44 +1,33 @@
 # Journal Module
 
-The `Journal` module manages the daily activity tracking (Logbook) for students during their
-internship. It allows students to record their work, reflect on their learning, and receive
-verification from supervisors.
+The `Journal` module manages the daily activity tracking (Logbook) for students.
+
+> **Spec Alignment:** This module fulfills the **Student Progress Monitoring** requirements of the
+> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 2), documenting student 
+> activities and competency achievements.
 
 ## Purpose
 
-- **Activity Tracking:** Provides a formal record of student daily tasks and achievements.
-- **Verification:** Enables a dual-authority approval process involving both School Teachers and
-  Industry Mentors.
-- **Competency Mapping:** Links daily activities to curriculum standards (Basic Competencies).
-- **Reflection:** Encourages students to document learning outcomes.
+- **Activity Tracking:** Systematic record of student daily tasks and reflections.
+- **Supervision:** Facilitates the recording of mentoring content by **Instructors** and **Industry Supervisors**.
+- **Competency Mapping:** Links activities to learning objectives.
 
 ## Key Features
 
 ### 1. Daily Logbook
-
-- **Work Topics:** Categorized titles for daily tasks.
-- **Detailed Descriptions:** Full log of activities performed.
-- **Private Attachments:** Support for photos, documents, and proof of work stored securely.
+- **Attachments:** Secure proof of work (Photos, Documents).
+- **i11n:** All log labels and status indicators are localized.
+- **Identity:** All journal entries use **UUIDs**.
 
 ### 2. Supervision Workflow
+- **Approval Logic:** Verified entries are locked to maintain historical integrity.
+- **Dual Verification:** Supports feedback from both academic and industry supervisors.
+- **Academic Scoping:** Automatically scoped to the active cycle via `HasAcademicYear`.
 
-- **Draft & Submit:** Students can save progress as drafts before final submission.
-- **Dual Approval:** Either an assigned Teacher or Mentor can approve/reject entries.
-- **Strict Locking:** Once an entry is marked as `approved` or `verified`, it is permanently locked.
-  Further updates or deletions are forbidden to ensure historical integrity.
-- **Academic Scoping:** Every entry is automatically associated with the `active_academic_year`
-  setting, ensuring logs are partitioned by academic period.
+### 3. Mobile-First Experience
+- **Daily Logging:** Optimized interface for students to record logs on-site.
+- **Quick Review:** Streamlined workflow for supervisors to approve logs via mobile devices.
 
-### 3. Visual Insights
+---
 
-- **Week at a Glance:** A sidebar widget providing quick visual status of the current week's
-  completion.
-- **Status Badges:** Clear indication of entry state (Draft, Submitted, Approved, Rejected).
-
-## Architecture
-
-- **Service Layer:** `JournalService` handles all status transitions and media orchestration.
-- **Contract:** `Modules\Journal\Services\Contracts\JournalService`.
-- **Media Collection:** `attachments` (stored in the `private` disk).
-- **Authorization:** Managed via `JournalPolicy`, ensuring data is only accessible to the student
-  and their assigned supervisors.
+_The Journal module provides the narrative evidence of a student's internship journey._

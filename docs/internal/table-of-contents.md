@@ -7,6 +7,7 @@ defines the standards, patterns, and workflows used to build Internara.
 
 ## 1. Architecture & Core Concepts
 
+- **[Internara Specs](internara-specs.md)**: **Single Source of Truth** - The authoritative specification for the entire project.
 - **[Architecture Guide](architecture-guide.md)**: Deep-dive into Modular Monolith layers and
   isolation rules.
 - **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules
@@ -34,6 +35,8 @@ defines the standards, patterns, and workflows used to build Internara.
 
 - **[Development Workflow](development-workflow.md)**: Feature engineering lifecycle (Plan -> Build
   -> Sync).
+- **[Blueprints Guidelines](blueprints-guidelines.md)**: Standards for managing system evolution
+  via architectural blueprints.
 - **[Application Blueprints Index](blueprints/table-of-contents.md)**: Pre-development architectural
   blueprints.
 - **[Software Lifecycle](software-lifecycle.md)**: SDLC phases from concept to release.

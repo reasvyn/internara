@@ -4,14 +4,16 @@ This guide explains how Internara manages the initial population of roles and pe
 modular seeders. This process is critical for setting up new environments and ensuring that system
 access is consistent across all installations.
 
+> **Spec Alignment:** The roles seeded here must strictly match the **User Roles** defined in the
+> **[Internara Specs](../internal/internara-specs.md)**. No extra roles (e.g., 'Assistant') should be added without updating the specs.
+
 ---
 
 ## 1. The Seeding Architecture
 
-Permissions are not defined in a single monolithic file. Instead, they are distributed across the
-modules that "own" the functionality.
+Permissions are distributed across the modules that "own" the functionality.
 
-- **Core Module**: Seeds the foundational roles (Super Admin, Teacher, Student).
+- **Core Module**: Seeds the foundational roles (Instructor, Staff, Student, Industry Supervisor).
 - **Domain Modules**: Seed permissions specific to their functionality (e.g., `attendance.view`).
 
 ---
@@ -23,7 +25,7 @@ directory.
 
 ### 2.1 Standard Pattern
 
-Use the `PermissionService` to ensure that permissions are created idempotently.
+Use the `PermissionService` (via Contract) to ensure that permissions are created idempotently.
 
 ```php
 namespace Modules\Attendance\Database\Seeders;
@@ -48,8 +50,7 @@ class AttendancePermissionSeeder extends Seeder
 
 ## 3. Synchronizing Access
 
-After adding new permissions to a seeder, run the synchronization command to update the database and
-refresh the cache.
+After adding new permissions to a seeder, run the synchronization command.
 
 ```bash
 php artisan permission:sync
@@ -57,5 +58,4 @@ php artisan permission:sync
 
 ---
 
-_Seeders are the foundation of our RBAC system. Always ensure that your seeder logic is
-idempotent—running it multiple times should not create duplicate records or cause errors._
+_Seeders are the foundation of our RBAC system. Always ensure that your seeder logic is idempotent._

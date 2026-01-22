@@ -4,64 +4,67 @@ Since Internara is built on the TALL stack, Livewire components are our primary 
 Testing these components ensures that user interactions, reactive states, and business logic
 delegation behave as expected.
 
+> **Spec Alignment:** Livewire tests must verify the **Mobile-First** responsiveness and
+> **Multi-Language** compliance of all UI components.
+
 ---
 
-## 1. Testing UI State
+## 1. Testing UI State & Localization
 
-Use the Livewire testing API to simulate user actions and verify component state.
-
-### 1.1 Standard Interaction
+Always verify that the UI renders the correct localized strings.
 
 ```php
-it('can search for users', function () {
-    Livewire::test(UserList::class)
-        ->set('search', 'John')
-        ->assertSee('John Doe')
-        ->assertDontSee('Jane Smith');
+it('renders localized welcome message in indonesian', function () {
+    app()->setLocale('id');
+
+    Livewire::test(Dashboard::class)
+        ->assertSee(__('core::ui.welcome'));
 });
 ```
 
-### 1.2 Form Submissions
+---
 
-Always verify that forms trigger the correct Service methods.
+## 2. Functional Verification
 
+Verify that user actions correctly interact with the **Service Layer**.
+
+### 2.1 Form Submissions
 ```php
-it('can create a new user', function () {
+it('delegates user creation to the service layer', function () {
     Livewire::test(CreateUser::class)
-        ->set('name', 'New User')
-        ->set('email', 'new@example.com')
+        ->set('name', 'John Doe')
+        ->set('email', 'john@example.com')
         ->call('save')
-        ->assertHasNoErrors()
-        ->assertRedirect('/admin/users');
+        ->assertHasNoErrors();
+
+    $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
 });
 ```
 
 ---
 
-## 2. Authorization in Tests
+## 3. Authorization & Roles
 
-Verifying that UI elements are correctly hidden or protected is a core requirement.
-
-### 2.1 The "Forbidden" Section
+Verify that UI elements are hidden according to the User Roles defined in **[Internara Specs](../internal/internara-specs.md)**.
 
 ```php
-it('hides the delete button for students', function () {
+it('denies students from accessing the delete action', function () {
     $student = User::factory()->create()->assignRole('student');
 
-    actingAs($student)->livewire(UserList::class)->assertDontSee('Delete');
+    actingAs($student)
+        ->livewire(UserList::class)
+        ->assertForbidden();
 });
 ```
 
 ---
 
-## 3. Best Practices
+## 4. Mobile-First Considerations
 
-1.  **Don't Over-Assert**: Focus on behavior (e.g., "Was the record created?") rather than
-    implementation details (e.g., "Is the variable `$user` an object?").
-2.  **Use Component Aliases**: Test components using their modular aliases if possible.
-3.  **Clean State**: Always use the `RefreshDatabase` concern to ensure each test runs in isolation.
+While functional tests don't check pixels, ensure your component handles data density well:
+- Test that tables have "Card View" alternatives or horizontal scroll states if required.
+- Test that navigation components (Drawers/Sidebars) respond correctly to state changes.
 
 ---
 
-_Effective Livewire tests allow us to iterate on our design system without breaking core
-functionality. They are the frontline of our quality assurance._
+_Effective Livewire tests are the frontline of our quality assurance, ensuring a consistent and localized experience for all users._

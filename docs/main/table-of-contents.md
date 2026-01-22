@@ -1,6 +1,6 @@
 # Public Documentation - Table of Contents
 
-This index lists all guides intended for general users, system administrators, and decision-makers.
+This index lists all guides intended for general users, system administrators, and stakeholders.
 
 ---
 
@@ -12,7 +12,7 @@ This index lists all guides intended for general users, system administrators, a
 
 ## 2. Product Information
 
-- **[Project Overview](../project-overview.md)**: Vision, architectural pillars, and key features.
+- **[Project Overview](project-overview.md)**: Vision, architectural pillars, and key features.
 - **[Latest Updates](../versions/versions-overview.md)**: Current status and release history.
 
 ## 3. Legal & Safety

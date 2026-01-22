@@ -4,28 +4,32 @@ Internara implements a robust **Role-Based Access Control (RBAC)** system using 
 `spatie/laravel-permission` package. We have customized this implementation to support **UUIDs** and
 modular isolation, ensuring that access management is both granular and scalable.
 
+> **Spec Alignment:** The roles defined below are strictly aligned with the User Roles mandated in
+> **[Internara Specs](../internal/internara-specs.md)**. No other fundamental roles may be introduced
+> without updating the specs.
+
 ---
 
 ## 1. Roles vs. Permissions
 
 We distinguish between roles (who you are) and permissions (what you can do).
 
-### 1.1 Fundamental Roles
+### 1.1 Fundamental Roles (from Specs)
 
 Defined in the `Core` module seeders:
 
-- **Super Admin**: Full system access, bypasses all gates.
-- **Admin**: School-level administrative access.
-- **Teacher**: Academic supervision and grading.
-- **Mentor**: Industry-side log review and assessment.
-- **Student**: Daily journals, attendance, and record viewing.
+- **Instructor**: (Equivalent to Teacher) Academic supervision, grading, and student monitoring.
+- **Staff**: (Practical Work Staff) Administrative management, scheduling, and document verification.
+- **Student**: Daily journals, attendance, and accessing schedules/reports.
+- **Industry Supervisor**: (Equivalent to Mentor) Industry-side monitoring, assessment, and feedback.
+- **Administrator**: (System Admin) Full system access, configuration, and user management.
 
 ### 1.2 Granular Permissions
 
 Permissions follow a **Module-Action** naming convention:
 
 - `user.view`, `user.create`, `user.update`
-- `attendance.check-in`, `journal.approve`
+- `assessment.create`, `report.generate`
 
 ---
 
@@ -38,8 +42,8 @@ Access control must be enforced at every layer of the application.
 Use the `@can` Blade directive or `$this->authorize()` in Livewire components.
 
 ```blade
-@can('user.create')
-    <x-ui::button label="Create User" />
+@can('assessment.create')
+    <x-ui::button label="{{ __('assessment::ui.create') }}" />
 @endcan
 ```
 
@@ -49,7 +53,7 @@ Services should check permissions before performing destructive operations.
 
 ```php
 if (!auth()->user()->can('user.delete')) {
-    throw new AuthorizationException();
+    throw new AuthorizationException(__('exception::messages.unauthorized'));
 }
 ```
 

@@ -1,56 +1,43 @@
 # UI Components: System Utilities
 
-Utility components handle technical UI concerns like theme persistence, dialog modals, and the
-dynamic injection of content from various modules.
+Utility components handle technical UI concerns like theme persistence, dialog modals, and modular 
+content injection.
 
 ---
 
 ## 1. `x-ui::slot-render` (Modular Injection)
 
-This is the core of our "Pluggable UI" system. It renders content that has been registered via the
-`SlotManager`.
+The core of our "Pluggable UI" system.
 
-- **Usage**: `<x-ui::slot-render name="navbar.actions" />`
-- **Why?**: It allows the `Notification` module to add a bell icon to the `UI` module's navbar
-  without any hard dependencies.
+- **Objective:** Ensures modular isolation mandated by the **Modular Monolith** architecture.
+- **Usage:** `<x-ui::slot-render name="navbar.actions" />`.
 
 ---
 
 ## 2. `x-ui::modal` (Focused Interaction)
 
-A high-level wrapper for DaisyUI dialogs.
+Standard wrapper for dialog interactions.
 
-- **Example**:
-
-```blade
-<x-ui::modal wire:model="showModal" title="Confirm Delete" separator>
-    <div>Are you sure? This action is permanent.</div>
-    <x-slot:actions>
-        <x-ui::button label="Cancel" @click="$wire.showModal = false" />
-        <x-ui::button label="Confirm" primary spinner="delete" />
-    </x-slot>
-</x-ui::modal>
-```
+- **Mobile-First:** Modals must scale to full-width or use a "Bottom Sheet" style on mobile devices 
+  (Specs 2.2).
+- **i11n:** All titles and button labels must be localized.
 
 ---
 
 ## 3. `x-ui::theme-toggle` (User Preference)
 
-A simple button that toggles between light and dark themes.
-
-- **Persistence**: Preferences are stored in the browser's local storage and synchronized via
-  Alpine.js.
+- **Specs Alignment:** Toggles between **Light** and **Dark** themes as defined in Specs 5.1.
+- **Aesthetic:** Uses a minimalist icon set to maintain a clean UI.
 
 ---
 
 ## 4. `x-ui::user-menu` (Account Access)
 
-A dropdown component typically placed in the navbar.
-
-- **Features**: Links to Profile settings and the Logout trigger.
-- **Note**: Handled via the `Auth` and `Profile` modules through the `navbar.actions` slot.
+- **Role Awareness:** Displays the user's role (Instructor, Staff, etc.) as defined in the 
+  **[Internara Specs](../../internara-specs.md)**.
+- **Localization:** All menu labels must be localized via `__('core::ui.user_menu')`.
 
 ---
 
-_Utilities are the "Glue" of our design system. They enable complex technical patterns while keeping
-the template code clean and semantic._
+_Utilities enable complex technical patterns while keeping the template code clean and semantic, 
+fully aligned with Internara's architectural and visual standards._

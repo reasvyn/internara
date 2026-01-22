@@ -1,21 +1,11 @@
 # Testing Guide
 
 This document outlines the philosophy, conventions, and workflow for writing tests within the
-Internara project. It acts as the central entry point for our testing infrastructure, which is
-supported by a comprehensive library of technical deep-dives.
+Internara project. It acts as the central entry point for our testing infrastructure.
 
-## Table of Contents
-
-- [Testing Philosophy](#testing-philosophy)
-    - [Unit vs. Feature Tests](#unit-vs-feature-tests)
-- [Architecture & Directory Structure](#architecture--directory-structure)
-    - [Layer-Based Placement (Mandatory)](#layer-based-placement-mandatory)
-- [The Internara Testing Stack](#the-internara-testing-stack)
-- [Creating & Running Tests](#creating--running-tests)
-- [Technical Reference Catalog](#technical-reference-catalog)
-- [Pest Deep-Dive Catalog](#pest-deep-dive-catalog)
-- [Project-Specific Patterns](#project-specific-patterns)
-    - [Asserting Exceptions & Localization](#asserting-exceptions--localization)
+> **Spec Alignment:** Testing must verify the fulfillment of requirements defined in the
+> **[Internara Specs](../internal/internara-specs.md)**, including **Mobile-First** UI behavior,
+> **Multi-Language** integrity, and **Role-Based** access control.
 
 ---
 
@@ -24,8 +14,8 @@ supported by a comprehensive library of technical deep-dives.
 - **TDD First**: Embrace writing tests alongside feature development.
 - **Comprehensive Coverage**: Every new feature, bug fix, or modification must be accompanied by
   relevant tests.
-- **Sustainable Suites**: Tests are primary artifacts. Maintain and update them rather than
-  deleting.
+- **Verification & Validation (V&V)**: Tests serve as the technical proof that the system meets
+  the authoritative specs.
 
 ### Unit vs. Feature Tests
 
@@ -36,118 +26,81 @@ supported by a comprehensive library of technical deep-dives.
 
 ---
 
-## Architecture & Directory Structure
+## Layer-Based Placement (Mandatory)
 
-Tests are organized into the root `/tests` directory for application-wide concerns and module-level
-`tests` directories for domain-specific logic.
+Tests must reflect the architectural layer being tested. Placing tests directly under `Feature/` or `Unit/` is prohibited.
 
-### Layer-Based Placement (Mandatory)
+- **Feature Tests:** `modules/{Module}/tests/Feature/{Livewire|Services|Api}`
+- **Unit Tests:** `modules/{Module}/tests/Unit/{Models|Enums|Support}`
 
-**Crucially, test files must always reside in a subdirectory within `Feature/` or `Unit/`,
-reflecting the architectural layer being tested.** Placing tests directly under the parent directory
-is prohibited.
+---
 
-- **Correct**: `modules/User/tests/Feature/Services/UserServiceTest.php`
-- **Correct**: `modules/Assessment/tests/Unit/Models/AssessmentTest.php`
-- **Incorrect**: `modules/User/tests/Feature/UserTest.php`
+## Mandatory Testing Patterns
 
-**Structure Overview:**
+### 1. Multi-Language Verification
 
-- `/tests/Feature/{Layer}`: App-level feature tests (e.g., `Http/Controllers`).
-- `/tests/Unit/{Layer}`: App-level unit tests (e.g., `Models`).
-- `modules/{Module}/tests/Feature/{Layer}`: Module feature tests (e.g., `Services`, `Livewire`).
-- `modules/{Module}/tests/Unit/{Layer}`: Module unit tests (e.g., `Models`, `Support`).
+Every user-facing output must be tested for localization across all supported locales (ID/EN).
+
+```php
+test('it returns localized error for unauthorized access', function () {
+    app()->setLocale('id');
+    expect(__('exception::messages.unauthorized'))->toBe('Akses tidak diizinkan.');
+
+    app()->setLocale('en');
+    expect(__('exception::messages.unauthorized'))->toBe('Unauthorized access.');
+});
+```
+
+### 2. Role-Based Access Control (RBAC)
+
+Verify that access is restricted to the specific user roles defined in the specs.
+
+```php
+test('staff can access administration but student cannot', function () {
+    $staff = User::factory()->create()->assignRole('staff');
+    $student = User::factory()->create()->assignRole('student');
+
+    actingAs($staff)->get(route('admin.dashboard'))->assertOk();
+    actingAs($student)->get(route('admin.dashboard'))->assertForbidden();
+});
+```
+
+### 3. Asserting Exceptions
+
+Internara uses standardized exception naming. Tests must verify the translation key and message.
+
+```php
+test('it throws translated exception using module-specific key', function () {
+    $service = app(JournalService::class);
+    $lockedJournal = Journal::factory()->create(['is_locked' => true]);
+
+    $expectedMessage = __('journal::exceptions.locked');
+
+    expect(fn() => $service->update($lockedJournal, []))
+        ->toThrow(JournalLockedException::class, $expectedMessage);
+});
+```
 
 ---
 
 ## The Internara Testing Stack
 
-- **Core Framework**: [Pest v4+](https://pestphp.com/) (Functional style).
+- **Core Framework**: [Pest v4+](https://pestphp.com/).
 - **Mocking**: Mockery & Laravel Fakes.
-- **Browser Testing**: Pest Browser (Playwright-based).
-- **Architecture**: Pest Arch Plugin.
+- **Architecture**: Pest Arch Plugin (Enforcing modular isolation).
 
 ---
 
-## Creating & Running Tests
-
-### Creating Tests
+## Running Tests
 
 ```bash
-# Application-Level (Always specify subdirectory)
-php artisan make:test Feature/Http/Controllers/ExampleTest
-php artisan make:test Unit/Models/ExampleTest --unit
-
-# Module-Level
-php artisan module:make-test Services/ExampleTest User --feature
-php artisan module:make-test Models/ExampleTest User
-```
-
-### Running Tests
-
-```bash
-# All tests
+# All tests (Parallel)
 php artisan test --parallel
 
 # Filter by Module
 php artisan test --filter=User
-
-# Filter by Layer/File
-php artisan test modules/User/tests/Feature/Services/UserServiceTest.php
 ```
 
 ---
 
-## Technical Reference Catalog
-
-For detailed technical guidance on specific testing domains, refer to our localized documentation:
-
-- [**General Testing Overview**](../tests/testing.md): Environment setup and basic concepts.
-- [**HTTP & API Testing**](../tests/http-tests.md): Making requests, assertions, and JSON APIs.
-- [**Database Testing**](../tests/database-testing.md): Factories, seeders, and DB assertions.
-- [**Livewire Testing**](../tests/livewire-tests.md): Testing reactive components and state.
-- [**Console Testing**](../tests/console-tests.md): Verifying Artisan commands and I/O.
-- [**Mocking & Fakes**](../tests/mocking.md): Isolating dependencies and time manipulation.
-
----
-
-## Pest Deep-Dive Catalog
-
-Explore the full power of Pest through these focused guides:
-
-- [**Writing Tests**](../tests/pestphp/writing-tests.md): Basic structure and the `it()` syntax.
-- [**Expectations API**](../tests/pestphp/expectations.md): The comprehensive list of assertions.
-- [**Hooks**](../tests/pestphp/hooks.md): `beforeEach`, `afterEach`, and setup logic.
-- [**Datasets**](../tests/pestphp/datasets.md): Matrix testing and shared data.
-- [**Architecture Testing**](../tests/pestphp/arch-testing.md): Enforcing code rules.
-- [**Browser Testing**](../tests/pestphp/browser-testing.md): Full browser automation.
-- [**Mutation Testing**](../tests/pestphp/mutation-testing.md): Verifying test quality.
-- [**Stress Testing**](../tests/pestphp/stress-testing.md): Performance and reliability.
-
----
-
-## Project-Specific Patterns
-
-### Asserting Exceptions & Localization
-
-Internara uses a custom `AppException` that leverages translation keys. Tests must verify both the
-logic and the localization integrity.
-
-```php
-// modules/User/tests/Feature/Services/UserServiceTest.php
-
-use Modules\User\Services\UserService;
-use Modules\Exception\AppException;
-
-uses(RefreshDatabase::class);
-
-test('it throws translated exception when deleting super-admin', function () {
-    $superAdmin = User::factory()->create()->assignRole('super-admin');
-    $service = app(UserService::class);
-
-    // Retrieve the expected translation
-    $expectedMessage = __('user::exceptions.super_admin_cannot_be_deleted');
-
-    expect(fn() => $service->delete($superAdmin))->toThrow(AppException::class, $expectedMessage);
-});
-```
+_Tests are not just a safety net; they are the executable documentation of our commitment to the Internara Specs._

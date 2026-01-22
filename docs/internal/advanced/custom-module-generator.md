@@ -4,6 +4,9 @@ To maintain structural integrity across our Modular Monolith, Internara utilizes
 logic. This ensures that every new module starts with the correct directory tree, naming
 conventions, and strict-typing boilerplate.
 
+> **Spec Alignment:** Scaffolding logic is designed to automatically fulfill the structural requirements
+> of the **[Internara Specs](../../internara-specs.md)**, such as UUID identity and i11n file placement.
+
 ---
 
 ## 1. Strategy 1: Configuration & Stubs (Standard)
@@ -12,22 +15,15 @@ This is our primary method. We leverage the native capabilities of `nwidart/lara
 customize it via the `config/modules.php` file.
 
 ### 1.1 Custom Path Mapping
-
 We override the default generator paths to align with our package-style structure:
 
-```php
-// config/modules.php
-'generator' => [
-    'model' => ['path' => 'src/Models', 'generate' => true],
-    'service' => ['path' => 'src/Services', 'generate' => true],
-    'contract' => ['path' => 'src/Services/Contracts', 'generate' => true],
-],
-```
+- **Models:** `src/Models` (Enforces `HasUuid`).
+- **Services:** `src/Services` (Enforces **Contract-First** design).
+- **Exceptions:** `lang/{locale}/exceptions.php` (Enforces standardized error handling).
 
 ### 1.2 The `src` Convention
-
 By setting `'app_folder' => 'src/'`, we ensure that all domain logic is isolated from the module's
-root assets (like `composer.json` or `vite.config.js`).
+root assets.
 
 ---
 
@@ -37,29 +33,26 @@ We have published and modified the default stubs to enforce our **PHPDoc** and *
 requirements.
 
 - **Location**: `stubs/modules/*.stub`
-- **Impact**: Any class generated via `php artisan module:make-*` will automatically include
-  Internara's standard header comments and type hints.
+- **Impact**: Any class generated via `php artisan module:make-*` will automatically include:
+    - `declare(strict_types=1);`
+    - Professional English PHPDocs.
+    - Standardized localization calls (`__('module::exceptions.key')`).
 
 ---
 
 ## 3. Strategy 3: The Base Module Pattern (Advanced)
 
-For scenarios where a module requires a non-standard starting point (e.g., pre-integrated
-third-party APIs), we use the **Base Module Pattern**.
+For scenarios where a module requires a non-standard starting point, we use the **Base Module Pattern**.
 
 ### 3.1 The Concept
-
-Instead of generating from stubs, we maintain a "Template" module. Creating a new feature becomes a
-process of **Cloning** and **Analytical Renaming**.
+Instead of generating from stubs, we maintain a "Template" module that includes the **Mobile-First** 
+UI wrappers and baseline authorization policies.
 
 ### 3.2 Implementation Steps
-
-1.  **Draft**: Create a perfect module in `stubs/base-module`.
-2.  **Placeholder**: Use `{Module}` and `{module}` placeholders in filenames and content.
-3.  **Command**: Run a custom Artisan command that clones the folder and performs a recursive
-    search-and-replace on the placeholders.
+1.  **Draft**: Create a template module in `stubs/base-module`.
+2.  **Placeholder**: Use `{Module}` and `{module}` placeholders.
+3.  **Command**: Run a custom Artisan command for cloning and analytical renaming.
 
 ---
 
-_Custom scaffolding prevents "Configuration Drift." By automating the start of a module's life, we
-ensure that our architecture remains pure as the project grows._
+_Custom scaffolding prevents "Configuration Drift," ensuring that our architecture remains pure as the project grows._

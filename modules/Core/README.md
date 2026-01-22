@@ -4,30 +4,30 @@ The `Core` module contains application-specific infrastructure, foundational con
 custom development tooling. Unlike the `Shared` module, the `Core` module is tailored to Internara's
 specific business model and architecture.
 
+> **Spec Alignment:** This module implements the infrastructure for user roles, multi-language
+> support, and dynamic settings required by the **[Internara Specs](../../docs/internal/internara-specs.md)**.
+
 ## Purpose
 
 - **Infrastructure:** Manages project-wide settings and foundational services.
-- **Localization Middleware:** Handles persistence of user language preferences.
-- **Tooling:** Provides custom Artisan commands to speed up development.
+- **Dynamic Settings:** Authoritative source for the `setting()` helper, preventing hard-coding of
+  brand names, logos, and site titles.
+- **Localization Middleware:** Handles persistence of user language preferences (ID/EN).
 
 ## Key Features
 
 ### 1. Localization Infrastructure
-
-- **SetLocale Middleware:** Automatically sets the application locale based on user session or
-  preference.
-- **Fail-safe Logic:** Ensures the application defaults to a safe locale (`id` or `en`) if no
-  preference is found.
+- **Middleware:** Automatically sets the application locale based on user preference.
+- **Language Support:** Enforces the dual-language requirement (Indonesian & English).
 
 ### 2. Development Tooling
+- **Modular Generators:** Custom Artisan commands to scaffold components following Internara's
+  conventions (e.g., `module:make-service`, `module:make-model`).
 
-- **Custom Generators:** Extended commands for creating modular classes, interfaces, and traits.
-    - `php artisan module:make-class`
-    - `php artisan module:make-interface`
-    - `php artisan module:make-trait`
+### 3. Application Identity
+- **Dynamic Configuration:** Centralizes management of `brand_name`, `brand_logo`, and other
+  application-level configurations as mandated by the development conventions.
 
-### 3. Core Functions
+---
 
-- **Fail-safe Setting Helper:** Provides a global `setting()` function with a direct-read fallback
-  from `modules_statuses.json` to prevent fatal errors during early bootstrapping or when the
-  database is unavailable.
+_The Core module is the glue of Internara. It connects architectural rules with business reality._

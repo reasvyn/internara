@@ -31,11 +31,11 @@ return [
             'routes/web' => 'routes/web.php',
             'routes/api' => 'routes/api.php',
             'scaffold/config' => 'config/config.php',
-            'vite' => 'vite.config.js',
             'composer' => 'composer.json',
             'package' => 'package.json',
 
             // Optional stubs
+            // 'vite' => 'vite.config.js',
             // 'views/index' => 'resources/views/index.blade.php',
             // 'views/master' => 'resources/views/components/layouts/master.blade.php',
             // 'assets/js/app' => 'resources/assets/js/app.js',

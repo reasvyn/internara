@@ -4,17 +4,19 @@ This directory contains documentation for advanced development scenarios, archit
 and complex customizations. These guides are intended for senior developers who need to evolve the
 system's core or build highly specialized domain modules.
 
+> **Governance Mandate:** All advanced engineering efforts must remain compliant with the 
+> authoritative **[Internara Specs](../internara-specs.md)**. Complexity must never compromise 
+> the core product goals (Mobile-First, Multi-Language, Role-Based Access).
+
 ---
 
 ## 1. Advanced Guides Index
 
 ### 1.1 [Custom Module Scaffolding](custom-module-generator.md)
-
 Explains how to override the default Laravel Modules generators to enforce Internara's specific
 directory structure and strict-typing rules.
 
 ### 1.2 Performance & Caching (Roadmap)
-
 Future guide on optimizing modular auto-discovery and hydration cycles in high-traffic environments.
 
 ---
@@ -30,7 +32,8 @@ Refer to these documents only after you have mastered the
 - **Pragmatic Minimalism**: Only use advanced patterns if the standard conventions are insufficient
   for the business requirement.
 - **Maintainability First**: Advanced customizations must be fully documented and covered by
-  comprehensive tests.
+  comprehensive tests (Pest v4).
+- **Terminological Consistency**: Ensure all custom components use standardized naming (e.g., `exceptions`, `setting()`).
 
 ---
 

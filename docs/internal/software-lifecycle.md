@@ -1,178 +1,126 @@
 # Software Development Lifecycle (SDLC)
 
-This document defines the **Software Development Lifecycle (SDLC)** of Internara as a product. It
-describes how the system evolves from concept to formally released artifacts, independent of
-day-to-day development workflows or implementation techniques.
+This document formalizes the **Software Development Lifecycle (SDLC)** for Internara. It adapts
+standard software engineering theory to the specific context of the **Internara Modular Monolith**,
+establishing a rigorous process for converting business requirements into reliable software artifacts.
 
-The SDLC exists to ensure that every release is **traceable, classifiable, and governable**.
-
----
-
-## 1. SDLC Scope & Principles
-
-Internara’s SDLC governs:
-
-- **When** a version is considered releasable
-- **How** a version is classified after release
-- **What guarantees** (if any) apply to a released artifact
-
-The SDLC explicitly **does not** define:
-
-- Coding practices
-- Development workflows
-- Branching or environment strategies
-- Tooling or implementation details
+> **Governance Mandate:** This SDLC is strictly governed by the **[Internara Specs](../internal/internara-specs.md)**.
+> No phase may proceed without alignment to this Single Source of Truth.
 
 ---
 
-## 2. Lifecycle Phases
+## 1. The SDLC Model: Iterative & Modular
 
-These phases describe the **product-level evolution** of a version, not engineering activities.
+Internara employs an **Iterative-Incremental** SDLC model.
+- **Iterative:** The system evolves through repeated cycles (Sprints/Milestones).
+- **Incremental:** Features are added module-by-module, adhering to the Modular Monolith architecture.
 
-### 2.1 Conceptualization
-
-A version begins as a **conceptual milestone**, defined by intended business value or architectural
-direction.
-
-- Scope is identified
-- Version lineage (Series Code) is established
-- No release artifact exists yet
-
-**Output**: A defined version intent **Status**: `Planned`
+Each iteration follows the standard engineering phases defined below.
 
 ---
 
-### 2.2 Construction
+## 2. Phase 1: Requirements Engineering
 
-The version is under active construction toward its intended scope.
+The foundation of the lifecycle. This phase defines *what* is being built.
 
-- Features may be incomplete
-- Internal iteration is expected
-- The version is not yet considered a published artifact
-
-**Output**: An internally coherent system state **Status**: `In Progress`
-
----
-
-### 2.3 Qualification
-
-The version reaches **scope closure**.
-
-- Intended features for the milestone are complete
-- The system is internally consistent
-- Documentation accurately reflects behavior
-
-This phase determines **eligibility for release**, not stability.
-
-**Output**: A releasable artifact candidate **Status**: `Stabilizing`
+- **Objective:** Transform abstract business goals into concrete technical specifications.
+- **Primary Artifact:** **[Internara Specs](../internal/internara-specs.md)** (Immutable Source of Truth).
+- **Process:**
+  1.  **Elicitation:** Gather requirements from user roles (Instructor, Staff, Student).
+  2.  **Analysis:** Feasibility study and scope definition.
+  3.  **Specification:** Documentation in `internara-specs.md`.
+- **Exit Gate:** Requirements are frozen and approved.
 
 ---
 
-### 2.4 Release
+## 3. Phase 2: System Design
 
-The version is formally published as a **versioned artifact**.
+This phase defines *how* the requirements will be met technically.
 
-- The version is tagged
-- Release notes and analytical documentation are finalized
-- The artifact becomes externally referable
-
-Release does **not** imply:
-
-- Production readiness
-- Long-term support
-- Absence of defects
-
-**Output**: A published version **Status**: `Released`
+- **Objective:** Design the structural architecture to support the specifications.
+- **Primary Artifact:** **[Architecture Guide](../internal/architecture-guide.md)** & Module Blueprints.
+- **Process:**
+  1.  **High-Level Design:** Define Module boundaries and inter-module contracts.
+  2.  **Low-Level Design:** Define Database Schema, Service Interfaces, and UI Components.
+  3.  **Compliance Check:** Ensure designs adhere to "Mobile-First" and "Multi-Language" constraints.
+- **Exit Gate:** Architecture is validated against the Specs.
 
 ---
 
-### 2.5 Post-Release Lifecycle
+## 4. Phase 3: Construction (Implementation)
 
-After release, the version transitions through post-publication states:
+The translation of design into executable code.
 
-| State      | Meaning                                |
-| ---------- | -------------------------------------- |
-| Active     | Still relevant and possibly referenced |
-| Deprecated | Discouraged for continued use          |
-| Archived   | Preserved for historical reference     |
-| EOL        | No longer maintained                   |
-
-These states reflect **product policy decisions**, not technical quality.
-
----
-
-## 3. Lifecycle Classification Axes
-
-Every released version is classified across **three orthogonal axes**.
-
-### 3.1 Stage (Maturity)
-
-Describes the **quality and stability expectation** of the artifact.
-
-- Experimental
-- Alpha
-- Beta
-- Release Candidate (RC)
-- Stable
-- LTS
+- **Objective:** Produce high-quality, maintainable code.
+- **Guidance:** **[Development Conventions](../internal/development-conventions.md)**.
+- **Process:**
+  1.  **Coding:** Implementation using Laravel v12, Livewire v3, and TALL Stack.
+  2.  **Unit Testing:** Writing tests (Pest) concurrently with code.
+  3.  **Static Analysis:** Linting (Pint) and Type Checking.
+- **Constraint:** All "Application Settings" must use the `setting()` helper; no hard-coding.
+- **Exit Gate:** Code compiles, passes local tests, and adheres to conventions.
 
 ---
 
-### 3.2 Support Policy
+## 5. Phase 4: Verification & Validation (V&V)
 
-Defines **what guarantees apply after release**.
+Quality Assurance ensures the software meets requirements (Validation) and is built correctly (Verification).
 
-- Snapshot (no guarantees)
-- Bugfix Only
-- Security Only
-- Full Support
-- EOL
-
----
-
-### 3.3 Status
-
-Represents the **current operational state** of the version.
-
-- Planned
-- In Progress
-- Stabilizing
-- Released
-- Deprecated
-- Archived
-
-> These axes are independent and may change without altering the version identifier.
+- **Objective:** Detect defects and ensure spec compliance.
+- **Process:**
+  1.  **Automated Testing:** CI pipelines run Feature and Unit tests.
+  2.  **Spec Validation:** Verify that features function exactly as described in `internara-specs.md`.
+  3.  **Security Audit:** Check for hard-coded secrets and vulnerability scanning.
+- **Exit Gate:** Zero critical bugs, 100% test pass rate on affected paths.
 
 ---
 
-## 4. Release Eligibility (SDLC Perspective)
+## 6. Phase 5: Release & Deployment
 
-From an SDLC standpoint, a version is eligible for release when:
+The formal publication of a versioned artifact.
 
-1. The intended milestone scope is internally complete
-2. The system state is coherent and documented
-3. The artifact can be uniquely identified and referenced
-
-No requirement exists for:
-
-- Feature completeness across the product
-- Stability guarantees
-- Backward compatibility
-
-Those concerns are expressed via **Stage** and **Policy**, not release permission.
+- **Objective:** Package the software for distribution/deployment.
+- **Process:**
+  1.  **Versioning:** Assign a SemVer identifier (e.g., `v1.0.0`).
+  2.  **Documentation:** Finalize Release Notes (User-Centric Narrative) and Technical Guides.
+  3.  **Tagging:** Git tag creation.
+- **Exit Gate:** Release notes approved and artifact tagged.
 
 ---
 
-## 5. SDLC Artifacts
+## 7. Lifecycle Classification Axes
 
-The SDLC is reflected through the following artifacts:
+To manage the maturity and support of released artifacts, Internara uses a 3-axis classification system.
 
-- **Version Identifier** (SemVer)
-- **Series Code** (lineage context)
-- **Analytical Version Notes** (as-built narrative)
-- **Versions Overview** (Single Source of Truth for lifecycle classification)
+### 7.1 Maturity Stage
+Reflects the stability confidence level.
+- **Experimental:** Proof of concept.
+- **Alpha:** Feature complete but unpolished.
+- **Beta:** Functionally complete, testing for bugs.
+- **Stable:** Production-ready.
+
+### 7.2 Operational Status
+Reflects the current state in the lifecycle.
+- **Planned:** Concept phase.
+- **In Progress:** Construction phase.
+- **Stabilizing:** V&V phase.
+- **Released:** Publicly available.
+- **Deprecated:** Scheduled for removal.
+- **Archived:** Historical reference only.
+
+### 7.3 Support Policy
+Reflects the maintenance commitment.
+- **Active Support:** Bugs and Security fixes.
+- **Security Only:** No new features, security patches only.
+- **EOL (End of Life):** No support provided.
 
 ---
 
-_Internara’s SDLC treats releases as **governed product milestones**, not accidental byproducts of
-development. This separation enables clarity, historical integrity, and scalable project growth._
+## 8. Maintenance & Evolution
+
+Post-release activities.
+- **Corrective:** Fixing reported bugs.
+- **Adaptive:** Updating for new environment versions (e.g., PHP updates).
+- **Perfective:** Refactoring for performance (without changing external behavior).
+
+_This theoretical framework ensures that Internara is not just "written," but **engineered** with precision, traceability, and quality at every step._

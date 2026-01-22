@@ -4,6 +4,10 @@ This document serves as the definitive, step-by-step technical guide for migrati
 stack from Livewire v3 to v4. This is a high-priority technical debt item targeted for the
 **v0.8.x** series.
 
+> **Spec Alignment:** This migration must preserve the **Mobile-First** responsiveness and 
+> **Multi-Language** integrity mandated by the **[Internara Specs](../../internara-specs.md)**.
+> All UI refactors must be validated against the specs.
+
 ---
 
 ## 🛠 Phase 1: Dependency & Cleanup
@@ -41,67 +45,41 @@ Update `config/livewire.php` to reflect the new internal naming conventions.
 ## 💻 Phase 3: Code-Level Refactoring
 
 ### 3.1 Namespace & Imports
-
-Since we are removing Volt, all components using Volt's base class must be updated.
-
 - **Action**: Globally replace `use Livewire\Volt\Component;` with `use Livewire\Component;`.
 
 ### 3.2 Routing (Mandatory)
-
 Standard `Route::get()` for full-page components is deprecated in favor of the new macro.
-
 ```php
-// Search for modular routes: modules/*/routes/web.php
-// BEFORE:
-Route::get('/dashboard', Dashboard::class);
-
-// AFTER:
-Route::livewire('/dashboard', Dashboard::class);
+// BEFORE: Route::get('/dashboard', Dashboard::class);
+// AFTER: Route::livewire('/dashboard', Dashboard::class);
 ```
 
-### 3.3 The `wire:model` Behavior Shift
-
-In v4, `wire:model` ignores bubbled events from children by default (equivalent to `.self`).
-
-- **Audit**: Check components where `wire:model` is placed on a parent `div` to capture input from
-  children.
-- **Fix**: Add the `.deep` modifier: `<div wire:model.deep="value">`.
-
-### 3.4 Navigation Directives
-
-- **Action**: Replace all `wire:scroll` with `wire:navigate:scroll`.
-
-### 3.5 View Transitions API
-
-If using `wire:transition`, remove Alpine modifiers like `.opacity` or `.scale`.
-
-- **Action**: Use plain `wire:transition`. Customize via CSS using the native View Transitions API
-  if needed.
+### 3.3 Localization & i11n
+Ensure that new v4 features (like `wire:navigate` or async actions) do not break the translation 
+bridge.
+- **Audit**: Verify that `{{ __('key') }}` calls remain reactive after navigation.
 
 ---
 
 ## 🧪 Phase 4: Modular Verification (QA)
 
-1.  **UI Core Audit**: Verify the `UI` module components first. Check if `x-ui::file` and
-    `x-ui::choices` handle hydration correctly in v4.
-2.  **Auto-Discovery Check**: Run `php artisan app:refresh-bindings`. Ensure that the automatic
-    mapping of **Contracts** to implementations still functions during Livewire's hydration cycles.
-3.  **Boundary Testing**: Run the Pest suite with focus on cross-module event dispatching:
+1.  **UI Core Audit**: Verify the `UI` module components. Check if `x-ui::file` handles hydration 
+    correctly in v4.
+2.  **Mobile-First Check**: Test the responsive sidebar and drawer behavior under the new 
+    Livewire navigation system.
+3.  **Boundary Testing**: Run the Pest suite:
     ```bash
     php artisan test --parallel
     ```
 
 ---
 
-## ✨ Phase 5: New Feature Adoption (Optional but Recommended)
+## ✨ Phase 5: New Feature Adoption
 
 1.  **Async Actions**: Optimize non-critical buttons with `wire:click.async`.
-2.  **Islands**: Refactor dashboard widgets (e.g., Statistics) using `@island` to allow independent
-    refreshing.
-3.  **Loading States**: Replace custom spinners with the native `data-loading` attributes styled via
-    Tailwind.
+2.  **Islands**: Refactor dashboard widgets (e.g., At-Risk Monitoring) using `@island`.
+3.  **Loading States**: Use native `data-loading` attributes.
 
 ---
 
-_This guide must be updated if any breaking changes are discovered during the initial migration
-spike._
+_This guide must be updated if any breaking changes are discovered during the initial migration spike._

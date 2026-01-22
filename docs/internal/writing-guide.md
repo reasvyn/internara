@@ -3,44 +3,50 @@
 To maintain a "Developer-First" documentation culture, all contributors must adhere to these
 principles when adding or modifying documentation in Internara.
 
+> **Single Source of Truth (SSoT):** The authoritative reference for all documentation is
+> **[Internara Specs](../internal/internara-specs.md)**. No document may contradict the specs.
+
 ---
 
 ## 1. Core Principles
 
-1.  **Single Source of Truth (SSOT)**: Each concept belongs to **one** authoritative document. If
-    you need to mention a rule defined elsewhere, use a concise summary and a **hyperlink**. _Do not
-    duplicate logic._
+1.  **Analytical Precision**: Documentation must be grounded in facts and architectural reality.
 2.  **Aesthetic-Natural Principle**: Documentation should be calm and structurally minimalist. Use
-    clear headers, bullet points, and avoid "wall of text" paragraphs.
-3.  **Technical Depth & Rationale**: Don't just say _what_ to do; explain _why_ it is done that way.
-    This helps other developers understand the architectural intent.
-4.  **Actionable Language**: Use direct, developer-centric language. Include code snippets or CLI
-    commands where they provide immediate value.
-5.  **Iterative Artifact Synchronization**: Documentation is not an afterthought. A feature is only
-    "Done" when its corresponding documentation accurately reflects the new system state.
+    clear headers and bullet points.
+3.  **Iterative Artifact Synchronization**: A feature is only "Done" when its corresponding documentation
+    (READMEs, Guides, Changelog) accurately reflects the new system state.
+4.  **Terminological Consistency**: Use standardized terms (e.g., `exception::messages`, `setting()`,
+    `Blueprint`, `Series Code`).
 
 ---
 
-## 2. Formatting Conventions
+## 2. Formatting & Language
 
-- **Markdown Only**: Use Markdown (`.md`) exclusively for all guides.
-- **Code Blocks**: Always use language hints (e.g., ` ```php `, ` ```bash `) for syntax
-  highlighting.
-- **Table of Contents**: Required for any document exceeding 1,000 words or containing more than 4
-  major sections.
+- **Markdown Only**: Use Markdown (`.md`) exclusively.
 - **English Only**: All documentation must be written in English.
+- **User-Centric Release Notes**: Written in friendly, accessible language (Indonesian & English).
+- **Internal Technical Docs**: Written in professional, technical English.
 
 ---
 
 ## 3. Directory Structure
 
-- `docs/main/`: Public guides for users and system administrators.
-- `docs/internal/`: Internal manuals for developers, including architecture, conventions, and
-  roadmaps.
-- `docs/versions/`: Post-release narratives documenting milestones.
-- `docs/tests/`: Technical guides for the testing suite.
+- `docs/internal/`: **Internal Engineering Hub** (Architecture, Conventions, SDLC).
+- `docs/versions/`: Post-release narratives (Analytical Version Notes).
+- `docs/blueprints/`: Architectural planning for active development series.
+- `docs/main/`: Public-facing project overview and installation guides.
+
+---
+
+## 4. Specific Naming Rules
+
+- **Exception Messages:**
+    - Module-specific: `module::exceptions.key`
+    - General: `exception::messages.key`
+- **Application Settings:**
+    - Always use `setting('key')`.
 
 ---
 
 _Clear documentation is as important as clean code. By following these standards, you ensure that
-Internara remains accessible and maintainable for years to come._
+Internara remains accessible and maintainable._

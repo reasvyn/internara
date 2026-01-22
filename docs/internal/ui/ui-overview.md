@@ -1,65 +1,68 @@
 # UI Module: The Internara Design System
 
 The `UI` module is the central repository for all shared frontend assets, global Blade components,
-and Livewire interface elements. It acts as the project's internal design system, ensuring that
-whether you are in the `Admin` or `Student` module, the experience remains cohesive and
-high-quality.
+and Livewire interface elements. It acts as the project's internal design system.
+
+> **Governance Mandate:** The UI module is the technical implementation of the visual identity
+> defined in the **[Internara Specs](../../internara-specs.md)**. All components must enforce
+> **Mobile-First** responsiveness and **Multi-Language** support.
 
 ---
 
-## 1. Our UI Architecture
+## 1. Visual Identity (from Specs)
 
-We follow a "Layered Design" approach, where each tool has a specific role:
+All components in this module are pre-configured with Internara's branding:
 
-- **Tailwind CSS 4**: The utility-first engine for layout, spacing, and colors.
-- **DaisyUI 5**: Provides the semantic "base" components (e.g., `.btn`, `.modal`, `.card`).
-- **MaryUI 2**: Supplies interactive Livewire components like data tables and form selectors.
-- **UI Module**: Provides the "Internara-flavored" wrappers that unify these tools.
-
----
-
-## 2. The Component Hierarchy
-
-When building an interface, you should choose components in this order of priority:
-
-1.  **Internara Components (`x-ui::`)**: These are our project-specific components (e.g.,
-    `x-ui::button`). They wrap MaryUI/DaisyUI with our specific styles and defaults.
-2.  **MaryUI Components (`x-mary-`)**: Use these for complex Livewire interactions that haven't been
-    wrapped yet.
-3.  **DaisyUI Classes**: Use raw DaisyUI classes for simple, static HTML elements.
+- **Typography:** Uses **Instrument Sans** as the primary font.
+- **Theming:** Supports Light/Dark modes with **Emerald Green** as the primary accent color.
+- **Shapes:** Standardized rounded corners (`0.25` – `0.75 rem`).
 
 ---
 
-## 3. Core Directory Layout
+## 2. Our UI Architecture
 
-For developers, understanding where assets reside is crucial:
+We follow a "Layered Design" approach:
 
-- `resources/css/app.css`: The main entry point for Tailwind. Custom theme variables are here.
-- `resources/views/layouts/`:
-    - `dashboard.blade.php`: The primary layout for all authenticated workspaces.
-    - `guest.blade.php`: Used for login, registration, and public verification pages.
-- `resources/views/components/`: Individual components categorized by purpose (Forms, Display,
-  etc.).
+- **Tailwind CSS v4:** The utility engine for layout and spacing.
+- **DaisyUI:** Semantic CSS components (Theme-aware).
+- **MaryUI:** Rich Livewire components.
+- **UI Module:** The "Internara-flavored" wrappers (e.g., `x-ui::button`).
 
 ---
 
-## 4. Branding & Visual Standards
+## 3. Mobile-First & i11n Strategy
 
-### 4.1 Icons
+### 3.1 Responsiveness
+- **Principle:** Default to mobile layouts. Use `md:` and `lg:` for desktop enhancement.
+- **Components:** Containers and grids in the `UI` module are responsive by default.
 
-We have standardized on **Tabler Icons**. Always use the `tabler.name` format. Example:
-`<x-ui::icon name="tabler.user" />`.
-
-### 4.2 Colors
-
-Use theme-aware classes instead of hardcoded hex values:
-
-- `primary`: For main actions.
-- `secondary`: For supporting elements.
-- `error`: For destructive actions (Delete buttons).
-- `base-100` to `base-300`: For background layering.
+### 3.2 Localization
+- **Principle:** No hardcoded strings in components.
+- **Usage:** All labels, placeholders, and tooltips must use `__('key')` or allow for slot injection.
 
 ---
 
-_The UI module is designed to be "Developer-First." By leveraging these components, you can build
-beautiful, responsive modules in minutes without writing a single line of custom CSS._
+## 4. The Component Hierarchy
+
+Priority order for building interfaces:
+
+1.  **Internara Components (`x-ui::`)**: Project-specific wrappers with built-in accessibility.
+2.  **MaryUI Components (`x-mary-`)**: Complex interactions not yet wrapped.
+3.  **DaisyUI Classes**: Raw CSS components for static elements.
+
+---
+
+## 5. Standardized Assets
+
+### 5.1 Icons
+Standard: **Tabler Icons**. Use the `tabler.name` format.
+
+### 5.2 Colors
+Always use semantic variables:
+- `primary`: Emerald Green actions.
+- `base-100`: Main background.
+- `error`: Destructive actions.
+
+---
+
+_The UI module ensures that Instructors, Staff, and Students experience a cohesive and professional interface across all devices._

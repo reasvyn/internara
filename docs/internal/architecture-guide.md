@@ -4,6 +4,10 @@ Welcome to the Internara engineering core. This guide provides a deep-dive into 
 Monolith** architecture. By following these principles, you ensure that the features you build are
 scalable, maintainable, and decoupled from the start.
 
+> **Critical Context:** This guide implements the technical direction mandated by the authoritative
+> **[Internara Specs](../internal/internara-specs.md)**. All architectural decisions must align
+> with the product goals, user roles, and constraints defined therein.
+
 ---
 
 ## 1. Core Architectural Philosophy
@@ -21,10 +25,23 @@ The root `app/` directory and the `Core` module handle cross-cutting technical c
 - **Infrastructure Migrations**: The `Core` module houses foundational system migrations such as
   `jobs`, `failed_jobs`, and `cache` tables.
 - **Infrastructure Services**: Technical services like `AuditLog` or `Settings`.
+- **Dynamic Settings**: Application settings (brand name, logo, site title) must never be
+  hard-coded. They are managed via the `Setting` module and accessed using the `setting()` helper.
+
+### 1.2 Multi-Language by Design (i11n)
+
+Per the **Internara Specs**, the application must be fully localized for **Indonesian (Primary)**
+and **English**.
+
+- **No Hardcoded Strings:** All user-facing text in Controllers, Livewire components, and Services
+  must use translation keys (e.g., `__('module::file.key')`).
+- **Locale Awareness:** The architecture supports dynamic locale switching based on user preference.
 
 ---
 
 ## 2. The TALL Stack: Our UI Engine
+
+**Stack Versions:** Laravel v12, Livewire v3, AlpineJS v4, Tailwind CSS v4.
 
 ### 2.1 Global Notification Bridge
 
@@ -32,6 +49,15 @@ To ensure a consistent user experience, we implement a **Global Notification Bri
 layout. This bridge listens for `notify` events dispatched from individual components and translates
 them into `mary-toast` notifications. This ensures that background job feedback or service-level
 exceptions reach the user regardless of their current view.
+
+### 2.2 Mobile-First Responsiveness
+
+The specs mandate a **Mobile-First** design strategy.
+
+- **Responsive Components:** Livewire components and Blade templates must be built using mobile
+  layouts as the default, with `md:`, `lg:`, and `xl:` overrides for larger screens.
+- **Touch-Friendly:** UI interactions (buttons, menus) must be sized and spaced for touch interfaces
+  (tablets/mobile).
 
 ---
 
@@ -57,6 +83,8 @@ cross-model operations.
   CRUD.
 - **Input**: Services accept validated arrays or DTOs—never `Request` objects.
 - **Output**: Returns models, collections, or simple data structures.
+- **Role Awareness**: Business logic must enforce the specific rules for roles defined in the specs
+  (Instructor, Staff, Student, Industry Supervisor).
 
 ### 3.3 Data Layer: Eloquent Models
 
@@ -65,6 +93,8 @@ cross-model operations.
 - **Logic:** Keep logic here minimal (e.g., `isActive()`, `getFullnameAttribute()`).
 - **Relationship Rules**: Models should only have `belongsTo` or `hasMany` relationships with models
   **within their own module**. Cross-module relations must be handled via Services.
+- **Security:** Ensure sensitive data (as defined in specs) is handled securely, leveraging
+  Laravel's encryption features where necessary.
 
 ### 3.4 Optional: Repositories & Entities
 
@@ -85,7 +115,7 @@ The strength of a Modular Monolith lies in how modules _don't_ talk to each othe
 
 **Physical foreign keys across modules are forbidden.**
 
-- Use simple indexed columns (e.g., `module_b_id` as UUID).
+- Use simple indexed columns (e.g., `student_id` as UUID in `Assessment` module).
 - **Why?** It prevents a "death by a thousand joins" and allows modules to be refactored or deleted
   without cascading database failures.
 - **Data Integrity**: Managed by the **Service Layer** of the module owning the data.
@@ -94,16 +124,15 @@ The strength of a Modular Monolith lies in how modules _don't_ talk to each othe
 
 If `Module A` needs data from `Module B`, it must type-hint a **Contract**.
 
-- **Example**: `AuthService` needs to create a user. It injects `UserService`, not the concrete
-  `UserServiceProvider` implementation.
+- **Example**: `AssessmentService` needs to verify a student. It injects `StudentServiceInterface`,
+  not the concrete `StudentService` implementation.
 
 ### 4.4 Pattern 2: Events & Listeners (Asynchronous)
 
 The preferred way to handle side-effects.
 
-- **Example**: When an internship is completed, the `Internship` module dispatches
-  `InternshipCompleted`. The `Certificate` and `Notification` modules listen and react
-  independently.
+- **Example**: When an `Internship` is completed, the module dispatches `InternshipCompleted`. The
+  `Report` and `Notification` modules listen and react independently.
 
 ### 4.5 Pattern 3: Framework Standards (Authorization)
 

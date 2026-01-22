@@ -1,37 +1,19 @@
 # Department Module
 
-The `Department` module manages the academic structures and specializations within the school,
-providing the necessary academic context for students and teachers.
+The `Department` module manages academic specializations (e.g., "Software Engineering").
 
 ## Purpose
 
-- **Academic Organization:** Groups students and teachers into specific fields of study (e.g.,
-  "Software Engineering", "Accounting").
-- **Internship Mapping:** Enables mapping internship placements to specific departments to ensure
-  students are placed in relevant industries.
+- **Academic Organization:** Groups Students and Instructors into fields of study.
+- **Internship Mapping:** Ensures students are placed in industrially relevant locations.
+- **Identity:** Uses **UUIDs** and follows the "No physical cross-module FKs" rule.
 
-## Core Components
+## Key Features
 
-### 1. Department Model
+- **i11n:** All department names and descriptions must be localized.
+- **Mobile-First:** Department management UI is optimized for tablet/mobile use.
+- **Scoping:** Integration with the `School` module via service-layer validation.
 
-- Represents an academic subdivision.
-- Uses **UUIDs** as primary keys to ensure security and portability.
-- Belongs to a **School** via `HasSchoolRelation`.
+---
 
-### 2. DepartmentService
-
-- Provides CRUD operations for departments.
-- Extends `EloquentQuery` for standardized querying and management.
-
-### 3. DepartmentManager (Livewire)
-
-- Administrative UI for creating and managing academic departments.
-- Provides lists and forms for department metadata.
-
-## Inter-Module Integration
-
-### 1. HasDepartmentRelation Trait
-
-- A shared trait provided by this module (located in `Models\Concerns`) that allows other models
-  (like `Profile`) to establish a decoupled relationship with a Department.
-- Communication is handled via the `DepartmentService` interface.
+_The Department module provides the academic specialization context for the entire platform._

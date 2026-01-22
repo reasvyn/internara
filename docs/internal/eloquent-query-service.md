@@ -4,6 +4,9 @@ To maintain consistency and reduce boilerplate across our modular domain service
 utilizes the `EloquentQuery` base service. This pattern centralizes standard CRUD operations while
 providing a flexible architecture for complex business orchestration.
 
+> **Spec Alignment:** This standardization supports the **Single Source of Truth** principle for
+> business logic required by the **[Internara Specs](../internal/internara-specs.md)**.
+
 ---
 
 ## 1. Core Philosophy
@@ -17,6 +20,7 @@ repetitive Eloquent calls.
 - **DRY (Don't Repeat Yourself)**: Common query patterns are inherited.
 - **Predictable APIs**: All domain services share a consistent method signature.
 - **Easy Mocking**: Centralized data access makes unit testing logic easier.
+- **Role Awareness**: The base query can be extended to enforce role-based scoping automatically.
 
 ---
 
@@ -73,7 +77,11 @@ You should override methods only when you need to inject cross-module logic or c
 ```php
 public function create(array $data): Model
 {
-    // 1. Perform custom validation or logic
+    // 1. Perform custom validation or logic (e.g., Application Settings check)
+    if (setting('registration_open') !== true) {
+         throw new ServiceException(__('auth::exceptions.registration_closed'));
+    }
+
     $data['password'] = Hash::make($data['password']);
 
     // 2. Call parent to handle persistence

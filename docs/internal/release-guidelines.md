@@ -4,6 +4,10 @@ This document defines the protocols for versioning, lifecycle classification, su
 release artifacts within the Internara project. These standards ensure that our development history
 is analytically precise, semantically consistent, and operationally unambiguous.
 
+> **Governance Mandate:** All releases must strictly adhere to the milestones and requirements
+> defined in the **[Internara Specs](../internal/internara-specs.md)**. A version cannot be
+> released if it does not fulfill the Spec Validation criteria for its milestone.
+
 ---
 
 ## 1. Versioning Standard
@@ -11,7 +15,7 @@ is analytically precise, semantically consistent, and operationally unambiguous.
 Internara adheres to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
 - **MAJOR**: Incompatible API changes or fundamental architectural shifts.
-- **MINOR**: Backward-compatible feature additions or scope expansion.
+- **MINOR**: Backward-compatible feature additions or scope expansion (aligned with Spec Milestones).
 - **PATCH**: Backward-compatible bug fixes or security patches.
 - **Pre-release Identifiers**: During non-production stages, versions may include a qualifier (e.g.,
   `v0.6.0-alpha`, `v1.0.0-beta.1`) to indicate maturity—not support guarantees.
@@ -65,16 +69,12 @@ Status reflects the **current reality** of a version at a given time.
 
 | Status      | Meaning                                     |
 | ----------- | ------------------------------------------- |
-| Planned     | Identified but not yet implemented.         |
-| In Progress | Under active development.                   |
-| Stabilizing | Feature-frozen, hardening phase.            |
+| Planned     | Identified in **Specs** but not implemented.|
+| In Progress | Under active development (Construction).    |
+| Stabilizing | Feature-frozen, Verification phase.         |
 | Released    | Publicly tagged and distributed.            |
 | Deprecated  | Still accessible but no longer recommended. |
 | Archived    | Closed and historically preserved.          |
-
-> **Note on Archiving:** The `Archived` status is applied based on **explicit developer decision**,
-> not solely by lifecycle age. A version may remain visible in the main index if it serves as a
-> critical reference.
 
 ---
 
@@ -85,13 +85,11 @@ remain semantically strict.
 
 **Required Fields:**
 
-- `version` The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
+- `version`: The immutable SemVer identifier (e.g., `v0.7.0-alpha`).
+- `series_code`: The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
+- `support_policy`: The maintenance contract level (`Snapshot`, `Full Support`, `EOL`, etc.).
 
-- `series_code` The architectural or business-value lineage identifier (e.g., `ARC01-ORCH-01`).
-
-- `support_policy` The maintenance contract level (`Snapshot`, `Full Support`, `EOL`, etc.).
-
-> Operational status is managed centrally in Versions Overview.
+> Operational status is managed centrally in **Versions Overview**.
 
 ---
 
@@ -113,8 +111,8 @@ Internara follows **Keep a Changelog** conventions:
 
 ### 4.2 Editorial Principle
 
-Entries must describe **impact and intent**, not implementation minutiae. Low-level details belong
-to commit history and analytical version notes.
+Entries must describe **impact and intent**, not implementation minutiae.
+- **Spec Compliance:** Mention if a change directly fulfills a requirement from `internara-specs.md`.
 
 ---
 
@@ -125,73 +123,57 @@ describing the version's value.
 
 These documents:
 
-- Reside in `docs/versions/`
-- Are immutable once the version is released
-- Must be written in **friendly, accessible language** suitable for non-technical stakeholders
-
-Lifecycle classification is managed exclusively in **Versions Overview** to maintain a Single Source
-of Truth.
-
-**Writing Principle: "Benefits over Features"**
-
-- **Don't say:** "Implemented Polymorphic ComplianceAggregator."
-- **Do say:** "Grading is now automated based on attendance and journal data."
+- Reside in `docs/versions/`.
+- Are immutable once the version is released.
+- Must be written in **friendly, accessible language**.
+- **Must reference the Spec Milestone** that this release fulfills.
 
 **Structure:**
 
 1.  **Metadata**: Version, Series Code, release date.
-2.  **Overview**: A high-level summary of "What's New".
-3.  **Key Highlights**: The core value delivered to the user (use emojis and clear headers).
-4.  **Stability & Quality**: Brief mention of reliability improvements.
-5.  **Forward Outlook**: What users can expect next.
+2.  **Spec Milestone**: Explicit link to the addressed spec section.
+3.  **Overview**: A high-level summary of "What's New".
+4.  **Key Highlights**: The core value delivered to the user (use emojis and clear headers).
+5.  **Stability & Quality**: Brief mention of reliability improvements.
+6.  **Forward Outlook**: What users can expect next.
 
 ---
 
 ## 6. Release Eligibility Criteria
 
-A version may be marked as `Released` when the following minimum conditions are met:
+A version may be marked as `Released` when the following minimum conditions are met (Exit Gate):
 
-1. **Scope Closure**: The intended milestone scope is internally complete.
-2. **Artifact Consistency**: Codebase, documentation, and metadata are synchronized.
-3. **Changelog Resolution**: `[Unreleased]` entries are reconciled.
-4. **Identity Verification**: Application identity reflects the intended version and stage.
-5. **Tagging**: A Git tag is created matching the version identifier.
-
-> A release does **not** imply stability, completeness, or long-term support—only that the artifact
-> has been formally published.
+1. **Spec Compliance**: The release has been validated against `internara-specs.md` (as per SDLC Phase 4).
+2. **Scope Closure**: The intended milestone scope is internally complete.
+3. **Artifact Consistency**: Codebase, documentation, and metadata are synchronized.
+4. **Changelog Resolution**: `[Unreleased]` entries are reconciled.
+5. **Identity Verification**: `app_info.json` reflects the intended version and stage.
+6. **Tagging**: A Git tag is created matching the version identifier.
 
 ---
 
 ## 7. Handling EOL & Archived Releases
 
 Versions transitioned to **EOL (End of Life)** or **Archived** status require specific technical
-handling to maintain historical integrity and manage user expectations.
+handling.
 
 ### 7.1 GitHub Mechanics
 
-- **Tag Preservation**: Tags for EOL/Archived versions are **immutable** and must never be deleted.
-  They serve as critical historical checkpoints.
-- **Release Description**: The GitHub Release notes for these versions must be updated to include a
-  prominent status banner at the top (e.g., `**Status: EOL - No longer maintained**`).
-- **Latest Label**: EOL/Archived versions must never hold the "Latest" tag on GitHub. The "Latest"
-  label is reserved for the most recent stable or active release.
+- **Tag Preservation**: Tags for EOL/Archived versions are **immutable**.
+- **Release Description**: Update release notes with a status banner (e.g., `**Status: EOL**`).
+- **Latest Label**: Reserved for the most recent active release.
 
 ### 7.2 Issue & PR Management
 
-- **Submission Policy**: New Issues or Pull Requests targeting EOL versions will be closed.
-- **Resolution**: Users will be directed to the latest active version series via a standardized,
-  polite response.
-- **Traceability**: Issues related to historical versions are labeled accordingly before closure to
-  preserve project context.
+- **Submission Policy**: New Issues/PRs targeting EOL versions will be closed.
+- **Resolution**: Direct users to the latest active version series.
 
 ### 7.3 Artifact Synchronization
 
-- **Local Storage**: Formal Application Blueprints for Archived versions are moved to the
-  `docs/internal/plans/archived/` directory.
-- **Narrative Visibility**: User-facing release notes for EOL versions remain in the main directory
-  for immediate accessibility, while Archived narratives may be moved to `docs/versions/archived/`.
+- **Blueprint Archival**: Formal Application Blueprints are moved to `docs/internal/blueprints/archived/`.
+- **Narrative Visibility**: User-facing release notes for EOL versions remain visible.
 
 ---
 
 _Consistent lifecycle semantics transform releases from ad-hoc events into traceable, governable
-system milestones._
+system milestones, fully aligned with the product specifications._

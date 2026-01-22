@@ -1,129 +1,102 @@
 # Development Workflow: Feature Engineering Lifecycle
 
 This document defines the **engineering workflow** for building features in the Internara project.
-It specifies _how work is performed_, not _when versions are released_ or _how they are classified
-within the SDLC_.
+It specifies _how work is performed_ to meet the rigorous standards of our **Modular Monolith**.
 
-This workflow applies to all feature development within Internara’s **Modular Monolith**
-architecture.
+> **Governance Mandate:** All engineering work must align with the **[Internara Specs](../internal/internara-specs.md)**
+> and the **[Software Development Lifecycle (SDLC)](../internal/software-lifecycle.md)**.
+> Deviation from the Specs requires a formal Change Request.
 
-**Core Principle** Never start implementation without contextual clarity. Never consider work
+**Core Principle:** Never start implementation without contextual clarity. Never consider work
 complete without **Artifact Synchronization**.
 
 ---
 
-## Phase 1: Pre-Development (Context Establishment)
+## Phase 1: Context & Planning (Requirements Engineering)
 
-This phase ensures that implementation decisions are grounded in historical and architectural
-context.
+This phase corresponds to the **Requirements** and **Design** phases of the SDLC.
 
-### 1.1 Historical Context Review
+### 1.1 Specification Validation
 
-Before initiating work:
+Before any code is written:
 
-- **Action**: Review the analytical narratives of the **current version** and up to **two prior
-  milestones** in `docs/versions/`.
-- **Objective**:
-    - Understand prior architectural decisions.
-    - Avoid redundant abstractions or conceptual regression.
+- **Action:** Verify the feature request against `docs/internal/internara-specs.md`.
+- **Constraint:** Ensure the feature respects **Mobile-First** design and **Multi-Language** support.
+- **Role Check:** Confirm the feature aligns with the designated User Roles (Instructor, Staff, etc.).
 
-This step is mandatory for changes affecting shared domains, services, or contracts.
+### 1.2 Historical & Architectural Review
 
----
+- **Action:** Review the analytical narratives of the **current version** and **prior milestones** in `docs/versions/`.
+- **Objective:** Understand existing patterns to avoid architectural regression.
 
-### 1.2 Implementation Planning
+### 1.3 Implementation Planning
 
-Each non-trivial feature requires an explicit plan.
+For any non-trivial feature:
 
-- **Action**: Decompose the feature into clear implementation steps.
-- **Artifact**: Store the plan in `docs/internal/plans/` using the relevant version scope (e.g.,
-  `v0.7.x-alpha.md`).
-- **Focus**:
-    - Module boundaries
-    - Cross-module interactions
-    - Required **Contracts** and abstractions
-
-Planning exists to reduce cognitive load during implementation, not to predict final outcomes.
+- **Action:** Create a detailed implementation plan.
+- **Artifact:** Store the plan in `docs/internal/blueprints/` scoped to the current version.
+- **Content:**
+    - Module boundaries involved.
+    - New Contracts/Interfaces required.
+    - Database schema changes (UUIDs, Indexes).
+    - UI Components needed (Mobile-responsive).
 
 ---
 
-## Phase 2: Development Execution (Implementation)
+## Phase 2: Development Execution (Construction)
 
-Implementation follows Internara’s architectural layering discipline.
+This phase corresponds to the **Construction** phase of the SDLC.
 
 ### 2.1 Domain & Data Layer (Eloquent Models)
 
-- **Identity**: All entities must use UUIDs via the `HasUuid` concern.
-- **Module Isolation**: Cross-module relationships must not rely on physical foreign keys. Use
-  indexed UUID references.
-- **Lifecycle State**: Entities with state transitions must use `HasStatuses`.
-
-The data layer models **business reality**, not UI or persistence convenience.
-
----
+- **Identity:** All entities must use UUIDs via the `HasUuid` concern.
+- **Isolation:** **No physical foreign keys** between modules. Use indexed UUID columns.
+- **Security:** Encrypt sensitive data as defined in the Specs.
 
 ### 2.2 Application Logic Layer (Services)
 
-Services represent the **authoritative source of business logic**.
-
-- **Responsibility**: All business rules, orchestration, and validation reside in Services.
-- **Base Abstraction**: CRUD-oriented services should extend
-  `Modules\Shared\Services\EloquentQuery`.
-- **Decoupling Rule**: When interacting across modules, depend exclusively on **Contracts**, never
-  concrete implementations.
-
-Services must remain deterministic and UI-agnostic.
-
----
+- **Authority:** Services are the *only* place for business logic.
+- **No Hard-Coding:** Use `setting($key)` for application configuration. Never hard-code brand names or emails.
+- **Decoupling:** Inject **Contracts**, not concrete classes, for cross-module dependencies.
 
 ### 2.3 Interface Layer (Livewire & Volt)
 
-UI components are responsible for interaction, not business decisions.
-
-- **Thin Components**: Livewire and Volt components manage state and events only.
-- **Dependency Injection**: Services must be injected via the `boot()` lifecycle method.
-- **UI Consistency**: Use standardized components provided by the `UI` module (MaryUI / DaisyUI).
-
-UI code should remain disposable without risking domain integrity.
+- **Presentation Only:** No business logic in components.
+- **Mobile-First:** Build for mobile screens first, then enhance for desktop.
+- **Localization:** Use `__('key')` for ALL user-facing text.
+- **UI Standard:** Use `MaryUI` components for consistency.
 
 ---
 
-## Phase 3: Verification & Artifact Synchronization
+## Phase 3: Verification (V&V)
 
-Implementation is not considered complete until verification and documentation converge.
-
----
+This phase corresponds to the **Verification & Validation** phase of the SDLC.
 
 ### 3.1 Iterative Verification Cycle
 
-Before considering work finished:
-
-- **Testing**: Execute unit and feature tests using Pest `php artisan test --parallel`
-- **Security Review**: Manually validate authorization gates, IDOR exposure, and XSS vectors.
-- **Quality Enforcement**: Run static analysis and formatting tools
-    - `vendor/bin/pint`
-    - `npm run lint`
-
-Verification validates correctness, not feature completeness.
+- **Automated Testing:** Run `php artisan test --parallel`.
+- **Spec Validation:** Manually verify the feature behaves exactly as described in `internara-specs.md`.
+- **Static Analysis:**
+    - `vendor/bin/pint` (Formatting)
+    - `npm run lint` (JS/CSS Linting)
 
 ---
 
-### 3.2 Artifact Synchronization (Doc-as-Code)
+## Phase 4: Artifact Synchronization (Closure)
 
-All relevant documentation must reflect the implemented behavior.
+Work is strictly **incomplete** until documentation converges with code.
 
-Update as applicable:
+### 4.1 Documentation Updates
 
-- **Root README**: High-level project state and capabilities.
-- **Analytical Version Notes**: Update or append implementation narratives in `docs/versions/`.
-- **Application Metadata**: Update `app_info.json` if a milestone boundary is reached.
-- **Changelog**: Record meaningful changes under `[Unreleased]` or the active version section.
-- **Technical Documentation**: Synchronize module READMEs and architectural references.
+- **Version Notes:** Update the narrative in `docs/versions/`.
+- **Changelog:** Add entry under `[Unreleased]`.
+- **Technical Docs:** Update Module READMEs if architecture changed.
+- **Specs:** If the implementation clarified a spec detail, update `internara-specs.md` (via formal approval only).
 
-Documentation is treated as a **first-class artifact**, not a postscript.
+### 4.2 Application Metadata
+
+- Update `app_info.json` if a milestone is reached.
 
 ---
 
-_By following this workflow, engineering efforts remain predictable, auditable, and resilient to
-complexity. Code quality is enforced through structure; long-term clarity is preserved through
-documentation._
+_By rigorously following this workflow, we ensure that every line of code contributes directly to the product goals defined in the Internara Specs._

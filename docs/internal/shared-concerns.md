@@ -1,8 +1,10 @@
 # Shared Model Concerns: Engineering Consistency
 
 Internara utilizes a set of shared Eloquent **Concerns** (Traits) located in the `Shared` module.
-These concerns enforce system-wide standards for identity, state management, and academic scoping,
-ensuring that all modules behave predictably.
+These concerns enforce system-wide standards for identity, state management, and academic scoping.
+
+> **Spec Alignment:** These concerns implement the technical foundations for document management,
+> student monitoring, and data integrity mandated by the **[Internara Specs](../internal/internara-specs.md)**.
 
 ---
 
@@ -10,18 +12,9 @@ ensuring that all modules behave predictably.
 
 We have standardized on **UUID v4** for all primary and foreign keys across the application.
 
-### Why UUIDs?
-
-- **Security**: Prevents ID enumeration attacks (e.g., guessing `/student/1` -> `/student/2`).
-- **Decoupling**: Allows modules to generate IDs before persistence, crucial for distributed or
-  event-driven systems.
-- **Portability**: Makes merging data from different environments (e.g., local to production)
-  risk-free.
-
-### Implementation
-
-Simply apply the concern to your model. It automatically handles ID generation and disables
-incrementing integers.
+- **Security (from Specs):** Prevents ID enumeration and unauthorized data guessing.
+- **Portability:** Critical for our Modular Monolith, allowing ID generation before persistence.
+- **Constraint:** **No physical foreign keys** between modules. Use simple indexed UUID columns.
 
 ```php
 use Modules\Shared\Models\Concerns\HasUuid;
@@ -36,37 +29,24 @@ class Internship extends Model
 
 ## 2. State Management: `HasStatuses`
 
-Most domain entities in Internara have a lifecycle (e.g., `Registration`: Pending -> Approved ->
-Active -> Finished). Instead of hardcoding boolean flags, we use a flexible status system.
+Entities follow a lifecycle (e.g., `Pending` -> `Approved` -> `Finished`).
 
-### Rationale
-
-- **Audit Trail**: The system tracks _when_ a status changed and _who_ changed it.
-- **Extensibility**: You can add new states without modifying the database schema.
-- **Consistency**: Centralizes state logic (validation, transitions) in one place.
-
-### Usage Example
+- **Rationale:** Centralizes state transitions and validation logic.
+- **Audit:** Tracks "who" and "when" for every status change, supporting the **Monitoring** goals of the specs.
 
 ```php
 $registration->setStatus('approved', 'Student met all entry requirements.');
-
-// Retrieve records by status
-$pendingOnes = InternshipRegistration::currentStatus('pending')->get();
 ```
 
 ---
 
-## 3. Academic Scoping: `HasAcademicYear`
+## 3. Scoping: `HasAcademicYear`
 
 Data integrity across academic cycles is critical. The `HasAcademicYear` concern ensures that
-operational data (like Journals and Attendance) is always filtered by the active year.
+operational data is always filtered by the active year.
 
-### How it works
-
-- **Auto-Injection**: Automatically populates the `academic_year` column from the global application
-  settings during model creation.
-- **Global Scope**: (Optional) Can be used to restrict queries to only show data for the current
-  session.
+- **Automatic Scoping:** Populates the `academic_year` column from `setting('active_academic_year')`.
+- **Integrity:** Prevents data leak between different academic periods.
 
 ```php
 use Modules\Shared\Models\Concerns\HasAcademicYear;
@@ -79,5 +59,13 @@ class JournalEntry extends Model
 
 ---
 
+## 4. Multi-Language Content: `HasTranslations`
+
+(If applicable) Used for entities requiring localized content storage (e.g., Department names, Assessment criteria).
+
+- **Standard:** Must support both Indonesian and English as mandated by specs.
+
+---
+
 _By leveraging these concerns, you ensure that your module remains aligned with Internara's core
-engineering principles. Always check `modules/Shared/src/Models/Concerns` for new additions._
+engineering principles._

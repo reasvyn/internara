@@ -1,16 +1,19 @@
 # Log Module
 
-The `Log` module is responsible for monitoring system events and auditing user activities. it
-provides transparency and accountability across the entire application.
+The `Log` module is responsible for monitoring system events and auditing user activities.
 
 ## Purpose
 
-- **Auditing:** Tracks who performed what action and when.
-- **Observability:** Monitors significant system events for debugging and security.
-- **Accountability:** Provides a history of data changes.
+- **Auditing:** Tracks "who", "what", and "when" for all critical business actions.
+- **Observability:** Supports the monitoring goals of the internship lifecycle.
+- **Privacy:** Enforces **PII Masking** in all system logs.
 
 ## Key Features
 
-- **Activity Logging**: Integration with `spatie/laravel-activitylog` to track model changes and
-  custom events.
-- **System Monitoring**: Captures critical logs for administrative review.
+- **Activity Logging:** Uses UUID-based identity for all audit trails.
+- **Traceability:** Correlates logs with `user_id` and `academic_year`.
+- **i11n:** Log descriptions and audit labels must support translation.
+
+---
+
+_The Log module provides the accountability and transparency required for academic legitimacy._

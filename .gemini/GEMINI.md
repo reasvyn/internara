@@ -4,6 +4,10 @@ This document outlines the core principles, project context, and operational gui
 assistant (“Gemini”) when working on the Internara project. These guidelines ensure consistency,
 architectural clarity, high code quality, and efficient collaboration.
 
+> **Single Source of Truth Mandate:**
+> The document **`docs/internal/internara-specs.md`** is the **Immutable, Authoritative Specification** for this project.
+> All architectural decisions, code conventions, and lifecycle events MUST align with it.
+
 ---
 
 ## Project Overview
@@ -13,8 +17,7 @@ MVC)**, where business rules are centralized in a **service-oriented business lo
 
 The architecture prioritizes clarity, maintainability, and pragmatic separation of concerns by
 leveraging Laravel’s native MVC conventions while intentionally avoiding unnecessary abstraction
-layers such as standalone Entities, Repositories, or internal DTOs unless explicitly justified by
-clear boundary or integration requirements.
+layers.
 
 ---
 
@@ -43,134 +46,77 @@ As an AI assistant, you operate under the following identity and interaction pri
 - **Services** are the primary holders of business logic and orchestration.
 - **Controllers and Livewire components remain thin**, focusing only on request handling and UI
   concerns.
-- Abstractions such as Repositories, Entities, or internal DTOs are **not introduced by default**
-  and must be explicitly justified by concrete architectural needs (e.g. external integrations,
-  async boundaries, or storage substitution).
+- Abstractions such as Repositories, Entities, or internal DTOs are **not introduced by default**.
 
 ---
 
 ## Project-Specific Workflow & Principles
 
-These directives guide all technical workflows for the Internara project. For detailed architectural
-and development documentation, always refer to the project’s `/docs` directory.
+These directives guide all technical workflows for the Internara project.
 
 ### Core Workflow Principles
 
-- **Planning First** Always formulate a detailed plan, present it to the user, and obtain explicit
-  approval before starting any implementation.
+- **Planning First (SDLC Phase 2)** Always formulate a detailed plan (Blueprint) derived from `internara-specs.md`, present it to the user, and obtain explicit approval before starting any implementation.
 
 - **English Only** All code, documentation, comments, and communication must be written entirely in
   **English**.
 
 - **Professional PHPDoc** Every class and method must include concise and professional PHPDoc in
-  English. Every method and function must have a PHPDoc that clearly describes its intent,
-  parameters, and return values.
+  English.
 
-- **Mandatory Documentation** Every new feature, standardized pattern, or significant technical
-  change must be accompanied by comprehensive documentation. Documentation is a primary artifact and
-  a prerequisite for task completion. Internara follows a **Doc-as-Code** principle with **Iterative
-  Artifact Synchronization**.
+- **Mandatory Documentation (Phase 4)** Every new feature, standardized pattern, or significant technical
+  change must be accompanied by comprehensive documentation. Internara follows a **Doc-as-Code** principle.
 
 - **Iterative Sync Cycle** Every technical modification triggers a full cycle of Quality Assurance
-  (Testing, Linting, Security) and Documentation Synchronization. Implementation is only complete
-  when all related artifacts (READMEs, Technical Guides, Changelog) reflect the new system state.
+  (Testing, Linting, Security) and Documentation Synchronization.
 
 - **User-Facing Release Notes** Version notes MUST be written as **Friendly, User-Centric
-  Narratives** instead of technical checklists. They must describe the **value and benefits** of
-  every milestone using accessible language, minimizing jargon. Refer to
-  `docs/main/release-guidelines.md` for the strict format (Metadata -> Overview -> Highlights).
+  Narratives** linking back to **Spec Milestones**.
 
-- **Release Management** For all versioning, changelog updates, and release protocols, strict
-  adherence to the **[Release Guidelines](docs/main/release-guidelines.md)** is mandatory. This
-  includes maintaining the `app_info.json` artifact at the root.
-
-- **Proactive Renaming & Restructuring** You are authorized to propose renaming files, folders,
-  classes, methods, contracts, concerns, attributes, parameters, keys, or even entire modules if the
-  current naming is inaccurate or suboptimal.
-    - **Mandatory Approval:** You must explicitly ask for and receive user approval before applying
-      these changes.
-    - **Thoroughness:** Changes must be comprehensive. Do not leave residual code, old imports, or
-      dead references.
-    - **Breaking Changes:** Mark such changes as **BREAKING CHANGES** in your plan if they impact
-      backward compatibility.
-    - **Documentation Update:** You must immediately update any related documentation to reflect
-      these changes.
+- **Release Management** Strict adherence to the **[Release Guidelines](docs/internal/release-guidelines.md)** is mandatory.
 
 - **Cross-check Project Documentation** Always cross-reference and adhere to existing project
   documentation. For comprehensive navigation, prioritize:
-    - [docs/main/table-of-contents.md](docs/main/table-of-contents.md)
-    - [docs/main/main-documentation-overview.md](docs/main/main-documentation-overview.md)
+    - [docs/internal/internara-specs.md](docs/internal/internara-specs.md) (**SSoT**)
     - [docs/internal/table-of-contents.md](docs/internal/table-of-contents.md)
     - [docs/internal/architecture-guide.md](docs/internal/architecture-guide.md)
     - [docs/internal/development-workflow.md](docs/internal/development-workflow.md)
+    - [docs/internal/software-lifecycle.md](docs/internal/software-lifecycle.md)
     - [docs/internal/release-guidelines.md](docs/internal/release-guidelines.md)
     - [docs/internal/development-conventions.md](docs/internal/development-conventions.md)
-    - [docs/internal/software-lifecycle.md](docs/internal/software-lifecycle.md)
-    - [docs/versions/versions-overview.md](docs/versions/versions-overview.md)
-    - **Module Guides:** Located in `modules/{ModuleName}/README.md` (Refer to
-      [docs/internal/modules/table-of-contents.md](docs/internal/modules/table-of-contents.md) for
-      index).
+    - [docs/internal/blueprints-guidelines.md](docs/internal/blueprints-guidelines.md)
+    - [docs/internal/ui-ux-development-guide.md](docs/internal/ui-ux-development-guide.md)
 
 ## Pinned Commands
 
 Quick reference for essential project verification:
 
-- **Identity & Status:** `php artisan app:info` (Run this to verify current version, series code,
-  and tech stack).
+- **Identity & Status:** `php artisan app:info`
+- **Linting:** `./vendor/bin/pint`
+- **Testing:** `php artisan test --parallel`
 
 ---
 
 ## Standard Project Workflow
 
-1. **Receive User Input** Carefully analyze the request, identifying explicit instructions, goals,
-   and implied context.
+1. **Receive User Input** Carefully analyze the request.
 
-2. **Study Instructions** Review all provided guidelines, project documentation, and task-specific
-   requirements.
+2. **Spec Validation (Critical)** Verify if the request aligns with **`internara-specs.md`**. If it contradicts, pause and clarify.
 
-3. **Build Knowledge (Targeted Context & History)**
-    - Start by reading the **Priority Documentation** listed above.
-    - **Historical Review:** Examine the current and at least **2 previous version documents** in
-      `docs/versions/`. This provides the necessary historical scope to ensure development is
-      sustainable and aligned with the project's evolution.
-    - Conclude which specific modules, classes, or documentation files are relevant to the task.
-    - **Do not** attempt to study the entire documentation or codebase at once. Focus on
-      "Just-in-Time" context to maintain flexibility and avoid performance/inconsistency issues.
-    - Analyze surrounding code patterns without performing modification actions during this phase.
+3. **Build Knowledge** Review **Priority Documentation** and **Blueprints**.
 
-4. **Formulate Task Plan** Create a clear, step-by-step plan aligned with project architecture and
-   best practices.
+4. **Formulate Task Plan (Blueprint)** Create a clear, step-by-step plan aligned with project architecture.
 
-5. **Blueprint Synchronization** Ensure that major architectural units are backed by an
-   **Application Blueprint** in `docs/internal/blueprints/` before implementation begins.
+5. **Blueprint Synchronization** Ensure major units are backed by an **Application Blueprint** in `docs/internal/blueprints/`.
 
-6. **Request User Approval** Present the plan and wait for explicit approval before implementation.
+6. **Request User Approval** Present the plan and wait for explicit approval.
 
 7. **Execute Approved Tasks** Implement strictly according to the approved plan, project
-   conventions, and coding standards.
+   conventions, and **Internara Specs**.
 
-8. **Report and Conclude** Provide a concise Keypoints Summary outlining actions taken, decisions
-   made, and outcomes achieved.
+8. **Report and Conclude** Provide a concise Keypoints Summary outlining actions taken.
 
-9. **Commit and Push All Changes (Mandatory)** When instructed to commit and push all, ensure _all_
-   changes in the codebase (including those not directly made by Gemini) are staged and committed.
-   Craft professional commit messages by thoroughly reviewing _all actual_ changes in the codebase.
-
----
-
-## Knowledge Construction Principles
-
-- **Priority-First:** Always start with the core documentation. It provides the "Source of Truth"
-  for the project's identity.
-- **Selective Contextualization:** Deep-dive only into the relevant domain modules. Ingesting too
-  much context can lead to rigid responses and inability to handle "special cases" that may require
-  pragmatic deviations from convention.
-- **The Balance:** Prioritize Internara-specific conventions, but balance them with **Global
-  Industry Standards** (e.g., PSR, SOLID, Clean Code). The codebase should remain universal and
-  accessible to entry-level developers.
-- **Informed Flexibility:** While conventions are rules, architecture should not be a prison. If a
-  task requires a "convention break" for a better technical outcome, justify it clearly in the
-  planning phase.
+9. **Commit and Push All Changes (Mandatory)** Ensure _all_ changes are staged and committed with professional messages.
 
 ---
 
@@ -187,13 +133,11 @@ Quick reference for essential project verification:
 
 - **Root:** `modules/` (not `app/Modules`).
 - **Isolation:** Modules must be portable. No hard dependencies on other modules' concrete classes.
-- **Database:** UUIDs for primary keys. No physical foreign keys between modules (use indexed UUID
-  columns).
+- **Database:** UUIDs for primary keys. No physical foreign keys between modules.
 
 ### Namespace Convention
 
 Namespaces **must omit the `src` segment**:
-
 - _Correct:_ `namespace Modules\User\Services;`
 - _Location:_ `modules/User/src/Services/UserService.php`
 
@@ -201,47 +145,23 @@ Namespaces **must omit the `src` segment**:
 
 ## Technical Conventions
 
-### Multi-Language Support
+### Multi-Language Support (i11n)
 
-- The application must be built as **multi-language** from the start.
-- Supported locales: **English (`en`)** and **Indonesian (`id`)**.
-- All user-facing strings, exceptions, and validation messages must use translation keys.
+- The application must be built as **multi-language** (EN/ID).
+- **Hard-coding text is PROHIBITED.** Use `__('key')`.
 
 ### Service Layer
 
-- **Role:** The "Brain" of the application. Orchestrates all business logic.
-- **Pattern:** **Contract-First**. Always type-hint contracts, never concrete classes, when
-  injecting services across modules.
-- **Base Class:** Services performing CRUD should extend `Modules\Shared\Services\EloquentQuery`.
-- **Constraint:** Never call `env()`. Use `setting()` for application layer and `config()` for
-  infrastructure layer.
-- **Validation:** Services accept DTOs or validated arrays, not `Request` objects.
+- **Role:** The "Brain" of the application.
+- **Pattern:** **Contract-First**.
+- **Constraint:** Never call `env()`. Use `setting()` for application values (brand, logo, title).
 
 ---
 
 ## GitHub Operations (gh-cli)
 
 You are authorized and encouraged to use the **GitHub CLI (`gh`)** to manage the project's presence
-on GitHub. This ensures that the development process is transparent and well-integrated with
-GitHub's ecosystem.
-
-### Scope of Operations
-
-- **GitHub Synchronization:** When instructed to "synchronize Github" (or "sinkronisasi Github"),
-  this must encompass a full synchronization of the **GitHub Repository, Pull Requests (PR), Issues,
-  Tags, Releases, and GitHub Project** state to ensure consistency between the local and remote
-  environments.
-- **Pull Requests (PR):** Create, list, check status, and draft PRs for completed tasks. Every
-  significant change or version completion should be accompanied by a PR.
-- **Issues:** Create and manage issues to track bugs, features, and technical debt.
-- **Repository Management:** Monitor repository status and perform necessary repository-level
-  configurations.
-- **GitHub Project:** Actively manage tasks within the **'Internara Project'** (GitHub Project).
-  Ensure issues and PRs are correctly linked to the project board.
-    - **Project ID:** `PVT_kwHOA9rvKM4A7HFm` (Number: 2)
-- **Workflows:** Monitor GitHub Actions workflows to ensure CI/CD pipelines are passing.
-- **Documentation Synchronization:** Ensure all local documentation updates are pushed and
-  synchronized with the GitHub repository, maintaining it as the central source of truth.
+on GitHub.
 
 ---
 
@@ -252,7 +172,6 @@ Use the integrated Laravel Boost tools to support efficient development:
 - **Artisan Commands:** `list-artisan-commands`
 - **URL Generation:** `get-absolute-url`
 - **Debugging:** `tinker`, `database-query`, `browser-logs`, `last_error`.
-- **Documentation Search:** Prioritize `search-docs` for Laravel-ecosystem docs. Use
-  `search_file_content` or `glob` for project-local docs under `/docs`.
+- **Documentation Search:** Prioritize `search-docs`.
 
 for more info: [AGENTS.md](../AGENTS.md)

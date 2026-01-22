@@ -1,0 +1,152 @@
+# Application Blueprints: Managing System Evolution
+
+This directory contains **Application Blueprints** for Internara—formal planning artifacts that
+define the **intended evolution** of the system across version series.
+
+> **Governance Mandate:** All Blueprints must derive their authority from the
+> **[Internara Specs](internara-specs.md)**. A Blueprint cannot authorize work that contradicts
+> the Product Specifications without a formal spec update.
+
+Application Blueprints translate **strategic intent** into **architecturally actionable direction**
+_before_ implementation begins and _until_ a version series is formally released.
+
+---
+
+## 1. Purpose of Application Blueprints
+
+Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. This aligns with **Phase 2: System Design** of our SDLC.
+
+They are used to:
+
+- Articulate _why_ a version series exists.
+- Define architectural scope and constraints (Module boundaries, Database changes).
+- Anticipate cross-module dependencies and contracts.
+- Establish criteria for completion (Exit Gates).
+
+They are **not**:
+
+- Task breakdowns (Jira tickets).
+- Development workflows.
+- Release notes.
+- Post-release documentation.
+
+---
+
+## 2. Planning Lifecycle
+
+### 2.1 Blueprint Initiation
+
+Before work begins on a new version series (e.g., `v0.7.x`), an Application Blueprint must be
+created.
+
+At initiation time:
+
+- The **Series Code** is assigned.
+- The blueprint is validated against `internara-specs.md`.
+- The blueprint enters **Active** state.
+
+### 2.2 Mandatory Blueprint Components
+
+Each Application Blueprint **must** contain the following sections.
+
+#### 2.2.1 Series Code & Spec Alignment
+
+- **Series Code:** A unique identifier (e.g., `ARC01-ORCH-01`).
+- **Spec Reference:** Explicit link to the section of `internara-specs.md` being addressed.
+
+#### 2.2.2 Core Problem Statement
+
+A concise articulation of the central problem or opportunity being addressed.
+- What limitation exists today?
+- Why does this version series need to exist?
+
+#### 2.2.3 Architectural Impact
+
+A high-level description of expected system changes, adhering to the **Modular Monolith** guide:
+
+- **Modules:** Affected, New, or Deprecated.
+- **Data Layer:** Schema changes (Must use UUIDs, No physical foreign keys).
+- **Settings:** Application config changes (Must use `setting()` helper).
+
+#### 2.2.4 Contract Definitions
+
+An outline of new or modified **Contracts (Interfaces)** required for cross-module interaction.
+- **Synchronous:** Service Interface definitions.
+- **Asynchronous:** Events & Listeners.
+
+#### 2.2.5 UI/UX Strategy
+
+- **Mobile-First:** How the changes will scale from mobile to desktop.
+- **Multi-Language:** Confirmation of `i11n` support for new features.
+- **Role Access:** Which User Roles interact with these changes.
+
+---
+
+## 3. Exit Criteria (Completion Conditions)
+
+Every Application Blueprint **must explicitly define its exit criteria**. This acts as the **Exit Gate** for the SDLC Construction Phase.
+
+Typical exit criteria include:
+
+- All declared architectural keystones are implemented.
+- **Spec Verification:** The system behavior aligns with `internara-specs.md`.
+- **Quality Gates:** 100% Test Pass Rate, Static Analysis Clean.
+- Documentation (Release Narrative) accurately reflects the realized architecture.
+
+> A blueprint is considered complete when its **intent has been realized** and **verified against specs**.
+
+---
+
+## 4. Blueprint Evolution During Development
+
+Application Blueprints are **living documents** while the version series is under construction.
+
+- Blueprints may be revised if architectural assumptions change.
+- **Spec Sync:** If a Blueprint change contradicts the Specs, the Specs MUST be updated first.
+- Significant deviations must be recorded.
+
+The blueprint remains authoritative **until the version is released**.
+
+---
+
+## 5. Transition to Release Narrative
+
+Once a version is **Released** (Phase 5 of SDLC):
+
+- The Application Blueprint is **archived**.
+- The final system state is documented in the **Release Note** (`docs/versions/vX.X.X.md`).
+
+### 5.1 Synchronization Rule
+
+- The Release Note must reflect the **as-built reality**.
+- Application Blueprints do not persist as sources of truth after release.
+
+> Blueprints describe **intent**. Narratives describe **outcome**.
+
+---
+
+## 6. Forward Outlook: vNext Roadmap
+
+Each Application Blueprint must conclude with a **vNext Roadmap** section.
+
+The vNext Roadmap:
+
+- Identifies logical continuation points after the current series.
+- Captures known limitations or deferred decisions.
+- Provides directional hints—not commitments—for the next series.
+
+This section may include:
+
+- Anticipated architectural refactors.
+- Emerging domain concerns.
+- Technical debt consciously deferred.
+
+---
+
+## 7. Blueprint Index & Status Tracking
+
+For an overview of all Application Blueprints, refer to the **[Internal Table of Contents](../table-of-contents.md)** or the `blueprints/` directory index.
+
+---
+
+_Application Blueprints ensure that Internara evolves deliberately rather than accidentally. By defining intent, strict spec alignment, and clear exit conditions, the system remains adaptable, comprehensible, and resilient as complexity grows._

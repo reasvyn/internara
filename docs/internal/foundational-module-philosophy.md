@@ -5,6 +5,10 @@ modules based on their relationship to business logic and their level of **Porta
 philosophy ensures that we don't accidentally "tangle" universal utilities with specific business
 rules.
 
+> **Spec Alignment:** This hierarchy supports the architectural requirements defined in
+> **[Internara Specs](../internal/internara-specs.md)**, specifically the need for centralized
+> administration and standardized UI across user roles.
+
 ---
 
 ## 1. Portability & Hierarchy Matrix
@@ -26,8 +30,7 @@ on and whether it can be easily reused in another project.
 The `Shared` module is the "Engine Room." It contains components that are **completely agnostic** of
 Internara's domain.
 
-- **Requirement**: Components here must be project-independent. If you move `Shared` to a new
-  Laravel project, it should work out of the box.
+- **Requirement**: Components here must be project-independent.
 - **Contents**:
     - **Concerns**: `HasUuid`, `HasStatuses`, `HasAuditLog`.
     - **Base Classes**: `EloquentQuery`, `BaseServiceContract`.
@@ -43,7 +46,7 @@ The `Core` module is the "Glue." it encapsulates the architectural building bloc
 - **Contents**:
     - Global Permission definitions.
     - Academic Year scoping logic.
-    - System-wide constants.
+    - **Dynamic Settings:** Infrastructure for `setting()` helper.
 
 ## 4. Support Module: The Infrastructure Bridge
 
@@ -59,11 +62,12 @@ The `Support` module handles **Development & Operational** utilities.
 
 The `UI` module is the "Skin." It is the single source of truth for the Internara design system.
 
-- **Purpose**: Encapsulates styling (Tailwind), interactivity (Alpine/Livewire), and accessibility.
+- **Purpose**: Encapsulates styling (**Tailwind v4**), interactivity (Alpine/Livewire), and accessibility.
+- **Mandate:** Must enforce the **Mobile-First** strategy and **Instrument Sans** typography mandated by specs.
 - **Contents**:
-    - Standardized Layouts (`Auth`, `Dashboard`).
+    - Standardized Layouts (`Auth`, `App`).
     - Design System Components (`Button`, `Card`, `Modal`).
-    - Branding assets (Logos, Icons).
+    - **Multi-Language**: UI components must support `__('key')` injection.
 
 ---
 
@@ -75,6 +79,7 @@ Modules like `User`, `Internship`, or `Attendance` represent the actual business
 - **Dependency Rule**: They should primarily depend on `Shared`. If they need `Core` data, they must
   access it through **Contracts** or framework-level **Policies/Gates** to avoid tight coupling with
   the concrete `Core` implementation.
+- **No Physical FKs:** As per specs, domain modules must never use physical foreign key constraints referencing tables outside their own schema.
 
 ---
 
