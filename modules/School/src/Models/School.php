@@ -23,20 +23,6 @@ class School extends Model implements HasMedia
     use InteractsWithMedia;
 
     /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = ['name', 'address', 'email', 'phone', 'fax', 'principal_name'];

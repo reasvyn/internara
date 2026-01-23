@@ -10,9 +10,17 @@ use Modules\Permission\Models\Role;
 use Modules\Permission\Services\Contracts\RoleService as RoleServiceContract;
 use Modules\Shared\Services\EloquentQuery;
 
+/**
+ * Service class for managing Role operations.
+ *
+ * @extends EloquentQuery<Role>
+ */
 class RoleService extends EloquentQuery implements RoleServiceContract
 {
-    use EloquentQuery;
+    /**
+     * The name of the record for exception messages.
+     */
+    protected string $recordName = 'role';
 
     /**
      * RoleService constructor.
@@ -20,30 +28,19 @@ class RoleService extends EloquentQuery implements RoleServiceContract
     public function __construct(Role $model)
     {
         $this->setModel($model);
+        $this->setSearchable(['name', 'module', 'description']);
+        $this->setSortable(['name', 'module', 'created_at']);
     }
 
     /**
-     * List roles with optional filtering and pagination.
-     *
-     * @param array<string, mixed> $filters Filter criteria (e.g., 'search', 'module').
-     * @param int $perPage Number of records per page.
-     * @param array<int, string> $columns Columns to retrieve.
-     *
-     * @return LengthAwarePaginator Paginated list of roles.
+     * {@inheritdoc}
      */
     public function list(
         array $filters = [],
         int $perPage = 10,
         array $columns = ['*'],
     ): LengthAwarePaginator {
-        return $this->model
-            ->query()
-            ->select($columns)
-            ->when($filters['search'] ?? null, function (Builder $query, string $search) {
-                $query
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('module', 'like', "%{$search}%");
-            })
+        return $this->query($filters, $columns)
             ->when($filters['module'] ?? null, function (Builder $query, string $module) {
                 $query->where('module', $module);
             })
@@ -52,17 +49,17 @@ class RoleService extends EloquentQuery implements RoleServiceContract
     }
 
     /**
-     * Sync permissions to a role.
-     *
-     * @param string $id The UUID of the role.
-     * @param array<int, string> $permissions An array of permission names to sync.
-     *
-     * @return Role The role with updated permissions.
+     * {@inheritdoc}
      */
     public function syncPermissions(string $id, array $permissions): Role
     {
         /** @var Role $role */
-        $role = $this->model->findOrFail($id);
+        $role = $this->find($id);
+
+        if (! $role) {
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(Role::class, [$id]);
+        }
+
         $role->syncPermissions($permissions);
 
         return $role;

@@ -19,7 +19,7 @@ class Role extends BaseRole
      *
      * @var list<string>
      */
-    protected $fillable = ['name', 'guard_name', 'module'];
+    protected $fillable = ['name', 'guard_name', 'description', 'module'];
 
     /**
      * Determine if the model should use UUIDs.

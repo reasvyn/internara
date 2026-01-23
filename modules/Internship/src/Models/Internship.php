@@ -4,32 +4,18 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Internship\Database\Factories\InternshipFactory;
 use Modules\School\Models\Concerns\HasSchoolRelation;
+use Modules\Shared\Models\Concerns\HasUuid;
 
 class Internship extends Model
 {
     use HasFactory;
     use HasSchoolRelation;
-    use HasUuids;
-
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+    use HasUuid;
 
     /**
      * The attributes that are mass assignable.

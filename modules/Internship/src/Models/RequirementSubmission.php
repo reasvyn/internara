@@ -22,14 +22,12 @@ class RequirementSubmission extends Model implements HasMedia
      *
      * @var string
      */
-    protected $keyType = 'string';
 
     /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool
      */
-    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.

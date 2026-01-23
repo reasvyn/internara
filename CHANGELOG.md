@@ -67,8 +67,19 @@ insights for institutions and industry partners.
 
 - **Service API Expansion:**
     - Enhanced `JournalService` with `getEngagementStats` for responsiveness tracking.
-
     - Enhanced `AssessmentService` with `getAverageScore` for partner feedback aggregation.
+
+- **Core Engine Refinement (Permission & Shared):**
+    - **Service Architecture:** Refactored `PermissionService` and `RoleService` to correctly extend the `EloquentQuery` abstract class, resolving inheritance-related fatal errors.
+    - **Exception Standardisation:** Integrated `AppException` across permission services for consistent, localized error reporting.
+    - **Model Security:** Added `description` to mass-assignment allowlist (`$fillable`) for `Permission` and `Role` models.
+    - **Schema Cleanup:** Removed redundant primary key properties (`$keyType`, `$incrementing`) across multiple modules (`School`, `Internship`, `Department`, etc.) to favor automated `HasUuid` trait handling.
+    - **Query Optimization:** Standardized permission and role listing using built-in `searchable` and `sortable` configurations.
+
+### 🐛 Fixed
+
+- **Permission Logic:** Fixed fatal PHP errors caused by incorrect trait usage in service classes.
+- **UUID Consistency:** Resolved inconsistent primary key handling by migrating all remaining manual UUID implementations to the `HasUuid` Shared concern.
 
 ---
 
