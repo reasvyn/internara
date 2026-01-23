@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('journal_entries', function (Blueprint $table) {
-            $table->dropColumn('mood');
+        Schema::create('students', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('nisn')->unique();
+            $table->timestamps();
         });
     }
 
@@ -23,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('journal_entries', function (Blueprint $table) {
-            $table->string('mood')->default('neutral');
-        });
+        Schema::dropIfExists('students');
     }
 };

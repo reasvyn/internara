@@ -28,7 +28,23 @@ class Profile extends Model
      *
      * @var list<string>
      */
-    protected $fillable = ['user_id', 'department_id', 'phone', 'address', 'bio', 'nip', 'nisn'];
+    protected $fillable = [
+        'user_id',
+        'department_id',
+        'phone',
+        'address',
+        'bio',
+        'profileable_id',
+        'profileable_type',
+    ];
+
+    /**
+     * Get the associated profileable model (Student, Teacher, etc.).
+     */
+    public function profileable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    {
+        return $this->morphTo();
+    }
 
     /**
      * Create a new factory instance for the model.

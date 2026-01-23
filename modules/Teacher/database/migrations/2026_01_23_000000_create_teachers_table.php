@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('internship_placements', function (Blueprint $table) {
-            $table->uuid('mentor_id')->nullable()->index()->after('internship_id');
+        Schema::create('teachers', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('nip')->unique();
+            $table->timestamps();
         });
     }
 
@@ -23,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('internship_placements', function (Blueprint $table) {
-            $table->dropColumn('mentor_id');
-        });
+        Schema::dropIfExists('teachers');
     }
 };

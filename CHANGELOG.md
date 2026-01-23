@@ -283,20 +283,27 @@ school/department management, industry placement tracking, and localized user in
 
 ## [v0.3.0-alpha] - 2026-01-15 (ARC01-USER)
 
-### Added
+### ✨ Added
+- **Automated PII Masking:**
+    - Centralized PII masking logic in `Modules\Shared\Support\Masker`.
+    - Implemented `PiiMaskingProcessor` for Monolog to automatically mask sensitive data (email, password, phone, nip, nisn) in system logs.
+    - Integrated automatic masking into `config/logging.php`.
+- **Polymorphic Profile System (Refactored):**
+    - Decoupled role-specific data into dedicated `Student` and `Teacher` models.
+    - Implemented polymorphic `profileable` relation in `Profile` model.
+    - Added `HasProfileMorphRelation` trait for seamless role-to-profile access.
+- **Automated Onboarding:**
+    - Enhanced `UserService` and `ProfileService` to automatically initialize the correct polymorphic model (`Student` or `Teacher`) during user creation or role updates.
 
-- **Administrative User Management:** Full CRUD interface with role-based adaptive forms.
-- **Specialized Profiles:** Polymorphic-like relations for **Student** (NISN) and **Teacher** (NIP).
-- **Email Verification:** Mandatory verification for Student and Teacher roles to secure the
-  platform.
-- **Role-Based Redirection:** Intelligent post-login redirection based on user roles.
-- **Institution-Centric Notifications:** Customized email verification and welcome templates.
+### 🛠 Changed
+- **Migration Consolidation:**
+    - Streamlined the entire database schema by merging all "alter" migrations into their original table creation files across all modules.
+    - Modularized infrastructure migrations by moving the `statuses` table to the `Core` module and removing the root `database/migrations` directory.
 
-### Fixed
-
+### 🐛 Fixed
 - **Security Hardening:** Remediated Authentication Bypass in email verification.
 - **Access Control:** Fixed IDOR vulnerabilities via explicit Policy enforcement.
-- **Privacy:** Implemented email masking in application logs to prevent PII leaks.
+- **Privacy:** Centralized and automated email masking in application logs to prevent PII leaks.
 
 ---
 

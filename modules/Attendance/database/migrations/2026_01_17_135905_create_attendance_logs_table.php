@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('registration_id')->index();
             $table->uuid('student_id')->index();
+            $table->string('academic_year', 10)->nullable()->index();
             $table->date('date');
             $table->timestamp('check_in_at')->nullable();
             $table->timestamp('check_out_at')->nullable();

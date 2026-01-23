@@ -62,6 +62,10 @@ class UserService extends EloquentQuery implements Contract
 
         // Initialize Profile
         $profile = $this->profileService->getByUserId($user->id);
+        if ($roles !== null) {
+            $this->profileService->syncProfileable($profile, $roles);
+        }
+
         if (! empty($profileData)) {
             $this->profileService->update($profile->id, $profileData);
         }
@@ -157,13 +161,14 @@ class UserService extends EloquentQuery implements Contract
         $this->handleUserAvatar($updatedUser, $data['avatar_file'] ?? null);
 
         // Update Profile
-        if (! empty($profileData)) {
-            $profile = $this->profileService->getByUserId($updatedUser->id);
-            $this->profileService->update($profile->id, $profileData);
-        }
-
+        $profile = $this->profileService->getByUserId($updatedUser->id);
         if ($roles !== null) {
             $updatedUser->syncRoles($roles);
+            $this->profileService->syncProfileable($profile, Arr::wrap($roles));
+        }
+
+        if (! empty($profileData)) {
+            $this->profileService->update($profile->id, $profileData);
         }
 
         if ($status !== null) {

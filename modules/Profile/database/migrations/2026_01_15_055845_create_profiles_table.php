@@ -20,9 +20,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->text('bio')->nullable();
 
-            // Role-specific fields
-            $table->string('nip')->nullable()->unique()->comment('For Teachers');
-            $table->string('nisn')->nullable()->unique()->comment('For Students');
+            // Polymorphic relationship for role-specific data (Student, Teacher, etc.)
+            $table->nullableMorphs('profileable');
 
             $table->uuid('department_id')->nullable()->index();
 

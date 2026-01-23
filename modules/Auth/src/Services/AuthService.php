@@ -52,8 +52,10 @@ class AuthService implements AuthServiceContract
         ];
 
         if (! Auth::attempt($authCredentials, $remember)) {
-            // Mask email for logging: user@example.com -> u***@example.com
-            $maskedIdentifier = preg_replace('/(?<=.{1}).(?=.*@)/', '*', $identifier);
+            // Mask identifier for logging
+            $maskedIdentifier = Str::contains($identifier, '@')
+                ? \Modules\Shared\Support\Masker::email($identifier)
+                : \Modules\Shared\Support\Masker::sensitive($identifier);
 
             throw new AppException(
                 userMessage: 'user::exceptions.invalid_credentials',
@@ -98,7 +100,7 @@ class AuthService implements AuthServiceContract
             if ($e->getCode() === '23000') {
                 // Duplicate entry SQLSTATE code
                 // Mask email for logging
-                $maskedEmail = preg_replace('/(?<=.{1}).(?=.*@)/', '*', $data['email']);
+                $maskedEmail = \Modules\Shared\Support\Masker::email($data['email']);
 
                 throw new AppException(
                     userMessage: 'records::exceptions.unique_violation',

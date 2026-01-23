@@ -61,6 +61,9 @@ These directives guide all technical workflows for the Internara project.
 - **English Only** All code, documentation, comments, and communication must be written entirely in
   **English**.
 
+- **Directory Exclusion** Always exclude `vendor` and `node_modules` directories when running shell
+  commands, scanning, or using other tools to ensure efficiency and focus on project-specific code.
+
 - **Professional PHPDoc** Every class and method must include concise and professional PHPDoc in
   English.
 

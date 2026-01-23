@@ -16,4 +16,9 @@ interface ProfileService extends EloquentQuery
      * Get or create a profile for a specific user.
      */
     public function getByUserId(string $userId): Profile;
+
+    /**
+     * Synchronize the profileable model based on user roles.
+     */
+    public function syncProfileable(Profile $profile, array $roles): Profile;
 }
