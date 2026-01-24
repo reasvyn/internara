@@ -76,7 +76,6 @@ class AttendanceService extends EloquentQuery implements Contract
             'registration_id' => $registration->id,
             'date' => $today->format('Y-m-d'),
             'check_in_at' => now(),
-            'academic_year' => setting('active_academic_year', '2025/2026'),
         ]);
 
         // Determine status (Late vs Present) based on settings

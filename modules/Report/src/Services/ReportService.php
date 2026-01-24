@@ -61,6 +61,22 @@ class ReportService implements ReportGenerator
 
         \Illuminate\Support\Facades\Storage::disk('local')->put($fileName, $pdf->output());
 
+        // Persist metadata using local model (same module is allowed)
+        \Modules\Report\Models\GeneratedReport::create([
+            'user_id' => auth()->id() ?: app(\Modules\User\Services\Contracts\UserService::class)->first(['id'])?->id,
+            'provider_identifier' => $providerIdentifier,
+            'file_path' => $fileName,
+            'filters' => $filters,
+        ]);
+
         return $fileName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProviders(): Collection
+    {
+        return $this->providers;
     }
 }

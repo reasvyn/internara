@@ -7,11 +7,13 @@ namespace Modules\Attendance\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Shared\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class AttendanceLog extends Model
 {
+    use HasAcademicYear;
     use HasFactory;
     use HasStatus;
     use HasUuid;
@@ -33,7 +35,7 @@ class AttendanceLog extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['registration_id', 'student_id', 'date', 'check_in_at', 'check_out_at'];
+    protected $fillable = ['registration_id', 'student_id', 'academic_year', 'date', 'check_in_at', 'check_out_at'];
 
     /**
      * The attributes that should be cast.

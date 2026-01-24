@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('user_id')->unique()->index();
+            $table->uuid('user_id')->unique()->index();
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->text('bio')->nullable();

@@ -103,7 +103,6 @@ Reflects the stability confidence level.
 Reflects the current state in the lifecycle.
 - **Planned:** Concept phase.
 - **In Progress:** Construction phase.
-- **Stabilizing:** V&V phase.
 - **Released:** Publicly available.
 - **Deprecated:** Scheduled for removal.
 - **Archived:** Historical reference only.

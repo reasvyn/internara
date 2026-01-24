@@ -8,47 +8,28 @@ defines the standards, patterns, and workflows used to build Internara.
 ## 1. Architecture & Core Concepts
 
 - **[Internara Specs](internara-specs.md)**: **Single Source of Truth** - The authoritative specification for the entire project.
-- **[Architecture Guide](architecture-guide.md)**: Deep-dive into Modular Monolith layers and
-  isolation rules.
-- **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules
-  (Core, Shared, UI, etc.).
-- **[EloquentQuery Service](eloquent-query-service.md)**: Standardized service layer implementation.
-- **[Shared Model Concerns](shared-concerns.md)**: Reusable behaviors (UUID, Status, Scoping).
-- **[Module Provider Concerns](module-provider-concerns.md)**: Standardized module bootstrapping
-  logic.
-- **[Service Binding & Auto-Discovery](service-binding-auto-discovery.md)**: Automatic dependency
-  injection mechanics.
+- **[Architecture Guide](architecture-guide.md)**: Deep-dive into Modular Monolith layers, bootstrapping, and auto-discovery.
+- **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules (Core, Shared, UI, etc.).
 
 ## 2. Standards & Conventions
 
-- **[Development Conventions](development-conventions.md)**: Authorities on naming, namespaces, and
-  directory structures.
-- **[Conceptual Best Practices](conceptual-best-practices.md)**: Philosophical foundations of the
-  project.
-- **[UI/UX Development Guide](ui-ux-development-guide.md)**: Building interfaces with
-  MaryUI/DaisyUI.
-- **[Exception Handling Guidelines](exception-handling-guidelines.md)**: Standardized error
-  reporting.
-- **[Writing Guide](writing-guide.md)**: Standards for technical documentation.
+- **[Development Conventions](development-conventions.md)**: Authorities on naming, namespaces, service layer patterns (EloquentQuery), and model concerns.
+- **[UI/UX Development Guide](ui-ux-development-guide.md)**: Building interfaces with MaryUI/DaisyUI.
+- **[Exception Handling Guidelines](exception-handling-guidelines.md)**: Standardized error reporting.
 
 ## 3. Engineering Workflows & Blueprints
 
-- **[Development Workflow](development-workflow.md)**: Feature engineering lifecycle (Plan -> Build
-  -> Sync).
-- **[Blueprints Guidelines](blueprints-guidelines.md)**: Standards for managing system evolution
-  via architectural blueprints.
-- **[Application Blueprints Index](blueprints/table-of-contents.md)**: Pre-development architectural
-  blueprints.
+- **[Development Workflow](development-workflow.md)**: Feature engineering lifecycle and documentation standards.
+- **[Blueprints Guidelines](blueprints-guidelines.md)**: Standards for managing system evolution via architectural blueprints.
+- **[Application Blueprints Index](blueprints/table-of-contents.md)**: Pre-development architectural blueprints.
 - **[Software Lifecycle](software-lifecycle.md)**: SDLC phases from concept to release.
 - **[Release Guidelines](release-guidelines.md)**: Versioning standards and deployment protocols.
 - **[Artisan Commands Reference](artisan-commands-reference.md)**: Catalog of modular generators.
 
 ## 4. Security & Authorization
 
-- **[Role & Permission Management](role-permission-management.md)**: Implementing modular RBAC.
+- **[Role & Permission Management](role-permission-management.md)**: Implementing modular RBAC, seeders, and UI components.
 - **[Policy Patterns](policy-patterns.md)**: Logic for protecting resources.
-- **[Permission Seeders](permission-seeders.md)**: Bootstrapping foundational access.
-- **[Permission UI Components](permission-ui-components.md)**: Shared elements for access control.
 
 ## 5. Quality Assurance
 

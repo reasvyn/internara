@@ -18,4 +18,11 @@ interface ReportGenerator
      * Generate a report immediately (Synchronous).
      */
     public function generate(string $providerIdentifier, array $filters = []): string;
+
+    /**
+     * Get all registered report providers.
+     *
+     * @return \Illuminate\Support\Collection<string, \Modules\Shared\Contracts\ExportableDataProvider>
+     */
+    public function getProviders(): \Illuminate\Support\Collection;
 }

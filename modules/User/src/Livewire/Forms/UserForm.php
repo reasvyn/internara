@@ -6,6 +6,7 @@ namespace Modules\User\Livewire\Forms;
 
 use Illuminate\Validation\Rule;
 use Livewire\Form;
+use Modules\Department\Services\Contracts\DepartmentService;
 
 class UserForm extends Form
 {
@@ -41,7 +42,19 @@ class UserForm extends Form
             'status' => ['required', 'string', Rule::in(['active', 'inactive'])],
             'profile' => ['nullable', 'array'],
             'profile.identity_number' => ['nullable', 'string'], // NISN or NIP
-            'profile.department_id' => ['nullable', 'exists:departments,id'],
+            'profile.department_id' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if (! $value) {
+                        return;
+                    }
+                    /** @var DepartmentService $service */
+                    $service = app(DepartmentService::class);
+                    if (! $service->find($value)) {
+                        $fail(__('validation.exists'));
+                    }
+                },
+            ],
             'profile.phone' => ['nullable', 'string'],
         ];
     }

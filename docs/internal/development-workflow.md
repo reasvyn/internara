@@ -86,12 +86,16 @@ This phase corresponds to the **Verification & Validation** phase of the SDLC.
 
 Work is strictly **incomplete** until documentation converges with code.
 
-### 4.1 Documentation Updates
+### 4.1 Documentation Standards (Artifact Synchronization)
 
-- **Version Notes:** Update the narrative in `docs/versions/`.
-- **Changelog:** Add entry under `[Unreleased]`.
-- **Technical Docs:** Update Module READMEs if architecture changed.
-- **Specs:** If the implementation clarified a spec detail, update `internara-specs.md` (via formal approval only).
+Documentation is an engineering requirement. Work is "incomplete" until documentation converges with code.
+
+- **Analytical Precision**: Documentation must be grounded in facts and architectural reality.
+- **English-Only**: All internal technical documentation must be written in professional English.
+- **Terminology Consistency**: Use standardized terms (e.g., `setting()`, `Blueprint`, `Series Code`).
+- **Markdown Only**: Use Markdown (`.md`) exclusively for all technical guides.
+- **Narrative Version Notes**: Update the narrative in `docs/versions/` to reflect changes.
+- **SSoT**: No document may contradict the **[Internara Specs](../internal/internara-specs.md)**.
 
 ### 4.2 Application Metadata
 

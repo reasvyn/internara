@@ -37,6 +37,11 @@ class TeacherServiceProvider extends ServiceProvider
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/teacher',
                 ],
+                'ui::components.menu-item#reports' => [
+                    'title' => __('report::ui.title'),
+                    'icon' => 'tabler.file-analytics',
+                    'link' => '/teacher/reports',
+                ],
             ],
         ];
     }

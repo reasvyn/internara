@@ -14,6 +14,7 @@ Internara project. It acts as the central entry point for our testing infrastruc
 - **TDD First**: Embrace writing tests alongside feature development.
 - **Comprehensive Coverage**: Every new feature, bug fix, or modification must be accompanied by
   relevant tests.
+- **Modular Isolation**: Tests must respect the same isolation boundaries as the application code. A test in `Module A` must not directly instantiate or assert against concrete models in `Module B`. Use **Service Contracts** or specific module factories to maintain decoupling.
 - **Verification & Validation (V&V)**: Tests serve as the technical proof that the system meets
   the authoritative specs.
 

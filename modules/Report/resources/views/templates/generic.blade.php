@@ -20,7 +20,33 @@
     </div>
 
     <div class="content">
-        @if(isset($data['rows']))
+        @if(isset($data['sections']))
+            @foreach($data['sections'] as $section)
+                <div style="margin-top: 20px;">
+                    <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">{{ $section['title'] }}</h3>
+                    @if(isset($section['rows']))
+                        <table>
+                            <thead>
+                                <tr>
+                                    @foreach($section['headers'] as $header)
+                                        <th>{{ $header }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($section['rows'] as $row)
+                                    <tr>
+                                        @foreach($row as $cell)
+                                            <td>{{ $cell }}</td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+            @endforeach
+        @elseif(isset($data['rows']))
             <table>
                 <thead>
                     <tr>
@@ -33,7 +59,7 @@
                     @foreach($data['rows'] as $row)
                         <tr>
                             @foreach($row as $cell)
-                                <td>{{ $row[$cell] ?? $cell }}</td>
+                                <td>{{ $cell }}</td>
                             @endforeach
                         </tr>
                     @endforeach

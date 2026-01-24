@@ -99,4 +99,12 @@ class InternshipRegistration extends Model
     {
         return $this->user()->whereRelation('roles', 'name', 'student');
     }
+
+    /**
+     * Get the placement history for this registration.
+     */
+    public function placementHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PlacementHistory::class, 'registration_id');
+    }
 }

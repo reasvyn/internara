@@ -49,8 +49,6 @@ class JournalService extends EloquentQuery implements Contract
      */
     public function create(array $data): JournalEntry
     {
-        $data['academic_year'] = setting('active_academic_year', '2025/2026');
-
         return parent::create($data);
     }
 

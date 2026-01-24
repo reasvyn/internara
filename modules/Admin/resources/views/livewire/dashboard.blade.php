@@ -43,6 +43,8 @@
                         </div>
                     @endscope
                 </x-ui::table>
+            </x-ui::card>
+            
             <x-ui::card title="{{ __('Siswa Dalam Pantauan (At-Risk)') }}" shadow separator class="border-error">
                 <x-ui::table :rows="$atRiskStudents" :headers="[
                     ['key' => 'student_name', 'label' => __('Nama Siswa')],

@@ -29,27 +29,25 @@ insights for institutions and industry partners.
 
 - **Reporting Engine (Keystone 1):**
     - Created the `Report` module to handle asynchronous PDF generation.
-
     - Defined the `ExportableDataProvider` contract in `Shared` for cross-module data extraction.
-
     - Implemented `ReportService` with support for both synchronous and queued generation.
-
     - Integrated `GenerateReportJob` for high-performance background processing.
-
+    - **History Tracking:** Implemented `GeneratedReport` model and service to persist report 
+      metadata and enable user-specific report history.
+    - **Report UI:** Created `ReportIndex` Livewire component with dynamic filtering and history
+      download capabilities.
     - Created `InternshipClassReportProvider` for class-wide status reports.
-
     - Added **Partner Engagement Analytics** report provider with responsiveness and feedback
       metrics.
+    - Added **Competency Achievement Summary** report provider (Placeholder logic for v0.10).
 
 - **Placement Lifecycle Tracking:**
     - Implemented **Placement History** log to track student journeys across sequential or
-
         rotational programs.
-
+    - **Traceability UI:** Integrated a **Placement Timeline** modal into the registration 
+        management interface for transparent audit trails.
     - Created `PlacementLogger` service for transparent audit trails of placement reassignments.
-
     - Added `reassignPlacement` capability to `InternshipRegistrationService` with mandatory
-
         logging.
 
 - **Analytical Dashboard:**
@@ -71,6 +69,7 @@ insights for institutions and industry partners.
 
 - **Core Engine Refinement (Permission & Shared):**
     - **Service Architecture:** Refactored `PermissionService` and `RoleService` to correctly extend the `EloquentQuery` abstract class, resolving inheritance-related fatal errors.
+    - **Data Scoping:** Standardized the `HasAcademicYear` trait in the `Shared` module to unify multi-year data integrity across operational modules.
     - **Exception Standardisation:** Integrated `AppException` across permission services for consistent, localized error reporting.
     - **Model Security:** Added `description` to mass-assignment allowlist (`$fillable`) for `Permission` and `Role` models.
     - **Schema Cleanup:** Removed redundant primary key properties (`$keyType`, `$incrementing`) across multiple modules (`School`, `Internship`, `Department`, etc.) to favor automated `HasUuid` trait handling.
@@ -79,7 +78,9 @@ insights for institutions and industry partners.
 ### 🐛 Fixed
 
 - **Permission Logic:** Fixed fatal PHP errors caused by incorrect trait usage in service classes.
-- **UUID Consistency:** Resolved inconsistent primary key handling by migrating all remaining manual UUID implementations to the `HasUuid` Shared concern.
+- **UUID Consistency:** 
+    - Resolved inconsistent primary key handling by migrating all remaining manual UUID implementations to the `HasUuid` Shared concern.
+    - Standardized `user_id` column type in the `profiles` table migration to `uuid` to align with identity standards.
 
 ---
 

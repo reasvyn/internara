@@ -42,6 +42,7 @@
 
                 @scope('actions', $registration)
                     <div class="flex gap-2">
+                        <x-ui::button icon="tabler.history" class="btn-ghost btn-sm text-secondary" wire:click="viewHistory('{{ $registration->id }}')" tooltip="{{ __('Riwayat Penempatan') }}" />
                         @if($registration->latestStatus()?->name !== 'active')
                             <x-ui::button icon="tabler.check" class="btn-ghost btn-sm text-success" wire:click="approve('{{ $registration->id }}')" tooltip="{{ __('shared::ui.approve') }}" />
                         @endif
@@ -135,5 +136,33 @@
                 <x-ui::button label="{{ __('Proses Penempatan') }}" type="submit" class="btn-primary" spinner="executeBulkPlace" />
             </x-slot:actions>
         </x-ui::form>
+    </x-ui::modal>
+
+    {{-- History Modal --}}
+    <x-ui::modal wire:model="historyModal" title="{{ __('Riwayat Penempatan Siswa') }}" separator>
+        @if($historyId)
+            <div class="flex flex-col gap-4">
+                @forelse($this->history as $log)
+                    <div class="flex gap-4 border-l-2 border-primary/30 pl-4 py-2 relative">
+                        <div class="absolute -left-[5px] top-4 w-2 h-2 rounded-full bg-primary"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <span class="font-bold text-sm uppercase text-primary">{{ $log->action }}</span>
+                                <span class="text-xs opacity-50">{{ $log->created_at->format('d M Y, H:i') }}</span>
+                            </div>
+                            <div class="text-sm font-semibold mt-1">{{ $log->placement?->company_name ?? __('N/A') }}</div>
+                            @if($log->reason)
+                                <div class="text-xs opacity-70 italic mt-1">"{{ $log->reason }}"</div>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center py-8 opacity-50">{{ __('Belum ada riwayat penempatan.') }}</p>
+                @endforelse
+            </div>
+        @endif
+        <x-slot:actions>
+            <x-ui::button label="{{ __('Tutup') }}" wire:click="$set('historyModal', false)" />
+        </x-slot:actions>
     </x-ui::modal>
 </div>

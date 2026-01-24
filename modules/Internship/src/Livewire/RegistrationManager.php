@@ -24,6 +24,10 @@ class RegistrationManager extends Component
 
     public bool $bulkPlaceModal = false;
 
+    public bool $historyModal = false;
+
+    public ?string $historyId = null;
+
     public function boot(InternshipRegistrationService $registrationService): void
     {
         $this->service = $registrationService;
@@ -116,6 +120,32 @@ class RegistrationManager extends Component
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
         }
+    }
+
+    /**
+     * Open the history modal for a registration.
+     */
+    public function viewHistory(string $id): void
+    {
+        $this->historyId = $id;
+        $this->historyModal = true;
+    }
+
+    /**
+     * Get history for the current record.
+     */
+    public function getHistoryProperty(): \Illuminate\Support\Collection
+    {
+        if (! $this->historyId) {
+            return collect();
+        }
+
+        return app(InternshipRegistrationService::class)
+            ->find($this->historyId)
+            ->placementHistory()
+            ->with('placement')
+            ->latest()
+            ->get();
     }
 
     public function render()

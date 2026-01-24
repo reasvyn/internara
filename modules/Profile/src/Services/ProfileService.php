@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Services;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService as Contract;
 use Modules\Shared\Services\EloquentQuery;
@@ -16,6 +18,17 @@ class ProfileService extends EloquentQuery implements Contract
     public function __construct(Profile $model)
     {
         $this->setModel($model);
+    }
+
+    /**
+     * Define the HasOne relationship for the User model.
+     */
+    public function defineHasOne(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): HasOne {
+        return $related->hasOne(Profile::class, $foreignKey ?: 'user_id', $localKey);
     }
 
     /**

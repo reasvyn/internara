@@ -63,6 +63,11 @@ class AdminServiceProvider extends ServiceProvider
                     'icon' => 'tabler.activity',
                     'link' => '/admin/jobs',
                 ],
+                'ui::components.menu-item#reports' => [
+                    'title' => __('report::ui.title'),
+                    'icon' => 'tabler.file-analytics',
+                    'link' => '/admin/reports',
+                ],
             ],
         ];
     }

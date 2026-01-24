@@ -31,7 +31,7 @@ This table represents the **authoritative status** of each version series.
 
 | Version    | Maturity (Stage) | Support Policy | Status             |
 | :--------- | :--------------- | :------------- | :----------------- |
-| **v0.8.x** | Alpha            | Snapshot       | In Progress        |
+| **v0.8.x** | Alpha            | Snapshot       | Released           |
 | **v0.7.x** | Alpha            | Snapshot       | Released           |
 | **v0.6.x** | Alpha            | Snapshot       | Released           |
 | **v0.5.x** | Alpha            | EOL            | Released (EOL)     |
@@ -41,21 +41,17 @@ This table represents the **authoritative status** of each version series.
 
 ## 3. Release Narratives
 
-### In Progress (Active Construction)
+### Latest Released Version
 
 - **[v0.8.0-alpha](v0.8.0-alpha.md)** — _Reporting & Intelligence_
   Focus: Competency achievement reports and on-site student condition visualization.
 
 ---
 
-### Latest Released Version
+### Historical Archive
 
 - **[v0.7.0-alpha](v0.7.0-alpha.md)** — _Administrative Automation_
   Focus: Automated prerequisite checks and structured documentation management.
-
----
-
-### Historical Archive
 
 - **[v0.6.0-alpha](v0.6.0-alpha.md)** — _Assessment & Workspaces_
   Introduced role-specific workspaces for Instructors, Staff, and Students.

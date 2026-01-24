@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Journal\Database\Factories\JournalEntryFactory;
+use Modules\Shared\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
@@ -15,6 +16,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class JournalEntry extends Model implements HasMedia
 {
+    use HasAcademicYear;
     use HasFactory;
     use HasStatus;
     use HasUuid;
@@ -40,6 +42,7 @@ class JournalEntry extends Model implements HasMedia
     protected $fillable = [
         'registration_id',
         'student_id',
+        'academic_year',
         'date',
         'work_topic',
         'activity_description',

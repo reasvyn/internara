@@ -59,7 +59,24 @@ if (!auth()->user()->can('user.delete')) {
 
 ---
 
-## 3. Mandatory Policies
+## 3. Shared UI Components
+
+The `Permission` module provides pre-built UI components to simplify access control management.
+
+### 3.1 Role & Permission Selectors
+Used in user creation or editing forms to assign access levels.
+
+- **`x-permission::role-select`**: A multi-select component that lists all available system roles (localized). Role names are automatically translated via `__('core::roles.{name}')`.
+- **`x-permission::permission-list`**: A checkbox-style list for selecting individual granular permissions.
+
+### 3.2 Conditional Display Rules
+1. **Fail Silently**: If a user doesn't have access, hide the element entirely.
+2. **Breadcrumbs & Nav**: Ensure that sidebar links are also protected via `@can`.
+3. **Localize**: Always use translation keys for any error messages or labels.
+
+---
+
+## 4. Mandatory Policies
 
 Every Eloquent model **must** have a corresponding Policy class. This centralizes authorization
 logic and allows for complex ownership checks.
@@ -76,12 +93,37 @@ public function update(User $user, Journal $journal)
 
 ---
 
-## 4. Seeding & Syncing
+## 5. Seeding & Synchronization
 
-Permissions are defined within each module's `Database/Seeders` directory.
+Permissions are distributed across the modules that "own" the functionality.
 
-- Use the **`PermissionService`** to safely register and assign permissions during installation.
-- **Command**: `php artisan permission:sync` (Custom command to refresh all modular permissions).
+### 5.1 Implementing a Module Seeder
+Every module that introduces new permissions should have a seeder class in its `database/seeders` directory. Use the `PermissionService` (via Contract) to ensure that permissions are created idempotently.
+
+```php
+namespace Modules\Attendance\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Modules\Permission\Services\Contracts\PermissionServiceInterface;
+
+class AttendancePermissionSeeder extends Seeder
+{
+    public function run(PermissionServiceInterface $service): void
+    {
+        $permissions = ['attendance.view', 'attendance.check-in', 'attendance.report'];
+
+        foreach ($permissions as $name) {
+            $service->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+        }
+    }
+}
+```
+
+### 5.2 Synchronization
+After adding new permissions to a seeder, run the synchronization command:
+```bash
+php artisan permission:sync
+```
 
 ---
 

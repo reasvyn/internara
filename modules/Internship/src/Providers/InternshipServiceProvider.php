@@ -48,6 +48,9 @@ class InternshipServiceProvider extends ServiceProvider
             $reportService->registerProvider(
                 new \Modules\Internship\Reports\PartnerEngagementReportProvider,
             );
+            $reportService->registerProvider(
+                new \Modules\Internship\Reports\CompetencyAchievementReportProvider,
+            );
         }
     }
 

@@ -71,7 +71,6 @@ Status reflects the **current reality** of a version at a given time.
 | ----------- | ------------------------------------------- |
 | Planned     | Identified in **Specs** but not implemented.|
 | In Progress | Under active development (Construction).    |
-| Stabilizing | Feature-frozen, Verification phase.         |
 | Released    | Publicly tagged and distributed.            |
 | Deprecated  | Still accessible but no longer recommended. |
 | Archived    | Closed and historically preserved.          |
@@ -121,21 +120,14 @@ Entries must describe **impact and intent**, not implementation minutiae.
 For each significant milestone, Internara produces a **Release Note**—a human-centric narrative
 describing the version's value.
 
-These documents:
+> **Important:** Marking a version as **Released** does NOT automatically trigger the archival 
+> of its blueprint. The Application Blueprint must remain in the active directory until 
+> explicit permission for archival is granted.
 
-- Reside in `docs/versions/`.
-- Are immutable once the version is released.
-- Must be written in **friendly, accessible language**.
-- **Must reference the Spec Milestone** that this release fulfills.
+### 5.1 Synchronization Rule
 
-**Structure:**
-
-1.  **Metadata**: Version, Series Code, release date.
-2.  **Spec Milestone**: Explicit link to the addressed spec section.
-3.  **Overview**: A high-level summary of "What's New".
-4.  **Key Highlights**: The core value delivered to the user (use emojis and clear headers).
-5.  **Stability & Quality**: Brief mention of reliability improvements.
-6.  **Forward Outlook**: What users can expect next.
+- The Release Note must reflect the **as-built reality**.
+- Blueprints describe **intent**. Narratives describe **outcome**.
 
 ---
 
@@ -157,6 +149,10 @@ A version may be marked as `Released` when the following minimum conditions are 
 Versions transitioned to **EOL (End of Life)** or **Archived** status require specific technical
 handling.
 
+> **Mandatory Protocol:** Transitioning a version to **Archived** status and performing physical 
+> artifact archival (e.g., moving blueprints to the archived directory) is strictly prohibited 
+> without explicit, prior permission from the project lead.
+
 ### 7.1 GitHub Mechanics
 
 - **Tag Preservation**: Tags for EOL/Archived versions are **immutable**.
@@ -170,7 +166,8 @@ handling.
 
 ### 7.3 Artifact Synchronization
 
-- **Blueprint Archival**: Formal Application Blueprints are moved to `docs/internal/blueprints/archived/`.
+- **Blueprint Archival**: Formal Application Blueprints may be moved to 
+  `docs/internal/blueprints/archived/` ONLY after receiving explicit permission.
 - **Narrative Visibility**: User-facing release notes for EOL versions remain visible.
 
 ---

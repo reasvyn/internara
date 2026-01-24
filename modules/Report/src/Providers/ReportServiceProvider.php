@@ -39,6 +39,7 @@ class ReportServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Report\Services\Contracts\ReportGenerator::class => \Modules\Report\Services\ReportService::class,
+            \Modules\Report\Services\Contracts\GeneratedReportService::class => \Modules\Report\Services\GeneratedReportService::class,
         ];
     }
 
@@ -48,7 +49,7 @@ class ReportServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerModule();
-        $this->app->singleton(\Modules\Report\Services\ReportService::class);
+        $this->app->singleton(\Modules\Report\Services\Contracts\ReportGenerator::class, \Modules\Report\Services\ReportService::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }

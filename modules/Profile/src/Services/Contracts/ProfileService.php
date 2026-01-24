@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Services\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Profile\Models\Profile;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
@@ -12,6 +14,11 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  */
 interface ProfileService extends EloquentQuery
 {
+    /**
+     * Define the HasOne relationship for the User model.
+     */
+    public function defineHasOne(Model $related, ?string $foreignKey = null, ?string $localKey = null): HasOne;
+
     /**
      * Get or create a profile for a specific user.
      */
