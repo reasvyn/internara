@@ -4,9 +4,9 @@ In Internara, exception handling is treated as a core business concern. We aim t
 feedback to users while ensuring that developers have the analytical data needed to resolve issues
 quickly.
 
-> **Governance Mandate:** Exception handling must ensure system integrity and security as defined
-> in the **[Internara Specs](../internal/internara-specs.md)**. Sensitive data must never be
-> exposed through error messages.
+> **Governance Mandate:** Exception handling must ensure system integrity and security as defined in
+> the **[Internara Specs](../internal/internara-specs.md)**. Sensitive data must never be exposed
+> through error messages.
 
 ---
 
@@ -36,9 +36,9 @@ presented to the user as a generic "System Error" in production.
 All exception messages **MUST** be localized.
 
 - **Module-Specific Exceptions:** Use the `module::exceptions.key` pattern.
-  - *Example:* `__('journal::exceptions.locked')`
+    - _Example:_ `__('journal::exceptions.locked')`
 - **General Exceptions:** Use the `exception::messages.key` pattern.
-  - *Example:* `__('exception::messages.unauthorized')`
+    - _Example:_ `__('exception::messages.unauthorized')`
 
 ---
 
@@ -70,7 +70,8 @@ To maintain privacy and comply with security specs:
 - **PII Masking**: The global logger automatically masks fields like `email`, `password`, and
   `phone` before writing to logs.
 - **Trace Context**: Logs include the `user_id` and `correlation_id` for traceability.
-- **No Hard-coding:** Error messages must never be hardcoded in English or Indonesian within the PHP code.
+- **No Hard-coding:** Error messages must never be hardcoded in English or Indonesian within the PHP
+  code.
 
 ---
 

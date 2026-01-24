@@ -41,19 +41,27 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
 
         $registrations = $query->get();
 
-        $rows = $registrations->map(function ($reg) {
-            // Placeholder for competency achievement logic (to be expanded in v0.10.0)
-            return [
-                'Student Name' => $reg->user->name,
-                'Placement' => $reg->placement?->company_name ?? '-',
-                'Technical Skills' => 'N/A', // Placeholder
-                'Soft Skills' => 'N/A',      // Placeholder
-                'Total Progress' => '0%',    // Placeholder
-            ];
-        })->toArray();
+        $rows = $registrations
+            ->map(function ($reg) {
+                // Placeholder for competency achievement logic (to be expanded in v0.10.0)
+                return [
+                    'Student Name' => $reg->user->name,
+                    'Placement' => $reg->placement?->company_name ?? '-',
+                    'Technical Skills' => 'N/A', // Placeholder
+                    'Soft Skills' => 'N/A', // Placeholder
+                    'Total Progress' => '0%', // Placeholder
+                ];
+            })
+            ->toArray();
 
         return [
-            'headers' => ['Student Name', 'Placement', 'Technical Skills', 'Soft Skills', 'Total Progress'],
+            'headers' => [
+                'Student Name',
+                'Placement',
+                'Technical Skills',
+                'Soft Skills',
+                'Total Progress',
+            ],
             'rows' => $rows,
         ];
     }

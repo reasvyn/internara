@@ -3,8 +3,8 @@
 Layout components are the scaffolding of the Internara application. They manage the global HTML
 structure, meta-tags, responsive containers, and modular UI injection points.
 
-> **Spec Alignment:** Layouts implement the **Mobile-First** and **Visual Identity** requirements
-> of the **[Internara Specs](../../internara-specs.md)**.
+> **Spec Alignment:** Layouts implement the **Mobile-First** and **Visual Identity** requirements of
+> the **[Internara Specs](../../internara-specs.md)**.
 
 ---
 
@@ -27,6 +27,7 @@ This component is the engine of our **Mobile-First** strategy.
 - **Primary Color:** All layout accents (active links, border highlights) use **Emerald Green**.
 
 ### Supported Slots:
+
 - `sidebar`: The navigation area (Drawer-compatible).
 - `actions`: Page-level primary actions (Optimized for touch targets on mobile).
 - `header`: Page title and breadcrumbs (Responsive sizing).
@@ -49,4 +50,5 @@ Used for Auth pages (Login) and Public Verification (Certificates).
 
 ---
 
-_Layouts ensure that whether a user is an Instructor on a desktop or a Student on a phone, the Internara experience remains cohesive and professional._
+_Layouts ensure that whether a user is an Instructor on a desktop or a Student on a phone, the
+Internara experience remains cohesive and professional._

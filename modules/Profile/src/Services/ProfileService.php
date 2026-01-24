@@ -50,11 +50,15 @@ class ProfileService extends EloquentQuery implements Contract
         }
 
         if (in_array('student', $roles)) {
-            $student = \Modules\Student\Models\Student::create(['nisn' => 'PENDING-'.(string) \Illuminate\Support\Str::uuid()]);
+            $student = \Modules\Student\Models\Student::create([
+                'nisn' => 'PENDING-'.(string) \Illuminate\Support\Str::uuid(),
+            ]);
             $profile->profileable()->associate($student);
             $profile->save();
         } elseif (in_array('teacher', $roles)) {
-            $teacher = \Modules\Teacher\Models\Teacher::create(['nip' => 'PENDING-'.(string) \Illuminate\Support\Str::uuid()]);
+            $teacher = \Modules\Teacher\Models\Teacher::create([
+                'nip' => 'PENDING-'.(string) \Illuminate\Support\Str::uuid(),
+            ]);
             $profile->profileable()->associate($teacher);
             $profile->save();
         }

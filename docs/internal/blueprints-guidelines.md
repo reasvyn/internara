@@ -4,8 +4,8 @@ This directory contains **Application Blueprints** for Internara—formal planni
 define the **intended evolution** of the system across version series.
 
 > **Governance Mandate:** All Blueprints must derive their authority from the
-> **[Internara Specs](internara-specs.md)**. A Blueprint cannot authorize work that contradicts
-> the Product Specifications without a formal spec update.
+> **[Internara Specs](internara-specs.md)**. A Blueprint cannot authorize work that contradicts the
+> Product Specifications without a formal spec update.
 
 Application Blueprints translate **strategic intent** into **architecturally actionable direction**
 _before_ implementation begins and _until_ a version series is formally released.
@@ -14,7 +14,8 @@ _before_ implementation begins and _until_ a version series is formally released
 
 ## 1. Purpose of Application Blueprints
 
-Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. This aligns with **Phase 2: System Design** of our SDLC.
+Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. This
+aligns with **Phase 2: System Design** of our SDLC.
 
 They are used to:
 
@@ -57,6 +58,7 @@ Each Application Blueprint **must** contain the following sections.
 #### 2.2.2 Core Problem Statement
 
 A concise articulation of the central problem or opportunity being addressed.
+
 - What limitation exists today?
 - Why does this version series need to exist?
 
@@ -71,6 +73,7 @@ A high-level description of expected system changes, adhering to the **Modular M
 #### 2.2.4 Contract Definitions
 
 An outline of new or modified **Contracts (Interfaces)** required for cross-module interaction.
+
 - **Synchronous:** Service Interface definitions.
 - **Asynchronous:** Events & Listeners.
 
@@ -84,7 +87,8 @@ An outline of new or modified **Contracts (Interfaces)** required for cross-modu
 
 ## 3. Exit Criteria (Completion Conditions)
 
-Every Application Blueprint **must explicitly define its exit criteria**. This acts as the **Exit Gate** for the SDLC Construction Phase.
+Every Application Blueprint **must explicitly define its exit criteria**. This acts as the **Exit
+Gate** for the SDLC Construction Phase.
 
 Typical exit criteria include:
 
@@ -93,7 +97,8 @@ Typical exit criteria include:
 - **Quality Gates:** 100% Test Pass Rate, Static Analysis Clean.
 - Documentation (Release Narrative) accurately reflects the realized architecture.
 
-> A blueprint is considered complete when its **intent has been realized** and **verified against specs**.
+> A blueprint is considered complete when its **intent has been realized** and **verified against
+> specs**.
 
 ---
 
@@ -145,8 +150,11 @@ This section may include:
 
 ## 7. Blueprint Index & Status Tracking
 
-For an overview of all Application Blueprints, refer to the **[Internal Table of Contents](../table-of-contents.md)** or the `blueprints/` directory index.
+For an overview of all Application Blueprints, refer to the
+**[Internal Table of Contents](../table-of-contents.md)** or the `blueprints/` directory index.
 
 ---
 
-_Application Blueprints ensure that Internara evolves deliberately rather than accidentally. By defining intent, strict spec alignment, and clear exit conditions, the system remains adaptable, comprehensible, and resilient as complexity grows._
+_Application Blueprints ensure that Internara evolves deliberately rather than accidentally. By
+defining intent, strict spec alignment, and clear exit conditions, the system remains adaptable,
+comprehensible, and resilient as complexity grows._

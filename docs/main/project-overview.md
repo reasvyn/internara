@@ -18,11 +18,13 @@ ecosystem.
 ## 1. Vision & Purpose
 
 ### The Vision
+
 To deliver a **minimalist, highly structured, and resilient** platform for vocational internship
 (PKL) governance. Internara prioritizes ease of use and reliability, ensuring that the system
 remains effective even as the number of users grows.
 
 ### The Problem Space
+
 Vocational internships often suffer from a "visibility gap." student progress is tracked via
 fragmented manual logs, and assessments are often subjective or delayed. Internara provides:
 

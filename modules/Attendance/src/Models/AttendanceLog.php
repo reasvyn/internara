@@ -35,7 +35,14 @@ class AttendanceLog extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['registration_id', 'student_id', 'academic_year', 'date', 'check_in_at', 'check_out_at'];
+    protected $fillable = [
+        'registration_id',
+        'student_id',
+        'academic_year',
+        'date',
+        'check_in_at',
+        'check_out_at',
+    ];
 
     /**
      * The attributes that should be cast.

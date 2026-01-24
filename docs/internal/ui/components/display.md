@@ -1,7 +1,7 @@
 # UI Components: Data Display
 
-Display components present complex data in a readable manner, following the **Minimalist** 
-aesthetic defined in the **[Internara Specs](../../internara-specs.md)**.
+Display components present complex data in a readable manner, following the **Minimalist** aesthetic
+defined in the **[Internara Specs](../../internara-specs.md)**.
 
 ---
 
@@ -18,10 +18,10 @@ Primary container for UI sections.
 
 Standardized data tables for list views.
 
-- **Mobile-First Strategy:** 
+- **Mobile-First Strategy:**
     - Tables must support horizontal scrolling on mobile.
-    - **Card View:** Use conditional rendering to switch from a table to a list of cards on 
-      small screens (if the dataset is complex).
+    - **Card View:** Use conditional rendering to switch from a table to a list of cards on small
+      screens (if the dataset is complex).
 - **i11n:** All column headers must be localized.
 
 ---
@@ -45,9 +45,10 @@ Standardized data tables for list views.
 
 Used for instructions or critical warnings.
 
-- **i11n:** All alert messages must be localized via `__('module::ui.key')` or `__('exception::messages.key')`.
+- **i11n:** All alert messages must be localized via `__('module::ui.key')` or
+  `__('exception::messages.key')`.
 
 ---
 
-_Display components minimize cognitive load, helping Instructors and Staff quickly identify 
-student progress and competency achievements._
+_Display components minimize cognitive load, helping Instructors and Staff quickly identify student
+progress and competency achievements._

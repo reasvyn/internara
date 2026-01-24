@@ -77,7 +77,8 @@ class Internship extends Model
 Entities follow a lifecycle (e.g., `Pending` -> `Approved` -> `Finished`).
 
 - **Rationale:** Centralizes state transitions and validation logic.
-- **Audit:** Tracks "who" and "when" for every status change, supporting the **Monitoring** goals of the specs.
+- **Audit:** Tracks "who" and "when" for every status change, supporting the **Monitoring** goals of
+  the specs.
 
 ```php
 $registration->setStatus('approved', 'Student met all entry requirements.');
@@ -85,9 +86,11 @@ $registration->setStatus('approved', 'Student met all entry requirements.');
 
 ### 4.3 Scoping: `HasAcademicYear`
 
-Data integrity across academic cycles is critical. The `HasAcademicYear` concern ensures that operational data is always filtered by the active year.
+Data integrity across academic cycles is critical. The `HasAcademicYear` concern ensures that
+operational data is always filtered by the active year.
 
-- **Automatic Scoping:** Populates the `academic_year` column from `setting('active_academic_year')`.
+- **Automatic Scoping:** Populates the `academic_year` column from
+  `setting('active_academic_year')`.
 - **Integrity:** Prevents data leak between different academic periods.
 
 ```php
@@ -107,7 +110,8 @@ Internara is a **Multi-Language Application** (Indonesian & English).
 
 - **Hardcoding Prohibited**: **Never** write raw text in Views, Controllers, or Services.
 - **Translation Helper**: Always use `__('module::file.key')` or `@lang`.
-- **Locale Awareness**: Code must respect the active locale (`id` or `en`) when formatting dates or currency.
+- **Locale Awareness**: Code must respect the active locale (`id` or `en`) when formatting dates or
+  currency.
 
 ---
 
@@ -119,13 +123,18 @@ The Service Layer is the **Single Source of Truth** for business logic.
 
 To reduce boilerplate, domain services should extend `Modules\Shared\Services\EloquentQuery`.
 
-- **Standard Methods**: `all()`, `paginate()`, `create()`, `update()`, `delete()`, `find()`, `query()`.
+- **Standard Methods**: `all()`, `paginate()`, `create()`, `update()`, `delete()`, `find()`,
+  `query()`.
 - **Implementation Example**:
-  ```php
-  class UserService extends EloquentQuery {
-      protected function model(): string { return User::class; }
-  }
-  ```
+    ```php
+    class UserService extends EloquentQuery
+    {
+        protected function model(): string
+        {
+            return User::class;
+        }
+    }
+    ```
 
 #### Advanced Usage & Customization
 
@@ -166,24 +175,36 @@ public function getActiveStudentsInDepartment(string $departmentId)
 ```
 
 ### 6.2 Service Design
-- **Contract-First**: When interacting across modules, depend on **Contracts**, never concrete classes.
-- **Strict Isolation**: It is strictly prohibited to call cross-module concrete classes (especially **Eloquent Models**) directly from within your service or utility layers. All data and business operations must be requested through the appropriate module's **Service Contract**.
-- **Public Accessors**: Static classes or Framework Facades designed for public consumption are the only exceptions. Direct instantiation of another module's classes is a violation of modular integrity.
-- **Role Awareness**: Business logic must explicitly handle the roles defined in Specs (Instructor, Staff, Student, Industry Supervisor).
+
+- **Contract-First**: When interacting across modules, depend on **Contracts**, never concrete
+  classes.
+- **Strict Isolation**: It is strictly prohibited to call cross-module concrete classes (especially
+  **Eloquent Models**) directly from within your service or utility layers. All data and business
+  operations must be requested through the appropriate module's **Service Contract**.
+- **Public Accessors**: Static classes or Framework Facades designed for public consumption are the
+  only exceptions. Direct instantiation of another module's classes is a violation of modular
+  integrity.
+- **Role Awareness**: Business logic must explicitly handle the roles defined in Specs (Instructor,
+  Staff, Student, Industry Supervisor).
 - **Inheritance**: CRUD services should extend `Modules\Shared\Services\EloquentQuery`.
 
 ### 6.3 Configuration & Settings
+
 - **No `env()`**: Never call `env()` directly in application code.
 - **Infrastructure Config**: Use `config('app.timezone')` for static infrastructure values.
-- **Dynamic Application Settings**: Use the `setting($key, $default)` helper for all business values (e.g., `site_title`, `brand_logo`, `contact_email`). **Hard-coding these values is strictly prohibited.**
+- **Dynamic Application Settings**: Use the `setting($key, $default)` helper for all business values
+  (e.g., `site_title`, `brand_logo`, `contact_email`). **Hard-coding these values is strictly
+  prohibited.**
 
 ---
 
 ## 7. UI/UX Implementation
 
-While visual guidelines are in the **[UI/UX Guide](ui-ux-development-guide.md)**, code conventions apply here:
+While visual guidelines are in the **[UI/UX Guide](ui-ux-development-guide.md)**, code conventions
+apply here:
 
-- **Mobile-First Structure**: Livewire components must be structured to support mobile views by default.
+- **Mobile-First Structure**: Livewire components must be structured to support mobile views by
+  default.
 - **Thin Controllers**: No business logic in Livewire components. Delegate to Services immediately.
 
 ---
@@ -198,4 +219,5 @@ Every class and method must include a professional PHPDoc in English.
 
 ---
 
-_Adherence to these conventions is not optional. They are verified during the **Iterative Sync Cycle** (Phase 4 of SDLC) and are a prerequisite for feature completion._
+_Adherence to these conventions is not optional. They are verified during the **Iterative Sync
+Cycle** (Phase 4 of SDLC) and are a prerequisite for feature completion._

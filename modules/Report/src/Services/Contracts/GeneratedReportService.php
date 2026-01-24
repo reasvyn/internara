@@ -8,6 +8,7 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
  * @template TModel of \Modules\Report\Models\GeneratedReport
+ *
  * @extends EloquentQuery<TModel>
  */
 interface GeneratedReportService extends EloquentQuery

@@ -16,12 +16,7 @@ class GeneratedReport extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'user_id',
-        'provider_identifier',
-        'file_path',
-        'filters',
-    ];
+    protected $fillable = ['user_id', 'provider_identifier', 'file_path', 'filters'];
 
     /**
      * The attributes that should be cast.
@@ -37,6 +32,9 @@ class GeneratedReport extends Model
      */
     public function user()
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo($this, 'user_id');
+        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+            $this,
+            'user_id',
+        );
     }
 }

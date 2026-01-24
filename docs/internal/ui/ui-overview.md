@@ -33,12 +33,15 @@ We follow a "Layered Design" approach:
 ## 3. Mobile-First & i11n Strategy
 
 ### 3.1 Responsiveness
+
 - **Principle:** Default to mobile layouts. Use `md:` and `lg:` for desktop enhancement.
 - **Components:** Containers and grids in the `UI` module are responsive by default.
 
 ### 3.2 Localization
+
 - **Principle:** No hardcoded strings in components.
-- **Usage:** All labels, placeholders, and tooltips must use `__('key')` or allow for slot injection.
+- **Usage:** All labels, placeholders, and tooltips must use `__('key')` or allow for slot
+  injection.
 
 ---
 
@@ -55,14 +58,18 @@ Priority order for building interfaces:
 ## 5. Standardized Assets
 
 ### 5.1 Icons
+
 Standard: **Tabler Icons**. Use the `tabler.name` format.
 
 ### 5.2 Colors
+
 Always use semantic variables:
+
 - `primary`: Emerald Green actions.
 - `base-100`: Main background.
 - `error`: Destructive actions.
 
 ---
 
-_The UI module ensures that Instructors, Staff, and Students experience a cohesive and professional interface across all devices._
+_The UI module ensures that Instructors, Staff, and Students experience a cohesive and professional
+interface across all devices._

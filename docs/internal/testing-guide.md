@@ -14,9 +14,11 @@ Internara project. It acts as the central entry point for our testing infrastruc
 - **TDD First**: Embrace writing tests alongside feature development.
 - **Comprehensive Coverage**: Every new feature, bug fix, or modification must be accompanied by
   relevant tests.
-- **Modular Isolation**: Tests must respect the same isolation boundaries as the application code. A test in `Module A` must not directly instantiate or assert against concrete models in `Module B`. Use **Service Contracts** or specific module factories to maintain decoupling.
-- **Verification & Validation (V&V)**: Tests serve as the technical proof that the system meets
-  the authoritative specs.
+- **Modular Isolation**: Tests must respect the same isolation boundaries as the application code. A
+  test in `Module A` must not directly instantiate or assert against concrete models in `Module B`.
+  Use **Service Contracts** or specific module factories to maintain decoupling.
+- **Verification & Validation (V&V)**: Tests serve as the technical proof that the system meets the
+  authoritative specs.
 
 ### Unit vs. Feature Tests
 
@@ -29,7 +31,8 @@ Internara project. It acts as the central entry point for our testing infrastruc
 
 ## Layer-Based Placement (Mandatory)
 
-Tests must reflect the architectural layer being tested. Placing tests directly under `Feature/` or `Unit/` is prohibited.
+Tests must reflect the architectural layer being tested. Placing tests directly under `Feature/` or
+`Unit/` is prohibited.
 
 - **Feature Tests:** `modules/{Module}/tests/Feature/{Livewire|Services|Api}`
 - **Unit Tests:** `modules/{Module}/tests/Unit/{Models|Enums|Support}`
@@ -77,8 +80,10 @@ test('it throws translated exception using module-specific key', function () {
 
     $expectedMessage = __('journal::exceptions.locked');
 
-    expect(fn() => $service->update($lockedJournal, []))
-        ->toThrow(JournalLockedException::class, $expectedMessage);
+    expect(fn() => $service->update($lockedJournal, []))->toThrow(
+        JournalLockedException::class,
+        $expectedMessage,
+    );
 });
 ```
 
@@ -104,4 +109,5 @@ php artisan test --filter=User
 
 ---
 
-_Tests are not just a safety net; they are the executable documentation of our commitment to the Internara Specs._
+_Tests are not just a safety net; they are the executable documentation of our commitment to the
+Internara Specs._

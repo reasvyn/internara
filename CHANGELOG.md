@@ -32,7 +32,7 @@ insights for institutions and industry partners.
     - Defined the `ExportableDataProvider` contract in `Shared` for cross-module data extraction.
     - Implemented `ReportService` with support for both synchronous and queued generation.
     - Integrated `GenerateReportJob` for high-performance background processing.
-    - **History Tracking:** Implemented `GeneratedReport` model and service to persist report 
+    - **History Tracking:** Implemented `GeneratedReport` model and service to persist report
       metadata and enable user-specific report history.
     - **Report UI:** Created `ReportIndex` Livewire component with dynamic filtering and history
       download capabilities.
@@ -43,12 +43,12 @@ insights for institutions and industry partners.
 
 - **Placement Lifecycle Tracking:**
     - Implemented **Placement History** log to track student journeys across sequential or
-        rotational programs.
-    - **Traceability UI:** Integrated a **Placement Timeline** modal into the registration 
-        management interface for transparent audit trails.
+      rotational programs.
+    - **Traceability UI:** Integrated a **Placement Timeline** modal into the registration
+      management interface for transparent audit trails.
     - Created `PlacementLogger` service for transparent audit trails of placement reassignments.
     - Added `reassignPlacement` capability to `InternshipRegistrationService` with mandatory
-        logging.
+      logging.
 
 - **Analytical Dashboard:**
     - Implemented `AnalyticsAggregator` in `Core` module to orchestrate cross-module data synthesis.
@@ -68,19 +68,28 @@ insights for institutions and industry partners.
     - Enhanced `AssessmentService` with `getAverageScore` for partner feedback aggregation.
 
 - **Core Engine Refinement (Permission & Shared):**
-    - **Service Architecture:** Refactored `PermissionService` and `RoleService` to correctly extend the `EloquentQuery` abstract class, resolving inheritance-related fatal errors.
-    - **Data Scoping:** Standardized the `HasAcademicYear` trait in the `Shared` module to unify multi-year data integrity across operational modules.
-    - **Exception Standardisation:** Integrated `AppException` across permission services for consistent, localized error reporting.
-    - **Model Security:** Added `description` to mass-assignment allowlist (`$fillable`) for `Permission` and `Role` models.
-    - **Schema Cleanup:** Removed redundant primary key properties (`$keyType`, `$incrementing`) across multiple modules (`School`, `Internship`, `Department`, etc.) to favor automated `HasUuid` trait handling.
-    - **Query Optimization:** Standardized permission and role listing using built-in `searchable` and `sortable` configurations.
+    - **Service Architecture:** Refactored `PermissionService` and `RoleService` to correctly extend
+      the `EloquentQuery` abstract class, resolving inheritance-related fatal errors.
+    - **Data Scoping:** Standardized the `HasAcademicYear` trait in the `Shared` module to unify
+      multi-year data integrity across operational modules.
+    - **Exception Standardisation:** Integrated `AppException` across permission services for
+      consistent, localized error reporting.
+    - **Model Security:** Added `description` to mass-assignment allowlist (`$fillable`) for
+      `Permission` and `Role` models.
+    - **Schema Cleanup:** Removed redundant primary key properties (`$keyType`, `$incrementing`)
+      across multiple modules (`School`, `Internship`, `Department`, etc.) to favor automated
+      `HasUuid` trait handling.
+    - **Query Optimization:** Standardized permission and role listing using built-in `searchable`
+      and `sortable` configurations.
 
 ### 🐛 Fixed
 
 - **Permission Logic:** Fixed fatal PHP errors caused by incorrect trait usage in service classes.
-- **UUID Consistency:** 
-    - Resolved inconsistent primary key handling by migrating all remaining manual UUID implementations to the `HasUuid` Shared concern.
-    - Standardized `user_id` column type in the `profiles` table migration to `uuid` to align with identity standards.
+- **UUID Consistency:**
+    - Resolved inconsistent primary key handling by migrating all remaining manual UUID
+      implementations to the `HasUuid` Shared concern.
+    - Standardized `user_id` column type in the `profiles` table migration to `uuid` to align with
+      identity standards.
 
 ---
 
@@ -285,23 +294,30 @@ school/department management, industry placement tracking, and localized user in
 ## [v0.3.0-alpha] - 2026-01-15 (ARC01-USER)
 
 ### ✨ Added
+
 - **Automated PII Masking:**
     - Centralized PII masking logic in `Modules\Shared\Support\Masker`.
-    - Implemented `PiiMaskingProcessor` for Monolog to automatically mask sensitive data (email, password, phone, nip, nisn) in system logs.
+    - Implemented `PiiMaskingProcessor` for Monolog to automatically mask sensitive data (email,
+      password, phone, nip, nisn) in system logs.
     - Integrated automatic masking into `config/logging.php`.
 - **Polymorphic Profile System (Refactored):**
     - Decoupled role-specific data into dedicated `Student` and `Teacher` models.
     - Implemented polymorphic `profileable` relation in `Profile` model.
     - Added `HasProfileMorphRelation` trait for seamless role-to-profile access.
 - **Automated Onboarding:**
-    - Enhanced `UserService` and `ProfileService` to automatically initialize the correct polymorphic model (`Student` or `Teacher`) during user creation or role updates.
+    - Enhanced `UserService` and `ProfileService` to automatically initialize the correct
+      polymorphic model (`Student` or `Teacher`) during user creation or role updates.
 
 ### 🛠 Changed
+
 - **Migration Consolidation:**
-    - Streamlined the entire database schema by merging all "alter" migrations into their original table creation files across all modules.
-    - Modularized infrastructure migrations by moving the `statuses` table to the `Core` module and removing the root `database/migrations` directory.
+    - Streamlined the entire database schema by merging all "alter" migrations into their original
+      table creation files across all modules.
+    - Modularized infrastructure migrations by moving the `statuses` table to the `Core` module and
+      removing the root `database/migrations` directory.
 
 ### 🐛 Fixed
+
 - **Security Hardening:** Remediated Authentication Bypass in email verification.
 - **Access Control:** Fixed IDOR vulnerabilities via explicit Policy enforcement.
 - **Privacy:** Centralized and automated email masking in application logs to prevent PII leaks.

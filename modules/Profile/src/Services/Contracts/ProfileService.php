@@ -17,7 +17,11 @@ interface ProfileService extends EloquentQuery
     /**
      * Define the HasOne relationship for the User model.
      */
-    public function defineHasOne(Model $related, ?string $foreignKey = null, ?string $localKey = null): HasOne;
+    public function defineHasOne(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): HasOne;
 
     /**
      * Get or create a profile for a specific user.

@@ -5,7 +5,8 @@ custom development tooling. Unlike the `Shared` module, the `Core` module is tai
 specific business model and architecture.
 
 > **Spec Alignment:** This module implements the infrastructure for user roles, multi-language
-> support, and dynamic settings required by the **[Internara Specs](../../docs/internal/internara-specs.md)**.
+> support, and dynamic settings required by the
+> **[Internara Specs](../../docs/internal/internara-specs.md)**.
 
 ## Purpose
 
@@ -17,14 +18,17 @@ specific business model and architecture.
 ## Key Features
 
 ### 1. Localization Infrastructure
+
 - **Middleware:** Automatically sets the application locale based on user preference.
 - **Language Support:** Enforces the dual-language requirement (Indonesian & English).
 
 ### 2. Development Tooling
+
 - **Modular Generators:** Custom Artisan commands to scaffold components following Internara's
   conventions (e.g., `module:make-service`, `module:make-model`).
 
 ### 3. Application Identity
+
 - **Dynamic Configuration:** Centralizes management of `brand_name`, `brand_logo`, and other
   application-level configurations as mandated by the development conventions.
 

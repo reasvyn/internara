@@ -5,8 +5,8 @@ release artifacts within the Internara project. These standards ensure that our 
 is analytically precise, semantically consistent, and operationally unambiguous.
 
 > **Governance Mandate:** All releases must strictly adhere to the milestones and requirements
-> defined in the **[Internara Specs](../internal/internara-specs.md)**. A version cannot be
-> released if it does not fulfill the Spec Validation criteria for its milestone.
+> defined in the **[Internara Specs](../internal/internara-specs.md)**. A version cannot be released
+> if it does not fulfill the Spec Validation criteria for its milestone.
 
 ---
 
@@ -15,7 +15,8 @@ is analytically precise, semantically consistent, and operationally unambiguous.
 Internara adheres to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
 
 - **MAJOR**: Incompatible API changes or fundamental architectural shifts.
-- **MINOR**: Backward-compatible feature additions or scope expansion (aligned with Spec Milestones).
+- **MINOR**: Backward-compatible feature additions or scope expansion (aligned with Spec
+  Milestones).
 - **PATCH**: Backward-compatible bug fixes or security patches.
 - **Pre-release Identifiers**: During non-production stages, versions may include a qualifier (e.g.,
   `v0.6.0-alpha`, `v1.0.0-beta.1`) to indicate maturity—not support guarantees.
@@ -59,6 +60,9 @@ Policies define **what the project guarantees** after a version is released.
 | Full Support  | Active maintenance and improvements.   | Bug + Security |
 | EOL           | End of life.                           | None           |
 
+> **Mandatory Status Mapping:** All versions with an **EOL** support policy must be marked with
+> either a **Deprecated** or **Archived** status in the support matrix and overview.
+
 > Support Policy is a **contract**, independent of Stage and Status.
 
 ---
@@ -67,13 +71,13 @@ Policies define **what the project guarantees** after a version is released.
 
 Status reflects the **current reality** of a version at a given time.
 
-| Status      | Meaning                                     |
-| ----------- | ------------------------------------------- |
-| Planned     | Identified in **Specs** but not implemented.|
-| In Progress | Under active development (Construction).    |
-| Released    | Publicly tagged and distributed.            |
-| Deprecated  | Still accessible but no longer recommended. |
-| Archived    | Closed and historically preserved.          |
+| Status      | Meaning                                      |
+| ----------- | -------------------------------------------- |
+| Planned     | Identified in **Specs** but not implemented. |
+| In Progress | Under active development (Construction).     |
+| Released    | Publicly tagged and distributed.             |
+| Deprecated  | Still accessible but no longer recommended.  |
+| Archived    | Closed and historically preserved.           |
 
 ---
 
@@ -111,7 +115,9 @@ Internara follows **Keep a Changelog** conventions:
 ### 4.2 Editorial Principle
 
 Entries must describe **impact and intent**, not implementation minutiae.
-- **Spec Compliance:** Mention if a change directly fulfills a requirement from `internara-specs.md`.
+
+- **Spec Compliance:** Mention if a change directly fulfills a requirement from
+  `internara-specs.md`.
 
 ---
 
@@ -120,9 +126,9 @@ Entries must describe **impact and intent**, not implementation minutiae.
 For each significant milestone, Internara produces a **Release Note**—a human-centric narrative
 describing the version's value.
 
-> **Important:** Marking a version as **Released** does NOT automatically trigger the archival 
-> of its blueprint. The Application Blueprint must remain in the active directory until 
-> explicit permission for archival is granted.
+> **Important:** Marking a version as **Released** does NOT automatically trigger the archival of
+> its blueprint. The Application Blueprint must remain in the active directory until explicit
+> permission for archival is granted.
 
 ### 5.1 Synchronization Rule
 
@@ -135,7 +141,8 @@ describing the version's value.
 
 A version may be marked as `Released` when the following minimum conditions are met (Exit Gate):
 
-1. **Spec Compliance**: The release has been validated against `internara-specs.md` (as per SDLC Phase 4).
+1. **Spec Compliance**: The release has been validated against `internara-specs.md` (as per SDLC
+   Phase 4).
 2. **Scope Closure**: The intended milestone scope is internally complete.
 3. **Artifact Consistency**: Codebase, documentation, and metadata are synchronized.
 4. **Changelog Resolution**: `[Unreleased]` entries are reconciled.
@@ -149,8 +156,8 @@ A version may be marked as `Released` when the following minimum conditions are 
 Versions transitioned to **EOL (End of Life)** or **Archived** status require specific technical
 handling.
 
-> **Mandatory Protocol:** Transitioning a version to **Archived** status and performing physical 
-> artifact archival (e.g., moving blueprints to the archived directory) is strictly prohibited 
+> **Mandatory Protocol:** Transitioning a version to **Archived** status and performing physical
+> artifact archival (e.g., moving blueprints to the archived directory) is strictly prohibited
 > without explicit, prior permission from the project lead.
 
 ### 7.1 GitHub Mechanics
@@ -166,7 +173,7 @@ handling.
 
 ### 7.3 Artifact Synchronization
 
-- **Blueprint Archival**: Formal Application Blueprints may be moved to 
+- **Blueprint Archival**: Formal Application Blueprints may be moved to
   `docs/internal/blueprints/archived/` ONLY after receiving explicit permission.
 - **Narrative Visibility**: User-facing release notes for EOL versions remain visible.
 

@@ -1,6 +1,6 @@
 # UI Components: Navigation & Branding
 
-These components handle the user's journey through the Internara platform, ensuring accessibility 
+These components handle the user's journey through the Internara platform, ensuring accessibility
 and clear branding as defined in the **[Internara Specs](../../internara-specs.md)**.
 
 ---
@@ -9,7 +9,8 @@ and clear branding as defined in the **[Internara Specs](../../internara-specs.m
 
 The top-level navigation bar.
 
-- **Branding:** Displays the logo retrieved via `setting('brand_logo')` and name from `setting('brand_name')`.
+- **Branding:** Displays the logo retrieved via `setting('brand_logo')` and name from
+  `setting('brand_name')`.
 - **Mobile-First:** Includes the burger menu button to toggle the sidebar drawer on small screens.
 - **Role Awareness:** User profile menu displays the current User Role (Instructor, Student, etc.).
 
@@ -19,7 +20,7 @@ The top-level navigation bar.
 
 The primary navigation for role-specific workspaces.
 
-- **Responsive Logic:** 
+- **Responsive Logic:**
     - **Desktop:** Persistent vertical menu.
     - **Mobile:** Hidden within an Alpine.js-powered Drawer.
 - **i11n:** All menu item titles MUST be wrapped in `__('module::ui.menu_key')`.
@@ -38,8 +39,8 @@ The primary navigation for role-specific workspaces.
 
 Used for switching views within a domain (e.g., `Internship` details).
 
-- **Mobile-First:** Tabs automatically convert to a horizontal scroll or a dropdown menu on 
-  very small screens to prevent layout overflow.
+- **Mobile-First:** Tabs automatically convert to a horizontal scroll or a dropdown menu on very
+  small screens to prevent layout overflow.
 - **State:** Integrated with `wire:model` for reactive state management.
 
 ---

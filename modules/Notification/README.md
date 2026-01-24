@@ -2,8 +2,8 @@
 
 The `Notification` module provides a unified system for sending alerts and messages to users.
 
-> **Spec Alignment:** This module supports the **Administrative Management** and 
-> **Communication** goals defined in the **[Internara Specs](../../docs/internal/internara-specs.md)**.
+> **Spec Alignment:** This module supports the **Administrative Management** and **Communication**
+> goals defined in the **[Internara Specs](../../docs/internal/internara-specs.md)**.
 
 ## Purpose
 
@@ -14,7 +14,7 @@ The `Notification` module provides a unified system for sending alerts and messa
 ## Key Features
 
 - **Global UI Bridge:** Powers the `mary-toast` notifications for real-time feedback.
-- **Role-Targeted Alerts:** Notifies specific user roles based on system events (e.g., Log Approval, 
+- **Role-Targeted Alerts:** Notifies specific user roles based on system events (e.g., Log Approval,
   Registration Submission).
 - **Email Integration:** Support for SMTP/Mailgun as mandated in Specs 10.5.
 

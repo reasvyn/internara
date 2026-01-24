@@ -17,8 +17,7 @@ Always verify that the UI renders the correct localized strings.
 it('renders localized welcome message in indonesian', function () {
     app()->setLocale('id');
 
-    Livewire::test(Dashboard::class)
-        ->assertSee(__('core::ui.welcome'));
+    Livewire::test(Dashboard::class)->assertSee(__('core::ui.welcome'));
 });
 ```
 
@@ -29,6 +28,7 @@ it('renders localized welcome message in indonesian', function () {
 Verify that user actions correctly interact with the **Service Layer**.
 
 ### 2.1 Form Submissions
+
 ```php
 it('delegates user creation to the service layer', function () {
     Livewire::test(CreateUser::class)
@@ -45,15 +45,14 @@ it('delegates user creation to the service layer', function () {
 
 ## 3. Authorization & Roles
 
-Verify that UI elements are hidden according to the User Roles defined in **[Internara Specs](../internal/internara-specs.md)**.
+Verify that UI elements are hidden according to the User Roles defined in
+**[Internara Specs](../internal/internara-specs.md)**.
 
 ```php
 it('denies students from accessing the delete action', function () {
     $student = User::factory()->create()->assignRole('student');
 
-    actingAs($student)
-        ->livewire(UserList::class)
-        ->assertForbidden();
+    actingAs($student)->livewire(UserList::class)->assertForbidden();
 });
 ```
 
@@ -62,9 +61,11 @@ it('denies students from accessing the delete action', function () {
 ## 4. Mobile-First Considerations
 
 While functional tests don't check pixels, ensure your component handles data density well:
+
 - Test that tables have "Card View" alternatives or horizontal scroll states if required.
 - Test that navigation components (Drawers/Sidebars) respond correctly to state changes.
 
 ---
 
-_Effective Livewire tests are the frontline of our quality assurance, ensuring a consistent and localized experience for all users._
+_Effective Livewire tests are the frontline of our quality assurance, ensuring a consistent and
+localized experience for all users._

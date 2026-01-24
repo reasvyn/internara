@@ -87,7 +87,8 @@ class PermissionService extends EloquentQuery implements PermissionServiceContra
      */
     protected function handleQueryException(QueryException $e, string $defaultKey): never
     {
-        $userMessage = 'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
+        $userMessage =
+            'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
 
         throw new AppException(
             userMessage: $userMessage,

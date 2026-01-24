@@ -7,7 +7,8 @@ Thank you for considering contributing to Internara! We welcome contributions fr
 1.  **Fork the repository** on GitHub.
 2.  **Create a new branch** (`git checkout -b feature/amazing-feature`).
 3.  **Plan your change**: Create an **Application Blueprint** in `docs/internal/blueprints/`.
-4.  **Implement your changes**: Adhere to the **[Development Conventions](docs/internal/development-conventions.md)**.
+4.  **Implement your changes**: Adhere to the
+    **[Development Conventions](docs/internal/development-conventions.md)**.
 5.  **Verify**: Run tests (`php artisan test --parallel`) and static analysis (`vendor/bin/pint`).
 6.  **Artifact Sync**: Update relevant documentation and the changelog.
 7.  **Submit a Pull Request**.

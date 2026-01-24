@@ -4,9 +4,9 @@ This document outlines the core principles, project context, and operational gui
 assistant (“Gemini”) when working on the Internara project. These guidelines ensure consistency,
 architectural clarity, high code quality, and efficient collaboration.
 
-> **Single Source of Truth Mandate:**
-> The document **`docs/internal/internara-specs.md`** is the **Immutable, Authoritative Specification** for this project.
-> All architectural decisions, code conventions, and lifecycle events MUST align with it.
+> **Single Source of Truth Mandate:** The document **`docs/internal/internara-specs.md`** is the
+> **Immutable, Authoritative Specification** for this project. All architectural decisions, code
+> conventions, and lifecycle events MUST align with it.
 
 ---
 
@@ -36,7 +36,9 @@ As an AI assistant, you operate under the following identity and interaction pri
 - **Privacy First** Never store, write, or engage with personal or sensitive information. Actively
   refuse such requests.
 
-- **Limited Initiative** Do not take initiatives too far, especially regarding lifecycle status changes (e.g., marking a version as "Released") or major strategic decisions without explicit user instruction.
+- **Limited Initiative** Do not take initiatives too far, especially regarding lifecycle status
+  changes (e.g., marking a version as "Released") or major strategic decisions without explicit user
+  instruction.
 
 ---
 
@@ -58,7 +60,9 @@ These directives guide all technical workflows for the Internara project.
 
 ### Core Workflow Principles
 
-- **Planning First (SDLC Phase 2)** Always formulate a detailed plan (Blueprint) derived from `internara-specs.md`, present it to the user, and obtain explicit approval before starting any implementation.
+- **Planning First (SDLC Phase 2)** Always formulate a detailed plan (Blueprint) derived from
+  `internara-specs.md`, present it to the user, and obtain explicit approval before starting any
+  implementation.
 
 - **English Only** All code, documentation, comments, and communication must be written entirely in
   **English**.
@@ -69,8 +73,9 @@ These directives guide all technical workflows for the Internara project.
 - **Professional PHPDoc** Every class and method must include concise and professional PHPDoc in
   English.
 
-- **Mandatory Documentation (Phase 4)** Every new feature, standardized pattern, or significant technical
-  change must be accompanied by comprehensive documentation. Internara follows a **Doc-as-Code** principle.
+- **Mandatory Documentation (Phase 4)** Every new feature, standardized pattern, or significant
+  technical change must be accompanied by comprehensive documentation. Internara follows a
+  **Doc-as-Code** principle.
 
 - **Iterative Sync Cycle** Every technical modification triggers a full cycle of Quality Assurance
   (Testing, Linting, Security) and Documentation Synchronization.
@@ -78,7 +83,8 @@ These directives guide all technical workflows for the Internara project.
 - **User-Facing Release Notes** Version notes MUST be written as **Friendly, User-Centric
   Narratives** linking back to **Spec Milestones**.
 
-- **Release Management** Strict adherence to the **[Release Guidelines](docs/internal/release-guidelines.md)** is mandatory.
+- **Release Management** Strict adherence to the
+  **[Release Guidelines](docs/internal/release-guidelines.md)** is mandatory.
 
 - **Cross-check Project Documentation** Always cross-reference and adhere to existing project
   documentation. For comprehensive navigation, prioritize:
@@ -106,13 +112,16 @@ Quick reference for essential project verification:
 
 1. **Receive User Input** Carefully analyze the request.
 
-2. **Spec Validation (Critical)** Verify if the request aligns with **`internara-specs.md`**. If it contradicts, pause and clarify.
+2. **Spec Validation (Critical)** Verify if the request aligns with **`internara-specs.md`**. If it
+   contradicts, pause and clarify.
 
 3. **Build Knowledge** Review **Priority Documentation** and **Blueprints**.
 
-4. **Formulate Task Plan (Blueprint)** Create a clear, step-by-step plan aligned with project architecture.
+4. **Formulate Task Plan (Blueprint)** Create a clear, step-by-step plan aligned with project
+   architecture.
 
-5. **Blueprint Synchronization** Ensure major units are backed by an **Application Blueprint** in `docs/internal/blueprints/`.
+5. **Blueprint Synchronization** Ensure major units are backed by an **Application Blueprint** in
+   `docs/internal/blueprints/`.
 
 6. **Request User Approval** Present the plan and wait for explicit approval.
 
@@ -121,7 +130,8 @@ Quick reference for essential project verification:
 
 8. **Report and Conclude** Provide a concise Keypoints Summary outlining actions taken.
 
-9. **Commit and Push All Changes (Mandatory)** Ensure _all_ changes are staged and committed with professional messages.
+9. **Commit and Push All Changes (Mandatory)** Ensure _all_ changes are staged and committed with
+   professional messages.
 
 ---
 
@@ -143,6 +153,7 @@ Quick reference for essential project verification:
 ### Namespace Convention
 
 Namespaces **must omit the `src` segment**:
+
 - _Correct:_ `namespace Modules\User\Services;`
 - _Location:_ `modules/User/src/Services/UserService.php`
 

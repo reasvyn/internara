@@ -19,31 +19,38 @@ Ensure your environment meets these requirements (Specs Section 10):
 ## 🚀 2. Step-by-Step Installation
 
 ### Step 1: Obtain Application Files
+
 ```bash
 git clone https://github.com/reasnov/internara.git
 cd internara
 ```
 
 ### Step 2: Install Components
+
 ```bash
 composer install
 npm install
 ```
 
 ### Step 3: Setup Environment
+
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
+
 _Note: Configure your database and app settings here._
 
 ### Step 4: Prepare Database & Roles
+
 ```bash
 php artisan migrate --seed
 ```
+
 _This seeds the foundational **User Roles** (Instructor, Staff, etc.)._
 
 ### Step 5: Build Interface
+
 ```bash
 npm run build
 ```
@@ -53,9 +60,11 @@ npm run build
 ## ✅ 3. Final Verification
 
 Start the application:
+
 ```bash
 php artisan serve
 ```
+
 Open `http://localhost:8000`. Success is achieved when you see the localized Internara welcome page.
 
 ---

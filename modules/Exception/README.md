@@ -11,13 +11,16 @@ The `Exception` module centralizes all error handling and exception management w
 ## Key Features
 
 ### 1. Base Exception Classes
+
 - **AppException:** Foundational class for all domain errors.
-- **Standardized Keying:** 
+- **Standardized Keying:**
     - Module-specific: `module::exceptions.key`
     - General: `exception::messages.key`
 
 ### 2. Standardized Logic
-- **Localization Bridge:** Ensures all exception messages are automatically localized (ID/EN) before being presented to the user.
+
+- **Localization Bridge:** Ensures all exception messages are automatically localized (ID/EN) before
+  being presented to the user.
 
 ---
 

@@ -57,7 +57,10 @@ class RoleService extends EloquentQuery implements RoleServiceContract
         $role = $this->find($id);
 
         if (! $role) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(Role::class, [$id]);
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+                Role::class,
+                [$id],
+            );
         }
 
         $role->syncPermissions($permissions);

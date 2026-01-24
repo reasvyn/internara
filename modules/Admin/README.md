@@ -3,7 +3,7 @@
 The `Admin` module is the command center for system administrators. It orchestrates high-level
 system configurations and provides a comprehensive overview of the entire platform.
 
-> **Spec Alignment:** This module provides the interface for the **Administrator** role as defined 
+> **Spec Alignment:** This module provides the interface for the **Administrator** role as defined
 > in the **[Internara Specs](../../docs/internal/internara-specs.md)**.
 
 ## Purpose
@@ -15,6 +15,7 @@ system configurations and provides a comprehensive overview of the entire platfo
 ## Key Features
 
 ### 1. Administrative Dashboard
+
 - **System Metrics:** Bird's-eye view of institutional activity.
 - **Navigation Hub:** Centralized access to all administrative domain modules.
 

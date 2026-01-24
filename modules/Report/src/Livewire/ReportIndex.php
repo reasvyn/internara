@@ -39,11 +39,17 @@ class ReportIndex extends Component
     {
         /** @var \Modules\Report\Services\ReportService $service */
         $service = app(ReportGenerator::class);
-        
-        return $service->getProviders()->map(fn(ExportableDataProvider $p) => [
-            'id' => $p->getIdentifier(),
-            'label' => $p->getLabel(),
-        ])->values()->toArray();
+
+        return $service
+            ->getProviders()
+            ->map(
+                fn (ExportableDataProvider $p) => [
+                    'id' => $p->getIdentifier(),
+                    'label' => $p->getLabel(),
+                ],
+            )
+            ->values()
+            ->toArray();
     }
 
     /**
@@ -53,7 +59,7 @@ class ReportIndex extends Component
     {
         return app(\Modules\Internship\Services\Contracts\InternshipService::class)
             ->all(['id', 'title'])
-            ->map(fn($i) => ['id' => $i->id, 'name' => $i->title])
+            ->map(fn ($i) => ['id' => $i->id, 'name' => $i->title])
             ->toArray();
     }
 
@@ -74,7 +80,7 @@ class ReportIndex extends Component
      */
     public function generate(): void
     {
-        if (!$this->selectedProvider) {
+        if (! $this->selectedProvider) {
             return;
         }
 
@@ -83,7 +89,7 @@ class ReportIndex extends Component
 
         try {
             $fileName = $service->generate($this->selectedProvider, $this->filters);
-            
+
             $this->dispatch('notify', [
                 'type' => 'success',
                 'message' => __('report::messages.generated', ['file' => $fileName]),

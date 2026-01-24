@@ -27,7 +27,8 @@ public function update(User $user, Journal $journal)
 
 ## 2. Pattern: Academic Supervision (Instructor & Industry Supervisor)
 
-Allowing an **Instructor** or **Industry Supervisor** to view or edit records for students assigned directly to them.
+Allowing an **Instructor** or **Industry Supervisor** to view or edit records for students assigned
+directly to them.
 
 ```php
 public function view(User $user, Journal $journal)
@@ -44,7 +45,8 @@ public function view(User $user, Journal $journal)
 
 ## 3. Pattern: The "Super Admin" Bypass
 
-Super Admins bypass all policies. This is configured in the `AuthServiceProvider` but must be considered when testing.
+Super Admins bypass all policies. This is configured in the `AuthServiceProvider` but must be
+considered when testing.
 
 ```php
 Gate::before(function ($user, $ability) {
@@ -57,9 +59,11 @@ Gate::before(function ($user, $ability) {
 ## 4. Best Practices
 
 1.  **Strict Typing**: Always type-hint the Model and User in policy methods.
-2.  **Explicit Naming**: Match policy method names to standard CRUD actions (`view`, `create`, `update`, `delete`).
+2.  **Explicit Naming**: Match policy method names to standard CRUD actions (`view`, `create`,
+    `update`, `delete`).
 3.  **Default to Deny**: If a condition isn't met, return `false`.
 
 ---
 
-_Consistent use of Policies ensures that Internara's security posture remains strong. Never authorize an action directly in a Controller or Livewire component without a Policy check._
+_Consistent use of Policies ensures that Internara's security posture remains strong. Never
+authorize an action directly in a Controller or Livewire component without a Policy check._

@@ -63,7 +63,8 @@ class ReportService implements ReportGenerator
 
         // Persist metadata using local model (same module is allowed)
         \Modules\Report\Models\GeneratedReport::create([
-            'user_id' => auth()->id() ?: app(\Modules\User\Services\Contracts\UserService::class)->first(['id'])?->id,
+            'user_id' => auth()->id() ?:
+                app(\Modules\User\Services\Contracts\UserService::class)->first(['id'])?->id,
             'provider_identifier' => $providerIdentifier,
             'file_path' => $fileName,
             'filters' => $filters,

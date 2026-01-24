@@ -4,9 +4,9 @@ This document serves as the definitive, step-by-step technical guide for migrati
 stack from Livewire v3 to v4. This is a high-priority technical debt item targeted for the
 **v0.8.x** series.
 
-> **Spec Alignment:** This migration must preserve the **Mobile-First** responsiveness and 
-> **Multi-Language** integrity mandated by the **[Internara Specs](../../internara-specs.md)**.
-> All UI refactors must be validated against the specs.
+> **Spec Alignment:** This migration must preserve the **Mobile-First** responsiveness and
+> **Multi-Language** integrity mandated by the **[Internara Specs](../../internara-specs.md)**. All
+> UI refactors must be validated against the specs.
 
 ---
 
@@ -45,28 +45,33 @@ Update `config/livewire.php` to reflect the new internal naming conventions.
 ## 💻 Phase 3: Code-Level Refactoring
 
 ### 3.1 Namespace & Imports
+
 - **Action**: Globally replace `use Livewire\Volt\Component;` with `use Livewire\Component;`.
 
 ### 3.2 Routing (Mandatory)
+
 Standard `Route::get()` for full-page components is deprecated in favor of the new macro.
+
 ```php
 // BEFORE: Route::get('/dashboard', Dashboard::class);
 // AFTER: Route::livewire('/dashboard', Dashboard::class);
 ```
 
 ### 3.3 Localization & i11n
-Ensure that new v4 features (like `wire:navigate` or async actions) do not break the translation 
+
+Ensure that new v4 features (like `wire:navigate` or async actions) do not break the translation
 bridge.
+
 - **Audit**: Verify that `{{ __('key') }}` calls remain reactive after navigation.
 
 ---
 
 ## 🧪 Phase 4: Modular Verification (QA)
 
-1.  **UI Core Audit**: Verify the `UI` module components. Check if `x-ui::file` handles hydration 
+1.  **UI Core Audit**: Verify the `UI` module components. Check if `x-ui::file` handles hydration
     correctly in v4.
-2.  **Mobile-First Check**: Test the responsive sidebar and drawer behavior under the new 
-    Livewire navigation system.
+2.  **Mobile-First Check**: Test the responsive sidebar and drawer behavior under the new Livewire
+    navigation system.
 3.  **Boundary Testing**: Run the Pest suite:
     ```bash
     php artisan test --parallel
@@ -82,4 +87,5 @@ bridge.
 
 ---
 
-_This guide must be updated if any breaking changes are discovered during the initial migration spike._
+_This guide must be updated if any breaking changes are discovered during the initial migration
+spike._

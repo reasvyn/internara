@@ -62,8 +62,10 @@ The `Support` module handles **Development & Operational** utilities.
 
 The `UI` module is the "Skin." It is the single source of truth for the Internara design system.
 
-- **Purpose**: Encapsulates styling (**Tailwind v4**), interactivity (Alpine/Livewire), and accessibility.
-- **Mandate:** Must enforce the **Mobile-First** strategy and **Instrument Sans** typography mandated by specs.
+- **Purpose**: Encapsulates styling (**Tailwind v4**), interactivity (Alpine/Livewire), and
+  accessibility.
+- **Mandate:** Must enforce the **Mobile-First** strategy and **Instrument Sans** typography
+  mandated by specs.
 - **Contents**:
     - Standardized Layouts (`Auth`, `App`).
     - Design System Components (`Button`, `Card`, `Modal`).
@@ -79,7 +81,8 @@ Modules like `User`, `Internship`, or `Attendance` represent the actual business
 - **Dependency Rule**: They should primarily depend on `Shared`. If they need `Core` data, they must
   access it through **Contracts** or framework-level **Policies/Gates** to avoid tight coupling with
   the concrete `Core` implementation.
-- **No Physical FKs:** As per specs, domain modules must never use physical foreign key constraints referencing tables outside their own schema.
+- **No Physical FKs:** As per specs, domain modules must never use physical foreign key constraints
+  referencing tables outside their own schema.
 
 ---
 

@@ -2,7 +2,7 @@
 
 The `Auth` module manages user authentication, providing secure access to the platform.
 
-> **Spec Alignment:** This module implements the security standards (Login via email/password) 
+> **Spec Alignment:** This module implements the security standards (Login via email/password)
 > mandated in the **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 10.6).
 
 ## Purpose
@@ -16,7 +16,7 @@ The `Auth` module manages user authentication, providing secure access to the pl
 - **Reactive Auth:** Livewire-powered login and registration.
 - **Mobile-First:** Auth pages are optimized for mobile devices.
 - **i11n Support:** All auth-related messages and validation errors are fully localized (ID/EN).
-- **Role Redirection:** Intelligently routes users (Instructor, Student, etc.) to their specific 
+- **Role Redirection:** Intelligently routes users (Instructor, Student, etc.) to their specific
   environments.
 
 ---

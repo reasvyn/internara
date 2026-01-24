@@ -5,8 +5,8 @@ Monolith** architecture. By following these principles, you ensure that the feat
 scalable, maintainable, and decoupled from the start.
 
 > **Critical Context:** This guide implements the technical direction mandated by the authoritative
-> **[Internara Specs](../internal/internara-specs.md)**. All architectural decisions must align
-> with the product goals, user roles, and constraints defined therein.
+> **[Internara Specs](../internal/internara-specs.md)**. All architectural decisions must align with
+> the product goals, user roles, and constraints defined therein.
 
 ---
 
@@ -20,8 +20,8 @@ but enough integration to maintain high development velocity.
 
 We build modules to **manage complexity**, not to create extra work.
 
-- **Do:** Create a new module when a domain concept has its own lifecycle, distinct data, and
-  clear boundaries (e.g., `Internship`, `Assessment`).
+- **Do:** Create a new module when a domain concept has its own lifecycle, distinct data, and clear
+  boundaries (e.g., `Internship`, `Assessment`).
 - **Don't:** Create a module for every single database table or helper function.
 - **Test:** "If I delete this module folder, does the rest of the app still compile (mostly)?" If
   yes, you have good isolation.
@@ -32,7 +32,8 @@ The **Service Layer** is the single source of truth for business logic.
 
 - **Controllers are dumb:** They validate input and call a service.
 - **Models are dumb:** They hold data and relationships.
-- **Services are smart:** They know *how* to register a student, calculate a grade, or generate a report.
+- **Services are smart:** They know _how_ to register a student, calculate a grade, or generate a
+  report.
 
 ### 1.3 Explicit over Implicit
 
@@ -56,19 +57,24 @@ The root `app/` directory and the `Core` module handle cross-cutting technical c
 
 ### 1.5 Standardized Bootstrapping (`ManagesModuleProvider`)
 
-The `ManagesModuleProvider` trait in the `Shared` module automates modular bootstrapping. It ensures that adding a new module is consistent with the Internara architecture.
+The `ManagesModuleProvider` trait in the `Shared` module automates modular bootstrapping. It ensures
+that adding a new module is consistent with the Internara architecture.
 
 #### Automated Features:
+
 - **`registerModule()`**:
     - **Config**: Recursively merges all files in `modules/{Module}/config/*.php`.
-    - **Bindings**: Automatically maps **Contracts** to implementations based on the **Auto-Discovery** rules.
+    - **Bindings**: Automatically maps **Contracts** to implementations based on the
+      **Auto-Discovery** rules.
 - **`bootModule()`**:
-    - **Translations (i11n)**: Registers the module namespace for **Multi-Language** support (e.g., `__('user::exceptions')`).
+    - **Translations (i11n)**: Registers the module namespace for **Multi-Language** support (e.g.,
+      `__('user::exceptions')`).
     - **Views (Mobile-First)**: Registers the Blade namespace for responsive components.
     - **Migrations**: Automatically loads modular migrations (UUID-based, No physical FKs).
     - **Settings**: Hooks into the `Setting` module to ensure `setting()` helper availability.
 
 #### Advanced Binding Logic
+
 The `bindings()` method is used for manual Dependency Injection (DI) overrides.
 
 ```php
@@ -83,9 +89,11 @@ protected function bindings(): array
 ```
 
 #### Bootstrapping Best Practices
+
 1. **Strict Identification**: Define `protected string $name = 'ModuleName'`.
 2. **English-First**: All metadata and PHPDoc within the provider must be in English.
-3. **No Hard-Coding**: Provider logic must not hard-code environment values; use `config()` or `setting()`.
+3. **No Hard-Coding**: Provider logic must not hard-code environment values; use `config()` or
+   `setting()`.
 
 ---
 
@@ -98,15 +106,18 @@ utilizes an **Auto-Discovery** system for its service layer. This system automat
 ### 2.1 How It Works
 
 The system scans the following directories for PHP classes:
+
 - `app/Services`
 - `modules/{ModuleName}/src/Services`
 
 #### The Directory Pattern
+
 The auto-discovery engine expects a specific layout:
+
 1.  **Contract**: Stored in `Services/Contracts/` (e.g., `UserService.php`).
-    - *Note:* Internara convention omits the `Interface` suffix for contracts.
+    - _Note:_ Internara convention omits the `Interface` suffix for contracts.
 2.  **Implementation**: Stored directly in `Services/` (e.g., `UserService.php`).
-    - *Note:* Implementation and Contract share the same name but live in different namespaces.
+    - _Note:_ Implementation and Contract share the same name but live in different namespaces.
 
 If a class in `Services/` implements an interface found in its own `Contracts/` subdirectory, the
 binding is registered automatically in the Laravel Service Container.
@@ -114,19 +125,21 @@ binding is registered automatically in the Laravel Service Container.
 ### 2.2 Cross-Module Communication Rules
 
 Per our **Modular Monolith** architecture:
+
 - **Strict Rule:** Always type-hint the **Contract**, never the concrete implementation when
   injecting services from another module.
 - **Example:**
-  ```php
-  // CORRECT: Injecting the contract
-  public function __construct(
-      protected UserServiceInterface $userService
-  ) {}
-  ```
+    ```php
+    // CORRECT: Injecting the contract
+    public function __construct(
+        protected UserServiceInterface $userService
+    ) {}
+    ```
 
 ### 2.3 Configuration & Caching
 
-- **Configuration**: Use `config/bindings.php` to manually register complex bindings or override auto-discovered ones.
+- **Configuration**: Use `config/bindings.php` to manually register complex bindings or override
+  auto-discovered ones.
 - **Caching**: For production performance, the discovered bindings are cached.
     - **Refresh Cache**: `php artisan app:refresh-bindings`
 
@@ -148,7 +161,8 @@ The specs mandate a **Mobile-First** design strategy.
 
 - **Responsive Components:** Livewire components and Blade templates must be built using mobile
   layouts as the default, with `md:`, `lg:`, and `xl:` overrides for larger screens.
-- **Touch-Friendly:** UI interactions (buttons, menus) must be sized and spaced for touch interfaces.
+- **Touch-Friendly:** UI interactions (buttons, menus) must be sized and spaced for touch
+  interfaces.
 
 ---
 
@@ -157,18 +171,25 @@ The specs mandate a **Mobile-First** design strategy.
 Every module follows a strict 3-tier internal structure.
 
 ### 4.1 UI Layer: Presentation & Interaction
+
 **Location:** `src/Livewire/` (Volt)
+
 - **Convention:** All business operations **MUST** be delegated to the Service layer.
 - **DI Rule:** Inject dependencies in the `boot()` method, never the constructor.
 
 ### 4.2 Business Logic Layer: Services
+
 **Location:** `src/Services/`
-- **Base Service**: Most services extend `Modules\Shared\Services\EloquentQuery` for standardized CRUD.
+
+- **Base Service**: Most services extend `Modules\Shared\Services\EloquentQuery` for standardized
+  CRUD.
 - **Input**: Services accept validated arrays or DTOs—never `Request` objects.
 - **Output**: Returns models, collections, or simple data structures.
 
 ### 4.3 Data Layer: Eloquent Models
+
 **Location:** `src/Models/`
+
 - **Relationship Rules**: Models should only have `belongsTo` or `hasMany` relationships with models
   **within their own module**. Cross-module relations must be handled via Services.
 
@@ -177,27 +198,40 @@ Every module follows a strict 3-tier internal structure.
 ## 5. Communication & Isolation Rules
 
 ### 5.1 Strict Isolation Principle
-To maintain modular portability, Internara enforces a **Strict Isolation** policy for cross-module communication:
 
-- **No Direct Class Access**: Modules must never instantiate or call concrete classes (especially Models) from another module directly below the Services/Utilities layer.
-- **Contract-Only Communication**: All interactions between modules must be performed via **Service Contracts (Interfaces)** or designated Service classes.
-- **Testing Boundaries**: This isolation also applies to testing. Feature tests for one module must not directly interact with the concrete models of another; they should rely on Services, Contracts, or Factories.
+To maintain modular portability, Internara enforces a **Strict Isolation** policy for cross-module
+communication:
+
+- **No Direct Class Access**: Modules must never instantiate or call concrete classes (especially
+  Models) from another module directly below the Services/Utilities layer.
+- **Contract-Only Communication**: All interactions between modules must be performed via **Service
+  Contracts (Interfaces)** or designated Service classes.
+- **Testing Boundaries**: This isolation also applies to testing. Feature tests for one module must
+  not directly interact with the concrete models of another; they should rely on Services,
+  Contracts, or Factories.
 - **Exceptions**: The only concrete classes allowed to be called directly are:
     - **Static Classes or Facades** specifically designed for public use (e.g., helper utilities).
-    - **Extreme Edge Cases**: Only when no other architectural path exists and isolation is impossible to maintain via contracts.
+    - **Extreme Edge Cases**: Only when no other architectural path exists and isolation is
+      impossible to maintain via contracts.
 
 ### 5.2 Database Isolation
+
 **Physical foreign keys across modules are forbidden.**
+
 - Use simple indexed columns (e.g., `student_id` as UUID).
 - **Data Integrity**: Managed by the **Service Layer** of the module owning the data.
 
 ### 5.3 Pattern 1: Service-to-Service (Synchronous)
+
 If `Module A` needs data from `Module B`, it must type-hint a **Contract**.
 
 ### 5.4 Pattern 2: Events & Listeners (Asynchronous)
-The preferred way to handle side-effects. When an `Internship` is completed, the module dispatches `InternshipCompleted`.
+
+The preferred way to handle side-effects. When an `Internship` is completed, the module dispatches
+`InternshipCompleted`.
 
 ### 5.5 Pattern 3: Framework Standards (Authorization)
+
 Modules should use standard Laravel `Policies` and `Gates`.
 
 ---

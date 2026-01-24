@@ -31,7 +31,7 @@ final class Masker
     {
         $length = strlen($value);
 
-        if ($length <= ($keepStart + $keepEnd)) {
+        if ($length <= $keepStart + $keepEnd) {
             return str_repeat('*', $length);
         }
 

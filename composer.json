@@ -75,7 +75,7 @@
         "test": [
             "@php artisan config:clear --ansi",
             "vendor/bin/pint --test",
-            "@php artisan test"
+            "@php artisan test --parallel"
         ],
         "lint": [
             "npm run lint",

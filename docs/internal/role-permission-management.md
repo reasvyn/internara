@@ -5,8 +5,8 @@ Internara implements a robust **Role-Based Access Control (RBAC)** system using 
 modular isolation, ensuring that access management is both granular and scalable.
 
 > **Spec Alignment:** The roles defined below are strictly aligned with the User Roles mandated in
-> **[Internara Specs](../internal/internara-specs.md)**. No other fundamental roles may be introduced
-> without updating the specs.
+> **[Internara Specs](../internal/internara-specs.md)**. No other fundamental roles may be
+> introduced without updating the specs.
 
 ---
 
@@ -19,9 +19,11 @@ We distinguish between roles (who you are) and permissions (what you can do).
 Defined in the `Core` module seeders:
 
 - **Instructor**: (Equivalent to Teacher) Academic supervision, grading, and student monitoring.
-- **Staff**: (Practical Work Staff) Administrative management, scheduling, and document verification.
+- **Staff**: (Practical Work Staff) Administrative management, scheduling, and document
+  verification.
 - **Student**: Daily journals, attendance, and accessing schedules/reports.
-- **Industry Supervisor**: (Equivalent to Mentor) Industry-side monitoring, assessment, and feedback.
+- **Industry Supervisor**: (Equivalent to Mentor) Industry-side monitoring, assessment, and
+  feedback.
 - **Administrator**: (System Admin) Full system access, configuration, and user management.
 
 ### 1.2 Granular Permissions
@@ -64,12 +66,16 @@ if (!auth()->user()->can('user.delete')) {
 The `Permission` module provides pre-built UI components to simplify access control management.
 
 ### 3.1 Role & Permission Selectors
+
 Used in user creation or editing forms to assign access levels.
 
-- **`x-permission::role-select`**: A multi-select component that lists all available system roles (localized). Role names are automatically translated via `__('core::roles.{name}')`.
-- **`x-permission::permission-list`**: A checkbox-style list for selecting individual granular permissions.
+- **`x-permission::role-select`**: A multi-select component that lists all available system roles
+  (localized). Role names are automatically translated via `__('core::roles.{name}')`.
+- **`x-permission::permission-list`**: A checkbox-style list for selecting individual granular
+  permissions.
 
 ### 3.2 Conditional Display Rules
+
 1. **Fail Silently**: If a user doesn't have access, hide the element entirely.
 2. **Breadcrumbs & Nav**: Ensure that sidebar links are also protected via `@can`.
 3. **Localize**: Always use translation keys for any error messages or labels.
@@ -98,7 +104,10 @@ public function update(User $user, Journal $journal)
 Permissions are distributed across the modules that "own" the functionality.
 
 ### 5.1 Implementing a Module Seeder
-Every module that introduces new permissions should have a seeder class in its `database/seeders` directory. Use the `PermissionService` (via Contract) to ensure that permissions are created idempotently.
+
+Every module that introduces new permissions should have a seeder class in its `database/seeders`
+directory. Use the `PermissionService` (via Contract) to ensure that permissions are created
+idempotently.
 
 ```php
 namespace Modules\Attendance\Database\Seeders;
@@ -120,7 +129,9 @@ class AttendancePermissionSeeder extends Seeder
 ```
 
 ### 5.2 Synchronization
+
 After adding new permissions to a seeder, run the synchronization command:
+
 ```bash
 php artisan permission:sync
 ```

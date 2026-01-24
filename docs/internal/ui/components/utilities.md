@@ -1,6 +1,6 @@
 # UI Components: System Utilities
 
-Utility components handle technical UI concerns like theme persistence, dialog modals, and modular 
+Utility components handle technical UI concerns like theme persistence, dialog modals, and modular
 content injection.
 
 ---
@@ -18,7 +18,7 @@ The core of our "Pluggable UI" system.
 
 Standard wrapper for dialog interactions.
 
-- **Mobile-First:** Modals must scale to full-width or use a "Bottom Sheet" style on mobile devices 
+- **Mobile-First:** Modals must scale to full-width or use a "Bottom Sheet" style on mobile devices
   (Specs 2.2).
 - **i11n:** All titles and button labels must be localized.
 
@@ -33,11 +33,11 @@ Standard wrapper for dialog interactions.
 
 ## 4. `x-ui::user-menu` (Account Access)
 
-- **Role Awareness:** Displays the user's role (Instructor, Staff, etc.) as defined in the 
+- **Role Awareness:** Displays the user's role (Instructor, Staff, etc.) as defined in the
   **[Internara Specs](../../internara-specs.md)**.
 - **Localization:** All menu labels must be localized via `__('core::ui.user_menu')`.
 
 ---
 
-_Utilities enable complex technical patterns while keeping the template code clean and semantic, 
+_Utilities enable complex technical patterns while keeping the template code clean and semantic,
 fully aligned with Internara's architectural and visual standards._
