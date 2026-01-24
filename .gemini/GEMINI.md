@@ -179,6 +179,14 @@ Namespaces **must omit the `src` segment**:
 You are authorized and encouraged to use the **GitHub CLI (`gh`)** to manage the project's presence
 on GitHub.
 
+- **Comprehensive Synchronization**: When the user requests "GitHub synchronization" (or similar), 
+  you must perform a full synchronization sweep. This includes:
+    - **Repository**: Syncing branches (push/pull).
+    - **Tags**: Ensuring local and remote tags are identical.
+    - **Releases**: Verifying release notes and assets match the current version.
+    - **PRs & Issues**: Checking for active pull requests or issues that need status updates 
+      aligned with the current work.
+
 ---
 
 ## Leveraging Laravel Boost Tools
