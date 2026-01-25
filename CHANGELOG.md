@@ -11,13 +11,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### 🚀 Overview
 
-Focuses on **System Initialization & Setup**, including automated installation and mobile-optimized
-
-student experiences.
+Tracking **v0.9.0-alpha** (ARC01-BOOT-01). Focuses on **System Initialization**, including automated installation and zero-config setup.
 
 ---
 
-## [v0.8.0-alpha] - 2026-01-22 (ARC01-INTEL-01)
+## [v0.8.0-alpha] - 2026-01-25 (ARC01-INTEL-01)
 
 ### 🚀 Overview
 

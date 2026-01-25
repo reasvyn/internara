@@ -1,6 +1,6 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.8.0--alpha-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.9.0--alpha-blue?style=flat-square)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-active--development-yellow?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
@@ -19,6 +19,9 @@ built with **Laravel v12** and the **TALL Stack**.
 
 - **Role-Based Workspaces**  
   Dedicated environments for **Instructors**, **Staff**, **Students**, and **Industry Supervisors**.
+
+- **Zero-Config Initialization**  
+  Automated setup wizard for instant deployment and easy configuration.
 
 - **Administrative Automation**  
   Automated prerequisite checks, participation-driven scoring, and institutional reporting.
@@ -51,6 +54,7 @@ Refer to the **[Installation Guide](docs/main/installation-guide.md)** for setup
 
 | Version Series | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status |
 | :------------- | :---- | :------------- | :--------------- | :-------- | :--------------- |
+| **v0.9.x**     | Alpha | Snapshot       | ❌               | ❌        | In Progress      |
 | **v0.8.x**     | Alpha | Snapshot       | ❌               | ❌        | Released         |
 | **v0.7.x**     | Alpha | Snapshot       | ❌               | ❌        | Released         |
 | **v0.6.x**     | Alpha | Snapshot       | ❌               | ❌        | Released         |

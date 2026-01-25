@@ -22,12 +22,7 @@ class SetupServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
     }
 
     /**
@@ -35,7 +30,8 @@ class SetupServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
+
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }
@@ -49,6 +45,33 @@ class SetupServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Setup\Services\Contracts\SetupService::class => \Modules\Setup\Services\SetupService::class,
+            \Modules\Setup\Services\Contracts\InstallerService::class => \Modules\Setup\Services\InstallerService::class,
         ];
+    }
+
+    /**
+     * Register commands in the format of Command::class
+     */
+    protected function registerCommands(): void
+    {
+        $this->commands([
+            \Modules\Setup\Console\Commands\AppInstallCommand::class,
+        ]);
+    }
+
+    /**
+     * Register command Schedules.
+     */
+    protected function registerCommandSchedules(): void
+    {
+        //
+    }
+
+    /**
+     * Define view slots for UI injection.
+     */
+    protected function viewSlots(): array
+    {
+        return [];
     }
 }

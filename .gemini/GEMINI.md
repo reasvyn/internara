@@ -103,35 +103,41 @@ These directives guide all technical workflows for the Internara project.
 Quick reference for essential project verification:
 
 - **Identity & Status:** `php artisan app:info`
-- **Linting:** `./vendor/bin/pint`
-- **Testing:** `php artisan test --parallel`
+- **Linting:** `composer lint`
+- **Testing:** `composer test`
 
 ---
 
 ## Standard Project Workflow
 
-1. **Receive User Input** Carefully analyze the request.
+1. **Contextual Immersion**
+    - Study the project's **Architecture**, **Documentation**, and **Codebase Structure**.
+    - Understand the foundational philosophy (Modular Monolith) and key constraints.
 
-2. **Spec Validation (Critical)** Verify if the request aligns with **`internara-specs.md`**. If it
-   contradicts, pause and clarify.
+2. **Blueprint & Version Alignment**
+    - Review the **Active Version's Blueprints** and specific development tasks.
+    - Ensure your understanding aligns with the current roadmap and milestones.
 
-3. **Build Knowledge** Review **Priority Documentation** and **Blueprints**.
+3. **Targeted Preparation**
+    - Identify and study specific **Documentation** related to the task.
+    - Analyze the relevant parts of the **Codebase** (Services, Modules, Tests) _before_ starting
+      any work.
 
-4. **Formulate Task Plan (Blueprint)** Create a clear, step-by-step plan aligned with project
-   architecture.
+4. **Interactive & Gradual Planning**
+    - Formulate a step-by-step plan.
+    - **Involve the user** in key decisions. ask clarifying questions.
+    - Present the plan for approval. **Do not proceed without a mandate.**
 
-5. **Blueprint Synchronization** Ensure major units are backed by an **Application Blueprint** in
-   `docs/internal/blueprints/`.
+5. **Strict Execution**
+    - Once approved, execute the development steps gradually, thoroughly, and carefully.
+    - Strictly follow the guidelines in
+      **[`docs/internal/development-workflow.md`](docs/internal/development-workflow.md)**.
+    - Maintain strict module isolation and coding standards.
 
-6. **Request User Approval** Present the plan and wait for explicit approval.
-
-7. **Execute Approved Tasks** Implement strictly according to the approved plan, project
-   conventions, and **Internara Specs**.
-
-8. **Report and Conclude** Provide a concise Keypoints Summary outlining actions taken.
-
-9. **Commit and Push All Changes (Mandatory)** Ensure _all_ changes are staged and committed with
-   professional messages.
+6. **Verification & Closure**
+    - Verify work via **Tests** (`composer test`) and **Linting** (`composer lint`).
+    - **Commit and Push** all changes with professional messages.
+    - Report the outcome with a concise summary.
 
 ---
 
@@ -171,6 +177,24 @@ Namespaces **must omit the `src` segment**:
 - **Role:** The "Brain" of the application.
 - **Pattern:** **Contract-First**.
 - **Constraint:** Never call `env()`. Use `setting()` for application values (brand, logo, title).
+
+---
+
+## Testing Standards
+
+**Reference:** [`docs/internal/testing-guide.md`](docs/internal/testing-guide.md)
+
+- **Philosophy:** TDD First. Tests must demonstrate compliance with **Internara Specs**.
+- **Modular Isolation:** Tests in Module A must **not** touch concrete classes in Module B. Use
+  Contracts.
+- **Placement:**
+    - **Feature:** `modules/{Module}/tests/Feature/`
+    - **Unit:** `modules/{Module}/tests/Unit/`
+- **Mandatory Verification:**
+    - **Localization:** Test all user-facing text in **ID** and **EN**.
+    - **RBAC:** Explicitly test allowed AND denied roles.
+    - **Exceptions:** Verify exact translated exception messages.
+- **Tooling:** Pest v4. Run via `php artisan test --parallel`.
 
 ---
 

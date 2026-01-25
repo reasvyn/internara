@@ -32,17 +32,22 @@ We explicitly separate **Maturity (Stage)**, **Operational Status**, and **Suppo
 
 This table represents the **authoritative status** of each version series.
 
-| Version    | Maturity (Stage) | Support Policy | Status     |
-| :--------- | :--------------- | :------------- | :--------- |
-| **v0.8.x** | Alpha            | Snapshot       | Released   |
-| **v0.7.x** | Alpha            | Snapshot       | Released   |
-| **v0.6.x** | Alpha            | Snapshot       | Released   |
-| **v0.5.x** | Alpha            | EOL            | Deprecated |
-| **v0.4.x** | Alpha            | EOL            | Archived   |
+| Version    | Maturity (Stage) | Support Policy | Status      |
+| :--------- | :--------------- | :------------- | :---------- |
+| **v0.9.x** | Alpha            | Snapshot       | In Progress |
+| **v0.8.x** | Alpha            | Snapshot       | Released    |
+| **v0.7.x** | Alpha            | Snapshot       | Released    |
+| **v0.6.x** | Alpha            | Snapshot       | Released    |
+| **v0.5.x** | Alpha            | EOL            | Deprecated  |
+| **v0.4.x** | Alpha            | EOL            | Archived    |
 
 ---
 
 ## 3. Release Narratives
+
+### Active Development
+
+- **[v0.9.0-alpha](v0.9.0-alpha.md)** — _System Initialization_ Focus: Zero-config setup wizard.
 
 ### Latest Released Version
 

@@ -48,57 +48,70 @@ At initiation time:
 
 ### 2.2 Mandatory Blueprint Components
 
-Each Application Blueprint **must** contain the following sections.
+Each Application Blueprint **must** contain the following sections using the standardized
+terminology.
 
 #### 2.2.1 Series Code & Spec Alignment
 
 - **Series Code:** A unique identifier (e.g., `ARC01-ORCH-01`).
 - **Spec Reference:** Explicit link to the section of `internara-specs.md` being addressed.
 
-#### 2.2.2 Core Problem Statement
+#### 2.2.2 Version Goals and Scopes (Core Problem Statement)
 
-A concise articulation of the central problem or opportunity being addressed.
+A clear definition of the version’s purpose, core objectives, and the primary problems it aims to
+solve.
 
-- What limitation exists today?
-- Why does this version series need to exist?
+- **Purpose:** Why does this version series need to exist?
+- **Objectives:** What specific outcomes must be achieved?
+- **Scope:** What limitations or current problems are being resolved?
 
-#### 2.2.3 Architectural Impact
+#### 2.2.3 Functional Specifications
 
-A high-level description of expected system changes, adhering to the **Modular Monolith** guide:
+A curated list of key features and user stories prioritized by their impact on the user experience.
+
+- **Feature Set:** Description of the primary functions introduced or modified.
+- **User Stories:** Concise narratives describing how actors interact with these features.
+
+#### 2.2.4 Technical Architecture (Architectural Impact)
+
+The structural design of the system, including database schemas, API integrations, and the chosen
+tech stack (adhering to the **Modular Monolith** guide).
 
 - **Modules:** Affected, New, or Deprecated.
 - **Data Layer:** Schema changes (Must use UUIDs, No physical foreign keys).
 - **Settings:** Application config changes (Must use `setting()` helper).
 
-#### 2.2.4 Contract Definitions
+#### 2.2.5 UX/UI Design Specifications (UI/UX Strategy)
 
-An outline of new or modified **Contracts (Interfaces)** required for cross-module interaction.
-
-- **Synchronous:** Service Interface definitions.
-- **Asynchronous:** Events & Listeners.
-
-#### 2.2.5 UI/UX Strategy
+A written framework detailing the design philosophy, user flow logic, interaction behaviors, and
+content tone.
 
 - **Mobile-First:** How the changes will scale from mobile to desktop.
+- **User Flow:** The logical flow of user interactions.
 - **Multi-Language:** Confirmation of `i11n` support for new features.
 - **Role Access:** Which User Roles interact with these changes.
 
+#### 2.2.6 Success Metrics (KPIs)
+
+Measurable indicators and data points to evaluate the performance and adoption of the version
+post-release.
+
 ---
 
-## 3. Exit Criteria (Completion Conditions)
+## 3. Quality Assurance (QA) Criteria (Exit Criteria)
 
-Every Application Blueprint **must explicitly define its exit criteria**. This acts as the **Exit
-Gate** for the SDLC Construction Phase.
+Every Application Blueprint **must explicitly define its QA and Exit Criteria**. This acts as the
+**Exit Gate** for the SDLC Construction Phase.
 
-Typical exit criteria include:
+Typical criteria include:
 
-- All declared architectural keystones are implemented.
-- **Spec Verification:** The system behavior aligns with `internara-specs.md`.
-- **Quality Gates:** 100% Test Pass Rate, Static Analysis Clean.
+- **Acceptance Criteria:** Specific functional requirements that must be met.
+- **Testing Protocols:** 100% Test Pass Rate (Unit & Feature).
+- **Quality Gates:** Static Analysis Clean, Spec Validation confirmed.
 - Documentation (Release Narrative) accurately reflects the realized architecture.
 
 > A blueprint is considered complete when its **intent has been realized** and **verified against
-> specs**.
+> QA criteria**.
 
 ---
 
