@@ -49,14 +49,32 @@ class AppInstallCommand extends Command
             return self::FAILURE;
         }
 
-        // 1. Environment Validation
-        $this->components->task('Validating environment requirements', function () {
+        $success = true;
+
+        // 1. Environment Initialization
+        $this->components->task('Ensuring .env file existence', function () use (&$success) {
+            if (! $this->installerService->ensureEnvFileExists()) {
+                $success = false;
+
+                return false;
+            }
+
+            return true;
+        });
+
+        if (! $success) {
+            return self::FAILURE;
+        }
+
+        // 2. Environment Validation
+        $this->components->task('Validating environment requirements', function () use (&$success) {
             $requirements = $this->installerService->validateEnvironment();
 
             foreach ($requirements as $name => $status) {
                 if (! $status) {
                     $this->newLine();
                     $this->components->error("Requirement failed: {$name}");
+                    $success = false;
 
                     return false;
                 }
@@ -65,20 +83,69 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        // 2. Database Migrations
-        $this->components->task('Running database migrations', function () {
-            return $this->installerService->runMigrations();
+        if (! $success) {
+            return self::FAILURE;
+        }
+
+        // 3. Application Key Generation
+        $this->components->task('Generating application key', function () use (&$success) {
+            if (! $this->installerService->generateAppKey()) {
+                $success = false;
+
+                return false;
+            }
+
+            return true;
         });
 
-        // 3. Core & Shared Seeding
-        $this->components->task('Seeding foundational data', function () {
-            return $this->installerService->runSeeders();
+        if (! $success) {
+            return self::FAILURE;
+        }
+
+        // 4. Database Migrations
+        $this->components->task('Running database migrations', function () use (&$success) {
+            if (! $this->installerService->runMigrations()) {
+                $success = false;
+
+                return false;
+            }
+
+            return true;
         });
 
-        // 4. Storage Symlinking
-        $this->components->task('Creating storage symbolic link', function () {
-            return $this->installerService->createStorageSymlink();
+        if (! $success) {
+            return self::FAILURE;
+        }
+
+        // 5. Core & Shared Seeding
+        $this->components->task('Seeding foundational data', function () use (&$success) {
+            if (! $this->installerService->runSeeders()) {
+                $success = false;
+
+                return false;
+            }
+
+            return true;
         });
+
+        if (! $success) {
+            return self::FAILURE;
+        }
+
+        // 6. Storage Symlinking
+        $this->components->task('Creating storage symbolic link', function () use (&$success) {
+            if (! $this->installerService->createStorageSymlink()) {
+                $success = false;
+
+                return false;
+            }
+
+            return true;
+        });
+
+        if (! $success) {
+            return self::FAILURE;
+        }
 
         $this->newLine();
         $this->components->info('Technical installation completed successfully!');

@@ -18,9 +18,17 @@ class InstallerService implements InstallerServiceContract
      */
     public function install(): bool
     {
+        if (! $this->ensureEnvFileExists()) {
+            return false;
+        }
+
         $requirements = $this->validateEnvironment();
 
         if (in_array(false, $requirements, true)) {
+            return false;
+        }
+
+        if (! $this->generateAppKey()) {
             return false;
         }
 
@@ -33,6 +41,34 @@ class InstallerService implements InstallerServiceContract
         }
 
         return $this->createStorageSymlink();
+    }
+
+    /**
+     * Ensures the .env file exists, creating it from .env.example if necessary.
+     */
+    public function ensureEnvFileExists(): bool
+    {
+        if (File::exists(base_path('.env'))) {
+            return true;
+        }
+
+        if (File::exists(base_path('.env.example'))) {
+            return File::copy(base_path('.env.example'), base_path('.env'));
+        }
+
+        return false;
+    }
+
+    /**
+     * Generates the application key if not set.
+     */
+    public function generateAppKey(): bool
+    {
+        try {
+            return Artisan::call('key:generate', ['--force' => true]) === 0;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

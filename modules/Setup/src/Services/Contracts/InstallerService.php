@@ -17,6 +17,20 @@ interface InstallerService
     public function install(): bool;
 
     /**
+     * Ensures the .env file exists, creating it from .env.example if necessary.
+     *
+     * @return bool True if the file exists or was created, false otherwise.
+     */
+    public function ensureEnvFileExists(): bool;
+
+    /**
+     * Generates the application key.
+     *
+     * @return bool True if the key was generated successfully, false otherwise.
+     */
+    public function generateAppKey(): bool;
+
+    /**
      * Validates the system environment requirements.
      *
      * @return array<string, bool> An associative array of requirement names and their status.
