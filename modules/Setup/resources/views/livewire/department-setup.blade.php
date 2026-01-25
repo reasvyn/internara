@@ -1,6 +1,6 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <p class="mb-16 font-bold text-gray-500">Langkah 4 dari 5</p>
+        <p class="mb-16 font-bold text-gray-500">Langkah 5 dari 6</p>
 
         <h1 class="text-3xl font-bold">Menyiapkan Jalur-Jalur Keahlian.</h1>
 
@@ -14,7 +14,7 @@
         </p>
 
         <div class="mt-8 flex items-center gap-4">
-            <x-ui::button class="btn-secondary btn-outline" label="Kembali" wire:click="back" />
+            <x-ui::button class="btn-secondary btn-outline" label="Kembali" wire:click="backToPrev" />
             <x-ui::button
                 class="btn-primary"
                 label="Lanjutkan"

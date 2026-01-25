@@ -32,9 +32,9 @@ class SchoolSetup extends Component
      */
     public function mount(): void
     {
-        $this->initSetupProps(
+        $this->initSetupStepProps(
             currentStep: 'school',
-            nextStep: 'department',
+            nextStep: 'system',
             prevStep: 'account',
             extra: ['req_record' => 'school'],
         );
@@ -43,9 +43,9 @@ class SchoolSetup extends Component
     }
 
     /**
-     * Handles the 'school-saved' event to proceed to the next setup step.
+     * Handles the 'school_saved' event to proceed to the next setup step.
      */
-    #[On('school-saved')]
+    #[On('school_saved')]
     public function handleSchoolSaved(): void
     {
         $this->nextStep();

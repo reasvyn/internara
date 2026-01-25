@@ -137,9 +137,20 @@ class SetupService implements Contracts\SetupService
         };
 
         return match ($step) {
+            'system' => $this->storeStep('system'),
             'complete' => $this->finalizeSetupStep(),
             default => $perform(),
         };
+    }
+
+    /**
+     * Saves the system and SMTP settings.
+     */
+    public function saveSystemSettings(array $settings): bool
+    {
+        $this->settingService->setValue($settings);
+
+        return true;
     }
 
     /**

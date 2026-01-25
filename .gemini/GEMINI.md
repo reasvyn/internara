@@ -67,6 +67,9 @@ These directives guide all technical workflows for the Internara project.
 - **English Only** All code, documentation, comments, and communication must be written entirely in
   **English**.
 
+- **Open Source Commitment** As this is an OSS project, never use or integrate any paid enterprise
+  services (e.g., paid APIs, proprietary software) in its development or features.
+
 - **Directory Exclusion** Always exclude `vendor` and `node_modules` directories when running shell
   commands, scanning, or using other tools to ensure efficiency and focus on project-specific code.
 
