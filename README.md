@@ -7,87 +7,96 @@
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
 ![Laravel](https://img.shields.io/badge/Laravel-v12-ff2d20?style=flat-square&logo=laravel)
 
-**Internara** (Practical Work Management Information System / SIM-PKL) is an open-source platform
-built with **Laravel v12** and the **TALL Stack**.
+**Internara** is a comprehensive **Practical Work Management Information System (SIM-PKL)** designed to modernize how educational institutions manage internships and vocational training programs.
+
+Built to bridge the gap between academic administration and industrial practice, Internara provides a centralized, digital ecosystem for managing the entire lifecycle of practical work—from prerequisite validation to final competency evaluation.
 
 ---
 
-## Core Features
+## System Overview
 
-- **Modular Monolith Architecture**  
-  Clean isolation of business domains (User, Internship, Assessment, etc.) with strict boundaries.
+Internara replaces fragmented manual processes with a unified, role-based platform that connects all stakeholders:
 
-- **Role-Based Workspaces**  
-  Dedicated environments for **Instructors**, **Staff**, **Students**, and **Industry Supervisors**.
-
-- **Zero-Config Initialization**  
-  Automated setup wizard for instant deployment and easy configuration.
-
-- **Administrative Automation**  
-  Automated prerequisite checks, participation-driven scoring, and institutional reporting.
-
-- **Mobile-First & Multi-Language**  
-  Fully responsive UI localized for **Indonesian** and **English**.
-
-- **Security & Portability**  
-  UUID-based identity, RBAC, and zero physical foreign keys between modules.
+- **For Institutions:** Automate administrative workflows, track student placement, and generate compliance reports with ease.
+- **For Instructors:** Monitor student progress in real-time, record guidance sessions, and assess competencies through a streamlined dashboard.
+- **For Industry Mentors:** A dedicated portal to provide feedback, validate logbooks, and collaborate with academic supervisors.
+- **For Students:** A mobile-responsive hub to manage daily logs, view schedules, and track competency achievements.
 
 ---
 
-## Requirements
+## Key Capabilities
 
+### ⚡ Streamlined Administration
+Eliminate paperwork with digital document management. Internara handles the heavy lifting of student data verification, placement management, and automated prerequisite checks.
+
+### 📊 Real-Time Monitoring & Evaluation
+Move beyond retroactive reporting. Instructors can monitor student activities daily, ensuring learning objectives are met on-site. The system supports detailed competency scoring and qualitative feedback.
+
+### 🤝 Collaborative Mentoring
+Facilitate meaningful guidance. The platform records mentoring sessions from both academic and industry supervisors, creating a transparent history of student development.
+
+### 📱 Mobile-First Experience
+Recognizing that internships happen in the field, Internara is built with a **"Mobile-First"** design philosophy. The interface is fully optimized for smartphones and tablets, ensuring access anytime, anywhere.
+
+### 🌍 Multi-Language Support
+Ready for diverse environments with native support for **Indonesian** and **English**, ensuring clarity for all users.
+
+---
+
+## Technical Foundation
+
+Under the hood, Internara is engineered for stability, security, and maintainability.
+
+- **Modern Core:** Built on **Laravel 12**, utilizing a robust **Modular Monolith** architecture for system integrity.
+- **Reactive UI:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire, Volt) for a fast, app-like user experience.
+- **Enterprise-Grade Security:** Features UUID-based identity management, strict Role-Based Access Control (RBAC), and encrypted data handling.
+
+---
+
+## Getting Started
+
+### Requirements
 - PHP 8.4 or higher
 - Composer
 - Node.js & NPM
 - SQLite, MySQL, or PostgreSQL
 - Linux-based VPS (Recommended)
 
----
-
-## Installation
-
-Refer to the **[Installation Guide](docs/main/installation-guide.md)** for setup instructions.
-
----
-
-## Version Supports
-
-| Version Series | Stage | Support Policy | Security Updates | Bug Fixes | Lifecycle Status |
-| :------------- | :---- | :------------- | :--------------- | :-------- | :--------------- |
-| **v0.9.x**     | Alpha | Snapshot       | ❌               | ❌        | In Progress      |
-| **v0.8.x**     | Alpha | Snapshot       | ❌               | ❌        | Released         |
-| **v0.7.x**     | Alpha | Snapshot       | ❌               | ❌        | Released         |
-| **v0.6.x**     | Alpha | Snapshot       | ❌               | ❌        | Released         |
-| **v0.5.x**     | Alpha | EOL            | ❌               | ❌        | Deprecated       |
-| **v0.4.x**     | Alpha | EOL            | ❌               | ❌        | Archived         |
-
-For a complete history of application evolution, see
-**[Application Versions Overview](docs/versions/versions-overview.md)**.
+### Installation
+For detailed deployment instructions, please refer to the **[Installation Guide](docs/main/installation-guide.md)**.
 
 ---
 
 ## Documentation
 
-### 👥 Public Guides
+### 👥 For Users & Administrators
+- **[Project Overview](docs/main/project-overview.md)**: Detailed feature breakdown and vision.
+- **[Release Notes](docs/versions/versions-overview.md)**: History of changes and updates.
 
-- **[Project Overview](docs/main/project-overview.md)**: Vision, goals, and key features.
-- **[Latest Updates](docs/versions/versions-overview.md)**: Release history and status.
-
-### 🛠 Internal Manuals
-
-- **[Architecture Guide](docs/internal/architecture-guide.md)**: Modular Monolith layers and rules.
-- **[Development Workflow](docs/internal/development-workflow.md)**: Engineering lifecycle.
-- **[Engineering Index](docs/internal/table-of-contents.md)**: Complete list of technical standards.
+### 🛠 For Developers
+- **[Architecture Guide](docs/internal/architecture-guide.md)**: Deep dive into the modular system.
+- **[Development Workflow](docs/internal/development-workflow.md)**: Engineering lifecycle and standards.
+- **[Engineering Index](docs/internal/table-of-contents.md)**: Complete list of technical specifications.
 
 ---
 
-## License
+## Project Status
 
-MIT License.
+**Current Version:** `v0.9.0-alpha`
+
+Internara is currently in **Active Development (Alpha Stage)**. While core features are functional, the system is evolving rapidly.
+
+| Version Series | Stage | Support Policy | Lifecycle Status |
+| :------------- | :---- | :------------- | :--------------- |
+| **v0.9.x**     | Alpha | Snapshot       | In Progress      |
+| **v0.8.x**     | Alpha | Snapshot       | Released         |
+| **v0.7.x**     | Alpha | Snapshot       | Released         |
 
 ---
 
-## Credits
+## License & Credits
+
+Internara is open-sourced software licensed under the **[MIT license](LICENSE)**.
 
 - **Author:** [Reas Vyn](https://github.com/reasnov)
 - **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)
