@@ -6,6 +6,7 @@ namespace Modules\Setup\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
 
@@ -14,6 +15,7 @@ class ProtectSetupRoute
     public function __construct(
         protected SetupService $setupService,
         protected SuperAdminService $superAdminService,
+        protected SettingService $settingService,
     ) {}
 
     /**
@@ -21,20 +23,42 @@ class ProtectSetupRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->isNotValidAccess()) {
+        // 1. If already installed and SuperAdmin exists, total lockdown (404)
+        if ($this->setupService->isAppInstalled() && $this->superAdminExists()) {
             return abort(404);
+        }
+
+        // 2. If not installed, enforce Token Authorization
+        if (! $this->setupService->isAppInstalled()) {
+            if ($this->hasValidToken($request)) {
+                $request->session()->put('setup_authorized', true);
+            }
+
+            if (! $request->session()->get('setup_authorized')) {
+                return abort(
+                    403,
+                    'Unauthorized setup access. Please use the link provided by the CLI.',
+                );
+            }
         }
 
         return $next($request);
     }
 
-    protected function isNotValidAccess(): bool
+    protected function superAdminExists(): bool
     {
-        return $this->setupService->isAppInstalled() &&
-            $this->superAdminService->remember(
-                cacheKey: 'user.super_admin',
-                ttl: now()->addDay(),
-                callback: fn (SuperAdminService $service) => $service->exists(),
-            );
+        return $this->superAdminService->remember(
+            cacheKey: 'user.super_admin',
+            ttl: now()->addDay(),
+            callback: fn (SuperAdminService $service) => $service->exists(),
+        );
+    }
+
+    protected function hasValidToken(Request $request): bool
+    {
+        $token = $request->query('token');
+        $storedToken = $this->settingService->getValue('setup_token');
+
+        return $token && $storedToken && is_string($token) && hash_equals($storedToken, $token);
     }
 }

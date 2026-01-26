@@ -6,68 +6,90 @@ use Modules\Setup\Services\Contracts\InstallerService;
 
 test('it asks for confirmation before installation', function () {
     $this->artisan('app:install')
-        ->expectsConfirmation('This will reset your database and initialize the system. Do you want to proceed?', 'no')
+        ->expectsConfirmation(
+            'This will reset your database and initialize the system. Do you want to proceed?',
+            'no',
+        )
         ->assertFailed();
 });
 
 test('it executes the installation steps correctly', function () {
     $installerMock = Mockery::mock(InstallerService::class);
-    
-    $installerMock->shouldReceive('ensureEnvFileExists')
-        ->once()
-        ->andReturn(true);
 
-    $installerMock->shouldReceive('validateEnvironment')
-        ->once()
-        ->andReturn(['php_version' => true, 'env_exists' => true, 'writable_storage' => true, 'writable_bootstrap' => true]);
+    $installerMock->shouldReceive('ensureEnvFileExists')->once()->andReturn(true);
 
-    $installerMock->shouldReceive('generateAppKey')
+    $installerMock
+        ->shouldReceive('validateEnvironment')
         ->once()
-        ->andReturn(true);
+        ->andReturn([
+            'php_version' => true,
+            'env_exists' => true,
+            'writable_storage' => true,
+            'writable_bootstrap' => true,
+        ]);
 
-    $installerMock->shouldReceive('runMigrations')
-        ->once()
-        ->andReturn(true);
+    $installerMock->shouldReceive('generateAppKey')->once()->andReturn(true);
 
-    $installerMock->shouldReceive('runSeeders')
-        ->once()
-        ->andReturn(true);
+    $installerMock->shouldReceive('runMigrations')->once()->andReturn(true);
 
-    $installerMock->shouldReceive('createStorageSymlink')
-        ->once()
-        ->andReturn(true);
+    $installerMock->shouldReceive('runSeeders')->once()->andReturn(true);
+
+    $installerMock->shouldReceive('createStorageSymlink')->once()->andReturn(true);
 
     $this->app->instance(InstallerService::class, $installerMock);
 
+    $settingServiceMock = Mockery::mock(\Modules\Setting\Services\Contracts\SettingService::class);
+    $settingServiceMock
+        ->shouldReceive('getValue')
+        ->with('setup_token')
+        ->andReturn('test-token-123');
+    $this->app->instance(
+        \Modules\Setting\Services\Contracts\SettingService::class,
+        $settingServiceMock,
+    );
+
     $this->artisan('app:install')
-        ->expectsConfirmation('This will reset your database and initialize the system. Do you want to proceed?', 'yes')
+        ->expectsConfirmation(
+            'This will reset your database and initialize the system. Do you want to proceed?',
+            'yes',
+        )
         ->expectsOutputToContain('Internara System Installation')
         ->expectsOutputToContain('Technical installation completed successfully!')
+        ->expectsOutputToContain('token=test-token-123')
         ->assertSuccessful();
 });
 
 test('it fails if environment validation fails', function () {
     $installerMock = Mockery::mock(InstallerService::class);
-    
-    $installerMock->shouldReceive('ensureEnvFileExists')
-        ->once()
-        ->andReturn(true);
 
-    $installerMock->shouldReceive('validateEnvironment')
+    $installerMock->shouldReceive('ensureEnvFileExists')->once()->andReturn(true);
+
+    $installerMock
+        ->shouldReceive('validateEnvironment')
         ->once()
         ->andReturn(['env_exists' => false]);
 
     $this->app->instance(InstallerService::class, $installerMock);
 
     $this->artisan('app:install')
-        ->expectsConfirmation('This will reset your database and initialize the system. Do you want to proceed?', 'yes')
+        ->expectsConfirmation(
+            'This will reset your database and initialize the system. Do you want to proceed?',
+            'yes',
+        )
         ->assertFailed();
 });
 
 test('it forces installation if flag is provided', function () {
     $installerMock = Mockery::mock(InstallerService::class);
     $installerMock->shouldReceive('ensureEnvFileExists')->andReturn(true);
-    $installerMock->shouldReceive('validateEnvironment')->andReturn(['php_version' => true, 'env_exists' => true, 'writable_storage' => true, 'writable_bootstrap' => true]);
+    $installerMock
+        ->shouldReceive('validateEnvironment')
+        ->andReturn([
+            'php_version' => true,
+            'env_exists' => true,
+            'writable_storage' => true,
+            'writable_bootstrap' => true,
+        ]);
     $installerMock->shouldReceive('generateAppKey')->andReturn(true);
     $installerMock->shouldReceive('runMigrations')->andReturn(true);
     $installerMock->shouldReceive('runSeeders')->andReturn(true);
@@ -75,7 +97,16 @@ test('it forces installation if flag is provided', function () {
 
     $this->app->instance(InstallerService::class, $installerMock);
 
+    $settingServiceMock = Mockery::mock(\Modules\Setting\Services\Contracts\SettingService::class);
+    $settingServiceMock
+        ->shouldReceive('getValue')
+        ->with('setup_token')
+        ->andReturn('test-token-123');
+    $this->app->instance(
+        \Modules\Setting\Services\Contracts\SettingService::class,
+        $settingServiceMock,
+    );
+
     // No expectsConfirmation needed because of --force
-    $this->artisan('app:install', ['--force' => true])
-        ->assertSuccessful();
+    $this->artisan('app:install', ['--force' => true])->assertSuccessful();
 });

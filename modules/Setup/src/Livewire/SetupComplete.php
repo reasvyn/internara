@@ -31,7 +31,7 @@ class SetupComplete extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(currentStep: 'complete', prevStep: 'internship');
+        $this->initSetupStepProps(currentStep: 'complete', prevStep: 'system');
 
         $this->requireSetupAccess();
     }

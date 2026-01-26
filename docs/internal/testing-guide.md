@@ -87,6 +87,20 @@ test('it throws translated exception using module-specific key', function () {
 });
 ```
 
+### 4. Cross-Module Isolation
+
+To maintain modular portability, tests must strictly respect domain boundaries.
+
+- **No Concrete Imports**: Avoid importing concrete classes (Models, Services, Actions) from other
+  modules.
+- **Contract Resolution**: Always resolve cross-module dependencies via their **Service Contracts**
+  using `app(Contract::class)`.
+- **State Setup**: Use **Factories** from other modules to set up necessary database state for
+  Feature tests. Avoid direct instantiation (`new Model()`) of foreign models.
+- **Assertion Boundaries**: Assertions should focus on the behavior of the module being tested.
+  Avoid asserting against the internal state of foreign models directly; instead, verify outcomes
+  through the current module's logic or public contracts.
+
 ---
 
 ## The Internara Testing Stack

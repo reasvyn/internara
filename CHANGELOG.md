@@ -11,22 +11,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### 🚀 Overview
 
-Tracking **v0.9.0-alpha** (ARC01-BOOT-01). Focuses on **System Initialization**, including automated installation and zero-config setup.
+Tracking **v0.9.0-alpha** (ARC01-BOOT-01). Focuses on **System Initialization**, including automated
+installation and zero-config setup.
 
 ### ✨ Added
 
 - **Automated Installer (Keystone 1):**
     - Implemented `app:install` Artisan command for one-tap technical installation.
-    - Created `InstallerService` to orchestrate environment validation, migrations, and foundational seeding.
+    - Created `InstallerService` to orchestrate environment validation, migrations, and foundational
+      seeding.
 - **Web Setup Wizard Enhancements:**
-    - Integrated **System & SMTP Setup** step to capture mail server configuration during initialization.
+    - Integrated **System & SMTP Setup** step to capture mail server configuration during
+      initialization.
     - Created `SystemSetup` Livewire component and associated views.
     - Standardized navigation flow and step-based validation across the wizard.
 
 ### 🛠 Changed
 
 - **Wizard Refinement:**
-    - Standardized event naming convention (e.g., `school_saved`) to ensure seamless step progression.
+    - Standardized event naming convention (e.g., `school_saved`) to ensure seamless step
+      progression.
     - Improved multi-step navigation logic in `HandlesSetupSteps` trait.
     - Updated wizard step counters to reflect the expanded 6-step initialization process.
 

@@ -4,21 +4,23 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\InstallerService;
 
 beforeEach(function () {
-    $this->service = new InstallerService();
+    $this->settingService = Mockery::mock(SettingService::class);
+    $this->service = new InstallerService($this->settingService);
 });
 
 test('it validates environment requirements correctly', function () {
-    File::shouldReceive('exists')
-        ->with(base_path('.env'))
-        ->andReturn(true);
+    File::shouldReceive('exists')->with(base_path('.env'))->andReturn(true);
 
     $results = $this->service->validateEnvironment();
 
-    expect($results)->toBeArray()
-        ->and($results)->toHaveKeys(['php_version', 'env_exists', 'writable_storage', 'writable_bootstrap']);
+    expect($results)
+        ->toBeArray()
+        ->and($results)
+        ->toHaveKeys(['php_version', 'env_exists', 'writable_storage', 'writable_bootstrap']);
 });
 
 test('it runs migrations with force flag', function () {
@@ -33,19 +35,23 @@ test('it runs migrations with force flag', function () {
 });
 
 test('it returns false if migrations fail', function () {
-    Artisan::shouldReceive('call')
-        ->andReturn(1);
+    Artisan::shouldReceive('call')->andReturn(1);
 
     $result = $this->service->runMigrations();
 
     expect($result)->toBeFalse();
 });
 
-test('it runs seeders with force flag', function () {
+test('it runs seeders with force flag and generates token', function () {
     Artisan::shouldReceive('call')
         ->with('db:seed', ['--force' => true])
         ->once()
         ->andReturn(0);
+
+    $this->settingService
+        ->shouldReceive('setValue')
+        ->with('setup_token', Mockery::type('string'))
+        ->once();
 
     $result = $this->service->runSeeders();
 
@@ -53,14 +59,9 @@ test('it runs seeders with force flag', function () {
 });
 
 test('it creates storage symlink if it does not exist', function () {
-    File::shouldReceive('exists')
-        ->with(public_path('storage'))
-        ->andReturn(false);
+    File::shouldReceive('exists')->with(public_path('storage'))->andReturn(false);
 
-    Artisan::shouldReceive('call')
-        ->with('storage:link')
-        ->once()
-        ->andReturn(0);
+    Artisan::shouldReceive('call')->with('storage:link')->once()->andReturn(0);
 
     $result = $this->service->createStorageSymlink();
 
@@ -68,12 +69,9 @@ test('it creates storage symlink if it does not exist', function () {
 });
 
 test('it skip storage symlink creation if it already exists', function () {
-    File::shouldReceive('exists')
-        ->with(public_path('storage'))
-        ->andReturn(true);
+    File::shouldReceive('exists')->with(public_path('storage'))->andReturn(true);
 
-    Artisan::shouldReceive('call')
-        ->never();
+    Artisan::shouldReceive('call')->never();
 
     $result = $this->service->createStorageSymlink();
 
@@ -81,17 +79,11 @@ test('it skip storage symlink creation if it already exists', function () {
 });
 
 test('it ensures env file exists', function () {
-    File::shouldReceive('exists')
-        ->with(base_path('.env'))
-        ->andReturn(false);
+    File::shouldReceive('exists')->with(base_path('.env'))->andReturn(false);
 
-    File::shouldReceive('exists')
-        ->with(base_path('.env.example'))
-        ->andReturn(true);
+    File::shouldReceive('exists')->with(base_path('.env.example'))->andReturn(true);
 
-    File::shouldReceive('copy')
-        ->once()
-        ->andReturn(true);
+    File::shouldReceive('copy')->once()->andReturn(true);
 
     $result = $this->service->ensureEnvFileExists();
 
@@ -112,27 +104,31 @@ test('it generates app key', function () {
 test('it orchestrates the complete installation process', function () {
     // 1. Mock Env Existence
     File::shouldReceive('exists')->andReturn(true);
-    
+
     // 2. Mock Environment Validation
     File::shouldReceive('exists')->andReturn(true);
-    
+
     // 3. Mock Key Generate
-    Artisan::shouldReceive('call')->with('key:generate', ['--force' => true])->andReturn(0);
+    Artisan::shouldReceive('call')
+        ->with('key:generate', ['--force' => true])
+        ->andReturn(0);
 
     // 4. Mock Migrations
     Artisan::shouldReceive('call')
         ->with('migrate', ['--force' => true])
         ->andReturn(0);
 
-    // 5. Mock Seeders
+    // 5. Mock Seeders & Token
     Artisan::shouldReceive('call')
         ->with('db:seed', ['--force' => true])
         ->andReturn(0);
+    $this->settingService
+        ->shouldReceive('setValue')
+        ->with('setup_token', Mockery::type('string'))
+        ->once();
 
     // 6. Mock Symlink
-    Artisan::shouldReceive('call')
-        ->with('storage:link')
-        ->andReturn(0);
+    Artisan::shouldReceive('call')->with('storage:link')->andReturn(0);
 
     $result = $this->service->install();
 

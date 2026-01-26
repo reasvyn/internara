@@ -54,9 +54,7 @@ class SetupServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        $this->commands([
-            \Modules\Setup\Console\Commands\AppInstallCommand::class,
-        ]);
+        $this->commands([\Modules\Setup\Console\Commands\AppInstallCommand::class]);
     }
 
     /**

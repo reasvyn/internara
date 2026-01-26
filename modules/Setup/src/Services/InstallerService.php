@@ -6,6 +6,8 @@ namespace Modules\Setup\Services;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallerService as InstallerServiceContract;
 
 /**
@@ -13,6 +15,11 @@ use Modules\Setup\Services\Contracts\InstallerService as InstallerServiceContrac
  */
 class InstallerService implements InstallerServiceContract
 {
+    /**
+     * InstallerService constructor.
+     */
+    public function __construct(protected SettingService $settingService) {}
+
     /**
      * Orchestrates the complete installation process.
      */
@@ -97,12 +104,19 @@ class InstallerService implements InstallerServiceContract
     }
 
     /**
-     * Executes the core and shared database seeders.
+     * Executes the core and shared database seeders and generates setup token.
      */
     public function runSeeders(): bool
     {
         try {
-            return Artisan::call('db:seed', ['--force' => true]) === 0;
+            $seeded = Artisan::call('db:seed', ['--force' => true]) === 0;
+
+            if ($seeded) {
+                $token = Str::random(32);
+                $this->settingService->setValue('setup_token', $token);
+            }
+
+            return $seeded;
         } catch (\Exception $e) {
             return false;
         }

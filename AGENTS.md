@@ -517,7 +517,7 @@ $product->delete();
   <code-snippet name="Pest Example Asserting postJson Response" lang="php"> it('returns all',
   function () { $response = $this->postJson('/api/docs', []);
 
-                                              $response->assertSuccessful();
+                                                $response->assertSuccessful();
 
     }); </code-snippet>
 
@@ -610,13 +610,13 @@ $pages->assertNoJavascriptErrors()->assertNoConsoleLogs(); </code-snippet>
 
 - When listing items, use gap utilities for spacing, don't use margins.
 
-                                            <code-snippet name="Valid Flex Gap Spacing Example" lang="html">
-                                                <div class="flex gap-8">
-                                                    <div>Superior</div>
-                                                    <div>Michigan</div>
-                                                    <div>Erie</div>
-                                                </div>
-                                            </code-snippet>
+                                              <code-snippet name="Valid Flex Gap Spacing Example" lang="html">
+                                                  <div class="flex gap-8">
+                                                      <div>Superior</div>
+                                                      <div>Michigan</div>
+                                                      <div>Erie</div>
+                                                  </div>
+                                              </code-snippet>
 
 ### Dark Mode
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setup\Console\Commands;
 
 use Illuminate\Console\Command;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallerService;
 
 /**
@@ -32,7 +33,8 @@ class AppInstallCommand extends Command
      * Create a new command instance.
      */
     public function __construct(
-        protected InstallerService $installerService
+        protected InstallerService $installerService,
+        protected SettingService $settingService,
     ) {
         parent::__construct();
     }
@@ -149,7 +151,12 @@ class AppInstallCommand extends Command
 
         $this->newLine();
         $this->components->info('Technical installation completed successfully!');
-        $this->info('You can now proceed to the Web Setup Wizard to configure institutional branding.');
+
+        $token = $this->settingService->getValue('setup_token');
+        $setupUrl = route('setup.welcome', ['token' => $token]);
+
+        $this->info('Please proceed to the Web Setup Wizard using the authorized link below:');
+        $this->warn($setupUrl);
         $this->newLine();
 
         return self::SUCCESS;
@@ -164,6 +171,9 @@ class AppInstallCommand extends Command
             return true;
         }
 
-        return $this->confirm('This will reset your database and initialize the system. Do you want to proceed?', false);
+        return $this->confirm(
+            'This will reset your database and initialize the system. Do you want to proceed?',
+            false,
+        );
     }
 }

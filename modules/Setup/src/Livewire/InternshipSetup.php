@@ -33,7 +33,7 @@ class InternshipSetup extends Component
     {
         $this->initSetupStepProps(
             currentStep: 'internship',
-            nextStep: 'complete',
+            nextStep: 'system',
             prevStep: 'department',
             extra: ['req_record' => 'internship'],
         );

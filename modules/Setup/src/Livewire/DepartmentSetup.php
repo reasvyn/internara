@@ -34,7 +34,7 @@ class DepartmentSetup extends Component
         $this->initSetupStepProps(
             currentStep: 'department',
             nextStep: 'internship',
-            prevStep: 'system',
+            prevStep: 'school',
             extra: ['req_record' => 'department'],
         );
 

@@ -110,8 +110,8 @@ Typical criteria include:
 - **Quality Gates:** Static Analysis Clean, Spec Validation confirmed.
 - Documentation (Release Narrative) accurately reflects the realized architecture.
 
-> A blueprint is considered complete when its **intent has been realized** and **verified against
-> QA criteria**.
+> A blueprint is considered complete when its **intent has been realized** and **verified against QA
+> criteria**.
 
 ---
 

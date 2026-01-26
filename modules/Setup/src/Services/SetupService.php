@@ -166,10 +166,12 @@ class SetupService implements Contracts\SetupService
             'brand_logo' => $schoolRecord->logo_url ?? null,
             'site_title' => $schoolRecord->name.' - Sistem Informasi Manajemen PKL',
             'app_installed' => true,
+            'setup_token' => null, // Purge the token
         ];
 
         $this->settingService->setValue($settings);
 
+        Session::forget('setup_authorized'); // Clear authorized session
         Session::flush();
         Session::regenerate();
 

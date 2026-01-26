@@ -1,6 +1,6 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <p class="mb-16 font-bold text-gray-500">Langkah 4 dari 6</p>
+        <p class="mb-16 font-bold text-gray-500">Langkah 6 dari 6</p>
 
         <h1 class="text-3xl font-bold">Pastikan Jalur Komunikasi Terbuka.</h1>
 

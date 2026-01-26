@@ -34,7 +34,7 @@ class SchoolSetup extends Component
     {
         $this->initSetupStepProps(
             currentStep: 'school',
-            nextStep: 'system',
+            nextStep: 'department',
             prevStep: 'account',
             extra: ['req_record' => 'school'],
         );

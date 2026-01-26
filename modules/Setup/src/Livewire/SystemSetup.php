@@ -17,11 +17,17 @@ class SystemSetup extends Component
     use Concerns\HandlesSetupSteps;
 
     public string $mail_host = '';
+
     public string $mail_port = '587';
+
     public string $mail_username = '';
+
     public string $mail_password = '';
+
     public string $mail_encryption = 'tls';
+
     public string $mail_from_address = '';
+
     public string $mail_from_name = '';
 
     /**
@@ -39,8 +45,8 @@ class SystemSetup extends Component
     {
         $this->initSetupStepProps(
             currentStep: 'system',
-            nextStep: 'department',
-            prevStep: 'school'
+            nextStep: 'complete',
+            prevStep: 'internship',
         );
 
         $this->requireSetupAccess();
