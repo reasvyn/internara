@@ -57,4 +57,11 @@ class DepartmentServiceProvider extends ServiceProvider
             \Modules\Department\Services\Contracts\DepartmentService::class => \Modules\Department\Services\DepartmentService::class,
         ];
     }
+
+    protected function viewSlots(): array
+    {
+        return [
+            'department-manager' => 'livewire:department::department-manager',
+        ];
+    }
 }

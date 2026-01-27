@@ -28,6 +28,8 @@ return [
     'title' => 'Title',
     'year' => 'Year',
     'semester' => 'Semester',
+    'semester_odd' => 'Odd',
+    'semester_even' => 'Even',
     'date_start' => 'Start Date',
     'date_finish' => 'Finish Date',
     'delete_program_confirm' => 'Are you sure you want to delete this internship program? All related placements and registrations will also be deleted.',

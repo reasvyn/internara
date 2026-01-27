@@ -1,39 +1,39 @@
 <div class="flex size-full flex-1 flex-col items-center justify-center">
     <x-ui::card
         class="border-base-300 w-full max-w-lg rounded-xl border text-center shadow-lg"
-        title="Daftar Akun Administrator"
-        subtitle="Buat akun utama untuk mengelola seluruh data sistem."
+        :title="__('auth::ui.register_super_admin.title')"
+        :subtitle="__('auth::ui.register_super_admin.subtitle')"
     >
         <x-ui::form class="text-start" wire:submit="register">
             <x-ui::input
                 wire:model="form.name"
                 type="text"
-                label="Nama Lengkap"
-                placeholder="Masukkan Nama Lengkap Anda"
+                :label="__('auth::ui.register_super_admin.form.name')"
+                :placeholder="__('auth::ui.register_super_admin.form.name_placeholder')"
                 required
                 disabled
             />
             <x-ui::input
                 wire:model="form.email"
                 type="email"
-                label="Alamat Email"
-                placeholder="Masukkan Alamat Email Anda"
+                :label="__('auth::ui.register_super_admin.form.email')"
+                :placeholder="__('auth::ui.register_super_admin.form.email_placeholder')"
                 required
                 autofocus
             />
             <x-ui::input
                 wire:model="form.password"
                 type="password"
-                label="Kata Sandi"
-                placeholder="Buat Kata Sandi Anda"
-                hint="Perhatian! Gunakan kombinasi kata sandi yang sulit ditebak."
+                :label="__('auth::ui.register_super_admin.form.password')"
+                :placeholder="__('auth::ui.register_super_admin.form.password_placeholder')"
+                :hint="__('auth::ui.register_super_admin.form.password_hint')"
                 required
             />
             <x-ui::input
                 wire:model="form.password_confirmation"
                 type="password"
-                label="Konfirmasi Kata Sandi"
-                placeholder="Ulangi Kata Sandi Anda"
+                :label="__('auth::ui.register_super_admin.form.password_confirmation')"
+                :placeholder="__('auth::ui.register_super_admin.form.password_confirmation_placeholder')"
                 required
             />
 
@@ -41,13 +41,13 @@
                 <div class="w-full space-y-2">
                     <x-ui::button
                         class="btn-primary w-full"
-                        label="Buat Akun"
+                        :label="__('auth::ui.register_super_admin.form.submit')"
                         type="submit"
                         spinner
                     />
 
                     <p class="text-center text-xs">
-                        Hati-hati! Jangan berikan informasi akun kepada siapapun.
+                        {{ __('auth::ui.register_super_admin.form.footer_warning') }}
                     </p>
                 </div>
             </div>

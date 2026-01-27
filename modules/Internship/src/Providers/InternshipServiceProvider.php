@@ -90,6 +90,7 @@ class InternshipServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
+            'internship-manager' => 'livewire:internship::internship-manager',
             'sidebar.menu' => [
                 'ui::components.menu-item' => [
                     'title' => __('internship::ui.requirement_title'),

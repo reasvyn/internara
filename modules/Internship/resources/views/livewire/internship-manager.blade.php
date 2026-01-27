@@ -46,7 +46,7 @@
                 <x-ui::select 
                     label="{{ __('internship::ui.semester') }}" 
                     wire:model="form.semester" 
-                    :options="[['id' => 'Ganjil', 'name' => 'Ganjil'], ['id' => 'Genap', 'name' => 'Genap']]" 
+                    :options="[['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], ['id' => 'Genap', 'name' => __('internship::ui.semester_even')]]" 
                     required 
                 />
             </div>
