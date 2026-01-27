@@ -12,7 +12,7 @@ Monolith** architecture and **Version Management Guide**.
 
 ## 1. Commit Protocols
 
-Internara uses **Conventional Commits** to ensure a readable and automated changelog history.
+Internara uses **Conventional Commits** to ensure a readable and automated Git history.
 
 ### 1.1 Commit Message Format
 

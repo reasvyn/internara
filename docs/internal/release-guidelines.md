@@ -1,6 +1,6 @@
 # Release Guidelines: Executing the Product Lifecycle
 
-This document defines the protocols for performing a release, managing changelogs, and synchronized
+This document defines the protocols for performing a release and synchronized
 deployment artifacts. For definitions of versioning standards and support policies, see the
 **[Version Management Guide](version-management.md)**.
 
@@ -23,21 +23,21 @@ A version may be marked as `Released` only when the following conditions are met
 
 ## 2. Release Procedure
 
+
+
 ### 2.1 Identity Verification
 
 Ensure `app_info.json` reflects the target version, series code, and intended support policy.
 
-### 2.2 Changelog Resolution (`CHANGELOG.md`)
 
-Reconcile all `[Unreleased]` entries into a new version block following **Keep a Changelog**
-conventions. Entries must describe **impact and intent**.
 
-### 2.3 Release Note Creation
+### 2.2 Release Note Creation
 
-Produce user-centric release notes in `docs/versions/vX.Y.Z.md`. This must reflect the **as-built
-reality**.
+Produce user-centric release notes in `docs/versions/vX.Y.Z.md`. This must reflect the
 
-### 2.4 Tagging
+**as-built reality**.
+
+### 2.3 Tagging
 
 Create a Git tag matching the version identifier (e.g., `git tag v0.9.0-alpha`).
 

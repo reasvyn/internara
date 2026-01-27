@@ -102,7 +102,6 @@ artifacts:
 
 - **`app_info.json`**: Machine-readable application identity and support policy.
 - **`README.md`**: Public interface, project status, and version support matrix.
-- **`CHANGELOG.md`**: Narrative delta history and SemVer comparison links.
 - **`docs/versions/versions-overview.md`**: Strategic registry of all version series.
 - **`Architectural Blueprint`**: Tactical intent and phase sequence tracking.
 - **`Release Note`**: Analytical outcome and spec milestone verification.
@@ -111,12 +110,15 @@ artifacts:
 
 When a version moves from **In Progress** to **Released**:
 
-1.  **Changelog Resolution**: Reconcile `[Unreleased]` entries into a new version block.
-2.  **Identity Alignment**: Ensure `app_info.json` reflects the stable version and policy.
-3.  **Note Finalization**: Set header status to `Released` in the release note.
-4.  **Registry Sync**: Ensure the link is active in the **Versions Overview**.
-5.  **Public Interface**: Update the **README.md** status table.
-6.  **Remote Execution**: Create Git tag and GitHub Release per protocols.
+1.  **Identity Alignment**: Ensure `app_info.json` reflects the stable version and policy.
+
+2.  **Note Finalization**: Set header status to `Released` in the release note.
+
+3.  **Registry Sync**: Ensure the link is active in the **Versions Overview**.
+
+4.  **Public Interface**: Update the **README.md** status table.
+
+5.  **Remote Execution**: Create Git tag and GitHub Release per protocols.
 
 ### 6.2 Checklist: Transition to 'Archived'
 
@@ -134,6 +136,5 @@ To prevent informational bloat and maintain tactical focus, primary registries m
 
 1.  **Registry Pruning**: Remove individual rows and links for archived versions from the **Version Support Matrix** in both `README.md` and `versions-overview.md`.
 2.  **TOC Delegation**: Replace the list of archived releases with a single, clear link to the **Archived Release Notes TOC** (`archived/table-of-contents.md`).
-3.  **Changelog Pruning**: Remove the detailed version block and its corresponding GitHub comparison link from `CHANGELOG.md`.
-4.  **Context Preservation**: Ensure that all removed details are preserved within the archived files and their respective Table of Contents.
-5.  **Active Focus**: Primary project files must prioritize the **Active Development**, **Latest Released**, and **Recent Stable** milestones.
+3.  **Context Preservation**: Ensure that all removed details are preserved within the archived files and their respective Table of Contents.
+4.  **Active Focus**: Primary project files must prioritize the **Active Development**, **Latest Released**, and **Recent Stable** milestones.
