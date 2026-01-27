@@ -47,14 +47,14 @@ semantic overlap.
 
 ### 2.3 Operational Status (Current Reality)
 
-| Status      | Meaning                                      |
-| ----------- | -------------------------------------------- |
-| Planned     | Identified in Specs but not implemented.     |
-| In Progress | Under active construction.                   |
-| Preview     | Accessible for demonstration or evaluation.  |
-| Released    | Publicly tagged and distributed.             |
-| Deprecated  | Accessible but no longer recommended.        |
-| Archived    | Closed and historically preserved.           |
+| Status      | Meaning                                     |
+| ----------- | ------------------------------------------- |
+| Planned     | Identified in Specs but not implemented.    |
+| In Progress | Under active construction.                  |
+| Preview     | Accessible for demonstration or evaluation. |
+| Released    | Publicly tagged and distributed.            |
+| Deprecated  | Accessible but no longer recommended.       |
+| Archived    | Closed and historically preserved.          |
 
 ---
 
@@ -94,18 +94,46 @@ Located in `docs/versions/`, these document the **realized outcome** of a versio
 
 ---
 
-## 5. Handling 'Preview' Versions
+## 6. Artifact Synchronization Protocols
 
-The **Preview** status serves as an operational bridge between active construction and formal
-release, allowing for early demonstration and evaluation.
+Work is strictly **incomplete** until all project artifacts converge with the current state. Every
+lifecycle transition (e.g., Promotion, Archival) requires a mandatory audit of the following primary
+artifacts:
 
-- **Objective:** Provide a functional environment for stakeholders to review progress without the
-  finality of a stable release.
-- **Data Policy:** Preview environments may use transient or mock data; persistent data storage is
-  not guaranteed.
-- **Deployment:** Preview versions are typically deployed to temporary or "Staging" environments.
-- **Feedback:** Stakeholders are encouraged to provide feedback, which is captured as internal
-  refinement tasks rather than formal bug reports.
-- **Lifecycle Transition:** A version in **Preview** must eventually transition to **Released** or
-  revert to **In Progress** if significant regressions are identified.
+- **`app_info.json`**: Machine-readable application identity and support policy.
+- **`README.md`**: Public interface, project status, and version support matrix.
+- **`CHANGELOG.md`**: Narrative delta history and SemVer comparison links.
+- **`docs/versions/versions-overview.md`**: Strategic registry of all version series.
+- **`Architectural Blueprint`**: Tactical intent and phase sequence tracking.
+- **`Release Note`**: Analytical outcome and spec milestone verification.
 
+### 6.1 Checklist: Promotion to 'Released'
+
+When a version moves from **In Progress** to **Released**:
+
+1.  **Changelog Resolution**: Reconcile `[Unreleased]` entries into a new version block.
+2.  **Identity Alignment**: Ensure `app_info.json` reflects the stable version and policy.
+3.  **Note Finalization**: Set header status to `Released` in the release note.
+4.  **Registry Sync**: Ensure the link is active in the **Versions Overview**.
+5.  **Public Interface**: Update the **README.md** status table.
+6.  **Remote Execution**: Create Git tag and GitHub Release per protocols.
+
+### 6.2 Checklist: Transition to 'Archived'
+
+When a version moves from **Released** to **Archived**:
+
+1.  **Metadata Alignment**: Update the header status to `Archived` in the release note.
+2.  **Physical Relocation**: Move the release note to `docs/versions/archived/`.
+3.  **Blueprint Archival**: Move the Architectural Blueprint to
+    `docs/internal/blueprints/archived/`.
+4.  **Index Synchronization**: Update all TOC files and the **Versions Overview** links.
+5.  **Status Sync**: Update **README.md** to reflect archival and EOL policy.
+
+### 6.3 Registry Streamlining (Cleanup Rules)
+To prevent informational bloat and maintain tactical focus, primary registries must be pruned during the archival process:
+
+1.  **Registry Pruning**: Remove individual rows and links for archived versions from the **Version Support Matrix** in both `README.md` and `versions-overview.md`.
+2.  **TOC Delegation**: Replace the list of archived releases with a single, clear link to the **Archived Release Notes TOC** (`archived/table-of-contents.md`).
+3.  **Changelog Pruning**: Remove the detailed version block and its corresponding GitHub comparison link from `CHANGELOG.md`.
+4.  **Context Preservation**: Ensure that all removed details are preserved within the archived files and their respective Table of Contents.
+5.  **Active Focus**: Primary project files must prioritize the **Active Development**, **Latest Released**, and **Recent Stable** milestones.

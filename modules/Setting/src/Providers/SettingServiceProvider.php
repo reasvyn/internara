@@ -22,12 +22,7 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
 
         // Include the global helper function
         require_once module_path($this->name, 'src/Functions/setting.php');
@@ -38,7 +33,7 @@ class SettingServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }

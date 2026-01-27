@@ -40,17 +40,11 @@ They are **not**:
 
 ### 1.1 Naming Convention
 
-
-
 Blueprints are named following the **Series-Based** pattern to decouple planning intent from
 
 specific release versions, prepended by a two-digit development sequence:
 
-
-
 `{Dev_Sequence}-{Series_Code}-{Phase_Sequence}-{Descriptive-Theme}.md`
-
-
 
 - **Dev Sequence**: Overall development order (e.g., `01`, `02`).
 
@@ -59,8 +53,6 @@ specific release versions, prepended by a two-digit development sequence:
 - **Phase Sequence**: Specific stage within that series (e.g., `01`, `02`).
 
 - **Theme**: A human-readable summary.
-
-
 
 **Example**: `09-ARC01-BOOT-01-System-Initialization.md`
 

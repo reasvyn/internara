@@ -7,6 +7,7 @@ series.
 
 ## 1. Project Plans
 
+- **[05-ARC01-OPER-01 (Operational)](05-ARC01-OPER-01-Operational-Layer.md)**
 - **[04-ARC01-INST-01 (Institutional)](04-ARC01-INST-01-Institutional.md)**
 - **[03-ARC01-USER-01 (Identity)](03-ARC01-USER-01-Identity.md)**
 - **[02-ARC01-CORE-01 (Core Engine)](02-ARC01-CORE-01-Core-Engine.md)**

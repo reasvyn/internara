@@ -7,7 +7,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [v0.9.0-alpha] - 2026-01-26 (ARC01-BOOT-01)
+## [v0.9.0] - 2026-01-26 (ARC01-BOOT-01)
 
 ### 🚀 Overview
 
@@ -40,7 +40,7 @@ experience for institutional administrators.
 
 ---
 
-## [v0.8.0-alpha] - 2026-01-25 (ARC01-INTEL-01)
+## [v0.8.0] - 2026-01-25 (ARC01-INTEL-01)
 
 ### 🚀 Overview
 
@@ -69,7 +69,7 @@ insights for institutions and industry partners.
 
 ---
 
-## [v0.7.0-alpha] - 2026-01-21 (ARC01-ORCH-01)
+## [v0.7.0] - 2026-01-21 (ARC01-ORCH-01)
 
 ### 🚀 Overview
 
@@ -85,7 +85,7 @@ monitoring and high-volume data management.
 
 ---
 
-## [v0.6.0-alpha] - 2026-01-19 (ARC01-FEAT-01)
+## [v0.6.0] - 2026-01-19 (ARC01-FEAT-01)
 
 ### 🚀 Overview
 
@@ -102,22 +102,7 @@ reporting.
 
 ---
 
-## [v0.5.0-alpha] - 2026-01-18 (ARC01-OPER-01)
-
-### 🚀 Overview
-
-Focuses on the operational phase, introducing activity tracking and formal supervisor relationships.
-
-### ✨ Added
-
-- **Journal Module:** Digital logbooks with dual-authority approval policies and private media
-  support.
-- **Attendance Module:** Daily check-in/out system with automated status determination.
-- **Supervisor Matching:** Formal triangulation between students, academic teachers, and industry
-  mentors.
-
-[v0.9.0-alpha]: https://github.com/reasnov/internara/compare/v0.8.0-alpha...v0.9.0-alpha
-[v0.8.0-alpha]: https://github.com/reasnov/internara/compare/v0.7.0-alpha...v0.8.0-alpha
-[v0.7.0-alpha]: https://github.com/reasnov/internara/compare/v0.6.0-alpha...v0.7.0-alpha
-[v0.6.0-alpha]: https://github.com/reasnov/internara/compare/v0.5.0-alpha...v0.6.0-alpha
-[v0.5.0-alpha]: https://github.com/reasnov/internara/compare/v0.4.0-alpha...v0.5.0-alpha
+[v0.9.0]: https://github.com/reasnov/internara/compare/v0.8.0-alpha...v0.9.0-alpha
+[v0.8.0]: https://github.com/reasnov/internara/compare/v0.7.0-alpha...v0.8.0-alpha
+[v0.7.0]: https://github.com/reasnov/internara/compare/v0.6.0-alpha...v0.7.0-alpha
+[v0.6.0]: https://github.com/reasnov/internara/compare/v0.5.0-alpha...v0.6.0-alpha

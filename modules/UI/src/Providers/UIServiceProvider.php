@@ -27,19 +27,12 @@ class UIServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
 
         // Register the custom Blade directive
         Blade::directive('slotRender', function ($expression) {
             return "<?php echo \Modules\UI\Facades\SlotManager::render({$expression}); ?>";
         });
-
-        $this->registerViewSlots();
     }
 
     /**
@@ -47,7 +40,7 @@ class UIServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }

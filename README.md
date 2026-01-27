@@ -122,6 +122,7 @@ the system is evolving rapidly.
 | **v0.9.x**     | Alpha | Snapshot       | In Progress |
 | **v0.8.x**     | Alpha | Snapshot       | Released    |
 | **v0.7.x**     | Alpha | Snapshot       | Released    |
+| **v0.6.x**     | Alpha | Snapshot       | Released    |
 
 ---
 

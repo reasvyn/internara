@@ -24,14 +24,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
      */
     public function boot(): void
     {
-        // Add module boot logic
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-        $this->registerViewSlots();
+        $this->bootModule();
 
         // Customize the verification email to sound like it's from the school
         $this->customizeVerificationEmail();
@@ -63,7 +56,8 @@ class AuthServiceProvider extends BaseAuthServiceProvider
      */
     public function register(): void
     {
-        $this->registerBindings();
+        $this->registerModule();
+
         // Register other service providers from this (Auth) module
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);

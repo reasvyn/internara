@@ -48,6 +48,7 @@ Create a Git tag matching the version identifier (e.g., `git tag v0.9.0-alpha`).
 ### 3.1 GitHub Operations
 
 Perform operations according to **[GitHub Protocols](github-protocols.md)**.
+
 - Update release notes on GitHub using `gh release create`.
 - Ensure the `Latest` label is moved to the new stable/active release.
 

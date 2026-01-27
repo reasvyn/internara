@@ -11,20 +11,33 @@ post-release release note documented in accordance with the
 
 ## 1. Version Lifecycle Model
 
-We explicitly separate **Maturity (Stage)**, **Operational Status**, and **Support Policy**.
+We explicitly separate **Maturity (Stage)**, **Operational Status**, and **Support Policy** to avoid
+semantic overlap.
 
-### Maturity Stages
+### Maturity Stages (Quality & Completeness)
 
-- **Experimental**: Conceptual validation.
-- **Alpha**: Core features incomplete.
-- **Beta**: Feature complete, focus on stabilization.
-- **Stable**: Production-ready.
+- **Experimental**: Architectural or conceptual validation.
+- **Alpha**: Core features incomplete; breaking changes expected.
+- **Beta**: Feature complete; focus on stabilization.
+- **Release Candidate (RC)**: Potential final release; only critical fixes allowed.
+- **Stable**: Production-ready with defined guarantees.
 
-### Support Policies
+### Support Policies (Maintenance Contract)
 
+- **Full Support**: Active maintenance and improvements (Bugs + Security).
+- **Bugfix Only**: Maintenance without feature additions.
+- **Security Only**: Critical vulnerability patches only.
 - **Snapshot**: Point-in-time release provided as-is.
-- **Full Support**: Active maintenance and improvements.
 - **EOL (End of Life)**: No longer maintained.
+
+### Operational Status (Current Reality)
+
+- **Planned**: Identified in Specs but not implemented.
+- **In Progress**: Under active construction.
+- **Preview**: Accessible for demonstration or evaluation.
+- **Released**: Publicly tagged and distributed.
+- **Deprecated**: Accessible but no longer recommended.
+- **Archived**: Closed and historically preserved.
 
 ---
 
@@ -38,8 +51,6 @@ This table represents the **authoritative status** of each version series.
 | **v0.8.x** | Alpha            | Snapshot       | Released    |
 | **v0.7.x** | Alpha            | Snapshot       | Released    |
 | **v0.6.x** | Alpha            | Snapshot       | Released    |
-| **v0.5.x** | Alpha            | EOL            | Deprecated  |
-| **v0.4.x** | Alpha            | EOL            | Archived    |
 
 ---
 
@@ -64,10 +75,10 @@ This table represents the **authoritative status** of each version series.
 - **[v0.6.0](v0.6.0.md)** — _Assessment & Workspaces_ Introduced role-specific workspaces for
   Instructors, Staff, and Students.
 
-- **[v0.5.0](v0.5.0.md)** — _Operational Layer_ Foundational daily journals and attendance tracking.
+- **[Archived Release Notes](archived/table-of-contents.md)** — Historical artifacts for legacy
+  version series.
 
 ---
-
 ## 4. Relationship to Planning Artifacts
 
 - **Analytical Release Notes**: Document **outcome** (located here in `docs/versions/`).
