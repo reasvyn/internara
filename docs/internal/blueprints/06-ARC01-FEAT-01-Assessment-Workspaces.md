@@ -1,4 +1,4 @@
-# Application Blueprint: v0.6.0 (Assessment & Workspaces)
+# Application Blueprint: Assessment & Workspaces (ARC01-FEAT-01)
 
 **Series Code**: `ARC01-FEAT-01` **Status**: `Archived` (Released)
 

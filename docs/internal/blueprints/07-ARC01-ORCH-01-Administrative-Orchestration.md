@@ -1,4 +1,4 @@
-# Application Blueprint: v0.7.0 (Administrative Orchestration)
+# Application Blueprint: Administrative Orchestration (ARC01-ORCH-01)
 
 **Series Code**: `ARC01-ORCH-01` **Status**: `Released`
 

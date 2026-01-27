@@ -23,7 +23,11 @@ test('it validates environment requirements correctly', function () {
         ->toHaveKeys(['php_version', 'env_exists', 'writable_storage', 'writable_bootstrap']);
 });
 
-test('it runs migrations with force flag', function () {
+test('it runs migrations with force flag for fresh installation', function () {
+    \Illuminate\Support\Facades\Schema::shouldReceive('hasTable')
+        ->with('migrations')
+        ->andReturn(false);
+
     Artisan::shouldReceive('call')
         ->with('migrate', ['--force' => true])
         ->once()
@@ -34,7 +38,26 @@ test('it runs migrations with force flag', function () {
     expect($result)->toBeTrue();
 });
 
+test('it runs migrate:fresh with force flag if migrations already exist', function () {
+    \Illuminate\Support\Facades\Schema::shouldReceive('hasTable')
+        ->with('migrations')
+        ->andReturn(true);
+    \Illuminate\Support\Facades\DB::shouldReceive('table')
+        ->with('migrations')
+        ->andReturn(Mockery::mock(['count' => 5]));
+
+    Artisan::shouldReceive('call')
+        ->with('migrate:fresh', ['--force' => true])
+        ->once()
+        ->andReturn(0);
+
+    $result = $this->service->runMigrations();
+
+    expect($result)->toBeTrue();
+});
+
 test('it returns false if migrations fail', function () {
+    \Illuminate\Support\Facades\Schema::shouldReceive('hasTable')->andReturn(false);
     Artisan::shouldReceive('call')->andReturn(1);
 
     $result = $this->service->runMigrations();
@@ -114,6 +137,9 @@ test('it orchestrates the complete installation process', function () {
         ->andReturn(0);
 
     // 4. Mock Migrations
+    \Illuminate\Support\Facades\Schema::shouldReceive('hasTable')
+        ->with('migrations')
+        ->andReturn(false);
     Artisan::shouldReceive('call')
         ->with('migrate', ['--force' => true])
         ->andReturn(0);

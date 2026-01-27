@@ -29,8 +29,8 @@ Before any code is written:
 
 ### 1.2 Historical & Architectural Review
 
-- **Action:** Review the analytical narratives of the **current version** and **prior milestones**
-  in `docs/versions/`.
+- **Action:** Review the analytical release notes of the **current version** and **prior
+  milestones** in `docs/versions/`.
 - **Objective:** Understand existing patterns to avoid architectural regression.
 
 ### 1.3 Implementation Planning
@@ -102,7 +102,7 @@ code.
 - **Terminology Consistency**: Use standardized terms (e.g., `setting()`, `Blueprint`,
   `Series Code`).
 - **Markdown Only**: Use Markdown (`.md`) exclusively for all technical guides.
-- **Narrative Version Notes**: Update the narrative in `docs/versions/` to reflect changes.
+- **Release Notes**: Update the release notes in `docs/versions/` to reflect changes.
 - **SSoT**: No document may contradict the **[Internara Specs](../internal/internara-specs.md)**.
 
 ### 4.2 Application Metadata

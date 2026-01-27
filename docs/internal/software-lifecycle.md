@@ -59,11 +59,14 @@ This phase defines _how_ the requirements will be met technically.
 The translation of design into executable code.
 
 - **Objective:** Produce high-quality, maintainable code.
-- **Guidance:** **[Development Conventions](../internal/development-conventions.md)**.
+- **Guidance:** **[Development Conventions](../internal/development-conventions.md)** &
+  **[GitHub Protocols](../internal/github-protocols.md)**.
 - **Process:**
     1.  **Coding:** Implementation using Laravel v12, Livewire v3, and TALL Stack.
     2.  **Unit Testing:** Writing tests (Pest) concurrently with code.
     3.  **Static Analysis:** Linting (Pint) and Type Checking.
+    4.  **Branching:** Adhere to the `feature/*` or `fix/*` branching strategy defined in GitHub
+        Protocols.
 - **Constraint:** All "Application Settings" must use the `setting()` helper; no hard-coding.
 - **Exit Gate:** Code compiles, passes local tests, and adheres to conventions.
 
@@ -75,8 +78,9 @@ Quality Assurance ensures the software meets requirements (Validation) and is bu
 (Verification).
 
 - **Objective:** Detect defects and ensure spec compliance.
+- **Protocol:** **[GitHub Protocols](../internal/github-protocols.md)** (CI/PR workflows).
 - **Process:**
-    1.  **Automated Testing:** CI pipelines run Feature and Unit tests.
+    1.  **Automated Testing:** CI pipelines run Feature and Unit tests on every PR.
     2.  **Spec Validation:** Verify that features function exactly as described in
         `internara-specs.md`.
     3.  **Security Audit:** Check for hard-coded secrets and vulnerability scanning.
@@ -91,7 +95,7 @@ The formal publication of a versioned artifact.
 - **Objective:** Package the software for distribution/deployment.
 - **Process:**
     1.  **Versioning:** Assign a SemVer identifier (e.g., `v1.0.0`).
-    2.  **Documentation:** Finalize Release Notes (User-Centric Narrative) and Technical Guides.
+    2.  **Documentation:** Finalize Release Notes and Technical Guides.
     3.  **Tagging:** Git tag creation.
 - **Exit Gate:** Release notes approved and artifact tagged.
 

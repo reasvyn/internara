@@ -80,6 +80,10 @@ These directives guide all technical workflows for the Internara project.
   technical change must be accompanied by comprehensive documentation. Internara follows a
   **Doc-as-Code** principle.
 
+- **No Truncation or Simplification**: It is **STRICTLY PROHIBITED** to simplify, truncate, or
+  reduce the technical depth of any documentation for any reason. All technical nuance,
+  architectural details, and rigorous definitions must be preserved in their entirety.
+
 - **Iterative Sync Cycle** Every technical modification triggers a full cycle of Quality Assurance
   (Testing, Linting, Security) and Documentation Synchronization.
 
@@ -97,6 +101,7 @@ These directives guide all technical workflows for the Internara project.
     - [docs/internal/development-workflow.md](docs/internal/development-workflow.md)
     - [docs/internal/software-lifecycle.md](docs/internal/software-lifecycle.md)
     - [docs/internal/release-guidelines.md](docs/internal/release-guidelines.md)
+    - [docs/internal/github-protocols.md](docs/internal/github-protocols.md)
     - [docs/internal/development-conventions.md](docs/internal/development-conventions.md)
     - [docs/internal/blueprints-guidelines.md](docs/internal/blueprints-guidelines.md)
     - [docs/internal/ui-ux-development-guide.md](docs/internal/ui-ux-development-guide.md)
@@ -171,6 +176,13 @@ Namespaces **must omit the `src` segment**:
 
 ## Technical Conventions
 
+### GitHub & Collaboration
+
+- **Protocols**: Strictly follow **Conventional Commits** and the branching/tagging strategy defined
+  in `github-protocols.md`.
+- **Documentation**: All documentation must be version-controlled in `docs/`; GitHub Wiki is
+  prohibited.
+
 ### Multi-Language Support (i11n)
 
 - The application must be built as **multi-language** (EN/ID).
@@ -204,14 +216,16 @@ Namespaces **must omit the `src` segment**:
 
 ## GitHub Operations (gh-cli)
 
-You are authorized and encouraged to use the **GitHub CLI (`gh`)** to manage the project's presence
-on GitHub.
+You are authorized and encouraged to use the **GitHub CLI (`gh`)** and the **`gh-milestone`**
+extension to manage the project's presence on GitHub.
 
+- **Protocol Adherence**: All operations MUST strictly follow the
+  **[`docs/internal/github-protocols.md`](docs/internal/github-protocols.md)**.
 - **Comprehensive Synchronization**: When the user requests "GitHub synchronization" (or similar),
   you must perform a full synchronization sweep. This includes:
-    - **Repository**: Syncing branches (push/pull).
-    - **Tags**: Ensuring local and remote tags are identical.
-    - **Releases**: Verifying release notes and assets match the current version.
+    - **Repository**: Syncing branches (push/pull) using the standard branching strategy.
+    - **Tags & Releases**: Ensuring tags are annotated and releases match the narrative notes.
+    - **Milestones**: Managing milestones via `gh-milestone` CLI.
     - **PRs & Issues**: Checking for active pull requests or issues that need status updates aligned
       with the current work.
 

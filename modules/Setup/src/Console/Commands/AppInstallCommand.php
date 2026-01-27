@@ -105,7 +105,7 @@ class AppInstallCommand extends Command
         }
 
         // 4. Database Migrations
-        $this->components->task('Running database migrations', function () use (&$success) {
+        $this->components->task('Initializing database schema', function () use (&$success) {
             if (! $this->installerService->runMigrations()) {
                 $success = false;
 

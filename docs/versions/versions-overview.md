@@ -4,7 +4,7 @@ This document provides a **strategic overview of Internara’s application versi
 release lineage, maturity stages, and support policies.
 
 Internara adopts **Analytical Versioning**, where each released version is accompanied by a
-post-release narrative documented in accordance with the
+post-release release note documented in accordance with the
 **[Release Guidelines](../internal/release-guidelines.md)**.
 
 ---
@@ -43,35 +43,34 @@ This table represents the **authoritative status** of each version series.
 
 ---
 
-## 3. Release Narratives
+## 3. Release Notes
 
 ### Active Development
 
-- **[v0.9.0-alpha](v0.9.0-alpha.md)** — _System Initialization_ Focus: Zero-config setup wizard.
+- **[v0.9.0](v0.9.0.md)** — _System Initialization_ Focus: Zero-config setup wizard.
 
 ### Latest Released Version
 
-- **[v0.8.0-alpha](v0.8.0-alpha.md)** — _Reporting & Intelligence_ Focus: Competency achievement
-  reports and on-site student condition visualization.
+- **[v0.8.0](v0.8.0.md)** — _Reporting & Intelligence_ Focus: Competency achievement reports and
+  on-site student condition visualization.
 
 ---
 
 ### Historical Archive
 
-- **[v0.7.0-alpha](v0.7.0-alpha.md)** — _Administrative Automation_ Focus: Automated prerequisite
-  checks and structured documentation management.
+- **[v0.7.0](v0.7.0.md)** — _Administrative Automation_ Focus: Automated prerequisite checks and
+  structured documentation management.
 
-- **[v0.6.0-alpha](v0.6.0-alpha.md)** — _Assessment & Workspaces_ Introduced role-specific
-  workspaces for Instructors, Staff, and Students.
+- **[v0.6.0](v0.6.0.md)** — _Assessment & Workspaces_ Introduced role-specific workspaces for
+  Instructors, Staff, and Students.
 
-- **[v0.5.0-alpha](v0.5.0-alpha.md)** — _Operational Layer_ Foundational daily journals and
-  attendance tracking.
+- **[v0.5.0](v0.5.0.md)** — _Operational Layer_ Foundational daily journals and attendance tracking.
 
 ---
 
 ## 4. Relationship to Planning Artifacts
 
-- **Analytical Version Notes**: Document **outcome** (located here in `docs/versions/`).
+- **Analytical Release Notes**: Document **outcome** (located here in `docs/versions/`).
 - **Application Blueprints**: Document **intent** (located in `docs/internal/blueprints/`).
 
 > **Source of Truth:** All versions must fulfill the requirements of the

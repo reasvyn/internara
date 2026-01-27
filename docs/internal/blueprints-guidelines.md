@@ -15,21 +15,64 @@ _before_ implementation begins and _until_ a version series is formally released
 ## 1. Purpose of Application Blueprints
 
 Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. This
+
 aligns with **Phase 2: System Design** of our SDLC.
 
 They are used to:
 
 - Articulate _why_ a version series exists.
+
 - Define architectural scope and constraints (Module boundaries, Database changes).
+
 - Anticipate cross-module dependencies and contracts.
+
 - Establish criteria for completion (Exit Gates).
 
 They are **not**:
 
 - Task breakdowns (Jira tickets).
+
 - Development workflows.
+
 - Release notes.
+
 - Post-release documentation.
+
+### 1.1 Naming Convention
+
+
+
+Blueprints are named following the **Series-Based** pattern to decouple planning intent from
+
+specific release versions, prepended by a two-digit development sequence:
+
+
+
+`{Dev_Sequence}-{Series_Code}-{Phase_Sequence}-{Descriptive-Theme}.md`
+
+
+
+- **Dev Sequence**: Overall development order (e.g., `01`, `02`).
+
+- **Series Code**: The primary architectural lineage (e.g., `ARC01-BOOT`).
+
+- **Phase Sequence**: Specific stage within that series (e.g., `01`, `02`).
+
+- **Theme**: A human-readable summary.
+
+
+
+**Example**: `09-ARC01-BOOT-01-System-Initialization.md`
+
+This naming ensures that a single blueprint can cover multiple minor version iterations (e.g.,
+
+`v0.9.0` through `v0.9.5`) while maintaining a clear, stable planning artifact.
+
+### 1.2 Intent vs. Outcome
+
+- **Blueprints** (here) describe **intent** and technical direction.
+
+- **Release Notes** (`docs/versions/`) describe the **realized outcome** of a specific version.
 
 ---
 
@@ -108,7 +151,7 @@ Typical criteria include:
 - **Acceptance Criteria:** Specific functional requirements that must be met.
 - **Testing Protocols:** 100% Test Pass Rate (Unit & Feature).
 - **Quality Gates:** Static Analysis Clean, Spec Validation confirmed.
-- Documentation (Release Narrative) accurately reflects the realized architecture.
+- Documentation (Release Note) accurately reflects the realized architecture.
 
 > A blueprint is considered complete when its **intent has been realized** and **verified against QA
 > criteria**.
@@ -127,7 +170,7 @@ The blueprint remains authoritative **until the version is released**.
 
 ---
 
-## 5. Transition to Release Narrative
+## 5. Transition to Release Note
 
 Once a version is **Released** (Phase 5 of SDLC):
 
@@ -139,7 +182,7 @@ Once a version is **Released** (Phase 5 of SDLC):
 - The Release Note must reflect the **as-built reality**.
 - Application Blueprints do not persist as sources of truth after release.
 
-> Blueprints describe **intent**. Narratives describe **outcome**.
+> Blueprints describe **intent**. Release Notes describe **outcome**.
 
 ---
 

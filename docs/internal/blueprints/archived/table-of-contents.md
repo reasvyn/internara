@@ -7,10 +7,10 @@ series.
 
 ## 1. Project Plans
 
-- **[v0.4.0 (Institutional)](v0.4.0-alpha.md)**
-- **[v0.3.0 (Identity)](v0.3.0-alpha.md)**
-- **[v0.2.0 (Core Engine)](v0.2.0-alpha.md)**
-- **[v0.1.0 (Genesis)](v0.1.0-alpha.md)**
+- **[04-ARC01-INST-01 (Institutional)](04-ARC01-INST-01-Institutional.md)**
+- **[03-ARC01-USER-01 (Identity)](03-ARC01-USER-01-Identity.md)**
+- **[02-ARC01-CORE-01 (Core Engine)](02-ARC01-CORE-01-Core-Engine.md)**
+- **[01-ARC01-INIT-01 (Genesis)](01-ARC01-INIT-01-Genesis.md)**
 
 ---
 

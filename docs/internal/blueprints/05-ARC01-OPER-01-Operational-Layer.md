@@ -1,4 +1,4 @@
-# Application Blueprint: v0.5.0 (Operational Layer)
+# Application Blueprint: Operational Layer (ARC01-OPER-01)
 
 **Series Code**: `ARC01-OPER-01` **Status**: `Archived` (Released)
 

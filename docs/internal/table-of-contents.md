@@ -13,6 +13,8 @@ defines the standards, patterns, and workflows used to build Internara.
   bootstrapping, and auto-discovery.
 - **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules
   (Core, Shared, UI, etc.).
+- **[Version Management Guide](version-management.md)**: Standards for SemVer, Maturity Stages, and
+  Support Policies.
 
 ## 2. Standards & Conventions
 
@@ -33,6 +35,8 @@ defines the standards, patterns, and workflows used to build Internara.
   blueprints.
 - **[Software Lifecycle](software-lifecycle.md)**: SDLC phases from concept to release.
 - **[Release Guidelines](release-guidelines.md)**: Versioning standards and deployment protocols.
+- **[GitHub Protocols](github-protocols.md)**: Standards for collaboration, branching, and issue
+  management.
 - **[Artisan Commands Reference](artisan-commands-reference.md)**: Catalog of modular generators.
 
 ## 4. Security & Authorization

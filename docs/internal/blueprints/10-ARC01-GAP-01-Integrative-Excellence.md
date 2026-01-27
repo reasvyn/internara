@@ -1,4 +1,4 @@
-# Application Blueprint: v0.10.0 (Integrative Excellence & Competency Mastery)
+# Application Blueprint: Integrative Excellence & Competency Mastery (ARC01-GAP-01)
 
 **Series Code**: `ARC01-GAP-01` **Status**: `Planned`
 

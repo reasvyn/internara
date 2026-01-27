@@ -1,4 +1,4 @@
-# Application Blueprint: v0.8.0 (Reporting & Intelligence)
+# Application Blueprint: Reporting & Intelligence (ARC01-INTEL-01)
 
 **Series Code**: `ARC01-INTEL-01` **Status**: `Active`
 

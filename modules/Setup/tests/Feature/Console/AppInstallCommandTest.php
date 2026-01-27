@@ -82,14 +82,12 @@ test('it fails if environment validation fails', function () {
 test('it forces installation if flag is provided', function () {
     $installerMock = Mockery::mock(InstallerService::class);
     $installerMock->shouldReceive('ensureEnvFileExists')->andReturn(true);
-    $installerMock
-        ->shouldReceive('validateEnvironment')
-        ->andReturn([
-            'php_version' => true,
-            'env_exists' => true,
-            'writable_storage' => true,
-            'writable_bootstrap' => true,
-        ]);
+    $installerMock->shouldReceive('validateEnvironment')->andReturn([
+        'php_version' => true,
+        'env_exists' => true,
+        'writable_storage' => true,
+        'writable_bootstrap' => true,
+    ]);
     $installerMock->shouldReceive('generateAppKey')->andReturn(true);
     $installerMock->shouldReceive('runMigrations')->andReturn(true);
     $installerMock->shouldReceive('runSeeders')->andReturn(true);

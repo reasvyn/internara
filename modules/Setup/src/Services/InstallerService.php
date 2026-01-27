@@ -88,16 +88,46 @@ class InstallerService implements InstallerServiceContract
             'env_exists' => File::exists(base_path('.env')),
             'writable_storage' => is_writable(storage_path()),
             'writable_bootstrap' => is_writable(base_path('bootstrap/cache')),
+            'extension_bcmath' => extension_loaded('bcmath'),
+            'extension_ctype' => extension_loaded('ctype'),
+            'extension_fileinfo' => extension_loaded('fileinfo'),
+            'extension_mbstring' => extension_loaded('mbstring'),
+            'extension_openssl' => extension_loaded('openssl'),
+            'extension_pdo' => extension_loaded('pdo'),
+            'extension_tokenizer' => extension_loaded('tokenizer'),
+            'extension_xml' => extension_loaded('xml'),
         ];
     }
 
     /**
      * Executes the database migrations.
+     * If the database is already initialized, it performs a fresh migration.
      */
     public function runMigrations(): bool
     {
         try {
-            return Artisan::call('migrate', ['--force' => true]) === 0;
+            $command = 'migrate';
+            $params = ['--force' => true];
+
+            // Check if migrations table exists to decide between migrate or migrate:fresh
+            if ($this->hasExistingMigrations()) {
+                $command = 'migrate:fresh';
+            }
+
+            return Artisan::call($command, $params) === 0;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if the migrations table exists and has entries.
+     */
+    protected function hasExistingMigrations(): bool
+    {
+        try {
+            return \Illuminate\Support\Facades\Schema::hasTable('migrations') &&
+                \Illuminate\Support\Facades\DB::table('migrations')->count() > 0;
         } catch (\Exception $e) {
             return false;
         }

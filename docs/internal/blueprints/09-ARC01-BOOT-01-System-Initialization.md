@@ -1,4 +1,4 @@
-# Application Blueprint: v0.9.0 (System Initialization)
+# Application Blueprint: System Initialization (ARC01-BOOT-01)
 
 **Series Code**: `ARC01-BOOT-01` **Status**: `Completed`
 

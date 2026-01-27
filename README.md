@@ -1,7 +1,7 @@
 # Internara
 
 ![Version](https://img.shields.io/badge/version-v0.9.0--alpha-blue?style=flat-square)
-![Lifecycle](https://img.shields.io/badge/lifecycle-active--development-yellow?style=flat-square)
+![Status](https://img.shields.io/badge/status-in--progress-yellow?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -117,11 +117,11 @@ For detailed deployment instructions, please refer to the
 Internara is currently in **Active Development (Alpha Stage)**. While core features are functional,
 the system is evolving rapidly.
 
-| Version Series | Stage | Support Policy | Lifecycle Status |
-| :------------- | :---- | :------------- | :--------------- |
-| **v0.9.x**     | Alpha | Snapshot       | In Progress      |
-| **v0.8.x**     | Alpha | Snapshot       | Released         |
-| **v0.7.x**     | Alpha | Snapshot       | Released         |
+| Version Series | Stage | Support Policy | Status      |
+| :------------- | :---- | :------------- | :---------- |
+| **v0.9.x**     | Alpha | Snapshot       | In Progress |
+| **v0.8.x**     | Alpha | Snapshot       | Released    |
+| **v0.7.x**     | Alpha | Snapshot       | Released    |
 
 ---
 
