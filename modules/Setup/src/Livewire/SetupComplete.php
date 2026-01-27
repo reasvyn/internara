@@ -44,9 +44,7 @@ class SetupComplete extends Component
     public function render(): View
     {
         return view('setup::livewire.setup-complete')->layout('setup::components.layouts.setup', [
-            'title' => __('Setup Selesai | :site_title', [
-                'site_title' => setting('site_title', 'Internara'),
-            ]),
+            'title' => __('setup::wizard.complete.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

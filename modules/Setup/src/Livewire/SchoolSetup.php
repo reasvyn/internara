@@ -59,9 +59,7 @@ class SchoolSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.school-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('Atur Data Sekolah | :site_title', [
-                'site_title' => setting('site_title', 'Internara'),
-            ]),
+            'title' => __('setup::wizard.school.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

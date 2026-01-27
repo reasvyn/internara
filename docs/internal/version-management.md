@@ -132,9 +132,15 @@ When a version moves from **Released** to **Archived**:
 5.  **Status Sync**: Update **README.md** to reflect archival and EOL policy.
 
 ### 6.3 Registry Streamlining (Cleanup Rules)
-To prevent informational bloat and maintain tactical focus, primary registries must be pruned during the archival process:
 
-1.  **Registry Pruning**: Remove individual rows and links for archived versions from the **Version Support Matrix** in both `README.md` and `versions-overview.md`.
-2.  **TOC Delegation**: Replace the list of archived releases with a single, clear link to the **Archived Release Notes TOC** (`archived/table-of-contents.md`).
-3.  **Context Preservation**: Ensure that all removed details are preserved within the archived files and their respective Table of Contents.
-4.  **Active Focus**: Primary project files must prioritize the **Active Development**, **Latest Released**, and **Recent Stable** milestones.
+To prevent informational bloat and maintain tactical focus, primary registries must be pruned during
+the archival process:
+
+1.  **Registry Pruning**: Remove individual rows and links for archived versions from the **Version
+    Support Matrix** in both `README.md` and `versions-overview.md`.
+2.  **TOC Delegation**: Replace the list of archived releases with a single, clear link to the
+    **Archived Release Notes TOC** (`archived/table-of-contents.md`).
+3.  **Context Preservation**: Ensure that all removed details are preserved within the archived
+    files and their respective Table of Contents.
+4.  **Active Focus**: Primary project files must prioritize the **Active Development**, **Latest
+    Released**, and **Recent Stable** milestones.

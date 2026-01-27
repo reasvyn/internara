@@ -79,6 +79,7 @@ This table represents the **authoritative status** of each version series.
   version series.
 
 ---
+
 ## 4. Relationship to Planning Artifacts
 
 - **Analytical Release Notes**: Document **outcome** (located here in `docs/versions/`).

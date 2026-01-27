@@ -21,7 +21,8 @@ trait ManagesModuleProvider
 {
     /**
      * Standard module registration logic.
-     * Call this in your provider's register() method.
+     *
+     * Should be invoked within the provider's register() method.
      */
     protected function registerModule(): void
     {
@@ -30,7 +31,8 @@ trait ManagesModuleProvider
 
     /**
      * Standard module boot logic.
-     * Call this in your provider's boot() method.
+     *
+     * Should be invoked within the provider's boot() method.
      */
     protected function bootModule(): void
     {
@@ -45,7 +47,7 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Register the module's policies.
+     * Registers the module's authorization policies.
      */
     public function registerPolicies(): void
     {
@@ -57,7 +59,7 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Register the module's service bindings.
+     * Registers the module's service bindings into the container.
      */
     protected function registerBindings(): void
     {
@@ -81,7 +83,7 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Get the service bindings for the module.
+     * Defines service bindings for the module.
      *
      * @return array<string, string|\Closure>
      */
@@ -91,23 +93,23 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Register commands in the format of Command::class
+     * Registers Artisan commands provided by the module.
      */
     protected function registerCommands(): void
     {
-        // To be overridden by the module provider if needed.
+        // Intended to be overridden by the module provider.
     }
 
     /**
-     * Register command Schedules.
+     * Registers the module's command schedules.
      */
     protected function registerCommandSchedules(): void
     {
-        // To be overridden by the module provider if needed.
+        // Intended to be overridden by the module provider.
     }
 
     /**
-     * Register translations.
+     * Registers the module's translation files.
      */
     protected function registerTranslations(): void
     {
@@ -116,14 +118,20 @@ trait ManagesModuleProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+
+            return;
+        }
+
+        $moduleLangPath = module_path($this->name, 'lang');
+
+        if (is_dir($moduleLangPath)) {
+            $this->loadTranslationsFrom($moduleLangPath, $this->nameLower);
+            $this->loadJsonTranslationsFrom($moduleLangPath);
         }
     }
 
     /**
-     * Register config.
+     * Registers the module's configuration files recursively.
      */
     protected function registerConfig(): void
     {
@@ -132,38 +140,46 @@ trait ManagesModuleProvider
             config('modules.paths.generator.config.path', 'config'),
         );
 
-        if (is_dir($configPath)) {
-            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath));
+        if (! is_dir($configPath)) {
+            return;
+        }
 
-            foreach ($iterator as $file) {
-                if ($file->isFile() && $file->getExtension() === 'php') {
-                    $config = str_replace(
-                        $configPath.DIRECTORY_SEPARATOR,
-                        '',
-                        $file->getPathname(),
-                    );
-                    $configKey = str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $config);
-                    $segments = explode('.', $this->nameLower.'.'.$configKey);
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($configPath, RecursiveDirectoryIterator::SKIP_DOTS),
+        );
 
-                    // Remove duplicated adjacent segments (e.g. user.user -> user)
-                    $normalized = [];
-                    foreach ($segments as $segment) {
-                        if (end($normalized) !== $segment) {
-                            $normalized[] = $segment;
-                        }
-                    }
+        foreach ($files as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
 
-                    $key = $config === 'config.php' ? $this->nameLower : implode('.', $normalized);
+            $relativePath = str_replace(
+                $configPath.DIRECTORY_SEPARATOR,
+                '',
+                $file->getPathname(),
+            );
+            $configKey = str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $relativePath);
 
-                    $this->publishes([$file->getPathname() => config_path($config)], 'config');
-                    $this->mergeConfigFromRecursive($file->getPathname(), $key);
+            // Construct the base key (module.filename)
+            $segments = explode('.', $this->nameLower.'.'.$configKey);
+
+            // De-duplicate adjacent identical segments (e.g., user.user -> user)
+            $normalized = [];
+            foreach ($segments as $segment) {
+                if (empty($normalized) || end($normalized) !== $segment) {
+                    $normalized[] = $segment;
                 }
             }
+
+            $key = $relativePath === 'config.php' ? $this->nameLower : implode('.', $normalized);
+
+            $this->publishes([$file->getPathname() => config_path($relativePath)], 'config');
+            $this->mergeConfigFromRecursive($file->getPathname(), $key);
         }
     }
 
     /**
-     * Merge config from the given path recursively.
+     * Merges configuration from the specified path recursively into the existing config.
      */
     protected function mergeConfigFromRecursive(string $path, string $key): void
     {
@@ -174,12 +190,16 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Register views.
+     * Registers the module's views and component namespaces.
      */
     protected function registerViews(): void
     {
         $viewPath = resource_path('views/modules/'.$this->nameLower);
         $sourcePath = module_path($this->name, 'resources/views');
+
+        if (! is_dir($sourcePath)) {
+            return;
+        }
 
         $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower.'-module-views']);
 
@@ -195,15 +215,21 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Register migrations.
+     * Registers the module's database migrations.
      */
     protected function registerMigrations(): void
     {
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $path = module_path($this->name, 'database/migrations');
+
+        if (is_dir($path)) {
+            $this->loadMigrationsFrom($path);
+        }
     }
 
     /**
      * Get the services provided by the provider.
+     *
+     * @return array<int, string>
      */
     public function provides(): array
     {
@@ -211,12 +237,15 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Get paths for publishable views.
+     * Retrieves paths for publishable module views.
+     *
+     * @return array<int, string>
      */
     private function getPublishableViewPaths(): array
     {
         $paths = [];
-        foreach (config('view.paths') as $path) {
+
+        foreach (config('view.paths', []) as $path) {
             if (is_dir($path.'/modules/'.$this->nameLower)) {
                 $paths[] = $path.'/modules/'.$this->nameLower;
             }
@@ -226,7 +255,7 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Register components for UI slots.
+     * Registers the module's UI slot configurations.
      */
     protected function registerViewSlots(): void
     {
@@ -236,7 +265,9 @@ trait ManagesModuleProvider
     }
 
     /**
-     * Define view slots for UI injection.
+     * Defines the UI slots provided by this module.
+     *
+     * @return array<string, string|array<int, string>>
      */
     protected function viewSlots(): array
     {

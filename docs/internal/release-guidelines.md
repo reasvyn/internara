@@ -1,7 +1,7 @@
 # Release Guidelines: Executing the Product Lifecycle
 
-This document defines the protocols for performing a release and synchronized
-deployment artifacts. For definitions of versioning standards and support policies, see the
+This document defines the protocols for performing a release and synchronized deployment artifacts.
+For definitions of versioning standards and support policies, see the
 **[Version Management Guide](version-management.md)**.
 
 > **Governance Mandate:** A version cannot be released if it does not fulfill the Spec Validation
@@ -23,13 +23,9 @@ A version may be marked as `Released` only when the following conditions are met
 
 ## 2. Release Procedure
 
-
-
 ### 2.1 Identity Verification
 
 Ensure `app_info.json` reflects the target version, series code, and intended support policy.
-
-
 
 ### 2.2 Release Note Creation
 

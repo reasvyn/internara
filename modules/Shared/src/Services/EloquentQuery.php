@@ -142,7 +142,7 @@ abstract class EloquentQuery implements EloquentQueryContract
      */
     public function find(mixed $id, array $columns = ['*']): ?Model
     {
-        return $this->model->newQuery()->find($id, $columns);
+        return $this->query()->find($id, $columns);
     }
 
     /**
@@ -160,7 +160,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     {
         $filteredData = $this->filterFillable($data);
 
-        return $this->model->newQuery()->create($filteredData);
+        try {
+            return $this->model->newQuery()->create($filteredData);
+        } catch (\Illuminate\Database\QueryException $e) {
+            $this->handleQueryException($e, 'creation_failed');
+        }
     }
 
     /**
@@ -175,7 +179,12 @@ abstract class EloquentQuery implements EloquentQueryContract
         }
 
         $filteredData = $this->filterFillable($data);
-        $model->update($filteredData);
+
+        try {
+            $model->update($filteredData);
+        } catch (\Illuminate\Database\QueryException $e) {
+            $this->handleQueryException($e, 'update_failed');
+        }
 
         return $model;
     }
@@ -185,7 +194,32 @@ abstract class EloquentQuery implements EloquentQueryContract
      */
     public function save(array $attributes, array $values = []): Model
     {
-        return $this->model->newQuery()->updateOrCreate($attributes, $values);
+        $filteredValues = $this->filterFillable($values);
+
+        try {
+            return $this->query()->updateOrCreate($attributes, $filteredValues);
+        } catch (\Illuminate\Database\QueryException $e) {
+            $this->handleQueryException($e, 'save_failed');
+        }
+    }
+
+    /**
+     * Handle QueryException and wrap it in AppException.
+     *
+     * @throws \Modules\Exception\AppException
+     */
+    protected function handleQueryException(\Illuminate\Database\QueryException $e, string $defaultKey): never
+    {
+        $recordName = property_exists($this, 'recordName') ? $this->recordName : 'record';
+        $userMessage = 'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
+
+        throw new \Modules\Exception\AppException(
+            userMessage: $userMessage,
+            replace: ['record' => $recordName, 'column' => 'data'],
+            logMessage: $e->getMessage(),
+            code: $e->getCode() === '23000' ? 409 : 500,
+            previous: $e,
+        );
     }
 
     /**

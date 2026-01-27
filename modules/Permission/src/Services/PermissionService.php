@@ -6,8 +6,6 @@ namespace Modules\Permission\Services;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\QueryException;
-use Modules\Exception\AppException;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Services\Contracts\PermissionService as PermissionServiceContract;
 use Modules\Shared\Services\EloquentQuery;
@@ -52,50 +50,19 @@ class PermissionService extends EloquentQuery implements PermissionServiceContra
 
     /**
      * {@inheritdoc}
-     *
-     * @throws AppException If creation fails due to a database error.
      */
     public function create(array $data): Permission
     {
-        try {
-            /** @var Permission */
-            return parent::create($data);
-        } catch (QueryException $e) {
-            $this->handleQueryException($e, 'creation_failed');
-        }
+        /** @var Permission */
+        return parent::create($data);
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @throws AppException If the update fails due to a database error.
      */
     public function update(mixed $id, array $data, array $columns = ['*']): Permission
     {
-        try {
-            /** @var Permission */
-            return parent::update($id, $data);
-        } catch (QueryException $e) {
-            $this->handleQueryException($e, 'update_failed');
-        }
-    }
-
-    /**
-     * Handle QueryException and wrap it in AppException.
-     *
-     * @throws AppException
-     */
-    protected function handleQueryException(QueryException $e, string $defaultKey): never
-    {
-        $userMessage =
-            'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
-
-        throw new AppException(
-            userMessage: $userMessage,
-            replace: ['record' => $this->recordName, 'column' => 'data'],
-            logMessage: $e->getMessage(),
-            code: $e->getCode() === '23000' ? 409 : 500,
-            previous: $e,
-        );
+        /** @var Permission */
+        return parent::update($id, $data);
     }
 }

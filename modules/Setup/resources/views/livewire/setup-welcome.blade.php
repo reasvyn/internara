@@ -1,7 +1,7 @@
 <div class="container mx-auto flex flex-col items-center justify-center gap-12 text-center">
     <!-- Main Headline -->
     <div class="max-w-prose">
-        <h1 class="text-3xl font-bold">Akhiri Kerumitan, Sambut Program Magang yang Bermakna.</h1>
+        <h1 class="text-3xl font-bold">{{ __('setup::wizard.welcome.headline') }}</h1>
     </div>
 
     <!-- 3-Column Feature Grid -->
@@ -9,36 +9,37 @@
         <!-- Column 1: The Problem -->
         <div class="flex flex-col items-center">
             <div class="mb-4 text-4xl">🧩</div>
-            <h3 class="text-lg font-semibold">Memahami Kerumitan Anda</h3>
+            <h3 class="text-lg font-semibold">{{ __('setup::wizard.welcome.problem.title') }}</h3>
             <p class="mt-2 text-sm text-base-content/70">
-                Kami tahu mengelola program magang terasa seperti menyatukan ribuan keping puzzle
-                yang rumit.
+                {{ __('setup::wizard.welcome.problem.description') }}
             </p>
         </div>
 
         <!-- Column 2: The Solution -->
         <div class="flex flex-col items-center">
             <div class="mb-4 text-4xl">🎓</div>
-            <h3 class="text-lg font-semibold">Solusi Cerdas Kami</h3>
+            <h3 class="text-lg font-semibold">{{ __('setup::wizard.welcome.solution.title') }}</h3>
             <p class="mt-2 text-sm text-base-content/70">
-                Internara hadir sebagai partner Anda, menata setiap detail agar Anda bisa fokus
-                membimbing masa depan siswa.
+                {{ __('setup::wizard.welcome.solution.description') }}
             </p>
         </div>
 
         <!-- Column 3: The Journey -->
         <div class="flex flex-col items-center">
             <div class="mb-4 text-4xl">🚀</div>
-            <h3 class="text-lg font-semibold">Perjalanan Dimulai</h3>
+            <h3 class="text-lg font-semibold">{{ __('setup::wizard.welcome.journey.title') }}</h3>
             <p class="mt-2 text-sm text-base-content/70">
-                Proses setup ini adalah langkah pertama Anda menuju program magang yang lebih
-                terorganisir dan berdampak.
+                {{ __('setup::wizard.welcome.journey.description') }}
             </p>
         </div>
     </div>
 
     <!-- Call to Action Button -->
     <div>
-        <x-ui::button class="btn-primary" label="Mulai Instalasi" wire:click="nextStep" />
+        <x-ui::button
+            class="btn-primary"
+            :label="__('setup::wizard.welcome.cta')"
+            wire:click="nextStep"
+        />
     </div>
 </div>

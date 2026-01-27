@@ -59,9 +59,7 @@ class AccountSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.account-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('Buat Akun Administrator | :site_title', [
-                'site_title' => setting('site_title', 'Internara'),
-            ]),
+            'title' => __('setup::wizard.account.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

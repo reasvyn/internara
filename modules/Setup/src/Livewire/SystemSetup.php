@@ -80,9 +80,7 @@ class SystemSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.system-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('Pengaturan Sistem | :site_title', [
-                'site_title' => setting('site_title', 'Internara'),
-            ]),
+            'title' => __('setup::wizard.system.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }
