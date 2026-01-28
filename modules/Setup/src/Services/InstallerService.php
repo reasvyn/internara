@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallerService as InstallerServiceContract;
+use Modules\Setup\Services\Contracts\SystemAuditor;
 
 /**
  * Service implementation for handling the technical installation process.
@@ -18,7 +19,10 @@ class InstallerService implements InstallerServiceContract
     /**
      * InstallerService constructor.
      */
-    public function __construct(protected SettingService $settingService) {}
+    public function __construct(
+        protected SettingService $settingService,
+        protected SystemAuditor $auditor
+    ) {}
 
     /**
      * Orchestrates the complete installation process.
@@ -29,9 +33,7 @@ class InstallerService implements InstallerServiceContract
             return false;
         }
 
-        $requirements = $this->validateEnvironment();
-
-        if (in_array(false, $requirements, true)) {
+        if (! $this->auditor->passes()) {
             return false;
         }
 
@@ -83,20 +85,7 @@ class InstallerService implements InstallerServiceContract
      */
     public function validateEnvironment(): array
     {
-        return [
-            'php_version' => version_compare(PHP_VERSION, '8.4.0', '>='),
-            'env_exists' => File::exists(base_path('.env')),
-            'writable_storage' => is_writable(storage_path()),
-            'writable_bootstrap' => is_writable(base_path('bootstrap/cache')),
-            'extension_bcmath' => extension_loaded('bcmath'),
-            'extension_ctype' => extension_loaded('ctype'),
-            'extension_fileinfo' => extension_loaded('fileinfo'),
-            'extension_mbstring' => extension_loaded('mbstring'),
-            'extension_openssl' => extension_loaded('openssl'),
-            'extension_pdo' => extension_loaded('pdo'),
-            'extension_tokenizer' => extension_loaded('tokenizer'),
-            'extension_xml' => extension_loaded('xml'),
-        ];
+        return $this->auditor->audit();
     }
 
     /**

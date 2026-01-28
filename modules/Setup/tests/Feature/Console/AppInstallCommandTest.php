@@ -22,10 +22,9 @@ test('it executes the installation steps correctly', function () {
         ->shouldReceive('validateEnvironment')
         ->once()
         ->andReturn([
-            'php_version' => true,
-            'env_exists' => true,
-            'writable_storage' => true,
-            'writable_bootstrap' => true,
+            'requirements' => ['php_version' => true],
+            'permissions' => ['writable_storage' => true],
+            'database' => ['connection' => true, 'message' => 'Connected'],
         ]);
 
     $installerMock->shouldReceive('generateAppKey')->once()->andReturn(true);
@@ -67,7 +66,11 @@ test('it fails if environment validation fails', function () {
     $installerMock
         ->shouldReceive('validateEnvironment')
         ->once()
-        ->andReturn(['env_exists' => false]);
+        ->andReturn([
+            'requirements' => ['php_version' => false],
+            'permissions' => ['writable_storage' => true],
+            'database' => ['connection' => true, 'message' => 'Connected'],
+        ]);
 
     $this->app->instance(InstallerService::class, $installerMock);
 
@@ -83,10 +86,9 @@ test('it forces installation if flag is provided', function () {
     $installerMock = Mockery::mock(InstallerService::class);
     $installerMock->shouldReceive('ensureEnvFileExists')->andReturn(true);
     $installerMock->shouldReceive('validateEnvironment')->andReturn([
-        'php_version' => true,
-        'env_exists' => true,
-        'writable_storage' => true,
-        'writable_bootstrap' => true,
+        'requirements' => ['php_version' => true],
+        'permissions' => ['writable_storage' => true],
+        'database' => ['connection' => true, 'message' => 'Connected'],
     ]);
     $installerMock->shouldReceive('generateAppKey')->andReturn(true);
     $installerMock->shouldReceive('runMigrations')->andReturn(true);

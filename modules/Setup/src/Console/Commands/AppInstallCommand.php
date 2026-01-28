@@ -70,16 +70,30 @@ class AppInstallCommand extends Command
 
         // 2. Environment Validation
         $this->components->task('Validating environment requirements', function () use (&$success) {
-            $requirements = $this->installerService->validateEnvironment();
+            $audit = $this->installerService->validateEnvironment();
+            $failedCount = 0;
 
-            foreach ($requirements as $name => $status) {
-                if (! $status) {
-                    $this->newLine();
-                    $this->components->error("Requirement failed: {$name}");
-                    $success = false;
-
-                    return false;
+            // Check Requirements & Permissions
+            foreach (['requirements', 'permissions'] as $category) {
+                foreach ($audit[$category] as $name => $status) {
+                    if ($status === false) {
+                        $this->newLine();
+                        $this->components->error("Audit failed: {$name}");
+                        $failedCount++;
+                    }
                 }
+            }
+
+            // Check Database specifically
+            if (! $audit['database']['connection']) {
+                $this->newLine();
+                $this->components->error("Database error: " . $audit['database']['message']);
+                $failedCount++;
+            }
+
+            if ($failedCount > 0) {
+                $success = false;
+                return false;
             }
 
             return true;

@@ -33,7 +33,7 @@ interface InstallerService
     /**
      * Validates the system environment requirements.
      *
-     * @return array<string, bool> An associative array of requirement names and their status.
+     * @return array<string, array<string, bool|string>>
      */
     public function validateEnvironment(): array;
 

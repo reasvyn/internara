@@ -51,20 +51,26 @@ For any non-trivial feature:
 
 This phase corresponds to the **Construction** phase of the SDLC.
 
-### 2.1 Domain & Data Layer (Eloquent Models)
+### 2.1 Preliminary Scaffold Audit
+
+- **Action:** Before generating new artifacts, verify if the module already contains scaffolds,
+  base contracts, or partial logic.
+- **Objective:** Avoid redundant code and leverage existing architectural foundations.
+
+### 2.2 Domain & Data Layer (Eloquent Models)
 
 - **Identity:** All entities must use UUIDs via the `HasUuid` concern.
 - **Isolation:** **No physical foreign keys** between modules. Use indexed UUID columns.
 - **Security:** Encrypt sensitive data as defined in the Specs.
 
-### 2.2 Application Logic Layer (Services)
+### 2.3 Application Logic Layer (Services)
 
 - **Authority:** Services are the _only_ place for business logic.
 - **No Hard-Coding:** Use `setting($key)` for application configuration. Never hard-code brand names
   or emails.
 - **Decoupling:** Inject **Contracts**, not concrete classes, for cross-module dependencies.
 
-### 2.3 Interface Layer (Livewire & Volt)
+### 2.4 Interface Layer (Livewire & Volt)
 
 - **Presentation Only:** No business logic in components.
 - **Mobile-First:** Build for mobile screens first, then enhance for desktop.

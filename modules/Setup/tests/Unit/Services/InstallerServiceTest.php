@@ -5,22 +5,23 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Setup\Services\Contracts\SystemAuditor;
 use Modules\Setup\Services\InstallerService;
 
 beforeEach(function () {
     $this->settingService = Mockery::mock(SettingService::class);
-    $this->service = new InstallerService($this->settingService);
+    $this->auditor = Mockery::mock(SystemAuditor::class);
+    $this->service = new InstallerService($this->settingService, $this->auditor);
 });
 
 test('it validates environment requirements correctly', function () {
-    File::shouldReceive('exists')->with(base_path('.env'))->andReturn(true);
+    $this->auditor->shouldReceive('audit')->once()->andReturn(['requirements' => [], 'permissions' => [], 'database' => []]);
 
     $results = $this->service->validateEnvironment();
 
     expect($results)
         ->toBeArray()
-        ->and($results)
-        ->toHaveKeys(['php_version', 'env_exists', 'writable_storage', 'writable_bootstrap']);
+        ->toHaveKeys(['requirements', 'permissions', 'database']);
 });
 
 test('it runs migrations with force flag for fresh installation', function () {
@@ -129,7 +130,7 @@ test('it orchestrates the complete installation process', function () {
     File::shouldReceive('exists')->andReturn(true);
 
     // 2. Mock Environment Validation
-    File::shouldReceive('exists')->andReturn(true);
+    $this->auditor->shouldReceive('passes')->once()->andReturn(true);
 
     // 3. Mock Key Generate
     Artisan::shouldReceive('call')

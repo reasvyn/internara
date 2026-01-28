@@ -46,6 +46,7 @@ class SetupServiceProvider extends ServiceProvider
         return [
             \Modules\Setup\Services\Contracts\SetupService::class => \Modules\Setup\Services\SetupService::class,
             \Modules\Setup\Services\Contracts\InstallerService::class => \Modules\Setup\Services\InstallerService::class,
+            \Modules\Setup\Services\Contracts\SystemAuditor::class => \Modules\Setup\Services\SystemAuditor::class,
         ];
     }
 

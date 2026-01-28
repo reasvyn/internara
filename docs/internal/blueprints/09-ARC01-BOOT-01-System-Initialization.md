@@ -26,64 +26,125 @@ these tasks.
 
 ## 2. Functional Specifications
 
+
+
 **Feature Set**:
 
+
+
 - **Automated Installer CLI**: A single command (`app:install`) to bootstrap the entire environment.
-- **Web Setup Wizard**: A 7-step graphical interface for initial configuration.
+
+- **Web Setup Wizard**: A 8-step graphical interface for initial configuration with state persistence.
+
+- **Pre-flight System Auditor**: Automated check for directory permissions, PHP extensions, and DB connectivity.
+
 - **Setup Token Security**: CLI-generated authorization token to prevent unauthorized web access.
+
+
 
 **User Stories**:
 
-- As an **IT Staff**, I want to run a single command to install the system so that I don't miss
-  critical setup steps.
-- As a **Principal/Admin**, I want a web interface to configure my school's logo and name during the
-  first run so that the system reflects our identity immediately.
+
+
+- As an **IT Staff**, I want the system to verify my server environment before I start configuration so that I don't encounter errors halfway through.
+
+- As an **IT Staff**, I want to run a single command to install the system so that I don't miss critical setup steps.
+
+- As a **Principal/Admin**, I want a web interface to configure my school's logo and name during the first run so that the system reflects our identity immediately.
+
+
 
 ---
+
+
 
 ## 3. Technical Architecture (Architectural Impact)
 
+
+
 **Modules**:
+
+
 
 - **Setup**: Dedicated module for installation and initialization logic.
 
+
+
 **Data Layer**:
 
+
+
 - **Seeding**: Orchestrated execution of Core and Shared seeders.
+
 - **UUID Identity**: All created records utilize UUIDs.
+
+- **State Persistence**: Current setup step is persisted to the `settings` table to allow resumption after disconnects.
+
+
 
 **Security Logic**:
 
-- **Middleware Protection**: `ProtectSetupRoute` and `RequireSetupAccess` strictly control wizard
-  lifecycle.
-- **One-Time Token**: 32-character random token required for initial web access, purged upon
-  completion.
-- **Self-Destruction**: Total lockdown of setup routes once `app_installed` is true and SuperAdmin
-  exists.
+
+
+- **Middleware Protection**: `ProtectSetupRoute` and `RequireSetupAccess` strictly control wizard lifecycle.
+
+- **One-Time Token**: 32-character random token required for initial web access, purged upon completion.
+
+- **Self-Destruction**: Total lockdown of setup routes once `app_installed` is true and SuperAdmin exists.
+
+- **Recovery Command**: `app:setup-reset` CLI command to bypass lockdown in case of catastrophic installation failure.
+
+
 
 **Settings**:
 
+
+
 - Integration with the `Setting` module to persist `brand_name`, `brand_logo`, and SMTP details.
+
+
 
 ---
 
+
+
 ## 4. UX/UI Design Specifications (UI/UX Strategy)
+
+
 
 **Design Philosophy**: Minimalist, guided, and high-trust onboarding.
 
+
+
 **Finalized User Flow**:
 
-1. **Welcome**: Introduction to Internara.
-2. **Account**: Initial Super-Administrator registration.
+
+
+1. **Welcome & Language**: Introduction to Internara and locale selection (ID/EN).
+
+2. **Environment**: Automated system check (Permissions, Extensions, DB).
+
 3. **School**: Institutional identity configuration (Name, Logo).
-4. **Department**: Defining academic pathways.
-5. **Internship**: Setting up management periods.
-6. **System**: SMTP and mail configuration.
-7. **Complete**: Finalization and redirection to login.
+
+4. **Account**: Initial Super-Administrator registration (Associated with School).
+
+5. **Department**: Defining academic pathways.
+
+6. **Internship**: Setting up management periods.
+
+7. **System**: SMTP configuration with "Test Connection" and "Skip for Now" options.
+
+8. **Complete**: Finalization and redirection to login.
+
+
 
 **Mobile-First**:
 
+
+
 - Setup Wizard is fully responsive, tested on multiple viewport sizes.
+
+
 
 **Multi-Language**:
 
