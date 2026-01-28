@@ -28,7 +28,6 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 | Version     | Readiness | Maintenance | Current Status |
 | :---------- | :-------- | :---------- | :------------- |
-| **v0.10.x** | Alpha     | Snapshot    | In Progress    |
 | **v0.9.x**  | Alpha     | Snapshot    | Released       |
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
 | **v0.7.x**  | Alpha     | Snapshot    | Released       |
@@ -38,24 +37,10 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 3. What's New?
 
-### Active Development
-
-- **[v0.10.0](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop with 
-  competency rubrics, mentoring logs, and temporal orchestration.
-
 ### Latest Released Versions
 
 - **[v0.9.0](v0.9.0.md)** — **Easy System Setup** Focus: A new automated wizard to help you set up
-  your school's identity and administrator account in minutes.
-
-- **[v0.8.0](v0.8.0.md)** — **Smart Reporting** Focus: Automated PDF reports for student
-  achievements and a clear history of student placements.
-
-- **[v0.7.0](v0.7.0.md)** — **Administrative Automation** Focus: Automatic checks for internship
-  requirements and batch tools for managing students.
-
-- **[v0.6.0](v0.6.0.md)** — **Dedicated Workspaces** Focus: Custom dashboards for Teachers,
-  Students, and Mentors, plus digital certificates.
+  Internara in minutes, including SMTP and system health audits.
 
 ---
 
