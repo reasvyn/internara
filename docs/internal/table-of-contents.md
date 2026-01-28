@@ -9,8 +9,8 @@ defines the standards, patterns, and workflows used to build Internara.
 
 - **[System Requirements Specification](system-requirements-specification.md)**: **Single Source of Truth** - The formal
   ISO/IEC 29148 specification for the entire project.
-- **[Architecture Guide](architecture-guide.md)**: Deep-dive into Modular Monolith layers,
-  bootstrapping, and auto-discovery.
+- **[Architecture Description](architecture-description.md)**: Formal ISO/IEC 42010 deep-dive into
+  Modular Monolith layers, bootstrapping, and auto-discovery.
 - **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules
   (Core, Shared, UI, etc.).
 - **[Version Management Guide](version-management.md)**: Standards for SemVer, Maturity Stages, and
