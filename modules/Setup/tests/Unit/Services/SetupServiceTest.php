@@ -4,49 +4,43 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Session;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipService;
-use Modules\Permission\Database\Seeders\PermissionSeeder;
-use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\School\Services\Contracts\SchoolService;
+use Modules\School\Models\School;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
-
-uses(RefreshDatabase::class);
+use Mockery;
 
 beforeEach(function () {
-    $this->seed(PermissionSeeder::class);
-    $this->seed(RoleSeeder::class);
-
-    $this->settingService = app(SettingService::class);
-    $this->superAdminService = app(SuperAdminService::class);
-    $this->schoolService = app(SchoolService::class);
-    $this->departmentService = app(DepartmentService::class);
-    $this->internshipService = app(InternshipService::class);
+    $this->settingService = Mockery::mock(SettingService::class);
+    $this->superAdminService = Mockery::mock(SuperAdminService::class);
+    $this->schoolService = Mockery::mock(SchoolService::class);
+    $this->departmentService = Mockery::mock(DepartmentService::class);
+    $this->internshipService = Mockery::mock(InternshipService::class);
 
     $this->service = new SetupService(
         $this->settingService,
         $this->superAdminService,
         $this->schoolService,
         $this->departmentService,
-        $this->internshipService,
+        $this->internshipService
     );
 });
 
 test('it checks if app is installed', function () {
-    $this->settingService->setValue('app_installed', true);
+    $this->settingService->shouldReceive('getValue')->with('app_installed', false, true)->twice()->andReturn(true, false);
+    
     expect($this->service->isAppInstalled())->toBeTrue();
-
-    $this->settingService->setValue('app_installed', false);
     expect($this->service->isAppInstalled())->toBeFalse();
 });
 
 test('it checks if step is completed', function () {
-    Session::put('setup:welcome', true);
+    $this->settingService->shouldReceive('getValue')->with('setup_step_welcome', false)->andReturn(true);
+    $this->settingService->shouldReceive('getValue')->with('setup_step_non_existent_step', false)->andReturn(false);
+
     expect($this->service->isStepCompleted('welcome'))
         ->toBeTrue()
         ->and($this->service->isStepCompleted('non_existent_step'))
@@ -54,10 +48,10 @@ test('it checks if step is completed', function () {
 });
 
 test('it checks if record exists', function () {
-    expect($this->service->isRecordExists('school'))->toBeFalse();
-
-    $this->schoolService->factory()->create();
+    $this->schoolService->shouldReceive('exists')->twice()->andReturn(true, false);
+    
     expect($this->service->isRecordExists('school'))->toBeTrue();
+    expect($this->service->isRecordExists('school'))->toBeFalse();
 });
 
 test('it throws exception if unknown record type requested', function () {
@@ -65,40 +59,49 @@ test('it throws exception if unknown record type requested', function () {
 })->throws(\InvalidArgumentException::class);
 
 test('it requires setup access', function () {
-    $this->settingService->setValue('app_installed', false);
+    // No prev step, check app_installed
+    $this->settingService->shouldReceive('getValue')->with('app_installed', false, true)->andReturn(false);
     expect($this->service->requireSetupAccess())->toBeFalse();
 
-    Session::put('setup:welcome', true);
+    // With prev step, check step completion
+    $this->settingService->shouldReceive('getValue')->with('setup_step_welcome', false)->andReturn(true);
     expect($this->service->requireSetupAccess('welcome'))->toBeTrue();
 
-    Session::forget('setup:welcome');
-    $this->service->requireSetupAccess('welcome');
+    // This should throw AppException because step is NOT completed
+    $this->settingService->shouldReceive('getValue')->with('setup_step_fail', false)->andReturn(false);
+    $this->service->requireSetupAccess('fail');
 })->throws(AppException::class);
 
 test('it performs setup step', function () {
+    $this->settingService->shouldReceive('setValue')->with('setup_step_welcome', true)->once();
     expect($this->service->performSetupStep('welcome'))->toBeTrue();
-    expect(Session::get('setup:welcome'))->toBeTrue();
 
-    $this->schoolService->factory()->create();
+    $this->schoolService->shouldReceive('exists')->andReturn(true);
+    $this->settingService->shouldReceive('setValue')->with('setup_step_school_step', true)->once();
     expect($this->service->performSetupStep('school_step', 'school'))->toBeTrue();
-    expect(Session::get('setup:school_step'))->toBeTrue();
 });
 
 test('it fails setup step if record missing', function () {
+    $this->superAdminService->shouldReceive('exists')->andReturn(false);
     $this->service->performSetupStep('account', 'super-admin');
 })->throws(AppException::class);
 
 test('it finalizes setup step', function () {
-    $school = $this->schoolService->factory()->create([
-        'name' => 'Test School',
-    ]);
+    $school = Mockery::mock(School::class)->makePartial();
+    $school->name = 'Test School';
+    $school->logo_url = 'http://logo.com';
+
+    $this->schoolService->shouldReceive('getSchool')->andReturn($school);
+
+    $this->settingService->shouldReceive('setValue')->with(Mockery::on(function ($settings) {
+        return $settings['brand_name'] === 'Test School' &&
+               $settings['app_installed'] === true &&
+               $settings['setup_token'] === null;
+    }))->once();
+
+    $this->settingService->shouldReceive('getValue')->with('app_installed', false, true)->andReturn(true);
 
     $result = $this->service->finalizeSetupStep();
 
-    expect($result)
-        ->toBeTrue()
-        ->and($this->settingService->getValue('brand_name'))
-        ->toBe('Test School')
-        ->and($this->settingService->getValue('app_installed'))
-        ->toBeTrue();
+    expect($result)->toBeTrue();
 });

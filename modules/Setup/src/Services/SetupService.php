@@ -61,7 +61,7 @@ class SetupService implements Contracts\SetupService
             return true;
         }
 
-        return Session::get("setup:{$step}", false);
+        return $this->settingService->getValue("setup_step_{$step}", false);
     }
 
     /**
@@ -179,14 +179,14 @@ class SetupService implements Contracts\SetupService
     }
 
     /**
-     * Stores the completion status of a setup step in the session.
+     * Stores the completion status of a setup step in the settings.
      *
      * @param string $name The name of the step.
      * @param bool $completed The completion status.
      */
     protected function storeStep(string $name, bool $completed = true): bool
     {
-        Session::put("setup:{$name}", $completed);
+        $this->settingService->setValue("setup_step_{$name}", $completed);
 
         return true;
     }

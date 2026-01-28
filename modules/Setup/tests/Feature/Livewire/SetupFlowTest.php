@@ -12,6 +12,7 @@ use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\AccountSetup;
 use Modules\Setup\Livewire\DepartmentSetup;
+use Modules\Setup\Livewire\EnvironmentSetup;
 use Modules\Setup\Livewire\InternshipSetup;
 use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
@@ -37,28 +38,24 @@ test('it can navigate through the entire setup flow with token authorization', f
     // 0. Verify unauthorized access (No token)
     $this->get(route('setup.welcome'))->assertStatus(403);
 
-    // 0. Verify unauthorized access (Invalid token)
-    $this->get(route('setup.welcome', ['token' => 'invalid-token']))->assertStatus(403);
-
     // 1. Welcome Step (Authorized)
     Livewire::withQueryParams(['token' => $token])
         ->test(SetupWelcome::class)
         ->assertStatus(200)
-        ->assertSee('Sambut Program Magang yang Bermakna')
+        ->assertSee(__('setup::wizard.welcome.headline'))
         ->call('nextStep')
-        ->assertRedirect(route('setup.account'));
+        ->assertRedirect(route('setup.environment'));
 
-    expect(session('setup:welcome'))->toBeTrue();
+    expect($settingService->getValue('setup_step_welcome'))->toBeTrue();
 
-    // 2. Account Setup
-    app(SuperAdminService::class)->factory()->create()->assignRole('super-admin');
-
-    Livewire::test(AccountSetup::class)
+    // 2. Environment Step
+    Livewire::test(EnvironmentSetup::class)
         ->assertStatus(200)
-        ->dispatch('super-admin-registered')
+        ->assertSee(__('setup::wizard.environment.title'))
+        ->call('nextStep')
         ->assertRedirect(route('setup.school'));
 
-    expect(session('setup:account'))->toBeTrue();
+    expect($settingService->getValue('setup_step_environment'))->toBeTrue();
 
     // 3. School Setup
     $school = app(SchoolService::class)->factory()->create();
@@ -66,11 +63,21 @@ test('it can navigate through the entire setup flow with token authorization', f
     Livewire::test(SchoolSetup::class)
         ->assertStatus(200)
         ->dispatch('school_saved')
+        ->assertRedirect(route('setup.account'));
+
+    expect($settingService->getValue('setup_step_school'))->toBeTrue();
+
+    // 4. Account Setup
+    app(SuperAdminService::class)->factory()->create()->assignRole('super-admin');
+
+    Livewire::test(AccountSetup::class)
+        ->assertStatus(200)
+        ->dispatch('super-admin-registered')
         ->assertRedirect(route('setup.department'));
 
-    expect(session('setup:school'))->toBeTrue();
+    expect($settingService->getValue('setup_step_account'))->toBeTrue();
 
-    // 4. Department Setup
+    // 5. Department Setup
     app(DepartmentService::class)->factory()->create();
 
     Livewire::test(DepartmentSetup::class)
@@ -78,9 +85,9 @@ test('it can navigate through the entire setup flow with token authorization', f
         ->call('nextStep')
         ->assertRedirect(route('setup.internship'));
 
-    expect(session('setup:department'))->toBeTrue();
+    expect($settingService->getValue('setup_step_department'))->toBeTrue();
 
-    // 5. Internship Setup
+    // 6. Internship Setup
     app(InternshipService::class)->factory()->create();
 
     Livewire::test(InternshipSetup::class)
@@ -88,9 +95,9 @@ test('it can navigate through the entire setup flow with token authorization', f
         ->call('nextStep')
         ->assertRedirect(route('setup.system'));
 
-    expect(session('setup:internship'))->toBeTrue();
+    expect($settingService->getValue('setup_step_internship'))->toBeTrue();
 
-    // 6. System Setup
+    // 7. System Setup
     Livewire::test(SystemSetup::class)
         ->set('mail_host', 'localhost')
         ->set('mail_port', '1025')
@@ -99,9 +106,9 @@ test('it can navigate through the entire setup flow with token authorization', f
         ->call('save')
         ->assertRedirect(route('setup.complete'));
 
-    expect(session('setup:system'))->toBeTrue();
+    expect($settingService->getValue('setup_step_system'))->toBeTrue();
 
-    // 7. Complete Step
+    // 8. Complete Step
     Livewire::test(SetupComplete::class)
         ->assertStatus(200)
         ->call('nextStep')

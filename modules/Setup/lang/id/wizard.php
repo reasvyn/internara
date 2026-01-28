@@ -4,6 +4,21 @@ declare(strict_types=1);
 
 return [
     'steps' => 'Langkah :current dari :total',
+    'status' => [
+        'passed' => 'Lulus',
+        'failed' => 'Gagal',
+        'writable' => 'Bisa Ditulis',
+        'not_writable' => 'Tidak Bisa Ditulis',
+        'connected' => 'Terhubung',
+        'disconnected' => 'Terputus',
+    ],
+    'buttons' => [
+        'back' => 'Kembali',
+        'next' => 'Lanjut',
+        'continue' => 'Lanjutkan',
+        'save_continue' => 'Simpan & Lanjutkan',
+        'finish' => 'Selesai',
+    ],
     'common' => [
         'back' => 'Kembali',
         'continue' => 'Lanjutkan',
@@ -27,6 +42,14 @@ return [
             'description' => 'Proses setup ini adalah langkah pertama Anda menuju program magang yang lebih terorganisir dan berdampak.',
         ],
         'cta' => 'Mulai Instalasi',
+    ],
+    'environment' => [
+        'title' => 'Pengecekan Lingkungan',
+        'description' => 'Kami perlu memastikan server Anda siap untuk menjalankan Internara dengan lancar.',
+        'requirements' => 'Persyaratan Sistem',
+        'permissions' => 'Izin Direktori',
+        'database' => 'Konektivitas Database',
+        'db_connection' => 'Koneksi Database',
     ],
     'account' => [
         'title' => 'Buat Akun Administrator',
@@ -53,6 +76,8 @@ return [
         'headline' => 'Pastikan Jalur Komunikasi Terbuka.',
         'description' => 'Internara perlu mengirimkan notifikasi penting, laporan, dan konfirmasi akun melalui email. Konfigurasikan server SMTP Anda untuk memastikan setiap pesan sampai ke tujuannya.',
         'description_extra' => 'Anda dapat menggunakan penyedia layanan SMTP gratis atau yang disediakan oleh institusi Anda.',
+        'test_connection' => 'Tes Koneksi',
+        'skip' => 'Lewati Dulu',
         'fields' => [
             'smtp_host' => 'SMTP Host',
             'smtp_port' => 'SMTP Port',

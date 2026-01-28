@@ -4,6 +4,21 @@ declare(strict_types=1);
 
 return [
     'steps' => 'Step :current of :total',
+    'status' => [
+        'passed' => 'Passed',
+        'failed' => 'Failed',
+        'writable' => 'Writable',
+        'not_writable' => 'Not Writable',
+        'connected' => 'Connected',
+        'disconnected' => 'Disconnected',
+    ],
+    'buttons' => [
+        'back' => 'Back',
+        'next' => 'Next',
+        'continue' => 'Continue',
+        'save_continue' => 'Save & Continue',
+        'finish' => 'Finish',
+    ],
     'common' => [
         'back' => 'Back',
         'continue' => 'Continue',
@@ -27,6 +42,14 @@ return [
             'description' => 'This setup process is your first step towards a more organized and impactful internship program.',
         ],
         'cta' => 'Start Installation',
+    ],
+    'environment' => [
+        'title' => 'Environment Check',
+        'description' => 'We need to make sure your server is ready to run Internara smoothly.',
+        'requirements' => 'System Requirements',
+        'permissions' => 'Directory Permissions',
+        'database' => 'Database Connectivity',
+        'db_connection' => 'Database Connection',
     ],
     'account' => [
         'title' => 'Create Administrator Account',
@@ -53,6 +76,8 @@ return [
         'headline' => 'Ensure Communication Lines Are Open.',
         'description' => 'Internara needs to send important notifications, reports, and account confirmations via email. Configure your SMTP server to ensure every message reaches its destination.',
         'description_extra' => 'You can use a free SMTP service provider or one provided by your institution.',
+        'test_connection' => 'Test Connection',
+        'skip' => 'Skip for Now',
         'fields' => [
             'smtp_host' => 'SMTP Host',
             'smtp_port' => 'SMTP Port',

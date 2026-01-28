@@ -34,9 +34,8 @@ class AccountSetup extends Component
     {
         $this->initSetupStepProps(
             currentStep: 'account',
-            nextStep: 'school',
-            prevStep: 'welcome',
-            extra: ['req_record' => 'super-admin'],
+            nextStep: 'department',
+            prevStep: 'school',
         );
 
         $this->requireSetupAccess();

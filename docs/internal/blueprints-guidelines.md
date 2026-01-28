@@ -14,9 +14,9 @@ _before_ implementation begins and _until_ a version series is formally released
 
 ## 1. Purpose of Application Blueprints
 
-Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. This
-
-aligns with **Phase 2: System Design** of our SDLC.
+Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. They
+function as a **Roadmap** and a **Work Contract** between planning and execution, rather than a
+granular task list. This aligns with **Phase 2: System Design** of our SDLC.
 
 They are used to:
 
@@ -30,7 +30,7 @@ They are used to:
 
 They are **not**:
 
-- Task breakdowns (Jira tickets).
+- Task lists or granular checklists (e.g., Jira tickets, GitHub Issues).
 
 - Development workflows.
 

@@ -31,7 +31,7 @@ class SetupWelcome extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(currentStep: 'welcome', nextStep: 'account');
+        $this->initSetupStepProps(currentStep: 'welcome', nextStep: 'environment');
     }
 
     /**
