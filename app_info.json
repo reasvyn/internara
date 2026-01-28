@@ -1,11 +1,11 @@
 {
     "name": "Internara",
-    "version": "0.9.0-alpha",
-    "series_code": "ARC01-BOOT-01",
+    "version": "0.10.0",
+    "series_code": "ARC01-GAP-01",
     "support_policy": "Snapshot",
     "author": {
         "name": "Reas Vyn",
-        "github": "reasnov",
         "email": "reasnov.official@gmail.com"
-    }
+    },
+    "license": "MIT"
 }

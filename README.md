@@ -1,6 +1,6 @@
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.9.0--alpha-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.10.0--alpha-blue?style=flat-square)
 ![Readiness](https://img.shields.io/badge/readiness-alpha-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
@@ -89,6 +89,7 @@ transparency.
 
 | Version     | Readiness | Maintenance | Current Status |
 | :---------- | :-------- | :---------- | :------------- |
+| **v0.10.x** | Alpha     | Snapshot    | In Progress    |
 | **v0.9.x**  | Alpha     | Snapshot    | Released       |
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
 | **v0.7.x**  | Alpha     | Snapshot    | Released       |
