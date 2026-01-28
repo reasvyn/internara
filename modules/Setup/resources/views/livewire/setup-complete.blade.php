@@ -1,6 +1,10 @@
 <div class="container mx-auto flex flex-col items-center justify-center gap-8 text-center">
     <div class="max-w-prose text-center">
-        <p class="mb-16 font-bold text-success">{{ __('setup::wizard.complete.badge') }}</p>
+        <p class="mb-16 font-bold text-gray-500">
+            {{ __('setup::wizard.steps', ['current' => 8, 'total' => 8]) }}
+        </p>
+
+        <p class="mb-8 font-bold text-success">{{ __('setup::wizard.complete.badge') }}</p>
 
         <h1 class="text-3xl font-bold">{{ __('setup::wizard.complete.headline') }}</h1>
 

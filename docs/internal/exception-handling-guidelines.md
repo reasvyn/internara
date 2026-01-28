@@ -1,79 +1,90 @@
-# Exception Handling: Engineering Resilience
+# Exception Handling: Engineering Resilience Standards
 
-In Internara, exception handling is treated as a core business concern. We aim to provide meaningful
-feedback to users while ensuring that developers have the analytical data needed to resolve issues
-quickly.
+This document formalizes the **Fault Tolerance** and **Error Management** protocols for the
+Internara project, adhering to **ISO/IEC 25010** (Reliability) and **ISO/IEC 27034** (Application
+Security). It defines the strategy for ensuring system stability while providing secure,
+traceable, and localized feedback to stakeholders.
 
-> **Governance Mandate:** Exception handling must ensure system integrity and security as defined in
-> the **[Internara Specs](../internal/internara-specs.md)**. Sensitive data must never be exposed
-> through error messages.
-
----
-
-## 1. The Strategy: "Fail Fast & Gracefully"
-
-We follow a tiered approach to managing errors:
-
-### 1.1 Validation Errors (Expected)
-
-Handle these at the UI or Service entry point. Always return helpful, localized error messages via
-Laravel's validation system.
-
-### 1.2 Business Logic Exceptions (Logical)
-
-Use custom exceptions for business rule violations (e.g., `JournalAlreadyApprovedException`). These
-should be caught by the UI layer to display a friendly notification.
-
-### 1.3 System Errors (Unexpected)
-
-Database failures, network timeouts, etc. These are handled by the global Laravel handler and
-presented to the user as a generic "System Error" in production.
+> **Governance Mandate:** Exception handling must prioritize system integrity and the protection of
+> sensitive information as mandated by the authoritative **[Internara Specs](../internal/internara-specs.md)**.
 
 ---
 
-## 2. Multi-Language & Standardized Messages
+## 1. Categorization of Faults & Exceptions
 
-All exception messages **MUST** be localized.
+Internara utilizes a tiered classification system to manage system anomalies based on their origin
+and intended resolution path.
 
-- **Module-Specific Exceptions:** Use the `module::exceptions.key` pattern.
-    - _Example:_ `__('journal::exceptions.locked')`
-- **General Exceptions:** Use the `exception::messages.key` pattern.
-    - _Example:_ `__('exception::messages.unauthorized')`
+### 1.1 Validation Exceptions (Anticipated Errors)
+- **Origin**: Boundary layers (Livewire Components, API Controllers).
+- **Behavior**: Handled via standard validation protocols.
+- **Feedback**: Immediate, localized feedback identifying the specific invalid input.
+
+### 1.2 Domain Exceptions (Business Logic Violations)
+- **Origin**: The **Service Layer**.
+- **Behavior**: Custom exceptions (e.g., `JournalLockedException`) representing specific business
+  rule violations.
+- **Feedback**: Transformed into user-friendly notifications in the UI layer.
+
+### 1.3 System Exceptions (Non-Recoverable Failures)
+- **Origin**: Infrastructure (Database, Network, Filesystem).
+- **Behavior**: Logged with full stack traces for forensic analysis.
+- **Feedback**: Abstracted into a generic, secure notification (e.g., "System Anomaly") in
+  production to prevent information leakage.
 
 ---
 
-## 3. Using Custom Exceptions
+## 2. Security & Privacy Invariants (ISO/IEC 27034)
 
-Custom exceptions are located within their respective feature modules under `src/Exceptions/`.
+Exception handling must never compromise the system's security posture or expose Personally
+Identifiable Information (PII).
 
-### 3.1 Catching in Livewire
+### 2.1 Information Leakage Prevention
+- **Sanitization**: Error messages intended for end-users must never include database schema
+  details, file paths, or variable values.
+- **PII Masking**: The automated logging subsystem must redact sensitive fields (e.g., `email`,
+  `password`, `ssn`) from all log payloads.
 
-Always wrap Service calls in a try-catch block when an exception is expected.
+### 2.2 Forensic Traceability
+- **Correlation**: Every exception must be associated with a unique **Correlation ID** and the
+  authenticated **User ID** to facilitate cross-module log analysis.
+- **Contextual Logging**: Capture the specific module state and operation parameters while ensuring
+  compliance with privacy mandates.
+
+---
+
+## 3. Localization (i11n) Standards
+
+Hard-coding of exception messages is a **Critical Quality Violation**.
+
+- **Protocol**: All exception messages must be resolved via translation keys.
+- **Mapping**:
+    - **Module-Specific**: `__('module::exceptions.key')`.
+    - **Generic/Shared**: `__('exception::messages.key')`.
+
+---
+
+## 4. Implementation Pattern
+
+### 4.1 Boundary Level Handling
+Livewire components must orchestrate the transition from Domain Exceptions to UI-friendly feedback.
 
 ```php
 try {
-    $this->journalService->update($id, $data);
-    $this->success(__('journal::ui.updated'));
-} catch (JournalLockedException $e) {
-    $this->error(__('journal::exceptions.locked'));
-} catch (AuthorizationException $e) {
-    $this->error(__('exception::messages.unauthorized'));
+    $this->journalService->lock($journalId);
+} catch (JournalAlreadyLockedException $e) {
+    $this->notify(__('journal::exceptions.already_locked'), type: 'warning');
+} catch (DomainException $e) {
+    $this->notify(__('exception::messages.unauthorized'), type: 'error');
 }
 ```
 
----
-
-## 4. Global Error Reporting & Privacy
-
-To maintain privacy and comply with security specs:
-
-- **PII Masking**: The global logger automatically masks fields like `email`, `password`, and
-  `phone` before writing to logs.
-- **Trace Context**: Logs include the `user_id` and `correlation_id` for traceability.
-- **No Hard-coding:** Error messages must never be hardcoded in English or Indonesian within the PHP
-  code.
+### 4.2 Service Layer Propagation
+Services should throw semantic, custom exceptions that reflect the domain rule being violated.
+- **Base Requirement**: Custom exceptions must reside in the `src/Exceptions/` directory of their
+  respective module.
 
 ---
 
-_By following these guidelines, you help keep Internara stable and user-friendly. Remember: An
-unhandled exception is a failure of documentation._
+_By adhering to these resilience standards, Internara ensures that faults are managed in a
+disciplined, secure, and user-centric manner, preserving the reliability of the modular monolith._

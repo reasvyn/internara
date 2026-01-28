@@ -1,123 +1,97 @@
-# Role & Permission Management: Security RBAC
+# Identity & Access Management: RBAC Standards
 
-Internara implements a robust **Role-Based Access Control (RBAC)** system using the
-`spatie/laravel-permission` package. We have customized this implementation to support **UUIDs** and
-modular isolation, ensuring that access management is both granular and scalable.
+This document formalizes the **Identity and Access Management (IAM)** framework for the Internara
+project, adhering to **ISO/IEC 27001** (Access Control) and **ISO/IEC 29146** (Access Control
+Framework). It defines the protocols for **Role-Based Access Control (RBAC)** to ensure system
+security, data confidentiality, and administrative accountability.
 
-> **Spec Alignment:** The roles defined below are strictly aligned with the User Roles mandated in
-> **[Internara Specs](../internal/internara-specs.md)**. No other fundamental roles may be
-> introduced without updating the specs.
-
----
-
-## 1. Roles vs. Permissions
-
-We distinguish between roles (who you are) and permissions (what you can do).
-
-### 1.1 Fundamental Roles (from Specs)
-
-Defined in the `Core` module seeders:
-
-- **Instructor**: (Equivalent to Teacher) Academic supervision, grading, and student monitoring.
-- **Staff**: (Practical Work Staff) Administrative management, scheduling, and document
-  verification.
-- **Student**: Daily journals, attendance, and accessing schedules/reports.
-- **Industry Supervisor**: (Equivalent to Mentor) Industry-side monitoring, assessment, and
-  feedback.
-- **Administrator**: (System Admin) Full system access, configuration, and user management.
-
-### 1.2 Granular Permissions
-
-Permissions follow a **Module-Action** naming convention:
-
-- `user.view`, `user.create`, `user.update`
-- `assessment.create`, `report.generate`
+> **Governance Mandate:** All roles and permissions must be traceable to the User Roles and
+> administrative requirements defined in the authoritative **[Internara Specs](../internal/internara-specs.md)**.
 
 ---
 
-## 2. Implementation in Modules
+## 1. Authorization Philosophy: Least Privilege
 
-Access control must be enforced at every layer of the application.
+Internara operates on the principle of **Least Privilege** and **Explicit Deny by Default**.
 
-### 2.1 The UI Layer (Livewire)
+- **Least Privilege**: Users are granted only the minimum permissions necessary to execute their
+  assigned domain functions.
+- **Explicit Deny**: Access is denied unless a specific permission or role assignment is verified.
+- **Modular Sovereignty**: Authorization logic is encapsulated within the module that owns the
+  domain resource, utilizing framework-standard Policies.
 
-Use the `@can` Blade directive or `$this->authorize()` in Livewire components.
+---
 
-```blade
-@can('assessment.create')
-    <x-ui::button label="{{ __('assessment::ui.create') }}" />
-@endcan
-```
+## 2. Role Taxonomy & Traceability
 
-### 2.2 The Service Layer
+Roles are defined in the `Core` module and mapped directly to the stakeholders identified in the
+SSoT.
 
-Services should check permissions before performing destructive operations.
+| Role                  | SSoT Stakeholder        | Primary Domain Function              |
+| :-------------------- | :---------------------- | :----------------------------------- |
+| **Administrator**     | System Admin            | Full System Orchestration            |
+| **Instructor**        | Instructor (Teacher)    | Supervision, Mentoring, Assessment   |
+| **Staff**             | Practical Work Staff    | Administration, Scheduling, V&V      |
+| **Industry Supervisor**| Industry Supervisor     | On-site Feedback, Mentoring          |
+| **Student**           | Student                 | Journals, Attendance, Reporting      |
+
+---
+
+## 3. Permission Specification (ISO/IEC 29146)
+
+Permissions represent granular capabilities and follow a strict **Module-Action** naming
+convention to ensure semantic clarity.
+
+- **Convention**: `{module}.{action}` (e.g., `attendance.report`, `journal.approve`).
+- **Traceability**: Every permission must fulfill a specific functional requirement defined in the
+  blueprint or SSoT.
+
+---
+
+## 4. Implementation Layers
+
+### 4.1 UI Layer (Presentation Logic)
+Authorization must be enforced at the UI level to prevent unauthorized interaction.
+- **Directive**: Use `@can` for Blade templates and `$this->authorize()` within Livewire components.
+- **Behavior**: Elements representing unauthorized actions must be suppressed from the interface
+  entirely.
+
+### 4.2 Service Layer (Business Logic)
+The Service Layer provides the final defense against unauthorized execution.
+- **Invariant**: Services must verify authorization before performing state-altering operations,
+  especially for destructive actions (Delete/Force-Delete).
+
+### 4.3 Policy Pattern (The Governance Layer)
+Every domain model must be associated with a **Policy Class**. Policies encapsulate complex
+authorization rules, including ownership checks and state-dependent access.
 
 ```php
-if (!auth()->user()->can('user.delete')) {
-    throw new AuthorizationException(__('exception::messages.unauthorized'));
-}
-```
-
----
-
-## 3. Shared UI Components
-
-The `Permission` module provides pre-built UI components to simplify access control management.
-
-### 3.1 Role & Permission Selectors
-
-Used in user creation or editing forms to assign access levels.
-
-- **`x-permission::role-select`**: A multi-select component that lists all available system roles
-  (localized). Role names are automatically translated via `__('core::roles.{name}')`.
-- **`x-permission::permission-list`**: A checkbox-style list for selecting individual granular
-  permissions.
-
-### 3.2 Conditional Display Rules
-
-1. **Fail Silently**: If a user doesn't have access, hide the element entirely.
-2. **Breadcrumbs & Nav**: Ensure that sidebar links are also protected via `@can`.
-3. **Localize**: Always use translation keys for any error messages or labels.
-
----
-
-## 4. Mandatory Policies
-
-Every Eloquent model **must** have a corresponding Policy class. This centralizes authorization
-logic and allows for complex ownership checks.
-
-**Example: `JournalPolicy`**
-
-```php
-public function update(User $user, Journal $journal)
+public function update(User $user, Journal $journal): bool
 {
-    // Check both permission AND ownership
+    // Verification: Permission check AND ownership validation
     return $user->can('journal.update') && $user->id === $journal->user_id;
 }
 ```
 
 ---
 
-## 5. Seeding & Synchronization
+## 5. Configuration & Synchronization (Baselines)
 
-Permissions are distributed across the modules that "own" the functionality.
+Permissions are introduced through **Modular Seeders** to maintain a consistent security baseline.
 
-### 5.1 Implementing a Module Seeder
-
-Every module that introduces new permissions should have a seeder class in its `database/seeders`
-directory. Use the `PermissionService` (via Contract) to ensure that permissions are created
-idempotently.
+### 5.1 Idempotent Seeding
+Modules must define their permissions within a seeder class, utilizing the `PermissionService`
+contract.
 
 ```php
 namespace Modules\Attendance\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\Permission\Services\Contracts\PermissionServiceInterface;
+use Modules\Permission\Services\Contracts\PermissionService;
 
 class AttendancePermissionSeeder extends Seeder
 {
-    public function run(PermissionServiceInterface $service): void
+    public function run(PermissionService $service): void
     {
         $permissions = ['attendance.view', 'attendance.check-in', 'attendance.report'];
 
@@ -128,15 +102,13 @@ class AttendancePermissionSeeder extends Seeder
 }
 ```
 
-### 5.2 Synchronization
-
-After adding new permissions to a seeder, run the synchronization command:
-
+### 5.2 Baseline Synchronization
+Updates to the security baseline are performed via the native synchronization command:
 ```bash
 php artisan permission:sync
 ```
 
 ---
 
-_Security is a shared responsibility. Always default to "Deny" and explicitly grant only the
-permissions necessary for a role to perform its function._
+_Security is a systemic invariant. By adhering to these RBAC standards, Internara ensures that
+access control is disciplined, traceable, and compliant with international security frameworks._

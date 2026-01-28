@@ -1,90 +1,99 @@
-# Foundational Module Philosophy: Structural Hierarchy
+# Foundational Module Philosophy: System Decomposition
 
-To maintain a resilient and scalable Modular Monolith, Internara categorizes its foundational
-modules based on their relationship to business logic and their level of **Portability**. This
-philosophy ensures that we don't accidentally "tangle" universal utilities with specific business
-rules.
+This document formalizes the **System Decomposition** strategy for the Internara modular monolith,
+consistent with **ISO/IEC 12207**. It establishes a structural hierarchy based on functional
+specialization and **Portability Invariants** to ensure architectural resilience and minimize
+systemic entropy.
 
-> **Spec Alignment:** This hierarchy supports the architectural requirements defined in
-> **[Internara Specs](../internal/internara-specs.md)**, specifically the need for centralized
-> administration and standardized UI across user roles.
-
----
-
-## 1. Portability & Hierarchy Matrix
-
-We classify modules into four distinct roles. This classification dictates what a module can depend
-on and whether it can be easily reused in another project.
-
-| Category    | Role                  | Portability                   | Example                     |
-| :---------- | :-------------------- | :---------------------------- | :-------------------------- |
-| **Shared**  | Universal Toolbox     | **High (Mandatory Portable)** | `HasUuid`, `EloquentQuery`  |
-| **Core**    | Business Blueprint    | **Low (Business-Specific)**   | `AcademicYear`, `BaseRoles` |
-| **Support** | Infrastructure Bridge | **Low (Project-Specific)**    | `ModuleGenerators`          |
-| **UI**      | Design System         | **Low (Brand-Specific)**      | `DashboardLayout`, `Toasts` |
+> **SSoT Alignment:** This hierarchy implements the structural requirements defined in the
+> **[Internara Specs](../internal/internara-specs.md)**, specifically the mandates for centralized
+> administration and standardized multi-role user interfaces.
 
 ---
 
-## 2. Shared Module: The Portable Foundation
+## 1. Architectural Hierarchy & Portability Matrix
 
-The `Shared` module is the "Engine Room." It contains components that are **completely agnostic** of
-Internara's domain.
+Modules are classified into five distinct tiers based on their functional role and level of
+decoupling from the Internara domain. This classification governs the **Dependency Direction** and
+**Interface Control Protocols**.
 
-- **Requirement**: Components here must be project-independent.
-- **Contents**:
-    - **Concerns**: `HasUuid`, `HasStatuses`, `HasAuditLog`.
-    - **Base Classes**: `EloquentQuery`, `BaseServiceContract`.
-    - **Utilities**: String formatters, geometric calculators, etc.
-
-## 3. Core Module: The Business Blueprint
-
-The `Core` module is the "Glue." it encapsulates the architectural building blocks that define
-**what Internara is**.
-
-- **Purpose**: It provides the foundational data (e.g., Roles, Settings) that domain modules need to
-  function.
-- **Contents**:
-    - Global Permission definitions.
-    - Academic Year scoping logic.
-    - **Dynamic Settings:** Infrastructure for `setting()` helper.
-
-## 4. Support Module: The Infrastructure Bridge
-
-The `Support` module handles **Development & Operational** utilities.
-
-- **Purpose**: To provide tools that keep domain modules clean from infrastructure "noise."
-- **Contents**:
-    - Custom Artisan Generators.
-    - Vite module loaders.
-    - Deployment scripts and environment auditors.
-
-## 5. UI Module: The Visual Identity
-
-The `UI` module is the "Skin." It is the single source of truth for the Internara design system.
-
-- **Purpose**: Encapsulates styling (**Tailwind v4**), interactivity (Alpine/Livewire), and
-  accessibility.
-- **Mandate:** Must enforce the **Mobile-First** strategy and **Instrument Sans** typography
-  mandated by specs.
-- **Contents**:
-    - Standardized Layouts (`Auth`, `App`).
-    - Design System Components (`Button`, `Card`, `Modal`).
-    - **Multi-Language**: UI components must support `__('key')` injection.
+| Category      | Functional Role          | Portability Requirement        | Example Artifacts           |
+| :------------ | :----------------------- | :----------------------------- | :-------------------------- |
+| **Shared**    | Abstract Utilities       | **High (Project-Agnostic)**    | `HasUuid`, `EloquentQuery`  |
+| **Core**      | Domain Blueprint         | **Low (Business-Specific)**    | `AcademicYear`, `BaseRoles` |
+| **Support**   | Infrastructure Bridge    | **Medium (Environment-Aware)** | `ModuleGenerators`, `Audit` |
+| **UI**        | Design System            | **Low (Identity-Specific)**    | `AppLayout`, `Instrument`   |
+| **Domain**    | Business Logic Execution | **High (Domain-Encapsulated)** | `Internship`, `Journal`     |
 
 ---
 
-## 6. Domain Modules: The Heart of the App
+## 2. Shared Tier: The Portable Foundation (Infrastructure View)
 
-Modules like `User`, `Internship`, or `Attendance` represent the actual business functionality.
+The `Shared` tier constitutes the project-independent "Engine Room." It encapsulates universal
+software engineering patterns.
 
-- **Best Practice**: Domain modules should strive for **High Portability**.
-- **Dependency Rule**: They should primarily depend on `Shared`. If they need `Core` data, they must
-  access it through **Contracts** or framework-level **Policies/Gates** to avoid tight coupling with
-  the concrete `Core` implementation.
-- **No Physical FKs:** As per specs, domain modules must never use physical foreign key constraints
-  referencing tables outside their own schema.
+- **Portability Invariant**: Components must remain strictly agnostic of Internara's specific
+  business rules. They should be reusable in any Laravel-based system without modification.
+- **Composition**:
+    - **Cross-Cutting Concerns**: `HasUuid`, `HasStatuses`, `HasAuditLog`.
+    - **Base Abstractions**: `EloquentQuery`, `BaseServiceContract`.
+    - **General Utilities**: String manipulation, mathematical validators, and data transformers.
 
 ---
 
-_Understanding this hierarchy prevents "Spaghetti Modularity." By respecting these boundaries, we
-ensure that Internara remains clean, testable, and future-proof._
+## 3. Core Tier: The Domain Blueprint (Contextual View)
+
+The `Core Tier` provides the foundational building blocks that define the **Identity of Internara**.
+
+- **Purpose**: It encapsulates global domain logic and static data required by all functional
+  modules.
+- **Composition**:
+    - **Identity & Access**: Global Role and Permission definitions.
+    - **Temporal Logic**: Academic Year and Semester scoping infrastructure.
+    - **System Configuration**: Technical implementation for the `setting()` helper and persistence.
+
+---
+
+## 4. Support Tier: The Operational Bridge (Tooling View)
+
+The `Support Tier` manages **Development and Infrastructure** operations, shielding domain logic
+from environmental "noise."
+
+- **Purpose**: Facilitate the construction and maintenance of domain artifacts through automation.
+- **Composition**:
+    - **Scaffolding**: Custom Artisan generators for modules and Livewire components.
+    - **Integration**: Asset loaders (Vite), environment auditors, and deployment scripts.
+
+---
+
+## 5. UI Tier: The Visual Identity (Presentation View)
+
+The `UI Tier` is the single source of truth for the Internara design system, enforcing the
+**Mobile-First** and **Responsive** mandates.
+
+- **Design Mandate**: Must strictly implement the **Instrument Sans** typography and emerald-accent
+  theme defined in the SSoT.
+- **Composition**:
+    - **Semantic Layouts**: `Auth`, `App`, and `Setup` base layouts.
+    - **Atomic Components**: Standardized buttons, modals, and form elements (MaryUI/Tailwind v4).
+    - **Localization (i11n)**: UI components must facilitate dynamic `__('key')` injection.
+
+---
+
+## 6. Domain Tier: Functional Execution (Business View)
+
+Domain modules (e.g., `User`, `Internship`) execute the actual business logic of the system.
+
+- **Best Practice**: Domain modules should strive for encapsulation, exposing functionality only
+  through **Service Contracts**.
+- **Dependency Invariant**:
+    1.  **Strict Downward Dependency**: Domain modules primarily depend on the `Shared` tier.
+    2.  **Contractual Access**: Dependencies on the `Core` tier must be resolved via **Service
+        Contracts** or framework-level Policies to prevent concrete coupling.
+    3.  **Physical Integrity**: **No physical foreign keys** across modules. Referential integrity
+        is enforced at the Service Layer.
+
+---
+
+_Adherence to this decomposition philosophy prevents "Spaghetti Modularity" and ensures that the
+system remains analysable, testable, and evolvable throughout its lifecycle._

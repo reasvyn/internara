@@ -1,4 +1,8 @@
 <div class="container mx-auto flex flex-col items-center justify-center gap-12 text-center">
+    <p class="font-bold text-gray-500">
+        {{ __('setup::wizard.steps', ['current' => 1, 'total' => 8]) }}
+    </p>
+
     <!-- Main Headline -->
     <div class="max-w-prose">
         <h1 class="text-3xl font-bold">{{ __('setup::wizard.welcome.headline') }}</h1>

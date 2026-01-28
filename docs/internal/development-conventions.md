@@ -1,223 +1,142 @@
 # Development Conventions: Engineering Standards
 
-To ensure that the Internara codebase remains clean, predictable, and accessible to all developers,
-we adhere to a strict set of coding conventions. Consistency is the foundation of our
-maintainability.
+This document codifies the **Construction Standards** for the Internara project, ensuring semantic
+consistency, maintainability, and structural integrity according to **ISO/IEC 11179** (Metadata)
+and **ISO/IEC 25010** (Maintainability).
 
-> **Governance Mandate:** These conventions are the technical implementation of the requirements
-> defined in the **[Internara Specs](../internal/internara-specs.md)**. All code must support the
-> product goals (e.g., Multi-Language, Mobile-First) outlined in the authoritative specifications.
-
----
-
-## 1. Code Style & Quality
-
-We follow standard PHP recommendations and rigorous static analysis to ensure interoperability.
-
-- **PSR-12**: All PHP code must adhere to the PSR-12 Extended Coding Style Guide.
-- **Strict Typing**: Use strict typing (`declare(strict_types=1);`) in every PHP file.
-- **Linting**: We use **Laravel Pint** for automated linting. Always run `./vendor/bin/pint` before
-  committing changes.
+> **Governance Mandate:** These conventions serve as the technical implementation of the
+> authoritative **[Internara Specs](../internal/internara-specs.md)**. All software artifacts must
+> satisfy the requirements for Multi-Language support, Mobile-First responsiveness, and Role-Based
+> security defined in the SSoT.
 
 ---
 
-## 2. Modular Namespace Convention (The `src` Rule)
+## 1. Syntax & Static Analysis (Quality Gate)
 
-A critical rule in Internara is the handling of the `src` directory within modules.
+Internara utilizes rigorous static analysis to ensure code interoperability and prevent latent
+defects.
 
-- **Directory Structure**: Module logic is located in `modules/{ModuleName}/src/`.
-- **Namespace Rule**: The `src` segment **MUST be omitted** from the namespace definition.
-- **Why?** This keeps namespaces short, semantic, and aligned with standard Laravel conventions.
-
-**Example:**
-
-- **Path**: `modules/User/src/Services/UserService.php`
-- **Namespace**: `namespace Modules\User\Services;` (✅ Correct)
-- **Namespace**: `namespace Modules\User\src\Services;` (❌ Incorrect)
+- **PSR-12 Alignment**: All PHP source code must strictly adhere to the PSR-12 Extended Coding
+  Style.
+- **Strict Typing**: Every PHP file must declare `strict_types=1` to ensure type safety and
+  predictability.
+- **Automated Linting**: Adherence to **Laravel Pint** standards is mandatory. Run
+  `./vendor/bin/pint` prior to any repository synchronization.
 
 ---
 
-## 3. Naming Standards
+## 2. Semantic Namespacing (The `src` Invariant)
 
-### 3.1 PHP Classes & Files
+To maintain brevity and semantic clarity in a modular environment, Internara enforces the **src
+Omission** rule for namespaces.
 
-- **Controllers/Livewire**: PascalCase (e.g., `StudentList`).
-- **Services**: PascalCase with `Service` suffix (e.g., `InternshipService`).
-- **Models**: PascalCase, singular (e.g., `JournalEntry`).
-- **Contracts (Interfaces)**: PascalCase, named by capability. **No `Interface` suffix**.
-    - **Service Contracts**: Located in `Services/Contracts/` (e.g., `UserService`).
-    - **General Contracts**: Located in `Contracts/` (e.g., `PermissionManager`).
-- **Concerns (Traits)**: PascalCase, ideally prefixed with `Has` or `Can`.
-    - **Model Concerns**: Located in `Models/Concerns/` (e.g., `HasUuid`).
-- **Enums**: PascalCase, located in `src/Enums/`. Used for statuses and fixed options.
+- **Directory Structure**: All module-specific logic resides in `modules/{ModuleName}/src/`.
+- **Namespace Invariant**: The `src` segment **must be omitted** from the namespace declaration.
+- **Rationale**: Aligns modular namespaces with standard Laravel conventions and reduces cognitive
+  load during cross-module integration.
+
+**Example**:
+- **File Path**: `modules/Internship/src/Services/InternshipService.php`
+- **Namespace**: `namespace Modules\Internship\Services;` (✅ Correct)
 
 ---
 
-## 4. Database Identity & State
+## 3. Naming Conventions (ISO/IEC 11179 Alignment)
 
-### 4.1 Identity: `HasUuid`
+Names must reflect the **conceptual intent** of the entity, not its implementation detail.
 
-We have standardized on **UUID v4** for all primary and foreign keys across the application.
+### 3.1 Class Identifiers
+- **Controllers/Livewire**: PascalCase reflecting the user action or resource (e.g.,
+  `ManageAttendance`).
+- **Services**: PascalCase with the `Service` suffix (e.g., `AssessmentService`).
+- **Models**: PascalCase, singular, reflecting the domain entity (e.g., `CompetencyRubric`).
+- **Contracts (Interfaces)**: PascalCase, named by capability. **The `Interface` suffix is
+  prohibited**.
+    - **Service Contracts**: `Services/Contracts/` (e.g., `InternshipService`).
+    - **General Contracts**: `Contracts/` (e.g., `Authenticatable`).
+- **Concerns (Traits)**: PascalCase, prefixed with `Has` or `Can` (e.g., `HasAuditLog`).
+- **Enums**: PascalCase, located in `src/Enums/`, used for fixed status values and domain constants.
 
-- **Security (from Specs):** Prevents ID enumeration and unauthorized data guessing.
-- **Portability:** Critical for our Modular Monolith, allowing ID generation before persistence.
-- **Constraint:** **No physical foreign keys** between modules. Use simple indexed UUID columns.
+---
 
-```php
-use Modules\Shared\Models\Concerns\HasUuid;
+## 4. Identity & Persistence Standards
 
-class Internship extends Model
-{
-    use HasUuid;
-}
-```
+### 4.1 Identity: UUID Invariant
 
-### 4.2 State Management: `HasStatuses`
+All entities must utilize **UUID v4** for identification to prevent enumeration and ensure
+modular portability.
 
-Entities follow a lifecycle (e.g., `Pending` -> `Approved` -> `Finished`).
+- **Implementation**: Utilize the `HasUuid` concern from the `Shared` module.
+- **Isolation Constraint**: **Physical foreign keys across module boundaries are forbidden**.
+  Referential integrity is maintained at the Service Layer using indexed UUID columns.
 
-- **Rationale:** Centralizes state transitions and validation logic.
-- **Audit:** Tracks "who" and "when" for every status change, supporting the **Monitoring** goals of
-  the specs.
+### 4.2 State Lifecycle: `HasStatuses`
 
-```php
-$registration->setStatus('approved', 'Student met all entry requirements.');
-```
+Operational entities must track their lifecycle transitions using the `HasStatuses` concern.
+- **Rationale**: Provides an immutable audit trail of state changes ("who", "when", "why") as
+  required for monitoring.
 
-### 4.3 Scoping: `HasAcademicYear`
+### 4.3 Temporal Scoping: `HasAcademicYear`
 
-Data integrity across academic cycles is critical. The `HasAcademicYear` concern ensures that
-operational data is always filtered by the active year.
-
-- **Automatic Scoping:** Populates the `academic_year` column from
+Data must be automatically scoped by the active academic cycle.
+- **Mechanism**: The `HasAcademicYear` concern filters all queries by the value of
   `setting('active_academic_year')`.
-- **Integrity:** Prevents data leak between different academic periods.
-
-```php
-use Modules\Shared\Models\Concerns\HasAcademicYear;
-
-class JournalEntry extends Model
-{
-    use HasAcademicYear;
-}
-```
 
 ---
 
-## 5. Internationalization (i11n)
+## 5. Application Logic: The Service Layer
 
-Internara is a **Multi-Language Application** (Indonesian & English).
+The **Service Layer** is the exclusive repository for business logic and orchestration.
 
-- **Hardcoding Prohibited**: **Never** write raw text in Views, Controllers, or Services.
-- **Translation Helper**: Always use `__('module::file.key')` or `@lang`.
-- **Locale Awareness**: Code must respect the active locale (`id` or `en`) when formatting dates or
-  currency.
+### 5.1 The `EloquentQuery` Pattern
 
----
-
-## 6. Domain Logic & Service Layer
-
-The Service Layer is the **Single Source of Truth** for business logic.
-
-### 6.1 The `EloquentQuery` Pattern
-
-To reduce boilerplate, domain services should extend `Modules\Shared\Services\EloquentQuery`.
-
-- **Standard Methods**: `all()`, `paginate()`, `create()`, `update()`, `delete()`, `find()`,
+Domain services should extend `Modules\Shared\Services\EloquentQuery` to utilize standardized CRUD
+operations.
+- **Standardized API**: `all()`, `paginate()`, `create()`, `update()`, `delete()`, `find()`,
   `query()`.
-- **Implementation Example**:
-    ```php
-    class UserService extends EloquentQuery
-    {
-        protected function model(): string
-        {
-            return User::class;
-        }
-    }
-    ```
+- **Overriding Logic**: Only override base methods when injecting cross-module side-effects or
+  complex domain events. Always utilize database **Transactions** for multi-entity operations.
 
-#### Advanced Usage & Customization
-
-You should override methods only when you need to inject cross-module logic or complex events.
-
-```php
-public function create(array $data): Model
-{
-    // 1. Perform global checks (e.g., Maintenance Mode)
-    if (setting('maintenance_mode') === true) {
-         throw new ServiceException(__('exception::messages.system_maintenance'));
-    }
-
-    $data['password'] = Hash::make($data['password']);
-
-    // 2. Call parent to handle persistence
-    $user = parent::create($data);
-
-    // 3. Dispatch events or trigger cross-module side effects
-    event(new UserCreated($user));
-
-    return $user;
-}
-```
-
-#### Building Complex Scopes
-
-Use the `query()` method to keep your service methods expressive.
-
-```php
-public function getActiveStudentsInDepartment(string $departmentId)
-{
-    return $this->query()
-        ->where('department_id', $departmentId)
-        ->where('is_active', true)
-        ->get();
-}
-```
-
-### 6.2 Service Design
-
-- **Contract-First**: When interacting across modules, depend on **Contracts**, never concrete
-  classes.
-- **Strict Isolation**: It is strictly prohibited to call cross-module concrete classes (especially
-  **Eloquent Models**) directly from within your service or utility layers. All data and business
-  operations must be requested through the appropriate module's **Service Contract**.
-- **Public Accessors**: Static classes or Framework Facades designed for public consumption are the
-  only exceptions. Direct instantiation of another module's classes is a violation of modular
-  integrity.
-- **Role Awareness**: Business logic must explicitly handle the roles defined in Specs (Instructor,
-  Staff, Student, Industry Supervisor).
-- **Inheritance**: CRUD services should extend `Modules\Shared\Services\EloquentQuery`.
-
-### 6.3 Configuration & Settings
-
-- **No `env()`**: Never call `env()` directly in application code.
-- **Infrastructure Config**: Use `config('app.timezone')` for static infrastructure values.
-- **Dynamic Application Settings**: Use the `setting($key, $default)` helper for all business values
-  (e.g., `site_title`, `brand_logo`, `contact_email`). **Hard-coding these values is strictly
-  prohibited.**
+### 5.2 Service Design Invariants
+- **Contract-First**: Always type-hint **Contracts**, never concrete implementations, for
+  cross-module dependencies.
+- **Strict Isolation**: Direct instantiation of external module classes (especially Models) is
+  strictly prohibited. All inter-module requests must pass through the target module's **Service
+  Contract**.
+- **Configuration Hygiene**: Never call `env()`. Use `config()` for static values and the
+  `setting()` helper for dynamic application values.
 
 ---
 
-## 7. UI/UX Implementation
+## 6. Presentation Layer: Livewire Components
 
-While visual guidelines are in the **[UI/UX Guide](ui-ux-development-guide.md)**, code conventions
-apply here:
+Livewire components serve as thin orchestrators between the UI and the Service Layer.
 
-- **Mobile-First Structure**: Livewire components must be structured to support mobile views by
-  default.
-- **Thin Controllers**: No business logic in Livewire components. Delegate to Services immediately.
-
----
-
-## 8. Documentation (PHPDoc)
-
-Every class and method must include a professional PHPDoc in English.
-
-- **Intent**: Briefly describe _why_ the method exists.
-- **Parameters**: Clearly type-hint all `@param` tags.
-- **Return**: Clearly define the `@return` type.
+- **The Thin Component Rule**: Implementation of business logic within Livewire components is
+  forbidden. Components must delegate immediately to the appropriate Service.
+- **Mobile-First Construction**: UI logic and styling must default to mobile layouts, utilizing
+  Tailwind v4 breakpoints for larger viewports.
 
 ---
 
-_Adherence to these conventions is not optional. They are verified during the **Iterative Sync
-Cycle** (Phase 4 of SDLC) and are a prerequisite for feature completion._
+## 7. Internationalization (i11n) Standards
+
+Internara is a multi-language system. Hard-coding of user-facing text is a **Critical Quality
+Violation**.
+
+- **Translation Protocol**: All text must be resolved via `__('module::file.key')`.
+- **Contextual Formatting**: Dates, currency, and numerical values must be formatted according to
+   the active locale (`id` or `en`).
+
+---
+
+## 8. Documentation (The Engineering Record)
+
+Every public class and method must include professional PHPDoc in English.
+- **Analytical Intent**: Describe the "why" and "what," not the obvious "how."
+- **Strict Typing**: All `@param` and `@return` tags must match the method signature's strict types.
+
+---
+
+_Non-compliance with these conventions indicates a failure of architectural integrity and will result
+in the rejection of the artifact during the V&V phase._

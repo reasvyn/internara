@@ -7,8 +7,8 @@ defines the standards, patterns, and workflows used to build Internara.
 
 ## 1. Architecture & Core Concepts
 
-- **[Internara Specs](internara-specs.md)**: **Single Source of Truth** - The authoritative
-  specification for the entire project.
+- **[System Requirements Specification](system-requirements-specification.md)**: **Single Source of Truth** - The formal
+  ISO/IEC 29148 specification for the entire project.
 - **[Architecture Guide](architecture-guide.md)**: Deep-dive into Modular Monolith layers,
   bootstrapping, and auto-discovery.
 - **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules

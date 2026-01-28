@@ -1,36 +1,38 @@
-# Application Blueprints - Strategy Index
+# Application Blueprints: Strategic Design Index
 
-This directory bridges abstract requirements with technical implementation. Every major development
-series starts here as an "Architectural Blueprint," organized by Series and Phase.
+This index centralizes the **Architecture Design Records (ADR)** for the Internara project. Every
+development series originates as a blueprint, providing the bridge between requirements and
+technical implementation.
 
 ---
 
-## 1. Planning Methodology
+## 1. Governance & Standards
 
-- **[Application Blueprints Guidelines](../blueprints-guidelines.md)**: Standards for drafting and
-  auditing blueprints.
+- **[Blueprint Design Guidelines](../blueprints-guidelines.md)**: Standards for the elicitation and
+  formalization of design intent.
 
-## 2. Active & Planned Series
+## 2. Active & Planned Development Series
 
-- **[10-ARC01-GAP-01 (Integrative Excellence)](10-ARC01-GAP-01-Integrative-Excellence.md)** -
-  _Planned_
-- **[09-ARC01-BOOT-01 (System Initialization)](09-ARC01-BOOT-01-System-Initialization.md)** -
-  _Completed_
+- **[10-ARC01-GAP-01 (Integrative Excellence)](10-ARC01-GAP-01-Integrative-Excellence.md)**
+  - **Status**: `Planned`
+  - **Focus**: Competency Rubrics, Mentoring Logs, and Schedule Management.
 
-## 3. Released Series
+- **[09-ARC01-BOOT-01 (System Initialization)](09-ARC01-BOOT-01-System-Initialization.md)**
+  - **Status**: `Completed`
+  - **Focus**: Automated CLI installation, Web Wizard, and System/SMTP configuration.
+
+## 3. Realized Design Baselines (Released)
 
 - **[08-ARC01-INTEL-01 (Reporting & Intelligence)](08-ARC01-INTEL-01-Reporting-Intelligence.md)**
 - **[07-ARC01-ORCH-01 (Administrative Orchestration)](07-ARC01-ORCH-01-Administrative-Orchestration.md)**
 - **[06-ARC01-FEAT-01 (Assessment & Workspaces)](06-ARC01-FEAT-01-Assessment-Workspaces.md)**
-- **[05-ARC01-OPER-01 (Operational Layer)](archived/05-ARC01-OPER-01-Operational-Layer.md)**
-  (Archived)
 
-## 4. Historical Archive (Archived)
+## 4. Historical Design Archive
 
-- **[Archived Blueprints Index](archived/table-of-contents.md)**: Historical pre-development
-  blueprints.
+- **[Archived Blueprints Index](archived/table-of-contents.md)**: Formal records of decommissioned or
+  legacy designs.
 
 ---
 
-_Once a blueprint is **Released**, it is archived here and summarized in the
-**[Public Release Notes](../../versions/versions-overview.md)**._
+_Once a design intent is successfully realized in a release, its blueprint is archived and the
+as-built outcome is documented in the **[Release Baselines](../../versions/versions-overview.md)**._

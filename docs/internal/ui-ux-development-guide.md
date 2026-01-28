@@ -1,117 +1,92 @@
-# UI/UX Development Guide: Designing Internara
+# UI/UX Development: Human-Centered Design Standards
 
-Internara follows a **Minimalist, Accessible, and Mobile-First** design philosophy. We utilize the
-TALL Stack and standardized UI components to ensure that the user experience is fast, reactive, and
-visually consistent across all modules and devices.
+This document formalizes the **User Interface (UI)** and **User Experience (UX)** standards for the
+Internara project, adhering to **ISO 9241-210** (Human-Centered Design) and **ISO/IEC 40500**
+(WCAG 2.1 Accessibility). It establishes the principles for building intuitive, responsive, and
+inclusive interfaces using the TALL Stack.
 
-> **Governance Mandate:** The UI/UX implementation must adhere to the visual design, typography, and
-> theming standards defined in the **[Internara Specs](../internal/internara-specs.md)**. Deviation
-> from the approved design system (colors, fonts, layout behavior) is prohibited.
-
----
-
-## 1. The Design System: TALL Stack + MaryUI
-
-We leverage a robust component ecosystem built on top of **Tailwind CSS v4**.
-
-- **DaisyUI:** Provides semantic, theme-aware CSS components (e.g., `btn-primary`, `card`).
-- **MaryUI:** Provides rich Blade components for Livewire (Tables, Modals, Drawers).
-- **Tailwind CSS v4:** The utility engine for layout and spacing.
-
-### 1.1 Visual Identity (from Specs)
-
-- **Typography:** Primary Font is **Instrument Sans**.
-- **Theme:**
-    - **Light Mode:** White/Soft Gray background, Deep Black primary elements.
-    - **Dark Mode:** Deep Black/Dark Gray background, White primary elements.
-    - **Accent:** **Emerald Green** (Buttons, Links, Highlights).
-- **Shapes:** Rounded corners (`0.25` – `0.75 rem`).
+> **Governance Mandate:** All UI/UX implementation must strictly adhere to the visual design,
+> typography, and thematic invariants defined in the authoritative
+> **[Internara Specs](../internal/internara-specs.md)**.
 
 ---
 
-## 2. Mobile-First Strategy
+## 1. Design Philosophy: Minimalist & Reactive
 
-Per the **Internara Specs**, the interface must be designed for mobile devices first, then
-progressively enhanced for larger screens.
+Internara prioritizes cognitive efficiency through a minimalist aesthetic that reduces visual noise
+and focuses on task completion.
 
-### 2.1 Responsive Principles
-
-- **Default Layout:** All grids and flex containers must default to a single-column (mobile) layout.
-- **Breakpoints:** Use `md:` (Tablet) and `lg:` (Desktop) prefixes to expand layouts.
-- **Touch Targets:** Buttons and interactive elements must have a minimum touch target size (approx.
-  44x44px).
-- **Navigation:**
-    - **Mobile:** Collapsible Sidebar (Drawer) or Bottom Navigation.
-    - **Desktop:** Persistent Sidebar or Top Navigation.
-
-### 2.2 Component Behavior
-
-- **Tables:** On mobile, tables should stack or scroll horizontally without breaking layout.
-  Consider using "Card Views" for data on small screens.
-- **Modals:** Must occupy full width/height or be sheet-based on mobile devices.
+### 1.1 Aesthetic-Natural Principles
+- **Calm Layouts**: Consistent use of negative space to prevent information overload.
+- **Instrument Sans Typography**: The primary font must be utilized across all interfaces to ensure
+  legibility and brand consistency.
+- **Thematic Integrity**:
+    - **Light Baseline**: White and soft gray backgrounds with deep black primary elements.
+    - **Dark Baseline**: Deep black backgrounds with white primary elements.
+    - **Emerald Accent**: Used exclusively for primary actions, hyperlinks, and critical highlights.
 
 ---
 
-## 3. Shared UI Module (`modules/UI`)
+## 2. Mobile-First & Responsive Strategy (ISO 9241)
 
-All custom or customized components reside in the `UI` module. **Do not duplicate component logic in
-feature modules.**
+The system is engineered for a **Mobile-First** experience, ensuring functional parity across all
+device classes.
 
-### 3.1 Core Components
+### 2.1 Progressive Enhancement Invariants
+- **Default Viewport**: Implementation must default to mobile layouts (single-column).
+- **Breakpoint Logic**: Progressive expansion to tablet (`md:`) and desktop (`lg:`) layouts using
+  Tailwind v4 utility classes.
+- **Touch-Friendly Targets**: All interactive elements (buttons, inputs) must maintain a minimum
+  44x44px target area to satisfy ergonomic requirements.
 
-- **Layouts**:
-    - `x-ui::layouts.app` (Main Dashboard with Responsive Navigation).
-    - `x-ui::layouts.auth` (Authentication Pages).
-- **Wrappers**:
-    - `x-ui::card`: Standard content container with responsive padding.
-    - `x-ui::container`: Max-width wrapper for page content.
-- **Interactions**:
-    - `x-ui::button`: Standardized button styles (Primary, Ghost, Error).
-    - `x-ui::modal`: Responsive dialog wrapper.
-
----
-
-## 4. Styling & Theming
-
-### 4.1 Utility-First (Tailwind)
-
-- **Spacing:** Adhere to the 4px grid (e.g., `p-4`, `gap-3`).
-- **Colors:** **NEVER** use hardcoded hex values (e.g., `#000000`). Always use semantic theme
-  variables:
-    - `bg-base-100`, `text-base-content` (Background/Text).
-    - `btn-primary`, `text-primary` (Emerald Green).
-    - `text-error`, `alert-warning` (Feedback).
-
-### 4.2 Icons
-
-- **Library:** **Tabler Icons**.
-- **Usage:** Use the `x-icon` component or generic svg helpers. Ensure consistent stroke width.
+### 2.2 Component Adaptability
+- **Adaptive Data Presentation**: Tabular data must utilize horizontal scrolling or card-based
+  stacking when rendered on small viewports.
+- **Modal Behavior**: Dialogs must transition to full-screen or sheet-based overlays on mobile
+  devices to maximize usable space.
 
 ---
 
-## 5. Multi-Language (i11n) Support
+## 3. Accessibility & Inclusivity (ISO/IEC 40500)
 
-The UI must support seamless switching between English (`en`) and Indonesian (`id`).
+Accessibility is a foundational engineering requirement, not an optional feature.
 
-- **Hardcoding Prohibited:** Never write raw text in Blade views.
-- **Usage:**
-    - Blade: `{{ __('module::file.key') }}`.
-    - Class/JS: Use the global translation helper.
-- **RTL:** Not required (both EN and ID are LTR), but layout directionality should use logical
-  properties (`ms-`, `me-`) where possible for future proofing.
-
----
-
-## 6. Feedback & Accessibility
-
-- **Global Notification Bridge:** Feedback (Toasts) must work across all device sizes.
-- **Accessibility (a11y):**
-    - Semantic HTML (Use `<button>`, not `<div>`).
-    - Focus states must be visible.
-    - Color contrast must meet WCAG AA standards (enforced by the Theme).
+### 3.1 WCAG 2.1 Compliance
+- **Perceivability**: Ensure sufficient color contrast (AA standard) for all text and interactive
+  elements.
+- **Operability**: Full keyboard navigability and visible focus states for all interactive
+  components.
+- **Understandability**: Consistent navigation patterns and clear error feedback across all
+  modules.
+- **Semantic HTML**: Mandatory use of semantic elements (`<main>`, `<nav>`, `<button>`) to ensure
+  compatibility with assistive technologies.
 
 ---
 
-_A great UI is invisible. Follow these guidelines to build an interface that helps Instructors,
-Staff, and Students complete their tasks with zero cognitive friction, regardless of the device they
-use._
+## 4. Engineering the UI (TALL Stack Standards)
+
+### 4.1 Modular UI Architecture
+- **Centralization**: All design system components reside in the foundational `UI` module.
+- **Thin Components**: Livewire components must focus on UI state and event handling, delegating all
+  business logic to the Service Layer.
+
+### 4.2 Internationalization (i11n) Invariant
+- **Translation Required**: Hard-coding of user-facing strings is a critical defect. All text must be
+  resolved via `__('module::file.key')`.
+- **Locale-Aware Formatting**: Dates, numerical values, and currency must adhere to the active
+  locale’s formatting standards (`id` or `en`).
+
+---
+
+## 5. Visual Consistency & Identity
+
+### 5.1 Themed Spacing & Layout
+- **Grid Discipline**: Adherence to a 4px (base-4) spacing grid (`p-4`, `gap-8`) for all layout
+  compositions.
+- **Iconography**: Use of **Tabler Icons** with consistent stroke weights and semantic sizing.
+
+---
+
+_By adhering to these human-centered design standards, Internara provides a professional, accessible,
+and high-performance experience that fulfills the educational management objectives defined in the
+specs._

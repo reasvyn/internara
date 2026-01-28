@@ -1,146 +1,80 @@
-# Version Management Guide
+# Version Management: Configuration Baseline Standards
 
-This document defines the authoritative standards for versioning, lifecycle classification, and
-support policies within the Internara project. It ensures that every system milestone is
-analytically precise and operationally unambiguous.
+This document formalizes the **Version Management** standards for the Internara project, adhering
+to **ISO/IEC 12207** (Configuration Management) and **ISO 10007** (Quality Management). It defines
+the protocols for establishing **Configuration Baselines**, lifecycle classification, and support
+governance to ensure systemic traceability and operational clarity.
 
-> **Governance Mandate:** All versioning decisions must align with the milestones defined in the
-> **[Internara Specs](internara-specs.md)**.
-
----
-
-## 1. Versioning Standard (SemVer)
-
-Internara adheres to **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`.
-
-- **MAJOR**: Incompatible API changes or fundamental architectural shifts.
-- **MINOR**: Backward-compatible feature additions (aligned with Spec Milestones).
-- **PATCH**: Backward-compatible bug fixes or security patches.
-- **Pre-release Identifiers**: Used during non-production stages (e.g., `v0.9.0-alpha`).
+> **Governance Mandate:** All versioning decisions and baseline promotions must be traceable to the
+> milestones defined in the authoritative **[Internara Specs](internara-specs.md)**.
 
 ---
 
-## 2. The 3-Axis Lifecycle Model
+## 1. Versioning Standard: SemVer (ISO 10007 Alignment)
 
-Internara explicitly separates **Maturity**, **Support Policy**, and **Operational Status** to avoid
-semantic overlap.
+Internara utilizes **Semantic Versioning (SemVer)** to communicate the nature of configuration
+changes within the system.
 
-### 2.1 Maturity Stages (Quality & Completeness)
-
-| Stage                  | Definition                                            |
-| ---------------------- | ----------------------------------------------------- |
-| Experimental           | Architectural or conceptual validation.               |
-| Alpha                  | Core features incomplete; breaking changes expected.  |
-| Beta                   | Feature complete; focus on stabilization.             |
-| Release Candidate (RC) | Potential final release; only critical fixes allowed. |
-| Stable                 | Production-ready with defined guarantees.             |
-
-### 2.2 Support Policies (Maintenance Contract)
-
-| Policy        | Definition                             | Guarantee      |
-| ------------- | -------------------------------------- | -------------- |
-| Full Support  | Active maintenance and improvements.   | Bug + Security |
-| Bugfix Only   | Maintenance without feature additions. | Bug fixes      |
-| Security Only | Critical vulnerability patches only.   | Security fixes |
-| Snapshot      | Point-in-time release provided as-is.  | None           |
-| EOL           | End of Life.                           | None           |
-
-### 2.3 Operational Status (Current Reality)
-
-| Status      | Meaning                                     |
-| ----------- | ------------------------------------------- |
-| Planned     | Identified in Specs but not implemented.    |
-| In Progress | Under active construction.                  |
-| Preview     | Accessible for demonstration or evaluation. |
-| Released    | Publicly tagged and distributed.            |
-| Deprecated  | Accessible but no longer recommended.       |
-| Archived    | Closed and historically preserved.          |
+- **MAJOR**: Structural architectural shifts or incompatible API changes.
+- **MINOR**: Functional capability additions (mapped to Spec Milestones).
+- **PATCH**: Corrective maintenance and security patches.
+- **Pre-release Identifiers**: Used to identify non-stable maturity stages (e.g., `v0.9.0-alpha`).
 
 ---
 
-## 3. Support Matrix Governance
+## 2. The 3-Axis Lifecycle Matrix
 
-All versions must be tracked in the **[Versions Overview](../versions/versions-overview.md)**.
+To ensure precise configuration identification, Internara separates **Maturity**, **Support
+Policy**, and **Operational Status**.
 
-- **Mandatory Mapping:** All versions with an **EOL** support policy must be marked as
-  **Deprecated** or **Archived**.
-- **Archival Protocol:** Transitioning a version to **Archived** status and moving its blueprints to
-  `archived/` directories requires explicit permission from the project lead.
-- **Immutability:** Tags for EOL/Archived versions are **immutable**.
-- **Visibility:** Release note visibility for EOL versions remains in `docs/versions/`.
-- **Closure:** Issues/PRs targeting EOL versions will be closed.
+### 2.1 Maturity Stages (Baseline Stability)
+- **Experimental**: Exploratory configuration.
+- **Alpha**: Internal construction; baseline is unstable.
+- **Beta**: Feature-complete; focusing on stabilization.
+- **Release Candidate (RC)**: Final verification baseline.
+- **Stable**: Certified production baseline.
 
----
+### 2.2 Support Policies (Maintenance Commitments)
+- **Active Support**: Full maintenance and evolutionary updates.
+- **Security Only**: Critical vulnerability patches exclusively.
+- **Snapshot**: Point-in-time baseline provided without maintenance guarantees.
+- **EOL (End of Life)**: No support provided; baseline is deprecated.
 
-## 4. Version Identity Artifacts
-
-### 4.1 `app_info.json`
-
-The machine-readable identity of the application.
-
-- `version`: The SemVer identifier.
-- `series_code`: The architectural lineage identifier.
-- `support_policy`: The maintenance contract level.
-
-### 4.2 Analytical Release Notes
-
-Located in `docs/versions/`, these document the **realized outcome** of a version.
-
-- **Naming Convention:** `v{MAJOR}.{MINOR}.{PATCH}.md` (e.g., `v0.9.0.md`).
-- **Stable Filenames:** Filenames remain static across maturity stages. Information regarding the
-  **Stage** (Alpha, Beta, etc.) is managed as internal metadata within the file.
-- **Intent vs. Outcome:** Blueprints document the **intent**, while release notes document the
-  **outcome**.
+### 2.3 Operational Status (Baseline State)
+- **Planned** | **In Progress** | **Released** | **Deprecated** | **Archived**
 
 ---
 
-## 6. Artifact Synchronization Protocols
+## 3. Configuration Identification Artifacts
 
-Work is strictly **incomplete** until all project artifacts converge with the current state. Every
-lifecycle transition (e.g., Promotion, Archival) requires a mandatory audit of the following primary
-artifacts:
+### 3.1 `app_info.json` (Machine-Readable Identity)
+The authoritative technical baseline identifier.
+- **Requirements**: Must include `version`, `series_code`, and `support_policy`.
 
-- **`app_info.json`**: Machine-readable application identity and support policy.
-- **`README.md`**: Public interface, project status, and version support matrix.
-- **`docs/versions/versions-overview.md`**: Strategic registry of all version series.
-- **`Architectural Blueprint`**: Tactical intent and phase sequence tracking.
-- **`Release Note`**: Analytical outcome and spec milestone verification.
+### 3.2 Analytical Release Notes (The Engineering Record)
+Located in `docs/versions/`, these document the **Realized Outcome** of a configuration baseline.
+- **Requirement**: Must reflect the as-built reality and verify the fulfillment of spec
+  milestones.
+- **SSoT Sync**: Blueprints document **Intent**; Release Notes document **Outcome**.
 
-### 6.1 Checklist: Promotion to 'Released'
+---
 
-When a version moves from **In Progress** to **Released**:
+## 4. Baseline Promotion & Archival Protocols
 
-1.  **Identity Alignment**: Ensure `app_info.json` reflects the stable version and policy.
+### 4.1 Promotion to 'Released' (Baseline Stabilization)
+1.  **Identity Audit**: Synchronize `app_info.json` with the target version and policy.
+2.  **Narrative Finalization**: Set internal status to `Released` in the release note.
+3.  **Registry Update**: Register the baseline in `docs/versions/versions-overview.md`.
+4.  **Baseline Tagging**: Create an annotated Git tag according to **[GitHub Protocols](github-protocols.md)**.
 
-2.  **Note Finalization**: Set header status to `Released` in the release note.
-
-3.  **Registry Sync**: Ensure the link is active in the **Versions Overview**.
-
-4.  **Public Interface**: Update the **README.md** status table.
-
-5.  **Remote Execution**: Create Git tag and GitHub Release per protocols.
-
-### 6.2 Checklist: Transition to 'Archived'
-
-When a version moves from **Released** to **Archived**:
-
-1.  **Metadata Alignment**: Update the header status to `Archived` in the release note.
-2.  **Physical Relocation**: Move the release note to `docs/versions/archived/`.
-3.  **Blueprint Archival**: Move the Architectural Blueprint to
+### 4.2 Transition to 'Archived' (Baseline Retirement)
+1.  **Metadata Update**: Reflect `Archived` status and `EOL` policy in all artifacts.
+2.  **Relocation**: Move release notes to `docs/versions/archived/` and blueprints to
     `docs/internal/blueprints/archived/`.
-4.  **Index Synchronization**: Update all TOC files and the **Versions Overview** links.
-5.  **Status Sync**: Update **README.md** to reflect archival and EOL policy.
+3.  **Traceability Preservation**: Ensure Table of Contents (ToC) updates maintain links to the
+    archived technical records.
 
-### 6.3 Registry Streamlining (Cleanup Rules)
+---
 
-To prevent informational bloat and maintain tactical focus, primary registries must be pruned during
-the archival process:
-
-1.  **Registry Pruning**: Remove individual rows and links for archived versions from the **Version
-    Support Matrix** in both `README.md` and `versions-overview.md`.
-2.  **TOC Delegation**: Replace the list of archived releases with a single, clear link to the
-    **Archived Release Notes TOC** (`archived/table-of-contents.md`).
-3.  **Context Preservation**: Ensure that all removed details are preserved within the archived
-    files and their respective Table of Contents.
-4.  **Active Focus**: Primary project files must prioritize the **Active Development**, **Latest
-    Released**, and **Recent Stable** milestones.
+_By adhering to these version management standards, Internara ensures that every system baseline is
+disciplined, traceable, and compliant with international configuration management frameworks._

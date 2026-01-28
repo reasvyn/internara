@@ -1,208 +1,101 @@
-# Application Blueprints: Managing System Evolution
+# Application Blueprints: Design & Evolution Standards
 
-This directory contains **Application Blueprints** for Internara—formal planning artifacts that
-define the **intended evolution** of the system across version series.
+This document formalizes the standards for **Application Blueprints** within the Internara project,
+adhering to **IEEE 1016** (Software Design Descriptions) and **ISO/IEC 12207** (Design Process).
+Blueprints serve as the authoritative **Architecture Design Records (ADR)**, governing the
+intentional evolution of the system across developmental milestones.
 
 > **Governance Mandate:** All Blueprints must derive their authority from the
-> **[Internara Specs](internara-specs.md)**. A Blueprint cannot authorize work that contradicts the
-> Product Specifications without a formal spec update.
-
-Application Blueprints translate **strategic intent** into **architecturally actionable direction**
-_before_ implementation begins and _until_ a version series is formally released.
+> **[Internara Specs](internara-specs.md)**. A Blueprint cannot authorize structural changes that
+> contradict the Product Specifications without a formal SSoT update.
 
 ---
 
-## 1. Purpose of Application Blueprints
+## 1. Purpose & Strategic Intent
 
-Application Blueprints exist to govern **intentional evolution**, not day-to-day execution. They
-function as a **Roadmap** and a **Work Contract** between planning and execution, rather than a
-granular task list. This aligns with **Phase 2: System Design** of our SDLC.
+Application Blueprints translate strategic requirements into architecturally actionable direction
+during **Phase 2 (Design)** of the SDLC. They function as a **Technical Contract** between
+Requirements Engineering and System Construction.
 
-They are used to:
-
-- Articulate _why_ a version series exists.
-
-- Define architectural scope and constraints (Module boundaries, Database changes).
-
-- Anticipate cross-module dependencies and contracts.
-
-- Establish criteria for completion (Exit Gates).
-
-They are **not**:
-
-- Task lists or granular checklists (e.g., Jira tickets, GitHub Issues).
-
-- Development workflows.
-
-- Release notes.
-
-- Post-release documentation.
-
-### 1.1 Naming Convention
-
-Blueprints are named following the **Series-Based** pattern to decouple planning intent from
-
-specific release versions, prepended by a two-digit development sequence:
-
-`{Dev_Sequence}-{Series_Code}-{Phase_Sequence}-{Descriptive-Theme}.md`
-
-- **Dev Sequence**: Overall development order (e.g., `01`, `02`).
-
-- **Series Code**: The primary architectural lineage (e.g., `ARC01-BOOT`).
-
-- **Phase Sequence**: Specific stage within that series (e.g., `01`, `02`).
-
-- **Theme**: A human-readable summary.
-
-**Example**: `09-ARC01-BOOT-01-System-Initialization.md`
-
-This naming ensures that a single blueprint can cover multiple minor version iterations (e.g.,
-
-`v0.9.0` through `v0.9.5`) while maintaining a clear, stable planning artifact.
-
-### 1.2 Intent vs. Outcome
-
-- **Blueprints** (here) describe **intent** and technical direction.
-
-- **Release Notes** (`docs/versions/`) describe the **realized outcome** of a specific version.
+- **Objective**: Eliminate architectural ambiguity before implementation.
+- **Traceability**: Ensure every design decision is mapped to a requirement in the SSoT.
+- **Isolation Control**: Define and protect modular boundaries and cross-module contracts.
 
 ---
 
-## 2. Planning Lifecycle
+## 2. Blueprint Taxonomy & Naming
 
-### 2.1 Blueprint Initiation
+Blueprints are organized by **Series-Based** lineage to decouple planning intent from transient
+release versions.
 
-Before work begins on a new version series (e.g., `v0.7.x`), an Application Blueprint must be
-created.
-
-At initiation time:
-
-- The **Series Code** is assigned.
-- The blueprint is validated against `internara-specs.md`.
-- The blueprint enters **Active** state.
-
-### 2.2 Mandatory Blueprint Components
-
-Each Application Blueprint **must** contain the following sections using the standardized
-terminology.
-
-#### 2.2.1 Series Code & Spec Alignment
-
-- **Series Code:** A unique identifier (e.g., `ARC01-ORCH-01`).
-- **Spec Reference:** Explicit link to the section of `internara-specs.md` being addressed.
-
-#### 2.2.2 Version Goals and Scopes (Core Problem Statement)
-
-A clear definition of the version’s purpose, core objectives, and the primary problems it aims to
-solve.
-
-- **Purpose:** Why does this version series need to exist?
-- **Objectives:** What specific outcomes must be achieved?
-- **Scope:** What limitations or current problems are being resolved?
-
-#### 2.2.3 Functional Specifications
-
-A curated list of key features and user stories prioritized by their impact on the user experience.
-
-- **Feature Set:** Description of the primary functions introduced or modified.
-- **User Stories:** Concise narratives describing how actors interact with these features.
-
-#### 2.2.4 Technical Architecture (Architectural Impact)
-
-The structural design of the system, including database schemas, API integrations, and the chosen
-tech stack (adhering to the **Modular Monolith** guide).
-
-- **Modules:** Affected, New, or Deprecated.
-- **Data Layer:** Schema changes (Must use UUIDs, No physical foreign keys).
-- **Settings:** Application config changes (Must use `setting()` helper).
-
-#### 2.2.5 UX/UI Design Specifications (UI/UX Strategy)
-
-A written framework detailing the design philosophy, user flow logic, interaction behaviors, and
-content tone.
-
-- **Mobile-First:** How the changes will scale from mobile to desktop.
-- **User Flow:** The logical flow of user interactions.
-- **Multi-Language:** Confirmation of `i11n` support for new features.
-- **Role Access:** Which User Roles interact with these changes.
-
-#### 2.2.6 Success Metrics (KPIs)
-
-Measurable indicators and data points to evaluate the performance and adoption of the version
-post-release.
+**Format**: `{Dev_Sequence}-{Series_Code}-{Phase_Sequence}-{Descriptive-Theme}.md`
+- **Dev Sequence**: Chronological order of development (e.g., `10`).
+- **Series Code**: The primary architectural lineage (e.g., `ARC01-GAP`).
+- **Phase Sequence**: Specific iteration within that series (e.g., `01`).
+- **Theme**: Semantic summary of the design focus.
 
 ---
 
-## 3. Quality Assurance (QA) Criteria (Exit Criteria)
+## 3. Mandatory Design Content (IEEE 1016 Alignment)
 
-Every Application Blueprint **must explicitly define its QA and Exit Criteria**. This acts as the
-**Exit Gate** for the SDLC Construction Phase.
+Every Application Blueprint must provide a comprehensive description of the intended system state.
 
-Typical criteria include:
+### 3.1 Strategic Context
+- **Series Identification**: Unique series code and current developmental status.
+- **Spec Alignment**: Explicit mapping to the functional/non-functional requirements in
+  `internara-specs.md`.
 
-- **Acceptance Criteria:** Specific functional requirements that must be met.
-- **Testing Protocols:** 100% Test Pass Rate (Unit & Feature).
-- **Quality Gates:** Static Analysis Clean, Spec Validation confirmed.
-- Documentation (Release Note) accurately reflects the realized architecture.
+### 3.2 Feature Specification
+- **Capability Set**: Detailed description of the new or modified system capabilities.
+- **User Personas**: Narratives describing how specific User Roles (Instructor, Staff, etc.)
+  interact with the new design.
 
-> A blueprint is considered complete when its **intent has been realized** and **verified against QA
-> criteria**.
+### 3.3 Architectural Impact (Logical View)
+- **Module Decomposition**: Identification of New, Modified, or Deprecated modules.
+- **Data Architecture**: Schema definitions emphasizing **UUID Identity** and the **No Physical
+  Foreign Key** invariant.
+- **Service Contracts**: Definition of new cross-module interfaces and their behavior.
 
----
-
-## 4. Blueprint Evolution During Development
-
-Application Blueprints are **living documents** while the version series is under construction.
-
-- Blueprints may be revised if architectural assumptions change.
-- **Spec Sync:** If a Blueprint change contradicts the Specs, the Specs MUST be updated first.
-- Significant deviations must be recorded.
-
-The blueprint remains authoritative **until the version is released**.
+### 3.4 Interface Strategy (Presentation View)
+- **Mobile-First UX**: Logic for scaling from touch-optimized mobile views to desktop environments.
+- **i11n Strategy**: Confirmation of multi-language support for all user-facing components.
+- **Access Control**: Mapping of new features to the **RBAC** model defined in the specs.
 
 ---
 
-## 5. Transition to Release Note
+## 4. Exit Criteria & Quality Gates
 
-Once a version is **Released** (Phase 5 of SDLC):
+A Blueprint is only considered fulfilled when the following **Verification & Validation** criteria
+are satisfied:
 
-- The Application Blueprint is **archived**.
-- The final system state is documented in the **Release Note** (`docs/versions/vX.X.X.md`).
-
-### 5.1 Synchronization Rule
-
-- The Release Note must reflect the **as-built reality**.
-- Application Blueprints do not persist as sources of truth after release.
-
-> Blueprints describe **intent**. Release Notes describe **outcome**.
+- **Acceptance Criteria**: Functional requirements that must be verified as operational.
+- **Testing Protocols**: Minimum coverage and pass-rate requirements (Unit & Feature).
+- **Static Analysis Gate**: Clean compliance with **[Code Quality Standardization](code-quality-standardization.md)**.
+- **V&V Gate**: Demonstrated fulfillment of the original specification requirement.
 
 ---
 
-## 6. Forward Outlook: vNext Roadmap
+## 5. Lifecycle & Archival
 
-Each Application Blueprint must conclude with a **vNext Roadmap** section.
+### 5.1 Evolution
+Blueprints are "Living Documents" during the Construction phase. Significant deviations from the
+original design must be recorded within the blueprint to maintain a technical audit trail.
 
-The vNext Roadmap:
-
-- Identifies logical continuation points after the current series.
-- Captures known limitations or deferred decisions.
-- Provides directional hints—not commitments—for the next series.
-
-This section may include:
-
-- Anticipated architectural refactors.
-- Emerging domain concerns.
-- Technical debt consciously deferred.
+### 5.2 Graduation to Release
+Upon a successful **Stable Release** (Phase 5 of SDLC):
+1.  The Blueprint's intent is considered realized.
+2.  The final as-built state is documented in the **Release Note** (`docs/versions/`).
+3.  The Blueprint is moved to the `archived/` directory, serving as a historical design record.
 
 ---
 
-## 7. Blueprint Index & Status Tracking
+## 6. Forward-Looking Roadmap
 
-For an overview of all Application Blueprints, refer to the
-**[Internal Table of Contents](../table-of-contents.md)** or the `blueprints/` directory index.
+Every blueprint must conclude with a **vNext Roadmap**, identifying deferred decisions, emerging
+technical debt, or logical extensions for the next developmental series.
 
 ---
 
-_Application Blueprints ensure that Internara evolves deliberately rather than accidentally. By
-defining intent, strict spec alignment, and clear exit conditions, the system remains adaptable,
-comprehensible, and resilient as complexity grows._
+_Application Blueprints ensure that Internara evolves as a disciplined, engineered system. By
+formalizing design intent and exit conditions, we prevent architectural decay and ensure continuous
+alignment with the foundational specifications._

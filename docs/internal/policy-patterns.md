@@ -1,39 +1,52 @@
-# Policy Patterns: Authorization Logic
+# Policy Patterns: Authorization Governance Standards
 
-In Internara, **Policies** are the primary mechanism for enforcing authorization. Every Eloquent
-model **must** have a Policy. This guide outlines the standard patterns for implementing secure and
-readable access control logic.
+This document formalizes the **Authorization Policy Patterns** for the Internara project, adhering
+to **ISO/IEC 29146** (Access Control Framework) and **ISO/IEC 27001** (Access Control). It defines
+standardized logic for **Policy Enforcement Points (PEP)** to ensure consistent and context-aware
+security across all domain modules.
 
-> **Spec Alignment:** Authorization logic must enforce the **User Roles** defined in the
-> **[Internara Specs](../internal/internara-specs.md)**. Only designated roles (Instructor, Staff,
-> Industry Supervisor) may access specific resources.
+> **Governance Mandate:** Authorization logic must strictly enforce the **User Roles** and
+> administrative constraints defined in the authoritative
+> **[Internara Specs](../internal/internara-specs.md)**.
 
 ---
 
-## 1. Pattern: Permission + Ownership
+## 1. Policy Enforcement Architecture
 
-This is the most common pattern. A user can only manage a resource if they have the system-wide
-permission **AND** they are the owner of that specific record.
+In Internara, **Policies** serve as the primary PEP for all domain resources. Every Eloquent model
+must be associated with a Policy class to centralize and formalize access decisions.
+
+- **Invariant**: Authorization checks must be performed at the earliest possible boundary (PEP)
+  before any business logic is executed.
+- **Protocol**: Controllers and Livewire components must utilize `$this->authorize()` or `@can` to
+  invoke the associated Policy.
+
+---
+
+## 2. Standard Authorization Patterns
+
+### 2.1 Pattern: Permission-Based Ownership (Default)
+The system verifies that the subject possesses the required functional permission AND maintains
+ownership of the specific resource.
+- **Applicability**: Personal records (e.g., Student Journals, Personal Profiles).
 
 ```php
-public function update(User $user, Journal $journal)
+public function update(User $user, Journal $journal): bool
 {
-    // Permission check AND Ownership check
+    // Verification: Capability (Permission) + Context (Ownership)
     return $user->can('journal.update') && $user->id === $journal->user_id;
 }
 ```
 
----
-
-## 2. Pattern: Academic Supervision (Instructor & Industry Supervisor)
-
-Allowing an **Instructor** or **Industry Supervisor** to view or edit records for students assigned
-directly to them.
+### 2.2 Pattern: Hierarchical Supervision (Relational)
+Allows subjects in supervisory roles (Instructor, Industry Supervisor) to access resources
+associated with their subordinates (Students).
+- **Applicability**: Mentoring logs, academic reports, and attendance records.
 
 ```php
-public function view(User $user, Journal $journal)
+public function view(User $user, Journal $journal): bool
 {
-    // Check if the user is the assigned academic supervisor OR industry mentor
+    // Context-Aware Verification: Is the user an assigned supervisor for this record?
     $isInstructor = $journal->registration->instructor_id === $user->id;
     $isMentor = $journal->registration->industry_supervisor_id === $user->id;
 
@@ -41,29 +54,28 @@ public function view(User $user, Journal $journal)
 }
 ```
 
----
-
-## 3. Pattern: The "Super Admin" Bypass
-
-Super Admins bypass all policies. This is configured in the `AuthServiceProvider` but must be
-considered when testing.
-
-```php
-Gate::before(function ($user, $ability) {
-    return $user->hasRole('super-admin') ? true : null;
-});
-```
+### 2.3 Pattern: Administrative Override (Super-Admin)
+The **Super-Admin** role maintains universal bypass capabilities to facilitate emergency system
+orchestration and maintenance.
+- **Implementation**: Defined via `Gate::before()` in the `AuthServiceProvider`.
 
 ---
 
-## 4. Best Practices
+## 3. Engineering Standards for Policies
 
-1.  **Strict Typing**: Always type-hint the Model and User in policy methods.
-2.  **Explicit Naming**: Match policy method names to standard CRUD actions (`view`, `create`,
-    `update`, `delete`).
-3.  **Default to Deny**: If a condition isn't met, return `false`.
+### 3.1 Strict Typing Invariant
+All policy methods must declare strict types for the `User` subject and the domain `Model` object.
+Failure to use strict typing is considered an architectural defect.
+
+### 3.2 Semantic CRUD Mapping
+Policy methods must correspond 1:1 with the standard system actions:
+- `viewAny`, `view`, `create`, `update`, `delete`, `restore`, `forceDelete`.
+
+### 3.3 Explicit Deny by Default
+If any condition remains unsatisfied, the policy must return `false`. Silence or ambiguity in
+policy logic is prohibited.
 
 ---
 
-_Consistent use of Policies ensures that Internara's security posture remains strong. Never
-authorize an action directly in a Controller or Livewire component without a Policy check._
+_By adhering to these standardized policy patterns, Internara ensures a resilient, context-aware,
+and traceable authorization posture across its modular ecosystem._

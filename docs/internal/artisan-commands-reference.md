@@ -1,77 +1,84 @@
-# Artisan Commands Reference: Modular Tooling
+# Artisan Commands Reference: Support Tooling Standards
 
-Internara extends the Laravel CLI with custom Artisan commands designed to streamline modular
-development and ensure spec compliance.
+This document formalizes the **Support Tooling** reference for the Internara project, adhering to
+**ISO/IEC 12207** (Infrastructure and Support Processes). It provides a technical catalog of custom
+Artisan commands engineered to enforce **Architectural Invariants** and streamline the construction
+of modular artifacts.
 
-> **Governance Mandate:** All generated code must adhere to the standards defined in the
-> **[Internara Specs](../internal/internara-specs.md)** (e.g., UUID identity, Mobile-First
-> structure).
-
----
-
-## 1. Modular Generators
-
-These commands respect our **Namespace Conventions** (omitting the `src` segment).
-
-### 1.1 Service Generation
-
-```bash
-php artisan module:make-service MyService ModuleName
-```
-
-- **Result**: `modules/ModuleName/src/Services/MyService.php`
-- **Convention**: Generates a **Contract-First** service.
-
-### 1.2 Model & Migration
-
-```bash
-php artisan module:make-model MyModel ModuleName --migration
-```
-
-- **Standards**: Enforces **UUID** primary keys and **Snake_case** table naming.
-- **Constraint**: Migrations generated will follow the "No physical cross-module FKs" rule.
-
-### 1.3 Livewire Component
-
-```bash
-php artisan module:make-livewire MyComponent ModuleName
-```
-
-- **UI Standard**: Scaffolds components with **Mobile-First** responsive wrappers.
+> **Governance Mandate:** All software artifacts generated via these tools must strictly comply with
+> the **[Internara Specs](../internal/internara-specs.md)** and the
+> **[Code Quality Standardization](code-quality-standardization.md)**.
 
 ---
 
-## 2. System Identity & Status
+## 1. Modular Artifact Generators
 
-### 2.1 Application Info
+Generators are engineered to respect the **Modular Monolith** hierarchy and the **src-Omission**
+namespace invariant.
 
+### 1.1 Service Construction
+```bash
+php artisan module:make-service {ServiceName} {ModuleName}
+```
+- **Invariant**: Generates a **Contract-First** service structure, including the interface in the
+  `Contracts/` subdirectory.
+
+### 1.2 Persistence Construction (Models & Migrations)
+```bash
+php artisan module:make-model {ModelName} {ModuleName} --migration
+```
+- **Standard**: Automatically incorporates the **UUID Identity** concern.
+- **Data Integrity**: Migrations are configured for modular isolation (No physical foreign keys
+  across boundaries).
+
+### 1.3 UI Construction (Livewire Components)
+```bash
+php artisan module:make-livewire {ComponentName} {ModuleName}
+```
+- **UI Standard**: Scaffolds components with responsive, **Mobile-First** layout wrappers and
+  standardized MaryUI components.
+
+---
+
+## 2. System Identity & State Orchestration
+
+### 2.1 Configuration Audit (App Info)
 ```bash
 php artisan app:info
 ```
+- **Objective**: Verifies the current system version, **Series Code**, maturity stage, and
+  environmental health (PHP/Laravel versions).
 
-- **Goal:** Verify version, **Series Code**, and environment health.
-
-### 2.2 Refresh Bindings
-
+### 2.2 Dependency Synchronization (Refresh Bindings)
 ```bash
 php artisan app:refresh-bindings
 ```
-
-- **Goal:** Sync the **Auto-Discovery** cache for Services and Contracts.
+- **Objective**: Synchronizes the **Auto-Discovery** cache for cross-module Service Contracts.
+  Mandatory after adding new services or contracts.
 
 ---
 
-## 3. Database & Security
+## 3. Security & Access Control
 
-### 3.1 Permission Sync
-
+### 3.1 Permission Baseline Synchronization
 ```bash
 php artisan permission:sync
 ```
-
-- **Goal:** Synchronize the User Roles defined in
-  **[Internara Specs](../internal/internara-specs.md)** across the database.
+- **Objective**: Synchronizes the **RBAC Baseline** defined in the `Core` and feature modules with
+  the database. Ensures User Roles match the authoritative specification.
 
 ---
 
-_Always use modular generators to ensure architectural integrity._
+## 4. Maintenance & Evolution
+
+### 4.1 System Clean-up
+```bash
+php artisan app:flush-cache
+```
+- **Objective**: Clears all application, modular, and configuration caches to ensure a clean state
+  for verification.
+
+---
+
+_Utilizing these standardized generators is mandatory to maintain the structural integrity and
+predictability of the Internara modular monolith ecosystem._

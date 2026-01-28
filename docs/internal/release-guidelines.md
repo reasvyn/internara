@@ -1,58 +1,75 @@
-# Release Guidelines: Executing the Product Lifecycle
+# Release Guidelines: Baseline Publication Protocols
 
-This document defines the protocols for performing a release and synchronized deployment artifacts.
-For definitions of versioning standards and support policies, see the
-**[Version Management Guide](version-management.md)**.
+This document formalizes the **Release Management** protocols for the Internara project, adhering
+to **ISO/IEC 12207** (Release Process) and **ISO/IEC 20000** (Service Management). It defines the
+systematic procedures for transitioning software from development to a stabilized delivery baseline.
 
-> **Governance Mandate:** A version cannot be released if it does not fulfill the Spec Validation
-> criteria defined in the **[Internara Specs](internara-specs.md)**.
-
----
-
-## 1. Release Eligibility Criteria (The Exit Gate)
-
-A version may be marked as `Released` only when the following conditions are met:
-
-1. **Spec Compliance**: Features function exactly as described in `internara-specs.md`.
-2. **Scope Closure**: The intended milestone scope is internally complete.
-3. **Artifact Consistency**: Code, documentation, and metadata are synchronized.
-4. **Testing Pass**: 100% pass rate on `composer test`.
-5. **Linting Pass**: Clean `composer lint`.
+> **Governance Mandate:** No release may be authorized unless it demonstrates 100% compliance with
+> the **[Internara Specs](internara-specs.md)** through formal verification and validation.
 
 ---
 
-## 2. Release Procedure
+## 1. Release Eligibility Criteria (The Technical Gate)
 
-### 2.1 Identity Verification
+A version is eligible for **Release** only when it satisfies the following **Quality Gates**:
 
-Ensure `app_info.json` reflects the target version, series code, and intended support policy.
-
-### 2.2 Release Note Creation
-
-Produce user-centric release notes in `docs/versions/vX.Y.Z.md`. These notes also function as the
-official **Changelog** for the version. This must reflect the **as-built reality**.
-
-### 2.3 Tagging
-
-Create a Git tag matching the version identifier (e.g., `git tag v0.9.0-alpha`).
+1.  **Requirement Fulfillment (Validation)**: Every feature specified in the blueprint must be
+    verified against the SSoT.
+2.  **Configuration Audit**: All artifacts (Code, Docs, Metadata) must be synchronized and correctly
+    versioned in `app_info.json`.
+3.  **Verification Pass**: 100% success rate across all Unit, Feature, and Architecture test suites.
+4.  **Security Certification**: Zero "Critical" or "High" vulnerabilities identified during SAST and
+    manual security audits.
+5.  **Static Analysis Compliance**: Clean results from automated linting and strict type checking.
 
 ---
 
-## 3. Post-Release Management
+## 2. Release Execution Procedure
 
-### 3.1 GitHub Operations
+### 2.1 Identity & Metadata Synchronization
+Verify that the `app_info.json` reflects the correct SemVer identifier, series code, and intended
+support policy.
 
-Perform operations according to **[GitHub Protocols](github-protocols.md)**.
+### 2.2 Configuration Baseline Creation (Tagging)
+Create an **Annotated Git Tag** to establish an immutable configuration baseline.
+- **Protocol**: `git tag -a vX.Y.Z -m "Release theme and series identification"`
+- **Convention**: Tags must match the identifier in `app_info.json` exactly.
 
-- Update release notes on GitHub using `gh release create`.
-- Ensure the `Latest` label is moved to the new stable/active release.
-
-### 3.2 Blueprint Archival
-
-Marking a version as **Released** does NOT automatically archive its blueprint. Blueprints remain in
-the active directory until explicit archival permission is granted.
+### 2.3 Documentation Finalization (Doc-as-Code)
+Synthesize the technical execution history into a user-centric release note in `docs/versions/`.
+- **Requirement**: Release notes must reflect the **as-built reality** and highlight strategic
+  milestones from the blueprint.
 
 ---
 
-_By following these protocols, we ensure that every release is a high-quality, traceable milestone
-in the Internara lifecycle._
+## 3. Deployment & Baseline Promotion
+
+### 3.1 GitHub Integration
+Promote the configuration baseline to GitHub according to the **[GitHub Protocols](github-protocols.md)**.
+- **Action**: Utilize `gh release create` to synchronize local release notes with the remote
+  repository.
+- **Visibility**: Mark non-stable releases as "Pre-release" to prevent accidental production
+  consumption.
+
+### 3.2 Post-Release Configuration Audit
+- **Artifact Locking**: Once released, the associated release note becomes a permanent part of the
+  system record.
+- **Blueprint Lifecycle**: Blueprints associated with the release are moved to `archived/` upon
+  successful baseline promotion.
+
+---
+
+## 4. Release Integrity & Rollback
+
+### 4.1 Integrity Verification
+Immediately following release, the system auditor must verify the integrity of the release package
+to ensure no configuration drift occurred during the transition.
+
+### 4.2 Emergency Corrective Action (Hotfix)
+If a critical defect is identified post-release, a **Hotfix** baseline must be established targeting
+the current release tag, as defined in the configuration management strategy.
+
+---
+
+_By strictly adhering to these release protocols, Internara ensures that every version is a
+stabilized, high-quality milestone that maintains the integrity of the modular monolith system._

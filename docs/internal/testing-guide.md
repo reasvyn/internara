@@ -1,127 +1,126 @@
-# Testing Guide
+# Testing & Verification Guide: V&V Framework
 
-This document outlines the philosophy, conventions, and workflow for writing tests within the
-Internara project. It acts as the central entry point for our testing infrastructure.
+This document formalizes the **Verification & Validation (V&V)** protocols for the Internara
+project, adhering to **IEEE Std 1012** and **ISO/IEC 29119** (Software Testing). It defines the
+methodologies for ensuring that software artifacts are technically correct (Verification) and
+fulfill the authoritative specifications (Validation).
 
-> **Spec Alignment:** Testing must verify the fulfillment of requirements defined in the
-> **[Internara Specs](../internal/internara-specs.md)**, including **Mobile-First** UI behavior,
-> **Multi-Language** integrity, and **Role-Based** access control.
-
----
-
-## Testing Philosophy
-
-- **TDD First**: Embrace writing tests alongside feature development.
-- **Comprehensive Coverage**: Every new feature, bug fix, or modification must be accompanied by
-  relevant tests.
-- **Modular Isolation**: Tests must respect the same isolation boundaries as the application code. A
-  test in `Module A` must not directly instantiate or assert against concrete models in `Module B`.
-  Use **Service Contracts** or specific module factories to maintain decoupling.
-- **Verification & Validation (V&V)**: Tests serve as the technical proof that the system meets the
-  authoritative specs.
-
-### Unit vs. Feature Tests
-
-| Type        | Focus                 | Goal                                      | Characteristics                           |
-| :---------- | :-------------------- | :---------------------------------------- | :---------------------------------------- |
-| **Unit**    | Isolated components   | Verify logic in absolute isolation.       | Fast, no DB, mocks all dependencies.      |
-| **Feature** | Component integration | Verify end-to-end user stories/processes. | Slower, uses DB, simulates HTTP/Livewire. |
+> **Spec Alignment:** Every test suite must validate the requirements defined in the
+> **[Internara Specs](../internal/internara-specs.md)**, including **Mobile-First** responsiveness,
+> **Multi-Language** integrity, and **Role-Based** security invariants.
 
 ---
 
-## Layer-Based Placement (Mandatory)
+## 1. V&V Philosophy: TDD-Driven Engineering
 
-Tests must reflect the architectural layer being tested. Placing tests directly under `Feature/` or
-`Unit/` is prohibited.
+Internara adopts a **TDD-First** methodology, treating tests as executable behavioral
+specifications.
 
-- **Feature Tests:** `modules/{Module}/tests/Feature/{Livewire|Services|Api}`
-- **Unit Tests:** `modules/{Module}/tests/Unit/{Models|Enums|Support}`
+- **Traceability**: Every test must be traceable to a specific requirement in the SSoT or an
+  architectural invariant.
+- **Independence**: Tests must verify behavior without knowledge of the internal implementation
+  details of other modules.
+- **Continuous Verification**: Tests are executed automatically within the CI pipeline to prevent
+  architectural or functional regression.
 
 ---
 
-## Mandatory Testing Patterns
+## 2. Testing Levels (The V-Model View)
 
-### 1. Multi-Language Verification
+| Level           | Focus                    | Objective                                | Implementation                      |
+| :-------------- | :----------------------- | :--------------------------------------- | :---------------------------------- |
+| **Unit**        | Component Isolation      | Verify logic in mathematical isolation.  | Pest (Mocking all dependencies)     |
+| **Integration** | Service/Module Contract  | Verify inter-module communication.       | Feature tests via Service Contracts |
+| **System**      | End-to-End User Flow     | Validate fulfillment of user stories.    | Feature tests (HTTP/Livewire)       |
+| **Architecture**| Structural Invariants    | Enforce modular isolation policies.      | Pest Arch Plugin                    |
 
-Every user-facing output must be tested for localization across all supported locales (ID/EN).
+---
+
+## 3. Mandatory Testing Patterns
+
+### 3.1 Architecture Invariants (Isolation Enforcement)
+
+To maintain the **Modular Monolith** integrity, we utilize **Architecture Testing** to prevent
+unauthorized cross-module coupling.
 
 ```php
-test('it returns localized error for unauthorized access', function () {
+arch('module isolation')
+    ->expect('Modules\Internship')
+    ->not->toUse('Modules\User\Models')
+    ->because('Domain modules must never interact with external models directly.');
+```
+
+### 3.2 Localization (i11n) Validation
+
+Every user-facing artifact must be verified across all supported locales (ID/EN).
+
+```php
+test('it returns localized validation error', function () {
     app()->setLocale('id');
-    expect(__('exception::messages.unauthorized'))->toBe('Akses tidak diizinkan.');
+    expect(__('validation.required', ['attribute' => 'nama']))->toBe('nama wajib diisi.');
 
     app()->setLocale('en');
-    expect(__('exception::messages.unauthorized'))->toBe('Unauthorized access.');
+    expect(__('validation.required', ['attribute' => 'name']))->toBe('The name field is required.');
 });
 ```
 
-### 2. Role-Based Access Control (RBAC)
+### 3.3 Access Control (RBAC) Verification
 
-Verify that access is restricted to the specific user roles defined in the specs.
+Access rights must be verified for every role defined in the **[Internara Specs](../internal/internara-specs.md)**.
 
 ```php
-test('staff can access administration but student cannot', function () {
-    $staff = User::factory()->create()->assignRole('staff');
+test('unauthorized roles are forbidden from accessing management', function () {
     $student = User::factory()->create()->assignRole('student');
+    $instructor = User::factory()->create()->assignRole('instructor');
 
-    actingAs($staff)->get(route('admin.dashboard'))->assertOk();
     actingAs($student)->get(route('admin.dashboard'))->assertForbidden();
+    actingAs($instructor)->get(route('admin.dashboard'))->assertOk();
 });
 ```
 
-### 3. Asserting Exceptions
+### 3.4 Exception & Fault Handling
 
-Internara uses standardized exception naming. Tests must verify the translation key and message.
+Tests must verify that the system fails securely and provides translated feedback.
 
 ```php
-test('it throws translated exception using module-specific key', function () {
+test('it throws translated domain exception', function () {
     $service = app(JournalService::class);
-    $lockedJournal = Journal::factory()->create(['is_locked' => true]);
+    $lockedJournal = Journal::factory()->create(['status' => 'locked']);
 
-    $expectedMessage = __('journal::exceptions.locked');
-
-    expect(fn() => $service->update($lockedJournal, []))->toThrow(
-        JournalLockedException::class,
-        $expectedMessage,
-    );
+    expect(fn() => $service->update($lockedJournal, []))
+        ->toThrow(JournalLockedException::class, __('journal::exceptions.locked'));
 });
 ```
 
-### 4. Cross-Module Isolation
+---
 
-To maintain modular portability, tests must strictly respect domain boundaries.
+## 4. Test Construction Standards
 
-- **No Concrete Imports**: Avoid importing concrete classes (Models, Services, Actions) from other
-  modules.
-- **Contract Resolution**: Always resolve cross-module dependencies via their **Service Contracts**
-  using `app(Contract::class)`.
-- **State Setup**: Use **Factories** from other modules to set up necessary database state for
-  Feature tests. Avoid direct instantiation (`new Model()`) of foreign models.
-- **Assertion Boundaries**: Assertions should focus on the behavior of the module being tested.
-  Avoid asserting against the internal state of foreign models directly; instead, verify outcomes
-  through the current module's logic or public contracts.
+### 4.1 Layered Placement
+Tests must be located within the module they verify, following the internal 3-tier structure:
+- **Feature Tests**: `modules/{Module}/tests/Feature/{Livewire|Services|Api}`
+- **Unit Tests**: `modules/{Module}/tests/Unit/{Models|Enums|Support}`
+
+### 4.2 Cross-Module State Setup
+- **No Direct Model Instantiation**: Do not use `new Model()` for foreign entities.
+- **Factory Resolution**: Use factories resolved from the target module to ensure valid state
+  initialization without coupling.
 
 ---
 
-## The Internara Testing Stack
+## 5. Execution & Quality Gates
 
-- **Core Framework**: [Pest v4+](https://pestphp.com/).
-- **Mocking**: Mockery & Laravel Fakes.
-- **Architecture**: Pest Arch Plugin (Enforcing modular isolation).
-
----
-
-## Running Tests
+Verification is mandatory before any repository synchronization.
 
 ```bash
-# All tests (Parallel)
+# Parallel Execution (Verification Gate)
 php artisan test --parallel
 
-# Filter by Module
-php artisan test --filter=User
+# Coverage Audit (Validation Gate)
+php artisan test --coverage --min=90
 ```
 
 ---
 
-_Tests are not just a safety net; they are the executable documentation of our commitment to the
-Internara Specs._
+_Tests are the formal proof of our engineering rigor. An artifact without verification is
+considered incomplete and non-compliant with the Internara standards._

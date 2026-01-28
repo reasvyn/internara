@@ -1,7 +1,7 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
         <p class="mb-16 font-bold text-gray-500">
-            {{ __('setup::wizard.steps', ['current' => 6, 'total' => 6]) }}
+            {{ __('setup::wizard.steps', ['current' => 7, 'total' => 8]) }}
         </p>
 
         <h1 class="text-3xl font-bold">{{ __('setup::wizard.system.headline') }}</h1>
@@ -13,16 +13,28 @@
             {{ __('setup::wizard.system.description_extra') }}
         </p>
 
-        <div class="mt-8 flex items-center gap-4">
+        <div class="mt-8 flex flex-wrap items-center gap-4">
             <x-ui::button
                 class="btn-secondary btn-outline"
-                :label="__('setup::wizard.common.back')"
+                :label="__('setup::wizard.buttons.back')"
                 wire:click="backToPrev"
             />
             <x-ui::button
+                class="btn-ghost"
+                :label="__('setup::wizard.system.skip')"
+                wire:click="skip"
+            />
+            <x-ui::button
+                class="btn-info btn-outline"
+                :label="__('setup::wizard.system.test_connection')"
+                wire:click="testConnection"
+                spinner="testConnection"
+            />
+            <x-ui::button
                 class="btn-primary"
-                :label="__('setup::wizard.common.save_continue')"
+                :label="__('setup::wizard.buttons.save_continue')"
                 wire:click="save"
+                spinner="save"
             />
         </div>
     </x-slot>

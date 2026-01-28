@@ -55,6 +55,51 @@ class SystemSetup extends Component
     }
 
     /**
+     * Tests the SMTP connection with the provided settings.
+     */
+    public function testConnection(): void
+    {
+        $this->validate([
+            'mail_host' => 'required|string',
+            'mail_port' => 'required|numeric',
+            'mail_encryption' => 'nullable|string',
+        ]);
+
+        try {
+            $transport = match ($this->mail_encryption) {
+                'ssl' => "ssl://{$this->mail_host}:{$this->mail_port}",
+                'tls', 'starttls' => "tcp://{$this->mail_host}:{$this->mail_port}",
+                default => "tcp://{$this->mail_host}:{$this->mail_port}",
+            };
+
+            $socket = @fsockopen($this->mail_host, (int) $this->mail_port, $errno, $errstr, 5);
+
+            if ($socket) {
+                fclose($socket);
+                $this->dispatch('notify', 
+                    type: 'success', 
+                    message: 'SMTP Connection successful!'
+                );
+            } else {
+                throw new \Exception($errstr ?: 'Connection timed out.');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('notify', 
+                type: 'error', 
+                message: 'Connection failed: ' . $e->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Skips the SMTP configuration and proceeds to the next step.
+     */
+    public function skip(): void
+    {
+        $this->nextStep();
+    }
+
+    /**
      * Saves the settings and proceeds to the next step.
      */
     public function save(): void

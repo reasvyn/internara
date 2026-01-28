@@ -1,7 +1,7 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
         <p class="mb-16 font-bold text-gray-500">
-            {{ __('setup::wizard.steps', ['current' => 2, 'total' => 6]) }}
+            {{ __('setup::wizard.steps', ['current' => 4, 'total' => 8]) }}
         </p>
 
         <h1 class="text-3xl font-bold">{{ __('setup::wizard.account.headline') }}</h1>

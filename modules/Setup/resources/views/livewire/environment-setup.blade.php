@@ -1,5 +1,9 @@
 <div class="mx-auto max-w-2xl">
     <div class="mb-8 text-center">
+        <p class="mb-16 font-bold text-gray-500">
+            {{ __('setup::wizard.steps', ['current' => 2, 'total' => 8]) }}
+        </p>
+
         <h2 class="text-3xl font-bold">
             {{ __('setup::wizard.environment.title') }}
         </h2>
