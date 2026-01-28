@@ -1,6 +1,6 @@
 # Application Blueprint: Reporting & Intelligence (ARC01-INTEL-01)
 
-**Series Code**: `ARC01-INTEL-01` **Status**: `Active`
+**Series Code**: `ARC01-INTEL-01` **Status**: `In Progress`
 
 > **System Requirements Specification Alignment:** This configuration baseline implements the
 > **Assessment & Reporting** ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative
@@ -87,7 +87,7 @@ engine and establishing systemic traceability for student placement transitions.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the Report and Internship verification suites via
   **`composer test`**.
@@ -100,8 +100,8 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 7. vNext Roadmap (v0.9.0)
+## 7. Improvement Suggestions
 
-- **Automated Initialization**: Integrated `app:install` and Setup Wizard.
-- **Mobile-First Optimization**: Enhanced journal interfaces for on-site interaction.
-- **Security Hardening**: Implementation of setup-token authorization protocols.
+- **Automated Setup**: Consider automating the technical installation process to reduce 
+  onboarding friction.
+- **Web-based Configuration**: Potential for a graphical interface for first-run setup.

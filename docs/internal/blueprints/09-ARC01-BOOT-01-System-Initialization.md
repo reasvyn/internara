@@ -1,6 +1,6 @@
 # Application Blueprint: System Initialization (ARC01-BOOT-01)
 
-**Series Code**: `ARC01-BOOT-01` **Status**: `Completed`
+**Series Code**: `ARC01-BOOT-01` **Status**: `Done`
 
 > **System Requirements Specification Alignment:** This configuration baseline implements the
 > **Administrative Orchestration** ([SYRS-F-101]) and **Architecture & Maintainability**
@@ -86,7 +86,7 @@ repeatable deployment experience.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the 23-test verification suite via
   **`composer test`**.
@@ -109,7 +109,8 @@ and security.
 
 ---
 
-## 8. vNext Roadmap (v0.10.0)
+## 8. Improvement Suggestions
 
-- **Competency Mapping**: Linking daily journals to curriculum rubrics.
-- **Mentoring Dialogue**: Formal feedback logging for supervisory roles.
+- **Competency Mapping**: Potential linkage between journals and curriculum rubrics for deeper 
+  instructional alignment.
+- **Mentoring Dialogue**: Suggestions for formalizing feedback logs for Instructors and Mentors.

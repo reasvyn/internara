@@ -1,6 +1,6 @@
 # Application Blueprint: Operational Layer (ARC01-OPER-01)
 
-**Series Code**: `ARC01-OPER-01` **Status**: `Archived` (Released)
+**Series Code**: `ARC01-OPER-01` **Status**: `Archived` (Done)
 
 > **Spec Alignment:** This configuration baseline implements the **Progress Monitoring &
 > Traceability** ([SYRS-F-201]) requirements of the authoritative
@@ -79,7 +79,7 @@ Attendance) and ensure data integrity through systemic temporal scoping.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the operational verification suites via
   **`composer test`**.
@@ -91,7 +91,8 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 7. vNext Roadmap (v0.6.0)
+## 7. Improvement Suggestions
 
-- **Assessment Engine**: Formal grading and digital certification orchestration.
-- **Role Workspaces**: Systematic decomposition into specialized UI modules.
+- **Grading Optimization**: Potential for an automated evaluation engine.
+- **Role-based Segmentation**: Suggestions for specialized workspaces for different users.
+

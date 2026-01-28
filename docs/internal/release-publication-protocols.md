@@ -18,13 +18,16 @@ mandatory quality gates:
 
 1.  **Validation Audit**: Every capability defined in the blueprint must be verified against the
     System Requirements Specification.
-2.  **Configuration Integrity**: Artifacts (Code, Docs, Metadata) must be synchronized and
-    identifiable in `app_info.json`.
-3.  **Verification Pass**: Successful execution of the full verification suite via
+2.  **Configuration Integrity**: All system artifacts (Source Code, Engineering Records,
+    Stakeholder Documentation) must be fully synchronized. The `README.md` must accurately
+    reflect the target configuration baseline, project status, and version support matrix.
+3.  **Status Transition Invariant**: The version status must be formally updated to **Released**
+    within the strategic registries and analytical records prior to final baseline promotion.
+4.  **Verification Pass**: Successful execution of the full verification suite via
     **`composer test`**.
-4.  **Static Analysis Compliance**: Successful execution of the automated linting suite via
+5.  **Static Analysis Compliance**: Successful execution of the automated linting suite via
     **`composer lint`**.
-5.  **Security Certification**: Zero critical/high vulnerabilities identified during the security
+6.  **Security Certification**: Zero critical/high vulnerabilities identified during the security
     audit phase.
 
 ---
@@ -33,8 +36,11 @@ mandatory quality gates:
 
 ### 2.1 Identity & Baseline Synchronization
 
-Verify that the `app_info.json` exactly matches the intended configuration baseline (Version,
-Series, Policy).
+Verify that the `app_info.json` exactly matches the intended configuration baseline (Series Code,
+
+Support Policy, Status). Execute the mandatory transition of the version status to **Released**
+
+within the internal records and the strategic baseline overview prior to tag creation.
 
 ### 2.2 Configuration Baseline Identification (Tagging)
 
@@ -47,6 +53,8 @@ Create an **Annotated Git Tag** to establish an immutable reference to the relea
 Synchronize the analytical release notes in `docs/versions/` to reflect the realized outcome.
 
 - **Requirement**: Documentation must be analytically precise and preserve all technical depth.
+- **Metadata Invariant**: Every release note must include **Series Code**, **Support Policy**, and
+  **Status** at the header of the document.
 
 ---
 

@@ -1,6 +1,6 @@
 # Application Blueprint: Institutional Foundation (ARC01-INST-01)
 
-**Series Code**: `ARC01-INST-01` **Status**: `Archived` (Released)
+**Series Code**: `ARC01-INST-01` **Status**: `Archived` (Done)
 
 > **Spec Alignment:** This configuration baseline implements the **Administrative Orchestration**
 > ([SYRS-F-101]) requirements of the authoritative
@@ -54,7 +54,7 @@ including school departments and industry partner registries.
 
 ## 4. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the institutional verification suites via
   **`composer test`**.
@@ -65,7 +65,7 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 5. vNext Roadmap (v0.5.0)
+## 5. Improvement Suggestions
 
-- **Operational Layer**: Daily activity logging and attendance tracking.
-- **Media Orchestration**: Systemic support for document attachments.
+- **Daily Monitoring**: Explore real-time attendance and journal tracking.
+- **Historical Scoping**: Suggestions for academic year isolation.

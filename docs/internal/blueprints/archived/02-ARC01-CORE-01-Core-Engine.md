@@ -1,6 +1,6 @@
 # Application Blueprint: Core Engine (ARC01-CORE-01)
 
-**Series Code**: `ARC01-CORE-01` **Status**: `Archived` (Released)
+**Series Code**: `ARC01-CORE-01` **Status**: `Archived` (Done)
 
 > **Spec Alignment:** This configuration baseline implements the foundational **Architecture &
 > Maintainability** ([SYRS-NF-601]) requirements of the authoritative
@@ -47,7 +47,7 @@ orchestrator and the core database identity standard.
 
 ## 4. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the core infrastructure suites via
   **`composer test`**.
@@ -58,7 +58,8 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 5. vNext Roadmap (v0.3.0)
+## 5. Improvement Suggestions
 
-- **Identity & Security**: Secure authentication and RBAC implementation.
-- **Profile Orchestration**: Subject management capabilities.
+- **Polymorphic Identity**: Potential for separating user credentials from role profiles.
+- **Privacy Hardening**: Suggestions for automated data masking in system logs.
+

@@ -1,6 +1,6 @@
 # Application Blueprint: Project Genesis (ARC01-INIT-01)
 
-**Series Code**: `ARC01-INIT-01` **Status**: `Archived` (Released)
+**Series Code**: `ARC01-INIT-01` **Status**: `Archived` (Done)
 
 ---
 
@@ -37,7 +37,7 @@ strategic vision and foundational design system.
 
 ## 4. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Quality Gate**: Completion of the initial
   **[System Requirements Specification](../../system-requirements-specification.md)**.
@@ -47,7 +47,7 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 5. vNext Roadmap (v0.2.0)
+## 5. Improvement Suggestions
 
-- **Core Engine**: Implementation of the modular orchestrator and UUID identity.
-- **Modularity Baseline**: Establishment of the `Core` and `Shared` module tiers.
+- **Access Infrastructure**: Consider a modular RBAC system for different user roles.
+- **Entity Standards**: Suggestions for UUID-based secure identification.

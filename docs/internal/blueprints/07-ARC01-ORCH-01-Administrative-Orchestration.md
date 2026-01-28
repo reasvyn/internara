@@ -1,6 +1,6 @@
 # Application Blueprint: Administrative Orchestration (ARC01-ORCH-01)
 
-**Series Code**: `ARC01-ORCH-01` **Status**: `Released`
+**Series Code**: `ARC01-ORCH-01` **Status**: `Done`
 
 > **System Requirements Specification Alignment:** This configuration baseline implements the
 > **Administrative Orchestration** ([SYRS-F-101], [SYRS-F-102]) requirements of the authoritative
@@ -81,7 +81,7 @@ rule enforcement and centralizing institutional oversight.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the orchestration and validation suites via
   **`composer test`**.
@@ -94,7 +94,7 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 7. vNext Roadmap (v0.8.0)
+## 7. Improvement Suggestions
 
-- **Asynchronous Reporting**: PDF synthesis engine for large-scale analytics.
-- **Placement Audit**: Forensic history logs for student rotations.
+- **Asynchronous Reporting**: Consider a PDF synthesis engine for large-scale analytics.
+- **Placement Audit**: Suggestions for forensic history logs for student rotations.

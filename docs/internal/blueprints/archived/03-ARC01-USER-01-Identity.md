@@ -1,6 +1,6 @@
 # Application Blueprint: Identity & Security (ARC01-USER-01)
 
-**Series Code**: `ARC01-USER-01` **Status**: `Archived` (Released)
+**Series Code**: `ARC01-USER-01` **Status**: `Archived` (Done)
 
 > **Spec Alignment:** This configuration baseline implements the **Security & Integrity**
 > ([SYRS-NF-501], [SYRS-NF-502]) requirements of the authoritative
@@ -54,7 +54,7 @@ authentication and the initial RBAC (Role-Based Access Control) framework.
 
 ## 4. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the security verification suites via
   **`composer test`**.
@@ -65,7 +65,7 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 5. vNext Roadmap (v0.4.0)
+## 5. Improvement Suggestions
 
-- **Institutional Foundation**: Management of schools, departments, and partners.
-- **Placement Orchestration**: Initial logic for assigning users to locations.
+- **Institutional Structure**: Consider building the school and department hierarchy.
+- **Resource Placement**: Potential for tracking internship capacity and placement limits.

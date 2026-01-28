@@ -14,18 +14,17 @@ technical implementation.
 ## 2. Active & Planned Development Series
 
 - **[10-ARC01-GAP-01 (Integrative Excellence)](10-ARC01-GAP-01-Integrative-Excellence.md)**
-    - **Status**: `Planned`
-    - **Focus**: Competency Rubrics, Mentoring Logs, and Schedule Management.
+- **[08-ARC01-INTEL-01 (Reporting & Intelligence)](08-ARC01-INTEL-01-Reporting-Intelligence.md)**
+
+---
+
+## 3. Done Design Baselines
 
 - **[09-ARC01-BOOT-01 (System Initialization)](09-ARC01-BOOT-01-System-Initialization.md)**
-    - **Status**: `Completed`
-    - **Focus**: Automated CLI installation, Web Wizard, and System/SMTP configuration.
-
-## 3. Realized Design Baselines (Released)
-
-- **[08-ARC01-INTEL-01 (Reporting & Intelligence)](08-ARC01-INTEL-01-Reporting-Intelligence.md)**
 - **[07-ARC01-ORCH-01 (Administrative Orchestration)](07-ARC01-ORCH-01-Administrative-Orchestration.md)**
 - **[06-ARC01-FEAT-01 (Assessment & Workspaces)](06-ARC01-FEAT-01-Assessment-Workspaces.md)**
+
+---
 
 ## 4. Historical Design Archive
 
@@ -34,5 +33,6 @@ technical implementation.
 
 ---
 
-_Once a design intent is successfully realized in a release, its blueprint is archived and the
-as-built outcome is documented in the **[Release Baselines](../../versions/versions-overview.md)**._
+_Once a design intent is successfully done, its blueprint is archived. The as-built outcome is 
+documented in the **[Release Baselines](../../versions/versions-overview.md)**, mapped via its 
+unique **Series Code**._

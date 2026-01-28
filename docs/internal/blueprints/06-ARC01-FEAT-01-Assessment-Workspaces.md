@@ -1,6 +1,6 @@
 # Application Blueprint: Assessment & Workspaces (ARC01-FEAT-01)
 
-**Series Code**: `ARC01-FEAT-01` **Status**: `Archived` (Released)
+**Series Code**: `ARC01-FEAT-01` **Status**: `Archived` (Done)
 
 > **System Requirements Specification Alignment:** This configuration baseline implements the
 > **Progress Monitoring** ([SYRS-F-201]) and **Assessment & Reporting** ([SYRS-F-301]) requirements
@@ -82,7 +82,7 @@ implement a formal assessment engine for verifiable credentialing.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered realized only when it satisfies the following gates:
+A design series is considered done only when it satisfies the following gates:
 
 - **Verification Gate**: 100% pass rate across the workspace and assessment verification suites.
 - **Quality Gate**: zero static analysis violations via **`composer lint`**.
@@ -94,7 +94,8 @@ A design series is considered realized only when it satisfies the following gate
 
 ---
 
-## 7. vNext Roadmap (v0.7.0)
+## 7. Improvement Suggestions
 
-- **Requirement Orchestration**: Automated verification of institutional prerequisites.
-- **Engagement-Based Scoring**: Integration of attendance and journal compliance into grading.
+- **Prerequisite Validation**: Potential for an engine to verify document compliance 
+  automatically.
+- **Administrative Automation**: Refinements for cohort-wide student management.

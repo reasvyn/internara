@@ -14,10 +14,13 @@ intentional evolution of the system across developmental milestones.
 ## 1. Purpose & Strategic Intent
 
 Application Blueprints translate strategic requirements into architecturally actionable direction
-during the **Software Design Process**. They function as a **Technical Contract** between
-Requirements Engineering and System Construction.
+during the **Software Design Process**. They function as a **Roadmap** and a **Work Contract**
+for the system's developmental direction.
 
-- **Objective**: Eliminate architectural ambiguity before implementation.
+- **Objective**: Eliminate architectural ambiguity before implementation and define the path of
+  evolution.
+- **Contractual Nature**: Serve as a technical agreement between Requirements Engineering and
+  System Construction, independent of release schedules.
 - **Traceability**: Ensure every design decision is traceable to a specific requirement in the
   System Requirements Specification.
 - **Isolation Control**: Define and protect modular boundaries and cross-module contracts.
@@ -27,7 +30,12 @@ Requirements Engineering and System Construction.
 ## 2. Blueprint Taxonomy & Naming
 
 Blueprints are organized by **Series-Based** lineage to decouple planning intent from transient
-release versions.
+release versions. A Blueprint does not represent a specific version of the application; it
+describes a coherent set of architectural or functional changes.
+
+> **The Binding Invariant:** The only bridge between an Application Blueprint and an Application
+> Version is the **Series Code**. This code ensures that design intent can be tracked across
+> multiple releases if necessary.
 
 **Format**: `{Dev_Sequence}-{Series_Code}-{Phase_Sequence}-{Descriptive-Theme}.md`
 
@@ -38,29 +46,43 @@ release versions.
 
 ---
 
-## 3. Mandatory Design Content (IEEE 1016 Alignment)
+## 3. Blueprint Status Taxonomy
+
+To maintain the decoupling between design intent and release cycles, Blueprints utilize a 
+specific set of operational statuses:
+
+- **Planned**: Strategic intent is defined and aligned with the SyRS, but implementation has not 
+  started.
+- **In Progress**: The design is currently being implemented within the codebase.
+- **Done**: The design intent has been fully implemented, verified, and merged into a 
+  configuration baseline.
+- **Archived**: The Blueprint serves as a historical record of a done or decommissioned design.
+
+---
+
+## 4. Mandatory Design Content (IEEE 1016 Alignment)
 
 Every Application Blueprint must provide a comprehensive description of the intended system state.
 
-### 3.1 Strategic Context
+### 4.1 Strategic Context
 
 - **Series Identification**: Unique series code and current developmental status.
 - **Spec Alignment**: Explicit mapping to the functional and non-functional requirements in the
   **[System Requirements Specification](system-requirements-specification.md)**.
 
-### 3.2 Functional Specification
+### 4.2 Functional Specification
 
 - **Capability Set**: Detailed description of the new or modified system capabilities.
 - **Stakeholder Personas**: Narratives describing how specific User Roles interact with the design.
 
-### 3.3 Architectural Impact (Logical View)
+### 4.3 Architectural Impact (Logical View)
 
 - **Module Decomposition**: Identification of New, Modified, or Deprecated modules.
 - **Data Architecture**: Schema definitions emphasizing **UUID Identity** and the **No Physical
   Foreign Key** invariant.
 - **Service Contracts**: Formalization of new inter-module interfaces and their behavior.
 
-### 3.4 Presentation Strategy (User Experience View)
+### 4.4 Presentation Strategy (User Experience View)
 
 - **Mobile-First UX**: Logic for scaling from touch-optimized mobile views to desktop environments.
 - **i11n Strategy**: Confirmation of multi-language support for all user-facing components.
@@ -69,7 +91,7 @@ Every Application Blueprint must provide a comprehensive description of the inte
 
 ---
 
-## 4. Exit Criteria & Quality Gates
+## 5. Exit Criteria & Quality Gates
 
 A Blueprint is only considered fulfilled when the following **Verification & Validation** criteria
 are satisfied:
@@ -82,27 +104,39 @@ are satisfied:
 
 ---
 
-## 5. Baseline Lifecycle & Archival
+## 6. Baseline Lifecycle & Archival
 
-### 5.1 Evolution
+### 6.1 Evolution
 
 Blueprints are "Living Documents" during the Construction phase. Significant deviations from the
 original design must be recorded within the blueprint to maintain a technical audit trail.
 
-### 5.2 Graduation to Release
+### 6.2 Graduation to Done
 
-Upon a successful **Stable Release Promotion**:
+Upon completion of the developmental roadmap defined in the Blueprint:
 
-1.  The Blueprint's intent is considered realized.
-2.  The final as-built state is documented in the **Release Baseline** (`docs/versions/`).
+1.  The Blueprint's intent is considered **Done**.
+2.  The final as-built state is documented in the corresponding **Release Baseline**
+    (`docs/versions/`) using the same **Series Code**.
 3.  The Blueprint is moved to the `archived/` directory, serving as a historical design record.
 
 ---
 
-## 6. Forward-Looking Roadmap
+## 7. Forward Outlook: Improvement Suggestions
 
-Every blueprint must conclude with a **vNext Roadmap**, identifying deferred decisions, emerging
-technical debt, or logical extensions for the next developmental series.
+Each Application Blueprint should conclude with an **Improvement Suggestions** section.
+
+This section:
+
+- Identifies potential enhancements or deferred refinements.
+- Captures logical continuation points for future consideration.
+- Provides directional hints—not commitments—for future architectural evolution.
+
+This section may include:
+
+- Anticipated architectural refactors.
+- Emerging domain concerns.
+- Technical debt consciously deferred.
 
 ---
 
