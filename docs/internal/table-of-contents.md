@@ -47,6 +47,8 @@ defines the standards, patterns, and workflows used to build Internara.
 
 ## 5. Quality Assurance
 
+- **[Code Quality Standardization](code-quality-standardization.md)**: ISO-standardized engineering and quality
+  metrics.
 - **[Testing Guide](testing-guide.md)**: Standards for Unit and Feature testing with Pest.
 
 ---

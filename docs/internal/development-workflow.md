@@ -1,7 +1,8 @@
 # Development Workflow: Feature Engineering Lifecycle
 
 This document defines the **engineering workflow** for building features in the Internara project.
-It specifies _how work is performed_ to meet the rigorous standards of our **Modular Monolith**.
+It specifies _how work is performed_ based on the principles of **Software Engineering (SE)** and
+the **ISO/IEC 12207** standards to meet the rigorous requirements of our **Modular Monolith**.
 
 > **Governance Mandate:** All engineering work must align with the
 > **[Internara Specs](../internal/internara-specs.md)** and the
@@ -13,109 +14,118 @@ complete without **Artifact Synchronization**.
 
 ---
 
-## Phase 1: Context & Planning (Requirements Engineering)
+## Phase 1: Requirements Engineering (Analysis & Specification)
 
-This phase corresponds to the **Requirements** and **Design** phases of the SDLC.
+This phase corresponds to the **Requirements Analysis** phase of the SDLC. It ensures that the "Type
+III Error" (solving the wrong problem) is avoided.
 
-### 1.1 Specification Validation
+### 1.1 Specification Verification
 
-Before any code is written:
+- **Action:** Validate the feature request against the **[Internara Specs](../internal/internara-specs.md)**.
+- **Analysis:** Identify functional requirements (what it does) and non-functional requirements
+  (performance, security, i11n).
+- **Constraint Check:** Ensure compliance with **Mobile-First** design and **Multi-Language**
+  mandates.
+- **Role Analysis:** Confirm the feature aligns with the designated User Roles (Instructor, Staff,
+  Student, Mentor).
 
-- **Action:** Verify the feature request against `docs/internal/internara-specs.md`.
-- **Constraint:** Ensure the feature respects **Mobile-First** design and **Multi-Language**
-  support.
-- **Role Check:** Confirm the feature aligns with the designated User Roles (Instructor, Staff,
-  etc.).
+### 1.2 Architectural & Historical Review
 
-### 1.2 Historical & Architectural Review
+- **Action:** Review existing patterns in `docs/versions/` and `docs/internal/architecture-guide.md`.
+- **Objective:** Prevent architectural regression and maintain modular consistency.
 
-- **Action:** Review the analytical release notes of the **current version** and **prior
-  milestones** in `docs/versions/`.
-- **Objective:** Understand existing patterns to avoid architectural regression.
+---
 
-### 1.3 Implementation Planning
+## Phase 2: Design & Blueprinting (Architectural Decomposition)
 
-For any non-trivial feature:
+This phase corresponds to the **Design** phase of the SDLC. It focuses on **Information Hiding**
+(Parnas) and **Separation of Concerns** (Dijkstra).
 
-- **Action:** Create a detailed implementation plan.
+### 2.1 Implementation Planning (Blueprint)
+
+- **Action:** Create a detailed implementation plan (Blueprint).
 - **Artifact:** Store the plan in `docs/internal/blueprints/` scoped to the current version.
-- **Content:**
-    - Module boundaries involved.
-    - New Contracts/Interfaces required.
-    - Database schema changes (UUIDs, Indexes).
-    - UI Components needed (Mobile-responsive).
+- **Technical Detail:**
+    - **Modular Boundaries**: Define which modules are impacted and how they will interact.
+    - **Contract Definitions**: Specify the **Service Contracts** (Interfaces) to be created.
+    - **Data Schema**: Define UUID-based entities, indexes, and encryption requirements.
+    - **UI/UX Strategy**: Map the user flow for mobile and desktop viewports.
 
 ---
 
-## Phase 2: Development Execution (Construction)
+## Phase 3: Construction (TDD & Implementation)
 
-This phase corresponds to the **Construction** phase of the SDLC.
+This phase corresponds to the **Construction** phase of the SDLC, utilizing **Test-Driven
+Development (TDD)** to ensure behavioral compliance.
 
-### 2.1 Preliminary Scaffold Audit
+### 3.1 Preliminary Scaffold & Test Specification
 
-- **Action:** Before generating new artifacts, verify if the module already contains scaffolds,
-  base contracts, or partial logic.
-- **Objective:** Avoid redundant code and leverage existing architectural foundations.
+- **Action:** Verify existing scaffolds/logic in the module.
+- **TDD Requirement:** Write unit and feature tests (`Pest v4`) *before* implementation to define
+  the expected behavior. Refer to the **[Testing Guide](testing-guide.md)**.
 
-### 2.2 Domain & Data Layer (Eloquent Models)
+### 3.2 Domain & Application Layer Construction
 
-- **Identity:** All entities must use UUIDs via the `HasUuid` concern.
-- **Isolation:** **No physical foreign keys** between modules. Use indexed UUID columns.
-- **Security:** Encrypt sensitive data as defined in the Specs.
+- **Eloquent Models**: Implement UUID-based entities. Ensure **No physical foreign keys** across
+  modules.
+- **Service Layer**: Implement the business logic within the **Service Layer** only.
+- **Contract-First Implementation**: Ensure the service implements its designated Interface.
+- **Dynamic Configuration**: Use `setting($key)` for application-wide values; never hard-code.
 
-### 2.3 Application Logic Layer (Services)
+### 3.3 Interface Construction (Livewire Components)
 
-- **Authority:** Services are the _only_ place for business logic.
-- **No Hard-Coding:** Use `setting($key)` for application configuration. Never hard-code brand names
-  or emails.
-- **Decoupling:** Inject **Contracts**, not concrete classes, for cross-module dependencies.
-
-### 2.4 Interface Layer (Livewire & Volt)
-
-- **Presentation Only:** No business logic in components.
-- **Mobile-First:** Build for mobile screens first, then enhance for desktop.
-- **Localization:** Use `__('key')` for ALL user-facing text.
-- **UI Standard:** Use `MaryUI` components for consistency.
+- **Logic Separation**: Components must remain "thin," delegating all business logic to Services.
+- **Localization**: Implement `__('key')` for all user-facing strings.
+- **Responsiveness**: Implement mobile-first Tailwind v4 styles.
 
 ---
 
-## Phase 3: Verification (V&V)
+## Phase 4: Verification & Validation (V&V)
 
-This phase corresponds to the **Verification & Validation** phase of the SDLC.
+This phase ensures both technical correctness (**Verification**) and requirement fulfillment
+(**Validation**).
 
-### 3.1 Iterative Verification Cycle
+### 4.1 Verification (Building the System Right)
 
-- **Automated Testing:** Run `php artisan test --parallel`.
-- **Spec Validation:** Manually verify the feature behaves exactly as described in
-  `internara-specs.md`.
-- **Static Analysis:**
-    - `vendor/bin/pint` (Formatting)
-    - `npm run lint` (JS/CSS Linting)
+- **Automated Testing**: Execute `php artisan test --parallel`.
+- **Static Analysis**: Run `composer lint` (Pint) and `npm run lint`.
+- **Security Audit**: Perform manual/automated security reviews (XSS, SQLi, IDOR, SSRF).
+
+### 4.2 Validation (Building the Right System)
+
+- **Spec Validation**: Manually verify the feature against the original **Internara Specs**.
+- **UX Validation**: Ensure the interface provides a professional and intuitive experience across
+  all supported viewports.
+
+### 4.3 Repository Synchronization (Git Protocols)
+
+- **Action:** Stage and commit changes following the **[GitHub Protocols](github-protocols.md)**.
+- **Protocol**: Use **Conventional Commits** and ensure branch alignment with the milestone.
 
 ---
 
-## Phase 4: Artifact Synchronization (Closure)
+## Phase 5: Artifact Synchronization & Evolution (Closure)
 
-Work is strictly **incomplete** until documentation converges with code.
+The final phase ensures documentation and system metadata reflect the current state of the
+application.
 
-### 4.1 Documentation Standards (Artifact Synchronization)
+### 5.1 Documentation Standards (The SSoT)
 
-Documentation is an engineering requirement. Work is "incomplete" until documentation converges with
-code.
+Work is "incomplete" until documentation converges with code.
 
-- **Analytical Precision**: Documentation must be grounded in facts and architectural reality.
-- **English-Only**: All internal technical documentation must be written in professional English.
-- **Terminology Consistency**: Use standardized terms (e.g., `setting()`, `Blueprint`,
-  `Series Code`).
-- **Markdown Only**: Use Markdown (`.md`) exclusively for all technical guides.
-- **Release Notes**: Update the release notes in `docs/versions/` to reflect changes.
-- **SSoT**: No document may contradict the **[Internara Specs](../internal/internara-specs.md)**.
+- **Technical Rigor**: Documentation must be precise, analytical, and grounded in architectural reality.
+- **No Simplification**: Maintain full technical depth; never truncate or simplify definitions.
+- **English-Only**: All technical documentation must be in professional English.
+- **Artifact Update**: Update `docs/versions/` (Release Notes) and `docs/internal/blueprints/`
+  (Status).
+- **ToC Synchronization**: Register new documents in `docs/internal/table-of-contents.md`.
 
-### 4.2 Application Metadata
+### 5.2 Application Metadata
 
-- Update `app_info.json` if a milestone is reached.
+- Update `app_info.json` if a major milestone or version change has occurred.
 
 ---
 
 _By rigorously following this workflow, we ensure that every line of code contributes directly to
-the product goals defined in the Internara Specs._
+the product goals defined in the Internara Specs through a scientifically sound engineering
+process._

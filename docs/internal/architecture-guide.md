@@ -1,240 +1,126 @@
-# Architecture Guide: The Internara Modular Monolith
+# Architecture Description: The Internara Modular Monolith
 
-Welcome to the Internara engineering core. This guide provides a deep-dive into our **Modular
-Monolith** architecture. By following these principles, you ensure that the features you build are
-scalable, maintainable, and decoupled from the start.
+This document provides a formal **Architecture Description (AD)** for the Internara system,
+standardized according to **ISO/IEC 42010** and **ISO/IEC 12207**. It defines the structural
+framework, architectural patterns, and design principles required to ensure system maintainability,
+scalability, and modular integrity.
 
-> **Critical Context:** This guide implements the technical direction mandated by the authoritative
-> **[Internara Specs](../internal/internara-specs.md)**. All architectural decisions must align with
-> the product goals, user roles, and constraints defined therein.
-
----
-
-## 1. Core Architectural Philosophy
-
-Internara is built as a collection of self-contained business domains (Modules) within a single
-Laravel application. We prioritize **Pragmatic Modularity**: enough isolation to manage complexity,
-but enough integration to maintain high development velocity.
-
-### 1.1 Pragmatic Modularity
-
-We build modules to **manage complexity**, not to create extra work.
-
-- **Do:** Create a new module when a domain concept has its own lifecycle, distinct data, and clear
-  boundaries (e.g., `Internship`, `Assessment`).
-- **Don't:** Create a module for every single database table or helper function.
-- **Test:** "If I delete this module folder, does the rest of the app still compile (mostly)?" If
-  yes, you have good isolation.
-
-### 1.2 Service-Oriented "Brain"
-
-The **Service Layer** is the single source of truth for business logic.
-
-- **Controllers are dumb:** They validate input and call a service.
-- **Models are dumb:** They hold data and relationships.
-- **Services are smart:** They know _how_ to register a student, calculate a grade, or generate a
-  report.
-
-### 1.3 Explicit over Implicit
-
-Magic is fun, but clarity is maintainable.
-
-- **Prefer:** Explicit dependency injection over Facades (where possible/reasonable).
-- **Prefer:** Named contracts (`StudentServiceInterface`) over generic containers.
-- **Avoid:** "Magic" string parsing or hidden side-effects.
-
-### 1.4 The "Infrastructure" Layer (`app/` & `modules/Core`)
-
-The root `app/` directory and the `Core` module handle cross-cutting technical concerns:
-
-- **Service Providers**: Bootstrapping the framework and modular auto-discovery.
-- **Base Classes**: Abstract definitions extended by modules (e.g., `BaseModel`, `BaseService`).
-- **Infrastructure Migrations**: The `Core` module houses foundational system migrations such as
-  `jobs`, `failed_jobs`, and `cache` tables.
-- **Infrastructure Services**: Technical services like `AuditLog` or `Settings`.
-- **Dynamic Settings**: Application settings (brand name, logo, site title) must never be
-  hard-coded. They are managed via the `Setting` module and accessed using the `setting()` helper.
-
-### 1.5 Standardized Bootstrapping (`ManagesModuleProvider`)
-
-The `ManagesModuleProvider` trait in the `Shared` module automates modular bootstrapping. It ensures
-that adding a new module is consistent with the Internara architecture.
-
-#### Automated Features:
-
-- **`registerModule()`**:
-    - **Config**: Recursively merges all files in `modules/{Module}/config/*.php`.
-    - **Bindings**: Automatically maps **Contracts** to implementations based on the
-      **Auto-Discovery** rules.
-- **`bootModule()`**:
-    - **Translations (i11n)**: Registers the module namespace for **Multi-Language** support (e.g.,
-      `__('user::exceptions')`).
-    - **Views (Mobile-First)**: Registers the Blade namespace for responsive components.
-    - **Migrations**: Automatically loads modular migrations (UUID-based, No physical FKs).
-    - **Settings**: Hooks into the `Setting` module to ensure `setting()` helper availability.
-
-#### Advanced Binding Logic
-
-The `bindings()` method is used for manual Dependency Injection (DI) overrides.
-
-```php
-protected function bindings(): array
-{
-    return [
-        // Map Contract to Concrete implementation (Omit 'Interface' suffix)
-        \Modules\User\Services\Contracts\UserService::class =>
-            \Modules\User\Services\UserService::class,
-    ];
-}
-```
-
-#### Bootstrapping Best Practices
-
-1. **Strict Identification**: Define `protected string $name = 'ModuleName'`.
-2. **English-First**: All metadata and PHPDoc within the provider must be in English.
-3. **No Hard-Coding**: Provider logic must not hard-code environment values; use `config()` or
-   `setting()`.
+> **SSoT Alignment:** This architecture implements the technical requirements mandated by the
+> authoritative **[Internara Specs](../internal/internara-specs.md)**. All architectural decisions
+> are mapped to the product goals and constraints defined therein.
 
 ---
 
-## 2. Dependency Injection & Auto-Discovery
+## 1. Architectural Philosophy & Rationale
 
-To facilitate easy cross-module communication and minimize Service Provider clutter, Internara
-utilizes an **Auto-Discovery** system for its service layer. This system automatically maps
-**Contracts** (Interfaces) to their concrete implementations based on directory structure.
+Internara utilizes a **Modular Monolith** pattern to balance the benefits of domain isolation with
+the operational simplicity of a unified deployment artifact.
 
-### 2.1 How It Works
+### 1.1 Pragmatic Modularity (Component Decomposition)
 
-The system scans the following directories for PHP classes:
+The system is decomposed into self-contained business domains (Modules) to manage cognitive
+complexity.
+- **Rationale**: Reduces coupling and facilitates independent evolution of business rules.
+- **Decomposition Criteria**: A module is defined by a distinct domain lifecycle, specialized data
+  requirements, and clear functional boundaries (e.g., `Internship`, `Assessment`).
 
-- `app/Services`
-- `modules/{ModuleName}/src/Services`
+### 1.2 Service-Oriented Business Logic (The Brain)
 
-#### The Directory Pattern
+Business logic is centralized in the **Service Layer**, adhering to the **Single Responsibility
+Principle (SRP)**.
+- **Presentation Logic**: Limited to request handling and UI state management (Controllers and
+  Livewire).
+- **Domain Logic**: Encapsulated within Services to ensure a single source of truth.
+- **Persistence Logic**: Encapsulated within Eloquent Models for data mapping and relationships.
 
-The auto-discovery engine expects a specific layout:
+### 1.3 Principle of Explicit Dependency
 
-1.  **Contract**: Stored in `Services/Contracts/` (e.g., `UserService.php`).
-    - _Note:_ Internara convention omits the `Interface` suffix for contracts.
-2.  **Implementation**: Stored directly in `Services/` (e.g., `UserService.php`).
-    - _Note:_ Implementation and Contract share the same name but live in different namespaces.
-
-If a class in `Services/` implements an interface found in its own `Contracts/` subdirectory, the
-binding is registered automatically in the Laravel Service Container.
-
-### 2.2 Cross-Module Communication Rules
-
-Per our **Modular Monolith** architecture:
-
-- **Strict Rule:** Always type-hint the **Contract**, never the concrete implementation when
-  injecting services from another module.
-- **Example:**
-    ```php
-    // CORRECT: Injecting the contract
-    public function __construct(
-        protected UserServiceInterface $userService
-    ) {}
-    ```
-
-### 2.3 Configuration & Caching
-
-- **Configuration**: Use `config/bindings.php` to manually register complex bindings or override
-  auto-discovered ones.
-- **Caching**: For production performance, the discovered bindings are cached.
-    - **Refresh Cache**: `php artisan app:refresh-bindings`
+To ensure system predictability, Internara prioritizes explicit dependency management.
+- **Action**: Prefer **Constructor-based Dependency Injection** over Facades or global helpers.
+- **Contract-First Design**: Utilize **Service Contracts** (Interfaces) to define boundaries and
+  facilitate testing via substitution (Liskov Substitution Principle).
 
 ---
 
-## 3. The TALL Stack: Our UI Engine
+## 2. Logical View: Layered Architecture
 
-**Stack Versions:** Laravel v12, Livewire v3, AlpineJS v4, Tailwind CSS v4.
+Each module adheres to a strict 3-tier internal structure to preserve the separation of concerns.
 
-### 3.1 Global Notification Bridge
+### 2.1 Presentation Layer (UI & Interaction)
 
-To ensure a consistent user experience, we implement a **Global Notification Bridge** in the base
-layout. This bridge listens for `notify` events dispatched from individual components and translates
-them into `mary-toast` notifications.
+- **Technology**: Livewire Components (TALL Stack).
+- **Rule**: No business logic implementation; all operations are delegated to the Service Layer.
+- **Dependency**: Injected via `boot()` or `mount()` lifecycle methods.
 
-### 3.2 Mobile-First Responsiveness
+### 2.2 Domain Layer (Services & Contracts)
 
-The specs mandate a **Mobile-First** design strategy.
+- **Location**: `src/Services/`.
+- **Base Pattern**: Extends `Shared` base classes (e.g., `EloquentQuery`) for standardized data
+  orchestration.
+- **I/O Contract**: Services accept primitive types or DTOs and return models or collections.
 
-- **Responsive Components:** Livewire components and Blade templates must be built using mobile
-  layouts as the default, with `md:`, `lg:`, and `xl:` overrides for larger screens.
-- **Touch-Friendly:** UI interactions (buttons, menus) must be sized and spaced for touch
-  interfaces.
+### 2.3 Persistence Layer (Data Mapping)
 
----
-
-## 4. Layered Architecture (Inside a Module)
-
-Every module follows a strict 3-tier internal structure.
-
-### 4.1 UI Layer: Presentation & Interaction
-
-**Location:** `src/Livewire/` (Volt)
-
-- **Convention:** All business operations **MUST** be delegated to the Service layer.
-- **DI Rule:** Inject dependencies in the `boot()` method, never the constructor.
-
-### 4.2 Business Logic Layer: Services
-
-**Location:** `src/Services/`
-
-- **Base Service**: Most services extend `Modules\Shared\Services\EloquentQuery` for standardized
-  CRUD.
-- **Input**: Services accept validated arrays or DTOs—never `Request` objects.
-- **Output**: Returns models, collections, or simple data structures.
-
-### 4.3 Data Layer: Eloquent Models
-
-**Location:** `src/Models/`
-
-- **Relationship Rules**: Models should only have `belongsTo` or `hasMany` relationships with models
-  **within their own module**. Cross-module relations must be handled via Services.
+- **Location**: `src/Models/`.
+- **Relationship Constraint**: Cross-module relationships are handled via Services or Events;
+  Models only define internal domain relationships.
 
 ---
 
-## 5. Communication & Isolation Rules
+## 3. Development View: Modular Infrastructure
 
-### 5.1 Strict Isolation Principle
+### 3.1 The Foundational Framework
 
-To maintain modular portability, Internara enforces a **Strict Isolation** policy for cross-module
-communication:
+Technical cross-cutting concerns are managed through a hierarchical layer of foundational modules:
+- **Shared**: Universal, project-agnostic utilities and base concerns (e.g., `HasUuid`).
+- **Core**: Business-specific building blocks (e.g., RBAC, Academic Years).
+- **Support**: Operational and infrastructure utilities (e.g., Generators).
+- **UI**: Standardized design system and layouts (Tailwind v4).
 
-- **No Direct Class Access**: Modules must never instantiate or call concrete classes (especially
-  Models) from another module directly below the Services/Utilities layer.
-- **Contract-Only Communication**: All interactions between modules must be performed via **Service
-  Contracts (Interfaces)** or designated Service classes.
-- **Testing Boundaries**: This isolation also applies to testing. Feature tests for one module must
-  not directly interact with the concrete models of another; they should rely on Services,
-  Contracts, or Factories.
-- **Exceptions**: The only concrete classes allowed to be called directly are:
-    - **Static Classes or Facades** specifically designed for public use (e.g., helper utilities).
-    - **Extreme Edge Cases**: Only when no other architectural path exists and isolation is
-      impossible to maintain via contracts.
+### 3.2 Dependency Injection & Auto-Discovery
 
-### 5.2 Database Isolation
-
-**Physical foreign keys across modules are forbidden.**
-
-- Use simple indexed columns (e.g., `student_id` as UUID).
-- **Data Integrity**: Managed by the **Service Layer** of the module owning the data.
-
-### 5.3 Pattern 1: Service-to-Service (Synchronous)
-
-If `Module A` needs data from `Module B`, it must type-hint a **Contract**.
-
-### 5.4 Pattern 2: Events & Listeners (Asynchronous)
-
-The preferred way to handle side-effects. When an `Internship` is completed, the module dispatches
-`InternshipCompleted`.
-
-### 5.5 Pattern 3: Framework Standards (Authorization)
-
-Modules should use standard Laravel `Policies` and `Gates`.
+Internara utilizes an automated mapping system to resolve **Service Contracts** to their
+concrete implementations based on directory structure.
+- **Contract Location**: `Services/Contracts/` (e.g., `UserService.php`).
+- **Implementation Location**: `Services/` (e.g., `UserService.php`).
+- **Auto-Discovery**: Handled via the `Shared` module's bootstrapping trait, ensuring zero-config
+  binding for standardized layouts.
 
 ---
 
-_Adhering to this architecture ensures Internara remains clean, predictable, and joy to develop.
-When in doubt, prioritize module isolation over clever code reuse._
+## 4. Process View: System Communication
+
+### 4.1 Synchronous Communication (Service-to-Service)
+
+Cross-module data requests must be performed via **Service Contracts**.
+- **Constraint**: Direct instantiation of concrete classes from external modules is prohibited to
+  maintain domain isolation.
+
+### 4.2 Asynchronous Communication (Event-Driven)
+
+Side-effects across domain boundaries are handled via Laravel's **Event/Listener** system.
+- **Rationale**: Decouples the primary action from its secondary consequences (e.g.,
+  `InternshipCompleted` triggering a notification).
+
+---
+
+## 5. Security & Isolation Protocols
+
+### 5.1 Strict Domain Isolation
+
+- **No Direct Access**: Modules must never interact with the database tables or models of another
+  module.
+- **Contractual Boundaries**: All inter-module communication is restricted to the Services/Utilities
+  layer using designated Contracts.
+
+### 5.2 Database Integrity
+
+- **No Physical Foreign Keys**: To ensure modular portability, referential integrity across modules
+  is managed at the **Service Layer** using indexed UUID columns.
+- **UUID Identity**: All entities utilize UUIDs for globally unique identification.
+
+---
+
+_Adherence to this Architecture Description ensures systemic integrity and compliance with the
+Internara Specs. Every technical modification must be validated against these principles to prevent
+architectural decay._
