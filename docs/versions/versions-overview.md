@@ -28,7 +28,7 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 | Version    | Readiness | Maintenance | Current Status |
 | :--------- | :-------- | :---------- | :------------- |
-| **v0.9.x** | Alpha     | Snapshot    | In Progress    |
+| **v0.9.x** | Alpha     | Snapshot    | Released       |
 | **v0.8.x** | Alpha     | Snapshot    | Released       |
 | **v0.7.x** | Alpha     | Snapshot    | Released       |
 | **v0.6.x** | Alpha     | Snapshot    | Released       |
@@ -37,12 +37,10 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 3. What's New?
 
-### Active Development
+### Latest Released Versions
 
 - **[v0.9.0](v0.9.0.md)** — **Easy System Setup** Focus: A new automated wizard to help you set up
   your school's identity and administrator account in minutes.
-
-### Latest Released Versions
 
 - **[v0.8.0](v0.8.0.md)** — **Smart Reporting** Focus: Automated PDF reports for student
   achievements and a clear history of student placements.
