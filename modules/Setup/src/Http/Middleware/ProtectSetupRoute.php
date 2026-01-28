@@ -23,18 +23,22 @@ class ProtectSetupRoute
      */
     public function handle(Request $request, Closure $next)
     {
-        // 1. If already installed and SuperAdmin exists, total lockdown (404)
+        // 1. Total lockdown if already installed and SuperAdmin exists
         if ($this->setupService->isAppInstalled() && $this->superAdminExists()) {
             return abort(404);
         }
 
         // 2. If not installed, enforce Token Authorization
         if (! $this->setupService->isAppInstalled()) {
+            // Check for new token in URL
             if ($this->hasValidToken($request)) {
                 $request->session()->put('setup_authorized', true);
             }
 
-            if (! $request->session()->get('setup_authorized')) {
+            // Verify authorized session AND ensure setup_token still exists in DB
+            // If setup_token is NULL, it means setup is finalizing or completed
+            $storedToken = $this->settingService->getValue('setup_token');
+            if (! $request->session()->get('setup_authorized') || empty($storedToken)) {
                 return abort(
                     403,
                     'Unauthorized setup access. Please use the link provided by the CLI.',

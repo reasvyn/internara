@@ -21,12 +21,12 @@ class RequireSetupAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // If the app is installed and is setup route, redirect to login
+        // 1. If already installed and trying to access setup route, hide it (404)
         if ($this->setupService->isAppInstalled() && $this->isSetupRoute($request)) {
-            return redirect()->route('login');
+            return abort(404);
         }
 
-        // If the app is not installed, redirect to the setup route.
+        // 2. If NOT installed, and NOT trying to access setup route, redirect to setup
         if (! $this->setupService->isAppInstalled() && ! $this->isSetupRoute($request)) {
             // Bypass specific requests
             if ($this->bypassSpecificRequests($request)) {
@@ -41,6 +41,10 @@ class RequireSetupAccess
 
     protected function bypassSpecificRequests(Request $request): bool
     {
+        if (config('app.env') === 'testing' && $request->headers->has('X-Test-No-Console')) {
+            return $this->isLivewireRequest($request);
+        }
+
         return app()->runningInConsole() || $this->isLivewireRequest($request);
     }
 

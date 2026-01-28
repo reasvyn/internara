@@ -29,9 +29,8 @@ Ensure `app_info.json` reflects the target version, series code, and intended su
 
 ### 2.2 Release Note Creation
 
-Produce user-centric release notes in `docs/versions/vX.Y.Z.md`. This must reflect the
-
-**as-built reality**.
+Produce user-centric release notes in `docs/versions/vX.Y.Z.md`. These notes also function as the
+official **Changelog** for the version. This must reflect the **as-built reality**.
 
 ### 2.3 Tagging
 
