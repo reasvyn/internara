@@ -1,80 +1,74 @@
-# Project Overview
+# Project Overview: Internara
 
-**Internara** (Practical Work Management Information System / SIM-PKL) is a high-performance
-platform designed to centralize, automate, and secure the entire internship lifecycle. It bridges
-the gap between students, academic supervisors, and industry mentors within a single, cohesive
-ecosystem.
-
-## Table of Contents
-
-- [1. Vision & Purpose](#1-vision--purpose)
-- [2. Key Features](#2-key-features)
-- [3. User Roles](#3-user-roles)
-- [4. Visual Identity](#4-visual-identity)
-- [5. Technology Foundation](#5-technology-foundation)
+**Internara** (Practical Work Management Information System) is a high-performance, modular platform
+engineered to centralize and secure the entire internship lifecycle. It provides a cohesive
+ecosystem for students, academic instructors, and industry supervisors, ensuring transparency and
+traceability throughout the practical work process.
 
 ---
 
 ## 1. Vision & Purpose
 
-### The Vision
+### The Strategic Vision
 
-To deliver a **minimalist, highly structured, and resilient** platform for vocational internship
-(PKL) governance. Internara prioritizes ease of use and reliability, ensuring that the system
-remains effective even as the number of users grows.
+To deliver a **minimalist, architecturally resilient, and human-centered** platform for vocational
+internship governance. Internara prioritizes cognitive efficiency and system reliability, adhering
+to the authoritative
+**[System Requirements Specification](../internal/system-requirements-specification.md)**.
 
-### The Problem Space
+### Solving the Visibility Gap
 
-Vocational internships often suffer from a "visibility gap." student progress is tracked via
-fragmented manual logs, and assessments are often subjective or delayed. Internara provides:
+Internara addresses the fragmentation of traditional internship management by providing:
 
 - **Integrated Administration**: Centralized data for students, schedules, and locations.
-- **Continuous Monitoring**: Real-time tracking of student progress and competency achievements.
-- **Evidence-Based Evaluation**: Documented mentoring activities and learning outcomes.
+- **Continuous Monitoring**: Real-time tracking of student progress via daily journals and
+  competency achievements.
+- **Evidence-Based Evaluation**: Documented mentoring dialogue and visualized learning outcomes.
 
 ---
 
-## 2. Key Features
+## 2. Core Functional Capabilities
 
-- **Administrative Management**: Record student data, schedules, and practical work locations.
-- **Progress Monitoring**: Track competency achievements and student conditions on-site.
-- **Mentoring & Evaluation**: Document mentoring sessions and generate competency reports.
-- **Mobile-First Design**: Accessible via desktop, tablet, and mobile devices.
-- **Multi-Language Support**: Fully localized in **Indonesian (Primary)** and **English**.
-
----
-
-## 3. User Roles
-
-Internara provides dedicated workspaces for:
-
-- **Instructors**: Monitor student progress, record mentoring content, and generate reports.
-- **Practical Work Staff**: Manage schedules, locations, and administrative documents.
-- **Students**: View competency achievements, schedules, and review mentoring content.
-- **Industry Supervisors**: Provide real-time feedback and mentoring documentation.
+- **Administrative Orchestration**: Formal record management for student data and schedules.
+- **Progress Tracking**: Systematic tracking of student conditions and competency milestones.
+- **Mentoring & Assessment**: Formalized documentation of supervisor-led mentoring sessions.
+- **Mobile-First UX**: Progressive enhancement for desktop, tablet, and mobile devices.
+- **Multi-Language Integrity**: Native support for **Indonesian** and **English**.
 
 ---
 
-## 4. Visual Identity
+## 3. Stakeholder Roles
 
-Internara follows a modern, professional aesthetic:
+The system provides specialized, role-based workspaces for:
+
+- **Instructors (Teachers)**: Supervision, monitoring, and competency reporting.
+- **Practical Work Staff**: Administrative management and schedule oversight.
+- **Students**: Activity logging and achievement tracking.
+- **Industry Supervisors (Mentors)**: Real-time feedback and mentoring documentation.
+
+---
+
+## 4. Visual Identity & UX Invariants
+
+Internara implements a professional, high-fidelity aesthetic defined in the System Requirements Specification:
 
 - **Typography**: Primary font is **Instrument Sans**.
-- **Theming**: Supports both **Light** and **Dark** modes.
-- **Accent**: **Emerald Green** (representing growth and precision).
-- **Interface**: Minimalist, responsive, and aligned with educational standards.
+- **Thematic Balance**: Full support for high-contrast **Light** and **Dark** modes.
+- **Accent Identity**: **Emerald Green**, signifying growth and precision.
+- **Responsive Design**: Minimalist and accessible, optimized for touch-optimized mobile viewing.
 
 ---
 
 ## 5. Technology Foundation
 
-Internara is built on the **TALL Stack**, chosen for speed, reactivity, and reliability:
+Internara is engineered using the **Modular Monolith** pattern and the **TALL Stack**:
 
-- **Laravel v12**: The backbone of the application's business logic.
-- **Livewire v3**: Powers the interactive, reactive user interface.
-- **Alpine.js v4**: Handles smooth client-side interactions.
-- **Tailwind CSS v4**: The utility-first design engine.
+- **PHP 8.4+ & Laravel v12**: Providing a robust, strictly typed business logic backbone.
+- **Livewire v3 & AlpineJS**: Powers a reactive, interactive user experience.
+- **Tailwind CSS v4**: A modern utility-first CSS engine for responsive styling.
+- **Modular Monolith**: Ensures domain isolation and architectural maintainability.
 
 ---
 
-_Internara is dedicated to building a better internship experience for everyone involved._
+_Internara is dedicated to engineering a superior internship experience through architectural
+precision and user-centered design._

@@ -1,65 +1,64 @@
-# Custom Module Scaffolding: Enforcing Standards
+# Custom Module Scaffolding: Automated Invariant Enforcement
 
-To maintain structural integrity across our Modular Monolith, Internara utilizes custom generation
-logic. This ensures that every new module starts with the correct directory tree, naming
-conventions, and strict-typing boilerplate.
+This document defines the advanced **Configuration Control** protocols for modular scaffolding
+within the Internara project, adhering to **ISO/IEC 12207** (Infrastructure Process). It establishes
+the technical mechanisms for enforcing structural invariants and strict-typing standards during the
+construction of new domain modules.
 
-> **Spec Alignment:** Scaffolding logic is designed to automatically fulfill the structural
-> requirements of the **[Internara Specs](../../internara-specs.md)**, such as UUID identity and
-> i11n file placement.
-
----
-
-## 1. Strategy 1: Configuration & Stubs (Standard)
-
-This is our primary method. We leverage the native capabilities of `nwidart/laravel-modules` and
-customize it via the `config/modules.php` file.
-
-### 1.1 Custom Path Mapping
-
-We override the default generator paths to align with our package-style structure:
-
-- **Models:** `src/Models` (Enforces `HasUuid`).
-- **Services:** `src/Services` (Enforces **Contract-First** design).
-- **Exceptions:** `lang/{locale}/exceptions.php` (Enforces standardized error handling).
-
-### 1.2 The `src` Convention
-
-By setting `'app_folder' => 'src/'`, we ensure that all domain logic is isolated from the module's
-root assets.
+> **Governance Mandate:** Scaffolding logic must automatically implement the structural requirements
+> defined in the authoritative
+> **[System Requirements Specification](../../internal/system-requirements-specification.md)** and
+> the **[Architecture Description](../../internal/architecture-description.md)**.
 
 ---
 
-## 2. Strategy 2: Custom Stubs (Visual Standards)
+## 1. Automated Path Orchestration (Structural Invariants)
 
-We have published and modified the default stubs to enforce our **PHPDoc** and **Strict Typing**
-requirements.
+Internara utilizes custom path mapping to ensure that every modular artifact satisfies the
+**src-Omission** namespace invariant and the tiered logical view.
 
-- **Location**: `stubs/modules/*.stub`
-- **Impact**: Any class generated via `php artisan module:make-*` will automatically include:
-    - `declare(strict_types=1);`
-    - Professional English PHPDocs.
-    - Standardized localization calls (`__('module::exceptions.key')`).
+### 1.1 Configuration Mapping
 
----
+We override the default module generators via `config/modules.php` to establish the following
+hierarchical baselines:
 
-## 3. Strategy 3: The Base Module Pattern (Advanced)
-
-For scenarios where a module requires a non-standard starting point, we use the **Base Module
-Pattern**.
-
-### 3.1 The Concept
-
-Instead of generating from stubs, we maintain a "Template" module that includes the **Mobile-First**
-UI wrappers and baseline authorization policies.
-
-### 3.2 Implementation Steps
-
-1.  **Draft**: Create a template module in `stubs/base-module`.
-2.  **Placeholder**: Use `{Module}` and `{module}` placeholders.
-3.  **Command**: Run a custom Artisan command for cloning and analytical renaming.
+- **Persistence Layer**: `src/Models/` (Enforces mandatory `HasUuid` concern).
+- **Domain Layer**: `src/Services/` (Enforces **Contract-First** service construction).
+- **Fault Management**: `src/Exceptions/` (Enforces standardized error propagation).
 
 ---
 
-_Custom scaffolding prevents "Configuration Drift," ensuring that our architecture remains pure as
-the project grows._
+## 2. Technical Template Orchestration (Stub Customization)
+
+To ensure high-fidelity implementation from the first line of code, Internara utilizes customized
+**Stubs** that enforce semantic and syntactic standards.
+
+### 2.1 Code Quality Invariants
+
+Stubs located in `stubs/modules/*.stub` are engineered to automatically include:
+
+- **Strict Typing**: Mandatory `declare(strict_types=1);` header.
+- **Analytical Documentation**: Pre-formatted professional PHPDoc blocks in English.
+- **Localization Baseline**: Pre-integrated translation keys to prevent hard-coding violations.
+
+---
+
+## 3. High-Fidelity Scaffolding: The Template Baseline
+
+For complex domain orchestrations, the system utilizes a **Template Baseline** strategy to provide
+pre-verified architectural patterns.
+
+### 3.1 Design Invariants
+
+Template baselines include:
+
+- **Presentation Logic**: Pre-configured **Mobile-First** responsive wrappers.
+- **Authorization Layer**: Baseline **RBAC Policies** mapped to the stakeholder roles defined in the
+  System Requirements Specification.
+- **V&V Baseline**: Pre-populated verification suites ensuring 100% test coverage for basic CRUD
+  operations.
+
+---
+
+_Automated scaffolding is a critical defensive mechanism against **Architectural Decay**, ensuring
+the systemic purity of the modular monolith throughout its evolution._

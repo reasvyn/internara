@@ -1,50 +1,49 @@
-# Application Blueprint: v0.1.0 (Genesis)
+# Application Blueprint: Project Genesis (ARC01-INIT-01)
 
 **Series Code**: `ARC01-INIT-01` **Status**: `Archived` (Released)
 
-> **Spec Alignment:** This blueprint establishes the **Modular Monolith** architecture required to
-> support the long-term scalability goals of the **[Internara Specs](../../../internara-specs.md)**.
+---
+
+## 1. Design Objectives & Scope
+
+**Strategic Purpose**: Establish the project's conceptual and aesthetic baseline, defining the
+strategic vision and foundational design system.
+
+**Objectives**:
+- Formalize the **Strategic Vision** for the Internara platform.
+- Establish the **Aesthetic-Natural** design philosophy and emerald-accent visual identity.
+- Initialize the documentation-as-code repository structure.
 
 ---
 
-## 1. Core Problem Statement
+## 2. Functional Specification
 
-Standard applications suffer from "Monolithic Decay." We need strict domain separation.
-
-**Goal**: Establish the Modular Monolith foundation.
-
----
-
-## 2. Architectural Impact
-
-### 2.1 Infrastructure: Modular Bootstrapping
-
-- **Structure**: Adoption of `nwidart/laravel-modules`.
-- **Constraint**: All domains reside in `modules/`.
-
-### 2.2 Domain: UI Centralization
-
-- **New Module**: `UI`.
-- **Scope**: **TALL Stack** encapsulation (Specs 5).
+### 2.1 Capability Set
+- **Strategic Baseline**: Documentation of the initial project goals and stakeholder needs.
+- **Design Baseline**: Definition of typography, thematic contrast, and accessibility invariants.
 
 ---
 
-## 3. UI/UX Strategy
+## 3. Presentation Strategy (User Experience View)
 
-- **Mobile-First:** Base layouts configured for responsiveness.
-- **i11n:** Localization infrastructure setup.
+### 3.1 Visual Identity
+- **Typography**: Selection of **Instrument Sans** as the authoritative font baseline.
+- **Thematic Invariant**: Conceptual design for multi-mode contrast (Light/Dark).
 
 ---
 
-## 4. Exit Criteria
+## 4. Exit Criteria & Verification Protocols
 
-- [x] **Modular Autoloading**: Auto-discovery active.
-- [x] **Asset Pipeline**: Vite bundling correct.
-- [x] **Spec Verification**: Tech stack aligns with Specs.
+A design series is considered realized only when it satisfies the following gates:
+
+- **Quality Gate**: Completion of the initial **[System Requirements Specification](../../system-requirements-specification.md)**.
+- **Acceptance Criteria**:
+    - Finalized strategic vision and aesthetic guidelines.
+    - Initial repository structure synchronization.
 
 ---
 
 ## 5. vNext Roadmap (v0.2.0)
 
-- **Shared Utilities**: Common traits.
-- **RBAC**: Modular permissions.
+- **Core Engine**: Implementation of the modular orchestrator and UUID identity.
+- **Modularity Baseline**: Establishment of the `Core` and `Shared` module tiers.

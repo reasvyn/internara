@@ -1,91 +1,85 @@
-# Migration Manual: Upgrading to Livewire v4
+# Migration Manual: Evolutionary Upgrade to Livewire v4
 
-This document serves as the definitive, step-by-step technical guide for migrating the Internara
-stack from Livewire v3 to v4. This is a high-priority technical debt item targeted for the
-**v0.8.x** series.
+This document constitutes the definitive technical guide for the migration of the Internara
+presentation baseline from Livewire v3 to v4. This evolution is a prioritized technical debt item
+targeted for stabilization in the **v0.8.x** developmental series.
 
-> **Spec Alignment:** This migration must preserve the **Mobile-First** responsiveness and
-> **Multi-Language** integrity mandated by the **[Internara Specs](../../internara-specs.md)**. All
-> UI refactors must be validated against the specs.
+> **Governance Mandate:** This migration must demonstrate 100% preservation of the **Mobile-First**
+> and **Localization** invariants defined in the authoritative
+> **[System Requirements Specification](../../internal/system-requirements-specification.md)**.
 
 ---
 
-## 🛠 Phase 1: Dependency & Cleanup
+## 🛠 Phase 1: Environment & Dependency Decommissioning
 
-Livewire v4 brings native support for patterns previously requiring external packages.
+Livewire v4 introduces native support for structural patterns previously orchestrated via external
+dependencies.
 
-1.  **Update Composer**:
+1.  **Baseline Synchronization**:
     ```bash
     composer require livewire/livewire:^4.0
     ```
-2.  **Decommission Volt**: Livewire v4 SFC (Single File Components) uses the same syntax as Volt.
-    Volt is no longer needed.
-    - Remove package: `composer remove livewire/volt`
-    - Delete Provider: `rm app/Providers/VoltServiceProvider.php`
-    - Cleanup Config: Remove `VoltServiceProvider` from `bootstrap/providers.php`.
-3.  **Clear Artifacts**:
+2.  **Modular Cleanup**: Decommission the **Volt** dependency, as SFC (Single File Component) logic
+    is now integrated into the core engine.
+    - **Remove Package**: `composer remove livewire/volt`
+    - **Retire Provider**: `rm app/Providers/VoltServiceProvider.php`
+    - **Config Audit**: Ensure removal of `VoltServiceProvider` from `bootstrap/providers.php`.
+
+---
+
+## ⚡ Phase 2: Configuration Baseline Mapping
+
+Synchronize the `config/livewire.php` baseline to reflect the v4 technical nomenclature.
+
+| Attribute (v3)       | Attribute (v4)            | Engineering Note           |
+| :------------------- | :------------------------ | :------------------------- |
+| `'layout'`           | `'component_layout'`      | Baseline: `'layouts::app'` |
+| `'lazy_placeholder'` | `'component_placeholder'` |                            |
+| `'smart_wire_keys'`  | (Implicit Invariant)      | Enabled by default.        |
+
+---
+
+## 💻 Phase 3: Construction-Level Refactoring
+
+### 3.1 Namespace Convergence
+
+- **Action**: Globally migrate from `Livewire\Volt\Component` to the unified `Livewire\Component`.
+
+### 3.2 Routing Orchestration
+
+Utilization of the specialized `Route::livewire` macro is mandatory for full-page component
+declaration to ensure optimized lifecycle management.
+
+### 3.3 Localization (i11n) Invariant
+
+Verification of the translation bridge reactivity is mandatory following the adoption of
+`wire:navigate` and asynchronous actions.
+
+---
+
+## 🧪 Phase 4: Verification & Validation (V&V)
+
+The migration is only considered certified when it satisfies the following gates:
+
+1.  **Presentation Audit**: Verification of the `UI` module components, specifically the hydration
+    logic of the `x-ui::file` orchestrator.
+2.  **Mobile-First Validation**: Ergonomic verification of the responsive sidebar and drawer
+    behavior under the new navigation baseline.
+3.  **Full Verification Suite**:
     ```bash
-    php artisan optimize:clear
+    composer test
     ```
 
 ---
 
-## ⚡ Phase 2: Configuration Mapping
+## ✨ Phase 5: Capability Adoption
 
-Update `config/livewire.php` to reflect the new internal naming conventions.
+Evolutionary adoption of new engine capabilities to satisfy performance requirements:
 
-| Old Key (v3)         | New Key (v4)              | Note                      |
-| :------------------- | :------------------------ | :------------------------ |
-| `'layout'`           | `'component_layout'`      | Default: `'layouts::app'` |
-| `'lazy_placeholder'` | `'component_placeholder'` |                           |
-| `'smart_wire_keys'`  | (Implicit)                | Now `true` by default.    |
+- **Async Interactions**: Implementation of `wire:click.async` for non-blocking UI orchestration.
+- **Component Islands**: Refactoring of dashboard analytics using the `@island` directive.
 
 ---
 
-## 💻 Phase 3: Code-Level Refactoring
-
-### 3.1 Namespace & Imports
-
-- **Action**: Globally replace `use Livewire\Volt\Component;` with `use Livewire\Component;`.
-
-### 3.2 Routing (Mandatory)
-
-Standard `Route::get()` for full-page components is deprecated in favor of the new macro.
-
-```php
-// BEFORE: Route::get('/dashboard', Dashboard::class);
-// AFTER: Route::livewire('/dashboard', Dashboard::class);
-```
-
-### 3.3 Localization & i11n
-
-Ensure that new v4 features (like `wire:navigate` or async actions) do not break the translation
-bridge.
-
-- **Audit**: Verify that `{{ __('key') }}` calls remain reactive after navigation.
-
----
-
-## 🧪 Phase 4: Modular Verification (QA)
-
-1.  **UI Core Audit**: Verify the `UI` module components. Check if `x-ui::file` handles hydration
-    correctly in v4.
-2.  **Mobile-First Check**: Test the responsive sidebar and drawer behavior under the new Livewire
-    navigation system.
-3.  **Boundary Testing**: Run the Pest suite:
-    ```bash
-    php artisan test --parallel
-    ```
-
----
-
-## ✨ Phase 5: New Feature Adoption
-
-1.  **Async Actions**: Optimize non-critical buttons with `wire:click.async`.
-2.  **Islands**: Refactor dashboard widgets (e.g., At-Risk Monitoring) using `@island`.
-3.  **Loading States**: Use native `data-loading` attributes.
-
----
-
-_This guide must be updated if any breaking changes are discovered during the initial migration
-spike._
+_This technical record must be updated upon the identification of any architectural regressions
+during the migration lifecycle._

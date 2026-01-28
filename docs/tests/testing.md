@@ -1,69 +1,71 @@
 # Testing Philosophy: Engineering Reliability
 
-Internara prioritizes a "Security-First" and "Spec-Driven" testing strategy. We use the **Pest**
-testing framework to ensure that every feature is functional, localized, and secure.
+Internara prioritizes a **Spec-Driven** and **Isolation-Aware** verification strategy. We utilize
+the **Pest v4** framework to ensure that every system capability is technically correct, localized,
+and secure.
 
-> **Governance Mandate:** Testing is the primary mechanism for verifying fulfillment of the
-> **[Internara Specs](../internal/internara-specs.md)**. No feature is complete without passing Spec
-> Validation tests.
-
----
-
-## 1. Testing Framework: Pest PHP (v4)
-
-We use Pest for its expressive syntax and deep integration with Laravel.
-
-- **Expressive**: Tests read like natural language.
-- **Speed**: Built-in support for parallel execution.
-- **Architecture**: Enforces modular boundaries via Arch Testing (no cross-module leaks).
+> **Governance Mandate:** Testing is the authoritative mechanism for validating fulfillment of the
+> **[System Requirements Specification](../internal/system-requirements-specification.md)**.
+> Construction is incomplete without formal verification pass.
 
 ---
 
-## 2. Test Categories
+## 1. Verification Framework: Pest PHP v4
 
-### 2.1 Unit Tests
+Pest is the foundational tool for our **Verification & Validation (V&V)** activities.
 
-Testing individual methods or logic in absolute isolation.
-
-- **Focus**: Services, Model Concerns, and Enums.
-- **Location**: `modules/{ModuleName}/tests/Unit/{Layer}/`.
-
-### 2.2 Feature Tests
-
-Testing the full interaction flow, including UI and database.
-
-- **Focus**: Livewire components, Services, and HTTP routes.
-- **Location**: `modules/{ModuleName}/tests/Feature/{Layer}/`.
+- **Traceability**: Enables mapping of tests to specific System Requirements Specification requirements.
+- **Velocity**: Support for parallel execution via the optimized verification suite.
+- **Architectural Guard**: Enforces modular boundaries via Architecture (Arch) Testing.
 
 ---
 
-## 3. Mandatory Verification Patterns
+## 2. Structural Hierarchy of Tests
 
-No feature is considered "Done" until it passes:
+Verification is categorized based on the architectural depth of the artifact under test:
 
-1.  **Spec Compliance**: Verifies behavior matches `internara-specs.md`.
-2.  **Role-Based Access**: Verifies that only the designated User Roles can access the feature.
-3.  **Multi-Language (i11n)**: Verifies that all user-facing strings are correctly localized
-    (ID/EN).
-4.  **Boundary Integrity**: Verifies no physical cross-module foreign keys or unauthorized service
-    leaks.
+### 2.1 Unit Verification
+
+Testing atomic logic (Services, Concerns, Enums) in isolation.
+
+- **Location**: `modules/{Module}/tests/Unit/{Layer}/`.
+
+### 2.2 Feature Validation
+
+Testing integrated user stories and domain flows, including UI and persistence.
+
+- **Location**: `modules/{Module}/tests/Feature/{Layer}/`.
 
 ---
 
-## 4. Running Tests
+## 3. Mandatory V&V Protocols
 
-### 4.1 Global Suite
+An artifact satisfies the quality gate only when it passes the following invariants:
+
+1.  **System Requirements Specification Compliance**: Verifies behavior aligns with the
+    **[System Requirements Specification](../internal/system-requirements-specification.md)**.
+2.  **Role-Based Access (RBAC)**: Verifies that access is restricted to the roles defined in the
+    System Requirements Specification.
+3.  **Localization Integrity (i11n)**: Verifies that all user-facing output is localized across all
+    supported locales (`id`, `en`).
+4.  **Boundary Isolation**: Verifies compliance with the **Strict Isolation** invariants in the
+    **[Architecture Description](../internal/architecture-description.md)**.
+
+---
+
+## 4. Execution of the Verification Suite
+
+The following command is the **Mandatory Verification Gate** for all engineering activities:
 
 ```bash
-php artisan test --parallel
+# Full System Verification
+composer test
 ```
 
-### 4.2 Modular Suite
-
-```bash
-php artisan test --filter=ModuleName
-```
+- **Objective**: Execute all unit, feature, and architecture tests in parallel to ensure a
+  consistent and verified system baseline.
 
 ---
 
-_Testing is the executable documentation of our commitment to quality and the Internara Specs._
+_Verification artifacts are the executable documentation of our engineering rigor and commitment to
+the Internara specifications._

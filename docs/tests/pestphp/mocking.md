@@ -41,7 +41,7 @@ method, we can indicate that we expect a certain method to be invoked by calling
 use App\Repositories\BookRepository;
 use Mockery;
 
-it('may buy a book', function () {
+test('may buy a book', function () {
     $client = Mockery::mock(PaymentClient::class);
     $client->shouldReceive('post');
 

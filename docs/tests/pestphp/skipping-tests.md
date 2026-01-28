@@ -11,7 +11,7 @@ During the development process, there may be times when you need to temporarily 
 Rather than commenting out the code, we recommended using the `skip()` method.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skip();
 ```
@@ -26,7 +26,7 @@ You may also provide the reason for skipping the test, which Pest will display w
 tests.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skip('temporarily unavailable');
 ```
@@ -36,7 +36,7 @@ cases, you may provide a boolean value as the first argument to the `skip()` met
 only be skipped if the boolean value evaluates to `true`.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skip($condition == true, 'temporarily unavailable');
 ```
@@ -45,7 +45,7 @@ You may pass a closure as the first argument to the `skip()` method to defer the
 condition until the `beforeEach()` hook of your test case has been executed.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skip(fn() => DB::getDriverName() !== 'mysql', 'db driver not supported');
 ```
@@ -54,7 +54,7 @@ You may also skip tests based on the environment in which they are running using
 or `skipOnCi()` methods.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skipLocally(); // or skipOnCi()
 ```
@@ -63,7 +63,7 @@ To skip a test on a particular operating system, you can make use of the `skipOn
 `skipOnMac()`, or `skipOnLinux()`.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skipOnWindows(); // or skipOnMac() or skipOnLinux() ...
 ```
@@ -72,7 +72,7 @@ Alternatively, you can skip a test on all operating systems except one by using 
 `onlyOnMac()`, or `onlyOnLinux()`.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->onlyOnWindows(); // or onlyOnMac() or onlyOnLinux() ...
 ```
@@ -81,7 +81,7 @@ Sometimes, you may want to skip a test on a specific PHP version. In these cases
 `skipOnPhp()` method.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->skipOnPhp('>=8.0.0');
 ```
@@ -101,7 +101,7 @@ You might want to add a couple of empty tests to make sure you don't forget to a
 `todo()` can be useful in this situation.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->todo();
 ```

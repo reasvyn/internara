@@ -30,7 +30,7 @@ to track the progress of your todos / tasks. Pest provides a simple way to creat
 `todo()` method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo();
 ```
@@ -56,7 +56,7 @@ todo to a specific team member by providing their name to the `assignee` argumen
 method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo(assignee: 'nunomaduro');
 ```
@@ -76,7 +76,7 @@ corresponding issue to a todo by providing the issue number to the `issue` argum
 method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo(issue: 123);
 ```
@@ -96,7 +96,7 @@ the corresponding pull request to a todo by providing the pull request number to
 of the `todo()` method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo(pr: 123);
 ```
@@ -115,7 +115,7 @@ It is often helpful to provide additional context for a todo. Pest allows you to
 todo by providing a string to the `note` argument of the `todo()` method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo(
     note: <<<NOTE
@@ -135,7 +135,7 @@ method will remove the todo status from the test and mark it as a regular test w
 context like assignees, issues, etc.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->wip(assignee: 'nunomaduro', issue: 123);
 ```
@@ -147,7 +147,7 @@ remove the todo status from the test and mark it as a regular test while keeping
 like assignees, issues, etc.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->done(assignee: 'nunomaduro', issue: 123);
 ```
@@ -160,11 +160,11 @@ progress of your todos. This can be done using the `describe` group, and the `to
 
 ```php
 describe('contacts', function () {
-    it('has a contact page', function () {
+    test('has a contact page', function () {
         //
     }))->issue(123); // or ->pr(123) etc
 
-    it('has a contact form', function () {
+    test('has a contact form', function () {
         //
     })->done(pr: 567);
 })->wip(assignee: 'nunomaduro');

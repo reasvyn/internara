@@ -14,12 +14,12 @@ technical implementation.
 ## 2. Active & Planned Development Series
 
 - **[10-ARC01-GAP-01 (Integrative Excellence)](10-ARC01-GAP-01-Integrative-Excellence.md)**
-  - **Status**: `Planned`
-  - **Focus**: Competency Rubrics, Mentoring Logs, and Schedule Management.
+    - **Status**: `Planned`
+    - **Focus**: Competency Rubrics, Mentoring Logs, and Schedule Management.
 
 - **[09-ARC01-BOOT-01 (System Initialization)](09-ARC01-BOOT-01-System-Initialization.md)**
-  - **Status**: `Completed`
-  - **Focus**: Automated CLI installation, Web Wizard, and System/SMTP configuration.
+    - **Status**: `Completed`
+    - **Focus**: Automated CLI installation, Web Wizard, and System/SMTP configuration.
 
 ## 3. Realized Design Baselines (Released)
 
@@ -29,8 +29,8 @@ technical implementation.
 
 ## 4. Historical Design Archive
 
-- **[Archived Blueprints Index](archived/table-of-contents.md)**: Formal records of decommissioned or
-  legacy designs.
+- **[Archived Blueprints Index](archived/table-of-contents.md)**: Formal records of decommissioned
+  or legacy designs.
 
 ---
 

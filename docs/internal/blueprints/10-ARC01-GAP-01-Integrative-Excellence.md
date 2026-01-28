@@ -2,126 +2,95 @@
 
 **Series Code**: `ARC01-GAP-01` **Status**: `Planned`
 
-> **Spec Alignment:** This blueprint addresses the final remaining gaps in the
-> **[Internara Specs](../../internara-specs.md)**, specifically **Competency Achievements** (Section
-> 2.2), **Mentoring Documentation** (Section 2.3), **Schedule Management** (Section 1.1), and
-> **Product Feasibility Criteria** (Section 7).
+> **System Requirements Specification Alignment:** This blueprint implements the **Assessment & Reporting** ([SYRS-F-301],
+> [SYRS-F-302]) and **Progress Monitoring** ([SYRS-F-202]) requirements of the authoritative
+> **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Complete the instructional loop by implementing a formal framework for competencies,
-supervisor mentoring sessions, and administrative schedule planning.
+**Strategic Purpose**: Complete the instructional feedback loop by formalizing competency mapping,
+supervisor-led mentoring sessions, and administrative schedule orchestration.
 
 **Objectives**:
 
-- Enable evidence-based competency tracking mapped to the curriculum.
-- Document formal mentoring dialogue between students and supervisors.
-- Provide administrative control over internship timelines.
-- Collect usability feedback for project feasibility evaluation.
-
-**Scope**: Internara v0.1-v0.9 tracks activity, but lacks the "Instructional Framework" required by
-the Specs. There is no way to define specific competencies, no formal log for mentoring dialogue,
-and no administrative tool to plan schedules.
+- Enable evidence-based tracking of **Competency Milestones** mapped to institutional rubrics.
+- Formalize **Mentoring Dialogue** between Students and Supervisors via polymorphic logs.
+- Provide administrative orchestration for **Internship Timelines** and cohort-wide scheduling.
+- Execute **Usability Feedback Surveys** to validate system feasibility against stakeholder needs.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
+### 2.1 Capability Set
 
-- **Competency Rubrics**: Tools for Teachers to define and map skills per department.
-- **Mentoring Dialogue Logs**: Supervisor-led logs to document feedback and on-site visit notes.
-- **Internship Timelines**: Administrative management of start/end dates and expected work days.
-- **Feasibility Surveys**: In-app usability feedback system for project evaluation.
+- **Competency Rubric Framework**: Tools for Teachers/Staff to define department-specific skill
+  trees.
+- **Mentoring Session Logs**: Polymorphic logging subsystem for documenting on-site visits and
+  feedback.
+- **Temporal Orchestration**: Management of cohort start/end dates and expected work-day invariants.
+- **Feasibility Analytics**: Integrated survey engine for collecting stakeholder satisfaction data.
 
-**User Stories**:
+### 2.2 Stakeholder Personas
 
-- As a **Teacher**, I want to define which competencies students should achieve so that the system
-  can track their progress automatically.
-- As a **Mentor**, I want to log a formal mentoring session to document the advice and feedback I
-  gave the student today.
-- As a **Staff**, I want to set the official start and end dates for an internship cohort to enforce
-  attendance rules.
-
----
-
-## 3. Technical Architecture (Architectural Impact)
-
-**Modules**:
-
-- **Assessment**: Enhanced to handle Competency Rubrics and mapping logic.
-- **Mentor/Teacher**: Enhanced with specialized "Mentoring Session" polymorphic logs.
-- **Internship**: Enhanced with Schedule/Timeline management features.
-- **Support**: New survey engine for feasibility data collection.
-
-**Data Layer**:
-
-- **Frameworks**: `competencies`, `mentoring_sessions`, and `internship_schedules` tables
-  (UUID-based).
-- **Validation**: Attendance and Journal services will be updated to validate against planned
-  schedules.
+- **Teacher**: Defines the rubrics required for automated progress tracking.
+- **Industry Supervisor**: Logs formal mentoring sessions to document student growth.
+- **Staff**: Orchestrates internship timelines to enforce attendance validation rules.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 3. Architectural Impact (Logical View)
 
-**Design Philosophy**: Instructional clarity and structured feedback loops.
+### 3.1 Modular Decomposition
 
-**User Flow**:
+- **Assessment Module**: Enhanced with rubric definition and mapping logic.
+- **Mentor/Teacher Modules**: Enhanced with specialized "Mentoring Session" polymorphic entities.
+- **Internship Module**: Enhanced with temporal schedule management capabilities.
+- **Support Module**: Implementation of the survey orchestration engine.
 
-1. Staff/Teacher defines the competency rubric for a specific department.
-2. System maps journal entry categories to these competencies.
-3. Supervisor performs an on-site visit and opens the "Mentoring Log" on their mobile device.
-4. Supervisor records the session notes and student progress against the rubric.
-5. Student views their "Competency Radar" to see achievement levels in real-time.
+### 3.2 Data Architecture
 
-**Mobile-First**:
+- **Entities**: `competencies`, `mentoring_sessions`, and `internship_schedules` (UUID-based).
+- **Isolation Constraint**: Referential integrity is managed at the Service Layer; no physical
+  foreign keys across modular boundaries.
 
-- **Competency Radar**: Responsive visualization optimized for mobile dashboard viewing.
-- **Quick-Log Visit**: Simplified form for supervisors to log visits while on-site.
+---
 
-**Multi-Language**:
+## 4. Presentation Strategy (User Experience View)
 
-- Rubrics, mentoring logs, and survey questions are fully localized in **Indonesian** and
-  **English**.
+### 4.1 Design Invariants
+
+- **Visual Feedback**: Implementation of the "Competency Radar" visualization optimized for mobile.
+- **Efficiency**: "Quick-Log" form design for Supervisors during on-site visit interactions.
+- **i11n**: Full localization of rubrics, logs, and survey instrumentation in **ID** and **EN**.
 
 ---
 
 ## 5. Success Metrics (KPIs)
 
-- **Instructional Alignment**: 100% of departments have defined competency rubrics.
-- **Engagement Quality**: At least 1 formal mentoring log per student every 2 weeks.
-- **Operational Precision**: 0 attendance logs allowed outside of the planned internship schedule
-  dates.
-- **Feasibility**: Achieve a minimum usability score of 4.0/5.0 across all user roles via internal
-  surveys.
+- **Instructional Alignment**: 100% of active departments utilizing defined competency rubrics.
+- **Engagement Quality**: Minimum of 1 formal mentoring log per student every 14-day cycle.
+- **Operational Integrity**: zero attendance logs permitted outside the planned temporal baseline.
 
 ---
 
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
+## 6. Exit Criteria & Verification Protocols
 
-**Acceptance Criteria**:
+A design series is considered realized only when it satisfies the following gates:
 
-- [ ] **Competency Mapping**: Journal-to-skill visualization is active and accurate.
-- [ ] **Formal Mentoring**: Supervisor-led logs correctly store polymorphic references.
-- [ ] **Schedule Control**: Staff can successfully enforce cohort-wide internship timelines.
-
-**Testing Protocols**:
-
-- [ ] Logic tests for schedule-based attendance validation.
-- [ ] Multi-locale verification of rubric and survey content.
-
-**Quality Gates**:
-
-- [ ] **Spec Verification**: 100% coverage of remaining requirements in `internara-specs.md`.
-- [ ] Static Analysis Clean.
+- **Verification Gate**: 100% pass rate on all new verification suites via **`composer test`**.
+- **Quality Gate**: zero static analysis or formatting violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Functional journal-to-skill mapping visualization.
+    - Verified polymorphic persistence for mentoring logs.
+    - Successful enforcement of temporal invariants in attendance logic.
 
 ---
 
-## 7. vNext Roadmap (v1.0.0-RC: Release Candidate)
+## 7. vNext Roadmap (v1.0.0-RC)
 
-- **End-to-End Simulation**: Full lifecycle testing from Setup to Graduation.
-- **Performance Benchmarking**: Mobile responsiveness under concurrent load.
-- **Documentation Freeze**: Finalizing all internal and user-facing guides.
+- **End-to-End Life Cycle Simulation**: Full-spectrum validation from Setup to Graduation.
+- **System Performance Benchmarking**: Stress testing under concurrent role-based load.
+- **Documentation Freeze**: Final synchronization of all technical and stakeholder records.

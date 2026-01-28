@@ -1,18 +1,20 @@
-# Archived Versions - Documentation Index
+# Archived Baseline Records: Historical Index
 
-This directory contains historical release notes for versions that are no longer actively supported
-or maintained.
-
----
-
-## 1. Release Notes
-
-- **[v0.5.0](v0.5.0.md)**: Operational Layer Phase.
-- **[v0.4.0](v0.4.0.md)**: Institutional Foundation Phase.
-- **[v0.3.0](v0.3.0.md)**: Identity & Security Phase.
-- **[v0.2.0](v0.2.0.md)**: Core Engine Phase.
-- **[v0.1.1](v0.1.1.md)**: Project Genesis.
+This index centralizes the **Historical Release Baselines** for the Internara project. These records
+represent decommissioned or legacy snapshots of the system that are no longer actively maintained
+under the current support policy.
 
 ---
 
-_For active and supported versions, refer to the **[Versions Overview](../versions-overview.md)**._
+## 1. Realized Outcome Baselines
+
+- **[v0.5.0](v0.5.0.md)**: Realization of the **Operational Layer** baseline.
+- **[v0.4.0](v0.4.0.md)**: Realization of the **Institutional Foundation** baseline.
+- **[v0.3.0](v0.3.0.md)**: Realization of the **Identity & Security** baseline.
+- **[v0.2.0](v0.2.0.md)**: Realization of the **Core Engine** baseline.
+- **[v0.1.1](v0.1.1.md)**: **Project Genesis** baseline.
+
+---
+
+_For active developmental milestones and certified production baselines, refer to the
+**[Strategic Baseline Overview](../versions-overview.md)**._

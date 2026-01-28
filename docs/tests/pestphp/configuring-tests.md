@@ -22,7 +22,7 @@ PHPUnit, simplifying collaboration with other developers who are more familiar w
 testing framework.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     echo get_class($this); // \PHPUnit\Framework\TestCase
 
     $this->assertTrue(true);
@@ -38,7 +38,7 @@ case class, thus changing the value of `$this` within tests. To accomplish this,
 pest()->extend(Tests\TestCase::class)->in('Feature');
 
 // tests/Feature/ExampleTest.php
-it('has home', function () {
+test('has home', function () {
     echo get_class($this); // \Tests\TestCase
 });
 ```
@@ -88,7 +88,7 @@ class TestCase extends BaseTestCase
 pest()->extend(TestCase::class)->in('Feature');
 
 // tests/Feature/ExampleTest.php
-it('has home', function () {
+test('has home', function () {
     $this->performThis();
 });
 ```
@@ -113,7 +113,7 @@ of the `in()` method.
 ```php
 pest()->extend(Tests\MySpecificTestCase::class);
 
-it('has home', function () {
+test('has home', function () {
     echo get_class($this); // \Tests\MySpecificTestCase
 });
 ```

@@ -1,26 +1,24 @@
-# Public Documentation - Table of Contents
+# Documentation Hub: Stakeholder Index
 
-This index lists all guides intended for general users, system administrators, and stakeholders.
-
----
-
-## 1. Getting Started
-
-- **[Documentation Hub](main-documentation-overview.md)**: An overview of all available manuals.
-- **[Installation Guide](installation-guide.md)**: Step-by-step setup instructions for
-  administrators.
-
-## 2. Product Information
-
-- **[Project Overview](project-overview.md)**: Vision, architectural pillars, and key features.
-- **[Latest Updates](../versions/versions-overview.md)**: Current status and release history.
-
-## 3. Legal & Safety
-
-- **[Security Policy](../../SECURITY.md)**: How we protect your data.
-- **[License](../../LICENSE)**: Open-source usage rights.
+This index centralizes the **Stakeholder Requirements** and operational guidance for the
+Internara project. It provides the high-level vision and environmental baseline for users and
+administrators.
 
 ---
 
-_For technical development guides, please refer to the
-**[Internal Engineering Index](../internal/table-of-contents.md)**._
+## 1. System Vision & Capability
+
+- **[Project Overview](project-overview.md)**: Strategic vision, functional capabilities, and
+  stakeholder roles defined in the System Requirements Specification.
+- **[System Bootstrapping](installation-guide.md)**: Formal procedures for environmental
+  initialization and deployment.
+
+## 2. Release Baselines
+
+- **[Strategic Baseline Overview](../versions/versions-overview.md)**: Registry of promoted
+  configuration baselines and their maintenance status.
+
+---
+
+_For technical engineering records and architectural descriptions, refer to the
+**[Internal Technical Index](../internal/table-of-contents.md)**._

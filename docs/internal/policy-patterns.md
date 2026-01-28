@@ -26,8 +26,10 @@ must be associated with a Policy class to centralize and formalize access decisi
 ## 2. Standard Authorization Patterns
 
 ### 2.1 Pattern: Permission-Based Ownership (Default)
+
 The system verifies that the subject possesses the required functional permission AND maintains
 ownership of the specific resource.
+
 - **Applicability**: Personal records (e.g., Student Journals, Personal Profiles).
 
 ```php
@@ -39,8 +41,10 @@ public function update(User $user, Journal $journal): bool
 ```
 
 ### 2.2 Pattern: Hierarchical Supervision (Relational)
+
 Allows subjects in supervisory roles (Instructor, Industry Supervisor) to access resources
 associated with their subordinates (Students).
+
 - **Applicability**: Mentoring logs, academic reports, and attendance records.
 
 ```php
@@ -55,8 +59,10 @@ public function view(User $user, Journal $journal): bool
 ```
 
 ### 2.3 Pattern: Administrative Override (Super-Admin)
+
 The **Super-Admin** role maintains universal bypass capabilities to facilitate emergency system
 orchestration and maintenance.
+
 - **Implementation**: Defined via `Gate::before()` in the `AuthServiceProvider`.
 
 ---
@@ -64,16 +70,20 @@ orchestration and maintenance.
 ## 3. Engineering Standards for Policies
 
 ### 3.1 Strict Typing Invariant
+
 All policy methods must declare strict types for the `User` subject and the domain `Model` object.
 Failure to use strict typing is considered an architectural defect.
 
 ### 3.2 Semantic CRUD Mapping
+
 Policy methods must correspond 1:1 with the standard system actions:
+
 - `viewAny`, `view`, `create`, `update`, `delete`, `restore`, `forceDelete`.
 
 ### 3.3 Explicit Deny by Default
-If any condition remains unsatisfied, the policy must return `false`. Silence or ambiguity in
-policy logic is prohibited.
+
+If any condition remains unsatisfied, the policy must return `false`. Silence or ambiguity in policy
+logic is prohibited.
 
 ---
 

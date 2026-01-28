@@ -1,20 +1,25 @@
-# Livewire Testing: Interactive Verification
+# Livewire Verification: Presentation Layer Standards
 
-Since Internara is built on the TALL stack, Livewire components are our primary interface layer.
-Testing these components ensures that user interactions, reactive states, and business logic
-delegation behave as expected.
+This document formalizes the **Presentation Verification** protocols for the Internara project,
+standardized according to **ISO 9241-210** (Human-Centered Design). Livewire tests ensure that
+interactive interfaces, reactive state transitions, and logic delegation invariants behave
+deterministically.
 
-> **Spec Alignment:** Livewire tests must verify the **Mobile-First** responsiveness and
-> **Multi-Language** compliance of all UI components.
+> **Governance Mandate:** All presentation logic must demonstrate compliance with the
+> **[Thin Component Mandate](../../internal/architecture-description.md)** through rigorous
+> automated verification.
 
 ---
 
-## 1. Testing UI State & Localization
+## 1. Localization & UI Invariants
 
-Always verify that the UI renders the correct localized strings.
+Verification artifacts must ensure that the user interface correctly implements the
+**Multi-Language** and **Identity** requirements defined in the System Requirements Specification.
+
+### 1.1 Multi-Language Verification [SYRS-NF-403]
 
 ```php
-it('renders localized welcome message in indonesian', function () {
+test('it renders the authoritative localized baseline', function () {
     app()->setLocale('id');
 
     Livewire::test(Dashboard::class)->assertSee(__('core::ui.welcome'));
@@ -23,49 +28,49 @@ it('renders localized welcome message in indonesian', function () {
 
 ---
 
-## 2. Functional Verification
+## 2. Functional & Transactional Verification
 
-Verify that user actions correctly interact with the **Service Layer**.
+Verification must confirm that user interactions are correctly delegated to the **Service Layer**
+and result in valid systemic state transitions.
 
-### 2.1 Form Submissions
+### 2.1 Orchestration Verification
 
 ```php
-it('delegates user creation to the service layer', function () {
-    Livewire::test(CreateUser::class)
-        ->set('name', 'John Doe')
-        ->set('email', 'john@example.com')
-        ->call('save')
+test('it delegates domain orchestration to the service contract', function () {
+    Livewire::test(CreateInternship::class)
+        ->set('placement_id', 'uuid-string')
+        ->call('orchestrate')
         ->assertHasNoErrors();
 
-    $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
+    $this->assertDatabaseHas('internships', ['placement_id' => 'uuid-string']);
 });
 ```
 
 ---
 
-## 3. Authorization & Roles
+## 3. Access Control Verification (RBAC)
 
-Verify that UI elements are hidden according to the User Roles defined in
-**[Internara Specs](../internal/internara-specs.md)**.
+Verification must confirm that the presentation layer strictly enforces the **Least Privilege**
+protocol defined in the System Requirements Specification.
 
 ```php
-it('denies students from accessing the delete action', function () {
+test('unauthorized roles are prohibited from executing restricted actions', function () {
     $student = User::factory()->create()->assignRole('student');
 
-    actingAs($student)->livewire(UserList::class)->assertForbidden();
+    actingAs($student)->livewire(AdministrativeDashboard::class)->assertForbidden();
 });
 ```
 
 ---
 
-## 4. Mobile-First Considerations
+## 4. Construction Invariants for Livewire Tests
 
-While functional tests don't check pixels, ensure your component handles data density well:
-
-- Test that tables have "Card View" alternatives or horizontal scroll states if required.
-- Test that navigation components (Drawers/Sidebars) respond correctly to state changes.
+- **Logic Invariant**: Direct verification of business rules within Livewire tests is prohibited.
+  Verification must focus on the correct **Delegation** to the service layer.
+- **Responsiveness Audit**: Verification of state-dependent UI visibility (e.g., Drawer toggling).
+- **V&V Mandatory**: All presentation verification must pass the **`composer test`** gate.
 
 ---
 
-_Effective Livewire tests are the frontline of our quality assurance, ensuring a consistent and
-localized experience for all users._
+_Livewire verification ensures that the Internara presentation layer remains resilient, accessible,
+and architecturally pure across its modular ecosystem._

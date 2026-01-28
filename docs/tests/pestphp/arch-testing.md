@@ -91,7 +91,7 @@ are the available expectations:
 - [`toOnlyBeUsedIn()`](#expect-toOnlyBeUsedIn)
 - [`toUse()`](#expect-toUse)
 - [`toUseStrictEquality()`](#expect-toUseStrictEquality)
-- [`toUseTrait()`](#expect-toUseTrait)
+- [`toUseTratest()`](#expect-toUseTrait)
 - [`toUseTraits()`](#expect-toUseTraits)
 - [`toUseNothing()`](#expect-toUseNothing)
 - [`toUseStrictTypes()`](#expect-toUseStrictTypes)
@@ -567,13 +567,13 @@ arch('models')->expect('App')->not->toUseStrictEquality();
 
 <a name="expect-toUseTrait"></a>
 
-### `toUseTrait()`
+### `toUseTratest()`
 
-The `toUseTrait()` method may be used to ensure that all files within a given namespace use a
+The `toUseTratest()` method may be used to ensure that all files within a given namespace use a
 specific trait.
 
 ```php
-arch('models')->expect('App\Models')->toUseTrait('Illuminate\Database\Eloquent\SoftDeletes');
+arch('models')->expect('App\Models')->toUseTratest('Illuminate\Database\Eloquent\SoftDeletes');
 ```
 
 <a name="expect-toUseTraits"></a>
@@ -877,7 +877,7 @@ The `extending()` modifier allows you to restrict the expectation to only classe
 extend the given class.
 
 ```php
-arch('app')->expect('App')->extending(Model::class)->toUseTrait(HasFactory::class);
+arch('app')->expect('App')->extending(Model::class)->toUseTratest(HasFactory::class);
 ```
 
 <a name="modifier-implementing"></a>
@@ -888,7 +888,7 @@ The `implementing()` modifier allows you to restrict the expectation to only cla
 the given interface.
 
 ```php
-arch('app')->expect('App')->implementing(ShouldQueue::class)->toUseTrait(Dispatchable::class);
+arch('app')->expect('App')->implementing(ShouldQueue::class)->toUseTratest(Dispatchable::class);
 ```
 
 <a name="modifier-using"></a>

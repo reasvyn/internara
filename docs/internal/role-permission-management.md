@@ -6,7 +6,8 @@ Framework). It defines the protocols for **Role-Based Access Control (RBAC)** to
 security, data confidentiality, and administrative accountability.
 
 > **Governance Mandate:** All roles and permissions must be traceable to the User Roles and
-> administrative requirements defined in the authoritative **[Internara Specs](../internal/internara-specs.md)**.
+> administrative requirements defined in the authoritative
+> **[Internara Specs](../internal/internara-specs.md)**.
 
 ---
 
@@ -27,20 +28,20 @@ Internara operates on the principle of **Least Privilege** and **Explicit Deny b
 Roles are defined in the `Core` module and mapped directly to the stakeholders identified in the
 SSoT.
 
-| Role                  | SSoT Stakeholder        | Primary Domain Function              |
-| :-------------------- | :---------------------- | :----------------------------------- |
-| **Administrator**     | System Admin            | Full System Orchestration            |
-| **Instructor**        | Instructor (Teacher)    | Supervision, Mentoring, Assessment   |
-| **Staff**             | Practical Work Staff    | Administration, Scheduling, V&V      |
-| **Industry Supervisor**| Industry Supervisor     | On-site Feedback, Mentoring          |
-| **Student**           | Student                 | Journals, Attendance, Reporting      |
+| Role                    | SSoT Stakeholder     | Primary Domain Function            |
+| :---------------------- | :------------------- | :--------------------------------- |
+| **Administrator**       | System Admin         | Full System Orchestration          |
+| **Instructor**          | Instructor (Teacher) | Supervision, Mentoring, Assessment |
+| **Staff**               | Practical Work Staff | Administration, Scheduling, V&V    |
+| **Industry Supervisor** | Industry Supervisor  | On-site Feedback, Mentoring        |
+| **Student**             | Student              | Journals, Attendance, Reporting    |
 
 ---
 
 ## 3. Permission Specification (ISO/IEC 29146)
 
-Permissions represent granular capabilities and follow a strict **Module-Action** naming
-convention to ensure semantic clarity.
+Permissions represent granular capabilities and follow a strict **Module-Action** naming convention
+to ensure semantic clarity.
 
 - **Convention**: `{module}.{action}` (e.g., `attendance.report`, `journal.approve`).
 - **Traceability**: Every permission must fulfill a specific functional requirement defined in the
@@ -51,17 +52,22 @@ convention to ensure semantic clarity.
 ## 4. Implementation Layers
 
 ### 4.1 UI Layer (Presentation Logic)
+
 Authorization must be enforced at the UI level to prevent unauthorized interaction.
+
 - **Directive**: Use `@can` for Blade templates and `$this->authorize()` within Livewire components.
 - **Behavior**: Elements representing unauthorized actions must be suppressed from the interface
   entirely.
 
 ### 4.2 Service Layer (Business Logic)
+
 The Service Layer provides the final defense against unauthorized execution.
+
 - **Invariant**: Services must verify authorization before performing state-altering operations,
   especially for destructive actions (Delete/Force-Delete).
 
 ### 4.3 Policy Pattern (The Governance Layer)
+
 Every domain model must be associated with a **Policy Class**. Policies encapsulate complex
 authorization rules, including ownership checks and state-dependent access.
 
@@ -80,6 +86,7 @@ public function update(User $user, Journal $journal): bool
 Permissions are introduced through **Modular Seeders** to maintain a consistent security baseline.
 
 ### 5.1 Idempotent Seeding
+
 Modules must define their permissions within a seeder class, utilizing the `PermissionService`
 contract.
 
@@ -103,7 +110,9 @@ class AttendancePermissionSeeder extends Seeder
 ```
 
 ### 5.2 Baseline Synchronization
+
 Updates to the security baseline are performed via the native synchronization command:
+
 ```bash
 php artisan permission:sync
 ```

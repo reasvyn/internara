@@ -21,10 +21,10 @@ These guides focus on the vision, usage, and installation of Internara.
 
 Internal manuals for developers looking to understand the code or contribute features.
 
-- **[Internara Specs](../internal/internara-specs.md)**: **Single Source of Truth** - The
-  authoritative specification for the entire project.
+- **[System Requirements Specification](../internal/system-requirements-specification.md)**:
+  **Single Source of Truth** - The formal ISO/IEC 29148 specification for the entire project.
 - **[Technical Index](../internal/table-of-contents.md)**: A complete list of internal engineering
-  standards, architecture, and workflows.
+  standards, architecture description, and implementation processes.
 
 ---
 

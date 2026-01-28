@@ -1,64 +1,57 @@
-# Laravel Modules: The Modular Engine
+# Laravel Modules: The Foundational Orchestrator
 
-Internara utilizes the `nwidart/laravel-modules` package as the foundational engine for our
-**Modular Monolith** architecture. It provides the directory structure, autoloader logic, and CLI
-tools necessary to manage isolated business domains effectively.
-
----
-
-## 1. Structural Customizations
-
-We have modified the default behavior of this package to align with our engineering standards.
-
-### 1.1 Source Directory (`src/`)
-
-Unlike the default `app/` folder, our logic resides in a clean `src/` directory.
-
-- **Config**: `'paths.app_folder' => 'src/'`
-- **Impact**: All models, services, and components are located at `modules/{Module}/src/`.
-
-### 1.2 Namespace Convention (Omit `src`)
-
-We have configured the autoloader to ignore the `src` segment in the namespace.
-
-- **Path**: `modules/User/src/Models/User.php`
-- **Namespace**: `Modules\User\Models\User` (✅ Correct)
+This document formalizes the integration of the `nwidart/laravel-modules` package, which serves as
+the primary orchestrator for the **Modular Monolith** baseline of the Internara project. It provides
+the structural framework and autoloading logic required to maintain autonomous domain boundaries.
 
 ---
 
-## 2. Modular Scaffolding
+## 1. Structural Baselines (Architectural Invariants)
 
-Our custom generators pre-configure every module with Internara's standard layers:
+Internara utilizes a customized configuration of the modular engine to enforce the following
+architectural invariants:
 
-- `Contracts/`: For interface definitions.
-- `Services/`: For business logic orchestration.
-- `Models/`: For persistence logic.
-- `Livewire/`: For UI components.
+### 1.1 Encapsulated Source Layout
 
-### Essential Commands
+All domain logic is encapsulated within a dedicated `src/` directory to isolate functional artifacts
+from modular assets.
 
-Always use the `module:` prefix to ensure paths and namespaces are generated correctly.
+- **Implementation**: `'paths.app_folder' => 'src/'`.
+- **Result**: Logical artifacts reside at `modules/{Module}/src/`.
 
-```bash
-# Create a new module
-php artisan module:make MyModule
+### 1.2 Namespace Synchronization (src-Omission)
 
-# Add resources to a module
-php artisan module:make-service MyService MyModule
-php artisan module:make-model MyModel MyModule --migration
-```
+The autoloading baseline is configured to omit the `src` segment from the PHP namespace, ensuring
+semantic brevity and alignment with the
+**[Architecture Description](../architecture-description.md)**.
 
----
-
-## 3. Strict Isolation Enforcement
-
-The package is configured to prevent accidental leakage between modules.
-
-- **Zero-Foreign-Key**: No physical database constraints are allowed across modules.
-- **Service Dependency**: Cross-module calls MUST be done via **Contracts** injected into Service
-  classes.
+- **Invariant**: `Modules\{Module}\Models\Entity` maps to `modules/{Module}/src/Models/Entity.php`.
 
 ---
 
-_Refer to the **[Architecture Guide](../architecture-guide.md)** for a deep-dive into the
-communication rules enforced by this modular engine._
+## 2. Automated Construction Protocols
+
+Modular artifacts must be generated via the
+**[Automated Tooling](../automated-tooling-reference.md)** to ensure compliance with the Internara
+structural baseline.
+
+### 2.1 Artifact Scaffolding
+
+- **Contracts Layer**: Interface definitions for cross-module decoupling.
+- **Domain Layer**: Business logic orchestration via Service Contracts.
+- **Persistence Layer**: UUID-based entity mapping.
+
+---
+
+## 3. Mandatory Isolation Protocols
+
+The modular engine is utilized to enforce **Strict Domain Isolation**:
+
+- **Persistence Invariant**: No physical foreign key constraints across modular boundaries.
+- **Communication Invariant**: Cross-module interaction is restricted to **Service Contracts**
+  resolved via the Laravel Service Container.
+
+---
+
+_By strictly governing the modular engine, Internara ensures a resilient, decoupled, and analysable
+architecture that supports high-velocity developmental iterations._

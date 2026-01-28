@@ -1,34 +1,39 @@
-# Technical Analysis: What's New in Livewire v4
+# Technical Analysis: Livewire v4 Capability Evolution
 
-Livewire v4 is a paradigm shift for the TALL stack. It moves away from external extensions (like
-Volt) toward a unified, high-performance core.
-
----
-
-## 1. Native Single-File Components (SFC)
-
-- **Impact:** Removal of `livewire/volt`.
-- **Architectural Benefit:** Leaner modules and simplified deployment.
-
-## 2. Component Islands
-
-- **Relevance:** Perfect for role-based workspaces. For example, the `Student` dashboard can refresh
-  the "Competency Achievement" island independently.
-
-## 3. Parallel Hydration & Async Actions
-
-- **Performance:** Reduced latency during bulk operations (e.g., batch grade processing).
-
-## 4. Native Drag-and-Drop (`wire:sort`)
-
-- **Relevance:** Used in administrative workspaces for reordering assessment criteria or internship
-  requirements.
-
-## 5. View Transitions API
-
-- **Aesthetic (Specs 5):** Provides the polished, minimalist feel mandated by the
-  **[Internara Specs](../../internara-specs.md)**.
+Livewire v4 constitutes a significant architectural advancement for the TALL stack baseline,
+transitioning from external orchestrators toward a unified, performance-optimized core.
 
 ---
 
-_For the execution roadmap, refer to the **[Migration Manual](upgrade_to_livewire_v4.md)**._
+## 1. Integrated Single-File Components (SFC)
+
+- **Impact**: Formal decommissioning of the `livewire/volt` dependency.
+- **Architectural Rational**: Simplification of modular construction and reduction of the systemic
+  configuration baseline.
+
+## 2. Distributed Component Islands
+
+- **Relevance**: Facilitates optimized hydration for role-specific functional workspaces.
+- **Objective**: Enables granular state persistence and independent refresh cycles for dashboard
+  analytics (e.g., At-Risk student monitoring).
+
+## 3. Asynchronous Orchestration & Parallel Hydration
+
+- **Performance Invariant**: Systematic reduction of latency during high-concurrency operations,
+  such as bulk grade processing and institutional reporting.
+
+## 4. Native Drag-and-Drop Invariant (`wire:sort`)
+
+- **Relevance**: Specialized orchestration for administrative orchestration, allowing for the
+  semantic reordering of assessment criteria and internship prerequisites.
+
+## 5. View Transitions Engine
+
+- **Aesthetic Alignment**: Realization of the polished, minimalist user experience mandated by the
+  authoritative
+  **[System Requirements Specification](../../internal/system-requirements-specification.md)**.
+
+---
+
+_For implementation protocols and the baseline migration roadmap, refer to the
+**[Migration Manual](upgrade_to_livewire_v4.md)**._

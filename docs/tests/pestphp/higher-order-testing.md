@@ -20,28 +20,28 @@ Let's consider an example that demonstrates how to migrate an existing test to h
 To illustrate, we will use a simple test.
 
 ```php
-it('works', function () {
+test('works', function () {
     $this->get('/')->assertStatus(200);
 });
 ```
 
 Based on this example, you can see that the entire content of the test is chained calls made on the
 `$this` variable. In such cases, it is possible to eliminate the test closure entirely and chain the
-required methods together directly to the `it()` function.
+required methods together directly to the `test()` function.
 
 ```php
-it('works')->get('/')->assertStatus(200);
+test('works')->get('/')->assertStatus(200);
 ```
 
 The technique of removing the closure function and directly chaining the methods of the test body to
-the `test()` or `it()` functions is commonly referred to as "High Order Testing". This approach can
+the `test()` or `test()` functions is commonly referred to as "High Order Testing". This approach can
 significantly simplify the code of your test suite.
 
 This technique can also be combined with the [expectation API](/docs/expectations). Let's look at a
 test where the expectation API is used to verify that a user was created with the correct name.
 
 ```php
-it('has a name', function () {
+test('has a name', function () {
     $user = User::create([
         'name' => 'Nuno Maduro',
     ]);
@@ -53,7 +53,7 @@ it('has a name', function () {
 If your test contains only one expectation, we can simplify it using high-order testing.
 
 ```php
-it('has a name')
+test('has a name')
     ->expect(fn() => User::create(['name' => 'Nuno Maduro'])->name)
     ->toBe('Nuno Maduro');
 ```
@@ -66,7 +66,7 @@ If you need to make assertions on an object that requires lazy evaluation at run
 the `defer()` method.
 
 ```php
-it('creates admins')
+test('creates admins')
     ->defer(fn() => $this->artisan('user:create --admin'))
     ->assertDatabaseHas('users', ['id' => 1]);
 ```
@@ -91,7 +91,7 @@ When using higher order testing, dataset values are passed to the `expect()` and
 for convenience.
 
 ```php
-it('validates emails')
+test('validates emails')
     ->with(['taylor@laravel.com', 'enunomaduro@gmail.com'])
     ->expect(fn(string $email) => Validator::isValid($email))
     ->toBeTrue();

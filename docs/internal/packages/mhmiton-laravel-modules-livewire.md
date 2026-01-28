@@ -1,36 +1,52 @@
-# Modules Livewire: The Component Bridge
+# Modules Livewire: Presentation Layer Integration Bridge
 
-The `mhmiton/laravel-modules-livewire` package is a critical piece of Internara's modular
-infrastructure. It allows Livewire components located within a module's `src/Livewire` directory to
-be discovered and rendered using a clean, semantic syntax.
-
----
-
-## 1. Modular Syntax
-
-Without this bridge, Livewire would only look in the `app/` directory. This package enables the
-`module::` prefix.
-
-- **Convention**: Always use the `@livewire` directive for interactive components.
-- **Example**: `@livewire('internship::application-form')`
-- **Path**: `modules/Internship/src/Livewire/ApplicationForm.php`
+This document formalizes the integration of the `mhmiton/laravel-modules-livewire` package, which
+serves as the primary orchestration bridge for modular presentation logic within the Internara
+project. It enables semantic component discovery across domain boundaries while maintaining modular
+sovereignty.
 
 ---
 
-## 2. Component Discovery
+## 1. Semantic Discovery Protocols
 
-The package is configured to scan the `src/Livewire` folder of every **Enabled** module. If a module
-is disabled in `modules_statuses.json`, its components will not be discoverable.
+The bridge facilitates the utilization of modular namespaces for component invocation, as defined in
+the **[Architecture Description](../../internal/architecture-description.md)**.
 
-### Event Namespacing
+### 1.1 Modular Invocation Syntax
 
-When dispatching events between modules, prefix the event name with the module alias to prevent
-collisions.
+Components must be invoked using the semantic `module::` prefix to ensure clear domain attribution.
 
-- **Correct**: `$this->dispatch('user::updated')`
-- **Incorrect**: `$this->dispatch('updated')`
+- **Standard**: `@livewire('module-alias::component-name')`.
+- **Mapping**: Automatically resolves to the component class within the target module's
+  `src/Livewire/` directory.
+
+### 1.2 Resource Sovereignty (Gating)
+
+Component discovery is strictly restricted to **Enabled** modules. If a domain baseline is
+decommissioned or disabled, its associated presentation logic becomes inaccessible to the system.
 
 ---
 
-_This bridge ensures that our UI remains as modular as our backend logic. Refer to the
-**[Livewire Integration Guide](laravel-livewire.md)** for general component best practices._
+## 2. Cross-Module Orchestration (Event Namespacing)
+
+To prevent collision and maintain domain isolation during asynchronous inter-component
+communication, Internara enforces a strict event namespacing protocol.
+
+- **Invariant**: Browser events dispatched across module boundaries must be prefixed with the
+  originating module alias.
+- **Correct Pattern**: `$this->dispatch('internship::application-verified')`.
+- **Incorrect Pattern**: `$this->dispatch('verified')`.
+
+---
+
+## 3. Implementation Invariants
+
+- **V&V Mandatory**: All cross-module UI interactions must be verified via **`composer test`** to
+  ensure that semantic discovery and event orchestration satisfy functional requirements.
+- **Thin Component Rule**: Utilization of this bridge does not exempt components from the **Thin
+  Component** mandate; logic must remain delegated to the Service Layer.
+
+---
+
+_By strictly governing the component bridge, Internara ensures a high-fidelity, decoupled UI
+architecture that preserves modular integrity while enabling rich cross-domain interaction._

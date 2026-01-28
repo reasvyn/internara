@@ -1,110 +1,59 @@
-# Application Blueprint: v0.2.0 (Core Engine)
+# Application Blueprint: Core Engine (ARC01-CORE-01)
 
 **Series Code**: `ARC01-CORE-01` **Status**: `Archived` (Released)
 
-> **Spec Alignment:** This blueprint lays the foundation for the **Platform and Technology**
-> standards (Specs Section 5), including centralized database architecture and role-based access.
+> **Spec Alignment:** This configuration baseline implements the foundational **Architecture &
+> Maintainability** ([SYRS-NF-601]) requirements of the authoritative
+> **[System Requirements Specification](../../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Establish the foundational infrastructure (Core & Shared modules) and implement the
-Role-Based Access Control (RBAC) system.
+**Strategic Purpose**: Establish the systemic technical baseline, implementing the Modular Monolith
+orchestrator and the core database identity standard.
 
 **Objectives**:
-
-- Unify utility logic (UUIDs, Statuses) across the modular system.
-- Standardize CRUD operations via a base service layer.
-- Implement the system roles mandated by the project specs.
-
-**Scope**: The project lacks a unified infrastructure, leading to duplication of utility logic and
-inconsistent database patterns. This version establishes the "Engine Room" of the application.
+- Provision the modular discovery engine to enable domain isolation.
+- Implement the **UUID v4** identity baseline for all system entities.
+- Establish the **Shared** module tier for project-agnostic utilities.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
-
-- **Shared Utilities**: Universal concerns for UUIDs, status management, and common traits.
-- **RBAC Infrastructure**: Modular implementation of role-based permissions for Instructor, Staff,
-  and Student.
-- **Base Service Layer**: Standardized `EloquentQuery` service for consistent data orchestration.
-
-**User Stories**:
-
-- As a **Developer**, I want a base service for CRUD so that I can implement new domains rapidly and
-  consistently.
-- As an **Admin**, I want to define specific permissions for different roles to ensure system
-  security.
-- As a **User**, I want my identity to be uniquely identified by a secure UUID.
+### 2.1 Capability Set
+- **Modular Autoloader**: Automated discovery of modules and their service providers.
+- **Identity Invariant**: Systemic integration of the `HasUuid` concern.
+- **Persistence Orchestrator**: Baseline configuration for cross-module referential integrity.
 
 ---
 
-## 3. Technical Architecture (Architectural Impact)
+## 3. Architectural Impact (Logical View)
 
-**Modules**:
+### 3.1 Modular Decomposition
+- **Core Module**: Foundations for systemic state and global settings.
+- **Shared Module**: Abstraction layer for universal engineer patterns (Traits, Base Classes).
 
-- **Shared**: New module for universal utility logic and traits.
-- **Permission**: New module for managing RBAC infrastructure.
-- **Core**: Infrastructure logic for the overall application lifecycle.
-
-**Data Layer**:
-
-- **Identity**: Enforcement of UUID v4 as the global standard for primary keys.
-- **Infrastructure**: Spatie Permission tables integrated within a modular context.
+### 3.2 System Configuration
+- **Isolation Constraint**: Implementation of the **src-Omission** namespace invariant to ensure
+  modular portability.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 4. Exit Criteria & Verification Protocols
 
-**Design Philosophy**: Architectural consistency and foundational security.
+A design series is considered realized only when it satisfies the following gates:
 
-**User Flow**:
-
-- Since this is a core engine version, the primary flow is developer-centric:
-
-1. Developer extends `BaseModel` and `HasUuid`.
-2. Developer extends `EloquentQuery` service for a new domain.
-3. Developer assigns roles to users via the `PermissionService`.
-4. System automatically enforces access control based on assigned roles.
-
-**Multi-Language**:
-
-- All permission labels and core system messages support **Indonesian** and **English**
-  localization.
+- **Verification Gate**: 100% pass rate across the core infrastructure suites via **`composer test`**.
+- **Quality Gate**: zero static analysis violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Demonstrated modular isolation during autodiscovery.
+    - Verified functionality of UUID identity generation.
 
 ---
 
-## 5. Success Metrics (KPIs)
+## 5. vNext Roadmap (v0.3.0)
 
-- **Code Consistency**: 100% of domain models utilize the `HasUuid` concern.
-- **Security Coverage**: 100% of routes protected by role-aware middleware.
-- **Performance**: CRUD operations using the base service show consistent execution times.
-
----
-
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
-
-**Acceptance Criteria**:
-
-- [x] **Universal UUIDs**: All models and migrations strictly follow the UUID standard.
-- [x] **Base Service**: Domain services successfully inherit and utilize standard CRUD features.
-
-**Testing Protocols**:
-
-- [x] Unit tests for UUID generation and status management.
-- [x] Integration tests for role-based permission inheritance.
-
-**Quality Gates**:
-
-- [x] **Spec Verification**: RBAC architecture supports all required user roles from Section 4.
-- [x] Static Analysis Clean.
-
----
-
-## 7. vNext Roadmap (v0.3.0: Identity)
-
-- **Identity System**: Refactoring User and Profile modules.
-- **Polymorphic Profiles**: Decoupling credentials from role context.
+- **Identity & Security**: Secure authentication and RBAC implementation.
+- **Profile Orchestration**: Subject management capabilities.

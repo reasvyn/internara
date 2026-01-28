@@ -1,57 +1,74 @@
-# Internal Engineering - Table of Contents
+# Internal Engineering: System Documentation Index
 
-This index lists all technical guides intended for internal developers and code contributors. It
-defines the standards, patterns, and workflows used to build Internara.
+This index centralizes the formal technical records for the Internara project, standardized
+according to **ISO/IEC 12207** and **ISO/IEC 42010**. It defines the authoritative standards,
+architectural views, and engineering processes used to build and maintain the system.
 
 ---
 
-## 1. Architecture & Core Concepts
+## 1. Authoritative Baselines & Architecture
 
-- **[System Requirements Specification](system-requirements-specification.md)**: **Single Source of Truth** - The formal
-  ISO/IEC 29148 specification for the entire project.
+- **[System Requirements Specification](system-requirements-specification.md)**: **Single Source of
+  Truth (SSoT)** - Formal ISO/IEC 29148 requirements baseline.
 - **[Architecture Description](architecture-description.md)**: Formal ISO/IEC 42010 deep-dive into
-  Modular Monolith layers, bootstrapping, and auto-discovery.
-- **[Foundational Module Philosophy](foundational-module-philosophy.md)**: Categorization of modules
-  (Core, Shared, UI, etc.).
-- **[Version Management Guide](version-management.md)**: Standards for SemVer, Maturity Stages, and
-  Support Policies.
+  structural views, invariants, and design rationale.
+- **[Foundational Module Philosophy](foundational-module-philosophy.md)**: System decomposition
+  strategy based on functional specialization and portability.
+- **[Version Management](version-management.md)**: ISO 10007 standards for configuration baseline
+  identification and lifecycle classification.
 
-## 2. Standards & Conventions
+## 2. Engineering Standards & Conventions
 
-- **[Development Conventions](development-conventions.md)**: Authorities on naming, namespaces,
-  service layer patterns (EloquentQuery), and model concerns.
-- **[UI/UX Development Guide](ui-ux-development-guide.md)**: Building interfaces with
-  MaryUI/DaisyUI.
-- **[Exception Handling Guidelines](exception-handling-guidelines.md)**: Standardized error
-  reporting.
+- **[Development Conventions](development-conventions.md)**: Construction standards for naming,
+  namespaces, and domain layer invariants.
+- **[Logic Orchestration Patterns](logic-orchestration-patterns.md)**: Advanced service orchestration,
+  immutable DTO usage, and transactional integrity.
+- **[Cross-Module Event Governance](cross-module-event-governance.md)**: Standards for decoupled
+  asynchronous side-effects and event-driven orchestration.
+- **[Data Integrity Protocols](data-integrity-orchestration-protocols.md)**: Maintenance of
+  software-level referential integrity within modular boundaries.
+- **[UI/UX Development Guide](ui-ux-development-guide.md)**: Human-centered design standards
+  adhering to ISO 9241-210 and WCAG 2.1.
+- **[Exception Handling Guidelines](exception-handling-guidelines.md)**: System reliability
+  standards for secure fault tolerance and localized feedback.
 
-## 3. Engineering Workflows & Blueprints
+## 3. Engineering Workflows & Design Baselines
 
-- **[Development Workflow](development-workflow.md)**: Feature engineering lifecycle and
-  documentation standards.
-- **[Blueprints Guidelines](blueprints-guidelines.md)**: Standards for managing system evolution via
-  architectural blueprints.
-- **[Application Blueprints Index](blueprints/table-of-contents.md)**: Pre-development architectural
-  blueprints.
-- **[Software Lifecycle](software-lifecycle.md)**: SDLC phases from concept to release.
-- **[Release Guidelines](release-guidelines.md)**: Versioning standards and deployment protocols.
-- **[GitHub Protocols](github-protocols.md)**: Standards for collaboration, branching, and issue
-  management.
-- **[Artisan Commands Reference](artisan-commands-reference.md)**: Catalog of modular generators.
+- **[Feature Engineering Workflow](feature-engineering-workflow.md)**: ISO/IEC 12207 implementation
+  processes and verification protocols.
+- **[Software Life Cycle Processes](software-lifecycle-processes.md)**: Formal engineering
+  framework from conceptualization to baseline retirement.
+- **[Blueprint Design Guidelines](blueprints-guidelines.md)**: IEEE 1016 standards for the
+  elicitation and formalization of design intent.
+- **[Application Blueprints Index](blueprints/table-of-contents.md)**: Strategic design records
+  bridging requirements and construction.
+- **[Release Publication Protocols](release-publication-protocols.md)**: ISO/IEC 12207 baseline
+  promotion and deployment standards.
+- **[Repository Configuration Protocols](repository-configuration-protocols.md)**: ISO 10007 standards
+  for collaboration and baseline management.
+- **[Automated Tooling Reference](automated-tooling-reference.md)**: ISO/IEC 12207 infrastructure
+  and support tooling catalog.
 
-## 4. Security & Authorization
+## 4. Security & Quality Assurance
 
-- **[Role & Permission Management](role-permission-management.md)**: Implementing modular RBAC,
-  seeders, and UI components.
-- **[Policy Patterns](policy-patterns.md)**: Logic for protecting resources.
+- **[Role & Permission Management](role-permission-management.md)**: Implementation of ISO/IEC 27001
+  access control and modular RBAC.
+- **[Policy Patterns](policy-patterns.md)**: Governance standards for policy enforcement points (PEP).
+- **[Code Quality Standardization](code-quality-standardization.md)**: ISO/IEC 25010/5055 quality
+  models and quantitative technical gates.
+- **[Testing & Verification Guide](testing-verification-guide.md)**: IEEE 1012 and ISO/IEC 29119
+  standards for V&V activities.
 
-## 5. Quality Assurance
+## 5. Advanced Engineering & Supporting Ecosystem
 
-- **[Code Quality Standardization](code-quality-standardization.md)**: ISO-standardized engineering and quality
-  metrics.
-- **[Testing Guide](testing-guide.md)**: Standards for Unit and Feature testing with Pest.
+- **[Advanced Engineering Index](advanced/table-of-contents.md)**: Protocols for systemic
+  evolution and specialized domain orchestrations.
+- **[Supporting Ecosystem Index](packages/table-of-contents.md)**: Technical records for
+  third-party baseline integration and orchestration.
+- **[Technical Debt Index](debts/table-of-contents.md)**: Evolutionary governance of refactoring
+  and architectural upgrades.
 
 ---
 
-_This directory is for engineering use only. Public-facing guides can be found in the
-**[Main Hub](../main/main-documentation-overview.md)**._
+_This registry is reserved for engineering use only. Stakeholder-facing records can be found in the
+**[Documentation Hub](../main/main-documentation-overview.md)**._

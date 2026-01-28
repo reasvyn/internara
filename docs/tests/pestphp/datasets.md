@@ -13,7 +13,7 @@ automatically. This saves time and effort by eliminating the need to repeat the 
 with different data.
 
 ```php
-it('has emails', function (string $email) {
+test('has emails', function (string $email) {
     expect($email)->not->toBeEmpty();
 })->with(['enunomaduro@gmail.com', 'other@example.com']);
 ```
@@ -30,7 +30,7 @@ Naturally, it is possible to supply multiple arguments by providing an array con
 arguments.
 
 ```php
-it('has emails', function (string $name, string $email) {
+test('has emails', function (string $name, string $email) {
     expect($email)->not->toBeEmpty();
 })->with([['Nuno', 'enunomaduro@gmail.com'], ['Other', 'other@example.com']]);
 ```
@@ -38,7 +38,7 @@ it('has emails', function (string $name, string $email) {
 To manually add your own description to a dataset value, you may simply assign it a key.
 
 ```php
-it('has emails', function (string $email) {
+test('has emails', function (string $email) {
     expect($email)->not->toBeEmpty();
 })->with([
     'james' => 'james@laravel.com',
@@ -64,7 +64,7 @@ It is important to notice that when using `closures` in your dataset, you must d
 type in the closure passed to the test function.
 
 ```php
-it('can sum', function (int $a, int $b, int $result) {
+test('can sum', function (int $a, int $b, int $result) {
     expect(sum($a, $b))->toBe($result);
 })->with([
     'positive numbers' => [1, 2, 3],
@@ -99,7 +99,7 @@ integration) where you may need a dataset of `App\Models\User` models that are c
 database schema is prepared by the `beforeEach()` method.
 
 ```php
-it('can generate the full name of a user', function (User $user) {
+test('can generate the full name of a user', function (User $user) {
     expect($user->full_name)->toBe("{$user->first_name} {$user->last_name}");
 })->with([
     fn() => User::factory()->create(['first_name' => 'Nuno', 'last_name' => 'Maduro']),
@@ -112,8 +112,8 @@ If you want, you can bind a single argument to the test case. However, Pest requ
 fully typed in the `it|test` function arguments.
 
 ```diff
--it('can generate the full name of a user', function ($user, $fullName) {
-+it('can generate the full name of a user', function (User $user, $fullName) {
+-test('can generate the full name of a user', function ($user, $fullName) {
++test('can generate the full name of a user', function (User $user, $fullName) {
     expect($user->full_name)->toBe($fullName);
 })->with([
     [fn() => User::factory()->create(['first_name' => 'Nuno', 'last_name' => 'Maduro']), 'Nuno Maduro'],
@@ -129,7 +129,7 @@ from your test code and ensure that they do not clutter your main test files.
 
 ```diff
 // tests/Unit/ExampleTest.php...
-it('has emails', function (string $email) {
+test('has emails', function (string $email) {
     expect($email)->not->toBeEmpty();
 -})->with(['enunomaduro@gmail.com', 'other@example.com']);
 +})->with('emails');
@@ -153,7 +153,7 @@ scope to that folder alone.
 
 ```php
 // tests/Feature/Products/ExampleTest.php...
-it('has products', function (string $product) {
+test('has products', function (string $product) {
     expect($product)->not->toBeEmpty();
 })->with('products');
 
@@ -194,7 +194,7 @@ the test is stable. On these occasions, you may use the `repeat()` method to rep
 number of times.
 
 ```php
-it('can repeat a test', function () {
+test('can repeat a test', function () {
     $result = /** Some code that may be unstable */;
 
     expect($result)->toBeTrue();

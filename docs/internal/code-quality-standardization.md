@@ -1,111 +1,101 @@
-# Code Quality Standardization: End-to-End Engineering
+# Code Quality Standardization: Engineering & Quality Models
 
-This document defines the formal **Code Quality Standardization (CQS)** for the Internara project.
-It establishes a rigorous framework for ensuring technical excellence, security, and
-maintainability from **Root (Requirements/Design)** to **Delivery (Release)**. It is grounded in
-**ISO/IEC 25010** (Product Quality), **ISO/IEC 5055** (Quality Measurement), and **ISO/IEC 27034**
-(Application Security).
+This document formalizes the **Code Quality Standardization (CQS)** for the Internara project,
+standardized according to **ISO/IEC 25010** (Product Quality Model) and **ISO/IEC 5055** (Software
+Quality Measurement). It establishes the rigorous technical gates required to ensure system
+maintainability, reliability, and security from **Conceptual Design** to **Artifact Delivery**.
 
-> **Governance Mandate:** All engineering activities must strictly adhere to these standards. Work
-> is considered "incomplete" until it satisfies the verification and validation (V&V) criteria
-> defined herein.
+> **Governance Mandate:** Adherence to these standards is mandatory for all construction activities.
+> Verification of these quality gates is a prerequisite for baseline promotion in the
+> **[Software Life Cycle Processes](software-lifecycle-processes.md)**.
 
 ---
 
-## 1. Quality Model: ISO/IEC 25010 Alignment
+## 1. Product Quality Model (ISO/IEC 25010 Alignment)
 
-Internara adopts the ISO/IEC 25010 quality model to manage systemic complexity within the
-Modular Monolith.
+Internara prioritizes the following quality sub-characteristics to manage systemic complexity and
+ensure architectural integrity.
 
-### 1.1 Maintainability & Portability
-- **Modular Isolation**: Modules must maintain strict logical boundaries. No physical foreign keys
-  across modules. All cross-module communication is restricted to **Service Contracts**.
-- **Analyzability**: Code must utilize explicit typing (PHP 8.4+), professional PHPDoc, and
-  semantic naming that reflects domain intent.
-- **Testability**: Every functional requirement must have an accompanying behavioral specification
-  (Pest v4) covering both positive and negative scenarios.
+### 1.1 Maintainability (Structural Integrity)
 
-### 1.2 Reliability & Fault Tolerance
-- **Maturity**: Every service method must handle state transitions and edge cases predictably.
-- **Recoverability**: Multi-step persistence operations must be encapsulated within database
-  transactions to ensure atomicity.
+- **Modularity**: Modules must maintain strict functional cohesion and logical isolation.
+  Cross-module interaction is restricted to **Service Contracts**.
+- **Analyzability**: Source code must utilize explicit typing (PHP 8.4+), professional PHPDoc, and
+  semantic naming that reflects domain concepts as defined in the
+  **[System Requirements Specification](system-requirements-specification.md)**.
+- **Testability**: Every capability must have an accompanying behavioral verification suite (Pest
+  v4) to ensure deterministic outcomes.
+
+### 1.2 Reliability (Operational Fault Tolerance)
+
+- **Maturity**: Service logic must demonstrate predictable behavior across all identified state
+  transitions.
+- **Recoverability**: All multi-entity persistence operations must be encapsulated within database
+  transactions to ensure atomicity and consistency.
 
 ---
 
 ## 2. End-to-End Protection Protocols (ISO/IEC 27034)
 
-Protection is implemented at every layer of the lifecycle to ensure system integrity.
+Protection is integrated into the engineering process to ensure information integrity and
+confidentiality.
 
-### 2.1 Entry/Exit Protection (Input/Output Validation)
-- **Input Validation**: All external input (Request, Component State) must be validated immediately
-  at the boundary using Laravel's `Validator` or custom DTOs.
-- **Output Sanitization**: All user-facing data must be sanitized to prevent XSS. Livewire
-  components must avoid `dangerouslySetInnerHTML` unless explicitly audited.
+### 2.1 Boundary Protection (Entry/Exit Validation)
 
-### 2.2 Data Seclusion & Encryption
-- **Identity Protection**: Use **UUID v4** for all entity identifiers to prevent enumeration and
-  unauthorized data discovery.
-- **Sensitive Data Encryption**: PII (Personally Identifiable Information) and credentials must be
-  encrypted at rest as mandated by the **[Internara Specs](../internal/internara-specs.md)**.
-- **Referential Integrity**: Managed at the **Service Layer** through strict domain logic to
-  compensate for the absence of physical foreign keys.
+- **Input Validation Invariant**: All external input must be validated at the system boundary
+  utilizing strict type-hinting and Laravel's validation subsystem.
+- **Output Sanitization**: Data rendered to the presentation layer must be sanitized to prevent
+  injection vulnerabilities (XSS).
 
-### 2.3 Access Protection (RBAC)
-- **Least Privilege**: Users and services must operate with the minimum necessary permissions.
-- **Modular Authorization**: Access to domain resources is strictly controlled via **Policies** and
-  **Gates**, mapped to the roles defined in the SSoT.
+### 2.2 Data Integrity & Privacy
+
+- **Identity Invariant**: Mandatory use of **UUID v4** for all entity identifiers to prevent
+  unauthorized enumeration attacks.
+- **Privacy Invariant**: Sensitive data (PII) must be encrypted at rest and masked within the
+  logging subsystem to comply with privacy mandates in the System Requirements Specification.
+- **Referential Integrity**: Managed exclusively at the **Service Layer** to preserve modular
+  portability (no physical foreign keys across modules).
 
 ---
 
-## 3. The Root-to-Delivery Pipeline
+## 3. Quantitative Quality Gates (ISO/IEC 5055)
 
-Quality is not inspected at the end; it is engineered from the root.
+Internara utilizes the following metrics as mandatory automated quality gates:
 
-### 3.1 Root (Design & Requirements)
-- **Conceptual Integrity**: Designs (Blueprints) must be traceable to a specific requirement in
-  the **[Internara Specs](../internal/internara-specs.md)**.
-- **Architectural Review**: Every modification must be validated against the **[Architecture Guide](architecture-guide.md)** to prevent regression.
-
-### 3.2 Process (Construction & Verification)
-- **TDD-First Construction**: Implementation is driven by tests to ensure correctness from the
-  first line of code.
-- **Static Analysis Gate**: Every commit must pass `composer lint` (Pint) and PHPStan Level 8
-  analysis.
-- **Verification & Validation (V&V)**: Distinguish between technical correctness (Verification)
-  and requirement fulfillment (Validation).
-
-### 3.3 Delivery (Release & Artifacts)
-- **Artifact Synchronization**: Code, tests, and documentation must evolve as a single unit.
-- **Release Narrative**: Release notes must be user-centric and analytically precise, reflecting
-  the "as-built" reality.
-- **Environment Parity**: Configurations must be managed via `setting()` to ensure consistent
-  behavior across all environments.
+| Characteristic      | Metric (ISO/IEC 5055)      | Limit/Target            |
+| :------------------ | :------------------------- | :---------------------- |
+| **Maintainability** | Cyclomatic Complexity      | < 10 per method         |
+| **Cognitive Load**  | Cognitive Complexity       | < 15 per class          |
+| **Control Flow**    | N-Path Complexity          | < 200                   |
+| **V&V Coverage**    | Behavioral Coverage (Pest) | > 90% per Domain Module |
+| **Security Risk**   | Vulnerability Count (SAST) | 0 Critical / 0 High     |
 
 ---
 
-## 4. Quantitative Quality Gates (ISO/IEC 5055)
+## 4. Construction Protocols (Root-to-Delivery)
 
-Automated measurement of structural quality.
+### 4.1 Design-to-Construction Traceability
 
-| Characteristic          | Metric                             | Limit/Target            |
-| :---------------------- | :--------------------------------- | :---------------------- |
-| **Maintainability**     | Cyclomatic Complexity              | < 10 per method         |
-| **Cognitive Load**      | Cognitive Complexity               | < 15 per class          |
-| **Control Flow**        | N-Path Complexity                  | < 200                   |
-| **Code Coverage**       | Behavioral Coverage (Pest)         | > 90% per Domain Module |
-| **Security Risk**       | Vulnerability Count (SAST)         | 0 Critical / 0 High     |
+- **Blueprint Alignment**: All implementation must demonstrate traceability to an approved
+  Architectural Blueprint.
+- **Architectural Compliance**: Every modification is validated against the
+  **[Architecture Description](architecture-description.md)**.
+
+### 4.2 Automated Verification Gates
+
+- **Static Analysis**: All commits must pass **PHPStan Level 8** analysis and **Laravel Pint**
+  linting.
+- **Contract Fulfillment**: Services must strictly implement their designated Service Contracts.
+
+### 4.3 Delivery Synchronization
+
+- **Artifact Consistency**: The code, verification tests, and documentation must be promoted as a
+  single, cohesive configuration baseline.
+- **Environment Parity**: Application behavior is managed via the `setting()` helper to ensure
+  uniformity across development and production environments.
 
 ---
 
-## 5. Technical Evolution & Maintenance
-
-Consistent with **Lehman’s Laws of Software Evolution**, the system is managed to prevent entropy.
-- **Refactoring Mandate**: If modification increases cognitive complexity beyond limits,
-  refactoring is mandatory before feature delivery.
-- **Obsolescence**: Deprecated paths must be removed proactively once their replacement is
-  stabilized.
-
----
-
-_By strictly adhering to these end-to-end standardization protocols, Internara ensures a resilient,
-secure, and high-quality software ecosystem that fulfills its foundational specifications._
+_By strictly adhering to these ISO-standardized quality gates, Internara ensures a high-fidelity,
+secure, and maintainable software ecosystem that remains fully aligned with its foundational
+specifications._

@@ -2,206 +2,114 @@
 
 **Series Code**: `ARC01-BOOT-01` **Status**: `Completed`
 
-> **Spec Alignment:** This blueprint implements the **Platform and Technology** requirements
-> (Section 5) and **Administrative Management** (Section 1) of the
-> **[Internara Specs](../../internara-specs.md)**. It focuses on reducing deployment friction.
+> **System Requirements Specification Alignment:** This configuration baseline implements the **Administrative Orchestration**
+> ([SYRS-F-101]) and **Architecture & Maintainability** ([SYRS-NF-601], [SYRS-NF-602]) requirements
+> of the authoritative
+> **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Automate the system initialization process to ensure a reliable and fast deployment
-experience.
+**Strategic Purpose**: Automate the system initialization process to ensure a resilient, secure, and
+repeatable deployment experience.
 
 **Objectives**:
 
-- Eliminate manual configuration errors during setup.
-- Provide a professional onboarding experience for institutional administrators.
-
-**Scope**: Deploying Internara currently requires manual CLI steps (migrations, seeding, env
-configuration) which is prone to human error. This version introduces automated tools to handle
-these tasks.
+- Eliminate configuration drift and manual orchestration errors during deployment.
+- Provide a professional, high-trust onboarding experience for institutional stakeholders.
+- Execute deep environmental validation to ensure host compatibility.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
+### 2.1 Capability Set
 
+- **Automated Installer CLI**: A unified `app:install` command to bootstrap the environment
+  baseline.
+- **Graphical Setup Wizard**: An 8-step interactive interface for institutional identity
+  configuration and state-persistent onboarding.
+- **Pre-flight System Auditor**: Automated validation of PHP extensions, directory permissions, and
+  database connectivity.
+- **Setup Security Baseline**: CLI-generated authorization tokens to prevent unauthorized web-based
+  orchestration.
 
-**Feature Set**:
+### 2.2 Stakeholder Personas
 
-
-
-- **Automated Installer CLI**: A single command (`app:install`) to bootstrap the entire environment.
-
-- **Web Setup Wizard**: A 8-step graphical interface for initial configuration with state persistence.
-
-- **Pre-flight System Auditor**: Automated check for directory permissions, PHP extensions, and DB connectivity.
-
-- **Setup Token Security**: CLI-generated authorization token to prevent unauthorized web access.
-
-
-
-**User Stories**:
-
-
-
-- As an **IT Staff**, I want the system to verify my server environment before I start configuration so that I don't encounter errors halfway through.
-
-- As an **IT Staff**, I want to run a single command to install the system so that I don't miss critical setup steps.
-
-- As a **Principal/Admin**, I want a web interface to configure my school's logo and name during the first run so that the system reflects our identity immediately.
-
-
+- **IT Staff**: Utilizes the auditor and CLI tools to verify environment health and bootstrap the
+  platform.
+- **Principal/Admin**: Utilizes the web wizard to establish institutional identity (`brand_name`,
+  `brand_logo`) without technical overhead.
 
 ---
 
+## 3. Architectural Impact (Logical View)
 
+### 3.1 Modular Decomposition
 
-## 3. Technical Architecture (Architectural Impact)
+- **Setup Module**: Dedicated domain for installation logic and initialization state persistence.
 
+### 3.2 Security Architecture
 
+- **Verification Middleware**: `ProtectSetupRoute` and `RequireSetupAccess` for lifecycle control.
+- **Authentication**: Mandatory one-time token verification for initial web access.
+- **Self-Lockdown Invariant**: Automated 404 lockdown of setup routes once installation is
+  certified.
 
-**Modules**:
+### 3.3 Persistence Logic
 
-
-
-- **Setup**: Dedicated module for installation and initialization logic.
-
-
-
-**Data Layer**:
-
-
-
-- **Seeding**: Orchestrated execution of Core and Shared seeders.
-
-- **UUID Identity**: All created records utilize UUIDs.
-
-- **State Persistence**: Current setup step is persisted to the `settings` table to allow resumption after disconnects.
-
-
-
-**Security Logic**:
-
-
-
-- **Middleware Protection**: `ProtectSetupRoute` and `RequireSetupAccess` strictly control wizard lifecycle.
-
-- **One-Time Token**: 32-character random token required for initial web access, purged upon completion.
-
-- **Self-Destruction**: Total lockdown of setup routes once `app_installed` is true and SuperAdmin exists.
-
-- **Recovery Command**: `app:setup-reset` CLI command to bypass lockdown in case of catastrophic installation failure.
-
-
-
-**Settings**:
-
-
-
-- Integration with the `Setting` module to persist `brand_name`, `brand_logo`, and SMTP details.
-
-
+- **Identity Invariant**: All initialization records utilize **UUID v4**.
+- **State Persistence**: Setup progress is persisted to the `settings` table to allow for
+  interrupted session resumption.
 
 ---
 
+## 4. Presentation Strategy (User Experience View)
 
+### 4.1 Design Invariants
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
-
-
-
-**Design Philosophy**: Minimalist, guided, and high-trust onboarding.
-
-
-
-**Finalized User Flow**:
-
-
-
-1. **Welcome & Language**: Introduction to Internara and locale selection (ID/EN).
-
-2. **Environment**: Automated system check (Permissions, Extensions, DB).
-
-3. **School**: Institutional identity configuration (Name, Logo).
-
-4. **Account**: Initial Super-Administrator registration (Associated with School).
-
-5. **Department**: Defining academic pathways.
-
-6. **Internship**: Setting up management periods.
-
-7. **System**: SMTP configuration with "Test Connection" and "Skip for Now" options.
-
-8. **Complete**: Finalization and redirection to login.
-
-
-
-**Mobile-First**:
-
-
-
-- Setup Wizard is fully responsive, tested on multiple viewport sizes.
-
-
-
-**Multi-Language**:
-
-- Full support for **Indonesian** and **English** across all steps.
+- **Flow Control**: Guided 8-step flow: Welcome -> Environment -> School -> Account -> Department ->
+  Internship -> System -> Complete.
+- **Accessibility**: Full localization in **ID** and **EN** across all onboarding interfaces.
+- **Responsiveness**: Mobile-first design for all setup components.
 
 ---
 
 ## 5. Success Metrics (KPIs)
 
-- **Installation Velocity**: Reduced setup time from ~15 minutes to < 2 minutes.
-- **Reliability**: Zero manual `.env` configuration errors required for standard installation.
-- **Authorization**: 100% of web setup requests are authorized via CLI-generated tokens.
+- **Initialization Velocity**: Reduced bootstrapping duration from >15 minutes to < 120 seconds.
+- **Configuration Integrity**: Zero manual `.env` modifications required for a standard baseline.
+- **Access Control**: 100% of web setup requests verified via authorized tokens.
 
 ---
 
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
+## 6. Exit Criteria & Verification Protocols
 
-**Acceptance Criteria**:
+A design series is considered realized only when it satisfies the following gates:
 
-- [x] **Zero-Config Install**: `app:install` successfully bootstraps environment.
-- [x] **Wizard Completion**: Institutional branding correctly persists to `setting()`.
-- [x] **One-Time Use**: Setup module is inaccessible after completion.
-
-**Testing Protocols**:
-
-- [x] 100% Test Pass Rate for the `Setup` module (23 Tests).
-- [x] **Feature Coverage**: End-to-end flow validated in `SetupFlowTest`.
-- [x] **Unit Coverage**: Service logic validated in `SetupServiceTest` and `InstallerServiceTest`.
-
-**Quality Gates**:
-
-- [x] **Spec Verification**: Complies with SIM-PKL initialization requirements.
-- [x] **Static Analysis**: Clean (`pint`, `lint`).
-- [x] **Architecture**: Strict Modular Isolation maintained.
+- **Verification Gate**: 100% pass rate across the 23-test verification suite via
+  **`composer test`**.
+- **Quality Gate**: Clean compliance with static analysis via **`composer lint`**.
+- **Acceptance Criteria**:
+    - `app:install` successfully bootstraps the authoritative baseline.
+    - Institutional metadata correctly persists to the `setting()` registry.
+    - Setup module becomes inaccessible post-release.
 
 ---
 
-## 7. Implementation Summary
+## 7. Realization Summary
 
-The system initialization flow has been successfully implemented with a focus on security, 
-resilience, and architectural integrity.
+The initialization framework has been successfully implemented with a focus on systemic resilience
+and security.
 
-- **Deep System Audit**: Implemented a dedicated `SystemAuditor` service that performs 
-  comprehensive pre-flight checks, including PHP extensions, folder permissions, and database 
-  connectivity.
-- **8-Step Guided Wizard**: Refactored the onboarding flow to include a reactive Environment 
-  Check and optimized the sequence to **School -> Account** for better data context.
-- **State Persistence**: Migrated setup progress storage from volatile Sessions to the 
-  permanent `Setting` module, ensuring users can resume the wizard after disconnects.
-- **Hardened Security**: Implemented a one-time `setup_token` verified against the database 
-  and enforced a total 404 lockdown of setup routes once installation is detected.
-- **CLI Utilities**: Enhanced `app:install` with detailed audit feedback and added 
-  `app:setup-reset` for emergency recovery.
+- **System Auditor**: Deep validation of environmental dependencies.
+- **Guided Onboarding**: Optimized 8-step flow ensuring data context (School -> Account).
+- **Hardened Security**: Multi-layer token verification and automated route destruction.
 
 ---
 
-## 8. vNext Roadmap (v0.10.0: Integrative Excellence & Competency Mastery)
+## 8. vNext Roadmap (v0.10.0)
 
-- **Competency Mapping**: Linking journals to curriculum rubrics.
-- **Mentoring Dialogue**: Formal feedback logs for Instructors/Mentors.
+- **Competency Mapping**: Linking daily journals to curriculum rubrics.
+- **Mentoring Dialogue**: Formal feedback logging for supervisory roles.

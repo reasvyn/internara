@@ -1,29 +1,32 @@
-# Pest PHP - Documentation Index
+# Pest PHP: Verification Documentation Index
 
-This directory contains specialized guides for using the Pest testing framework within Internara.
-
----
-
-## 1. Fundamentals
-
-- **[Writing Tests](writing-tests.md)**: Basic structure and the `it()` syntax.
-- **[Expectations API](expectations.md)**: Comprehensive list of available assertions.
-- **[Hooks](hooks.md)**: Managing setup and teardown logic.
-- **[Datasets](datasets.md)**: Performing matrix testing.
-
-## 2. Advanced Testing
-
-- **[Architecture Testing](arch-testing.md)**: Enforcing modular code rules.
-- **[Browser Testing](browser-testing.md)**: End-to-end testing with Playwright.
-- **[Mutation Testing](mutation-testing.md)**: Verifying the quality of your tests.
-- **[Stress Testing](stress-testing.md)**: Load and performance testing.
-
-## 3. Tooling & Extensions
-
-- **[Mocking](mocking.md)**: Using mocks and spies in Pest.
-- **[Plugins](plugins.md)**: Extending Pest functionality.
-- **[Snapshot Testing](snapshot-testing.md)**: Testing complex output stability.
+This directory formalizes the utilization of the **Pest v4** framework for the Internara project,
+standardized according to **ISO/IEC 29119** (Software Testing). It provides technical guidance for
+constructing deterministic verification suites.
 
 ---
 
-_Refer to the [General Testing Index](../table-of-contents.md) for project-specific patterns._
+## 1. Foundational Verification
+
+- **[Writing Tests](writing-tests.md)**: Semantic structure utilizing the **`test(...)`** pattern.
+- **[Expectations API](expectations.md)**: Formal catalog of behavioral assertions.
+- **[Life Cycle Hooks](hooks.md)**: Orchestration of setup and teardown baselines.
+- **[Verification Datasets](datasets.md)**: Matrix-driven behavioral verification.
+
+## 2. Advanced Verification Protocols
+
+- **[Architecture Verification](arch-testing.md)**: Automated enforcement of modular isolation.
+- **[Browser Verification](browser-testing.md)**: End-to-end user flow validation via Playwright.
+- **[Mutation Verification](mutation-testing.md)**: Quantitative evaluation of verification quality.
+- **[Stress Verification](stress-testing.md)**: System performance and load concurrency audit.
+
+## 3. Infrastructure & Tooling
+
+- **[Dependency Mocking](mocking.md)**: Orchestration of mocks and spies within the V&V cycle.
+- **[Pest Extensions](plugins.md)**: Technical protocols for framework extensibility.
+- **[Output Snapshots](snapshot-testing.md)**: Verification of complex artifact stability.
+
+---
+
+_For Internara-specific verification patterns and domain invariants, refer to the
+**[Testing & Verification Standards](../testing-verification-guide.md)**._

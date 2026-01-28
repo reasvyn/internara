@@ -43,7 +43,7 @@ for your tests.
 ```php
 use function Pest\Faker\fake;
 
-it('generates a name', function () {
+test('generates a name', function () {
     $name = fake()->name; // random name...
 
     //
@@ -56,7 +56,7 @@ the locale to the function.
 ```php
 use function Pest\Faker\fake;
 
-it('generates a portuguese name', function () {
+test('generates a portuguese name', function () {
     $name = fake('pt_PT')->name; // Nuno Maduro
 
     //
@@ -108,7 +108,7 @@ tests. When using Pest's Laravel plugin, you may access all of those assertions 
 would.
 
 ```php
-it('has a welcome page', function () {
+test('has a welcome page', function () {
     $this->get('/')->assertStatus(200);
 });
 ```
@@ -119,7 +119,7 @@ variable while using namespaced functions such as `actingAs`, `get`, `post` and 
 ```php
 use function Pest\Laravel\{get};
 
-it('has a welcome page', function () {
+test('has a welcome page', function () {
     get('/')->assertStatus(200);
     // same as $this->get('/')...
 });
@@ -170,11 +170,11 @@ components.
 ```php
 use function Pest\Livewire\livewire;
 
-it('can be incremented', function () {
+test('can be incremented', function () {
     livewire(Counter::class)->call('increment')->assertSee(1);
 });
 
-it('can be decremented', function () {
+test('can be decremented', function () {
     livewire(Counter::class)
         ->call('decrement')
         ->assertSee(-1);

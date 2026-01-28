@@ -17,13 +17,13 @@ Modules are classified into five distinct tiers based on their functional role a
 decoupling from the Internara domain. This classification governs the **Dependency Direction** and
 **Interface Control Protocols**.
 
-| Category      | Functional Role          | Portability Requirement        | Example Artifacts           |
-| :------------ | :----------------------- | :----------------------------- | :-------------------------- |
-| **Shared**    | Abstract Utilities       | **High (Project-Agnostic)**    | `HasUuid`, `EloquentQuery`  |
-| **Core**      | Domain Blueprint         | **Low (Business-Specific)**    | `AcademicYear`, `BaseRoles` |
-| **Support**   | Infrastructure Bridge    | **Medium (Environment-Aware)** | `ModuleGenerators`, `Audit` |
-| **UI**        | Design System            | **Low (Identity-Specific)**    | `AppLayout`, `Instrument`   |
-| **Domain**    | Business Logic Execution | **High (Domain-Encapsulated)** | `Internship`, `Journal`     |
+| Category    | Functional Role          | Portability Requirement        | Example Artifacts           |
+| :---------- | :----------------------- | :----------------------------- | :-------------------------- |
+| **Shared**  | Abstract Utilities       | **High (Project-Agnostic)**    | `HasUuid`, `EloquentQuery`  |
+| **Core**    | Domain Blueprint         | **Low (Business-Specific)**    | `AcademicYear`, `BaseRoles` |
+| **Support** | Infrastructure Bridge    | **Medium (Environment-Aware)** | `ModuleGenerators`, `Audit` |
+| **UI**      | Design System            | **Low (Identity-Specific)**    | `AppLayout`, `Instrument`   |
+| **Domain**  | Business Logic Execution | **High (Domain-Encapsulated)** | `Internship`, `Journal`     |
 
 ---
 

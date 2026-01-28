@@ -15,7 +15,7 @@ As example, let's say you have a string response coming from an API. You can use
 ensure that the response is not changing unexpectedly.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     $response = $this->get('/contact');
 
     expect($response)->toMatchSnapshot();

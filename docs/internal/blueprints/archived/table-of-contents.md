@@ -1,11 +1,12 @@
-# Archived Application Blueprints - Documentation Index
+# Archived Design Baselines: Historical Index
 
-This directory contains historical pre-development blueprints for completed or deprecated version
-series.
+This index centralizes the **Historical Architecture Design Records (ADR)** for the Internara
+project. These records represent decommissioned or realized design intents that are no longer
+actively utilized for current development orchestration.
 
 ---
 
-## 1. Project Plans
+## 1. Historical Engineering Series
 
 - **[05-ARC01-OPER-01 (Operational)](05-ARC01-OPER-01-Operational-Layer.md)**
 - **[04-ARC01-INST-01 (Institutional)](04-ARC01-INST-01-Institutional.md)**
@@ -15,5 +16,5 @@ series.
 
 ---
 
-_For active or planned engineering series, refer to the
-**[Strategy Index](../table-of-contents.md)**._
+_For active developmental milestones and planned engineering series, refer to the
+**[Strategic Design Index](../table-of-contents.md)**._

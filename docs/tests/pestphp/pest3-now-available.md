@@ -53,7 +53,7 @@ of your code your test covers using the `covers()` function.
 ```php
 covers(TodoController::class);
 
-it('list todos', function () {
+test('list todos', function () {
     $this->getJson('/todos')->assertStatus(200);
 });
 ```
@@ -92,7 +92,7 @@ Once you have identified the untested code, you can write additional tests to co
 ```diff
 covers(TodoController::class);
 
-it('list todos', function () {
+test('list todos', function () {
 +    Todo::factory()->create(['name' => 'Buy milk']);
 
 -    $this->getJson('/todos')->assertStatus(200);
@@ -265,7 +265,7 @@ Finally, you can create todos by using the `todo()` method. Also, you may use th
 management system.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo(assignee: 'taylor@laravel.com', issue: 123);
 ```
@@ -274,7 +274,7 @@ Also, it is often helpful to provide additional context for a todo. Pest allows 
 for a todo by providing a string to the `note` argument of the `todo()` method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->todo(
     note: <<<NOTE
@@ -289,7 +289,7 @@ Once a todo is completed, you can mark it as work in progress by using the `wip(
 as done by using the `done()` method.
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     //
 })->wip(assignee: 'taylor@laravel.com', issue: 123); // or ->done()
 ```
@@ -318,12 +318,12 @@ describe('home', function () {
         //
     });
 
-    it('can be visited', function () {
+    test('can be visited', function () {
         //
     });
 
     describe('footer', function () {
-        it('contains a link to the contact page', function () {
+        test('contains a link to the contact page', function () {
             //
         });
     });
@@ -393,7 +393,7 @@ already being used in the new Arch Presets, but you can use them individually as
   Asserts a class only "allows" the given public methods.
 - [`not->toHavePublicMethods()`](/docs/arch-testing#expect-toHavePublicMethods) - Asserts that a
   class does not have public methods.
-- [`toUseTrait()`](/docs/arch-testing#expect-toUseTrait) - Asserts that a class uses the given
+- [`toUseTratest()`](/docs/arch-testing#expect-toUseTrait) - Asserts that a class uses the given
   trait.
 - [`toUseTraits()`](/docs/arch-testing#expect-toUseTraits) - Asserts that a class uses the given
   traits.
@@ -416,7 +416,7 @@ In Pest 3, we've introduced a new `after()` method that allows you to run a spec
 callback after a specific test or group of tests using describe.
 
 ```php
-it('may list todos', function () {
+test('may list todos', function () {
     //
 })->after(function () {
     // This will run after this test only...

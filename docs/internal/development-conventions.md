@@ -1,8 +1,8 @@
 # Development Conventions: Engineering Standards
 
 This document codifies the **Construction Standards** for the Internara project, ensuring semantic
-consistency, maintainability, and structural integrity according to **ISO/IEC 11179** (Metadata)
-and **ISO/IEC 25010** (Maintainability).
+consistency, maintainability, and structural integrity according to **ISO/IEC 11179** (Metadata) and
+**ISO/IEC 25010** (Maintainability).
 
 > **Governance Mandate:** These conventions serve as the technical implementation of the
 > authoritative **[Internara Specs](../internal/internara-specs.md)**. All software artifacts must
@@ -36,6 +36,7 @@ Omission** rule for namespaces.
   load during cross-module integration.
 
 **Example**:
+
 - **File Path**: `modules/Internship/src/Services/InternshipService.php`
 - **Namespace**: `namespace Modules\Internship\Services;` (✅ Correct)
 
@@ -46,6 +47,7 @@ Omission** rule for namespaces.
 Names must reflect the **conceptual intent** of the entity, not its implementation detail.
 
 ### 3.1 Class Identifiers
+
 - **Controllers/Livewire**: PascalCase reflecting the user action or resource (e.g.,
   `ManageAttendance`).
 - **Services**: PascalCase with the `Service` suffix (e.g., `AssessmentService`).
@@ -63,8 +65,8 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
 
 ### 4.1 Identity: UUID Invariant
 
-All entities must utilize **UUID v4** for identification to prevent enumeration and ensure
-modular portability.
+All entities must utilize **UUID v4** for identification to prevent enumeration and ensure modular
+portability.
 
 - **Implementation**: Utilize the `HasUuid` concern from the `Shared` module.
 - **Isolation Constraint**: **Physical foreign keys across module boundaries are forbidden**.
@@ -73,12 +75,14 @@ modular portability.
 ### 4.2 State Lifecycle: `HasStatuses`
 
 Operational entities must track their lifecycle transitions using the `HasStatuses` concern.
+
 - **Rationale**: Provides an immutable audit trail of state changes ("who", "when", "why") as
   required for monitoring.
 
 ### 4.3 Temporal Scoping: `HasAcademicYear`
 
 Data must be automatically scoped by the active academic cycle.
+
 - **Mechanism**: The `HasAcademicYear` concern filters all queries by the value of
   `setting('active_academic_year')`.
 
@@ -92,12 +96,14 @@ The **Service Layer** is the exclusive repository for business logic and orchest
 
 Domain services should extend `Modules\Shared\Services\EloquentQuery` to utilize standardized CRUD
 operations.
+
 - **Standardized API**: `all()`, `paginate()`, `create()`, `update()`, `delete()`, `find()`,
   `query()`.
 - **Overriding Logic**: Only override base methods when injecting cross-module side-effects or
   complex domain events. Always utilize database **Transactions** for multi-entity operations.
 
 ### 5.2 Service Design Invariants
+
 - **Contract-First**: Always type-hint **Contracts**, never concrete implementations, for
   cross-module dependencies.
 - **Strict Isolation**: Direct instantiation of external module classes (especially Models) is
@@ -126,17 +132,18 @@ Violation**.
 
 - **Translation Protocol**: All text must be resolved via `__('module::file.key')`.
 - **Contextual Formatting**: Dates, currency, and numerical values must be formatted according to
-   the active locale (`id` or `en`).
+  the active locale (`id` or `en`).
 
 ---
 
 ## 8. Documentation (The Engineering Record)
 
 Every public class and method must include professional PHPDoc in English.
+
 - **Analytical Intent**: Describe the "why" and "what," not the obvious "how."
 - **Strict Typing**: All `@param` and `@return` tags must match the method signature's strict types.
 
 ---
 
-_Non-compliance with these conventions indicates a failure of architectural integrity and will result
-in the rejection of the artifact during the V&V phase._
+_Non-compliance with these conventions indicates a failure of architectural integrity and will
+result in the rejection of the artifact during the V&V phase._

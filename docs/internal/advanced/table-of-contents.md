@@ -1,22 +1,26 @@
-# Advanced Engineering - Documentation Index
+# Advanced Engineering: System Evolution Index
 
-This directory is reserved for senior developers managing the system's core architecture. These
-guides cover complex customizations and future performance roadmaps.
-
----
-
-## 1. Advanced Scaffolding
-
-- **[Advanced Overview](advanced-overview.md)**: When and how to use advanced engineering patterns.
-- **[Custom Module Generator](custom-module-generator.md)**: Overriding default Laravel Modules
-  generators to enforce project standards.
-
-## 2. Roadmaps (Future)
-
-- **Modular Performance Tuning**: Optimizing auto-discovery and hydration (Planned).
-- **Service Mesh Strategy**: Internal inter-module communication scaling (Planned).
+This index centralizes the technical records for the **Advanced Engineering** processes of the
+Internara project, consistent with **ISO/IEC 12207**. It defines the protocols for systemic
+evolution, specialized orchestrations, and future architectural roadmaps.
 
 ---
 
-_Use standard patterns defined in the **[Development Workflow](../development-workflow.md)** unless
-a specific business requirement necessitates an advanced solution._
+## 1. Modular Evolution Protocols
+
+- **[Engineering Overview](advanced-overview.md)**: Applicability and compliance standards for
+  advanced extensions.
+- **[Custom Scaffolding](custom-module-generator.md)**: Protocols for the extension of automated
+  modular generators.
+
+## 2. Strategic Performance Roadmaps
+
+- **Modular Hydration Tuning**: Protocols for the optimization of auto-discovery and state
+  persistence cycles (Planned).
+- **Service Mesh Architecture**: Internal communication scaling strategies for high-concurrency
+  environments (Planned).
+
+---
+
+_Advanced orchestrations must satisfy the **[Code Quality Standardization](../code-quality-standardization.md)**
+and demonstrate fulfillment of requirements defined in the System Requirements Specification._

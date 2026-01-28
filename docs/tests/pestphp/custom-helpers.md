@@ -29,7 +29,7 @@ function asAdmin(): TestCase
     return test()->actingAs($user);
 }
 
-it('can manage users', function () {
+test('can manage users', function () {
     asAdmin()->get('/users')->assertOk();
 });
 ```
@@ -56,7 +56,7 @@ function mockPayments(): object
 }
 
 // tests/Feature/PaymentsTest.php
-it('may buy a book', function () {
+test('may buy a book', function () {
     $client = mockPayments();
 
     //
@@ -88,7 +88,7 @@ class TestCase extends BaseTestCase
 pest()->extend(TestCase::class)->in('Feature');
 
 // tests/Feature/PaymentsTest.php
-it('may buy a book', function () {
+test('may buy a book', function () {
     $client = $this->mockPayments();
 
     //

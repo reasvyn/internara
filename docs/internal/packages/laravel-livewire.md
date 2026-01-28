@@ -1,79 +1,65 @@
-# Laravel Livewire: Reactive Modular UI
+# Laravel Livewire: Presentation Layer Orchestration
 
-Livewire is the primary framework for building interactive user interfaces in Internara. By
-leveraging the TALL stack, we maintain a simplified, full-stack development experience while
-achieving SPA-like reactivity.
-
----
-
-## 1. Architectural Role in Modules
-
-In our layered architecture, Livewire acts as the **Presentation Layer**.
-
-### 1.1 Strict Gating (Thin Components)
-
-Livewire components **must not** contain business logic. Their responsibilities are:
-
-- Capturing user input.
-- Managing local UI state (e.g., toggling modals).
-- Delegating data processing to **Service** classes.
-- Rendering views using **MaryUI** and **DaisyUI** components.
-
-### 1.2 Modular Discovery
-
-We use the `module::component` syntax. This is made possible by the
-`mhmiton/laravel-modules-livewire` bridge.
-
-- **Example**: `@livewire('user::profile-form')` points to
-  `modules/User/src/Livewire/ProfileForm.php`.
+This document formalizes the integration of **Laravel Livewire**, which serves as the primary engine
+for high-fidelity, reactive user interfaces within the Internara project. It defines the technical
+protocols required to maintain the **Thin Component** invariant and architectural purity.
 
 ---
 
-## 2. Dependency Injection: The `boot()` Rule
+## 1. Presentation View (Structural Invariants)
 
-A critical convention in Internara: **Never use the constructor for Dependency Injection in Livewire
-components.**
+Livewire components are restricted to the orchestration of UI state and user interaction, as defined
+in the **[Architecture Description](../../internal/architecture-description.md)**.
 
-### Why?
+### 1.1 The Thin Component Mandate
 
-Livewire's hydration cycle recreates the component instance on every request. Injecting dependencies
-in the constructor can lead to stale objects or hydration failures.
+- **Responsibility**: Components must restrict operations to input capture, local state management
+  (e.g., modal visibility), and event orchestration.
+- **Logic Delegation**: Implementation of domain rules or persistence logic within Livewire is
+  strictly prohibited. All operations must be delegated to the **Service Layer**.
 
-### The Correct Way
+### 1.2 Dependency Injection Protocol (Life Cycle Rule)
 
-Use the `boot()` method to inject your **Contracts**.
+To ensure compatibility with the Livewire hydration baseline, constructor-based injection is
+forbidden.
 
-```php
-protected UserServiceInterface $userService;
-
-public function boot(UserServiceInterface $userService): void
-{
-    $this->userService = $userService;
-}
-```
-
----
-
-## 3. Inter-Module Communication
-
-To maintain modular isolation, Livewire components should never reference other components from
-different modules directly. Use these approved patterns:
-
-### 3.1 Browser Events (Client-Side)
-
-The preferred method for dynamic updates.
-
-- **Trigger**: `$this->dispatch('user-updated')`.
-- **Listen**: `#[On('user-updated')]` in another module's component.
-
-### 3.2 UI Slots (Server-Side)
-
-For static or layout-level injection.
-
-- **Usage**: Modules register their components to a named slot (e.g., `navbar.actions`).
-- **Render**: The `UI` module renders these slots via `@slotRender`.
+- **Protocol**: Inject **Service Contracts** exclusively via the `boot()` or `mount()` life cycle
+  methods.
+- **Rationale**: Prevents hydration failures and ensures that resolved dependencies are persistent
+  across state-altering requests.
 
 ---
 
-_Livewire is our most powerful UI tool. Following these conventions ensures that your interfaces
-remain fast, secure, and easy to test._
+## 2. Technical Integration Baselines
+
+### 2.1 Modular Component Discovery
+
+Internara utilize semantic namespaces for cross-module component invocation.
+
+- **Convention**: `@livewire('module::component-name')`.
+- **Bridge**: Facilitated by the `mhmiton/laravel-modules-livewire` orchestrator.
+
+### 2.2 Cross-Module UI Orchestration (Events)
+
+To maintain domain isolation, inter-component communication across module boundaries is restricted
+to asynchronous browser events.
+
+- **Dispatcher**: `$this->dispatch('domain-event')`.
+- **Listener**: Utilizes the `#[On('domain-event')]` attribute to trigger localized state updates.
+
+---
+
+## 3. Human-Centered Design Standards
+
+Livewire implementation must demonstrate compliance with **ISO 9241-210** and the **Mobile-First**
+mandate defined in the **[UI/UX Development Guide](../ui-ux-development-guide.md)**.
+
+- **Responsiveness**: Utilization of Tailwind v4 utility classes for progressive enhancement.
+- **Localization**: Native support for translation keys; zero hard-coding of user-facing text.
+- **V&V Mandatory**: Component behavior must be verified via **`composer test`** using the Livewire
+  testing utilities.
+
+---
+
+_By strictly governing the presentation layer engine, Internara ensures a high-performance,
+maintainable, and architecturally resilient user experience._

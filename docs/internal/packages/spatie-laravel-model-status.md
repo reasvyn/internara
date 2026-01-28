@@ -1,58 +1,62 @@
-# Spatie Model Status: Standardized Lifecycles
+# Spatie Model Status: Entity Lifecycle Orchestration
 
-To manage complex entity states (e.g., `Internship`: Applied -> Active -> Completed), Internara
-utilizes the `spatie/laravel-model-status` package. This allows us to track history and reasons for
-status changes without polluting our domain tables with status flags.
-
----
-
-## 1. Rationale: Auditability
-
-Unlike a simple `status` column, this package stores state changes in a separate `statuses` table.
-
-- **Audit Trail**: You can see _who_ changed a status and _why_ (via the `reason` field).
-- **History**: The entire lifecycle of a record is preserved.
+This document formalizes the integration of the `spatie/laravel-model-status` package, which powers
+the **Entity Lifecycle** baseline for the Internara project. It establishes the technical protocols
+required to track state transitions and maintain an immutable audit trail of domain status changes.
 
 ---
 
-## 2. Implementation in Modules
+## 1. Rationale: Systemic Auditability
 
-### 2.1 Apply the HasStatuses Concern
+Internara prioritizes forensic transparency for all operational entities.
 
-```php
-use Spatie\ModelStatus\HasStatuses;
-
-class InternshipRegistration extends Model
-{
-    use HasStatuses;
-}
-```
-
-### 2.2 Setting & Transitioning
-
-```php
-$registration->setStatus('approved', 'Student passed the technical test.');
-
-// Retrieve current state
-echo $registration->currentStatus; // "approved"
-```
+- **Audit Invariant**: Utilization of a dedicated `statuses` table to decouple lifecycle state from
+  primary domain attributes.
+- **Traceability**: Captured metadata includes the subject responsible for the transition and the
+  analytical justification (`reason`).
 
 ---
 
-## 3. Querying by Status
+## 2. Construction Invariants (Implementation View)
 
-The concern provides powerful scopes for filtering your data grids.
+### 2.1 Domain Application
 
-```php
-// Get all pending applications
-$pending = InternshipRegistration::whereStatus('pending')->get();
+Entities with non-binary lifecycles (e.g., `Internship`, `Assessment`) must implement the
+`HasStatuses` concern.
 
-// Get all non-archived records
-$active = InternshipRegistration::whereNotStatus('archived')->get();
-```
+- **Requirement**: Entities must demonstrate compliance with the state transition rules defined in
+  the **[Architecture Description](../../internal/architecture-description.md)**.
+
+### 2.2 Orchestrating Transitions
+
+Status modifications must be accompanied by semantic reasoning to ensure data quality.
+
+- **Standard**:
+    ```php
+    $entity->setStatus('baseline_state', 'Semantic justification for transition');
+    ```
 
 ---
 
-_By standardizing on `Model Status`, we ensure that all business lifecycles in Internara are
-transparent and traceable. Refer to the **[Shared Concerns](../shared-concerns.md)** guide for
-details on global status helpers._
+## 3. Analytical Query Invariants
+
+To ensure high-performance data orchestration, services must utilize the provided query scopes.
+
+- **Scoping**: Use `whereStatus()` and `whereNotStatus()` to filter data grids at the database
+  layer.
+- **Validation**: Transition logic must verify that the requested state is valid for the current
+  domain context.
+
+---
+
+## 4. Integration with V&V
+
+All state machine transitions must be verified via **`composer test`**.
+
+- **Test Invariant**: Verification must confirm that unauthorized roles are prohibited from
+  triggering restricted status transitions.
+
+---
+
+_By strictly governing lifecycle orchestration, Internara ensures that the system state remains
+predictable, auditable, and aligned with stakeholder requirements for operational transparency._

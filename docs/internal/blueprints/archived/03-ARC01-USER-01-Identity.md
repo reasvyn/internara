@@ -1,121 +1,66 @@
-# Application Blueprint: v0.3.0 (Identity)
+# Application Blueprint: Identity & Security (ARC01-USER-01)
 
 **Series Code**: `ARC01-USER-01` **Status**: `Archived` (Released)
 
-> **Spec Alignment:** This blueprint implements the **Security** requirements of the
-> **[Internara Specs](../../../internara-specs.md)** (Section 10.6), specifically login via
-> email/password and role-based access control.
+> **Spec Alignment:** This configuration baseline implements the **Security & Integrity**
+> ([SYRS-NF-501], [SYRS-NF-502]) requirements of the authoritative
+> **[System Requirements Specification](../../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Implement a flexible and secure identity system that decouples authentication (User)
-from role-specific context (Profile).
+**Strategic Purpose**: Establish the foundational identity baseline, implementing secure
+authentication and the initial RBAC (Role-Based Access Control) framework.
 
 **Objectives**:
-
-- Decouple user credentials from role-specific attributes.
-- Implement a polymorphic profile system to support Students, Teachers, and Staff.
-- Enhance system privacy via automated data masking.
-
-**Scope**: A monolithic `User` model leads to architectural rigidity. We need a structure where
-identity is managed centrally but context is role-specific. This version addresses the "God Object"
-model issue and PII privacy.
+- Implement secure subject identification via email and cryptographic passwords.
+- Establish the formal User Role taxonomy (Instructor, Student, etc.) mandated by the SyRS.
+- Provide self-service profile management for system subjects.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
+### 2.1 Capability Set
+- **Authentication Orchestrator**: Secure login/logout flows with session integrity.
+- **RBAC Baseline**: Implementation of roles and granular permissions according to the stakeholder
+  requirements.
+- **Profile Subsystem**: Logic for subjects to update personal metadata and security credentials.
 
-- **Polymorphic Profiles**: Single `User` can have different profile types (Student, Teacher) with
-  specific fields (NISN, NIP).
-- **Automated Onboarding**: Automatic initialization of profile data upon account creation or role
-  assignment.
-- **PII Masking**: Automatic redacting of sensitive data (emails, passwords, IDs) in system logs.
-
-**User Stories**:
-
-- As a **User**, I want to log in with my email and password so that I can access my account safely.
-- As a **Student**, I want to provide my Student ID (NISN) during onboarding so that my school can
-  identify me.
-- As an **Admin**, I want system logs to hide sensitive user data to ensure privacy compliance.
+### 2.2 Stakeholder Personas
+- **Universal Subject**: Any identified system user requiring secure access to role-specific
+  capabilities.
 
 ---
 
-## 3. Technical Architecture (Architectural Impact)
+## 3. Architectural Impact (Logical View)
 
-**Modules**:
+### 3.1 Modular Decomposition
+- **Auth Module**: New domain for identity orchestration and session management.
+- **User Module**: Domain for managing user profiles and personal metadata.
+- **Permission Module**: Core domain for RBAC state and synchronization.
 
-- **Auth/User**: Refactored to handle only credentials and core identity.
-- **Profile**: New module for role-specific data using polymorphic relationships.
-- **Shared**: Enhanced with privacy utilities (Masker).
-
-**Data Layer**:
-
-- **Polymorphism**: `profiles` table with `profileable_type` and `profileable_id`.
-- **Identity**: All user and profile records use UUID v4.
-
-**Security**:
-
-- **Log Masking**: Integration of a custom Monolog processor to intercept and mask PII patterns.
+### 3.2 Security Architecture
+- **Encryption Invariant**: Passwords must be hashed using the **Argon2id** algorithm.
+- **Access Control**: Mandatory authorization check at every system boundary.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 4. Exit Criteria & Verification Protocols
 
-**Design Philosophy**: Secure identity and role-specific context.
+A design series is considered realized only when it satisfies the following gates:
 
-**User Flow**:
-
-1. User registers or is invited to the system via email.
-2. User logs in for the first time.
-3. System identifies the user's role and redirects to the "Complete Profile" flow.
-4. User provides role-specific details (e.g., Student provides NISN/Major).
-5. System verifies the data and unlocks the workspace.
-
-**Mobile-First**:
-
-- Profile management and onboarding forms are designed for responsive mobile usage.
-- Inputs for numeric IDs (NISN/NIP) use appropriate mobile keypad types.
-
-**Multi-Language**:
-
-- All profile field labels, validation messages, and privacy notices are localized in **Indonesian**
-  and **English**.
+- **Verification Gate**: 100% pass rate across the security verification suites via
+  **`composer test`**.
+- **Quality Gate**: zero static analysis violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Demonstrated enforcement of role-based route protection.
+    - Verified security of subject credentials at rest.
 
 ---
 
-## 5. Success Metrics (KPIs)
+## 5. vNext Roadmap (v0.4.0)
 
-- **Onboarding Success**: 100% of newly created users successfully initialize their polymorphic
-  profile record.
-- **Privacy Compliance**: 0 instances of unmasked PII found in logs during post-release audit.
-- **Architecture**: 100% removal of role-specific columns from the core `users` table.
-
----
-
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
-
-**Acceptance Criteria**:
-
-- [x] **Separation of Concerns**: User table contains no role-specific data (God Object remediated).
-- [x] **Automated Onboarding**: Profile records are created atomically with User roles.
-
-**Testing Protocols**:
-
-- [x] Feature tests for polymorphic relationship integrity.
-- [x] Audit tests for log masking efficiency across different data types.
-
-**Quality Gates**:
-
-- [x] **Spec Verification**: Security protocols align with Section 10.6 of the Internara Specs.
-- [x] Static Analysis Clean.
-
----
-
-## 7. vNext Roadmap (v0.4.0: Institutional Foundation)
-
-- **Institutional Context**: Schools and Departments.
-- **Academic Scoping**: Linking users to organizational units.
+- **Institutional Foundation**: Management of schools, departments, and partners.
+- **Placement Orchestration**: Initial logic for assigning users to locations.

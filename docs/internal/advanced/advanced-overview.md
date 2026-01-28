@@ -1,44 +1,48 @@
-# Advanced Engineering: Extending Internara
+# Advanced Engineering: System Evolution & Extensions
 
-This directory contains documentation for advanced development scenarios, architectural extensions,
-and complex customizations. These guides are intended for senior developers who need to evolve the
-system's core or build highly specialized domain modules.
+This directory formalizes the **Advanced Engineering** protocols for the Internara project,
+providing technical guidance for systemic extensions and specialized domain orchestrations. These
+guides are intended for senior engineers responsible for evolving the **Architecture Description
+(AD)** and the **Automated Tooling** ecosystem.
 
-> **Governance Mandate:** All advanced engineering efforts must remain compliant with the
-> authoritative **[Internara Specs](../internara-specs.md)**. Complexity must never compromise the
-> core product goals (Mobile-First, Multi-Language, Role-Based Access).
+> **Governance Mandate:** All advanced engineering activities must demonstrate traceability to the
+> authoritative **[System Requirements Specification](../system-requirements-specification.md)**.
+> Extensions must never violate the **Strict Isolation** invariants of the modular monolith.
 
 ---
 
-## 1. Advanced Guides Index
+## 1. Advanced Engineering Index
 
 ### 1.1 [Custom Module Scaffolding](custom-module-generator.md)
 
-Explains how to override the default Laravel Modules generators to enforce Internara's specific
-directory structure and strict-typing rules.
+Formal documentation for the extension and customization of the **Automated Tooling** to enforce
+Internara's specific structural and namespace invariants.
 
-### 1.2 Performance & Caching (Roadmap)
+### 1.2 Performance & System Optimization (Roadmap)
 
-Future guide on optimizing modular auto-discovery and hydration cycles in high-traffic environments.
-
----
-
-## 2. When to Use Advanced Guides
-
-Refer to these documents only after you have mastered the
-**[Core Architecture](../architecture-guide.md)** and standard
-**[Development Workflow](../development-workflow.md)**.
-
-### Best Practices:
-
-- **Pragmatic Minimalism**: Only use advanced patterns if the standard conventions are insufficient
-  for the business requirement.
-- **Maintainability First**: Advanced customizations must be fully documented and covered by
-  comprehensive tests (Pest v4).
-- **Terminological Consistency**: Ensure all custom components use standardized naming (e.g.,
-  `exceptions`, `setting()`).
+Future protocols for optimizing modular hydration, auto-discovery caching, and high-concurrency
+persistence cycles.
 
 ---
 
-_The goal of our advanced engineering is to make the system more resilient and automated, never more
-complex for complexity's sake._
+## 2. Applicability & Compliance
+
+These protocols should be utilized only when standard
+**[Development Conventions](../development-conventions.md)** are insufficient for fulfilling a
+complex functional requirement.
+
+### Engineering Invariants:
+
+- **Pragmatic Minimalism**: Complexity must be justifiable through demonstrated architectural or
+  performance necessity.
+- **Maintainability Invariant**: Advanced extensions must satisfy the
+  **[Code Quality Standardization](../code-quality-standardization.md)** and be accompanied by
+  comprehensive verification suites.
+- **V&V Mandatory**: All extensions must pass the full verification gate via **`composer test`** and
+  **`composer lint`**.
+
+---
+
+_Advanced engineering is the discipline of enhancing system resilience through automation and
+architectural precision, ensuring Internara remains scalable and maintainable throughout its
+evolution._

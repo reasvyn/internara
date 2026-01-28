@@ -1,8 +1,8 @@
 # Version Management: Configuration Baseline Standards
 
-This document formalizes the **Version Management** standards for the Internara project, adhering
-to **ISO/IEC 12207** (Configuration Management) and **ISO 10007** (Quality Management). It defines
-the protocols for establishing **Configuration Baselines**, lifecycle classification, and support
+This document formalizes the **Version Management** standards for the Internara project, adhering to
+**ISO/IEC 12207** (Configuration Management) and **ISO 10007** (Quality Management). It defines the
+protocols for establishing **Configuration Baselines**, lifecycle classification, and support
 governance to ensure systemic traceability and operational clarity.
 
 > **Governance Mandate:** All versioning decisions and baseline promotions must be traceable to the
@@ -28,6 +28,7 @@ To ensure precise configuration identification, Internara separates **Maturity**
 Policy**, and **Operational Status**.
 
 ### 2.1 Maturity Stages (Baseline Stability)
+
 - **Experimental**: Exploratory configuration.
 - **Alpha**: Internal construction; baseline is unstable.
 - **Beta**: Feature-complete; focusing on stabilization.
@@ -35,12 +36,14 @@ Policy**, and **Operational Status**.
 - **Stable**: Certified production baseline.
 
 ### 2.2 Support Policies (Maintenance Commitments)
+
 - **Active Support**: Full maintenance and evolutionary updates.
 - **Security Only**: Critical vulnerability patches exclusively.
 - **Snapshot**: Point-in-time baseline provided without maintenance guarantees.
 - **EOL (End of Life)**: No support provided; baseline is deprecated.
 
 ### 2.3 Operational Status (Baseline State)
+
 - **Planned** | **In Progress** | **Released** | **Deprecated** | **Archived**
 
 ---
@@ -48,13 +51,16 @@ Policy**, and **Operational Status**.
 ## 3. Configuration Identification Artifacts
 
 ### 3.1 `app_info.json` (Machine-Readable Identity)
+
 The authoritative technical baseline identifier.
+
 - **Requirements**: Must include `version`, `series_code`, and `support_policy`.
 
 ### 3.2 Analytical Release Notes (The Engineering Record)
+
 Located in `docs/versions/`, these document the **Realized Outcome** of a configuration baseline.
-- **Requirement**: Must reflect the as-built reality and verify the fulfillment of spec
-  milestones.
+
+- **Requirement**: Must reflect the as-built reality and verify the fulfillment of spec milestones.
 - **SSoT Sync**: Blueprints document **Intent**; Release Notes document **Outcome**.
 
 ---
@@ -62,12 +68,15 @@ Located in `docs/versions/`, these document the **Realized Outcome** of a config
 ## 4. Baseline Promotion & Archival Protocols
 
 ### 4.1 Promotion to 'Released' (Baseline Stabilization)
+
 1.  **Identity Audit**: Synchronize `app_info.json` with the target version and policy.
 2.  **Narrative Finalization**: Set internal status to `Released` in the release note.
 3.  **Registry Update**: Register the baseline in `docs/versions/versions-overview.md`.
-4.  **Baseline Tagging**: Create an annotated Git tag according to **[GitHub Protocols](github-protocols.md)**.
+4.  **Baseline Tagging**: Create an annotated Git tag according to
+    **[GitHub Protocols](github-protocols.md)**.
 
 ### 4.2 Transition to 'Archived' (Baseline Retirement)
+
 1.  **Metadata Update**: Reflect `Archived` status and `EOL` policy in all artifacts.
 2.  **Relocation**: Move release notes to `docs/versions/archived/` and blueprints to
     `docs/internal/blueprints/archived/`.

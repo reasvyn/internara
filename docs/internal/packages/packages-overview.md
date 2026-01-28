@@ -1,70 +1,67 @@
-# Package Integration: The Internara Ecosystem
+# Package Integration: The Internara Supporting Ecosystem
 
-Internara is built on the shoulders of giants. We leverage several high-quality Laravel packages to
-achieve our **Modular Monolith** architecture and reactive UI. This directory documents how we
-configure and wrap these dependencies to maintain our strict architectural standards.
+This document formalizes the **Supporting Ecosystem** for the Internara project, standardized
+according to **ISO/IEC 12207** (Supporting Life Cycle Processes). It defines the protocols for
+integrating third-party dependencies while maintaining the **Strict Isolation** invariants of the
+modular monolith.
 
 ---
 
-## 1. Core Architectural Drivers
+## 1. Architectural Drivers (Modularity Engine)
 
 ### 1.1 [nwidart/laravel-modules](nwidart-laravel-modules.md)
 
-The foundational engine for our modularity. It provides the directory structure and autoloader logic
-that allows us to treat each folder in `modules/` as a mini-application.
+The foundational orchestrator for domain isolation. It provides the structural baseline and
+autoloading logic required to maintain autonomous modular boundaries.
 
 ### 1.2 [mhmiton/laravel-modules-livewire](mhmiton-laravel-modules-livewire.md)
 
-A critical bridge that enables Livewire component discovery across modular boundaries. This allows
-for the `module::component` syntax in our views.
+The integration bridge for cross-module presentation logic, enabling semantic component discovery
+and modular view namespaces.
 
 ---
 
-## 2. Security & Identity
+## 2. Security & Governance (Access & Audit)
 
 ### 2.1 [spatie/laravel-permission](spatie-laravel-permission.md)
 
-The engine behind our **RBAC** system. We have wrapped this package into a portable `Permission`
-module, adding full **UUID** support and cross-module synchronization logic.
+The primary engine for **Identity & Access Management (IAM)**. This baseline is encapsulated within
+the `Permission` module, providing **UUID-based RBAC** as mandated by the System Requirements Specification.
 
 ### 2.2 [spatie/laravel-activitylog](spatie-laravel-activitylog.md)
 
-Powers our audit trails. It is integrated into the `Log` module to ensure all critical business
-actions are tracked and attributed to specific users.
+Orchestrates systemic auditability. It is integrated into the `Log` module to ensure that all
+state-altering operations satisfy the **Traceability** requirements of the System Requirements Specification.
 
 ---
 
-## 3. UI & State Management
+## 3. Presentation & State Persistence
 
-### 3.1 [Livewire/livewire](laravel-livewire.md)
+### 3.1 [Livewire](laravel-livewire.md)
 
-The primary driver for our interactive frontend. It allows us to manage complex state and reactive
-updates using pure PHP logic.
+The primary driver for high-fidelity, reactive user interfaces. It enables complex state
+orchestration through strict-typed PHP logic.
 
 ### 3.2 [spatie/laravel-model-status](spatie-laravel-model-status.md)
 
-Powers our **HasStatuses** concern. It provides a standardized way to manage entity lifecycles
-(e.g., Pending -> Approved) with a built-in audit trail.
-
-### 3.3 [spatie/laravel-medialibrary](spatie-laravel-medialibrary.md)
-
-Handles all file attachments and image processing. It is integrated with our `UI` file component to
-provide seamless uploads and previews.
+Implements the **Entity Lifecycle** baseline. It provides standardized state transitions and
+forensic audit trails for operational data.
 
 ---
 
-## 4. Our "Zero-Leak" Philosophy
+## 4. Technical Integration Invariants
 
-We do not use these packages in a standard way. Our configuration rules ensure:
+To prevent architectural regression, all package integrations must satisfy the following:
 
-- **Isolation**: Package configuration is injected at runtime by the module, preventing leakage into
-  the global `config/` directory.
-- **Portability**: Modules remain plug-and-play. Disabling a module also disables its corresponding
-  package integrations.
-- **Consistency**: All packages are configured to respect our **Namespace Convention** (omitting the
-  `src` segment).
+- **Isolation Invariant**: Configuration must be injected at runtime via modular providers; leakage
+  into the global baseline is prohibited.
+- **Namespace Invariant**: Integrations must respect the **src-Omission** namespace rule to maintain
+  modular portability.
+- **V&V Mandatory**: Every package integration must pass the automated verification gate via
+  **`composer test`**.
 
 ---
 
-_Refer to the individual guide for each package to understand its specific implementation patterns
-and best practices within Internara._
+_By strictly governing package integration, Internara ensures that the system remains
+architecturally pure and maintainable, leveraging external innovation without compromising modular
+integrity._

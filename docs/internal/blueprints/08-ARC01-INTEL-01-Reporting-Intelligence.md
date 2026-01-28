@@ -2,122 +2,105 @@
 
 **Series Code**: `ARC01-INTEL-01` **Status**: `Active`
 
-> **Spec Alignment:** This blueprint implements the **Mentoring and Evaluation** requirements
-> defined in the **[Internara Specs](../../internara-specs.md)** (Section 3). It specifically
-> addresses the need for "Competency Achievement Reports" and visualization of learning outcomes.
+> **System Requirements Specification Alignment:** This configuration baseline implements the **Assessment & Reporting**
+> ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative
+> **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Transform Internara into an "Intelligence Platform" that provides actionable reports
-and maintains a complete audit trail of student placements.
+**Strategic Purpose**: Transform Internara into a data-driven platform by formalizing the reporting
+engine and establishing systemic traceability for student placement transitions.
 
 **Objectives**:
 
-- Provide aggregated insights for Principals and Industry Partners.
-- Ensure transparency and traceability in student internship journeys.
-
-**Scope**: Current stakeholders lack aggregated insights. While individual data tracking exists,
-there is no high-level synthesis or reporting engine. Additionally, placement history is not
-traceable, making it difficult to audit student movements across partners.
+- Provide aggregated, actionable insights for institutional and industry stakeholders.
+- Ensure immutable transparency and forensic traceability in student internship trajectories.
+- Synthesize cross-module data into high-fidelity analytical visualizations.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
+### 2.1 Capability Set
 
-- **Reporting Engine**: Asynchronous PDF generation for institutional and class-level metrics.
-- **Placement History**: Chronological log of student reassignments with reasoning.
-- **Analytical Dashboard**: Visual synthesis of student engagement, at-risk identifiers, and partner
-  metrics.
+- **Reporting Orchestrator**: Asynchronous PDF generation engine for institutional and class-level
+  competency metrics.
+- **Placement Audit Subsystem**: Chronological logging of student reassignments with mandatory
+  justification invariants.
+- **Intelligence Dashboard**: Visual synthesis of engagement metrics and "At-Risk" identification
+  logic.
 
-**User Stories**:
+### 2.2 Stakeholder Personas
 
-- As an **Instructor**, I want to export a class-wide competency report so that I can evaluate
-  student progress collectively.
-- As a **Staff**, I want to see a student's placement history so that I can audit why they were
-  reassigned to different partners.
-- As an **Admin**, I want to identify "At-Risk" students automatically based on low activity logs to
-  provide timely intervention.
-
----
-
-## 3. Technical Architecture (Architectural Impact)
-
-**Modules**:
-
-- **Report**: New module dedicated to PDF generation and report history management.
-- **Internship**: Enhanced to include the placement logging logic and history tracking.
-- **Core**: Aggregator services for synthesizing cross-module data into dashboard metrics.
-
-**Data Layer**:
-
-- **History Tracking**: `internship_placement_history` table (UUID-based).
-- **Isolation**: Cross-module data retrieval strictly via `ExportableDataProvider` contracts.
-
-**Settings**:
-
-- Report templates retrieve institutional branding via `setting('brand_logo')` and
-  `setting('brand_name')`.
+- **Instructor**: Utilizes class-wide reports to evaluate collective competency achievement.
+- **Practical Work Staff**: Audits placement history to verify student movement across industry
+  partners.
+- **System Administrator**: Identifies at-risk students via engagement analytics to trigger
+  proactive interventions.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 3. Architectural Impact (Logical View)
 
-**Design Philosophy**: Data-driven visibility with high-performance responsiveness.
+### 3.1 Modular Decomposition
 
-**User Flow**:
+- **Report Module**: New domain dedicated to document orchestration and history management.
+- **Internship Module**: Enhanced with placement audit logic and historical tracking.
+- **Core Module**: Implementation of data aggregators for cross-module analytical synthesis.
 
-1. User navigates to the "Reports" or "Analytics" section.
-2. User selects desired filters (e.g., Academic Year, Class, Report Type).
-3. User triggers report generation.
-4. System queues the generation and displays a confirmation.
-5. User receives a toast notification once the report is ready.
-6. User downloads the completed PDF from the "Report History" list.
+### 3.2 Data Architecture
 
-**Mobile-First**:
+- **Audit Entity**: `internship_placement_history` (UUID-based identity).
+- **Communication Invariant**: Cross-module data retrieval restricted to `ExportableDataProvider`
+  Service Contracts.
 
-- Dashboards use responsive grid layouts that stack on small screens.
-- Reports are generated asynchronously to prevent blocking mobile UI interactions.
+### 3.3 System Configuration
 
-**Multi-Language**:
+- **Thematic Integration**: Templates retrieve institutional identity via the `setting()` registry
+  to ensure brand consistency in generated artifacts.
 
-- All report templates and dashboard labels are localized in **Indonesian** and **English**.
+---
+
+## 4. Presentation Strategy (User Experience View)
+
+### 4.1 Design Invariants
+
+- **Async Feedback**: "Fire-and-Forget" report generation with reactive toast notifications upon
+  completion.
+- **Responsiveness**: Dashboards utilize adaptive grid compositions that maintain legibility on
+  touch-optimized viewports.
+- **Multi-Language Integrity**: Full localization of dashboard labels and report templates in **ID**
+  and **EN**.
 
 ---
 
 ## 5. Success Metrics (KPIs)
 
-- **Reporting Efficiency**: 100% of PDF reports generated in the background without UI hangs.
-- **Audit Coverage**: 100% of student placement transitions recorded with valid reasoning.
-- **Intervention Rate**: Admins can identify at-risk students within 2 clicks from the dashboard.
+- **Operational Efficiency**: 100% of reports generated asynchronously to prevent UI blocking.
+- **Audit Integrity**: 100% of placement transitions accompanied by immutable timestamps and
+  rationale.
+- **Analytic Precision**: zero manual aggregation required for class-level competency reporting.
 
 ---
 
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
+## 6. Exit Criteria & Verification Protocols
 
-**Acceptance Criteria**:
+A design series is considered realized only when it satisfies the following gates:
 
-- [ ] **Class-Level Reporting**: Successful generation of multi-student competency summaries.
-- [ ] **Traceability**: Audit log correctly records time, user, and reason for every placement
-      change.
-
-**Testing Protocols**:
-
-- [ ] 100% Test Pass Rate in `Report` and `Internship` modules.
-- [ ] Verification of PDF layout integrity across small and large datasets.
-
-**Quality Gates**:
-
-- [ ] **Spec Verification**: Reports match the "Competency Achievement" format required by Specs.
-- [ ] Static Analysis Clean (`pint`, `lint`).
+- **Verification Gate**: 100% pass rate across the Report and Internship verification suites via
+  **`composer test`**.
+- **Quality Gate**: zero static analysis violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Demonstrated generation of multi-student competency summaries.
+    - Verified forensic trail for student placement history.
+    - Reports match the "Competency Achievement" format defined in the System Requirements Specification.
 
 ---
 
-## 7. vNext Roadmap (v0.9.0: System Initialization)
+## 7. vNext Roadmap (v0.9.0)
 
-- **CLI Installation**: Automated `php artisan app:install`.
-- **Setup Wizard**: Web-based configuration flow for branding and admin setup.
-- **Mobile-First Journals**: Optimization of the daily log interface for on-site usage.
+- **Automated Initialization**: Integrated `app:install` and Setup Wizard.
+- **Mobile-First Optimization**: Enhanced journal interfaces for on-site interaction.
+- **Security Hardening**: Implementation of setup-token authorization protocols.

@@ -32,7 +32,7 @@ You also have the option to assign a particular test to a group by chaining the 
 onto the test function.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->group('feature');
 ```
@@ -40,7 +40,7 @@ it('has home', function () {
 You may also assign a test to multiple groups.
 
 ```php
-it('has home', function () {
+test('has home', function () {
     //
 })->group('feature', 'browser');
 ```
@@ -62,7 +62,7 @@ In some cases, you may want to assign a whole file to a group. To do so, you may
 ```php
 pest()->group('feature');
 
-it('has home', function () {
+test('has home', function () {
     //
 });
 ```

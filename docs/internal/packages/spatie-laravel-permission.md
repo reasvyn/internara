@@ -1,55 +1,53 @@
-# Spatie Permissions: Modular RBAC
+# Spatie Permission: Modular IAM Orchestration
 
-Internara uses the `spatie/laravel-permission` package to power our **Role-Based Access Control**
-system. We have heavily customized this integration to support modularity, portability, and UUID
-identity.
-
----
-
-## 1. Modular Customizations
-
-To ensure the system works within our architecture, we've implemented three major enhancements:
-
-### 1.1 Support for UUIDs
-
-All permission-related models (Role, Permission) are configured to use **UUIDs** as primary keys,
-matching our application-wide identity standard.
-
-### 1.2 Module Ownership
-
-We added a `module` column to the `roles` and `permissions` tables. This allows us to:
-
-- Identify which module "owns" a permission.
-- Automatically clean up permissions when a module is uninstalled.
-- Group permissions in the UI for better administrative oversight.
-
-### 1.3 Runtime Configuration Injection
-
-To keep the `Permission` module portable, it overrides Spatie's global config at runtime. This means
-you don't need to touch `config/permission.php` manually.
-
-```php
-protected function overrideSpatieConfig(): void
-{
-    config([
-        'permission.models.role' => \Modules\Permission\Models\Role::class,
-        'permission.models.permission' => \Modules\Permission\Models\Permission::class,
-    ]);
-}
-```
+This document formalizes the integration of the `spatie/laravel-permission` package, which powers
+the **Identity & Access Management (IAM)** and **RBAC** baseline for the Internara project. It
+defines the technical customizations required to maintain modular sovereignty and UUID-based
+identification.
 
 ---
 
-## 2. Integration Best Practices
+## 1. Technical Baseline Customizations
 
-1.  **Use Policies**: Never check permissions directly in a view. Wrap them in a **Policy** to
-    handle ownership logic.
-2.  **Sync via CLI**: After adding permissions to a module seeder, run
-    `php artisan permission:sync`.
-3.  **Role Hierarchy**: Base roles are defined in the `Core` module. Avoid creating new roles within
-    domain modules unless absolutely necessary.
+Internara utilizes a specialized configuration of the permission engine to satisfy the security
+requirements defined in the
+**[System Requirements Specification](../../internal/system-requirements-specification.md)**.
+
+### 1.1 Identity Invariant: UUID Support
+
+The persistence baseline for all security artifacts (Roles, Permissions) is configured to utilize
+**UUID v4** primary keys, ensuring consistency with the systemic identity standard.
+
+### 1.2 Resource Sovereignty (Module Ownership)
+
+The security schema is enhanced with a `module` metadata attribute to establish clear ownership
+boundaries.
+
+- **Traceability**: Facilitates identification of the module responsible for defining a granular
+  capability.
+- **Cleanup**: Enables automated decommissioning of modular permissions during baseline retirement.
+
+### 1.3 Decoupled Configuration Injection
+
+The `Permission` module injects its configuration at runtime to prevent leakage into the global
+baseline and maintain modular portability.
+
+- **Protocol**: Runtime overrides ensure that the system resolves the customized modular models
+  instead of the package defaults.
 
 ---
 
-_Refer to the **[Role & Permission Guide](../role-permission-management.md)** for a practical guide
-on how to implement authorization in your features._
+## 2. Governance & Implementation Invariants
+
+Verification of security compliance is mandatory for all configuration baselines.
+
+- **Policy Invariant**: Direct permission verification within the presentation layer is prohibited.
+  Logic must be encapsulated within **[Authorization Policies](../policy-patterns.md)**.
+- **Baseline Synchronization**: Updates to the modular RBAC baseline are performed via the
+  **[Automated Tooling](../automated-tooling-reference.md)**: `php artisan permission:sync`.
+- **V&V Mandatory**: All security state transitions must be verified via **`composer test`**.
+
+---
+
+_By strictly governing the IAM engine, Internara ensures a resilient, traceable, and secure access
+control posture across its modular ecosystem._

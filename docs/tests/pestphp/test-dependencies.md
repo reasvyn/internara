@@ -51,11 +51,11 @@ The example above results in the following output:
     <img src="/assets/img/depends-fail.webp?1" style="--lines: 3" />
 </div>
 
-It is important to remember that the `it()` function prefixes the test with "it" by default. Thus,
+It is important to remember that the `test()` function prefixes the test with "it" by default. Thus,
 when referencing the test name via the `depends()` method, you should include the "it " prefix.
 
 ```php
-it('is the parent', function () {
+test('is the parent', function () {
     expect(true)->toBeTrue();
 });
 

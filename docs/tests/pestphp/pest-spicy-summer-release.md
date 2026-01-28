@@ -40,7 +40,7 @@ example, let's say your "contacts" endpoint outputs a certain HTML every time it
 probably write a test like this:
 
 ```php
-it('has a contact page', function () {
+test('has a contact page', function () {
     $response = $this->get('/contact');
 
     expect($response)->toMatchSnapshot();

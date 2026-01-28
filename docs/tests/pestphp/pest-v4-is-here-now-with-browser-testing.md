@@ -32,14 +32,14 @@ testing features in Pest v4 at Laracon US:
 Here is an example of Browser Testing using [Laravel](https://laravel.com):
 
 ```php
-it('may reset the password', function () {
+test('may reset the password', function () {
     // access any laravel testing helpers...
     Notification::fake();
 
     // access to the database — using the RefreshDatabase trait (even sqlite in memory...)
     $this->actingAs(User::factory()->create());
 
-    $page = visit('/sign-in') // visit on a real browser...
+    $page = vistest('/sign-in') // visit on a real browser...
         ->on()
         ->mobile() // or ->desktop(), ->tablet(), etc...
         ->inDarkMode(); // or ->inLightMode()
@@ -79,7 +79,7 @@ npm install playwright@latest
 npx playwright install
 ```
 
-After, you may use the `visit()` function anywhere. Finally, running this test is as simple as
+After, you may use the `vistest()` function anywhere. Finally, running this test is as simple as
 executing `./vendor/bin/pest` in your terminal. Pest will handle the rest, launching a browser,
 navigating to the page, and performing the actions you specified.
 
@@ -92,7 +92,7 @@ they don't log any console errors.
 ```php
 $routes = ['/', '/about', '/contact'];
 
-visit($routes)->assertNoSmoke();
+vistest($routes)->assertNoSmoke();
 
 // assertNoSmoke() is a shorthand for:
 // - assertNoJavascriptErrors()
@@ -107,7 +107,7 @@ pages and compare them against baseline images, ensuring that your UI remains co
 changes.
 
 ```php
-$pages = visit(['/', '/about', '/contact']);
+$pages = vistest(['/', '/about', '/contact']);
 
 $pages->assertScreenshotMatches();
 ```
@@ -219,11 +219,11 @@ Pest v4 introduces the ability to conditionally skip tests based on the environm
 server.
 
 ```php
-it('does not run locally', function () {
+test('does not run locally', function () {
     // This test will be skipped when running locally
 })->skipLocally();
 
-it('does not run on CI', function () {
+test('does not run on CI', function () {
     // This test will be skipped when running on a CI server
 })->skipOnCi();
 ```

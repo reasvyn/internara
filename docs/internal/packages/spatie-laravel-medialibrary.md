@@ -1,67 +1,67 @@
-# Spatie MediaLibrary: Modular Asset Management
+# Spatie MediaLibrary: Asset Management Orchestration
 
-Internara utilizes `spatie/laravel-medialibrary` to handle all file uploads and media processing.
-This package is integrated into our `Media` module, providing a unified API for attaching documents,
-images, and other assets to domain models.
-
----
-
-## 1. Architectural Customizations
-
-Our integration is designed to support diverse primary key types and modular isolation.
-
-### 1.1 Polymorphic UUID Support
-
-The default Spatie migration uses incrementing integers for `model_id`. We have modified this to a
-string column to support both **UUIDs** and **Big Integers**.
-
-- **Migration**: `modules/Media/database/migrations/..._create_media_table.php`
-- **Cast**: The `model_id` attribute is explicitly cast to `string`.
-
-### 1.2 Custom Media Model
-
-We extend the base `Media` model to add a `module` attribute, allowing us to group assets by their
-business domain (e.g., "Internship", "User").
+This document formalizes the integration of the `spatie/laravel-medialibrary` package, which powers
+the **Document & Media Orchestration** baseline for the Internara project. It defines the technical
+customizations required to maintain modular sovereignty and UUID-based identification for system
+assets.
 
 ---
 
-## 2. Using Media in Your Module
+## 1. Technical Baseline (Asset View)
 
-### 2.1 Apply the InteractsWithMedia Concern
+Internara utilizes a specialized configuration of the media engine to satisfy the document
+management requirements defined in the
+**[System Requirements Specification](../../internal/system-requirements-specification.md)**.
 
-```php
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+### 1.1 Identity Invariant: Polymorphic UUID Support
 
-class Student extends Model implements HasMedia
-{
-    use InteractsWithMedia;
+The persistence baseline for media records is configured to utilize a `string` based `model_id` to
+ensure compatibility with the system's **UUID v4** identity standard.
 
+- **Protocol**: All domain entities utilize UUIDs; the media subsystem must facilitate these
+  polymorphic relationships without concrete ID coupling.
+
+### 1.2 Resource Sovereignty (Module metadata)
+
+The media schema is enhanced with a `module` attribute to establish clear domain boundaries for
+uploaded artifacts.
+
+- **Traceability**: Enables administrative grouping and forensic auditing of assets based on their
+  originating business domain (e.g., `Internship`, `Profile`).
+
+---
+
+## 2. Implementation Invariants
+
+### 2.1 Model Integration
+
+Domain entities requiring asset attachment must implement the `HasMedia` contract and utilize the
+`InteractsWithMedia` concern.
+
+- **Standard**:
+    ```php
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('certificates')->singleFile();
+        $this->addMediaCollection('domain_scope')->singleFile();
     }
-}
-```
+    ```
 
-### 2.2 Attaching Files
+### 2.2 Orchestration via Service Layer
 
-```php
-$student->addMedia($file)->toMediaCollection('certificates');
-```
+Persistence of media artifacts must be orchestrated through the **Service Layer** to ensure
+compliance with **[Data Integrity Protocols](../data-integrity-orchestration-protocols.md)**.
 
 ---
 
-## 3. UI Integration
+## 3. UI Layer Synchronization
 
-For a seamless user experience, use the `x-ui::file` component. It is pre-configured to handle
-temporary Livewire uploads and display existing MediaLibrary items.
+Integration with the presentation layer must utilize standardized MaryUI components to ensure
+responsive, **Mobile-First** document capturing.
 
-```blade
-<x-ui::file label="Upload Document" wire:model="file" />
-```
+- **Verification Invariant**: Successful asset persistence and retrieval must be verified via
+  **`composer test`**.
 
 ---
 
-_MediaLibrary is essential for student logbooks and certification. Always define clear **Media
-Collections** in your models to keep your assets organized._
+_By strictly governing the media engine, Internara ensures a resilient, traceable, and secure asset
+management posture that satisfies stakeholder requirements for digitized document orchestration._

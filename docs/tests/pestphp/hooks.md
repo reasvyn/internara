@@ -83,7 +83,7 @@ beforeEach(function () {
     $this->userRepository = new UserRepository();
 });
 
-it('may be created', function () {
+test('may be created', function () {
     $user = $this->userRepository->create();
 
     expect($user)->toBeInstanceOf(User::class);
@@ -119,7 +119,7 @@ is useful when you need to clean up resources that are specific to a single test
 across all tests in the file.
 
 ```php
-it('may be created', function () {
+test('may be created', function () {
     $this->userRepository->create();
 
     expect($user)->toBeInstanceOf(User::class);

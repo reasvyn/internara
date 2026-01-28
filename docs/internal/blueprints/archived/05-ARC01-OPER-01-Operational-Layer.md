@@ -2,122 +2,90 @@
 
 **Series Code**: `ARC01-OPER-01` **Status**: `Archived` (Released)
 
-> **Spec Alignment:** This blueprint implements the **Student Progress Monitoring** requirements
-> defined in the **[Internara Specs](../../internara-specs.md)** (Section 2). It provides the
-> foundation for "Systematic tracking of student progress."
+> **Spec Alignment:** This configuration baseline implements the **Progress Monitoring &
+> Traceability** ([SYRS-F-201]) requirements of the authoritative
+> **[System Requirements Specification](../../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Implement high-frequency activity tracking systems (Journals and Attendance) and ensure
-data is scoped by Academic Year for multi-year integrity.
+**Strategic Purpose**: Implement high-frequency activity tracking subsystems (Journals and
+Attendance) and ensure data integrity through systemic temporal scoping.
 
 **Objectives**:
-
-- Provide students with a mechanism to record daily activities.
-- Enable automated attendance monitoring for supervisors.
-- Maintain data isolation between different internship cohorts.
-
-**Scope**: The system has the structural foundation (Schools, Users), but lacks operational
-tracking. There is no mechanism to record "what happened today" or to isolate data between different
-academic periods.
+- Provide students with a robust mechanism for daily activity recording.
+- Enable automated, role-aware attendance monitoring for supervisory stakeholders.
+- Enforce strict data isolation between distinct internship cohorts via Academic Year scoping.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
+### 2.1 Capability Set
+- **Journal Subsystem**: Daily logbook orchestration with draft persistence and multi-authority
+  approval workflows.
+- **Attendance Orchestration**: Check-in/out protocols with automated late-status determination
+  logic.
+- **Temporal Scoping Invariant**: Global `HasAcademicYear` concern to ensure data relevance to the
+  active baseline.
+- **Secure Media Storage**: Cryptographic signed-URL access for journal evidence attachments.
 
-- **Journal System**: Daily student logbooks with draft support and dual-authority approval
-  (Mentor/Teacher).
-- **Attendance Tracking**: Check-in/out system with automated late status determination.
-- **Academic Year Scoping**: Global scoping trait to ensure data remains relevant to the active
-  cohort.
-- **Media Support**: Secure attachment uploads for journal evidence.
-
-**User Stories**:
-
-- As a **Student**, I want to log my daily activities so that my supervisors can review my progress.
-- As a **Mentor**, I want to see if my interns are present on-site today so that I can manage their
-  schedule.
-- As a **Teacher**, I want to approve weekly journals to verify competency achievements.
+### 2.2 Stakeholder Personas
+- **Student**: Utilizes the mobile-first dashboard for real-time activity and attendance logging.
+- **Industry Supervisor**: Audits intern presence and provides qualitative feedback on daily logs.
+- **Instructor**: Verifies weekly journal entries to satisfy competency achievement invariants.
 
 ---
 
-## 3. Technical Architecture (Architectural Impact)
+## 3. Architectural Impact (Logical View)
 
-**Modules**:
+### 3.1 Modular Decomposition
+- **Journal Module**: New domain for logbook orchestration and approval lifecycles.
+- **Attendance Module**: New domain for high-frequency temporal tracking.
+- **Shared Module**: Enhanced with the `HasAcademicYear` scoping invariant.
 
-- **Journal**: New module for logbook entries and approval workflows.
-- **Attendance**: New module for daily time-tracking.
-- **Shared**: Enhanced with the `HasAcademicYear` concern for global scoping.
-
-**Data Layer**:
-
-- **Operational Tables**: `journal_entries` and `attendance_logs` using UUID primary keys.
-- **Isolation**: References to Users and Placements use indexed UUIDs (no physical FKs).
-
-**Settings**:
-
-- Late thresholds and active academic years managed via the `setting()` helper.
+### 3.2 Persistence Logic
+- **Operational Entities**: `journal_entries` and `attendance_logs` utilizing **UUID v4** identity.
+- **Isolation Constraint**: Inter-module references restricted to indexed UUIDs; no physical
+  foreign keys.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 4. Presentation Strategy (User Experience View)
 
-**Design Philosophy**: High-trust tracking with a mobile-first "Actionable" interface.
-
-**User Flow**:
-
-1. Student accesses the mobile dashboard and taps "Clock In."
-2. System records the time and determines the status (Present/Late) based on global settings.
-3. Throughout the day, the student logs activity in a draft Journal entry.
-4. Student submits the Journal entry for the day.
-5. Supervisor reviews the entry and marks it as Approved or Verified.
-6. Once approved, the entry is locked and cannot be edited.
-
-**Mobile-First**:
-
-- "Clock In/Out" buttons are prominent on mobile screens.
-- Journal forms support direct camera uploads for activity evidence.
-
-**Multi-Language**:
-
-- Status labels (Present, Late, Absent) and journal fields are localized in **Indonesian** and
-  **English**.
+### 4.1 Design Invariants
+- **High-Frequency UX**: Prioritization of "Clock In/Out" actions on mobile viewports.
+- **Immutable History**: Logic-enforced lockdown of approved/verified journal records to ensure
+  audit integrity.
+- **i11n Integrity**: Full localization of attendance statuses and journal fields in **ID** and
+  **EN**.
 
 ---
 
 ## 5. Success Metrics (KPIs)
 
-- **Tracking Consistency**: 90% of active interns submit at least 4 journal entries per week.
-- **Data Integrity**: 0 cases of approved journals being modified post-approval.
-- **Isolation**: 100% of queries correctly filter data by the active academic year.
+- **Tracking Consistency**: 90% of active interns satisfy the 4-entry per week submission baseline.
+- **Audit Integrity**: zero instances of post-approval record modification.
+- **Scoping Accuracy**: 100% of data requests satisfy the active academic year constraint.
 
 ---
 
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
+## 6. Exit Criteria & Verification Protocols
 
-**Acceptance Criteria**:
+A design series is considered realized only when it satisfies the following gates:
 
-- [x] **Immutable History**: Logic prevents updates to approved or verified journal entries.
-- [x] **Secure Media**: Journal attachments are stored on private disks and accessible only via
-      signed URLs.
-
-**Testing Protocols**:
-
-- [x] Unit tests for `HasAcademicYear` trait isolation.
-- [x] Feature tests for double check-in prevention.
-
-**Quality Gates**:
-
-- [x] **Spec Verification**: Features match the "Student Progress Monitoring" requirements.
-- [x] Static Analysis Clean.
+- **Verification Gate**: 100% pass rate across the operational verification suites via
+  **`composer test`**.
+- **Quality Gate**: zero static analysis violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Functional implementation of `HasAcademicYear` isolation.
+    - Verified security of journal media attachments via signed URLs.
+    - Features match the "Progress Monitoring" requirements defined in the SyRS.
 
 ---
 
-## 7. vNext Roadmap (v0.6.0: Assessment & Workspaces)
+## 7. vNext Roadmap (v0.6.0)
 
-- **Assessment Engine**: Grading and Certification logic.
-- **Workspaces**: Dedicated UI modules for different user roles.
+- **Assessment Engine**: Formal grading and digital certification orchestration.
+- **Role Workspaces**: Systematic decomposition into specialized UI modules.

@@ -135,7 +135,7 @@ on an object that needs lazy evaluation during runtime. With Pest 2, the `tap()`
 deprecated, and on Pest 3 it was removed. Instead, you should use the `defer()` method.
 
 ```diff
-it('creates admins')
+test('creates admins')
 -    ->tap(fn () => $this->artisan('user:create --admin'))
 +    ->defer(fn () => $this->artisan('user:create --admin'))
      ->assertDatabaseHas('users', ['id' => 1]);
@@ -256,7 +256,7 @@ on an object that needs lazy evaluation during runtime. With Pest 2, the `tap()`
 deprecated. Instead, you should use the `defer()` method.
 
 ```diff
-it('creates admins')
+test('creates admins')
 -    ->tap(fn () => $this->artisan('user:create --admin'))
 +    ->defer(fn () => $this->artisan('user:create --admin'))
      ->assertDatabaseHas('users', ['id' => 1]);
@@ -272,8 +272,8 @@ If you are utilizing "bound" datasets and binding a single dataset argument, you
 corresponding test parameter.
 
 ```diff
--it('can generate the full name of a user', function ($user, $fullName) {
-+it('can generate the full name of a user', function (User $user, $fullName) {
+-test('can generate the full name of a user', function ($user, $fullName) {
++test('can generate the full name of a user', function (User $user, $fullName) {
     expect($user->full_name)->toBe($fullName);
 })->with([
     [fn() => User::factory()->create(['first_name' => 'Nuno', 'last_name' => 'Maduro']), 'Nuno Maduro'],

@@ -1,24 +1,24 @@
-# Application Blueprints: Design & Evolution Standards
+# Application Blueprints: Strategic Design Standards
 
 This document formalizes the standards for **Application Blueprints** within the Internara project,
-adhering to **IEEE 1016** (Software Design Descriptions) and **ISO/IEC 12207** (Design Process).
-Blueprints serve as the authoritative **Architecture Design Records (ADR)**, governing the
+adhering to **IEEE 1016** (Software Design Descriptions) and **ISO/IEC 12207** (Software Design
+Process). Blueprints serve as the authoritative **Architecture Design Records (ADR)**, governing the
 intentional evolution of the system across developmental milestones.
 
-> **Governance Mandate:** All Blueprints must derive their authority from the
-> **[Internara Specs](internara-specs.md)**. A Blueprint cannot authorize structural changes that
-> contradict the Product Specifications without a formal SSoT update.
+> **Governance Mandate:** All Blueprints must derive their authority from the authoritative
+> **[System Requirements Specification](system-requirements-specification.md)**. A Blueprint cannot
+> authorize structural modifications that contradict the SSoT requirements.
 
 ---
 
 ## 1. Purpose & Strategic Intent
 
 Application Blueprints translate strategic requirements into architecturally actionable direction
-during **Phase 2 (Design)** of the SDLC. They function as a **Technical Contract** between
+during the **Software Design Process**. They function as a **Technical Contract** between
 Requirements Engineering and System Construction.
 
 - **Objective**: Eliminate architectural ambiguity before implementation.
-- **Traceability**: Ensure every design decision is mapped to a requirement in the SSoT.
+- **Traceability**: Ensure every design decision is traceable to a specific requirement in the System Requirements Specification.
 - **Isolation Control**: Define and protect modular boundaries and cross-module contracts.
 
 ---
@@ -29,6 +29,7 @@ Blueprints are organized by **Series-Based** lineage to decouple planning intent
 release versions.
 
 **Format**: `{Dev_Sequence}-{Series_Code}-{Phase_Sequence}-{Descriptive-Theme}.md`
+
 - **Dev Sequence**: Chronological order of development (e.g., `10`).
 - **Series Code**: The primary architectural lineage (e.g., `ARC01-GAP`).
 - **Phase Sequence**: Specific iteration within that series (e.g., `01`).
@@ -41,25 +42,28 @@ release versions.
 Every Application Blueprint must provide a comprehensive description of the intended system state.
 
 ### 3.1 Strategic Context
-- **Series Identification**: Unique series code and current developmental status.
-- **Spec Alignment**: Explicit mapping to the functional/non-functional requirements in
-  `internara-specs.md`.
 
-### 3.2 Feature Specification
+- **Series Identification**: Unique series code and current developmental status.
+- **Spec Alignment**: Explicit mapping to the functional and non-functional requirements in the
+  **[System Requirements Specification](system-requirements-specification.md)**.
+
+### 3.2 Functional Specification
+
 - **Capability Set**: Detailed description of the new or modified system capabilities.
-- **User Personas**: Narratives describing how specific User Roles (Instructor, Staff, etc.)
-  interact with the new design.
+- **Stakeholder Personas**: Narratives describing how specific User Roles interact with the design.
 
 ### 3.3 Architectural Impact (Logical View)
+
 - **Module Decomposition**: Identification of New, Modified, or Deprecated modules.
 - **Data Architecture**: Schema definitions emphasizing **UUID Identity** and the **No Physical
   Foreign Key** invariant.
-- **Service Contracts**: Definition of new cross-module interfaces and their behavior.
+- **Service Contracts**: Formalization of new inter-module interfaces and their behavior.
 
-### 3.4 Interface Strategy (Presentation View)
+### 3.4 Presentation Strategy (User Experience View)
+
 - **Mobile-First UX**: Logic for scaling from touch-optimized mobile views to desktop environments.
 - **i11n Strategy**: Confirmation of multi-language support for all user-facing components.
-- **Access Control**: Mapping of new features to the **RBAC** model defined in the specs.
+- **Authorization**: Mapping of new capabilities to the **RBAC** model defined in the System Requirements Specification.
 
 ---
 
@@ -69,22 +73,26 @@ A Blueprint is only considered fulfilled when the following **Verification & Val
 are satisfied:
 
 - **Acceptance Criteria**: Functional requirements that must be verified as operational.
-- **Testing Protocols**: Minimum coverage and pass-rate requirements (Unit & Feature).
-- **Static Analysis Gate**: Clean compliance with **[Code Quality Standardization](code-quality-standardization.md)**.
-- **V&V Gate**: Demonstrated fulfillment of the original specification requirement.
+- **Verification Protocols**: Successful execution of the full verification suite via
+  **`composer test`**.
+- **Quality Gates**: Clean compliance with
+  **[Code Quality Standardization](code-quality-standardization.md)**.
 
 ---
 
-## 5. Lifecycle & Archival
+## 5. Baseline Lifecycle & Archival
 
 ### 5.1 Evolution
+
 Blueprints are "Living Documents" during the Construction phase. Significant deviations from the
 original design must be recorded within the blueprint to maintain a technical audit trail.
 
 ### 5.2 Graduation to Release
-Upon a successful **Stable Release** (Phase 5 of SDLC):
+
+Upon a successful **Stable Release Promotion**:
+
 1.  The Blueprint's intent is considered realized.
-2.  The final as-built state is documented in the **Release Note** (`docs/versions/`).
+2.  The final as-built state is documented in the **Release Baseline** (`docs/versions/`).
 3.  The Blueprint is moved to the `archived/` directory, serving as a historical design record.
 
 ---

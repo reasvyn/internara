@@ -1,60 +1,67 @@
-# HTTP Testing: Endpoint Verification
+# HTTP Verification: Endpoint Orchestration Standards
 
-While Livewire handles most user interactions, Internara still utilizes standard HTTP routes for
-redirections, API endpoints, and media access. HTTP tests verify that our routing, middleware, and
-response structures are correct.
+This document formalizes the **Endpoint Verification** protocols for the Internara project,
+standardized according to **ISO/IEC 27034** (Application Security). HTTP tests verify the integrity
+of routing architectures, the effectiveness of security middleware, and the deterministic structure
+of system responses.
 
----
-
-## 1. Testing Route Protection
-
-The most common HTTP test case is ensuring that middleware (like `auth` or `role`) is correctly
-applied to a route.
-
-### 1.1 Redirect Guest
-
-```php
-it('redirects guests to login', function () {
-    get('/admin/dashboard')->assertRedirect('/login');
-});
-```
-
-### 1.2 Status Verification
-
-```php
-it('allows teachers to access the workspace', function () {
-    $teacher = User::factory()->create()->assignRole('teacher');
-
-    actingAs($teacher)->get('/teacher/dashboard')->assertStatus(200);
-});
-```
+> **Governance Mandate:** All systemic entry points must demonstrate compliance with the
+> **[Security & Isolation Protocols](../../internal/architecture-description.md)** through rigorous
+> automated verification.
 
 ---
 
-## 2. Testing Media & Signed URLs
+## 1. Boundary Protection Verification (Middleware)
 
-For sensitive documents like internship certificates, we use **Signed URLs**.
+Verification artifacts must ensure that the application baseline strictly enforces the security
+middleware defined in the System Requirements Specification.
+
+### 1.1 Authentication Baseline Verification
 
 ```php
-it('allows access via signed URL', function () {
-    $url = URL::signedRoute('certificate.verify', ['id' => $id]);
+test('it redirects unauthenticated subjects to the identity baseline', function () {
+    $this->get('/admin/dashboard')->assertRedirect('/login');
+});
+```
 
-    get($url)->assertStatus(200)->assertSee('Authenticated Certificate');
+### 1.2 Authorization (RBAC) Invariant Verification [SYRS-NF-502]
+
+```php
+test('it grants access to authorized stakeholder roles', function () {
+    $instructor = User::factory()->create()->assignRole('instructor');
+
+    actingAs($instructor)->get('/instructor/dashboard')->assertOk();
 });
 ```
 
 ---
 
-## 3. Best Practices
+## 2. Media & Secure Orchestration Verification
 
-1.  **Test for "Forbidden"**: Always include tests that verify unauthorized roles receive a `403`
-    response.
-2.  **Assert Redirects**: When a user is moved after an action (e.g., Logout), verify the
-    destination.
-3.  **JSON APIs**: If building API endpoints, use `assertJsonStructure` to ensure the contract is
-    respected.
+For sensitive document access (e.g., Certificates, Logbooks), verification must ensure the integrity
+of cryptographic signatures.
+
+### 2.1 Cryptographic Signature Verification
+
+```php
+test('it permits access via validated signed configuration', function () {
+    $url = URL::signedRoute('certificate.verify', ['identity' => 'uuid-string']);
+
+    $this->get($url)->assertOk()->assertSee('Certified Outcome');
+});
+```
 
 ---
 
-_HTTP tests ensure that the "gates" of our application are secure. They are essential for verifying
-cross-cutting concerns like authentication and localization._
+## 3. Construction Invariants for HTTP Tests
+
+- **Response Invariant**: Verification must assert the correct HTTP status baseline (`200`, `302`,
+  `403`, `404`).
+- **Semantic Structure**: Utilization of `assertSee()` to verify the presence of authoritative
+  localized UI identifiers.
+- **V&V Mandatory**: All endpoint verification must pass the **`composer test`** gate.
+
+---
+
+_HTTP verification ensures that the security perimeters of Internara remain resilient, protecting
+stakeholder data and preserving systemic integrity._

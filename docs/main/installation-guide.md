@@ -1,55 +1,53 @@
-# Installation Guide: Getting Started with Internara
+# Installation Guide: System Bootstrapping
 
-Welcome to Internara! This guide helps school administrators and IT staff set up the platform.
-
----
-
-## 🛠 1. System Requirements
-
-Ensure your environment meets these requirements (Specs Section 10):
-
-- **PHP 8.4 or higher**: Primary engine.
-- **Composer**: Dependency manager.
-- **Node.js & NPM**: Required for building the TALL Stack interface.
-- **Database**: SQLite, MySQL, or PostgreSQL.
-- **Server**: Linux-based VPS recommended (Specs 10.4).
+This document provides the formal procedure for the deployment and initialization of the Internara
+platform. It is designed for system administrators and IT personnel responsible for environment
+provisioning.
 
 ---
 
-## 🚀 2. Step-by-Step Installation
+## 🛠 1. Technical Requirements Baseline
 
-### Step 1: Obtain Application Files
+Before initialization, verify that the target environment satisfies the requirements defined in the
+**[System Requirements Specification](../internal/system-requirements-specification.md)**:
+
+- **PHP 8.4+**: Mandatory for strict-type compatibility.
+- **Composer**: PHP dependency manager.
+- **Node.js & NPM**: Required for asset orchestration (Tailwind v4).
+- **Database Engine**: Support for SQLite, PostgreSQL, or MySQL.
+- **Server**: Linux-based environment (VPS or Bare Metal).
+
+---
+
+## 🚀 2. Automated Installation Procedure
+
+Internara utilizes the **Setup** module to automate environment initialization and reduce deployment
+friction.
+
+### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/reasnov/internara.git
 cd internara
 ```
 
-### Step 2: Install Components
+### Step 2: Dependency Orchestration
 
 ```bash
 composer install
 npm install
 ```
 
-### Step 3: Setup Environment
+### Step 3: Automated Bootstrapping
+
+Run the unified installation command to handle environment generation, application key assignment,
+and database migration.
 
 ```bash
-cp .env.example .env
-php artisan key:generate
+php artisan app:install
 ```
 
-_Note: Configure your database and app settings here._
-
-### Step 4: Prepare Database & Roles
-
-```bash
-php artisan migrate --seed
-```
-
-_This seeds the foundational **User Roles** (Instructor, Staff, etc.)._
-
-### Step 5: Build Interface
+### Step 4: UI Asset Construction
 
 ```bash
 npm run build
@@ -57,16 +55,20 @@ npm run build
 
 ---
 
-## ✅ 3. Final Verification
+## ✅ 3. Post-Installation Verification
 
-Start the application:
+Once the automated installation is complete, verify the health of the application baseline:
 
 ```bash
-php artisan serve
+php artisan app:info
 ```
 
-Open `http://localhost:8000`. Success is achieved when you see the localized Internara welcome page.
+- **Objective**: Ensure the version, series code, and environment status match the intended
+  deployment target.
+- **Access**: Access the web-based **Setup Wizard** via the browser to finalize institutional
+  branding and initial administrator registration as guided by the system.
 
 ---
 
-_For technical support, refer to the **[Documentation Hub](main-documentation-overview.md)**._
+_For advanced architectural details or customization, refer to the
+**[Architecture Description](../internal/architecture-description.md)**._

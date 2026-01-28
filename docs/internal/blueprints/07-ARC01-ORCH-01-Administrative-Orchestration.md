@@ -2,120 +2,98 @@
 
 **Series Code**: `ARC01-ORCH-01` **Status**: `Released`
 
-> **Spec Alignment:** This blueprint implements the **Administrative Management** requirements
-> defined in the **[Internara Specs](../../internara-specs.md)** (Section 1). It focuses on
-> "Automated Requirement Verification" and centralized administrative control.
+> **System Requirements Specification Alignment:** This configuration baseline implements the **Administrative Orchestration**
+> ([SYRS-F-101], [SYRS-F-102]) requirements of the authoritative
+> **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Transform Internara into an "Active Orchestrator" that enforces administrative rules
-automatically to reduce bottlenecks and human error.
+**Strategic Purpose**: Transform Internara into an active orchestrator by automating administrative
+rule enforcement and centralizing institutional oversight.
 
 **Objectives**:
 
-- Automate the enforcement of internship prerequisites.
-- Implement participation-driven scoring for more objective assessments.
-- Enhance administrative efficiency via bulk operations.
-
-**Scope**: Admins rely on manual verification for internships and assessments, leading to delays.
-There is no automated enforcement of prerequisites like parent permission letters. This version
-introduces an engine to handle these verifications.
+- Automate the validation of internship prerequisites to eliminate procedural bottlenecks.
+- Implement participation-driven scoring to ensure objective student evaluation.
+- Enhance operational efficiency through bulk placement orchestration and centralized verification.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
+### 2.1 Capability Set
 
-- **Requirements Engine**: System for defining, submitting, and verifying mandatory internship
-  prerequisites.
-- **Participation-Driven Scoring**: Automated student scores calculated based on attendance and
-  journal compliance.
-- **Bulk Placement Engine**: Tools for batch assigning students to industry partners.
-- **Global Notifier**: Standardized system-wide UI feedback (Toasts).
+- **Requirement Orchestrator**: Subsystem for defining, submitting, and verifying mandatory
+  institutional prerequisites.
+- **Participation Scoring**: Automated calculation of engagement metrics based on attendance and
+  journal compliance invariants.
+- **Bulk Placement Engine**: Integrated tools for batch-assigning students to industry partners.
+- **Global Notifier**: Standardized bridge for real-time system-wide UI feedback (Toasts).
 
-**User Stories**:
+### 2.2 Stakeholder Personas
 
-- As a **Student**, I want to see which documents I must upload so that I can proceed with my
-  internship registration.
-- As a **Staff**, I want to verify a batch of student documents quickly so that they can be assigned
-  to partners.
-- As a **Teacher**, I want the system to calculate an initial score based on attendance so that I
-  can focus on qualitative evaluation.
+- **Student**: Interacts with the requirement dashboard to upload mandatory documentation.
+- **Staff**: Orchestrates bulk verification and placement workflows via centralized queues.
+- **Teacher**: Utilizes participation-driven scores to facilitate objective qualitative assessment.
 
 ---
 
-## 3. Technical Architecture (Architectural Impact)
+## 3. Architectural Impact (Logical View)
 
-**Modules**:
+### 3.1 Modular Decomposition
 
-- **Internship**: Enhanced with the `InternshipRequirement` validation logic and bulk assignment
-  features.
-- **Assessment**: Integrated with `Attendance` and `Journal` modules for compliance metrics.
-- **Notification**: New module for orchestrating global UI feedback.
+- **Internship Module**: Enhanced with prerequisite validation and bulk assignment logic.
+- **Assessment Module**: Integrated with **Attendance** and **Journal** modules for engagement
+  telemetry.
+- **Notification Module**: Formalized as the orchestrator for cross-module UI feedback.
 
-**Data Layer**:
+### 3.2 Data Architecture
 
-- **Requirements**: `internship_requirements` and `requirement_submissions` tables (UUID-based).
-- **Isolation**: Service-to-service communication via contracts for metric retrieval.
+- **Entities**: `internship_requirements` and `requirement_submissions` (UUID-based).
+- **Communication Invariant**: Service-to-service metric retrieval via **Service Contracts** only.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 4. Presentation Strategy (User Experience View)
 
-**Design Philosophy**: Streamlined administrative workflows and automated feedback.
+### 4.1 Design Invariants
 
-**User Flow**:
-
-1. Student views the required list of documents on their dashboard.
-2. Student uploads the requested files.
-3. Staff receives a notification and reviews the submission queue.
-4. Staff approves or rejects (with reason) the submissions.
-5. System unlocks the "Ready for Placement" status once all requirements are met.
-
-**Mobile-First**:
-
-- Requirement submission forms are optimized for mobile document capturing.
-- Admin verification queues support responsive card views.
-
-**Multi-Language**:
-
-- All requirement descriptions, rejection reasons, and notification messages support **Indonesian**
-  and **English**.
+- **Flow State**: Conditional progression—"Ready for Placement" status is locked until requirements
+  are certified.
+- **Mobile-First Capture**: Submission interfaces optimized for mobile-based document digitization.
+- **i11n Integrity**: Full localization of requirement definitions, rejection feedback, and
+  notifications in **ID** and **EN**.
 
 ---
 
 ## 5. Success Metrics (KPIs)
 
-- **Verification Velocity**: Reduce document review time by 50% through centralized queues.
-- **Accuracy**: 100% of placed students meet the mandatory institutional prerequisites.
-- **Compliance**: Increase average journal submission rates by 20% due to the transparent
-  auto-scoring impact.
+- **Verification Velocity**: 50% reduction in document review duration via centralized
+  orchestration.
+- **Procedural Integrity**: 100% of placed students verified against institutional baseline
+  requirements.
+- **Compliance Gain**: 20% increase in journal submission rates due to transparent participation
+  scoring.
 
 ---
 
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
+## 6. Exit Criteria & Verification Protocols
 
-**Acceptance Criteria**:
+A design series is considered realized only when it satisfies the following gates:
 
-- [x] **Dynamic Prerequisites**: Requirement Manager UI implemented and verified against Specs.
-- [x] **Auto-Grading**: Final grades correctly incorporate weights from attendance and journal logs.
-
-**Testing Protocols**:
-
-- [x] Integration tests for the requirement validation lifecycle.
-- [x] Role-based access tests for verification queues.
-
-**Quality Gates**:
-
-- [x] **Spec Verification**: Validated "Administrative Management" workflow alignment.
-- [x] Static Analysis Clean.
+- **Verification Gate**: 100% pass rate across the orchestration and validation suites via
+  **`composer test`**.
+- **Quality Gate**: zero static analysis violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Demonstrated dynamic requirement verification lifecycle.
+    - Verified accuracy of participación-weighted scoring logic.
+    - Reports match the "Administrative Management" requirements defined in the System Requirements Specification.
 
 ---
 
-## 7. vNext Roadmap (v0.8.0: Reporting & Intelligence)
+## 7. vNext Roadmap (v0.8.0)
 
-- **Reporting Engine**: Synthesis of raw data into PDF analytics.
-- **Placement History**: Traceable logs for rotational programs.
+- **Asynchronous Reporting**: PDF synthesis engine for large-scale analytics.
+- **Placement Audit**: Forensic history logs for student rotations.

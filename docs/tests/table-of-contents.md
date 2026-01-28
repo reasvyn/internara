@@ -1,23 +1,28 @@
-# Testing - Documentation Index
+# Verification Records: Systematic Testing Index
 
-This directory documents the project's automated testing infrastructure and strategies.
-
----
-
-## 1. Core Testing Manuals
-
-- **[Testing Overview](testing.md)**: Introduction to the testing environment.
-- **[Database Testing](database-testing.md)**: Handling factories, seeders, and transactions.
-- **[HTTP & API Testing](http-tests.md)**: Testing controllers and JSON responses.
-- **[Livewire Testing](livewire-tests.md)**: Testing reactive components and state.
-- **[Console Testing](console-tests.md)**: Verifying Artisan commands and CLI output.
-- **[Mocking & Fakes](mocking.md)**: Strategies for isolating dependencies.
-
-## 2. Pest PHP Resources
-
-- **[Pest Guides Index](pestphp/table-of-contents.md)**: Deep-dives into the Pest testing framework.
+This index centralizes the **Verification & Validation (V&V)** records for the Internara project,
+consistent with **IEEE Std 1012**. It provides technical guidance for constructing and executing
+deterministic verification artifacts.
 
 ---
 
-_All tests in Internara must be written using **Pest v4**. Refer to the
-[Internal Engineering Index](../internal/table-of-contents.md) for more context._
+## 1. Verification Philosophy
+
+- **[Verification Philosophy](testing.md)**: Engineering reliability and the Pest v4 baseline.
+
+## 2. Specialized Verification Protocols
+
+- **[Persistence Verification](database-testing.md)**: Standards for schema and model integrity.
+- **[Presentation Verification](livewire-tests.md)**: Standards for interactive UI orchestration.
+- **[Endpoint Verification](http-tests.md)**: Standards for boundary protection and API state.
+- **[Infrastructure Verification](console-tests.md)**: Standards for CLI orchestration tools.
+- **[Dependency Mocking](mocking.md)**: Protocols for strict modular isolation during V&V.
+
+## 3. Pest v4 Technical Baseline
+
+- **[Pest Documentation Index](pestphp/table-of-contents.md)**: Comprehensive technical catalog for the
+  Pest verification framework.
+
+---
+
+_All verification activities must satisfy the **[Testing & Verification Guide](../internal/testing-verification-guide.md)**._

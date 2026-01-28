@@ -32,7 +32,7 @@ of your code your test covers using the `covers()` function or the `mutates` fun
 ```php
 covers(TodoController::class); // or mutates(TodoController::class);
 
-it('list todos', function () {
+test('list todos', function () {
     $this->getJson('/todos')->assertStatus(200);
 });
 ```
@@ -76,7 +76,7 @@ Once you have identified the untested code, you can write additional tests to co
 ```diff
 covers(TodoController::class);
 
-it('list todos', function () {
+test('list todos', function () {
 +    Todo::factory()->create(['name' => 'Buy milk']);
 
 -    $this->getJson('/todos')->assertStatus(200);
@@ -128,7 +128,7 @@ class TodoController
     }
 }
 
-it('list todos', function () {
+test('list todos', function () {
     Todo::factory()->create(['name' => 'Buy milk']);
 
     // this fails because the mutation changed the return value, proving that the test is working and testing the return value...
@@ -155,7 +155,7 @@ class TodoController
     }
 }
 
-it('list todos', function () {
+test('list todos', function () {
     Todo::factory()->create(['name' => 'Buy milk']);
 
     // this test still passes even though the return value was changed by the mutation...

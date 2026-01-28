@@ -131,7 +131,7 @@ URL:
 
 use function Pest\Stressless\stress;
 
-it('has a fast response time', function () {
+test('has a fast response time', function () {
     $result = stress('example.com');
 
     expect($result->requests()->duration()->med())->toBeLessThan(100); // < 100.00ms

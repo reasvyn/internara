@@ -2,118 +2,97 @@
 
 **Series Code**: `ARC01-FEAT-01` **Status**: `Archived` (Released)
 
-> **Spec Alignment:** This blueprint implements the **Student Progress Monitoring** (Section 2) and
-> **Mentoring and Evaluation** (Section 3) of the **[Internara Specs](../../internara-specs.md)**.
-> It introduces the Role-Specific Workspaces mandated by the specs.
+> **System Requirements Specification Alignment:** This configuration baseline implements the **Progress Monitoring**
+> ([SYRS-F-201]) and **Assessment & Reporting** ([SYRS-F-301]) requirements of the authoritative
+> **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
 
-## 1. Version Goals and Scopes (Core Problem Statement)
+## 1. Design Objectives & Scope
 
-**Purpose**: Decompose the application into dedicated role-based workspaces and implement a formal
-assessment and certification engine.
+**Strategic Purpose**: Decompose the application into specialized role-based workspaces and
+implement a formal assessment engine for verifiable credentialing.
 
 **Objectives**:
 
-- Provide clear boundaries between User Roles (Instructor, Staff, Student, Mentor).
-- Standardize the evaluation process and automate certificate issuance.
-
-**Scope**: The application was functionally rich but "role-confused," with all users sharing a
-generic dashboard. Furthermore, while activities were tracked, there was no formal mechanism to
-grade them or issue verifiable certificates.
+- Establish rigorous logical boundaries between stakeholder roles (Instructor, Staff, Student,
+  Mentor).
+- Standardize the qualitative evaluation process and automate high-fidelity certificate issuance.
+- Resolve "role confusion" by providing dedicated, task-optimized interfaces for all actors.
 
 ---
 
-## 2. Functional Specifications
+## 2. Functional Specification
 
-**Feature Set**:
+### 2.1 Capability Set
 
-- **Role-Specific Workspaces**: Dedicated dashboards and navigation for Admin, Student, Teacher, and
-  Mentor.
-- **Assessment Engine**: Unified scoring system for supervisors and teachers.
-- **Verifiable Certificates**: Automated generation of Certificates of Completion with QR code
-  verification.
+- **Role-Centric Workspaces**: Dedicated dashboards and navigation architectures for every
+  identified stakeholder role.
+- **Unified Assessment Engine**: Centralized scoring logic for multi-stakeholder evaluations
+  (Teachers and Mentors).
+- **Verifiable Credentials**: Automated generation of completion certificates utilizing QR-based
+  cryptographic verification.
 
-**User Stories**:
+### 2.2 Stakeholder Personas
 
-- As a **Mentor**, I want a dedicated space to review my assigned interns so that I can provide
-  feedback efficiently.
-- As a **Student**, I want to download my verified certificate once my internship is completed.
-- As an **Admin**, I want to see a unified transcript of student scores across all competency areas.
-
----
-
-## 3. Technical Architecture (Architectural Impact)
-
-**Modules**:
-
-- **Workspaces**: Decomposed into `Admin`, `Student`, `Teacher`, and `Mentor` modules.
-- **Assessment**: New module for grading logic and certificate generation.
-- **UI**: Centralized layout engine for consistent role-specific themes.
-
-**Data Layer**:
-
-- **Assessments**: `assessments` table with UUID-based identification.
-- **Isolation**: Workspaces consume assessment data via service-layer abstractions.
+- **Mentor**: Interacts with assigned intern profiles to provide efficient qualitative feedback.
+- **Student**: Utilizes the workspace to download verified transcripts and completion certificates.
+- **Administrator**: Accesses a unified transcription of student achievements across modular
+  competency areas.
 
 ---
 
-## 4. UX/UI Design Specifications (UI/UX Strategy)
+## 3. Architectural Impact (Logical View)
 
-**Design Philosophy**: Role-centric clarity and professional credentialing.
+### 3.1 Modular Decomposition
 
-**User Flow**:
+- **Workspace Modules**: Systematic decomposition into `Admin`, `Student`, `Teacher`, and `Mentor`
+  modules.
+- **Assessment Module**: Dedicated domain for grading logic and document orchestration.
+- **UI Module**: Centralization of layout engines to ensure thematic consistency across roles.
 
-1. User logs in and is automatically routed to their role-specific dashboard (e.g., `/student`).
-2. Supervisor (Mentor/Teacher) completes the assessment form for a student.
-3. System calculates the final grade and unlocks the "Download Certificate" action for the student.
-4. Student downloads the PDF certificate.
-5. Third-party scans the QR code on the certificate to verify its authenticity via a public landing
-   page.
+### 3.2 Data Architecture
 
-**Mobile-First**:
+- **Identity Invariant**: Assessments utilize **UUID v4** identification.
+- **Communication Protocol**: Workspaces consume assessment telemetry via **Service Contracts**
+  exclusively.
 
-- Student dashboards prioritize high-frequency tasks (Daily Journal) on mobile devices.
-- Mentor evaluation forms are optimized for rapid input on touch interfaces.
+---
 
-**Multi-Language**:
+## 4. Presentation Strategy (User Experience View)
 
-- All certificates, transcripts, and workspace navigation are fully localized in **Indonesian** and
-  **English**.
+### 4.1 Design Invariants
+
+- **Dynamic Routing**: Role-aware redirection upon authentication to optimized landing zones.
+- **Mobile-First Task Prioritization**: High-frequency tasks (Journals) are prioritized in touch
+  interfaces.
+- **Credential Integrity**: High-fidelity PDF generation for certificates, supporting full
+  localization in **ID** and **EN**.
 
 ---
 
 ## 5. Success Metrics (KPIs)
 
-- **Role Isolation**: 100% of routes correctly protected by role-based middleware.
-- **Certification Speed**: Certificates are available for download within 1 second of assessment
-  finalization.
-- **Usability**: 30% reduction in support queries related to "where to find" specific features due
-  to dedicated workspaces.
+- **Authorization Invariant**: 100% of role-based routes protected by verified middleware.
+- **Release Velocity**: Real-time availability of certificates upon assessment finalization.
+- **Cognitive Load**: 30% reduction in support queries related to navigation and task discovery.
 
 ---
 
-## 6. Quality Assurance (QA) Criteria (Exit Criteria)
+## 6. Exit Criteria & Verification Protocols
 
-**Acceptance Criteria**:
+A design series is considered realized only when it satisfies the following gates:
 
-- [x] **Role Separation**: Students cannot access staff routes; mentors see only their interns.
-- [x] **Verifiable Output**: QR codes on certificates correctly link to the verification landing
-      page.
-
-**Testing Protocols**:
-
-- [x] Access control tests for all role-specific routes.
-- [x] PDF layout verification for Certificates and Transcripts.
-
-**Quality Gates**:
-
-- [x] **Spec Verification**: Workspaces match the "Users" section of the Internara Specs.
-- [x] Static Analysis Clean.
+- **Verification Gate**: 100% pass rate across the workspace and assessment verification suites.
+- **Quality Gate**: zero static analysis violations via **`composer lint`**.
+- **Acceptance Criteria**:
+    - Demonstrated role-based access control (RBAC) integrity.
+    - Verified QR-link authenticity for generated certificates.
+    - Workspaces match the "Stakeholder Requirements" defined in the System Requirements Specification.
 
 ---
 
-## 7. vNext Roadmap (v0.7.0: Administrative Orchestration)
+## 7. vNext Roadmap (v0.7.0)
 
-- **Requirement Engine**: Automated prerequisite verification.
-- **Auto-Grading**: Linking compliance logs directly to scores.
+- **Requirement Orchestration**: Automated verification of institutional prerequisites.
+- **Engagement-Based Scoring**: Integration of attendance and journal compliance into grading.

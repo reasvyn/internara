@@ -1,75 +1,76 @@
-# Mocking Strategy: Isolate & Conquer
+# Mocking Strategy: Dependency Isolation Standards
 
-To maintain the **Isolation Principle** of our Modular Monolith, Internara utilizes mocking to
-verify logic without triggering side effects in other modules. This ensures that unit tests remain
-fast and focused on a single responsibility.
+This document defines the **Dependency Mocking** protocols for the Internara project, standardized
+according to the **[Architecture Description](../internal/architecture-description.md)**. Mocking is
+utilized to enforce **Strict Modular Isolation**, enabling the verification of domain logic without
+triggering side-effects across module boundaries.
 
 ---
 
-## 1. Mocking Services (Contracts)
+## 1. Mocking Service Contracts (The Authoritative Method)
 
-Since we utilize **Auto-Discovery** and type-hint **Contracts**, mocking a dependency is
-straightforward via Laravel's Service Container.
+Internara utilizes constructor-based injection of **Service Contracts**. Verification suites must
+leverage Laravel's Service Container to swap concrete implementations with verified mocks.
 
-### 1.1 Standard Service Mock
+### 1.1 Standard Contract Mocking
 
 ```php
-it('calls the user service when creating a profile', function () {
-    // 1. Create a mock of the Contract
-    $userService = mock(UserServiceInterface::class);
+test('it orchestrates user creation via the service contract', function () {
+    // 1. Create a mock of the Service Contract (Interface)
+    $userService = mock(UserService::class);
 
-    // 2. Define expectations
+    // 2. Define behavioral expectations
     $userService->shouldReceive('create')->once()->andReturn(new User());
 
-    // 3. Swap the implementation in the container
-    app()->instance(UserServiceInterface::class, $userService);
+    // 3. Register the mock baseline in the Service Container
+    app()->instance(UserService::class, $userService);
 
-    // 4. Run the logic
-    $profileService->setupForNewUser($data);
+    // 4. Execute the orchestrating logic
+    $registrationService->registerNewStudent($data);
 });
 ```
 
 ---
 
-## 2. Mocking Global Helpers & Time
+## 2. Temporal & Environmental Orchestration
 
-Sometimes logic depends on system state, such as current time or configuration.
+Certain domain rules depend on systemic state, such as temporal invariants or configuration
+baselines.
 
-### 2.1 Time Travel
+### 2.1 Temporal Verification (Time Travel)
 
-Use Pest's time helpers to test logic with expiration dates (e.g., Attendance check-in).
+Utilize Pest's temporal helpers to verify time-sensitive logic (e.g., Attendance deadlines).
 
 ```php
-it('fails to check-in after the deadline', function () {
-    freezeTime('2026-01-19 09:00:00'); // Past the deadline
+test('it rejects check-in attempts following the temporal deadline', function () {
+    freezeTime('2026-01-28 09:00:00'); // Post-deadline baseline
 
     expect($service->canCheckIn())->toBeFalse();
 });
 ```
 
-### 2.2 Mocking Settings
+### 2.2 Configuration Baselining
 
 ```php
-it('respects the global late threshold', function () {
+test('it respects the modular late-threshold setting', function () {
     setting(['late_threshold' => 15]);
 
-    // Test logic...
+    // Behavioral verification logic...
 });
 ```
 
 ---
 
-## 3. Best Practices
+## 3. Construction Invariants for Mocking
 
-1.  **Don't Mock Models**: Eloquent models are internal state. Mocking them leads to brittle tests.
-    Use Factories and `RefreshDatabase` instead.
-2.  **Mock Interfaces, Not Classes**: Always mock the **Contract**. This ensures your test is
-    independent of the concrete implementation.
-3.  **Use `Spy` for Side Effects**: If you only need to verify that a method was called (e.g.,
-    sending a notification), use a Spy instead of a strict Mock.
+- **Interface Invariant**: Always mock the **Service Contract**, never the concrete class. This
+  ensures verification is independent of internal implementation details.
+- **Model Invariant**: Direct mocking of Eloquent models is prohibited. Utilize **Factories** and
+  the `RefreshDatabase` concern to manage persistence state.
+- **Side-Effect Verification**: Utilize **Spies** when only the occurrence of an event (e.g.,
+  Notification dispatch) needs to be verified without strict return expectations.
 
 ---
 
-_Mocking is our primary tool for enforcing module boundaries during testing. By isolating
-dependencies, we ensure that a bug in one module doesn't cause a cascade of failing tests across the
-entire suite._
+_By strictly isolating dependencies through mocking, Internara ensures that verification suites
+remain performant, focused, and resilient to changes in external modules._
