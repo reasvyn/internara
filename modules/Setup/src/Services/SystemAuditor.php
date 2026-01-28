@@ -73,7 +73,9 @@ class SystemAuditor implements SystemAuditorContract
             'storage_logs' => is_writable(storage_path('logs')),
             'storage_framework' => is_writable(storage_path('framework')),
             'bootstrap_cache' => is_writable(base_path('bootstrap/cache')),
-            'env_file' => File::exists(base_path('.env')) ? is_writable(base_path('.env')) : is_writable(base_path()),
+            'env_file' => File::exists(base_path('.env'))
+                ? is_writable(base_path('.env'))
+                : is_writable(base_path()),
         ];
     }
 

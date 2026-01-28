@@ -52,9 +52,17 @@ class SetupResetCommand extends Command
         $this->components->task('Clearing installation flags', function () {
             $this->settingService->setValue('app_installed', false);
             Cache::forget('user.super_admin');
-            
+
             // Optional: Clear step progress to allow a clean restart
-            $steps = ['welcome', 'environment', 'school', 'account', 'department', 'internship', 'system'];
+            $steps = [
+                'welcome',
+                'environment',
+                'school',
+                'account',
+                'department',
+                'internship',
+                'system',
+            ];
             foreach ($steps as $step) {
                 $this->settingService->setValue("setup_step_{$step}", false);
             }
@@ -67,7 +75,7 @@ class SetupResetCommand extends Command
 
         $this->newLine();
         $this->components->info('Setup state has been reset successfully!');
-        
+
         $setupUrl = route('setup.welcome', ['token' => $token]);
         $this->info('You can now access the Setup Wizard again using the link below:');
         $this->warn($setupUrl);
@@ -87,7 +95,7 @@ class SetupResetCommand extends Command
 
         return $this->confirm(
             'This will unlock the setup routes and allow reconfiguration. Continue?',
-            false
+            false,
         );
     }
 }

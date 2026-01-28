@@ -87,12 +87,13 @@ class AppInstallCommand extends Command
             // Check Database specifically
             if (! $audit['database']['connection']) {
                 $this->newLine();
-                $this->components->error("Database error: " . $audit['database']['message']);
+                $this->components->error('Database error: '.$audit['database']['message']);
                 $failedCount++;
             }
 
             if ($failedCount > 0) {
                 $success = false;
+
                 return false;
             }
 

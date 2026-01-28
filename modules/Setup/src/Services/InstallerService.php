@@ -21,7 +21,7 @@ class InstallerService implements InstallerServiceContract
      */
     public function __construct(
         protected SettingService $settingService,
-        protected SystemAuditor $auditor
+        protected SystemAuditor $auditor,
     ) {}
 
     /**

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Unit\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Mockery;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Http\Middleware\ProtectSetupRoute;
 use Modules\Setup\Services\Contracts\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
-use Mockery;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 beforeEach(function () {
@@ -19,7 +19,7 @@ beforeEach(function () {
     $this->middleware = new ProtectSetupRoute(
         $this->setupService,
         $this->superAdminService,
-        $this->settingService
+        $this->settingService,
     );
 });
 
@@ -30,9 +30,10 @@ test('it aborts 404 if app is installed and superadmin exists', function () {
     $request = Request::create('/setup/welcome', 'GET');
 
     try {
-        $this->middleware->handle($request, fn() => null);
+        $this->middleware->handle($request, fn () => null);
     } catch (HttpException $e) {
         expect($e->getStatusCode())->toBe(404);
+
         return;
     }
 
@@ -46,10 +47,12 @@ test('it allows access if app not installed and token is valid', function () {
     $request = Request::create('/setup/welcome', 'GET', ['token' => 'valid-token']);
     $request->setLaravelSession(app('session')->driver('array'));
 
-    $response = $this->middleware->handle($request, fn($req) => 'passed');
+    $response = $this->middleware->handle($request, fn ($req) => 'passed');
 
-    expect($response)->toBe('passed')
-        ->and($request->session()->get('setup_authorized'))->toBeTrue();
+    expect($response)
+        ->toBe('passed')
+        ->and($request->session()->get('setup_authorized'))
+        ->toBeTrue();
 });
 
 test('it aborts 403 if app not installed and no valid session/token', function () {
@@ -60,9 +63,10 @@ test('it aborts 403 if app not installed and no valid session/token', function (
     $request->setLaravelSession(app('session')->driver('array'));
 
     try {
-        $this->middleware->handle($request, fn() => null);
+        $this->middleware->handle($request, fn () => null);
     } catch (HttpException $e) {
         expect($e->getStatusCode())->toBe(403);
+
         return;
     }
 
@@ -80,9 +84,10 @@ test('it aborts 403 if setup_token is missing in DB (completed)', function () {
     $request->setLaravelSession($session);
 
     try {
-        $this->middleware->handle($request, fn() => null);
+        $this->middleware->handle($request, fn () => null);
     } catch (HttpException $e) {
         expect($e->getStatusCode())->toBe(403);
+
         return;
     }
 

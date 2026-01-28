@@ -129,6 +129,6 @@ test(
         app(SettingService::class)->setValue('app_installed', true);
         app(SuperAdminService::class)->factory()->create()->assignRole('super-admin');
 
-        $this->get(route('setup.welcome'))->assertStatus(302)->assertRedirect(route('login'));
+        $this->get(route('setup.welcome'))->assertStatus(404);
     },
 );

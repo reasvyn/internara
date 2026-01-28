@@ -15,7 +15,10 @@ beforeEach(function () {
 });
 
 test('it validates environment requirements correctly', function () {
-    $this->auditor->shouldReceive('audit')->once()->andReturn(['requirements' => [], 'permissions' => [], 'database' => []]);
+    $this->auditor
+        ->shouldReceive('audit')
+        ->once()
+        ->andReturn(['requirements' => [], 'permissions' => [], 'database' => []]);
 
     $results = $this->service->validateEnvironment();
 

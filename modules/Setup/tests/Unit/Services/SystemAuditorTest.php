@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Unit\Services;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Modules\Setup\Services\SystemAuditor;
 
 beforeEach(function () {
@@ -26,7 +25,8 @@ test('it checks PHP requirements', function () {
     expect($results)
         ->toBeArray()
         ->toHaveKey('php_version')
-        ->and($results['php_version'])->toBeTrue(); // Assuming test runner is on 8.4+ as per project specs
+        ->and($results['php_version'])
+        ->toBeTrue(); // Assuming test runner is on 8.4+ as per project specs
 
     // Check for some common extensions defined in the service
     expect($results)->toHaveKeys(['extension_pdo', 'extension_mbstring', 'extension_xml']);
@@ -45,10 +45,7 @@ test('it checks database connectivity', function () {
     // In test environment, DB should usually be connected (sqlite in memory)
     $results = $this->service->checkDatabase();
 
-    expect($results)
-        ->toBeArray()
-        ->toHaveKey('connection')
-        ->and($results['connection'])->toBeTrue();
+    expect($results)->toBeArray()->toHaveKey('connection')->and($results['connection'])->toBeTrue();
 });
 
 test('it handles database connection failure', function () {
@@ -58,8 +55,10 @@ test('it handles database connection failure', function () {
 
     expect($results)
         ->toBeArray()
-        ->and($results['connection'])->toBeFalse()
-        ->and($results['message'])->toBe('Connection failed');
+        ->and($results['connection'])
+        ->toBeFalse()
+        ->and($results['message'])
+        ->toBe('Connection failed');
 });
 
 test('it determines if all audits pass', function () {

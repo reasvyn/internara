@@ -208,10 +208,13 @@ abstract class EloquentQuery implements EloquentQueryContract
      *
      * @throws \Modules\Exception\AppException
      */
-    protected function handleQueryException(\Illuminate\Database\QueryException $e, string $defaultKey): never
-    {
+    protected function handleQueryException(
+        \Illuminate\Database\QueryException $e,
+        string $defaultKey,
+    ): never {
         $recordName = property_exists($this, 'recordName') ? $this->recordName : 'record';
-        $userMessage = 'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
+        $userMessage =
+            'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
 
         throw new \Modules\Exception\AppException(
             userMessage: $userMessage,
