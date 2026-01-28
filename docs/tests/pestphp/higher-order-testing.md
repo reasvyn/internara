@@ -34,8 +34,8 @@ test('works')->get('/')->assertStatus(200);
 ```
 
 The technique of removing the closure function and directly chaining the methods of the test body to
-the `test()` or `test()` functions is commonly referred to as "High Order Testing". This approach can
-significantly simplify the code of your test suite.
+the `test()` or `test()` functions is commonly referred to as "High Order Testing". This approach
+can significantly simplify the code of your test suite.
 
 This technique can also be combined with the [expectation API](/docs/expectations). Let's look at a
 test where the expectation API is used to verify that a user was created with the correct name.

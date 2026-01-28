@@ -15,8 +15,8 @@ technical correctness and requirement fulfillment.
 
 Internara adopts a **TDD-First** and **Traceability-Driven** testing philosophy.
 
-- **Traceability**: Every test suite must be traceable to a specific requirement in the System Requirements Specification or an
-  architectural invariant in the AD.
+- **Traceability**: Every test suite must be traceable to a specific requirement in the System
+  Requirements Specification or an architectural invariant in the AD.
 - **Independence**: Verification artifacts must verify domain behavior while respecting the **Strict
   Isolation** invariants of the Modular Monolith.
 - **Regression Prevention**: Automated verification is mandatory before any baseline promotion.
@@ -62,7 +62,8 @@ test('it returns localized verification error', function () {
 
 ### 3.3 Authorization (RBAC) Verification
 
-Access rights must be verified for every role defined in the System Requirements Specification to satisfy **[SYRS-NF-502]**.
+Access rights must be verified for every role defined in the System Requirements Specification to
+satisfy **[SYRS-NF-502]**.
 
 ---
 

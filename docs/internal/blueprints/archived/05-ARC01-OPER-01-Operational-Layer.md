@@ -14,6 +14,7 @@
 Attendance) and ensure data integrity through systemic temporal scoping.
 
 **Objectives**:
+
 - Provide students with a robust mechanism for daily activity recording.
 - Enable automated, role-aware attendance monitoring for supervisory stakeholders.
 - Enforce strict data isolation between distinct internship cohorts via Academic Year scoping.
@@ -23,6 +24,7 @@ Attendance) and ensure data integrity through systemic temporal scoping.
 ## 2. Functional Specification
 
 ### 2.1 Capability Set
+
 - **Journal Subsystem**: Daily logbook orchestration with draft persistence and multi-authority
   approval workflows.
 - **Attendance Orchestration**: Check-in/out protocols with automated late-status determination
@@ -32,6 +34,7 @@ Attendance) and ensure data integrity through systemic temporal scoping.
 - **Secure Media Storage**: Cryptographic signed-URL access for journal evidence attachments.
 
 ### 2.2 Stakeholder Personas
+
 - **Student**: Utilizes the mobile-first dashboard for real-time activity and attendance logging.
 - **Industry Supervisor**: Audits intern presence and provides qualitative feedback on daily logs.
 - **Instructor**: Verifies weekly journal entries to satisfy competency achievement invariants.
@@ -41,20 +44,23 @@ Attendance) and ensure data integrity through systemic temporal scoping.
 ## 3. Architectural Impact (Logical View)
 
 ### 3.1 Modular Decomposition
+
 - **Journal Module**: New domain for logbook orchestration and approval lifecycles.
 - **Attendance Module**: New domain for high-frequency temporal tracking.
 - **Shared Module**: Enhanced with the `HasAcademicYear` scoping invariant.
 
 ### 3.2 Persistence Logic
+
 - **Operational Entities**: `journal_entries` and `attendance_logs` utilizing **UUID v4** identity.
-- **Isolation Constraint**: Inter-module references restricted to indexed UUIDs; no physical
-  foreign keys.
+- **Isolation Constraint**: Inter-module references restricted to indexed UUIDs; no physical foreign
+  keys.
 
 ---
 
 ## 4. Presentation Strategy (User Experience View)
 
 ### 4.1 Design Invariants
+
 - **High-Frequency UX**: Prioritization of "Clock In/Out" actions on mobile viewports.
 - **Immutable History**: Logic-enforced lockdown of approved/verified journal records to ensure
   audit integrity.

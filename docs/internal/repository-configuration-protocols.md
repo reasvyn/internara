@@ -61,7 +61,8 @@ A PR is only eligible for merging when it satisfies the following technical requ
 2.  **Full Linting**: Successful execution of **`composer lint`**.
 3.  **Isolation Audit**: Reviewer verification of **Strict Modular Isolation** as defined in the
     **[Architecture Description](architecture-description.md)**.
-4.  **Traceability**: Demonstrated alignment with the corresponding blueprint and System Requirements Specification.
+4.  **Traceability**: Demonstrated alignment with the corresponding blueprint and System
+    Requirements Specification.
 
 ---
 

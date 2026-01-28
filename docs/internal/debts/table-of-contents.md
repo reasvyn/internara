@@ -18,6 +18,7 @@ technical record of prioritized refactoring and architectural upgrades.
 ## 2. Governance Invariants
 
 Items in this registry are managed according to the following protocols:
+
 - **Prioritization**: Technical debt is prioritized based on its impact on system maintainability
   and alignment with the **[Code Quality Standardization](../code-quality-standardization.md)**.
 - **V&V Mandatory**: Resolution of any debt item must be verified via the full verification suite

@@ -18,7 +18,8 @@ during the **Software Design Process**. They function as a **Technical Contract*
 Requirements Engineering and System Construction.
 
 - **Objective**: Eliminate architectural ambiguity before implementation.
-- **Traceability**: Ensure every design decision is traceable to a specific requirement in the System Requirements Specification.
+- **Traceability**: Ensure every design decision is traceable to a specific requirement in the
+  System Requirements Specification.
 - **Isolation Control**: Define and protect modular boundaries and cross-module contracts.
 
 ---
@@ -63,7 +64,8 @@ Every Application Blueprint must provide a comprehensive description of the inte
 
 - **Mobile-First UX**: Logic for scaling from touch-optimized mobile views to desktop environments.
 - **i11n Strategy**: Confirmation of multi-language support for all user-facing components.
-- **Authorization**: Mapping of new capabilities to the **RBAC** model defined in the System Requirements Specification.
+- **Authorization**: Mapping of new capabilities to the **RBAC** model defined in the System
+  Requirements Specification.
 
 ---
 

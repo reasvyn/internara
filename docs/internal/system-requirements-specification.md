@@ -1,8 +1,9 @@
 # System Requirements Specification (System Requirements Specification): Internara
 
-This document constitutes the formal **System Requirements Specification (System Requirements Specification)** for the Internara
-project, standardized according to **ISO/IEC 29148** (Requirements Engineering). It establishes the
-authoritative baseline for all developmental, architectural, and verification activities.
+This document constitutes the formal **System Requirements Specification (System Requirements
+Specification)** for the Internara project, standardized according to **ISO/IEC 29148**
+(Requirements Engineering). It establishes the authoritative baseline for all developmental,
+architectural, and verification activities.
 
 > **Governance Mandate:** This document is the **Single Source of Truth (SSoT)**. All technical
 > modifications, architectural designs, and software artifacts must demonstrate traceability to the
@@ -103,5 +104,6 @@ The system shall adhere to the following quality and technical constraints:
 
 ---
 
-_This System Requirements Specification establishes the authoritative configuration for Internara. Every subsequent engineering
-artifact must demonstrate compliance with these requirements to satisfy the V&V phase._
+_This System Requirements Specification establishes the authoritative configuration for Internara.
+Every subsequent engineering artifact must demonstrate compliance with these requirements to satisfy
+the V&V phase._

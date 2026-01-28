@@ -1,29 +1,36 @@
 # Contributing to Internara
 
-Thank you for considering contributing to Internara! We welcome contributions from everyone.
+Thank you for your interest in contributing to Internara! We welcome contributions from everyone who
+shares our commitment to building high-quality, resilient software.
 
-## Getting Started
+## 🚀 Getting Started
+
+To ensure a smooth contribution process, please follow these steps:
 
 1.  **Fork the repository** on GitHub.
-2.  **Create a new branch** (`git checkout -b feature/amazing-feature`).
-3.  **Plan your change**: Create an **Application Blueprint** in `docs/internal/blueprints/`.
-4.  **Implement your changes**: Adhere to the
+2.  **Create a new branch** following our naming convention (`feature/module/description`).
+3.  **Plan your change**: Create or update an **Architectural Blueprint** in
+    `docs/internal/blueprints/` to define your design intent.
+4.  **Implement your changes**: Adhere to the authoritative
     **[Development Conventions](docs/internal/development-conventions.md)**.
-5.  **Verify**: Run tests (`php artisan test --parallel`) and static analysis (`vendor/bin/pint`).
-6.  **Artifact Sync**: Update relevant documentation and release notes.
-7.  **Submit a Pull Request**.
+5.  **Verify**: Execute the full verification suite via **`composer test`** and ensure static
+    analysis passes via **`composer lint`**.
+6.  **Synchronize Artifacts**: Update relevant documentation and analytical release notes.
+7.  **Submit a Pull Request**: Ensure your PR satisfies the requirements in the
+    **[Repository Configuration Protocols](docs/internal/repository-configuration-protocols.md)**.
 
-## Coding Standards
+## 🛠 Engineering Standards
 
-- **Strict Typing:** Every PHP file must use `declare(strict_types=1);`.
-- **Localization:** No hardcoded strings. Use `__('key')`.
-- **Identity:** Use UUIDs for all entities.
-- **Testing:** Use **Pest v4**.
+- **Strict Typing:** Every PHP file must declare `strict_types=1`.
+- **Localization Invariant:** Zero hard-coded strings. All user-facing text must use `__('key')`.
+- **Identity:** Mandatory use of **UUID v4** for all entities.
+- **TDD-First:** Verification must utilize the **`test(...)`** pattern via **Pest v4**.
 
-## Security Vulnerabilities
+## 🔐 Security Vulnerabilities
 
-If you discover a security vulnerability, please refer to our **[Security Policy](SECURITY.md)**.
+If you discover a security vulnerability, please refer to our **[Security Policy](SECURITY.md)** for
+the responsible disclosure process.
 
-## License
+## ⚖️ License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the **MIT License**.

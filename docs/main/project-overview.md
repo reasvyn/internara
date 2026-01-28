@@ -50,7 +50,8 @@ The system provides specialized, role-based workspaces for:
 
 ## 4. Visual Identity & UX Invariants
 
-Internara implements a professional, high-fidelity aesthetic defined in the System Requirements Specification:
+Internara implements a professional, high-fidelity aesthetic defined in the System Requirements
+Specification:
 
 - **Typography**: Primary font is **Instrument Sans**.
 - **Thematic Balance**: Full support for high-contrast **Light** and **Dark** modes.

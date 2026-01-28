@@ -1,8 +1,7 @@
 # Documentation Hub: Stakeholder Index
 
-This index centralizes the **Stakeholder Requirements** and operational guidance for the
-Internara project. It provides the high-level vision and environmental baseline for users and
-administrators.
+This index centralizes the **Stakeholder Requirements** and operational guidance for the Internara
+project. It provides the high-level vision and environmental baseline for users and administrators.
 
 ---
 

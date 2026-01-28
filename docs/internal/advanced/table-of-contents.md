@@ -22,5 +22,6 @@ evolution, specialized orchestrations, and future architectural roadmaps.
 
 ---
 
-_Advanced orchestrations must satisfy the **[Code Quality Standardization](../code-quality-standardization.md)**
-and demonstrate fulfillment of requirements defined in the System Requirements Specification._
+_Advanced orchestrations must satisfy the
+**[Code Quality Standardization](../code-quality-standardization.md)** and demonstrate fulfillment
+of requirements defined in the System Requirements Specification._

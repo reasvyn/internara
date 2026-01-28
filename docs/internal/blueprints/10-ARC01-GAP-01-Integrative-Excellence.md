@@ -2,8 +2,9 @@
 
 **Series Code**: `ARC01-GAP-01` **Status**: `Planned`
 
-> **System Requirements Specification Alignment:** This blueprint implements the **Assessment & Reporting** ([SYRS-F-301],
-> [SYRS-F-302]) and **Progress Monitoring** ([SYRS-F-202]) requirements of the authoritative
+> **System Requirements Specification Alignment:** This blueprint implements the **Assessment &
+> Reporting** ([SYRS-F-301], [SYRS-F-302]) and **Progress Monitoring** ([SYRS-F-202]) requirements
+> of the authoritative
 > **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---

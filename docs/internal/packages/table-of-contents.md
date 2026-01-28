@@ -15,7 +15,8 @@ compliance with the **Modular Monolith** architectural invariants.
 ## 2. Presentation & State Baselines
 
 - **[Laravel Livewire](laravel-livewire.md)**: Presentation layer orchestration standards.
-- **[Modules Livewire](mhmiton-laravel-modules-livewire.md)**: Cross-module component discovery bridge.
+- **[Modules Livewire](mhmiton-laravel-modules-livewire.md)**: Cross-module component discovery
+  bridge.
 - **[Model Status](spatie-laravel-model-status.md)**: Entity lifecycle orchestration standards.
 
 ## 3. Security, Audit & Media

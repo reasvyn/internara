@@ -1,7 +1,7 @@
 # Internara
 
 ![Version](https://img.shields.io/badge/version-v0.9.0--alpha-blue?style=flat-square)
-![Status](https://img.shields.io/badge/status-in--progress-yellow?style=flat-square)
+![Readiness](https://img.shields.io/badge/readiness-alpha-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -11,12 +11,12 @@
 to modernize how educational institutions manage internships and vocational training programs.
 
 Built to bridge the gap between academic administration and industrial practice, Internara provides
-a centralized, digital ecosystem for managing the entire lifecycle of practical work—from
-prerequisite validation to final competency evaluation.
+a centralized, digital ecosystem for managing the entire lifecycle of practical work—from initial
+registration to final competency evaluation.
 
 ---
 
-## System Overview
+## 🚀 System Overview
 
 Internara replaces fragmented manual processes with a unified, role-based platform that connects all
 stakeholders:
@@ -32,101 +32,71 @@ stakeholders:
 
 ---
 
-## Key Capabilities
+## ✨ Key Capabilities
 
 ### ⚡ Streamlined Administration
 
 Eliminate paperwork with digital document management. Internara handles the heavy lifting of student
-data verification, placement management, and automated prerequisite checks.
+data verification, placement management, and automated requirement checks.
 
-### 📊 Real-Time Monitoring & Evaluation
+### 📊 Real-Time Monitoring
 
 Move beyond retroactive reporting. Instructors can monitor student activities daily, ensuring
-learning objectives are met on-site. The system supports detailed competency scoring and qualitative
-feedback.
-
-### 🤝 Collaborative Mentoring
-
-Facilitate meaningful guidance. The platform records mentoring sessions from both academic and
-industry supervisors, creating a transparent history of student development.
+learning objectives are met on-site. The system supports detailed competency scoring and feedback.
 
 ### 📱 Mobile-First Experience
 
 Recognizing that internships happen in the field, Internara is built with a **"Mobile-First"**
-design philosophy. The interface is fully optimized for smartphones and tablets, ensuring access
-anytime, anywhere.
-
-### 🌍 Multi-Language Support
-
-Ready for diverse environments with native support for **Indonesian** and **English**, ensuring
-clarity for all users.
+design philosophy. The interface is fully optimized for smartphones and tablets.
 
 ---
 
-## Technical Foundation
+## 🛠 Technical Foundation
 
-Under the hood, Internara is engineered for stability, security, and maintainability.
+Internara is engineered for stability, security, and long-term maintainability.
 
-- **Modern Core:** Built on **Laravel 12**, utilizing a robust **Modular Monolith** architecture for
-  system integrity.
-- **Reactive UI:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire, Volt) for a
-  fast, app-like user experience.
-- **Enterprise-Grade Security:** Features UUID-based identity management, strict Role-Based Access
-  Control (RBAC), and encrypted data handling.
-
----
-
-## Getting Started
-
-### Requirements
-
-- PHP 8.4 or higher
-- Composer
-- Node.js & NPM
-- SQLite, MySQL, or PostgreSQL
-- Linux-based VPS (Recommended)
-
-### Installation
-
-For detailed deployment instructions, please refer to the
-**[Installation Guide](docs/main/installation-guide.md)**.
+- **Modular Architecture:** Built on **Laravel 12**, utilizing a **Modular Monolith** structure to
+  ensure domain isolation and system integrity.
+- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) for a
+  fast, app-like experience.
+- **Rigorous Standards:** Development is governed by **ISO/IEC** standards, ensuring high-quality
+  code and documentation.
 
 ---
 
-## Documentation
+## 📂 Documentation
 
 ### 👥 For Users & Administrators
 
-- **[Project Overview](docs/main/project-overview.md)**: Detailed feature breakdown and vision.
-- **[Release Notes](docs/versions/versions-overview.md)**: History of changes and updates.
+- **[Project Overview](docs/main/project-overview.md)**: Strategic vision and feature breakdown.
+- **[System Installation](docs/main/installation-guide.md)**: Automated setup and deployment guide.
+- **[Release Notes](docs/versions/versions-overview.md)**: Friendly history of updates and progress.
 
-### 🛠 For Developers
+### 🛠 For Developers & Contributors
 
-- **[Architecture Guide](docs/internal/architecture-guide.md)**: Deep dive into the modular system.
-- **[Development Workflow](docs/internal/development-workflow.md)**: Engineering lifecycle and
-  standards.
-- **[Engineering Index](docs/internal/table-of-contents.md)**: Complete list of technical
-  specifications.
-
----
-
-## Project Status
-
-**Current Version:** `v0.9.0-alpha`
-
-Internara is currently in **Active Development (Alpha Stage)**. While core features are functional,
-the system is evolving rapidly.
-
-| Version Series | Stage | Support Policy | Status      |
-| :------------- | :---- | :------------- | :---------- |
-| **v0.9.x**     | Alpha | Snapshot       | In Progress |
-| **v0.8.x**     | Alpha | Snapshot       | Released    |
-| **v0.7.x**     | Alpha | Snapshot       | Released    |
-| **v0.6.x**     | Alpha | Snapshot       | Released    |
+- **[Architecture Description](docs/internal/architecture-description.md)**: Deep dive into the
+  modular system invariants.
+- **[Feature Engineering Workflow](docs/internal/feature-engineering-workflow.md)**: Our systematic
+  implementation process.
+- **[Technical Index](docs/internal/table-of-contents.md)**: Full catalog of engineering standards.
 
 ---
 
-## License & Credits
+## 📈 Project Status
+
+Internara is currently in **Active Development**. We follow a clear maintenance policy to ensure
+transparency.
+
+| Version    | Readiness | Maintenance | Current Status |
+| :--------- | :-------- | :---------- | :------------- |
+| **v0.9.x** | Alpha     | Snapshot    | In Progress    |
+| **v0.8.x** | Alpha     | Snapshot    | Released       |
+| **v0.7.x** | Alpha     | Snapshot    | Released       |
+| **v0.6.x** | Alpha     | Snapshot    | Released       |
+
+---
+
+## ⚖️ License & Credits
 
 Internara is open-sourced software licensed under the **[MIT license](LICENSE)**.
 

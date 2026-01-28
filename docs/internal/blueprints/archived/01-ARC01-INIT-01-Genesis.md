@@ -10,6 +10,7 @@
 strategic vision and foundational design system.
 
 **Objectives**:
+
 - Formalize the **Strategic Vision** for the Internara platform.
 - Establish the **Aesthetic-Natural** design philosophy and emerald-accent visual identity.
 - Initialize the documentation-as-code repository structure.
@@ -19,6 +20,7 @@ strategic vision and foundational design system.
 ## 2. Functional Specification
 
 ### 2.1 Capability Set
+
 - **Strategic Baseline**: Documentation of the initial project goals and stakeholder needs.
 - **Design Baseline**: Definition of typography, thematic contrast, and accessibility invariants.
 
@@ -27,6 +29,7 @@ strategic vision and foundational design system.
 ## 3. Presentation Strategy (User Experience View)
 
 ### 3.1 Visual Identity
+
 - **Typography**: Selection of **Instrument Sans** as the authoritative font baseline.
 - **Thematic Invariant**: Conceptual design for multi-mode contrast (Light/Dark).
 
@@ -36,7 +39,8 @@ strategic vision and foundational design system.
 
 A design series is considered realized only when it satisfies the following gates:
 
-- **Quality Gate**: Completion of the initial **[System Requirements Specification](../../system-requirements-specification.md)**.
+- **Quality Gate**: Completion of the initial
+  **[System Requirements Specification](../../system-requirements-specification.md)**.
 - **Acceptance Criteria**:
     - Finalized strategic vision and aesthetic guidelines.
     - Initial repository structure synchronization.

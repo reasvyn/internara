@@ -2,8 +2,8 @@
 
 **Series Code**: `ARC01-ORCH-01` **Status**: `Released`
 
-> **System Requirements Specification Alignment:** This configuration baseline implements the **Administrative Orchestration**
-> ([SYRS-F-101], [SYRS-F-102]) requirements of the authoritative
+> **System Requirements Specification Alignment:** This configuration baseline implements the
+> **Administrative Orchestration** ([SYRS-F-101], [SYRS-F-102]) requirements of the authoritative
 > **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
@@ -89,7 +89,8 @@ A design series is considered realized only when it satisfies the following gate
 - **Acceptance Criteria**:
     - Demonstrated dynamic requirement verification lifecycle.
     - Verified accuracy of participación-weighted scoring logic.
-    - Reports match the "Administrative Management" requirements defined in the System Requirements Specification.
+    - Reports match the "Administrative Management" requirements defined in the System Requirements
+      Specification.
 
 ---
 

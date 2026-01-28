@@ -2,8 +2,9 @@
 
 **Series Code**: `ARC01-FEAT-01` **Status**: `Archived` (Released)
 
-> **System Requirements Specification Alignment:** This configuration baseline implements the **Progress Monitoring**
-> ([SYRS-F-201]) and **Assessment & Reporting** ([SYRS-F-301]) requirements of the authoritative
+> **System Requirements Specification Alignment:** This configuration baseline implements the
+> **Progress Monitoring** ([SYRS-F-201]) and **Assessment & Reporting** ([SYRS-F-301]) requirements
+> of the authoritative
 > **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
@@ -88,7 +89,8 @@ A design series is considered realized only when it satisfies the following gate
 - **Acceptance Criteria**:
     - Demonstrated role-based access control (RBAC) integrity.
     - Verified QR-link authenticity for generated certificates.
-    - Workspaces match the "Stakeholder Requirements" defined in the System Requirements Specification.
+    - Workspaces match the "Stakeholder Requirements" defined in the System Requirements
+      Specification.
 
 ---
 

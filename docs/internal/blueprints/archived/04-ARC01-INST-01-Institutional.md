@@ -14,6 +14,7 @@
 including school departments and industry partner registries.
 
 **Objectives**:
+
 - Provide a centralized repository for managing academic pathway data.
 - Enable the formal registration and classification of industry partners (Internship Locations).
 - Establish the baseline for student-to-partner assignment orchestration.
@@ -23,12 +24,14 @@ including school departments and industry partner registries.
 ## 2. Functional Specification
 
 ### 2.1 Capability Set
+
 - **Department Orchestrator**: Management of institutional academic units and their metadata.
 - **Partner Registry**: Centralized listing of industry collaborators with contact and capacity
   attributes.
 - **Placement Logic Baseline**: Core services for linking student profiles to registered partners.
 
 ### 2.2 Stakeholder Personas
+
 - **Practical Work Staff**: Utilizes the registry to manage institutional and industry data.
 - **Instructor**: Accesses department-specific student lists for supervision planning.
 
@@ -37,10 +40,12 @@ including school departments and industry partner registries.
 ## 3. Architectural Impact (Logical View)
 
 ### 3.1 Modular Decomposition
+
 - **Department Module**: New domain for academic structural orchestration.
 - **School Module**: Domain for managing institutional identity and partners.
 
 ### 3.2 Persistence Logic
+
 - **Identity Invariant**: Mandatory utilization of **UUID v4** for all institutional records.
 - **Isolation Protocol**: Domain logic ensures zero concrete coupling between school and partner
   entities at the database layer.

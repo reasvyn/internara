@@ -26,12 +26,14 @@ and modular view namespaces.
 ### 2.1 [spatie/laravel-permission](spatie-laravel-permission.md)
 
 The primary engine for **Identity & Access Management (IAM)**. This baseline is encapsulated within
-the `Permission` module, providing **UUID-based RBAC** as mandated by the System Requirements Specification.
+the `Permission` module, providing **UUID-based RBAC** as mandated by the System Requirements
+Specification.
 
 ### 2.2 [spatie/laravel-activitylog](spatie-laravel-activitylog.md)
 
 Orchestrates systemic auditability. It is integrated into the `Log` module to ensure that all
-state-altering operations satisfy the **Traceability** requirements of the System Requirements Specification.
+state-altering operations satisfy the **Traceability** requirements of the System Requirements
+Specification.
 
 ---
 

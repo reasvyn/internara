@@ -92,8 +92,8 @@ the failed test run:
 
 ### Navigation
 
-The `vistest()` method is used to navigate to a specific URL in your browser test. It provides various
-methods to interact with the page:
+The `vistest()` method is used to navigate to a specific URL in your browser test. It provides
+various methods to interact with the page:
 
 ```php
 test('example', function () {
@@ -105,8 +105,8 @@ test('example', function () {
 
 ### Using Other Browsers
 
-By default, the `vistest()` method uses Chrome as the browser. However, if you want to use a different
-browser, you can specify it using the `--browser` option when running the tests:
+By default, the `vistest()` method uses Chrome as the browser. However, if you want to use a
+different browser, you can specify it using the `--browser` option when running the tests:
 
 ```bash
 ./vendor/bin/pest --browser firefox

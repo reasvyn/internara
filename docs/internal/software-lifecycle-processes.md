@@ -23,7 +23,8 @@ needs into a verified and validated modular system.
 
 ### 1.2 Architectural Design (ISO/IEC 42010)
 
-- **Objective**: Synthesize a structural solution that satisfies the System Requirements Specification.
+- **Objective**: Synthesize a structural solution that satisfies the System Requirements
+  Specification.
 - **Process**: Definition of modular boundaries, service contracts, and design invariants as
   documented in the **[Architecture Description](architecture-description.md)**.
 - **Verification**: Design is validated against the Requirements Specification.
@@ -45,7 +46,8 @@ needs into a verified and validated modular system.
 Internara utilizes a dual-layered V&V framework derived from the **V-Model**:
 
 - **Verification**: "Are we building the system right?" (Testing against Design/Conventions).
-- **Validation**: "Are we building the right system?" (Testing against System Requirements Specification/StRS).
+- **Validation**: "Are we building the right system?" (Testing against System Requirements
+  Specification/StRS).
 
 ### 2.2 Configuration Management (ISO 10007)
 

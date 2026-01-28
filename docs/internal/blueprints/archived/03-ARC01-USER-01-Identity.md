@@ -14,6 +14,7 @@
 authentication and the initial RBAC (Role-Based Access Control) framework.
 
 **Objectives**:
+
 - Implement secure subject identification via email and cryptographic passwords.
 - Establish the formal User Role taxonomy (Instructor, Student, etc.) mandated by the SyRS.
 - Provide self-service profile management for system subjects.
@@ -23,12 +24,14 @@ authentication and the initial RBAC (Role-Based Access Control) framework.
 ## 2. Functional Specification
 
 ### 2.1 Capability Set
+
 - **Authentication Orchestrator**: Secure login/logout flows with session integrity.
 - **RBAC Baseline**: Implementation of roles and granular permissions according to the stakeholder
   requirements.
 - **Profile Subsystem**: Logic for subjects to update personal metadata and security credentials.
 
 ### 2.2 Stakeholder Personas
+
 - **Universal Subject**: Any identified system user requiring secure access to role-specific
   capabilities.
 
@@ -37,11 +40,13 @@ authentication and the initial RBAC (Role-Based Access Control) framework.
 ## 3. Architectural Impact (Logical View)
 
 ### 3.1 Modular Decomposition
+
 - **Auth Module**: New domain for identity orchestration and session management.
 - **User Module**: Domain for managing user profiles and personal metadata.
 - **Permission Module**: Core domain for RBAC state and synchronization.
 
 ### 3.2 Security Architecture
+
 - **Encryption Invariant**: Passwords must be hashed using the **Argon2id** algorithm.
 - **Access Control**: Mandatory authorization check at every system boundary.
 

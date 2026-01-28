@@ -21,7 +21,6 @@ class RequireSetupAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        \Illuminate\Support\Facades\Log::info('RequireSetupAccess running for: ' . $request->fullUrl());
         // 1. If already installed and trying to access setup route, hide it (404)
         if ($this->setupService->isAppInstalled() && $this->isSetupRoute($request)) {
             return abort(404);
@@ -42,11 +41,6 @@ class RequireSetupAccess
 
     protected function bypassSpecificRequests(Request $request): bool
     {
-        // Allow tests to bypass the console check to verify redirection
-        if (config('app.env') === 'testing' && $request->headers->has('X-Test-No-Console')) {
-            return $this->isLivewireRequest($request);
-        }
-
         return app()->runningInConsole() || $this->isLivewireRequest($request);
     }
 

@@ -14,7 +14,8 @@ and secure.
 
 Pest is the foundational tool for our **Verification & Validation (V&V)** activities.
 
-- **Traceability**: Enables mapping of tests to specific System Requirements Specification requirements.
+- **Traceability**: Enables mapping of tests to specific System Requirements Specification
+  requirements.
 - **Velocity**: Support for parallel execution via the optimized verification suite.
 - **Architectural Guard**: Enforces modular boundaries via Architecture (Arch) Testing.
 

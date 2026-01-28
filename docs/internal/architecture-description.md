@@ -7,7 +7,8 @@ required to ensure system integrity, maintainability, and modularity.
 
 > **Governance Mandate:** This architecture implements the technical requirements mandated by the
 > authoritative **[System Requirements Specification](system-requirements-specification.md)**. All
-> architectural decisions demonstrate traceability to the STRS and System Requirements Specification requirements.
+> architectural decisions demonstrate traceability to the STRS and System Requirements Specification
+> requirements.
 
 ---
 

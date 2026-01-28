@@ -2,8 +2,8 @@
 
 **Series Code**: `ARC01-INTEL-01` **Status**: `Active`
 
-> **System Requirements Specification Alignment:** This configuration baseline implements the **Assessment & Reporting**
-> ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative
+> **System Requirements Specification Alignment:** This configuration baseline implements the
+> **Assessment & Reporting** ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative
 > **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
@@ -95,7 +95,8 @@ A design series is considered realized only when it satisfies the following gate
 - **Acceptance Criteria**:
     - Demonstrated generation of multi-student competency summaries.
     - Verified forensic trail for student placement history.
-    - Reports match the "Competency Achievement" format defined in the System Requirements Specification.
+    - Reports match the "Competency Achievement" format defined in the System Requirements
+      Specification.
 
 ---
 

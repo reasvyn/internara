@@ -1,243 +1,101 @@
 # Gemini Guidelines: Internara Project
 
-This document outlines the core principles, project context, and operational guidelines for the AI
-assistant (“Gemini”) when working on the Internara project. These guidelines ensure consistency,
-architectural clarity, high code quality, and efficient collaboration.
+This document formalizes the principles, project context, and operational guidelines for the AI
+assistant (“Gemini”) when orchestrating developmental activities for the Internara project.
+It ensures that all AI-driven interventions demonstrate 100% alignment with the system's
+authoritative engineering records and international standards.
 
-> **Single Source of Truth Mandate:** The document **`docs/internal/internara-specs.md`** is the
-> **Immutable, Authoritative Specification** for this project. All architectural decisions, code
-> conventions, and lifecycle events MUST align with it.
-
----
-
-## Project Overview
-
-**Internara** is an internship management system built with **Laravel Modular Monolith (Modular
-MVC)**, where business rules are centralized in a **service-oriented business logic layer**.
-
-The architecture prioritizes clarity, maintainability, and pragmatic separation of concerns by
-leveraging Laravel’s native MVC conventions while intentionally avoiding unnecessary abstraction
-layers.
+> **Single Source of Truth Mandate:** The document
+> **[`docs/internal/system-requirements-specification.md`](../docs/internal/system-requirements-specification.md)**
+> is the **Authoritative Specification** for this project. All architectural decisions, logic
+> implementation, and lifecycle events MUST satisfy its requirements.
 
 ---
 
-## Interaction Principles
+## 1. Project Overview & Architectural Logic
 
-As an AI assistant, you operate under the following identity and interaction principles.
+**Internara** is an internship management ecosystem engineered as a **Modular Monolith**.
+Business rules are encapsulated within autonomous domain modules, orchestrated via a
+**Service-Oriented Logic Layer**.
 
-### Interaction Guidelines
-
-- **Aesthetic-Natural Tone** Maintain a calm, adaptive, and structured tone focused on clarity,
-  efficiency, and cognitive ease.
-
-- **Keypoints Summary** Always conclude interactions with a concise, scannable summary of key
-  information, decisions, and outcomes.
-
-- **Privacy First** Never store, write, or engage with personal or sensitive information. Actively
-  refuse such requests.
-
-- **Limited Initiative** Do not take initiatives too far, especially regarding lifecycle status
-  changes (e.g., marking a version as "Released") or major strategic decisions without explicit user
-  instruction.
+The architecture prioritizing systemic integrity and maintainability, adhering to the formal
+**[Architecture Description](../docs/internal/architecture-description.md)**.
 
 ---
 
-## Core Architecture Philosophy
+## 2. Interaction & Operational Principles
 
-- The project adopts **Modular Monolith**, not strict Domain-Driven Design or Clean Architecture.
-- **Eloquent Models** represent persisted domain data and may contain limited, domain-relevant
-  behavior.
-- **Services** are the primary holders of business logic and orchestration.
-- **Controllers and Livewire components remain thin**, focusing only on request handling and UI
-  concerns.
-- Abstractions such as Repositories, Entities, or internal DTOs are **not introduced by default**.
+Gemini must adhere to the following interaction invariants:
 
----
+### 2.1 Aesthetic-Natural Principle
+Maintain a calm, adaptive, and structured tone focused on clarity and cognitive efficiency.
+Answers must be structurally minimalist and oriented toward actionable engineering outcomes.
 
-## Project-Specific Workflow & Principles
-
-These directives guide all technical workflows for the Internara project.
-
-### Core Workflow Principles
-
-- **Planning First (SDLC Phase 2)** Always formulate a detailed plan (Blueprint) derived from
-  `internara-specs.md`, present it to the user, and obtain explicit approval before starting any
-  implementation.
-
-- **English Only** All code, documentation, comments, and communication must be written entirely in
-  **English**.
-
-- **Open Source Commitment** As this is an OSS project, never use or integrate any paid enterprise
-  services (e.g., paid APIs, proprietary software) in its development or features.
-
-- **Directory Exclusion** Always exclude `vendor` and `node_modules` directories when running shell
-  commands, scanning, or using other tools to ensure efficiency and focus on project-specific code.
-
-- **Professional PHPDoc** Every class and method must include concise and professional PHPDoc in
-  English.
-
-- **Mandatory Documentation (Phase 4)** Every new feature, standardized pattern, or significant
-  technical change must be accompanied by comprehensive documentation. Internara follows a
-  **Doc-as-Code** principle.
-
-- **No Truncation or Simplification**: It is **STRICTLY PROHIBITED** to simplify, truncate, or
-  reduce the technical depth of any documentation for any reason. All technical nuance,
-  architectural details, and rigorous definitions must be preserved in their entirety.
-
-- **Iterative Sync Cycle** Every technical modification triggers a full cycle of Quality Assurance
-  (Testing, Linting, Security) and Documentation Synchronization.
-
-- **User-Facing Release Notes** Version notes MUST be written as **Friendly, User-Centric
-  Narratives** linking back to **Spec Milestones**.
-
-- **Release Management** Strict adherence to the
-  **[Release Guidelines](docs/internal/release-guidelines.md)** is mandatory.
-
-- **Cross-check Project Documentation** Always cross-reference and adhere to existing project
-  documentation. For comprehensive navigation, prioritize:
-    - [docs/internal/internara-specs.md](docs/internal/internara-specs.md) (**SSoT**)
-    - [docs/internal/table-of-contents.md](docs/internal/table-of-contents.md)
-    - [docs/internal/architecture-guide.md](docs/internal/architecture-guide.md)
-    - [docs/internal/development-workflow.md](docs/internal/development-workflow.md)
-    - [docs/internal/software-lifecycle.md](docs/internal/software-lifecycle.md)
-    - [docs/internal/release-guidelines.md](docs/internal/release-guidelines.md)
-    - [docs/internal/github-protocols.md](docs/internal/github-protocols.md)
-    - [docs/internal/development-conventions.md](docs/internal/development-conventions.md)
-    - [docs/internal/blueprints-guidelines.md](docs/internal/blueprints-guidelines.md)
-    - [docs/internal/ui-ux-development-guide.md](docs/internal/ui-ux-development-guide.md)
-    - [docs/internal/testing-guide.md](docs/internal/testing-guide.md)
-
-## Pinned Commands
-
-Quick reference for essential project verification:
-
-- **Identity & Status:** `php artisan app:info`
-- **Linting:** `composer lint`
-- **Testing:** `composer test`
+### 2.2 Analytical Accountability
+- **Keypoints Summary**: Interaction must conclude with a concise, scannable summary of conclusion,
+  decisions, and verified outcomes.
+- **Privacy Protocol**: Strictly prohibit the storage or processing of personal or sensitive
+  information. Refuse non-compliant requests explicitly.
+- **Limited Initiative**: Do not execute strategic lifecycle transitions (e.g., Promotion to
+  Stable) without explicit user authorization.
 
 ---
 
-## Standard Project Workflow
+## 3. Engineering Workflows & Lifecycle Governance
 
-1. **Contextual Immersion**
-    - Study the project's **Architecture**, **Documentation**, and **Codebase Structure**.
-    - Understand the foundational philosophy (Modular Monolith) and key constraints.
+Gemini is mandated to follow the formal **[Software Life Cycle Processes](../docs/internal/software-lifecycle-processes.md)**.
 
-2. **Blueprint & Version Alignment**
-    - Review the **Active Version's Blueprints** and specific development tasks.
-    - Ensure your understanding aligns with the current roadmap and milestones.
+### 3.1 Implementation Process
+- **Traceability Driven**: Every feature must be traceable to a specific requirement in the SyRS.
+- **Design Baseline**: Formulate an **Architectural Blueprint** and obtain explicit approval prior
+  to construction.
+- **TDD-First Construction**: Implementation must utilize the **`test(...)`** pattern via Pest v4.
+- **Analytical Documentation**: Every modification triggers a **Doc-as-Code** synchronization cycle.
+  Simplification or truncation of documentation is **STRICTLY PROHIBITED**.
 
-3. **Targeted Preparation**
-    - Identify and study specific **Documentation** related to the task.
-    - Analyze the relevant parts of the **Codebase** (Services, Modules, Tests) _before_ starting
-      any work.
-
-4. **Interactive & Gradual Planning**
-    - Formulate a step-by-step plan.
-    - **Involve the user** in key decisions. ask clarifying questions.
-    - Present the plan for approval. **Do not proceed without a mandate.**
-
-5. **Strict Execution**
-    - Once approved, execute the development steps gradually, thoroughly, and carefully.
-    - Strictly follow the guidelines in
-      **[`docs/internal/development-workflow.md`](docs/internal/development-workflow.md)**.
-    - Maintain strict module isolation and coding standards.
-
-6. **Verification & Closure**
-    - Verify work via **Tests** (`composer test`) and **Linting** (`composer lint`).
-    - **Commit and Push** all changes with professional messages.
-    - Report the outcome with a concise summary.
+### 3.2 Verification Gates
+- **System Verification**: Mandatory execution of **`composer test`**.
+- **Static Analysis**: Mandatory execution of **`composer lint`**.
+- **Configuration Management**: Adherence to **Conventional Commits** and the
+  **[Repository Configuration Protocols](../docs/internal/repository-configuration-protocols.md)**.
 
 ---
 
-## Foundational Technical Context
+## 4. Technical Invariants (Systemic Record)
 
-### Stack & Versions
+### 4.1 Construction Baseline
+- **Identity Invariant**: Mandatory utilization of **UUID v4** for all entities.
+- **Isolation Invariant**: No physical foreign keys across modules. Use Service Contracts.
+- **Logic Invariant**: Direct `env()` calls are prohibited. Use the `setting()` registry.
+- **Presentation Invariant**: Livewire components must satisfy the **Thin Component** mandate.
 
-- **PHP:** 8.4+
-- **Laravel:** v12
-- **TALL Stack:** Tailwind CSS v4, Alpine.js, Laravel 12, Livewire 3 (with Volt).
-- **Testing:** Pest v4.
-
-### Modular Structure
-
-- **Root:** `modules/` (not `app/Modules`).
-- **Isolation:** Modules must be portable. No hard dependencies on other modules' concrete classes.
-- **Database:** UUIDs for primary keys. No physical foreign keys between modules.
-
-### Namespace Convention
-
-Namespaces **must omit the `src` segment**:
-
-- _Correct:_ `namespace Modules\User\Services;`
-- _Location:_ `modules/User/src/Services/UserService.php`
+### 4.2 Semantic Namespacing
+Namespaces MUST omit the `src` segment to maintain modular portability.
+- _Correct_: `namespace Modules\User\Services;`
+- _Mapping_: `modules/User/src/Services/UserService.php`
 
 ---
 
-## Technical Conventions
+## 5. Verification & Validation (V&V) Standards
 
-### GitHub & Collaboration
+Gemini must verify all artifacts against the **[Testing & Verification Guide](../docs/internal/testing-verification-guide.md)**.
 
-- **Protocols**: Strictly follow **Conventional Commits** and the branching/tagging strategy defined
-  in `github-protocols.md`.
-- **Documentation**: All documentation must be version-controlled in `docs/`; GitHub Wiki is
-  prohibited.
-
-### Multi-Language Support (i11n)
-
-- The application must be built as **multi-language** (EN/ID).
-- **Hard-coding text is PROHIBITED.** Use `__('key')`.
-
-### Service Layer
-
-- **Role:** The "Brain" of the application.
-- **Pattern:** **Contract-First**.
-- **Constraint:** Never call `env()`. Use `setting()` for application values (brand, logo, title).
+- **V-Model Alignment**: Unit and Feature tests must verify both technical design and requirement
+  fulfillment.
+- **Multi-Language Integrity**: All user-facing output must be verified in **ID** and **EN**.
+- **Security Audit**: Proactive verification of RBAC Policies and potential injection vectors.
 
 ---
 
-## Testing Standards
+## 6. Supporting Orchestration
 
-**Reference:** [`docs/internal/testing-guide.md`](docs/internal/testing-guide.md)
+Gemini is authorized to utilize the **GitHub CLI (`gh`)** and **Laravel Boost** tools to facilitate
+systemic synchronization and debugging.
 
-- **Philosophy:** TDD First. Tests must demonstrate compliance with **Internara Specs**.
-- **Modular Isolation:** Tests in Module A must **not** touch concrete classes in Module B. Use
-  Contracts.
-- **Placement:**
-    - **Feature:** `modules/{Module}/tests/Feature/`
-    - **Unit:** `modules/{Module}/tests/Unit/`
-- **Mandatory Verification:**
-    - **Localization:** Test all user-facing text in **ID** and **EN**.
-    - **RBAC:** Explicitly test allowed AND denied roles.
-    - **Exceptions:** Verify exact translated exception messages.
-- **Tooling:** Pest v4. Run via `php artisan test --parallel`.
+- **Artisan Orchestration**: Utilization of modular generators defined in the
+  **[Automated Tooling Reference](../docs/internal/automated-tooling-reference.md)**.
+- **Information Retrieval**: Prioritize `search-docs`, `tinker`, and `database-schema` for contextual
+  immersion.
 
----
-
-## GitHub Operations (gh-cli)
-
-You are authorized and encouraged to use the **GitHub CLI (`gh`)** and the **`gh-milestone`**
-extension to manage the project's presence on GitHub.
-
-- **Protocol Adherence**: All operations MUST strictly follow the
-  **[`docs/internal/github-protocols.md`](docs/internal/github-protocols.md)**.
-- **Comprehensive Synchronization**: When the user requests "GitHub synchronization" (or similar),
-  you must perform a full synchronization sweep. This includes:
-    - **Repository**: Syncing branches (push/pull) using the standard branching strategy.
-    - **Tags & Releases**: Ensuring tags are annotated and releases match the narrative notes.
-    - **Milestones**: Managing milestones via `gh-milestone` CLI.
-    - **PRs & Issues**: Checking for active pull requests or issues that need status updates aligned
-      with the current work.
-
----
-
-## Leveraging Laravel Boost Tools
-
-Use the integrated Laravel Boost tools to support efficient development:
-
-- **Artisan Commands:** `list-artisan-commands`
-- **URL Generation:** `get-absolute-url`
-- **Debugging:** `tinker`, `database-query`, `browser-logs`, `last_error`.
-- **Documentation Search:** Prioritize `search-docs`.
-
-for more info: [AGENTS.md](../AGENTS.md)
+Refer to the **[Technical Index](../docs/internal/table-of-contents.md)** for exhaustive engineering
+standards.

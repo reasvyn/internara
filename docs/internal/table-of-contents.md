@@ -21,8 +21,8 @@ architectural views, and engineering processes used to build and maintain the sy
 
 - **[Development Conventions](development-conventions.md)**: Construction standards for naming,
   namespaces, and domain layer invariants.
-- **[Logic Orchestration Patterns](logic-orchestration-patterns.md)**: Advanced service orchestration,
-  immutable DTO usage, and transactional integrity.
+- **[Logic Orchestration Patterns](logic-orchestration-patterns.md)**: Advanced service
+  orchestration, immutable DTO usage, and transactional integrity.
 - **[Cross-Module Event Governance](cross-module-event-governance.md)**: Standards for decoupled
   asynchronous side-effects and event-driven orchestration.
 - **[Data Integrity Protocols](data-integrity-orchestration-protocols.md)**: Maintenance of
@@ -36,16 +36,16 @@ architectural views, and engineering processes used to build and maintain the sy
 
 - **[Feature Engineering Workflow](feature-engineering-workflow.md)**: ISO/IEC 12207 implementation
   processes and verification protocols.
-- **[Software Life Cycle Processes](software-lifecycle-processes.md)**: Formal engineering
-  framework from conceptualization to baseline retirement.
+- **[Software Life Cycle Processes](software-lifecycle-processes.md)**: Formal engineering framework
+  from conceptualization to baseline retirement.
 - **[Blueprint Design Guidelines](blueprints-guidelines.md)**: IEEE 1016 standards for the
   elicitation and formalization of design intent.
 - **[Application Blueprints Index](blueprints/table-of-contents.md)**: Strategic design records
   bridging requirements and construction.
 - **[Release Publication Protocols](release-publication-protocols.md)**: ISO/IEC 12207 baseline
   promotion and deployment standards.
-- **[Repository Configuration Protocols](repository-configuration-protocols.md)**: ISO 10007 standards
-  for collaboration and baseline management.
+- **[Repository Configuration Protocols](repository-configuration-protocols.md)**: ISO 10007
+  standards for collaboration and baseline management.
 - **[Automated Tooling Reference](automated-tooling-reference.md)**: ISO/IEC 12207 infrastructure
   and support tooling catalog.
 
@@ -53,7 +53,8 @@ architectural views, and engineering processes used to build and maintain the sy
 
 - **[Role & Permission Management](role-permission-management.md)**: Implementation of ISO/IEC 27001
   access control and modular RBAC.
-- **[Policy Patterns](policy-patterns.md)**: Governance standards for policy enforcement points (PEP).
+- **[Policy Patterns](policy-patterns.md)**: Governance standards for policy enforcement points
+  (PEP).
 - **[Code Quality Standardization](code-quality-standardization.md)**: ISO/IEC 25010/5055 quality
   models and quantitative technical gates.
 - **[Testing & Verification Guide](testing-verification-guide.md)**: IEEE 1012 and ISO/IEC 29119
@@ -61,12 +62,12 @@ architectural views, and engineering processes used to build and maintain the sy
 
 ## 5. Advanced Engineering & Supporting Ecosystem
 
-- **[Advanced Engineering Index](advanced/table-of-contents.md)**: Protocols for systemic
-  evolution and specialized domain orchestrations.
-- **[Supporting Ecosystem Index](packages/table-of-contents.md)**: Technical records for
-  third-party baseline integration and orchestration.
-- **[Technical Debt Index](debts/table-of-contents.md)**: Evolutionary governance of refactoring
-  and architectural upgrades.
+- **[Advanced Engineering Index](advanced/table-of-contents.md)**: Protocols for systemic evolution
+  and specialized domain orchestrations.
+- **[Supporting Ecosystem Index](packages/table-of-contents.md)**: Technical records for third-party
+  baseline integration and orchestration.
+- **[Technical Debt Index](debts/table-of-contents.md)**: Evolutionary governance of refactoring and
+  architectural upgrades.
 
 ---
 
