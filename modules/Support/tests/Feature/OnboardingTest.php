@@ -77,3 +77,26 @@ test('it handles validation errors in CSV rows', function () {
 
     unlink($filePath);
 });
+
+test('it can handle a larger batch of student imports', function () {
+    $count = 20;
+    $csvContent = "name,email,nisn\n";
+    for ($i = 1; $i <= $count; $i++) {
+        $csvContent .= "Student {$i},student{$i}@example.com,nisn{$i}\n";
+    }
+
+    $filePath = tempnam(sys_get_temp_dir(), 'import_bulk_').'.csv';
+    file_put_contents($filePath, $csvContent);
+
+    $service = app(OnboardingService::class);
+    $results = $service->importFromCsv($filePath, 'student');
+
+    expect($results['success'])->toBe($count);
+    $this->assertDatabaseCount('users', $count);
+    
+    // Verify one of them
+    $student = User::where('email', 'student10@example.com')->first();
+    expect($student->name)->toBe('Student 10');
+
+    unlink($filePath);
+});

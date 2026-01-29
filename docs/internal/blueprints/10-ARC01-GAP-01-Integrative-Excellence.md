@@ -1,6 +1,6 @@
 # Application Blueprint: Operational Readiness & Governance (ARC01-GAP-01)
 
-**Series Code**: `ARC01-GAP-01` **Status**: `Done`
+**Series Code**: `ARC01-GAP-01` **Status**: `In Progress`
 
 > **System Requirements Specification Alignment:** This blueprint satisfies the **Administrative
 > Orchestration** ([SYRS-F-101]) and **Security & Integrity** ([SYRS-NF-502]) requirements by
@@ -21,10 +21,14 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
   Allocation** to ensure every student placement has an assigned monitoring teacher.
 - **Temporal Integrity**: Enforce strict lifecycle-aware activity windows via `start_date` and
   `end_date` invariants on internship registrations.
-- **Student Deliverables Management**: Prioritize the formalization of post-internship artifacts
-  (PKL Reports and PPT Presentations) as mandatory completion requirements.
-- **Operational Accountability**: Implement audit logs for critical data changes and global
-  **Operational State Control** for system phases.
+- **Flexible Assignment Governance**: Replace hardcoded deliverables with a dynamic assignment
+  engine. While "Laporan PKL (PDF)" and "Presentasi PKL (PPT)" remain the default requirements,
+  administrators must have the autonomy to add, modify, or remove assignments based on institutional
+  policy.
+- **Operational Accountability**: Implement a dual-tier logging strategy:
+    - **System Log (AuditLog)**: Immutable logs for critical backend data modifications.
+    - **User Log (ActivityLog)**: Behavioral logs for stakeholder interactions using
+      `Spatie/ActivityLog`.
 
 ---
 
@@ -38,15 +42,20 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
   Monitoring Teachers to student placements.
 - **Temporal Guard**: Logic-level enforcement of internship period boundaries for all student
   activities.
-- **Deliverable Submission Subsystem**: A dedicated engine for students to upload mandatory
-  post-internship artifacts, specifically PKL Reports (PDF) and Presentation Materials (PPT).
+- **Dynamic Assignment Engine**: A polymorphic submission system where admins define required
+  tasks. The system initializes with default tasks (Report & PPT) but supports custom task
+  definitions (e.g., "Industry Certificate", "Weekly Log Summary") with specific validation rules
+  (file types, deadlines).
 - **Audit Logs & State Control**: Immutable logs for critical data modifications and global
   operational toggles to manage system-wide phases (e.g., Registration vs. Operation).
+- **User Activity Tracking**: Capture user-level events such as successful logins, profile
+  modifications, and document submissions to provide a behavioral audit trail for stakeholders.
 
 ### 2.2 Stakeholder Personas
 
 - **Staff**: Orchestrates batch imports, manages quotas, and assigns advisors.
 - **System Administrator**: Manages global system phases and audits administrative logs.
+- **Student/User**: Can view their own activity history for transparency.
 
 ---
 
@@ -61,8 +70,25 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
     - Implementation of `internship_deliverables` (UUID, registration_id, type [Report/PPT],
       file_path, status).
 - **Core Module**:
-    - Implementation of `AuditLog` (UUID, subject_id, action, payload, timestamp).
     - Global state management for `system_phase`.
+- **Log Module (Centralized Observability)**:
+    - **System Log (AuditLog)**: Managed within this module to provide an immutable trail of
+      critical data modifications. Existing `AuditLog` infrastructure will be consolidated here.
+    - **User Log (ActivityLog)**: Integration of `Spatie/ActivityLog` for behavioral tracking.
+        1.  Configuration: Use **UUID** for `subject_id` and `causer_id`.
+        2.  Standardization: Define `log_name` identifiers: `auth`, `profile`, `submission`.
+        3.  Implementation: Provide centralized Traits/Contracts for other modules to record user
+            activities.
+- **Assignment Module (Evolutionary Target)**:
+    - **Purpose**: Decouple task-related logic from the core Internship lifecycle.
+    - **Entities**:
+        - `AssignmentType`: Template for tasks (e.g., "PDF Document", "Video", "External Link").
+        - `Assignment`: Specific requirements linked to an `internship_id` or `academic_year`.
+          Stores 'is_mandatory' status and 'default_title' (e.g., "Laporan Kegiatan PKL").
+        - `Submission`: Student uploads/entries linked to a specific `Assignment` and
+          `registration_id`.
+    - **Migration Path**: Transition existing `InternshipDeliverable` and `InternshipRequirement`
+      data into this unified, flexible structure.
 
 ### 3.2 Logic Invariants
 
@@ -70,8 +96,9 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
   Teacher.
 - **The Period Invariant**: Activities are strictly rejected if `today()` is outside the assigned
   internship date range.
-- **The Deliverable Invariant**: A student's program completion status cannot be certified until
-  both the PKL Report and PPT Presentation are submitted and verified.
+- **The Assignment Fulfillment Invariant**: A student's program completion status cannot be
+  certified until **all mandatory assignments** (as defined by the current policy/assignment types)
+  are submitted and verified.
 - **The Phase Invariant**: Certain operations (like registration) are restricted based on the global
   `system_phase`.
 
@@ -98,7 +125,9 @@ A design series is considered done only when it satisfies the following gates:
 - **Acceptance Criteria**:
     - Successful batch import of 100+ students via CSV.
     - Verified rejection of out-of-period attendance/journal attempts.
-    - Functional submission and administrative verification of PKL Reports and PPT presentations.
+    - Admin can successfully add a custom mandatory assignment (e.g., "Industry Certificate").
+    - Verified that student cannot complete the program if the new custom mandatory assignment is
+      missing.
     - Audit logs correctly record placement modifications.
 
 ---
