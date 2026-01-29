@@ -21,6 +21,7 @@ class DeliverableSubmission extends Component
     use WithFileUploads;
 
     public $reportFile;
+
     public $presentationFile;
 
     public ?string $registrationId = null;

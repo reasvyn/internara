@@ -12,13 +12,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Modules\Log\Concerns\InteractsWithActivityLog;
+use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Profile\Models\Concerns\HasProfileRelation;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\User\Database\Factories\UserFactory;
 use Modules\User\Support\UsernameGenerator;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -31,9 +32,15 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     use HasRoles;
     use HasStatus;
     use HasUuid;
+    use InteractsWithActivityLog;
     use InteractsWithMedia;
     use MustVerifyEmailTrait;
     use Notifiable;
+
+    /**
+     * The name of the activity log for this model.
+     */
+    protected string $activityLogName = 'profile';
 
     /**
      * The attributes that are mass assignable.
@@ -115,9 +122,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         string|UploadedFile $file,
         string $collectionName = 'user_avatar',
     ): bool {
-        $this->clearMediaCollection($collectionName);
-
-        return (bool) $this->addMedia($file)->toMediaCollection($collectionName);
+        return $this->setMedia($file, $collectionName);
     }
 
     /**

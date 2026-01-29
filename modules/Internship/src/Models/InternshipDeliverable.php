@@ -6,10 +6,10 @@ namespace Modules\Internship\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * Class InternshipDeliverable

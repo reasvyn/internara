@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Core\Models\AuditLog;
+use Modules\Log\Models\AuditLog;
 use Modules\Setting\Models\Setting;
 use Modules\User\Models\User;
 

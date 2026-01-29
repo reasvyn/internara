@@ -22,7 +22,7 @@ test('it records audit log when a placement is updated', function () {
         'action' => 'updated',
     ]);
 
-    $log = \Modules\Core\Models\AuditLog::first();
+    $log = \Modules\Log\Models\AuditLog::first();
     expect($log->payload['company_name'])->toBe('New Company');
 });
 

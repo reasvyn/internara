@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services;
 
+use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
@@ -19,6 +20,7 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
         protected InternshipPlacementService $placementService,
         protected InternshipRequirementService $requirementService,
         protected PlacementLogger $logger,
+        protected AssignmentService $assignmentService,
     ) {
         $this->setModel($model);
         $this->setSortable(['created_at']);
@@ -206,10 +208,10 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
             );
         }
 
-        // Deliverable Invariant: Completion requires verified deliverables
-        if (! app(\Modules\Internship\Services\Contracts\DeliverableService::class)->areAllDeliverablesVerified($registrationId)) {
+        // Assignment Fulfillment Invariant: Completion requires all mandatory assignments verified
+        if (! $this->assignmentService->isFulfillmentComplete($registrationId)) {
             throw new AppException(
-                userMessage: 'internship::exceptions.deliverables_not_verified',
+                userMessage: 'internship::exceptions.mandatory_assignments_not_verified',
                 code: 422,
             );
         }

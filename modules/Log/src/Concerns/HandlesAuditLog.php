@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Models\Concerns;
+namespace Modules\Log\Concerns;
 
 use Illuminate\Support\Facades\Auth;
-use Modules\Core\Models\AuditLog;
+use Modules\Log\Models\AuditLog;
 
 /**
  * Trait HandlesAuditLog

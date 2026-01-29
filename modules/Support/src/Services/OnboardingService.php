@@ -99,7 +99,7 @@ class OnboardingService implements Contract
             $columns[] = 'nip';
         }
 
-        return implode(',', $columns) . "\n";
+        return implode(',', $columns)."\n";
     }
 
     /**

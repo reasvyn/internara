@@ -48,7 +48,7 @@ test('student can upload a report', function () {
 
 test('deliverable service can verify all deliverables', function () {
     $service = app(DeliverableService::class);
-    
+
     $report = $service->submit($this->registration->id, 'report', UploadedFile::fake()->create('r.pdf'));
     $ppt = $service->submit($this->registration->id, 'presentation', UploadedFile::fake()->create('p.pdf'));
 

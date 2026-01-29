@@ -11,5 +11,5 @@ return [
     'invalid_period_range' => 'Tanggal mulai tidak boleh lebih besar dari tanggal berakhir.',
     'registration_not_found' => 'Registrasi magang tidak ditemukan.',
     'registration_closed_for_current_phase' => 'Pendaftaran siswa tidak tersedia pada fase sistem saat ini.',
-    'deliverables_not_verified' => 'Program magang tidak dapat diselesaikan hingga seluruh berkas wajib (Laporan dan Presentasi) diverifikasi.',
+    'mandatory_assignments_not_verified' => 'Program magang tidak dapat diselesaikan hingga seluruh tugas wajib diverifikasi.',
 ];

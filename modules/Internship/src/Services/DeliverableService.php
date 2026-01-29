@@ -66,7 +66,7 @@ class DeliverableService extends EloquentQuery implements Contract
     public function areAllDeliverablesVerified(string $registrationId): bool
     {
         $mandatoryTypes = ['report', 'presentation'];
-        
+
         $verifiedCount = $this->model->newQuery()
             ->where('registration_id', $registrationId)
             ->whereIn('type', $mandatoryTypes)

@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/assignment",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Assignment\\": "src/",
+            "Modules\\Assignment\\Database\\Factories\\": "database/factories/",
+            "Modules\\Assignment\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Assignment\\Tests\\": "tests/"
+        }
+    }
+}

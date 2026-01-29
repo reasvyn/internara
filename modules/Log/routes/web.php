@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+use Modules\Log\Livewire\ActivityFeed;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +15,7 @@ declare(strict_types=1);
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(function () {
+    Route::get('/admin/activities', ActivityFeed::class)->name('admin.activities');
+});

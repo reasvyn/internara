@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Modules\Core\Models\Concerns\HandlesAuditLog;
 use Modules\Internship\Database\Factories\InternshipPlacementFactory;
+use Modules\Log\Concerns\HandlesAuditLog;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class InternshipPlacement extends Model

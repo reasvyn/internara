@@ -6,7 +6,7 @@ namespace Modules\Setting\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Core\Models\Concerns\HandlesAuditLog;
+use Modules\Log\Concerns\HandlesAuditLog;
 use Modules\Setting\Database\Factories\SettingFactory;
 
 class Setting extends Model

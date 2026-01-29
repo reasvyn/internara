@@ -46,4 +46,20 @@ class LogServiceProvider extends ServiceProvider
             // 'SomeContract::class' => 'SomeConcrete::class'
         ];
     }
+
+    /**
+     * Define the view slots for the module.
+     */
+    protected function viewSlots(): array
+    {
+        return [
+            'sidebar.menu' => [
+                'ui::components.menu-item#activities' => [
+                    'title' => __('log::ui.activity_feed'),
+                    'icon' => 'tabler.history',
+                    'link' => '/admin/activities',
+                ],
+            ],
+        ];
+    }
 }

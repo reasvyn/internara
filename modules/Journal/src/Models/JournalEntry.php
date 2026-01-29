@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Journal\Database\Factories\JournalEntryFactory;
+use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
 class JournalEntry extends Model implements HasMedia
 {

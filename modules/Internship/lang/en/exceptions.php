@@ -11,5 +11,5 @@ return [
     'invalid_period_range' => 'The start date cannot be after the end date.',
     'registration_not_found' => 'The specified internship registration was not found.',
     'registration_closed_for_current_phase' => 'Student registration is not available in the current system phase.',
-    'deliverables_not_verified' => 'The internship cannot be completed until all mandatory deliverables (Report and Presentation) are verified.',
+    'mandatory_assignments_not_verified' => 'The internship cannot be completed until all mandatory assignments are verified.',
 ];

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Models;
+namespace Modules\Log\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Shared\Models\Concerns\HasUuid;

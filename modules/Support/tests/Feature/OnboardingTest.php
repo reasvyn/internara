@@ -93,7 +93,7 @@ test('it can handle a larger batch of student imports', function () {
 
     expect($results['success'])->toBe($count);
     $this->assertDatabaseCount('users', $count);
-    
+
     // Verify one of them
     $student = User::where('email', 'student10@example.com')->first();
     expect($student->name)->toBe('Student 10');
