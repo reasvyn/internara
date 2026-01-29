@@ -1,8 +1,8 @@
 # Code of Conduct: Professional Standards
 
 This document establishes the **Ethical & Professional Standards** for the Internara project,
-aligned with **ISO 26000** (Social Responsibility) and standard open-source governance protocols.
-It defines the non-negotiable behavioral invariants required to participate in this engineering
+aligned with **ISO 26000** (Social Responsibility) and standard open-source governance protocols. It
+defines the non-negotiable behavioral invariants required to participate in this engineering
 ecosystem.
 
 > **Governance Mandate:** Participation in this project is contingent upon strict adherence to these
@@ -28,14 +28,16 @@ We prioritize **Technical Merit** and **Professional Integrity** above all else.
 Contributors are expected to adhere to the following behavioral standards:
 
 ### 2.1 Professional Discourse
+
 - **Technical Focus**: Critique ideas and code, never people. Ad hominem attacks are strictly
   prohibited.
-- **Constructive Feedback**: Feedback must be actionable, specific, and respectful. Use the
-  "Request for Changes" mechanism to improve quality, not to demean.
+- **Constructive Feedback**: Feedback must be actionable, specific, and respectful. Use the "Request
+  for Changes" mechanism to improve quality, not to demean.
 - **Data Privacy (ISO/IEC 27000)**: Never publish or leak Personally Identifiable Information (PII)
   of others without explicit consent.
 
 ### 2.2 Community Integrity
+
 - **Authenticity**: Represent yourself and your credentials honestly.
 - **Collaboration**: Prioritize the project's goals over personal ego or preference.
 - **Responsiveness**: Acknowledge feedback and questions within a reasonable timeframe.
@@ -62,11 +64,13 @@ Violations will be handled according to the **Community & Communication Protocol
 `docs/internal/repository-configuration-protocols.md`.
 
 ### 4.1 Reporting
+
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting
 the project team at **[reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)**. All complaints will be reviewed and investigated
 promptly and fairly.
 
 ### 4.2 Triage & Resolution
+
 - **Correction**: A private, written warning/explanation of the violation.
 - **Warning**: A formal warning with consequences for continued behavior.
 - **Temporary Ban**: A temporary ban from interaction for a specified period.

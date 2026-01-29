@@ -235,4 +235,23 @@ class RegistrationManager extends Component
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
         }
     }
+
+    /**
+     * Complete a registration.
+     */
+    public function complete(string $id): void
+    {
+        try {
+            /** @var InternshipRegistrationService $service */
+            $service = $this->service;
+            $service->complete($id);
+            $this->dispatch(
+                'notify',
+                message: __('internship::ui.registration_completed'),
+                type: 'success',
+            );
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
+    }
 }

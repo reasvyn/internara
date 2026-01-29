@@ -95,4 +95,3 @@ A design series is considered done only when it satisfies the following gates:
 
 - **Grading Optimization**: Potential for an automated evaluation engine.
 - **Role-based Segmentation**: Suggestions for specialized workspaces for different users.
-

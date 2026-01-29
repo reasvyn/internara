@@ -15,7 +15,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
         $this->setModel($model);
         $this->setBaseQuery($model->newQuery()->with('internship'));
         $this->setSearchable(['company_name', 'contact_person']);
-        $this->setSortable(['company_name', 'slots', 'created_at']);
+        $this->setSortable(['company_name', 'capacity_quota', 'created_at']);
     }
 
     /**
@@ -31,7 +31,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
 
         $occupiedSlots = $placement->registrations()->count();
 
-        return max(0, $placement->slots - $occupiedSlots);
+        return max(0, $placement->capacity_quota - $occupiedSlots);
     }
 
     /**

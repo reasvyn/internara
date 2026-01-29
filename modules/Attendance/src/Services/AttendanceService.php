@@ -6,6 +6,7 @@ namespace Modules\Attendance\Services;
 
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService as Contract;
+use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Shared\Services\EloquentQuery;
 
@@ -19,9 +20,11 @@ class AttendanceService extends EloquentQuery implements Contract
     /**
      * AttendanceService constructor.
      */
-    public function __construct()
-    {
-        $this->setModel(new AttendanceLog);
+    public function __construct(
+        protected InternshipRegistrationService $registrationService,
+        AttendanceLog $model,
+    ) {
+        $this->setModel($model);
         $this->setSortable(['date', 'check_in_at', 'created_at']);
     }
 
@@ -57,17 +60,35 @@ class AttendanceService extends EloquentQuery implements Contract
 
         // Check if already checked in
         if ($this->getTodayLog($studentId)) {
-            throw new \Exception(__('attendance::messages.already_checked_in'));
+            throw new AppException(
+                userMessage: 'attendance::messages.already_checked_in',
+                code: 422,
+            );
         }
 
         // Find active registration
-        $registration = app(InternshipRegistrationService::class)->first([
+        $registration = $this->registrationService->first([
             'student_id' => $studentId,
             'latest_status' => 'active',
         ]);
 
         if (! $registration) {
-            throw new \Exception(__('internship::messages.no_active_registration'));
+            throw new AppException(
+                userMessage: 'internship::messages.no_active_registration',
+                code: 404,
+            );
+        }
+
+        // Period Invariant: activities are restricted to assigned date range
+        $todayStr = now()->format('Y-m-d');
+        if (
+            ($registration->start_date && $todayStr < $registration->start_date->format('Y-m-d')) ||
+            ($registration->end_date && $todayStr > $registration->end_date->format('Y-m-d'))
+        ) {
+            throw new AppException(
+                userMessage: 'attendance::messages.outside_internship_period',
+                code: 403,
+            );
         }
 
         /** @var AttendanceLog $log */
@@ -98,11 +119,17 @@ class AttendanceService extends EloquentQuery implements Contract
         $log = $this->getTodayLog($studentId);
 
         if (! $log) {
-            throw new \Exception(__('attendance::messages.no_check_in_record'));
+            throw new AppException(
+                userMessage: 'attendance::messages.no_check_in_record',
+                code: 404,
+            );
         }
 
         if ($log->check_out_at) {
-            throw new \Exception(__('attendance::messages.already_checked_out'));
+            throw new AppException(
+                userMessage: 'attendance::messages.already_checked_out',
+                code: 422,
+            );
         }
 
         $log->update([

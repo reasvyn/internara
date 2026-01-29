@@ -45,4 +45,9 @@ interface InternshipRegistrationService extends EloquentQuery
         string $newPlacementId,
         ?string $reason = null,
     ): \Modules\Internship\Models\InternshipRegistration;
+
+    /**
+     * Mark a registration as completed.
+     */
+    public function complete(string $registrationId): \Modules\Internship\Models\InternshipRegistration;
 }

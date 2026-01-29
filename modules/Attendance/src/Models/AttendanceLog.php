@@ -60,10 +60,9 @@ class AttendanceLog extends Model
      */
     public function registration(): BelongsTo
     {
-        return $this->belongsTo(
-            \Modules\Internship\Models\InternshipRegistration::class,
-            'registration_id',
-        );
+        return app(
+            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+        )->defineBelongsTo($this, 'registration_id');
     }
 
     /**

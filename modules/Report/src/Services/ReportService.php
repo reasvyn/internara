@@ -30,11 +30,15 @@ class ReportService implements ReportGenerator
     /**
      * {@inheritdoc}
      */
-    public function queue(string $providerIdentifier, array $filters = []): string
-    {
+    public function queue(
+        string $providerIdentifier,
+        array $filters = [],
+        ?string $userId = null,
+    ): string {
         $jobId = uniqid('report_');
+        $userId = $userId ?: auth()->id();
 
-        GenerateReportJob::dispatch($providerIdentifier, $filters, $jobId);
+        GenerateReportJob::dispatch($providerIdentifier, $filters, $jobId, $userId);
 
         return $jobId;
     }
@@ -42,8 +46,11 @@ class ReportService implements ReportGenerator
     /**
      * {@inheritdoc}
      */
-    public function generate(string $providerIdentifier, array $filters = []): string
-    {
+    public function generate(
+        string $providerIdentifier,
+        array $filters = [],
+        ?string $userId = null,
+    ): string {
         $provider = $this->providers->get($providerIdentifier);
 
         if (! $provider) {
@@ -52,8 +59,9 @@ class ReportService implements ReportGenerator
 
         $data = $provider->getReportData($filters);
         $fileName = "reports/{$providerIdentifier}_".now()->format('YmdHis').'.pdf';
+        $template = $provider->getTemplate();
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('report::templates.generic', [
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($template, [
             'title' => $provider->getLabel(),
             'data' => $data,
             'filters' => $filters,
@@ -61,10 +69,11 @@ class ReportService implements ReportGenerator
 
         \Illuminate\Support\Facades\Storage::disk('local')->put($fileName, $pdf->output());
 
-        // Persist metadata using local model (same module is allowed)
+        $userId = $userId ?: auth()->id();
+
+        // Persist metadata using local model
         \Modules\Report\Models\GeneratedReport::create([
-            'user_id' => auth()->id() ?:
-                app(\Modules\User\Services\Contracts\UserService::class)->first(['id'])?->id,
+            'user_id' => $userId,
             'provider_identifier' => $providerIdentifier,
             'file_path' => $fileName,
             'filters' => $filters,

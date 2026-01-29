@@ -30,6 +30,11 @@ test('report service can register and list providers', function () {
                 return [];
             }
 
+            public function getTemplate(): string
+            {
+                return 'report::templates.generic';
+            }
+
             public function getFilterRules(): array
             {
                 return [];

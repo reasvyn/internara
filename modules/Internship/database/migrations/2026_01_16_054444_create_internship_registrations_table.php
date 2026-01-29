@@ -22,6 +22,8 @@ return new class extends Migration
                 ->constrained('internship_placements')
                 ->nullOnDelete();
             $table->uuid('student_id')->index();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('academic_year', 10)->nullable()->index();
             $table->uuid('teacher_id')->nullable()->index();
             $table->uuid('mentor_id')->nullable()->index();

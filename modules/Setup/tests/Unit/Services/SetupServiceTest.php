@@ -73,8 +73,10 @@ test('it requires setup access', function () {
     $this->settingService
         ->shouldReceive('getValue')
         ->with('app_installed', false, true)
-        ->andReturn(false);
-    expect($this->service->requireSetupAccess())->toBeFalse();
+        ->andReturn(false, true); // First call returns false, second returns true
+
+    expect($this->service->requireSetupAccess())->toBeTrue(); // Returns !false = true
+    expect($this->service->requireSetupAccess())->toBeFalse(); // Returns !true = false
 
     // With prev step, check step completion
     $this->settingService

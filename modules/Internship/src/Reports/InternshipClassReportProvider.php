@@ -56,6 +56,14 @@ class InternshipClassReportProvider implements ExportableDataProvider
     /**
      * {@inheritdoc}
      */
+    public function getTemplate(): string
+    {
+        return 'internship::reports.class-summary';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterRules(): array
     {
         return [

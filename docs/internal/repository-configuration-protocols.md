@@ -79,8 +79,8 @@ To maintain zero configuration drift, a full synchronization sweep is required a
 
 ## 6. Community & Communication Protocols (GitHub Discussions)
 
-Internara utilizes GitHub Discussions as the primary channel for community engagement, enforcing strict
-protocols to maintain professional discourse and operational responsiveness.
+Internara utilizes GitHub Discussions as the primary channel for community engagement, enforcing
+strict protocols to maintain professional discourse and operational responsiveness.
 
 ### 6.1 Violation Filtering (Moderation)
 

@@ -46,6 +46,9 @@
                         @if($registration->latestStatus()?->name !== 'active')
                             <x-ui::button icon="tabler.check" class="btn-ghost btn-sm text-success" wire:click="approve('{{ $registration->id }}')" tooltip="{{ __('shared::ui.approve') }}" />
                         @endif
+                        @if($registration->latestStatus()?->name === 'active')
+                            <x-ui::button icon="tabler.award" class="btn-ghost btn-sm text-primary" wire:click="complete('{{ $registration->id }}')" tooltip="{{ __('Selesaikan Program') }}" />
+                        @endif
                         @if($registration->latestStatus()?->name !== 'inactive')
                             <x-ui::button icon="tabler.x" class="btn-ghost btn-sm text-warning" wire:click="reject('{{ $registration->id }}')" tooltip="{{ __('shared::ui.reject') }}" />
                         @endif
@@ -90,6 +93,7 @@
                     wire:model="form.teacher_id" 
                     :options="$this->teachers" 
                     placeholder="{{ __('internship::ui.select_teacher') }}"
+                    required
                 />
                 <x-ui::select 
                     label="{{ __('internship::ui.mentor') }}" 
@@ -97,6 +101,11 @@
                     :options="$this->mentors" 
                     placeholder="{{ __('internship::ui.select_mentor') }}"
                 />
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <x-ui::input label="{{ __('internship::ui.date_start') }}" type="date" wire:model="form.start_date" required />
+                <x-ui::input label="{{ __('internship::ui.date_finish') }}" type="date" wire:model="form.end_date" required />
             </div>
 
             <x-slot:actions>

@@ -59,7 +59,10 @@ class JournalEntryManager extends Component
                 ]);
 
                 if (! $registration) {
-                    throw new \Exception(__('internship::messages.no_active_registration'));
+                    throw new \Modules\Exception\AppException(
+                        userMessage: 'internship::messages.no_active_registration',
+                        code: 404,
+                    );
                 }
 
                 $data = $this->form->except('entry', 'attachments');
@@ -86,7 +89,12 @@ class JournalEntryManager extends Component
             );
             $this->redirect(route('journal.index'), navigate: true);
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $message =
+                $e instanceof \Modules\Exception\AppException
+                    ? $e->getUserMessage()
+                    : $e->getMessage();
+
+            $this->dispatch('notify', message: $message, type: 'error');
         }
     }
 

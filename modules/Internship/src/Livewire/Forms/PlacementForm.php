@@ -22,7 +22,7 @@ class PlacementForm extends Form
 
     public ?string $mentor_id = null;
 
-    public int $slots = 1;
+    public int $capacity_quota = 1;
 
     /**
      * Get validation rules.
@@ -36,7 +36,7 @@ class PlacementForm extends Form
             'contact_person' => ['nullable', 'string', 'max:255'],
             'contact_number' => ['nullable', 'string', 'max:20'],
             'mentor_id' => ['nullable', 'uuid'],
-            'slots' => ['required', 'integer', 'min:1'],
+            'capacity_quota' => ['required', 'integer', 'min:1'],
         ];
     }
 }

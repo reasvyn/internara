@@ -36,11 +36,16 @@ interface InternshipRequirementService extends EloquentQuery
     ): \Modules\Internship\Models\RequirementSubmission;
 
     /**
-     * Reject a requirement submission with notes.
+     * Reject a requirement submission.
      */
     public function reject(
         string $submissionId,
         string $adminId,
         string $notes,
     ): \Modules\Internship\Models\RequirementSubmission;
+
+    /**
+     * Determine if a registration has cleared all mandatory requirements for its academic year.
+     */
+    public function hasClearedMandatory(string $registrationId): bool;
 }

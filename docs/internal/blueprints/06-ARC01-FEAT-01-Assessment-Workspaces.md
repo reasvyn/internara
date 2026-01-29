@@ -96,6 +96,5 @@ A design series is considered done only when it satisfies the following gates:
 
 ## 7. Improvement Suggestions
 
-- **Prerequisite Validation**: Potential for an engine to verify document compliance 
-  automatically.
+- **Prerequisite Validation**: Potential for an engine to verify document compliance automatically.
 - **Administrative Automation**: Refinements for cohort-wide student management.

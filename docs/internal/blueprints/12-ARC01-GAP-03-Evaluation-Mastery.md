@@ -30,8 +30,8 @@ evaluations, scoring logic, and the generation of verifiable completion document
 
 ### 2.1 Capability Set
 
-- **Formative Assessment Framework**: A simplified mid-program feedback mechanism for supervisors
-  to evaluate student progress.
+- **Formative Assessment Framework**: A simplified mid-program feedback mechanism for supervisors to
+  evaluate student progress.
 - **Competency-Linked Scoring**: Logic that calculates scores based on validated journal entries,
   mentoring attendance, and supervisor feedback.
 - **Instructional Transcript Engine**: A print-friendly (PDF) summary generator for student
@@ -89,5 +89,5 @@ A design series is considered done only when it satisfies the following gates:
 
 ---
 
-_By completing this blueprint, Internara ensures that every internship results in a verifiable, 
+_By completing this blueprint, Internara ensures that every internship results in a verifiable,
 data-backed credential of competency attainment._

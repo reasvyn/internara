@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Core\Models\Concerns\HandlesAuditLog;
 use Modules\Internship\Database\Factories\InternshipPlacementFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class InternshipPlacement extends Model
 {
+    use HandlesAuditLog;
     use HasFactory;
     use HasUuid;
 
@@ -38,7 +40,7 @@ class InternshipPlacement extends Model
         'company_address',
         'contact_person',
         'contact_number',
-        'slots',
+        'capacity_quota',
         'internship_id',
         'mentor_id',
     ];

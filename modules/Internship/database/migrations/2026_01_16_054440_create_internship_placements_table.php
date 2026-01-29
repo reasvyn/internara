@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('company_address')->nullable();
             $table->string('contact_person')->nullable();
             $table->string('contact_number')->nullable();
-            $table->integer('slots')->default(1);
+            $table->integer('capacity_quota')->default(1);
             $table->foreignUuid('internship_id')->constrained('internships')->cascadeOnDelete();
             $table->uuid('mentor_id')->nullable()->index();
             $table->timestamps();

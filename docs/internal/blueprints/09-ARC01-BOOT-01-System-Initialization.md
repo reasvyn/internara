@@ -111,6 +111,6 @@ and security.
 
 ## 8. Improvement Suggestions
 
-- **Competency Mapping**: Potential linkage between journals and curriculum rubrics for deeper 
+- **Competency Mapping**: Potential linkage between journals and curriculum rubrics for deeper
   instructional alignment.
 - **Mentoring Dialogue**: Suggestions for formalizing feedback logs for Instructors and Mentors.

@@ -7,12 +7,13 @@ namespace Modules\Assessment\Services;
 use Carbon\Carbon;
 use Modules\Assessment\Services\Contracts\ComplianceService as Contract;
 use Modules\Attendance\Services\Contracts\AttendanceService;
-use Modules\Internship\Models\InternshipRegistration;
+use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 
 class ComplianceService implements Contract
 {
     public function __construct(
+        protected InternshipRegistrationService $registrationService,
         protected AttendanceService $attendanceService,
         protected JournalService $journalService,
     ) {}
@@ -22,19 +23,29 @@ class ComplianceService implements Contract
      */
     public function calculateScore(string $registrationId): array
     {
-        $registration = InternshipRegistration::with('internship')->findOrFail($registrationId);
-        $internship = $registration->internship;
+        /** @var \Modules\Internship\Models\InternshipRegistration|null $registration */
+        $registration = $this->registrationService->find($registrationId);
 
-        $totalDays = $this->calculateWorkingDays($internship->date_start, $internship->date_finish);
+        if (! $registration) {
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+                \Modules\Internship\Models\InternshipRegistration::class,
+                [$registrationId],
+            );
+        }
 
-        // If the internship is still ongoing, we might want to cap totalDays
-        // to today's date if date_finish is in the future.
+        $startDate = $registration->start_date;
+        $endDate = $registration->end_date;
+
+        if (! $startDate || ! $endDate) {
+            return $this->emptyScore();
+        }
+
+        $totalDays = $this->calculateWorkingDays($startDate, $endDate);
+
+        // If the internship is still ongoing, we cap totalDays to today
         $effectiveTotalDays = min(
             $totalDays,
-            $this->calculateWorkingDays(
-                $internship->date_start,
-                Carbon::now()->min($internship->date_finish),
-            ),
+            $this->calculateWorkingDays($startDate, Carbon::now()->min($endDate)),
         );
 
         if ($effectiveTotalDays <= 0) {

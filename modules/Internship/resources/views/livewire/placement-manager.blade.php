@@ -14,7 +14,7 @@
             <x-ui::table :headers="[
                 ['key' => 'company_name', 'label' => __('internship::ui.company_name')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
-                ['key' => 'slots', 'label' => __('internship::ui.slots')],
+                ['key' => 'capacity_quota', 'label' => __('internship::ui.capacity_quota')],
                 ['key' => 'contact_person', 'label' => __('internship::ui.contact')],
             ]" :rows="$this->records" with-pagination>
                 @scope('actions', $placement)
@@ -45,7 +45,7 @@
                 <x-ui::input label="{{ __('internship::ui.contact_number') }}" wire:model="form.contact_number" />
             </div>
 
-            <x-ui::input label="{{ __('internship::ui.quota') }}" type="number" wire:model="form.slots" required min="1" />
+            <x-ui::input label="{{ __('internship::ui.capacity_quota') }}" type="number" wire:model="form.capacity_quota" required min="1" />
 
             <div class="flex items-end gap-2">
                 <div class="flex-1">

@@ -9,7 +9,7 @@ use Modules\User\Services\Contracts\UserService;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-test('it can register a student for a placement if slots are available', function () {
+test('it can register a student for a placement if capacity is available', function () {
     $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
         ->factory()
         ->create();
@@ -17,20 +17,26 @@ test('it can register a student for a placement if slots are available', functio
         ->factory()
         ->create([
             'internship_id' => $program->id,
-            'slots' => 1,
+            'capacity_quota' => 1,
         ]);
     $student = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
 
     $registration = app(InternshipRegistrationService::class)->register([
         'internship_id' => $program->id,
         'placement_id' => $placement->id,
         'student_id' => $student->id,
+        'teacher_id' => $teacher->id,
+        'start_date' => now()->toDateString(),
+        'end_date' => now()->addMonths(3)->toDateString(),
     ]);
 
     expect($registration)
         ->toBeInstanceOf(InternshipRegistration::class)
         ->and($registration->student_id)
-        ->toBe($student->id);
+        ->toBe($student->id)
+        ->and($registration->teacher_id)
+        ->toBe($teacher->id);
 });
 
 test('it throws exception if student already registered for the same program', function () {
@@ -44,25 +50,29 @@ test('it throws exception if student already registered for the same program', f
         ->factory()
         ->create(['internship_id' => $program->id]);
     $student = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
 
-    // First registration
-    app(InternshipRegistrationService::class)->register([
+    $data = [
         'internship_id' => $program->id,
         'placement_id' => $placement1->id,
         'student_id' => $student->id,
-    ]);
+        'teacher_id' => $teacher->id,
+        'start_date' => now()->toDateString(),
+        'end_date' => now()->addMonths(3)->toDateString(),
+    ];
+
+    // First registration
+    app(InternshipRegistrationService::class)->register($data);
 
     // Second registration for same program but different placement
-    expect(
-        fn () => app(InternshipRegistrationService::class)->register([
-            'internship_id' => $program->id,
-            'placement_id' => $placement2->id,
-            'student_id' => $student->id,
-        ]),
-    )->toThrow(AppException::class, 'internship::exceptions.student_already_registered');
+    $data['placement_id'] = $placement2->id;
+    expect(fn () => app(InternshipRegistrationService::class)->register($data))->toThrow(
+        AppException::class,
+        'internship::exceptions.student_already_registered',
+    );
 });
 
-test('it throws exception if no slots available', function () {
+test('it throws exception if no capacity available', function () {
     $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
         ->factory()
         ->create();
@@ -70,27 +80,32 @@ test('it throws exception if no slots available', function () {
         ->factory()
         ->create([
             'internship_id' => $program->id,
-            'slots' => 1,
+            'capacity_quota' => 1,
         ]);
 
     $student1 = app(UserService::class)->factory()->create();
     $student2 = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
 
-    // Fill the only slot
-    app(InternshipRegistrationService::class)->register([
+    $data1 = [
         'internship_id' => $program->id,
         'placement_id' => $placement->id,
         'student_id' => $student1->id,
-    ]);
+        'teacher_id' => $teacher->id,
+        'start_date' => now()->toDateString(),
+        'end_date' => now()->addMonths(3)->toDateString(),
+    ];
+
+    // Fill the only slot
+    app(InternshipRegistrationService::class)->register($data1);
 
     // Try to register another student
-    expect(
-        fn () => app(InternshipRegistrationService::class)->register([
-            'internship_id' => $program->id,
-            'placement_id' => $placement->id,
-            'student_id' => $student2->id,
-        ]),
-    )->toThrow(AppException::class, 'internship::exceptions.no_slots_available');
+    $data2 = $data1;
+    $data2['student_id'] = $student2->id;
+    expect(fn () => app(InternshipRegistrationService::class)->register($data2))->toThrow(
+        AppException::class,
+        'internship::exceptions.no_slots_available',
+    );
 });
 
 test('it logs the placement assignment when registering', function () {
@@ -101,14 +116,18 @@ test('it logs the placement assignment when registering', function () {
         ->factory()
         ->create([
             'internship_id' => $program->id,
-            'slots' => 5,
+            'capacity_quota' => 5,
         ]);
     $student = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
 
     $registration = app(InternshipRegistrationService::class)->register([
         'internship_id' => $program->id,
         'placement_id' => $placement->id,
         'student_id' => $student->id,
+        'teacher_id' => $teacher->id,
+        'start_date' => now()->toDateString(),
+        'end_date' => now()->addMonths(3)->toDateString(),
     ]);
 
     $this->assertDatabaseHas('internship_placement_history', [
@@ -126,20 +145,24 @@ test('it can reassign a placement and logs the change', function () {
         ->factory()
         ->create([
             'internship_id' => $program->id,
-            'slots' => 1,
+            'capacity_quota' => 1,
         ]);
     $placement2 = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
-            'slots' => 1,
+            'capacity_quota' => 1,
         ]);
     $student = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
 
     $registration = app(InternshipRegistrationService::class)->register([
         'internship_id' => $program->id,
         'placement_id' => $placement1->id,
         'student_id' => $student->id,
+        'teacher_id' => $teacher->id,
+        'start_date' => now()->toDateString(),
+        'end_date' => now()->addMonths(3)->toDateString(),
     ]);
 
     $updatedRegistration = app(InternshipRegistrationService::class)->reassignPlacement(
@@ -169,4 +192,86 @@ test('it can reassign a placement and logs the change', function () {
         ->toBe($placement1->id)
         ->and($history->metadata['new_placement_id'])
         ->toBe($placement2->id);
+});
+
+test('it enforces advisor invariant', function () {
+    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+        ->factory()
+        ->create();
+    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+        ->factory()
+        ->create(['internship_id' => $program->id]);
+    $student = app(UserService::class)->factory()->create();
+
+    expect(
+        fn () => app(InternshipRegistrationService::class)->register([
+            'internship_id' => $program->id,
+            'placement_id' => $placement->id,
+            'student_id' => $student->id,
+            // 'teacher_id' missing
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->addMonths(3)->toDateString(),
+        ]),
+    )->toThrow(AppException::class, 'internship::exceptions.advisor_required_for_placement');
+});
+
+test('it enforces temporal integrity', function () {
+    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+        ->factory()
+        ->create();
+    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+        ->factory()
+        ->create(['internship_id' => $program->id]);
+    $student = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
+
+    // Missing dates
+    expect(
+        fn () => app(InternshipRegistrationService::class)->register([
+            'internship_id' => $program->id,
+            'placement_id' => $placement->id,
+            'student_id' => $student->id,
+            'teacher_id' => $teacher->id,
+        ]),
+    )->toThrow(AppException::class, 'internship::exceptions.period_dates_required');
+
+    // Invalid range
+    expect(
+        fn () => app(InternshipRegistrationService::class)->register([
+            'internship_id' => $program->id,
+            'placement_id' => $placement->id,
+            'student_id' => $student->id,
+            'teacher_id' => $teacher->id,
+            'start_date' => now()->addMonth()->toDateString(),
+            'end_date' => now()->toDateString(),
+        ]),
+    )->toThrow(AppException::class, 'internship::exceptions.invalid_period_range');
+});
+
+test('it restricts registration based on system phase', function () {
+    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+        ->factory()
+        ->create();
+    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+        ->factory()
+        ->create(['internship_id' => $program->id]);
+    $student = app(UserService::class)->factory()->create();
+    $teacher = app(UserService::class)->factory()->create();
+
+    // Change system phase to 'operation'
+    setting(['system_phase' => 'operation']);
+
+    expect(
+        fn () => app(InternshipRegistrationService::class)->register([
+            'internship_id' => $program->id,
+            'placement_id' => $placement->id,
+            'student_id' => $student->id,
+            'teacher_id' => $teacher->id,
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->addMonths(3)->toDateString(),
+        ]),
+    )->toThrow(AppException::class, 'internship::exceptions.registration_closed_for_current_phase');
+
+    // Revert to 'registration' for other tests if necessary (though RefreshDatabase is used)
+    setting(['system_phase' => 'registration']);
 });

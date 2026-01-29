@@ -13,4 +13,5 @@ return [
     'check_in' => 'Clock In',
     'check_out' => 'Clock Out',
     'status' => 'Status',
+    'outside_internship_period' => 'You cannot clock in outside your assigned internship period.',
 ];

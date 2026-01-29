@@ -21,13 +21,11 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         $schoolId = $data['school_id'] ?? null;
         unset($data['school_id']);
 
+        /** @var Department $department */
         $department = parent::create($data);
         $department->changeSchoolId($schoolId);
 
-        $department->refresh();
-        $department->loadMissing(['school']);
-
-        return $department;
+        return $department->fresh(['school']);
     }
 
     public function update(mixed $id, array $data): Department
@@ -35,13 +33,11 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         $schoolId = $data['school_id'] ?? null;
         unset($data['school_id']);
 
+        /** @var Department $department */
         $department = parent::update($id, $data);
         $department->changeSchoolId($schoolId);
 
-        $department->refresh();
-        $department->loadMissing(['school']);
-
-        return $department;
+        return $department->fresh(['school']);
     }
 
     public function save(array $attributes, array $values = []): Department
@@ -49,12 +45,10 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         $schoolId = $attributes['school_id'] ?? null;
         unset($attributes['school_id']);
 
+        /** @var Department $department */
         $department = parent::save($attributes, $values);
         $department->changeSchoolId($schoolId);
 
-        $department->refresh();
-        $department->loadMissing(['school']);
-
-        return $department;
+        return $department->fresh(['school']);
     }
 }

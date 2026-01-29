@@ -62,4 +62,3 @@ A design series is considered done only when it satisfies the following gates:
 
 - **Polymorphic Identity**: Potential for separating user credentials from role profiles.
 - **Privacy Hardening**: Suggestions for automated data masking in system logs.
-

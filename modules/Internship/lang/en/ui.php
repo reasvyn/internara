@@ -11,7 +11,7 @@ return [
     'company_name' => 'Company Name',
     'company_address' => 'Company Address',
     'program' => 'Internship Program',
-    'slots' => 'Slots',
+    'capacity_quota' => 'Capacity Quota',
     'contact' => 'Contact',
     'contact_person' => 'Contact Name',
     'contact_number' => 'Phone Number',
@@ -52,6 +52,7 @@ return [
     'delete_registration_confirm' => 'Are you sure you want to delete this registration?',
     'registration_approved' => 'Student registration has been approved.',
     'registration_rejected' => 'Student registration has been rejected.',
+    'registration_completed' => 'Student internship program has been marked as completed.',
 
     // Requirements
     'requirement_title' => 'Internship Requirements',

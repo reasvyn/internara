@@ -31,4 +31,22 @@ interface PlacementService extends EloquentQuery
      * @param array<string, string> $pairings Array of registration_id => placement_id
      */
     public function bulkMatch(array $pairings): int;
+
+    /**
+     * Assign a placement to a single registration with auditing.
+     */
+    public function assignPlacement(
+        string $registrationId,
+        string $placementId,
+        ?string $reason = null,
+    ): bool;
+
+    /**
+     * Change an existing placement for a registration with auditing.
+     */
+    public function changePlacement(
+        string $registrationId,
+        string $newPlacementId,
+        string $reason,
+    ): bool;
 }

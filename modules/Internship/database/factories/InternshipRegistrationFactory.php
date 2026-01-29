@@ -26,6 +26,9 @@ class InternshipRegistrationFactory extends Factory
             'internship_id' => app(InternshipService::class)->factory(),
             'placement_id' => app(InternshipPlacementService::class)->factory(),
             'student_id' => app(UserService::class)->factory(),
+            'teacher_id' => app(UserService::class)->factory(),
+            'start_date' => now()->startOfMonth(),
+            'end_date' => now()->addMonths(3)->endOfMonth(),
         ];
     }
 }

@@ -95,15 +95,10 @@ class InstallerService implements InstallerServiceContract
     public function runMigrations(): bool
     {
         try {
-            $command = 'migrate';
-            $params = ['--force' => true];
+            $isFresh = $this->hasExistingMigrations();
+            $command = $isFresh ? 'migrate:fresh' : 'migrate';
 
-            // Check if migrations table exists to decide between migrate or migrate:fresh
-            if ($this->hasExistingMigrations()) {
-                $command = 'migrate:fresh';
-            }
-
-            return Artisan::call($command, $params) === 0;
+            return Artisan::call($command, ['--force' => true]) === 0;
         } catch (\Exception $e) {
             return false;
         }

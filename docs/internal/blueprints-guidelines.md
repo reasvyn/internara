@@ -14,13 +14,13 @@ intentional evolution of the system across developmental milestones.
 ## 1. Purpose & Strategic Intent
 
 Application Blueprints translate strategic requirements into architecturally actionable direction
-during the **Software Design Process**. They function as a **Roadmap** and a **Work Contract**
-for the system's developmental direction.
+during the **Software Design Process**. They function as a **Roadmap** and a **Work Contract** for
+the system's developmental direction.
 
 - **Objective**: Eliminate architectural ambiguity before implementation and define the path of
   evolution.
-- **Contractual Nature**: Serve as a technical agreement between Requirements Engineering and
-  System Construction, independent of release schedules.
+- **Contractual Nature**: Serve as a technical agreement between Requirements Engineering and System
+  Construction, independent of release schedules.
 - **Traceability**: Ensure every design decision is traceable to a specific requirement in the
   System Requirements Specification.
 - **Isolation Control**: Define and protect modular boundaries and cross-module contracts.
@@ -30,8 +30,8 @@ for the system's developmental direction.
 ## 2. Blueprint Taxonomy & Naming
 
 Blueprints are organized by **Series-Based** lineage to decouple planning intent from transient
-release versions. A Blueprint does not represent a specific version of the application; it
-describes a coherent set of architectural or functional changes.
+release versions. A Blueprint does not represent a specific version of the application; it describes
+a coherent set of architectural or functional changes.
 
 > **The Binding Invariant:** The only bridge between an Application Blueprint and an Application
 > Version is the **Series Code**. This code ensures that design intent can be tracked across
@@ -48,15 +48,18 @@ describes a coherent set of architectural or functional changes.
 
 ## 3. Blueprint Status Taxonomy
 
-To maintain the decoupling between design intent and release cycles, Blueprints utilize a 
-specific set of operational statuses:
+To maintain the decoupling between design intent and release cycles, Blueprints utilize a specific
+set of operational statuses:
 
-- **Planned**: Strategic intent is defined and aligned with the SyRS, but implementation has not 
+- **Planned**: Strategic intent is defined and aligned with the SyRS, but implementation has not
   started.
 - **In Progress**: The design is currently being implemented within the codebase.
-- **Done**: The design intent has been fully implemented, verified, and merged into a 
-  configuration baseline.
-- **Archived**: The Blueprint serves as a historical record of a done or decommissioned design.
+- **Done**: The design intent has been fully implemented, verified, and merged into a configuration
+  baseline.
+- **Archived**: The Blueprint has been moved to historical storage. **Important**: Archiving is an
+  organizational action and does not inherently signify that the design has been fully implemented
+  or verified. A blueprint may be archived if it is superseded, decommissioned, or completed. Its
+  final functional status is defined by its state (e.g., Done vs. Decommissioned) within the record.
 
 ---
 
@@ -115,10 +118,12 @@ original design must be recorded within the blueprint to maintain a technical au
 
 Upon completion of the developmental roadmap defined in the Blueprint:
 
-1.  The Blueprint's intent is considered **Done**.
+1.  The Blueprint's intent is marked as **Done**.
 2.  The final as-built state is documented in the corresponding **Release Baseline**
     (`docs/versions/`) using the same **Series Code**.
-3.  The Blueprint is moved to the `archived/` directory, serving as a historical design record.
+3.  The Blueprint may be moved to the `archived/` directory to maintain a clean active workspace,
+    serving as a historical design record. Admission to the archive is an administrative lifecycle
+    event, whereas 'Done' is a functional verification event.
 
 ---
 

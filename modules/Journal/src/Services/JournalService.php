@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Journal\Services;
 
 use Modules\Exception\AppException;
+use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService as Contract;
 use Modules\Shared\Services\EloquentQuery;
@@ -19,9 +20,11 @@ class JournalService extends EloquentQuery implements Contract
     /**
      * JournalService constructor.
      */
-    public function __construct()
-    {
-        $this->setModel(new JournalEntry);
+    public function __construct(
+        protected InternshipRegistrationService $registrationService,
+        JournalEntry $model,
+    ) {
+        $this->setModel($model);
         $this->setSearchable(['work_topic', 'activity_description', 'basic_competence']);
         $this->setSortable(['date', 'created_at']);
     }
@@ -49,6 +52,29 @@ class JournalService extends EloquentQuery implements Contract
      */
     public function create(array $data): JournalEntry
     {
+        $registrationId = $data['registration_id'];
+        $registration = $this->registrationService->find($registrationId);
+
+        if (! $registration) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.registration_not_found',
+                code: 404,
+            );
+        }
+
+        // Period Invariant: activities are restricted to assigned date range
+        $journalDate = $data['date'] ?? now()->format('Y-m-d');
+        if (
+            ($registration->start_date &&
+                $journalDate < $registration->start_date->format('Y-m-d')) ||
+            ($registration->end_date && $journalDate > $registration->end_date->format('Y-m-d'))
+        ) {
+            throw new AppException(
+                userMessage: 'journal::exceptions.outside_internship_period',
+                code: 403,
+            );
+        }
+
         return parent::create($data);
     }
 

@@ -61,8 +61,8 @@ The authoritative technical baseline identifier.
 Located in `docs/versions/`, these document the **Realized Outcome** of a configuration baseline.
 
 - **Requirement**: Must reflect the as-built reality and verify the fulfillment of spec milestones.
-- **Metadata Invariant**: Must include **Series Code**, **Support Policy**, and **Status** at the top
-  of the document.
+- **Metadata Invariant**: Must include **Series Code**, **Support Policy**, and **Status** at the
+  top of the document.
 - **SSoT Sync**: Blueprints document **Intent**; Release Notes document **Outcome**.
 
 ---

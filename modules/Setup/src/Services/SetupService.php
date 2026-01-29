@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Exception\AppException;
-use Modules\Exception\RecordNotFoundException;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
@@ -75,19 +74,15 @@ class SetupService implements Contracts\SetupService
      */
     public function isRecordExists(string $recordName): bool
     {
-        try {
-            return match ($recordName) {
-                'super-admin' => $this->superAdminService->exists(),
-                'school' => $this->schoolService->exists(),
-                'department' => $this->departmentService->exists(),
-                'internship' => $this->internshipService->exists(),
-                default => throw new InvalidArgumentException(
-                    "Unknown record type '{$recordName}' requested.",
-                ),
-            };
-        } catch (RecordNotFoundException $e) {
-            return false; // If exists() throws RecordNotFoundException, it means the record does not exist.
-        }
+        return match ($recordName) {
+            'super-admin' => $this->superAdminService->exists(),
+            'school' => $this->schoolService->exists(),
+            'department' => $this->departmentService->exists(),
+            'internship' => $this->internshipService->exists(),
+            default => throw new InvalidArgumentException(
+                "Unknown record type '{$recordName}' requested.",
+            ),
+        };
     }
 
     /**
@@ -102,45 +97,41 @@ class SetupService implements Contracts\SetupService
     public function requireSetupAccess(string $prevStep = ''): bool
     {
         if (! $prevStep) {
-            return $this->isAppInstalled();
+            return ! $this->isAppInstalled();
         }
 
-        if (! ($access = $this->isStepCompleted($prevStep))) {
+        if (! $this->isStepCompleted($prevStep)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
             );
         }
 
-        return $access;
+        return true;
     }
 
     /**
      * Performs a specific setup step.
      *
      * @param string $step The name of the setup step to perform.
-     * @param string|null $requireRecord Optional. The name of a required record for this step.
+     * @param string|null $reqRecord Optional. The name of a required record for this step.
      *
      * @return bool True if the step was performed successfully, false otherwise.
      */
-    public function performSetupStep(string $step, ?string $requireRecord = null): bool
+    public function performSetupStep(string $step, ?string $reqRecord = null): bool
     {
-        $perform = function () use ($step, $requireRecord) {
-            if ($requireRecord && ! $this->isRecordExists($requireRecord)) {
-                throw new AppException(
-                    userMessage: 'setup::exceptions.require_record_exists',
-                    code: 403,
-                );
-            }
+        if ($step === 'complete') {
+            return $this->finalizeSetupStep();
+        }
 
-            return $this->storeStep($step);
-        };
+        if ($reqRecord && ! $this->isRecordExists($reqRecord)) {
+            throw new AppException(
+                userMessage: 'setup::exceptions.require_record_exists',
+                code: 403,
+            );
+        }
 
-        return match ($step) {
-            'system' => $this->storeStep('system'),
-            'complete' => $this->finalizeSetupStep(),
-            default => $perform(),
-        };
+        return $this->storeStep($step);
     }
 
     /**

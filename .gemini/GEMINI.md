@@ -1,9 +1,9 @@
 # Gemini Guidelines: Internara Project
 
 This document formalizes the principles, project context, and operational guidelines for the AI
-assistant (“Gemini”) when orchestrating developmental activities for the Internara project.
-It ensures that all AI-driven interventions demonstrate 100% alignment with the system's
-authoritative engineering records and international standards.
+assistant (“Gemini”) when orchestrating developmental activities for the Internara project. It
+ensures that all AI-driven interventions demonstrate 100% alignment with the system's authoritative
+engineering records and international standards.
 
 > **Single Source of Truth Mandate:** The document
 > **[`docs/internal/system-requirements-specification.md`](../docs/internal/system-requirements-specification.md)**
@@ -14,9 +14,9 @@ authoritative engineering records and international standards.
 
 ## 1. Project Overview & Architectural Logic
 
-**Internara** is an internship management ecosystem engineered as a **Modular Monolith**.
-Business rules are encapsulated within autonomous domain modules, orchestrated via a
-**Service-Oriented Logic Layer**.
+**Internara** is an internship management ecosystem engineered as a **Modular Monolith**. Business
+rules are encapsulated within autonomous domain modules, orchestrated via a **Service-Oriented Logic
+Layer**.
 
 The architecture prioritizing systemic integrity and maintainability, adhering to the formal
 **[Architecture Description](../docs/internal/architecture-description.md)**.
@@ -28,24 +28,28 @@ The architecture prioritizing systemic integrity and maintainability, adhering t
 Gemini must adhere to the following interaction invariants:
 
 ### 2.1 Aesthetic-Natural Principle
-Maintain a calm, adaptive, and structured tone focused on clarity and cognitive efficiency.
-Answers must be structurally minimalist and oriented toward actionable engineering outcomes.
+
+Maintain a calm, adaptive, and structured tone focused on clarity and cognitive efficiency. Answers
+must be structurally minimalist and oriented toward actionable engineering outcomes.
 
 ### 2.2 Analytical Accountability
+
 - **Keypoints Summary**: Interaction must conclude with a concise, scannable summary of conclusion,
   decisions, and verified outcomes.
 - **Privacy Protocol**: Strictly prohibit the storage or processing of personal or sensitive
   information. Refuse non-compliant requests explicitly.
-- **Limited Initiative**: Do not execute strategic lifecycle transitions (e.g., Promotion to
-  Stable) without explicit user authorization.
+- **Limited Initiative**: Do not execute strategic lifecycle transitions (e.g., Promotion to Stable)
+  without explicit user authorization.
 
 ---
 
 ## 3. Engineering Workflows & Lifecycle Governance
 
-Gemini is mandated to follow the formal **[Software Life Cycle Processes](../docs/internal/software-lifecycle-processes.md)**.
+Gemini is mandated to follow the formal
+**[Software Life Cycle Processes](../docs/internal/software-lifecycle-processes.md)**.
 
 ### 3.1 Implementation Process
+
 - **Traceability Driven**: Every feature must be traceable to a specific requirement in the SyRS.
 - **Design Baseline**: Formulate an **Architectural Blueprint** and obtain explicit approval prior
   to construction.
@@ -54,6 +58,7 @@ Gemini is mandated to follow the formal **[Software Life Cycle Processes](../doc
   Simplification or truncation of documentation is **STRICTLY PROHIBITED**.
 
 ### 3.2 Verification Gates
+
 - **System Verification**: Mandatory execution of **`composer test`**.
 - **Static Analysis**: Mandatory execution of **`composer lint`**.
 - **Configuration Management**: Adherence to **Conventional Commits** and the
@@ -64,13 +69,16 @@ Gemini is mandated to follow the formal **[Software Life Cycle Processes](../doc
 ## 4. Technical Invariants (Systemic Record)
 
 ### 4.1 Construction Baseline
+
 - **Identity Invariant**: Mandatory utilization of **UUID v4** for all entities.
 - **Isolation Invariant**: No physical foreign keys across modules. Use Service Contracts.
 - **Logic Invariant**: Direct `env()` calls are prohibited. Use the `setting()` registry.
 - **Presentation Invariant**: Livewire components must satisfy the **Thin Component** mandate.
 
 ### 4.2 Semantic Namespacing
+
 Namespaces MUST omit the `src` segment to maintain modular portability.
+
 - _Correct_: `namespace Modules\User\Services;`
 - _Mapping_: `modules/User/src/Services/UserService.php`
 
@@ -78,7 +86,8 @@ Namespaces MUST omit the `src` segment to maintain modular portability.
 
 ## 5. Verification & Validation (V&V) Standards
 
-Gemini must verify all artifacts against the **[Testing & Verification Guide](../docs/internal/testing-verification-guide.md)**.
+Gemini must verify all artifacts against the
+**[Testing & Verification Guide](../docs/internal/testing-verification-guide.md)**.
 
 - **V-Model Alignment**: Unit and Feature tests must verify both technical design and requirement
   fulfillment.
@@ -94,8 +103,8 @@ systemic synchronization and debugging.
 
 - **Artisan Orchestration**: Utilization of modular generators defined in the
   **[Automated Tooling Reference](../docs/internal/automated-tooling-reference.md)**.
-- **Information Retrieval**: Prioritize `search-docs`, `tinker`, and `database-schema` for contextual
-  immersion.
+- **Information Retrieval**: Prioritize `search-docs`, `tinker`, and `database-schema` for
+  contextual immersion.
 
 Refer to the **[Technical Index](../docs/internal/table-of-contents.md)** for exhaustive engineering
 standards.

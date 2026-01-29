@@ -13,4 +13,5 @@ return [
     'check_in' => 'Jam Masuk',
     'check_out' => 'Jam Keluar',
     'status' => 'Status',
+    'outside_internship_period' => 'Anda tidak dapat melakukan presensi di luar periode magang yang telah ditentukan.',
 ];

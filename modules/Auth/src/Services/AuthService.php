@@ -6,7 +6,6 @@ namespace Modules\Auth\Services;
 
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -83,41 +82,18 @@ class AuthService implements AuthServiceContract
         string|array|null $roles = null,
         bool $sendEmailVerification = false,
     ): User {
-        try {
-            $user = $this->userService->create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'roles' => $roles,
-            ]);
+        $user = $this->userService->create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'roles' => $roles,
+        ]);
 
-            if ($sendEmailVerification) {
-                $user->sendEmailVerificationNotification();
-            }
-
-            return $user;
-        } catch (QueryException $e) {
-            if ($e->getCode() === '23000') {
-                // Duplicate entry SQLSTATE code
-                // Mask email for logging
-                $maskedEmail = \Modules\Shared\Support\Masker::email($data['email']);
-
-                throw new AppException(
-                    userMessage: 'records::exceptions.unique_violation',
-                    replace: ['record' => 'user'],
-                    logMessage: 'Attempted to register with duplicate email: '.$maskedEmail,
-                    code: 409, // Conflict
-                    previous: $e,
-                );
-            }
-            throw new AppException(
-                userMessage: 'records::exceptions.creation_failed',
-                replace: ['record' => 'user'],
-                logMessage: 'Registration failed due to database error: '.$e->getMessage(),
-                code: 500,
-                previous: $e,
-            );
+        if ($sendEmailVerification) {
+            $user->sendEmailVerificationNotification();
         }
+
+        return $user;
     }
 
     /**

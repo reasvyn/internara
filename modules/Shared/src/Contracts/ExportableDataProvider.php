@@ -32,6 +32,11 @@ interface ExportableDataProvider
     public function getReportData(array $filters = []): array;
 
     /**
+     * Get the Blade template path for this report.
+     */
+    public function getTemplate(): string;
+
+    /**
      * Define the validation rules for the filters.
      */
     public function getFilterRules(): array;

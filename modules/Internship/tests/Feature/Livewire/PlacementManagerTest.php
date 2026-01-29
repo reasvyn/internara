@@ -2,66 +2,61 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+namespace Modules\Internship\Tests\Feature\Livewire;
+
 use Livewire\Livewire;
 use Modules\Internship\Livewire\PlacementManager;
-use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+    $role = \Modules\Permission\Models\Role::create(['name' => 'staff']);
+    $permission = \Modules\Permission\Models\Permission::create(['name' => 'internship.update']);
+    $role->givePermissionTo($permission);
+
+    $this->user = User::factory()->create();
+    $this->user->assignRole('staff');
+    $this->actingAs($this->user);
 });
 
 test('placement management page is forbidden for unauthorized users', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
+    $this->user->removeRole('staff');
 
-    $this->get(route('internship.placement.index'))->assertForbidden();
+    Livewire::test(PlacementManager::class)->assertForbidden();
 });
 
 test('placement management page is accessible by authorized users', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo('internship.update');
-    $this->actingAs($user);
-
-    $this->get(route('internship.placement.index'))->assertOk()->assertSee('Penempatan');
+    Livewire::test(PlacementManager::class)->assertOk();
 });
 
 test('it can create a new placement', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo(['internship.update']);
-    $this->actingAs($user);
-
-    $internship = Internship::factory()->create();
+    $internship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+        ->factory()
+        ->create();
 
     Livewire::test(PlacementManager::class)
-        ->call('add')
         ->set('form.internship_id', $internship->id)
         ->set('form.company_name', 'Google')
-        ->set('form.slots', 5)
+        ->set('form.capacity_quota', 5)
         ->call('save')
         ->assertHasNoErrors()
         ->assertSet('formModal', false);
 
     $this->assertDatabaseHas('internship_placements', [
         'company_name' => 'Google',
-        'slots' => 5,
+        'capacity_quota' => 5,
         'internship_id' => $internship->id,
     ]);
 });
 
 test('it can update an existing placement', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo(['internship.update']);
-    $this->actingAs($user);
-
     $placement = InternshipPlacement::factory()->create(['company_name' => 'Old Company']);
 
     Livewire::test(PlacementManager::class)
         ->call('edit', $placement->id)
+        ->assertSet('form.company_name', 'Old Company')
         ->set('form.company_name', 'New Company')
         ->call('save')
         ->assertHasNoErrors();
@@ -70,16 +65,13 @@ test('it can update an existing placement', function () {
 });
 
 test('it can delete a placement', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo(['internship.update']);
-    $this->actingAs($user);
-
     $placement = InternshipPlacement::factory()->create();
 
     Livewire::test(PlacementManager::class)
         ->call('discard', $placement->id)
+        ->assertSet('confirmModal', true)
         ->call('remove', $placement->id)
-        ->assertHasNoErrors();
+        ->assertSet('confirmModal', false);
 
     $this->assertDatabaseMissing('internship_placements', ['id' => $placement->id]);
 });

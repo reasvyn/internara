@@ -1,6 +1,6 @@
 # Application Blueprint: Operational Readiness & Governance (ARC01-GAP-01)
 
-**Series Code**: `ARC01-GAP-01` **Status**: `Planned`
+**Series Code**: `ARC01-GAP-01` **Status**: `Done`
 
 > **System Requirements Specification Alignment:** This blueprint satisfies the **Administrative
 > Orchestration** ([SYRS-F-101]) and **Security & Integrity** ([SYRS-NF-502]) requirements by
@@ -17,8 +17,8 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
 
 - **Batch Onboarding**: Eliminate manual friction by providing utilities for mass subject
   registration via CSV.
-- **Placement Governance**: Formalize partner capacity management and explicit **Advisor Allocation**
-  to ensure every student placement has an assigned monitoring teacher.
+- **Placement Governance**: Formalize partner capacity management and explicit **Advisor
+  Allocation** to ensure every student placement has an assigned monitoring teacher.
 - **Temporal Integrity**: Enforce strict lifecycle-aware activity windows via `start_date` and
   `end_date` invariants on internship registrations.
 - **Student Deliverables Management**: Prioritize the formalization of post-internship artifacts
@@ -34,8 +34,8 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
 
 - **Batch Onboarding Utility**: CSV-based import engine for Students, Teachers, and Mentors with
   automated credential generation.
-- **Placement & Advisor Orchestrator**: Tools for Staff to manage partner quotas and explicitly
-  link Monitoring Teachers to student placements.
+- **Placement & Advisor Orchestrator**: Tools for Staff to manage partner quotas and explicitly link
+  Monitoring Teachers to student placements.
 - **Temporal Guard**: Logic-level enforcement of internship period boundaries for all student
   activities.
 - **Deliverable Submission Subsystem**: A dedicated engine for students to upload mandatory
@@ -72,8 +72,8 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
   internship date range.
 - **The Deliverable Invariant**: A student's program completion status cannot be certified until
   both the PKL Report and PPT Presentation are submitted and verified.
-- **The Phase Invariant**: Certain operations (like registration) are restricted based on the
-  global `system_phase`.
+- **The Phase Invariant**: Certain operations (like registration) are restricted based on the global
+  `system_phase`.
 
 ---
 
@@ -103,5 +103,14 @@ A design series is considered done only when it satisfies the following gates:
 
 ---
 
-_This blueprint establishes the administrative baseline, ensuring Internara is ready for 
-large-scale school operations._
+## 6. Improvement Suggestions
+
+- **Assignment Modularization**: In future development phases, all task-related and assignment
+  mechanisms (including deliverables and submissions) must be decoupled from the Internship module
+  and migrated to a dedicated **Assignment** module to ensure domain purity and better
+  maintainability.
+
+---
+
+_This blueprint establishes the administrative baseline, ensuring Internara is ready for large-scale
+school operations._

@@ -40,8 +40,8 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ### Active Development
 
-- **[v0.10.0](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop with 
-  competency rubrics, mentoring logs, and temporal orchestration.
+- **[v0.10.0](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop
+  with competency rubrics, mentoring logs, and temporal orchestration.
 
 ### Latest Released Versions
 

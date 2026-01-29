@@ -11,7 +11,7 @@ return [
     'company_name' => 'Nama Perusahaan',
     'company_address' => 'Alamat Perusahaan',
     'program' => 'Program Magang',
-    'slots' => 'Kuota',
+    'capacity_quota' => 'Kuota Penempatan',
     'contact' => 'Kontak',
     'contact_person' => 'Nama Kontak',
     'contact_number' => 'No. Telepon',
@@ -52,6 +52,7 @@ return [
     'delete_registration_confirm' => 'Apakah Anda yakin ingin menghapus pendaftaran ini?',
     'registration_approved' => 'Pendaftaran siswa berhasil disetujui.',
     'registration_rejected' => 'Pendaftaran siswa berhasil ditolak.',
+    'registration_completed' => 'Program magang siswa telah ditandai sebagai selesai.',
 
     // Requirements
     'requirement_title' => 'Prasyarat Magang',

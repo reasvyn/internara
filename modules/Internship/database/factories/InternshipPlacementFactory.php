@@ -26,7 +26,7 @@ class InternshipPlacementFactory extends Factory
             'company_address' => $this->faker->address,
             'contact_person' => $this->faker->name,
             'contact_number' => $this->faker->phoneNumber,
-            'slots' => 1,
+            'capacity_quota' => 1,
         ];
     }
 }

@@ -1,8 +1,8 @@
 # Archived Design Baselines: Historical Index
 
 This index centralizes the **Historical Architecture Design Records (ADR)** for the Internara
-project. These records represent decommissioned or done design intents that are no longer
-actively utilized for current development orchestration.
+project. These records represent decommissioned or done design intents that are no longer actively
+utilized for current development orchestration.
 
 ---
 

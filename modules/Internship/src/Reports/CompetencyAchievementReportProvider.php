@@ -69,6 +69,14 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
     /**
      * {@inheritdoc}
      */
+    public function getTemplate(): string
+    {
+        return 'internship::reports.competency-achievement';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterRules(): array
     {
         return [

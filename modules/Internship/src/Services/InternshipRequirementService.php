@@ -50,6 +50,8 @@ class InternshipRequirementService extends EloquentQuery implements Contract
             );
         }
 
+        // Use standard save (updateOrCreate) from EloquentQuery if it was RequirementSubmission service,
+        // but since we manage it here, we use the model directly for now or better, use create/update.
         $submission = \Modules\Internship\Models\RequirementSubmission::updateOrCreate(
             ['registration_id' => $registrationId, 'requirement_id' => $requirementId],
             [
@@ -103,5 +105,36 @@ class InternshipRequirementService extends EloquentQuery implements Contract
         ]);
 
         return $submission;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasClearedMandatory(string $registrationId): bool
+    {
+        $registration = app(
+            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+        )->find($registrationId);
+
+        if (! $registration) {
+            return false;
+        }
+
+        $mandatoryRequirements = $this->getActiveForYear($registration->academic_year)->where(
+            'is_mandatory',
+            true,
+        );
+
+        if ($mandatoryRequirements->isEmpty()) {
+            return true;
+        }
+
+        $verifiedCount = \Modules\Internship\Models\RequirementSubmission::query()
+            ->where('registration_id', $registrationId)
+            ->whereIn('requirement_id', $mandatoryRequirements->pluck('id'))
+            ->where('status', \Modules\Internship\Enums\SubmissionStatus::VERIFIED)
+            ->count();
+
+        return $verifiedCount === $mandatoryRequirements->count();
     }
 }

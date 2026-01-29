@@ -33,6 +33,6 @@ technical implementation.
 
 ---
 
-_Once a design intent is successfully done, its blueprint is archived. The as-built outcome is 
-documented in the **[Release Baselines](../../versions/versions-overview.md)**, mapped via its 
+_Once a design intent is successfully done, its blueprint is archived. The as-built outcome is
+documented in the **[Release Baselines](../../versions/versions-overview.md)**, mapped via its
 unique **Series Code**._

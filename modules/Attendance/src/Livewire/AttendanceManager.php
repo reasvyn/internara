@@ -52,7 +52,12 @@ class AttendanceManager extends Component
                 type: 'success',
             );
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $message =
+                $e instanceof \Modules\Exception\AppException
+                    ? $e->getUserMessage()
+                    : $e->getMessage();
+
+            $this->dispatch('notify', message: $message, type: 'error');
         }
     }
 
@@ -70,7 +75,12 @@ class AttendanceManager extends Component
                 type: 'success',
             );
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $message =
+                $e instanceof \Modules\Exception\AppException
+                    ? $e->getUserMessage()
+                    : $e->getMessage();
+
+            $this->dispatch('notify', message: $message, type: 'error');
         }
     }
 

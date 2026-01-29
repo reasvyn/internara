@@ -6,6 +6,7 @@ namespace Modules\Core\Services;
 
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Core\Services\Contracts\AnalyticsAggregator as Contract;
+use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 
@@ -13,6 +14,7 @@ class AnalyticsAggregator implements Contract
 {
     public function __construct(
         protected InternshipRegistrationService $registrationService,
+        protected InternshipPlacementService $placementService,
         protected JournalService $journalService,
         protected AssessmentService $assessmentService,
     ) {}
@@ -30,8 +32,7 @@ class AnalyticsAggregator implements Contract
             ])
             ->count();
 
-        // This is a bit of a shortcut, ideally we have a dedicated PlacementService count
-        $activePartners = \Modules\Internship\Models\InternshipPlacement::count();
+        $activePartners = $this->placementService->all()->count();
 
         return [
             'total_interns' => $totalInterns,

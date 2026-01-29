@@ -2,9 +2,9 @@
 
 **Series Code**: `ARC01-GAP-02` **Status**: `Planned`
 
-> **System Requirements Specification Alignment:** This blueprint implements the **Progress Monitoring**
-> ([SYRS-F-201], [SYRS-F-202]) and **Assessment** ([SYRS-F-301]) requirements of the authoritative
-> **[System Requirements Specification](../system-requirements-specification.md)**.
+> **System Requirements Specification Alignment:** This blueprint implements the **Progress
+> Monitoring** ([SYRS-F-201], [SYRS-F-202]) and **Assessment** ([SYRS-F-301]) requirements of the
+> authoritative **[System Requirements Specification](../system-requirements-specification.md)**.
 
 ---
 
@@ -15,8 +15,8 @@ mentoring session documentation, and activity governance.
 
 **Objectives**:
 
-- **Competency Mapping**: Establish a linear departmental rubric for students to claim skills
-  during journal entries.
+- **Competency Mapping**: Establish a linear departmental rubric for students to claim skills during
+  journal entries.
 - **Mentoring Dialogue**: Bridge Teacher and Mentor roles with authenticated mentoring logs to
   document student growth.
 - **Submission Governance**: Implement journal submission windows and a simplified mechanism for
@@ -30,14 +30,14 @@ mentoring session documentation, and activity governance.
 
 ### 2.1 Capability Set
 
-- **Competency Registry**: A simplified framework for Teachers to define department-specific
-  skills that students claim during journal entry.
+- **Competency Registry**: A simplified framework for Teachers to define department-specific skills
+  that students claim during journal entry.
 - **Mentoring Session Registry**: A centralized log for documenting formal interaction between
   supervisors (Teachers/Mentors) and students.
 - **Submission & Absence Management**: A governance engine for journal submission deadlines and a
   workflow for student absence requests (Leave/Sick).
-- **Instructional Progress Recap**: A tabular summary for Teachers to view competency claims
-  derived from student journals.
+- **Instructional Progress Recap**: A tabular summary for Teachers to view competency claims derived
+  from student journals.
 
 ### 2.2 Stakeholder Personas
 
@@ -61,8 +61,7 @@ mentoring session documentation, and activity governance.
 
 ### 3.2 Logic Invariants
 
-- **The Claim Invariant**: Students can only claim competencies mapped to their specific
-  department.
+- **The Claim Invariant**: Students can only claim competencies mapped to their specific department.
 - **The Submission Invariant**: Journals cannot be submitted or edited outside the defined
   submission window (e.g., within 7 days of the activity date).
 
@@ -91,5 +90,5 @@ A design series is considered done only when it satisfies the following gates:
 
 ---
 
-_By completing this blueprint, Internara ensures that daily internship activities are 
+_By completing this blueprint, Internara ensures that daily internship activities are
 instructionally meaningful and rigorously documented._

@@ -59,7 +59,7 @@ class StudentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            // \Modules\Example\Services\Contract\YourContractService::class => \Modules\Example\Services\YourService::class
+            \Modules\Student\Services\Contracts\StudentService::class => \Modules\Student\Services\StudentService::class,
         ];
     }
 }

@@ -9,14 +9,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService as Contract;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\Student\Services\Contracts\StudentService;
+use Modules\Teacher\Services\Contracts\TeacherService;
 
 /**
  * @property Profile $model
  */
 class ProfileService extends EloquentQuery implements Contract
 {
-    public function __construct(Profile $model)
-    {
+    public function __construct(
+        Profile $model,
+        protected StudentService $studentService,
+        protected TeacherService $teacherService,
+    ) {
         $this->setModel($model);
     }
 
@@ -50,15 +55,11 @@ class ProfileService extends EloquentQuery implements Contract
         }
 
         if (in_array('student', $roles)) {
-            $student = \Modules\Student\Models\Student::create([
-                'nisn' => 'PENDING-'.(string) \Illuminate\Support\Str::uuid(),
-            ]);
+            $student = $this->studentService->createWithDefault();
             $profile->profileable()->associate($student);
             $profile->save();
         } elseif (in_array('teacher', $roles)) {
-            $teacher = \Modules\Teacher\Models\Teacher::create([
-                'nip' => 'PENDING-'.(string) \Illuminate\Support\Str::uuid(),
-            ]);
+            $teacher = $this->teacherService->createWithDefault();
             $profile->profileable()->associate($teacher);
             $profile->save();
         }

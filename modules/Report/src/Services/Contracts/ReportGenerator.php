@@ -12,12 +12,20 @@ interface ReportGenerator
     /**
      * Dispatch a background job to generate a report.
      */
-    public function queue(string $providerIdentifier, array $filters = []): string;
+    public function queue(
+        string $providerIdentifier,
+        array $filters = [],
+        ?string $userId = null,
+    ): string;
 
     /**
      * Generate a report immediately (Synchronous).
      */
-    public function generate(string $providerIdentifier, array $filters = []): string;
+    public function generate(
+        string $providerIdentifier,
+        array $filters = [],
+        ?string $userId = null,
+    ): string;
 
     /**
      * Get all registered report providers.

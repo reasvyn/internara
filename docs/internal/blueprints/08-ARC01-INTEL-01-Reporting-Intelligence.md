@@ -102,6 +102,6 @@ A design series is considered done only when it satisfies the following gates:
 
 ## 7. Improvement Suggestions
 
-- **Automated Setup**: Consider automating the technical installation process to reduce 
-  onboarding friction.
+- **Automated Setup**: Consider automating the technical installation process to reduce onboarding
+  friction.
 - **Web-based Configuration**: Potential for a graphical interface for first-run setup.

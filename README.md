@@ -99,8 +99,8 @@ transparency.
 
 ## ⚖️ License & Credits
 
-Internara is open-sourced software licensed under the **[MIT license](LICENSE)**.
-Contributors must adhere to the **[Code of Conduct](CODE_OF_CONDUCT.md)**.
+Internara is open-sourced software licensed under the **[MIT license](LICENSE)**. Contributors must
+adhere to the **[Code of Conduct](CODE_OF_CONDUCT.md)**.
 
 - **Author:** [Reas Vyn](https://github.com/reasnov)
 - **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)

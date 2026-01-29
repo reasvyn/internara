@@ -49,11 +49,18 @@ interface SetupService
      * Performs a specific setup step.
      *
      * @param string $step The name of the setup step to perform.
-     * @param string $reqRecord Optional. The name of a required record for this step.
+     * @param string|null $reqRecord Optional. The name of a required record for this step.
      *
      * @return bool True if the step was performed successfully, false otherwise.
      */
-    public function performSetupStep(string $step, string $reqRecord = ''): bool;
+    public function performSetupStep(string $step, ?string $reqRecord = null): bool;
+
+    /**
+     * Saves the system and SMTP settings.
+     *
+     * @param array<string, mixed> $settings The settings to save.
+     */
+    public function saveSystemSettings(array $settings): bool;
 
     /**
      * Finalizes the current setup step.

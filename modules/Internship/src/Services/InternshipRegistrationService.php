@@ -8,6 +8,7 @@ use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipRegistrationService as Contract;
+use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\Internship\Services\Contracts\PlacementLogger;
 use Modules\Shared\Services\EloquentQuery;
 
@@ -16,6 +17,7 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
     public function __construct(
         InternshipRegistration $model,
         protected InternshipPlacementService $placementService,
+        protected InternshipRequirementService $requirementService,
         protected PlacementLogger $logger,
     ) {
         $this->setModel($model);
@@ -40,6 +42,14 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
      */
     public function register(array $data): InternshipRegistration
     {
+        // 0. Enforce Phase Invariant: Registration restricted by system phase
+        if (setting('system_phase', 'registration') !== 'registration') {
+            throw new AppException(
+                userMessage: 'internship::exceptions.registration_closed_for_current_phase',
+                code: 403,
+            );
+        }
+
         $placementId = $data['placement_id'];
         $studentId = $data['student_id'];
 
@@ -61,12 +71,35 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
             );
         }
 
-        // 3. Inject active academic year
+        // 3. Enforce Advisor Invariant: teacher_id is mandatory
+        if (empty($data['teacher_id'])) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.advisor_required_for_placement',
+                code: 422,
+            );
+        }
+
+        // 4. Enforce Temporal Integrity: start_date and end_date are mandatory
+        if (empty($data['start_date']) || empty($data['end_date'])) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.period_dates_required',
+                code: 422,
+            );
+        }
+
+        if ($data['start_date'] > $data['end_date']) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.invalid_period_range',
+                code: 422,
+            );
+        }
+
+        // 5. Inject active academic year
         $data['academic_year'] = setting('active_academic_year', '2025/2026');
 
         $registration = $this->create($data);
 
-        // 4. Log initial assignment
+        // 6. Log initial assignment
         $this->logger->logAssignment($registration);
 
         return $registration;
@@ -86,8 +119,8 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
             );
         }
 
-        // Check if mandatory requirements are cleared
-        if (! $registration->hasClearedAllMandatoryRequirements()) {
+        // Check if mandatory requirements are cleared via service
+        if (! $this->requirementService->hasClearedMandatory($registrationId)) {
             throw new AppException(
                 userMessage: 'internship::exceptions.mandatory_requirements_not_met',
                 code: 422,
@@ -157,5 +190,32 @@ class InternshipRegistrationService extends EloquentQuery implements Contract
         return $this->update($registrationId, [
             'placement_id' => $newPlacementId,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function complete(string $registrationId): InternshipRegistration
+    {
+        $registration = $this->find($registrationId);
+
+        if (! $registration) {
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+                InternshipRegistration::class,
+                [$registrationId],
+            );
+        }
+
+        // Deliverable Invariant: Completion requires verified deliverables
+        if (! app(\Modules\Internship\Services\Contracts\DeliverableService::class)->areAllDeliverablesVerified($registrationId)) {
+            throw new AppException(
+                userMessage: 'internship::exceptions.deliverables_not_verified',
+                code: 422,
+            );
+        }
+
+        $registration->setStatus('completed', 'Internship program completed successfully.');
+
+        return $registration;
     }
 }

@@ -33,6 +33,18 @@ class InternshipRegistration extends Model
         'teacher_id',
         'mentor_id',
         'academic_year',
+        'start_date',
+        'end_date',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     /**

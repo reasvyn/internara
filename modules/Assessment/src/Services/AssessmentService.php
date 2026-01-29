@@ -6,19 +6,26 @@ namespace Modules\Assessment\Services;
 
 use Modules\Assessment\Models\Assessment;
 use Modules\Assessment\Services\Contracts\AssessmentService as Contract;
+use Modules\Assessment\Services\Contracts\ComplianceService;
 use Modules\Exception\AppException;
+use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Shared\Services\EloquentQuery;
 
 class AssessmentService extends EloquentQuery implements Contract
 {
     public function __construct(
-        protected \Modules\Assessment\Services\Contracts\ComplianceService $complianceService,
+        protected ComplianceService $complianceService,
+        protected InternshipRegistrationService $registrationService,
+        Assessment $model,
     ) {
-        $this->setModel(new Assessment);
+        $this->setModel($model);
         $this->setSearchable(['type', 'academic_year']);
         $this->setSortable(['created_at', 'score']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function submitEvaluation(
         string $registrationId,
         string $evaluatorId,
@@ -27,9 +34,7 @@ class AssessmentService extends EloquentQuery implements Contract
         ?string $feedback = null,
     ): Assessment {
         // Authorization: Verify evaluator is assigned to this registration
-        $registration = app(
-            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
-        )->find($registrationId);
+        $registration = $this->registrationService->find($registrationId);
 
         if (! $registration) {
             throw new AppException('assessment::messages.invalid_registration', code: 404);

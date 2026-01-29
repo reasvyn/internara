@@ -33,7 +33,7 @@ class SystemAuditor implements SystemAuditorContract
     /**
      * Minimum PHP version.
      */
-    protected const MIN_PHP_VERSION = '8.4.0';
+    protected const MIN_PHP_VERSION = '8.2.0';
 
     /**
      * {@inheritdoc}
@@ -106,18 +106,10 @@ class SystemAuditor implements SystemAuditorContract
     {
         $audit = $this->audit();
 
-        foreach ($audit['requirements'] as $status) {
-            if ($status === false) {
-                return false;
-            }
-        }
+        $requirementsPassed = ! in_array(false, $audit['requirements'], true);
+        $permissionsPassed = ! in_array(false, $audit['permissions'], true);
+        $databasePassed = (bool) $audit['database']['connection'];
 
-        foreach ($audit['permissions'] as $status) {
-            if ($status === false) {
-                return false;
-            }
-        }
-
-        return (bool) $audit['database']['connection'];
+        return $requirementsPassed && $permissionsPassed && $databasePassed;
     }
 }

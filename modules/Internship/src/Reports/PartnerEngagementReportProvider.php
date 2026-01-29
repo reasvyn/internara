@@ -71,6 +71,14 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
     /**
      * {@inheritdoc}
      */
+    public function getTemplate(): string
+    {
+        return 'internship::reports.partner-engagement';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterRules(): array
     {
         return [
