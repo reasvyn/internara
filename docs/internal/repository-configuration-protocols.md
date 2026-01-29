@@ -77,5 +77,32 @@ To maintain zero configuration drift, a full synchronization sweep is required a
 
 ---
 
+## 6. Community & Communication Protocols (GitHub Discussions)
+
+Internara utilizes GitHub Discussions as the primary channel for community engagement, enforcing strict
+protocols to maintain professional discourse and operational responsiveness.
+
+### 6.1 Violation Filtering (Moderation)
+
+- **Protocol**: Immediate removal or flagging of content violating the **Code of Conduct** (spam,
+  harassment, or unauthorized PII disclosure).
+- **Goal**: Preserve professional engineering discourse and protect community safety.
+
+### 6.2 Knowledge Distribution (FAQ Strategy)
+
+- **Protocol**: Recurring inquiries must be answered with references to the **Single Source of
+  Truth** documentation.
+- **Evolution**: Frequently asked questions trigger a documentation enhancement cycle (Draft ->
+  Review -> Publish) to reduce support overhead.
+
+### 6.3 Rapid Response (Urgent Triage)
+
+- **Scope**: Critical security vulnerabilities or blocking operational defects reported by the
+  community.
+- **SLA**: Immediate acknowledgment and conversion into **Priority Issues** for the engineering
+  team.
+
+---
+
 _Strict adherence to these configuration protocols ensures that Internara remains a disciplined,
 traceable, and reliable system throughout its evolution._

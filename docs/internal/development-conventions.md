@@ -56,7 +56,9 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
   prohibited**.
     - **Service Contracts**: `Services/Contracts/` (e.g., `InternshipService`).
     - **General Contracts**: `Contracts/` (e.g., `Authenticatable`).
-- **Concerns (Traits)**: PascalCase, prefixed with `Has` or `Can` (e.g., `HasAuditLog`).
+- **Concerns (Traits)**: PascalCase, prefixed with semantic verbs such as `Has`, `Can`,
+  `Handles`, or `Manages` (e.g., `HasAuditLog`, `HandlesResponse`). Naming should be flexible to
+  context while remaining semantically standardized.
 - **Enums**: PascalCase, located in `src/Enums/`, used for fixed status values and domain constants.
 
 ---
