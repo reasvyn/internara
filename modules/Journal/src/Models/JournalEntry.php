@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Journal\Database\Factories\JournalEntryFactory;
+use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasStatus;
@@ -20,7 +21,13 @@ class JournalEntry extends Model implements HasMedia
     use HasFactory;
     use HasStatus;
     use HasUuid;
+    use InteractsWithActivityLog;
     use InteractsWithMedia;
+
+    /**
+     * The name of the activity log for this model.
+     */
+    protected string $activityLogName = 'journal';
 
     /**
      * The "type" of the primary key ID.

@@ -135,7 +135,9 @@ A design series is considered done only when it satisfies the following gates:
 
 ## 6. Improvement Suggestions
 
-- **Assignment Modularization**: All assignment-related mechanisms (including submissions) have been decoupled from the Internship module and migrated to a dedicated **Assignment** module to ensure domain purity and better maintainability.
+- **Assignment Modularization**: All assignment-related mechanisms (including submissions) have been
+  decoupled from the Internship module and migrated to a dedicated **Assignment** module to ensure
+  domain purity and better maintainability.
 
 ---
 

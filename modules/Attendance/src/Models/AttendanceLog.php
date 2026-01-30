@@ -7,6 +7,7 @@ namespace Modules\Attendance\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
@@ -17,6 +18,12 @@ class AttendanceLog extends Model
     use HasFactory;
     use HasStatus;
     use HasUuid;
+    use InteractsWithActivityLog;
+
+    /**
+     * The name of the activity log for this model.
+     */
+    protected string $activityLogName = 'attendance';
 
     /**
      * The "type" of the primary key ID.

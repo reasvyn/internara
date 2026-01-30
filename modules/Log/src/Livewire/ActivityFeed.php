@@ -7,7 +7,6 @@ namespace Modules\Log\Livewire;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Log\Models\Activity;
 
 class ActivityFeed extends Component
 {
@@ -29,10 +28,14 @@ class ActivityFeed extends Component
      */
     public function render()
     {
-        $activities = Activity::query()
+        $filters = array_filter([
+            'log_name' => $this->logName,
+            'causer_id' => $this->causerId,
+        ]);
+
+        $activities = app(\Modules\Log\Services\Contracts\ActivityService::class)
+            ->query($filters)
             ->with(['causer', 'subject'])
-            ->when($this->logName, fn ($q) => $q->where('log_name', $this->logName))
-            ->when($this->causerId, fn ($q) => $q->where('causer_id', $this->causerId))
             ->latest()
             ->paginate(10);
 

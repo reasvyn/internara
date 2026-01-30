@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     
-                    @livewire('internship::requirement-submission-manager', ['registrationId' => $registration->id])
+                    <x-ui::slot-render name="student.dashboard.requirements" />
 
                 {{-- Phase 2: Placement & Activity --}}
                 @elseif($registration->placement)
@@ -60,6 +60,8 @@
                             @endif
                         </div>
                     </x-ui::card>
+
+                    <x-ui::slot-render name="student.dashboard.active-content" />
                 @else
                     {{-- Requirements Cleared, but Waiting for Placement --}}
                     <x-ui::card title="{{ __('Menunggu Penempatan') }}" class="bg-base-100 border-l-4 border-info">
@@ -83,12 +85,11 @@
 
         <div class="space-y-6">
             @if($registration && $registration->placement)
-                @livewire('attendance::attendance-manager')
+                <x-ui::slot-render name="student.dashboard.sidebar" />
                 
                 <x-ui::card title="{{ __('Tautan Cepat') }}" shadow separator>
                     <div class="grid grid-cols-1 gap-2">
-                        <x-ui::button label="{{ __('Log Presensi') }}" icon="tabler.calendar" class="btn-ghost justify-start" link="{{ route('attendance.index') }}" />
-                        <x-ui::button label="{{ __('Jurnal Harian') }}" icon="tabler.book" class="btn-ghost justify-start" link="{{ route('journal.index') }}" />
+                        <x-ui::slot-render name="student.dashboard.quick-actions" />
                     </div>
                 </x-ui::card>
             @endif

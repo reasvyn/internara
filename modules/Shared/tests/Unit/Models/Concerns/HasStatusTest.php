@@ -51,10 +51,10 @@ test('HasStatus trait can set and get status', function () {
         ->toBe('success');
 });
 
-test('getStatusLabel returns translation key if translation missing', function () {
+test('getStatusLabel returns translated label', function () {
+    app()->setLocale('en');
     $model = StatusTestModel::create(['name' => 'Test']);
     $model->setStatus('active');
 
-    // Since shared::status.active probably doesn't exist yet
-    expect($model->getStatusLabel())->toBe('shared::status.active');
+    expect($model->getStatusLabel())->toBe('Active');
 });

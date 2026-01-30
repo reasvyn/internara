@@ -12,7 +12,7 @@ use Modules\UI\Livewire\LanguageSwitcher;
 test('it can change application locale', function () {
     App::setLocale('en');
 
-    Livewire::test(LanguageSwitcher::class)->call('changeLanguage', 'id')->assertRedirect('/');
+    Livewire::test(LanguageSwitcher::class)->call('changeLocale', 'id')->assertRedirect('/');
 
     expect(App::getLocale())->toBe('id');
     expect(Session::get('locale'))->toBe('id');
@@ -21,7 +21,7 @@ test('it can change application locale', function () {
 test('it ignores unsupported locales', function () {
     App::setLocale('en');
 
-    Livewire::test(LanguageSwitcher::class)->call('changeLanguage', 'fr')->assertNoRedirect();
+    Livewire::test(LanguageSwitcher::class)->call('changeLocale', 'fr')->assertNoRedirect();
 
     expect(App::getLocale())->toBe('en');
 });

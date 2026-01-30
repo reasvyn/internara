@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Exception\AppException;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
@@ -33,7 +34,7 @@ trait HandlesAppException
         array $replace = [],
         ?string $locale = null,
         ?string $logMessage = null,
-        int $code = 422,
+        int $code = Response::HTTP_UNPROCESSABLE_ENTITY,
         ?Throwable $previous = null,
         array $context = [],
     ): AppException {
@@ -58,7 +59,7 @@ trait HandlesAppException
         array $replace = [],
         ?string $locale = null,
         ?string $logMessage = null,
-        int $code = 422,
+        int $code = Response::HTTP_UNPROCESSABLE_ENTITY,
         ?Throwable $previous = null,
         array $context = [],
     ): void {
@@ -135,7 +136,9 @@ trait HandlesAppException
                         ? $exception->getMessage()
                         : __('An unexpected error occurred.'),
                 ],
-                method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500,
+                method_exists($exception, 'getStatusCode')
+                    ? $exception->getStatusCode()
+                    : Response::HTTP_INTERNAL_SERVER_ERROR,
             );
         }
 

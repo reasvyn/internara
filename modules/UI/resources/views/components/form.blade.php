@@ -1,9 +1,11 @@
+@props(['actions' => null])
+
 <x-mary-form {{ $attributes }}>
     {{ $slot }}
 
-    @isset($actions)
-        <x-slot:actions>
+    @if($actions)
+        <x-slot name="actions">
             {{ $actions }}
         </x-slot>
-    @endisset
+    @endif
 </x-mary-form>

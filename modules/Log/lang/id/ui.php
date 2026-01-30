@@ -8,4 +8,5 @@ return [
     'user' => 'Pengguna',
     'category' => 'Kategori',
     'activity' => 'Aktivitas',
+    'no_activities' => 'Belum ada aktivitas yang tercatat.',
 ];

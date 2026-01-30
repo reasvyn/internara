@@ -1,33 +1,53 @@
 # UI Module
 
-The `UI` module is the **"Headless"** source of truth for the application's visual language and
-shared frontend components. It encapsulates common layouts, interactive elements, and design tokens,
-but **does not** contain business logic, routes, or database tables.
+The `UI` module serves as the authoritative, "headless" source of truth for Internara's visual language and shared frontend components. it encapsulates the design system, interactive elements, and presentation layouts without containing business logic or data persistence.
 
-## Purpose
+> **Governance Mandate:** This module implements the UI/UX and Accessibility standards required by the authoritative **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)** (ISO 9241-210). It ensures a mobile-first, consistent, and localized user experience.
 
-- **Design System:** Enforces a consistent look and feel across all modules using Tailwind CSS,
-  DaisyUI, and MaryUI.
-- **Component Library:** Provides a comprehensive library of pre-built Blade and Livewire components
-  (e.g., `<x-ui::button>`, `<x-ui::card>`).
-- **No Side Effects:** This module is strictly for presentation. It does not handle HTTP requests or
-  store data.
+---
 
-## Key Features
+## 1. Architectural Role
 
-### 1. Global Components
+As a **Public Module**, the `UI` module provides the shared presentation layer for all domain modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) and leverages **DaisyUI** and **MaryUI** for its component base.
 
-- **Core Elements:** Buttons, Inputs, Cards, Modals, Badges.
-- **Layouts:** Navbar, Sidebar, App Shell.
-- **LanguageSwitcher:** A persistent UI component allowing users to toggle between English and
-  Indonesian.
+---
 
-### 2. Design System Tokens
+## 2. Key Features
 
-- Centralized configuration for DaisyUI themes and Tailwind extensions.
-- Light/Dark mode compatibility built-in.
+### 2.1 Design System
+- **Centralized Styling**: Configuration for Tailwind v4 and DaisyUI themes.
+- **Typography**: Enforces the use of **Instrument Sans** as the primary font (**[SYRS-NF-402]**).
+- **Theming**: Native support for Light/Dark modes and responsive layouts.
 
-### 3. Slot System
+### 2.2 Component Library
+- **Blade Components**: Reusable, standardized elements such as `<x-ui::button>`, `<x-ui::card>`, `<x-ui::modal>`, and `<x-ui::input>`.
+- **Livewire Components**: Shared interactive elements like the `LanguageSwitcher`.
 
-- Implements a cross-module UI injection system (Slot Registry) that allows modules to register
-  their own elements (like sidebar links) into global layouts without tight coupling.
+### 2.3 Cross-Module View Orchestration (Slot Injection)
+The UI module provides the infrastructure for zero-coupling UI integration:
+- **`SlotRegistry`**: A central registry where modules can register their own UI fragments (e.g., sidebar links, dashboard widgets).
+- **`SlotManager`**: Handles the secure rendering of registered components into named slots within the layout.
+- **`SlotRender`**: A Blade component (`<x-ui::slot-render name="..." />`) used to mark injection points in global layouts.
+
+---
+
+## 3. Engineering Standards
+
+- **Zero Coupling**: Strictly presentation-focused. D Domain logic is prohibited.
+- **Mobile-First**: All layouts and components must default to mobile-responsive design (**[SYRS-NF-401]**).
+- **i18n Infrastructure**: Facilitates the **Language Switcher** and ensures all presentation text is localized.
+- **Zero Magic Values**: UI configurations (like supported locales and icons) are managed via `config/ui.php`.
+
+---
+
+## 4. Verification & Validation (V&V)
+
+Presentation integrity is verified through **Pest v4**:
+- **Unit Tests**: Verifies the `SlotRegistry` logic and injection accuracy.
+- **Feature Tests**: Validates interactive components like the `LanguageSwitcher`.
+- **Visual Audit**: Manual verification of mobile responsiveness and theme consistency.
+- **Command**: `php artisan test modules/UI`
+
+---
+
+_The UI module ensures that Internara provides a professional, accessible, and seamless interface for all stakeholders._

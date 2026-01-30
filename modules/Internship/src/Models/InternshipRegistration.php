@@ -9,17 +9,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Internship\Database\Factories\InternshipRegistrationFactory;
 use Modules\Internship\Models\Concerns\HasRequirements;
+use Modules\Log\Concerns\HandlesAuditLog;
+use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\User\Models\Concerns\HasUserRelation;
 
 class InternshipRegistration extends Model
 {
+    use HandlesAuditLog;
     use HasFactory;
     use HasRequirements;
     use HasStatus;
     use HasUserRelation; // For student relation
     use HasUuid;
+    use InteractsWithActivityLog;
 
     /**
      * The attributes that are mass assignable.
@@ -46,6 +50,11 @@ class InternshipRegistration extends Model
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    /**
+     * The name of the activity log for this model.
+     */
+    protected string $activityLogName = 'registration';
 
     /**
      * Create a new factory instance for the model.

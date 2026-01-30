@@ -5,9 +5,9 @@ consistency, maintainability, and structural integrity according to **ISO/IEC 11
 **ISO/IEC 25010** (Maintainability).
 
 > **Governance Mandate:** These conventions serve as the technical implementation of the
-> authoritative **[System Requirements Specification](system-requirements-specification.md)**. All software artifacts must
-> satisfy the requirements for Multi-Language support, Mobile-First responsiveness, and Role-Based
-> security defined in the SSoT.
+> authoritative **[System Requirements Specification](system-requirements-specification.md)**. All
+> software artifacts must satisfy the requirements for Multi-Language support, Mobile-First
+> responsiveness, and Role-Based security defined in the SSoT.
 
 ---
 
@@ -48,6 +48,14 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
 
 ### 3.1 Class Identifiers
 
+- **Semantic & Contextual Naming**: Class names must be descriptive and context-aware. While
+  avoiding redundant prefixes provided by the namespace is encouraged, clarity must never be
+  sacrificed for brevity.
+    - _Brevity_: Avoid repeating the module name if the namespace already makes it obvious (e.g.,
+      `Modules\Internship\Services\RegistrationService` instead of `InternshipRegistrationService`).
+    - _Context_: Ensure the name explicitly describes the entity or action (e.g.,
+      `RecordNotFoundException` is preferred over `NotFoundException` because it specifies that a
+      database record is the missing entity).
 - **Controllers/Livewire**: PascalCase reflecting the user action or resource (e.g.,
   `ManageAttendance`).
 - **Services**: PascalCase with the `Service` suffix (e.g., `AssessmentService`).
@@ -56,14 +64,14 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
   prohibited**.
     - **Layer-Specific Contracts**: reside within the layer's directory: `src/<Layer>/Contracts/`
       (e.g., `src/Services/Contracts/InternshipService.php`).
-    - **Module-Global Contracts**: reside in the root contracts directory: `src/Contracts/`
-      (e.g., `src/Contracts/Authenticatable.php`).
+    - **Module-Global Contracts**: reside in the root contracts directory: `src/Contracts/` (e.g.,
+      `src/Contracts/Authenticatable.php`).
 - **Concerns (Traits)**: PascalCase, prefixed with semantic verbs such as `Has`, `Can`, `Handles`,
   or `Manages` (e.g., `HasAuditLog`, `HandlesResponse`).
     - **Layer-Specific Concerns**: reside within the layer's directory: `src/<Layer>/Concerns/`
       (e.g., `src/Models/Concerns/HasUuid.php`).
-    - **Module-Global Concerns**: reside in the root concerns directory: `src/Concerns/`
-      (e.g., `src/Concerns/HasModuleMetadata.php`).
+    - **Module-Global Concerns**: reside in the root concerns directory: `src/Concerns/` (e.g.,
+      `src/Concerns/HasModuleMetadata.php`).
 - **Enums**: PascalCase, located in `src/Enums/`, used for fixed status values and domain constants.
 
 ---
@@ -99,6 +107,11 @@ Data must be automatically scoped by the active academic cycle.
 
 The **Service Layer** is the exclusive repository for business logic and orchestration.
 
+- **Business Logic Restriction**: Services must strictly contain logic related to domain rules,
+  workflows, and cross-module orchestration.
+- **Decoupling**: Services must interact with other modules only through their respective Service
+  Contracts.
+
 ### 5.1 The `EloquentQuery` Pattern
 
 Domain services should extend `Modules\Shared\Services\EloquentQuery` to utilize standardized CRUD
@@ -121,7 +134,22 @@ operations.
 
 ---
 
-## 6. Presentation Layer: Livewire Components
+## 6. Infrastructure Utilities: The Support Layer
+
+The **Support Layer** (`src/Support/`) contains project-specific utilities, helpers, and static
+tools that provide technical capabilities without containing business logic.
+
+- **Technical Scope**: Reserved for stateless, technical operations such as string formatting, data
+  masking, and mathematical utilities.
+- **Service vs. Support**: If logic defines a business rule (e.g., "how an internship is
+  validated"), it resides in a **Service**. If it defines a technical tool (e.g., "how to normalize
+  a path"), it resides in **Support**.
+- **Global Helpers**: Utility functions that need to be globally accessible should be defined in
+  `src/Support/helpers.php`.
+
+---
+
+## 7. Presentation Layer: Livewire Components
 
 Livewire components serve as thin orchestrators between the UI and the Service Layer.
 
@@ -129,11 +157,13 @@ Livewire components serve as thin orchestrators between the UI and the Service L
   forbidden. Components must delegate immediately to the appropriate Service.
 - **Mobile-First Construction**: UI logic and styling must default to mobile layouts, utilizing
   Tailwind v4 breakpoints for larger viewports.
-- **Validation Invariant (ISO/IEC 27034)**: Validation must occur at the earliest possible boundary (PEP). Livewire components must utilize `rules()` or Form Requests to ensure data integrity before Service invocation.
+- **Validation Invariant (ISO/IEC 27034)**: Validation must occur at the earliest possible boundary
+  (PEP). Livewire components must utilize `rules()` or Form Requests to ensure data integrity before
+  Service invocation.
 
 ---
 
-## 7. Internationalization (i18n) Standards
+## 8. Internationalization (i18n) Standards
 
 Internara is a multi-language system. Hard-coding of user-facing text is a **Critical Quality
 Violation**.
@@ -144,7 +174,25 @@ Violation**.
 
 ---
 
-## 8. Documentation (The Engineering Record)
+## 9. Avoiding Magic Values
+
+Predictability and maintainability require the elimination of "Magic Values" (hard-coded strings or
+numbers with semantic meaning).
+
+- **Principle**: Any value that carries semantic meaning (e.g., a status code, a role name, a
+  specific limit) must be abstracted.
+- **Implementation**:
+    - **Enums**: Use PHP 8.1+ Enums for fixed sets of values (e.g.,
+      `src/Enums/RegistrationStatus.php`).
+    - **Constants**: Use class constants for internal model or service configuration.
+    - **Config/Settings**: Use `config()` for environment-static values and `setting()` for values
+      that require runtime administrative control.
+- **Rationale**: Reduces the risk of "typo-based" bugs and provides a single source of truth for
+  value changes.
+
+---
+
+## 10. Documentation (The Engineering Record)
 
 Every public class and method must include professional PHPDoc in English.
 
@@ -153,67 +201,120 @@ Every public class and method must include professional PHPDoc in English.
 
 ---
 
-## 9. Database Migrations & Schema Design
+## 11. Database Migrations & Schema Design
 
 Migrations must ensure modular portability and data integrity without physical coupling.
 
-- **UUID Invariant**: Primary keys must use `uuid('id')->primary()` (or resolved via config). Foreign keys within the same module should use `foreignUuid()`.
-- **Strict Isolation**: Physical foreign keys across module boundaries are **Forbidden**. Use indexed UUID columns (e.g., `$table->uuid('user_id')->index()`) and maintain referential integrity at the Service Layer.
-- **Anonymous Migrations**: All migrations must utilize anonymous classes (`return new class extends Migration`).
+- **UUID Invariant**: Primary keys must use `uuid('id')->primary()` (or resolved via config).
+  Foreign keys within the same module should use `foreignUuid()`.
+- **Strict Isolation**: Physical foreign keys across module boundaries are **Forbidden**. Use
+  indexed UUID columns (e.g., `$table->uuid('user_id')->index()`) and maintain referential integrity
+  at the Service Layer.
+- **Anonymous Migrations**: All migrations must utilize anonymous classes
+  (`return new class extends Migration`).
 - **Standard Columns**: Always include `$table->timestamps()` for auditability.
 
 ---
 
-## 10. Exception Handling & Resilience (ISO/IEC 25010)
+## 12. Exception Handling & Resilience (ISO/IEC 25010)
 
 Fault management must be disciplined, secure, and localized.
 
-- **Semantic Exceptions**: Throw custom, module-specific exceptions (e.g., `JournalLockedException`) from the Service Layer.
-- **Sanitization Invariant**: Exceptions rendered to end-users must NEVER expose system internals (schema, paths, traces). Use generic messages in production.
-- **Localization**: Exception messages must be resolved via translation keys (`module::exceptions.key`).
-- **PII Protection**: Logging must redact sensitive data (passwords, tokens) to satisfy privacy mandates.
+- **Semantic Exceptions**: Throw custom, module-specific exceptions (e.g., `JournalLockedException`)
+  from the Service Layer.
+- **Sanitization Invariant**: Exceptions rendered to end-users must NEVER expose system internals
+  (schema, paths, traces). Use generic messages in production.
+- **Localization**: Exception messages must be resolved via translation keys
+  (`module::exceptions.key`).
+- **PII Protection**: Logging must redact sensitive data (passwords, tokens) to satisfy privacy
+  mandates.
 
 ---
 
-## 11. Asynchronous Orchestration (Events)
+## 13. Asynchronous Orchestration (Events)
 
 Utilize events for decoupled cross-module side-effects.
 
-- **Naming Semantic**: Events must use the **Past Tense** (`{Entity}{Action}ed`, e.g., `InternshipStarted`).
-- **Lightweight Payloads**: Event constructors should only accept the **UUID** of the entity or a lightweight DTO to prevent serialization overhead.
-- **Isolation Constraint**: Listeners must interact with foreign modules exclusively via Service Contracts, never direct Model access.
+- **Naming Semantic**: Events must use the **Past Tense** (`{Entity}{Action}ed`, e.g.,
+  `InternshipStarted`).
+- **Lightweight Payloads**: Event constructors should only accept the **UUID** of the entity or a
+  lightweight DTO to prevent serialization overhead.
+- **Isolation Constraint**: Listeners must interact with foreign modules exclusively via Service
+  Contracts, never direct Model access.
 
 ---
 
-## 12. Authorization Policies (ISO/IEC 29146)
+## 14. Authorization Policies (ISO/IEC 29146)
 
 Authorization logic must be centralized and context-aware.
 
-- **Policy Enforcement Points (PEP)**: Every domain model must have a corresponding **Policy** class.
-- **Strict Typing**: All policy methods must declare strict types for the `User` subject and the `Model` object.
-- **Deny by Default**: Policies must explicitly return `false` if conditions are not met. Ambiguity is a security defect.
-- **Ownership Verification**: Always verify functional permission (`$user->can()`) AND context (e.g., `$user->id === $resource->user_id`).
+- **Policy Enforcement Points (PEP)**: Every domain model must have a corresponding **Policy**
+  class.
+- **Strict Typing**: All policy methods must declare strict types for the `User` subject and the
+  `Model` object.
+- **Deny by Default**: Policies must explicitly return `false` if conditions are not met. Ambiguity
+  is a security defect.
+- **Ownership Verification**: Always verify functional permission (`$user->can()`) AND context
+  (e.g., `$user->id === $resource->user_id`).
 
 ---
 
-## 13. Verification & Validation (ISO/IEC 29119)
+## 15. Verification & Validation (ISO/IEC 29119)
 
 Tests serve as the executable proof of requirement fulfillment.
 
 - **TDD-First**: Construct verification suites (Pest v4) prior to implementation.
-- **Traceability**: Link tests to SyRS requirements or architectural invariants using `test('it fulfills [SYRS-ID]')`.
+- **Traceability**: Link tests to SyRS requirements or architectural invariants using
+  `test('it fulfills [SYRS-ID]')`.
 - **Architecture Testing**: Enforce modular isolation using Pest's Arch plugin.
 - **Coverage**: Maintain a minimum of 90% behavioral coverage for domain modules.
 
 ---
 
-## 14. Repository Management & Traceability
+## 16. Repository Management & Traceability
 
 Standards for maintaining the engineering record.
 
-- **Conventional Commits**: All commit messages must follow the `type(module): description` pattern (e.g., `feat(user): add uuid-based identity`).
+- **Conventional Commits**: All commit messages must follow the `type(module): description` pattern
+  (e.g., `feat(user): add uuid-based identity`).
 - **Atomic Commits**: Each commit must represent a single, logical unit of work.
-- **Doc-as-Code**: Every code modification must trigger a corresponding update to technical documentation to prevent desynchronization.
+- **Doc-as-Code**: Every code modification must trigger a corresponding update to technical
+  documentation to prevent desynchronization.
+
+---
+
+## 17. Zero-Coupling & Domain Isolation Rules
+
+To preserve the modular integrity of the system, strict boundaries are enforced between business
+domains.
+
+### 17.1 Dependency Direction
+
+- **Public Modules**: Modules such as `Shared`, `UI`, `Core`, `Support`, `Auth`, and `Exception` are
+  considered infrastructure providers. Domain modules **may** depend on these directly.
+- **Domain Modules**: Modules representing business logic (e.g., `Internship`, `Journal`,
+  `Attendance`) **must never** depend on each other directly.
+
+### 17.2 Data Isolation
+
+- **No Physical Foreign Keys**: Cross-module database relationships must use indexed UUID columns
+  without physical constraints.
+- **Model Isolation**: Direct instantiation or usage of a Model class from another domain module is
+  **Strictly Forbidden**.
+
+### 17.3 Logic Isolation (Service Contracts)
+
+- **Contract-First Communication**: Inter-module logic requests must be handled through the target
+  module's **Service Contract** (Interface).
+- **Service Dependency**: If Module A requires data from Module B, it must inject the Service
+  Contract of Module B into its own Service.
+
+### 17.4 Presentation Isolation (Slot Injection)
+
+- **Direct Component Restriction**: Calling a Blade/Livewire component from another domain module
+  directly (e.g., `<x-internship::... />` inside `Journal`) is **Forbidden**.
+- **Slot Pattern**: Cross-module UI integration must utilize the **Slot Injection** pattern via the
+  `SlotRegistry` provided by the `UI` module.
 
 ---
 

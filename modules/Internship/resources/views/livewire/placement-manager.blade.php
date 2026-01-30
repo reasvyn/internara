@@ -14,9 +14,19 @@
             <x-ui::table :headers="[
                 ['key' => 'company_name', 'label' => __('internship::ui.company_name')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
-                ['key' => 'capacity_quota', 'label' => __('internship::ui.capacity_quota')],
+                ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
                 ['key' => 'contact_person', 'label' => __('internship::ui.contact')],
             ]" :rows="$this->records" with-pagination>
+                @scope('cell_quota', $placement)
+                    <div class="flex flex-col gap-1 min-w-[120px]">
+                        <div class="flex justify-between text-xs">
+                            <span>{{ $placement->capacity_quota - $placement->remaining_slots }} / {{ $placement->capacity_quota }}</span>
+                            <span class="font-bold">{{ $placement->utilization_percentage }}%</span>
+                        </div>
+                        <progress class="progress progress-primary w-full" value="{{ $placement->utilization_percentage }}" max="100"></progress>
+                    </div>
+                @endscope
+
                 @scope('actions', $placement)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('shared::ui.edit') }}" />

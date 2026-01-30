@@ -11,24 +11,24 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class ModuleMakeInterfaceCommand
+ * Class MakeTraitCommand
  *
- * Generates a PHP interface within a module, respecting the project's
+ * Generates a PHP trait within a module, respecting the project's
  * namespace and directory conventions.
  */
-class ModuleMakeInterfaceCommand extends GeneratorCommand
+class MakeTraitCommand extends GeneratorCommand
 {
     use HandlesModuleMakeGenerator;
 
     /**
      * The name and signature of the console command.
      */
-    protected $name = 'module:make-interface';
+    protected $name = 'module:make-trait';
 
     /**
      * The console command description.
      */
-    protected $description = 'Create a new interface for the specified module, with a direct namespace.';
+    protected $description = 'Create a new trait for the specified module, with a direct namespace.';
 
     /**
      * The argument name of the module.
@@ -38,14 +38,14 @@ class ModuleMakeInterfaceCommand extends GeneratorCommand
     /**
      * The configuration key for the command.
      */
-    protected $configKey = 'interfaces';
+    protected $configKey = 'traits';
 
     /**
      * Get the stub file for the generator.
      */
     protected function getStub(): string
     {
-        return '/interface.stub';
+        return '/trait.stub';
     }
 
     /**
@@ -60,7 +60,7 @@ class ModuleMakeInterfaceCommand extends GeneratorCommand
     }
 
     /**
-     * Get the destination file path for the generated interface.
+     * Get the destination file path for the generated trait.
      */
     protected function getDestinationFilePath(): string
     {
@@ -76,7 +76,7 @@ class ModuleMakeInterfaceCommand extends GeneratorCommand
             [
                 'name',
                 InputArgument::REQUIRED,
-                'The name of the interface. Subdirectories are allowed (e.g., Services/SomeInterface).',
+                'The name of the trait. Subdirectories are allowed (e.g., Concerns/MyTrait).',
             ],
             ['module', InputArgument::REQUIRED, 'The name of the module.'],
         ];
@@ -92,7 +92,7 @@ class ModuleMakeInterfaceCommand extends GeneratorCommand
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Create the interface even if the interface already exists.',
+                'Create the trait even if the trait already exists.',
             ],
         ];
     }

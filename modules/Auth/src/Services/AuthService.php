@@ -85,7 +85,7 @@ class AuthService implements AuthServiceContract
         $user = $this->userService->create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'],
             'roles' => $roles,
         ]);
 

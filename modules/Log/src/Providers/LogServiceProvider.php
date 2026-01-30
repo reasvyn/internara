@@ -43,7 +43,7 @@ class LogServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            // 'SomeContract::class' => 'SomeConcrete::class'
+            \Modules\Log\Services\Contracts\ActivityService::class => \Modules\Log\Services\ActivityService::class,
         ];
     }
 
@@ -53,13 +53,7 @@ class LogServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
-            'sidebar.menu' => [
-                'ui::components.menu-item#activities' => [
-                    'title' => __('log::ui.activity_feed'),
-                    'icon' => 'tabler.history',
-                    'link' => '/admin/activities',
-                ],
-            ],
+            'admin.dashboard.side' => 'livewire:log::activity-feed',
         ];
     }
 }

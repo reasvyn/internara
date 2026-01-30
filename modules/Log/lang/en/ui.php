@@ -8,4 +8,5 @@ return [
     'user' => 'User',
     'category' => 'Category',
     'activity' => 'Activity',
+    'no_activities' => 'No activities recorded yet.',
 ];

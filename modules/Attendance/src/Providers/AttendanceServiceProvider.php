@@ -38,6 +38,15 @@ class AttendanceServiceProvider extends ServiceProvider
     {
         return [
             'navbar.items' => 'attendance::components.nav-link',
+            'student.dashboard.sidebar' => 'livewire:attendance::attendance-manager',
+            'student.dashboard.quick-actions' => [
+                'ui::components.button' => [
+                    'label' => __('Log Presensi'),
+                    'icon' => 'tabler.calendar',
+                    'link' => '/attendance',
+                    'class' => 'btn-ghost justify-start w-full',
+                ],
+            ],
         ];
     }
 

@@ -4,24 +4,26 @@ declare(strict_types=1);
 
 namespace Modules\UI\Livewire;
 
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class LanguageSwitcher extends Component
 {
     /**
-     * The supported locales.
+     * Get the supported locales from configuration.
      */
-    public array $locales = [
-        'en' => ['name' => 'English', 'flag' => '🇬🇧'],
-        'id' => ['name' => 'Indonesia', 'flag' => '🇮🇩'],
-    ];
+    #[Computed]
+    public function locales(): array
+    {
+        return (array) config('ui.locales', []);
+    }
 
     /**
      * Change the application locale.
      */
-    public function changeLanguage(string $locale): void
+    public function changeLocale(string $locale): void
     {
-        if (! in_array($locale, ['en', 'id'])) {
+        if (! array_key_exists($locale, $this->locales())) {
             return;
         }
 

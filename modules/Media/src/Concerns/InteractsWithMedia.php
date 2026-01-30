@@ -16,11 +16,20 @@ trait InteractsWithMedia
     use SpatieInteractsWithMedia;
 
     /**
+     * Standard collection names.
+     */
+    public const COLLECTION_DEFAULT = 'default';
+
+    public const COLLECTION_AVATAR = 'avatar';
+
+    public const COLLECTION_LOGO = 'logo';
+
+    /**
      * Set media for a specific collection, optionally clearing existing media.
      */
     public function setMedia(
         mixed $file,
-        string $collectionName = 'default',
+        string $collectionName = self::COLLECTION_DEFAULT,
         bool $clearExisting = true,
     ): bool {
         if ($clearExisting) {
@@ -34,7 +43,7 @@ trait InteractsWithMedia
      * Get the first media URL for a specific collection.
      */
     public function getMediaUrl(
-        string $collectionName = 'default',
+        string $collectionName = self::COLLECTION_DEFAULT,
         string $conversionName = '',
     ): string {
         return $this->getFirstMediaUrl($collectionName, $conversionName);

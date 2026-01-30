@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
@@ -21,6 +22,11 @@ use Throwable;
  */
 class AppException extends Exception
 {
+    /**
+     * Default limit for trace stack subsets.
+     */
+    protected const DEFAULT_TRACE_LIMIT = 6;
+
     protected string $userMessage;
 
     protected string $logMessage;
@@ -41,7 +47,7 @@ class AppException extends Exception
         protected array $replace = [],
         protected ?string $locale = null,
         ?string $logMessage = null,
-        int $code = 422,
+        int $code = Response::HTTP_UNPROCESSABLE_ENTITY,
         ?Throwable $previous = null,
         protected array $context = [],
     ) {
@@ -114,7 +120,7 @@ class AppException extends Exception
      *
      * @return array The trace stacks.
      */
-    public function getSubTrace(int $limit = 6): array
+    public function getSubTrace(int $limit = self::DEFAULT_TRACE_LIMIT): array
     {
         return \array_slice($this->getTrace(), 0, $limit);
     }
@@ -148,7 +154,10 @@ class AppException extends Exception
                 $payload['stack'] = $this->getSubTrace();
             }
 
-            return response()->json($payload, $this->getCode() ?: 422);
+            return response()->json(
+                $payload,
+                $this->getCode() ?: Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
         }
 
         return redirect()

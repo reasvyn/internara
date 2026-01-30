@@ -52,8 +52,10 @@ test('HasAcademicYear trait scopes queries by active academic year', function ()
     AcademicYearTestModel::create(['name' => 'Current', 'academic_year' => '2025/2026']);
     AcademicYearTestModel::create(['name' => 'Old', 'academic_year' => '2024/2025']);
 
-    expect(AcademicYearTestModel::count())->toBe(1)
-        ->and(AcademicYearTestModel::first()->name)->toBe('Current');
+    expect(AcademicYearTestModel::count())
+        ->toBe(1)
+        ->and(AcademicYearTestModel::first()->name)
+        ->toBe('Current');
 });
 
 test('scopeForAcademicYear allows querying specific year', function () {
@@ -62,6 +64,8 @@ test('scopeForAcademicYear allows querying specific year', function () {
 
     $oldModels = AcademicYearTestModel::forAcademicYear('2024/2025')->get();
 
-    expect($oldModels)->toHaveCount(1)
-        ->and($oldModels->first()->name)->toBe('Old');
+    expect($oldModels)
+        ->toHaveCount(1)
+        ->and($oldModels->first()->name)
+        ->toBe('Old');
 });

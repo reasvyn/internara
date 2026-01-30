@@ -21,6 +21,11 @@ use Illuminate\Support\Collection;
 interface EloquentQuery
 {
     /**
+     * Default number of items per page for pagination.
+     */
+    public const DEFAULT_PER_PAGE = 15;
+
+    /**
      * Retrieves paginated records, applying optional filters.
      *
      * @param array<string, mixed> $filters
@@ -30,7 +35,7 @@ interface EloquentQuery
      */
     public function paginate(
         array $filters = [],
-        int $perPage = 15,
+        int $perPage = self::DEFAULT_PER_PAGE,
         array $columns = ['*'],
     ): LengthAwarePaginator;
 
@@ -192,6 +197,13 @@ interface EloquentQuery
      * @return static
      */
     public function setModel(Model $model): self;
+
+    /**
+     * Set whether to include soft-deleted records.
+     *
+     * @return static
+     */
+    public function withTrashed(bool $value = true): self;
 
     /**
      * Sets a base query to build upon.

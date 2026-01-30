@@ -20,12 +20,6 @@ class SetupService implements Contracts\SetupService
 {
     /**
      * Create a new SetupService instance.
-     *
-     * @param SettingService $settingService The setting service instance.
-     * @param SuperAdminService $superAdminService The SuperAdmin service instance.
-     * @param SchoolService $schoolService The school service instance.
-     * @param DepartmentService $departmentService The department service instance.
-     * @param InternshipService $internshipService The internship service instance.
      */
     public function __construct(
         protected SettingService $settingService,
@@ -36,23 +30,15 @@ class SetupService implements Contracts\SetupService
     ) {}
 
     /**
-     * Checks if the application is currently installed.
-     *
-     * @param bool $skipCache If true, bypasses the cache and re-checks the installation status.
-     *
-     * @return bool True if the application is installed, false otherwise.
+     * {@inheritDoc}
      */
     public function isAppInstalled(bool $skipCache = true): bool
     {
-        return $this->settingService->getValue('app_installed', false, $skipCache);
+        return $this->settingService->getValue(self::SETTING_APP_INSTALLED, false, $skipCache);
     }
 
     /**
-     * Checks if a specific setup step has been completed.
-     *
-     * @param string $step The name of the setup step to check.
-     *
-     * @return bool True if the step is completed, false otherwise.
+     * {@inheritDoc}
      */
     public function isStepCompleted(string $step): bool
     {
@@ -64,21 +50,15 @@ class SetupService implements Contracts\SetupService
     }
 
     /**
-     * Checks if a specific record exists in the system.
-     *
-     * @param string $recordName The name of the record to check for existence (e.g., 'super-admin', 'school').
-     *
-     * @throws InvalidArgumentException If an unknown record type is requested.
-     *
-     * @return bool True if the record exists, false otherwise.
+     * {@inheritDoc}
      */
     public function isRecordExists(string $recordName): bool
     {
         return match ($recordName) {
-            'super-admin' => $this->superAdminService->exists(),
-            'school' => $this->schoolService->exists(),
-            'department' => $this->departmentService->exists(),
-            'internship' => $this->internshipService->exists(),
+            self::RECORD_SUPER_ADMIN => $this->superAdminService->exists(),
+            self::RECORD_SCHOOL => $this->schoolService->exists(),
+            self::RECORD_DEPARTMENT => $this->departmentService->exists(),
+            self::RECORD_INTERNSHIP => $this->internshipService->exists(),
             default => throw new InvalidArgumentException(
                 "Unknown record type '{$recordName}' requested.",
             ),
@@ -86,13 +66,7 @@ class SetupService implements Contracts\SetupService
     }
 
     /**
-     * Requests access to the setup process, optionally checking against a previous step.
-     *
-     * @param string $prevStep The name of the previous step, if applicable.
-     *
-     * @throws AppException If the previous step is not completed, preventing access.
-     *
-     * @return bool True if setup access is granted, false otherwise.
+     * {@inheritDoc}
      */
     public function requireSetupAccess(string $prevStep = ''): bool
     {
@@ -111,16 +85,11 @@ class SetupService implements Contracts\SetupService
     }
 
     /**
-     * Performs a specific setup step.
-     *
-     * @param string $step The name of the setup step to perform.
-     * @param string|null $reqRecord Optional. The name of a required record for this step.
-     *
-     * @return bool True if the step was performed successfully, false otherwise.
+     * {@inheritDoc}
      */
     public function performSetupStep(string $step, ?string $reqRecord = null): bool
     {
-        if ($step === 'complete') {
+        if ($step === self::STEP_COMPLETE) {
             return $this->finalizeSetupStep();
         }
 
@@ -135,7 +104,7 @@ class SetupService implements Contracts\SetupService
     }
 
     /**
-     * Saves the system and SMTP settings.
+     * {@inheritDoc}
      */
     public function saveSystemSettings(array $settings): bool
     {
@@ -145,24 +114,22 @@ class SetupService implements Contracts\SetupService
     }
 
     /**
-     * Finalizes the current setup step.
-     *
-     * @return bool True if the setup step was finalized successfully, false otherwise.
+     * {@inheritDoc}
      */
     public function finalizeSetupStep(): bool
     {
         $schoolRecord = $this->schoolService->getSchool();
         $settings = [
-            'brand_name' => $schoolRecord->name,
-            'brand_logo' => $schoolRecord->logo_url ?? null,
-            'site_title' => $schoolRecord->name.' - Sistem Informasi Manajemen PKL',
-            'app_installed' => true,
-            'setup_token' => null, // Purge the token
+            self::SETTING_BRAND_NAME => $schoolRecord->name,
+            self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
+            self::SETTING_SITE_TITLE => $schoolRecord->name.' - Sistem Informasi Manajemen PKL',
+            self::SETTING_APP_INSTALLED => true,
+            self::SETTING_SETUP_TOKEN => null,
         ];
 
         $this->settingService->setValue($settings);
 
-        Session::forget('setup_authorized'); // Clear authorized session
+        Session::forget(self::SESSION_SETUP_AUTHORIZED);
         Session::flush();
         Session::regenerate();
 
@@ -171,9 +138,6 @@ class SetupService implements Contracts\SetupService
 
     /**
      * Stores the completion status of a setup step in the settings.
-     *
-     * @param string $name The name of the step.
-     * @param bool $completed The completion status.
      */
     protected function storeStep(string $name, bool $completed = true): bool
     {

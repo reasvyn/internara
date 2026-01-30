@@ -46,6 +46,17 @@ class AssessmentServiceProvider extends ServiceProvider
             \Modules\Assessment\Services\Contracts\AssessmentService::class => \Modules\Assessment\Services\AssessmentService::class,
             \Modules\Assessment\Services\Contracts\CertificateService::class => \Modules\Assessment\Services\CertificateService::class,
             \Modules\Assessment\Services\Contracts\ComplianceService::class => \Modules\Assessment\Services\ComplianceService::class,
+            \Modules\Assessment\Services\Contracts\CompetencyService::class => \Modules\Assessment\Services\CompetencyService::class,
+        ];
+    }
+
+    /**
+     * Define view slots for UI injection.
+     */
+    protected function viewSlots(): array
+    {
+        return [
+            'student.dashboard.active-content' => 'livewire:assessment::skill-progress',
         ];
     }
 }

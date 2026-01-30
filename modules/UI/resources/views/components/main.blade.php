@@ -1,23 +1,25 @@
+@props(['sidebar' => null, 'actions' => null, 'footer' => null])
+
 <x-mary-main {{ $attributes }}>
-    @isset($sidebar)
-        <x-slot:sidebar>
+    @if($sidebar)
+        <x-slot name="sidebar">
             {{ $sidebar }}
-        </x-slot:sidebar>
-    @endisset
+        </x-slot>
+    @endif
 
-    @isset($actions)
-        <x-slot:actions>
+    @if($actions)
+        <x-slot name="actions">
             {{ $actions }}
-        </x-slot:actions>
-    @endisset
+        </x-slot>
+    @endif
 
-    @isset($footer)
-        <x-slot:footer>
+    @if($footer)
+        <x-slot name="footer">
             {{ $footer }}
-        </x-slot:footer>
-    @endisset
+        </x-slot>
+    @endif
 
-    <x-slot:content>
-        {{ $content ?? $slot }}
-    </x-slot:content>
+    <x-slot name="content">
+        {{ $slot }}
+    </x-slot>
 </x-mary-main>

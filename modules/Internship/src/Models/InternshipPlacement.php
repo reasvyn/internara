@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Internship\Database\Factories\InternshipPlacementFactory;
 use Modules\Log\Concerns\HandlesAuditLog;
+use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class InternshipPlacement extends Model
@@ -17,18 +18,7 @@ class InternshipPlacement extends Model
     use HandlesAuditLog;
     use HasFactory;
     use HasUuid;
-
-    /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
+    use InteractsWithActivityLog;
 
     /**
      * The attributes that are mass assignable.
@@ -44,6 +34,11 @@ class InternshipPlacement extends Model
         'internship_id',
         'mentor_id',
     ];
+
+    /**
+     * The name of the activity log for this model.
+     */
+    protected string $activityLogName = 'placement';
 
     /**
      * Create a new factory instance for the model.
@@ -78,5 +73,31 @@ class InternshipPlacement extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(InternshipRegistration::class, 'placement_id');
+    }
+
+    /**
+     * Get the remaining available slots.
+     */
+    public function getRemainingSlotsAttribute(): int
+    {
+        return max(
+            0,
+            $this->capacity_quota -
+                $this->registrations()->whereRelation('statuses', 'name', 'active')->count(),
+        );
+    }
+
+    /**
+     * Get the utilization percentage.
+     */
+    public function getUtilizationPercentageAttribute(): int
+    {
+        if ($this->capacity_quota === 0) {
+            return 0;
+        }
+
+        $activeCount = $this->registrations()->whereRelation('statuses', 'name', 'active')->count();
+
+        return (int) min(100, round(($activeCount / $this->capacity_quota) * 100));
     }
 }

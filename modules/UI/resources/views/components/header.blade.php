@@ -1,12 +1,14 @@
+@props(['middle' => null, 'actions' => null])
+
 <x-mary-header {{ $attributes }}>
-    @isset($middle)
-        <x-slot:middle>
+    @if($middle)
+        <x-slot name="middle">
             {{ $middle }}
-        </x-slot:middle>
-    @endisset
-    @isset($actions)
-        <x-slot:actions>
+        </x-slot>
+    @endif
+    @if($actions)
+        <x-slot name="actions">
             {{ $actions }}
-        </x-slot:actions>
-    @endisset
+        </x-slot>
+    @endif
 </x-mary-header>

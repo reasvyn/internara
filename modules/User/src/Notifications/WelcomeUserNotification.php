@@ -8,7 +8,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Modules\User\Models\User;
 
 class WelcomeUserNotification extends Notification implements ShouldQueue
 {
@@ -17,7 +16,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected User $user) {}
+    public function __construct(protected string $plainPassword) {}
 
     /**
      * Get the notification's delivery channels.
@@ -39,8 +38,13 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject(__('user::notifications.welcome_subject', ['school' => $brandName]))
-            ->greeting(__('user::notifications.welcome_greeting', ['name' => $this->user->name]))
+            ->greeting(__('user::notifications.welcome_greeting', ['name' => $notifiable->name]))
             ->line(__('user::notifications.welcome_line_1', ['school' => $brandName]))
+            ->line(__('user::notifications.welcome_credentials_info'))
+            ->line(
+                __('user::notifications.welcome_username', ['username' => $notifiable->username]),
+            )
+            ->line(__('user::notifications.welcome_password', ['password' => $this->plainPassword]))
             ->line(__('user::notifications.welcome_line_2'))
             ->action(__('user::notifications.welcome_action'), route('profile.index'))
             ->line(__('user::notifications.welcome_line_3'))

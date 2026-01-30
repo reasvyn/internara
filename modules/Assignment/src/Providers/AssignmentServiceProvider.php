@@ -68,6 +68,14 @@ class AssignmentServiceProvider extends ServiceProvider
                     'role' => 'admin|super-admin',
                 ],
             ],
+            'student.dashboard.quick-actions' => [
+                'ui::components.button' => [
+                    'label' => __('Tugas Akhir'),
+                    'icon' => 'tabler.certificate',
+                    'link' => '/assignments',
+                    'class' => 'btn-ghost justify-start w-full',
+                ],
+            ],
         ];
     }
 }

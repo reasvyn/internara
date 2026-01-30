@@ -6,6 +6,9 @@ namespace Modules\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Console\Commands\AppInfoCommand;
+use Modules\Core\Console\Commands\MakeClassCommand;
+use Modules\Core\Console\Commands\MakeInterfaceCommand;
+use Modules\Core\Console\Commands\MakeTraitCommand;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -41,7 +44,12 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        $this->commands([AppInfoCommand::class]);
+        $this->commands([
+            AppInfoCommand::class,
+            MakeClassCommand::class,
+            MakeInterfaceCommand::class,
+            MakeTraitCommand::class,
+        ]);
     }
 
     /**

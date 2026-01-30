@@ -1,5 +1,5 @@
 {
-    "name": "reasnov/notifications",
+    "name": "reasnov/notification",
     "description": "",
     "authors": [
         {
@@ -17,14 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Notifications\\": "src/",
-            "Modules\\Notifications\\Database\\Factories\\": "database/factories/",
-            "Modules\\Notifications\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Notification\\": "src/",
+            "Modules\\Notification\\Database\\Factories\\": "database/factories/",
+            "Modules\\Notification\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\Notifications\\Tests\\": "tests/"
+            "Modules\\Notification\\Tests\\": "tests/"
         }
     }
 }

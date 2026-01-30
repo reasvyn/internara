@@ -17,6 +17,20 @@ trait HasStatus
     use HasStatuses;
 
     /**
+     * Standard status names.
+     */
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUS_INACTIVE = 'inactive';
+
+    /**
+     * Default fallback color for unknown statuses.
+     */
+    protected const DEFAULT_STATUS_COLOR = 'gray';
+
+    /**
      * Get the label for the current status.
      *
      * This can be used to return a translated or human-readable label.
@@ -40,10 +54,10 @@ trait HasStatus
         $status = $this->latestStatus();
 
         if (! $status) {
-            return 'gray';
+            return self::DEFAULT_STATUS_COLOR;
         }
 
-        return $this->getStatusColorMap()[$status->name] ?? 'gray';
+        return $this->getStatusColorMap()[$status->name] ?? self::DEFAULT_STATUS_COLOR;
     }
 
     /**
@@ -64,9 +78,9 @@ trait HasStatus
     protected function getStatusColorMap(): array
     {
         return [
-            'active' => 'success',
-            'pending' => 'warning',
-            'inactive' => 'error',
+            self::STATUS_ACTIVE => 'success',
+            self::STATUS_PENDING => 'warning',
+            self::STATUS_INACTIVE => 'error',
         ];
     }
 }

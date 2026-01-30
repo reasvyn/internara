@@ -16,13 +16,11 @@
         <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 border-r border-base-200">
             {{-- Sidebar Menu --}}
             <x-mary-menu activate-by-route>
-                @slotRender('sidebar.menu')
+                <x-ui::slot-render name="sidebar.menu" />
             </x-mary-menu>
         </x-slot:sidebar>
 
         {{-- Main Content --}}
-        <x-slot:content>
-            {{ $slot }}
-        </x-slot:content>
+        {{ $slot }}
     </x-ui::main>
 </x-ui::layouts.base>

@@ -24,6 +24,7 @@
             @endscope
             
             @scope('actions', $registration)
+                <x-ui::button label="{{ __('Mentoring') }}" icon="tabler.messages" class="btn-sm btn-ghost text-secondary" link="{{ route('mentor.mentoring', $registration->id) }}" />
                 <x-ui::button label="{{ __('Evaluate') }}" icon="tabler.clipboard-check" class="btn-sm btn-ghost" link="{{ route('mentor.evaluate', $registration->id) }}" />
             @endscope
         </x-ui::table>

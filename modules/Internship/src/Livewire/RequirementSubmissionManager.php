@@ -14,7 +14,7 @@ class RequirementSubmissionManager extends Component
 {
     use WithFileUploads;
 
-    public string $registrationId;
+    public ?string $registrationId = null;
 
     public array $files = [];
 
@@ -23,10 +23,21 @@ class RequirementSubmissionManager extends Component
     /**
      * Initialize the component.
      */
-    public function mount(string $registrationId): void
+    public function mount(?string $registrationId = null): void
     {
-        $this->registrationId = $registrationId;
-        $this->loadData();
+        if (! $registrationId) {
+            $registration = app(
+                \Modules\Internship\Services\Contracts\RegistrationService::class,
+            )->first([
+                'student_id' => auth()->id(),
+            ]);
+            $registrationId = $registration?->id;
+        }
+
+        if ($registrationId) {
+            $this->registrationId = $registrationId;
+            $this->loadData();
+        }
     }
 
     /**

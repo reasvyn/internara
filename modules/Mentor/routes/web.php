@@ -8,5 +8,9 @@ use Modules\Mentor\Livewire\EvaluateIntern;
 
 Route::middleware(['auth', 'verified', 'role:mentor'])->group(function () {
     Route::get('/mentor', Dashboard::class)->name('mentor.dashboard');
+    Route::get(
+        '/mentor/mentoring/{registrationId}',
+        \Modules\Mentor\Livewire\MentoringManager::class,
+    )->name('mentor.mentoring');
     Route::get('/mentor/evaluate/{registrationId}', EvaluateIntern::class)->name('mentor.evaluate');
 });

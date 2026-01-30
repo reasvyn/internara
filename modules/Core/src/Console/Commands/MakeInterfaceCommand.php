@@ -11,24 +11,24 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class ModuleMakeTraitCommand
+ * Class MakeInterfaceCommand
  *
- * Generates a PHP trait within a module, respecting the project's
+ * Generates a PHP interface within a module, respecting the project's
  * namespace and directory conventions.
  */
-class ModuleMakeTraitCommand extends GeneratorCommand
+class MakeInterfaceCommand extends GeneratorCommand
 {
     use HandlesModuleMakeGenerator;
 
     /**
      * The name and signature of the console command.
      */
-    protected $name = 'module:make-trait';
+    protected $name = 'module:make-interface';
 
     /**
      * The console command description.
      */
-    protected $description = 'Create a new trait for the specified module, with a direct namespace.';
+    protected $description = 'Create a new interface for the specified module, with a direct namespace.';
 
     /**
      * The argument name of the module.
@@ -38,14 +38,14 @@ class ModuleMakeTraitCommand extends GeneratorCommand
     /**
      * The configuration key for the command.
      */
-    protected $configKey = 'traits';
+    protected $configKey = 'interfaces';
 
     /**
      * Get the stub file for the generator.
      */
     protected function getStub(): string
     {
-        return '/trait.stub';
+        return '/interface.stub';
     }
 
     /**
@@ -60,7 +60,7 @@ class ModuleMakeTraitCommand extends GeneratorCommand
     }
 
     /**
-     * Get the destination file path for the generated trait.
+     * Get the destination file path for the generated interface.
      */
     protected function getDestinationFilePath(): string
     {
@@ -76,7 +76,7 @@ class ModuleMakeTraitCommand extends GeneratorCommand
             [
                 'name',
                 InputArgument::REQUIRED,
-                'The name of the trait. Subdirectories are allowed (e.g., Concerns/MyTrait).',
+                'The name of the interface. Subdirectories are allowed (e.g., Services/SomeInterface).',
             ],
             ['module', InputArgument::REQUIRED, 'The name of the module.'],
         ];
@@ -92,7 +92,7 @@ class ModuleMakeTraitCommand extends GeneratorCommand
                 'force',
                 null,
                 InputOption::VALUE_NONE,
-                'Create the trait even if the trait already exists.',
+                'Create the interface even if the interface already exists.',
             ],
         ];
     }

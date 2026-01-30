@@ -11,12 +11,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class ModuleMakeClassCommand
+ * Class MakeClassCommand
  *
  * Generates a plain PHP class within a module, respecting the project's
  * namespace and directory conventions.
  */
-class ModuleMakeClassCommand extends GeneratorCommand
+class MakeClassCommand extends GeneratorCommand
 {
     use HandlesModuleMakeGenerator;
 

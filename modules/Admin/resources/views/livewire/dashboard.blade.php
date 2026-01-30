@@ -58,13 +58,15 @@
             </x-ui::card>
         </div>
 
-        <div class="lg:col-span-1">
+        <div class="lg:col-span-1 flex flex-col gap-6">
             <x-ui::card title="{{ __('Tautan Cepat') }}" shadow separator>
                 <div class="flex flex-col gap-2">
                     <x-ui::button label="{{ __('Manajemen User') }}" icon="tabler.users" class="btn-ghost justify-start" link="#" />
                     <x-ui::button label="{{ __('Konfigurasi Sistem') }}" icon="tabler.settings" class="btn-ghost justify-start" link="#" />
                 </div>
             </x-ui::card>
+
+            <x-ui::slot-render name="admin.dashboard.side" />
         </div>
     </div>
 </div>

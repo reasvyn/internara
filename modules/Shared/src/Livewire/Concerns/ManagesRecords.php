@@ -14,6 +14,36 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  */
 trait ManagesRecords
 {
+    /**
+     * Default sorting field.
+     */
+    protected const DEFAULT_SORT_BY = 'created_at';
+
+    /**
+     * Default sorting direction.
+     */
+    protected const DEFAULT_SORT_DIR = 'desc';
+
+    /**
+     * Standard modal identifiers.
+     */
+    protected const MODAL_FORM = 'form-modal';
+
+    protected const MODAL_CONFIRM = 'confirm-modal';
+
+    /**
+     * Standard event identifiers.
+     */
+    protected const EVENT_NOTIFY = 'notify';
+
+    protected const EVENT_OPEN_MODAL = 'open-modal';
+
+    protected const EVENT_CLOSE_MODAL = 'close-modal';
+
+    protected const EVENT_CONFIRM_MODAL = 'show-confirm-modal';
+
+    protected const EVENT_DESTROY_RECORD = 'destroy-record';
+
     protected EloquentQuery $service;
 
     public string $eventPrefix = '';
@@ -21,14 +51,14 @@ trait ManagesRecords
     #[Url(except: '')]
     public string $search = '';
 
-    #[Url(except: 'created_at')]
-    public string $sortBy = 'created_at';
+    #[Url(except: self::DEFAULT_SORT_BY)]
+    public string $sortBy = self::DEFAULT_SORT_BY;
 
-    #[Url(except: 'desc')]
-    public string $sortDir = 'desc';
+    #[Url(except: self::DEFAULT_SORT_DIR)]
+    public string $sortDir = self::DEFAULT_SORT_DIR;
 
-    #[Url(except: 15)]
-    public int $perPage = 15;
+    #[Url(except: EloquentQuery::DEFAULT_PER_PAGE)]
+    public int $perPage = EloquentQuery::DEFAULT_PER_PAGE;
 
     public bool $formModal = false;
 

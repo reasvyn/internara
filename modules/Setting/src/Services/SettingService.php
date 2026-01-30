@@ -9,12 +9,20 @@ use Illuminate\Support\Facades\Cache;
 use Modules\Setting\Models\Setting;
 use Modules\Shared\Services\EloquentQuery;
 
+/**
+ * Class SettingService
+ *
+ * Provides a cached, centralized API for managing application-wide dynamic settings.
+ */
 class SettingService extends EloquentQuery implements Contracts\SettingService
 {
     /**
+     * Cache key constants.
+     */
+    protected const CACHE_PREFIX = 'settings.';
+
+    /**
      * Create a new SettingService instance.
-     *
-     * @param \Modules\Setting\Models\Setting $model The Setting model instance.
      */
     public function __construct(Setting $model)
     {
@@ -24,42 +32,24 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     }
 
     /**
-     * Get all settings.
-     *
-     * @param array $filters Filter criteria.
-     * @param bool $skipCache Whether to bypass the cache and fetch directly from the database.
-     *
-     * @return array<string, mixed>
-     */
-    public function getValues(array $filters = [], bool $skipCache = false): array
-    {
-        return $this->remember(
-            'settings.all',
-            now()->addDay(),
-            fn () => $this->get($filters, ['value'])->toArray(),
-            $skipCache,
-        );
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getValue(
         string|array $key,
         mixed $default = null,
-        bool $skipCached = false,
+        bool $skipCache = false,
     ): mixed {
         if (is_array($key)) {
             $results = [];
             foreach ($key as $k) {
-                $results[$k] = $this->getValue($k, $default, $skipCached);
+                $results[$k] = $this->getValue($k, $default, $skipCache);
             }
 
             return $results;
         }
 
         return $this->remember(
-            'settings.'.$key,
+            self::CACHE_PREFIX.$key,
             now()->addDay(),
             function () use ($key, $default) {
                 $setting = $this->model->find($key);
@@ -70,7 +60,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
 
                 return $setting->value;
             },
-            $skipCached,
+            $skipCache,
         );
     }
 
@@ -85,9 +75,9 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
         if (is_array($key)) {
             $success = true;
             foreach ($key as $k => $v) {
-                $value = $v['value'] ?? $v;
-                $extraAttributes = is_array($v) ? array_diff_key($v, ['value' => null]) : [];
-                if (! $this->setValue($k, $value, $extraAttributes)) {
+                $currentValue = is_array($v) ? ($v['value'] ?? null) : $v;
+                $attributes = is_array($v) ? array_diff_key($v, ['value' => null]) : [];
+                if (! $this->setValue($k, $currentValue, $attributes)) {
                     $success = false;
                 }
             }
@@ -111,7 +101,8 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     public function group(string $name, bool $skipCache = false): Collection
     {
         return $this->remember(
-            'settings.group.'.$name,
+            self::CACHE_PREFIX.'group.'.$name,
+            now()->addDay(),
             fn () => $this->model->group($name)->get(),
             $skipCache,
         );
@@ -120,50 +111,22 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     /**
      * {@inheritDoc}
      */
-    public function discard(string $key): bool
-    {
-        $setting = $this->model->find($key);
-
-        if (! $setting) {
-            return false;
-        }
-
-        if ($deleted = $setting->discard()) {
-            $this->clearCache($key, $setting->group);
-        }
-
-        return $deleted;
-    }
-
-    /**
-     * Clear the cache for a specific setting and its related groups.
-     *
-     * @param string $key The key of the setting whose cache to clear.
-     * @param string|null $group The group name the setting belongs to, if any.
-     */
-    protected function clearCache(string $key, ?string $group = null): void
-    {
-        // Clear cache for this specific setting
-        Cache::forget('settings.'.$key);
-
-        // Clear cache for the group this setting belongs to, if any
-        if ($group) {
-            Cache::forget('settings.group.'.$group);
-        }
-
-        // Clear cache for all settings, as this setting might affect the 'all' collection
-        Cache::forget('settings.all');
-    }
-
     public function set(string|array $key, mixed $value = null, array $extraAttributes = []): bool
     {
         return $this->setValue($key, $value, $extraAttributes);
     }
 
-    public function setGroup(
-        \Illuminate\Database\Eloquent\Collection|\Modules\Setting\Models\Setting $settings,
-    ): \Illuminate\Database\Eloquent\Collection {
-        // TODO: Implement setGroup() method.
-        return new \Illuminate\Database\Eloquent\Collection;
+    /**
+     * Clear the cache for a specific setting and its related groups.
+     */
+    protected function clearCache(string $key, ?string $group = null): void
+    {
+        Cache::forget(self::CACHE_PREFIX.$key);
+
+        if ($group) {
+            Cache::forget(self::CACHE_PREFIX.'group.'.$group);
+        }
+
+        Cache::forget(self::CACHE_PREFIX.'all');
     }
 }

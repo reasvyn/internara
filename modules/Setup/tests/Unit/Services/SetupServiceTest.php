@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Unit\Services;
 
 use Mockery;
-use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Exception\AppException;
-use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Setup\Services\Contracts\SetupService as Contract;
 use Modules\Setup\Services\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
+use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Internship\Services\Contracts\InternshipService;
 
 beforeEach(function () {
     $this->settingService = Mockery::mock(SettingService::class);
@@ -33,7 +34,7 @@ beforeEach(function () {
 test('it checks if app is installed', function () {
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('app_installed', false, true)
+        ->with(Contract::SETTING_APP_INSTALLED, false, true)
         ->twice()
         ->andReturn(true, false);
 
@@ -60,8 +61,8 @@ test('it checks if step is completed', function () {
 test('it checks if record exists', function () {
     $this->schoolService->shouldReceive('exists')->twice()->andReturn(true, false);
 
-    expect($this->service->isRecordExists('school'))->toBeTrue();
-    expect($this->service->isRecordExists('school'))->toBeFalse();
+    expect($this->service->isRecordExists(Contract::RECORD_SCHOOL))->toBeTrue();
+    expect($this->service->isRecordExists(Contract::RECORD_SCHOOL))->toBeFalse();
 });
 
 test('it throws exception if unknown record type requested', function () {
@@ -72,11 +73,11 @@ test('it requires setup access', function () {
     // No prev step, check app_installed
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('app_installed', false, true)
-        ->andReturn(false, true); // First call returns false, second returns true
+        ->with(Contract::SETTING_APP_INSTALLED, false, true)
+        ->andReturn(false, true); 
 
-    expect($this->service->requireSetupAccess())->toBeTrue(); // Returns !false = true
-    expect($this->service->requireSetupAccess())->toBeFalse(); // Returns !true = false
+    expect($this->service->requireSetupAccess())->toBeTrue(); 
+    expect($this->service->requireSetupAccess())->toBeFalse();
 
     // With prev step, check step completion
     $this->settingService
@@ -99,12 +100,12 @@ test('it performs setup step', function () {
 
     $this->schoolService->shouldReceive('exists')->andReturn(true);
     $this->settingService->shouldReceive('setValue')->with('setup_step_school_step', true)->once();
-    expect($this->service->performSetupStep('school_step', 'school'))->toBeTrue();
+    expect($this->service->performSetupStep('school_step', Contract::RECORD_SCHOOL))->toBeTrue();
 });
 
 test('it fails setup step if record missing', function () {
     $this->superAdminService->shouldReceive('exists')->andReturn(false);
-    $this->service->performSetupStep('account', 'super-admin');
+    $this->service->performSetupStep(Contract::STEP_ACCOUNT, Contract::RECORD_SUPER_ADMIN);
 })->throws(AppException::class);
 
 test('it finalizes setup step', function () {
@@ -118,16 +119,16 @@ test('it finalizes setup step', function () {
         ->shouldReceive('setValue')
         ->with(
             Mockery::on(function ($settings) {
-                return $settings['brand_name'] === 'Test School' &&
-                    $settings['app_installed'] === true &&
-                    $settings['setup_token'] === null;
+                return $settings[Contract::SETTING_BRAND_NAME] === 'Test School' &&
+                    $settings[Contract::SETTING_APP_INSTALLED] === true &&
+                    $settings[Contract::SETTING_SETUP_TOKEN] === null;
             }),
         )
         ->once();
 
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('app_installed', false, true)
+        ->with(Contract::SETTING_APP_INSTALLED, false, true)
         ->andReturn(true);
 
     $result = $this->service->finalizeSetupStep();

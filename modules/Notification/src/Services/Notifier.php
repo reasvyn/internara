@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Modules\Notification\Services;
 
-use Modules\Notification\Contracts\Notifier;
+use Modules\Notification\Contracts\Notifier as Contract;
 
 /**
- * Class NotifierService
+ * Class Notifier
  *
  * Implements the Notifier contract to handle UI notifications via Livewire event dispatching.
  */
-class NotifierService implements Notifier
+class Notifier implements Contract
 {
     /**
      * {@inheritdoc}
      */
     public function success(string $message, array $options = []): void
     {
-        $this->notify($message, 'success', $options);
+        $this->notify($message, self::TYPE_SUCCESS, $options);
     }
 
     /**
@@ -26,7 +26,7 @@ class NotifierService implements Notifier
      */
     public function error(string $message, array $options = []): void
     {
-        $this->notify($message, 'error', $options);
+        $this->notify($message, self::TYPE_ERROR, $options);
     }
 
     /**
@@ -34,7 +34,7 @@ class NotifierService implements Notifier
      */
     public function warning(string $message, array $options = []): void
     {
-        $this->notify($message, 'warning', $options);
+        $this->notify($message, self::TYPE_WARNING, $options);
     }
 
     /**
@@ -42,14 +42,17 @@ class NotifierService implements Notifier
      */
     public function info(string $message, array $options = []): void
     {
-        $this->notify($message, 'info', $options);
+        $this->notify($message, self::TYPE_INFO, $options);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function notify(string $message, string $type = 'info', array $options = []): void
-    {
+    public function notify(
+        string $message,
+        string $type = self::TYPE_INFO,
+        array $options = [],
+    ): void {
         // If we are within a Livewire request, we can dispatch the event
         if (app()->bound('livewire')) {
             /** @var \Livewire\Features\SupportEvents\EventBus $eventBus */
@@ -61,7 +64,5 @@ class NotifierService implements Notifier
                 'options' => $options,
             ]);
         }
-
-        // In the future, this can also log to database or session for non-livewire requests
     }
 }

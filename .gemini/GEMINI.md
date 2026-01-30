@@ -7,8 +7,9 @@ engineering records and international standards.
 
 > **Single Source of Truth Mandate:** The document
 > **[`docs/internal/system-requirements-specification.md`](../docs/internal/system-requirements-specification.md)**
-> is the **Authoritative Specification** for this project. All architectural decisions, logic
-> implementation, and lifecycle events MUST satisfy its requirements.
+> is the **Authoritative Specification** for this project. For a complete list of modules and their
+> roles, refer to the **[Module Catalog](../docs/main/modules-catalog.md)**. All architectural
+> decisions, logic implementation, and lifecycle events MUST satisfy its requirements.
 
 ---
 

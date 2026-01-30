@@ -57,6 +57,9 @@ class UserService extends EloquentQuery implements Contract
             }
         }
 
+        $plainPassword = $data['password'] ?? \Illuminate\Support\Str::random(12);
+        $data['password'] = $plainPassword;
+
         $user = parent::create($data);
         $this->handleUserAvatar($user, $data['avatar_file'] ?? null);
 
@@ -82,7 +85,7 @@ class UserService extends EloquentQuery implements Contract
         $user->setStatus($status);
 
         // Notify the new user
-        $user->notify(new WelcomeUserNotification($user));
+        $user->notify(new WelcomeUserNotification($plainPassword));
 
         return $user;
     }

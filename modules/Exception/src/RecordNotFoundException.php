@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Exception;
 
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
@@ -31,7 +32,7 @@ class RecordNotFoundException extends AppException
         ?string $locale = null,
         array $record = [],
         string $logMessage = 'Record not found.',
-        int $code = 404,
+        int $code = Response::HTTP_NOT_FOUND,
         ?Throwable $previous = null,
     ) {
         $context = [];

@@ -27,6 +27,18 @@ use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
 abstract class EloquentQuery implements EloquentQueryContract
 {
     /**
+     * Sort direction constants.
+     */
+    public const SORT_ASC = 'asc';
+
+    public const SORT_DESC = 'desc';
+
+    /**
+     * SQL state code for unique constraint violation.
+     */
+    protected const SQL_STATE_UNIQUE_VIOLATION = '23000';
+
+    /**
      * The Eloquent model instance.
      *
      * @var TModel
@@ -55,11 +67,26 @@ abstract class EloquentQuery implements EloquentQueryContract
     protected ?Builder $baseQuery = null;
 
     /**
+     * Whether to include soft-deleted records in the query.
+     */
+    protected bool $withTrashed = false;
+
+    /**
      * {@inheritdoc}
      */
     public function setModel(Model $model): self
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * Set whether to include soft-deleted records.
+     */
+    public function withTrashed(bool $value = true): self
+    {
+        $this->withTrashed = $value;
 
         return $this;
     }
@@ -99,7 +126,7 @@ abstract class EloquentQuery implements EloquentQueryContract
      */
     public function paginate(
         array $filters = [],
-        int $perPage = 15,
+        int $perPage = self::DEFAULT_PER_PAGE,
         array $columns = ['*'],
     ): LengthAwarePaginator {
         return $this->query($filters, $columns)->paginate($perPage, $columns);
@@ -214,13 +241,14 @@ abstract class EloquentQuery implements EloquentQueryContract
     ): never {
         $recordName = property_exists($this, 'recordName') ? $this->recordName : 'record';
         $userMessage =
-            'shared::exceptions.'.($e->getCode() === '23000' ? 'unique_violation' : $defaultKey);
+            'shared::exceptions.'.
+            ($e->getCode() === self::SQL_STATE_UNIQUE_VIOLATION ? 'unique_violation' : $defaultKey);
 
         throw new \Modules\Exception\AppException(
             userMessage: $userMessage,
             replace: ['record' => $recordName, 'column' => 'data'],
             logMessage: $e->getMessage(),
-            code: $e->getCode() === '23000' ? 409 : 500,
+            code: $e->getCode() === self::SQL_STATE_UNIQUE_VIOLATION ? 409 : 500,
             previous: $e,
         );
     }
@@ -288,6 +316,10 @@ abstract class EloquentQuery implements EloquentQueryContract
     {
         $query = $this->baseQuery ? clone $this->baseQuery : $this->model->newQuery();
 
+        if ($this->withTrashed && method_exists($query, 'withTrashed')) {
+            $query->withTrashed();
+        }
+
         $query->select($columns);
 
         $this->applyFilters($query, $filters);
@@ -324,9 +356,9 @@ abstract class EloquentQuery implements EloquentQueryContract
         // Sorting logic
         if (isset($filters['sort_by']) && in_array($filters['sort_by'], $this->sortable)) {
             $sortBy = $filters['sort_by'];
-            $sortDir = strtolower($filters['sort_dir'] ?? 'asc');
+            $sortDir = strtolower($filters['sort_dir'] ?? self::SORT_ASC);
 
-            if (in_array($sortDir, ['asc', 'desc'])) {
+            if (in_array($sortDir, [self::SORT_ASC, self::SORT_DESC])) {
                 $query->orderBy($sortBy, $sortDir);
             }
             unset($filters['sort_by'], $filters['sort_dir']);
