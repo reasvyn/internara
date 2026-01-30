@@ -88,7 +88,7 @@ Every Application Blueprint must provide a comprehensive description of the inte
 ### 4.4 Presentation Strategy (User Experience View)
 
 - **Mobile-First UX**: Logic for scaling from touch-optimized mobile views to desktop environments.
-- **i11n Strategy**: Confirmation of multi-language support for all user-facing components.
+- **i18n Strategy**: Confirmation of multi-language support for all user-facing components.
 - **Authorization**: Mapping of new capabilities to the **RBAC** model defined in the System
   Requirements Specification.
 

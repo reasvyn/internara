@@ -15,11 +15,11 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);
-    
+
     Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
     $this->admin = User::factory()->create();
     $this->admin->assignRole('admin');
-    
+
     $this->actingAs($this->admin);
 });
 

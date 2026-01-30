@@ -13,7 +13,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('activitylog.table_name', 'activity_log'), function (Blueprint $table) {
+        Schema::create(config('activitylog.table_name', 'activity_log'), function (
+            Blueprint $table,
+        ) {
             $table->uuid('id')->primary();
             $table->string('log_name')->nullable()->index();
             $table->text('description');

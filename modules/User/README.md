@@ -18,7 +18,7 @@ The `User` module is responsible for the core identity system of Internara.
 ### 1. Services
 
 - **UserService:** General user lifecycle management (CRUD).
-- **i11n:** All user-facing administrative messages are fully localized.
+- **i18n:** All user-facing administrative messages are fully localized.
 
 ### 2. Management UI
 

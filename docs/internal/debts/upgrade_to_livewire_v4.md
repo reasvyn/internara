@@ -50,7 +50,7 @@ Synchronize the `config/livewire.php` baseline to reflect the v4 technical nomen
 Utilization of the specialized `Route::livewire` macro is mandatory for full-page component
 declaration to ensure optimized lifecycle management.
 
-### 3.3 Localization (i11n) Invariant
+### 3.3 Localization (i18n) Invariant
 
 Verification of the translation bridge reactivity is mandatory following the adoption of
 `wire:navigate` and asynchronous actions.

@@ -30,7 +30,7 @@ official credentials. It aggregates data from various sources to produce final g
 ### 3. Key Features
 
 - **Participation-Driven Assessment:** Automated logic mapping to student competency goals.
-- **i11n Support:** All grading feedback and certificates must be fully localized (ID/EN).
+- **i18n Support:** All grading feedback and certificates must be fully localized (ID/EN).
 - **Mobile-First:** Evaluation forms are optimized for on-site use by Industry Supervisors.
 
 ---

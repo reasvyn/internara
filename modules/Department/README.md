@@ -10,7 +10,7 @@ The `Department` module manages academic specializations (e.g., "Software Engine
 
 ## Key Features
 
-- **i11n:** All department names and descriptions must be localized.
+- **i18n:** All department names and descriptions must be localized.
 - **Mobile-First:** Department management UI is optimized for tablet/mobile use.
 - **Scoping:** Integration with the `School` module via service-layer validation.
 

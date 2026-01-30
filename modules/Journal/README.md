@@ -18,7 +18,7 @@ The `Journal` module manages the daily activity tracking (Logbook) for students.
 ### 1. Daily Logbook
 
 - **Attachments:** Secure proof of work (Photos, Documents).
-- **i11n:** All log labels and status indicators are localized.
+- **i18n:** All log labels and status indicators are localized.
 - **Identity:** All journal entries use **UUIDs**.
 
 ### 2. Supervision Workflow

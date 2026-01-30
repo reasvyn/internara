@@ -12,7 +12,7 @@ The `Log` module is responsible for monitoring system events and auditing user a
 
 - **Activity Logging:** Uses UUID-based identity for all audit trails.
 - **Traceability:** Correlates logs with `user_id` and `academic_year`.
-- **i11n:** Log descriptions and audit labels must support translation.
+- **i18n:** Log descriptions and audit labels must support translation.
 
 ---
 

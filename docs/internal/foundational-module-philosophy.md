@@ -76,7 +76,7 @@ The `UI Tier` is the single source of truth for the Internara design system, enf
 - **Composition**:
     - **Semantic Layouts**: `Auth`, `App`, and `Setup` base layouts.
     - **Atomic Components**: Standardized buttons, modals, and form elements (MaryUI/Tailwind v4).
-    - **Localization (i11n)**: UI components must facilitate dynamic `__('key')` injection.
+    - **Localization (i18n)**: UI components must facilitate dynamic `__('key')` injection.
 
 ---
 

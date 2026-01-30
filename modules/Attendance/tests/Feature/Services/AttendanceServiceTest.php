@@ -49,8 +49,10 @@ test('it throws exception when checking in before the internship period starts',
     ]);
     $registration->setStatus('active');
 
-    expect(fn () => $this->attendanceService->checkIn($student->id))
-        ->toThrow(AppException::class, 'attendance::messages.outside_internship_period');
+    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
+        AppException::class,
+        'attendance::messages.outside_internship_period',
+    );
 });
 
 test('it throws exception when checking in after the internship period ends', function () {
@@ -64,6 +66,8 @@ test('it throws exception when checking in after the internship period ends', fu
     ]);
     $registration->setStatus('active');
 
-    expect(fn () => $this->attendanceService->checkIn($student->id))
-        ->toThrow(AppException::class, 'attendance::messages.outside_internship_period');
+    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
+        AppException::class,
+        'attendance::messages.outside_internship_period',
+    );
 });

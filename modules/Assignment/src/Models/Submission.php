@@ -45,8 +45,6 @@ class Submission extends Model implements HasMedia
 
     /**
      * The name of the activity log for this model.
-     *
-     * @var string
      */
     protected string $activityLogName = 'submission';
 

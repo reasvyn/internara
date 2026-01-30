@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
      * If set to false, no activities will be saved to the database.
      */

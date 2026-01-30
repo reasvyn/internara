@@ -6,8 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Assignment\Models\Assignment;
-use Modules\Assignment\Models\AssignmentType;
-use Modules\Assignment\Models\Submission;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Assignment\Services\Contracts\SubmissionService;
 use Modules\Internship\Models\Internship;
@@ -24,7 +22,7 @@ beforeEach(function () {
 
 test('it can create default assignments for an internship program', function () {
     $internship = Internship::factory()->create();
-    
+
     $this->assignmentService->createDefaults($internship->id);
 
     $this->assertDatabaseHas('assignments', [
@@ -36,7 +34,7 @@ test('it can create default assignments for an internship program', function () 
         'internship_id' => $internship->id,
         'title' => 'Presentasi Kegiatan PKL',
     ]);
-    
+
     expect(Assignment::where('internship_id', $internship->id)->count())->toBe(2);
 });
 
@@ -59,11 +57,11 @@ test('it determines fulfillment complete when all mandatory assignments are veri
         $submission = $this->submissionService->submit(
             $registration->id,
             $assignment->id,
-            UploadedFile::fake()->create('doc.pdf')
+            UploadedFile::fake()->create('doc.pdf'),
         );
-        
+
         expect($this->assignmentService->isFulfillmentComplete($registration->id))->toBeFalse();
-        
+
         $this->submissionService->verify($submission->id);
     }
 

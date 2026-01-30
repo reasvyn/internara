@@ -32,7 +32,7 @@ projects.
 
 ### 3. Support & Utilities
 
-- **i11n Infrastructure**: Utilities to support Multi-Language requirements.
+- **i18n Infrastructure**: Utilities to support Multi-Language requirements.
 - **Global Helpers**: Procedural functions for module health and status checks.
 
 ### 4. Base Providers

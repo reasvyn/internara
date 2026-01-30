@@ -15,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('assignments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('assignment_type_id')->constrained('assignment_types')->cascadeOnDelete();
+            $table
+                ->foreignUuid('assignment_type_id')
+                ->constrained('assignment_types')
+                ->cascadeOnDelete();
             $table->uuid('internship_id')->nullable()->index();
             $table->string('academic_year', 10)->nullable()->index();
             $table->string('title');

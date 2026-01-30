@@ -35,7 +35,7 @@ class AssignmentService extends EloquentQuery implements Contract
                     'description' => $type->description,
                     'is_mandatory' => true,
                     'academic_year' => $academicYear,
-                ]
+                ],
             );
         }
     }
@@ -48,15 +48,17 @@ class AssignmentService extends EloquentQuery implements Contract
         // 1. Get all mandatory assignments for the program associated with this registration
         // (Assuming we can find the program from registration, but since we don't have direct access here,
         // we might need registration details passed in or fetched)
-        
-        $registration = app(\Modules\Internship\Services\Contracts\InternshipRegistrationService::class)
-            ->find($registrationId);
 
-        if (!$registration) {
+        $registration = app(
+            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+        )->find($registrationId);
+
+        if (! $registration) {
             return false;
         }
 
-        $mandatoryAssignments = $this->model->newQuery()
+        $mandatoryAssignments = $this->model
+            ->newQuery()
             ->where('internship_id', $registration->internship_id)
             ->where('is_mandatory', true)
             ->get();
@@ -73,7 +75,7 @@ class AssignmentService extends EloquentQuery implements Contract
                 ->currentStatus('verified')
                 ->exists();
 
-            if (!$hasVerified) {
+            if (! $hasVerified) {
                 return false;
             }
         }

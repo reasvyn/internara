@@ -66,8 +66,8 @@ Violations will be handled according to the **Community & Communication Protocol
 ### 4.1 Reporting
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting
-the project team at **[reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)**. All complaints will be reviewed and investigated
-promptly and fairly.
+the project team at **[reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)**. All
+complaints will be reviewed and investigated promptly and fairly.
 
 ### 4.2 Triage & Resolution
 

@@ -127,7 +127,7 @@ Livewire components serve as thin orchestrators between the UI and the Service L
 
 ---
 
-## 7. Internationalization (i11n) Standards
+## 7. Internationalization (i18n) Standards
 
 Internara is a multi-language system. Hard-coding of user-facing text is a **Critical Quality
 Violation**.

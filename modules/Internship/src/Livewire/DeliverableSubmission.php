@@ -50,7 +50,11 @@ class DeliverableSubmission extends Component
 
         try {
             $service->submit($this->registrationId, 'report', $this->reportFile);
-            $this->dispatch('notify', message: __('Report submitted successfully.'), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: __('Report submitted successfully.'),
+                type: 'success',
+            );
             $this->reportFile = null;
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');
@@ -66,7 +70,11 @@ class DeliverableSubmission extends Component
 
         try {
             $service->submit($this->registrationId, 'presentation', $this->presentationFile);
-            $this->dispatch('notify', message: __('Presentation material submitted successfully.'), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: __('Presentation material submitted successfully.'),
+                type: 'success',
+            );
             $this->presentationFile = null;
         } catch (\Throwable $e) {
             $this->dispatch('notify', message: $e->getMessage(), type: 'error');

@@ -49,5 +49,7 @@ interface InternshipRegistrationService extends EloquentQuery
     /**
      * Mark a registration as completed.
      */
-    public function complete(string $registrationId): \Modules\Internship\Models\InternshipRegistration;
+    public function complete(
+        string $registrationId,
+    ): \Modules\Internship\Models\InternshipRegistration;
 }

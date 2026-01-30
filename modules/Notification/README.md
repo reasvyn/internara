@@ -9,7 +9,7 @@ The `Notification` module provides a unified system for sending alerts and messa
 
 - **Communication:** Keeps Instructors, Students, and Supervisors informed about critical events.
 - **Centralization:** Standardizes multi-channel alerting (Database, Email).
-- **i11n:** All notification templates MUST be fully localized (ID/EN).
+- **i18n:** All notification templates MUST be fully localized (ID/EN).
 
 ## Key Features
 

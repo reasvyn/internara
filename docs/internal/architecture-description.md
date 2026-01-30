@@ -90,7 +90,7 @@ Cross-cutting technical concerns are distributed across specialized foundational
 - **Transactional Integrity**: Multi-step operations must be atomic, encapsulated within database
   transactions.
 
-### 3.3 Internationalization (i11n)
+### 3.3 Internationalization (i18n)
 
 - **Localization Invariant**: Zero hard-coding of user-facing text. All strings must be resolved via
   translation keys using the `__('module::file.key')` pattern.

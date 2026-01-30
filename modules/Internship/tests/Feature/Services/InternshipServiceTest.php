@@ -15,9 +15,7 @@ beforeEach(function () {
 });
 
 test('it automatically creates default assignments when an internship is created', function () {
-    $school = app(\Modules\School\Services\Contracts\SchoolService::class)
-        ->factory()
-        ->create();
+    $school = app(\Modules\School\Services\Contracts\SchoolService::class)->factory()->create();
 
     $data = [
         'school_id' => $school->id,
@@ -31,7 +29,7 @@ test('it automatically creates default assignments when an internship is created
     $internship = $this->internshipService->create($data);
 
     expect($internship)->toBeInstanceOf(Internship::class);
-    
+
     $this->assertDatabaseHas('assignments', [
         'internship_id' => $internship->id,
         'title' => 'Laporan Kegiatan PKL',

@@ -25,7 +25,7 @@ The `Attendance` module manages student presence tracking during the internship 
 
 - **Real-time Overview:** Instructors and Supervisors can monitor assigned students.
 - **Mobile-First:** Monitoring dashboards are optimized for mobile access.
-- **i11n:** All status labels (Present, Late, Absent) are localized.
+- **i18n:** All status labels (Present, Late, Absent) are localized.
 
 ### 3. Dashboard Widget
 

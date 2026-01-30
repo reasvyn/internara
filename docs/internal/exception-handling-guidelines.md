@@ -59,7 +59,7 @@ Identifiable Information (PII).
 
 ---
 
-## 3. Localization (i11n) Standards
+## 3. Localization (i18n) Standards
 
 Hard-coding of exception messages is a **Critical Quality Violation**.
 

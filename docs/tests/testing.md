@@ -47,7 +47,7 @@ An artifact satisfies the quality gate only when it passes the following invaria
     **[System Requirements Specification](../internal/system-requirements-specification.md)**.
 2.  **Role-Based Access (RBAC)**: Verifies that access is restricted to the roles defined in the
     System Requirements Specification.
-3.  **Localization Integrity (i11n)**: Verifies that all user-facing output is localized across all
+3.  **Localization Integrity (i18n)**: Verifies that all user-facing output is localized across all
     supported locales (`id`, `en`).
 4.  **Boundary Isolation**: Verifies compliance with the **Strict Isolation** invariants in the
     **[Architecture Description](../internal/architecture-description.md)**.

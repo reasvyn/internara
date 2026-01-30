@@ -31,7 +31,7 @@ to official registration.
 
 - **One-Student-One-Placement:** Enforces official standards while tracking history.
 - **Automated Validation:** Gated registrations ensuring all administrative criteria are met.
-- **i11n:** All requirement descriptions and placement data support localization.
+- **i18n:** All requirement descriptions and placement data support localization.
 - **Mobile-First:** optimized interfaces for students to track their application status.
 
 ---

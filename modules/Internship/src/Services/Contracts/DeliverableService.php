@@ -17,7 +17,11 @@ interface DeliverableService
     /**
      * Submit a deliverable for a registration.
      */
-    public function submit(string $registrationId, string $type, UploadedFile $file): InternshipDeliverable;
+    public function submit(
+        string $registrationId,
+        string $type,
+        UploadedFile $file,
+    ): InternshipDeliverable;
 
     /**
      * Verify/Approve a deliverable.

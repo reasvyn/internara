@@ -20,22 +20,23 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     Storage::fake('public');
     $this->seed(AssignmentSeeder::class);
-    
+
     Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
     $this->student = User::factory()->create();
     $this->student->assignRole('student');
-    
+
     $this->internship = Internship::factory()->create();
     $this->registration = InternshipRegistration::factory()->create([
         'student_id' => $this->student->id,
         'internship_id' => $this->internship->id,
     ]);
     $this->registration->setStatus('active');
-    
+
     // Create assignments for this internship
-    app(\Modules\Assignment\Services\Contracts\AssignmentService::class)
-        ->createDefaults($this->internship->id);
-        
+    app(\Modules\Assignment\Services\Contracts\AssignmentService::class)->createDefaults(
+        $this->internship->id,
+    );
+
     $this->actingAs($this->student);
 });
 
@@ -61,7 +62,7 @@ test('student can submit a file for a report assignment', function () {
         'registration_id' => $this->registration->id,
         'student_id' => $this->student->id,
     ]);
-    
+
     $submission = Submission::where('assignment_id', $assignment->id)->first();
     expect($submission->getFirstMediaUrl('file'))->not->toBeEmpty();
 });
@@ -71,7 +72,7 @@ test('student can submit text for a custom assignment', function () {
         'name' => 'Refleksi Mingguan',
         'slug' => 'refleksi-mingguan',
     ]);
-    
+
     $assignment = Assignment::create([
         'assignment_type_id' => $customType->id,
         'internship_id' => $this->internship->id,

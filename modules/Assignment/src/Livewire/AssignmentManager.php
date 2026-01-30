@@ -73,7 +73,7 @@ class AssignmentManager extends Component
         $this->description = $assignment->description ?? '';
         $this->is_mandatory = $assignment->is_mandatory;
         $this->due_date = $assignment->due_date?->format('Y-m-d\TH:i');
-        
+
         $this->formModal = true;
     }
 
@@ -94,10 +94,18 @@ class AssignmentManager extends Component
 
         if ($this->recordId) {
             $service->update($this->recordId, $data);
-            $this->dispatch('notify', message: __('assignment::ui.success_updated'), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: __('assignment::ui.success_updated'),
+                type: 'success',
+            );
         } else {
             $service->create($data);
-            $this->dispatch('notify', message: __('assignment::ui.success_created'), type: 'success');
+            $this->dispatch(
+                'notify',
+                message: __('assignment::ui.success_created'),
+                type: 'success',
+            );
         }
 
         $this->formModal = false;

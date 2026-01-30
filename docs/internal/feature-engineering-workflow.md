@@ -20,7 +20,7 @@ request.
 
 - **Action**: Validate the request against the
   **[System Requirements Specification](system-requirements-specification.md)**.
-- **Analysis**: Identify functional requirements and non-functional constraints (Security, i11n,
+- **Analysis**: Identify functional requirements and non-functional constraints (Security, i18n,
   Mobile-First).
 - **Stakeholder Mapping**: Confirm the feature aligns with the designated User Roles.
 

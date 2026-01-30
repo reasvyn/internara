@@ -58,9 +58,12 @@ class AssignmentSubmission extends Component
     public function submit(string $assignmentId, SubmissionService $service): void
     {
         $assignment = Assignment::findOrFail($assignmentId);
-        
+
         $rules = [];
-        if ($assignment->type->slug === 'laporan-pkl' || $assignment->type->slug === 'presentasi-pkl') {
+        if (
+            $assignment->type->slug === 'laporan-pkl' ||
+            $assignment->type->slug === 'presentasi-pkl'
+        ) {
             $rules["uploads.{$assignmentId}"] = 'required|file|max:20480';
         } else {
             $rules["contents.{$assignmentId}"] = 'required|string';
@@ -70,11 +73,15 @@ class AssignmentSubmission extends Component
 
         try {
             $content = $this->uploads[$assignmentId] ?? $this->contents[$assignmentId];
-            
+
             $service->submit($this->registrationId, $assignmentId, $content);
-            
-            $this->dispatch('notify', message: __('assignment::ui.success_submitted'), type: 'success');
-            
+
+            $this->dispatch(
+                'notify',
+                message: __('assignment::ui.success_submitted'),
+                type: 'success',
+            );
+
             // Reset input
             unset($this->uploads[$assignmentId], $this->contents[$assignmentId]);
         } catch (\Throwable $e) {

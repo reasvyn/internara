@@ -13,8 +13,6 @@ class AssignmentDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            AssignmentSeeder::class,
-        ]);
+        $this->call([AssignmentSeeder::class]);
     }
 }

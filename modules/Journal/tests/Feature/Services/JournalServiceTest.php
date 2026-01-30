@@ -68,44 +68,54 @@ test('it cannot update an approved journal entry', function () {
     )->toThrow(AppException::class);
 });
 
-test('it throws exception when creating a journal entry before the internship period starts', function () {
-    $student = User::factory()->create();
-    $registration = InternshipRegistration::factory()->create([
-        'student_id' => $student->id,
-        'start_date' => now()->addDay()->format('Y-m-d'), // Starts tomorrow
-        'end_date' => now()->addMonth()->format('Y-m-d'),
-    ]);
+test(
+    'it throws exception when creating a journal entry before the internship period starts',
+    function () {
+        $student = User::factory()->create();
+        $registration = InternshipRegistration::factory()->create([
+            'student_id' => $student->id,
+            'start_date' => now()->addDay()->format('Y-m-d'), // Starts tomorrow
+            'end_date' => now()->addMonth()->format('Y-m-d'),
+        ]);
 
-    $data = [
-        'student_id' => $student->id,
-        'registration_id' => $registration->id,
-        'date' => now()->format('Y-m-d'),
-        'work_topic' => 'Test Topic',
-        'activity_description' => 'Test Description',
-        'basic_competence' => 'Test Competence',
-    ];
+        $data = [
+            'student_id' => $student->id,
+            'registration_id' => $registration->id,
+            'date' => now()->format('Y-m-d'),
+            'work_topic' => 'Test Topic',
+            'activity_description' => 'Test Description',
+            'basic_competence' => 'Test Competence',
+        ];
 
-    expect(fn () => $this->journalService->create($data))
-        ->toThrow(AppException::class, 'journal::exceptions.outside_internship_period');
-});
+        expect(fn () => $this->journalService->create($data))->toThrow(
+            AppException::class,
+            'journal::exceptions.outside_internship_period',
+        );
+    },
+);
 
-test('it throws exception when creating a journal entry after the internship period ends', function () {
-    $student = User::factory()->create();
-    $registration = InternshipRegistration::factory()->create([
-        'student_id' => $student->id,
-        'start_date' => now()->subMonth()->format('Y-m-d'),
-        'end_date' => now()->subDay()->format('Y-m-d'), // Ended yesterday
-    ]);
+test(
+    'it throws exception when creating a journal entry after the internship period ends',
+    function () {
+        $student = User::factory()->create();
+        $registration = InternshipRegistration::factory()->create([
+            'student_id' => $student->id,
+            'start_date' => now()->subMonth()->format('Y-m-d'),
+            'end_date' => now()->subDay()->format('Y-m-d'), // Ended yesterday
+        ]);
 
-    $data = [
-        'student_id' => $student->id,
-        'registration_id' => $registration->id,
-        'date' => now()->format('Y-m-d'),
-        'work_topic' => 'Test Topic',
-        'activity_description' => 'Test Description',
-        'basic_competence' => 'Test Competence',
-    ];
+        $data = [
+            'student_id' => $student->id,
+            'registration_id' => $registration->id,
+            'date' => now()->format('Y-m-d'),
+            'work_topic' => 'Test Topic',
+            'activity_description' => 'Test Description',
+            'basic_competence' => 'Test Competence',
+        ];
 
-    expect(fn () => $this->journalService->create($data))
-        ->toThrow(AppException::class, 'journal::exceptions.outside_internship_period');
-});
+        expect(fn () => $this->journalService->create($data))->toThrow(
+            AppException::class,
+            'journal::exceptions.outside_internship_period',
+        );
+    },
+);

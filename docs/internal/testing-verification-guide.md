@@ -48,7 +48,7 @@ arch('module isolation')
     ->because('Domain modules must interact with external models via Service Contracts.');
 ```
 
-### 3.2 Localization & i11n Validation
+### 3.2 Localization & i18n Validation
 
 User-facing artifacts must be verified across all supported locales (`id`, `en`) to satisfy
 **[SYRS-NF-403]**.

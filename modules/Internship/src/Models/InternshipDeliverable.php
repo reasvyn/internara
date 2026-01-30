@@ -27,11 +27,7 @@ class InternshipDeliverable extends Model implements HasMedia
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'registration_id',
-        'type',
-        'file_path',
-    ];
+    protected $fillable = ['registration_id', 'type', 'file_path'];
 
     /**
      * Get the associated internship registration.

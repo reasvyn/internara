@@ -21,7 +21,7 @@ trait InteractsWithMedia
     public function setMedia(
         mixed $file,
         string $collectionName = 'default',
-        bool $clearExisting = true
+        bool $clearExisting = true,
     ): bool {
         if ($clearExisting) {
             $this->clearMediaCollection($collectionName);
@@ -33,8 +33,10 @@ trait InteractsWithMedia
     /**
      * Get the first media URL for a specific collection.
      */
-    public function getMediaUrl(string $collectionName = 'default', string $conversionName = ''): string
-    {
+    public function getMediaUrl(
+        string $collectionName = 'default',
+        string $conversionName = '',
+    ): string {
         return $this->getFirstMediaUrl($collectionName, $conversionName);
     }
 }

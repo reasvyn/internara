@@ -15,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('internship_deliverables', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
+            $table
+                ->foreignUuid('registration_id')
+                ->constrained('internship_registrations')
+                ->cascadeOnDelete();
             $table->string('type'); // report, presentation
             $table->string('file_path')->nullable();
             $table->timestamps();

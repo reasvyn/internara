@@ -27,7 +27,7 @@ class SubmissionService extends EloquentQuery implements Contract
             [
                 'student_id' => auth()->id(), // Assuming student is submitting
                 'submitted_at' => now(),
-            ]
+            ],
         );
 
         if ($content instanceof UploadedFile) {

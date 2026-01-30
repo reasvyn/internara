@@ -64,7 +64,7 @@ Attendance) and ensure data integrity through systemic temporal scoping.
 - **High-Frequency UX**: Prioritization of "Clock In/Out" actions on mobile viewports.
 - **Immutable History**: Logic-enforced lockdown of approved/verified journal records to ensure
   audit integrity.
-- **i11n Integrity**: Full localization of attendance statuses and journal fields in **ID** and
+- **i18n Integrity**: Full localization of attendance statuses and journal fields in **ID** and
   **EN**.
 
 ---

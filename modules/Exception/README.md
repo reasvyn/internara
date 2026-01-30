@@ -5,7 +5,7 @@ The `Exception` module centralizes all error handling and exception management w
 ## Purpose
 
 - **Standardization:** Provides base exception classes and translatable messages.
-- **i11n:** Manages the `exception::messages` namespace for global error feedback.
+- **i18n:** Manages the `exception::messages` namespace for global error feedback.
 - **Security:** Prevents sensitive data leakage in production.
 
 ## Key Features

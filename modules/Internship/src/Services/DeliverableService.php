@@ -24,13 +24,18 @@ class DeliverableService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function submit(string $registrationId, string $type, UploadedFile $file): InternshipDeliverable
-    {
+    public function submit(
+        string $registrationId,
+        string $type,
+        UploadedFile $file,
+    ): InternshipDeliverable {
         /** @var InternshipDeliverable $deliverable */
-        $deliverable = $this->model->newQuery()->updateOrCreate(
-            ['registration_id' => $registrationId, 'type' => $type],
-            ['registration_id' => $registrationId, 'type' => $type]
-        );
+        $deliverable = $this->model
+            ->newQuery()
+            ->updateOrCreate(
+                ['registration_id' => $registrationId, 'type' => $type],
+                ['registration_id' => $registrationId, 'type' => $type],
+            );
 
         $deliverable->addMedia($file)->toMediaCollection('file');
         $deliverable->setStatus('submitted', 'File uploaded by student.');
@@ -67,7 +72,8 @@ class DeliverableService extends EloquentQuery implements Contract
     {
         $mandatoryTypes = ['report', 'presentation'];
 
-        $verifiedCount = $this->model->newQuery()
+        $verifiedCount = $this->model
+            ->newQuery()
             ->where('registration_id', $registrationId)
             ->whereIn('type', $mandatoryTypes)
             ->currentStatus('verified')

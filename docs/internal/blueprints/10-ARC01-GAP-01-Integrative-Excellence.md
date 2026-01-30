@@ -42,10 +42,10 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
   Monitoring Teachers to student placements.
 - **Temporal Guard**: Logic-level enforcement of internship period boundaries for all student
   activities.
-- **Dynamic Assignment Engine**: A polymorphic submission system where admins define required
-  tasks. The system initializes with default tasks (Report & PPT) but supports custom task
-  definitions (e.g., "Industry Certificate", "Weekly Log Summary") with specific validation rules
-  (file types, deadlines).
+- **Dynamic Assignment Engine**: A polymorphic submission system where admins define required tasks.
+  The system initializes with default tasks (Report & PPT) but supports custom task definitions
+  (e.g., "Industry Certificate", "Weekly Log Summary") with specific validation rules (file types,
+  deadlines).
 - **Audit Logs & State Control**: Immutable logs for critical data modifications and global
   operational toggles to manage system-wide phases (e.g., Registration vs. Operation).
 - **User Activity Tracking**: Capture user-level events such as successful logins, profile

@@ -74,7 +74,7 @@ Accessibility is a foundational engineering requirement, not an optional feature
 - **Thin Components**: Livewire components must focus on UI state and event handling, delegating all
   business logic to the Service Layer.
 
-### 4.2 Internationalization (i11n) Invariant
+### 4.2 Internationalization (i18n) Invariant
 
 - **Translation Required**: Hard-coding of user-facing strings is a critical defect. All text must
   be resolved via `__('module::file.key')`.

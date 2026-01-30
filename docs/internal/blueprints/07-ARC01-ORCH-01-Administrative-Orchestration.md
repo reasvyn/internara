@@ -63,7 +63,7 @@ rule enforcement and centralizing institutional oversight.
 - **Flow State**: Conditional progression—"Ready for Placement" status is locked until requirements
   are certified.
 - **Mobile-First Capture**: Submission interfaces optimized for mobile-based document digitization.
-- **i11n Integrity**: Full localization of requirement definitions, rejection feedback, and
+- **i18n Integrity**: Full localization of requirement definitions, rejection feedback, and
   notifications in **ID** and **EN**.
 
 ---

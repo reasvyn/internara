@@ -27,8 +27,7 @@ test('it can import students from CSV', function () {
     $service = app(OnboardingService::class);
     $results = $service->importFromCsv($filePath, 'student');
 
-    expect($results['success'])->toBe(2)
-        ->and($results['failure'])->toBe(0);
+    expect($results['success'])->toBe(2)->and($results['failure'])->toBe(0);
 
     $this->assertDatabaseHas('users', ['email' => 'john@example.com', 'name' => 'John Doe']);
     $this->assertDatabaseHas('users', ['email' => 'jane@example.com', 'name' => 'Jane Doe']);
