@@ -17,7 +17,7 @@ class AssignmentType extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'slug', 'handler_class', 'description'];
+    protected $fillable = ['name', 'slug', 'group', 'handler_class', 'description'];
 
     /**
      * Create a new factory instance for the model.

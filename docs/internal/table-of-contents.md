@@ -19,7 +19,7 @@ architectural views, and engineering processes used to build and maintain the sy
 
 ## 2. Engineering Standards & Conventions
 
-- **[Development Conventions](development-conventions.md)**: Construction standards for naming,
+- **[Conventions and Rules](conventions-and-rules.md)**: Construction standards for naming,
   namespaces, and domain layer invariants.
 - **[Logic Orchestration Patterns](logic-orchestration-patterns.md)**: Advanced service
   orchestration, immutable DTO usage, and transactional integrity.

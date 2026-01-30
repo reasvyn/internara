@@ -34,7 +34,7 @@ needs into a verified and validated modular system.
 - **Objective**: Create executable artifacts following **TDD-First** and **Contract-First**
   principles.
 - **Process**: Implementation of Services, Models, and Livewire components as governed by the
-  **[Development Conventions](development-conventions.md)**.
+  **[Conventions and Rules](conventions-and-rules.md)**.
 - **Verification**: Unit and feature testing via Pest v4.
 
 ---

@@ -20,5 +20,5 @@ interface AssignmentService extends EloquentQuery
     /**
      * Verify if all mandatory assignments for a registration are completed.
      */
-    public function isFulfillmentComplete(string $registrationId): bool;
+    public function isFulfillmentComplete(string $registrationId, ?string $group = null): bool;
 }

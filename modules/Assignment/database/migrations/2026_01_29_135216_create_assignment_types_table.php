@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('group')->default('assignment')->index(); // assignment, others
             $table->string('handler_class')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

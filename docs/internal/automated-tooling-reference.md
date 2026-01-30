@@ -32,7 +32,7 @@ composer lint
 
 - **Objective**: Perform full-spectrum static analysis and formatting using Laravel Pint and
   automated analysis tools. Ensures compliance with
-  **[Development Conventions](development-conventions.md)**.
+  **[Conventions and Rules](conventions-and-rules.md)**.
 
 ---
 

@@ -12,7 +12,7 @@ To ensure a smooth contribution process, please follow these steps:
 3.  **Plan your change**: Create or update an **Architectural Blueprint** in
     `docs/internal/blueprints/` to define your design intent.
 4.  **Implement your changes**: Adhere to the authoritative
-    **[Development Conventions](docs/internal/development-conventions.md)**.
+    **[Conventions and Rules](docs/internal/conventions-and-rules.md)**.
 5.  **Verify**: Execute the full verification suite via **`composer test`** and ensure static
     analysis passes via **`composer lint`**.
 6.  **Synchronize Artifacts**: Update relevant documentation and analytical release notes.

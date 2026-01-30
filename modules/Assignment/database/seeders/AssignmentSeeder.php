@@ -18,11 +18,13 @@ class AssignmentSeeder extends Seeder
             [
                 'name' => 'Laporan Kegiatan PKL',
                 'slug' => 'laporan-pkl',
+                'group' => 'assignment',
                 'description' => 'Mandatory internship final report in PDF format.',
             ],
             [
                 'name' => 'Presentasi Kegiatan PKL',
                 'slug' => 'presentasi-pkl',
+                'group' => 'assignment',
                 'description' => 'Mandatory internship presentation materials in PPT/PDF format.',
             ],
         ];

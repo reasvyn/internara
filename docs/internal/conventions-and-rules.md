@@ -1,11 +1,11 @@
-# Development Conventions: Engineering Standards
+# Conventions and Rules: Engineering Standards
 
 This document codifies the **Construction Standards** for the Internara project, ensuring semantic
 consistency, maintainability, and structural integrity according to **ISO/IEC 11179** (Metadata) and
 **ISO/IEC 25010** (Maintainability).
 
 > **Governance Mandate:** These conventions serve as the technical implementation of the
-> authoritative **[Internara Specs](../internal/internara-specs.md)**. All software artifacts must
+> authoritative **[System Requirements Specification](system-requirements-specification.md)**. All software artifacts must
 > satisfy the requirements for Multi-Language support, Mobile-First responsiveness, and Role-Based
 > security defined in the SSoT.
 
@@ -54,11 +54,16 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
 - **Models**: PascalCase, singular, reflecting the domain entity (e.g., `CompetencyRubric`).
 - **Contracts (Interfaces)**: PascalCase, named by capability. **The `Interface` suffix is
   prohibited**.
-    - **Service Contracts**: `Services/Contracts/` (e.g., `InternshipService`).
-    - **General Contracts**: `Contracts/` (e.g., `Authenticatable`).
+    - **Layer-Specific Contracts**: reside within the layer's directory: `src/<Layer>/Contracts/`
+      (e.g., `src/Services/Contracts/InternshipService.php`).
+    - **Module-Global Contracts**: reside in the root contracts directory: `src/Contracts/`
+      (e.g., `src/Contracts/Authenticatable.php`).
 - **Concerns (Traits)**: PascalCase, prefixed with semantic verbs such as `Has`, `Can`, `Handles`,
-  or `Manages` (e.g., `HasAuditLog`, `HandlesResponse`). Naming should be flexible to context while
-  remaining semantically standardized.
+  or `Manages` (e.g., `HasAuditLog`, `HandlesResponse`).
+    - **Layer-Specific Concerns**: reside within the layer's directory: `src/<Layer>/Concerns/`
+      (e.g., `src/Models/Concerns/HasUuid.php`).
+    - **Module-Global Concerns**: reside in the root concerns directory: `src/Concerns/`
+      (e.g., `src/Concerns/HasModuleMetadata.php`).
 - **Enums**: PascalCase, located in `src/Enums/`, used for fixed status values and domain constants.
 
 ---
@@ -124,6 +129,7 @@ Livewire components serve as thin orchestrators between the UI and the Service L
   forbidden. Components must delegate immediately to the appropriate Service.
 - **Mobile-First Construction**: UI logic and styling must default to mobile layouts, utilizing
   Tailwind v4 breakpoints for larger viewports.
+- **Validation Invariant (ISO/IEC 27034)**: Validation must occur at the earliest possible boundary (PEP). Livewire components must utilize `rules()` or Form Requests to ensure data integrity before Service invocation.
 
 ---
 
@@ -144,6 +150,70 @@ Every public class and method must include professional PHPDoc in English.
 
 - **Analytical Intent**: Describe the "why" and "what," not the obvious "how."
 - **Strict Typing**: All `@param` and `@return` tags must match the method signature's strict types.
+
+---
+
+## 9. Database Migrations & Schema Design
+
+Migrations must ensure modular portability and data integrity without physical coupling.
+
+- **UUID Invariant**: Primary keys must use `uuid('id')->primary()` (or resolved via config). Foreign keys within the same module should use `foreignUuid()`.
+- **Strict Isolation**: Physical foreign keys across module boundaries are **Forbidden**. Use indexed UUID columns (e.g., `$table->uuid('user_id')->index()`) and maintain referential integrity at the Service Layer.
+- **Anonymous Migrations**: All migrations must utilize anonymous classes (`return new class extends Migration`).
+- **Standard Columns**: Always include `$table->timestamps()` for auditability.
+
+---
+
+## 10. Exception Handling & Resilience (ISO/IEC 25010)
+
+Fault management must be disciplined, secure, and localized.
+
+- **Semantic Exceptions**: Throw custom, module-specific exceptions (e.g., `JournalLockedException`) from the Service Layer.
+- **Sanitization Invariant**: Exceptions rendered to end-users must NEVER expose system internals (schema, paths, traces). Use generic messages in production.
+- **Localization**: Exception messages must be resolved via translation keys (`module::exceptions.key`).
+- **PII Protection**: Logging must redact sensitive data (passwords, tokens) to satisfy privacy mandates.
+
+---
+
+## 11. Asynchronous Orchestration (Events)
+
+Utilize events for decoupled cross-module side-effects.
+
+- **Naming Semantic**: Events must use the **Past Tense** (`{Entity}{Action}ed`, e.g., `InternshipStarted`).
+- **Lightweight Payloads**: Event constructors should only accept the **UUID** of the entity or a lightweight DTO to prevent serialization overhead.
+- **Isolation Constraint**: Listeners must interact with foreign modules exclusively via Service Contracts, never direct Model access.
+
+---
+
+## 12. Authorization Policies (ISO/IEC 29146)
+
+Authorization logic must be centralized and context-aware.
+
+- **Policy Enforcement Points (PEP)**: Every domain model must have a corresponding **Policy** class.
+- **Strict Typing**: All policy methods must declare strict types for the `User` subject and the `Model` object.
+- **Deny by Default**: Policies must explicitly return `false` if conditions are not met. Ambiguity is a security defect.
+- **Ownership Verification**: Always verify functional permission (`$user->can()`) AND context (e.g., `$user->id === $resource->user_id`).
+
+---
+
+## 13. Verification & Validation (ISO/IEC 29119)
+
+Tests serve as the executable proof of requirement fulfillment.
+
+- **TDD-First**: Construct verification suites (Pest v4) prior to implementation.
+- **Traceability**: Link tests to SyRS requirements or architectural invariants using `test('it fulfills [SYRS-ID]')`.
+- **Architecture Testing**: Enforce modular isolation using Pest's Arch plugin.
+- **Coverage**: Maintain a minimum of 90% behavioral coverage for domain modules.
+
+---
+
+## 14. Repository Management & Traceability
+
+Standards for maintaining the engineering record.
+
+- **Conventional Commits**: All commit messages must follow the `type(module): description` pattern (e.g., `feat(user): add uuid-based identity`).
+- **Atomic Commits**: Each commit must represent a single, logical unit of work.
+- **Doc-as-Code**: Every code modification must trigger a corresponding update to technical documentation to prevent desynchronization.
 
 ---
 

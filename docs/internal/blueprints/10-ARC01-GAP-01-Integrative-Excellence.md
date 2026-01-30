@@ -80,15 +80,17 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
         3.  Implementation: Provide centralized Traits/Contracts for other modules to record user
             activities.
 - **Assignment Module (Evolutionary Target)**:
-    - **Purpose**: Decouple task-related logic from the core Internship lifecycle.
+    - **Purpose**: Decouple student assignment logic (e.g., Reports, Presentations) from the core
+      Internship lifecycle.
     - **Entities**:
-        - `AssignmentType`: Template for tasks (e.g., "PDF Document", "Video", "External Link").
-        - `Assignment`: Specific requirements linked to an `internship_id` or `academic_year`.
-          Stores 'is_mandatory' status and 'default_title' (e.g., "Laporan Kegiatan PKL").
-        - `Submission`: Student uploads/entries linked to a specific `Assignment` and
-          `registration_id`.
-    - **Migration Path**: Transition existing `InternshipDeliverable` and `InternshipRequirement`
-      data into this unified, flexible structure.
+        - `AssignmentType`: Template for assignment formats (e.g., "Laporan PKL", "Presentasi PKL").
+        - `Assignment`: Specific tasks linked to an `internship_id` or `academic_year`.
+        - `Submission`: Student uploads for a specific `Assignment`.
+- **Requirement Management (Internship Module)**:
+    - **Context**: Registration prerequisites (e.g., "Surat Izin Orang Tua", "Pakta Integritas")
+      remain in the **Internship** module as they are part of the onboarding/registration flow.
+    - **Migration Path**: Transition legacy report/presentation records into the new Assignment
+      structure, while maintaining requirement records in the Internship domain.
 
 ### 3.2 Logic Invariants
 

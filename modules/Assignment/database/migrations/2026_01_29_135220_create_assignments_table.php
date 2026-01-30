@@ -22,7 +22,7 @@ return new class extends Migration
             $table->uuid('internship_id')->nullable()->index();
             $table->string('academic_year', 10)->nullable()->index();
             $table->string('title');
-            $table->string('group')->default('deliverable')->index(); // prerequisite, deliverable
+            $table->string('group')->default('assignment')->index(); // assignment
             $table->text('description')->nullable();
             $table->boolean('is_mandatory')->default(true);
             $table->dateTime('due_date')->nullable();

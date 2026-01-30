@@ -30,7 +30,7 @@ specific business model and architecture.
 ### 3. Application Identity
 
 - **Dynamic Configuration:** Centralizes management of `brand_name`, `brand_logo`, and other
-  application-level configurations as mandated by the development conventions.
+  application-level configurations as mandated by the conventions and rules.
 
 ---
 

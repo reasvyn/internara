@@ -32,6 +32,7 @@ class AssignmentService extends EloquentQuery implements Contract
                 ],
                 [
                     'title' => $type->name,
+                    'group' => $type->group,
                     'description' => $type->description,
                     'is_mandatory' => true,
                     'academic_year' => $academicYear,
@@ -43,12 +44,9 @@ class AssignmentService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function isFulfillmentComplete(string $registrationId): bool
+    public function isFulfillmentComplete(string $registrationId, ?string $group = null): bool
     {
         // 1. Get all mandatory assignments for the program associated with this registration
-        // (Assuming we can find the program from registration, but since we don't have direct access here,
-        // we might need registration details passed in or fetched)
-
         $registration = app(
             \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
         )->find($registrationId);
@@ -57,11 +55,16 @@ class AssignmentService extends EloquentQuery implements Contract
             return false;
         }
 
-        $mandatoryAssignments = $this->model
+        $query = $this->model
             ->newQuery()
             ->where('internship_id', $registration->internship_id)
-            ->where('is_mandatory', true)
-            ->get();
+            ->where('is_mandatory', true);
+
+        if ($group) {
+            $query->where('group', $group);
+        }
+
+        $mandatoryAssignments = $query->get();
 
         if ($mandatoryAssignments->isEmpty()) {
             return true;
