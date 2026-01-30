@@ -23,7 +23,7 @@
         "@prettier/plugin-php": "^0.24.0",
         "@tailwindcss/vite": "^4.1.18",
         "daisyui": "^5.5.14",
-        "prettier": "^3.8.0",
+        "prettier": "^3.8.1",
         "prettier-plugin-blade": "^2.1.21",
         "tailwindcss": "^4.1.18"
     }
