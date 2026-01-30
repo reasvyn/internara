@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Journal\Services;
 
 use Modules\Exception\AppException;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService as Contract;
 use Modules\Shared\Services\EloquentQuery;
@@ -21,7 +21,7 @@ class JournalService extends EloquentQuery implements Contract
      * JournalService constructor.
      */
     public function __construct(
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
         JournalEntry $model,
     ) {
         $this->setModel($model);

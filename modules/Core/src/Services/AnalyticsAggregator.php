@@ -7,13 +7,13 @@ namespace Modules\Core\Services;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Core\Services\Contracts\AnalyticsAggregator as Contract;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 
 class AnalyticsAggregator implements Contract
 {
     public function __construct(
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
         protected InternshipPlacementService $placementService,
         protected JournalService $journalService,
         protected AssessmentService $assessmentService,

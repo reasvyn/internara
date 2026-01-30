@@ -67,8 +67,7 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
     - Enhancement of `internship_registrations` table with `start_date`, `end_date`, and
       `teacher_id` (Advisor).
     - Enhancement of `internship_placements` table with `capacity_quota` management.
-    - Implementation of `internship_deliverables` (UUID, registration_id, type [Report/PPT],
-      file_path, status).
+    - Implementation of student assignments (managed via Assignment module).
 - **Core Module**:
     - Global state management for `system_phase`.
 - **Log Module (Centralized Observability)**:
@@ -136,10 +135,7 @@ A design series is considered done only when it satisfies the following gates:
 
 ## 6. Improvement Suggestions
 
-- **Assignment Modularization**: In future development phases, all task-related and assignment
-  mechanisms (including deliverables and submissions) must be decoupled from the Internship module
-  and migrated to a dedicated **Assignment** module to ensure domain purity and better
-  maintainability.
+- **Assignment Modularization**: All assignment-related mechanisms (including submissions) have been decoupled from the Internship module and migrated to a dedicated **Assignment** module to ensure domain purity and better maintainability.
 
 ---
 

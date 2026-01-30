@@ -7,8 +7,8 @@ namespace Modules\Internship\Livewire;
 use Livewire\Component;
 use Modules\Internship\Livewire\Forms\RegistrationForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Shared\Livewire\Concerns\ManagesRecords;
 use Modules\User\Services\Contracts\UserService;
 
@@ -28,7 +28,7 @@ class RegistrationManager extends Component
 
     public ?string $historyId = null;
 
-    public function boot(InternshipRegistrationService $registrationService): void
+    public function boot(RegistrationService $registrationService): void
     {
         $this->service = $registrationService;
         $this->eventPrefix = 'registration';
@@ -87,7 +87,7 @@ class RegistrationManager extends Component
         $this->form->validate();
 
         try {
-            /** @var InternshipRegistrationService $service */
+            /** @var RegistrationService $service */
             $service = $this->service;
 
             // Keystone Verification: Ensure student has cleared requirements before placement
@@ -140,7 +140,7 @@ class RegistrationManager extends Component
             return collect();
         }
 
-        return app(InternshipRegistrationService::class)
+        return app(RegistrationService::class)
             ->find($this->historyId)
             ->placementHistory()
             ->with('placement')
@@ -204,7 +204,7 @@ class RegistrationManager extends Component
     public function approve(string $id): void
     {
         try {
-            /** @var InternshipRegistrationService $service */
+            /** @var RegistrationService $service */
             $service = $this->service;
             $service->approve($id);
             $this->dispatch(
@@ -223,7 +223,7 @@ class RegistrationManager extends Component
     public function reject(string $id): void
     {
         try {
-            /** @var InternshipRegistrationService $service */
+            /** @var RegistrationService $service */
             $service = $this->service;
             $service->reject($id);
             $this->dispatch(
@@ -242,7 +242,7 @@ class RegistrationManager extends Component
     public function complete(string $id): void
     {
         try {
-            /** @var InternshipRegistrationService $service */
+            /** @var RegistrationService $service */
             $service = $this->service;
             $service->complete($id);
             $this->dispatch(

@@ -6,7 +6,7 @@ namespace Modules\Mentor\Tests\Feature\Livewire;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Mentor\Livewire\EvaluateIntern;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
@@ -25,7 +25,7 @@ test('mentor can view evaluation page', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'mentor_id' => $mentor->id,
@@ -44,7 +44,7 @@ test('mentor can submit evaluation', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'mentor_id' => $mentor->id,

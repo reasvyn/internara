@@ -7,7 +7,7 @@ namespace Modules\Journal\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Livewire\Forms\JournalForm;
 use Modules\Journal\Services\Contracts\JournalService;
 
@@ -19,11 +19,11 @@ class JournalEntryManager extends Component
 
     protected JournalService $journalService;
 
-    protected InternshipRegistrationService $registrationService;
+    protected RegistrationService $registrationService;
 
     public function boot(
         JournalService $journalService,
-        InternshipRegistrationService $registrationService,
+        RegistrationService $registrationService,
     ): void {
         $this->journalService = $journalService;
         $this->registrationService = $registrationService;

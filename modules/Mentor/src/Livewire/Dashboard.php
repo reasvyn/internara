@@ -7,7 +7,7 @@ namespace Modules\Mentor\Livewire;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 class Dashboard extends Component
 {
@@ -16,8 +16,8 @@ class Dashboard extends Component
      */
     public function getStudentsProperty(): Collection
     {
-        /** @var InternshipRegistrationService $service */
-        $service = app(InternshipRegistrationService::class);
+        /** @var RegistrationService $service */
+        $service = app(RegistrationService::class);
 
         return $service->get(['mentor_id' => auth()->id()]);
     }

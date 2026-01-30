@@ -7,7 +7,7 @@ namespace Modules\Assessment\Http\Controllers;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Assessment\Services\Contracts\CertificateService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 /**
  * Class AssessmentPdfController
@@ -18,7 +18,7 @@ class AssessmentPdfController extends Controller
 {
     public function __construct(
         protected CertificateService $certificateService,
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
     ) {}
 
     /**

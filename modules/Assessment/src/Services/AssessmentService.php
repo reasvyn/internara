@@ -8,14 +8,14 @@ use Modules\Assessment\Models\Assessment;
 use Modules\Assessment\Services\Contracts\AssessmentService as Contract;
 use Modules\Assessment\Services\Contracts\ComplianceService;
 use Modules\Exception\AppException;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Shared\Services\EloquentQuery;
 
 class AssessmentService extends EloquentQuery implements Contract
 {
     public function __construct(
         protected ComplianceService $complianceService,
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
         Assessment $model,
     ) {
         $this->setModel($model);

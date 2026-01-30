@@ -66,7 +66,7 @@ class JournalEntry extends Model implements HasMedia
     public function registration(): BelongsTo
     {
         return app(
-            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+            \Modules\Internship\Services\Contracts\RegistrationService::class,
         )->defineBelongsTo($this, 'registration_id');
     }
 

@@ -6,7 +6,7 @@ namespace Modules\Assessment\Tests\Feature\Services;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Assessment\Services\Contracts\AssessmentService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Models\User;
 
 uses(RefreshDatabase::class);
@@ -14,7 +14,7 @@ uses(RefreshDatabase::class);
 test('submitEvaluation creates assessment and calculates score', function () {
     // Arrange
     $user = User::factory()->create();
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'teacher_id' => $user->id,
@@ -48,7 +48,7 @@ test('submitEvaluation creates assessment and calculates score', function () {
 test('it throws exception for unauthorized evaluator', function () {
     // Arrange
     $user = User::factory()->create();
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'teacher_id' => User::factory()->create()->id, // Different teacher
@@ -72,7 +72,7 @@ test('getScoreCard returns both assessments', function () {
     $service = app(AssessmentService::class);
     $teacher = User::factory()->create();
     $mentor = User::factory()->create();
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'teacher_id' => $teacher->id,

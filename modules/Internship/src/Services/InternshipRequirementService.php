@@ -113,7 +113,7 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     public function hasClearedMandatory(string $registrationId): bool
     {
         $registration = app(
-            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+            \Modules\Internship\Services\Contracts\RegistrationService::class,
         )->find($registrationId);
 
         if (! $registration) {

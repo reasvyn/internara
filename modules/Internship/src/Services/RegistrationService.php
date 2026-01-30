@@ -8,12 +8,12 @@ use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService as Contract;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\Internship\Services\Contracts\PlacementLogger;
+use Modules\Internship\Services\Contracts\RegistrationService as Contract;
 use Modules\Shared\Services\EloquentQuery;
 
-class InternshipRegistrationService extends EloquentQuery implements Contract
+class RegistrationService extends EloquentQuery implements Contract
 {
     public function __construct(
         InternshipRegistration $model,

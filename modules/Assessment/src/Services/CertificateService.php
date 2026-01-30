@@ -8,7 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\URL;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Assessment\Services\Contracts\CertificateService as Contract;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
@@ -19,7 +19,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class CertificateService implements Contract
 {
     public function __construct(
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
         protected AssessmentService $assessmentService,
     ) {}
 

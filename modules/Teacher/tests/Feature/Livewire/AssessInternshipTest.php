@@ -6,7 +6,7 @@ namespace Modules\Teacher\Tests\Feature\Livewire;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Permission\Models\Role;
 use Modules\Teacher\Livewire\AssessInternship;
 use Modules\User\Models\User;
@@ -25,7 +25,7 @@ test('teacher can view assessment page', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'teacher_id' => $teacher->id,
@@ -44,7 +44,7 @@ test('teacher can submit assessment', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = app(InternshipRegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'teacher_id' => $teacher->id,

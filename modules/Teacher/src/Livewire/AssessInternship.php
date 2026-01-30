@@ -6,7 +6,7 @@ namespace Modules\Teacher\Livewire;
 
 use Livewire\Component;
 use Modules\Assessment\Services\Contracts\AssessmentService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 class AssessInternship extends Component
 {
@@ -38,7 +38,7 @@ class AssessInternship extends Component
         $this->registrationId = $registrationId;
 
         // Authorization check for viewing
-        $registration = app(InternshipRegistrationService::class)->find($registrationId);
+        $registration = app(RegistrationService::class)->find($registrationId);
         if (! $registration || $registration->teacher_id !== auth()->id()) {
             abort(403, 'You are not authorized to assess this student.');
         }
@@ -81,7 +81,7 @@ class AssessInternship extends Component
 
     public function render()
     {
-        $registration = app(InternshipRegistrationService::class)->find($this->registrationId);
+        $registration = app(RegistrationService::class)->find($this->registrationId);
 
         return view('teacher::livewire.assess-internship', [
             'registration' => $registration,

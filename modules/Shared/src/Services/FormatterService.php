@@ -2,20 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Support;
+namespace Modules\Shared\Services;
 
 use Illuminate\Support\Str;
+use Modules\Shared\Services\Contracts\FormatterService as Contract;
 
-final class Formatter
+class FormatterService implements Contract
 {
-    public static function path(?string ...$paths): string
+    /**
+     * {@inheritDoc}
+     */
+    public function path(?string ...$paths): string
     {
         $path = implode('/', array_filter($paths, fn ($path) => ! empty($path)));
 
-        return self::normalizePath($path);
+        return $this->normalizePath($path);
     }
 
-    protected static function normalizePath(string $path = ''): string
+    /**
+     * Normalize path string.
+     */
+    protected function normalizePath(string $path = ''): string
     {
         $path = Str::replace('//', '/', $path);
         $path = Str::startsWith($path, '/') ? Str::replaceFirst('/', '', $path) : $path;
@@ -25,16 +32,22 @@ final class Formatter
         return $path;
     }
 
-    public static function namespace(?string ...$parts): string
+    /**
+     * {@inheritDoc}
+     */
+    public function namespace(?string ...$parts): string
     {
         $namespace = implode('\\', array_filter($parts, fn ($namespace) => ! empty($namespace)));
 
-        return self::normalizeNamespace($namespace);
+        return $this->normalizeNamespace($namespace);
     }
 
-    protected static function normalizeNamespace(string $namespace): string
+    /**
+     * Normalize namespace string.
+     */
+    protected function normalizeNamespace(string $namespace): string
     {
-        $namespace = Str::replace(['/', '//', '\\\\'], '\\', $namespace);
+        $namespace = Str::replace(['/', '//', '\\'], '\\', $namespace);
         $namespace = Str::startsWith($namespace, '\\')
             ? Str::replaceFirst('\\', '', $namespace)
             : $namespace;

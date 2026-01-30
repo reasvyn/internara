@@ -11,7 +11,7 @@
         <div class="lg:col-span-3 flex flex-col gap-6">
             <x-ui::card title="{{ __('Penilaian Magang Terbaru') }}" shadow separator>
                 @php
-                    $registrations = app(\Modules\Internship\Services\Contracts\InternshipRegistrationService::class)->paginate(10);
+                    $registrations = app(\Modules\Internship\Services\Contracts\RegistrationService::class)->paginate(10);
                 @endphp
 
                 <x-ui::table :rows="$registrations" :headers="[

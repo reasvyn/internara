@@ -7,7 +7,7 @@ namespace Modules\Attendance\Services;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService as Contract;
 use Modules\Exception\AppException;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Shared\Services\EloquentQuery;
 
 /**
@@ -21,7 +21,7 @@ class AttendanceService extends EloquentQuery implements Contract
      * AttendanceService constructor.
      */
     public function __construct(
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
         AttendanceLog $model,
     ) {
         $this->setModel($model);

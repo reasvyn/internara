@@ -11,7 +11,7 @@ use Livewire\WithFileUploads;
 use Modules\Assignment\Models\Assignment;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Assignment\Services\Contracts\SubmissionService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 /**
  * Class AssignmentSubmission
@@ -40,7 +40,7 @@ class AssignmentSubmission extends Component
     /**
      * Mount the component.
      */
-    public function mount(InternshipRegistrationService $regService): void
+    public function mount(RegistrationService $regService): void
     {
         $registration = $regService->first([
             'student_id' => Auth::id(),
@@ -98,7 +98,7 @@ class AssignmentSubmission extends Component
             return collect();
         }
 
-        $registration = app(InternshipRegistrationService::class)->find($this->registrationId);
+        $registration = app(RegistrationService::class)->find($this->registrationId);
 
         return $service->get(['internship_id' => $registration->internship_id]);
     }

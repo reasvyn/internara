@@ -11,7 +11,7 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  *
  * @extends EloquentQuery<TModel>
  */
-interface InternshipRegistrationService extends EloquentQuery
+interface RegistrationService extends EloquentQuery
 {
     /**
      * Register a student for an internship placement.

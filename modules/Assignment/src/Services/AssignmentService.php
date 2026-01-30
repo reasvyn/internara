@@ -48,7 +48,7 @@ class AssignmentService extends EloquentQuery implements Contract
     {
         // 1. Get all mandatory assignments for the program associated with this registration
         $registration = app(
-            \Modules\Internship\Services\Contracts\InternshipRegistrationService::class,
+            \Modules\Internship\Services\Contracts\RegistrationService::class,
         )->find($registrationId);
 
         if (! $registration) {

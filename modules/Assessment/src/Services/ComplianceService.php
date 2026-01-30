@@ -7,13 +7,13 @@ namespace Modules\Assessment\Services;
 use Carbon\Carbon;
 use Modules\Assessment\Services\Contracts\ComplianceService as Contract;
 use Modules\Attendance\Services\Contracts\AttendanceService;
-use Modules\Internship\Services\Contracts\InternshipRegistrationService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 
 class ComplianceService implements Contract
 {
     public function __construct(
-        protected InternshipRegistrationService $registrationService,
+        protected RegistrationService $registrationService,
         protected AttendanceService $attendanceService,
         protected JournalService $journalService,
     ) {}
