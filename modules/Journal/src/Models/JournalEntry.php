@@ -11,8 +11,8 @@ use Modules\Journal\Database\Factories\JournalEntryFactory;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasAcademicYear;
-use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Status\Concerns\HasStatus;
 use Spatie\MediaLibrary\HasMedia;
 
 class JournalEntry extends Model implements HasMedia

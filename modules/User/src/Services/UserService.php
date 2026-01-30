@@ -9,12 +9,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Modules\Exception\AppException;
 use Modules\Exception\RecordNotFoundException;
+use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
 use Modules\User\Services\Contracts\SuperAdminService;
 use Modules\User\Services\Contracts\UserService as Contract;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @property User $model
@@ -40,18 +42,18 @@ class UserService extends EloquentQuery implements Contract
     public function create(array $data): User
     {
         $roles = $data['roles'] ?? null;
-        $status = $data['status'] ?? 'active';
+        $status = $data['status'] ?? User::STATUS_ACTIVE;
         $profileData = $data['profile'] ?? [];
         unset($data['roles'], $data['status'], $data['profile']);
 
         // Default role for new users if not specified (e.g., from public registration)
         if ($roles === null) {
-            $roles = ['student'];
+            $roles = [Role::STUDENT->value];
         }
 
         if ($roles !== null) {
             $roles = Arr::wrap($roles);
-            if (in_array('super-admin', $roles)) {
+            if (in_array(Role::SUPER_ADMIN->value, $roles)) {
                 // Specialized SuperAdmin creation logic
                 return $this->superAdminService->create($data);
             }
@@ -77,7 +79,7 @@ class UserService extends EloquentQuery implements Contract
             $user->assignRole($roles);
 
             // Automatically verify Admin accounts created by other administrators
-            if (in_array('admin', Arr::wrap($roles))) {
+            if (in_array(Role::ADMIN->value, Arr::wrap($roles))) {
                 $user->markEmailAsVerified();
             }
         }
@@ -119,15 +121,16 @@ class UserService extends EloquentQuery implements Contract
 
         Gate::authorize('update', $user);
 
-        if ($user->hasRole('super-admin')) {
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             throw new AppException(
                 userMessage: 'user::exceptions.super_admin_status_cannot_be_changed',
-                code: 403,
+                code: Response::HTTP_FORBIDDEN,
             );
         }
 
         $currentStatus = $user->latestStatus()?->name;
-        $newStatus = $currentStatus === 'active' ? 'inactive' : 'active';
+        $newStatus =
+            $currentStatus === User::STATUS_ACTIVE ? User::STATUS_INACTIVE : User::STATUS_ACTIVE;
 
         $user->setStatus($newStatus);
 
@@ -152,7 +155,7 @@ class UserService extends EloquentQuery implements Contract
         $profileData = $data['profile'] ?? [];
         unset($data['roles'], $data['status'], $data['profile']);
 
-        if ($user->hasRole('super-admin')) {
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             return $this->superAdminService->update($id, $data);
         }
 
@@ -194,7 +197,7 @@ class UserService extends EloquentQuery implements Contract
 
         Gate::authorize('delete', $user);
 
-        if ($user->hasRole('super-admin')) {
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             return $this->superAdminService->delete($id, $force);
         }
 

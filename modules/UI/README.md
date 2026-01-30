@@ -1,48 +1,67 @@
 # UI Module
 
-The `UI` module serves as the authoritative, "headless" source of truth for Internara's visual language and shared frontend components. it encapsulates the design system, interactive elements, and presentation layouts without containing business logic or data persistence.
+The `UI` module serves as the authoritative, "headless" source of truth for Internara's visual
+language and shared frontend components. it encapsulates the design system, interactive elements,
+and presentation layouts without containing business logic or data persistence.
 
-> **Governance Mandate:** This module implements the UI/UX and Accessibility standards required by the authoritative **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)** (ISO 9241-210). It ensures a mobile-first, consistent, and localized user experience.
+> **Governance Mandate:** This module implements the UI/UX and Accessibility standards required by
+> the authoritative
+> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**
+> (ISO 9241-210). It ensures a mobile-first, consistent, and localized user experience.
 
 ---
 
 ## 1. Architectural Role
 
-As a **Public Module**, the `UI` module provides the shared presentation layer for all domain modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) and leverages **DaisyUI** and **MaryUI** for its component base.
+As a **Public Module**, the `UI` module provides the shared presentation layer for all domain
+modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) and leverages
+**DaisyUI** and **MaryUI** for its component base.
 
 ---
 
 ## 2. Key Features
 
 ### 2.1 Design System
+
 - **Centralized Styling**: Configuration for Tailwind v4 and DaisyUI themes.
 - **Typography**: Enforces the use of **Instrument Sans** as the primary font (**[SYRS-NF-402]**).
 - **Theming**: Native support for Light/Dark modes and responsive layouts.
 
 ### 2.2 Component Library
-- **Blade Components**: Reusable, standardized elements such as `<x-ui::button>`, `<x-ui::card>`, `<x-ui::modal>`, and `<x-ui::input>`.
+
+- **Blade Components**: Reusable, standardized elements such as `<x-ui::button>`, `<x-ui::card>`,
+  `<x-ui::modal>`, and `<x-ui::input>`.
 - **Livewire Components**: Shared interactive elements like the `LanguageSwitcher`.
 
 ### 2.3 Cross-Module View Orchestration (Slot Injection)
+
 The UI module provides the infrastructure for zero-coupling UI integration:
-- **`SlotRegistry`**: A central registry where modules can register their own UI fragments (e.g., sidebar links, dashboard widgets).
-- **`SlotManager`**: Handles the secure rendering of registered components into named slots within the layout.
-- **`SlotRender`**: A Blade component (`<x-ui::slot-render name="..." />`) used to mark injection points in global layouts.
+
+- **`SlotRegistry`**: A central registry where modules can register their own UI fragments (e.g.,
+  sidebar links, dashboard widgets).
+- **`SlotManager`**: Handles the secure rendering of registered components into named slots within
+  the layout.
+- **`SlotRender`**: A Blade component (`<x-ui::slot-render name="..." />`) used to mark injection
+  points in global layouts.
 
 ---
 
 ## 3. Engineering Standards
 
 - **Zero Coupling**: Strictly presentation-focused. D Domain logic is prohibited.
-- **Mobile-First**: All layouts and components must default to mobile-responsive design (**[SYRS-NF-401]**).
-- **i18n Infrastructure**: Facilitates the **Language Switcher** and ensures all presentation text is localized.
-- **Zero Magic Values**: UI configurations (like supported locales and icons) are managed via `config/ui.php`.
+- **Mobile-First**: All layouts and components must default to mobile-responsive design
+  (**[SYRS-NF-401]**).
+- **i18n Infrastructure**: Facilitates the **Language Switcher** and ensures all presentation text
+  is localized.
+- **Zero Magic Values**: UI configurations (like supported locales and icons) are managed via
+  `config/ui.php`.
 
 ---
 
 ## 4. Verification & Validation (V&V)
 
 Presentation integrity is verified through **Pest v4**:
+
 - **Unit Tests**: Verifies the `SlotRegistry` logic and injection accuracy.
 - **Feature Tests**: Validates interactive components like the `LanguageSwitcher`.
 - **Visual Audit**: Manual verification of mobile responsiveness and theme consistency.
@@ -50,4 +69,5 @@ Presentation integrity is verified through **Pest v4**:
 
 ---
 
-_The UI module ensures that Internara provides a professional, accessible, and seamless interface for all stakeholders._
+_The UI module ensures that Internara provides a professional, accessible, and seamless interface
+for all stakeholders._

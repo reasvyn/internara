@@ -61,7 +61,7 @@ The `Core` module manages foundational system tables required for application st
 
 - **`cache`**: Centralized storage for application performance.
 - **`jobs`**: Infrastructure for asynchronous task execution.
-- **`statuses`**: Audit trail for entity state transitions (utilized by `HasStatus`).
+- **`statuses`**: Audit trail for entity state transitions (utilized by the `Status` module).
 
 ---
 

@@ -1,32 +1,70 @@
 # User Module
 
-The `User` module is responsible for the core identity system of Internara.
+The `User` module serves as the authoritative source of truth for stakeholder identity and account
+management within the Internara ecosystem. It provides the necessary infrastructure for managing
+Instructors, Students, Administrators, and Industry Mentors.
 
-> **Spec Alignment:** This module supports the **Administrative Management** requirements of the
-> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 1), providing the
-> authoritative source for user identity.
-
-## Purpose
-
-- **Identity Management:** Authoritative source for Instructor, Staff, Student, and Supervisor
-  accounts.
-- **Administration:** Lifecycle management of user credentials and roles.
-- **Security:** Enforces strict account status controls and UUID-based identity.
-
-## Key Features
-
-### 1. Services
-
-- **UserService:** General user lifecycle management (CRUD).
-- **i18n:** All user-facing administrative messages are fully localized.
-
-### 2. Management UI
-
-- **Administrative CRUD:** Mobile-optimized interface for Staff to manage accounts.
-- **Role Assignment:** Integration with the `Permission` module for secure role bridging.
-- **No Hard-Coding:** User profile defaults (logos, avatars) follow dynamic settings.
+> **Governance Mandate:** This module implements the Identity Management and Access Control
+> standards required by the authoritative
+> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
+> It adheres to **ISO/IEC 27034** (Application Security) and ensures strict domain isolation.
 
 ---
 
-_The User module ensures that every participant in the Internara ecosystem has a secure and
-localized identity._
+## 1. Architectural Role
+
+As a **Core Domain Module**, the `User` module manages the lifecycle of credentials and profiles. It
+acts as a primary provider for the `Auth` and `Permission` modules while maintaining zero physical
+coupling with other domain modules.
+
+---
+
+## 2. Core Components
+
+### 2.1 Service Layer
+
+- **`UserService`**: Orchestrates user account lifecycles, including creation, status toggling, and
+  role-based initialization.
+    - _Features_: Automated email verification for admins, welcome notification dispatching, and
+      secure deletion guards.
+    - _Contract_: `Modules\User\Services\Contracts\UserService`.
+- **`SuperAdminService`**: Specialized service for managing the highest-privileged system accounts.
+
+### 2.2 Persistence Layer
+
+- **`User` Model**: The central identity entity.
+    - _Identities_: Supports configurable **UUID v4** primary keys (**[SYRS-NF-504]**).
+    - _Traits_: Implements `HasRoles`, `HasStatus`, `HasUuid`, and `InteractsWithMedia`.
+    - _Collections_: Manages the `COLLECTION_AVATAR` for profile pictures.
+
+### 2.3 Notifications
+
+- **`WelcomeUserNotification`**: A localized onboarding message that securely delivers initial
+  credentials to new stakeholders.
+
+---
+
+## 3. Engineering Standards
+
+- **Context-Aware Naming**: Prioritizes semantic clarity (e.g., `UserService`) while utilizing
+  constants for roles and statuses to avoid magic values.
+- **Privacy First**: Integrates with the `Log` module to ensure that identity changes are audited
+  while sensitive fields remain masked.
+- **i18n Compliance**: All administrative feedback and notification templates are fully localized in
+  **ID** and **EN**.
+
+---
+
+## 4. Verification & Validation (V&V)
+
+Quality is ensured through **Pest v4**:
+
+- **Unit Tests**: Verifies model logic, such as initials generation and UUID configuration.
+- **Feature Tests**: Validates business rules, including SuperAdmin protection and automatic role
+  assignment.
+- **Command**: `php artisan test modules/User`
+
+---
+
+_The User module provides the secure and localized identity foundation required for institutional
+legitimacy._

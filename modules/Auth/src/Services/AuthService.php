@@ -14,6 +14,7 @@ use Modules\Auth\Services\Contracts\AuthService as AuthServiceContract;
 use Modules\Exception\AppException;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Service to manage user authentication, registration, password management, and email verification.
@@ -59,7 +60,7 @@ class AuthService implements AuthServiceContract
             throw new AppException(
                 userMessage: 'user::exceptions.invalid_credentials',
                 logMessage: 'Authentication attempt failed for: '.$maskedIdentifier,
-                code: 401,
+                code: Response::HTTP_UNAUTHORIZED,
             );
         }
 
@@ -113,14 +114,17 @@ class AuthService implements AuthServiceContract
      * @param string $currentPassword The user's current password.
      * @param string $newPassword The new password for the user.
      *
-     * @throws \Modules\Exceptions\AppException If the current password does not match.
+     * @throws AppException If the current password does not match.
      *
      * @return bool True if the password was successfully changed, false otherwise.
      */
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool
     {
         if (! Hash::check($currentPassword, $user->password)) {
-            throw new AppException(userMessage: 'user::exceptions.password_mismatch', code: 422);
+            throw new AppException(
+                userMessage: 'user::exceptions.password_mismatch',
+                code: Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
         }
 
         return $user->update([
@@ -189,14 +193,14 @@ class AuthService implements AuthServiceContract
      *
      * @param \Modules\User\Models\User $user The user to resend the verification email to.
      *
-     * @throws \Modules\Exceptions\AppException If the email is already verified.
+     * @throws AppException If the email is already verified.
      */
     public function resendVerificationEmail(User $user): void
     {
         if ($user->hasVerifiedEmail()) {
             throw new AppException(
                 userMessage: 'user::exceptions.email_already_verified',
-                code: 422,
+                code: Response::HTTP_UNPROCESSABLE_ENTITY,
             );
         }
 

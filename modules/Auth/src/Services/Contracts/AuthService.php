@@ -15,7 +15,7 @@ interface AuthService
      * @param array $credentials Contains 'email' (which can be an email or username), 'password'.
      * @param bool $remember Whether to "remember" the user.
      *
-     * @throws \Modules\Exceptions\AppException If authentication fails.
+     * @throws \Modules\Exception\AppException If authentication fails.
      *
      * @return Authenticatable|User The authenticated user.
      */
@@ -33,7 +33,7 @@ interface AuthService
      * @param string|array|null $roles Roles to assign to the user upon registration.
      * @param bool $sendEmailVerification Whether to send an email verification notification.
      *
-     * @throws \Modules\Exceptions\AppException If registration fails (e.g., duplicate email).
+     * @throws \Modules\Exception\AppException If registration fails (e.g., duplicate email).
      *
      * @return User The newly registered user.
      */
@@ -57,7 +57,7 @@ interface AuthService
      * @param string $currentPassword The user's current password.
      * @param string $newPassword The new password for the user.
      *
-     * @throws \Modules\Exceptions\AppException If the current password does not match.
+     * @throws \Modules\Exception\AppException If the current password does not match.
      *
      * @return bool True if the password was successfully changed, false otherwise.
      */
@@ -94,7 +94,7 @@ interface AuthService
      *
      * @param \Modules\User\Models\User $user The user to resend the verification email to.
      *
-     * @throws \Modules\Exceptions\AppException If the email is already verified.
+     * @throws \Modules\Exception\AppException If the email is already verified.
      */
     public function resendVerificationEmail(User $user): void;
 

@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Tests\Unit\Models\Concerns;
+namespace Modules\Status\Tests\Unit\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
-use Modules\Shared\Models\Concerns\HasStatus;
+use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Status\Concerns\HasStatus;
 
 uses(RefreshDatabase::class);
 
 class StatusTestModel extends Model
 {
-    use HasStatus;
+    use HasStatus, HasUuid;
 
     protected $table = 'status_test_models';
 
@@ -22,21 +23,14 @@ class StatusTestModel extends Model
 }
 
 beforeEach(function () {
-    // Migration for statuses table is required by Spatie Model Status
-    // It should be handled by RefreshDatabase if the migration exists in modules/Core/database/migrations
-    // as I saw earlier.
     Schema::create('status_test_models', function (Blueprint $table) {
-        $table->id();
+        $table->uuid('id')->primary();
         $table->string('name');
         $table->timestamps();
     });
 });
 
-afterEach(function () {
-    Schema::dropIfExists('status_test_models');
-});
-
-test('HasStatus trait can set and get status', function () {
+test('has status trait can set and get status', function () {
     $model = StatusTestModel::create(['name' => 'Test']);
 
     $model->setStatus('active');
@@ -51,7 +45,7 @@ test('HasStatus trait can set and get status', function () {
         ->toBe('success');
 });
 
-test('getStatusLabel returns translated label', function () {
+test('get status label returns translated label', function () {
     app()->setLocale('en');
     $model = StatusTestModel::create(['name' => 'Test']);
     $model->setStatus('active');

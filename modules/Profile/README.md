@@ -1,33 +1,63 @@
 # Profile Module
 
-The `Profile` module handles extended user information and academic integration. It serves as the
-primary store for data that distinguishes users beyond their core authentication credentials.
+The `Profile` module manages extended user data and academic integration within the Internara
+ecosystem. It provides the necessary storage for information that distinguishes users beyond their
+core authentication credentials, such as institutional IDs, contact details, and department
+affiliations.
 
-## Purpose
+> **Governance Mandate:** This module implements the Administrative Orchestration and Data Privacy
+> standards required by the authoritative
+> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
+> It ensures that personal data is handled according to **ISO/IEC 27034** (Security).
 
-- **Academic Context:** Links users to their respective institutional structures (Departments).
-- **Specialized Identification:** Stores role-specific identifiers like **NIP** (for Teachers) and
-  **NISN** (for Students).
-- **Personal Information:** Manages PII such as phone numbers, addresses, and bios.
+---
 
-## Core Components
+## 1. Architectural Role
 
-### 1. Profile Model
+As a **Core Domain Module**, the `Profile` module acts as a specialized data store for user-specific
+attributes. It maintains a strict one-to-one relationship with the `User` module while facilitating
+decoupled integration with the `Department`, `Student`, and `Teacher` modules.
 
-- Stores extended user attributes.
-- Uses `HasUserRelation` to link back to the core `User` model.
-- Integrated with `HasDepartmentRelation` (from the Department module) to provide academic context.
-- Uses **UUIDs** for secure identification.
+---
 
-### 2. Academic Integration
+## 2. Core Components
 
-- **Department ID:** The profile stores a `department_id` which is validated against the
-  `DepartmentService`.
-- **Relationship Trait:** Utilizes the `HasDepartmentRelation` trait for a decoupled link to the
-  Department module.
+### 2.1 Service Layer
 
-## Technical Details
+- **`ProfileService`**: Manages the initialization and synchronization of user profiles.
+    - _Features_: Automated profile creation upon user registration and role-based "profileable"
+      model association (Student/Teacher).
+    - _Contract_: `Modules\Profile\Services\Contracts\ProfileService`.
 
-- **Mass Assignable:** Includes `department_id`, `nip`, `nisn`, `phone`, `address`, and `bio`.
-- **Database Isolation:** Adheres to the project convention of manual indexes for cross-module
-  relationships (e.g., `user_id`, `department_id`).
+### 2.2 Persistence Layer
+
+- **`Profile` Model**: The central entity for extended personal data.
+    - _Relationships_: Linked to `User` (Identity), `Department` (Academic Scoping), and a
+      polymorphic `profileable` (Domain Specifics).
+    - _Identities_: Uses **UUID v4** for secure identification.
+
+---
+
+## 3. Engineering Standards
+
+- **Zero-Coupling**: Cross-module relationships are managed via indexed UUID columns without
+  physical foreign keys.
+- **Model Isolation**: Utilizes the `Role` Enum from the `Permission` module to perform role-based
+  logic, avoiding direct dependency on the `User` model for constants.
+- **Privacy First**: Sensitive fields (phone, address) are subject to automated masking in system
+  logs via the `Log` module.
+
+---
+
+## 4. Verification & Validation (V&V)
+
+Quality is ensured through **Pest v4**:
+
+- **Integration Tests**: Verifies seamless relationship mapping with the `Department` module.
+- **Feature Tests**: Validates user-facing profile update workflows and authorization.
+- **Command**: `php artisan test modules/Profile`
+
+---
+
+_The Profile module ensures that every user in Internara has a complete and context-aware academic
+identity._

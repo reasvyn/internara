@@ -8,14 +8,24 @@ use Modules\Department\Models\Department;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Shared\Services\EloquentQuery;
 
+/**
+ * @property Department $model
+ */
 class DepartmentService extends EloquentQuery implements Contracts\DepartmentService
 {
+    /**
+     * Create a new DepartmentService instance.
+     */
     public function __construct(Department $model, protected SchoolService $schoolService)
     {
         $this->setModel($model);
         $this->setSearchable(['name', 'school_id']);
+        $this->setSortable(['name', 'created_at']);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function create(array $data): Department
     {
         $schoolId = $data['school_id'] ?? null;
@@ -28,6 +38,9 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         return $department->fresh(['school']);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function update(mixed $id, array $data): Department
     {
         $schoolId = $data['school_id'] ?? null;
@@ -40,10 +53,13 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         return $department->fresh(['school']);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function save(array $attributes, array $values = []): Department
     {
-        $schoolId = $attributes['school_id'] ?? null;
-        unset($attributes['school_id']);
+        $schoolId = $attributes['school_id'] ?? ($values['school_id'] ?? null);
+        unset($attributes['school_id'], $values['school_id']);
 
         /** @var Department $department */
         $department = parent::save($attributes, $values);

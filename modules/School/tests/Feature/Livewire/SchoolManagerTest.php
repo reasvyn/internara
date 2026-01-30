@@ -73,5 +73,5 @@ test('it can upload school logo', function () {
         ->call('save')
         ->assertHasNoErrors();
 
-    expect($school->refresh()->getFirstMedia('school_logo'))->not->toBeNull();
+    expect($school->refresh()->getFirstMedia(School::COLLECTION_LOGO))->not->toBeNull();
 });

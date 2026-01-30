@@ -6,6 +6,7 @@ namespace Modules\Profile\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService as Contract;
 use Modules\Shared\Services\EloquentQuery;
@@ -54,11 +55,11 @@ class ProfileService extends EloquentQuery implements Contract
             return $profile;
         }
 
-        if (in_array('student', $roles)) {
+        if (in_array(Role::STUDENT->value, $roles)) {
             $student = $this->studentService->createWithDefault();
             $profile->profileable()->associate($student);
             $profile->save();
-        } elseif (in_array('teacher', $roles)) {
+        } elseif (in_array(Role::TEACHER->value, $roles)) {
             $teacher = $this->teacherService->createWithDefault();
             $profile->profileable()->associate($teacher);
             $profile->save();

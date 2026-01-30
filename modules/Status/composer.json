@@ -1,0 +1,32 @@
+{
+    "name": "reasnov/status",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Status\\Providers\\StatusServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Status\\": "src/",
+            "Modules\\Status\\Database\\Factories\\": "database/factories/",
+            "Modules\\Status\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Status\\Tests\\": "tests/"
+        }
+    }
+}

@@ -14,9 +14,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
+use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Concerns\HasProfileRelation;
-use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Status\Concerns\HasStatus;
 use Modules\User\Database\Factories\UserFactory;
 use Modules\User\Support\UsernameGenerator;
 use Spatie\MediaLibrary\HasMedia;
@@ -104,7 +105,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('user_avatar')->singleFile();
+        $this->addMediaCollection(self::COLLECTION_AVATAR)->singleFile();
     }
 
     /**
@@ -112,7 +113,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->getFirstMediaUrl('user_avatar') ?: null;
+        return $this->getFirstMediaUrl(self::COLLECTION_AVATAR) ?: null;
     }
 
     /**
@@ -120,7 +121,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function setAvatar(
         string|UploadedFile $file,
-        string $collectionName = 'user_avatar',
+        string $collectionName = self::COLLECTION_AVATAR,
     ): bool {
         return $this->setMedia($file, $collectionName);
     }
@@ -130,7 +131,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function scopeSuperAdmin(Builder $query): Builder
     {
-        return $query->role('super-admin');
+        return $query->role(Role::SUPER_ADMIN->value);
     }
 
     /**

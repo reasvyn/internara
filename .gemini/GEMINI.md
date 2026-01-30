@@ -75,6 +75,8 @@ Gemini is mandated to follow the formal
 - **Isolation Invariant**: No physical foreign keys across modules. Use Service Contracts.
 - **Logic Invariant**: Direct `env()` calls are prohibited. Use the `setting()` registry.
 - **Presentation Invariant**: Livewire components must satisfy the **Thin Component** mandate.
+- **UI Decoupling Invariant**: Cross-module UI integration must utilize the **Slot Injection**
+  pattern via the `UI` module. Direct cross-module component calls are prohibited.
 
 ### 4.2 Semantic Namespacing
 
@@ -88,7 +90,8 @@ Namespaces MUST omit the `src` segment to maintain modular portability.
 ## 5. Verification & Validation (V&V) Standards
 
 Gemini must verify all artifacts against the
-**[Testing & Verification Guide](../docs/internal/testing-verification-guide.md)**.
+**[Testing & Verification Guide](../docs/internal/testing-verification-guide.md)** and the
+**[Conventions and Rules](../docs/internal/conventions-and-rules.md)**.
 
 - **V-Model Alignment**: Unit and Feature tests must verify both technical design and requirement
   fulfillment.

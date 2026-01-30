@@ -11,10 +11,9 @@ trait RedirectsUsers
      */
     public function redirectPath(): string
     {
-        if (method_exists($this, 'redirectTo')) {
-            return $this->redirectTo();
-        }
+        /** @var \Modules\Auth\Services\Contracts\RedirectService $redirectService */
+        $redirectService = app(\Modules\Auth\Services\Contracts\RedirectService::class);
 
-        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
+        return $redirectService->getTargetUrl(auth()->user());
     }
 }

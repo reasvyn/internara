@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Modules\Department\Models\Concerns\HasDepartmentsRelation;
 use Modules\Internship\Models\Concerns\HasInternshipsRelation;
+use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\School\Database\Factories\SchoolFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
 class School extends Model implements HasMedia
 {
@@ -32,14 +32,20 @@ class School extends Model implements HasMedia
         return SchoolFactory::new();
     }
 
+    /**
+     * Register the media collections for the school's logo.
+     */
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('school_logo')->singleFile();
+        $this->addMediaCollection(self::COLLECTION_LOGO)->singleFile();
     }
 
+    /**
+     * Get the URL of the school's logo.
+     */
     public function getLogoUrlAttribute(): ?string
     {
-        return $this->getFirstMediaUrl('school_logo') ?: null;
+        return $this->getFirstMediaUrl(self::COLLECTION_LOGO) ?: null;
     }
 
     /**
@@ -50,10 +56,10 @@ class School extends Model implements HasMedia
      *
      * @return bool True if successful.
      */
-    public function setLogo(string|UploadedFile $file, string $collectionName = 'school_logo'): bool
-    {
-        $this->clearMediaCollection($collectionName);
-
-        return (bool) $this->addMedia($file)->toMediaCollection($collectionName);
+    public function setLogo(
+        string|UploadedFile $file,
+        string $collectionName = self::COLLECTION_LOGO,
+    ): bool {
+        return $this->setMedia($file, $collectionName);
     }
 }

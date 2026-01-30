@@ -26,7 +26,7 @@ request.
 
 ### 1.2 Architectural Consistency
 
-- **Action**: Review the current system baseline in the
+- **Action**: Audit the current system baseline in the
   **[Architecture Description](architecture-description.md)**.
 - **Objective**: Prevent architectural regression and ensure modular isolation.
 
@@ -82,7 +82,7 @@ The following commands are mandatory and must be executed in full before any bas
 
 - **Spec Validation**: Verify the feature against the
   **[System Requirements Specification](system-requirements-specification.md)**.
-- **Security Audit**: Perform manual review for potential injection, authorization (RBAC), and
+- **Security Audit**: Perform manual audit for potential injection, authorization (RBAC), and
   privacy violations.
 
 ---

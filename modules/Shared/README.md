@@ -47,8 +47,6 @@ Resides in `src/Support/`. Contains stateless tools for technical operations.
 Resides in `src/Models/Concerns/`. Standardizes data behavior.
 
 - **`HasUuid`**: Implements mandatory **UUID v4** identity generation (ISO/IEC 11179).
-- **`HasStatus`**: Orchestrates state transitions and provides localized labels/colors for UI
-  components.
 - **`HasAcademicYear`**: Automatically scopes queries and data creation to the active academic
   cycle.
 
@@ -75,7 +73,6 @@ The `Shared` module provides the baseline translations for systemic feedback and
 - **Directory**: `lang/` (supporting `id` and `en`).
 - **Standardized Keys**:
     - `shared::ui.*`: Common buttons and labels (Save, Cancel, Edit).
-    - `shared::status.*`: Localized names for entity states (Active, Pending).
     - `shared::messages.*`: Standard success/error notifications.
     - `shared::exceptions.*`: Technical exception messages (Unique violation, Record not found).
 

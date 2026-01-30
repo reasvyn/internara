@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Unit\Services;
 
 use Mockery;
+use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Exception\AppException;
+use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\SetupService as Contract;
 use Modules\Setup\Services\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
-use Modules\Department\Services\Contracts\DepartmentService;
-use Modules\Internship\Services\Contracts\InternshipService;
 
 beforeEach(function () {
     $this->settingService = Mockery::mock(SettingService::class);
@@ -74,9 +74,9 @@ test('it requires setup access', function () {
     $this->settingService
         ->shouldReceive('getValue')
         ->with(Contract::SETTING_APP_INSTALLED, false, true)
-        ->andReturn(false, true); 
+        ->andReturn(false, true);
 
-    expect($this->service->requireSetupAccess())->toBeTrue(); 
+    expect($this->service->requireSetupAccess())->toBeTrue();
     expect($this->service->requireSetupAccess())->toBeFalse();
 
     // With prev step, check step completion

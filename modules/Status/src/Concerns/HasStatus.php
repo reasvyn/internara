@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Models\Concerns;
+namespace Modules\Status\Concerns;
 
 use Spatie\ModelStatus\HasStatuses;
 
@@ -40,7 +40,7 @@ trait HasStatus
         $status = $this->latestStatus();
 
         if (! $status) {
-            return __('shared::status.unknown');
+            return __('status::status.unknown');
         }
 
         return __($this->getStatusTranslationPrefix().$status->name);
@@ -66,7 +66,7 @@ trait HasStatus
      */
     protected function getStatusTranslationPrefix(): string
     {
-        return 'shared::status.';
+        return 'status::status.';
     }
 
     /**

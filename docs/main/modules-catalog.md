@@ -12,6 +12,7 @@ zero-coupling.
 | **Core**         | Technical Foundation          | Acts as the system "glue," handling localization middleware, custom Artisan generators, and cross-domain analytics. |
 | **Support**      | Business Utility              | Provides business-aware utilities for mass operations, such as CSV onboarding.                                      |
 | **Exception**    | Error Handling                | Manages standardized error handling (Fault Tolerance) and localized error message mapping.                          |
+| **Status**       | State Management              | Provides the foundational infrastructure for tracking and managing entity state transitions.                        |
 | **UI**           | Design System                 | Implements the Design System, standard Blade/Livewire components, and the _Slot Injection_ mechanism.               |
 | **Auth**         | Authentication, Authorization | Handles authentication protocols, user session management, and primary account registration.                        |
 | **Permission**   | RBAC, Access Control          | Manages Role-Based Access Control (RBAC) and permission mapping for system actions.                                 |

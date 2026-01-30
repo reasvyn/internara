@@ -75,7 +75,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
         if (is_array($key)) {
             $success = true;
             foreach ($key as $k => $v) {
-                $currentValue = is_array($v) ? ($v['value'] ?? null) : $v;
+                $currentValue = is_array($v) ? $v['value'] ?? null : $v;
                 $attributes = is_array($v) ? array_diff_key($v, ['value' => null]) : [];
                 if (! $this->setValue($k, $currentValue, $attributes)) {
                     $success = false;

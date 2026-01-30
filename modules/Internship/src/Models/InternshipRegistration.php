@@ -11,8 +11,8 @@ use Modules\Internship\Database\Factories\InternshipRegistrationFactory;
 use Modules\Internship\Models\Concerns\HasRequirements;
 use Modules\Log\Concerns\HandlesAuditLog;
 use Modules\Log\Concerns\InteractsWithActivityLog;
-use Modules\Shared\Models\Concerns\HasStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Status\Concerns\HasStatus;
 use Modules\User\Models\Concerns\HasUserRelation;
 
 class InternshipRegistration extends Model

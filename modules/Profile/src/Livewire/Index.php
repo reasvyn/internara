@@ -130,10 +130,10 @@ class Index extends Component
         $user = auth()->user();
 
         $rules = [];
-        if ($user->hasRole('teacher')) {
+        if ($user->hasRole(\Modules\Permission\Enums\Role::TEACHER->value)) {
             $rules['nip'] = 'required|string|unique:profiles,nip,'.$user->profile->id;
         }
-        if ($user->hasRole('student')) {
+        if ($user->hasRole(\Modules\Permission\Enums\Role::STUDENT->value)) {
             $rules['nisn'] = 'required|string|unique:profiles,nisn,'.$user->profile->id;
         }
 

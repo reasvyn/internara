@@ -182,8 +182,9 @@ numbers with semantic meaning).
 - **Principle**: Any value that carries semantic meaning (e.g., a status code, a role name, a
   specific limit) must be abstracted.
 - **Implementation**:
-    - **Enums**: Use PHP 8.1+ Enums for fixed sets of values (e.g.,
-      `src/Enums/RegistrationStatus.php`).
+    - **Enums (Recommended)**: Use PHP 8.1+ Enums for fixed sets of values (e.g.,
+      `src/Enums/RegistrationStatus.php`). This is the preferred approach for better type safety and
+      clarity.
     - **Constants**: Use class constants for internal model or service configuration.
     - **Config/Settings**: Use `config()` for environment-static values and `setting()` for values
       that require runtime administrative control.
