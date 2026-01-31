@@ -21,6 +21,22 @@ class AttendanceManager extends Component
     public function boot(AttendanceService $attendanceService): void
     {
         $this->attendanceService = $attendanceService;
+
+        // Gating System: Check if student has completed mandatory guidance
+        if (auth()->check() && auth()->user()->hasRole('student')) {
+            $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+            $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+
+            if (
+                $settingService->getValue('feature_guidance_enabled', true) &&
+                ! $guidanceService->hasCompletedMandatory((string) auth()->id())
+            ) {
+                // For manager component which might be embedded, we might just disable actions
+                // but for consistency with Journal, let's redirect if it's a main page.
+                // However, AttendanceManager is often a small widget.
+                // If it's a widget, we should probably just prevent the action in clockIn().
+            }
+        }
     }
 
     public function mount(): void
@@ -33,7 +49,7 @@ class AttendanceManager extends Component
      */
     public function loadTodayLog(): void
     {
-        if (auth()->user()->hasRole('student')) {
+        if (auth()->check() && auth()->user()->hasRole('student')) {
             $this->todayLog = $this->attendanceService->getTodayLog((string) auth()->id());
         }
     }
@@ -43,6 +59,23 @@ class AttendanceManager extends Component
      */
     public function clockIn(): void
     {
+        // Gating Check
+        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+
+        if (
+            $settingService->getValue('feature_guidance_enabled', true) &&
+            ! $guidanceService->hasCompletedMandatory((string) auth()->id())
+        ) {
+            $this->dispatch(
+                'toast',
+                message: __('guidance::messages.must_complete_guidance'),
+                type: 'warning',
+            );
+
+            return;
+        }
+
         try {
             $this->attendanceService->checkIn((string) auth()->id());
             $this->loadTodayLog();

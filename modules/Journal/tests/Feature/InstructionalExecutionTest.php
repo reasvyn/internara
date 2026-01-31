@@ -61,6 +61,6 @@ test('it enforces dynamic submission window', function () {
 
     expect(fn () => $this->journalService->create($data))->toThrow(
         AppException::class,
-        'journal::exceptions.submission_window_expired'
+        'journal::exceptions.submission_window_expired',
     );
 });

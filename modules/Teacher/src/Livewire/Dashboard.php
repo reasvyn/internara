@@ -27,8 +27,9 @@ class Dashboard extends Component
      */
     public function getReadiness(string $id): array
     {
-        return app(\Modules\Assessment\Services\Contracts\AssessmentService::class)
-            ->getReadinessStatus($id);
+        return app(
+            \Modules\Assessment\Services\Contracts\AssessmentService::class,
+        )->getReadinessStatus($id);
     }
 
     /**

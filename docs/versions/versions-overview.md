@@ -26,73 +26,37 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 2. Version History
 
-
-
-
-
-| Version     | Readiness | Maintenance | Current Status |
-
-
-
-
+| Version | Readiness | Maintenance | Current Status |
 
 | :---------- | :-------- | :---------- | :------------- |
 
-| **v0.12.x** | Alpha     | Snapshot    | In Progress    |
+| **v0.12.x** | Alpha | Snapshot | In Progress |
 
-| **v0.11.x** | Alpha     | Snapshot    | Released       |
+| **v0.11.x** | Alpha | Snapshot | Released |
 
+| **v0.10.x** | Alpha | Snapshot | Released |
 
+| **v0.9.x** | Alpha | Snapshot | Released |
 
+| **v0.8.x** | Alpha | Snapshot | Released |
 
-
-| **v0.10.x** | Alpha     | Snapshot    | Released       |
-
-| **v0.9.x**  | Alpha     | Snapshot    | Released       |
-
-| **v0.8.x**  | Alpha     | Snapshot    | Released       |
-
-| **v0.7.x** | Alpha     | Snapshot    | Released       |
-
-
+| **v0.7.x** | Alpha | Snapshot | Released |
 
 ---
 
-
-
-
-
-
-
 ## 3. What's New?
-
-
-
-
-
-
 
 ### Active Development
 
-
-
 - **[v0.12.0](v0.12.0.md)** — **Timeline Transparency & Guidance** Focus: Centralized scheduling and
 
-  instructional guidance hub for students.
-
-
+    instructional guidance hub for students.
 
 ### Latest Released Versions
 
-
-
-
-
-
-
 - **[v0.11.0-alpha](v0.11.0.md)** — **Instructional Execution & Evaluation** Focus: Formalizing the
 
-  complete instructional loop from journal claims to final transcripts.
+    complete instructional loop from journal claims to final transcripts.
 
 ---
 

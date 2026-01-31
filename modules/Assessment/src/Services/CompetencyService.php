@@ -67,13 +67,17 @@ class CompetencyService extends EloquentQuery implements Contract
             ->where('journal_entry_id', $journalEntryId)
             ->delete();
 
-        $data = collect($competencyIds)->map(fn ($id) => [
-            'id' => \Illuminate\Support\Str::uuid()->toString(),
-            'journal_entry_id' => $journalEntryId,
-            'competency_id' => $id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ])->toArray();
+        $data = collect($competencyIds)
+            ->map(
+                fn ($id) => [
+                    'id' => \Illuminate\Support\Str::uuid()->toString(),
+                    'journal_entry_id' => $journalEntryId,
+                    'competency_id' => $id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            )
+            ->toArray();
 
         \Illuminate\Support\Facades\DB::table('journal_competency')->insert($data);
     }
@@ -84,7 +88,12 @@ class CompetencyService extends EloquentQuery implements Contract
     public function getClaimedCompetencies(string $registrationId): \Illuminate\Support\Collection
     {
         return \Illuminate\Support\Facades\DB::table('journal_competency')
-            ->join('journal_entries', 'journal_competency.journal_entry_id', '=', 'journal_entries.id')
+            ->join(
+                'journal_entries',
+                'journal_competency.journal_entry_id',
+                '=',
+                'journal_entries.id',
+            )
             ->join('competencies', 'journal_competency.competency_id', '=', 'competencies.id')
             ->where('journal_entries.registration_id', $registrationId)
             ->select('competencies.*', 'journal_entries.date as claimed_date')

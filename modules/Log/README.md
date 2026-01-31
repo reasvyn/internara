@@ -30,8 +30,8 @@ that allow other modules to record and visualize audit trails without domain cou
 
 ### 2.2 Logging Infrastructure
 
-- **`AuditLog` Model**: Provides an immutable trail of critical administrative and system-wide
-  data modifications.
+- **`AuditLog` Model**: Provides an immutable trail of critical administrative and system-wide data
+  modifications.
 - **`Activity` Model**: Extends Spatie Activitylog to support **UUID v4** identities for behavioral
   tracking.
 - **`PiiMaskingProcessor`**: A Monolog processor that recursively redacts sensitive fields (emails,

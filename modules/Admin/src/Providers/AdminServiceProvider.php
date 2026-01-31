@@ -31,6 +31,11 @@ class AdminServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
+            'admin.dashboard.side' => [
+                'livewire:admin::widgets.app-info-widget' => [
+                    'order' => 100,
+                ],
+            ],
             'sidebar.menu' => [
                 'ui::components.menu-item' => [
                     'title' => __('Dashboard'),

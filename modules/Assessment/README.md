@@ -25,7 +25,8 @@ official credentials. It aggregates data from various sources to produce final g
 ### 2. Services
 
 - **AssessmentService:** Manages manual evaluations from Instructors and Supervisors.
-- **CompetencyService:** Orchestrates the registry of skills and their mapping to student activities.
+- **CompetencyService:** Orchestrates the registry of skills and their mapping to student
+  activities.
 - **ComplianceService:** Orchestrates the calculation of participation-driven scores via
   **Contracts**.
 - **CertificateService:** Generates PDF documents with QR-code verification.

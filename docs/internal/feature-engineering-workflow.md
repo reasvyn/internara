@@ -44,6 +44,12 @@ This phase corresponds to the **Software Design Process** of ISO/IEC 12207.
     - **Contract Definitions**: Formalize the Service Interfaces (Contracts) required.
     - **Data Schema**: Define UUID-based entities and persistence requirements.
 
+### 2.2 Task Formalization (GitHub Issues)
+
+- **Action**: Create a **GitHub Issue** corresponding to the blueprint.
+- **Objective**: Define the atomic task list, milestones, and project tracking based on the
+  blueprint's functional specification.
+
 ---
 
 ## Phase 3: Construction (TDD & Implementation)
@@ -94,10 +100,11 @@ The final phase ensures that the engineering record converges with the realized 
 ### 5.1 Configuration Synchronization
 
 - **Metadata**: Update `app_info.json` if a milestone is achieved.
-- **Documentation**: 
+- **Documentation**:
     - Finalize Release Notes in `docs/versions/`.
     - Synchronize the related **Table of Contents** documents.
-    - **README Update**: Update the project-level `README.md` and any affected module-specific `README.md` files to reflect new capabilities and architectural changes.
+    - **README Update**: Update the project-level `README.md` and any affected module-specific
+      `README.md` files to reflect new capabilities and architectural changes.
 - **Repository**: Stage and commit changes according to the
   **[GitHub Protocols](github-protocols.md)**.
 

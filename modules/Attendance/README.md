@@ -17,13 +17,18 @@ The `Attendance` module manages student presence tracking during the internship 
 
 ### 1. Daily Check-in/Check-out
 
-- **Absence Integrity:** Automatically blocks clock-in if an approved absence (Leave/Sick) exists for the day.
+- **Guidance Gating:** Integrity check to ensure students have acknowledged mandatory guidelines
+  prior to first presence.
+- **Absence Integrity:** Automatically blocks clock-in if an approved absence (Leave/Sick) exists
+  for the day.
 - **Dynamic Thresholds:** Late thresholds are managed via the `Setting` module (No hard-coding).
 
 ### 2. Absence Management
 
-- **Leave & Sick Requests:** A dedicated workflow for students to request absence with proof of documentation.
-- **Approval Workflow:** Supervisors can review and approve absence requests, which then integrate with attendance stats.
+- **Leave & Sick Requests:** A dedicated workflow for students to request absence with proof of
+  documentation.
+- **Approval Workflow:** Supervisors can review and approve absence requests, which then integrate
+  with attendance stats.
 
 ### 3. Supervisor Monitoring
 

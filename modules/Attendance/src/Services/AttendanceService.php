@@ -56,6 +56,20 @@ class AttendanceService extends EloquentQuery implements Contract
      */
     public function checkIn(string $studentId): AttendanceLog
     {
+        // Gating Invariant: Briefing/Guidance must be completed if enabled
+        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+
+        if (
+            $settingService->getValue('feature_guidance_enabled', true) &&
+            ! $guidanceService->hasCompletedMandatory($studentId)
+        ) {
+            throw new AppException(
+                userMessage: 'guidance::messages.must_complete_guidance',
+                code: 403,
+            );
+        }
+
         $today = now()->startOfDay();
 
         // Check if there is an approved absence request for today

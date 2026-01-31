@@ -15,14 +15,7 @@ class AbsenceRequest extends Model
 {
     use HasFactory, HasStatus, HasUuid, InteractsWithActivityLog;
 
-    protected $fillable = [
-        'registration_id',
-        'student_id',
-        'date',
-        'type',
-        'reason',
-        'proof_url',
-    ];
+    protected $fillable = ['registration_id', 'student_id', 'date', 'type', 'reason', 'proof_url'];
 
     protected $casts = [
         'date' => 'date',

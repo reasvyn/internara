@@ -37,6 +37,8 @@ zero-coupling.
 | **Attendance** | Time Tracking         | Records daily student attendance at internship locations (Check-in/Check-out).         |
 | **Journal**    | Activity Logging      | Documents daily student activities, learning reflections, and supervisor verification. |
 | **Assignment** | Task Management       | Manages mandatory tasks and institutional policy document submissions.                 |
+| **Schedule**   | Timeline & Scheduling | Manages institutional milestones and student journey visualization.                    |
+| **Guidance**   | Briefing & Onboarding | Manages instructional handbooks and student readiness acknowledgements.                |
 | **Assessment** | Competency Evaluation | Calculates final grades, manages competency rubrics, and issues digital certificates.  |
 | **Report**     | Data Export           | Reporting engine for exporting administrative data to document formats (PDF/Excel).    |
 | **Admin**      | System Monitoring     | Central orchestration dashboard for administrative staff and system oversight.         |

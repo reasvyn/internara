@@ -98,18 +98,10 @@ class AssignmentTypeManager extends Component
 
         if ($this->recordId) {
             $service->update($this->recordId, $data);
-            $this->dispatch(
-                'notify',
-                message: __('assignment::ui.type_updated'),
-                type: 'success',
-            );
+            $this->dispatch('notify', message: __('assignment::ui.type_updated'), type: 'success');
         } else {
             $service->create($data);
-            $this->dispatch(
-                'notify',
-                message: __('assignment::ui.type_created'),
-                type: 'success',
-            );
+            $this->dispatch('notify', message: __('assignment::ui.type_created'), type: 'success');
         }
 
         $this->formModal = false;

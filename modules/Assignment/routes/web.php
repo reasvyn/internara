@@ -24,7 +24,8 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
     Route::get('/admin/assignments', \Modules\Assignment\Livewire\AssignmentManager::class)->name(
         'admin.assignments.index',
     );
-    Route::get('/admin/assignments/types', \Modules\Assignment\Livewire\AssignmentTypeManager::class)->name(
-        'admin.assignments.types',
-    );
+    Route::get(
+        '/admin/assignments/types',
+        \Modules\Assignment\Livewire\AssignmentTypeManager::class,
+    )->name('admin.assignments.types');
 });

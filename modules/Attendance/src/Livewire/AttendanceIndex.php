@@ -59,13 +59,19 @@ class AttendanceIndex extends Component
         ]);
 
         $user = auth()->user();
-        $registration = app(\Modules\Internship\Services\Contracts\RegistrationService::class)->first([
+        $registration = app(
+            \Modules\Internship\Services\Contracts\RegistrationService::class,
+        )->first([
             'student_id' => $user->id,
             'latest_status' => 'active',
         ]);
 
         if (! $registration) {
-            $this->dispatch('notify', message: __('internship::messages.no_active_registration'), type: 'error');
+            $this->dispatch(
+                'notify',
+                message: __('internship::messages.no_active_registration'),
+                type: 'error',
+            );
 
             return;
         }
@@ -80,7 +86,11 @@ class AttendanceIndex extends Component
 
         $this->absenceModal = false;
         $this->absence_reason = '';
-        $this->dispatch('notify', message: __('attendance::messages.absence_request_submitted'), type: 'success');
+        $this->dispatch(
+            'notify',
+            message: __('attendance::messages.absence_request_submitted'),
+            type: 'success',
+        );
     }
 
     /**

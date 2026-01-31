@@ -37,8 +37,8 @@ ensure architectural integrity.
 
 ### 1.3 Usability & Accessibility (A11y Aware)
 
-- **Accessibility**: Compliance with **WCAG 2.1 (Level AA)** standards. Interfaces must be
-  navigable via keyboard and compatible with assistive technologies (A11y Aware).
+- **Accessibility**: Compliance with **WCAG 2.1 (Level AA)** standards. Interfaces must be navigable
+  via keyboard and compatible with assistive technologies (A11y Aware).
 - **Inclusivity**: UI elements must utilize semantic HTML and provide sufficient color contrast to
   ensure usability for all user cohorts.
 

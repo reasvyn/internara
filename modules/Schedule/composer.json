@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/schedule",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Schedule\\": "src/",
+            "Modules\\Schedule\\Database\\Factories\\": "database/factories/",
+            "Modules\\Schedule\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Schedule\\Tests\\": "tests/"
+        }
+    }
+}

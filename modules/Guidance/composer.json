@@ -1,0 +1,30 @@
+{
+    "name": "reasnov/guidance",
+    "description": "",
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasnov.official@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Guidance\\": "src/",
+            "Modules\\Guidance\\Database\\Factories\\": "database/factories/",
+            "Modules\\Guidance\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Guidance\\Tests\\": "tests/"
+        }
+    }
+}

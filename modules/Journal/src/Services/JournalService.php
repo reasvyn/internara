@@ -54,6 +54,7 @@ class JournalService extends EloquentQuery implements Contract
      */
     public function create(array $data): JournalEntry
     {
+        // Gating Invariant: Briefing/Guidance must be completed if enabled
         $registrationId = $data['registration_id'];
         $registration = $this->registrationService->find($registrationId);
 
@@ -61,6 +62,19 @@ class JournalService extends EloquentQuery implements Contract
             throw new AppException(
                 userMessage: 'internship::exceptions.registration_not_found',
                 code: 404,
+            );
+        }
+
+        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+
+        if (
+            $settingService->getValue('feature_guidance_enabled', true) &&
+            ! $guidanceService->hasCompletedMandatory($registration->student_id)
+        ) {
+            throw new AppException(
+                userMessage: 'guidance::messages.must_complete_guidance',
+                code: 403,
             );
         }
 

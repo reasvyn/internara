@@ -332,8 +332,8 @@ AA)** standards.
   to ensure legibility.
 - **ARIA Attributes**: Utilize ARIA roles and labels (`aria-label`, `aria-expanded`, etc.) when
   native HTML semantics are insufficient.
-- **Labeling Invariant**: Every input element must have a corresponding `<label>` or an
-  `aria-label` to ensure screen reader compatibility.
+- **Labeling Invariant**: Every input element must have a corresponding `<label>` or an `aria-label`
+  to ensure screen reader compatibility.
 
 ---
 

@@ -14,13 +14,13 @@ test('it calculates readiness correctly', function () {
     $student = User::factory()->create();
     $teacher = User::factory()->create();
     $mentor = User::factory()->create();
-    
+
     // 1. Not ready: period not ended
     $registration = InternshipRegistration::factory()->create([
         'student_id' => $student->id,
         'teacher_id' => $teacher->id,
         'mentor_id' => $mentor->id,
-        'end_date' => now()->addDay()
+        'end_date' => now()->addDay(),
     ]);
 
     $service = app(AssessmentService::class);
@@ -39,13 +39,13 @@ test('it calculates readiness correctly', function () {
         'registration_id' => $registration->id,
         'evaluator_id' => $teacher->id,
         'type' => 'teacher',
-        'score' => 80
+        'score' => 80,
     ]);
     Assessment::create([
         'registration_id' => $registration->id,
         'evaluator_id' => $mentor->id,
         'type' => 'mentor',
-        'score' => 85
+        'score' => 85,
     ]);
 
     $status = $service->getReadinessStatus($registration->id);

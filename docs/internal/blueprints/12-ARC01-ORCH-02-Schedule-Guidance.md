@@ -48,15 +48,15 @@ readiness by formalizing the internship timeline and providing a structured guid
 ### 3.1 Domain Integration & Data Architecture
 
 - **Schedule Module (New)**:
-    - `ScheduleEvent`: (UUID, title, description, start_at, end_at, type: `event, deadline, briefing`).
+    - `Schedule`: (UUID, title, description, start_at, end_at, type: `event, deadline, briefing`).
     - Events can be scoped to an `Internship` program or `Academic Year`.
 - **Guidance Module (New)**:
-    - `Guideline`: (UUID, title, file_url, version, is_active).
-    - `GuidelineAcknowledgement`: (UUID, student_id, guideline_id, acknowledged_at).
+    - `Handbook`: (UUID, title, file_url, version, is_active).
+    - `HandbookAcknowledgement`: (UUID, student_id, handbook_id, acknowledged_at).
 - **Cross-Module Relation**:
     - `Schedule` utilizes the `setting()` registry for default phase labels.
-    - `Guidance` visibility is governed by `setting('feature_guidance_enabled', true)`.
-    - `Guidance` integrates with the `Media` module for secure PDF storage.
+    - `Handbook` visibility is governed by `setting('feature_guidance_enabled', true)`.
+    - `Handbook` integrates with the `Media` module for secure PDF storage.
 
 ### 3.2 Logic Invariants
 
@@ -65,8 +65,8 @@ readiness by formalizing the internship timeline and providing a structured guid
 - **The Acknowledgement Invariant**: If enabled, certain internship activities (like starting a
   journal) may optionally be gated by the completion of the "Guideline Checklist" if configured by
   the school.
-- **The Period Alignment**: Schedule events must reside within the broad boundaries of the
-  academic year.
+- **The Period Alignment**: Schedule events must reside within the broad boundaries of the academic
+  year.
 
 ---
 

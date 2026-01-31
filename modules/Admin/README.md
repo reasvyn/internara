@@ -18,11 +18,13 @@ system configurations and provides a comprehensive overview of the entire platfo
 
 - **System Metrics:** Bird's-eye view of institutional activity.
 - **Navigation Hub:** Centralized access to all administrative domain modules.
+- **Application Metadata:** Discrete widget displaying system version, series code, and developer
+  credits via `AppInfoWidget`.
 
 ### 2. Batch Onboarding
 
-- **CSV Import Engine:** High-scale utility for mass registering students, teachers, and mentors with
-  automated account creation.
+- **CSV Import Engine:** High-scale utility for mass registering students, teachers, and mentors
+  with automated account creation.
 - **Onboarding Monitor:** Real-time feedback and result reporting for bulk initialization tasks.
 
 ---

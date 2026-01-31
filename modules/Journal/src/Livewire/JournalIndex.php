@@ -33,6 +33,25 @@ class JournalIndex extends Component
     public function boot(JournalService $journalService): void
     {
         $this->journalService = $journalService;
+
+        // Gating System: Check if student has completed mandatory guidance
+        if (auth()->user()->hasRole('student')) {
+            $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+            $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+
+            if (
+                $settingService->getValue('feature_guidance_enabled', true) &&
+                ! $guidanceService->hasCompletedMandatory(auth()->id())
+            ) {
+                $this->dispatch(
+                    'toast',
+                    message: __('guidance::messages.must_complete_guidance'),
+                    type: 'warning',
+                );
+
+                $this->redirect(route('student.dashboard'));
+            }
+        }
     }
 
     /**

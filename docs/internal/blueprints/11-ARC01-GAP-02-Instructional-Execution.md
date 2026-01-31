@@ -68,8 +68,8 @@ formal academic evaluation and credentialing.
 
 - **Assessment Module**:
     - Creation of `competencies` (UUID, code, name, department_id).
-    - Creation of `journal_competency`: A many-to-many pivot table linking Journals and
-      Competencies for performant aggregation.
+    - Creation of `journal_competency`: A many-to-many pivot table linking Journals and Competencies
+      for performant aggregation.
     - Implementation of `assessments`: Records for formative and summative evaluations (UUID, type,
       scores, feedback).
     - Scoring engine logic for aggregating claims and attendance engagement.
@@ -77,7 +77,8 @@ formal academic evaluation and credentialing.
     - Implementation of `mentoring_sessions`: A unified registry for guidance logs utilizing
       `MentoringVisit` and `MentoringLog`.
 - **Attendance Module**:
-    - Implementation of `absence_requests` (UUID, registration_id, student_id, type, reason, status).
+    - Implementation of `absence_requests` (UUID, registration_id, student_id, type, reason,
+      status).
 - **Report Module**:
     - Implementation of the `TranscriptService` for student achievement document orchestration.
 
@@ -126,6 +127,5 @@ A design series is considered done only when it satisfies the following gates:
 
 ---
 
-_By completing this combined blueprint, Internara ensures that daily activities are
-instructionally meaningful, rigorously documented, and correctly transformed into verifiable
-academic credentials._
+_By completing this combined blueprint, Internara ensures that daily activities are instructionally
+meaningful, rigorously documented, and correctly transformed into verifiable academic credentials._

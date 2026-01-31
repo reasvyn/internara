@@ -1,0 +1,11 @@
+{
+    "name": "Guidance",
+    "alias": "guidance",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Guidance\\Providers\\GuidanceServiceProvider"
+    ],
+    "files": []
+}
