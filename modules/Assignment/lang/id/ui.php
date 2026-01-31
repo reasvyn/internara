@@ -19,4 +19,7 @@ return [
     'success_deleted' => 'Tugas berhasil dihapus.',
     'success_submitted' => 'Tugas berhasil dikumpulkan.',
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus tugas ini?',
+    'type_created' => 'Jenis tugas berhasil dibuat.',
+    'type_updated' => 'Jenis tugas berhasil diperbarui.',
+    'type_deleted' => 'Jenis tugas berhasil dihapus.',
 ];

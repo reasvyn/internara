@@ -29,6 +29,10 @@ to official registration.
 
 ### 3. Key Features
 
+- **Advisor Allocation:** Explicitly links every student placement to a Monitoring Teacher
+  (`teacher_id`) to ensure continuous supervision.
+- **Temporal Guard:** Enforces strict internship activity windows via `start_date` and `end_date`
+  invariants.
 - **One-Student-One-Placement:** Enforces official standards while tracking history.
 - **Automated Validation:** Gated registrations ensuring all administrative criteria are met.
 - **i18n:** All requirement descriptions and placement data support localization.

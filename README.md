@@ -89,7 +89,7 @@ transparency.
 
 | Version     | Readiness | Maintenance | Current Status |
 | :---------- | :-------- | :---------- | :------------- |
-| **v0.10.x** | Alpha     | Snapshot    | In Progress    |
+| **v0.10.x** | Alpha     | Snapshot    | Released       |
 | **v0.9.x**  | Alpha     | Snapshot    | Released       |
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
 | **v0.7.x**  | Alpha     | Snapshot    | Released       |

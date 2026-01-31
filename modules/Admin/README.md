@@ -19,6 +19,12 @@ system configurations and provides a comprehensive overview of the entire platfo
 - **System Metrics:** Bird's-eye view of institutional activity.
 - **Navigation Hub:** Centralized access to all administrative domain modules.
 
+### 2. Batch Onboarding
+
+- **CSV Import Engine:** High-scale utility for mass registering students, teachers, and mentors with
+  automated account creation.
+- **Onboarding Monitor:** Real-time feedback and result reporting for bulk initialization tasks.
+
 ---
 
 _The Admin module ensures that the Internara platform remains secure, configured, and localized._

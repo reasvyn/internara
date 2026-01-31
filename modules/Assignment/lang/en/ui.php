@@ -19,4 +19,7 @@ return [
     'success_deleted' => 'Assignment deleted successfully.',
     'success_submitted' => 'Assignment submitted successfully.',
     'delete_confirm' => 'Are you sure you want to delete this assignment?',
+    'type_created' => 'Assignment type created successfully.',
+    'type_updated' => 'Assignment type updated successfully.',
+    'type_deleted' => 'Assignment type deleted successfully.',
 ];

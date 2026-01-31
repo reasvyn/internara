@@ -94,8 +94,10 @@ The final phase ensures that the engineering record converges with the realized 
 ### 5.1 Configuration Synchronization
 
 - **Metadata**: Update `app_info.json` if a milestone is achieved.
-- **Documentation**: Finalize Release Notes in `docs/versions/` and synchronize the **Table of
-  Contents**.
+- **Documentation**: 
+    - Finalize Release Notes in `docs/versions/`.
+    - Synchronize the related **Table of Contents** documents.
+    - **README Update**: Update the project-level `README.md` and any affected module-specific `README.md` files to reflect new capabilities and architectural changes.
 - **Repository**: Stage and commit changes according to the
   **[GitHub Protocols](github-protocols.md)**.
 

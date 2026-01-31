@@ -23,18 +23,27 @@ that allow other modules to record and visualize audit trails without domain cou
 
 ### 2.1 Service Layer
 
-- **`ActivityService`**: Orchestrates the querying and analysis of system activity logs.
+- **`ActivityService`**: Orchestrates the querying and analysis of user activity logs.
     - _Features_: Engagement statistics calculation, filtered log retrieval, and subject-based
       correlation.
     - _Contract_: `Modules\Log\Services\Contracts\ActivityService`.
 
 ### 2.2 Logging Infrastructure
 
+- **`AuditLog` Model**: Provides an immutable trail of critical administrative and system-wide
+  data modifications.
+- **`Activity` Model**: Extends Spatie Activitylog to support **UUID v4** identities for behavioral
+  tracking.
 - **`PiiMaskingProcessor`**: A Monolog processor that recursively redacts sensitive fields (emails,
-  passwords, IDs) from log payloads using the `Shared` module's `Masker`.
-- **`Activity` Model**: Extends Spatie Activitylog to support **UUID v4** identities.
+  passwords, IDs) from log payloads.
 
-### 2.3 Presentation Layer
+### 2.3 Specialized Concerns
+
+- **`HandlesAuditLog`**: A trait for automated recording of system-level audit events.
+- **`InteractsWithActivityLog`**: A trait for standardized user activity tracking across the
+  ecosystem.
+
+### 2.4 Presentation Layer
 
 - **`ActivityFeed`**: A reusable Livewire component for visualizing activity streams. It adheres to
   the **Thin Component** mandate by delegating all data retrieval to the `ActivityService`.

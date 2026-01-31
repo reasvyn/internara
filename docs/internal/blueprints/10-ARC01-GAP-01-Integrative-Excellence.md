@@ -1,6 +1,6 @@
 # Application Blueprint: Operational Readiness & Governance (ARC01-GAP-01)
 
-**Series Code**: `ARC01-GAP-01` **Status**: `In Progress`
+**Series Code**: `ARC01-GAP-01` **Status**: `Done`
 
 > **System Requirements Specification Alignment:** This blueprint satisfies the **Administrative
 > Orchestration** ([SYRS-F-101]) and **Security & Integrity** ([SYRS-NF-502]) requirements by
@@ -68,17 +68,16 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
       `teacher_id` (Advisor).
     - Enhancement of `internship_placements` table with `capacity_quota` management.
     - Implementation of student assignments (managed via Assignment module).
-- **Core Module**:
-    - Global state management for `system_phase`.
 - **Log Module (Centralized Observability)**:
     - **System Log (AuditLog)**: Managed within this module to provide an immutable trail of
-      critical data modifications. Existing `AuditLog` infrastructure will be consolidated here.
+      critical data modifications. Existing `AuditLog` infrastructure has been consolidated here,
+      utilizing the `HandlesAuditLog` concern for automated recording.
     - **User Log (ActivityLog)**: Integration of `Spatie/ActivityLog` for behavioral tracking.
-        1.  Configuration: Use **UUID** for `subject_id` and `causer_id`.
-        2.  Standardization: Define `log_name` identifiers: `auth`, `profile`, `submission`.
-        3.  Implementation: Provide centralized Traits/Contracts for other modules to record user
-            activities.
-- **Assignment Module (Evolutionary Target)**:
+        1.  Configuration: Uses **UUID** for `subject_id` and `causer_id`.
+        2.  Standardization: Defined `log_name` identifiers: `auth`, `profile`, `submission`.
+        3.  Implementation: Provides the `InteractsWithActivityLog` concern for other modules to
+            record user activities.
+- **Assignment Module**:
     - **Purpose**: Decouple student assignment logic (e.g., Reports, Presentations) from the core
       Internship lifecycle.
     - **Entities**:
@@ -88,8 +87,11 @@ ensuring high-fidelity stakeholder onboarding and strict temporal governance.
 - **Requirement Management (Internship Module)**:
     - **Context**: Registration prerequisites (e.g., "Surat Izin Orang Tua", "Pakta Integritas")
       remain in the **Internship** module as they are part of the onboarding/registration flow.
-    - **Migration Path**: Transition legacy report/presentation records into the new Assignment
-      structure, while maintaining requirement records in the Internship domain.
+    - **Migration Path**: Legacy report/presentation records have been transitioned into the new
+      Assignment structure.
+- **Setting Module**:
+    - **Governance**: Manages the global `system_phase` (e.g., `registration`, `operation`) via the
+      dynamic `setting()` registry to orchestrate system-wide operational windows.
 
 ### 3.2 Logic Invariants
 

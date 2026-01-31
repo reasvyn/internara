@@ -28,7 +28,7 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 | Version     | Readiness | Maintenance | Current Status |
 | :---------- | :-------- | :---------- | :------------- |
-| **v0.10.x** | Alpha     | Snapshot    | In Progress    |
+| **v0.10.x** | Alpha     | Snapshot    | Released       |
 | **v0.9.x**  | Alpha     | Snapshot    | Released       |
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
 | **v0.7.x**  | Alpha     | Snapshot    | Released       |
@@ -38,13 +38,9 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 3. What's New?
 
-### Active Development
-
-- **[v0.10.0](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop
-  with competency rubrics, mentoring logs, and temporal orchestration.
-
 ### Latest Released Versions
-
+ 
+ - **[v0.10.0-alpha](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop  with competency rubrics, mentoring logs, and temporal orchestration.
 - **[v0.9.0](v0.9.0.md)** — **Easy System Setup** Focus: A new automated wizard to help you set up
   Internara in minutes, including SMTP and system health audits.
 

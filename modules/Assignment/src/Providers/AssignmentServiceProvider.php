@@ -44,6 +44,7 @@ class AssignmentServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Assignment\Services\Contracts\AssignmentService::class => \Modules\Assignment\Services\AssignmentService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class => \Modules\Assignment\Services\AssignmentTypeService::class,
             \Modules\Assignment\Services\Contracts\SubmissionService::class => \Modules\Assignment\Services\SubmissionService::class,
         ];
     }
@@ -65,6 +66,12 @@ class AssignmentServiceProvider extends ServiceProvider
                     'title' => __('Manage Assignments'),
                     'icon' => 'tabler.settings-automation',
                     'link' => '/admin/assignments',
+                    'role' => 'admin|super-admin',
+                ],
+                'ui::components.menu-item#admin-assignment-types' => [
+                    'title' => __('Assignment Types'),
+                    'icon' => 'tabler.category',
+                    'link' => '/admin/assignments/types',
                     'role' => 'admin|super-admin',
                 ],
             ],

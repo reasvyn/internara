@@ -44,19 +44,27 @@ test('it can submit a journal entry', function () {
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('draft');
 
-    $updatedEntry = $this->journalService->submit($entry->id);
+    $this->journalService->submit($entry->id);
 
-    expect($updatedEntry->latestStatus()->name)->toBe('submitted');
+    $this->assertDatabaseHas('statuses', [
+        'model_id' => $entry->id,
+        'model_type' => JournalEntry::class,
+        'name' => 'submitted',
+    ]);
 });
 
 test('it can approve a journal entry', function () {
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('submitted');
 
-    $updatedEntry = $this->journalService->approve($entry->id, 'Good job!');
+    $this->journalService->approve($entry->id, 'Good job!');
 
-    expect($updatedEntry->latestStatus()->name)->toBe('approved');
-    expect($updatedEntry->latestStatus()->reason)->toBe('Good job!');
+    $this->assertDatabaseHas('statuses', [
+        'model_id' => $entry->id,
+        'model_type' => JournalEntry::class,
+        'name' => 'approved',
+        'reason' => 'Good job!',
+    ]);
 });
 
 test('it cannot update an approved journal entry', function () {
