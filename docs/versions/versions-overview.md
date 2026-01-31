@@ -28,15 +28,21 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 
 
+
+
 | Version     | Readiness | Maintenance | Current Status |
+
+
 
 
 
 | :---------- | :-------- | :---------- | :------------- |
 
-
+| **v0.12.x** | Alpha     | Snapshot    | In Progress    |
 
 | **v0.11.x** | Alpha     | Snapshot    | Released       |
+
+
 
 
 
@@ -46,9 +52,7 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
 
-| **v0.7.x**  | Alpha     | Snapshot    | Released       |
-
-| **v0.6.x**  | Alpha     | Snapshot    | Released       |
+| **v0.7.x** | Alpha     | Snapshot    | Released       |
 
 
 
@@ -56,7 +60,25 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 
 
+
+
+
+
 ## 3. What's New?
+
+
+
+
+
+
+
+### Active Development
+
+
+
+- **[v0.12.0](v0.12.0.md)** — **Timeline Transparency & Guidance** Focus: Centralized scheduling and
+
+  instructional guidance hub for students.
 
 
 
@@ -68,15 +90,9 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 
 
-- **[v0.11.0-alpha](v0.11.0.md)** — **Instructional Execution & Evaluation** Focus: Formalizing the complete instructional loop from journal claims to final transcripts.
+- **[v0.11.0-alpha](v0.11.0.md)** — **Instructional Execution & Evaluation** Focus: Formalizing the
 
-
-
-- **[v0.10.0-alpha](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop
-
-  with competency rubrics, mentoring logs, and temporal orchestration.
-- **[v0.9.0](v0.9.0.md)** — **Easy System Setup** Focus: A new automated wizard to help you set up
-  Internara in minutes, including SMTP and system health audits.
+  complete instructional loop from journal claims to final transcripts.
 
 ---
 

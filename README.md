@@ -89,12 +89,12 @@ transparency.
 
 | Version     | Readiness | Maintenance | Current Status |
 | :---------- | :-------- | :---------- | :------------- |
+| **v0.12.x** | Alpha     | Snapshot    | In Progress    |
 | **v0.11.x** | Alpha     | Snapshot    | Released       |
 | **v0.10.x** | Alpha     | Snapshot    | Released       |
 | **v0.9.x**  | Alpha     | Snapshot    | Released       |
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
 | **v0.7.x**  | Alpha     | Snapshot    | Released       |
-| **v0.6.x**  | Alpha     | Snapshot    | Released       |
 
 ---
 

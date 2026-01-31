@@ -24,7 +24,6 @@ technical implementation.
 - **[10-ARC01-GAP-01 (Integrative Excellence)](10-ARC01-GAP-01-Integrative-Excellence.md)**
 - **[09-ARC01-BOOT-01 (System Initialization)](09-ARC01-BOOT-01-System-Initialization.md)**
 - **[07-ARC01-ORCH-01 (Administrative Orchestration)](07-ARC01-ORCH-01-Administrative-Orchestration.md)**
-- **[06-ARC01-FEAT-01 (Assessment & Workspaces)](06-ARC01-FEAT-01-Assessment-Workspaces.md)**
 
 ---
 

@@ -8,6 +8,7 @@ utilized for current development orchestration.
 
 ## 1. Historical Engineering Series
 
+- **[06-ARC01-FEAT-01 (Workspaces)](06-ARC01-FEAT-01-Assessment-Workspaces.md)**
 - **[05-ARC01-OPER-01 (Operational)](05-ARC01-OPER-01-Operational-Layer.md)**
 - **[04-ARC01-INST-01 (Institutional)](04-ARC01-INST-01-Institutional.md)**
 - **[03-ARC01-USER-01 (Identity)](03-ARC01-USER-01-Identity.md)**
