@@ -32,12 +32,17 @@
                         required 
                     />
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-ui::input 
-                            label="{{ __('Kompetensi Dasar (KD)') }}" 
-                            placeholder="{{ __('Misal: KD 3.1') }}"
-                            wire:model="form.basic_competence" 
+                    <div class="grid grid-cols-1 gap-4">
+                        <x-ui::choices
+                            label="{{ __('Kompetensi / Skill yang Dilatih') }}"
+                            wire:model="form.competency_ids"
+                            :options="$availableCompetencies"
+                            placeholder="{{ __('Pilih kompetensi...') }}"
+                            hint="{{ __('Anda dapat memilih lebih dari satu kompetensi') }}"
                         />
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-ui::input 
                             label="{{ __('Nilai-nilai Karakter') }}" 
                             placeholder="{{ __('Misal: Disiplin, Tanggung Jawab') }}"
@@ -52,13 +57,12 @@
                         rows="3"
                     />
 
-                                    <x-ui::file
-                                        label="{{ __('journal::journal.field.attachments') }}"
-                                        wire:model="attachments"
-                                        multiple
-                                        accept="image/*,application/pdf"
-                                        :preview="$attachment_urls"
-                                    />
+                    <x-ui::file
+                        label="{{ __('Lampiran / Bukti') }}"
+                        wire:model="form.attachments"
+                        multiple
+                        accept="image/*,application/pdf"
+                    />
                     <x-slot:actions>
                         <x-ui::button 
                             label="{{ __('Batal') }}" 

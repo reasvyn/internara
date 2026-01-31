@@ -4,8 +4,8 @@
     {{-- Main Navbar --}}
     <x-ui::navbar sticky full-width>
         <x-slot:hamburger>
-            <label for="main-drawer" class="lg:hidden mr-3">
-                <x-ui::icon name="tabler.menu-2" class="cursor-pointer" />
+            <label for="main-drawer" class="lg:hidden mr-3" aria-label="{{ __('Open menu') }}">
+                <x-ui::icon name="tabler.menu-2" class="cursor-pointer" aria-hidden="true" />
             </label>
         </x-slot:hamburger>
     </x-ui::navbar>
@@ -21,6 +21,8 @@
         </x-slot:sidebar>
 
         {{-- Main Content --}}
-        {{ $slot }}
+        <div id="main-content">
+            {{ $slot }}
+        </div>
     </x-ui::main>
 </x-ui::layouts.base>

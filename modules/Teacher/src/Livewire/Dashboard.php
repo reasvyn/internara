@@ -23,6 +23,15 @@ class Dashboard extends Component
     }
 
     /**
+     * Get readiness status for a specific registration.
+     */
+    public function getReadiness(string $id): array
+    {
+        return app(\Modules\Assessment\Services\Contracts\AssessmentService::class)
+            ->getReadinessStatus($id);
+    }
+
+    /**
      * Render the teacher dashboard view.
      */
     public function render(): View

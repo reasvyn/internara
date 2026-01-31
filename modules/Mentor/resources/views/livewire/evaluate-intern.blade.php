@@ -40,42 +40,62 @@
         </x-ui::card>
     </div>
 
-    <x-ui::card title="{{ __('Industry Assessment') }}" shadow separator>
-        <x-ui::form wire:submit="save">
-            <div class="space-y-4">
-                @foreach($criteria as $key => $value)
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text font-bold">{{ ucfirst(str_replace('_', ' ', $key)) }} (0-100)</span>
-                        </label>
-                        <input 
-                            type="range" 
-                            min="0" 
-                            max="100" 
-                            wire:model.live="criteria.{{ $key }}" 
-                            class="range range-primary range-sm" 
-                        />
-                        <div class="w-full flex justify-between text-xs px-2 mt-1">
-                            <span>0</span>
-                            <span class="font-bold text-lg text-primary">{{ $value }}</span>
-                            <span>100</span>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <x-ui::card title="{{ __('Industry Assessment') }}" shadow separator>
+            <x-ui::form wire:submit="save">
+                <div class="space-y-4">
+                    @foreach($criteria as $key => $value)
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-bold">{{ ucfirst(str_replace('_', ' ', $key)) }} (0-100)</span>
+                            </label>
+                            <input 
+                                type="range" 
+                                min="0" 
+                                max="100" 
+                                wire:model.live="criteria.{{ $key }}" 
+                                class="range range-primary range-sm" 
+                            />
+                            <div class="w-full flex justify-between text-xs px-2 mt-1">
+                                <span>0</span>
+                                <span class="font-bold text-lg text-primary">{{ $value }}</span>
+                                <span>100</span>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
 
-            <x-ui::textarea 
-                label="{{ __('Mentor Feedback') }}" 
-                wire:model="feedback" 
-                rows="3" 
-                class="mt-6"
-                placeholder="{{ __('Optional comments...') }}"
-            />
+                <x-ui::textarea 
+                    label="{{ __('Mentor Feedback') }}" 
+                    wire:model="feedback" 
+                    rows="3" 
+                    class="mt-6"
+                    placeholder="{{ __('Optional comments...') }}"
+                />
 
-            <x-slot:actions>
-                <x-ui::button label="{{ __('Cancel') }}" link="{{ route('mentor.dashboard') }}" />
-                <x-ui::button type="submit" label="{{ __('Submit') }}" class="btn-primary" spinner="save" />
-            </x-slot:actions>
-        </x-ui::form>
-    </x-ui::card>
+                <x-slot:actions>
+                    <x-ui::button label="{{ __('Cancel') }}" link="{{ route('mentor.dashboard') }}" />
+                    <x-ui::button type="submit" label="{{ __('Submit') }}" class="btn-primary" spinner="save" />
+                </x-slot:actions>
+            </x-ui::form>
+        </x-ui::card>
+
+        <x-ui::card title="{{ __('Competency Recap') }}" subtitle="{{ __('Skills claimed in student journals') }}" shadow separator>
+            @if($claimedCompetencies->isEmpty())
+                <div class="text-center py-8 opacity-50">
+                    <x-ui::icon name="tabler.info-circle" class="w-12 h-12 mx-auto mb-2" />
+                    <p>{{ __('No competencies claimed yet.') }}</p>
+                </div>
+            @else
+                <x-ui::table :headers="[
+                    ['key' => 'name', 'label' => __('Skill')],
+                    ['key' => 'claimed_date', 'label' => __('Date')],
+                ]" :rows="$claimedCompetencies">
+                    @scope('cell_claimed_date', $competency)
+                        {{ \Illuminate\Support\Carbon::parse($competency->claimed_date)->format('d M Y') }}
+                    @endscope
+                </x-ui::table>
+            @endif
+        </x-ui::card>
+    </div>
 </div>

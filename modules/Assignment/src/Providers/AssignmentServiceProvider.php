@@ -61,18 +61,21 @@ class AssignmentServiceProvider extends ServiceProvider
                     'icon' => 'tabler.checklist',
                     'link' => '/assignments',
                     'role' => 'student',
+                    'order' => 40,
                 ],
                 'ui::components.menu-item#admin-assignments' => [
                     'title' => __('Manage Assignments'),
                     'icon' => 'tabler.settings-automation',
                     'link' => '/admin/assignments',
                     'role' => 'admin|super-admin',
+                    'order' => 41,
                 ],
                 'ui::components.menu-item#admin-assignment-types' => [
                     'title' => __('Assignment Types'),
                     'icon' => 'tabler.category',
                     'link' => '/admin/assignments/types',
                     'role' => 'admin|super-admin',
+                    'order' => 42,
                 ],
             ],
             'student.dashboard.quick-actions' => [

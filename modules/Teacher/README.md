@@ -14,3 +14,8 @@ assigned students.
 
 - **Student Overview:** Lists all students currently under supervision.
 - **Status Tracking:** Visual indicators of student internship status.
+
+### 2. Evaluation & Insights
+
+- **Competency Recap:** Automatic visualization of skills claimed by students in their journals.
+- **Academic Assessment:** Formal evaluation interface for grading student performance.

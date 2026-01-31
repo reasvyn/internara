@@ -36,7 +36,12 @@ interface AttendanceService extends EloquentQuery
     public function getTodayLog(string $studentId): ?AttendanceLog;
 
     /**
-     * Get the total count of attendance days for a specific registration.
+     * Get attendance count for a registration.
      */
     public function getAttendanceCount(string $registrationId, ?string $status = null): int;
+
+    /**
+     * Create a new absence request.
+     */
+    public function createAbsenceRequest(array $data): \Modules\Attendance\Models\AbsenceRequest;
 }

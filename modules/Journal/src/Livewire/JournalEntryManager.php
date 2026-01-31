@@ -100,7 +100,25 @@ class JournalEntryManager extends Component
 
     public function render(): View
     {
-        return view('journal::livewire.journal-entry-manager')->layout(
+        $registration = $this->registrationService->first([
+            'student_id' => auth()->id(),
+            'latest_status' => 'active',
+        ]);
+
+        $availableCompetencies = [];
+        if ($registration) {
+            $profile = app(\Modules\Profile\Services\Contracts\ProfileService::class)
+                ->getByUserId(auth()->id());
+
+            if ($profile && $profile->department_id) {
+                $availableCompetencies = app(\Modules\Assessment\Services\Contracts\CompetencyService::class)
+                    ->getForDepartment($profile->department_id);
+            }
+        }
+
+        return view('journal::livewire.journal-entry-manager', [
+            'availableCompetencies' => $availableCompetencies,
+        ])->layout(
             'ui::components.layouts.dashboard',
             [
                 'title' => $this->form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru'),

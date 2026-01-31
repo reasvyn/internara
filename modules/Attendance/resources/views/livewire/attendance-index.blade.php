@@ -1,5 +1,11 @@
 <div>
-    <x-ui::header title="{{ __('Log Presensi') }}" subtitle="{{ __('Riwayat kehadiran selama masa magang.') }}" />
+    <x-ui::header title="{{ __('Log Presensi') }}" subtitle="{{ __('Riwayat kehadiran selama masa magang.') }}">
+        <x-slot:actions>
+            @if(auth()->user()->hasRole('student'))
+                <x-ui::button label="{{ __('Ajukan Izin / Sakit') }}" icon="tabler.user-off" wire:click="openAbsenceModal" class="btn-outline" />
+            @endif
+        </x-slot:actions>
+    </x-ui::header>
 
     <x-ui::main>
         <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -37,4 +43,28 @@
             </x-ui::table>
         </x-ui::card>
     </x-ui::main>
+
+    <x-ui::modal wire:model="absenceModal" title="{{ __('Ajukan Izin / Sakit') }}" separator>
+        <x-ui::form wire:submit="submitAbsence">
+            <x-ui::input type="date" label="{{ __('Tanggal') }}" wire:model="absence_date" required />
+            
+            <x-ui::select 
+                label="{{ __('Jenis') }}" 
+                wire:model="absence_type" 
+                :options="[
+                    ['id' => 'leave', 'name' => __('Izin')],
+                    ['id' => 'sick', 'name' => __('Sakit')],
+                    ['id' => 'permit', 'name' => __('Keperluan Sekolah')],
+                ]" 
+                required 
+            />
+
+            <x-ui::textarea label="{{ __('Alasan') }}" wire:model="absence_reason" placeholder="{{ __('Jelaskan alasan Anda...') }}" required />
+
+            <x-slot:actions>
+                <x-ui::button label="{{ __('Batal') }}" x-on:click="$wire.absenceModal = false" />
+                <x-ui::button label="{{ __('Kirim Pengajuan') }}" type="submit" class="btn-primary" spinner="submitAbsence" />
+            </x-slot:actions>
+        </x-ui::form>
+    </x-ui::modal>
 </div>

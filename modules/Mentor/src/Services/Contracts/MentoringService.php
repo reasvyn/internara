@@ -24,7 +24,12 @@ interface MentoringService extends EloquentQuery
     public function recordLog(array $data): \Modules\Mentor\Models\MentoringLog;
 
     /**
-     * Get mentoring stats for a specific registration.
+     * Get mentoring stats for a registration.
      */
     public function getMentoringStats(string $registrationId): array;
+
+    /**
+     * Get a combined chronological timeline of visits and logs.
+     */
+    public function getUnifiedTimeline(string $registrationId): \Illuminate\Support\Collection;
 }

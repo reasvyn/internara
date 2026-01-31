@@ -22,4 +22,16 @@ interface CompetencyService extends EloquentQuery
      * Get competency progress for a registration (Radar Chart Data).
      */
     public function getProgressStats(string $registrationId): array;
+
+    /**
+     * Sync competencies to a specific journal entry.
+     *
+     * @param array<string> $competencyIds
+     */
+    public function syncJournalCompetencies(string $journalEntryId, array $competencyIds): void;
+
+    /**
+     * Get all competencies claimed in journals for a specific registration.
+     */
+    public function getClaimedCompetencies(string $registrationId): \Illuminate\Support\Collection;
 }

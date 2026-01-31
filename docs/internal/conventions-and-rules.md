@@ -319,5 +319,23 @@ domains.
 
 ---
 
+## 18. Accessibility (A11y Aware) Standards
+
+Internara is committed to inclusivity and usability for all users, adhering to **WCAG 2.1 (Level
+AA)** standards.
+
+- **Semantic HTML**: Mandatory usage of semantic tags (`<main>`, `<nav>`, `<article>`, `<button>`)
+  to provide context to assistive technologies.
+- **Keyboard Navigability**: Every interactive element must be reachable and operable via keyboard
+  tabbing. Focus states must be clearly visible.
+- **Color Contrast**: All text and UI elements must maintain a minimum contrast ratio of **4.5:1**
+  to ensure legibility.
+- **ARIA Attributes**: Utilize ARIA roles and labels (`aria-label`, `aria-expanded`, etc.) when
+  native HTML semantics are insufficient.
+- **Labeling Invariant**: Every input element must have a corresponding `<label>` or an
+  `aria-label` to ensure screen reader compatibility.
+
+---
+
 _Non-compliance with these conventions indicates a failure of architectural integrity and will
 result in the rejection of the artifact during the V&V phase._

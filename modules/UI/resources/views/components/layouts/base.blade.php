@@ -7,6 +7,10 @@
     </head>
 
     <body class="max-w-screen size-full overflow-x-hidden font-sans antialiased">
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-base-100 focus:text-primary">
+            {{ __('Skip to content') }}
+        </a>
+
         <!-- Page Content --->
         <div class="flex size-full min-h-screen flex-col">
             {{ $slot }}

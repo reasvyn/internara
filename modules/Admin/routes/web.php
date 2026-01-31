@@ -14,6 +14,9 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
     Route::get('/admin/reports', \Modules\Report\Livewire\ReportIndex::class)->name(
         'admin.reports',
     );
+    Route::get('/admin/readiness', \Modules\Admin\Livewire\GraduationReadiness::class)->name(
+        'admin.readiness',
+    );
 
     // Stakeholder Management
     Route::get('/admin/students', \Modules\User\Livewire\UserManager::class)

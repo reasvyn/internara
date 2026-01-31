@@ -36,6 +36,7 @@ class MentorServiceProvider extends ServiceProvider
                     'title' => __('Dashboard'),
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/mentor',
+                    'order' => 10,
                 ],
             ],
         ];

@@ -17,6 +17,8 @@ The `Journal` module manages the daily activity tracking (Logbook) for students.
 
 ### 1. Daily Logbook
 
+- **Competency Tagging:** Students can tag specific skills/competencies from their department rubric.
+- **Submission Windows:** Enforces timely logging via dynamic windows managed in system settings.
 - **Attachments:** Secure proof of work (Photos, Documents).
 - **i18n:** All log labels and status indicators are localized.
 - **Identity:** All journal entries use **UUIDs**.

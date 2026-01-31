@@ -18,11 +18,14 @@ official credentials. It aggregates data from various sources to produce final g
 ### 1. Models
 
 - **Assessment:** Stores manual criteria and feedback (UUID identity).
+- **Competency:** Master registry for departmental skills.
+- **JournalCompetency:** Pivot mapping student journals to claimed skills.
 - **ComplianceScore:** Automated score derived from student engagement.
 
 ### 2. Services
 
 - **AssessmentService:** Manages manual evaluations from Instructors and Supervisors.
+- **CompetencyService:** Orchestrates the registry of skills and their mapping to student activities.
 - **ComplianceService:** Orchestrates the calculation of participation-driven scores via
   **Contracts**.
 - **CertificateService:** Generates PDF documents with QR-code verification.

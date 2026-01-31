@@ -38,42 +38,59 @@
         </x-ui::card>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <x-ui::card title="{{ __('Riwayat Kunjungan') }}" shadow>
-            @forelse($visits as $visit)
-                <div class="mb-4 p-4 border-l-4 border-primary bg-base-100 rounded-r shadow-sm">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-bold text-primary">{{ $visit->visit_date->format('d M Y') }}</span>
-                        <span class="text-xs opacity-50">{{ $visit->created_at->diffForHumans() }}</span>
-                    </div>
-                    <p class="text-sm">{{ $visit->notes }}</p>
-                </div>
-            @empty
-                <div class="text-center py-8 opacity-50">{{ __('Belum ada catatan kunjungan.') }}</div>
-            @endforelse
-        </x-ui::card>
-
-        <x-ui::card title="{{ __('Log & Feedback Bimbingan') }}" shadow>
-            @forelse($logs as $log)
-                <div class="mb-4 p-4 border-l-4 border-secondary bg-base-100 rounded-r shadow-sm">
-                    <div class="flex justify-between items-start mb-2">
+    <x-ui::card title="{{ __('Timeline Pembimbingan') }}" subtitle="{{ __('Gabungan log bimbingan dan kunjungan lapangan secara kronologis.') }}" shadow>
+        <div class="space-y-6">
+            @forelse($timeline as $item)
+                <div class="relative pl-8 border-l-2 {{ $item['type'] === 'visit' ? 'border-primary' : 'border-secondary' }}">
+                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full {{ $item['type'] === 'visit' ? 'bg-primary' : 'bg-secondary' }}"></div>
+                    
+                    <div class="flex justify-between items-start mb-1">
                         <div>
-                            <span class="font-bold">{{ $log->subject }}</span>
-                            <x-ui::badge :label="strtoupper($log->type)" class="badge-sm badge-outline" />
+                            <span class="font-bold text-lg">{{ $item['title'] }}</span>
+                            <x-ui::badge :label="strtoupper($item['type'])" class="badge-sm badge-outline ml-2" />
                         </div>
-                        <span class="text-xs opacity-50">{{ $log->created_at->diffForHumans() }}</span>
+                        <div class="text-right">
+                            <div class="text-sm font-medium">{{ \Illuminate\Support\Carbon::parse($item['date'])->format('d M Y') }}</div>
+                            <div class="text-[10px] opacity-50">{{ \Illuminate\Support\Carbon::parse($item['date'])->diffForHumans() }}</div>
+                        </div>
                     </div>
-                    <p class="text-sm italic mb-2">"{{ $log->content }}"</p>
-                    <div class="text-xs opacity-70 flex items-center gap-1">
-                        <x-ui::icon name="tabler.user" class="w-3 h-3" />
-                        {{ $log->causer->name }}
+
+                    <div class="bg-base-200 p-4 rounded-lg shadow-sm">
+                        <p class="text-sm whitespace-pre-line">{{ $item['content'] }}</p>
+                        
+                        @if($item['type'] === 'visit' && !empty($item['metadata']))
+                            <div class="mt-3 pt-3 border-t border-base-300">
+                                <div class="text-xs font-bold opacity-70 mb-1">{{ __('Temuan Lapangan:') }}</div>
+                                <ul class="list-disc list-inside text-xs space-y-1">
+                                    @foreach($item['metadata'] as $finding)
+                                        <li>{{ $finding }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+                        <div class="mt-4 flex items-center gap-2 text-xs opacity-70">
+                            <div class="avatar placeholder">
+                                <div class="bg-neutral text-neutral-content rounded-full w-6">
+                                    <span>{{ substr($item['causer']->name, 0, 1) }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-bold">{{ $item['causer']->name }}</span>
+                                <span class="mx-1">•</span>
+                                <span>{{ $item['causer']->roles->first()?->name ?? 'User' }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @empty
-                <div class="text-center py-8 opacity-50">{{ __('Belum ada log bimbingan.') }}</div>
+                <div class="text-center py-12 opacity-50">
+                    <x-ui::icon name="tabler.timeline" class="w-16 h-16 mx-auto mb-4" />
+                    <p>{{ __('Belum ada aktivitas pembimbingan yang tercatat.') }}</p>
+                </div>
             @endforelse
-        </x-ui::card>
-    </div>
+        </div>
+    </x-ui::card>
 
     {{-- Visit Modal --}}
     <x-ui::modal wire:model="visitModal" title="{{ __('Catat Kunjungan Lapangan') }}" subtitle="{{ __('Dokumentasikan temuan saat kunjungan fisik.') }}">

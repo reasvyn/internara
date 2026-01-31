@@ -45,4 +45,42 @@ class MentoringService extends EloquentQuery implements Contract
                 ->first(),
         ];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUnifiedTimeline(string $registrationId): \Illuminate\Support\Collection
+    {
+        $visits = MentoringVisit::with('teacher')
+            ->where('registration_id', $registrationId)
+            ->get()
+            ->map(function ($visit) {
+                return [
+                    'id' => $visit->id,
+                    'type' => 'visit',
+                    'date' => $visit->visit_date,
+                    'causer' => $visit->teacher,
+                    'title' => __('Kunjungan Lapangan'),
+                    'content' => $visit->notes,
+                    'metadata' => $visit->findings,
+                ];
+            });
+
+        $logs = MentoringLog::with('causer')
+            ->where('registration_id', $registrationId)
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'type' => 'log',
+                    'date' => $log->created_at,
+                    'causer' => $log->causer,
+                    'title' => $log->subject,
+                    'content' => $log->content,
+                    'metadata' => $log->metadata,
+                ];
+            });
+
+        return $visits->concat($logs)->sortByDesc('date')->values();
+    }
 }

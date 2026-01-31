@@ -87,22 +87,12 @@ class MentoringManager extends Component
         ])->findOrFail($this->registrationId);
 
         $stats = app(MentoringService::class)->getMentoringStats($this->registrationId);
+        $timeline = app(MentoringService::class)->getUnifiedTimeline($this->registrationId);
 
         return view('mentor::livewire.mentoring-manager', [
             'registration' => $registration,
             'stats' => $stats,
-            'visits' => \Modules\Mentor\Models\MentoringVisit::where(
-                'registration_id',
-                $this->registrationId,
-            )
-                ->latest('visit_date')
-                ->get(),
-            'logs' => \Modules\Mentor\Models\MentoringLog::where(
-                'registration_id',
-                $this->registrationId,
-            )
-                ->latest()
-                ->get(),
+            'timeline' => $timeline,
         ])->layout('ui::components.layouts.dashboard', ['title' => __('Manajemen Pembimbingan')]);
     }
 }

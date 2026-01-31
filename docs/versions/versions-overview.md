@@ -26,21 +26,55 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 2. Version History
 
+
+
 | Version     | Readiness | Maintenance | Current Status |
+
+
+
 | :---------- | :-------- | :---------- | :------------- |
+
+
+
+| **v0.11.x** | Alpha     | Snapshot    | Released       |
+
+
+
 | **v0.10.x** | Alpha     | Snapshot    | Released       |
+
 | **v0.9.x**  | Alpha     | Snapshot    | Released       |
+
 | **v0.8.x**  | Alpha     | Snapshot    | Released       |
+
 | **v0.7.x**  | Alpha     | Snapshot    | Released       |
+
 | **v0.6.x**  | Alpha     | Snapshot    | Released       |
+
+
 
 ---
 
+
+
 ## 3. What's New?
 
+
+
 ### Latest Released Versions
- 
- - **[v0.10.0-alpha](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop  with competency rubrics, mentoring logs, and temporal orchestration.
+
+
+
+
+
+
+
+- **[v0.11.0-alpha](v0.11.0.md)** — **Instructional Execution & Evaluation** Focus: Formalizing the complete instructional loop from journal claims to final transcripts.
+
+
+
+- **[v0.10.0-alpha](v0.10.0.md)** — **Integrative Excellence** Focus: Completing the instructional loop
+
+  with competency rubrics, mentoring logs, and temporal orchestration.
 - **[v0.9.0](v0.9.0.md)** — **Easy System Setup** Focus: A new automated wizard to help you set up
   Internara in minutes, including SMTP and system health audits.
 

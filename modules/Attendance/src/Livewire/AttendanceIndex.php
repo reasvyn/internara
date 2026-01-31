@@ -19,6 +19,15 @@ class AttendanceIndex extends Component
 
     public ?string $search = null;
 
+    // Absence Request Form
+    public bool $absenceModal = false;
+
+    public string $absence_date = '';
+
+    public string $absence_type = 'leave';
+
+    public string $absence_reason = '';
+
     protected AttendanceService $attendanceService;
 
     /**
@@ -27,6 +36,51 @@ class AttendanceIndex extends Component
     public function boot(AttendanceService $attendanceService): void
     {
         $this->attendanceService = $attendanceService;
+    }
+
+    /**
+     * Show the absence request modal.
+     */
+    public function openAbsenceModal(): void
+    {
+        $this->absence_date = now()->format('Y-m-d');
+        $this->absenceModal = true;
+    }
+
+    /**
+     * Submit the absence request.
+     */
+    public function submitAbsence(): void
+    {
+        $this->validate([
+            'absence_date' => 'required|date',
+            'absence_type' => 'required|in:leave,sick,permit',
+            'absence_reason' => 'required|string|max:500',
+        ]);
+
+        $user = auth()->user();
+        $registration = app(\Modules\Internship\Services\Contracts\RegistrationService::class)->first([
+            'student_id' => $user->id,
+            'latest_status' => 'active',
+        ]);
+
+        if (! $registration) {
+            $this->dispatch('notify', message: __('internship::messages.no_active_registration'), type: 'error');
+
+            return;
+        }
+
+        $this->attendanceService->createAbsenceRequest([
+            'registration_id' => $registration->id,
+            'student_id' => $user->id,
+            'date' => $this->absence_date,
+            'type' => $this->absence_type,
+            'reason' => $this->absence_reason,
+        ]);
+
+        $this->absenceModal = false;
+        $this->absence_reason = '';
+        $this->dispatch('notify', message: __('attendance::messages.absence_request_submitted'), type: 'success');
     }
 
     /**

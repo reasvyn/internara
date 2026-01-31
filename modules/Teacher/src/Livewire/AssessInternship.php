@@ -82,9 +82,13 @@ class AssessInternship extends Component
     public function render()
     {
         $registration = app(RegistrationService::class)->find($this->registrationId);
+        $claimedCompetencies = app(
+            \Modules\Assessment\Services\Contracts\CompetencyService::class,
+        )->getClaimedCompetencies($this->registrationId);
 
         return view('teacher::livewire.assess-internship', [
             'registration' => $registration,
+            'claimedCompetencies' => $claimedCompetencies,
         ])->layout('ui::components.layouts.dashboard', ['title' => 'Assess Student']);
     }
 }

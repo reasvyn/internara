@@ -58,6 +58,20 @@ class AttendanceService extends EloquentQuery implements Contract
     {
         $today = now()->startOfDay();
 
+        // Check if there is an approved absence request for today
+        $hasApprovedAbsence = \Modules\Attendance\Models\AbsenceRequest::query()
+            ->where('student_id', $studentId)
+            ->whereDate('date', today())
+            ->currentStatus('approved')
+            ->exists();
+
+        if ($hasApprovedAbsence) {
+            throw new AppException(
+                userMessage: 'attendance::messages.cannot_check_in_with_approved_absence',
+                code: 422,
+            );
+        }
+
         // Check if already checked in
         if ($this->getTodayLog($studentId)) {
             throw new AppException(
@@ -163,5 +177,17 @@ class AttendanceService extends EloquentQuery implements Contract
         }
 
         return $query->count();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createAbsenceRequest(array $data): \Modules\Attendance\Models\AbsenceRequest
+    {
+        /** @var \Modules\Attendance\Models\AbsenceRequest $request */
+        $request = \Modules\Attendance\Models\AbsenceRequest::create($data);
+        $request->setStatus('pending', 'Absence request submitted by student.');
+
+        return $request;
     }
 }

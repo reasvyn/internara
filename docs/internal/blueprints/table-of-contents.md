@@ -13,12 +13,14 @@ technical implementation.
 
 ## 2. Active & Planned Development Series
 
+- **[12-ARC01-ORCH-02 (Timeline Transparency & Instructional Guidance)](12-ARC01-ORCH-02-Schedule-Guidance.md)**
 - **[08-ARC01-INTEL-01 (Reporting & Intelligence)](08-ARC01-INTEL-01-Reporting-Intelligence.md)**
 
 ---
 
 ## 3. Done Design Baselines
 
+- **[11-ARC01-GAP-02 (Instructional Execution, Mentoring & Evaluation)](11-ARC01-GAP-02-Instructional-Execution.md)**
 - **[10-ARC01-GAP-01 (Integrative Excellence)](10-ARC01-GAP-01-Integrative-Excellence.md)**
 - **[09-ARC01-BOOT-01 (System Initialization)](09-ARC01-BOOT-01-System-Initialization.md)**
 - **[07-ARC01-ORCH-01 (Administrative Orchestration)](07-ARC01-ORCH-01-Administrative-Orchestration.md)**

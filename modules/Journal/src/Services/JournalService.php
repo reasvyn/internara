@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Services;
 
+use Modules\Assessment\Services\Contracts\CompetencyService;
 use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Models\JournalEntry;
@@ -22,6 +23,7 @@ class JournalService extends EloquentQuery implements Contract
      */
     public function __construct(
         protected RegistrationService $registrationService,
+        protected CompetencyService $competencyService,
         JournalEntry $model,
     ) {
         $this->setModel($model);
@@ -75,7 +77,29 @@ class JournalService extends EloquentQuery implements Contract
             );
         }
 
-        return parent::create($data);
+        // Submission Window Invariant: journals must be submitted within the defined window
+        $window = (int) setting('journal_submission_window', 7);
+        $diff = now()->diffInDays(\Illuminate\Support\Carbon::parse($journalDate), false);
+
+        if (abs($diff) > $window && $diff < 0) {
+            throw new AppException(
+                userMessage: 'journal::exceptions.submission_window_expired',
+                replace: ['days' => $window],
+                code: 403,
+            );
+        }
+
+        $competencyIds = $data['competency_ids'] ?? [];
+        unset($data['competency_ids']);
+
+        /** @var JournalEntry $entry */
+        $entry = parent::create($data);
+
+        if (! empty($competencyIds)) {
+            $this->competencyService->syncJournalCompetencies($entry->id, $competencyIds);
+        }
+
+        return $entry;
     }
 
     /**
@@ -93,7 +117,29 @@ class JournalService extends EloquentQuery implements Contract
             );
         }
 
-        return parent::update($id, $data);
+        // Submission Window Invariant: journals must be updated within the defined window
+        $window = (int) setting('journal_submission_window', 7);
+        $diff = now()->diffInDays($entry->date, false);
+
+        if (abs($diff) > $window && $diff < 0) {
+            throw new AppException(
+                userMessage: 'journal::exceptions.submission_window_expired',
+                replace: ['days' => $window],
+                code: 403,
+            );
+        }
+
+        $competencyIds = $data['competency_ids'] ?? null;
+        unset($data['competency_ids']);
+
+        /** @var JournalEntry $updatedEntry */
+        $updatedEntry = parent::update($id, $data);
+
+        if ($competencyIds !== null) {
+            $this->competencyService->syncJournalCompetencies($updatedEntry->id, $competencyIds);
+        }
+
+        return $updatedEntry;
     }
 
     /**

@@ -20,6 +20,8 @@ ensure architectural integrity.
 
 - **Modularity**: Modules must maintain strict functional cohesion and logical isolation.
   Cross-module interaction is restricted to **Service Contracts**.
+- **Zero-Coupling**: Absolute isolation between domain modules. Interaction is strictly permitted
+  only via Service Contracts (Interfaces) to prevent ripple effects and architectural decay.
 - **Analyzability**: Source code must utilize explicit typing (PHP 8.4+), professional PHPDoc, and
   semantic naming that reflects domain concepts as defined in the
   **[System Requirements Specification](system-requirements-specification.md)**.
@@ -32,6 +34,13 @@ ensure architectural integrity.
   transitions.
 - **Recoverability**: All multi-entity persistence operations must be encapsulated within database
   transactions to ensure atomicity and consistency.
+
+### 1.3 Usability & Accessibility (A11y Aware)
+
+- **Accessibility**: Compliance with **WCAG 2.1 (Level AA)** standards. Interfaces must be
+  navigable via keyboard and compatible with assistive technologies (A11y Aware).
+- **Inclusivity**: UI elements must utilize semantic HTML and provide sufficient color contrast to
+  ensure usability for all user cohorts.
 
 ---
 

@@ -6,6 +6,7 @@ namespace Modules\Assessment\Http\Controllers;
 
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Assessment\Services\Contracts\CertificateService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
@@ -19,6 +20,7 @@ class AssessmentPdfController extends Controller
     public function __construct(
         protected CertificateService $certificateService,
         protected RegistrationService $registrationService,
+        protected AssessmentService $assessmentService,
     ) {}
 
     /**
@@ -31,6 +33,12 @@ class AssessmentPdfController extends Controller
         // Basic Authorization check
         if (auth()->user()->cannot('view', $registration)) {
             abort(403);
+        }
+
+        // Completion Invariant: Must be ready
+        $readiness = $this->assessmentService->getReadinessStatus($registrationId);
+        if (! $readiness['is_ready']) {
+            abort(403, __('assessment::messages.not_ready_for_credentials'));
         }
 
         $pdf = $this->certificateService->generateCertificate($registrationId);
@@ -53,6 +61,12 @@ class AssessmentPdfController extends Controller
         // Basic Authorization check
         if (auth()->user()->cannot('view', $registration)) {
             abort(403);
+        }
+
+        // Completion Invariant: Must be ready
+        $readiness = $this->assessmentService->getReadinessStatus($registrationId);
+        if (! $readiness['is_ready']) {
+            abort(403, __('assessment::messages.not_ready_for_credentials'));
         }
 
         $pdf = $this->certificateService->generateTranscript($registrationId);

@@ -81,9 +81,13 @@ class EvaluateIntern extends Component
     public function render()
     {
         $registration = app(RegistrationService::class)->find($this->registrationId);
+        $claimedCompetencies = app(
+            \Modules\Assessment\Services\Contracts\CompetencyService::class,
+        )->getClaimedCompetencies($this->registrationId);
 
         return view('mentor::livewire.evaluate-intern', [
             'registration' => $registration,
+            'claimedCompetencies' => $claimedCompetencies,
         ])->layout('ui::components.layouts.dashboard', ['title' => 'Evaluate Intern']);
     }
 }

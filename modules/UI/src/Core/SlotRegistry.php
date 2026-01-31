@@ -77,7 +77,7 @@ class SlotRegistry implements SlotRegistryContract
     }
 
     /**
-     * Get all registered components for a given slot.
+     * Get all registered components for a given slot, sorted by order.
      *
      * @param string $slot The name of the slot.
      *
@@ -85,6 +85,11 @@ class SlotRegistry implements SlotRegistryContract
      */
     public function getSlotsFor(string $slot): array
     {
-        return $this->slots[$slot] ?? [];
+        return collect($this->slots[$slot] ?? [])
+            ->sortBy(function ($item) {
+                return $item['data']['order'] ?? 100;
+            })
+            ->values()
+            ->toArray();
     }
 }

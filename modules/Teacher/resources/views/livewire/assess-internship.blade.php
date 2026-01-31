@@ -41,32 +41,52 @@
             </x-ui::card>
         </div>
 
-        <x-ui::card title="{{ __('Academic Evaluation') }}" shadow separator>
-            <x-ui::form wire:submit="save">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @foreach($criteria as $key => $value)
-                        <x-ui::input 
-                            type="number" 
-                            min="0" 
-                            max="100" 
-                            label="{{ ucfirst(str_replace('_', ' ', $key)) }}" 
-                            wire:model="criteria.{{ $key }}" 
-                        />
-                    @endforeach
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            <x-ui::card title="{{ __('Academic Evaluation') }}" shadow separator>
+                <x-ui::form wire:submit="save">
+                    <div class="grid grid-cols-1 gap-4">
+                        @foreach($criteria as $key => $value)
+                            <x-ui::input 
+                                type="number" 
+                                min="0" 
+                                max="100" 
+                                label="{{ ucfirst(str_replace('_', ' ', $key)) }}" 
+                                wire:model="criteria.{{ $key }}" 
+                            />
+                        @endforeach
+                    </div>
 
-                <x-ui::textarea 
-                    label="{{ __('Feedback / Notes') }}" 
-                    wire:model="feedback" 
-                    rows="4" 
-                    class="mt-4"
-                />
+                    <x-ui::textarea 
+                        label="{{ __('Feedback / Notes') }}" 
+                        wire:model="feedback" 
+                        rows="4" 
+                        class="mt-4"
+                    />
 
-                <x-slot:actions>
-                    <x-ui::button label="{{ __('Cancel') }}" link="{{ route('teacher.dashboard') }}" />
-                    <x-ui::button type="submit" label="{{ __('Submit Evaluation') }}" class="btn-primary" spinner="save" />
-                </x-slot:actions>
-            </x-ui::form>
-        </x-ui::card>
+                    <x-slot:actions>
+                        <x-ui::button label="{{ __('Cancel') }}" link="{{ route('teacher.dashboard') }}" />
+                        <x-ui::button type="submit" label="{{ __('Submit Evaluation') }}" class="btn-primary" spinner="save" />
+                    </x-slot:actions>
+                </x-ui::form>
+            </x-ui::card>
+
+            <x-ui::card title="{{ __('Competency Recap') }}" subtitle="{{ __('Skills claimed in daily journals') }}" shadow separator>
+                @if($claimedCompetencies->isEmpty())
+                    <div class="text-center py-8 opacity-50">
+                        <x-ui::icon name="tabler.info-circle" class="w-12 h-12 mx-auto mb-2" />
+                        <p>{{ __('No competencies claimed yet.') }}</p>
+                    </div>
+                @else
+                    <x-ui::table :headers="[
+                        ['key' => 'name', 'label' => __('Skill')],
+                        ['key' => 'claimed_date', 'label' => __('Date')],
+                    ]" :rows="$claimedCompetencies">
+                        @scope('cell_claimed_date', $competency)
+                            {{ \Illuminate\Support\Carbon::parse($competency->claimed_date)->format('d M Y') }}
+                        @endscope
+                    </x-ui::table>
+                @endif
+            </x-ui::card>
+        </div>
     </x-ui::main>
 </div>

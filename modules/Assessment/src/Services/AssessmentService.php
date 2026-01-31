@@ -118,4 +118,42 @@ class AssessmentService extends EloquentQuery implements Contract
             ->avg('score') ?:
             0.0;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReadinessStatus(string $registrationId): array
+    {
+        $registration = $this->registrationService->find($registrationId);
+        $missing = [];
+
+        if (! $registration) {
+            return ['is_ready' => false, 'missing' => ['Invalid registration']];
+        }
+
+        // 1. Check Period
+        if (! $registration->end_date || $registration->end_date->isFuture()) {
+            $missing[] = __('assessment::messages.period_not_ended');
+        }
+
+        // 2. Check Evaluations
+        $assessments = $this->query(['registration_id' => $registrationId])->get();
+        if (! $assessments->where('type', 'teacher')->first()) {
+            $missing[] = __('assessment::messages.missing_teacher_eval');
+        }
+        if (! $assessments->where('type', 'mentor')->first()) {
+            $missing[] = __('assessment::messages.missing_mentor_eval');
+        }
+
+        // 3. Check Mandatory Assignments
+        $assignmentService = app(\Modules\Assignment\Services\Contracts\AssignmentService::class);
+        if (! $assignmentService->isFulfillmentComplete($registrationId)) {
+            $missing[] = __('assessment::messages.missing_assignments');
+        }
+
+        return [
+            'is_ready' => empty($missing),
+            'missing' => $missing,
+        ];
+    }
 }
