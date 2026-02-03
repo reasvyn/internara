@@ -106,3 +106,7 @@ adhere to the **[Code of Conduct](CODE_OF_CONDUCT.md)**.
 
 - **Author:** [Reas Vyn](https://github.com/reasnov)
 - **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)
+
+---
+
+_**AI Disclosure:** This project utilizes AI for development. Contributors must prioritize security and user privacy in every modification._
