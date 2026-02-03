@@ -112,3 +112,17 @@ systemic synchronization and debugging.
 
 Refer to the **[Technical Index](../docs/internal/table-of-contents.md)** for exhaustive engineering
 standards.
+
+---
+
+## 7. Mandatory Context Reference
+
+Gemini must always consider the following authoritative documents as active context:
+
+- **[System Requirements Specification](../docs/internal/system-requirements-specification.md)**
+- **[Architecture Description](../docs/internal/architecture-description.md)**
+- **[Conventions and Rules](../docs/internal/conventions-and-rules.md)**
+- **[Repository Configuration Protocols](../docs/internal/repository-configuration-protocols.md)**
+- **[Release Publication Protocols](../docs/internal/release-publication-protocols.md)**
+- **[Version Management](../docs/internal/version-management.md)**
+- **[Module Catalog](../docs/main/modules-catalog.md)**
