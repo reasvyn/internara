@@ -178,11 +178,6 @@ class AppInstallCommand extends Command
             ['token' => $token]
         );
 
-        // Attempt to detect port if running locally
-        if (config('app.url') === 'http://localhost' && env('SERVER_PORT')) {
-            $setupUrl = str_replace('localhost', 'localhost:'.env('SERVER_PORT'), $setupUrl);
-        }
-
         $this->info('Please proceed to the Web Setup Wizard using the authorized link below:');
         $this->warn($setupUrl);
 

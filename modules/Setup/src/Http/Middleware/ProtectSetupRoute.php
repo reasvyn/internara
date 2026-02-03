@@ -30,8 +30,8 @@ class ProtectSetupRoute
 
         // 2. If not installed, enforce Signed URL validation or Authorized Session
         if (! $this->setupService->isAppInstalled()) {
-            // Check for valid signature or authorized session
-            if ($request->hasValidSignature()) {
+            // Check for valid signature OR valid token
+            if ($request->hasValidSignature() || $this->hasValidToken($request)) {
                 $request->session()->put('setup_authorized', true);
             }
 
