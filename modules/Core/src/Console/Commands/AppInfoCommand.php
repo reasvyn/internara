@@ -55,8 +55,8 @@ class AppInfoCommand extends Command
             (string) config('app.series_code', $info['series_code'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
-            'Support Policy',
-            (string) config('app.support_policy', $info['support_policy'] ?? 'Unknown'),
+            'Maintenance',
+            (string) config('app.maintenance', $info['maintenance'] ?? 'Unknown'),
         );
 
         $this->newLine();

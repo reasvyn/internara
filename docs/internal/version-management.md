@@ -18,16 +18,16 @@ changes within the system.
 - **MAJOR**: Structural architectural shifts or incompatible API changes.
 - **MINOR**: Functional capability additions (mapped to Spec Milestones).
 - **PATCH**: Corrective maintenance and security patches.
-- **Pre-release Identifiers**: Used to identify non-stable maturity stages (e.g., `v0.9.0-alpha`).
+- **Pre-release Identifiers**: Used to identify non-stable readiness stages (e.g., `v0.9.0-alpha`).
 
 ---
 
 ## 2. The 3-Axis Lifecycle Matrix
 
-To ensure precise configuration identification, Internara separates **Maturity**, **Support
-Policy**, and **Operational Status**.
+To ensure precise configuration identification, Internara separates **Readiness**, **Maintenance**,
+and **Current Status**.
 
-### 2.1 Maturity Stages (Baseline Stability)
+### 2.1 Readiness Levels (Baseline Stability)
 
 - **Experimental**: Exploratory configuration.
 - **Alpha**: Internal construction; baseline is unstable.
@@ -35,14 +35,14 @@ Policy**, and **Operational Status**.
 - **Release Candidate (RC)**: Final verification baseline.
 - **Stable**: Certified production baseline.
 
-### 2.2 Support Policies (Maintenance Commitments)
+### 2.2 Maintenance (Support Commitments)
 
 - **Active Support**: Full maintenance and evolutionary updates.
 - **Security Only**: Critical vulnerability patches exclusively.
 - **Snapshot**: Point-in-time baseline provided without maintenance guarantees.
 - **EOL (End of Life)**: No support provided; baseline is deprecated.
 
-### 2.3 Operational Status (Baseline State)
+### 2.3 Current Status (Baseline State)
 
 - **Planned** | **In Progress** | **Released** | **Deprecated** | **Archived**
 
@@ -54,14 +54,14 @@ Policy**, and **Operational Status**.
 
 The authoritative technical baseline identifier.
 
-- **Requirements**: Must include `version`, `series_code`, and `support_policy`.
+- **Requirements**: Must include `version`, `series_code`, and `maintenance`.
 
 ### 3.2 Analytical Release Notes (The Engineering Record)
 
 Located in `docs/versions/`, these document the **Realized Outcome** of a configuration baseline.
 
 - **Requirement**: Must reflect the as-built reality and verify the fulfillment of spec milestones.
-- **Metadata Invariant**: Must include **Series Code**, **Support Policy**, and **Status** at the
+- **Metadata Invariant**: Must include **Series Code**, **Maintenance**, and **Status** at the
   top of the document.
 - **SSoT Sync**: Blueprints document **Intent**; Release Notes document **Outcome**.
 

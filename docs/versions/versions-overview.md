@@ -30,7 +30,9 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 | :---------- | :-------- | :---------- | :------------- |
 
-| **v0.12.x** | Alpha | Snapshot | In Progress |
+| **v0.13.x** | Alpha | Snapshot | In Progress |
+
+| **v0.12.x** | Alpha | Snapshot | Released |
 
 | **v0.11.x** | Alpha | Snapshot | Released |
 
@@ -46,13 +48,25 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 3. What's New?
 
+
+
 ### Active Development
+
+
+
+- **[v0.13.0](v0.13.0.md)** — **Beta Preparation** Focus: Stabilization, bug fixes, and performance
+
+  optimizations.
+
+
+
+### Latest Released Versions
+
+
 
 - **[v0.12.0](v0.12.0.md)** — **Timeline Transparency & Guidance** Focus: Centralized scheduling and
 
-    instructional guidance hub for students.
-
-### Latest Released Versions
+  instructional guidance hub for students.
 
 - **[v0.11.0-alpha](v0.11.0.md)** — **Instructional Execution & Evaluation** Focus: Formalizing the
 
