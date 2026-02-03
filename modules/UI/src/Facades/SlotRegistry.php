@@ -10,6 +10,7 @@ use Modules\UI\Core\Contracts\SlotRegistry as SlotRegistryContract;
 /**
  * @method static void configure(array $slots = [])
  * @method static void register(string $slot, string|\Closure|\Illuminate\Contracts\View\View $view, array $data = [])
+ * @method static bool hasSlot(string $slot)
  *
  * @see \Modules\UI\Core\SlotRegistry
  */

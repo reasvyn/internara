@@ -31,4 +31,9 @@ interface SlotRegistry
      * @return array The registered components.
      */
     public function getSlotsFor(string $slot): array;
+
+    /**
+     * Check if a slot has any registered components.
+     */
+    public function hasSlot(string $slot): bool;
 }

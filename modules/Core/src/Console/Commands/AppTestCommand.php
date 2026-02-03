@@ -43,13 +43,13 @@ class AppTestCommand extends Command
     {
         $startTime = microtime(true);
         $results = [];
-        
+
         $this->newLine();
         $this->components->info(config('app.name', 'Internara').' Modular Test Orchestrator');
 
         // Identify segments
         $segments = [['label' => 'Root Application', 'path' => base_path('tests')]];
-        
+
         $modulesPath = base_path('modules');
         $moduleDirs = File::directories($modulesPath);
         foreach ($moduleDirs as $path) {
@@ -68,9 +68,9 @@ class AppTestCommand extends Command
         foreach ($segments as $index => $segment) {
             $currentIndex = $index + 1;
             $segmentStart = microtime(true);
-            
+
             $success = $this->runTestSegment(
-                "{$segment['label']} ({$currentIndex}/{$totalSegments})", 
+                "{$segment['label']} ({$currentIndex}/{$totalSegments})",
                 $segment['path']
             );
 
@@ -102,7 +102,7 @@ class AppTestCommand extends Command
     {
         $this->newLine();
         $this->components->info('Test Execution Summary');
-        
+
         $this->table(
             ['Segment', 'Status', 'Duration'],
             $results
@@ -110,7 +110,7 @@ class AppTestCommand extends Command
 
         $this->components->twoColumnDetail('Total Duration', number_format($totalDuration, 2).'s');
         $this->components->twoColumnDetail('Peak Memory Usage', number_format(memory_get_peak_usage(true) / 1024 / 1024, 2).'MB');
-        
+
         $this->newLine();
         if ($success) {
             $this->components->info('Verification Passed: System is stable.');
@@ -159,5 +159,4 @@ class AppTestCommand extends Command
 
         return $success;
     }
-}
 }

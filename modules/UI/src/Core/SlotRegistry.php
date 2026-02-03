@@ -92,4 +92,12 @@ class SlotRegistry implements SlotRegistryContract
             ->values()
             ->toArray();
     }
+
+    /**
+     * Check if a slot has any registered components.
+     */
+    public function hasSlot(string $slot): bool
+    {
+        return ! empty($this->slots[$slot]);
+    }
 }

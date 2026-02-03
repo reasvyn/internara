@@ -16,6 +16,9 @@
         }
     },
     "autoload": {
+        "files": [
+            "src/Support/helpers.php"
+        ],
         "psr-4": {
             "Modules\\UI\\": "src/",
             "Modules\\UI\\Database\\Factories\\": "database/factories/",
