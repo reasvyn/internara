@@ -17,6 +17,20 @@ trait HasStatus
     use HasStatuses;
 
     /**
+     * Override the statuses relationship to use created_at for ordering.
+     * The base package uses latest('id') which is incompatible with UUIDs.
+     */
+    public function statuses(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(
+            config('model-status.status_model'),
+            'model',
+            'model_type',
+            config('model-status.model_primary_key_attribute', 'model_id'),
+        )->latest();
+    }
+
+    /**
      * Standard status names.
      */
     public const STATUS_ACTIVE = 'active';
@@ -58,6 +72,22 @@ trait HasStatus
         }
 
         return $this->getStatusColorMap()[$status->name] ?? self::DEFAULT_STATUS_COLOR;
+    }
+
+    /**
+     * Check if the current model status is expired.
+     */
+    public function isStatusExpired(): bool
+    {
+        return $this->latestStatus()?->isExpired() ?? false;
+    }
+
+    /**
+     * Force refresh the status relationship cache.
+     */
+    public function refreshStatus(): self
+    {
+        return $this->unsetRelation('statuses');
     }
 
     /**

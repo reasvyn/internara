@@ -39,6 +39,21 @@ class Profile extends Model
     ];
 
     /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'phone' => 'encrypted',
+            'address' => 'encrypted',
+            'nip' => 'encrypted',
+            'nisn' => 'encrypted',
+        ];
+    }
+
+    /**
      * Get the associated profileable model (Student, Teacher, etc.).
      */
     public function profileable(): \Illuminate\Database\Eloquent\Relations\MorphTo

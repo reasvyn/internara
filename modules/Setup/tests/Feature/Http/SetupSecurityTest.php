@@ -26,12 +26,14 @@ test('it aborts 403 on setup routes if token is missing or invalid', function ()
     $this->get(route('setup.welcome', ['token' => 'wrong-token']))->assertStatus(403);
 });
 
-test('it allows setup access if valid token is provided', function () {
+test('it allows setup access if valid token and signature are provided', function () {
     app(SettingService::class)->setValue('app_installed', false);
     $token = Str::random(32);
     app(SettingService::class)->setValue('setup_token', $token);
 
-    $this->get(route('setup.welcome', ['token' => $token]))
+    $url = \Illuminate\Support\Facades\URL::signedRoute('setup.welcome', ['token' => $token]);
+
+    $this->get($url)
         ->assertOk()
         ->assertSessionHas('setup_authorized', true);
 });

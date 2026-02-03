@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->string('model_type');
             $table->uuid('model_id');
+            $table->timestamp('expires_at')->nullable();
             $table->index(['model_type', 'model_id']);
             $table->timestamps();
         });

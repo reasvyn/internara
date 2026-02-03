@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Auth\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Auth\Services\Contracts\RedirectService;
@@ -23,14 +22,17 @@ class Login extends Component
 
     protected RedirectService $redirectService;
 
-    #[Rule('required|string')]
     public string $identifier = '';
 
     /**
      * The user's password for login.
      */
-    #[Rule('required|string')]
     public string $password = '';
+
+    /**
+     * The captcha response token.
+     */
+    public string $captcha_token = '';
 
     /**
      * Indicates whether the user should be remembered.
@@ -40,7 +42,7 @@ class Login extends Component
     /**
      * Define the validation rules for the component properties.
      *
-     * @return array<string, string>
+     * @return array<string, array|string>
      */
     protected function rules(): array
     {
@@ -51,6 +53,7 @@ class Login extends Component
                 $this->isEmail($this->identifier) ? 'email' : null,
             ],
             'password' => 'required|string',
+            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile],
         ];
     }
 

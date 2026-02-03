@@ -28,20 +28,19 @@ class ProtectSetupRoute
             return abort(404);
         }
 
-        // 2. If not installed, enforce Token Authorization
+        // 2. If not installed, enforce Signed URL validation or Authorized Session
         if (! $this->setupService->isAppInstalled()) {
-            // Check for new token in URL
-            if ($this->hasValidToken($request)) {
+            // Check for valid signature or authorized session
+            if ($request->hasValidSignature()) {
                 $request->session()->put('setup_authorized', true);
             }
 
             // Verify authorized session AND ensure setup_token still exists in DB
-            // If setup_token is NULL, it means setup is finalizing or completed
             $storedToken = $this->settingService->getValue('setup_token');
             if (! $request->session()->get('setup_authorized') || empty($storedToken)) {
                 return abort(
                     403,
-                    'Unauthorized setup access. Please use the link provided by the CLI.',
+                    'Unauthorized setup access. Please use the signed link provided by the CLI.',
                 );
             }
         }

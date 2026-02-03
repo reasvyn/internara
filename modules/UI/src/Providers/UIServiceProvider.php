@@ -29,6 +29,9 @@ class UIServiceProvider extends ServiceProvider
     {
         $this->bootModule();
 
+        // Register anonymous components
+        Blade::anonymousComponentPath(module_path('UI', 'resources/views/components'), 'ui');
+
         // Register the custom Blade directive
         Blade::directive('slotRender', function ($expression) {
             return "<?php echo \Modules\UI\Facades\SlotManager::render({$expression}); ?>";

@@ -18,8 +18,12 @@ Internara adopts a **TDD-First** and **Traceability-Driven** testing philosophy.
 - **Traceability**: Every test suite must be traceable to a specific requirement in the System
   Requirements Specification or an architectural invariant in the AD.
 - **Independence**: Verification artifacts must verify domain behavior while respecting the **Strict
-  Isolation** invariants of the Modular Monolith.
-- **Regression Prevention**: Automated verification is mandatory before any baseline promotion.
+  Isolation** invariants. Tests should interact with external domains exclusively via their **Service
+  Contracts**.
+- **Minimized Mocking**: To reduce the risk of "mock-gap" bugs and ensure realistic verification, the
+  use of real **Service Contracts** is preferred over `Mockery` for cross-module integration.
+  Mocking should be reserved for high-overhead infrastructure (External APIs, Mail, etc.) or when
+  specifically testing failure states.
 
 ---
 
@@ -27,8 +31,8 @@ Internara adopts a **TDD-First** and **Traceability-Driven** testing philosophy.
 
 | Level            | Focus                 | Objective                               | Implementation                  |
 | :--------------- | :-------------------- | :-------------------------------------- | :------------------------------ |
-| **Unit**         | Component Isolation   | Verify logic in mathematical isolation. | Pest (Mocking all dependencies) |
-| **Integration**  | Service Contracts     | Verify inter-module communication.      | Feature tests via Contracts     |
+| **Unit**         | Component Isolation   | Verify logic in mathematical isolation. | Pest (Mocking internal deps)    |
+| **Integration**  | Service Contracts     | Verify inter-module communication.      | Contracts & Public Concrete     |
 | **System**       | End-to-End User Flow  | Validate fulfillment of user stories.   | Feature tests (HTTP/Livewire)   |
 | **Architecture** | Structural Invariants | Enforce modular isolation policies.     | Pest Arch Plugin                |
 
@@ -39,7 +43,8 @@ Internara adopts a **TDD-First** and **Traceability-Driven** testing philosophy.
 ### 3.1 Architecture Invariants (Isolation Enforcement)
 
 To maintain modular integrity, we utilize **Architecture Testing** to prevent unauthorized
-cross-module coupling.
+cross-module coupling. This check distinguishes between **Domain Models** (Forbidden) and **Public
+Infrastructure** (Permitted).
 
 ```php
 arch('module isolation')
@@ -88,7 +93,7 @@ The following command is the **Mandatory Verification Gate** and must be execute
 repository synchronization:
 
 ```bash
-# Full System Verification
+# Full System Verification (Standard)
 composer test
 ```
 
@@ -97,5 +102,35 @@ composer test
 
 ---
 
-_Non-compliant artifacts (untested or failing) are considered architectural defects and will be
-rejected during the verification phase._
+## 6. Resource Optimization & Memory Management
+
+To ensure stability in memory-constrained environments (e.g., 512MB limit), the following protocols
+are mandatory to prevent memory leaks during long-running verification cycles.
+
+### 6.1 Aggressive Lifecycle Cleanup
+Every test case must ensure that the application state is completely purged after each test
+execution.
+
+- **Implementation**: The `tearDown()` method must invoke `$this->app->flush()` and
+  `gc_collect_cycles()` to release circular references and heavy object graphs.
+- **Mocking**: Minimize the use of `Mockery::mock` for large service classes. Prefer using
+  contract-based fake implementations or lightweight anonymous classes where feasible.
+
+### 6.2 Modular Sequential Pattern
+Running the entire suite in high-concurrency parallel mode is prohibited in low-memory
+environments. Instead, utilize the **Modular Sequential** strategy:
+
+1.  **System-Wide Suite**: Execute root application tests in `tests/`.
+2.  **Isolated Module Execution**: Execute each module's test suite (`modules/{Module}/tests/`)
+    sequentially, one module at a time. This ensures that the memory heap is reset between module
+    runs.
+
+### 6.3 The `app:test` Orchestrator
+Developers should utilize the `php artisan app:test` command, which automates this sequential
+flow. It iterates through each module directory and executes its local test suite as an isolated
+process, effectively capping memory usage to the requirements of a single module.
+
+---
+
+_Non-compliant artifacts (untested, leaking, or failing) are considered architectural defects and
+will be rejected during the verification phase._

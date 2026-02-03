@@ -75,7 +75,13 @@ class AssignmentService extends EloquentQuery implements Contract
             $hasVerified = Submission::query()
                 ->where('assignment_id', $assignment->id)
                 ->where('registration_id', $registrationId)
-                ->currentStatus('verified')
+                ->whereHas('statuses', function ($query) {
+                    $query->where('name', 'verified')
+                        ->where(function ($q) {
+                            $q->whereNull('expires_at')
+                                ->orWhere('expires_at', '>', now());
+                        });
+                })
                 ->exists();
 
             if (! $hasVerified) {

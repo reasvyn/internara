@@ -14,9 +14,11 @@ use Modules\User\Models\User;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
     $this->placementService = app(PlacementService::class);
     $this->academicYear = '2025/2026';
+
+    // Create required roles for isolation
+    \Modules\Permission\Models\Role::create(['name' => 'student', 'guard_name' => 'web']);
 
     // Setup base data
     $this->student = User::factory()->create()->assignRole('student');
@@ -27,7 +29,7 @@ beforeEach(function () {
 
     $this->registration = InternshipRegistration::create([
         'internship_id' => $this->internship->id,
-        'placement_id' => null, // Not yet placed
+        'placement_id' => null,
         'student_id' => $this->student->id,
         'academic_year' => $this->academicYear,
     ]);

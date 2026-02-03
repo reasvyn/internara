@@ -26,4 +26,16 @@ class Student extends Model
      * @var list<string>
      */
     protected $fillable = ['nisn'];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'nisn' => 'encrypted',
+        ];
+    }
 }

@@ -306,9 +306,17 @@ domains.
 ### 17.3 Logic Isolation (Service Contracts)
 
 - **Contract-First Communication**: Inter-module logic requests must be handled through the target
-  module's **Service Contract** (Interface).
+  module's **Service Contract** (Interface). This applies to all layers, including **Tests**.
 - **Service Dependency**: If Module A requires data from Module B, it must inject the Service
   Contract of Module B into its own Service.
+- **Testing Invariant**: In verification suites, developers are encouraged to utilize **Service
+  Contracts** of external modules to minimize mocking overhead.
+- **Concrete Class Restriction**: The use of **Domain-Specific Concrete Classes** (Models,
+  Controllers, or private implementations) from other modules is **Strictly Forbidden**. However,
+  **Public Infrastructure Classes** (Stateless Helpers, Utilities, or Facades) that are
+  intentionally designed for public consumption and are not coupled to the source module's
+  internal architecture may be utilized. Verification should verify the contract's output, not the
+  external module's internals.
 
 ### 17.4 Presentation Isolation (Slot Injection)
 

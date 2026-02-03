@@ -6,6 +6,7 @@ namespace Modules\Assessment\Tests\Feature\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
@@ -26,6 +27,21 @@ test('authorized student can download certificate', function () {
         ->create([
             'student_id' => $student->id,
         ]);
+
+    // Mock Readiness
+    $this->mock(AssessmentService::class, function ($mock) {
+        $mock->shouldReceive('getReadinessStatus')->andReturn([
+            'is_ready' => true,
+            'missing' => [],
+        ]);
+
+        $mock->shouldReceive('getScoreCard')->andReturn([
+            'mentor' => null,
+            'teacher' => null,
+            'compliance' => ['final_score' => 0],
+            'final_grade' => 0,
+        ]);
+    });
 
     // Act
     $response = $this->actingAs($student)->get(route('assessment.certificate', $registration->id));

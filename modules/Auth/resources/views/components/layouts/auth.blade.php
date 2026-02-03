@@ -1,7 +1,8 @@
 @props(['title' => null])
 
 <x-ui::layouts.base.with-navbar :$title>
-    <div class="flex size-full flex-1 flex-col items-center justify-center pt-16">
+    <main class="flex flex-1 flex-col items-center justify-center p-4">
+        <x-honeypot />
         {{ $slot }}
-    </div>
+    </main>
 </x-ui::layouts.base.with-navbar>

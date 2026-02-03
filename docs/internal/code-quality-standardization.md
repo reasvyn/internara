@@ -19,9 +19,12 @@ ensure architectural integrity.
 ### 1.1 Maintainability (Structural Integrity)
 
 - **Modularity**: Modules must maintain strict functional cohesion and logical isolation.
-  Cross-module interaction is restricted to **Service Contracts**.
+  Cross-module interaction is restricted to **Service Contracts**. This applies to production
+  logic and **Verification Tests**.
 - **Zero-Coupling**: Absolute isolation between domain modules. Interaction is strictly permitted
-  only via Service Contracts (Interfaces) to prevent ripple effects and architectural decay.
+  only via Service Contracts (Interfaces) or **Public Infrastructure Classes** (Stateless Helpers,
+  Utilities). Direct usage of **Domain-Specific Concrete Classes** (Models, Factories,
+  Repositories) from other modules is a critical quality violation.
 - **Analyzability**: Source code must utilize explicit typing (PHP 8.4+), professional PHPDoc, and
   semantic naming that reflects domain concepts as defined in the
   **[System Requirements Specification](system-requirements-specification.md)**.

@@ -53,6 +53,8 @@ architectural views, and engineering processes used to build and maintain the sy
 
 - **[Role & Permission Management](role-permission-management.md)**: Implementation of ISO/IEC 27001
   access control and modular RBAC.
+- **[Security & Privacy Protocols](security_and_privacy_protocols.md)**: ISO/IEC 27001/27034
+  standards for encryption, bot protection, and traffic governance.
 - **[Policy Patterns](policy-patterns.md)**: Governance standards for policy enforcement points
   (PEP).
 - **[Code Quality Standardization](code-quality-standardization.md)**: ISO/IEC 25010/5055 quality

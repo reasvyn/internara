@@ -23,6 +23,7 @@
         "secondnetwork/blade-tabler-icons": "^3.36",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-honeypot": "^4.6",
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-model-status": "^1.18",
         "spatie/laravel-permission": "^6.24"
@@ -76,7 +77,7 @@
         "test": [
             "@php artisan optimize:clear --ansi",
             "vendor/bin/pint --test",
-            "vendor/bin/pest --stop-on-failure"
+            "@php artisan app:test --stop-on-failure"
         ],
         "lint": [
             "npm run lint",
@@ -115,6 +116,7 @@
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
+        "process-timeout": 1800,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,

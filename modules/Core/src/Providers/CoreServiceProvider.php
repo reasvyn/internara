@@ -6,6 +6,7 @@ namespace Modules\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Console\Commands\AppInfoCommand;
+use Modules\Core\Console\Commands\AppTestCommand;
 use Modules\Core\Console\Commands\MakeClassCommand;
 use Modules\Core\Console\Commands\MakeInterfaceCommand;
 use Modules\Core\Console\Commands\MakeTraitCommand;
@@ -46,6 +47,7 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->commands([
             AppInfoCommand::class,
+            AppTestCommand::class,
             MakeClassCommand::class,
             MakeInterfaceCommand::class,
             MakeTraitCommand::class,

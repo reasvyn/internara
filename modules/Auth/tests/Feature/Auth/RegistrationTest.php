@@ -20,12 +20,16 @@ beforeEach(function () {
 
 test('a new user can register and receives a student role and verification email', function () {
     Notification::fake();
+    \Illuminate\Support\Facades\Http::fake([
+        'https://challenges.cloudflare.com/turnstile/v0/siteverify' => \Illuminate\Support\Facades\Http::response(['success' => true]),
+    ]);
 
     Livewire::test(Register::class)
         ->set('name', 'Test Student')
         ->set('email', 'student@example.com')
         ->set('password', 'password123')
         ->set('password_confirmation', 'password123')
+        ->set('captcha_token', 'fake-token')
         ->call('register')
         ->assertHasNoErrors();
 

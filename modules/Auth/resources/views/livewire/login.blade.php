@@ -34,6 +34,8 @@
 
             <x-ui::checkbox label="Ingat saya" wire:model="remember" />
 
+            <x-ui::turnstile field-name="captcha_token" />
+
             <div class="mt-4 flex w-full flex-col gap-8">
                 <x-ui::button
                     class="btn-primary w-full"

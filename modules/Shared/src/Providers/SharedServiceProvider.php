@@ -28,6 +28,22 @@ class SharedServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+
+        $this->registerRateLimiters();
+    }
+
+    /**
+     * Register the module's rate limiters.
+     */
+    protected function registerRateLimiters(): void
+    {
+        \Illuminate\Support\Facades\RateLimiter::for('auth', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('setup', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($request->ip());
+        });
     }
 
     /**

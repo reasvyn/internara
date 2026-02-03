@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Setup\Livewire;
 
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Modules\Setup\Livewire\Concerns\HandlesSetupSteps;
 use Modules\Setup\Services\Contracts\SetupService;
@@ -16,8 +14,6 @@ use Modules\Setup\Services\Contracts\SystemAuditor;
  * Handles the environment validation step of the application setup wizard.
  * Displays system requirements, directory permissions, and database connectivity.
  */
-#[Layout('ui::components.layouts.auth')]
-#[Title('Environment Validation')]
 class EnvironmentSetup extends Component
 {
     use HandlesSetupSteps;
@@ -69,6 +65,8 @@ class EnvironmentSetup extends Component
      */
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('setup::livewire.environment-setup');
+        return view('setup::livewire.environment-setup')
+            ->layout('auth::components.layouts.auth')
+            ->title(__('setup::setup.environment_validation'));
     }
 }

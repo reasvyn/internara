@@ -12,10 +12,16 @@ use Monolog\Logger;
 class CustomLogger
 {
     /**
-     * Customize the given Monolog instance.
+     * Customize the given logger instance.
      */
-    public function __invoke(Logger $logger): void
+    public function __invoke($logger): void
     {
-        $logger->pushProcessor(new PiiMaskingProcessor);
+        $monolog = $logger instanceof \Illuminate\Log\Logger
+            ? $logger->getLogger()
+            : $logger;
+
+        if ($monolog instanceof \Monolog\Logger) {
+            $monolog->pushProcessor(new PiiMaskingProcessor);
+        }
     }
 }

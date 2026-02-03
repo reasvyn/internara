@@ -32,6 +32,9 @@
             wire:model="password_confirmation"
             required
         />
+
+        <x-ui::turnstile field-name="captcha_token" />
+
         @php
             $policyRoute = \Illuminate\Support\Facades\Route::has('privacy-policy') ? route('privacy-policy') : '#';
         @endphp

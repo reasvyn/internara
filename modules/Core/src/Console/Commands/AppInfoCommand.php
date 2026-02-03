@@ -44,19 +44,19 @@ class AppInfoCommand extends Command
 
         $this->components->twoColumnDetail(
             'Application Name',
-            (string) config('app.name', $info['name'] ?? 'Unknown'),
+            (string) ($info['name'] ?? config('app.name', 'Unknown')),
         );
         $this->components->twoColumnDetail(
             'Version',
-            (string) config('app.version', $info['version'] ?? 'Unknown'),
+            (string) config('core.info.version', $info['version'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'Series Code',
-            (string) config('app.series_code', $info['series_code'] ?? 'Unknown'),
+            (string) config('core.info.series_code', $info['series_code'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'Maintenance',
-            (string) config('app.maintenance', $info['maintenance'] ?? 'Unknown'),
+            (string) ($info['maintenance'] ?? 'Unknown'),
         );
 
         $this->newLine();
@@ -95,15 +95,15 @@ class AppInfoCommand extends Command
         $this->components->info('Author Information');
         $this->components->twoColumnDetail(
             'Author',
-            (string) config('app.author_name', $info['author']['name'] ?? 'Unknown'),
+            (string) config('core.author.name', $info['author']['name'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'GitHub',
-            (string) config('app.author_github', $info['author']['github'] ?? 'Unknown'),
+            (string) config('core.author.github', $info['author']['github'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'Email',
-            (string) config('app.author_email', $info['author']['email'] ?? 'Unknown'),
+            (string) config('core.author.email', $info['author']['email'] ?? 'Unknown'),
         );
 
         $this->newLine();

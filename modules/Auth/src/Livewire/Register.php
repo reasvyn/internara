@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\Auth\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Auth\Services\Contracts\RedirectService;
 use Modules\Exception\AppException;
+use Modules\Shared\Rules\Password;
 
 class Register extends Component
 {
@@ -17,16 +17,25 @@ class Register extends Component
 
     protected RedirectService $redirectService;
 
-    #[Rule('required|string|min:3')]
     public string $name = '';
 
-    #[Rule('required|email|unique:users,email')]
     public string $email = '';
 
-    #[Rule('required|string|min:8|confirmed')]
     public string $password = '';
 
     public string $password_confirmation = '';
+
+    public string $captcha_token = '';
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|min:3',
+            'email' => 'required|email|unique:users,email',
+            'password' => ['required', 'string', 'confirmed', Password::auto()],
+            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile],
+        ];
+    }
 
     public function boot(AuthService $authService, RedirectService $redirectService): void
     {

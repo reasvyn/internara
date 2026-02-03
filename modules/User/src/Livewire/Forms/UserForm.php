@@ -7,6 +7,7 @@ namespace Modules\User\Livewire\Forms;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Shared\Rules\Password;
 
 class UserForm extends Form
 {
@@ -37,7 +38,7 @@ class UserForm extends Form
                 'max:255',
                 Rule::unique('users', 'username')->ignore($this->id),
             ],
-            'password' => [$this->id ? 'nullable' : 'required', 'string', 'min:8'],
+            'password' => [$this->id ? 'nullable' : 'required', 'string', Password::auto()],
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', Rule::in(['active', 'inactive'])],
             'profile' => ['nullable', 'array'],

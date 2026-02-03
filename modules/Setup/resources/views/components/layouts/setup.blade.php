@@ -8,7 +8,11 @@
             @endisset
 
             {{-- Brand --}}
-            @slotRender('navbar.brand')
+            @if(slotExists('navbar.brand'))
+                @slotRender('navbar.brand')
+            @else
+                <x-ui::brand />
+            @endif
 
             <div class="badge badge-ghost ml-2 text-xs font-medium text-gray-500">
                 {{ 'v' . config('app.version', '1.0.0') }}
@@ -22,6 +26,7 @@
     </x-ui::nav>
 
     <main class="flex flex-1 flex-col items-center justify-center">
+        <x-honeypot />
         {{ $slot }}
     </main>
 

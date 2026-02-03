@@ -75,19 +75,23 @@ class AppInstallCommand extends Command
 
             // Check Requirements & Permissions
             foreach (['requirements', 'permissions'] as $category) {
+                if (! isset($audit[$category]) || ! is_array($audit[$category])) {
+                    continue;
+                }
+
                 foreach ($audit[$category] as $name => $status) {
                     if ($status === false) {
                         $this->newLine();
-                        $this->components->error("Audit failed: {$name}");
+                        $this->components->error('Audit failed: '.(is_array($name) ? json_encode($name) : (string) $name));
                         $failedCount++;
                     }
                 }
             }
 
             // Check Database specifically
-            if (! $audit['database']['connection']) {
+            if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
                 $this->newLine();
-                $this->components->error('Database error: '.$audit['database']['message']);
+                $this->components->error('Database error: '.(is_array($audit['database']['message']) ? json_encode($audit['database']['message']) : (string) ($audit['database']['message'] ?? 'Unknown error')));
                 $failedCount++;
             }
 
@@ -168,10 +172,25 @@ class AppInstallCommand extends Command
         $this->components->info('Technical installation completed successfully!');
 
         $token = $this->settingService->getValue('setup_token');
-        $setupUrl = route('setup.welcome', ['token' => $token]);
+        $setupUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+            'setup.welcome',
+            now()->addHours(24),
+            ['token' => $token]
+        );
+
+        // Attempt to detect port if running locally
+        if (config('app.url') === 'http://localhost' && env('SERVER_PORT')) {
+            $setupUrl = str_replace('localhost', 'localhost:'.env('SERVER_PORT'), $setupUrl);
+        }
 
         $this->info('Please proceed to the Web Setup Wizard using the authorized link below:');
         $this->warn($setupUrl);
+
+        if (parse_url($setupUrl, PHP_URL_PORT) === null && config('app.url') === 'http://localhost') {
+            $this->newLine();
+            $this->info('Note: If you are using a specific port (e.g., via artisan serve), ensure the port is included in the URL.');
+        }
+
         $this->newLine();
 
         return self::SUCCESS;
