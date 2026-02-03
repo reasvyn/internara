@@ -1,6 +1,6 @@
 # Application Blueprint: Administrative Orchestration (ARC01-ORCH-01)
 
-**Series Code**: `ARC01-ORCH-01` **Status**: `Done`
+**Series Code**: `ARC01-ORCH-01` **Status**: `Archived`
 
 > **System Requirements Specification Alignment:** This configuration baseline implements the
 > **Administrative Orchestration** ([SYRS-F-101], [SYRS-F-102]) requirements of the authoritative

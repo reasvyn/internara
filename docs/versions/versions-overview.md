@@ -42,8 +42,6 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 | **v0.8.x** | Alpha | Snapshot | Released |
 
-| **v0.7.x** | Alpha | Snapshot | Released |
-
 ---
 
 ## 3. What's New?

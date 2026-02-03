@@ -8,6 +8,7 @@ under the current support policy.
 
 ## 1. Realized Outcome Baselines
 
+- **[v0.7.0](v0.7.0.md)**: Realization of the **Administrative Orchestration** baseline.
 - **[v0.6.0](v0.6.0.md)**: Realization of the **Dedicated Workspaces** baseline.
 - **[v0.5.0](v0.5.0.md)**: Realization of the **Operational Layer** baseline.
 - **[v0.4.0](v0.4.0.md)**: Realization of the **Institutional Foundation** baseline.
