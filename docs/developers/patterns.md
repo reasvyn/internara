@@ -303,6 +303,107 @@ manageable platform while preserving architectural resilience._
 
 ---
 
+---
+
+# Participation & Compliance Scoring
+
+This document defines the automated logic used to calculate student engagement metrics during the
+internship period.
+
+---
+
+## 1. Scoring Components
+
+Compliance scores are derived from two primary high-frequency telemetry sources:
+
+1.  **Attendance Score**: Derived from the ratio of actual presence to scheduled working days.
+2.  **Journal Score**: Derived from the ratio of approved daily logs to scheduled working days.
+
+## 2. Calculation Formula
+
+The `ComplianceService` calculates scores based on the **Effective Working Days** (excluding
+weekends) between the internship start date and the current date (or end date).
+
+### 2.1 Component Weighting
+
+By default, the final compliance score is a simple weighted average:
+
+- **Attendance**: 50%
+- **Journaling**: 50%
+
+**Formula**:
+`Final Score = (Attendance % * 0.5) + (Journal % * 0.5)`
+
+### 2.2 Participation Capping
+
+To maintain data integrity, scores are capped at 100%. If a student logs more entries than required
+working days (due to overtime or makeup tasks), the extra entries contribute to qualitative
+merit but do not exceed the 100% participation threshold.
+
+---
+
+## 3. Implementation Invariant
+
+- **Asynchronous Retrieval**: Assessment logic must retrieve compliance scores via the
+  `ComplianceService` contract, never by querying `AttendanceLog` or `JournalEntry` models directly.
+- **Dynamic Thresholds**: Working day calculations must respect institutional settings for late
+  thresholds and submission windows.
+
+---
+
+_Standardizing compliance scoring ensures objective student evaluations across all departments._
+
+
+---
+
+---
+
+# Notification Orchestration
+
+This document defines the protocols for dispatching notifications and UI feedback within the
+Internara project.
+
+---
+
+## 1. Multi-Path Notification Strategy
+
+Internara distinguishes between transient UI feedback and persistent/external notifications.
+
+### 1.1 UI Feedback (Transient)
+Used for immediate response to a user action (e.g., "Record saved successfully").
+
+- **Path**: Dispatched via the `Notifier` service contract.
+- **Mechanism**: Livewire browser events (Toasts).
+- **Service**: `Modules\Notification\Contracts\Notifier`.
+
+### 1.2 System & User Notifications (Persistent/External)
+Used for formal communication or asynchronous alerts (e.g., "New internship assignment", "Registration approved").
+
+- **Path**: Dispatched via the `NotificationService` contract.
+- **Channels**: 
+    - **System**: Stored in the `notifications` database table.
+    - **User**: Sent via external channels like **Email**.
+- **Service**: `Modules\Notification\Services\Contracts\NotificationService`.
+
+---
+
+## 2. Implementation Standards
+
+- **Contract-First**: Domain modules must never use the `Notification` facade directly. They must
+  inject the appropriate service contract.
+- **Localization**: All notification content must be localized via translation keys before being
+  passed to the dispatcher.
+- **Queueing**: Persistent notifications should implement the `ShouldQueue` interface to prevent UI
+  blocking during external mail delivery.
+
+---
+
+_Standardizing notification paths ensures a consistent user experience and maintains architectural
+purity between UI state and formal communication._
+
+
+---
+
 # Policy Patterns: Authorization Governance Standards
 
 This document formalizes the **Authorization Policy Patterns** for the Internara project, adhering

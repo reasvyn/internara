@@ -1,10 +1,6 @@
 # Application Blueprint: Administrative Orchestration (ARC01-ORCH-01)
 
-**Series Code**: `ARC01-ORCH-01` **Status**: `Archived`
-
-> **System Requirements Specification Alignment:** This configuration baseline implements the
-> **Administrative Orchestration** ([SYRS-F-101], [SYRS-F-102]) requirements of the authoritative
-> **[System Requirements Specification](../system-requirements-specification.md)**.
+**Series Code**: `ARC01-ORCH-01` **Status**: `Archived` (Done)
 
 ---
 
@@ -26,16 +22,18 @@ rule enforcement and centralizing institutional oversight.
 ### 2.1 Capability Set
 
 - **Requirement Orchestrator**: Subsystem for defining, submitting, and verifying mandatory
-  institutional prerequisites.
+  institutional prerequisites before placement activation.
 - **Participation Scoring**: Automated calculation of engagement metrics based on attendance and
-  journal compliance invariants.
-- **Bulk Placement Engine**: Integrated tools for batch-assigning students to industry partners.
-- **Global Notifier**: Standardized bridge for real-time system-wide UI feedback (Toasts).
+  journal compliance invariants (50/50 weighting).
+- **Bulk Placement Engine**: Integrated tools for batch-assigning students to internship placements with automated capacity checking.
+- **Global Notifier**: Formalized dual-path notification system:
+    - **UI Feedback**: Real-time toast notifications via the `Notifier` contract.
+    - **System/User Notifications**: Persistent (DB) and external (Email) alerts via the `NotificationService` contract.
 
 ### 2.2 Stakeholder Personas
 
 - **Student**: Interacts with the requirement dashboard to upload mandatory documentation.
-- **Staff**: Orchestrates bulk verification and placement workflows via centralized queues.
+- **Staff**: Orchestrates bulk verification and placement workflows via centralized management interfaces.
 - **Teacher**: Utilizes participation-driven scores to facilitate objective qualitative assessment.
 
 ---
@@ -44,15 +42,14 @@ rule enforcement and centralizing institutional oversight.
 
 ### 3.1 Modular Decomposition
 
-- **Internship Module**: Enhanced with prerequisite validation and bulk assignment logic.
-- **Assessment Module**: Integrated with **Attendance** and **Journal** modules for engagement
-  telemetry.
-- **Notification Module**: Formalized as the orchestrator for cross-module UI feedback.
+- **Internship Module**: Enhanced with prerequisite validation, bulk assignment logic, and placement history tracking.
+- **Assessment Module**: Integrated with **Attendance** and **Journal** modules via `ComplianceService` for engagement telemetry.
+- **Notification Module**: Formalized as the orchestrator for cross-module UI feedback via the `Notifier` contract.
 
 ### 3.2 Data Architecture
 
 - **Entities**: `internship_requirements` and `requirement_submissions` (UUID-based).
-- **Communication Invariant**: Service-to-service metric retrieval via **Service Contracts** only.
+- **Communication Invariant**: Service-to-service metric retrieval via **Service Contracts** exclusively to maintain modular isolation.
 
 ---
 
@@ -61,25 +58,42 @@ rule enforcement and centralizing institutional oversight.
 ### 4.1 Design Invariants
 
 - **Flow State**: Conditional progression—"Ready for Placement" status is locked until requirements
-  are certified.
-- **Mobile-First Capture**: Submission interfaces optimized for mobile-based document digitization.
+  are certified by staff.
+- **Feedback Consistency**: Systematic adoption of the `Notifier` service across all workspace actions to ensure uniform UI alerts.
 - **i18n Integrity**: Full localization of requirement definitions, rejection feedback, and
   notifications in **ID** and **EN**.
 
 ---
 
-## 5. Success Metrics (KPIs)
+## 5. Documentation Strategy (Knowledge View)
 
-- **Verification Velocity**: 50% reduction in document review duration via centralized
-  orchestration.
-- **Procedural Integrity**: 100% of placed students verified against institutional baseline
-  requirements.
-- **Compliance Gain**: 20% increase in journal submission rates due to transparent participation
-  scoring.
+- **Standardization**: Formalization of the **[Participation & Compliance Scoring](../patterns.md)** formula.
+- **Module Records**: Authoring of the initial `README.md` for the `Notification` module.
+- **Service Contracts**: Documentation of the `Notifier` and `ComplianceService` APIs.
 
 ---
 
-## 6. Exit Criteria & Verification Protocols
+## 6. Audit & Evaluation Report (v0.13.0 Audit)
+
+**Date**: 2026-02-04 | **Auditor**: Gemini
+
+### 6.1 Realized Outcomes
+- **Prerequisite Gating**: Successfully enforced in `RegistrationService::approve`, preventing placement of non-compliant students.
+- **Compliance Scoring**: `ComplianceService` implemented with working-day calculation logic.
+- **Bulk Orchestration**: Batch placement verified in `RegistrationManager`.
+- **UI Consistency**: Refactored `RegistrationManager` to use the `Notifier` service instead of manual dispatch calls.
+
+### 6.2 Identified Anomalies & Corrections
+- **Notifier Inconsistency**: Found several Livewire components bypassing the `Notifier` service. **Correction**: Enforced usage of the `Notifier` contract in core management components.
+- **Fixed Scoring Weight**: Scoring weights are currently hardcoded (50/50). **Resolution**: Identified as a candidate for dynamic configuration in future milestones to allow "direction shifts" as requested by stakeholders.
+
+### 6.3 Improvement Plan
+- [x] Refactor core Livewire components to inject and use the `Notifier` service.
+- [x] Document the compliance scoring formula in the technical patterns.
+
+---
+
+## 7. Exit Criteria & Verification Protocols
 
 A design series is considered done only when it satisfies the following gates:
 
@@ -88,13 +102,13 @@ A design series is considered done only when it satisfies the following gates:
 - **Quality Gate**: zero static analysis violations via **`composer lint`**.
 - **Acceptance Criteria**:
     - Demonstrated dynamic requirement verification lifecycle.
-    - Verified accuracy of participación-weighted scoring logic.
-    - Reports match the "Administrative Management" requirements defined in the System Requirements
-      Specification.
+    - Verified accuracy of participation-weighted scoring logic.
+    - Reports match the "Administrative Management" requirements defined in the SyRS.
 
 ---
 
-## 7. Improvement Suggestions
+## 8. Improvement Suggestions (Legacy)
 
-- **Asynchronous Reporting**: Consider a PDF synthesis engine for large-scale analytics.
-- **Placement Audit**: Suggestions for forensic history logs for student rotations.
+- **Dynamic Weighting**: Develop an administrative interface to adjust participation weights (Attendance vs Journal).
+- **Asynchronous Reporting**: Realized via the **[Reporting (ARC01-INTEL-01)](08-ARC01-INTEL-01-Reporting-Intelligence.md)** series.
+- **Placement Audit**: Realized via `PlacementLogger` in the **Internship** module.

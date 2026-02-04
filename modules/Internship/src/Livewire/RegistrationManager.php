@@ -28,9 +28,14 @@ class RegistrationManager extends Component
 
     public ?string $historyId = null;
 
-    public function boot(RegistrationService $registrationService): void
-    {
+    protected \Modules\Notification\Contracts\Notifier $notifier;
+
+    public function boot(
+        RegistrationService $registrationService,
+        \Modules\Notification\Contracts\Notifier $notifier,
+    ): void {
         $this->service = $registrationService;
+        $this->notifier = $notifier;
         $this->eventPrefix = 'registration';
     }
 
@@ -112,13 +117,9 @@ class RegistrationManager extends Component
             }
 
             $this->formModal = false;
-            $this->dispatch(
-                'notify',
-                message: __('shared::messages.record_saved'),
-                type: 'success',
-            );
+            $this->notifier->success(__('shared::messages.record_saved'));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $this->notifier->error($e->getMessage());
         }
     }
 
@@ -188,13 +189,9 @@ class RegistrationManager extends Component
             $this->selectedIds = [];
             $this->targetPlacementId = null;
 
-            $this->dispatch(
-                'notify',
-                message: __(':count siswa berhasil ditempatkan.', ['count' => $count]),
-                type: 'success',
-            );
+            $this->notifier->success(__(':count siswa berhasil ditempatkan.', ['count' => $count]));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $this->notifier->error($e->getMessage());
         }
     }
 
@@ -207,13 +204,9 @@ class RegistrationManager extends Component
             /** @var RegistrationService $service */
             $service = $this->service;
             $service->approve($id);
-            $this->dispatch(
-                'notify',
-                message: __('internship::ui.registration_approved'),
-                type: 'success',
-            );
+            $this->notifier->success(__('internship::ui.registration_approved'));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $this->notifier->error($e->getMessage());
         }
     }
 
@@ -226,13 +219,9 @@ class RegistrationManager extends Component
             /** @var RegistrationService $service */
             $service = $this->service;
             $service->reject($id);
-            $this->dispatch(
-                'notify',
-                message: __('internship::ui.registration_rejected'),
-                type: 'warning',
-            );
+            $this->notifier->warning(__('internship::ui.registration_rejected'));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $this->notifier->error($e->getMessage());
         }
     }
 
@@ -245,13 +234,9 @@ class RegistrationManager extends Component
             /** @var RegistrationService $service */
             $service = $this->service;
             $service->complete($id);
-            $this->dispatch(
-                'notify',
-                message: __('internship::ui.registration_completed'),
-                type: 'success',
-            );
+            $this->notifier->success(__('internship::ui.registration_completed'));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            $this->notifier->error($e->getMessage());
         }
     }
 }
