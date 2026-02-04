@@ -48,8 +48,7 @@ class Profile extends Model
         return [
             'phone' => 'encrypted',
             'address' => 'encrypted',
-            'nip' => 'encrypted',
-            'nisn' => 'encrypted',
+            'bio' => 'encrypted',
         ];
     }
 

@@ -7,7 +7,7 @@ technologies (PET) used to protect system integrity and user data.
 
 > **Governance Mandate:** All security implementations must satisfy the requirements for Access
 > Control **[SYRS-NF-502]**, Data Privacy **[SYRS-NF-503]**, and Data Integrity **[SYRS-NF-603]**
-> defined in the authoritative **[System Requirements Specification](system-requirements-specification.md)**.
+> defined in the authoritative **[System Requirements Specification](specs.md)**.
 
 ---
 
@@ -52,11 +52,13 @@ Proactive management of request volume and link integrity to protect system reso
 
 Systemic isolation and encryption of Personally Identifiable Information (PII).
 
-### 3.1 Database Encryption
+### 3.1 Distributed Database Encryption
 - **Policy**: All fields identified as PII must be encrypted at the database level.
-- **Target Fields**: `phone`, `address`, `nisn`, `nip`, `nik`, and `bio`.
-- **Implementation**: Utilization of Eloquent's `encrypted` cast in the `Profile`, `Student`, and
-  `Teacher` models.
+- **Implementation**: Utilization of Eloquent's `encrypted` cast in the relevant domain models.
+- **PII Distribution**:
+    - **`Profile`**: `phone`, `address`, and `bio`.
+    - **`Student`**: `nisn` (National Student ID).
+    - **`Teacher`**: `nip` (Staff ID).
 - **Rationale**: Ensures that even in the event of a raw database breach, sensitive user data
   remains unreadable ciphertext.
 

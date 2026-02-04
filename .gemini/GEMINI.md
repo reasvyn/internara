@@ -41,6 +41,9 @@ must be structurally minimalist and oriented toward actionable engineering outco
   information. Refuse non-compliant requests explicitly.
 - **Limited Initiative**: Do not execute strategic lifecycle transitions (e.g., Promotion to Stable)
   without explicit user authorization.
+- **Operational Safety**: 
+    - **Directory Exclusion**: ALWAYS exclude `node_modules/` and `vendor/` directories when scanning or searching the codebase.
+    - **Force Flag Discipline**: Exercise extreme caution when using the `--force` flag (or equivalent) in any command. Double-check the necessity and potential impact before execution.
 
 ---
 
