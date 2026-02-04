@@ -3,8 +3,9 @@
 The `Guidance` module formalizes the onboarding and briefing process for students, managing official
 institutional handbooks and tracking student readiness.
 
-> **Spec Alignment:** This module satisfies the **Stakeholder Onboarding** requirements by providing
-> a structured hub for instructional materials and a digital trail of student acknowledgements.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+
+---
 
 ## Purpose
 

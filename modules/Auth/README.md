@@ -5,10 +5,7 @@ Internara ecosystem. It handles user authentication, registration, password reco
 verification while ensuring that users are intelligently routed to their respective domain-specific
 environments.
 
-> **Governance Mandate:** This module implements the Access Control and Identity Protection
-> standards required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It adheres to **ISO/IEC 27034** (Application Security).
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

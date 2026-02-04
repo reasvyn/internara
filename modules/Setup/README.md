@@ -4,10 +4,7 @@ The `Setup` module provides the automated infrastructure for the initial install
 verification, and system configuration of the Internara application. It orchestrates the transition
 from a clean repository to a production-ready baseline.
 
-> **Governance Mandate:** This module implements the Deployment and System Initialization standards
-> required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It ensures environment integrity through automated pre-flight audits.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

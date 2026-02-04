@@ -3,8 +3,9 @@
 The `Schedule` module manages institutional milestones, event scheduling, and student journey
 visualization within the internship ecosystem.
 
-> **Spec Alignment:** This module implements the **Administrative Orchestration** ([SYRS-F-101])
-> requirements, providing transparency in the internship timeline for all stakeholders.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+
+---
 
 ## Purpose
 

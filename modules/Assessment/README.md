@@ -3,9 +3,9 @@
 The `Assessment` module is the central engine for evaluating student performance and generating
 official credentials. It aggregates data from various sources to produce final grades.
 
-> **Spec Alignment:** This module fulfills the **Mentoring and Evaluation** requirements of the
-> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 3), supporting the
-> generation of competency achievement reports.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+
+---
 
 ## Purpose
 

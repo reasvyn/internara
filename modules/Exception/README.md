@@ -4,10 +4,7 @@ The `Exception` module provides the foundational infrastructure for standardized
 fault tolerance within the Internara ecosystem. It ensures that technical failures are captured,
 logged, and presented to users in a secure, localized, and context-aware manner.
 
-> **Governance Mandate:** This module implements the Resilience and Application Security standards
-> required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It adheres to **ISO/IEC 25010** (Reliability) and **ISO/IEC 27034** (Security).
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

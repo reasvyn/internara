@@ -2,9 +2,9 @@
 
 The `Attendance` module manages student presence tracking during the internship period.
 
-> **Spec Alignment:** This module fulfills the **Student Progress Monitoring** requirements of the
-> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 2), providing real-time
-> tracking of student presence and conditions.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+
+---
 
 ## Purpose
 

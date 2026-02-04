@@ -3,10 +3,7 @@
 The `Support` module provides high-level administrative utilities and cross-domain orchestration
 tools that facilitate mass-operations and automated onboarding.
 
-> **Governance Mandate:** This module implements the bulk orchestration logic required by the
-> authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It adheres to **ISO/IEC 25010** (Maintainability) and ensures reliable stakeholder initialization.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

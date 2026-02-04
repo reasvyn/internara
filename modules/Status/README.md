@@ -4,9 +4,7 @@ The `Status` module provides the foundational infrastructure for tracking and ma
 transitions of all entities within the Internara ecosystem. It centralizes state-based logic and
 ensures that lifecycle changes are auditable, localized, and consistent.
 
-> **Governance Mandate:** This module implements the State Management and Lifecycle Tracking
-> standards required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

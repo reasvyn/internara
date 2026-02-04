@@ -4,9 +4,7 @@ The `Setting` module provides a centralized, cached, and database-backed infrast
 dynamic application-wide configurations. It allows administrators to modify system parameters during
 runtime without requiring code or environment file changes.
 
-> **Governance Mandate:** This module implements the Dynamic Configuration and Bootstrapping
-> Resilience standards required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

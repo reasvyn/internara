@@ -4,11 +4,7 @@ The `Log` module provides the observability and auditing infrastructure for the 
 It ensures accountability by tracking user actions and system events while maintaining strict
 privacy standards through automated PII masking.
 
-> **Governance Mandate:** This module implements the Auditing and Information Leakage Prevention
-> standards required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It adheres to **ISO/IEC 27034** (Security) and provides the forensic evidence required for
-> academic legitimacy.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

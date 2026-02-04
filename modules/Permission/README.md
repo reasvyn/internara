@@ -4,10 +4,7 @@ The `Permission` module provides the centralized Role-Based Access Control (RBAC
 Internara ecosystem. It defines granular access levels for Instructors, Students, and Supervisors,
 ensuring that every system action is authorized according to the stakeholder's role.
 
-> **Governance Mandate:** This module implements the User Roles and Security mandates required by
-> the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It adheres to **ISO/IEC 29146** (Access Control Framework).
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

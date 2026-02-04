@@ -3,11 +3,7 @@
 The `Assignment` module manages the lifecycle of student tasks and submissions, decoupled from the
 core internship program to provide flexible institutional governance.
 
-> **Governance Mandate:** This module implements the **Dynamic Assignment Engine** required by the
-> authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It allows schools to define custom mandatory tasks beyond standard reports, ensuring compliance
-> with institutional policies.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

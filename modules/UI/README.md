@@ -4,10 +4,7 @@ The `UI` module serves as the authoritative, "headless" source of truth for Inte
 language and shared frontend components. it encapsulates the design system, interactive elements,
 and presentation layouts without containing business logic or data persistence.
 
-> **Governance Mandate:** This module implements the UI/UX and Accessibility standards required by
-> the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**
-> (ISO 9241-210). It ensures a mobile-first, consistent, and localized user experience.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

@@ -5,10 +5,7 @@ ecosystem. It provides the necessary storage for information that distinguishes 
 core authentication credentials, such as institutional IDs, contact details, and department
 affiliations.
 
-> **Governance Mandate:** This module implements the Administrative Orchestration and Data Privacy
-> standards required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It ensures that personal data is handled according to **ISO/IEC 27034** (Security).
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

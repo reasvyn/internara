@@ -4,10 +4,7 @@ The `Notification` module provides a unified infrastructure for dispatching aler
 real-time UI feedback within the Internara ecosystem. It centralizes multi-channel communication to
 ensure Instructors, Students, and Supervisors remain informed about critical system events.
 
-> **Governance Mandate:** This module implements the Communication and Information Flow standards
-> required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It facilitates proactive system interaction as defined in the architecturalPROCESS VIEW.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

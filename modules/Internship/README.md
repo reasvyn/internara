@@ -3,9 +3,9 @@
 The `Internship` module manages the lifecycle of student practical work, from placement availability
 to official registration.
 
-> **Spec Alignment:** This module fulfills the **Administrative Management** requirements of the
-> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 1), centralizing student
-> data, schedules, and locations.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+
+---
 
 ## Purpose
 

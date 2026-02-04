@@ -2,9 +2,9 @@
 
 The `Journal` module manages the daily activity tracking (Logbook) for students.
 
-> **Spec Alignment:** This module fulfills the **Student Progress Monitoring** requirements of the
-> **[Internara Specs](../../docs/internal/internara-specs.md)** (Section 2), documenting student
-> activities and competency achievements.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+
+---
 
 ## Purpose
 

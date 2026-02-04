@@ -4,10 +4,7 @@ The `User` module serves as the authoritative source of truth for stakeholder id
 management within the Internara ecosystem. It provides the necessary infrastructure for managing
 Instructors, Students, Administrators, and Industry Mentors.
 
-> **Governance Mandate:** This module implements the Identity Management and Access Control
-> standards required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> It adheres to **ISO/IEC 27034** (Application Security) and ensures strict domain isolation.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

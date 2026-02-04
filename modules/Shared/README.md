@@ -4,10 +4,7 @@ The `Shared` module serves as the technical foundation of the Internara modular 
 provides business-agnostic infrastructure, technical utilities, and standardized behavioral concerns
 that are utilized across all domain modules.
 
-> **Governance Mandate:** This module implements the foundational technical invariants required by
-> the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
-> All components adhere to **ISO/IEC 25010** (Maintainability) and **ISO/IEC 27034** (Security).
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

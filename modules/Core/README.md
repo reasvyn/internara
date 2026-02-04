@@ -4,9 +4,7 @@ The `Core` module serves as the authoritative repository for Internara-specific 
 foundational configurations, and specialized development tooling. It acts as the "glue" that
 connects architectural invariants with business reality.
 
-> **Governance Mandate:** This module implements the infrastructure for RBAC, multi-language
-> support, and dynamic system orchestration required by the authoritative
-> **[System Requirements Specification](../../docs/internal/system-requirements-specification.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
