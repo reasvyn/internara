@@ -71,6 +71,7 @@ authentication and the initial RBAC (Role-Based Access Control) framework.
 ### 5.2 Identified Anomalies & Corrections
 - **Hashing Drift**: Initial design suggested Argon2id, but implementation used BCrypt. **Resolution**: Adjusted blueprint to favor BCrypt for MVP portability while recommending Argon2id for high-security production.
 - **Identity Sprawl**: Found redundant profile-like fields in early User model migrations. **Resolution**: Standardized delegating all biodata to the `Profile` module.
+- **Academic Coupling**: User profiles now depend on the `Department` structure formalized in the **[Institutional (ARC01-INST-01)](04-ARC01-INST-01-Institutional.md)** series.
 
 ### 5.3 Improvement Plan
 - [x] Synchronize all identity-related blueprints with the finalized SyRS.

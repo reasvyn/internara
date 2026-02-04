@@ -2,22 +2,18 @@
 
 **Series Code**: `ARC01-INST-01` **Status**: `Archived` (Done)
 
-> **Spec Alignment:** This configuration baseline implements the **Administrative Orchestration**
-> ([SYRS-F-101]) requirements of the authoritative
-> **[System Requirements Specification](../../specs.md)**.
-
 ---
 
 ## 1. Design Objectives & Scope
 
 **Strategic Purpose**: Establish the structural framework for managing institutional entities,
-including school departments and industry partner registries.
+including school departments and industry placement registries.
 
 **Objectives**:
 
 - Provide a centralized repository for managing academic pathway data.
-- Enable the formal registration and classification of industry partners (Internship Locations).
-- Establish the baseline for student-to-partner assignment orchestration.
+- Enable the formal registration and classification of industry placements (Internship Locations).
+- Establish the baseline for student-to-placement assignment orchestration.
 
 ---
 
@@ -26,9 +22,9 @@ including school departments and industry partner registries.
 ### 2.1 Capability Set
 
 - **Department Orchestrator**: Management of institutional academic units and their metadata.
-- **Partner Registry**: Centralized listing of industry collaborators with contact and capacity
-  attributes.
-- **Placement Logic Baseline**: Core services for linking student profiles to registered partners.
+- **Placement Registry**: Centralized listing of industry collaborators with contact and capacity
+  attributes (previously referred to as "Partners").
+- **Placement Logic Baseline**: Core services for linking student profiles to registered placements.
 
 ### 2.2 Stakeholder Personas
 
@@ -42,17 +38,47 @@ including school departments and industry partner registries.
 ### 3.1 Modular Decomposition
 
 - **Department Module**: New domain for academic structural orchestration.
-- **School Module**: Domain for managing institutional identity and partners.
+- **School Module**: Domain for managing institutional identity.
+- **Internship Module**: Enhanced to handle placement logistics and capacity tracking.
 
 ### 3.2 Persistence Logic
 
 - **Identity Invariant**: Mandatory utilization of **UUID v4** for all institutional records.
-- **Isolation Protocol**: Domain logic ensures zero concrete coupling between school and partner
+- **Isolation Protocol**: Domain logic ensures zero concrete coupling between school and placement
   entities at the database layer.
+- **Software-Level Integrity (SLRI)**: Implementation of service-layer validation to ensure referential integrity between Departments and Schools without physical constraints.
 
 ---
 
-## 4. Exit Criteria & Verification Protocols
+## 4. Documentation Strategy (Knowledge View)
+
+- **Standardization**: Documentation of the institutional hierarchy within the **Architecture Description**.
+- **Module Records**: Authoring of the `README.md` files for the `School` and `Department` modules.
+- **Branding Integration**: Strategy for providing school logo and name to the global layout and reporting engine.
+
+---
+
+## 5. Audit & Evaluation Report (v0.13.0 Audit)
+
+**Date**: 2026-02-04 | **Auditor**: Gemini
+
+### 5.1 Realized Outcomes
+- **UUID Identity**: Successfully adopted across `School`, `Department`, and `InternshipPlacement` models.
+- **SLRI Enforcement**: `DepartmentService` refactored to explicitly validate `school_id` via `SchoolService`, adhering to the logic isolation mandate.
+- **Terminology Alignment**: Standardized "Partner" into "Internship Placement" to better reflect the system's operational focus.
+- **Branding Baseline**: Integrated `COLLECTION_LOGO` in the `School` model via the `Media` module.
+
+### 5.2 Identified Anomalies & Corrections
+- **Loose Integrity**: Initial `DepartmentService` relied on model-level validation. **Correction**: Moved validation logic to the Service Layer to satisfy the **Logic Layer** mandate.
+- **Naming Inconsistency**: "Partner" terminology was ambiguous. **Correction**: Aligned all documentation and code to use "Placement".
+
+### 5.3 Improvement Plan
+- [x] Refactor Department creation/update logic to use SLRI protocols.
+- [x] Synchronize institutional metadata with the global UI module.
+
+---
+
+## 6. Exit Criteria & Verification Protocols
 
 A design series is considered done only when it satisfies the following gates:
 
@@ -60,12 +86,12 @@ A design series is considered done only when it satisfies the following gates:
   **`composer test`**.
 - **Quality Gate**: zero static analysis violations via **`composer lint`**.
 - **Acceptance Criteria**:
-    - Successful registration and retrieval of department-partner relationships.
+    - Successful registration and retrieval of department-placement relationships.
     - Verified fulfillment of [SYRS-F-101] requirements.
 
 ---
 
-## 5. Improvement Suggestions
+## 7. Improvement Suggestions (Legacy)
 
-- **Daily Monitoring**: Explore real-time attendance and journal tracking.
-- **Historical Scoping**: Suggestions for academic year isolation.
+- **Daily Monitoring**: Realized via the **[Instructional Execution (ARC01-GAP-02)](11-ARC01-GAP-02-Instructional-Execution.md)** series.
+- **Historical Scoping**: Realized via the `HasAcademicYear` concern in the **Shared** module.

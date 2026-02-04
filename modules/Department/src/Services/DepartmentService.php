@@ -29,13 +29,12 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     public function create(array $data): Department
     {
         $schoolId = $data['school_id'] ?? null;
-        unset($data['school_id']);
 
-        /** @var Department $department */
-        $department = parent::create($data);
-        $department->changeSchoolId($schoolId);
+        if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(__('school::exceptions.not_found'));
+        }
 
-        return $department->fresh(['school']);
+        return parent::create($data)->fresh(['school']);
     }
 
     /**
@@ -44,13 +43,12 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     public function update(mixed $id, array $data): Department
     {
         $schoolId = $data['school_id'] ?? null;
-        unset($data['school_id']);
 
-        /** @var Department $department */
-        $department = parent::update($id, $data);
-        $department->changeSchoolId($schoolId);
+        if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(__('school::exceptions.not_found'));
+        }
 
-        return $department->fresh(['school']);
+        return parent::update($id, $data)->fresh(['school']);
     }
 
     /**
@@ -59,12 +57,11 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     public function save(array $attributes, array $values = []): Department
     {
         $schoolId = $attributes['school_id'] ?? ($values['school_id'] ?? null);
-        unset($attributes['school_id'], $values['school_id']);
 
-        /** @var Department $department */
-        $department = parent::save($attributes, $values);
-        $department->changeSchoolId($schoolId);
+        if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(__('school::exceptions.not_found'));
+        }
 
-        return $department->fresh(['school']);
+        return parent::save($attributes, $values)->fresh(['school']);
     }
 }
