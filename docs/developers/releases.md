@@ -7,7 +7,7 @@ configurations to an authoritative delivery baseline.
 
 > **Governance Mandate:** No release baseline may be authorized unless it demonstrates 100%
 > compliance with the authoritative
-> **[System Requirements Specification](system-requirements-specification.md)**.
+> **[System Requirements Specification](specs.md)**.
 
 ---
 
@@ -37,9 +37,7 @@ mandatory quality gates:
 ### 2.1 Identity & Baseline Synchronization
 
 Verify that the `app_info.json` exactly matches the intended configuration baseline (Series Code,
-
 Support Policy, Status). Execute the mandatory transition of the version status to **Released**
-
 within the internal records and the strategic baseline overview prior to tag creation.
 
 ### 2.2 Configuration Baseline Identification (Tagging)
@@ -50,7 +48,7 @@ Create an **Annotated Git Tag** to establish an immutable reference to the relea
 
 ### 2.3 Documentation Finalization (Doc-as-Code)
 
-Synchronize the analytical release notes in `docs/versions/` to reflect the realized outcome.
+Synchronize the analytical release notes in `versions/` to reflect the realized outcome.
 
 - **Requirement**: Documentation must be analytically precise and preserve all technical depth.
 - **Metadata Invariant**: Every release note must include **Series Code**, **Support Policy**, and
@@ -63,7 +61,7 @@ Synchronize the analytical release notes in `docs/versions/` to reflect the real
 ### 3.1 GitHub Baseline Synchronization
 
 Synchronize the configuration baseline with the remote repository according to the
-**[GitHub Protocols](github-protocols.md)**.
+**[Git Protocols](git.md)**.
 
 - **Action**: Utilize `gh release create` to promote the baseline and its associated metadata.
 - **Maturity Identification**: Explicitly mark non-stable baselines as "Pre-release."
@@ -87,7 +85,21 @@ delivery package to ensure zero configuration drift.
 
 If a defect is identified in a released baseline, a **Hotfix** configuration must be established
 targeting the current baseline tag, as defined in the
-**[Software Life Cycle Processes](software-lifecycle-processes.md)**.
+**[Software Lifecycle](lifecycle.md)**.
+
+---
+
+## 5. Release Notes Authoring Standards
+
+To ensure transparency and accessibility for all stakeholders, Release Notes must adhere to the following semantic standards:
+
+- **Language**: All Release Notes must be authored in **English**.
+- **Tone & Accessibility**: Content must be easily understandable by non-technical users (laypeople). Avoid excessive jargon unless necessary for technical context.
+- **Mandatory Structure**:
+    - **Overview**: A brief summary of the release's purpose and strategic impact.
+    - **Key Features**: High-level descriptions of significant new capabilities.
+    - **What's Changed? (Changelog)**: A concise list of functional improvements and fixes.
+- **Inclusion Policy**: Only significant changes, features, and fixes should be recorded. Minor technical maintenance or trivial updates (e.g., "typo fix in internal comment") should be omitted to maintain signal quality.
 
 ---
 
