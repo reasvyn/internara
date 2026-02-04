@@ -81,4 +81,4 @@ A design series is considered done only when it satisfies the following gates:
 ## 7. Improvement Suggestions (Legacy)
 
 - **Access Infrastructure**: Adoped via **[Access Control Standards](../access-control.md)**.
-- **Entity Standards**: Adoped via **UUID v4 Invariant** in the SyRS.
+- **Entity Standards**: Conceptualized here; formalized as the **UUID v4 Invariant** in the **[Core Engine (ARC01-CORE-01)](02-ARC01-CORE-01-Core-Engine.md)** series.

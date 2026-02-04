@@ -48,11 +48,11 @@ class AppInfoCommand extends Command
         );
         $this->components->twoColumnDetail(
             'Version',
-            (string) config('core.info.version', $info['version'] ?? 'Unknown'),
+            (string) ($info['version'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'Series Code',
-            (string) config('core.info.series_code', $info['series_code'] ?? 'Unknown'),
+            (string) ($info['series_code'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'Maintenance',
@@ -95,15 +95,15 @@ class AppInfoCommand extends Command
         $this->components->info('Author Information');
         $this->components->twoColumnDetail(
             'Author',
-            (string) config('core.author.name', $info['author']['name'] ?? 'Unknown'),
+            (string) ($info['author']['name'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'GitHub',
-            (string) config('core.author.github', $info['author']['github'] ?? 'Unknown'),
+            (string) ($info['author']['github'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
             'Email',
-            (string) config('core.author.email', $info['author']['email'] ?? 'Unknown'),
+            (string) ($info['author']['email'] ?? 'Unknown'),
         );
 
         $this->newLine();

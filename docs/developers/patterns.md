@@ -245,6 +245,64 @@ ecosystem, preserving the benefits of modularity without sacrificing systemic in
 
 ---
 
+---
+
+# System Configuration & Dynamic Settings
+
+This document defines the protocols for managing application-wide configurations that require
+runtime administrative control via the `setting()` helper.
+
+---
+
+## 1. Authoritative Source: The `setting()` Helper
+
+Internara utilizes a global `setting()` helper to retrieve dynamic configurations from the database
+with a proactive caching layer.
+
+- **Primary Provider**: The `Setting` module manages the persistence and caching of these values.
+- **Infrastructure Fallback**: The `Core` module provides a safe, non-functional fallback for the
+  helper to prevent system-wide fatal errors if the `Setting` module is unavailable during early
+  boot cycles.
+
+### 1.1 Usage Pattern
+
+```php
+// Retrieve a setting with a default value
+$threshold = setting('late_threshold', 15);
+
+// Retrieve an array-based setting
+$branding = setting('institutional_branding');
+```
+
+---
+
+## 2. Bootstrapping Resilience
+
+To ensure architectural stability, certain critical system checks must bypass the full service
+container.
+
+- **File-Based Discovery**: Logic related to module activation status (via `modules_statuses.json`)
+  is designed to operate before the database engine is initialized.
+- **Fail-Safe Defaults**: Always provide sensible default values in the second parameter of
+  `setting()` to ensure operational continuity during environment migration or database resets.
+
+---
+
+## 3. Auditability Invariant
+
+Every modification to a dynamic setting must be captured by the `Log` module.
+
+- **Traceability**: Captured metadata must include the previous value, the new value, and the
+  administrative subject responsible for the change.
+
+---
+
+_Utilizing the standardized setting protocols ensures that Internara remains a flexible and
+manageable platform while preserving architectural resilience._
+
+
+---
+
 # Policy Patterns: Authorization Governance Standards
 
 This document formalizes the **Authorization Policy Patterns** for the Internara project, adhering

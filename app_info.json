@@ -5,7 +5,8 @@
     "maintenance": "Snapshot",
     "author": {
         "name": "Reas Vyn",
-        "email": "reasnov.official@gmail.com"
+        "email": "reasnov.official@gmail.com",
+        "github": "https://github.com/reasnov"
     },
     "license": "MIT"
 }
