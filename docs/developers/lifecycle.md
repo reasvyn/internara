@@ -52,7 +52,7 @@ Internara utilizes a dual-layered V&V framework derived from the **V-Model**:
 
 - **Objective**: Maintain the integrity of software artifacts throughout the lifecycle.
 - **Process**: Versioning (SemVer), tagging, and baseline management as defined in
-  **[Version Management](versions/README.md)** and **[GitHub Protocols](github-protocols.md)**.
+  **[Version Management](../pubs/releases/README.md)** and **[GitHub Protocols](git.md)**.
 
 ### 2.3 Quality Assurance (ISO/IEC 25010)
 
@@ -202,7 +202,7 @@ The final phase ensures that the engineering record converges with the realized 
 
 - **Metadata**: Update `app_info.json` if a milestone is achieved.
 - **Documentation**:
-    - Finalize Release Notes in `docs/versions/`.
+    - Finalize Release Notes in `docs/pubs/releases/`.
     - Synchronize the related **Table of Contents** documents.
     - **README Update**: Update the project-level `README.md` and any affected module-specific
       `README.md` files to reflect new capabilities and architectural changes.

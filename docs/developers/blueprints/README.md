@@ -35,5 +35,5 @@ technical implementation.
 ---
 
 _Once a design intent is successfully done, its blueprint is archived. The as-built outcome is
-documented in the **[Release Baselines](../versions/README.md)**, mapped via its
+documented in the **[Release Baselines](../../pubs/releases/README.md)**, mapped via its
 unique **Series Code**._

@@ -11,7 +11,7 @@ These guides focus on the vision, usage, and installation of Internara.
 - **[Project Overview](overview.md)**: The core vision, goals, and key features of the platform.
 - **[Installation Guide](installation.md)**: How to set up and run Internara on your server.
 - **[Module Catalog](modules.md)**: Detailed breakdown of available system modules.
-- **[Release History](../developers/versions/README.md)**: Track the latest updates and release history.
+- **[Release History](../pubs/releases/README.md)**: Track the latest updates and release history.
 
 ---
 

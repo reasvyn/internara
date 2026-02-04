@@ -120,7 +120,7 @@ Upon completion of the developmental roadmap defined in the Blueprint:
 
 1.  The Blueprint's intent is marked as **Done**.
 2.  The final as-built state is documented in the corresponding **Release Baseline**
-    (`docs/versions/`) using the same **Series Code**.
+    (`docs/pubs/releases/`) using the same **Series Code**.
 3.  The Blueprint may be moved to the `archived/` directory to maintain a clean active workspace,
     serving as a historical design record. Admission to the archive is an administrative lifecycle
     event, whereas 'Done' is a functional verification event.

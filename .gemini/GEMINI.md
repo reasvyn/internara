@@ -124,5 +124,5 @@ Gemini must always consider the following authoritative documents as active cont
 - **[Coding Conventions](../docs/developers/conventions.md)**
 - **[Repository Configuration Protocols](../docs/developers/git.md)**
 - **[Release Publication Protocols](../docs/developers/releases.md)**
-- **[Version Management](../docs/developers/versions/README.md)**
+- **[Version Management](../docs/pubs/releases/README.md)**
 - **[Module Catalog](../docs/wiki/modules.md)**

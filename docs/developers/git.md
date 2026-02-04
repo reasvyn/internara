@@ -73,7 +73,7 @@ To maintain zero configuration drift, a full synchronization sweep is required a
 1.  **Baseline Fetch**: `git fetch --all --tags --prune`.
 2.  **Artifact Alignment**: Ensure local documentation in `docs/` exactly matches the remote
     baseline on GitHub.
-3.  **Metadata Audit**: Synchronize GitHub Milestones with the version roadmap in `docs/versions/`.
+3.  **Metadata Audit**: Synchronize GitHub Milestones with the version roadmap in `docs/pubs/releases/`.
 
 ---
 

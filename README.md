@@ -70,7 +70,7 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 - **[Project Overview](docs/wiki/overview.md)**: Strategic vision and feature breakdown.
 - **[System Installation](docs/wiki/installation.md)**: Automated setup and deployment guide.
-- **[Release Notes](docs/developers/versions/README.md)**: Friendly history of updates and progress.
+- **[Release Notes](docs/pubs/releases/README.md)**: Friendly history of updates and progress.
 
 ### 🛠 For Developers & Contributors
 

@@ -48,7 +48,7 @@ Create an **Annotated Git Tag** to establish an immutable reference to the relea
 
 ### 2.3 Documentation Finalization (Doc-as-Code)
 
-Synchronize the analytical release notes in `versions/` to reflect the realized outcome.
+Synchronize the analytical release notes in `../pubs/releases/` to reflect the realized outcome.
 
 - **Requirement**: Documentation must be analytically precise and preserve all technical depth.
 - **Metadata Invariant**: Every release note must include **Series Code**, **Support Policy**, and
