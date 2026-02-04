@@ -6,9 +6,9 @@ ensures that all AI-driven interventions demonstrate 100% alignment with the sys
 engineering records and international standards.
 
 > **Single Source of Truth Mandate:** The document
-> **[`docs/internal/system-requirements-specification.md`](../docs/internal/system-requirements-specification.md)**
+> **[`docs/developers/specs.md`](../docs/developers/specs.md)**
 > is the **Authoritative Specification** for this project. For a complete list of modules and their
-> roles, refer to the **[Module Catalog](../docs/main/modules-catalog.md)**. All architectural
+> roles, refer to the **[Module Catalog](../docs/wiki/modules.md)**. All architectural
 > decisions, logic implementation, and lifecycle events MUST satisfy its requirements.
 
 ---
@@ -20,7 +20,7 @@ rules are encapsulated within autonomous domain modules, orchestrated via a **Se
 Layer**.
 
 The architecture prioritizing systemic integrity and maintainability, adhering to the formal
-**[Architecture Description](../docs/internal/architecture-description.md)**.
+**[Architecture Description](../docs/developers/architecture.md)**.
 
 ---
 
@@ -47,7 +47,7 @@ must be structurally minimalist and oriented toward actionable engineering outco
 ## 3. Engineering Workflows & Lifecycle Governance
 
 Gemini is mandated to follow the formal
-**[Software Life Cycle Processes](../docs/internal/software-lifecycle-processes.md)**.
+**[Software Life Cycle Processes](../docs/developers/lifecycle.md)**.
 
 ### 3.1 Implementation Process
 
@@ -63,7 +63,7 @@ Gemini is mandated to follow the formal
 - **System Verification**: Mandatory execution of **`composer test`**.
 - **Static Analysis**: Mandatory execution of **`composer lint`**.
 - **Configuration Management**: Adherence to **Conventional Commits** and the
-  **[Repository Configuration Protocols](../docs/internal/repository-configuration-protocols.md)**.
+  **[Repository Configuration Protocols](../docs/developers/git.md)**.
 
 ---
 
@@ -90,8 +90,8 @@ Namespaces MUST omit the `src` segment to maintain modular portability.
 ## 5. Verification & Validation (V&V) Standards
 
 Gemini must verify all artifacts against the
-**[Testing & Verification Guide](../docs/internal/testing-verification-guide.md)** and the
-**[Conventions and Rules](../docs/internal/conventions-and-rules.md)**.
+**[Testing & Verification Guide](../docs/developers/testing.md)** and the
+**[Coding Conventions](../docs/developers/conventions.md)**.
 
 - **V-Model Alignment**: Unit and Feature tests must verify both technical design and requirement
   fulfillment.
@@ -106,11 +106,11 @@ Gemini is authorized to utilize the **GitHub CLI (`gh`)** and **Laravel Boost** 
 systemic synchronization and debugging.
 
 - **Artisan Orchestration**: Utilization of modular generators defined in the
-  **[Automated Tooling Reference](../docs/internal/automated-tooling-reference.md)**.
+  **[Automated Tooling](../docs/developers/tooling.md)**.
 - **Information Retrieval**: Prioritize `search-docs`, `tinker`, and `database-schema` for
   contextual immersion.
 
-Refer to the **[Technical Index](../docs/internal/table-of-contents.md)** for exhaustive engineering
+Refer to the **[Technical Index](../docs/developers/README.md)** for exhaustive engineering
 standards.
 
 ---
@@ -119,10 +119,10 @@ standards.
 
 Gemini must always consider the following authoritative documents as active context:
 
-- **[System Requirements Specification](../docs/internal/system-requirements-specification.md)**
-- **[Architecture Description](../docs/internal/architecture-description.md)**
-- **[Conventions and Rules](../docs/internal/conventions-and-rules.md)**
-- **[Repository Configuration Protocols](../docs/internal/repository-configuration-protocols.md)**
-- **[Release Publication Protocols](../docs/internal/release-publication-protocols.md)**
-- **[Version Management](../docs/internal/version-management.md)**
-- **[Module Catalog](../docs/main/modules-catalog.md)**
+- **[System Requirements Specification](../docs/developers/specs.md)**
+- **[Architecture Description](../docs/developers/architecture.md)**
+- **[Coding Conventions](../docs/developers/conventions.md)**
+- **[Repository Configuration Protocols](../docs/developers/git.md)**
+- **[Release Publication Protocols](../docs/developers/releases.md)**
+- **[Version Management](../docs/developers/versions/README.md)**
+- **[Module Catalog](../docs/wiki/modules.md)**

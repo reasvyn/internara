@@ -68,17 +68,17 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 ### 👥 For Users & Administrators
 
-- **[Project Overview](docs/main/project-overview.md)**: Strategic vision and feature breakdown.
-- **[System Installation](docs/main/installation-guide.md)**: Automated setup and deployment guide.
-- **[Release Notes](docs/versions/versions-overview.md)**: Friendly history of updates and progress.
+- **[Project Overview](docs/wiki/overview.md)**: Strategic vision and feature breakdown.
+- **[System Installation](docs/wiki/installation.md)**: Automated setup and deployment guide.
+- **[Release Notes](docs/developers/versions/README.md)**: Friendly history of updates and progress.
 
 ### 🛠 For Developers & Contributors
 
-- **[Architecture Description](docs/internal/architecture-description.md)**: Deep dive into the
+- **[Architecture Description](docs/developers/architecture.md)**: Deep dive into the
   modular system invariants.
-- **[Feature Engineering Workflow](docs/internal/feature-engineering-workflow.md)**: Our systematic
+- **[Feature Engineering Workflow](docs/developers/lifecycle.md)**: Our systematic
   implementation process.
-- **[Technical Index](docs/internal/table-of-contents.md)**: Full catalog of engineering standards.
+- **[Technical Index](docs/developers/README.md)**: Full catalog of engineering standards.
 
 ---
 
