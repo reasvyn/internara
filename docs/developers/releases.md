@@ -98,7 +98,7 @@ To ensure transparency and accessibility for all stakeholders, Release Notes mus
 - **Mandatory Structure**:
     - **Overview**: A brief summary of the release's purpose and strategic impact.
     - **Key Features**: High-level descriptions of significant new capabilities.
-    - **What's Changed? (Changelog)**: A concise list of functional improvements and fixes.
+    - **What's Changed? (Changelog)**: A concise list of functional improvements and fixes adhering to the **Keep a Changelog** convention (Added, Changed, Deprecated, Removed, Fixed, Security).
 - **Inclusion Policy**: Only significant changes, features, and fixes should be recorded. Minor technical maintenance or trivial updates (e.g., "typo fix in internal comment") should be omitted to maintain signal quality.
 
 ---
