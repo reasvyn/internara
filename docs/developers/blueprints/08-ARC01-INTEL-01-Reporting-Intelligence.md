@@ -4,7 +4,7 @@
 
 > **System Requirements Specification Alignment:** This configuration baseline implements the
 > **Assessment & Reporting** ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative
-> **[System Requirements Specification](../system-requirements-specification.md)**.
+> **[System Requirements Specification](../specs.md)**.
 
 ---
 
@@ -73,6 +73,11 @@ engine and establishing systemic traceability for student placement transitions.
   touch-optimized viewports.
 - **Multi-Language Integrity**: Full localization of dashboard labels and report templates in **ID**
   and **EN**.
+
+### 4.2 Documentation Strategy (Knowledge View)
+- **Module Records**: Authoring of the authoritative `README.md` for the new `Report` module.
+- **Audit Protocols**: Formalization of the placement history audit invariants within the `Internship` module documentation.
+- **Analytical Manuals**: Creation of stakeholder-facing guides in the Wiki explaining how to interpret competency reports and "At-Risk" metrics.
 
 ---
 

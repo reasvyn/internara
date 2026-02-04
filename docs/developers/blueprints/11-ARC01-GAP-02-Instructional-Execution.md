@@ -5,7 +5,7 @@
 > **System Requirements Specification Alignment:** This blueprint implements the **Progress
 > Monitoring** ([SYRS-F-201], [SYRS-F-202]) and **Assessment & Reporting** ([SYRS-F-301],
 > [SYRS-F-302]) requirements of the authoritative
-> **[System Requirements Specification](../system-requirements-specification.md)**.
+> **[System Requirements Specification](../specs.md)**.
 
 ---
 

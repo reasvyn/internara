@@ -61,7 +61,7 @@ The following behaviors are considered violations of this Code of Conduct:
 ## 4. Enforcement Protocols
 
 Violations will be handled according to the **Community & Communication Protocols** defined in
-`docs/internal/repository-configuration-protocols.md`.
+`docs/developers/git.md`.
 
 ### 4.1 Reporting
 

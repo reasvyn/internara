@@ -4,7 +4,7 @@
 
 > **Spec Alignment:** This configuration baseline implements the **Progress Monitoring &
 > Traceability** ([SYRS-F-201]) requirements of the authoritative
-> **[System Requirements Specification](../../system-requirements-specification.md)**.
+> **[System Requirements Specification](../../specs.md)**.
 
 ---
 

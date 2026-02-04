@@ -4,7 +4,7 @@
 
 > **Spec Alignment:** This configuration baseline implements the **Security & Integrity**
 > ([SYRS-NF-501], [SYRS-NF-502]) requirements of the authoritative
-> **[System Requirements Specification](../../system-requirements-specification.md)**.
+> **[System Requirements Specification](../../specs.md)**.
 
 ---
 

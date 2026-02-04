@@ -60,6 +60,12 @@
 ### 4.2 Masking Standards
 - Implementation of helper methods in the `Support` module for masking sensitive strings (e.g., `ma**@email.com`, `32**********01`).
 
+### 4.3 Documentation Strategy (Knowledge View)
+- **Structural Transformation**: Consolidation of redundant technical documents into authoritative guides (`architecture.md`, `conventions.md`, `patterns.md`).
+- **Standardization**: Transition of all index files to `README.md` for better platform compatibility.
+- **Relocation**: Migration of release-specific documentation to `docs/pubs/releases/` to distinguish public records from internal engineering standards.
+- **Protocol Definition**: Formalization of Release Notes authoring standards in `releases.md`.
+
 ---
 
 ## 5. Exit Criteria & Quality Gates

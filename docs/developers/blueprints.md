@@ -6,7 +6,7 @@ Process). Blueprints serve as the authoritative **Architecture Design Records (A
 intentional evolution of the system across developmental milestones.
 
 > **Governance Mandate:** All Blueprints must derive their authority from the authoritative
-> **[System Requirements Specification](system-requirements-specification.md)**. A Blueprint cannot
+> **[System Requirements Specification](specs.md)**. A Blueprint cannot
 > authorize structural modifications that contradict the SSoT requirements.
 
 ---
@@ -17,6 +17,7 @@ Application Blueprints translate strategic requirements into architecturally act
 during the **Software Design Process**. They function as a **Roadmap** and a **Work Contract** for
 the system's developmental direction.
 
+- **Strategic Nature**: A Blueprint is **NOT** a simple task list or "To-Do" log. It is a formal declaration of vision and a technical roadmap that establishes the contractual baseline for a development series.
 - **Objective**: Eliminate architectural ambiguity before implementation and define the path of
   evolution.
 - **Contractual Nature**: Serve as a technical agreement between Requirements Engineering and System
@@ -71,7 +72,7 @@ Every Application Blueprint must provide a comprehensive description of the inte
 
 - **Series Identification**: Unique series code and current developmental status.
 - **Spec Alignment**: Explicit mapping to the functional and non-functional requirements in the
-  **[System Requirements Specification](system-requirements-specification.md)**.
+  **[System Requirements Specification](specs.md)**.
 
 ### 4.2 Functional Specification
 
@@ -92,6 +93,12 @@ Every Application Blueprint must provide a comprehensive description of the inte
 - **Authorization**: Mapping of new capabilities to the **RBAC** model defined in the System
   Requirements Specification.
 
+### 4.5 Documentation Strategy (Knowledge View)
+
+- **Record Synchronization**: Identification of new technical documents or required updates to existing standards.
+- **Stakeholder Manuals**: Strategy for updating the Wiki to reflect changes for end-users and administrators.
+- **Release Preparation**: Definition of the primary narrative for the eventual Release Notes.
+
 ---
 
 ## 5. Exit Criteria & Quality Gates
@@ -103,7 +110,7 @@ are satisfied:
 - **Verification Protocols**: Successful execution of the full verification suite via
   **`composer test`**.
 - **Quality Gates**: Clean compliance with
-  **[Code Quality Standardization](code-quality-standardization.md)**.
+  **[Code Quality Standardization](quality.md)**.
 
 ---
 

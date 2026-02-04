@@ -4,7 +4,7 @@
 
 > **Spec Alignment:** This configuration baseline implements the foundational **Architecture &
 > Maintainability** ([SYRS-NF-601]) requirements of the authoritative
-> **[System Requirements Specification](../../system-requirements-specification.md)**.
+> **[System Requirements Specification](../../specs.md)**.
 
 ---
 

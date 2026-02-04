@@ -4,7 +4,7 @@
 
 > **Spec Alignment:** This configuration baseline implements the **Administrative Orchestration**
 > ([SYRS-F-101]) requirements of the authoritative
-> **[System Requirements Specification](../../system-requirements-specification.md)**.
+> **[System Requirements Specification](../../specs.md)**.
 
 ---
 
