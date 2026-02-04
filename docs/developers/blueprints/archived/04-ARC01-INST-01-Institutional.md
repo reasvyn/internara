@@ -66,7 +66,7 @@ including school departments and industry placement registries.
 - **UUID Identity**: Successfully adopted across `School`, `Department`, and `InternshipPlacement` models.
 - **SLRI Enforcement**: `DepartmentService` refactored to explicitly validate `school_id` via `SchoolService`, adhering to the logic isolation mandate.
 - **Terminology Alignment**: Standardized "Partner" into "Internship Placement" to better reflect the system's operational focus.
-- **Branding Baseline**: Integrated `COLLECTION_LOGO` in the `School` model via the `Media` module.
+- **Branding Baseline**: Integrated `COLLECTION_LOGO` in the `School` model via the `Media` module. Institutional branding data now serves as the authoritative source for the **[Operational (ARC01-OPER-01)](05-ARC01-OPER-01-Operational-Layer.md)** dashboards.
 
 ### 5.2 Identified Anomalies & Corrections
 - **Loose Integrity**: Initial `DepartmentService` relied on model-level validation. **Correction**: Moved validation logic to the Service Layer to satisfy the **Logic Layer** mandate.

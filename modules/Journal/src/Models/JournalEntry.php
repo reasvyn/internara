@@ -30,18 +30,6 @@ class JournalEntry extends Model implements HasMedia
     protected string $activityLogName = 'journal';
 
     /**
-     * The "type" of the primary key ID.
-     *
-     * @var string
-     */
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
