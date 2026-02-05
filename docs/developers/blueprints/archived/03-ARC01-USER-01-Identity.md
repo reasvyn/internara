@@ -1,58 +1,50 @@
 # Application Blueprint: Identity & Security (ARC01-USER-01)
 
-**Series Code**: `ARC01-USER-01` **Status**: `Archived` (Done)
+**Series Code**: `ARC01-USER-01` | **Status**: `Archived` (Done)
 
 ---
 
-## 1. Design Objectives & Scope
+## 1. Strategic Context
 
-**Strategic Purpose**: Establish the foundational identity baseline, implementing secure
-authentication and the initial RBAC (Role-Based Access Control) framework.
-
-**Objectives**:
-
-- Implement secure subject identification via email and cryptographic passwords.
-- Establish the formal User Role taxonomy (Instructor, Student, etc.) mandated by the SyRS.
-- Provide self-service profile management for system subjects.
+- **Spec Alignment**: This configuration baseline implements the **Security & Integrity** ([SYRS-NF-501], [SYRS-NF-502]) requirements of the authoritative **[Specs](../specs.md)**.
 
 ---
 
-## 2. Functional Specification
+## 2. Logic & Architecture (Systemic View)
 
-### 2.1 Capability Set
-
+### 2.1 Capabilities
 - **Authentication Orchestrator**: Secure login/logout flows with session integrity.
-- **RBAC Baseline**: Implementation of roles and granular permissions according to the stakeholder
-  requirements.
+- **RBAC Baseline**: Implementation of roles and granular permissions according to the stakeholder requirements.
 - **Profile Subsystem**: Logic for subjects to update personal metadata and security credentials.
-- **Environment Redirection**: Intelligent routing of users to their authorized dashboards post-login.
 
-### 2.2 Stakeholder Personas
+### 2.2 Service Contracts
+- **AuthService**: Manages the technical lifecycle of an authentication session.
+- **RedirectService**: Orchestrates role-based environment redirection post-login.
 
-- **Universal Subject**: Any identified system user requiring secure access to role-specific
-  capabilities.
+### 2.3 Data Architecture
+- **Identity Isolation**: Verification of the separation between `User` (Account) and `Profile` (Biodata) modules.
+- **Encryption Invariant**: Passwords must be hashed using the **BCrypt** algorithm (Standard MVP Baseline).
 
 ---
 
-## 3. Architectural Impact (Logical View)
+## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Modular Decomposition
+### 3.1 UX Workflow
+- **Environment Redirection**: Intelligent routing of users to their authorized dashboards (Student, Teacher, Mentor, Admin).
+- **Self-Service**: Dedicated interfaces for subjects to manage their personal security baseline.
 
-- **Auth Module**: New domain for identity orchestration and session management.
-- **User Module**: Domain for managing user credentials and account status.
-- **Profile Module**: Dedicated domain for managing personal data and role-based affiliations.
-- **Permission Module**: Core domain for RBAC state and synchronization.
-
-### 3.2 Security Architecture
-
-- **Encryption Invariant**: Passwords must be hashed using the **BCrypt** algorithm (Standard MVP Baseline).
+### 3.2 Invariants
 - **Access Control**: Mandatory authorization check at every system boundary via Policies and Gates.
+- **Mobile-First**: Priority given to high-frequency identity actions on touch viewports.
 
 ---
 
 ## 4. Documentation Strategy (Knowledge View)
 
-- **Security Standards**: Formalization of the **[Access Control Standards](../access-control.md)**.
+### 4.1 Security Standards
+- **Standardization**: Formalization of the **[Access Control Standards](../access-control.md)**.
+
+### 4.2 Module Standards
 - **Identity Record**: Authoring of the `README.md` files for the `Auth`, `User`, and `Permission` modules.
 - **Implementation Guide**: Documentation of the post-login redirection logic and session protection.
 
@@ -69,7 +61,7 @@ authentication and the initial RBAC (Role-Based Access Control) framework.
 - **Post-Login Routing**: `RedirectService` implemented to manage role-based environment transitions.
 
 ### 5.2 Identified Anomalies & Corrections
-- **Hashing Drift**: Initial design suggested Argon2id, but implementation used BCrypt. **Resolution**: Adjusted blueprint to favor BCrypt for MVP portability while recommending Argon2id for high-security production.
+- **Hashing Drift**: Initial design suggested Argon2id, but implementation used BCrypt. **Resolution**: Adjusted blueprint to favor BCrypt for MVP portability.
 - **Identity Sprawl**: Found redundant profile-like fields in early User model migrations. **Resolution**: Standardized delegating all biodata to the `Profile` module.
 - **Academic Coupling**: User profiles now depend on the `Department` structure formalized in the **[Institutional (ARC01-INST-01)](04-ARC01-INST-01-Institutional.md)** series.
 
@@ -81,10 +73,7 @@ authentication and the initial RBAC (Role-Based Access Control) framework.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered done only when it satisfies the following gates:
-
-- **Verification Gate**: 100% pass rate across the security verification suites via
-  **`composer test`**.
+- **Verification Gate**: 100% pass rate across the security verification suites via **`composer test`**.
 - **Quality Gate**: zero static analysis violations via **`composer lint`**.
 - **Acceptance Criteria**:
     - Demonstrated enforcement of role-based route protection.

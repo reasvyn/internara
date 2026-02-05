@@ -1,53 +1,50 @@
 # Application Blueprint: Core Engine (ARC01-CORE-01)
 
-**Series Code**: `ARC01-CORE-01` **Status**: `Archived` (Done)
+**Series Code**: `ARC01-CORE-01` | **Status**: `Archived` (Done)
 
 ---
 
-## 1. Design Objectives & Scope
+## 1. Strategic Context
 
-**Strategic Purpose**: Establish the systemic technical baseline, implementing the Modular Monolith
-orchestrator and the core database identity standard.
-
-**Objectives**:
-
-- Provision the modular discovery engine to enable domain isolation.
-- Implement the **UUID v4** identity baseline for all system entities.
-- Establish the **Shared** module tier for project-agnostic utilities.
+- **Spec Alignment**: This configuration baseline implements the foundational **Architecture & Maintainability** ([SYRS-NF-601]) requirements of the authoritative **[Specs](../specs.md)**.
 
 ---
 
-## 2. Functional Specification
+## 2. Logic & Architecture (Systemic View)
 
-### 2.1 Capability Set
-
+### 2.1 Capabilities
 - **Modular Autoloader**: Automated discovery of modules and their service providers (via `nwidart/laravel-modules`).
-- **Identity Invariant**: Systemic integration of the `HasUuid` concern across all domain models.
 - **Persistence Orchestrator**: Configuration of Eloquent to support UUID-based primary and foreign keys without physical constraints.
 - **Developer Tooling**: Initialization of custom Artisan generators (`module:make-class`, etc.) to enforce project conventions.
 - **Dynamic Configuration**: Provisioning of the global `setting()` helper and persistence infrastructure for runtime configuration management.
 
+### 2.2 Service Contracts
+- **EloquentQuery**: Standardized contract for repository-like domain services.
+
+### 2.3 Data Architecture
+- **Identity Invariant**: Systemic integration of the `HasUuid` concern across all domain models.
+- **Namespacing**: Implementation of the **src-Omission** invariant (Namespace: `Modules\Name`, Path: `modules/Name/src`).
+
 ---
 
-## 3. Architectural Impact (Logical View)
+## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Modular Decomposition
+### 3.1 Interface Design
+- **Alias Subsystem**: Centralized model aliasing via `AliasServiceProvider` to streamline internal references and UI data fetching.
 
-- **Core Module**: Foundations for systemic state, global settings, and cross-domain analytics.
-- **Shared Module**: Abstraction layer for universal engineering patterns (Base Services, Traits).
-
-### 3.2 System Configuration
-
-- **Isolation Constraint**: Implementation of the **src-Omission** namespace invariant (Namespace: `Modules\Name`, Path: `modules/Name/src`).
-- **Alias Subsystem**: Centralized model aliasing via `AliasServiceProvider` to streamline internal references.
+### 3.2 Invariants
+- **Structural Integrity**: Modular isolation during autodiscovery verified to ensure zero-coupling at the presentation layer.
 
 ---
 
 ## 4. Documentation Strategy (Knowledge View)
 
+### 4.1 Engineering Record
 - **Standardization**: Formalization of the **[Coding Conventions](../conventions.md)** and **[Architecture Description](../architecture.md)**.
-- **Infrastructure Record**: Authoring of the initial `README.md` files for the `Shared` and `Core` modules.
 - **API Catalog**: Documentation of the base `EloquentQuery` pattern for standardized CRUD.
+
+### 4.2 Module Standards
+- **Infrastructure Record**: Authoring of the initial `README.md` files for the `Shared` and `Core` modules.
 
 ---
 
@@ -59,10 +56,10 @@ orchestrator and the core database identity standard.
 - **UUID Invariant**: Successfully implemented via `Modules\Shared\Models\Concerns\HasUuid`. Verified usage in all core domain models.
 - **src-Omission**: Correctly configured in `composer.json` and `config/modules.php`.
 - **Shared Abstractions**: `EloquentQuery` base service successfully provisioned.
-- **Alias Registry**: `AliasServiceProvider` active, providing global shorthand for all primary domain models. This infrastructure proved crucial for the rapid implementation of the **[Identity & Security (ARC01-USER-01)](03-ARC01-USER-01-Identity.md)** series by streamlining cross-module model resolution.
+- **Alias Registry**: `AliasServiceProvider` active, providing global shorthand for all primary domain models. This infrastructure proved crucial for the rapid implementation of the **[Identity & Security (ARC01-USER-01)](03-ARC01-USER-01-Identity.md)** series.
 
 ### 5.2 Identified Anomalies & Corrections
-- **Metadata Desync**: `app:info` command was found to report inconsistent version data (v0.4.0-alpha) due to redundant configuration overrides. **Correction**: Removed redundant `info` and `author` keys from `modules/Core/config/config.php` and standardized `AppInfoCommand` to prioritize `app_info.json` as the SSoT.
+- **Metadata Desync**: `app:info` command was found to report inconsistent version data (v0.4.0-alpha). **Correction**: Removed redundant `info` and `author` keys from `modules/Core/config/config.php` and standardized `AppInfoCommand` to prioritize `app_info.json` as the SSoT.
 - **Alias Gaps**: The alias registry was missing several newer domain models. **Correction**: Synchronized `AliasServiceProvider` with the current module catalog.
 
 ### 5.3 Improvement Plan
@@ -74,10 +71,7 @@ orchestrator and the core database identity standard.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered done only when it satisfies the following gates:
-
-- **Verification Gate**: 100% pass rate across the core infrastructure suites via
-  **`composer test`**.
+- **Verification Gate**: 100% pass rate across the core infrastructure suites via **`composer test`**.
 - **Quality Gate**: zero static analysis violations via **`composer lint`**.
 - **Acceptance Criteria**:
     - Demonstrated modular isolation during autodiscovery.

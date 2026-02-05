@@ -1,60 +1,52 @@
 # Application Blueprint: Institutional Foundation (ARC01-INST-01)
 
-**Series Code**: `ARC01-INST-01` **Status**: `Archived` (Done)
+**Series Code**: `ARC01-INST-01` | **Status**: `Archived` (Done)
 
 ---
 
-## 1. Design Objectives & Scope
+## 1. Strategic Context
 
-**Strategic Purpose**: Establish the structural framework for managing institutional entities,
-including school departments and industry placement registries.
-
-**Objectives**:
-
-- Provide a centralized repository for managing academic pathway data.
-- Enable the formal registration and classification of industry placements (Internship Locations).
-- Establish the baseline for student-to-placement assignment orchestration.
+- **Spec Alignment**: This configuration baseline implements the **Administrative Orchestration** ([SYRS-F-101]) requirements of the authoritative **[Specs](../specs.md)**.
 
 ---
 
-## 2. Functional Specification
+## 2. Logic & Architecture (Systemic View)
 
-### 2.1 Capability Set
-
+### 2.1 Capabilities
 - **Department Orchestrator**: Management of institutional academic units and their metadata.
-- **Placement Registry**: Centralized listing of industry collaborators with contact and capacity
-  attributes (previously referred to as "Partners").
+- **Placement Registry**: Centralized listing of industry collaborators with contact and capacity attributes.
 - **Placement Logic Baseline**: Core services for linking student profiles to registered placements.
 
-### 2.2 Stakeholder Personas
+### 2.2 Service Contracts
+- **DepartmentService**: Orchestrates the lifecycle of academic specializations.
+- **SchoolService**: Authoritative provider for institutional data and SLRI verification.
 
-- **Practical Work Staff**: Utilizes the registry to manage institutional and industry data.
-- **Instructor**: Accesses department-specific student lists for supervision planning.
+### 2.3 Data Architecture
+- **Identity Invariant**: Mandatory utilization of **UUID v4** for all institutional records.
+- **Software-Level Integrity (SLRI)**: Service-layer validation ensuring referential integrity between Departments and Schools without physical constraints.
 
 ---
 
-## 3. Architectural Impact (Logical View)
+## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Modular Decomposition
+### 3.1 Interface Design
+- **Branding Baseline**: Integration of the school logo and name into the global layout engine.
+- **Placement Management**: Administrator UI for managing industry partner capacity and contact data.
 
-- **Department Module**: New domain for academic structural orchestration.
-- **School Module**: Domain for managing institutional identity.
-- **Internship Module**: Enhanced to handle placement logistics and capacity tracking.
-
-### 3.2 Persistence Logic
-
-- **Identity Invariant**: Mandatory utilization of **UUID v4** for all institutional records.
-- **Isolation Protocol**: Domain logic ensures zero concrete coupling between school and placement
-  entities at the database layer.
-- **Software-Level Integrity (SLRI)**: Implementation of service-layer validation to ensure referential integrity between Departments and Schools without physical constraints.
+### 3.2 Invariants
+- **Multi-Language**: Full localization of department names and institutional metadata in **ID** and **EN**.
+- **Isolation**: Presentation layer interacts with institutional data exclusively via Service Contracts.
 
 ---
 
 ## 4. Documentation Strategy (Knowledge View)
 
-- **Standardization**: Documentation of the institutional hierarchy within the **Architecture Description**.
-- **Module Records**: Authoring of the `README.md` files for the `School` and `Department` modules.
-- **Branding Integration**: Strategy for providing school logo and name to the global layout and reporting engine.
+### 4.1 Engineering Record
+- **Structural Identity**: Documentation of the institutional hierarchy within the **Architecture Description**.
+
+### 4.2 Module Standards
+- **Knowledge Base**: Authoring of the `README.md` files for the `School` and `Department` modules.
+- **Branding Protocols**: Strategy for providing institutional identity to the global reporting engine.
 
 ---
 
@@ -64,12 +56,12 @@ including school departments and industry placement registries.
 
 ### 5.1 Realized Outcomes
 - **UUID Identity**: Successfully adopted across `School`, `Department`, and `InternshipPlacement` models.
-- **SLRI Enforcement**: `DepartmentService` refactored to explicitly validate `school_id` via `SchoolService`, adhering to the logic isolation mandate.
-- **Terminology Alignment**: Standardized "Partner" into "Internship Placement" to better reflect the system's operational focus.
-- **Branding Baseline**: Integrated `COLLECTION_LOGO` in the `School` model via the `Media` module. Institutional branding data now serves as the authoritative source for the **[Operational (ARC01-OPER-01)](05-ARC01-OPER-01-Operational-Layer.md)** dashboards.
+- **SLRI Enforcement**: `DepartmentService` refactored to explicitly validate `school_id` via `SchoolService`.
+- **Terminology Alignment**: Standardized "Partner" into "Internship Placement" to reflect operational focus.
+- **Branding Baseline**: Integrated `COLLECTION_LOGO` in the `School` model. Institutional data now powers the **[Operational (ARC01-OPER-01)](05-ARC01-OPER-01-Operational-Layer.md)** dashboards.
 
 ### 5.2 Identified Anomalies & Corrections
-- **Loose Integrity**: Initial `DepartmentService` relied on model-level validation. **Correction**: Moved validation logic to the Service Layer to satisfy the **Logic Layer** mandate.
+- **Loose Integrity**: Initial implementation relied on model-level validation. **Correction**: Moved validation logic to the Service Layer.
 - **Naming Inconsistency**: "Partner" terminology was ambiguous. **Correction**: Aligned all documentation and code to use "Placement".
 
 ### 5.3 Improvement Plan
@@ -80,10 +72,7 @@ including school departments and industry placement registries.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered done only when it satisfies the following gates:
-
-- **Verification Gate**: 100% pass rate across the institutional verification suites via
-  **`composer test`**.
+- **Verification Gate**: 100% pass rate across the institutional verification suites via **`composer test`**.
 - **Quality Gate**: zero static analysis violations via **`composer lint`**.
 - **Acceptance Criteria**:
     - Successful registration and retrieval of department-placement relationships.

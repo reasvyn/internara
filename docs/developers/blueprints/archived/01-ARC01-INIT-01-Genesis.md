@@ -1,36 +1,32 @@
 # Application Blueprint: Project Genesis (ARC01-INIT-01)
 
-**Series Code**: `ARC01-INIT-01` **Status**: `Archived` (Done)
+**Series Code**: `ARC01-INIT-01` | **Status**: `Archived` (Done)
 
 ---
 
-## 1. Design Objectives & Scope
+## 1. Strategic Context
 
-**Strategic Purpose**: Establish the project's conceptual and aesthetic baseline, defining the
-strategic vision and foundational design system.
-
-**Objectives**:
-
-- Formalize the **Strategic Vision** for the Internara platform.
-- Establish the **Aesthetic-Natural** design philosophy and emerald-accent visual identity.
-- Initialize the documentation-as-code repository structure.
+- **Spec Alignment**: This blueprint authorizes the conceptual and aesthetic baseline, defining the strategic vision and foundational design system.
 
 ---
 
-## 2. Functional Specification
+## 2. Logic & Architecture (Systemic View)
 
-### 2.1 Capability Set
+### 2.1 Capabilities
+- **Strategic Baseline**: Documentation of initial project goals and stakeholder needs.
+- **Repository Architecture**: Initialization of the documentation-as-code repository structure.
 
-- **Strategic Baseline**: Documentation of the initial project goals and stakeholder needs.
-- **Design Baseline**: Definition of typography, thematic contrast, and accessibility invariants.
-- **UI Framework Selection**: Integration of **TALL Stack** (Tailwind v4, AlpineJS, Laravel, Livewire) with **DaisyUI** and **MaryUI** as the component baseline.
+### 2.2 Invariants
+- **ISO Alignment**: Establishment of ISO/IEC 29148 requirements baseline (SyRS).
 
 ---
 
 ## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Visual Identity
+### 3.1 Interface Design
+- **UI Framework Selection**: Integration of **TALL Stack** (Tailwind v4, AlpineJS, Laravel, Livewire) with **DaisyUI** and **MaryUI** as the component baseline.
 
+### 3.2 Visual Identity
 - **Typography**: Selection of **Instrument Sans** as the authoritative font baseline (delivered via Bunny Fonts).
 - **Thematic Invariant**: Conceptual design for multi-mode contrast (Light/Dark).
 - **Identity Invariant**: Emerald Green (`#10b981`) as the primary brand accent.
@@ -39,9 +35,12 @@ strategic vision and foundational design system.
 
 ## 4. Documentation Strategy (Knowledge View)
 
-- **Authoritative Baselines**: Elicitation and formalization of the initial **System Requirements Specification (SyRS)**.
-- **Structural Identity**: Initialization of the documentation-as-code repository structure, eventually evolved into `wiki/` and `developers/` zones.
-- **Engineering Record**: Establishment of the first architectural views and design rationale.
+### 4.1 Authoritative Baselines
+- **System Requirements Specification (SyRS)**: Elicitation and formalization of the authoritative SSoT.
+- **Structural Identity**: Initialization of the modular documentation hierarchy, eventually evolved into `wiki/` and `developers/` zones.
+
+### 4.2 Engineering Record
+- **Architecture Baseline**: Establishment of the first architectural views and design rationale.
 
 ---
 
@@ -68,10 +67,7 @@ strategic vision and foundational design system.
 
 ## 6. Exit Criteria & Verification Protocols
 
-A design series is considered done only when it satisfies the following gates:
-
-- **Quality Gate**: Completion of the initial
-  **[System Requirements Specification](../specs.md)**.
+- **Quality Gate**: Completion of the initial **[Specs](../specs.md)**.
 - **Acceptance Criteria**:
     - Finalized strategic vision and aesthetic guidelines.
     - Initial repository structure synchronization.

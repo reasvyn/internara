@@ -24,8 +24,19 @@ class GenerateReportJob implements ShouldQueue
 
     public function handle(ReportGenerator $generator): void
     {
-        $generator->generate($this->providerIdentifier, $this->filters, $this->userId);
+        $filePath = $generator->generate($this->providerIdentifier, $this->filters, $this->userId);
 
-        // In a real implementation, we would notify the user or update a job status record
+        if ($this->userId) {
+            $user = \Modules\User\Models\User::find($this->userId);
+            if ($user) {
+                $provider = $generator->getProviders()->get($this->providerIdentifier);
+                $title = $provider ? $provider->getLabel() : 'Report';
+
+                app(\Modules\Notification\Services\Contracts\NotificationService::class)->send(
+                    $user,
+                    new \Modules\Report\Notifications\ReportGeneratedNotification($title, $filePath)
+                );
+            }
+        }
     }
 }

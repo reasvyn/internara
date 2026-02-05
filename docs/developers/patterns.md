@@ -1,7 +1,7 @@
 # Logic Orchestration & Data Transfer Patterns
 
 This document defines the advanced **Process Orchestration** patterns for the Internara project,
-**[Architecture Description](architecture.md)**
+consistent with the **[Architecture Description](architecture.md)**. It formalizes the
 use of **Data Transfer Objects (DTOs)** and Service orchestration to manage complex business logic
 while maintaining modular isolation.
 
@@ -81,13 +81,6 @@ semantic methods to preserve the **Single Source of Truth**.
 
 ---
 
-_Utilizing these patterns ensures that business logic remains discoverable, testable, and
-architecturally sound, enabling the system to scale in complexity without decaying into technical
-debt._
-
-
----
-
 # Cross-Module Event Governance
 
 This document formalizes the **Asynchronous Orchestration** protocols for the Internara project,
@@ -153,12 +146,6 @@ To prevent the system from becoming a "Black Box," all cross-module events must 
   the version series.
 - **Monitoring**: Utilize the `AuditLog` concern to record the dispatching of critical domain events
   for forensic analysis.
-
----
-
-_By governing events with these protocols, Internara ensures a decoupled, scalable, and traceable
-architecture that handles complexity through elegant asynchronous orchestration._
-
 
 ---
 
@@ -239,11 +226,48 @@ data retrieval:
 
 ---
 
-_By strictly adhering to these protocols, Internara ensures a reliable and consistent data
-ecosystem, preserving the benefits of modularity without sacrificing systemic integrity._
+# Reporting Orchestration
 
+This document defines the protocols for generating structured academic and administrative reports
+across the Internara ecosystem.
 
 ---
+
+## 1. The `ExportableDataProvider` Pattern
+
+To ensure low coupling, the `Report` module does not query domain models directly. Instead, it
+interacts with **Data Providers** defined in domain modules.
+
+- **Contract**: `Modules\Shared\Contracts\ExportableDataProvider`.
+- **Responsibility**: Domain modules must implement this contract to provide the data, template
+  path, and filter rules required for a specific report type.
+
+### 1.1 Implementation Flow
+
+1.  **Registry**: Domain modules register their Data Providers in the `Report` module's registry.
+2.  **Request**: The `Report` module captures user filters and validates them against the provider's
+    rules.
+3.  **Synthesis**: The engine retrieves data from the provider and passes it to the designated
+    Blade template.
+
+---
+
+## 2. Asynchronous Generation Strategy
+
+Large-scale reports (e.g., class-wide competency transcripts) must be generated asynchronously to
+preserve system responsiveness.
+
+- **Standard**: All heavy document synthesis jobs must implement the `ShouldQueue` interface.
+- **Feedback**: The system utilizes the `Notifier` service to inform users once the report is
+  available for download.
+
+---
+
+## 3. Storage & Security
+
+- **Private Persistence**: All generated reports must be stored on the `private` disk.
+- **Signed Access**: Access to download reports is restricted via **Signed URLs** to prevent
+  unauthorized data exposure.
 
 ---
 
@@ -297,14 +321,6 @@ Every modification to a dynamic setting must be captured by the `Log` module.
 
 ---
 
-_Utilizing the standardized setting protocols ensures that Internara remains a flexible and
-manageable platform while preserving architectural resilience._
-
-
----
-
----
-
 # Participation & Compliance Scoring
 
 This document defines the automated logic used to calculate student engagement metrics during the
@@ -351,13 +367,6 @@ merit but do not exceed the 100% participation threshold.
 
 ---
 
-_Standardizing compliance scoring ensures objective student evaluations across all departments._
-
-
----
-
----
-
 # Notification Orchestration
 
 This document defines the protocols for dispatching notifications and UI feedback within the
@@ -398,22 +407,12 @@ Used for formal communication or asynchronous alerts (e.g., "New internship assi
 
 ---
 
-_Standardizing notification paths ensures a consistent user experience and maintains architectural
-purity between UI state and formal communication._
-
-
----
-
 # Policy Patterns: Authorization Governance Standards
 
 This document formalizes the **Authorization Policy Patterns** for the Internara project, adhering
 to **ISO/IEC 29146** (Access Control Framework) and **ISO/IEC 27001** (Access Control). It defines
 standardized logic for **Policy Enforcement Points (PEP)** to ensure consistent and context-aware
 security across all domain modules.
-
-> **Governance Mandate:** Authorization logic must strictly enforce the **User Roles** and
-> administrative constraints defined in the authoritative
-> **[Internara Specs](specs.md)**.
 
 ---
 
@@ -424,7 +423,7 @@ must be associated with a Policy class to centralize and formalize access decisi
 
 - **Invariant**: Authorization checks must be performed at the earliest possible boundary (PEP)
   before any business logic is executed.
-- **Protocol**: Controllers and Livewire components must utilize `$this->authorize()` or `@can` to
+- **Protocol**: Controllers and Livewire components must utilize `$this->authorize()` or @can to
   invoke the associated Policy.
 
 ---
@@ -490,8 +489,3 @@ Policy methods must correspond 1:1 with the standard system actions:
 
 If any condition remains unsatisfied, the policy must return `false`. Silence or ambiguity in policy
 logic is prohibited.
-
----
-
-_By adhering to these standardized policy patterns, Internara ensures a resilient, context-aware,
-and traceable authorization posture across its modular ecosystem._
