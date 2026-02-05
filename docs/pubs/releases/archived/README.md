@@ -14,7 +14,7 @@ under the current support policy.
 - **[v0.4.0](v0.4.0.md)**: Realization of the **Institutional Foundation** baseline.
 - **[v0.3.0](v0.3.0.md)**: Realization of the **Identity & Security** baseline.
 - **[v0.2.0](v0.2.0.md)**: Realization of the **Core Engine** baseline.
-- **[v0.1.1](v0.1.1.md)**: **Project Genesis** baseline.
+- **[v0.1.0](v0.1.0.md)**: **Project Genesis** baseline.
 
 ---
 
