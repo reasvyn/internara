@@ -69,9 +69,6 @@
 - **Hardcoded Weights**: Grading weights are currently static. **Status**: Candidate for future dynamic configuration.
 - **Component Redundancy**: Similar logic in `EvaluateIntern` and `AssessInternship` retained for UX optimization.
 
-### 5.3 Improvement Plan
-- [x] Link assessment telemetry to the institutional reporting engine.
-- [x] Verify RBAC middleware enforcement across all workspace routes.
 
 ---
 

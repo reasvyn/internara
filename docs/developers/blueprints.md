@@ -67,10 +67,11 @@ This section ensures the preservation and distribution of project knowledge.
 
 ## 5. Exit Criteria & Quality Gates
 
-A Blueprint is only considered fulfilled when:
+A Blueprint is only considered fulfilled when the following criteria are met. **Note**: These must be defined as narrative requirements or plain bullet points. The use of checklist markers (`[ ]` or `[x]`) is **STRICTLY PROHIBITED** within any section of the blueprint to maintain its role as a strategic record rather than a transient task list.
+
 - **Acceptance Criteria**: Functional requirements verified as operational.
 - **Verification Protocols**: 100% pass rate in **`composer test`**.
-- **Quality Gates**: Compliance with **[Code Quality Standardization](quality.md)**.
+- **Quality Gate**: Compliance with **[Code Quality Standardization](quality.md)**.
 
 ---
 

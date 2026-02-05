@@ -67,9 +67,6 @@
 - **Notifier Inconsistency**: Found several Livewire components bypassing the `Notifier` service. **Correction**: Enforced usage of the `Notifier` contract in core management components.
 - **Fixed Scoring Weight**: Weights are currently hardcoded (50/50). **Resolution**: Identified as a candidate for future dynamic configuration.
 
-### 5.3 Improvement Plan
-- [x] Refactor core Livewire components to inject and use the `Notifier` service.
-- [x] Document the compliance scoring formula in the technical patterns.
 
 ---
 

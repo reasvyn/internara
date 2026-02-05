@@ -226,6 +226,53 @@ data retrieval:
 
 ---
 
+# The Instructional Loop
+
+This document defines the systemic lifecycle of daily student activities and the subsequent
+supervisory verification process.
+
+---
+
+## 1. The Daily Cycle
+
+The instructional loop is a high-frequency process designed to capture evidence of student learning
+and industry engagement.
+
+1.  **Activity Execution**: Student performs tasks at the internship placement.
+2.  **Logging & Claiming**: Student records a **Journal Entry** and claims specific **Competencies**
+    (Skills) mastered during the day.
+3.  **Presence Verification**: Student performs **Attendance Check-in/out** to provide temporal evidence.
+4.  **Supervisory Audit**: 
+    - **Mentor** provides behavioral feedback and validates the journal entry.
+    - **Teacher** performs periodic visits and verifies competency attainment.
+5.  **Telemetry Synthesis**: The system aggregates these interactions into the **Intelligence Dashboard**
+    and calculates the **Participation Score**.
+
+## 2. Integrity Invariants
+
+- **Submission Window**: Journals must be recorded within the operational window (default: 7 days)
+  to ensure accuracy and prevent retroactive logging "bloat".
+- **Evidence-Based Evaluation**: Competency achievements are only certified if linked to verified
+  journal entries.
+- **Absence Integrity**: Approved absence requests automatically nullify the requirement for
+  attendance logs for that specific date.
+
+---
+
+## 3. Implementation Standards
+
+- **Isolation**: Domain modules (Journal, Attendance, Mentor) communicate via Service Contracts
+  to update the assessment baseline.
+- **Auditability**: Every state transition in the loop (Submitted -> Approved/Rejected) is recorded
+  in the forensic audit trail.
+
+---
+
+_Standardizing the instructional loop ensures a rigorous and transparent vocational training experience._
+
+
+---
+
 # Task Fulfillment Protocols
 
 This document defines the protocols for managing student assignments and deliverables within the
