@@ -47,9 +47,9 @@ class AssignmentService extends EloquentQuery implements Contract
     public function isFulfillmentComplete(string $registrationId, ?string $group = null): bool
     {
         // 1. Get all mandatory assignments for the program associated with this registration
-        $registration = app(
-            \Modules\Internship\Services\Contracts\RegistrationService::class,
-        )->find($registrationId);
+        // Note: Using app() resolution to avoid circular dependency with RegistrationService
+        $registration = app(\Modules\Internship\Services\Contracts\RegistrationService::class)
+            ->find($registrationId);
 
         if (! $registration) {
             return false;

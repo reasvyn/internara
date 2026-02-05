@@ -226,6 +226,50 @@ data retrieval:
 
 ---
 
+# Task Fulfillment Protocols
+
+This document defines the protocols for managing student assignments and deliverables within the
+Internara ecosystem.
+
+---
+
+## 1. Dynamic Assignment Engine
+
+To allow for institutional flexibility, Internara utilizes a decoupled **Assignment** module that
+manages student tasks independently of the core internship program.
+
+- **Assignment Templates**: Administrators define `AssignmentTypes` (e.g., "Final Report", "Logbook Summary").
+- **Automatic Instantiation**: When an internship program is created, the system automatically
+  instantiates assignments for that program based on the current active types.
+
+## 2. Fulfillment Invariants
+
+A student's internship lifecycle is governed by the **Assignment Fulfillment Invariant**.
+
+- **Certification Gating**: A student's program status cannot be transitioned to `completed`
+  until every mandatory assignment linked to their program has a **Verified** submission.
+- **Verification Loop**: 
+    1. Student uploads file (PDF/PPT/DOC).
+    2. Supervisor (Teacher/Mentor) reviews and verifies the submission.
+    3. The `AssignmentService` recalculates the fulfillment status for the registration.
+
+---
+
+## 3. Implementation Standards
+
+- **Cross-Module Verification**: The `Internship` module verifies graduation readiness by
+  injecting the `AssignmentService` contract and invoking `isFulfillmentComplete()`.
+- **Status Auditing**: Every submission transition (Submitted -> Verified/Rejected) must be
+  recorded in the `ActivityLog`.
+
+---
+
+_Utilizing dynamic task fulfillment ensures that Internara can adapt to diverse school policies
+without requiring structural code changes._
+
+
+---
+
 # Reporting Orchestration
 
 This document defines the protocols for generating structured academic and administrative reports
