@@ -6,7 +6,6 @@
 
 ## 1. Strategic Context
 
-- **Series Identification**: ARC01-INTEL-01 (Reporting & Intelligence)
 - **Spec Alignment**: This configuration baseline implements the **Assessment & Reporting** ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative **[Specs](../specs.md)**.
 
 ---
@@ -59,7 +58,7 @@
 
 ## 5. Audit & Evaluation Report (v0.13.0 Audit)
 
-**Date**: 2026-02-04 | **Auditor**: Gemini
+**Date**: 2026-02-04
 
 ### 5.1 Realized Outcomes
 - **History Tracking**: `PlacementHistory` model and `PlacementLoggerService` fully implemented and verified.

@@ -82,7 +82,8 @@ class AppInstallCommand extends Command
                 foreach ($audit[$category] as $name => $status) {
                     if ($status === false) {
                         $this->newLine();
-                        $this->components->error('Audit failed: '.(is_array($name) ? json_encode($name) : (string) $name));
+                        $label = is_string($name) ? $name : (is_numeric($name) ? (string) $name : json_encode($name));
+                        $this->components->error("Audit failed for: {$label}");
                         $failedCount++;
                     }
                 }

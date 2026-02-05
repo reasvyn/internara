@@ -55,7 +55,7 @@
 
 ## 5. Audit & Evaluation Report (v0.13.0 Audit)
 
-**Date**: 2026-02-04 | **Auditor**: Gemini
+**Date**: 2026-02-04
 
 ### 5.1 Realized Outcomes
 - **Prerequisite Gating**: Successfully enforced in `RegistrationService::approve`, preventing placement of non-compliant students.

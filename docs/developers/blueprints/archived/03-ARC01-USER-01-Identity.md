@@ -52,7 +52,7 @@
 
 ## 5. Audit & Evaluation Report (v0.13.0 Audit)
 
-**Date**: 2026-02-04 | **Auditor**: Gemini
+**Date**: 2026-02-04
 
 ### 5.1 Realized Outcomes
 - **RBAC Foundation**: Successfully implemented 5 core roles via `RoleSeeder`.

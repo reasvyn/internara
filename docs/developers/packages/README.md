@@ -10,7 +10,7 @@ compliance with the **Modular Monolith** architectural invariants.
 
 - **[Ecosystem Overview](packages-overview.md)**: Semantic mapping of the supporting baseline.
 - **[Laravel Framework](laravel-framework.md)**: Infrastructure orchestration standards.
-- **[Laravel Modules](nwidart-laravel-modules.md)**: Foundational modular engine protocols.
+- **[Laravel Modules](laravel-modules.md)**: Foundational modular engine protocols.
 
 ## 2. Presentation & State Baselines
 

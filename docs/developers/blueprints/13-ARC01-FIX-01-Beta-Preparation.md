@@ -1,86 +1,72 @@
-# Architectural Blueprint: Beta Preparation & Stabilization
+# Application Blueprint: Beta Preparation & Stabilization (ARC01-FIX-01)
 
-**Document ID:** 13-ARC01-FIX-01 | **Status:** In Progress | **Author:** Gemini
+**Series Code**: `ARC01-FIX-01` | **Status**: `In Progress`
 
 ---
 
 ## 1. Strategic Context
 
-- **Series Identification**: ARC01-FIX-01 (Beta Preparation & Stabilization)
 - **Spec Alignment**: This blueprint authorizes technical corrections and systemic security hardening required to satisfy **[SYRS-NF-601]** (Isolation), **[SYRS-NF-502]** (Access Control), **[SYRS-NF-503]** (Data Privacy), and **[SYRS-NF-603]** (Data Integrity).
 
 ---
 
-## 2. Functional Specification
+## 2. Logic & Architecture (Systemic View)
 
-### 2.1 Capability Set (Technical Corrections)
-- Identity Visibility: Integration of the `Brand` component into the `Setup` module navbar.
-- Namespaced Layouts: Systematic transition to `auth::components.layouts.auth` for identity flows.
-- Robust Installation: Port-aware URL generation in `app:install` and sanitization of audit outputs to prevent runtime crashes.
-- Schema Optimization: Consolidation of database migrations to maintain an atomic, table-centric history.
-- Metadata Standardization: Universal adoption of the `view()->layout(..., ['title' => ...])` pattern in Livewire components.
-- **Memory-Efficient Testing**: Implementation of the `app:test` command to orchestrate modular sequential test execution, preventing memory exhaustion in constrained environments.
+### 2.1 Capabilities
+- **Security Hardening**: Implementation of multi-layered defense (Turnstile, Honeypot, Signed URLs, Rate Limiting).
+- **Data Privacy**: Systemic encryption of PII at rest and automated data masking in forensic logs.
+- **Robust Installation**: Port-aware CLI bootstrapping and safe audit reporting for environment initialization.
+- **Memory-Efficient Testing**: Orchestrated sequential test execution to prevent memory exhaustion in constrained environments.
 
-### 2.2 Security Hardening Set
-- **Bot Defense**: Integration of **Cloudflare Turnstile** on all sensitive entry points (Login, Register, Setup).
-- **Spam Mitigation**: Implementation of **Spatie/Laravel-Honeypot** to silently trap automated form submissions.
-- **Access Integrity**: Mandatory use of **Signed URLs** for the Setup Wizard and high-privilege administrative actions.
-- **Traffic Governance**: Implementation of granular **Rate Limiting** for authentication, media uploads, and setup routes.
-- **Privacy at Rest**: Application of **Database Encryption** for PII fields (Phone, Address, NISN, NIP, Bio) across the `User`, `Student`, and `Teacher` domains.
-- **Information Protection**: Implementation of **Data Masking** for sensitive identifiers in logs and administrative UI views (role-dependent).
-- **Adaptive Password Policy**: Introduction of a project-wide `Password` rule class with environment-aware complexity logic.
+### 2.2 Service Contracts
+- **PasswordRule**: Adaptive rule class enforcing environment-aware complexity logic.
+- **Masker**: Utility for redacting sensitive identifiers in UI and logs.
+
+### 2.3 Data Architecture
+- **Encryption Invariant**: Application of Eloquent `encrypted` casts for targeted PII fields (`phone`, `address`, `nisn`, `nip`, `bio`).
+- **Schema Optimization**: Consolidation of migrations to ensure atomic history.
 
 ---
 
-## 3. Architectural Impact
+## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Module Decomposition
-- Modified: `Setup`, `Auth`, `UI`, `Shared`, `User`, `Student`, `Teacher`, `Log`.
-- Infrastructure: New security middleware, validation rules, and encryption casts in the `Shared` and `Core` modules.
+### 3.1 UX Workflow
+- **Bot Defense**: Silent and interactive challenges integrated into authentication and registration flows.
+- **Link Integrity**: Use of expiring signed URLs for high-privilege administrative actions.
 
-### 3.2 Data Architecture
-- **Encryption Casts**: Models containing PII must utilize Eloquent encryption casts for fields identified in the audit.
-- **Migration Policy**: Ensure migration fields for encrypted data have sufficient length to handle ciphertext.
+### 3.2 Interface Design
+- **Identity Consistency**: Restoration of branding visibility in navigation components.
+- **Standardized Metadata**: Universal adoption of the title/layout pattern in reactive components.
 
-### 3.3 Security Contracts
-- **Modules\Shared\Rules\Password**: A centralized rule enforcing complexity tiers:
-    - `low()`: min 8 characters (Development/Testing).
-    - `medium()`: min 8 chars + alphanumeric.
-    - `high()`: min 12 chars + mixed case + symbols (Production).
-    - `auto()`: Dynamic resolution based on `app.env`.
+### 3.3 Invariants
+- **Privacy Masking**: Role-dependent visibility of sensitive strings in administrative views.
 
 ---
 
-## 4. Presentation Strategy
+## 4. Documentation Strategy (Knowledge View)
 
-### 4.1 UI Security Components
-- Integration of the Turnstile widget within the `UI` module's shared form components.
-- Global registration of the Honeypot component in the `Auth` and `Setup` layout stacks.
+### 4.1 Engineering Record
+- **Structural Transformation**: Consolidation of redundant technical documents into authoritative guides.
+- **Standardization**: Universal transition of index files to `README.md`.
+- **Security Protocols**: Formalization of **[Security and Privacy Protocols](../security.md)**.
 
-### 4.2 Masking Standards
-- Implementation of helper methods in the `Support` module for masking sensitive strings (e.g., `ma**@email.com`, `32**********01`).
-
-### 4.3 Documentation Strategy (Knowledge View)
-- **Structural Transformation**: Consolidation of redundant technical documents into authoritative guides (`architecture.md`, `conventions.md`, `patterns.md`).
-- **Standardization**: Transition of all index files to `README.md` for better platform compatibility.
-- **Relocation**: Migration of release-specific documentation to `docs/pubs/releases/` to distinguish public records from internal engineering standards.
-- **Protocol Definition**: Formalization of Release Notes authoring standards in `releases.md`.
+### 4.2 Knowledge Relocation
+- **Public Records**: Migration of version history to `docs/pubs/releases/`.
+- **Stakeholder Manuals**: Strategy for updating the Wiki with security and installation guides.
 
 ---
 
 ## 5. Exit Criteria & Quality Gates
 
 ### 5.1 Acceptance Criteria
-- [ ] **Functional**: `app:install` generates an expired, **Signed URL** with the correct port.
-- [ ] **Security**: Identity forms are protected by Turnstile and Honeypot; rate limiting is active on `/login`.
-- [ ] **Privacy**: Targeted PII fields are encrypted in the database; logs contain masked sensitive data.
-- [ ] **Validation**: Passwords meet the `auto()` complexity requirements for the current environment.
-- [ ] **Stability**: Zero "Array to string conversion" errors; migrations are clean and consolidated.
+- [ ] **Functional**: `app:install` generates valid, port-aware Signed URLs.
+- [ ] **Security**: Identity forms protected by Turnstile/Honeypot; Rate limiting active on sensitive routes.
+- [ ] **Privacy**: PII fields encrypted in DB; Logs contain masked sensitive data.
+- [ ] **Stability**: zero static analysis violations and clean migration history.
 
 ### 5.2 Verification Protocols
-- **Full Verification Suite**: `composer test` (100% Pass).
-- **Static Analysis**: `composer lint` (Zero violations).
-- **Security Audit**: Manual verification of signed URL expiration and encryption transparency.
+- **Full Verification Suite**: 100% pass rate in `composer test` (Modular Sequential).
+- **Quality Gate**: zero violations in `composer lint`.
 
 ---
 
@@ -88,7 +74,3 @@
 
 - **Identity**: Consider WebAuthn/Passkey support for the Beta 2.0 milestone.
 - **Logs**: Transition to encrypted log storage for high-compliance environments.
-
----
-
-_This Application Blueprint establishes the authoritative security and stabilization design, serving as the work contract for the v0.13.0-alpha baseline._
