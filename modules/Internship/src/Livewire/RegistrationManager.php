@@ -160,7 +160,7 @@ class RegistrationManager extends Component
     public function openBulkPlace(): void
     {
         if (empty($this->selectedIds)) {
-            $this->dispatch('notify', message: __('Pilih setidaknya satu siswa.'), type: 'warning');
+            notify(__('Pilih setidaknya satu siswa.'), 'warning');
 
             return;
         }
@@ -174,7 +174,7 @@ class RegistrationManager extends Component
     public function executeBulkPlace(): void
     {
         if (! $this->targetPlacementId) {
-            $this->dispatch('notify', message: __('Pilih lokasi penempatan.'), type: 'error');
+            notify(__('Pilih lokasi penempatan.'), 'error');
 
             return;
         }

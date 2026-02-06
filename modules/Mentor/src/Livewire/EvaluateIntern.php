@@ -74,7 +74,7 @@ class EvaluateIntern extends Component
             $this->feedback,
         );
 
-        $this->dispatch('notify', message: __('assessment::messages.submitted'), type: 'success');
+        notify(__('assessment::messages.submitted'), 'success');
         $this->redirect(route('mentor.dashboard'), navigate: true);
     }
 

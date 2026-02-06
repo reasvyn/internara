@@ -76,16 +76,12 @@ class AssignmentSubmission extends Component
 
             $service->submit($this->registrationId, $assignmentId, $content);
 
-            $this->dispatch(
-                'notify',
-                message: __('assignment::ui.success_submitted'),
-                type: 'success',
-            );
+            notify(__('assignment::ui.success_submitted'), 'success');
 
             // Reset input
             unset($this->uploads[$assignmentId], $this->contents[$assignmentId]);
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            notify($e->getMessage(), 'error');
         }
     }
 

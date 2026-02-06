@@ -75,7 +75,7 @@ class AssessInternship extends Component
             $this->feedback,
         );
 
-        $this->dispatch('notify', message: __('assessment::messages.submitted'), type: 'success');
+        notify(__('assessment::messages.submitted'), 'success');
         $this->redirect(route('teacher.dashboard'), navigate: true);
     }
 

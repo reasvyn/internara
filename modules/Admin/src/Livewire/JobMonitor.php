@@ -30,7 +30,7 @@ class JobMonitor extends Component
     public function retry(string $uuid): void
     {
         Artisan::call('queue:retry', ['id' => $uuid]);
-        $this->dispatch('notify', message: __('admin::ui.job_retried'), type: 'success');
+        notify(__('admin::ui.job_retried'), 'success');
     }
 
     /**
@@ -39,7 +39,7 @@ class JobMonitor extends Component
     public function forget(string $uuid): void
     {
         Artisan::call('queue:forget', ['id' => $uuid]);
-        $this->dispatch('notify', message: __('admin::ui.job_forgotten'), type: 'warning');
+        notify(__('admin::ui.job_forgotten'), 'warning');
     }
 
     /**
@@ -48,11 +48,7 @@ class JobMonitor extends Component
     public function flush(): void
     {
         Artisan::call('queue:flush');
-        $this->dispatch(
-            'notify',
-            message: __('admin::ui.all_failed_jobs_flushed'),
-            type: 'success',
-        );
+        notify(__('admin::ui.all_failed_jobs_flushed'), 'success');
     }
 
     public function render()

@@ -67,11 +67,7 @@ class AttendanceManager extends Component
             $settingService->getValue('feature_guidance_enabled', true) &&
             ! $guidanceService->hasCompletedMandatory((string) auth()->id())
         ) {
-            $this->dispatch(
-                'toast',
-                message: __('guidance::messages.must_complete_guidance'),
-                type: 'warning',
-            );
+            notify(__('guidance::messages.must_complete_guidance'), 'warning');
 
             return;
         }
@@ -79,18 +75,14 @@ class AttendanceManager extends Component
         try {
             $this->attendanceService->checkIn((string) auth()->id());
             $this->loadTodayLog();
-            $this->dispatch(
-                'notify',
-                message: __('attendance::messages.check_in_success'),
-                type: 'success',
-            );
+            notify(__('attendance::messages.check_in_success'), 'success');
         } catch (\Throwable $e) {
             $message =
                 $e instanceof \Modules\Exception\AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
-            $this->dispatch('notify', message: $message, type: 'error');
+            notify($message, 'error');
         }
     }
 
@@ -102,18 +94,14 @@ class AttendanceManager extends Component
         try {
             $this->attendanceService->checkOut((string) auth()->id());
             $this->loadTodayLog();
-            $this->dispatch(
-                'notify',
-                message: __('attendance::messages.check_out_success'),
-                type: 'success',
-            );
+            notify(__('attendance::messages.check_out_success'), 'success');
         } catch (\Throwable $e) {
             $message =
                 $e instanceof \Modules\Exception\AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
-            $this->dispatch('notify', message: $message, type: 'error');
+            notify($message, 'error');
         }
     }
 

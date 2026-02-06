@@ -85,14 +85,10 @@ class RequirementSubmissionManager extends Component
         try {
             $requirementService->submit($this->registrationId, $requirementId, $value, $file);
 
-            $this->dispatch(
-                'notify',
-                message: __('internship::ui.requirement_submitted'),
-                type: 'success',
-            );
+            notify(__('internship::ui.requirement_submitted'), 'success');
             $this->loadData();
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            notify($e->getMessage(), 'error');
         }
     }
 

@@ -8,8 +8,8 @@ use Illuminate\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService;
-use Modules\User\Models\User;
 
 class JournalIndex extends Component
 {
@@ -35,7 +35,7 @@ class JournalIndex extends Component
         $this->journalService = $journalService;
 
         // Gating System: Check if student has completed mandatory guidance
-        if (auth()->user()->hasRole('student')) {
+        if (auth()->check() && auth()->user()->hasRole('student')) {
             $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
             $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
 
@@ -43,13 +43,9 @@ class JournalIndex extends Component
                 $settingService->getValue('feature_guidance_enabled', true) &&
                 ! $guidanceService->hasCompletedMandatory(auth()->id())
             ) {
-                $this->dispatch(
-                    'toast',
-                    message: __('guidance::messages.must_complete_guidance'),
-                    type: 'warning',
-                );
+                notify(__('guidance::messages.must_complete_guidance'), 'warning');
 
-                $this->redirect(route('student.dashboard'));
+                $this->redirect(route('student.dashboard'), navigate: true);
             }
         }
     }
@@ -150,7 +146,7 @@ class JournalIndex extends Component
             $this->selectedEntry = $this->journalService->find($id);
         }
 
-        $this->dispatch('notify', message: __('shared::messages.record_approved'), type: 'success');
+        notify(__('shared::messages.record_approved'), 'success');
     }
 
     /**
@@ -168,7 +164,7 @@ class JournalIndex extends Component
             $this->selectedEntry = $this->journalService->find($id);
         }
 
-        $this->dispatch('notify', message: __('shared::messages.record_rejected'), type: 'error');
+        notify(__('shared::messages.record_rejected'), 'error');
     }
 
     public function render(): View

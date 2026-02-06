@@ -81,7 +81,7 @@ class ManageSchedule extends Component
         $this->authorize('delete', Schedule::class);
 
         if ($service->delete($id)) {
-            $this->dispatch('toast', message: __('schedule::messages.schedule_deleted'), type: 'success');
+            notify(__('schedule::messages.schedule_deleted'), 'success');
         }
     }
 
@@ -91,7 +91,7 @@ class ManageSchedule extends Component
     public function scheduleSaved(): void
     {
         $this->showForm = false;
-        $this->dispatch('toast', message: __('schedule::messages.schedule_saved'), type: 'success');
+        notify(__('schedule::messages.schedule_saved'), 'success');
     }
 
     /**

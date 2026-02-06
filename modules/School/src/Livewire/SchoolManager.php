@@ -56,7 +56,7 @@ class SchoolManager extends Component
         $this->form->fill($school->append('logo_url'));
 
         $this->dispatch('school_saved', schoolId: $school->id);
-        $this->dispatch('notify', message: __('shared::messages.record_saved'), type: 'success');
+        notify(__('shared::messages.record_saved'), 'success');
     }
 
     public function render()

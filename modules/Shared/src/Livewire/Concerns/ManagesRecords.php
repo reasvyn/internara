@@ -162,7 +162,7 @@ trait ManagesRecords
 
         $this->formModal = false;
         $this->dispatch($this->getEventPrefix().':close-modal', 'form-modal');
-        $this->dispatch('notify', message: __('shared::messages.record_saved'), type: 'success');
+        notify(__('shared::messages.record_saved'), 'success');
     }
 
     /**
@@ -176,11 +176,7 @@ trait ManagesRecords
             $this->service->delete($id);
             $this->confirmModal = false;
             $this->recordId = null;
-            $this->dispatch(
-                'notify',
-                message: __('shared::messages.record_deleted'),
-                type: 'success',
-            );
+            notify(__('shared::messages.record_deleted'), 'success');
         }
     }
 }

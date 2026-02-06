@@ -90,15 +90,9 @@ class ReportIndex extends Component
         try {
             $fileName = $service->generate($this->selectedProvider, $this->filters);
 
-            $this->dispatch('notify', [
-                'type' => 'success',
-                'message' => __('report::messages.generated', ['file' => $fileName]),
-            ]);
+            notify(__('report::messages.generated', ['file' => $fileName]), 'success');
         } catch (\Exception $e) {
-            $this->dispatch('notify', [
-                'type' => 'error',
-                'message' => $e->getMessage(),
-            ]);
+            notify($e->getMessage(), 'error');
         }
     }
 

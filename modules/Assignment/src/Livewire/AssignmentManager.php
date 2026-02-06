@@ -94,18 +94,10 @@ class AssignmentManager extends Component
 
         if ($this->recordId) {
             $service->update($this->recordId, $data);
-            $this->dispatch(
-                'notify',
-                message: __('assignment::ui.success_updated'),
-                type: 'success',
-            );
+            notify(__('assignment::ui.success_updated'), 'success');
         } else {
             $service->create($data);
-            $this->dispatch(
-                'notify',
-                message: __('assignment::ui.success_created'),
-                type: 'success',
-            );
+            notify(__('assignment::ui.success_created'), 'success');
         }
 
         $this->formModal = false;
@@ -117,7 +109,7 @@ class AssignmentManager extends Component
     public function remove(string $id, AssignmentService $service): void
     {
         $service->delete($id);
-        $this->dispatch('notify', message: __('assignment::ui.success_deleted'), type: 'success');
+        notify(__('assignment::ui.success_deleted'), 'success');
     }
 
     /**

@@ -80,12 +80,11 @@ class JournalEntryManager extends Component
                 $this->journalService->attachMedia($entry->id, $this->form->attachments);
             }
 
-            $this->dispatch(
-                'notify',
-                message: $asDraft
+            notify(
+                $asDraft
                     ? __('shared::messages.record_saved')
                     : __('shared::messages.record_submitted'),
-                type: 'success',
+                'success',
             );
             $this->redirect(route('journal.index'), navigate: true);
         } catch (\Throwable $e) {
@@ -94,7 +93,7 @@ class JournalEntryManager extends Component
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
-            $this->dispatch('notify', message: $message, type: 'error');
+            notify($message, 'error');
         }
     }
 
