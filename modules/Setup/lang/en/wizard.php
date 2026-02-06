@@ -35,7 +35,7 @@ return [
         ],
         'solution' => [
             'title' => 'Our Smart Solution',
-            'description' => 'Internara is here as your partner, organizing every detail so you can focus on guiding students\' futures.',
+            'description' => ':app is here as your partner, organizing every detail so you can focus on guiding students\' futures.',
         ],
         'journey' => [
             'title' => 'The Journey Begins',
@@ -45,7 +45,7 @@ return [
     ],
     'environment' => [
         'title' => 'Environment Check',
-        'description' => 'We need to make sure your server is ready to run Internara smoothly.',
+        'description' => 'We need to make sure your server is ready to run :app smoothly.',
         'requirements' => 'System Requirements',
         'permissions' => 'Directory Permissions',
         'database' => 'Database Connectivity',
@@ -54,12 +54,12 @@ return [
     'account' => [
         'title' => 'Create Administrator Account',
         'headline' => 'Every Great Journey Needs a Leader.',
-        'description' => 'This account will be your command center. With this account, you will direct the internship program flow, manage users, and ensure everything runs smoothly. Let\'s set up your main administrator account.',
+        'description' => 'This account will be your command center. With this account, you will direct the internship program flow within :app, manage users, and ensure everything runs smoothly. Let\'s set up your main administrator account.',
     ],
     'school' => [
         'title' => 'Set Up School Data',
         'headline' => 'Building Your School\'s Identity.',
-        'description' => 'This information will be the foundation of the entire system, ensuring every document, report, and communication carries your school\'s unique identity. Let\'s introduce your institution to Internara.',
+        'description' => 'This information will be the foundation of the entire system, ensuring every document, report, and communication carries your school\'s unique identity. Let\'s introduce your institution to :app.',
     ],
     'department' => [
         'title' => 'Set Up Department Data',
@@ -74,7 +74,7 @@ return [
     'system' => [
         'title' => 'System Settings',
         'headline' => 'Ensure Communication Lines Are Open.',
-        'description' => 'Internara needs to send important notifications, reports, and account confirmations via email. Configure your SMTP server to ensure every message reaches its destination.',
+        'description' => ':app needs to send important notifications, reports, and account confirmations via email. Configure your SMTP server to ensure every message reaches its destination.',
         'description_extra' => 'You can use a free SMTP service provider or one provided by your institution.',
         'test_connection' => 'Test Connection',
         'skip' => 'Skip for Now',
@@ -91,8 +91,8 @@ return [
     'complete' => [
         'title' => 'Setup Complete',
         'badge' => '🎉 One Last Touch! 🎉',
-        'headline' => 'Finalization and Synchronization: Internara Ready for Action! ✨',
-        'description' => 'This is the final touch—like an artist signing their work. This step will bring together everything we have prepared, activate all modules, and ensure Internara is ready to serve you fully.',
+        'headline' => 'Finalization and Synchronization: :app Ready for Action! ✨',
+        'description' => 'This is the final touch—like an artist signing their work. This step will bring together everything we have prepared, activate all modules, and ensure :app is ready to serve you fully.',
         'description_extra' => 'With one final click, you will open the door to a new internship management experience. Ready to start this new chapter?',
         'cta' => 'Finalize & Start Adventure',
     ],

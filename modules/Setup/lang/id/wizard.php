@@ -35,7 +35,7 @@ return [
         ],
         'solution' => [
             'title' => 'Solusi Cerdas Kami',
-            'description' => 'Internara hadir sebagai partner Anda, menata setiap detail agar Anda bisa fokus membimbing masa depan siswa.',
+            'description' => ':app hadir sebagai partner Anda, menata setiap detail agar Anda bisa fokus membimbing masa depan siswa.',
         ],
         'journey' => [
             'title' => 'Perjalanan Dimulai',
@@ -45,7 +45,7 @@ return [
     ],
     'environment' => [
         'title' => 'Pengecekan Lingkungan',
-        'description' => 'Kami perlu memastikan server Anda siap untuk menjalankan Internara dengan lancar.',
+        'description' => 'Kami perlu memastikan server Anda siap untuk menjalankan :app dengan lancar.',
         'requirements' => 'Persyaratan Sistem',
         'permissions' => 'Izin Direktori',
         'database' => 'Konektivitas Database',
@@ -54,12 +54,12 @@ return [
     'account' => [
         'title' => 'Buat Akun Administrator',
         'headline' => 'Setiap Perjalanan Hebat Butuh Seorang Pemimpin.',
-        'description' => 'Akun ini akan menjadi pusat kendali Anda. Dengan akun inilah Anda akan mengarahkan alur program magang, mengelola pengguna, dan memastikan semuanya berjalan lancar. Mari kita siapkan akun administrator utama Anda.',
+        'description' => 'Akun ini akan menjadi pusat kendali Anda. Dengan akun inilah Anda akan mengarahkan alur program magang di :app, mengelola pengguna, dan memastikan semuanya berjalan lancar. Mari kita siapkan akun administrator utama Anda.',
     ],
     'school' => [
         'title' => 'Atur Data Sekolah',
         'headline' => 'Membangun Identitas Sekolah Anda.',
-        'description' => 'Informasi ini akan menjadi fondasi dari seluruh sistem, memastikan setiap dokumen, laporan, dan komunikasi membawa identitas unik sekolah Anda. Mari kita perkenalkan institusi Anda pada Internara.',
+        'description' => 'Informasi ini akan menjadi fondasi dari seluruh sistem, memastikan setiap dokumen, laporan, dan komunikasi membawa identitas unik sekolah Anda. Mari kita perkenalkan institusi Anda pada :app.',
     ],
     'department' => [
         'title' => 'Atur Data Jurusan',
@@ -74,7 +74,7 @@ return [
     'system' => [
         'title' => 'Pengaturan Sistem',
         'headline' => 'Pastikan Jalur Komunikasi Terbuka.',
-        'description' => 'Internara perlu mengirimkan notifikasi penting, laporan, dan konfirmasi akun melalui email. Konfigurasikan server SMTP Anda untuk memastikan setiap pesan sampai ke tujuannya.',
+        'description' => ':app perlu mengirimkan notifikasi penting, laporan, dan konfirmasi akun melalui email. Konfigurasikan server SMTP Anda untuk memastikan setiap pesan sampai ke tujuannya.',
         'description_extra' => 'Anda dapat menggunakan penyedia layanan SMTP gratis atau yang disediakan oleh institusi Anda.',
         'test_connection' => 'Tes Koneksi',
         'skip' => 'Lewati Dulu',
@@ -91,8 +91,8 @@ return [
     'complete' => [
         'title' => 'Setup Selesai',
         'badge' => '🎉 Satu Sentuhan Terakhir! 🎉',
-        'headline' => 'Finalisasi dan Sinkronisasi: Internara Siap Beraksi! ✨',
-        'description' => 'Ini adalah sentuhan akhir—seperti seorang seniman yang membubuhkan tanda tangannya. Langkah ini akan menyatukan semua yang telah kita siapkan, mengaktifkan seluruh modul, dan memastikan Internara siap melayani Anda sepenuhnya.',
+        'headline' => 'Finalisasi dan Sinkronisasi: :app Siap Beraksi! ✨',
+        'description' => 'Ini adalah sentuhan akhir—seperti seorang seniman yang membubuhkan tanda tangannya. Langkah ini akan menyatukan semua yang telah kita siapkan, mengaktifkan seluruh modul, dan memastikan :app siap melayani Anda sepenuhnya.',
         'description_extra' => 'Dengan satu klik terakhir, Anda akan membuka pintu menuju pengalaman manajemen magang yang baru. Siap untuk memulai babak baru ini?',
         'cta' => 'Selesaikan & Mulai Petualangan',
     ],

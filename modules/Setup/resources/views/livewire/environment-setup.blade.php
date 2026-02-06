@@ -1,25 +1,27 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <p class="mb-16 font-bold text-gray-500">
+        <x-ui::badge priority="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
             {{ __('setup::wizard.steps', ['current' => 2, 'total' => 8]) }}
+        </x-ui::badge>
+
+        <h1 class="text-4xl font-bold tracking-tight text-base-content" data-aos="fade-right" data-aos-delay="400">
+            {{ __('setup::wizard.environment.title') }}
+        </h1>
+
+        <p class="mt-4 text-base-content/60 leading-relaxed" data-aos="fade-right" data-aos-delay="600">
+            {{ __('setup::wizard.environment.description', ['app' => setting('app_name')]) }}
         </p>
 
-        <h1 class="text-3xl font-bold">{{ __('setup::wizard.environment.title') }}</h1>
-
-        <p class="mt-4 text-base-content/70">
-            {{ __('setup::wizard.environment.description') }}
-        </p>
-
-        <div class="mt-10 flex items-center gap-4">
+        <div class="mt-10 flex items-center gap-4" data-aos="fade-up" data-aos-delay="800">
             <x-ui::button
+                priority="secondary"
                 :label="__('setup::wizard.buttons.back')"
                 wire:click="backToPrev"
-                class="btn-secondary btn-outline"
             />
             <x-ui::button
+                priority="primary"
                 :label="__('setup::wizard.buttons.next')"
                 wire:click="nextStep"
-                class="btn-primary"
                 :disabled="$this->disableNextStep"
                 spinner
             />
@@ -29,85 +31,77 @@
     <x-slot:content>
         <div class="space-y-6">
             {{-- Requirements Audit --}}
-            <x-mary-card
+            <x-ui::card
                 title="{{ __('setup::wizard.environment.requirements') }}"
                 separator
-                shadow
+                aos="fade-left"
+                data-aos-delay="400"
             >
-                <div class="space-y-3">
+                <div class="space-y-4">
                     @foreach($this->audit['requirements'] as $name => $passed)
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium">{{ str_replace(['extension_', '_'], ['', ' '], $name) }}</span>
-                            @if($passed)
-                                <x-mary-badge
-                                    value="{{ __('setup::wizard.status.passed') }}"
-                                    class="badge-success"
-                                />
-                            @else
-                                <x-mary-badge
-                                    value="{{ __('setup::wizard.status.failed') }}"
-                                    class="badge-error"
-                                />
-                            @endif
+                        <div class="flex items-center justify-between group">
+                            <span class="text-sm font-semibold text-base-content/80 group-hover:text-base-content transition-colors">
+                                {{ str_replace(['extension_', '_'], ['', ' '], $name) }}
+                            </span>
+                            <x-ui::badge 
+                                :priority="$passed ? 'primary' : 'secondary'"
+                                class="{{ $passed ? 'badge-success' : 'badge-error' }} px-3"
+                            >
+                                {{ $passed ? __('setup::wizard.status.passed') : __('setup::wizard.status.failed') }}
+                            </x-ui::badge>
                         </div>
                     @endforeach
                 </div>
-            </x-mary-card>
+            </x-ui::card>
 
             {{-- Permissions Audit --}}
-            <x-mary-card
+            <x-ui::card
                 title="{{ __('setup::wizard.environment.permissions') }}"
                 separator
-                shadow
+                aos="fade-left"
+                data-aos-delay="600"
             >
-                <div class="space-y-3">
+                <div class="space-y-4">
                     @foreach($this->audit['permissions'] as $path => $writable)
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium">{{ str_replace('_', ' ', $path) }}</span>
-                            @if($writable)
-                                <x-mary-badge
-                                    value="{{ __('setup::wizard.status.writable') }}"
-                                    class="badge-success"
-                                />
-                            @else
-                                <x-mary-badge
-                                    value="{{ __('setup::wizard.status.not_writable') }}"
-                                    class="badge-error"
-                                />
-                            @endif
+                        <div class="flex items-center justify-between group">
+                            <span class="text-sm font-semibold text-base-content/80 group-hover:text-base-content transition-colors lowercase">
+                                {{ str_replace('_', ' ', $path) }}
+                            </span>
+                            <x-ui::badge 
+                                :priority="$writable ? 'primary' : 'secondary'"
+                                class="{{ $writable ? 'badge-success' : 'badge-error' }} px-3"
+                            >
+                                {{ $writable ? __('setup::wizard.status.writable') : __('setup::wizard.status.not_writable') }}
+                            </x-ui::badge>
                         </div>
                     @endforeach
                 </div>
-            </x-mary-card>
+            </x-ui::card>
 
             {{-- Database Audit --}}
-            <x-mary-card
+            <x-ui::card
                 title="{{ __('setup::wizard.environment.database') }}"
                 separator
-                shadow
+                aos="fade-left"
+                data-aos-delay="800"
             >
                 <div class="flex items-center justify-between">
                     <div>
-                        <span class="text-sm font-medium">{{ __('setup::wizard.environment.db_connection') }}</span>
+                        <span class="text-sm font-semibold text-base-content/80">{{ __('setup::wizard.environment.db_connection') }}</span>
                         @if(!$this->audit['database']['connection'])
-                            <p class="mt-1 text-xs text-error">
+                            <p class="mt-1 text-xs text-error font-medium">
                                 {{ $this->audit['database']['message'] }}
                             </p>
                         @endif
                     </div>
-                    @if($this->audit['database']['connection'])
-                        <x-mary-badge
-                            value="{{ __('setup::wizard.status.connected') }}"
-                            class="badge-success"
-                        />
-                    @else
-                        <x-mary-badge
-                            value="{{ __('setup::wizard.status.disconnected') }}"
-                            class="badge-error"
-                        />
-                    @endif
+                    <x-ui::badge 
+                        :priority="$this->audit['database']['connection'] ? 'primary' : 'secondary'"
+                        class="{{ $this->audit['database']['connection'] ? 'badge-success' : 'badge-error' }} px-3"
+                    >
+                        {{ $this->audit['database']['connection'] ? __('setup::wizard.status.connected') : __('setup::wizard.status.disconnected') }}
+                    </x-ui::badge>
                 </div>
-            </x-mary-card>
+            </x-ui::card>
         </div>
     </x-slot>
 </x-setup::layouts.setup-wizard>

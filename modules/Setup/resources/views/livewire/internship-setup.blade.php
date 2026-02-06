@@ -1,34 +1,41 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <p class="mb-16 font-bold text-gray-500">
+        <x-ui::badge priority="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
             {{ __('setup::wizard.steps', ['current' => 6, 'total' => 8]) }}
-        </p>
+        </x-ui::badge>
 
-        <h1 class="text-3xl font-bold">{{ __('setup::wizard.internship.headline') }}</h1>
+        <h1 class="text-4xl font-bold tracking-tight text-base-content" data-aos="fade-right" data-aos-delay="400">
+            {{ __('setup::wizard.internship.headline') }}
+        </h1>
 
-        <p class="mt-4">
-            {{ __('setup::wizard.internship.description') }}
-        </p>
-        <p class="mt-2 text-sm text-base-content/70">
-            {{ __('setup::wizard.common.later_at_settings') }}
-        </p>
+        <div class="mt-6 space-y-4" data-aos="fade-right" data-aos-delay="600">
+            <p class="text-base-content/70 leading-relaxed">
+                {{ __('setup::wizard.internship.description', ['app' => setting('app_name')]) }}
+            </p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-accent">
+                {{ __('setup::wizard.common.later_at_settings') }}
+            </p>
+        </div>
 
-        <div class="mt-8 flex items-center gap-4">
+        <div class="mt-10 flex items-center gap-4" data-aos="fade-up" data-aos-delay="800">
             <x-ui::button
-                class="btn-secondary btn-outline"
+                priority="secondary"
                 :label="__('setup::wizard.common.back')"
                 wire:click="backToPrev"
             />
             <x-ui::button
-                class="btn-primary"
+                priority="primary"
                 :label="__('setup::wizard.common.continue')"
                 wire:click="nextStep"
                 :disabled="$this->disableNextStep"
+                spinner
             />
         </div>
     </x-slot>
 
     <x-slot:content>
-        @slotRender('internship-manager')
+        <div data-aos="fade-left" data-aos-delay="400">
+            @slotRender('internship-manager')
+        </div>
     </x-slot>
 </x-setup::layouts.setup-wizard>
