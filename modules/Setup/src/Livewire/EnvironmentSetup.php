@@ -26,10 +26,9 @@ class EnvironmentSetup extends Component
     /**
      * Initializes the component and performs the initial environment check.
      */
-    public function boot(SetupService $setupService, SystemAuditor $auditor): void
+    public function boot(SetupService $setupService): void
     {
         $this->setupService = $setupService;
-        $this->auditor = $auditor;
 
         $this->initSetupStepProps(
             currentStep: 'environment',
@@ -48,7 +47,7 @@ class EnvironmentSetup extends Component
     #[Computed]
     public function audit(): array
     {
-        return $this->auditor->audit();
+        return app(SystemAuditor::class)->audit();
     }
 
     /**
@@ -57,7 +56,7 @@ class EnvironmentSetup extends Component
     #[Computed]
     public function disableNextStep(): bool
     {
-        return ! $this->auditor->passes();
+        return ! app(SystemAuditor::class)->passes();
     }
 
     /**
@@ -66,7 +65,7 @@ class EnvironmentSetup extends Component
     public function render(): \Illuminate\Contracts\View\View
     {
         return view('setup::livewire.environment-setup')
-            ->layout('auth::components.layouts.auth')
+            ->layout('setup::components.layouts.setup')
             ->title(__('setup::setup.environment_validation'));
     }
 }

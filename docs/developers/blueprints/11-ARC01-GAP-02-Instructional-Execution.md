@@ -7,6 +7,7 @@
 ## 1. Strategic Context
 
 - **Spec Alignment**: This blueprint implements the **Progress Monitoring** ([SYRS-F-201], [SYRS-F-202]) and **Assessment & Reporting** ([SYRS-F-301], [SYRS-F-302]) requirements of the authoritative **[Specs](../specs.md)**.
+- **Upward Continuity**: Extends the governance framework established in **[ARC01-GAP-01](10-ARC01-GAP-01-Integrative-Excellence.md)** by transforming administrative registrations into active instructional cycles.
 
 ---
 
@@ -15,7 +16,7 @@
 ### 2.1 Capabilities
 - **Competency Mapping**: Departmental rubric system allowing students to claim skills during journal entries.
 - **Mentoring Registry**: Centralized log documenting formal interactions between supervisors (Teachers/Mentors) and students.
-- **Submission Governance**: Implementation of journal submission windows and automated absence request workflows.
+- **Submission Governance**: Implementation of journal submission windows (default: 7 days) and automated absence request workflows.
 - **Participation Scoring**: Quantitative logic linking engagement telemetry (attendance/journals) to objective scores.
 
 ### 2.2 Service Contracts
@@ -34,12 +35,12 @@
 ## 3. Presentation Strategy (User Experience View)
 
 ### 3.1 UX Workflow
-- **Claim Integration**: Smart dropdowns in the journal form with contextual skill suggestions.
+- **Claim Integration**: Smart dropdowns in the journal form with contextual skill suggestions based on the student's department.
 - **Verification Loop**: Streamlined approval workflow for supervisors to validate journal claims and absence requests.
 
 ### 3.2 Interface Design
 - **Unified Timeline**: Chronological view of all teacher and mentor logs for comprehensive student tracking.
-- **Evaluation Dashboards**: Role-specific interfaces for formative and summative assessments.
+- **Evaluation Dashboards**: Role-specific interfaces (Student vs Supervisor) for formative and summative assessments.
 
 ---
 
@@ -57,14 +58,13 @@
 ## 5. Audit & Evaluation Report (v0.13.0 Audit)
 
 ### 5.1 Realized Outcomes
-- **Skill Claiming**: Successfully implemented competency selection within the Journal form, linking raw activities to departmental rubrics.
-- **Dual Supervision**: Mentors and Teachers can both verify journals, fulfilling the requirements for high-fidelity supervision.
-- **Absence Integrity**: Confirmed that `AttendanceService` correctly respects approved `AbsenceRequest` records.
-- **Instructional Loop**: Formalized the daily cycle in the project's technical patterns.
+- **Instructional Integrity**: Successfully implemented the competency attainment claim within the Journal form.
+- **Dual Supervision**: Verified that both Mentor (Industry) and Teacher (Academic) can independently verify entries, fulfilling high-fidelity supervision mandates.
+- **Telemetry Synthesis**: `ComplianceService` correctly aggregates attendance and journal logs into a standardized participation score.
 
 ### 5.2 Identified Anomalies & Corrections
-- **Terminology Clarity**: "Claim Skill" was identified as a potentially ambiguous term for contributors. **Correction**: Formally defined as "Competency Attainment Claim" in the technical patterns.
-- **Window Validation**: Messages for submission windows were found to use inconsistent translation keys. **Resolution**: Synchronized with the latest `journal::exceptions` baseline.
+- **Terminology Ambiguity**: "Claim Skill" was found to be confusing in the UI. **Correction**: Renamed to "Competency Attainment" in the interface and technical patterns.
+- **Key Desynchronization**: Journal submission window exceptions used inconsistent translation keys. **Resolution**: Standardized to `journal::exceptions.window_closed`.
 
 ---
 
@@ -83,5 +83,5 @@ A Blueprint is only considered fulfilled when the following criteria are met:
 
 ## 7. Improvement Suggestions
 
-- **Dynamic Weighting**: Develop an administrative interface to adjust participation weights.
-- **Credentialing Automation**: Realized via the **[Reporting (ARC01-INTEL-01)](08-ARC01-INTEL-01-Reporting-Intelligence.md)** series.
+- **Dynamic Weighting**: The current 50/50 weighting for participation is hard-coded; an administrative interface for custom weighting is recommended.
+- **Credentialing Automation**: Automated generation of digital credentials based on validated competency attainment.

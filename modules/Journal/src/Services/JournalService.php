@@ -27,7 +27,7 @@ class JournalService extends EloquentQuery implements Contract
         JournalEntry $model,
     ) {
         $this->setModel($model);
-        $this->setSearchable(['work_topic', 'activity_description', 'basic_competence']);
+        $this->setSearchable(['work_topic', 'activity_description']);
         $this->setSortable(['date', 'created_at']);
     }
 

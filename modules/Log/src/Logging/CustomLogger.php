@@ -14,7 +14,7 @@ class CustomLogger
     /**
      * Customize the given logger instance.
      */
-    public function __invoke($logger): void
+    public function __invoke(mixed $logger): void
     {
         $monolog = $logger instanceof \Illuminate\Log\Logger
             ? $logger->getLogger()

@@ -16,7 +16,7 @@ We use simple labels to let you know the readiness and maintenance level of each
 - **Beta**: Feature complete. We are focusing on fixing bugs and polishing the experience.
 - **Stable**: Ready for everyday use in your institution.
 
-### Maintenance Level
+### Support Level
 
 - **Snapshot**: A point-in-time release provided as-is. We generally do not provide updates or bug
   fixes for these early versions.
@@ -26,7 +26,7 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 2. Version History
 
-| Version | Readiness | Maintenance | Current Status |
+| Version | Readiness | Support | Current Status |
 
 | :---------- | :-------- | :---------- | :------------- |
 

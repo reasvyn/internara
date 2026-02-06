@@ -29,7 +29,7 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
     /**
      * {@inheritdoc}
      */
-    public function getStudentTimeline(string $studentId): Collection
+    public function getStudentTimeline(string $studentId, int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
     {
         $registrationService = app(\Modules\Internship\Services\Contracts\RegistrationService::class);
         $registration = $registrationService->first(['student_id' => $studentId]);
@@ -46,7 +46,7 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
             $query->whereNull('internship_id');
         }
 
-        return $query->get();
+        return $query->paginate([], $perPage);
     }
 
     /**

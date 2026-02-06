@@ -58,10 +58,14 @@ class ComplianceService implements Contract
         $attendanceScore = min(100, ($attendedDays / $effectiveTotalDays) * 100);
         $journalScore = min(100, ($approvedJournals / $effectiveTotalDays) * 100);
 
+        // Retrieve dynamic weights from settings (default to 0.5 each)
+        $attendanceWeight = (float) setting('compliance_attendance_weight', 0.5);
+        $journalWeight = (float) setting('compliance_journal_weight', 0.5);
+
         return [
             'attendance_score' => round($attendanceScore, 2),
             'journal_score' => round($journalScore, 2),
-            'final_score' => round($attendanceScore * 0.5 + $journalScore * 0.5, 2),
+            'final_score' => round(($attendanceScore * $attendanceWeight) + ($journalScore * $journalWeight), 2),
             'total_days' => $effectiveTotalDays,
             'attended_days' => $attendedDays,
             'approved_journals' => $approvedJournals,

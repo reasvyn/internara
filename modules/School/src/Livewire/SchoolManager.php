@@ -38,27 +38,22 @@ class SchoolManager extends Component
 
     public function save(): void
     {
-        $this->authorize('school.manage');
+        // Allow saving without 'school.manage' permission ONLY during the initial setup wizard.
+        // The wizard is already protected by Signed URLs and specific session tokens.
+        $isSetupPhase = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+
+        if (! $isSetupPhase) {
+            $this->authorize('school.manage');
+        }
 
         $this->form->validate();
 
-        // Use ID for identification (WHERE), rest for data (values)
-        $school = $this->schoolService->save(
-            ['id' => $this->form->id],
-            $this->form->except(['id', 'logo_file', 'logo_url']),
-        );
-
-        // Handle logo separately via Service (it checks for logo_file in the merged data or we can pass it explicitly)
-        // Wait, Service->save calls parent->save then handleSchoolLogo.
-        // handleSchoolLogo looks for 'logo_file' in the $data.
-        // So we need to ensure logo_file is passed.
-
-        // Let's pass logo_file in the values array so handleSchoolLogo can find it.
+        // Pass all relevant values including logo_file to the service
         $values = $this->form->except(['id', 'logo_url']);
         $school = $this->schoolService->save(['id' => $this->form->id], $values);
 
         // Refresh form with persisted data, including new logo URLs
-        $this->form->fill($school);
+        $this->form->fill($school->append('logo_url'));
 
         $this->dispatch('school_saved', schoolId: $school->id);
         $this->dispatch('notify', message: __('shared::messages.record_saved'), type: 'success');

@@ -29,6 +29,7 @@ class Schedule extends Model
     protected $casts = [
         'start_at' => 'datetime',
         'end_at' => 'datetime',
+        'type' => \Modules\Schedule\Enums\ScheduleType::class,
     ];
 
     /**

@@ -84,10 +84,10 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 ## 📈 Project Status
 
-Internara is currently in **Active Development**. We follow a clear maintenance policy to ensure
+Internara is currently in **Active Development**. We follow a clear support policy to ensure
 transparency.
 
-| Version     | Readiness | Maintenance | Current Status |
+| Version     | Readiness | Support     | Current Status |
 | :---------- | :-------- | :---------- | :------------- |
 | **v0.13.x** | Alpha     | Snapshot    | In Progress    |
 | **v0.12.x** | Alpha     | Snapshot    | Released       |

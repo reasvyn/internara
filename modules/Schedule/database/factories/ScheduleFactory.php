@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Schedule\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Schedule\Enums\ScheduleType;
 use Modules\Schedule\Models\Schedule;
 
 class ScheduleFactory extends Factory
@@ -27,7 +28,7 @@ class ScheduleFactory extends Factory
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph,
             'start_at' => now()->addDays(rand(1, 30)),
-            'type' => $this->faker->randomElement(['event', 'deadline', 'briefing']),
+            'type' => $this->faker->randomElement(ScheduleType::cases()),
             'academic_year' => '2025/2026',
         ];
     }

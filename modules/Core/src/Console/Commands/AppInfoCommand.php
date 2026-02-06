@@ -55,8 +55,8 @@ class AppInfoCommand extends Command
             (string) ($info['series_code'] ?? 'Unknown'),
         );
         $this->components->twoColumnDetail(
-            'Maintenance',
-            (string) ($info['maintenance'] ?? 'Unknown'),
+            'Support',
+            (string) ($info['support'] ?? 'Unknown'),
         );
 
         $this->newLine();
