@@ -16,35 +16,24 @@
             {{ $slot }}
         </div>
 
-        <!-- Toast Area --->
-        <x-ui::toast class="toast-bottom toast-end z-50" />
+        <livewire:ui::notification-bridge />
+        <x-ui::toast />
 
         <script>
             document.addEventListener('livewire:init', () => {
-                const triggerToast = (payload) => {
-                    const type = payload.type || 'info';
-                    if (typeof window.toast === 'function') {
-                        window.toast({
-                            toast: {
-                                type: type,
-                                title: type.charAt(0).toUpperCase() + type.slice(1),
-                                description: payload.message,
-                                css: `alert-${type}`,
-                                timeout: payload.options?.timeout || 3000,
-                            }
-                        });
-                    }
+                const triggerNotify = (payload) => {
+                    window.dispatchEvent(new CustomEvent('notify', { detail: payload }));
                 };
 
-                // Listen for Livewire events
-                Livewire.on('notify', (data) => {
+                // Real-time Browser Events (from NotificationBridge)
+                Livewire.on('notify-browser', (data) => {
                     const payload = Array.isArray(data) ? data[0] : data;
-                    triggerToast(payload);
+                    triggerNotify(payload);
                 });
 
-                // Handle session flashed notifications
+                // Initial Session Flash (from Standard Redirects)
                 @if(session('notify'))
-                    triggerToast(@json(session('notify')));
+                    triggerNotify(@json(session('notify')));
                 @endif
             });
         </script>

@@ -53,25 +53,18 @@ class Notifier implements Contract
         string $type = self::TYPE_INFO,
         array $options = [],
     ): void {
-        // 1. Handle Livewire Dispatch (Real-time)
-        if (app()->bound(\Livewire\LivewireManager::class) && app(\Livewire\LivewireManager::class)->isLivewireRequest()) {
-            /** @var \Livewire\Features\SupportEvents\EventBus $eventBus */
-            $eventBus = app(\Livewire\Features\SupportEvents\EventBus::class);
-
-            $eventBus->dispatch('notify', [
-                'message' => $message,
-                'type' => $type,
-                'options' => $options,
-            ]);
-
-            return;
-        }
-
-        // 2. Handle Session Flash (Standard Redirects)
-        session()->flash('notify', [
+        $payload = [
             'message' => $message,
             'type' => $type,
             'options' => $options,
-        ]);
+        ];
+
+        // 1. Session Flash (Standard Redirects & Initial Load)
+        session()->flash('notify', $payload);
+
+        // 2. Livewire Event Bus (Real-time within the same request)
+        if (app()->bound(\Livewire\EventBus::class)) {
+            app(\Livewire\EventBus::class)->trigger('notify', $payload);
+        }
     }
 }

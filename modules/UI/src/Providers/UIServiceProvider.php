@@ -29,6 +29,9 @@ class UIServiceProvider extends ServiceProvider
     {
         $this->bootModule();
 
+        // Register Livewire components
+        \Livewire\Livewire::component('ui::notification-bridge', \Modules\UI\Livewire\NotificationBridge::class);
+
         // Register anonymous components
         Blade::anonymousComponentPath(module_path('UI', 'resources/views/components'), 'ui');
 
