@@ -14,4 +14,10 @@ return [
     'confirm' => 'Confirm',
     'search' => 'Search',
     'open_menu' => 'Open menu',
+    'built_with' => 'Built with',
+    'by' => 'by',
+    'profile' => 'Profile',
+    'logout' => 'Log out',
+    'login' => 'Log in',
+    'register' => 'Register',
 ];

@@ -20,7 +20,10 @@
             "Modules\\Notification\\": "src/",
             "Modules\\Notification\\Database\\Factories\\": "database/factories/",
             "Modules\\Notification\\Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "src/Functions/notify.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -53,8 +53,8 @@ class Notifier implements Contract
         string $type = self::TYPE_INFO,
         array $options = [],
     ): void {
-        // If we are within a Livewire request, we can dispatch the event
-        if (app()->bound('livewire')) {
+        // 1. Handle Livewire Dispatch (Real-time)
+        if (app()->bound(\Livewire\LivewireManager::class) && app(\Livewire\LivewireManager::class)->isLivewireRequest()) {
             /** @var \Livewire\Features\SupportEvents\EventBus $eventBus */
             $eventBus = app(\Livewire\Features\SupportEvents\EventBus::class);
 
@@ -63,6 +63,15 @@ class Notifier implements Contract
                 'type' => $type,
                 'options' => $options,
             ]);
+
+            return;
         }
+
+        // 2. Handle Session Flash (Standard Redirects)
+        session()->flash('notify', [
+            'message' => $message,
+            'type' => $type,
+            'options' => $options,
+        ]);
     }
 }

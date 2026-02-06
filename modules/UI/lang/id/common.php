@@ -14,4 +14,10 @@ return [
     'confirm' => 'Konfirmasi',
     'search' => 'Cari',
     'open_menu' => 'Buka menu',
+    'built_with' => 'Dibuat dengan',
+    'by' => 'oleh',
+    'profile' => 'Profil',
+    'logout' => 'Keluar',
+    'login' => 'Masuk',
+    'register' => 'Daftar',
 ];

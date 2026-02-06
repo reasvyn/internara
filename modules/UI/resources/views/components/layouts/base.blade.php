@@ -17,22 +17,35 @@
         </div>
 
         <!-- Toast Area --->
-        <div class="fixed z-20">
-            <x-mary-toast />
-        </div>
+        <x-ui::toast class="toast-bottom toast-end z-50" />
 
         <script>
             document.addEventListener('livewire:init', () => {
+                const triggerToast = (payload) => {
+                    const type = payload.type || 'info';
+                    if (typeof window.toast === 'function') {
+                        window.toast({
+                            toast: {
+                                type: type,
+                                title: type.charAt(0).toUpperCase() + type.slice(1),
+                                description: payload.message,
+                                css: `alert-${type}`,
+                                timeout: payload.options?.timeout || 3000,
+                            }
+                        });
+                    }
+                };
+
+                // Listen for Livewire events
                 Livewire.on('notify', (data) => {
                     const payload = Array.isArray(data) ? data[0] : data;
-                    
-                    Livewire.dispatch('toast', {
-                        type: payload.type || 'info',
-                        title: payload.type === 'error' ? '{{ __("ui::common.error") }}' : '{{ __("ui::common.success") }}',
-                        description: payload.message,
-                        icon: payload.type === 'error' ? 'tabler.alert-circle' : 'tabler.check'
-                    });
+                    triggerToast(payload);
                 });
+
+                // Handle session flashed notifications
+                @if(session('notify'))
+                    triggerToast(@json(session('notify')));
+                @endif
             });
         </script>
 
