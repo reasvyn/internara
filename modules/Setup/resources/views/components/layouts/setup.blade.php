@@ -15,7 +15,7 @@
             @endif
 
             <div class="badge badge-ghost ml-2 text-xs font-medium text-gray-500">
-                {{ 'v' . config('app.version', '1.0.0') }}
+                {{ 'v' . setting('app_version') }}
             </div>
         </x-slot>
 
@@ -25,7 +25,7 @@
         </x-slot>
     </x-ui::nav>
 
-    <main class="flex flex-1 flex-col items-center justify-center">
+    <main class="flex flex-1 flex-col items-center justify-center" data-aos="fade-up">
         <x-honeypot />
         {{ $slot }}
     </main>

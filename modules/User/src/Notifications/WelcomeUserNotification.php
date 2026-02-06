@@ -34,7 +34,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $brandName = setting('brand_name', 'Sekolah/Instansi');
+        $brandName = setting('brand_name', setting('app_name'));
 
         return (new MailMessage)
             ->subject(__('user::notifications.welcome_subject', ['school' => $brandName]))
@@ -60,10 +60,10 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
     {
         return [
             'message' => __('user::notifications.welcome_db_message', [
-                'school' => setting('brand_name', 'Sekolah'),
+                'school' => setting('brand_name', setting('app_name')),
             ]),
             'action_url' => route('profile.index'),
-            'sender_name' => setting('brand_name', 'Internara Team'),
+            'sender_name' => setting('brand_name', setting('app_name')) . ' Team',
         ];
     }
 }

@@ -92,7 +92,7 @@
     <div class="container">
         <div class="header">
             <h1>Certificate of Completion</h1>
-            <p>Internara Internship Management System</p>
+            <p>{{ setting('brand_name', setting('app_name')) }}</p>
         </div>
 
         <div class="content">

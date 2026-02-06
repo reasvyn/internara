@@ -49,7 +49,7 @@ class DepartmentSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.department-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.department.title').' | '.setting('site_title', 'Internara'),
+            'title' => __('setup::wizard.department.title').' | '.setting('site_title', setting('app_name')),
         ]);
     }
 }

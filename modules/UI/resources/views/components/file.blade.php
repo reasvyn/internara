@@ -129,25 +129,25 @@
 
         get dropzoneOverlayText() {
             return this.isMultiple
-                ? 'Jatuhkan berkas di sini untuk menambahkan.'
-                : 'Jatuhkan berkas di sini untuk mengganti.'
+                ? '{{ __("ui::file.drop_to_add") }}'
+                : '{{ __("ui::file.drop_to_replace") }}'
         },
     }"
     {{ $otherAttributes->merge(['class' => 'mb-4']) }}
 >
     @isset($label)
-        <label for="{{ $id }}" class="text-xs font-bold">
-            {{ $label }}
+        <label for="{{ $id }}" class="label mb-1 px-1">
+            <span class="label-text font-semibold text-base-content/80">{{ $label }}</span>
         </label>
     @endisset
 
-    <div class="mt-2 h-full min-h-24 w-full rounded-lg border border-gray-300 p-4 dark:border-gray-300">
+    <div class="h-full min-h-24 w-full rounded-2xl border border-base-200 bg-base-100 p-4 shadow-sm transition-all">
         <div
-            class="border-3 flex h-full w-full cursor-pointer items-center justify-center rounded-lg border-dashed border-gray-300 p-4 hover:border-gray-500 dark:border-gray-700"
+            class="flex h-full w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-base-200 p-4 hover:border-accent/50 hover:bg-accent/5 transition-colors"
             x-on:dragover.prevent="isDropping = true"
             x-on:dragleave.prevent="isDropping = false"
             x-on:drop.prevent="handleDrop($event)"
-            x-bind:class="{ 'border-primary': isDropping }"
+            x-bind:class="{ 'border-accent bg-accent/10': isDropping }"
             x-on:click.prevent="! isDropping && $refs.maryFile.querySelector('input[type=file]').click()"
         >
             {{-- Hidden Mary File Component acting as the engine --}}
@@ -162,40 +162,42 @@
                 />
             </div>
 
-            <div class="text-center text-xs text-gray-500 relative w-full">
+            <div class="text-center text-xs text-base-content/60 relative w-full">
                 {{-- Overlay for drag-over --}}
                 <div
                     x-show="isDropping"
-                    class="absolute inset-0 z-10 flex size-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg bg-base-100/90 p-4 text-center font-medium dark:bg-base-900/90"
+                    class="absolute inset-0 z-10 flex size-full flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-base-100/90 p-4 text-center font-medium"
                 >
-                    <x-ui::icon name="tabler.upload" class="h-12 w-12 text-primary" />
-                    <p class="text-primary" x-text="dropzoneOverlayText"></p>
+                    <x-ui::icon name="tabler.upload" class="size-12 text-accent animate-bounce" />
+                    <p class="text-accent text-sm" x-text="dropzoneOverlayText"></p>
                 </div>
 
                 {{-- File Previews --}}
                 <template x-if="files.length > 0">
-                    <div>
+                    <div class="w-full">
                         <template x-if="isMultiple">
-                            <ul class="w-full space-y-2 p-2 text-left">
+                            <ul class="w-full space-y-3 p-2 text-left">
                                 <template x-for="fileItem in files" :key="fileItem.id">
-                                    <li class="flex items-center gap-2 p-2">
+                                    <li class="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl border border-base-200">
                                         <template x-if="isImage(fileItem) && fileItem.url">
-                                            <img x-bind:src="fileItem.url" class="h-8 w-8 flex-shrink-0 rounded-md object-cover" />
+                                            <img x-bind:src="fileItem.url" class="size-10 flex-shrink-0 rounded-lg object-cover shadow-sm" />
                                         </template>
                                         <template x-if="! isImage(fileItem) || ! fileItem.url">
-                                            <x-ui::icon name="tabler.file" class="h-8 w-8 flex-shrink-0 text-gray-400" />
+                                            <div class="size-10 flex items-center justify-center bg-base-300 rounded-lg flex-shrink-0">
+                                                <x-ui::icon name="tabler.file" class="size-6 text-base-content/40" />
+                                            </div>
                                         </template>
                                         <div class="flex-grow overflow-hidden text-left">
-                                            <p class="break-all text-sm font-medium" x-text="fileItem.name"></p>
-                                            <p class="text-xs text-gray-400">
+                                            <p class="truncate text-sm font-bold text-base-content" x-text="fileItem.name"></p>
+                                            <p class="text-[10px] uppercase tracking-wider text-base-content/50 font-semibold">
                                                 <span x-text="formatBytes(fileItem.size)"></span>
                                                 <template x-if="fileItem.extension">
-                                                    <span class="ml-1">(<span x-text="fileItem.extension"></span>)</span>
+                                                    <span class="ml-1" x-text="fileItem.extension"></span>
                                                 </template>
                                             </p>
                                         </div>
-                                        <button type="button" x-on:click.stop="removeFile(fileItem.id)" class="btn btn-ghost btn-circle btn-xs flex-shrink-0">
-                                            <x-ui::icon name="tabler.x" class="h-4 w-4" />
+                                        <button type="button" x-on:click.stop="removeFile(fileItem.id)" class="btn btn-ghost btn-circle btn-sm hover:bg-error/10 hover:text-error transition-colors flex-shrink-0">
+                                            <x-ui::icon name="tabler.trash" class="size-4" />
                                         </button>
                                     </li>
                                 </template>
@@ -203,19 +205,19 @@
                         </template>
 
                         <template x-if="!isMultiple">
-                            <div class="flex items-center justify-center">
-                                <div class="relative">
+                            <div class="flex items-center justify-center py-4">
+                                <div class="relative group">
                                     <template x-if="isImage(files[0])">
-                                        <img x-bind:src="files[0].url" class="h-32 w-32 rounded-lg object-cover" />
+                                        <img x-bind:src="files[0].url" class="h-40 w-40 rounded-2xl object-cover shadow-lg border border-base-200" />
                                     </template>
                                     <template x-if="! isImage(files[0])">
-                                        <div class="flex h-32 w-32 flex-col items-center justify-center rounded-lg bg-gray-100 p-2 dark:bg-gray-800">
-                                            <x-ui::icon name="tabler.file-text" class="h-12 w-12 text-gray-400" />
-                                            <p class="mt-2 w-full truncate px-1 text-center text-xs text-gray-500" x-text="files[0].name"></p>
+                                        <div class="flex h-40 w-40 flex-col items-center justify-center rounded-2xl bg-base-200 border border-base-300">
+                                            <x-ui::icon name="tabler.file-text" class="size-16 text-base-content/20" />
+                                            <p class="mt-2 w-full truncate px-4 text-center text-xs font-bold text-base-content/60" x-text="files[0].name"></p>
                                         </div>
                                     </template>
-                                    <button type="button" x-on:click.stop="removeFile(files[0].id)" class="btn btn-primary btn-circle btn-xs absolute -right-2 -top-2 z-10">
-                                        <x-ui::icon name="tabler.x" class="h-4 w-4" />
+                                    <button type="button" x-on:click.stop="removeFile(files[0].id)" class="btn btn-error btn-circle btn-sm absolute -right-3 -top-3 z-10 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <x-ui::icon name="tabler.x" class="size-4" />
                                     </button>
                                 </div>
                             </div>
@@ -224,14 +226,19 @@
                 </template>
 
                 <template x-if="files.length === 0">
-                    <div class="flex flex-col items-center justify-center text-center text-xs font-medium gap-2 size-full overflow-hidden">
+                    <div class="flex flex-col items-center justify-center text-center gap-3 py-8 overflow-hidden">
                         @if($slot->isNotEmpty())
                             {{ $slot }}
                         @else
-                            <x-ui::icon name="tabler.upload" class="mb-2 h-8 w-8 text-gray-400" />
-                            <p>Jatuhkan berkas di sini atau <span class="text-primary font-semibold">klik untuk mengunggah.</span></p>
+                            <div class="size-16 flex items-center justify-center bg-base-200 rounded-full mb-2">
+                                <x-ui::icon name="tabler.cloud-upload" class="size-8 text-base-content/30" />
+                            </div>
+                            <p class="text-sm">
+                                {{ __('ui::file.instruction') }} 
+                                <span class="text-accent font-bold">{{ __('ui::file.click_to_upload') }}</span>
+                            </p>
                             @isset($hint)
-                                <p class="mt-1 text-gray-400 font-normal">{{ $hint }}</p>
+                                <p class="text-[11px] text-base-content/40 font-medium uppercase tracking-tight">{{ $hint }}</p>
                             @endisset
                         @endif
                     </div>
@@ -241,6 +248,9 @@
     </div>
 
     @error($name)
-        <p class="mt-1 text-xs text-error">{{ $message }}</p>
+        <p class="mt-2 text-sm text-error font-medium px-1 flex items-center gap-1">
+            <x-ui::icon name="tabler.alert-circle" class="size-4" />
+            {{ $message }}
+        </p>
     @enderror
 </div>

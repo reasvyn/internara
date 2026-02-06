@@ -2,6 +2,31 @@
 
 declare(strict_types=1);
 
+/*
+|--------------------------------------------------------------------------
+| Integrity & Attribution Verification
+|--------------------------------------------------------------------------
+|
+| This block ensures the application's core metadata is intact and that
+| the original author is properly attributed. Tampering with this
+| metadata will prevent the application from booting.
+*/
+(function () {
+    $authorIdentity = 'Reas Vyn';
+    $path = dirname(__DIR__) . '/app_info.json';
+
+    if (! file_exists($path)) {
+        header('HTTP/1.1 403 Forbidden');
+        die("Critical Error: Core system metadata (app_info.json) is missing.");
+    }
+
+    $info = json_decode(file_get_contents($path), true);
+    if (($info['author']['name'] ?? null) !== $authorIdentity) {
+        header('HTTP/1.1 403 Forbidden');
+        die("Attribution Error: Unauthorized author modification detected. This system requires attribution to [{$authorIdentity}].");
+    }
+})();
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

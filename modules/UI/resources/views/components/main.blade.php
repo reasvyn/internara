@@ -1,4 +1,9 @@
-@props(['sidebar' => null, 'actions' => null, 'footer' => null])
+@props([
+    'sidebar' => null,
+    'actions' => null, 
+    'footer' => null,
+    'aos' => null,
+])
 
 <x-mary-main {{ $attributes }}>
     @if($sidebar)
@@ -20,6 +25,8 @@
     @endif
 
     <x-slot name="content">
-        {{ $slot }}
+        <div :data-aos="$aos">
+            {{ $slot }}
+        </div>
     </x-slot>
 </x-mary-main>

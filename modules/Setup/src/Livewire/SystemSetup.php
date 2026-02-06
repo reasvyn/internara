@@ -51,7 +51,7 @@ class SystemSetup extends Component
 
         $this->requireSetupAccess();
 
-        $this->mail_from_name = setting('brand_name', 'Internara');
+        $this->mail_from_name = setting('brand_name', setting('app_name'));
     }
 
     /**
@@ -123,7 +123,7 @@ class SystemSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.system-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.system.title').' | '.setting('site_title', 'Internara'),
+            'title' => __('setup::wizard.system.title').' | '.setting('site_title', setting('app_name')),
         ]);
     }
 }

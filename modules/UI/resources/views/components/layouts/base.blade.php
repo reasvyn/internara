@@ -8,7 +8,7 @@
 
     <body class="max-w-screen size-full overflow-x-hidden font-sans antialiased">
         <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-base-100 focus:text-primary">
-            {{ __('Skip to content') }}
+            {{ __('ui::common.skip_to_content') }}
         </a>
 
         <!-- Page Content --->
@@ -28,7 +28,7 @@
                     
                     Livewire.dispatch('toast', {
                         type: payload.type || 'info',
-                        title: payload.type === 'error' ? '{{ __("Error") }}' : '{{ __("Success") }}',
+                        title: payload.type === 'error' ? '{{ __("ui::common.error") }}' : '{{ __("ui::common.success") }}',
                         description: payload.message,
                         icon: payload.type === 'error' ? 'tabler.alert-circle' : 'tabler.check'
                     });

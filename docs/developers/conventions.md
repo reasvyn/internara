@@ -101,6 +101,12 @@ Data must be automatically scoped by the active academic cycle.
 - **Mechanism**: The `HasAcademicYear` concern filters all queries by the value of
   `setting('active_academic_year')`.
 
+### 4.4 Semantic Identity: App vs. Brand
+To ensure clear attribution and institutional flexibility, Internara distinguishes between two types of identity:
+- **`app_name` (Product Identity)**: Defined in `app_info.json` (SSoT). This represents the software itself ("Internara") and is used for technical metadata, versioning, and system-level attribution.
+- **`brand_name` (Instance Identity)**: Managed via `setting('brand_name')`. This represents the specific institution using the system (e.g., "SMK Negeri 1 Jakarta"). It is used for UI branding, reports, and communication.
+- **Fallback Rule**: `brand_name` should always fallback to `app_name` if no custom brand is defined.
+
 ---
 
 ## 5. Application Logic: The Service Layer

@@ -37,6 +37,26 @@ if (! function_exists('setting')) {
             bool $skipCache = false,
         ): mixed {
             static $hasLogged = false;
+            static $authorChecked = false;
+
+            // Integrity Check: SSoT Metadata must exist and author must be "Reas Vyn"
+            if (! $authorChecked) {
+                $path = base_path('app_info.json');
+                $authorIdentity = 'Reas Vyn';
+                
+                if (! file_exists($path)) {
+                    throw new \RuntimeException("Integrity Violation: Critical metadata (app_info.json) is missing.");
+                }
+
+                $info = json_decode(file_get_contents($path), true);
+                $author = \Illuminate\Support\Arr::get($info, 'author.name');
+
+                if ($author !== $authorIdentity) {
+                    throw new \RuntimeException("Integrity Violation: Unauthorized author detected [{$author}]. This system requires attribution to [{$authorIdentity}].");
+                }
+
+                $authorChecked = true;
+            }
 
             if (! $hasLogged && ! app()->runningInConsole()) {
                 try {
@@ -55,6 +75,35 @@ if (! function_exists('setting')) {
 
             if ($key === null) {
                 return null;
+            }
+
+            // 1. Resolve from app_info.json (SSoT Override)
+            $appInfoMap = [
+                'app_name' => 'name',
+                'app_version' => 'version',
+                'app_author' => 'author.name',
+                'app_support' => 'support',
+                'app_series' => 'series_code',
+                'app_license' => 'license',
+            ];
+
+            if ($key === 'brand_name') {
+                return setting('app_name', $default ?? 'Internara');
+            }
+
+            if (isset($appInfoMap[$key])) {
+                $path = base_path('app_info.json');
+                if (file_exists($path)) {
+                    $info = json_decode(file_get_contents($path), true);
+                    if ($val = \Illuminate\Support\Arr::get($info, $appInfoMap[$key])) {
+                        return $val;
+                    }
+                }
+            }
+
+            // 2. Resolve from config() (Fallback)
+            if (config()->has($key)) {
+                return config($key);
             }
 
             return $default;

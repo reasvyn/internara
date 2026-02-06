@@ -1,1 +1,1 @@
-<x-mary-icon {{ $attributes }} />
+<x-mary-icon {{ $attributes->merge(['aria-hidden' => 'true']) }} />

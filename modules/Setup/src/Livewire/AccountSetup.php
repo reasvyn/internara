@@ -59,7 +59,7 @@ class AccountSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.account-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.account.title').' | '.setting('site_title', 'Internara'),
+            'title' => __('setup::wizard.account.title').' | '.setting('site_title', setting('app_name')),
         ]);
     }
 }

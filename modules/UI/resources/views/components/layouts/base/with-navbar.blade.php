@@ -1,7 +1,7 @@
 @props(['title' => null, 'footer' => null])
 
 <x-ui::layouts.base :$title>
-    <div class="flex flex-1 flex-col">
+    <div class="flex flex-1 flex-col" data-aos="fade-in">
         <x-ui::navbar sticky full-width />
 
         <x-ui::main with-nav full-width>

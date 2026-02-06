@@ -63,7 +63,7 @@
 <body>
     <div class="header">
         <h1>Official Internship Transcript</h1>
-        <p>Internara Internship Management System</p>
+        <p>{{ setting('brand_name', setting('app_name')) }}</p>
     </div>
 
     <table class="info-table">

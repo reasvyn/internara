@@ -16,7 +16,7 @@
 <body>
     <div class="header">
         <div class="title">{{ $title }}</div>
-        <div>Internara Internship Management System</div>
+        <div>{{ setting('brand_name', setting('app_name')) }}</div>
     </div>
 
     <div class="content">
