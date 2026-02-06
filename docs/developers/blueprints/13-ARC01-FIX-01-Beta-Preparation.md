@@ -14,14 +14,16 @@
 ## 2. Logic & Architecture (Systemic View)
 
 ### 2.1 Capabilities
-- **Security Hardening**: Implementation of multi-layered defense (Turnstile Captcha, Honeypot, Signed URLs, Rate Limiting).
-- **Data Privacy**: Systemic encryption of PII ( NISN, NIP, Phone, Address, Bio) at rest and automated data masking in forensic logs.
+- **Security & Integrity Hardening**: Implementation of multi-layered defense (Turnstile Captcha, Honeypot, Signed URLs, Rate Limiting) and a robust **Attribution Guard** to verify author integrity at the Bootstrap, Service, and Helper levels.
+- **Data Privacy**: Systemic encryption of PII (NISN, NIP, Phone, Address, Bio) at rest and automated data masking in forensic logs.
 - **Robust Installation**: Port-aware CLI bootstrapping and safe audit reporting for environment initialization.
 - **Memory-Efficient Testing**: Orchestrated sequential test execution to prevent memory exhaustion in constrained environments.
+- **Cinematic UX Infrastructure**: Integration of AOS (Animate On Scroll) and a custom **Native Toast Engine** for a premium, dependency-free notification experience.
 
 ### 2.2 Service Contracts
 - **PasswordRule**: Adaptive rule class enforcing environment-aware complexity logic.
 - **Masker**: Utility for redacting sensitive identifiers in UI and logs.
+- **Notifier**: Unified contract for dispatching real-time and session-flashed UI feedback.
 
 ### 2.3 Data Architecture
 - **Encryption Invariant**: Application of Eloquent `encrypted` casts for targeted PII fields in the `Profile` model.
@@ -36,8 +38,9 @@
 - **Link Integrity**: Use of expiring signed URLs for high-privilege administrative actions and setup initialization.
 
 ### 3.2 Interface Design
-- **Identity Consistency**: Restoration of branding visibility in navigation components and layout headers.
-- **Standardized Metadata**: Universal adoption of the title/layout pattern in reactive components.
+- **Tiered Layout System**: Implementation of a three-tiered structural hierarchy (Base, Page, and Component Layouts) to ensure systemic visual coherence.
+- **Dynamic Identity**: Decoupling of **Product Identity** (`app_name`) from **Instance Identity** (`brand_name`) with smart fallback orchestration.
+- **Cinematic Motion**: System-wide support for AOS animations in all core layout tiers.
 
 ### 3.3 Invariants
 - **Privacy Masking**: Role-dependent visibility of sensitive strings in administrative views via the `Masker` utility.
@@ -47,6 +50,7 @@
 ## 4. Documentation Strategy (Knowledge View)
 
 ### 4.1 Engineering Record
+- **Technical Debt Formalization**: Documentation of the **Attribution & Integrity Protection** strategy as a core architectural constraint.
 - **Structural Transformation**: Consolidation of redundant technical documents into authoritative guides.
 - **Standardization**: Universal transition of index files to `README.md`.
 - **Security Protocols**: Formalization of **[Security and Privacy Protocols](../security.md)**.
@@ -61,6 +65,8 @@
 
 ### 5.1 Realized Outcomes
 - **Multi-Layered Defense**: Verified Turnstile integration in Auth components and Honeypot in layouts.
+- **Attribution Guard**: Confirmed immediate application halt upon tampering with `app_info.json` or author metadata.
+- **Native Toast Engine**: Verified robust notification delivery across Livewire events and standard redirects.
 - **PII Encryption**: Confirmed `encrypted` casts on `phone`, `address`, and `bio` in the `Profile` model.
 - **Test Orchestration**: `app:test` successfully executes modular suites sequentially, capping memory usage.
 - **Privacy Masking**: `Masker` utility correctly redacts data in designated sinks.
@@ -78,6 +84,9 @@ A Blueprint is only considered fulfilled when the following criteria are met:
 - **Acceptance Criteria**: 
     - `app:install` generates valid, port-aware Signed URLs.
     - Identity forms protected by Turnstile/Honeypot; Rate limiting active on sensitive routes.
+    - Author attribution verified at Bootstrap level; `app_info.json` acts as SSoT for metadata.
+    - Tiered Layout System implemented with AOS motion support.
+    - Native Toast Engine delivers messages across all request contexts.
     - PII fields encrypted in DB; Logs contain masked sensitive data.
     - Zero static analysis violations and clean migration history.
 - **Verification Gate**: 100% pass rate in `composer test` (Modular Sequential).
