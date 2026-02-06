@@ -42,7 +42,8 @@
         <div class="mt-4 flex flex-col gap-8">
             <div class="w-full space-y-2">
                 <x-ui::button
-                    class="btn-primary w-full"
+                    priority="primary"
+                    class="w-full"
                     label="Daftar Sekarang"
                     type="submit"
                     spinner

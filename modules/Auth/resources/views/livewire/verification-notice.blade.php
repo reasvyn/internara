@@ -1,29 +1,25 @@
-<div class="container mx-auto mt-10">
-    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Verify Your Email Address</h2>
-
+<x-ui::card
+    class="w-full max-w-lg text-center"
+    title="{{ __('Verify Your Email') }}"
+    subtitle="{{ __('Check your inbox for a verification link.') }}"
+>
+    <div class="flex flex-col gap-6">
         @if (session('status'))
-            <div
-                class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                role="alert"
-            >
-                <span class="block sm:inline">{{ session('status') }}</span>
-            </div>
+            <x-ui::alert type="success" :description="session('status')" />
         @endif
 
-        <p class="text-gray-600 mb-6">
-            Before proceeding, please check your email for a verification link.
+        <p class="text-base-content/70">
+            {{ __('Before proceeding, please check your email for a verification link.') }}
         </p>
-        <p class="text-gray-600 mb-6">
-            If you did not receive the email,
-            <a
-                href="#"
-                wire:click.prevent="resend"
-                class="text-blue-500 hover:text-blue-700 font-bold focus:outline-none"
+
+        <div class="text-center text-sm text-base-content/60">
+            {{ __("Didn't receive the email?") }}
+            <button
+                wire:click="resend"
+                class="font-medium text-accent underline hover:text-accent/80"
             >
-                click here to request another
-            </a>
-            .
-        </p>
+                {{ __('Click here to request another') }}
+            </button>
+        </div>
     </div>
-</div>
+</x-ui::card>

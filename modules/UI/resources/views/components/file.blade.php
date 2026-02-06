@@ -6,6 +6,7 @@
     'preview' => [],
     'multiple' => false,
     'hint' => null,
+    'aos' => null,
 ])
 
 @php
@@ -134,6 +135,7 @@
         },
     }"
     {{ $otherAttributes->merge(['class' => 'mb-4']) }}
+    :data-aos="$aos"
 >
     @isset($label)
         <label for="{{ $id }}" class="label mb-1 px-1">

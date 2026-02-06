@@ -3,6 +3,7 @@
     'icon' => null,
     'title' => null,
     'description' => null,
+    'aos' => 'fade-in',
 ])
 
 @php
@@ -21,7 +22,11 @@
     };
 @endphp
 
-<div {{ $attributes->class(['alert shadow-sm border', $alertClasses]) }} role="alert">
+<div 
+    {{ $attributes->class(['alert shadow-sm border', $alertClasses]) }} 
+    role="alert"
+    :data-aos="$aos"
+>
     <x-ui::icon :name="$icon ?? $defaultIcon" class="size-6 shrink-0" />
     
     <div class="flex flex-col gap-1">

@@ -38,7 +38,8 @@
 
             <div class="mt-4 flex w-full flex-col gap-8">
                 <x-ui::button
-                    class="btn-primary w-full"
+                    priority="primary"
+                    class="w-full"
                     label="Masuk Sekarang"
                     type="submit"
                     spinner

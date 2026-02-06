@@ -1,9 +1,10 @@
 @props([
     'label' => null,
     'hint' => null,
+    'aos' => null,
 ])
 
-<div class="form-control">
+<div class="form-control" :data-aos="$aos">
     <label class="label cursor-pointer justify-start gap-4 min-h-[2.75rem]">
         <x-mary-checkbox 
             {{ $attributes->merge(['class' => 'checkbox checkbox-accent']) }} 

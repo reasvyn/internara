@@ -7,10 +7,10 @@
 
 @php
     $priorityClasses = match ($priority) {
-        'primary' => 'btn-accent text-white',
+        'primary' => 'btn-accent text-accent-content',
         'secondary' => 'btn-outline border-base-content/20 text-base-content/80',
         'tertiary' => 'btn-ghost text-base-content/70',
-        default => 'btn-outline',
+        default => 'btn-outline text-base-content/80',
     };
 @endphp
 

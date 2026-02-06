@@ -3,6 +3,7 @@
     'title' => null,
     'subtitle' => null,
     'size' => 'w-12',
+    'aos' => null,
 ])
 
 <x-mary-avatar 
@@ -11,6 +12,7 @@
     :title="$title"
     :subtitle="$subtitle"
     :class="$size"
+    :data-aos="$aos"
 >
     @if(!$image && $title)
         <x-slot:placeholder>
