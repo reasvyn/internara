@@ -8,13 +8,15 @@ This index centralizes the formal technical records for the Internara project.
 
 - **[System Requirements Specification](specs.md)**: **SSoT** - ISO/IEC 29148 requirements baseline.
 - **[Architecture Description](architecture.md)**: ISO/IEC 42010 structural views and decomposition.
-- **[Design Blueprints](blueprints/README.md)**: Strategic design records and active architectural plans.
+- **[Design Blueprints](blueprints/README.md)**: Strategic design records and active architectural
+  plans.
 - **[Version History](../pubs/releases/README.md)**: Release baselines and change logs.
 
 ## 2. Engineering Standards
 
 - **[Coding Conventions](conventions.md)**: Naming, namespace rules, and exception handling.
-- **[Orchestration Patterns](patterns.md)**: Service orchestration, DTOs, Events, and Data Integrity.
+- **[Orchestration Patterns](patterns.md)**: Service orchestration, DTOs, Events, and Data
+  Integrity.
 - **[Security & Privacy](security.md)**: System hardening and encryption protocols.
 - **[Access Control (RBAC)](access-control.md)**: Role and Permission management standards.
 - **[Code Quality](quality.md)**: ISO 25010 metrics and static analysis gates.
@@ -38,4 +40,5 @@ This index centralizes the formal technical records for the Internara project.
 
 ---
 
-_This registry is for engineering use. Stakeholder guides are available in the **[Wiki](../wiki/README.md)**._
+_This registry is for engineering use. Stakeholder guides are available in the
+**[Wiki](../wiki/README.md)**._

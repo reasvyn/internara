@@ -6,9 +6,8 @@ description). It defines the architectural viewpoints, structural frameworks, an
 required to ensure system integrity, maintainability, and modularity.
 
 > **Governance Mandate:** This architecture implements the technical requirements mandated by the
-> authoritative **[System Requirements Specification](specs.md)**. All
-> architectural decisions demonstrate traceability to the STRS and System Requirements Specification
-> requirements.
+> authoritative **[System Requirements Specification](specs.md)**. All architectural decisions
+> demonstrate traceability to the STRS and System Requirements Specification requirements.
 
 ---
 
@@ -101,7 +100,6 @@ _This Architecture Description establishes the structural baseline for Internara
 modification must be validated against these viewpoints to ensure the long-term maintainability and
 integrity of the system._
 
-
 ---
 
 # Foundational Module Philosophy: System Decomposition
@@ -112,8 +110,8 @@ specialization and **Portability Invariants** to ensure architectural resilience
 systemic entropy.
 
 > **SSoT Alignment:** This hierarchy implements the structural requirements defined in the
-> **[Internara Specs](specs.md)**, specifically the mandates for centralized
-> administration and standardized multi-role user interfaces.
+> **[Internara Specs](specs.md)**, specifically the mandates for centralized administration and
+> standardized multi-role user interfaces.
 
 ---
 

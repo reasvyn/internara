@@ -25,9 +25,7 @@ class AppInfoWidget extends Component
     public function mount(): void
     {
         $path = base_path('app_info.json');
-        $this->appInfo = file_exists($path)
-            ? json_decode(file_get_contents($path), true)
-            : [];
+        $this->appInfo = file_exists($path) ? json_decode(file_get_contents($path), true) : [];
     }
 
     /**

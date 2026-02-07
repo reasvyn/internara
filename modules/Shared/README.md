@@ -4,7 +4,9 @@ The `Shared` module serves as the technical foundation of the Internara modular 
 provides business-agnostic infrastructure, technical utilities, and standardized behavioral concerns
 that are utilized across all domain modules.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
@@ -37,7 +39,14 @@ Resides in `src/Support/`. Contains stateless tools for technical operations.
 - **`Formatter`**: Normalizes system strings, paths, and namespaces.
 - **`Masker`**: Redacts sensitive data (PII) such as emails and phone numbers to satisfy privacy
   mandates.
-- **`helpers.php`**: Global procedural functions for module health and status checks.
+
+### 2.3 Functional Layer (Procedural Helpers)
+
+Resides in `src/Functions/`. Contains global procedural functions for module health and status
+checks.
+
+- **`is_active_module.php`**: Check if a module is currently enabled.
+- **`shared_static_url.php`**: Resolve absolute URLs for shared static assets.
 
 ### 2.3 Persistence Layer (Model Concerns)
 

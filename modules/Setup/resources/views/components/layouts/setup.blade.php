@@ -1,7 +1,7 @@
 @props(['title' => null])
 
 <x-ui::layouts.base :$title>
-    <x-ui::nav {{ $attributes }}>
+    <x-ui::nav {{ $attributes->merge(['class' => 'bg-base-100/80 backdrop-blur-md border-b border-base-200']) }}>
         <x-slot:brand>
             @isset($hamburger)
                 {{ $hamburger }}
@@ -14,9 +14,11 @@
                 <x-ui::brand />
             @endif
 
-            <div class="badge badge-ghost ml-2 text-xs font-medium text-gray-500">
-                {{ 'v' . setting('app_version') }}
-            </div>
+            <x-ui::badge 
+                :value="'v' . setting('app_version', '0.1.0')" 
+                priority="metadata" 
+                class="ml-2" 
+            />
         </x-slot>
 
         {{-- Right side actions --}}
@@ -25,12 +27,10 @@
         </x-slot>
     </x-ui::nav>
 
-    <main class="flex flex-1 flex-col items-center justify-center" data-aos="fade-up">
+    <main id="main-content" class="flex flex-1 flex-col items-center justify-center p-4" data-aos="fade-up">
         <x-honeypot />
         {{ $slot }}
     </main>
 
-    <footer class="border-base-200 mt-auto border-t">
-        <x-ui::footer />
-    </footer>
+    <x-ui::footer class="border-t border-base-200" />
 </x-ui::layouts.base>

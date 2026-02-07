@@ -40,9 +40,7 @@ class Password implements ValidationRule
      */
     public static function medium(): BasePassword
     {
-        return BasePassword::min(8)
-            ->letters()
-            ->numbers();
+        return BasePassword::min(8)->letters()->numbers();
     }
 
     /**
@@ -50,12 +48,7 @@ class Password implements ValidationRule
      */
     public static function high(): BasePassword
     {
-        return BasePassword::min(12)
-            ->letters()
-            ->mixedCase()
-            ->numbers()
-            ->symbols()
-            ->uncompromised();
+        return BasePassword::min(12)->letters()->mixedCase()->numbers()->symbols()->uncompromised();
     }
 
     /**

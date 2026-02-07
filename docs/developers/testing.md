@@ -6,9 +6,9 @@ Validation) and **ISO/IEC 29119** (Software Testing). It defines the methodologi
 technical correctness and requirement fulfillment.
 
 > **Governance Mandate:** Testing is the authoritative mechanism for validating fulfillment of the
-> **[System Requirements Specification](specs.md)**. All software artifacts must demonstrate 
-> fulfillment of the requirements defined in the SSoT. Construction is incomplete without a 
-> formal verification pass.
+> **[System Requirements Specification](specs.md)**. All software artifacts must demonstrate
+> fulfillment of the requirements defined in the SSoT. Construction is incomplete without a formal
+> verification pass.
 
 ---
 
@@ -16,47 +16,94 @@ technical correctness and requirement fulfillment.
 
 Internara adopts a **Spec-Driven**, **TDD-First**, and **Isolation-Aware** verification strategy.
 
-- **Traceability**: Every test suite must be traceable to a specific requirement in the System
-  Requirements Specification or an architectural invariant in the Architecture Description.
+- **Traceability**: Every test suite must be traceable to a specific requirement in the SyRS or an
+  architectural invariant in the Architecture Description.
 - **Independence**: Verification artifacts must verify domain behavior while respecting the **Strict
-  Isolation** invariants. Tests should interact with external domains exclusively via their **Service
-  Contracts**.
-- **Minimized Mocking**: To reduce the risk of "mock-gap" bugs and ensure realistic verification, the
-  use of real **Service Contracts** is preferred over `Mockery` for cross-module integration.
+  Isolation** invariants. Tests should interact with external domains exclusively via their
+  **Service Contracts**.
+- **Minimized Mocking**: To reduce the risk of "mock-gap" bugs and ensure realistic verification,
+  the use of real **Service Contracts** is preferred over `Mockery` for cross-module integration.
   Mocking should be reserved for high-overhead infrastructure (External APIs, Mail, etc.).
 
 ---
 
-## 2. Verification Framework: Pest PHP v4
+## 2. Infrastructure & Configuration
 
-Pest is the foundational tool for our **Verification & Validation (V&V)** activities.
+The testing environment is orchestrated through three core files that ensure consistency and modular
+scalability.
 
-- **Traceability**: Enables mapping of tests to specific SyRS requirements.
-- **Velocity**: Support for parallel execution via the optimized verification suite.
-- **Architectural Guard**: Enforces modular boundaries via Architecture (Arch) Testing.
+### 2.1 `phpunit.xml` (Environment Blueprint)
+
+The **PHPUnit Configuration** defines the global testing environment, including database drivers
+(SQLite in-memory), memory limits, and the discovery paths for modular test suites.
+
+- **Role**: Bootstraps the testing framework and manages environment variables.
+
+### 2.2 `tests/Pest.php` (Verification Scope)
+
+The **Pest Configuration** defines the "rules of engagement" for all tests. It configures the base
+test classes, traits (e.g., `RefreshDatabase`), and the file paths where Pest should be active.
+
+- **Role**: Standardizes test execution across root and modular boundaries.
+
+### 2.3 `tests/TestCase.php` (Aggressive Cleanup)
+
+The **Base Test Case** implements strict memory management and lifecycle hooks to ensure stability
+in constrained environments.
+
+- **Role**: Enforces the **Aggressive Lifecycle Cleanup** mandated in section 6.1.
 
 ---
 
 ## 3. Testing Hierarchy (The V-Model View)
 
-| Level            | Focus                 | Objective                               | Implementation                  |
-| :--------------- | :-------------------- | :-------------------------------------- | :------------------------------ |
-| **Unit**         | Component Isolation   | Verify logic in mathematical isolation. | Pest (Mocking internal deps)    |
-| **Integration**  | Service Contracts     | Verify inter-module communication.      | Contracts & Public Concrete     |
-| **System**       | End-to-End User Flow  | Validate fulfillment of user stories.   | Feature tests (HTTP/Livewire)   |
-| **Architecture** | Structural Invariants | Enforce modular isolation policies.     | Pest Arch Plugin                |
+| Level            | Focus                 | Objective                               | Implementation                |
+| :--------------- | :-------------------- | :-------------------------------------- | :---------------------------- |
+| **Unit**         | Component Isolation   | Verify logic in mathematical isolation. | Pest (Mocking internal deps)  |
+| **Integration**  | Service Contracts     | Verify inter-module communication.      | Contracts & Public Concrete   |
+| **System**       | End-to-End User Flow  | Validate fulfillment of user stories.   | Feature tests (HTTP/Livewire) |
+| **Browser**      | Visual & UX Integrity | Verify UI/UX and frontend behavior.     | Pest Browser (Playwright)     |
+| **Architecture** | Structural Invariants | Enforce modular isolation policies.     | Pest Arch Plugin              |
 
 ### 3.1 Structural Placement
+
+To ensure high discoverability and organization, the directory structure within the `tests` folder
+MUST mirror the internal layer structure of the module.
+
 - **Unit Verification**: Testing atomic logic (Services, Concerns, Enums) in isolation.
-    - **Location**: `modules/{Module}/tests/Unit/{Layer}/`.
+    - **Location**: `modules/{Module}/tests/Unit/{Layer}/`
 - **Feature Validation**: Testing integrated user stories and domain flows.
-    - **Location**: `modules/{Module}/tests/Feature/{Layer}/`.
+    - **Location**: `modules/{Module}/tests/Feature/{Layer}/`
+- **Browser Validation**: Verifying frontend behavior, UI motion, and UX requirements.
+    - **Location**: `modules/{Module}/tests/Browser/{Layer}/` (e.g., `Browser/Components/`,
+      `Browser/Layouts/`)
 
 ---
 
-## 4. Mandatory Testing Patterns
+## 4. Specialized Testing Guides
 
-### 4.1 Architecture Invariants (Isolation Enforcement)
+For detailed technical implementation of specific testing patterns, refer to the following
+authoritative guides:
+
+- **[Unit Tests](tests/pestphp/writing-tests.md)**: Guidelines for testing atomic units of logic.
+- **[Feature Tests](tests/pestphp/writing-tests.md)**: Patterns for verifying integrated domain
+  flows.
+- **[HTTP Tests](tests/http-tests.md)**: Protocols for verifying API endpoints and controller
+  responses.
+- **[Console Tests](tests/console-tests.md)**: Verification of Artisan commands and CLI output.
+- **[Browser Tests](tests/pestphp/browser-testing.md)**: High-fidelity verification of frontend and
+  UX using Playwright.
+- **[Database Tests](tests/database-testing.md)**: Strategies for verifying persistence and complex
+  query logic.
+- **[Mocking Standards](tests/mocking.md)**: Rules for when and how to utilize `Mockery` or Pest's
+  native mocking.
+- **[Livewire Tests](tests/livewire-tests.md)**: Specialized verification for reactive components.
+
+---
+
+## 5. Mandatory Testing Patterns
+
+### 5.1 Architecture Invariants (Isolation Enforcement)
 
 To maintain modular integrity, we utilize **Architecture Testing** to prevent unauthorized
 cross-module coupling.
@@ -68,51 +115,54 @@ arch('module isolation')
     ->because('Domain modules must interact with external models via Service Contracts.');
 ```
 
-### 4.2 Localization & i18n Validation
+### 5.2 Localization & i18n Validation
 
 User-facing artifacts must be verified across all supported locales (`id`, `en`) to satisfy
 **[SYRS-NF-403]**.
 
 ```php
 test('it returns localized verification error', function () {
-    app()->setLocale('id');
-    expect(__('validation.required', ['attribute' => 'nama']))->toBe('nama wajib diisi.');
+    app()->setLocale('en');
+    expect(__('validation.required', ['attribute' => 'name']))->toBe('The name field is required.');
 });
 ```
 
-### 4.3 Authorization (RBAC) Verification
-
-Access rights must be verified for every role defined in the System Requirements Specification to
-satisfy **[SYRS-NF-502]**.
-
 ---
 
-## 5. Execution & Quality Gates
+## 6. Execution & Quality Gates
 
-The following command is the **Mandatory Verification Gate** and must be executed in full before any
-repository synchronization:
+Verification is the primary safeguard against systemic regression. The following gates are mandatory
+for any baseline promotion:
+
+- **Pass Criteria**: 100% success rate on all test suites across all modules.
+- **Coverage Requirement**: Minimum 90% behavioral coverage for all Domain and Core modules.
+- **Static Analysis**: Zero violations in `composer lint` (Laravel Pint).
+
+The following commands are the **Mandatory Verification Gates**:
+
+- **Automated Testing**: Adherence to modular stability is mandatory. Run `composer test` prior to
+  any repository synchronization.
+- **Full System Verification**: Orchestrated sequential execution via `php artisan app:test`.
 
 ```bash
 # Full System Verification
 composer test
 ```
 
-- **Pass Criteria**: 100% success rate on all test suites.
-- **Coverage Requirement**: Minimum 90% behavioral coverage for domain modules.
-
----
-
-## 6. Resource Optimization & Memory Management
-
-To ensure stability in memory-constrained environments, the following protocols are mandatory.
-
 ### 6.1 Aggressive Lifecycle Cleanup
-- **Implementation**: The `tearDown()` method must invoke `$this->app->flush()` and
-  `gc_collect_cycles()`.
-- **Mocking**: Minimize the use of `Mockery::mock` for large service classes.
+
+To ensure stability in memory-constrained environments, verification artifacts must implement strict
+resource management.
+
+- **Implementation**: The `tearDown()` method in `TestCase.php` must invoke `$this->app->flush()`
+  and `gc_collect_cycles()` to clear the service container and trigger garbage collection.
+- **Mocking**: Minimize the use of complex `Mockery` objects for large-scale integration tests.
 
 ### 6.2 The `app:test` Orchestrator
-Developers should utilize the `php artisan app:test` command for sequential module execution. It ensures that the memory heap is reset between module runs, effectively capping memory usage to the requirements of a single module.
+
+Developers should utilize the `php artisan app:test` command for sequential module execution. It
+ensures that the memory heap is reset between module runs, effectively capping memory usage to the
+requirements of a single module.
 
 ---
 

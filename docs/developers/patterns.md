@@ -1,9 +1,9 @@
 # Logic Orchestration & Data Transfer Patterns
 
 This document defines the advanced **Process Orchestration** patterns for the Internara project,
-consistent with the **[Architecture Description](architecture.md)**. It formalizes the
-use of **Data Transfer Objects (DTOs)** and Service orchestration to manage complex business logic
-while maintaining modular isolation.
+consistent with the **[Architecture Description](architecture.md)**. It formalizes the use of **Data
+Transfer Objects (DTOs)** and Service orchestration to manage complex business logic while
+maintaining modular isolation.
 
 ---
 
@@ -84,9 +84,9 @@ semantic methods to preserve the **Single Source of Truth**.
 # Cross-Module Event Governance
 
 This document formalizes the **Asynchronous Orchestration** protocols for the Internara project,
-standardized according to the **[Architecture Description](architecture.md)** Process
-View. It defines the standards for utilizing events and listeners to handle side-effects across
-modular boundaries.
+standardized according to the **[Architecture Description](architecture.md)** Process View. It
+defines the standards for utilizing events and listeners to handle side-effects across modular
+boundaries.
 
 ---
 
@@ -157,8 +157,7 @@ required to maintain data consistency in a modular monolith environment where ph
 constraints across module boundaries are prohibited.
 
 > **Governance Mandate:** All service-layer persistence logic must demonstrate adherence to these
-> integrity protocols to satisfy the
-> **[Code Quality Standardization](quality.md)**.
+> integrity protocols to satisfy the **[Code Quality Standardization](quality.md)**.
 
 ---
 
@@ -241,12 +240,13 @@ and industry engagement.
 1.  **Activity Execution**: Student performs tasks at the internship placement.
 2.  **Logging & Claiming**: Student records a **Journal Entry** and claims specific **Competencies**
     (Skills) mastered during the day.
-3.  **Presence Verification**: Student performs **Attendance Check-in/out** to provide temporal evidence.
-4.  **Supervisory Audit**: 
+3.  **Presence Verification**: Student performs **Attendance Check-in/out** to provide temporal
+    evidence.
+4.  **Supervisory Audit**:
     - **Mentor** provides behavioral feedback and validates the journal entry.
     - **Teacher** performs periodic visits and verifies competency attainment.
-5.  **Telemetry Synthesis**: The system aggregates these interactions into the **Intelligence Dashboard**
-    and calculates the **Participation Score**.
+5.  **Telemetry Synthesis**: The system aggregates these interactions into the **Intelligence
+    Dashboard** and calculates the **Participation Score**.
 
 ## 2. Integrity Invariants
 
@@ -261,15 +261,15 @@ and industry engagement.
 
 ## 3. Implementation Standards
 
-- **Isolation**: Domain modules (Journal, Attendance, Mentor) communicate via Service Contracts
-  to update the assessment baseline.
+- **Isolation**: Domain modules (Journal, Attendance, Mentor) communicate via Service Contracts to
+  update the assessment baseline.
 - **Auditability**: Every state transition in the loop (Submitted -> Approved/Rejected) is recorded
   in the forensic audit trail.
 
 ---
 
-_Standardizing the instructional loop ensures a rigorous and transparent vocational training experience._
-
+_Standardizing the instructional loop ensures a rigorous and transparent vocational training
+experience._
 
 ---
 
@@ -285,7 +285,8 @@ Internara ecosystem.
 To allow for institutional flexibility, Internara utilizes a decoupled **Assignment** module that
 manages student tasks independently of the core internship program.
 
-- **Assignment Templates**: Administrators define `AssignmentTypes` (e.g., "Final Report", "Logbook Summary").
+- **Assignment Templates**: Administrators define `AssignmentTypes` (e.g., "Final Report", "Logbook
+  Summary").
 - **Automatic Instantiation**: When an internship program is created, the system automatically
   instantiates assignments for that program based on the current active types.
 
@@ -293,9 +294,9 @@ manages student tasks independently of the core internship program.
 
 A student's internship lifecycle is governed by the **Assignment Fulfillment Invariant**.
 
-- **Certification Gating**: A student's program status cannot be transitioned to `completed`
-  until every mandatory assignment linked to their program has a **Verified** submission.
-- **Verification Loop**: 
+- **Certification Gating**: A student's program status cannot be transitioned to `completed` until
+  every mandatory assignment linked to their program has a **Verified** submission.
+- **Verification Loop**:
     1. Student uploads file (PDF/PPT/DOC).
     2. Supervisor (Teacher/Mentor) reviews and verifies the submission.
     3. The `AssignmentService` recalculates the fulfillment status for the registration.
@@ -304,16 +305,15 @@ A student's internship lifecycle is governed by the **Assignment Fulfillment Inv
 
 ## 3. Implementation Standards
 
-- **Cross-Module Verification**: The `Internship` module verifies graduation readiness by
-  injecting the `AssignmentService` contract and invoking `isFulfillmentComplete()`.
-- **Status Auditing**: Every submission transition (Submitted -> Verified/Rejected) must be
-  recorded in the `ActivityLog`.
+- **Cross-Module Verification**: The `Internship` module verifies graduation readiness by injecting
+  the `AssignmentService` contract and invoking `isFulfillmentComplete()`.
+- **Status Auditing**: Every submission transition (Submitted -> Verified/Rejected) must be recorded
+  in the `ActivityLog`.
 
 ---
 
 _Utilizing dynamic task fulfillment ensures that Internara can adapt to diverse school policies
 without requiring structural code changes._
-
 
 ---
 
@@ -338,8 +338,8 @@ interacts with **Data Providers** defined in domain modules.
 1.  **Registry**: Domain modules register their Data Providers in the `Report` module's registry.
 2.  **Request**: The `Report` module captures user filters and validates them against the provider's
     rules.
-3.  **Synthesis**: The engine retrieves data from the provider and passes it to the designated
-    Blade template.
+3.  **Synthesis**: The engine retrieves data from the provider and passes it to the designated Blade
+    template.
 
 ---
 
@@ -438,14 +438,13 @@ By default, the final compliance score is a simple weighted average:
 - **Attendance**: 50%
 - **Journaling**: 50%
 
-**Formula**:
-`Final Score = (Attendance % * 0.5) + (Journal % * 0.5)`
+**Formula**: `Final Score = (Attendance % * 0.5) + (Journal % * 0.5)`
 
 ### 2.2 Participation Capping
 
 To maintain data integrity, scores are capped at 100%. If a student logs more entries than required
-working days (due to overtime or makeup tasks), the extra entries contribute to qualitative
-merit but do not exceed the 100% participation threshold.
+working days (due to overtime or makeup tasks), the extra entries contribute to qualitative merit
+but do not exceed the 100% participation threshold.
 
 ---
 
@@ -470,6 +469,7 @@ Internara project.
 Internara distinguishes between transient UI feedback and persistent/external notifications.
 
 ### 1.1 UI Feedback (Transient)
+
 Used for immediate response to a user action (e.g., "Record saved successfully").
 
 - **Path**: Dispatched via the `Notifier` service contract.
@@ -477,10 +477,12 @@ Used for immediate response to a user action (e.g., "Record saved successfully")
 - **Service**: `Modules\Notification\Contracts\Notifier`.
 
 ### 1.2 System & User Notifications (Persistent/External)
-Used for formal communication or asynchronous alerts (e.g., "New internship assignment", "Registration approved").
+
+Used for formal communication or asynchronous alerts (e.g., "New internship assignment",
+"Registration approved").
 
 - **Path**: Dispatched via the `NotificationService` contract.
-- **Channels**: 
+- **Channels**:
     - **System**: Stored in the `notifications` database table.
     - **User**: Sent via external channels like **Email**.
 - **Service**: `Modules\Notification\Services\Contracts\NotificationService`.

@@ -43,16 +43,20 @@ if (! function_exists('setting')) {
             if (! $authorChecked) {
                 $path = base_path('app_info.json');
                 $authorIdentity = 'Reas Vyn';
-                
+
                 if (! file_exists($path)) {
-                    throw new \RuntimeException("Integrity Violation: Critical metadata (app_info.json) is missing.");
+                    throw new \RuntimeException(
+                        'Integrity Violation: Critical metadata (app_info.json) is missing.',
+                    );
                 }
 
                 $info = json_decode(file_get_contents($path), true);
                 $author = \Illuminate\Support\Arr::get($info, 'author.name');
 
                 if ($author !== $authorIdentity) {
-                    throw new \RuntimeException("Integrity Violation: Unauthorized author detected [{$author}]. This system requires attribution to [{$authorIdentity}].");
+                    throw new \RuntimeException(
+                        "Integrity Violation: Unauthorized author detected [{$author}]. This system requires attribution to [{$authorIdentity}].",
+                    );
                 }
 
                 $authorChecked = true;

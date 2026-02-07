@@ -39,7 +39,7 @@ test('may reset the password', function () {
     // access to the database — using the RefreshDatabase trait (even sqlite in memory...)
     $this->actingAs(User::factory()->create());
 
-    $page = vistest('/sign-in') // visit on a real browser...
+    $page = visit('/sign-in') // visit on a real browser...
         ->on()
         ->mobile() // or ->desktop(), ->tablet(), etc...
         ->inDarkMode(); // or ->inLightMode()
@@ -79,7 +79,7 @@ npm install playwright@latest
 npx playwright install
 ```
 
-After, you may use the `vistest()` function anywhere. Finally, running this test is as simple as
+After, you may use the `visit()` function anywhere. Finally, running this test is as simple as
 executing `./vendor/bin/pest` in your terminal. Pest will handle the rest, launching a browser,
 navigating to the page, and performing the actions you specified.
 
@@ -92,7 +92,7 @@ they don't log any console errors.
 ```php
 $routes = ['/', '/about', '/contact'];
 
-vistest($routes)->assertNoSmoke();
+visit($routes)->assertNoSmoke();
 
 // assertNoSmoke() is a shorthand for:
 // - assertNoJavascriptErrors()
@@ -107,7 +107,7 @@ pages and compare them against baseline images, ensuring that your UI remains co
 changes.
 
 ```php
-$pages = vistest(['/', '/about', '/contact']);
+$pages = visit(['/', '/about', '/contact']);
 
 $pages->assertScreenshotMatches();
 ```

@@ -13,10 +13,7 @@ class ReportGeneratedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        protected string $reportTitle,
-        protected string $filePath,
-    ) {}
+    public function __construct(protected string $reportTitle, protected string $filePath) {}
 
     public function via(object $notifiable): array
     {
@@ -35,7 +32,9 @@ class ReportGeneratedNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'message' => __('report::notifications.generated_db_message', ['title' => $this->reportTitle]),
+            'message' => __('report::notifications.generated_db_message', [
+                'title' => $this->reportTitle,
+            ]),
             'file_path' => $this->filePath,
             'type' => 'report',
         ];

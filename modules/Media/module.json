@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Media\\Providers\\MediaServiceProvider"
-    ],
+    "providers": ["Modules\\Media\\Providers\\MediaServiceProvider"],
     "files": []
 }

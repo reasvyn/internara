@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\UI\\Providers\\UIServiceProvider"
-    ],
+    "providers": ["Modules\\UI\\Providers\\UIServiceProvider"],
     "files": []
 }

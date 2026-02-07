@@ -9,4 +9,5 @@ return [
     'internal_error' => 'An internal server error occurred.',
     'validation_failed' => 'The provided data was invalid.',
     'conflict' => 'The request could not be completed due to a conflict with the current state of the resource.',
+    'unexpected_error' => 'An unexpected error occurred. Please try again later.',
 ];

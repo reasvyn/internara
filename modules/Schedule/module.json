@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Schedule\\Providers\\ScheduleServiceProvider"
-    ],
+    "providers": ["Modules\\Schedule\\Providers\\ScheduleServiceProvider"],
     "files": []
 }

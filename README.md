@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/internara/logo.png" alt="Internara Logo" width="128">
+</p>
+
 # Internara
 
 ![Version](https://img.shields.io/badge/version-v0.13.0--alpha-blue?style=flat-square)
@@ -74,10 +78,10 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 ### 🛠 For Developers & Contributors
 
-- **[Architecture Description](docs/developers/architecture.md)**: Deep dive into the
-  modular system invariants.
-- **[Feature Engineering Workflow](docs/developers/lifecycle.md)**: Our systematic
-  implementation process.
+- **[Architecture Description](docs/developers/architecture.md)**: Deep dive into the modular system
+  invariants.
+- **[Feature Engineering Workflow](docs/developers/lifecycle.md)**: Our systematic implementation
+  process.
 - **[Technical Index](docs/developers/README.md)**: Full catalog of engineering standards.
 
 ---
@@ -87,15 +91,14 @@ Internara is engineered for stability, security, and long-term maintainability.
 Internara is currently in **Active Development**. We follow a clear support policy to ensure
 transparency.
 
-| Version     | Readiness | Support     | Current Status |
-| :---------- | :-------- | :---------- | :------------- |
-| **v0.13.x** | Alpha     | Snapshot    | In Progress    |
-| **v0.12.x** | Alpha     | Snapshot    | Released       |
-| **v0.11.x** | Alpha     | Snapshot    | Released       |
-| **v0.10.x** | Alpha     | Snapshot    | Released       |
-| **v0.9.x**  | Alpha     | Snapshot    | Released       |
-| **v0.8.x**  | Alpha     | Snapshot    | Released       |
-| **v0.7.x**  | Alpha     | Snapshot    | Released       |
+| Version     | Readiness | Support Policy | Current Status |
+| :---------- | :-------- | :------------- | :------------- |
+| **v0.13.x** | Alpha     | Experimental   | In Progress    |
+| **v0.12.x** | Alpha     | Experimental   | Released       |
+| **v0.11.x** | Alpha     | Experimental   | Released       |
+| **v0.10.x** | Alpha     | Experimental   | Released       |
+| **v0.9.x**  | Alpha     | Experimental   | Released       |
+| **v0.8.x**  | Alpha     | Experimental   | Released       |
 
 ---
 
@@ -109,4 +112,5 @@ adhere to the **[Code of Conduct](CODE_OF_CONDUCT.md)**.
 
 ---
 
-_**AI Disclosure:** This project utilizes AI for development. Contributors must prioritize security and user privacy in every modification._
+_**AI Disclosure:** This project utilizes AI for development. Contributors must prioritize security
+and user privacy in every modification._

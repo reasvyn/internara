@@ -30,10 +30,16 @@ class UIServiceProvider extends ServiceProvider
         $this->bootModule();
 
         // Register Livewire components
-        \Livewire\Livewire::component('ui::notification-bridge', \Modules\UI\Livewire\NotificationBridge::class);
+        \Livewire\Livewire::component(
+            'ui::notification-bridge',
+            \Modules\UI\Livewire\NotificationBridge::class,
+        );
 
         // Register anonymous components
         Blade::anonymousComponentPath(module_path('UI', 'resources/views/components'), 'ui');
+
+        // Register class-based components
+        Blade::component('ui::components.user-menu', \Modules\UI\View\Components\UserMenu::class);
 
         // Register the custom Blade directive
         Blade::directive('slotRender', function ($expression) {
@@ -61,6 +67,7 @@ class UIServiceProvider extends ServiceProvider
         return [
             SlotManagerContract::class => SlotManager::class,
             SlotRegistryContract::class => SlotRegistry::class,
+            \Modules\UI\Services\Contracts\LocalizationService::class => \Modules\UI\Services\LocalizationService::class,
         ];
     }
 

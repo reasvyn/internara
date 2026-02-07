@@ -65,7 +65,10 @@ class ComplianceService implements Contract
         return [
             'attendance_score' => round($attendanceScore, 2),
             'journal_score' => round($journalScore, 2),
-            'final_score' => round(($attendanceScore * $attendanceWeight) + ($journalScore * $journalWeight), 2),
+            'final_score' => round(
+                $attendanceScore * $attendanceWeight + $journalScore * $journalWeight,
+                2,
+            ),
             'total_days' => $effectiveTotalDays,
             'attended_days' => $attendedDays,
             'approved_journals' => $approvedJournals,

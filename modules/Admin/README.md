@@ -3,7 +3,9 @@
 The `Admin` module is the command center for system administrators. It orchestrates high-level
 system configurations and provides a comprehensive overview of the entire platform.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

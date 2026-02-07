@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Permission\Services;
 
-use Modules\Permission\Contracts\PermissionManager as PermissionManagerContract;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
+use Modules\Permission\Services\Contracts\PermissionManager as PermissionManagerContract;
 
 class PermissionManager implements PermissionManagerContract
 {

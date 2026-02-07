@@ -3,7 +3,9 @@
 The `Assessment` module is the central engine for evaluating student performance and generating
 official credentials. It aggregates data from various sources to produce final grades.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

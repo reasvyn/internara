@@ -48,8 +48,9 @@ class AssignmentService extends EloquentQuery implements Contract
     {
         // 1. Get all mandatory assignments for the program associated with this registration
         // Note: Using app() resolution to avoid circular dependency with RegistrationService
-        $registration = app(\Modules\Internship\Services\Contracts\RegistrationService::class)
-            ->find($registrationId);
+        $registration = app(
+            \Modules\Internship\Services\Contracts\RegistrationService::class,
+        )->find($registrationId);
 
         if (! $registration) {
             return false;
@@ -76,11 +77,9 @@ class AssignmentService extends EloquentQuery implements Contract
                 ->where('assignment_id', $assignment->id)
                 ->where('registration_id', $registrationId)
                 ->whereHas('statuses', function ($query) {
-                    $query->where('name', 'verified')
-                        ->where(function ($q) {
-                            $q->whereNull('expires_at')
-                                ->orWhere('expires_at', '>', now());
-                        });
+                    $query->where('name', 'verified')->where(function ($q) {
+                        $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                    });
                 })
                 ->exists();
 

@@ -37,11 +37,15 @@ class SharedServiceProvider extends ServiceProvider
      */
     protected function registerRateLimiters(): void
     {
-        \Illuminate\Support\Facades\RateLimiter::for('auth', function (\Illuminate\Http\Request $request) {
+        \Illuminate\Support\Facades\RateLimiter::for('auth', function (
+            \Illuminate\Http\Request $request,
+        ) {
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
         });
 
-        \Illuminate\Support\Facades\RateLimiter::for('setup', function (\Illuminate\Http\Request $request) {
+        \Illuminate\Support\Facades\RateLimiter::for('setup', function (
+            \Illuminate\Http\Request $request,
+        ) {
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($request->ip());
         });
     }

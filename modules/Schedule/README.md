@@ -3,7 +3,9 @@
 The `Schedule` module manages institutional milestones, event scheduling, and student journey
 visualization within the internship ecosystem.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
@@ -22,8 +24,7 @@ visualization within the internship ecosystem.
 - **Event Management:** Staff can create and manage events scoped to specific programs or global
   academic years.
 - **Categorization:** Supports multiple agenda types including `event`, `deadline`, and `briefing`.
-- **Auto-Scoping:** Automatically filters agendas by the active academic year via
-  `HasAcademicYear`.
+- **Auto-Scoping:** Automatically filters agendas by the active academic year via `HasAcademicYear`.
 
 ### 2. Student Journey View
 

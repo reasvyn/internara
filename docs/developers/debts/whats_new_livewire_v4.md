@@ -30,8 +30,7 @@ transitioning from external orchestrators toward a unified, performance-optimize
 ## 5. View Transitions Engine
 
 - **Aesthetic Alignment**: Realization of the polished, minimalist user experience mandated by the
-  authoritative
-  **[System Requirements Specification](../specs.md)**.
+  authoritative **[System Requirements Specification](../specs.md)**.
 
 ---
 

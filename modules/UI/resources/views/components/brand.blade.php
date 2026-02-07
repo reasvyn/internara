@@ -1,5 +1,21 @@
 @props(['aos' => null])
 
-<a class="flex items-center gap-2" href="/" wire:navigate :data-aos="$aos">
-    <span class="text-lg font-bold">{{ setting('brand_name', setting('app_name')) }}</span>
+@php
+    $brandName = setting('brand_name', setting('app_name', 'Internara'));
+    $brandLogo = setting('brand_logo', '/internara/logo.png');
+@endphp
+
+<a 
+    class="flex items-center gap-2" 
+    href="/" 
+    wire:navigate 
+    :data-aos="$aos"
+    aria-label="{{ __('ui::common.go_to_home', ['name' => $brandName]) }}"
+>
+    <img 
+        src="{{ $brandLogo }}" 
+        alt="{{ __('ui::common.brand_logo_alt', ['name' => $brandName]) }}" 
+        class="size-8 object-contain" 
+    />
+    <span class="text-lg font-bold">{{ $brandName }}</span>
 </a>

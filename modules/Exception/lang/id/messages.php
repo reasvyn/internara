@@ -9,4 +9,5 @@ return [
     'internal_error' => 'Terjadi kesalahan internal pada server.',
     'validation_failed' => 'Data yang diberikan tidak valid.',
     'conflict' => 'Permintaan tidak dapat diselesaikan karena adanya konflik dengan status sumber daya saat ini.',
+    'unexpected_error' => 'Terjadi kesalahan yang tidak terduga. Silakan coba lagi nanti.',
 ];

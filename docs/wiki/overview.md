@@ -13,8 +13,7 @@ traceability throughout the practical work process.
 
 To deliver a **minimalist, architecturally resilient, and human-centered** platform for vocational
 internship governance. Internara prioritizes cognitive efficiency and system reliability, adhering
-to the authoritative
-**[System Requirements Specification](../developers/specs.md)**.
+to the authoritative **[System Requirements Specification](../developers/specs.md)**.
 
 ### Solving the Visibility Gap
 

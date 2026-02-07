@@ -1,5 +1,5 @@
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 /**
  * Initialize AOS (Animate on Scroll).
@@ -12,8 +12,8 @@ const initAOS = () => {
         easing: 'ease-out-cubic',
         once: true,
         offset: 50,
-    });
-};
+    })
+}
 
-document.addEventListener('DOMContentLoaded', initAOS);
-document.addEventListener('livewire:navigated', initAOS);
+document.addEventListener('DOMContentLoaded', initAOS)
+document.addEventListener('livewire:navigated', initAOS)

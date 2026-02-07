@@ -99,7 +99,7 @@ trait HandlesAppException
     {
         $this->reportException($exception);
 
-        $message = __('An unexpected error occurred.');
+        $message = __('exception::messages.unexpected_error');
         $type = 'error';
 
         if ($this->isAppException($exception)) {
@@ -134,7 +134,7 @@ trait HandlesAppException
                 [
                     'message' => config('app.debug')
                         ? $exception->getMessage()
-                        : __('An unexpected error occurred.'),
+                        : __('exception::messages.unexpected_error'),
                 ],
                 method_exists($exception, 'getStatusCode')
                     ? $exception->getStatusCode()
@@ -149,7 +149,7 @@ trait HandlesAppException
                 'error',
                 config('app.debug')
                     ? $exception->getMessage()
-                    : __('An unexpected error occurred.'),
+                    : __('exception::messages.unexpected_error'),
             );
     }
 }

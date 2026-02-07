@@ -8,7 +8,7 @@ technical record of prioritized refactoring and architectural upgrades.
 
 ## 1. Prioritized Evolutionary Items
 
-- **[Attribution & Integrity Protection](attribution_integrity_protection.md)**: Architectural 
+- **[Attribution & Integrity Protection](attribution_integrity_protection.md)**: Architectural
   constraint for core metadata validation and author attribution.
 - **[Livewire v4 Migration](upgrade_to_livewire_v4.md)**: High-priority migration of the
   presentation engine to the unified v4 core.

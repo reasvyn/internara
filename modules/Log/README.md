@@ -4,7 +4,9 @@ The `Log` module provides the observability and auditing infrastructure for the 
 It ensures accountability by tracking user actions and system events while maintaining strict
 privacy standards through automated PII masking.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

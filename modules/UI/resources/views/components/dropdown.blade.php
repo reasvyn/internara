@@ -12,6 +12,8 @@
         'tertiary' => 'btn-ghost text-base-content/70',
         default => 'btn-outline text-base-content/80',
     };
+    
+    $ariaLabel = $attributes->get('aria-label') ?? $label ?? __('ui::common.options');
 @endphp
 
 <x-mary-dropdown 
@@ -24,11 +26,12 @@
         </x-slot:trigger>
     @else
         <x-slot:trigger>
-            @if($icon && !$label)
-                <x-ui::button :priority="$priority" :icon="$icon" aria-label="{{ $attributes->get('aria-label', __('ui::common.options')) }}" />
-            @else
-                <x-ui::button :priority="$priority" :icon="$icon" :label="$label" />
-            @endif
+            <x-ui::button 
+                :priority="$priority" 
+                :icon="$icon" 
+                :label="$label" 
+                aria-label="{{ $ariaLabel }}" 
+            />
         </x-slot:trigger>
     @endisset
 

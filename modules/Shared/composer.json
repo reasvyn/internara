@@ -10,12 +10,14 @@
     "extra": {
         "laravel": {
             "providers": [],
-            "aliases": {
-
-            }
+            "aliases": {}
         }
     },
     "autoload": {
+        "files": [
+            "src/Functions/is_active_module.php",
+            "src/Functions/shared_url.php"
+        ],
         "psr-4": {
             "Modules\\Shared\\": "src/",
             "Modules\\Shared\\Database\\Factories\\": "database/factories/",

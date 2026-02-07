@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Report\\Providers\\ReportServiceProvider"
-    ],
+    "providers": ["Modules\\Report\\Providers\\ReportServiceProvider"],
     "files": []
 }

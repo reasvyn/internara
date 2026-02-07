@@ -1,14 +1,14 @@
 <x-ui::card
     class="w-full max-w-lg text-center"
-    title="Masuk ke Akun Anda"
-    subtitle="Gunakan email atau nama pengguna Anda untuk melanjutkan."
+    :title="__('auth::ui.login.title')"
+    :subtitle="__('auth::ui.login.subtitle')"
 >
     <div class="flex flex-col gap-8">
         <x-ui::form class="text-start" wire:submit="login">
             <x-ui::input
                 type="text"
-                label="Email atau Username"
-                placeholder="Masukkan Email atau Username Anda"
+                :label="__('auth::ui.login.form.identifier')"
+                :placeholder="__('auth::ui.login.form.identifier_placeholder')"
                 wire:model="identifier"
                 required
             />
@@ -16,8 +16,8 @@
             <div class="relative w-full">
                 <x-ui::input
                     type="password"
-                    label="Kata Sandi"
-                    placeholder="Masukkan Kata Sandi Anda"
+                    :label="__('auth::ui.login.form.password')"
+                    :placeholder="__('auth::ui.login.form.password_placeholder')"
                     wire:model="password"
                     required
                 />
@@ -27,12 +27,12 @@
                         class="absolute right-0 top-2 text-xs font-medium underline"
                         href="{{ route('forgot-password') }}"
                     >
-                        Lupa Kata Sandi Anda?
+                        {{ __('auth::ui.login.form.forgot_password') }}
                     </a>
                 @endif
             </div>
 
-            <x-ui::checkbox label="Ingat saya" wire:model="remember" />
+            <x-ui::checkbox :label="__('auth::ui.login.form.remember_me')" wire:model="remember" />
 
             <x-ui::turnstile field-name="captcha_token" />
 
@@ -40,20 +40,20 @@
                 <x-ui::button
                     priority="primary"
                     class="w-full"
-                    label="Masuk Sekarang"
+                    :label="__('auth::ui.login.form.submit')"
                     type="submit"
                     spinner
                 />
 
                 @if (\Illuminate\Support\Facades\Route::has('register'))
                     <p class="text-center text-sm">
-                        Belum punya akun?
+                        {{ __('auth::ui.login.form.no_account') }}
                         <a
                             class="font-medium underline"
                             href="{{ route('register') }}"
                             wire:navigate
                         >
-                            Daftar Sekarang
+                            {{ __('auth::ui.login.form.register_now') }}
                         </a>
                     </p>
                 @endif

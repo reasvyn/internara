@@ -6,8 +6,7 @@ integrity of schemas, the behavior of shared model concerns, and the accuracy of
 scoping within the modular monolith framework.
 
 > **Governance Mandate:** All persistence logic must demonstrate compliance with the
-> **[Data Integrity Protocols](../patterns.md)** through
-> rigorous automated verification.
+> **[Data Integrity Protocols](../patterns.md)** through rigorous automated verification.
 
 ---
 
@@ -28,8 +27,7 @@ test('it implements uuid v4 identification', function () {
 ### 1.2 Isolation Invariant: No Physical Foreign Keys
 
 Verification must confirm the absence of cross-module physical constraints, ensuring modular
-portability as defined in the
-**[Architecture Description](../architecture.md)**.
+portability as defined in the **[Architecture Description](../architecture.md)**.
 
 ---
 

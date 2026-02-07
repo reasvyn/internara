@@ -1,20 +1,18 @@
 @props([
-    'priority' => 'primary', // primary, secondary, metadata
+	'value' => null,
+    'priority' => 'primary',
     'aos' => null,
 ])
 
 @php
     $priorityClasses = match ($priority) {
-        'primary' => 'badge-accent text-accent-content font-semibold',
+        'primary' => 'badge-primary text-primary-content font-semibold',
         'secondary' => 'badge-outline border-base-content/20 text-base-content/70',
         'metadata' => 'badge-ghost badge-sm text-base-content/50 font-normal lowercase',
-        default => 'badge-accent text-accent-content',
+        default => 'badge-primary text-primary-content',
     };
-php@endphp
+@endphp
 
-<x-mary-badge 
-    {{ $attributes->class([$priorityClasses]) }}
-    :data-aos="$aos"
->
-    {{ $slot }}
+<x-mary-badge {{ $attributes->class([$priorityClasses]) }} :data-aos="$aos">
+    <x-slot:value>{{ $value ?? $slot }}</x-slot:value>
 </x-mary-badge>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Concerns;
 
+use Modules\Status\Enums\Status as StatusEnum;
 use Spatie\ModelStatus\HasStatuses;
 
 /**
@@ -31,18 +32,28 @@ trait HasStatus
     }
 
     /**
-     * Standard status names.
+     * Standard status names (Backward Compatibility).
      */
-    public const STATUS_ACTIVE = 'active';
+    public const STATUS_ACTIVE = StatusEnum::ACTIVE->value;
 
-    public const STATUS_PENDING = 'pending';
+    public const STATUS_PENDING = StatusEnum::PENDING->value;
 
-    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_INACTIVE = StatusEnum::INACTIVE->value;
 
     /**
      * Default fallback color for unknown statuses.
      */
     protected const DEFAULT_STATUS_COLOR = 'gray';
+
+    /**
+     * Get the current status as an Enum instance.
+     */
+    public function getStatus(): ?StatusEnum
+    {
+        $status = $this->latestStatus();
+
+        return $status ? StatusEnum::tryFrom($status->name) : null;
+    }
 
     /**
      * Get the label for the current status.
@@ -51,13 +62,13 @@ trait HasStatus
      */
     public function getStatusLabel(): string
     {
-        $status = $this->latestStatus();
+        $status = $this->getStatus();
 
         if (! $status) {
             return __('status::status.unknown');
         }
 
-        return __($this->getStatusTranslationPrefix().$status->name);
+        return __($status->label());
     }
 
     /**
@@ -65,13 +76,13 @@ trait HasStatus
      */
     public function getStatusColor(): string
     {
-        $status = $this->latestStatus();
+        $status = $this->getStatus();
 
         if (! $status) {
             return self::DEFAULT_STATUS_COLOR;
         }
 
-        return $this->getStatusColorMap()[$status->name] ?? self::DEFAULT_STATUS_COLOR;
+        return $status->color();
     }
 
     /**
@@ -88,29 +99,5 @@ trait HasStatus
     public function refreshStatus(): self
     {
         return $this->unsetRelation('statuses');
-    }
-
-    /**
-     * Define the translation prefix for status names.
-     * Override this in the model if needed.
-     */
-    protected function getStatusTranslationPrefix(): string
-    {
-        return 'status::status.';
-    }
-
-    /**
-     * Define the color map for statuses.
-     * Override this in the model.
-     *
-     * @return array<string, string>
-     */
-    protected function getStatusColorMap(): array
-    {
-        return [
-            self::STATUS_ACTIVE => 'success',
-            self::STATUS_PENDING => 'warning',
-            self::STATUS_INACTIVE => 'error',
-        ];
     }
 }

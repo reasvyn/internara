@@ -1,28 +1,47 @@
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.temp
-/.tmp
-/.vscode
-/.zed
-/auth.json
-/modules/*/node_modules
-/modules/*/vendor
+# Core Build & Dependencies
 /node_modules
+/vendor
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
 /storage/pail
 /temp
-/vendor
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
+/.phpunit.cache
+/.temp
+/.tmp
+
+# Environment & Private Config
 .env
 .env.backup
 .env.production
+/auth.json
+Homestead.json
+Homestead.yaml
+
+# IDE & Editor Specifics
+.fleet/
+.idea/
+.nova/
+.vscode/
+.zed/
 .phpactor.json
+
+# Logs & Cache Artifacts
+npm-debug.log
+yarn-error.log
 .phpunit.result.cache
+
+# Testing & Browser Verification
+/tests/Browser/Screenshots
+/tests/Browser/Console/*.log
+
+# Module-Level Exclusions
+/modules/*/node_modules
+/modules/*/vendor
+/modules/*/composer.lock
+/modules/*/.env
+/modules/*/.env.*
+/modules/*/.phpunit.cache
+/modules/*/.temp
+/modules/*/.tmp

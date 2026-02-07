@@ -1,34 +1,34 @@
 <x-ui::card
     class="w-full max-w-lg text-center"
-    title="Daftar Akun Siswa Internara"
-    subtitle="Isi data diri Anda untuk memulai perjalanan magang."
+    :title="__('auth::ui.register.title')"
+    :subtitle="__('auth::ui.register.subtitle')"
 >
     <x-ui::form class="text-start" wire:submit="register">
         <x-ui::input
             type="text"
-            label="Nama Lengkap"
-            placeholder="Masukkan Nama Lengkap Anda"
+            :label="__('auth::ui.register.form.name')"
+            :placeholder="__('auth::ui.register.form.name_placeholder')"
             wire:model="name"
             required
         />
         <x-ui::input
             type="email"
-            label="Alamat Email"
-            placeholder="Masukkan Alamat Email Anda"
+            :label="__('auth::ui.register.form.email')"
+            :placeholder="__('auth::ui.register.form.email_placeholder')"
             wire:model="email"
             required
         />
         <x-ui::input
             type="password"
-            label="Kata Sandi"
-            placeholder="Buat Kata Sandi Anda"
+            :label="__('auth::ui.register.form.password')"
+            :placeholder="__('auth::ui.register.form.password_placeholder')"
             wire:model="password"
             required
         />
         <x-ui::input
             type="password"
-            label="Konfirmasi Kata Sandi"
-            placeholder="Ulangi Kata Sandi Anda"
+            :label="__('auth::ui.register.form.password_confirmation')"
+            :placeholder="__('auth::ui.register.form.password_confirmation_placeholder')"
             wire:model="password_confirmation"
             required
         />
@@ -44,24 +44,21 @@
                 <x-ui::button
                     priority="primary"
                     class="w-full"
-                    label="Daftar Sekarang"
+                    :label="__('auth::ui.register.form.submit')"
                     type="submit"
                     spinner
                 />
 
                 <p class="text-center text-xs">
-                    Dengan menekan tombol
-                    <b>Daftar Sekarang</b>
-                    , Anda otomatis menyetujui
-                    <a class="underline" href="{{ $policyRoute }}">Kebijakan Privasi kami.</a>
+                    {!! str_replace(':url', $policyRoute, __('auth::ui.register.form.policy_agreement')) !!}
                 </p>
             </div>
 
             @if (\Illuminate\Support\Facades\Route::has('login'))
                 <p class="text-center text-sm">
-                    Sudah memiliki akun?
+                    {{ __('auth::ui.register.form.has_account') }}
                     <a class="font-medium underline" href="{{ route('login') }}" wire:navigate>
-                        Masuk
+                        {{ __('auth::ui.register.form.login_now') }}
                     </a>
                 </p>
             @endif

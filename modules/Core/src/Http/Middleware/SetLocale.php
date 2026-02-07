@@ -10,15 +10,27 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Middleware SetLocale
+ *
+ * Orchestrates the application's localization state based on the user's session.
+ * This middleware ensures compliance with [SYRS-NF-403] by resolving the active
+ * language baseline (Indonesian or English).
+ */
 class SetLocale
 {
     /**
      * Handle an incoming request.
+     *
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Session::has('locale')) {
-            App::setLocale(Session::get('locale'));
+        $supportedLocales = ['id', 'en'];
+        $locale = Session::get('locale');
+
+        if ($locale && in_array($locale, $supportedLocales)) {
+            App::setLocale($locale);
         }
 
         return $next($request);

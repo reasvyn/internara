@@ -1,31 +1,51 @@
 <div>
-    <x-ui::header title="{{ __('Dasbor Mentor Industri') }}" subtitle="{{ __('Pantau aktivitas dan kehadiran siswa magang di perusahaan Anda.') }}" />
+    <x-ui::header 
+        :title="__('mentor::ui.dashboard.title')" 
+        :subtitle="__('mentor::ui.dashboard.subtitle')" 
+    />
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 mb-8">
         <x-ui::card class="bg-secondary text-secondary-content">
             <div class="flex items-center justify-between">
                 <div>
-                    <div class="text-sm opacity-80">{{ __('Total Siswa Magang') }}</div>
+                    <div class="text-sm opacity-80">{{ __('mentor::ui.dashboard.total_interns') }}</div>
                     <div class="text-3xl font-bold">{{ $this->students->count() }}</div>
                 </div>
-                <x-ui::icon name="tabler.school" class="w-10 h-10 opacity-20" />
+                <x-ui::icon name="tabler.school" class="size-10 opacity-20" />
             </div>
         </x-ui::card>
     </div>
 
-    <x-ui::card title="{{ __('Siswa Magang') }}">
+    <x-ui::card :title="__('mentor::ui.dashboard.assigned_interns')">
         <x-ui::table :headers="[
-            ['key' => 'student.name', 'label' => __('Nama Siswa')],
-            ['key' => 'internship.title', 'label' => __('Program Magang')],
-            ['key' => 'status', 'label' => __('Status')],
+            ['key' => 'student.name', 'label' => __('mentor::ui.dashboard.table.student_name')],
+            ['key' => 'internship.title', 'label' => __('mentor::ui.dashboard.table.program')],
+            ['key' => 'status', 'label' => __('mentor::ui.dashboard.table.status')],
         ]" :rows="$this->students">
             @scope('cell_status', $registration)
-                <x-ui::badge :label="$registration->getStatusLabel()" :class="'badge-' . $registration->getStatusColor()" />
+                <x-ui::badge 
+                    :value="$registration->getStatusLabel()" 
+                    :priority="$registration->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                />
             @endscope
             
             @scope('actions', $registration)
-                <x-ui::button label="{{ __('Mentoring') }}" icon="tabler.messages" class="btn-sm btn-ghost text-secondary" link="{{ route('mentor.mentoring', $registration->id) }}" />
-                <x-ui::button label="{{ __('Evaluate') }}" icon="tabler.clipboard-check" class="btn-sm btn-ghost" link="{{ route('mentor.evaluate', $registration->id) }}" />
+                <div class="flex gap-1">
+                    <x-ui::button 
+                        :label="__('mentor::ui.dashboard.actions.mentoring')" 
+                        icon="tabler.messages" 
+                        priority="tertiary" 
+                        class="text-secondary btn-sm" 
+                        link="{{ route('mentor.mentoring', $registration->id) }}" 
+                    />
+                    <x-ui::button 
+                        :label="__('mentor::ui.dashboard.actions.evaluate')" 
+                        icon="tabler.clipboard-check" 
+                        priority="tertiary" 
+                        class="btn-sm" 
+                        link="{{ route('mentor.evaluate', $registration->id) }}" 
+                    />
+                </div>
             @endscope
         </x-ui::table>
     </x-ui::card>

@@ -6,6 +6,7 @@ processes). It defines the technical and managerial processes required to transf
 needs into a verified and validated modular system.
 
 **[System Requirements Specification](specs.md)**. Every process
+
 > output is a configuration baseline subject to audit.
 
 ---
@@ -16,8 +17,7 @@ needs into a verified and validated modular system.
 
 - **Objective**: Establish the authoritative **Single Source of Truth (SSoT)**.
 - **Process**: Systematic elicitation, analysis, and formalization of functional and non-functional
-  requirements into the
-  **[System Requirements Specification](specs.md)**.
+  requirements into the **[System Requirements Specification](specs.md)**.
 - **Verification**: Requirements are verified for completeness, consistency, and feasibility.
 
 ### 1.2 Architectural Design (ISO/IEC 42010)
@@ -68,8 +68,8 @@ Internara utilizes a dual-layered V&V framework derived from the **V-Model**:
 ### 3.1 Transition & Release
 
 - **Objective**: Formally promote a verified baseline to operational status.
-- **Process**: Execution of the **[Release Guidelines](releases.md)** and synchronization
-  of release notes.
+- **Process**: Execution of the **[Release Guidelines](releases.md)** and synchronization of release
+  notes.
 
 ### 3.2 Evolution & Maintenance (Lehman's Laws)
 
@@ -96,7 +96,6 @@ _By adhering to these ISO-standardized processes, Internara ensures a discipline
 reproducible engineering environment, yielding high-quality software that fulfills its foundational
 specifications._
 
-
 ---
 
 # Feature Engineering Workflow: Implementation Processes
@@ -119,8 +118,7 @@ request.
 
 ### 1.1 Specification Verification
 
-- **Action**: Validate the request against the
-  **[System Requirements Specification](specs.md)**.
+- **Action**: Validate the request against the **[System Requirements Specification](specs.md)**.
 - **Analysis**: Identify functional requirements and non-functional constraints (Security, i18n,
   Mobile-First).
 - **Stakeholder Mapping**: Confirm the feature aligns with the designated User Roles.

@@ -10,13 +10,7 @@ integrity, and availability of institutional and student data.
 
 Security updates are provided exclusively for the **latest stable release**. For more details on the
 support status of specific versions, refer to the
-**[Release Notes](docs/pubs/releases/README.md)**.
-
-| Version    | Readiness | Security Support |
-| :--------- | :-------- | :--------------- |
-| **v0.9.x** | Alpha     | Snapshot Only    |
-| **v0.8.x** | Alpha     | Snapshot Only    |
-| **< v0.8** | Archived  | EOL              |
+**[Versions Overview](docs/pubs/releases/README.md)**.
 
 ---
 

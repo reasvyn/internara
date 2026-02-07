@@ -5,7 +5,9 @@ Internara ecosystem. It handles user authentication, registration, password reco
 verification while ensuring that users are intelligently routed to their respective domain-specific
 environments.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
@@ -29,10 +31,10 @@ initial security context for every session.
   the user's active roles and verification status.
     - _Contract_: `Modules\Auth\Services\Contracts\RedirectService`.
 
-### 2.2 Shared Traits
+### 2.2 Global Concerns
 
 - **`RedirectsUsers`**: A reusable concern for controllers and Livewire components that leverages
-  the `RedirectService` to ensure consistent routing logic.
+  the `RedirectService` to ensure consistent routing logic. Resides in `src/Concerns/`.
 
 ---
 
@@ -41,9 +43,10 @@ initial security context for every session.
 - **Zero Magic Values**: Utilizes standardized `Symfony\Component\HttpFoundation\Response` constants
   for all authentication-related HTTP status codes.
 - **Privacy Masking**: Automatically masks identifiers (emails/usernames) in technical logs to
-  prevent information leakage during failed login attempts.
+  prevent information leakage during failed login attempts via the `Masker` utility.
 - **Context-Aware Redirection**: Redirection logic is centralized, ensuring that Instructors,
   Students, and Administrators are always funneled into their authorized workspaces.
+- **TDD-First**: All authentication flows are verified against role-based requirements.
 
 ---
 
@@ -51,6 +54,7 @@ initial security context for every session.
 
 Security is verified through **Pest v4**:
 
+- **Unit Tests**: Verifies core service logic and redirect mapping in isolation.
 - **Feature Tests**: Validates registration workflows, role assignments, and email verification
   redirects.
 - **Security Audit**: Ensures that unverified users are strictly blocked from protected dashboards.

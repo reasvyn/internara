@@ -1,9 +1,9 @@
 # Mocking Strategy: Dependency Isolation Standards
 
 This document defines the **Dependency Mocking** protocols for the Internara project, standardized
-according to the **[Architecture Description](../architecture.md)**. Mocking is
-utilized to enforce **Strict Modular Isolation**, enabling the verification of domain logic without
-triggering side-effects across module boundaries.
+according to the **[Architecture Description](../architecture.md)**. Mocking is utilized to enforce
+**Strict Modular Isolation**, enabling the verification of domain logic without triggering
+side-effects across module boundaries.
 
 ---
 

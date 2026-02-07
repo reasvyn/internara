@@ -6,8 +6,7 @@ interactive interfaces, reactive state transitions, and logic delegation invaria
 deterministically.
 
 > **Governance Mandate:** All presentation logic must demonstrate compliance with the
-> **[Thin Component Mandate](../architecture.md)** through rigorous
-> automated verification.
+> **[Thin Component Mandate](../architecture.md)** through rigorous automated verification.
 
 ---
 

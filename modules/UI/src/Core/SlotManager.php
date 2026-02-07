@@ -58,10 +58,16 @@ class SlotManager implements SlotManagerContract
     {
         return collect($this->registry->getSlotsFor($slot))
             ->map(function ($item) use ($slot) {
-                try {
-                    $view = $item['view'];
-                    $data = $item['data'];
+                $view = $item['view'];
+                $data = $item['data'];
 
+                // Ensure $attributes is always defined for anonymous components rendered as views.
+                $data = array_merge(
+                    ['attributes' => new \Illuminate\View\ComponentAttributeBag([])],
+                    $data,
+                );
+
+                try {
                     if ($view instanceof Closure) {
                         return $view($data);
                     }
@@ -82,7 +88,7 @@ class SlotManager implements SlotManagerContract
                 } catch (\Throwable $e) {
                     \Illuminate\Support\Facades\Log::error(
                         'Slot Injection Error: Failed to render component ['.
-                            (is_string($item['view']) ? $item['view'] : 'Closure').
+                            (is_string($view) ? $view : 'Closure').
                             "] in slot [{$slot}]. Error: {$e->getMessage()}",
                         [
                             'exception' => $e,
@@ -91,14 +97,14 @@ class SlotManager implements SlotManagerContract
                         ],
                     );
 
-                    // Return a placeholder or empty string in production,
-                    // maybe a small warning icon in local/debug mode?
+                    // If we are in local/debug mode, we let the exception bubble up
+                    // to prevent corrupted component stacks and provide better debugging.
                     if (config('app.debug')) {
-                        return "<!-- Slot Render Error: {$item['view']} -->";
+                        throw $e;
                     }
                 }
 
-                // Return empty string for unrenderable types to avoid errors.
+                // Return empty string for unrenderable types or failed renders in production.
                 return '';
             })
             ->implode('');

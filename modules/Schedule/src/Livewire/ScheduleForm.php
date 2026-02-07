@@ -37,8 +37,11 @@ class ScheduleForm extends Component
     /**
      * Initialize the component.
      */
-    public function mount(?string $scheduleId, ScheduleService $service, SettingService $settingService): void
-    {
+    public function mount(
+        ?string $scheduleId,
+        ScheduleService $service,
+        SettingService $settingService,
+    ): void {
         $this->scheduleId = $scheduleId;
 
         // Set default academic year

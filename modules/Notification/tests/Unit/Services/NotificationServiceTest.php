@@ -4,33 +4,26 @@ declare(strict_types=1);
 
 namespace Modules\Notification\Tests\Unit\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Modules\Notification\Services\NotificationService;
-use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
+test('it delegates send to facade', function () {
+    $service = new NotificationService;
+    $notification = mock(Notification::class);
 
-test('it can send notifications to recipients', function () {
-    Notification::fake();
+    NotificationFacade::shouldReceive('send')->once()->with('user', $notification);
 
-    $user = User::factory()->create();
-    $service = new NotificationService();
-    $notification = new \Modules\User\Notifications\WelcomeUserNotification('password123');
-
-    $service->send($user, $notification);
-
-    Notification::assertSentTo($user, \Modules\User\Notifications\WelcomeUserNotification::class);
+    $service->send('user', $notification);
+    expect(true)->toBeTrue();
 });
 
-test('it can send notifications immediately', function () {
-    Notification::fake();
+test('it delegates sendNow to facade', function () {
+    $service = new NotificationService;
+    $notification = mock(Notification::class);
 
-    $user = User::factory()->create();
-    $service = new NotificationService();
-    $notification = new \Modules\User\Notifications\WelcomeUserNotification('password123');
+    NotificationFacade::shouldReceive('sendNow')->once()->with('user', $notification);
 
-    $service->sendNow($user, $notification);
-
-    Notification::assertSentTo($user, \Modules\User\Notifications\WelcomeUserNotification::class);
+    $service->sendNow('user', $notification);
+    expect(true)->toBeTrue();
 });

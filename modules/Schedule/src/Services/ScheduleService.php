@@ -29,17 +29,22 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
     /**
      * {@inheritdoc}
      */
-    public function getStudentTimeline(string $studentId, int $perPage = 15): \Illuminate\Pagination\LengthAwarePaginator
-    {
-        $registrationService = app(\Modules\Internship\Services\Contracts\RegistrationService::class);
+    public function getStudentTimeline(
+        string $studentId,
+        int $perPage = 15,
+    ): \Illuminate\Pagination\LengthAwarePaginator {
+        $registrationService = app(
+            \Modules\Internship\Services\Contracts\RegistrationService::class,
+        );
         $registration = $registrationService->first(['student_id' => $studentId]);
 
         $query = $this->query()->orderBy('start_at', 'asc');
 
         if ($registration) {
             $query->where(function ($q) use ($registration) {
-                $q->where('internship_id', $registration->internship_id)
-                    ->orWhereNull('internship_id');
+                $q->where('internship_id', $registration->internship_id)->orWhereNull(
+                    'internship_id',
+                );
             });
         } else {
             // If no registration, only show global events

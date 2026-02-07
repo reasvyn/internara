@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Admin\\Providers\\AdminServiceProvider"
-    ],
+    "providers": ["Modules\\Admin\\Providers\\AdminServiceProvider"],
     "files": []
 }

@@ -1,7 +1,7 @@
 <x-ui::card
     class="w-full max-w-lg text-center"
-    title="{{ __('Email Verification') }}"
-    subtitle="{{ __('Please verify your email address to access all features.') }}"
+    :title="__('auth::ui.verification.title')"
+    :subtitle="__('auth::ui.verification.subtitle')"
 >
     <div class="flex flex-col gap-6">
         @if (session('status'))
@@ -13,26 +13,26 @@
         @endif
 
         <p class="text-base-content/70">
-            {{ __('Before proceeding, please check your email for a verification link.') }}
+            {{ __('auth::ui.verification.notice') }}
         </p>
 
         <x-ui::form wire:submit="verify">
             <x-ui::button
                 priority="primary"
                 class="w-full"
-                label="{{ __('Verify Email') }}"
+                :label="__('auth::ui.verification.verify_button')"
                 type="submit"
                 spinner
             />
         </x-ui::form>
 
         <div class="text-center text-sm text-base-content/60">
-            {{ __("Didn't receive the email?") }}
+            {{ __('auth::ui.verification.resend_prompt') }}
             <button
                 wire:click="resend"
                 class="font-medium text-accent underline hover:text-accent/80"
             >
-                {{ __('Click here to resend') }}
+                {{ __('auth::ui.verification.resend_button') }}
             </button>
         </div>
     </div>

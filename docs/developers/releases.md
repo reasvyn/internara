@@ -6,8 +6,7 @@ standardized according to **ISO/IEC 12207** (Software Release Process) and **ISO
 configurations to an authoritative delivery baseline.
 
 > **Governance Mandate:** No release baseline may be authorized unless it demonstrates 100%
-> compliance with the authoritative
-> **[System Requirements Specification](specs.md)**.
+> compliance with the authoritative **[System Requirements Specification](specs.md)**.
 
 ---
 
@@ -37,22 +36,38 @@ mandatory quality gates:
 ### 2.1 Identity & Baseline Synchronization
 
 Verify that the `app_info.json` exactly matches the intended configuration baseline (Series Code,
-Support Policy, Status). Execute the mandatory transition of the version status to **Released**
-within the internal records and the strategic baseline overview prior to tag creation.
+Support Policy, Readiness). Prior to tag creation, execute the mandatory transition of the version
+status to **Released** within the internal records and the Versions Overview table.
 
-### 2.2 Configuration Baseline Identification (Tagging)
+- **Readiness Invariant**: Every new version baseline must begin with **Alpha** readiness to ensure
+  rigorous testing before stabilization.
 
-Create an **Annotated Git Tag** to establish an immutable reference to the release baseline.
+### 2.2 Series-Based Release Relationship
 
-- **Protocol**: `git tag -a vX.Y.Z -m "Release description and series identifier"`
+A single **Blueprint Series** (e.g., `ARC01-ORCH`) may span multiple release cycles. The release
+must identify which series it contributes to or fulfills.
 
-### 2.3 Documentation Finalization (Doc-as-Code)
+- **Ongoing Series**: Release contributes to an `In Progress` blueprint.
+- **Series Fulfillment**: Release marks the completion of a blueprint, triggering its transition to
+  `Done`.
+
+### 2.3 Configuration Baseline Identification (Tagging)
+
+Create an **Annotated Git Tag** to establish an immutable reference to the release baseline. All
+tags must strictly adhere to the **Semantic Versioning (SemVer)** standard.
+
+- **Format**: `vX.Y.Z-{pre-release}+{build}` (e.g., `v0.13.0-alpha`, `v1.0.0-rc.1`)
+- **Pre-release Suffixes**: Use `-alpha`, `-beta`, or `-rc` to identify the maturity of the
+  baseline.
+- **Protocol**: `git tag -a vX.Y.Z-suffix -m "Release description and series identifier"`
+
+### 2.4 Documentation Finalization (Doc-as-Code)
 
 Synchronize the analytical release notes in `../pubs/releases/` to reflect the realized outcome.
 
 - **Requirement**: Documentation must be analytically precise and preserve all technical depth.
 - **Metadata Invariant**: Every release note must include **Series Code**, **Support Policy**, and
-  **Status** at the header of the document.
+  **Readiness** at the header of the document.
 
 ---
 
@@ -64,13 +79,17 @@ Synchronize the configuration baseline with the remote repository according to t
 **[Git Protocols](git.md)**.
 
 - **Action**: Utilize `gh release create` to promote the baseline and its associated metadata.
+- **Title Convention**: Use the format `vX.Y.Z — {Release Theme}`.
 - **Maturity Identification**: Explicitly mark non-stable baselines as "Pre-release."
 
 ### 3.2 Post-Promotion Audit
 
 - **Artifact Locking**: Once promoted, the release baseline and its documentation are immutable.
-- **Blueprint Retirement**: Blueprints associated with the realized baseline are moved to the
-  `archived/` directory.
+- **Transparency**: Update the **Versions Overview** (`README.md` in `pubs/releases`) to reflect the
+  newly released configuration.
+- **Visibility Limit**: To maintain minimalist clarity, the Versions Overview table and detailed
+  notes must be limited to the **6 most recent versions**. Older records remain available in the
+  filesystem but are removed from the overview document.
 
 ---
 
@@ -84,22 +103,64 @@ delivery package to ensure zero configuration drift.
 ### 4.2 Corrective Maintenance (Hotfix)
 
 If a defect is identified in a released baseline, a **Hotfix** configuration must be established
-targeting the current baseline tag, as defined in the
-**[Software Lifecycle](lifecycle.md)**.
+targeting the current baseline tag, as defined in the **[Software Lifecycle](lifecycle.md)**.
 
 ---
 
-## 5. Release Notes Authoring Standards
+## 5. Support Cycle Transitions
 
-To ensure transparency and accessibility for all stakeholders, Release Notes must adhere to the following semantic standards:
+When a new version reaches **Stable** readiness, the support policy for older versions must be
+formally transitioned according to the following rules:
+
+1.  **Promotion to Maintenance**: The previous stable version transitions to `Maintenance`.
+2.  **Promotion to EOL**: Versions superseded by multiple major/minor baselines or containing
+    unfixable architectural debt transition to `End of Life (EOL)`.
+3.  **Experimental Removal**: Beta/Alpha releases associated with a completed series transition to
+    `End of Life (EOL)`.
+
+---
+
+## 6. Release Notes Authoring Standards
+
+To ensure transparency and accessibility for all stakeholders, Release Notes must adhere to the
+following semantic standards:
 
 - **Language**: All Release Notes must be authored in **English**.
-- **Tone & Accessibility**: Content must be easily understandable by non-technical users (laypeople). Avoid excessive jargon unless necessary for technical context.
+- **Tone & Accessibility**: Content must be easily understandable by non-technical users
+  (laypeople). Avoid excessive jargon unless necessary for technical context.
 - **Mandatory Structure**:
     - **Overview**: A brief summary of the release's purpose and strategic impact.
     - **Key Features**: High-level descriptions of significant new capabilities.
-    - **What's Changed? (Changelog)**: A concise list of functional improvements and fixes adhering to the **Keep a Changelog** convention (Added, Changed, Deprecated, Removed, Fixed, Security).
-- **Inclusion Policy**: Only significant changes, features, and fixes should be recorded. Minor technical maintenance or trivial updates (e.g., "typo fix in internal comment") should be omitted to maintain signal quality.
+    - **What's Changed? (Changelog)**: A concise list of functional improvements and fixes adhering
+      to the **Keep a Changelog** convention (Added, Changed, Deprecated, Removed, Fixed, Security).
+- **Inclusion Policy**: Only significant changes, features, and fixes should be recorded. Minor
+  technical maintenance or trivial updates (e.g., "typo fix in internal comment") should be omitted
+  to maintain signal quality.
+
+---
+
+## 6. Release Metadata Definitions
+
+To ensure technical consistency, all releases must be classified according to the following
+authoritative levels:
+
+### 6.1 Readiness
+
+- **Alpha**: Early testing phase. New features are being added rapidly.
+- **Beta**: Feature complete. Focusing on fixing bugs and polishing the experience.
+- **Release Candidate (RC)**: Final validation phase. Stable enough for evaluation, pending final
+  sign-off.
+- **Stable**: Production-ready. Verified baseline ready for everyday use in your institution.
+
+### 6.2 Support Policy
+
+- **Experimental**: Active development. No stability guarantees; not recommended for production.
+- **Stable/LTS**: Long-term support. Guaranteed reliability and critical updates for a defined
+  period.
+- **Maintenance**: Actively maintained with regular improvements and security fixes.
+- **Security Only**: Critical fixes only. No new features or general bug fixes will be provided.
+- **End of Life (EOL)**: No longer supported. Institutions must upgrade to a newer version
+  immediately.
 
 ---
 

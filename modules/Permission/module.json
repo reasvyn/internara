@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Permission\\Providers\\PermissionServiceProvider"
-    ],
+    "providers": ["Modules\\Permission\\Providers\\PermissionServiceProvider"],
     "files": []
 }

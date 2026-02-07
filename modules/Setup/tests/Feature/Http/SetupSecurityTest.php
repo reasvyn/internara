@@ -33,9 +33,7 @@ test('it allows setup access if valid token and signature are provided', functio
 
     $url = \Illuminate\Support\Facades\URL::signedRoute('setup.welcome', ['token' => $token]);
 
-    $this->get($url)
-        ->assertOk()
-        ->assertSessionHas('setup_authorized', true);
+    $this->get($url)->assertOk()->assertSessionHas('setup_authorized', true);
 });
 
 test('it hides setup routes with 404 once installed and superadmin exists', function () {

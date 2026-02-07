@@ -82,7 +82,11 @@ class AppInstallCommand extends Command
                 foreach ($audit[$category] as $name => $status) {
                     if ($status === false) {
                         $this->newLine();
-                        $label = is_string($name) ? $name : (is_numeric($name) ? (string) $name : json_encode($name));
+                        $label = is_string($name)
+                            ? $name
+                            : (is_numeric($name)
+                                ? (string) $name
+                                : json_encode($name));
                         $this->components->error("Audit failed for: {$label}");
                         $failedCount++;
                     }
@@ -92,7 +96,12 @@ class AppInstallCommand extends Command
             // Check Database specifically
             if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
                 $this->newLine();
-                $this->components->error('Database error: '.(is_array($audit['database']['message']) ? json_encode($audit['database']['message']) : (string) ($audit['database']['message'] ?? 'Unknown error')));
+                $this->components->error(
+                    'Database error: '.
+                        (is_array($audit['database']['message'])
+                            ? json_encode($audit['database']['message'])
+                            : (string) ($audit['database']['message'] ?? 'Unknown error')),
+                );
                 $failedCount++;
             }
 
@@ -176,15 +185,20 @@ class AppInstallCommand extends Command
         $setupUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
             'setup.welcome',
             now()->addHours(24),
-            ['token' => $token]
+            ['token' => $token],
         );
 
         $this->info('Please proceed to the Web Setup Wizard using the authorized link below:');
         $this->warn($setupUrl);
 
-        if (parse_url($setupUrl, PHP_URL_PORT) === null && config('app.url') === 'http://localhost') {
+        if (
+            parse_url($setupUrl, PHP_URL_PORT) === null &&
+            config('app.url') === 'http://localhost'
+        ) {
             $this->newLine();
-            $this->info('Note: If you are using a specific port (e.g., via artisan serve), ensure the port is included in the URL.');
+            $this->info(
+                'Note: If you are using a specific port (e.g., via artisan serve), ensure the port is included in the URL.',
+            );
         }
 
         $this->newLine();

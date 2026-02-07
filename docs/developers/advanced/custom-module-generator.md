@@ -6,9 +6,8 @@ the technical mechanisms for enforcing structural invariants and strict-typing s
 construction of new domain modules.
 
 > **Governance Mandate:** Scaffolding logic must automatically implement the structural requirements
-> defined in the authoritative
-> **[System Requirements Specification](../specs.md)** and
-> the **[Architecture Description](../architecture.md)**.
+> defined in the authoritative **[System Requirements Specification](../specs.md)** and the
+> **[Architecture Description](../architecture.md)**.
 
 ---
 

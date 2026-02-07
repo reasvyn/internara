@@ -7,35 +7,31 @@ namespace Modules\Core\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
+use Modules\Core\Services\Contracts\MetadataService;
 
 /**
  * Class AppInfoCommand
  *
  * Displays technical identity and environment information about the Internara application.
- * This command is file-based and does not depend on the database.
  */
 class AppInfoCommand extends Command
 {
     /**
      * The name and signature of the console command.
-     *
-     * @var string
      */
     protected $signature = 'app:info';
 
     /**
      * The console command description.
-     *
-     * @var string
      */
-    protected $description = 'Display application identity, version, and tech stack (File-based)';
+    protected $description = 'Display application identity, version, and tech stack';
 
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(MetadataService $metadata): int
     {
-        $info = $this->getAppInfo();
+        $info = $metadata->getAll();
         $composer = $this->getComposerData();
         $package = $this->getPackageData();
 
@@ -44,19 +40,13 @@ class AppInfoCommand extends Command
 
         $this->components->twoColumnDetail(
             'Application Name',
-            (string) ($info['name'] ?? config('app.name', 'Unknown')),
+            (string) $metadata->get('name', config('app.name', 'Unknown')),
         );
-        $this->components->twoColumnDetail(
-            'Version',
-            (string) ($info['version'] ?? 'Unknown'),
-        );
-        $this->components->twoColumnDetail(
-            'Series Code',
-            (string) ($info['series_code'] ?? 'Unknown'),
-        );
+        $this->components->twoColumnDetail('Version', $metadata->getVersion());
+        $this->components->twoColumnDetail('Series Code', $metadata->getSeriesCode());
         $this->components->twoColumnDetail(
             'Support',
-            (string) ($info['support'] ?? 'Unknown'),
+            (string) $metadata->get('support', 'Unknown'),
         );
 
         $this->newLine();
@@ -93,18 +83,10 @@ class AppInfoCommand extends Command
 
         $this->newLine();
         $this->components->info('Author Information');
-        $this->components->twoColumnDetail(
-            'Author',
-            (string) ($info['author']['name'] ?? 'Unknown'),
-        );
-        $this->components->twoColumnDetail(
-            'GitHub',
-            (string) ($info['author']['github'] ?? 'Unknown'),
-        );
-        $this->components->twoColumnDetail(
-            'Email',
-            (string) ($info['author']['email'] ?? 'Unknown'),
-        );
+        $author = $metadata->getAuthor();
+        $this->components->twoColumnDetail('Author', (string) ($author['name'] ?? 'Unknown'));
+        $this->components->twoColumnDetail('GitHub', (string) ($author['github'] ?? 'Unknown'));
+        $this->components->twoColumnDetail('Email', (string) ($author['email'] ?? 'Unknown'));
 
         $this->newLine();
         $this->components->info('Environment Details');
@@ -123,20 +105,6 @@ class AppInfoCommand extends Command
         $this->newLine();
 
         return self::SUCCESS;
-    }
-
-    /**
-     * Load application information from JSON file.
-     */
-    protected function getAppInfo(): array
-    {
-        $path = base_path('app_info.json');
-
-        if (! File::exists($path)) {
-            return [];
-        }
-
-        return json_decode(File::get($path), true) ?? [];
     }
 
     /**

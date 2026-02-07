@@ -20,10 +20,9 @@ deterministic verification artifacts.
 
 ## 3. Pest v4 Technical Baseline
 
-- **[Pest Documentation Index](pestphp/README.md)**: Comprehensive technical catalog for
-  the Pest verification framework.
+- **[Pest Documentation Index](pestphp/README.md)**: Comprehensive technical catalog for the Pest
+  verification framework.
 
 ---
 
-_All verification activities must satisfy the
-**[Testing & Verification Guide](../testing.md)**._
+_All verification activities must satisfy the **[Testing & Verification Guide](../testing.md)**._

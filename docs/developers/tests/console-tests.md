@@ -6,8 +6,7 @@ commands produce deterministic output and execute intended side-effects without 
 regression.
 
 > **Governance Mandate:** All administrative orchestration tools must demonstrate compliance with
-> the **[Automated Tooling Reference](../tooling.md)** through
-> comprehensive automated verification.
+> the **[Automated Tooling Reference](../tooling.md)** through comprehensive automated verification.
 
 ---
 

@@ -37,39 +37,42 @@ beforeEach(function () {
         ->andReturn(7);
 });
 
-test('it prevents journal creation if mandatory guidance is not completed [SYRS-F-101]', function () {
-    // Factory resolution via Service Contract (Isolation Invariant)
-    $userService = app(UserService::class);
-    $student = $userService->factory()->create();
-    $student->assignRole('student');
-    $this->actingAs($student);
+test(
+    'it prevents journal creation if mandatory guidance is not completed [SYRS-F-101]',
+    function () {
+        // Factory resolution via Service Contract (Isolation Invariant)
+        $userService = app(UserService::class);
+        $student = $userService->factory()->create();
+        $student->assignRole('student');
+        $this->actingAs($student);
 
-    // Create mandatory handbook
-    Handbook::factory()->create(['is_mandatory' => true, 'is_active' => true]);
+        // Create mandatory handbook
+        Handbook::factory()->create(['is_mandatory' => true, 'is_active' => true]);
 
-    $internshipService = app(InternshipService::class);
-    $internship = $internshipService->factory()->create();
+        $internshipService = app(InternshipService::class);
+        $internship = $internshipService->factory()->create();
 
-    $registrationService = app(RegistrationService::class);
-    $registration = $registrationService->factory()->create([
-        'student_id' => $student->id,
-        'internship_id' => $internship->id,
-        'start_date' => now()->subDays(1),
-        'end_date' => now()->addDays(30),
-    ]);
+        $registrationService = app(RegistrationService::class);
+        $registration = $registrationService->factory()->create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'start_date' => now()->subDays(1),
+            'end_date' => now()->addDays(30),
+        ]);
 
-    $journalService = app(JournalService::class);
+        $journalService = app(JournalService::class);
 
-    $this->expectException(\Modules\Exception\AppException::class);
+        $this->expectException(\Modules\Exception\AppException::class);
 
-    $journalService->create([
-        'registration_id' => $registration->id,
-        'student_id' => $student->id,
-        'date' => now()->format('Y-m-d'),
-        'work_topic' => 'Testing Gating',
-        'activity_description' => 'Should fail',
-    ]);
-});
+        $journalService->create([
+            'registration_id' => $registration->id,
+            'student_id' => $student->id,
+            'date' => now()->format('Y-m-d'),
+            'work_topic' => 'Testing Gating',
+            'activity_description' => 'Should fail',
+        ]);
+    },
+);
 
 test('it returns localized gating error messages [SYRS-NF-403]', function () {
     $handbookService = app(HandbookService::class);
@@ -83,7 +86,9 @@ test('it returns localized gating error messages [SYRS-NF-403]', function () {
     try {
         app(AttendanceService::class)->checkIn($studentId);
     } catch (\Modules\Exception\AppException $e) {
-        expect($e->getUserMessage())->toBe('Anda wajib menyelesaikan pembekalan (membaca seluruh panduan wajib) sebelum dapat mengakses fitur ini.');
+        expect($e->getUserMessage())->toBe(
+            'Anda wajib menyelesaikan pembekalan (membaca seluruh panduan wajib) sebelum dapat mengakses fitur ini.',
+        );
     }
 
     // Test English
@@ -91,7 +96,9 @@ test('it returns localized gating error messages [SYRS-NF-403]', function () {
     try {
         app(AttendanceService::class)->checkIn($studentId);
     } catch (\Modules\Exception\AppException $e) {
-        expect($e->getUserMessage())->toBe('You must complete the briefing (read all mandatory handbooks) before you can access this feature.');
+        expect($e->getUserMessage())->toBe(
+            'You must complete the briefing (read all mandatory handbooks) before you can access this feature.',
+        );
     }
 });
 
@@ -104,12 +111,14 @@ test('it allows activities after mandatory guidance is acknowledged [SYRS-F-101]
     $handbook = Handbook::factory()->create(['is_mandatory' => true, 'is_active' => true]);
 
     $internship = app(InternshipService::class)->factory()->create();
-    $registration = app(RegistrationService::class)->factory()->create([
-        'student_id' => $student->id,
-        'internship_id' => $internship->id,
-        'start_date' => now()->subDays(1),
-        'end_date' => now()->addDays(30),
-    ]);
+    $registration = app(RegistrationService::class)
+        ->factory()
+        ->create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'start_date' => now()->subDays(1),
+            'end_date' => now()->addDays(30),
+        ]);
     $registration->setStatus('active');
 
     // Acknowledge via Service

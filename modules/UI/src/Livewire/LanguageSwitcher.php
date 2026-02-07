@@ -6,31 +6,27 @@ namespace Modules\UI\Livewire;
 
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Modules\UI\Services\Contracts\LocalizationService;
 
 class LanguageSwitcher extends Component
 {
     /**
-     * Get the supported locales from configuration.
+     * Get the supported locales from the localization service.
      */
     #[Computed]
     public function locales(): array
     {
-        return (array) config('ui.locales', []);
+        return app(LocalizationService::class)->getSupportedLocales();
     }
 
     /**
      * Change the application locale.
      */
-    public function changeLocale(string $locale): void
+    public function changeLocale(string $locale, LocalizationService $service): void
     {
-        if (! array_key_exists($locale, $this->locales())) {
-            return;
+        if ($service->setLocale($locale)) {
+            $this->redirect(request()->header('Referer') ?: '/', navigate: true);
         }
-
-        app()->setLocale($locale);
-        session()->put('locale', $locale);
-
-        $this->redirect(request()->header('Referer') ?: '/', navigate: true);
     }
 
     public function render()

@@ -6,7 +6,9 @@
             'badge-'.$size,
             'font-medium uppercase tracking-wider text-[10px]',
         ])
+        role="status"
+        aria-label="{{ __('permission::roles.'.$roleName) }}"
     >
-        {{ str_replace('-', ' ', $roleName) }}
+        {{ __('permission::roles.'.$roleName) }}
     </div>
 </div>

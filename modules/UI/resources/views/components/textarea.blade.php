@@ -16,6 +16,6 @@
         {{ $attributes->merge(['class' => 'textarea-bordered focus:border-accent focus:ring-accent w-full']) }}
         :hint="$hint"
         :icon="$icon"
-        aria-label="{{ $label ?? $attributes->get('placeholder') }}"
+        aria-label="{{ $label ?? $attributes->get('placeholder') ?? __('ui::common.textarea') }}"
     />
 </div>

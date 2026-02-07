@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Internship\\Providers\\InternshipServiceProvider"
-    ],
+    "providers": ["Modules\\Internship\\Providers\\InternshipServiceProvider"],
     "files": []
 }

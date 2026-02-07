@@ -1,29 +1,35 @@
 <div>
-    <x-ui::main title="{{ __('assignment::ui.manage_assignments') }}" subtitle="{{ __('Define mandatory tasks and institutional policies for students.') }}">
+    <x-ui::header :title="__('assignment::ui.manage_assignments')" :subtitle="__('assignment::ui.subtitle')">
         <x-slot:actions>
-            <x-ui::button label="{{ __('assignment::ui.add_assignment') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
+            <x-ui::button :label="__('assignment::ui.add_assignment')" icon="tabler.plus" priority="primary" wire:click="add" />
         </x-slot:actions>
+    </x-ui::header>
 
+    <x-ui::main>
         <x-ui::card>
             <x-ui::table :headers="[
-                ['key' => 'title', 'label' => __('Title')],
-                ['key' => 'type.name', 'label' => __('Type')],
+                ['key' => 'title', 'label' => __('assignment::ui.title')],
+                ['key' => 'type.name', 'label' => __('assignment::ui.type')],
                 ['key' => 'is_mandatory', 'label' => __('assignment::ui.is_mandatory')],
                 ['key' => 'due_date', 'label' => __('assignment::ui.due_date')],
             ]" :rows="$assignments" with-pagination>
                 
                 @scope('cell_is_mandatory', $assignment)
-                    <x-ui::badge :label="$assignment->is_mandatory ? __('Yes') : __('No')" :class="$assignment->is_mandatory ? 'badge-error' : 'badge-outline'" />
+                    <x-ui::badge 
+                        :value="$assignment->is_mandatory ? __('ui::common.success') : __('ui::common.cancel')" 
+                        :priority="$assignment->is_mandatory ? 'primary' : 'secondary'" 
+                        class="badge-sm" 
+                    />
                 @endscope
 
                 @scope('cell_due_date', $assignment)
-                    {{ $assignment->due_date?->format('d/m/Y H:i') ?? '-' }}
+                    <span class="text-xs opacity-70">{{ $assignment->due_date?->translatedFormat('d M Y H:i') ?? '-' }}</span>
                 @endscope
 
                 @scope('actions', $assignment)
-                    <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $assignment->id }}')" />
-                        <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="remove('{{ $assignment->id }}')" wire:confirm="{{ __('assignment::ui.delete_confirm') }}" />
+                    <div class="flex gap-1">
+                        <x-ui::button icon="tabler.edit" priority="tertiary" class="text-info btn-sm" wire:click="edit('{{ $assignment->id }}')" />
+                        <x-ui::button icon="tabler.trash" priority="tertiary" class="text-error btn-sm" wire:click="remove('{{ $assignment->id }}')" wire:confirm="__('assignment::ui.delete_confirm')" />
                     </div>
                 @endscope
             </x-ui::table>
@@ -31,27 +37,27 @@
     </x-ui::main>
 
     {{-- Form Modal --}}
-    <x-ui::modal wire:model="formModal" title="{{ $recordId ? __('assignment::ui.edit_assignment') : __('assignment::ui.add_assignment') }}">
+    <x-ui::modal wire:model="formModal" :title="$recordId ? __('assignment::ui.edit_assignment') : __('assignment::ui.add_assignment')">
         <x-ui::form wire:submit="save">
-            <x-ui::input label="{{ __('Title') }}" wire:model="title" required />
+            <x-ui::input :label="__('assignment::ui.title')" wire:model="title" required />
             
             <x-ui::select 
-                label="{{ __('assignment::ui.assignment_type') }}" 
+                :label="__('assignment::ui.assignment_type')" 
                 wire:model="assignment_type_id" 
                 :options="$types" 
                 required 
             />
 
-            <x-ui::textarea label="{{ __('Description') }}" wire:model="description" />
+            <x-ui::textarea :label="__('ui::common.description')" wire:model="description" />
             
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::checkbox label="{{ __('assignment::ui.is_mandatory') }}" wire:model="is_mandatory" />
-                <x-ui::input label="{{ __('assignment::ui.due_date') }}" type="datetime-local" wire:model="due_date" />
+                <x-ui::checkbox :label="__('assignment::ui.is_mandatory')" wire:model="is_mandatory" />
+                <x-ui::input :label="__('assignment::ui.due_date')" type="datetime-local" wire:model="due_date" />
             </div>
 
             <x-slot:actions>
-                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
-                <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" priority="primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

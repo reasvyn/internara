@@ -1,4 +1,5 @@
 @props([
+    'id' => \Illuminate\Support\Str::random(10),
     'title' => null,
     'subtitle' => null,
     'separator' => true,
@@ -7,11 +8,13 @@
 
 <x-mary-modal 
     {{ $attributes->merge(['class' => 'backdrop-blur-sm']) }}
+    id="{{ $id }}"
+    aria-labelledby="{{ $id }}-title"
 >
     <div class="p-6 lg:p-8" :data-aos="$aos">
         @if($title)
             <div class="mb-6">
-                <h3 class="text-2xl font-bold text-base-content">{{ $title }}</h3>
+                <h3 id="{{ $id }}-title" class="text-2xl font-bold text-base-content">{{ $title }}</h3>
                 @if($subtitle)
                     <p class="text-base-content/60 mt-1 text-sm">{{ $subtitle }}</p>
                 @endif

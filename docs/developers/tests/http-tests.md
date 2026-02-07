@@ -6,8 +6,7 @@ of routing architectures, the effectiveness of security middleware, and the dete
 of system responses.
 
 > **Governance Mandate:** All systemic entry points must demonstrate compliance with the
-> **[Security & Isolation Protocols](../architecture.md)** through rigorous
-> automated verification.
+> **[Security & Isolation Protocols](../architecture.md)** through rigorous automated verification.
 
 ---
 

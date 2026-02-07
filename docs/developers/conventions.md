@@ -5,9 +5,9 @@ consistency, maintainability, and structural integrity according to **ISO/IEC 11
 **ISO/IEC 25010** (Maintainability).
 
 > **Governance Mandate:** These conventions serve as the technical implementation of the
-> authoritative **[System Requirements Specification](specs.md)**. All
-> software artifacts must satisfy the requirements for Multi-Language support, Mobile-First
-> responsiveness, and Role-Based security defined in the SSoT.
+> authoritative **[System Requirements Specification](specs.md)**. All software artifacts must
+> satisfy the requirements for Multi-Language support, Mobile-First responsiveness, and Role-Based
+> security defined in the SSoT.
 
 ---
 
@@ -102,10 +102,17 @@ Data must be automatically scoped by the active academic cycle.
   `setting('active_academic_year')`.
 
 ### 4.4 Semantic Identity: App vs. Brand
-To ensure clear attribution and institutional flexibility, Internara distinguishes between two types of identity:
-- **`app_name` (Product Identity)**: Defined in `app_info.json` (SSoT). This represents the software itself ("Internara") and is used for technical metadata, versioning, and system-level attribution.
-- **`brand_name` (Instance Identity)**: Managed via `setting('brand_name')`. This represents the specific institution using the system (e.g., "SMK Negeri 1 Jakarta"). It is used for UI branding, reports, and communication.
-- **Fallback Rule**: `brand_name` should always fallback to `app_name` if no custom brand is defined.
+
+To ensure clear attribution and institutional flexibility, Internara distinguishes between two types
+of identity:
+
+- **`app_name` (Product Identity)**: Defined in `app_info.json` (SSoT). This represents the software
+  itself ("Internara") and is used for technical metadata, versioning, and system-level attribution.
+- **`brand_name` (Instance Identity)**: Managed via `setting('brand_name')`. This represents the
+  specific institution using the system (e.g., "SMK Negeri 1 Jakarta"). It is used for UI branding,
+  reports, and communication.
+- **Fallback Rule**: `brand_name` should always fallback to `app_name` if no custom brand is
+  defined.
 
 ---
 
@@ -150,8 +157,23 @@ tools that provide technical capabilities without containing business logic.
 - **Service vs. Support**: If logic defines a business rule (e.g., "how an internship is
   validated"), it resides in a **Service**. If it defines a technical tool (e.g., "how to normalize
   a path"), it resides in **Support**.
-- **Global Helpers**: Utility functions that need to be globally accessible should be defined in
-  `src/Support/helpers.php`.
+- **Semantic Class Structure**: Utilities must be organized into semantic static classes based on
+  their domain of responsibility (e.g., `Support\Formatter.php`, `Support\Module.php`).
+
+### 6.1 Global Helper Functions (Wrappers)
+
+To enhance developer productivity and code brevity, technical utilities may be exposed as global
+helper functions. These functions must strictly adhere to the following protocols:
+
+- **Wrapper Pattern**: Global functions must act solely as "syntactic sugar" wrappers for the
+  underlying static classes in the Support layer. Direct implementation of logic within a function
+  is prohibited.
+- **Naming Convention**: Utilize `snake_case` for global functions to align with Laravel's core
+  helper conventions (e.g., `is_active_module()` wraps `Module::isActive()`).
+- **Organization**: Each global function must reside in its own file within the `src/Functions/`
+  directory, named after the function (e.g., `src/Functions/shared_url.php`).
+- **Autoloading**: Functions must be registered via the `autoload.files` section of the module's
+  `composer.json`.
 
 ---
 
@@ -320,9 +342,9 @@ domains.
 - **Concrete Class Restriction**: The use of **Domain-Specific Concrete Classes** (Models,
   Controllers, or private implementations) from other modules is **Strictly Forbidden**. However,
   **Public Infrastructure Classes** (Stateless Helpers, Utilities, or Facades) that are
-  intentionally designed for public consumption and are not coupled to the source module's
-  internal architecture may be utilized. Verification should verify the contract's output, not the
-  external module's internals.
+  intentionally designed for public consumption and are not coupled to the source module's internal
+  architecture may be utilized. Verification should verify the contract's output, not the external
+  module's internals.
 
 ### 17.4 Presentation Isolation (Slot Injection)
 
@@ -354,7 +376,6 @@ AA)** standards.
 _Non-compliance with these conventions indicates a failure of architectural integrity and will
 result in the rejection of the artifact during the V&V phase._
 
-
 ---
 
 # Exception Handling: Engineering Resilience Standards
@@ -365,8 +386,7 @@ Security). It defines the strategy for ensuring system stability while providing
 and localized feedback to stakeholders.
 
 > **Governance Mandate:** Exception handling must prioritize system integrity and the protection of
-> sensitive information as mandated by the authoritative
-> **[Internara Specs](specs.md)**.
+> sensitive information as mandated by the authoritative **[Internara Specs](specs.md)**.
 
 ---
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Notification\Services;
 
-use Modules\Notification\Contracts\Notifier as Contract;
+use Modules\Notification\Services\Contracts\Notifier as Contract;
 
 /**
  * Class Notifier

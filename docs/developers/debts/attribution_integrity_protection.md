@@ -28,6 +28,7 @@ The system implements a "Defense in Depth" approach, verifying integrity at diff
 application lifecycle.
 
 ### 2.1 Layer 1: The Root (Bootstrap Verification)
+
 - **Location**: `bootstrap/app.php`
 - **Mechanism**: A self-invoking anonymous function executed at the very beginning of the boot
   process.
@@ -37,18 +38,20 @@ application lifecycle.
   is the entry point for both Web and CLI.
 
 ### 2.2 Layer 2: The Logic (Service Verification)
+
 - **Location**: `Modules\Setting\Services\SettingService`
 - **Mechanism**: Integrity check within the constructor.
 - **Behavior**: Re-validates the metadata integrity during the initialization of the Setting
   service.
-- **Impact**: **Application Exception**. Throws a `Modules\Exception\AppException`, ensuring that even
-  if Layer 1 is bypassed, the core configuration engine will block operation.
+- **Impact**: **Application Exception**. Throws a `Modules\Exception\AppException`, ensuring that
+  even if Layer 1 is bypassed, the core configuration engine will block operation.
 
 ### 2.3 Layer 3: The Helper (Utility Fallback)
+
 - **Location**: `Modules\Core\Functions\setting.php`
 - **Mechanism**: Static variable-based check within the global `setting()` helper.
-- **Behavior**: Ensures that even if the `Setting` module is disabled, the fallback mechanism
-  still enforces author attribution before resolving any values.
+- **Behavior**: Ensures that even if the `Setting` module is disabled, the fallback mechanism still
+  enforces author attribution before resolving any values.
 - **Impact**: **Runtime Exception**. Blocks access to any configuration values if metadata is
   compromised.
 
@@ -74,11 +77,12 @@ This strategy introduces a maintenance overhead that future developers must resp
 ## 4. Remediation of Violations
 
 If an "Integrity Violation" or "Attribution Error" is triggered:
+
 1.  Verify that `app_info.json` exists in the project root.
 2.  Ensure that `author.name` in `app_info.json` is set to `Reas Vyn`.
 3.  Check for accidental deletions of the protection code in the mentioned files.
 
 ---
 
-_This engineering record ensures that the attribution protection remains a core part of the Internara
-architecture, preserving the relationship between the system and its creator._
+_This engineering record ensures that the attribution protection remains a core part of the
+Internara architecture, preserving the relationship between the system and its creator._

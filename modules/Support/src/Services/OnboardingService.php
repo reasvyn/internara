@@ -15,10 +15,14 @@ use Modules\User\Services\Contracts\UserService;
 /**
  * Class OnboardingService
  *
- * Implementation for batch onboarding stakeholders via CSV.
+ * Provides high-level administrative orchestration for batch onboarding
+ * stakeholders through CSV data processing.
  */
 class OnboardingService implements Contract
 {
+    /**
+     * Create a new onboarding service instance.
+     */
     public function __construct(
         protected UserService $userService,
         protected ProfileService $profileService,
@@ -38,7 +42,7 @@ class OnboardingService implements Contract
         ];
 
         if (! file_exists($filePath) || ! is_readable($filePath)) {
-            $results['errors'][] = 'File not found or not readable.';
+            $results['errors'][] = __('support::onboarding.errors.file_not_readable');
 
             return $results;
         }
@@ -47,26 +51,29 @@ class OnboardingService implements Contract
         $header = fgetcsv($handle);
 
         if (! $header) {
-            $results['errors'][] = 'Empty CSV file.';
+            $results['errors'][] = __('support::onboarding.errors.empty_file');
+            fclose($handle);
 
             return $results;
         }
 
-        // Normalize header keys
-        $header = array_map(fn ($h) => strtolower(trim($h)), $header);
+        // Normalize header keys for consistent mapping
+        $header = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
 
         $rowCount = 1;
         while (($row = fgetcsv($handle)) !== false) {
             $rowCount++;
 
-            // Skip empty rows
+            // Skip empty rows to prevent unnecessary processing
             if (empty(array_filter($row))) {
                 continue;
             }
 
             if (count($header) !== count($row)) {
                 $results['failure']++;
-                $results['errors'][] = "Row {$rowCount}: Column count mismatch.";
+                $results['errors'][] = __('support::onboarding.errors.column_mismatch', [
+                    'row' => $rowCount,
+                ]);
 
                 continue;
             }
@@ -89,9 +96,12 @@ class OnboardingService implements Contract
         return $results;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTemplate(string $type): string
     {
-        $columns = ['name', 'email', 'username', 'password', 'phone', 'address'];
+        $columns = ['name', 'email', 'username', 'password', 'phone', 'address', 'department_id'];
 
         if ($type === 'student') {
             $columns[] = 'nisn';
@@ -103,14 +113,31 @@ class OnboardingService implements Contract
     }
 
     /**
-     * Process a single CSV row.
+     * Orchestrates the creation of a single stakeholder identity and its profile.
+     *
+     * @param array<string, mixed> $data Raw row data from the CSV.
+     * @param string $type The designated stakeholder role.
+     *
+     * @throws \InvalidArgumentException If mandatory data is missing or invalid.
      */
     protected function processRow(array $data, string $type): void
     {
-        // 1. Prepare User Data
+        // 1. Data Integrity Pre-check
+        $name = $data['name'] ?? null;
+        $email = $data['email'] ?? null;
+
+        if (empty($name) || empty($email)) {
+            throw new \InvalidArgumentException(__('support::onboarding.errors.required_fields'));
+        }
+
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException(__('support::onboarding.errors.invalid_email'));
+        }
+
+        // 2. Prepare Unified User Data structure
         $userData = [
-            'name' => $data['name'] ?? null,
-            'email' => $data['email'] ?? null,
+            'name' => $name,
+            'email' => $email,
             'username' => $data['username'] ?? null,
             'password' => $data['password'] ?? Str::random(12),
             'roles' => [$type],
@@ -121,24 +148,16 @@ class OnboardingService implements Contract
             ],
         ];
 
-        if (empty($userData['name']) || empty($userData['email'])) {
-            throw new \InvalidArgumentException('Name and Email are required.');
-        }
-
-        if (! filter_var($userData['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('Invalid email format.');
-        }
-
-        // 2. Create User (this also initializes profile and profileable via syncProfileable)
+        // 3. Create User via Service (Orchestrates User, Auth, and Profile initialization)
         $user = $this->userService->create($userData);
 
-        // 3. Update Profileable specific data (nisn/nip)
+        // 4. Update Stakeholder-specific attributes via Domain Services
         $profile = $user->profile;
-        if ($profile && $profile->profileable) {
+        if ($profile && $profile->profileable_id) {
             if ($type === 'student' && ! empty($data['nisn'])) {
-                $profile->profileable->update(['nisn' => $data['nisn']]);
+                $this->studentService->update($profile->profileable_id, ['nisn' => $data['nisn']]);
             } elseif ($type === 'teacher' && ! empty($data['nip'])) {
-                $profile->profileable->update(['nip' => $data['nip']]);
+                $this->teacherService->update($profile->profileable_id, ['nip' => $data['nip']]);
             }
         }
     }

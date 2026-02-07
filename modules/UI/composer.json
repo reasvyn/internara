@@ -10,14 +10,12 @@
     "extra": {
         "laravel": {
             "providers": [],
-            "aliases": {
-
-            }
+            "aliases": {}
         }
     },
     "autoload": {
         "files": [
-            "src/Support/helpers.php"
+            "src/Functions/slot_exists.php"
         ],
         "psr-4": {
             "Modules\\UI\\": "src/",

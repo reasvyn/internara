@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Notifications\\Providers\\NotificationsServiceProvider"
-    ],
+    "providers": ["Modules\\Notifications\\Providers\\NotificationsServiceProvider"],
     "files": []
 }

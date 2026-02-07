@@ -13,17 +13,19 @@ declare(strict_types=1);
 */
 (function () {
     $authorIdentity = 'Reas Vyn';
-    $path = dirname(__DIR__) . '/app_info.json';
+    $path = dirname(__DIR__).'/app_info.json';
 
     if (! file_exists($path)) {
         header('HTTP/1.1 403 Forbidden');
-        die("Critical Error: Core system metadata (app_info.json) is missing.");
+        exit('Critical Error: Core system metadata (app_info.json) is missing.');
     }
 
     $info = json_decode(file_get_contents($path), true);
     if (($info['author']['name'] ?? null) !== $authorIdentity) {
         header('HTTP/1.1 403 Forbidden');
-        die("Attribution Error: Unauthorized author modification detected. This system requires attribution to [{$authorIdentity}].");
+        exit(
+            "Attribution Error: Unauthorized author modification detected. This system requires attribution to [{$authorIdentity}]."
+        );
     }
 })();
 

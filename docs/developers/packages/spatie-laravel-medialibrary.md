@@ -10,8 +10,7 @@ assets.
 ## 1. Technical Baseline (Asset View)
 
 Internara utilizes a specialized configuration of the media engine to satisfy the document
-management requirements defined in the
-**[System Requirements Specification](../specs.md)**.
+management requirements defined in the **[System Requirements Specification](../specs.md)**.
 
 ### 1.1 Identity Invariant: Polymorphic UUID Support
 

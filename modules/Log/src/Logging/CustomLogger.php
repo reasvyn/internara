@@ -16,9 +16,7 @@ class CustomLogger
      */
     public function __invoke(mixed $logger): void
     {
-        $monolog = $logger instanceof \Illuminate\Log\Logger
-            ? $logger->getLogger()
-            : $logger;
+        $monolog = $logger instanceof \Illuminate\Log\Logger ? $logger->getLogger() : $logger;
 
         if ($monolog instanceof \Monolog\Logger) {
             $monolog->pushProcessor(new PiiMaskingProcessor);

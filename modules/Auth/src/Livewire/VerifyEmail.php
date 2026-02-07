@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Auth\Livewire;
 
 use Livewire\Component;
+use Modules\Auth\Concerns\RedirectsUsers;
 use Modules\Auth\Services\Contracts\AuthService;
-use Modules\Auth\Traits\RedirectsUsers;
 use Modules\User\Models\User;
 
 class VerifyEmail extends Component

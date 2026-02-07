@@ -26,11 +26,14 @@ class Turnstile implements ValidationRule
             return;
         }
 
-        $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'secret' => $secretKey,
-            'response' => $value,
-            'remoteip' => request()->ip(),
-        ]);
+        $response = Http::asForm()->post(
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            [
+                'secret' => $secretKey,
+                'response' => $value,
+                'remoteip' => request()->ip(),
+            ],
+        );
 
         if (! $response->json('success')) {
             $fail(__('shared::validation.turnstile_failed'));

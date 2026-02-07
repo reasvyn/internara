@@ -4,7 +4,9 @@ The `Media` module provides centralized management for file uploads and digital 
 Internara ecosystem. It leverages `spatie/laravel-medialibrary` to handle file associations while
 ensuring systemic consistency through standardized traits and identities.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 

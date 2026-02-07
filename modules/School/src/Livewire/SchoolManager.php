@@ -40,7 +40,9 @@ class SchoolManager extends Component
     {
         // Allow saving without 'school.manage' permission ONLY during the initial setup wizard.
         // The wizard is already protected by Signed URLs and specific session tokens.
-        $isSetupPhase = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupPhase =
+            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            true;
 
         if (! $isSetupPhase) {
             $this->authorize('school.manage');

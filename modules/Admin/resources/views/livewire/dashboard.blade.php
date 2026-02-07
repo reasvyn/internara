@@ -1,28 +1,32 @@
 <div>
-    <x-ui::header title="{{ __('Dasbor Admin') }}" subtitle="{{ __('Selamat datang di panel administrasi Internara.') }}" />
+    <x-ui::header 
+        :title="__('admin::ui.dashboard.title')" 
+        :subtitle="__('admin::ui.dashboard.subtitle')" 
+    />
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 mb-6">
-        <x-ui::stat title="{{ __('Total Siswa Magang') }}" value="{{ $summary['total_interns'] }}" icon="tabler.users" />
-        <x-ui::stat title="{{ __('Mitra Industri Aktif') }}" value="{{ $summary['active_partners'] }}" icon="tabler.building" />
-        <x-ui::stat title="{{ __('Tingkat Penempatan') }}" value="{{ $summary['placement_rate'] }}%" icon="tabler.chart-pie" />
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 mb-8">
+        <x-ui::stat :title="__('admin::ui.dashboard.stats.total_interns')" :value="$summary['total_interns']" icon="tabler.users" priority="primary" />
+        <x-ui::stat :title="__('admin::ui.dashboard.stats.active_partners')" :value="$summary['active_partners']" icon="tabler.building" priority="secondary" />
+        <x-ui::stat :title="__('admin::ui.dashboard.stats.placement_rate')" :value="$summary['placement_rate'] . '%'" icon="tabler.chart-pie" priority="accent" />
     </div>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        <div class="lg:col-span-3 flex flex-col gap-6">
-            <x-ui::card title="{{ __('Penilaian Magang Terbaru') }}" shadow separator>
-                @php
-                    $registrations = app(\Modules\Internship\Services\Contracts\RegistrationService::class)->paginate(10);
-                @endphp
-
-                <x-ui::table :rows="$registrations" :headers="[
-                    ['key' => 'student.name', 'label' => __('Siswa')],
-                    ['key' => 'company_name', 'label' => __('Perusahaan')],
-                    ['key' => 'final_grade', 'label' => __('Nilai Akhir')],
+        <div class="lg:col-span-3 flex flex-col gap-8">
+            <x-ui::card :title="__('admin::ui.dashboard.recent_assessments')" shadow separator>
+                <x-ui::table :rows="$this->registrations" :headers="[
+                    ['key' => 'student.name', 'label' => __('admin::ui.dashboard.table.student')],
+                    ['key' => 'company_name', 'label' => __('admin::ui.dashboard.table.company')],
+                    ['key' => 'final_grade', 'label' => __('admin::ui.dashboard.table.final_grade')],
                     ['key' => 'actions', 'label' => '']
                 ]">
                     @scope('cell_student.name', $reg)
-                        <div class="font-bold">{{ $reg->student->name }}</div>
-                        <div class="text-xs opacity-70">{{ $reg->student->username }}</div>
+                        <div class="flex items-center gap-3">
+                            <x-ui::avatar :image="$reg->student->avatar_url" :title="$reg->student->name" size="w-8" />
+                            <div>
+                                <div class="font-bold text-sm leading-tight">{{ $reg->student->name }}</div>
+                                <div class="text-[10px] uppercase tracking-wider opacity-50">{{ $reg->student->username }}</div>
+                            </div>
+                        </div>
                     @endscope
 
                     @scope('cell_final_grade', $reg)
@@ -30,39 +34,39 @@
                             $scoreCard = app(\Modules\Assessment\Services\Contracts\AssessmentService::class)->getScoreCard($reg->id);
                         @endphp
                         @if($scoreCard['final_grade'])
-                            <x-ui::badge value="{{ number_format($scoreCard['final_grade'], 2) }}" class="badge-primary" />
+                            <x-ui::badge :value="number_format($scoreCard['final_grade'], 2)" priority="primary" />
                         @else
-                            <x-ui::badge value="{{ __('Belum Dinilai') }}" class="badge-ghost" />
+                            <x-ui::badge :value="__('admin::ui.dashboard.table.not_graded')" priority="secondary" class="badge-sm" />
                         @endif
                     @endscope
 
                     @scope('actions', $reg)
-                        <div class="flex gap-2">
-                            <x-ui::button icon="tabler.certificate" class="btn-ghost btn-sm" link="{{ route('assessment.certificate', $reg->id) }}" tooltip="{{ __('Sertifikat') }}" />
-                            <x-ui::button icon="tabler.file-description" class="btn-ghost btn-sm" link="{{ route('assessment.transcript', $reg->id) }}" tooltip="{{ __('Transkrip') }}" />
+                        <div class="flex gap-1">
+                            <x-ui::button icon="tabler.certificate" priority="tertiary" class="btn-sm" link="{{ route('assessment.certificate', $reg->id) }}" tooltip="{{ __('ui::common.success') }}" />
+                            <x-ui::button icon="tabler.file-description" priority="tertiary" class="btn-sm" link="{{ route('assessment.transcript', $reg->id) }}" tooltip="{{ __('ui::common.options') }}" />
                         </div>
                     @endscope
                 </x-ui::table>
             </x-ui::card>
             
-            <x-ui::card title="{{ __('Siswa Dalam Pantauan (At-Risk)') }}" shadow separator class="border-error">
+            <x-ui::card :title="__('admin::ui.dashboard.at_risk_students')" shadow separator class="border-error/20">
                 <x-ui::table :rows="$atRiskStudents" :headers="[
-                    ['key' => 'student_name', 'label' => __('Nama Siswa')],
-                    ['key' => 'reason', 'label' => __('Penyebab')],
-                    ['key' => 'risk_level', 'label' => __('Tingkat Risiko')],
+                    ['key' => 'student_name', 'label' => __('admin::ui.dashboard.table.student')],
+                    ['key' => 'reason', 'label' => __('admin::ui.dashboard.table.reason')],
+                    ['key' => 'risk_level', 'label' => __('admin::ui.dashboard.table.risk_level')],
                 ]">
                     @scope('cell_risk_level', $item)
-                        <x-ui::badge :value="$item['risk_level']" :class="$item['risk_level'] === 'High' ? 'badge-error' : 'badge-warning'" />
+                        <x-ui::badge :value="$item['risk_level']" :priority="$item['risk_level'] === 'High' ? 'error' : 'warning'" class="badge-sm" />
                     @endscope
                 </x-ui::table>
             </x-ui::card>
         </div>
 
         <div class="lg:col-span-1 flex flex-col gap-6">
-            <x-ui::card title="{{ __('Tautan Cepat') }}" shadow separator>
-                <div class="flex flex-col gap-2">
-                    <x-ui::button label="{{ __('Manajemen User') }}" icon="tabler.users" class="btn-ghost justify-start" link="#" />
-                    <x-ui::button label="{{ __('Konfigurasi Sistem') }}" icon="tabler.settings" class="btn-ghost justify-start" link="#" />
+            <x-ui::card :title="__('admin::ui.dashboard.quick_links')" shadow separator>
+                <div class="flex flex-col gap-1">
+                    <x-ui::button :label="__('admin::ui.dashboard.user_management')" icon="tabler.users" priority="tertiary" class="justify-start w-full" link="{{ route('user.manager') }}" />
+                    <x-ui::button :label="__('admin::ui.dashboard.system_config')" icon="tabler.settings" priority="tertiary" class="justify-start w-full" link="{{ route('admin.settings') }}" />
                 </div>
             </x-ui::card>
 

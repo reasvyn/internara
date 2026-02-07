@@ -5,23 +5,30 @@ declare(strict_types=1);
 namespace Modules\Guidance\Livewire;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Modules\Guidance\Services\Contracts\HandbookService;
 
 class HandbookHub extends Component
 {
     /**
-     * List of active handbooks.
+     * Get the list of active handbooks with their acknowledgment status.
      */
-    public Collection $handbooks;
-
-    /**
-     * Initialize the component.
-     */
-    public function mount(HandbookService $service): void
+    #[Computed]
+    public function handbooks(): Collection
     {
-        $this->handbooks = $service->get(['is_active' => true]);
+        $service = app(HandbookService::class);
+        $userId = Auth::id() ?: '';
+
+        return $service
+            ->get(['is_active' => true])
+            ->map(function ($handbook) use ($service, $userId) {
+                $handbook->is_acknowledged = $service->hasAcknowledged($userId, $handbook->id);
+
+                return $handbook;
+            });
     }
 
     /**
@@ -29,10 +36,7 @@ class HandbookHub extends Component
      */
     public function acknowledge(string $handbookId, HandbookService $service): void
     {
-        $service->acknowledge(auth()->id() ?: '', $handbookId);
-
-        // Refresh handbooks list to update UI state
-        $this->handbooks = $service->get(['is_active' => true]);
+        $service->acknowledge(Auth::id() ?: '', $handbookId);
 
         $this->dispatch('handbook-acknowledged');
     }

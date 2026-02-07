@@ -34,7 +34,10 @@ class GenerateReportJob implements ShouldQueue
 
                 app(\Modules\Notification\Services\Contracts\NotificationService::class)->send(
                     $user,
-                    new \Modules\Report\Notifications\ReportGeneratedNotification($title, $filePath)
+                    new \Modules\Report\Notifications\ReportGeneratedNotification(
+                        $title,
+                        $filePath,
+                    ),
                 );
             }
         }

@@ -1,44 +1,44 @@
 <div>
-    <x-ui::card title="{{ __('schedule::ui.timeline_title') }}" shadow separator>
+    <x-ui::card :title="__('schedule::ui.timeline_title')" shadow separator>
         @if($schedules->isEmpty())
-            <div class="text-center py-8 opacity-50" role="status">
-                <x-ui::icon name="tabler.calendar-off" class="w-12 h-12 mx-auto mb-2" aria-hidden="true" />
-                <p>{{ __('schedule::ui.empty_timeline') }}</p>
+            <div class="text-center py-12 opacity-50" role="status" data-aos="fade-in">
+                <x-ui::icon name="tabler.calendar-off" class="size-12 mx-auto mb-3" aria-hidden="true" />
+                <p class="font-medium">{{ __('schedule::ui.empty_timeline') }}</p>
             </div>
         @else
             <div class="relative" role="list" aria-label="{{ __('schedule::ui.timeline_title') }}">
                 {{-- Vertical Line --}}
                 <div class="absolute left-3 top-0 bottom-0 w-0.5 bg-base-300" aria-hidden="true"></div>
 
-                <div class="space-y-8">
-                    @foreach($schedules as $schedule)
-                        <div class="relative pl-10" role="listitem">
+                <div class="space-y-10">
+                    @foreach($schedules as $index => $schedule)
+                        <div class="relative pl-10" role="listitem" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                             {{-- Bullet --}}
                             <div @class([
-                                'absolute left-0 top-1 w-6 h-6 rounded-full border-4 border-base-100 flex items-center justify-center',
+                                'absolute left-0 top-1 size-6 rounded-full border-4 border-base-100 flex items-center justify-center shadow-sm',
                                 'bg-primary' => $schedule->type === 'briefing',
                                 'bg-info' => $schedule->type === 'event',
                                 'bg-error' => $schedule->type === 'deadline',
                             ]) aria-hidden="true">
-                                <x-ui::icon name="tabler.point-filled" class="w-2 h-2 text-white" />
+                                <x-ui::icon name="tabler.point-filled" class="size-2 text-white" />
                             </div>
 
                             <div>
-                                <div class="text-xs font-bold uppercase tracking-wider opacity-60">
+                                <div class="text-[10px] font-black uppercase tracking-widest opacity-60 flex items-center gap-2">
                                     <time datetime="{{ $schedule->start_at->toIso8601String() }}">
                                         {{ $schedule->start_at->translatedFormat('d M Y') }}
                                     </time>
                                     @if($schedule->start_at->isToday())
-                                        <span class="badge badge-primary badge-xs ml-1">{{ __('schedule::ui.today') }}</span>
+                                        <x-ui::badge :value="__('schedule::ui.today')" priority="primary" class="badge-xs" />
                                     @endif
                                 </div>
-                                <h3 class="font-black text-base leading-tight">{{ $schedule->title }}</h3>
+                                <h3 class="font-bold text-lg leading-tight mt-1">{{ $schedule->title }}</h3>
                                 @if($schedule->description)
-                                    <p class="text-sm opacity-70 mt-1">{{ $schedule->description }}</p>
+                                    <p class="text-sm opacity-70 mt-2 leading-relaxed">{{ $schedule->description }}</p>
                                 @endif
                                 @if($schedule->location)
-                                    <div class="flex items-center gap-1 mt-2 text-xs opacity-60">
-                                        <x-ui::icon name="tabler.map-pin" class="w-3 h-3" aria-hidden="true" />
+                                    <div class="flex items-center gap-1.5 mt-3 text-xs font-semibold opacity-60">
+                                        <x-ui::icon name="tabler.map-pin" class="size-3.5" aria-hidden="true" />
                                         <span>{{ $schedule->location }}</span>
                                     </div>
                                 @endif

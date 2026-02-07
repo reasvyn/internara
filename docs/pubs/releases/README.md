@@ -10,72 +10,47 @@ improvements, and what to expect in each version.
 
 We use simple labels to let you know the readiness and maintenance level of each version:
 
-### Readiness Level
+### Readiness
 
 - **Alpha**: Early testing phase. New features are being added rapidly.
-- **Beta**: Feature complete. We are focusing on fixing bugs and polishing the experience.
-- **Stable**: Ready for everyday use in your institution.
+- **Beta**: Feature complete. Focusing on fixing bugs and polishing the experience.
+- **Release Candidate (RC)**: Final validation phase. Stable enough for evaluation, pending final
+  sign-off.
+- **Stable**: Production-ready. Verified baseline ready for everyday use in your institution.
 
-### Support Level
+### Support Policy
 
-- **Snapshot**: A point-in-time release provided as-is. We generally do not provide updates or bug
-  fixes for these early versions.
-- **Full Support**: Actively maintained with regular improvements and security fixes.
+- **Experimental**: Active development. No stability guarantees; not recommended for production.
+- **Stable/LTS**: Long-term support. Guaranteed reliability and critical updates for a defined
+  period.
+- **Maintenance**: Actively maintained with regular improvements and security fixes.
+- **Security Only**: Critical fixes only. No new features or general bug fixes will be provided.
+- **End of Life (EOL)**: No longer supported. Institutions must upgrade to a newer version
+  immediately.
 
 ---
 
 ## 2. Version History
 
-| Version | Readiness | Support | Current Status |
-
-| :---------- | :-------- | :---------- | :------------- |
-
-| **v0.13.x** | Alpha | Snapshot | In Progress |
-
-| **v0.12.x** | Alpha | Snapshot | Released |
-
-| **v0.11.x** | Alpha | Snapshot | Released |
-
-| **v0.10.x** | Alpha | Snapshot | Released |
-
-| **v0.9.x** | Alpha | Snapshot | Released |
-
-| **v0.8.x** | Alpha | Snapshot | Released |
+| Version     | Readiness | Support Policy | Current Status |
+| :---------- | :-------- | :------------- | :------------- |
+| **v0.13.x** | Alpha     | Experimental   | In Progress    |
+| **v0.12.x** | Alpha     | Experimental   | Released       |
+| **v0.11.x** | Alpha     | Experimental   | Released       |
+| **v0.10.x** | Alpha     | Experimental   | Released       |
+| **v0.9.x**  | Alpha     | Experimental   | Released       |
+| **v0.8.x**  | Alpha     | Experimental   | Released       |
 
 ---
 
-## 3. What's New?
+## 3. Detailed Release Notes
 
-
-
-### Active Development
-
-
-
-- **[v0.13.0](v0.13.0.md)** — **Beta Preparation** Focus: Stabilization, bug fixes, and performance
-
-  optimizations.
-
-
-
-### Latest Released Versions
-
-
-
-- **[v0.12.0](v0.12.0.md)** — **Timeline Transparency & Guidance** Focus: Centralized scheduling and
-
-  instructional guidance hub for students.
-
-- **[v0.11.0-alpha](v0.11.0.md)** — **Instructional Execution & Evaluation** Focus: Formalizing the
-
-    complete instructional loop from journal claims to final transcripts.
-
----
-
-### Historical Archive
-
-- **[Archived Release Notes](archived/README.md)**: View the history of our earlier
-  development phases.
+- **[v0.13.0](v0.13.0-alpha.md)** — **Beta Preparation**
+- **[v0.12.0](v0.12.0-alpha.md)** — **Timeline & Guidance**
+- **[v0.11.0](v0.11.0-alpha.md)** — **Instructional Execution**
+- **[v0.10.0](v0.10.0-alpha.md)** — **Integrative Excellence**
+- **[v0.9.0](v0.9.0-alpha.md)** — **Easy System Setup**
+- **[v0.8.0](v0.8.0-alpha.md)** — **Smart Reporting & Insights**
 
 ---
 

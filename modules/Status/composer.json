@@ -12,9 +12,7 @@
             "providers": [
                 "Modules\\Status\\Providers\\StatusServiceProvider"
             ],
-            "aliases": {
-
-            }
+            "aliases": {}
         }
     },
     "autoload": {

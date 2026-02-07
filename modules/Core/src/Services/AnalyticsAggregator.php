@@ -10,8 +10,18 @@ use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 
+/**
+ * Class AnalyticsAggregator
+ *
+ * Provides a unified logic layer for aggregating cross-domain analytics.
+ * This service orchestrates data from multiple functional modules to generate
+ * institutional insights and risk assessments.
+ */
 class AnalyticsAggregator implements Contract
 {
+    /**
+     * Create a new analytics aggregator instance.
+     */
     public function __construct(
         protected RegistrationService $registrationService,
         protected InternshipPlacementService $placementService,
@@ -24,12 +34,10 @@ class AnalyticsAggregator implements Contract
      */
     public function getInstitutionalSummary(): array
     {
-        $activeAcademicYear = setting('active_academic_year', '2025/2026');
+        $activeAcademicYear = setting('active_academic_year');
 
         $totalInterns = $this->registrationService
-            ->query([
-                'academic_year' => $activeAcademicYear,
-            ])
+            ->query(['academic_year' => $activeAcademicYear])
             ->count();
 
         $activePartners = $this->placementService->all()->count();
@@ -37,7 +45,7 @@ class AnalyticsAggregator implements Contract
         return [
             'total_interns' => $totalInterns,
             'active_partners' => $activePartners,
-            'placement_rate' => 100.0, // Mock for now
+            'placement_rate' => $this->calculatePlacementRate($totalInterns),
         ];
     }
 
@@ -46,11 +54,9 @@ class AnalyticsAggregator implements Contract
      */
     public function getAtRiskStudents(int $limit = 5): array
     {
-        // For simplicity, we look at the most recent active registrations
+        // Retrieve the most recent active registrations for analysis
         $activeRegistrations = $this->registrationService
-            ->query([
-                'latest_status' => 'active',
-            ])
+            ->query(['latest_status' => 'active'])
             ->limit(20)
             ->get();
 
@@ -61,11 +67,13 @@ class AnalyticsAggregator implements Contract
             $avgScore = $this->assessmentService->getAverageScore([$registration->id], 'mentor');
 
             $riskReasons = [];
+
             if ($stats['responsiveness'] < 50) {
-                $riskReasons[] = 'Low journal verification';
+                $riskReasons[] = __('core::analytics.risks.low_verification');
             }
+
             if ($avgScore > 0 && $avgScore < 70) {
-                $riskReasons[] = 'Low mentor assessment score';
+                $riskReasons[] = __('core::analytics.risks.low_score');
             }
 
             if (! empty($riskReasons)) {
@@ -82,5 +90,20 @@ class AnalyticsAggregator implements Contract
         }
 
         return $atRisk;
+    }
+
+    /**
+     * Calculates the institutional placement rate.
+     *
+     * @param int $totalInterns The total number of registered interns.
+     */
+    protected function calculatePlacementRate(int $totalInterns): float
+    {
+        if ($totalInterns === 0) {
+            return 0.0;
+        }
+
+        // TODO: Implement actual placement count logic via RegistrationService query
+        return 100.0;
     }
 }

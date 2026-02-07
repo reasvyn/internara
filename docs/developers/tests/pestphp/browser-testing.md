@@ -11,7 +11,7 @@ elegant way to write browser tests. Here is an example of how to write a browser
 
 ```php
 test('may welcome the user', function () {
-    $page = vistest('/');
+    $page = visit('/');
 
     $page->assertSee('Welcome');
 });
@@ -34,7 +34,7 @@ test('may sign in the user', function () {
         'password' => 'password',
     ]);
 
-    $page = vistest('/')->on()->mobile()->firefox();
+    $page = visit('/')->on()->mobile()->firefox();
 
     $page
         ->click('Sign In')
@@ -92,12 +92,12 @@ the failed test run:
 
 ### Navigation
 
-The `vistest()` method is used to navigate to a specific URL in your browser test. It provides
-various methods to interact with the page:
+The `visit()` method is used to navigate to a specific URL in your browser test. It provides various
+methods to interact with the page:
 
 ```php
 test('example', function () {
-    $page = vistest('/');
+    $page = visit('/');
 
     $page->assertSee('Welcome');
 });
@@ -105,8 +105,8 @@ test('example', function () {
 
 ### Using Other Browsers
 
-By default, the `vistest()` method uses Chrome as the browser. However, if you want to use a
-different browser, you can specify it using the `--browser` option when running the tests:
+By default, the `visit()` method uses Chrome as the browser. However, if you want to use a different
+browser, you can specify it using the `--browser` option when running the tests:
 
 ```bash
 ./vendor/bin/pest --browser firefox
@@ -123,18 +123,18 @@ pest()->browser()->inSafari();
 
 ### Using Other Devices
 
-The `vistest()` method uses a desktop viewport. However, you can specify a mobile viewport using the
+The `visit()` method uses a desktop viewport. However, you can specify a mobile viewport using the
 `onMobile()` method. For example:
 
 ```php
-$page = vistest('/')->on()->mobile();
+$page = visit('/')->on()->mobile();
 ```
 
 If you wish to use a specific device, you can use the `on()` method and chain it with the
 `macbook14`, `iPhone14Pro`, etc:
 
 ```php
-$page = vistest('/')->on()->iPhone14Pro();
+$page = visit('/')->on()->iPhone14Pro();
 ```
 
 ### Using Dark Mode
@@ -143,16 +143,16 @@ Pest enforces a light color scheme by default. However, you can specify a dark c
 the `inDarkMode()` method:
 
 ```php
-$page = vistest('/')->inDarkMode();
+$page = visit('/')->inDarkMode();
 ```
 
 ### Visiting Multiple Pages
 
-You can visit multiple pages simultaneously by passing an array of URLs to the `vistest()` method.
+You can visit multiple pages simultaneously by passing an array of URLs to the `visit()` method.
 This is useful for testing scenarios where you need to interact with multiple pages at once:
 
 ```php
-$pages = vistest(['/', '/about']);
+$pages = visit(['/', '/about']);
 
 $pages
     ->assertNoSmoke()
@@ -172,7 +172,7 @@ After visiting a page, you can navigate to other pages using the `navigate()` me
 allows you to navigate to a different URL while keeping the current browser context:
 
 ```php
-$page = vistest('/');
+$page = visit('/');
 
 $page->navigate('/about')->assertSee('About Us');
 ```
@@ -238,7 +238,7 @@ takes a latitude and longitude and will set the `geolocation` permission in the 
 make the coordinates available via Javascript's getCurrentPosition API:
 
 ```php
-$page = vistest('/')->geolocation(39.399872, -8.224454);
+$page = visit('/')->geolocation(39.399872, -8.224454);
 ```
 
 ### Configuring Locale
@@ -247,7 +247,7 @@ You can set the locale for your test requests using the `withLocale` method. Thi
 useful for testing multilingual applications.
 
 ```php
-$page = vistest('/')->withLocale('fr-FR');
+$page = visit('/')->withLocale('fr-FR');
 
 $page->assertSee('Bienvenue');
 ```
@@ -258,7 +258,7 @@ You can set the timezone for your test requests using the `withTimezone` method.
 testing date and time displays in different time zones.
 
 ```php
-$page = vistest('/')->withTimezone('America/New_York');
+$page = visit('/')->withTimezone('America/New_York');
 
 $page->assertSee('EST');
 ```
@@ -270,7 +270,7 @@ useful for testing how your application responds to different types of clients, 
 browsers or bots.
 
 ```php
-$page = vistest('/')->withUserAgent('Googlebot');
+$page = visit('/')->withUserAgent('Googlebot');
 
 $page->assertSee('Welcome, bot!');
 ```
@@ -281,7 +281,7 @@ You can set the host for your test server using the `withHost` method. This is u
 subdomains or where different hosts serve different content.
 
 ```php
-$page = vistest('/dashboard')->withHost('some-subdomain.localhost');
+$page = visit('/dashboard')->withHost('some-subdomain.localhost');
 
 $page->assertSee('Welcome to Some Subdomain');
 ```

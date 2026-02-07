@@ -9,9 +9,9 @@ use Livewire\EventBus;
 
 /**
  * NotificationBridge
- * 
- * This component acts as a bridge between the server-side EventBus 
- * and the client-side browser events. It allows Services to trigger 
+ *
+ * This component acts as a bridge between the server-side EventBus
+ * and the client-side browser events. It allows Services to trigger
  * toasts during Livewire requests.
  */
 class NotificationBridge extends Component

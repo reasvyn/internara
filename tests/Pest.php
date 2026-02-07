@@ -15,7 +15,34 @@ declare(strict_types=1);
 
 pest()
     ->extend(\Tests\TestCase::class)
-    ->in('Feature/*', 'Unit/*', '../modules/*/tests/Feature/*', '../modules/*/tests/Unit/*');
+    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->in(__DIR__.'/Feature', __DIR__.'/../modules/*/tests/Feature');
+
+// Browser testing configuration
+if (class_exists(\Pest\Browser\Browser::class)) {
+    pest()
+        ->extend(\Tests\TestCase::class)
+        ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+        ->use(\Pest\Browser\Browser::class)
+        ->in(__DIR__.'/Browser', __DIR__.'/../modules/*/tests/Browser');
+
+    // Global browser configuration for stability in Linux environments
+    pest()
+        ->browser()
+        ->arguments([
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--disable-software-rasterizer',
+            '--no-zygote',
+            '--disable-features=VizDisplayCompositor',
+        ]);
+}
+
+pest()
+    ->extend(\Tests\TestCase::class)
+    ->in(__DIR__.'/Unit', __DIR__.'/../modules/*/tests/Unit');
 
 /*
 |--------------------------------------------------------------------------

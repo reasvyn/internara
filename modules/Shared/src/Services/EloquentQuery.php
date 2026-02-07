@@ -18,7 +18,9 @@ use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
  * Provides a base implementation for Eloquent query classes.
  *
  * This abstract class offers a reusable, standardized way to query Eloquent models,
- * with built-in support for filtering, sorting, searching, and caching.
+ * adhering to the "Service-Oriented Logic Execution" philosophy. It centralizes
+ * built-in support for filtering, sorting, searching, and caching to ensure
+ * single-responsibility and testable domain logic.
  *
  * @template TModel of \Illuminate\Database\Eloquent\Model
  *
@@ -34,45 +36,49 @@ abstract class EloquentQuery implements EloquentQueryContract
     public const SORT_DESC = 'desc';
 
     /**
-     * SQL state code for unique constraint violation.
+     * SQL state code for unique constraint violation (Standardized ISO/IEC 9075).
      */
     protected const SQL_STATE_UNIQUE_VIOLATION = '23000';
 
     /**
-     * The Eloquent model instance.
+     * The Eloquent model instance that this service orchestrates.
      *
      * @var TModel
      */
     protected Model $model;
 
     /**
-     * Columns that can be used for text-based searching.
+     * Columns that are authorized for text-based searching.
      *
      * @var list<string>
      */
     protected array $searchable = [];
 
     /**
-     * Columns that can be used for sorting.
+     * Columns that are authorized for sorting operations.
      *
      * @var list<string>
      */
     protected array $sortable = [];
 
     /**
-     * A base query builder instance to extend from.
+     * A base query builder instance to extend from, allowing for complex scoping.
      *
      * @var Builder<TModel>|null
      */
     protected ?Builder $baseQuery = null;
 
     /**
-     * Whether to include soft-deleted records in the query.
+     * Whether to include soft-deleted records in the resulting query.
      */
     protected bool $withTrashed = false;
 
     /**
-     * {@inheritdoc}
+     * Set the primary model instance for the service.
+     *
+     * @param TModel $model
+     *
+     * @return $this
      */
     public function setModel(Model $model): self
     {
@@ -82,7 +88,9 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * Set whether to include soft-deleted records.
+     * Configure the service to include or exclude soft-deleted records.
+     *
+     * @return $this
      */
     public function withTrashed(bool $value = true): self
     {
@@ -92,7 +100,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Define a base query to be used for all subsequent operations.
+     *
+     * @param Builder<TModel> $query
+     *
+     * @return $this
      */
     public function setBaseQuery(Builder $query): self
     {
@@ -102,7 +114,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Define the set of columns that can be searched via the 'search' filter.
+     *
+     * @param list<string> $columns
+     *
+     * @return $this
      */
     public function setSearchable(array $columns = []): self
     {
@@ -112,7 +128,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Define the set of columns that are authorized for sorting.
+     *
+     * @param list<string> $columns
+     *
+     * @return $this
      */
     public function setSortable(array $columns = []): self
     {
@@ -122,7 +142,12 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve a paginated collection of records based on the provided filters.
+     *
+     * @param array<string, mixed> $filters
+     * @param list<string> $columns
+     *
+     * @return LengthAwarePaginator<TModel>
      */
     public function paginate(
         array $filters = [],
@@ -133,7 +158,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve all records for the model without any filtering.
+     *
+     * @param list<string> $columns
+     *
+     * @return Collection<int, TModel>
      */
     public function all(array $columns = ['*']): Collection
     {
@@ -141,7 +170,12 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve a collection of records matching the provided filters.
+     *
+     * @param array<string, mixed> $filters
+     * @param list<string> $columns
+     *
+     * @return Collection<int, TModel>
      */
     public function get(array $filters = [], array $columns = ['*']): Collection
     {
@@ -149,7 +183,12 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the first record matching the provided filters.
+     *
+     * @param array<string, mixed> $filters
+     * @param list<string> $columns
+     *
+     * @return TModel|null
      */
     public function first(array $filters = [], array $columns = ['*']): ?Model
     {
@@ -157,7 +196,14 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieve the first record matching the filters or throw an exception.
+     *
+     * @param array<string, mixed> $filters
+     * @param list<string> $columns
+     *
+     * @throws ModelNotFoundException
+     *
+     * @return TModel
      */
     public function firstOrFail(array $filters = [], array $columns = ['*']): Model
     {
@@ -165,7 +211,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Find a specific record by its primary identity (UUID).
+     *
+     * @param list<string> $columns
+     *
+     * @return TModel|null
      */
     public function find(mixed $id, array $columns = ['*']): ?Model
     {
@@ -173,7 +223,9 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Determine if any records exist matching the provided filters.
+     *
+     * @param array<string, mixed> $filters
      */
     public function exists(array $filters = []): bool
     {
@@ -181,7 +233,13 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Persist a new record into the database.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @throws \Modules\Exception\AppException
+     *
+     * @return TModel
      */
     public function create(array $data): Model
     {
@@ -195,7 +253,14 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Update an existing record by its identity.
+     *
+     * @param array<string, mixed> $data
+     *
+     * @throws ModelNotFoundException
+     * @throws \Modules\Exception\AppException
+     *
+     * @return TModel
      */
     public function update(mixed $id, array $data): Model
     {
@@ -217,7 +282,14 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Persist or update a record based on matching attributes.
+     *
+     * @param array<string, mixed> $attributes
+     * @param array<string, mixed> $values
+     *
+     * @throws \Modules\Exception\AppException
+     *
+     * @return TModel
      */
     public function save(array $attributes, array $values = []): Model
     {
@@ -231,7 +303,8 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * Handle QueryException and wrap it in AppException.
+     * Handle Database exceptions and encapsulate them in a localized AppException.
+     *
      *
      * @throws \Modules\Exception\AppException
      */
@@ -254,7 +327,7 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Remove a record from the database by its identity.
      */
     public function delete(mixed $id, bool $force = false): bool
     {
@@ -267,7 +340,9 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Perform a low-level bulk insertion of data.
+     *
+     * @param list<array<string, mixed>> $data
      */
     public function insert(array $data): bool
     {
@@ -275,7 +350,11 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Perform a bulk update-or-insert operation.
+     *
+     * @param list<array<string, mixed>> $values
+     * @param list<string>|string $uniqueBy
+     * @param list<string>|null $update
      */
     public function upsert(array $values, array|string $uniqueBy, ?array $update = null): int
     {
@@ -283,7 +362,9 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Remove multiple records by their identities.
+     *
+     * @param list<mixed>|mixed $ids
      */
     public function destroy(mixed $ids, bool $force = false): int
     {
@@ -302,7 +383,12 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Convert the filtered collection of records to a plain array.
+     *
+     * @param array<string, mixed> $filters
+     * @param list<string> $columns
+     *
+     * @return array<int, array<string, mixed>>
      */
     public function toArray(array $filters = [], array $columns = ['*']): array
     {
@@ -310,7 +396,12 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Construct a fresh query builder instance with applied filters and scoping.
+     *
+     * @param array<string, mixed> $filters
+     * @param list<string> $columns
+     *
+     * @return Builder<TModel>
      */
     public function query(array $filters = [], array $columns = ['*']): Builder
     {
@@ -328,7 +419,10 @@ abstract class EloquentQuery implements EloquentQueryContract
     }
 
     /**
-     * {@inheritdoc}
+     * Execute the callback within a cached context to optimize performance.
+     *
+     * @param \DateTimeInterface|\DateInterval|int|null $ttl
+     * @param Closure($this): mixed $callback
      */
     public function remember(
         string $cacheKey,

@@ -6,43 +6,41 @@ namespace Modules\Shared\Support;
 
 use Illuminate\Support\Str;
 
+/**
+ * Utility class for normalizing and formatting technical strings.
+ *
+ * Provides standardized methods for path and namespace manipulation, ensuring
+ * consistency across different operating systems and architectural layers.
+ */
 final class Formatter
 {
+    /**
+     * Joins and normalizes multiple path segments.
+     */
     public static function path(?string ...$paths): string
     {
-        $path = implode('/', array_filter($paths, fn ($path) => ! empty($path)));
+        $joined = implode('/', array_filter($paths));
+        $normalized = Str::replace(['\\', '//'], '/', $joined);
 
-        return self::normalizePath($path);
+        while (str_contains($normalized, '//')) {
+            $normalized = Str::replace('//', '/', $normalized);
+        }
+
+        return trim($normalized, '/');
     }
 
-    protected static function normalizePath(string $path = ''): string
-    {
-        $path = Str::replace('//', '/', $path);
-        $path = Str::startsWith($path, '/') ? Str::replaceFirst('/', '', $path) : $path;
-        $path = Str::endsWith($path, '/') ? Str::replaceLast('/', '', $path) : $path;
-        $path = Str::replace('//', '/', $path);
-
-        return $path;
-    }
-
+    /**
+     * Joins and normalizes multiple namespace segments.
+     */
     public static function namespace(?string ...$parts): string
     {
-        $namespace = implode('\\', array_filter($parts, fn ($namespace) => ! empty($namespace)));
+        $joined = implode('\\', array_filter($parts));
+        $normalized = Str::replace(['/', '\\\\'], '\\', $joined);
 
-        return self::normalizeNamespace($namespace);
-    }
+        while (str_contains($normalized, '\\\\')) {
+            $normalized = Str::replace('\\\\', '\\', $normalized);
+        }
 
-    protected static function normalizeNamespace(string $namespace): string
-    {
-        $namespace = Str::replace(['/', '//', '\\\\'], '\\', $namespace);
-        $namespace = Str::startsWith($namespace, '\\')
-            ? Str::replaceFirst('\\', '', $namespace)
-            : $namespace;
-        $namespace = Str::endsWith($namespace, '\\')
-            ? Str::replaceLast('\\', '', $namespace)
-            : $namespace;
-        $namespace = Str::replace('\\\\', '\\', $namespace);
-
-        return $namespace;
+        return trim($normalized, '\\');
     }
 }

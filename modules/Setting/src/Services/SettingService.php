@@ -6,6 +6,7 @@ namespace Modules\Setting\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Modules\Core\Services\Contracts\MetadataService;
 use Modules\Setting\Models\Setting;
 use Modules\Shared\Services\EloquentQuery;
 
@@ -13,62 +14,26 @@ use Modules\Shared\Services\EloquentQuery;
  * Class SettingService
  *
  * Provides a cached, centralized API for managing application-wide dynamic settings.
+ * This service acts as the orchestration layer for database-backed configurations,
+ * config-based fallbacks, and SSoT metadata resolution.
  */
 class SettingService extends EloquentQuery implements Contracts\SettingService
 {
-    /**
-     * Authoritative developer identifier.
-     */
-    protected const AUTHOR_IDENTITY = 'Reas Vyn';
-
     /**
      * Cache key constants.
      */
     protected const CACHE_PREFIX = 'settings.';
 
     /**
-     * Cache for app_info.json data.
-     */
-    protected ?array $appInfo = null;
-
-    /**
      * Create a new SettingService instance.
      */
-    public function __construct(Setting $model)
+    public function __construct(Setting $model, protected MetadataService $metadataService)
     {
         $this->setModel($model);
         $this->setSearchable(['key', 'group']);
         $this->setSortable(['key', 'group']);
 
-        $this->verifyIntegrity();
-    }
-
-    /**
-     * Verifies the authenticity of the application metadata.
-     *
-     * @throws \Modules\Exception\AppException
-     */
-    protected function verifyIntegrity(): void
-    {
-        $info = $this->getAppInfo();
-
-        if (empty($info)) {
-            throw new \Modules\Exception\AppException(
-                userMessage: 'exception::messages.integrity_violation_missing_metadata',
-                logMessage: 'Security Audit: Critical metadata (app_info.json) is missing.',
-                code: 403
-            );
-        }
-
-        $author = \Illuminate\Support\Arr::get($info, 'author.name');
-
-        if ($author !== self::AUTHOR_IDENTITY) {
-            throw new \Modules\Exception\AppException(
-                userMessage: 'exception::messages.integrity_violation_unauthorized_author',
-                logMessage: "Security Audit: Unauthorized author detected [{$author}]. This system requires attribution to [" . self::AUTHOR_IDENTITY . "].",
-                code: 403
-            );
-        }
+        $this->metadataService->verifyIntegrity();
     }
 
     /**
@@ -119,32 +84,10 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     }
 
     /**
-     * Load application information from the app_info.json file.
-     *
-     * @return array<string, mixed>
-     */
-    protected function getAppInfo(): array
-    {
-        if ($this->appInfo !== null) {
-            return $this->appInfo;
-        }
-
-        $path = base_path('app_info.json');
-
-        if (! file_exists($path)) {
-            return $this->appInfo = [];
-        }
-
-        return $this->appInfo = json_decode(file_get_contents($path), true) ?? [];
-    }
-
-    /**
-     * Map setting keys to app_info.json fields for SSoT resolution.
+     * Map setting keys to MetadataService fields for SSoT resolution.
      */
     protected function resolveAppInfoValue(string $key): mixed
     {
-        $info = $this->getAppInfo();
-
         $map = [
             'app_name' => 'name',
             'app_version' => 'version',
@@ -158,7 +101,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             return null;
         }
 
-        return \Illuminate\Support\Arr::get($info, $map[$key]);
+        return $this->metadataService->get($map[$key]);
     }
 
     /**

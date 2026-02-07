@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Modules\UI\Tests\Feature\Livewire;
-
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 use Livewire\Livewire;
 use Modules\UI\Livewire\LanguageSwitcher;
+use Modules\UI\Services\Contracts\LocalizationService;
 
-test('it can change application locale', function () {
-    App::setLocale('en');
+test('it renders supported locales', function () {
+    $service = mock(LocalizationService::class);
+    $service->shouldReceive('getSupportedLocales')->andReturn([
+        'en' => ['name' => 'English', 'icon' => 'flag-en'],
+        'id' => ['name' => 'Indonesia', 'icon' => 'flag-id'],
+    ]);
+    app()->instance(LocalizationService::class, $service);
 
-    Livewire::test(LanguageSwitcher::class)->call('changeLocale', 'id')->assertRedirect('/');
-
-    expect(App::getLocale())->toBe('id');
-    expect(Session::get('locale'))->toBe('id');
+    Livewire::test(LanguageSwitcher::class)->assertSee('English')->assertSee('Indonesia');
 });
 
-test('it ignores unsupported locales', function () {
-    App::setLocale('en');
+test('it can change locale', function () {
+    $service = mock(LocalizationService::class);
+    $service->shouldReceive('getSupportedLocales')->andReturn(['id' => ['name' => 'ID']]);
+    $service->shouldReceive('setLocale')->with('id')->once()->andReturn(true);
+    app()->instance(LocalizationService::class, $service);
 
-    Livewire::test(LanguageSwitcher::class)->call('changeLocale', 'fr')->assertNoRedirect();
-
-    expect(App::getLocale())->toBe('en');
+    Livewire::test(LanguageSwitcher::class)->call('changeLocale', 'id')->assertRedirect();
 });

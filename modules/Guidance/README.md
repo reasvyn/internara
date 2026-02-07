@@ -3,7 +3,9 @@
 The `Guidance` module formalizes the onboarding and briefing process for students, managing official
 institutional handbooks and tracking student readiness.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the requirements defined in the authoritative
+> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
@@ -39,5 +41,5 @@ institutional handbooks and tracking student readiness.
 
 ---
 
-_The Guidance module ensures that every student begins their internship with a verifiable
-foundation of institutional knowledge._
+_The Guidance module ensures that every student begins their internship with a verifiable foundation
+of institutional knowledge._

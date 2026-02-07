@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Log\\Providers\\LogServiceProvider"
-    ],
+    "providers": ["Modules\\Log\\Providers\\LogServiceProvider"],
     "files": []
 }

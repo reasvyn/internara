@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Livewire\Livewire;
 use Livewire\Component;
 use Modules\Notification\Contracts\Notifier;
 
@@ -31,6 +30,6 @@ test('notify helper flashes session', function () {
 
 test('notify helper returns notifier instance when no parameters provided', function () {
     $result = notify();
-    
+
     expect($result)->toBeInstanceOf(Notifier::class);
 });

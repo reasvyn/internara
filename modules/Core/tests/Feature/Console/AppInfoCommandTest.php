@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Tests\Feature\Console;
 
 use Illuminate\Support\Facades\File;
+
 use function Pest\Laravel\artisan;
 
 test('it displays correct metadata from app_info.json', function () {

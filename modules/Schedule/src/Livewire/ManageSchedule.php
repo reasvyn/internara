@@ -108,10 +108,7 @@ class ManageSchedule extends Component
             ['key' => 'location', 'label' => __('schedule::ui.location')],
         ];
 
-        $schedules = $service->paginate(
-            filters: ['search' => $this->search],
-            perPage: 10
-        );
+        $schedules = $service->paginate(filters: ['search' => $this->search], perPage: 10);
 
         return view('schedule::livewire.manage-schedule', [
             'schedules' => $schedules,

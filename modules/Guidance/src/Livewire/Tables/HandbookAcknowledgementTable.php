@@ -38,7 +38,8 @@ class HandbookAcknowledgementTable extends Component
     public function render(RegistrationService $regService, HandbookService $handbookService): View
     {
         // Get active registrations
-        $registrations = $regService->query(['latest_status' => 'active'])
+        $registrations = $regService
+            ->query(['latest_status' => 'active'])
             ->with(['student'])
             ->paginate(15);
 

@@ -6,8 +6,7 @@ Framework). It defines the protocols for **Role-Based Access Control (RBAC)** to
 security, data confidentiality, and administrative accountability.
 
 > **Governance Mandate:** All roles and permissions must be traceable to the User Roles and
-> administrative requirements defined in the authoritative
-> **[Internara Specs](specs.md)**.
+> administrative requirements defined in the authoritative **[Internara Specs](specs.md)**.
 
 ---
 

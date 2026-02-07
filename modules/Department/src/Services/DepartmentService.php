@@ -31,7 +31,9 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         $schoolId = $data['school_id'] ?? null;
 
         if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(__('school::exceptions.not_found'));
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(
+                __('school::exceptions.not_found'),
+            );
         }
 
         return parent::create($data)->fresh(['school']);
@@ -45,7 +47,9 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         $schoolId = $data['school_id'] ?? null;
 
         if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(__('school::exceptions.not_found'));
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(
+                __('school::exceptions.not_found'),
+            );
         }
 
         return parent::update($id, $data)->fresh(['school']);
@@ -59,7 +63,9 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         $schoolId = $attributes['school_id'] ?? ($values['school_id'] ?? null);
 
         if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(__('school::exceptions.not_found'));
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException(
+                __('school::exceptions.not_found'),
+            );
         }
 
         return parent::save($attributes, $values)->fresh(['school']);

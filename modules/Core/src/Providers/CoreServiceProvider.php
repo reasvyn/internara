@@ -63,6 +63,7 @@ class CoreServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Core\Services\Contracts\AnalyticsAggregator::class => \Modules\Core\Services\AnalyticsAggregator::class,
+            \Modules\Core\Services\Contracts\MetadataService::class => \Modules\Core\Services\MetadataService::class,
         ];
     }
 }

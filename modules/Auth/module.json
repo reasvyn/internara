@@ -4,8 +4,6 @@
     "description": "",
     "keywords": [],
     "priority": 0,
-    "providers": [
-        "Modules\\Auth\\Providers\\AuthServiceProvider"
-    ],
+    "providers": ["Modules\\Auth\\Providers\\AuthServiceProvider"],
     "files": []
 }

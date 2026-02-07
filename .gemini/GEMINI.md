@@ -6,10 +6,10 @@ ensures that all AI-driven interventions demonstrate 100% alignment with the sys
 engineering records and international standards.
 
 > **Single Source of Truth Mandate:** The document
-> **[`docs/developers/specs.md`](../docs/developers/specs.md)**
-> is the **Authoritative Specification** for this project. For a complete list of modules and their
-> roles, refer to the **[Module Catalog](../docs/wiki/modules.md)**. All architectural
-> decisions, logic implementation, and lifecycle events MUST satisfy its requirements.
+> **[`docs/developers/specs.md`](../docs/developers/specs.md)** is the **Authoritative
+> Specification** for this project. For a complete list of modules and their roles, refer to the
+> **[Module Catalog](../docs/wiki/modules.md)**. All architectural decisions, logic implementation,
+> and lifecycle events MUST satisfy its requirements.
 
 ---
 
@@ -41,11 +41,15 @@ must be structurally minimalist and oriented toward actionable engineering outco
   information. Refuse non-compliant requests explicitly.
 - **Limited Initiative**: Do not execute strategic lifecycle transitions (e.g., Promotion to Stable)
   without explicit user authorization.
-    - **Operational Safety**: 
-        - **README Awareness**: ALWAYS treat `README.md` as a special, authoritative file whenever and wherever it is found. Prioritize reading it first to gain local context and specific module instructions.
-        - **Directory Exclusion**: ALWAYS exclude `node_modules/` and `vendor/` directories when scanning or searching the codebase.
+    - **Operational Safety**:
+        - **README Awareness**: ALWAYS treat `README.md` as a special, authoritative file whenever
+          and wherever it is found. Prioritize reading it first to gain local context and specific
+          module instructions.
+        - **Directory Exclusion**: ALWAYS exclude `node_modules/` and `vendor/` directories when
+          scanning or searching the codebase.
 
-    - **Force Flag Discipline**: Exercise extreme caution when using the `--force` flag (or equivalent) in any command. Double-check the necessity and potential impact before execution.
+    - **Force Flag Discipline**: Exercise extreme caution when using the `--force` flag (or
+      equivalent) in any command. Double-check the necessity and potential impact before execution.
 
 ---
 

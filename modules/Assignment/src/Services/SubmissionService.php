@@ -25,8 +25,10 @@ class SubmissionService extends EloquentQuery implements Contract
         $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
         $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
 
-        if ($settingService->getValue('feature_guidance_enabled', true) &&
-            ! $guidanceService->hasCompletedMandatory((string) auth()->id())) {
+        if (
+            $settingService->getValue('feature_guidance_enabled', true) &&
+            ! $guidanceService->hasCompletedMandatory((string) auth()->id())
+        ) {
             throw new \Modules\Exception\AppException(
                 userMessage: 'guidance::messages.must_complete_guidance',
                 code: 403,

@@ -1,13 +1,19 @@
 <div 
     x-data="{
         toasts: [],
+        translations: {
+            success: '{{ __('ui::common.success') }}',
+            error: '{{ __('ui::common.error') }}',
+            warning: '{{ __('ui::common.warning') }}',
+            info: '{{ __('ui::common.notification') }}'
+        },
         add(payload) {
             const id = Date.now();
             const toast = {
                 id,
                 message: payload.message || payload.description,
                 type: payload.type || 'info',
-                title: payload.title || (payload.type ? payload.type.charAt(0).toUpperCase() + payload.type.slice(1) : 'Notification'),
+                title: payload.title || this.translations[payload.type || 'info'],
                 visible: false
             };
 
@@ -49,6 +55,8 @@
                 'bg-warning text-warning-content': toast.type === 'warning',
                 'bg-info text-info-content': toast.type === 'info',
             }"
+            role="status"
+            aria-live="polite"
             @click="remove(toast.id)"
         >
             <div class="mt-0.5 bg-base-100/20 p-2 rounded-xl">
@@ -63,7 +71,11 @@
                 <p class="text-xs font-bold leading-relaxed opacity-100 mt-0.5" x-text="toast.message"></p>
             </div>
 
-            <button class="btn btn-ghost btn-circle btn-xs -mr-1 opacity-50 hover:opacity-100" @click.stop="remove(toast.id)">
+            <button 
+                class="btn btn-ghost btn-circle btn-xs -mr-1 opacity-50 hover:opacity-100" 
+                @click.stop="remove(toast.id)"
+                aria-label="{{ __('ui::common.close') }}"
+            >
                 <x-ui::icon name="tabler.x" class="size-3" />
             </button>
         </div>

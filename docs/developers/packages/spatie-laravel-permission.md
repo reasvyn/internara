@@ -10,8 +10,7 @@ identification.
 ## 1. Technical Baseline Customizations
 
 Internara utilizes a specialized configuration of the permission engine to satisfy the security
-requirements defined in the
-**[System Requirements Specification](../specs.md)**.
+requirements defined in the **[System Requirements Specification](../specs.md)**.
 
 ### 1.1 Identity Invariant: UUID Support
 
