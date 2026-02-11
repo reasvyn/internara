@@ -10,7 +10,7 @@
     "dependencies": {
         "aos": "^2.3.4",
         "autoprefixer": "^10.4.23",
-        "axios": "^1.13.4",
+        "axios": "^1.13.5",
         "concurrently": "^9.2.1",
         "laravel-vite-plugin": "^2.1",
         "playwright": "^1.58.2",
