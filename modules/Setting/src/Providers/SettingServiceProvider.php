@@ -36,7 +36,7 @@ class SettingServiceProvider extends ServiceProvider
     protected function syncSettingsToConfig(): void
     {
         // Only sync if the application is installed to avoid database errors during early setup
-        if (!$this->app->runningInConsole() || $this->app->bound('db')) {
+        if (! $this->app->runningInConsole() || $this->app->bound('db')) {
             try {
                 // 1. Determine the sender identity: mail_from_name > brand_name > app_name
                 $senderName =
@@ -84,8 +84,7 @@ class SettingServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Setting\Services\Contracts\SettingService::class =>
-                \Modules\Setting\Services\SettingService::class,
+            \Modules\Setting\Services\Contracts\SettingService::class => \Modules\Setting\Services\SettingService::class,
         ];
     }
 }

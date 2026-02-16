@@ -1,7 +1,7 @@
 <div>
     <x-ui::header :title="__('assignment::ui.manage_assignments')" :subtitle="__('assignment::ui.subtitle')">
         <x-slot:actions>
-            <x-ui::button :label="__('assignment::ui.add_assignment')" icon="tabler.plus" priority="primary" wire:click="add" />
+            <x-ui::button :label="__('assignment::ui.add_assignment')" icon="tabler.plus" variant="primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>
 
@@ -17,7 +17,7 @@
                 @scope('cell_is_mandatory', $assignment)
                     <x-ui::badge 
                         :value="$assignment->is_mandatory ? __('ui::common.success') : __('ui::common.cancel')" 
-                        :priority="$assignment->is_mandatory ? 'primary' : 'secondary'" 
+                        :variant="$assignment->is_mandatory ? 'primary' : 'secondary'" 
                         class="badge-sm" 
                     />
                 @endscope
@@ -28,8 +28,8 @@
 
                 @scope('actions', $assignment)
                     <div class="flex gap-1">
-                        <x-ui::button icon="tabler.edit" priority="tertiary" class="text-info btn-sm" wire:click="edit('{{ $assignment->id }}')" />
-                        <x-ui::button icon="tabler.trash" priority="tertiary" class="text-error btn-sm" wire:click="remove('{{ $assignment->id }}')" wire:confirm="__('assignment::ui.delete_confirm')" />
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-sm" wire:click="edit('{{ $assignment->id }}')" />
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-sm" wire:click="remove('{{ $assignment->id }}')" wire:confirm="__('assignment::ui.delete_confirm')" />
                     </div>
                 @endscope
             </x-ui::table>
@@ -57,7 +57,7 @@
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
-                <x-ui::button :label="__('ui::common.save')" type="submit" priority="primary" spinner="save" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

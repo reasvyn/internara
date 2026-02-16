@@ -60,8 +60,7 @@ class MentorServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Mentor\Services\Contracts\MentoringService::class =>
-                \Modules\Mentor\Services\MentoringService::class,
+            \Modules\Mentor\Services\Contracts\MentoringService::class => \Modules\Mentor\Services\MentoringService::class,
         ];
     }
 }

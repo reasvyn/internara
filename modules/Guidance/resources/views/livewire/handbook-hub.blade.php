@@ -11,7 +11,7 @@
                             <div class="font-bold flex items-center gap-2 leading-tight">
                                 {{ $handbook->title }}
                                 @if($handbook->is_mandatory)
-                                    <x-ui::badge :value="__('guidance::ui.mandatory')" priority="primary" class="badge-xs" />
+                                    <x-ui::badge :value="__('guidance::ui.mandatory')" variant="primary" class="badge-xs" />
                                 @endif
                             </div>
                             <div class="text-[10px] uppercase tracking-wider font-semibold opacity-60 mt-0.5">
@@ -28,7 +28,7 @@
                         @else
                             <x-ui::button 
                                 :label="__('guidance::ui.read_and_agree')" 
-                                priority="tertiary"
+                                variant="tertiary"
                                 class="btn-sm" 
                                 wire:click="acknowledge('{{ $handbook->id }}')" 
                                 wire:loading.attr="disabled"
@@ -38,7 +38,7 @@
 
                         <x-ui::button 
                             icon="tabler.download" 
-                            priority="primary"
+                            variant="primary"
                             class="btn-sm btn-circle" 
                             link="{{ route('guidance.download', $handbook->id) }}" 
                             tooltip="{{ __('guidance::ui.download_pdf') }}"

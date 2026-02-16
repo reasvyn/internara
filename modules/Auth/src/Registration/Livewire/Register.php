@@ -33,7 +33,7 @@ class Register extends Component
             'name' => 'required|string|min:3',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'string', 'confirmed', Password::auto()],
-            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile()],
+            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile],
         ];
     }
 

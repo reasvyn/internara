@@ -11,6 +11,5 @@ return [
     'name' => 'Department Name',
     'description' => 'Description',
     'created_at' => 'Created At',
-    'delete_confirm' =>
-        'Are you sure you want to delete this department? This action cannot be undone.',
+    'delete_confirm' => 'Are you sure you want to delete this department? This action cannot be undone.',
 ];

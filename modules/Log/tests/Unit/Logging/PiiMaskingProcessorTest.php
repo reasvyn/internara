@@ -9,9 +9,9 @@ use Monolog\Level;
 use Monolog\LogRecord;
 
 test('it masks sensitive fields in context', function () {
-    $processor = new PiiMaskingProcessor();
+    $processor = new PiiMaskingProcessor;
 
-    $record = new LogRecord(new \DateTimeImmutable(), 'test', Level::Info, 'Log message', [
+    $record = new LogRecord(new \DateTimeImmutable, 'test', Level::Info, 'Log message', [
         'email' => 'user@example.com',
         'password' => 'secret123',
         'safe_field' => 'visible',

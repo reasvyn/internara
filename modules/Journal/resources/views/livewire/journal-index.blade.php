@@ -2,7 +2,7 @@
     <x-ui::header :title="__('journal::ui.index.title')" :subtitle="__('journal::ui.index.subtitle')">
         <x-slot:actions>
             @can('create', \Modules\Journal\Models\JournalEntry::class)
-                <x-ui::button :label="__('journal::ui.index.create_new')" icon="tabler.plus" priority="primary" link="{{ route('journal.create') }}" />
+                <x-ui::button :label="__('journal::ui.index.create_new')" icon="tabler.plus" variant="primary" link="{{ route('journal.create') }}" />
             @endcan
         </x-slot:actions>
     </x-ui::header>
@@ -26,9 +26,9 @@
                                 </div>
                                 
                                 @if($day['status'] === 'empty')
-                                    <x-ui::button icon="tabler.plus" priority="tertiary" class="btn-xs" link="{{ route('journal.create', ['date' => $day['date']->format('Y-m-d')]) }}" />
+                                    <x-ui::button icon="tabler.plus" variant="tertiary" class="btn-xs" link="{{ route('journal.create', ['date' => $day['date']->format('Y-m-d')]) }}" />
                                 @else
-                                    <x-ui::button icon="tabler.eye" priority="tertiary" class="btn-xs" link="{{ route('journal.index', ['date' => $day['date']->format('Y-m-d')]) }}" />
+                                    <x-ui::button icon="tabler.eye" variant="tertiary" class="btn-xs" link="{{ route('journal.index', ['date' => $day['date']->format('Y-m-d')]) }}" />
                                 @endif
                             </div>
                         @endforeach
@@ -44,8 +44,8 @@
                 </div>
                 @if($date)
                     <div class="flex items-center gap-2">
-                        <x-ui::badge :value="__('journal::ui.index.filter_date', ['date' => \Carbon\Carbon::parse($date)->translatedFormat('d M Y')])" priority="primary" />
-                        <x-ui::button icon="tabler.x" priority="tertiary" class="btn-xs" wire:click="$set('date', '')" />
+                        <x-ui::badge :value="__('journal::ui.index.filter_date', ['date' => \Carbon\Carbon::parse($date)->translatedFormat('d M Y')])" variant="primary" />
+                        <x-ui::button icon="tabler.x" variant="tertiary" class="btn-xs" wire:click="$set('date', '')" />
                     </div>
                 @endif
             </div>
@@ -64,23 +64,23 @@
                 @scope('cell_status', $entry)
                     <x-ui::badge 
                         :value="$entry->getStatusLabel()" 
-                        :priority="$entry->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                        :variant="$entry->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
                         class="badge-sm" 
                     />
                 @endscope
 
                 @scope('actions', $entry)
                     <div class="flex gap-1">
-                        <x-ui::button icon="tabler.eye" priority="tertiary" class="text-info btn-sm" tooltip="{{ __('journal::ui.index.actions.view_detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
+                        <x-ui::button icon="tabler.eye" variant="tertiary" class="text-info btn-sm" tooltip="{{ __('journal::ui.index.actions.view_detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
                         
                         @can('update', $entry)
-                            <x-ui::button icon="tabler.edit" priority="tertiary" class="text-warning btn-sm" tooltip="{{ __('ui::common.edit') }}" link="{{ route('journal.edit', $entry->id) }}" />
+                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-warning btn-sm" tooltip="{{ __('ui::common.edit') }}" link="{{ route('journal.edit', $entry->id) }}" />
                         @endcan
 
                         @can('validate', $entry)
                             @if($entry->latestStatus()?->name !== 'approved')
-                                <x-ui::button icon="tabler.check" priority="tertiary" class="text-success btn-sm" tooltip="{{ __('journal::ui.index.actions.approve') }}" wire:click="approve('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.approve_confirm') }}" />
-                                <x-ui::button icon="tabler.x" priority="tertiary" class="text-error btn-sm" tooltip="{{ __('journal::ui.index.actions.reject') }}" wire:click="reject('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.reject_confirm') }}" />
+                                <x-ui::button icon="tabler.check" variant="tertiary" class="text-success btn-sm" tooltip="{{ __('journal::ui.index.actions.approve') }}" wire:click="approve('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.approve_confirm') }}" />
+                                <x-ui::button icon="tabler.x" variant="tertiary" class="text-error btn-sm" tooltip="{{ __('journal::ui.index.actions.reject') }}" wire:click="reject('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.reject_confirm') }}" />
                             @endif
                         @endcan
                     </div>
@@ -95,7 +95,7 @@
                 <div class="flex">
                     <x-ui::badge 
                         :value="$selectedEntry->getStatusLabel()" 
-                        :priority="$selectedEntry->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                        :variant="$selectedEntry->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
                     />
                 </div>
 
@@ -145,8 +145,8 @@
 
         <x-slot:actions>
             @if($selectedEntry && auth()->user()->id !== $selectedEntry->student_id && $selectedEntry->latestStatus()?->name !== 'approved')
-                <x-ui::button :label="__('journal::ui.index.actions.reject')" priority="secondary" class="btn-error" wire:click="reject('{{ $selectedEntry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.reject_confirm') }}" />
-                <x-ui::button :label="__('journal::ui.index.actions.approve')" priority="primary" class="btn-success" wire:click="approve('{{ $selectedEntry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.approve_confirm') }}" />
+                <x-ui::button :label="__('journal::ui.index.actions.reject')" variant="secondary" class="btn-error" wire:click="reject('{{ $selectedEntry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.reject_confirm') }}" />
+                <x-ui::button :label="__('journal::ui.index.actions.approve')" variant="primary" class="btn-success" wire:click="approve('{{ $selectedEntry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.approve_confirm') }}" />
             @endif
             <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.journalDetailModal = false" />
         </x-slot:actions>

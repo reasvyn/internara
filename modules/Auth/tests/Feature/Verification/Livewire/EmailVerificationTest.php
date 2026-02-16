@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Tests\Feature\Verification\Livewire;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
-
 
 describe('Email Verification', function () {
     beforeEach(function () {

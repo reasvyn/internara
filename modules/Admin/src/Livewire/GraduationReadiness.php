@@ -26,10 +26,10 @@ class GraduationReadiness extends Component
 
         if ($this->search) {
             $query->whereHas('student', function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')->orWhere(
+                $q->where('name', 'like', '%'.$this->search.'%')->orWhere(
                     'username',
                     'like',
-                    '%' . $this->search . '%',
+                    '%'.$this->search.'%',
                 );
             });
         }

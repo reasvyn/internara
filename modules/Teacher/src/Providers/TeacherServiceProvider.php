@@ -66,8 +66,7 @@ class TeacherServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Teacher\Services\Contracts\TeacherService::class =>
-                \Modules\Teacher\Services\TeacherService::class,
+            \Modules\Teacher\Services\Contracts\TeacherService::class => \Modules\Teacher\Services\TeacherService::class,
         ];
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
  * It defines a safe, non-functional version of setting() ONLY if the Setting
  * module is disabled or missing.
  */
-if (!function_exists('setting')) {
+if (! function_exists('setting')) {
     /**
      * Check if the Setting module is enabled by reading the statuses file directly.
      * This is necessary because this file is loaded early via composer autoload.
@@ -18,7 +18,7 @@ if (!function_exists('setting')) {
     $isSettingModuleActive = (function () {
         $statusPath = base_path('modules_statuses.json');
 
-        if (!file_exists($statusPath)) {
+        if (! file_exists($statusPath)) {
             return false;
         }
 
@@ -27,7 +27,7 @@ if (!function_exists('setting')) {
         return isset($statuses['Setting']) && $statuses['Setting'] === true;
     })();
 
-    if (!$isSettingModuleActive) {
+    if (! $isSettingModuleActive) {
         /**
          * Fallback for the setting() helper function.
          */
@@ -40,11 +40,11 @@ if (!function_exists('setting')) {
             static $authorChecked = false;
 
             // Integrity Check: SSoT Metadata must exist and author must be "Reas Vyn"
-            if (!$authorChecked) {
+            if (! $authorChecked) {
                 $path = base_path('app_info.json');
                 $authorIdentity = 'Reas Vyn';
 
-                if (!file_exists($path)) {
+                if (! file_exists($path)) {
                     throw new \RuntimeException(
                         'Integrity Violation: Critical metadata (app_info.json) is missing.',
                     );
@@ -62,7 +62,7 @@ if (!function_exists('setting')) {
                 $authorChecked = true;
             }
 
-            if (!$hasLogged && !app()->runningInConsole()) {
+            if (! $hasLogged && ! app()->runningInConsole()) {
                 try {
                     Log::warning(
                         'The setting() helper was called, but the Setting module is disabled or missing. A fallback was used.',

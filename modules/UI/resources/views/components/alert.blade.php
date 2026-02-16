@@ -25,7 +25,7 @@
 <div 
     {{ $attributes->class(['alert shadow-sm border', $alertClasses]) }} 
     role="alert"
-    :data-aos="$aos"
+    data-aos="{{ $aos }}"
 >
     <x-ui::icon :name="$icon ?? $defaultIcon" class="size-6 shrink-0" />
     

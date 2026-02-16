@@ -23,8 +23,7 @@ class ScheduleServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Schedule\Models\Schedule::class =>
-            \Modules\Schedule\Policies\SchedulePolicy::class,
+        \Modules\Schedule\Models\Schedule::class => \Modules\Schedule\Policies\SchedulePolicy::class,
     ];
 
     /**
@@ -75,8 +74,7 @@ class ScheduleServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Schedule\Services\Contracts\ScheduleService::class =>
-                \Modules\Schedule\Services\ScheduleService::class,
+            \Modules\Schedule\Services\Contracts\ScheduleService::class => \Modules\Schedule\Services\ScheduleService::class,
         ];
     }
 }

@@ -54,8 +54,7 @@ class JournalServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Journal\Services\Contracts\JournalService::class =>
-                \Modules\Journal\Services\JournalService::class,
+            \Modules\Journal\Services\Contracts\JournalService::class => \Modules\Journal\Services\JournalService::class,
         ];
     }
 

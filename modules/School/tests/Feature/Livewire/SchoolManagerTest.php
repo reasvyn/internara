@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Livewire\Livewire;
 use Modules\School\Livewire\SchoolManager;
@@ -12,7 +11,6 @@ use Modules\User\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
-
 
 beforeEach(function () {
     // Seed permissions for testing

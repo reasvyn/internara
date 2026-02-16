@@ -9,13 +9,11 @@ return [
     'after' => 'The :attribute field must be a date after :date.',
     'after_or_equal' => 'The :attribute field must be a date after or equal to :date.',
     'alpha' => 'The :attribute field must only contain letters.',
-    'alpha_dash' =>
-        'The :attribute field must only contain letters, numbers, dashes, and underscores.',
+    'alpha_dash' => 'The :attribute field must only contain letters, numbers, dashes, and underscores.',
     'alpha_num' => 'The :attribute field must only contain letters and numbers.',
     'any_of' => 'The :attribute field is invalid.',
     'array' => 'The :attribute field must be an array.',
-    'ascii' =>
-        'The :attribute field must only contain single-byte alphanumeric characters and symbols.',
+    'ascii' => 'The :attribute field must only contain single-byte alphanumeric characters and symbols.',
     'before' => 'The :attribute field must be a date before :date.',
     'before_or_equal' => 'The :attribute field must be a date before or equal to :date.',
     'between' => [
@@ -42,8 +40,7 @@ return [
     'distinct' => 'The :attribute field has a duplicate value.',
     'doesnt_contain' => 'The :attribute field must not contain any of the following: :values.',
     'doesnt_end_with' => 'The :attribute field must not end with one of the following: :values.',
-    'doesnt_start_with' =>
-        'The :attribute field must not start with one of the following: :values.',
+    'doesnt_start_with' => 'The :attribute field must not start with one of the following: :values.',
     'email' => 'The :attribute field must be a valid email address.',
     'ends_with' => 'The :attribute field must end with one of the following: :values.',
     'enum' => 'The selected :attribute is invalid.',
@@ -67,8 +64,7 @@ return [
     'image' => 'The :attribute field must be an image.',
     'in' => 'The selected :attribute is invalid.',
     'in_array' => 'The :attribute field must exist in :other.',
-    'in_array_keys' =>
-        'The :attribute field must contain at least one of the following keys: :values.',
+    'in_array_keys' => 'The :attribute field must contain at least one of the following keys: :values.',
     'integer' => 'The :attribute field must be an integer.',
     'ip' => 'The :attribute field must be a valid IP address.',
     'ipv4' => 'The :attribute field must be a valid IPv4 address.',
@@ -116,12 +112,10 @@ return [
     'numeric' => 'The :attribute field must be a number.',
     'password' => [
         'letters' => 'The :attribute field must contain at least one letter.',
-        'mixed' =>
-            'The :attribute field must contain at least one uppercase and one lowercase letter.',
+        'mixed' => 'The :attribute field must contain at least one uppercase and one lowercase letter.',
         'numbers' => 'The :attribute field must contain at least one number.',
         'symbols' => 'The :attribute field must contain at least one symbol.',
-        'uncompromised' =>
-            'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
+        'uncompromised' => 'The given :attribute has appeared in a data leak. Please choose a different :attribute.',
     ],
     'present' => 'The :attribute field must be present.',
     'present_if' => 'The :attribute field must be present when :other is :value.',

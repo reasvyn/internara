@@ -47,7 +47,7 @@ class AppTestCommand extends Command
         $results = [];
 
         $this->newLine();
-        $this->components->info(config('app.name', 'Internara') . ' Modular Test Orchestrator');
+        $this->components->info(config('app.name', 'Internara').' Modular Test Orchestrator');
 
         $targets = $this->identifyTargets();
 
@@ -68,7 +68,7 @@ class AppTestCommand extends Command
         $totalSegments = 0;
         foreach ($targets as $target) {
             foreach ($subsegments as $sub) {
-                if (File::isDirectory($target['path'] . DIRECTORY_SEPARATOR . $sub)) {
+                if (File::isDirectory($target['path'].DIRECTORY_SEPARATOR.$sub)) {
                     $totalSegments++;
                 }
             }
@@ -87,15 +87,15 @@ class AppTestCommand extends Command
             $hasTests = false;
 
             foreach ($subsegments as $sub) {
-                $testPath = $target['path'] . DIRECTORY_SEPARATOR . $sub;
+                $testPath = $target['path'].DIRECTORY_SEPARATOR.$sub;
 
                 if (File::isDirectory($testPath)) {
                     $hasTests = true;
                     $currentSegment++;
 
-                    $shouldSkip = $this->option('no-' . strtolower($sub));
+                    $shouldSkip = $this->option('no-'.strtolower($sub));
 
-                    if ($onlyFlagsActive && !$this->option(strtolower($sub) . '-only')) {
+                    if ($onlyFlagsActive && ! $this->option(strtolower($sub).'-only')) {
                         $shouldSkip = true;
                     }
 
@@ -115,10 +115,10 @@ class AppTestCommand extends Command
                     );
 
                     $duration = microtime(true) - $segmentStart;
-                    $row[$sub] = number_format($duration, 2) . 's';
+                    $row[$sub] = number_format($duration, 2).'s';
                     $row['total'] += $duration;
 
-                    if (!$success) {
+                    if (! $success) {
                         $overallSuccess = false;
                         $row[$sub] = '<fg=red>FAIL</>';
                         if ($this->option('stop-on-failure')) {
@@ -127,7 +127,7 @@ class AppTestCommand extends Command
                                 $row['Unit'],
                                 $row['Feature'],
                                 $row['Browser'],
-                                number_format($row['total'], 2) . 's',
+                                number_format($row['total'], 2).'s',
                             ];
                             break 2;
                         }
@@ -141,7 +141,7 @@ class AppTestCommand extends Command
                     $row['Unit'],
                     $row['Feature'],
                     $row['Browser'],
-                    number_format($row['total'], 2) . 's',
+                    number_format($row['total'], 2).'s',
                 ];
             }
         }
@@ -160,7 +160,7 @@ class AppTestCommand extends Command
         $targetModule = $this->argument('module');
         $targets = [];
 
-        if (!$targetModule || strtolower($targetModule) === 'root') {
+        if (! $targetModule || strtolower($targetModule) === 'root') {
             $targets[] = ['label' => 'Root', 'path' => base_path('tests')];
         }
 
@@ -176,7 +176,7 @@ class AppTestCommand extends Command
 
                 $targets[] = [
                     'label' => $moduleName,
-                    'path' => $path . DIRECTORY_SEPARATOR . 'tests',
+                    'path' => $path.DIRECTORY_SEPARATOR.'tests',
                 ];
             }
         }
@@ -210,11 +210,11 @@ class AppTestCommand extends Command
 
         $this->components->twoColumnDetail(
             'Total Execution Time',
-            number_format($totalDuration, 2) . 's',
+            number_format($totalDuration, 2).'s',
         );
         $this->components->twoColumnDetail(
             'Peak Memory Usage',
-            number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) . 'MB',
+            number_format(memory_get_peak_usage(true) / 1024 / 1024, 2).'MB',
         );
 
         $this->newLine();
@@ -272,10 +272,10 @@ class AppTestCommand extends Command
 
         if ($isSuccessful === false) {
             $this->newLine();
-            if (!empty($output)) {
+            if (! empty($output)) {
                 $this->line($output);
             }
-            if (!empty($errorOutput)) {
+            if (! empty($errorOutput)) {
                 $this->error($errorOutput);
             }
         }

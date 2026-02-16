@@ -17,9 +17,7 @@ test('dashboard layout renders title and sidebar slot', function () {
 });
 
 test('dashboard layout contains navbar and hamburger for mobile', function () {
-    $html = Blade::render(
-        '<x-ui::layouts.dashboard>Content</x-ui::layouts.dashboard>',
-    );
+    $html = Blade::render('<x-ui::layouts.dashboard>Content</x-ui::layouts.dashboard>');
 
     expect($html)->toContain('aria-label="Open menu"')->toContain('main-drawer');
 });

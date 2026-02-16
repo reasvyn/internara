@@ -25,7 +25,7 @@
     @endif
 
     <x-slot name="content">
-        <div :data-aos="$aos">
+        <div data-aos="{{ $aos }}">
             {{ $slot }}
         </div>
     </x-slot>

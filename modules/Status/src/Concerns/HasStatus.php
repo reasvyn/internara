@@ -64,7 +64,7 @@ trait HasStatus
     {
         $status = $this->getStatus();
 
-        if (!$status) {
+        if (! $status) {
             return __('status::status.unknown');
         }
 
@@ -78,7 +78,7 @@ trait HasStatus
     {
         $status = $this->getStatus();
 
-        if (!$status) {
+        if (! $status) {
             return self::DEFAULT_STATUS_COLOR;
         }
 

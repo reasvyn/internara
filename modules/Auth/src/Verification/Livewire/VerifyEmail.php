@@ -33,7 +33,7 @@ class VerifyEmail extends Component
 
     public function verify()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -57,7 +57,7 @@ class VerifyEmail extends Component
 
     public function resend()
     {
-        if (auth()->check() && !auth()->user()->hasVerifiedEmail()) {
+        if (auth()->check() && ! auth()->user()->hasVerifiedEmail()) {
             $this->authService->resendVerificationEmail(auth()->user());
             session()->flash(
                 'status',

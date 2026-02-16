@@ -11,13 +11,13 @@ uses(RefreshDatabase::class);
 
 test('it generates username from name', function () {
     $username = UsernameGenerator::generate('john');
-    
+
     expect($username)->toStartWith('john')->toHaveLength(12); // john + 8 digits
 });
 
 test('it handles special characters', function () {
     $username = UsernameGenerator::generate('john');
-    
+
     expect($username)->toStartWith('john');
 });
 

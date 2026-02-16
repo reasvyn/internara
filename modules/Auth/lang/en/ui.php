@@ -9,6 +9,8 @@ return [
         'form' => [
             'name' => 'Full Name',
             'name_placeholder' => 'Enter your full name',
+            'username' => 'Username',
+            'username_placeholder' => 'Enter your username',
             'email' => 'Email Address',
             'email_placeholder' => 'Enter your email address',
             'password' => 'Password',
@@ -48,8 +50,7 @@ return [
             'password_confirmation' => 'Confirm Password',
             'password_confirmation_placeholder' => 'Repeat your password',
             'submit' => 'Register Now',
-            'policy_agreement' =>
-                'By clicking **Register Now**, you automatically agree to our [Privacy Policy](:url).',
+            'policy_agreement' => 'By clicking **Register Now**, you automatically agree to our [Privacy Policy](:url).',
             'has_account' => 'Already have an account?',
             'login_now' => 'Sign In',
         ],

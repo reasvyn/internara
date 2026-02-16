@@ -6,8 +6,7 @@ return [
     'complete_now' => 'Selesaikan Sekarang',
     'hub_title' => 'Pusat Panduan & Pedoman',
     'requirements_title' => 'Persyaratan Pembekalan',
-    'requirements_description' =>
-        'Anda wajib membaca dan menyetujui seluruh panduan magang yang bertanda WAJIB sebelum dapat melanjutkan.',
+    'requirements_description' => 'Anda wajib membaca dan menyetujui seluruh panduan magang yang bertanda WAJIB sebelum dapat melanjutkan.',
     'read_and_agree' => 'Baca & Setujui',
     'download_pdf' => 'Unduh PDF',
     'already_read' => 'Telah dibaca',

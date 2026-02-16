@@ -43,8 +43,8 @@ class UserForm extends Form
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email,' . $this->id],
-            'username' => ['required', 'string', 'unique:users,username,' . $this->id],
+            'email' => ['required', 'email', 'unique:users,email,'.$this->id],
+            'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
             'password' => $this->id

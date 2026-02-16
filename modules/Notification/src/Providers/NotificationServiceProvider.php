@@ -43,10 +43,8 @@ class NotificationServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Notification\Services\Contracts\Notifier::class =>
-                \Modules\Notification\Services\Notifier::class,
-            \Modules\Notification\Services\Contracts\NotificationService::class =>
-                \Modules\Notification\Services\NotificationService::class,
+            \Modules\Notification\Services\Contracts\Notifier::class => \Modules\Notification\Services\Notifier::class,
+            \Modules\Notification\Services\Contracts\NotificationService::class => \Modules\Notification\Services\NotificationService::class,
         ];
     }
 }

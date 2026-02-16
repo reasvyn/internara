@@ -133,7 +133,7 @@ class AttendanceIndex extends Component
             // Filter by student name if search is provided
             if ($this->search) {
                 $query->whereHas('student', function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%');
+                    $q->where('name', 'like', '%'.$this->search.'%');
                 });
             }
 

@@ -90,7 +90,7 @@ class AssignmentSubmission extends Component
      */
     public function getAssignmentsProperty(AssignmentService $service)
     {
-        if (!$this->registrationId) {
+        if (! $this->registrationId) {
             return collect();
         }
 

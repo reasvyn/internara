@@ -29,7 +29,7 @@
                                         {{ $schedule->start_at->translatedFormat('d M Y') }}
                                     </time>
                                     @if($schedule->start_at->isToday())
-                                        <x-ui::badge :value="__('schedule::ui.today')" priority="primary" class="badge-xs" />
+                                        <x-ui::badge :value="__('schedule::ui.today')" variant="primary" class="badge-xs" />
                                     @endif
                                 </div>
                                 <h3 class="font-bold text-lg leading-tight mt-1">{{ $schedule->title }}</h3>

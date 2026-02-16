@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Schedule\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Schedule\Enums\ScheduleType;
 use Modules\Schedule\Models\Schedule;
 use Modules\Schedule\Services\Contracts\ScheduleService;
-
 
 beforeEach(function () {
     \Modules\Setting\Facades\Setting::shouldReceive('getValue')

@@ -29,7 +29,7 @@ trait HasAcademicYear
 
         static::addGlobalScope('academic_year', function (Builder $builder) {
             $builder->where(
-                $builder->getQuery()->from . '.academic_year',
+                $builder->getQuery()->from.'.academic_year',
                 setting('active_academic_year', self::getDynamicAcademicYear()),
             );
         });

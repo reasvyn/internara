@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Assignment\Models\Assignment;
@@ -11,7 +10,6 @@ use Modules\Assignment\Services\Contracts\SubmissionService;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);

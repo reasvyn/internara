@@ -38,7 +38,7 @@ describe('EloquentQuery Base Service', function () {
             $table->timestamps();
         });
 
-        $this->service = new QueryTestService(new QueryTestModel());
+        $this->service = new QueryTestService(new QueryTestModel);
     });
 
     test('it can create a record', function () {

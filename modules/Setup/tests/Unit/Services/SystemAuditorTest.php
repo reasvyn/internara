@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Setup\Services\SystemAuditor;
 
 beforeEach(function () {
-    $this->service = new SystemAuditor();
+    $this->service = new SystemAuditor;
 });
 
 test('it performs a full system audit', function () {

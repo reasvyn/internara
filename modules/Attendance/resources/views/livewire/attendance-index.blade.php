@@ -3,8 +3,8 @@
         <x-slot:actions>
             @if(auth()->user()->hasRole('student'))
                 <div class="flex gap-2">
-                    <x-ui::button :label="__('attendance::ui.index.quick_check_in')" icon="tabler.check" wire:click="quickCheckIn" priority="primary" spinner="quickCheckIn" />
-                    <x-ui::button :label="__('attendance::ui.index.fill_attendance')" icon="tabler.edit" wire:click="openAttendanceModal" priority="secondary" />
+                    <x-ui::button :label="__('attendance::ui.index.quick_check_in')" icon="tabler.check" wire:click="quickCheckIn" variant="primary" spinner="quickCheckIn" />
+                    <x-ui::button :label="__('attendance::ui.index.fill_attendance')" icon="tabler.edit" wire:click="openAttendanceModal" variant="secondary" />
                 </div>
             @endif
         </x-slot:actions>
@@ -44,7 +44,7 @@
                 @scope('cell_status', $log)
                     <x-ui::badge 
                         :value="$log->getStatusLabel()" 
-                        :priority="$log->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                        :variant="$log->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
                         class="badge-sm" 
                     />
                 @endscope
@@ -76,7 +76,7 @@
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" x-on:click="$wire.attendanceModal = false" />
-                <x-ui::button :label="__('ui::common.save')" type="submit" priority="primary" spinner="submitAttendance" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="submitAttendance" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

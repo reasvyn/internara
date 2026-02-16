@@ -29,6 +29,11 @@ class SetupWelcome extends Component
     public function mount(): void
     {
         $this->initSetupStepProps(currentStep: 'welcome', nextStep: 'environment');
+
+        notify(
+            __('setup::wizard.welcome.toast_greeting', ['app' => setting('app_name', 'Internara')]),
+            'info',
+        );
     }
 
     /**
@@ -37,9 +42,8 @@ class SetupWelcome extends Component
     public function render(): View
     {
         return view('setup::livewire.setup-welcome')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.welcome.title') .
-                ' | ' .
+            'title' => __('setup::wizard.welcome.title').
+                ' | '.
                 setting('site_title', setting('app_name')),
         ]);
     }

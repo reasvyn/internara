@@ -21,7 +21,7 @@ class SupervisorService extends EloquentQuery implements Contract
      */
     public function __construct(protected UserService $userService)
     {
-        $this->setModel(new InternshipRegistration());
+        $this->setModel(new InternshipRegistration);
     }
 
     /**
@@ -34,7 +34,7 @@ class SupervisorService extends EloquentQuery implements Contract
         $registration = $this->resolveRegistration($registration);
 
         // Validate that the user has the 'teacher' role
-        if (!$this->userService->hasRole($teacherId, 'teacher')) {
+        if (! $this->userService->hasRole($teacherId, 'teacher')) {
             return false;
         }
 
@@ -51,7 +51,7 @@ class SupervisorService extends EloquentQuery implements Contract
         $registration = $this->resolveRegistration($registration);
 
         // Validate that the user has the 'mentor' role
-        if (!$this->userService->hasRole($mentorId, 'mentor')) {
+        if (! $this->userService->hasRole($mentorId, 'mentor')) {
             return false;
         }
 

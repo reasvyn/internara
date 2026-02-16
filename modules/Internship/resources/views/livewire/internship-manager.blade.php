@@ -1,7 +1,7 @@
 <div>
     <x-ui::header :title="__('internship::ui.program_title')" :subtitle="__('internship::ui.program_subtitle')">
         <x-slot:actions>
-            <x-ui::button :label="__('internship::ui.add_program')" icon="tabler.plus" priority="primary" wire:click="add" />
+            <x-ui::button :label="__('internship::ui.add_program')" icon="tabler.plus" variant="primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>
 
@@ -29,8 +29,8 @@
 
                 @scope('actions', $program)
                     <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" priority="tertiary" class="text-info" wire:click="edit('{{ $program->id }}')" tooltip="{{ __('ui::common.edit') }}" />
-                        <x-ui::button icon="tabler.trash" priority="tertiary" class="text-error" wire:click="discard('{{ $program->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $program->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $program->id }}')" tooltip="{{ __('ui::common.delete') }}" />
                     </div>
                 @endscope
             </x-ui::table>
@@ -60,7 +60,7 @@
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
-                <x-ui::button :label="__('ui::common.save')" type="submit" priority="primary" spinner="save" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

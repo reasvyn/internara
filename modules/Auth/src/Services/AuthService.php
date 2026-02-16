@@ -51,7 +51,7 @@ class AuthService implements AuthServiceContract
             'password' => $credentials['password'],
         ];
 
-        if (!Auth::attempt($authCredentials, $remember)) {
+        if (! Auth::attempt($authCredentials, $remember)) {
             // Mask identifier for logging
             $maskedIdentifier = Str::contains($identifier, '@')
                 ? \Modules\Shared\Support\Masker::email($identifier)
@@ -59,7 +59,7 @@ class AuthService implements AuthServiceContract
 
             throw new AppException(
                 userMessage: 'user::exceptions.invalid_credentials',
-                logMessage: 'Authentication attempt failed for: ' . $maskedIdentifier,
+                logMessage: 'Authentication attempt failed for: '.$maskedIdentifier,
                 code: Response::HTTP_UNAUTHORIZED,
             );
         }
@@ -75,20 +75,19 @@ class AuthService implements AuthServiceContract
         Auth::logout();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function register(
         array $data,
         string|array|null $roles = null,
         bool $sendEmailVerification = false,
     ): User {
-        $user = $this->userService->create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => $data['password'],
-            'roles' => $roles,
-        ]);
+        // Prevent role escalation by filtering roles from user input
+        $sanitizedData = \Illuminate\Support\Arr::except($data, ['roles', 'role']);
+
+        $user = $this->userService->create(
+            array_merge($sanitizedData, [
+                'roles' => $roles,
+            ]),
+        );
 
         if ($sendEmailVerification) {
             $user->sendEmailVerificationNotification();
@@ -120,7 +119,7 @@ class AuthService implements AuthServiceContract
      */
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool
     {
-        if (!Hash::check($currentPassword, $user->password)) {
+        if (! Hash::check($currentPassword, $user->password)) {
             throw new AppException(
                 userMessage: 'user::exceptions.password_mismatch',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -171,7 +170,7 @@ class AuthService implements AuthServiceContract
     {
         $user = User::findOrFail($id);
 
-        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
             return false;
         }
 

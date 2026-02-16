@@ -66,7 +66,7 @@ class RoleSeeder extends Seeder
             default => [],
         };
 
-        if (!empty($permissions)) {
+        if (! empty($permissions)) {
             $role->syncPermissions($permissions);
         }
     }

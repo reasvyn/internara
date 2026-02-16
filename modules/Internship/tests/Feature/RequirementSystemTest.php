@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
@@ -10,7 +9,6 @@ use Modules\Internship\Models\InternshipRequirement;
 use Modules\Internship\Models\RequirementSubmission;
 use Modules\Internship\Services\Contracts\PlacementService;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->placementService = app(PlacementService::class);

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
@@ -19,7 +18,6 @@ use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Livewire\SystemSetup;
 use Modules\User\Services\Contracts\SuperAdminService;
-
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);

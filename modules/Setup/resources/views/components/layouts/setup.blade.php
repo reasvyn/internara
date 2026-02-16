@@ -15,8 +15,8 @@
             @endif
 
             <x-ui::badge 
-                :value="'v' . setting('app_version', '0.1.0')" 
-                priority="metadata" 
+                :value="\Illuminate\Support\Str::start(setting('app_version', '0.1.0'), 'v')" 
+                variant="metadata" 
                 class="ml-2" 
             />
         </x-slot>
@@ -27,7 +27,7 @@
         </x-slot>
     </x-ui::nav>
 
-    <main id="main-content" class="flex flex-1 flex-col items-center justify-center p-4" data-aos="fade-up">
+    <main id="main-content" class="flex flex-1 flex-col items-center justify-center p-4">
         <x-honeypot />
         {{ $slot }}
     </main>

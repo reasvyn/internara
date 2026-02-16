@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Http;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\User\Services\Contracts\SuperAdminService;
-
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);

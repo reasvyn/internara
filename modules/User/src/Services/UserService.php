@@ -59,7 +59,7 @@ class UserService extends EloquentQuery implements Contract
             }
         }
 
-        $plainPassword = $data['password'] ?? \Illuminate\Support\Str::random(12);
+        $plainPassword = $data['password'] ?? \Illuminate\Support\Str::password(16);
         $data['password'] = $plainPassword;
 
         $user = parent::create($data);
@@ -71,7 +71,7 @@ class UserService extends EloquentQuery implements Contract
             $this->profileService->syncProfileable($profile, $roles, $profileData);
         }
 
-        if (!empty($profileData)) {
+        if (! empty($profileData)) {
             $this->profileService->update($profile->id, $profileData);
         }
 
@@ -115,7 +115,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
@@ -144,7 +144,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
@@ -173,7 +173,7 @@ class UserService extends EloquentQuery implements Contract
             $this->profileService->syncProfileable($profile, Arr::wrap($roles), $profileData);
         }
 
-        if (!empty($profileData)) {
+        if (! empty($profileData)) {
             $this->profileService->update($profile->id, $profileData);
         }
 
@@ -191,7 +191,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
@@ -219,7 +219,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

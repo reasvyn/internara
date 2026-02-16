@@ -26,7 +26,7 @@ describe('Metadata Service', function () {
         ];
 
         File::put($this->metadataPath, json_encode($this->testMetadata));
-        $this->service = new MetadataService();
+        $this->service = new MetadataService;
     });
 
     afterEach(function () {
@@ -66,7 +66,7 @@ describe('Metadata Service', function () {
         $tamperedMetadata['author']['name'] = 'Tampered Author';
         File::put($this->metadataPath, json_encode($tamperedMetadata));
 
-        $service = new MetadataService(); // Fresh instance to clear cache
+        $service = new MetadataService; // Fresh instance to clear cache
         $service->verifyIntegrity();
     })->throws(RuntimeException::class, 'Integrity Violation');
 });

@@ -30,7 +30,7 @@
                 <div class="flex items-end">
                     <x-ui::button 
                         :label="__('report::ui.generate')" 
-                        priority="primary"
+                        variant="primary"
                         class="w-full" 
                         icon="tabler.file-export"
                         wire:click="generate" 
@@ -60,7 +60,7 @@
                         @endscope
 
                         @scope('actions', $report)
-                            <x-ui::button icon="tabler.download" priority="tertiary" class="btn-sm" link="{{ \Illuminate\Support\Facades\Storage::url($report->file_path) }}" external />
+                            <x-ui::button icon="tabler.download" variant="tertiary" class="btn-sm" link="{{ \Illuminate\Support\Facades\Storage::url($report->file_path) }}" external />
                         @endscope
                     </x-ui::table>
                 @endif

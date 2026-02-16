@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Assessment\Tests\Feature\Controllers;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
@@ -49,7 +48,7 @@ test('authorized student can download certificate', function () {
     $response->assertHeader('Content-Type', 'application/pdf');
     $response->assertHeader(
         'Content-Disposition',
-        'attachment; filename="certificate-' . $student->username . '.pdf"',
+        'attachment; filename="certificate-'.$student->username.'.pdf"',
     );
 });
 

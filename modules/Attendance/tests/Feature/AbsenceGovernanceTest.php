@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Attendance\Models\AbsenceRequest;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->attendanceService = app(AttendanceService::class);
@@ -32,7 +30,7 @@ test('it prevents check-in if an approved absence request exists for today', fun
     ]);
     $absence->setStatus('approved');
 
-    expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
+    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
         AppException::class,
         'attendance::messages.cannot_check_in_with_approved_absence',
     );

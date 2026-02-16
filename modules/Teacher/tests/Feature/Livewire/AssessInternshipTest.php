@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Teacher\Tests\Feature\Livewire;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Permission\Models\Role;
 use Modules\Teacher\Livewire\AssessInternship;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'teacher', 'guard_name' => 'web']);

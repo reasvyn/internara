@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Modules\User\Tests\Feature\Services;
 
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
 use Modules\User\Services\Contracts\UserService;
-
 
 describe('UserService', function () {
     beforeEach(function () {
@@ -56,7 +54,7 @@ describe('UserService', function () {
 
         $userService = app(UserService::class);
 
-        expect(fn() => $userService->delete($superAdmin->id))->toThrow(
+        expect(fn () => $userService->delete($superAdmin->id))->toThrow(
             AuthorizationException::class,
         );
     });
@@ -67,7 +65,7 @@ describe('UserService', function () {
 
         $userService = app(UserService::class);
 
-        expect(fn() => $userService->toggleStatus($superAdmin->id))->toThrow(
+        expect(fn () => $userService->toggleStatus($superAdmin->id))->toThrow(
             AuthorizationException::class,
         );
     });

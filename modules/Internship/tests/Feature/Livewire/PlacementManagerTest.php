@@ -10,7 +10,6 @@ use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\User\Models\User;
 
-
 beforeEach(function () {
     $role = \Modules\Permission\Models\Role::create(['name' => 'staff']);
     $permission = \Modules\Permission\Models\Permission::create(['name' => 'internship.update']);

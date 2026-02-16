@@ -70,7 +70,7 @@
             </div>
 
             <div class="flex flex-col items-center gap-8">
-                <x-ui::button priority="primary" class="w-full" :label="__('ui::common.save')" type="submit" />
+                <x-ui::button variant="primary" class="w-full" :label="__('ui::common.save')" type="submit" />
             </div>
         </x-ui::form>
     </x-ui::card>

@@ -88,7 +88,7 @@ class SystemSetup extends Component
                 throw new \Exception($errstr ?: 'Connection timed out.');
             }
         } catch (\Exception $e) {
-            notify('Connection failed: ' . $e->getMessage(), 'error');
+            notify('Connection failed: '.$e->getMessage(), 'error');
         }
     }
 
@@ -126,9 +126,8 @@ class SystemSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.system-setup')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.system.title') .
-                ' | ' .
+            'title' => __('setup::wizard.system.title').
+                ' | '.
                 setting('site_title', setting('app_name')),
         ]);
     }

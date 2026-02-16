@@ -23,8 +23,7 @@ class AttendanceServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Attendance\Models\AttendanceLog::class =>
-            \Modules\Attendance\Policies\AttendancePolicy::class,
+        \Modules\Attendance\Models\AttendanceLog::class => \Modules\Attendance\Policies\AttendancePolicy::class,
     ];
 
     /**
@@ -69,8 +68,7 @@ class AttendanceServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Attendance\Services\Contracts\AttendanceService::class =>
-                \Modules\Attendance\Services\AttendanceService::class,
+            \Modules\Attendance\Services\Contracts\AttendanceService::class => \Modules\Attendance\Services\AttendanceService::class,
         ];
     }
 }

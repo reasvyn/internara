@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
-
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);

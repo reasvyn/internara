@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Permission\Models\Role;
 use Modules\Profile\Livewire\Index;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     Role::create(['name' => 'super-admin', 'guard_name' => 'web']);

@@ -25,7 +25,7 @@ final class UsernameGenerator
                 $randomNumbers .= random_int(0, 9);
             }
 
-            $username = $prefix . $randomNumbers;
+            $username = $prefix.$randomNumbers;
             $attempt++;
 
             if ($attempt > $maxAttempts) {

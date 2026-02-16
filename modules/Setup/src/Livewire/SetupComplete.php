@@ -44,9 +44,8 @@ class SetupComplete extends Component
     public function render(): View
     {
         return view('setup::livewire.setup-complete')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.complete.title') .
-                ' | ' .
+            'title' => __('setup::wizard.complete.title').
+                ' | '.
                 setting('site_title', setting('app_name')),
         ]);
     }

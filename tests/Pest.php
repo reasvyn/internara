@@ -5,16 +5,16 @@ declare(strict_types=1);
 pest()
     ->extend(Tests\DuskTestCase::class)
     ->use(Illuminate\Foundation\Testing\DatabaseMigrations::class)
-    ->in(__DIR__ . '/Browser', __DIR__ . '/../modules/*/tests/Browser');
+    ->in(__DIR__.'/Browser', __DIR__.'/../modules/*/tests/Browser');
 
 pest()
     ->extend(\Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
-    ->in(__DIR__ . '/Feature', __DIR__ . '/../modules/*/tests/Feature');
+    ->in(__DIR__.'/Feature', __DIR__.'/../modules/*/tests/Feature');
 
 pest()
     ->extend(\Tests\TestCase::class)
-    ->in(__DIR__ . '/Unit', __DIR__ . '/../modules/*/tests/Unit');
+    ->in(__DIR__.'/Unit', __DIR__.'/../modules/*/tests/Unit');
 
 /*
 |--------------------------------------------------------------------------

@@ -7,7 +7,7 @@
     'aos' => null,
 ])
 
-<div class="w-full space-y-2" :data-aos="$aos">
+<div class="w-full space-y-2" data-aos="{{ $aos }}">
     @if($label)
         <label class="label mb-1 px-1">
             <span class="label-text font-semibold text-base-content/80">{{ $label }}</span>

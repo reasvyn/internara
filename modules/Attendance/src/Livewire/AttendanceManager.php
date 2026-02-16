@@ -29,7 +29,7 @@ class AttendanceManager extends Component
 
             if (
                 $settingService->getValue('feature_guidance_enabled', true) &&
-                !$guidanceService->hasCompletedMandatory((string) auth()->id())
+                ! $guidanceService->hasCompletedMandatory((string) auth()->id())
             ) {
                 // For manager component which might be embedded, we might just disable actions
                 // but for consistency with Journal, let's redirect if it's a main page.
@@ -65,7 +65,7 @@ class AttendanceManager extends Component
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
-            !$guidanceService->hasCompletedMandatory((string) auth()->id())
+            ! $guidanceService->hasCompletedMandatory((string) auth()->id())
         ) {
             notify(__('guidance::messages.must_complete_guidance'), 'warning');
 

@@ -43,12 +43,9 @@ class AssignmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Assignment\Services\Contracts\AssignmentService::class =>
-                \Modules\Assignment\Services\AssignmentService::class,
-            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class =>
-                \Modules\Assignment\Services\AssignmentTypeService::class,
-            \Modules\Assignment\Services\Contracts\SubmissionService::class =>
-                \Modules\Assignment\Services\SubmissionService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentService::class => \Modules\Assignment\Services\AssignmentService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class => \Modules\Assignment\Services\AssignmentTypeService::class,
+            \Modules\Assignment\Services\Contracts\SubmissionService::class => \Modules\Assignment\Services\SubmissionService::class,
         ];
     }
 

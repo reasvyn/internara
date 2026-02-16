@@ -39,7 +39,7 @@ class AssessInternship extends Component
 
         // Authorization check for viewing
         $registration = app(RegistrationService::class)->find($registrationId);
-        if (!$registration || $registration->teacher_id !== auth()->id()) {
+        if (! $registration || $registration->teacher_id !== auth()->id()) {
             abort(403, 'You are not authorized to assess this student.');
         }
 

@@ -44,7 +44,7 @@ class Form extends Component
     {
         if ($id) {
             $user = User::findOrFail($id);
-            $this->form . setUser($user);
+            $this->form.setUser($user);
         }
     }
 

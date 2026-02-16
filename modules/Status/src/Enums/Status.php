@@ -32,6 +32,6 @@ enum Status: string
      */
     public function label(): string
     {
-        return 'status::status.' . $this->value;
+        return 'status::status.'.$this->value;
     }
 }

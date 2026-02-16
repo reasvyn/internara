@@ -6,7 +6,6 @@ use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\User\Models\User;
 
-
 test('it records audit log when a placement is updated', function () {
     $user = User::factory()->create();
     $this->actingAs($user);

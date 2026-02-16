@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Department\Livewire\DepartmentManager;
 use Modules\Department\Models\Department;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);

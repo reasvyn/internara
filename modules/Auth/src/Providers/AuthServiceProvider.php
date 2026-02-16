@@ -26,8 +26,34 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     {
         $this->bootModule();
 
+        $this->registerLivewireComponents();
+
         // Customize the verification email to sound like it's from the school
         $this->customizeVerificationEmail();
+    }
+
+    /**
+     * Register Livewire components for the module.
+     */
+    protected function registerLivewireComponents(): void
+    {
+        \Livewire\Livewire::component('auth::login', \Modules\Auth\Livewire\Login::class);
+        \Livewire\Livewire::component(
+            'auth::register',
+            \Modules\Auth\Registration\Livewire\Register::class,
+        );
+        \Livewire\Livewire::component(
+            'auth::register-super-admin',
+            \Modules\Auth\Registration\Livewire\RegisterSuperAdmin::class,
+        );
+        \Livewire\Livewire::component(
+            'auth::verify-email',
+            \Modules\Auth\Verification\Livewire\VerifyEmail::class,
+        );
+        \Livewire\Livewire::component(
+            'auth::verification-notice',
+            \Modules\Auth\Verification\Livewire\VerificationNotice::class,
+        );
     }
 
     /**
@@ -36,7 +62,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function customizeVerificationEmail(): void
     {
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return (new MailMessage())
+            return (new MailMessage)
                 ->subject(__('auth::emails.verification_subject'))
                 ->greeting(__('auth::emails.verification_greeting', ['name' => $notifiable->name]))
                 ->line(__('auth::emails.verification_line_1'))
@@ -71,10 +97,8 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Auth\Services\Contracts\AuthService::class =>
-                \Modules\Auth\Services\AuthService::class,
-            \Modules\Auth\Services\Contracts\RedirectService::class =>
-                \Modules\Auth\Services\RedirectService::class,
+            \Modules\Auth\Services\Contracts\AuthService::class => \Modules\Auth\Services\AuthService::class,
+            \Modules\Auth\Services\Contracts\RedirectService::class => \Modules\Auth\Services\RedirectService::class,
         ];
     }
 

@@ -26,17 +26,17 @@
             @scope('cell_status', $registration)
                 <x-ui::badge 
                     :value="$registration->getStatusLabel()" 
-                    :priority="$registration->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                    :variant="$registration->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
                 />
             @endscope
 
             @scope('cell_readiness', $registration)
                 @php $readiness = $this->getReadiness($registration->id); @endphp
                 @if($readiness['is_ready'])
-                    <x-ui::badge :value="__('teacher::ui.dashboard.readiness.ready')" priority="primary" />
+                    <x-ui::badge :value="__('teacher::ui.dashboard.readiness.ready')" variant="primary" />
                 @else
                     <div class="tooltip" data-tip="{{ implode(', ', $readiness['missing']) }}">
-                        <x-ui::badge :value="__('teacher::ui.dashboard.readiness.not_ready')" priority="secondary" />
+                        <x-ui::badge :value="__('teacher::ui.dashboard.readiness.not_ready')" variant="secondary" />
                     </div>
                 @endif
             @endscope
@@ -46,14 +46,14 @@
                     <x-ui::button 
                         :label="__('teacher::ui.dashboard.actions.supervise')" 
                         icon="tabler.messages" 
-                        priority="tertiary" 
+                        variant="tertiary" 
                         class="text-primary btn-sm" 
                         link="{{ route('teacher.mentoring', $registration->id) }}" 
                     />
                     <x-ui::button 
                         :label="__('teacher::ui.dashboard.actions.assess')" 
                         icon="tabler.clipboard-check" 
-                        priority="tertiary" 
+                        variant="tertiary" 
                         class="btn-sm" 
                         link="{{ route('teacher.assess', $registration->id) }}" 
                     />
@@ -63,7 +63,7 @@
                         <x-ui::button 
                             :label="__('teacher::ui.dashboard.actions.transcript')" 
                             icon="tabler.file-download" 
-                            priority="tertiary" 
+                            variant="tertiary" 
                             class="text-success btn-sm" 
                             link="{{ route('assessment.transcript', $registration->id) }}" 
                             external 

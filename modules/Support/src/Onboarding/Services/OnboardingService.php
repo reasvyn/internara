@@ -41,7 +41,7 @@ class OnboardingService implements Contract
             'errors' => [],
         ];
 
-        if (!file_exists($filePath) || !is_readable($filePath)) {
+        if (! file_exists($filePath) || ! is_readable($filePath)) {
             $results['errors'][] = __('support::onboarding.errors.file_not_readable');
 
             return $results;
@@ -50,7 +50,7 @@ class OnboardingService implements Contract
         $handle = fopen($filePath, 'r');
         $header = fgetcsv($handle);
 
-        if (!$header) {
+        if (! $header) {
             $results['errors'][] = __('support::onboarding.errors.empty_file');
             fclose($handle);
 
@@ -58,7 +58,7 @@ class OnboardingService implements Contract
         }
 
         // Normalize header keys for consistent mapping
-        $header = array_map(fn($h) => strtolower(trim((string) $h)), $header);
+        $header = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
 
         $rowCount = 1;
         while (($row = fgetcsv($handle)) !== false) {
@@ -87,7 +87,7 @@ class OnboardingService implements Contract
                 $results['success']++;
             } catch (\Throwable $e) {
                 $results['failure']++;
-                $results['errors'][] = "Row {$rowCount}: " . $e->getMessage();
+                $results['errors'][] = "Row {$rowCount}: ".$e->getMessage();
             }
         }
 
@@ -110,7 +110,7 @@ class OnboardingService implements Contract
             $columns[] = 'nip';
         }
 
-        return implode(',', $columns) . "\n";
+        return implode(',', $columns)."\n";
     }
 
     /**
@@ -131,7 +131,7 @@ class OnboardingService implements Contract
             throw new \InvalidArgumentException(__('support::onboarding.errors.required_fields'));
         }
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException(__('support::onboarding.errors.invalid_email'));
         }
 
@@ -157,17 +157,17 @@ class OnboardingService implements Contract
         if ($profile && $profile->profileable_id) {
             if ($type === 'student') {
                 $studentData = [];
-                if (!empty($data['national_identifier'])) {
+                if (! empty($data['national_identifier'])) {
                     $studentData['national_identifier'] = $data['national_identifier'];
                 }
-                if (!empty($data['registration_number'])) {
+                if (! empty($data['registration_number'])) {
                     $studentData['registration_number'] = $data['registration_number'];
                 }
 
-                if (!empty($studentData)) {
+                if (! empty($studentData)) {
                     $this->studentService->update($profile->profileable_id, $studentData);
                 }
-            } elseif ($type === 'teacher' && !empty($data['nip'])) {
+            } elseif ($type === 'teacher' && ! empty($data['nip'])) {
                 $this->teacherService->update($profile->profileable_id, ['nip' => $data['nip']]);
             }
         }

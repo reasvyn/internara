@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Assessment\Models\Competency;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->journalService = app(JournalService::class);
@@ -58,7 +56,7 @@ test('it enforces dynamic submission window', function () {
         'activity_description' => 'Old work',
     ];
 
-    expect(fn() => $this->journalService->create($data))->toThrow(
+    expect(fn () => $this->journalService->create($data))->toThrow(
         AppException::class,
         'journal::exceptions.submission_window_expired',
     );

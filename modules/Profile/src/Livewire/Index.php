@@ -130,8 +130,8 @@ class Index extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|unique:users,username,' . auth()->id(),
-            'email' => 'required|email|unique:users,email,' . auth()->id(),
+            'username' => 'required|string|unique:users,username,'.auth()->id(),
+            'email' => 'required|email|unique:users,email,'.auth()->id(),
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'gender' => [
@@ -183,24 +183,22 @@ class Index extends Component
         $user = auth()->user();
         $profileable = $user->profile->profileable;
 
-        if (!$profileable) {
+        if (! $profileable) {
             return;
         }
 
         try {
             if ($user->hasRole(\Modules\Permission\Enums\Role::TEACHER->value)) {
                 $this->validate([
-                    'nip' => 'required|string|unique:teachers,nip,' . $profileable->id,
+                    'nip' => 'required|string|unique:teachers,nip,'.$profileable->id,
                 ]);
                 $profileable->update(['nip' => $this->nip]);
             }
 
             if ($user->hasRole(\Modules\Permission\Enums\Role::STUDENT->value)) {
                 $this->validate([
-                    'national_identifier' =>
-                        'required|string|unique:students,national_identifier,' . $profileable->id,
-                    'registration_number' =>
-                        'nullable|string|unique:students,registration_number,' . $profileable->id,
+                    'national_identifier' => 'required|string|unique:students,national_identifier,'.$profileable->id,
+                    'registration_number' => 'nullable|string|unique:students,registration_number,'.$profileable->id,
                     'class_name' => 'nullable|string|max:50',
                     'passport_photo' => 'nullable|image|max:1024',
                 ]);

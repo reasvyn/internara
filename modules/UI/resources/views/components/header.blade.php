@@ -12,7 +12,7 @@
     :title="$title"
     :subtitle="$subtitle"
     :separator="$separator"
-    :data-aos="$aos"
+    data-aos="{{ $aos }}"
 >
     @if($middle)
         <x-slot:middle>

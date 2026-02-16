@@ -41,14 +41,14 @@
                                         <x-ui::button 
                                             :label="__('student::ui.dashboard.score.download_certificate')" 
                                             icon="tabler.certificate" 
-                                            priority="primary" 
+                                            variant="primary" 
                                             class="btn-sm" 
                                             link="{{ route('assessment.certificate', $this->registration->id) }}" 
                                         />
                                         <x-ui::button 
                                             :label="__('student::ui.dashboard.score.download_transcript')" 
                                             icon="tabler.file-description" 
-                                            priority="secondary" 
+                                            variant="secondary" 
                                             class="btn-sm" 
                                             link="{{ route('assessment.transcript', $this->registration->id) }}" 
                                         />

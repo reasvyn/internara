@@ -1,6 +1,6 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <x-ui::badge priority="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
+        <x-ui::badge variant="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
             {{ __('setup::wizard.steps', ['current' => 7, 'total' => 8]) }}
         </x-ui::badge>
 
@@ -19,24 +19,24 @@
 
         <div class="mt-10 flex flex-wrap items-center gap-4" data-aos="fade-up" data-aos-delay="800">
             <x-ui::button
-                priority="secondary"
+                variant="secondary"
                 :label="__('setup::wizard.buttons.back')"
                 wire:click="backToPrev"
             />
             <x-ui::button
-                priority="tertiary"
+                variant="tertiary"
                 :label="__('setup::wizard.system.skip')"
                 wire:click="skip"
             />
             <x-ui::button
-                priority="secondary"
+                variant="secondary"
                 class="border-info/50 text-info hover:bg-info/5 hover:border-info"
                 :label="__('setup::wizard.system.test_connection')"
                 wire:click="testConnection"
                 spinner="testConnection"
             />
             <x-ui::button
-                priority="primary"
+                variant="primary"
                 :label="__('setup::wizard.buttons.save_continue')"
                 wire:click="save"
                 spinner="save"

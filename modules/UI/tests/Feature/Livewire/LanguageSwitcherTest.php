@@ -19,7 +19,9 @@ test('it renders supported locales', function () {
 
 test('it can change locale', function () {
     $service = mock(LocalizationService::class);
-    $service->shouldReceive('getSupportedLocales')->andReturn(['id' => ['name' => 'ID', 'icon' => 'tabler.id']]);
+    $service
+        ->shouldReceive('getSupportedLocales')
+        ->andReturn(['id' => ['name' => 'ID', 'icon' => 'tabler.id']]);
     $service->shouldReceive('setLocale')->with('id')->once()->andReturn(true);
     app()->instance(LocalizationService::class, $service);
 

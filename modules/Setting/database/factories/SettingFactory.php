@@ -33,7 +33,7 @@ class SettingFactory extends Factory
      */
     public function string(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('string', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('string', $attributes));
     }
 
     /**
@@ -43,7 +43,7 @@ class SettingFactory extends Factory
      */
     public function integer(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('integer', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('integer', $attributes));
     }
 
     /**
@@ -53,7 +53,7 @@ class SettingFactory extends Factory
      */
     public function float(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('float', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('float', $attributes));
     }
 
     /**
@@ -63,7 +63,7 @@ class SettingFactory extends Factory
      */
     public function boolean(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('boolean', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('boolean', $attributes));
     }
 
     /**
@@ -73,7 +73,7 @@ class SettingFactory extends Factory
      */
     public function array(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('array', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('array', $attributes));
     }
 
     /**
@@ -83,7 +83,7 @@ class SettingFactory extends Factory
      */
     public function json(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('json', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('json', $attributes));
     }
 
     /**
@@ -93,7 +93,7 @@ class SettingFactory extends Factory
      */
     public function nullType(array $attributes = []): static
     {
-        return $this->state(fn(array $_) => $this->buildState('null', $attributes));
+        return $this->state(fn (array $_) => $this->buildState('null', $attributes));
     }
 
     /**

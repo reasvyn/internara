@@ -52,10 +52,8 @@ class CoreServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator::class =>
-                \Modules\Core\Analytics\Services\AnalyticsAggregator::class,
-            \Modules\Core\Metadata\Services\Contracts\MetadataService::class =>
-                \Modules\Core\Metadata\Services\MetadataService::class,
+            \Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator::class => \Modules\Core\Analytics\Services\AnalyticsAggregator::class,
+            \Modules\Core\Metadata\Services\Contracts\MetadataService::class => \Modules\Core\Metadata\Services\MetadataService::class,
         ];
     }
 }

@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Log\Models\AuditLog;
 use Modules\Setting\Models\Setting;
 use Modules\User\Models\User;
-
 
 test('it records audit log when a setting is updated', function () {
     $user = User::factory()->create();

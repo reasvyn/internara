@@ -13,7 +13,7 @@ test('it passes when turnstile is successful', function () {
         'challenges.cloudflare.com/*' => Http::response(['success' => true]),
     ]);
 
-    $rule = new Turnstile();
+    $rule = new Turnstile;
     $passed = true;
 
     $rule->validate('turnstile', 'test-token', function ($message) use (&$passed) {
@@ -30,7 +30,7 @@ test('it fails when turnstile is unsuccessful', function () {
         'challenges.cloudflare.com/*' => Http::response(['success' => false]),
     ]);
 
-    $rule = new Turnstile();
+    $rule = new Turnstile;
     $errorMessage = null;
 
     $rule->validate('turnstile', 'test-token', function ($message) use (&$errorMessage) {
@@ -43,7 +43,7 @@ test('it fails when turnstile is unsuccessful', function () {
 test('it passes if secret key is missing', function () {
     Config::set('services.cloudflare.turnstile.secret_key', null);
 
-    $rule = new Turnstile();
+    $rule = new Turnstile;
     $passed = true;
 
     $rule->validate('turnstile', 'test-token', function ($message) use (&$passed) {

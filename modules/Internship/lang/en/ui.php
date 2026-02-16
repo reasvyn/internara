@@ -12,8 +12,7 @@ return [
     'add_company' => 'Add Partner',
     'edit_company' => 'Edit Partner',
     'search_company' => 'Search partner...',
-    'delete_company_confirm' =>
-        'Are you sure you want to delete this company? All related placements will also be deleted.',
+    'delete_company_confirm' => 'Are you sure you want to delete this company? All related placements will also be deleted.',
     'search_placement' => 'Search industry partner...',
     'company_name' => 'Agency/Company Name',
     'company_address' => 'Company Address',
@@ -30,8 +29,7 @@ return [
     'contact_number' => 'Phone Number',
     'quota' => 'Quota (Students)',
     'select_program' => 'Select Internship Program',
-    'delete_placement_confirm' =>
-        'Are you sure you want to delete this internship placement? Student registrations for this partner will also be deleted.',
+    'delete_placement_confirm' => 'Are you sure you want to delete this internship placement? Student registrations for this partner will also be deleted.',
 
     // Internship Program
     'program_title' => 'Internship Programs',
@@ -46,8 +44,7 @@ return [
     'semester_even' => 'Even',
     'date_start' => 'Start Date',
     'date_finish' => 'Finish Date',
-    'delete_program_confirm' =>
-        'Are you sure you want to delete this internship program? All related placements and registrations will also be deleted.',
+    'delete_program_confirm' => 'Are you sure you want to delete this internship program? All related placements and registrations will also be deleted.',
 
     // Registration
     'registration_title' => 'Student Registrations',
@@ -83,8 +80,7 @@ return [
     'document' => 'Document',
     'skill' => 'Skill',
     'condition' => 'Condition',
-    'delete_requirement_confirm' =>
-        'Are you sure you want to delete this requirement? All related student submissions will also be deleted.',
+    'delete_requirement_confirm' => 'Are you sure you want to delete this requirement? All related student submissions will also be deleted.',
 
     // Submissions
     'requirements' => 'Prerequisites & Requirements',
@@ -95,6 +91,5 @@ return [
     'submit_requirement' => 'Submit',
     'requirement_submitted' => 'Requirement successfully submitted.',
     'view_current_document' => 'View Submitted Document',
-    'all_mandatory_requirements_cleared' =>
-        'All mandatory requirements have been verified. You are ready for placement!',
+    'all_mandatory_requirements_cleared' => 'All mandatory requirements have been verified. You are ready for placement!',
 ];

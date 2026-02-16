@@ -49,9 +49,8 @@ class InternshipSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.internship-setup')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.internship.title') .
-                ' | ' .
+            'title' => __('setup::wizard.internship.title').
+                ' | '.
                 setting('site_title', setting('app_name')),
         ]);
     }

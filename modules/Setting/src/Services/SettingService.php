@@ -68,7 +68,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
 
         // 2. Check Database (Cached)
         $dbValue = $this->remember(
-            self::CACHE_PREFIX . $key,
+            self::CACHE_PREFIX.$key,
             now()->addDay(),
             function () use ($key) {
                 $setting = $this->model->find($key);
@@ -105,7 +105,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             'app_license' => 'license',
         ];
 
-        if (!isset($map[$key])) {
+        if (! isset($map[$key])) {
             return null;
         }
 
@@ -125,7 +125,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             foreach ($key as $k => $v) {
                 $currentValue = is_array($v) ? $v['value'] ?? null : $v;
                 $attributes = is_array($v) ? array_diff_key($v, ['value' => null]) : [];
-                if (!$this->setValue($k, $currentValue, $attributes)) {
+                if (! $this->setValue($k, $currentValue, $attributes)) {
                     $success = false;
                 }
             }
@@ -149,9 +149,9 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     public function group(string $name, bool $skipCache = false): Collection
     {
         return $this->remember(
-            self::CACHE_PREFIX . 'group.' . $name,
+            self::CACHE_PREFIX.'group.'.$name,
             now()->addDay(),
-            fn() => $this->model->group($name)->get(),
+            fn () => $this->model->group($name)->get(),
             $skipCache,
         );
     }
@@ -185,12 +185,12 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
      */
     protected function clearCache(string $key, ?string $group = null): void
     {
-        Cache::forget(self::CACHE_PREFIX . $key);
+        Cache::forget(self::CACHE_PREFIX.$key);
 
         if ($group) {
-            Cache::forget(self::CACHE_PREFIX . 'group.' . $group);
+            Cache::forget(self::CACHE_PREFIX.'group.'.$group);
         }
 
-        Cache::forget(self::CACHE_PREFIX . 'all');
+        Cache::forget(self::CACHE_PREFIX.'all');
     }
 }

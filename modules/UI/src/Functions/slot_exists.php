@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Modules\UI\Support\Slot;
 
-if (!function_exists('slot_exists')) {
+if (! function_exists('slot_exists')) {
     /**
      * Global wrapper for Modules\UI\Support\Slot::exists.
      */
@@ -14,7 +14,7 @@ if (!function_exists('slot_exists')) {
     }
 }
 
-if (!function_exists('slotExists')) {
+if (! function_exists('slotExists')) {
     /**
      * @deprecated Use slot_exists() instead.
      */

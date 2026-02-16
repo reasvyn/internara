@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 use Modules\Guidance\Models\Handbook;
 use Modules\Guidance\Services\Contracts\HandbookService;
@@ -12,7 +11,6 @@ use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Services\Contracts\UserService;
-
 
 beforeEach(function () {
     // Seed roles and permissions via modular seeder

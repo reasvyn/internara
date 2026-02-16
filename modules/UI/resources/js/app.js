@@ -1,19 +1,35 @@
 import AOS from 'aos'
-import 'aos/dist/aos.css'
 
 /**
  * Initialize AOS (Animate on Scroll).
- * We listen for both DOMContentLoaded and livewire:navigated to ensure
- * animations work during initial load and SPA transitions.
  */
 const initAOS = () => {
     AOS.init({
         duration: 800,
         easing: 'ease-out-cubic',
         once: true,
-        offset: 50,
+        offset: 20,
     })
 }
 
-document.addEventListener('DOMContentLoaded', initAOS)
-document.addEventListener('livewire:navigated', initAOS)
+// Initial Load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initAOS, 150)
+    })
+} else {
+    setTimeout(initAOS, 150)
+}
+
+// Livewire Integration
+document.addEventListener('livewire:init', () => {
+    initAOS()
+})
+
+document.addEventListener('livewire:navigated', () => {
+    // Refresh and re-init to handle new DOM elements in SPA mode
+    setTimeout(() => {
+        AOS.refresh()
+        initAOS()
+    }, 50)
+})

@@ -53,7 +53,7 @@ class EnvironmentSetup extends Component
     #[Computed]
     public function disableNextStep(): bool
     {
-        return !app(SystemAuditor::class)->passes();
+        return ! app(SystemAuditor::class)->passes();
     }
 
     /**

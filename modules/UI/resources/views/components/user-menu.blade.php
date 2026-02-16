@@ -34,7 +34,7 @@
         <div class="flex flex-nowrap items-center gap-2">
             @if ($hasLogin)
                 <x-ui::button 
-                    priority="primary" 
+                    variant="primary" 
                     :label="__('ui::common.login')" 
                     :link="$loginRoute" 
                 />
@@ -42,7 +42,7 @@
 
             @if ($hasRegister)
                 <x-ui::button 
-                    priority="secondary" 
+                    variant="secondary" 
                     :label="__('ui::common.register')" 
                     :link="$registerRoute" 
                 />

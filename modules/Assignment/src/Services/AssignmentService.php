@@ -52,7 +52,7 @@ class AssignmentService extends EloquentQuery implements Contract
             \Modules\Internship\Services\Contracts\RegistrationService::class,
         )->find($registrationId);
 
-        if (!$registration) {
+        if (! $registration) {
             return false;
         }
 
@@ -83,7 +83,7 @@ class AssignmentService extends EloquentQuery implements Contract
                 })
                 ->exists();
 
-            if (!$hasVerified) {
+            if (! $hasVerified) {
                 return false;
             }
         }

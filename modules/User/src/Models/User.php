@@ -96,7 +96,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn(string $word) => Str::substr($word, 0, 1))
+            ->map(fn (string $word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 

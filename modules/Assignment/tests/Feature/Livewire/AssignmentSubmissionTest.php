@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -14,7 +13,6 @@ use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     Storage::fake('public');

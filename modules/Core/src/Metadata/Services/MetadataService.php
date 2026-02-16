@@ -36,7 +36,7 @@ class MetadataService implements Contract
         if ($this->info === null) {
             $path = base_path('app_info.json');
 
-            if (!File::exists($path)) {
+            if (! File::exists($path)) {
                 $this->info = [];
             } else {
                 $this->info = json_decode(File::get($path), true) ?? [];
@@ -79,9 +79,9 @@ class MetadataService implements Contract
 
         if ($author !== self::AUTHOR_IDENTITY) {
             throw new \RuntimeException(
-                "Integrity Violation: Unauthorized author detected [{$author}]. " .
-                    'This system requires attribution to [' .
-                    self::AUTHOR_IDENTITY .
+                "Integrity Violation: Unauthorized author detected [{$author}]. ".
+                    'This system requires attribution to ['.
+                    self::AUTHOR_IDENTITY.
                     '].',
             );
         }

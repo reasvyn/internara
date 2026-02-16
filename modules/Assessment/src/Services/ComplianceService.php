@@ -26,8 +26,8 @@ class ComplianceService implements Contract
         /** @var \Modules\Internship\Models\InternshipRegistration|null $registration */
         $registration = $this->registrationService->find($registrationId);
 
-        if (!$registration) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException())->setModel(
+        if (! $registration) {
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
                 \Modules\Internship\Models\InternshipRegistration::class,
                 [$registrationId],
             );
@@ -36,7 +36,7 @@ class ComplianceService implements Contract
         $startDate = $registration->start_date;
         $endDate = $registration->end_date;
 
-        if (!$startDate || !$endDate) {
+        if (! $startDate || ! $endDate) {
             return $this->emptyScore();
         }
 
@@ -85,7 +85,7 @@ class ComplianceService implements Contract
         }
 
         return (int) $start->diffInDaysFiltered(
-            fn(Carbon $date) => !$date->isWeekend(),
+            fn (Carbon $date) => ! $date->isWeekend(),
             $end->addDay(),
         );
     }

@@ -94,14 +94,14 @@ class AppSettingSeeder extends Seeder
             ],
             [
                 'key' => 'brand_logo',
-                'value' => '',
+                'value' => null,
                 'type' => 'string',
                 'description' => 'The logo of the institute brand',
                 'group' => 'general',
             ],
             [
                 'key' => 'brand_logo_dark',
-                'value' => '',
+                'value' => null,
                 'type' => 'string',
                 'description' => 'The logo of the institute brand',
                 'group' => 'general',
@@ -167,7 +167,7 @@ class AppSettingSeeder extends Seeder
             ],
             [
                 'key' => 'active_academic_year',
-                'value' => date('Y') - 1 . '/' . date('Y'),
+                'value' => date('Y') - 1 .'/'.date('Y'),
                 'type' => 'string',
                 'description' => 'The current active academic year for operational data.',
                 'group' => 'operational',
@@ -189,8 +189,8 @@ class AppSettingSeeder extends Seeder
         ];
 
         $settingsToUpsert = [];
-        $caster = new SettingValueCast();
-        $dummyModel = new Setting(); // A dummy model instance for the caster's set method
+        $caster = new SettingValueCast;
+        $dummyModel = new Setting; // A dummy model instance for the caster's set method
 
         foreach ($rawSettings as $setting) {
             // Apply the SettingValueCast::set logic manually to each setting

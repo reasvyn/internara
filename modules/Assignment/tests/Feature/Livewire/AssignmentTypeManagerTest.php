@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Assignment\Livewire\AssignmentTypeManager;
 use Modules\Assignment\Models\AssignmentType;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);

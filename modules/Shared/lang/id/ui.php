@@ -15,6 +15,5 @@ return [
     'actions' => 'Aksi',
     'optional' => 'Opsional',
     'confirmation' => 'Konfirmasi',
-    'confirm_delete' =>
-        'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
+    'confirm_delete' => 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
 ];

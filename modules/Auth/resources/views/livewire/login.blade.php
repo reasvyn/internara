@@ -38,7 +38,7 @@
 
             <div class="mt-4 flex w-full flex-col gap-8">
                 <x-ui::button
-                    priority="primary"
+                    variant="primary"
                     class="w-full"
                     :label="__('auth::ui.login.form.submit')"
                     type="submit"

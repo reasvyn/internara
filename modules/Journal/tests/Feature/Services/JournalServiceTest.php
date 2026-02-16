@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     $this->journalService = app(JournalService::class);
@@ -71,7 +69,7 @@ test('it cannot update an approved journal entry', function () {
     $entry->setStatus('approved');
 
     expect(
-        fn() => $this->journalService->update($entry->id, ['work_topic' => 'New Topic']),
+        fn () => $this->journalService->update($entry->id, ['work_topic' => 'New Topic']),
     )->toThrow(AppException::class);
 });
 
@@ -94,7 +92,7 @@ test(
             'basic_competence' => 'Test Competence',
         ];
 
-        expect(fn() => $this->journalService->create($data))->toThrow(
+        expect(fn () => $this->journalService->create($data))->toThrow(
             AppException::class,
             'journal::exceptions.outside_internship_period',
         );
@@ -120,7 +118,7 @@ test(
             'basic_competence' => 'Test Competence',
         ];
 
-        expect(fn() => $this->journalService->create($data))->toThrow(
+        expect(fn () => $this->journalService->create($data))->toThrow(
             AppException::class,
             'journal::exceptions.outside_internship_period',
         );

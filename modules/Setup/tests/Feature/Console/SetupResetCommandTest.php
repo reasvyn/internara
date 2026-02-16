@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Console;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Modules\Setting\Services\Contracts\SettingService;
-
 
 test('it resets setup state correctly', function () {
     $settingService = app(SettingService::class);

@@ -58,7 +58,7 @@ class JournalService extends EloquentQuery implements Contract
         $registrationId = $data['registration_id'];
         $registration = $this->registrationService->find($registrationId);
 
-        if (!$registration) {
+        if (! $registration) {
             throw new AppException(
                 userMessage: 'internship::exceptions.registration_not_found',
                 code: 404,
@@ -70,7 +70,7 @@ class JournalService extends EloquentQuery implements Contract
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
-            !$guidanceService->hasCompletedMandatory($registration->student_id)
+            ! $guidanceService->hasCompletedMandatory($registration->student_id)
         ) {
             throw new AppException(
                 userMessage: 'guidance::messages.must_complete_guidance',
@@ -109,7 +109,7 @@ class JournalService extends EloquentQuery implements Contract
         /** @var JournalEntry $entry */
         $entry = parent::create($data);
 
-        if (!empty($competencyIds)) {
+        if (! empty($competencyIds)) {
             $this->competencyService->syncJournalCompetencies($entry->id, $competencyIds);
         }
 
@@ -250,7 +250,7 @@ class JournalService extends EloquentQuery implements Contract
             ->whereIn('registration_id', $registrationIds)
             ->whereHas(
                 'statuses',
-                fn($q) => $q->whereIn('name', ['submitted', 'approved', 'verified']),
+                fn ($q) => $q->whereIn('name', ['submitted', 'approved', 'verified']),
             )
             ->count();
 

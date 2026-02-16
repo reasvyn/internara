@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Assessment\Models\Assessment;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Models\InternshipRegistration;

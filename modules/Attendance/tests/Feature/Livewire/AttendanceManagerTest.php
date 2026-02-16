@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Attendance\Livewire\AttendanceManager;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
-
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);

@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Assessment\Tests\Feature\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Models\User;
-
 
 test('submitEvaluation creates assessment and calculates score', function () {
     // Arrange
@@ -56,7 +54,7 @@ test('it throws exception for unauthorized evaluator', function () {
 
     // Act & Assert
     expect(
-        fn() => $service->submitEvaluation(
+        fn () => $service->submitEvaluation(
             $registration->id,
             $user->id,
             'teacher',

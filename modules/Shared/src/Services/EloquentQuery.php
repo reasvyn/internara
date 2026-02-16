@@ -266,8 +266,8 @@ abstract class EloquentQuery implements EloquentQueryContract
     {
         $model = $this->find($id);
 
-        if (!$model) {
-            throw (new ModelNotFoundException())->setModel(get_class($this->model), [$id]);
+        if (! $model) {
+            throw (new ModelNotFoundException)->setModel(get_class($this->model), [$id]);
         }
 
         $filteredData = $this->filterFillable($data);
@@ -314,13 +314,16 @@ abstract class EloquentQuery implements EloquentQueryContract
     ): never {
         $recordName = property_exists($this, 'recordName') ? $this->recordName : 'record';
         $userMessage =
-            'shared::exceptions.' .
+            'shared::exceptions.'.
             ($e->getCode() === self::SQL_STATE_UNIQUE_VIOLATION ? 'unique_violation' : $defaultKey);
+
+        // Sanitize log message to prevent PII leakage
+        $sanitizedLogMessage = "Database error during {$recordName} operation. SQL State: {$e->getCode()}";
 
         throw new \Modules\Exception\AppException(
             userMessage: $userMessage,
             replace: ['record' => $recordName, 'column' => 'data'],
-            logMessage: $e->getMessage(),
+            logMessage: $sanitizedLogMessage,
             code: $e->getCode() === self::SQL_STATE_UNIQUE_VIOLATION ? 409 : 500,
             previous: $e,
         );
@@ -332,7 +335,7 @@ abstract class EloquentQuery implements EloquentQueryContract
     public function delete(mixed $id, bool $force = false): bool
     {
         $model = $this->find($id);
-        if (!$model) {
+        if (! $model) {
             return false;
         }
 
@@ -375,7 +378,7 @@ abstract class EloquentQuery implements EloquentQueryContract
                 ->newQuery()
                 ->whereIn($this->model->getKeyName(), $ids)
                 ->get()
-                ->each(fn(Model $model) => $model->forceDelete())
+                ->each(fn (Model $model) => $model->forceDelete())
                 ->count();
         }
 
@@ -436,7 +439,7 @@ abstract class EloquentQuery implements EloquentQueryContract
             return $callback($this);
         }
 
-        return Cache::remember($cacheKey, $ttl, fn() => $callback($this));
+        return Cache::remember($cacheKey, $ttl, fn () => $callback($this));
     }
 
     /**
@@ -459,7 +462,7 @@ abstract class EloquentQuery implements EloquentQueryContract
         }
 
         // Search logic
-        if (!empty($this->searchable) && isset($filters['search'])) {
+        if (! empty($this->searchable) && isset($filters['search'])) {
             $search = $filters['search'];
             $query->where(function (Builder $q) use ($search) {
                 foreach ($this->searchable as $column) {
@@ -470,7 +473,7 @@ abstract class EloquentQuery implements EloquentQueryContract
         }
 
         // Apply remaining filters
-        if (!empty($filters)) {
+        if (! empty($filters)) {
             foreach ($filters as $key => $value) {
                 if (is_string($key) && str_contains($key, '.')) {
                     $segments = explode('.', $key);

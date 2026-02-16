@@ -22,7 +22,7 @@ test('it prioritizes metadata service for app identity', function () {
     $metadata->shouldReceive('verifyIntegrity')->once();
     $metadata->shouldReceive('get')->with('name')->andReturn('Internara SSoT');
 
-    $service = new SettingService(new Setting(), $metadata);
+    $service = new SettingService(new Setting, $metadata);
 
     expect($service->getValue('app_name'))->toBe('Internara SSoT');
 });
@@ -39,7 +39,7 @@ test('it falls back to database for other keys', function () {
         'type' => 'string',
     ]);
 
-    $service = new SettingService(new Setting(), $metadata);
+    $service = new SettingService(new Setting, $metadata);
 
     expect($service->getValue('custom_key'))->toBe('db-value');
 });
@@ -51,7 +51,7 @@ test('it falls back to config if not in db', function () {
 
     Config::set('my.config', 'config-value');
 
-    $service = new SettingService(new Setting(), $metadata);
+    $service = new SettingService(new Setting, $metadata);
 
     expect($service->getValue('my.config'))->toBe('config-value');
 });

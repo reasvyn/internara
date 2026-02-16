@@ -28,7 +28,7 @@ class StudentService extends EloquentQuery implements Contract
     public function createWithDefault(array $data = []): Student
     {
         if (empty($data['national_identifier'])) {
-            $data['national_identifier'] = 'PENDING-' . (string) \Illuminate\Support\Str::uuid();
+            $data['national_identifier'] = 'PENDING-'.(string) \Illuminate\Support\Str::uuid();
         }
 
         return $this->create($data);

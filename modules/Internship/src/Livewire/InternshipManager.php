@@ -32,7 +32,7 @@ class InternshipManager extends Component
     {
         $isSetupPhase =
             session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
-            true || app()->runningUnitTests();
+                true || app()->runningUnitTests();
 
         if ($isSetupPhase) {
             return;

@@ -62,8 +62,8 @@ class SlotRegistry implements SlotRegistryContract
         if (
             is_string($view) &&
             str_contains($view, ':') &&
-            !str_contains($view, '::') &&
-            !str_starts_with($view, 'livewire:')
+            ! str_contains($view, '::') &&
+            ! str_starts_with($view, 'livewire:')
         ) {
             Log::warning(
                 "Slot Injection: Registering potentially invalid component name [{$view}] into slot [{$slot}]. Ensure it's a valid Blade component or view alias.",
@@ -98,6 +98,6 @@ class SlotRegistry implements SlotRegistryContract
      */
     public function hasSlot(string $slot): bool
     {
-        return !empty($this->slots[$slot]);
+        return ! empty($this->slots[$slot]);
     }
 }

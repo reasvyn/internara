@@ -2,17 +2,16 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Report\Services\Contracts\ReportGenerator;
 use Modules\Shared\Contracts\ExportableDataProvider;
-
 
 test('report service can register and list providers', function () {
     $service = app(ReportGenerator::class);
 
     // Register a mock provider for isolation
     $service->registerProvider(
-        new class implements ExportableDataProvider {
+        new class implements ExportableDataProvider
+        {
             public function getIdentifier(): string
             {
                 return 'test';

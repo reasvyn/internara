@@ -87,8 +87,8 @@ class SlotManager implements SlotManagerContract
                     }
                 } catch (\Throwable $e) {
                     \Illuminate\Support\Facades\Log::error(
-                        'Slot Injection Error: Failed to render component [' .
-                            (is_string($view) ? $view : 'Closure') .
+                        'Slot Injection Error: Failed to render component ['.
+                            (is_string($view) ? $view : 'Closure').
                             "] in slot [{$slot}]. Error: {$e->getMessage()}",
                         [
                             'exception' => $e,

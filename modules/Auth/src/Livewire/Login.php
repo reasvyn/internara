@@ -53,7 +53,7 @@ class Login extends Component
                 $this->isEmail($this->identifier) ? 'email' : null,
             ],
             'password' => 'required|string',
-            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile()],
+            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile],
         ];
     }
 

@@ -26,29 +26,34 @@ interface Notifier
     /**
      * Dispatch a success notification.
      */
-    public function success(string $message, array $options = []): void;
+    public function success(string $message, ?string $title = null, array $options = []): self;
 
     /**
      * Dispatch a error notification.
      */
-    public function error(string $message, array $options = []): void;
+    public function error(string $message, ?string $title = null, array $options = []): self;
 
     /**
      * Dispatch a warning notification.
      */
-    public function warning(string $message, array $options = []): void;
+    public function warning(string $message, ?string $title = null, array $options = []): self;
 
     /**
      * Dispatch an informational notification.
      */
-    public function info(string $message, array $options = []): void;
+    public function info(string $message, ?string $title = null, array $options = []): self;
 
     /**
      * Generic method to dispatch a notification with a specific type.
+     *
+     * Options may include:
+     * - timeout: integer (ms)
+     * - autohide: boolean
+     * - title: string
      */
     public function notify(
         string $message,
         string $type = self::TYPE_INFO,
         array $options = [],
-    ): void;
+    ): self;
 }

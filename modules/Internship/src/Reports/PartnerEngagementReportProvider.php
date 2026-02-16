@@ -56,8 +56,8 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
                 return [
                     'Partner Name' => $placement->company?->name ?? 'Unknown',
                     'Total Interns' => count($registrationIds),
-                    'Responsiveness' => $journalStats['responsiveness'] . '%',
-                    'Avg Feedback' => number_format($avgScore, 2) . ' / 100',
+                    'Responsiveness' => $journalStats['responsiveness'].'%',
+                    'Avg Feedback' => number_format($avgScore, 2).' / 100',
                 ];
             })
             ->toArray();

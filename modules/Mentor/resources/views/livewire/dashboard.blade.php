@@ -25,7 +25,7 @@
             @scope('cell_status', $registration)
                 <x-ui::badge 
                     :value="$registration->getStatusLabel()" 
-                    :priority="$registration->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                    :variant="$registration->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
                 />
             @endscope
             
@@ -34,14 +34,14 @@
                     <x-ui::button 
                         :label="__('mentor::ui.dashboard.actions.mentoring')" 
                         icon="tabler.messages" 
-                        priority="tertiary" 
+                        variant="tertiary" 
                         class="text-secondary btn-sm" 
                         link="{{ route('mentor.mentoring', $registration->id) }}" 
                     />
                     <x-ui::button 
                         :label="__('mentor::ui.dashboard.actions.evaluate')" 
                         icon="tabler.clipboard-check" 
-                        priority="tertiary" 
+                        variant="tertiary" 
                         class="btn-sm" 
                         link="{{ route('mentor.evaluate', $registration->id) }}" 
                     />

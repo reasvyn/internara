@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Guidance\Models\Handbook;
 use Modules\Guidance\Services\Contracts\HandbookService;
-
 
 test('it can record student acknowledgement', function () {
     $service = app(HandbookService::class);

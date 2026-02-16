@@ -23,9 +23,9 @@ final class AcademicYear
 
         // Academic years typically transition in July
         if ($month < 7) {
-            return $year - 1 . '/' . $year;
+            return $year - 1 .'/'.$year;
         }
 
-        return $year . '/' . ($year + 1);
+        return $year.'/'.($year + 1);
     }
 }

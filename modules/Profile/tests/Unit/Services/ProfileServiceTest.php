@@ -23,7 +23,7 @@ test('it can get profile by user id', function () {
     $builder
         ->shouldReceive('firstOrCreate')
         ->with(['user_id' => 'user-uuid'])
-        ->andReturn(new Profile());
+        ->andReturn(new Profile);
 
     $result = $service->getByUserId('user-uuid');
     expect($result)->toBeInstanceOf(Profile::class);

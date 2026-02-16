@@ -31,7 +31,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
     {
         $placement = $this->find($placementId);
 
-        if (!$placement) {
+        if (! $placement) {
             return 0;
         }
 

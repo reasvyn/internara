@@ -41,7 +41,7 @@ class AssignmentTypeManager extends Component
      */
     public function updatedName(string $value): void
     {
-        if (!$this->recordId) {
+        if (! $this->recordId) {
             $this->slug = Str::slug($value);
         }
     }

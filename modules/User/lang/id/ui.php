@@ -33,8 +33,7 @@ return [
         ],
         'delete' => [
             'title' => 'Konfirmasi Penghapusan',
-            'message' =>
-                'Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.',
+            'message' => 'Apakah Anda yakin ingin menghapus pengguna ini? Tindakan ini tidak dapat dibatalkan.',
         ],
     ],
 ];

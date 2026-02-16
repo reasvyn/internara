@@ -1,9 +1,13 @@
 node_modules/
 vendor/
-storage/
+storage/framework/
+storage/logs/
 public/build/
 public/hot/
 public/storage/
 .temp/
 .vscode/
 .git/
+composer.lock
+package-lock.json
+test-results/

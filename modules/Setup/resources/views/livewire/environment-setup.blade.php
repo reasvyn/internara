@@ -1,6 +1,6 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <x-ui::badge priority="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
+        <x-ui::badge variant="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
             {{ __('setup::wizard.steps', ['current' => 2, 'total' => 8]) }}
         </x-ui::badge>
 
@@ -14,12 +14,12 @@
 
         <div class="mt-10 flex items-center gap-4" data-aos="fade-up" data-aos-delay="800">
             <x-ui::button
-                priority="secondary"
+                variant="secondary"
                 :label="__('setup::wizard.buttons.back')"
                 wire:click="backToPrev"
             />
             <x-ui::button
-                priority="primary"
+                variant="primary"
                 :label="__('setup::wizard.buttons.next')"
                 wire:click="nextStep"
                 :disabled="$this->disableNextStep"
@@ -44,8 +44,8 @@
                                 {{ str_replace(['extension_', '_'], ['', ' '], $name) }}
                             </span>
                             <x-ui::badge 
-                                :priority="$passed ? 'primary' : 'secondary'"
-                                class="{{ $passed ? 'badge-success' : 'badge-error' }} px-3"
+                                variant="custom"
+                                class="{{ $passed ? 'badge-success text-success-content' : 'badge-error text-error-content' }} px-3"
                             >
                                 {{ $passed ? __('setup::wizard.status.passed') : __('setup::wizard.status.failed') }}
                             </x-ui::badge>
@@ -68,8 +68,8 @@
                                 {{ str_replace('_', ' ', $path) }}
                             </span>
                             <x-ui::badge 
-                                :priority="$writable ? 'primary' : 'secondary'"
-                                class="{{ $writable ? 'badge-success' : 'badge-error' }} px-3"
+                                variant="custom"
+                                class="{{ $writable ? 'badge-success text-success-content' : 'badge-error text-error-content' }} px-3"
                             >
                                 {{ $writable ? __('setup::wizard.status.writable') : __('setup::wizard.status.not_writable') }}
                             </x-ui::badge>
@@ -95,8 +95,8 @@
                         @endif
                     </div>
                     <x-ui::badge 
-                        :priority="$this->audit['database']['connection'] ? 'primary' : 'secondary'"
-                        class="{{ $this->audit['database']['connection'] ? 'badge-success' : 'badge-error' }} px-3"
+                        variant="custom"
+                        class="{{ $this->audit['database']['connection'] ? 'badge-success text-success-content' : 'badge-error text-error-content' }} px-3"
                     >
                         {{ $this->audit['database']['connection'] ? __('setup::wizard.status.connected') : __('setup::wizard.status.disconnected') }}
                     </x-ui::badge>

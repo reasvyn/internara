@@ -77,7 +77,7 @@ trait HandlesModuleMakeGenerator
      */
     protected function getTargetFilePath(): string
     {
-        $filePath = Formatter::path($this->getTargetPath(), $this->getTargetName()) . '.php';
+        $filePath = Formatter::path($this->getTargetPath(), $this->getTargetName()).'.php';
 
         return module_path($this->getModule()->getName(), $filePath);
     }

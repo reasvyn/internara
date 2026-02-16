@@ -30,7 +30,7 @@ class VerificationNotice extends Component
 
     public function resend()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             session()->flash('error', 'You must be logged in to resend the verification email.');
 
             return;

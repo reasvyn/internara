@@ -5,11 +5,10 @@
     "version": "0.13.0",
     "type": "module",
     "scripts": {
-        "build": "vite build",
         "dev": "vite",
-        "test:dev": "vite -m \"dusk.local\"",
-        "format": "prettier --write \"**/*.{md,php,blade.php,css,js,json}\"",
-        "lint": "prettier --check \"**/*.{md,php,blade.php,css,js,json}\""
+        "build": "vite build",
+        "format": "prettier --write .",
+        "lint": "prettier --check ."
     },
     "dependencies": {
         "aos": "^2.3.4",
@@ -17,7 +16,6 @@
         "axios": "^1.13.4",
         "concurrently": "^9.2.1",
         "laravel-vite-plugin": "^2.1",
-        "playwright": "^1.58.2",
         "vite": "^7.3.1"
     },
     "optionalDependencies": {
@@ -26,7 +24,6 @@
         "lightningcss-linux-x64-gnu": "^1.31.1"
     },
     "devDependencies": {
-        "@playwright/test": "^1.58.2",
         "@prettier/plugin-php": "^0.24.0",
         "@tailwindcss/vite": "^4.1.18",
         "daisyui": "^5.5.14",

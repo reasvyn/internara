@@ -185,11 +185,11 @@ structure.
 Pre-release labels (e.g., `-alpha`, `-beta`) are optional and reserved for high-stakes release
 tracks. For standard `v0.x.y` development, clean versioning is the baseline.
 
-| Label       | Meaning                                            | Syntax Example                     |
-| :---------- | :------------------------------------------------- | :--------------------------------- |
-| **`alpha`** | Initial construction; experimental and unstable.   | `v0.13.0`, `v0.13.0.1` |
-| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v0.13.0-beta`, `v0.13.0-beta.2`   |
-| **`rc`**    | Release Candidate; final validation before stable. | `v0.13.0-rc`, `v0.13.0-rc.1`       |
+| Label       | Meaning                                            | Syntax Example                   |
+| :---------- | :------------------------------------------------- | :------------------------------- |
+| **`alpha`** | Initial construction; experimental and unstable.   | `v0.13.0`, `v0.13.0.1`           |
+| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v0.13.0-beta`, `v0.13.0-beta.2` |
+| **`rc`**    | Release Candidate; final validation before stable. | `v0.13.0-rc`, `v0.13.0-rc.1`     |
 
 ### 7.3 Firm Invariants
 

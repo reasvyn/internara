@@ -6,7 +6,7 @@ namespace Modules\Auth\Registration\Livewire;
 
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
-use Modules\User\Livewire\UserForm;
+use Modules\User\Livewire\Forms\UserForm;
 
 class RegisterSuperAdmin extends Component
 {
@@ -31,6 +31,8 @@ class RegisterSuperAdmin extends Component
     public function mount()
     {
         $this->form->name = 'Administrator';
+        $this->form->roles = [\Modules\Permission\Enums\Role::SUPER_ADMIN->value];
+        $this->form->status = 'active';
     }
 
     /**
@@ -38,12 +40,29 @@ class RegisterSuperAdmin extends Component
      */
     public function register()
     {
-        $this->form->validate();
+        try {
+            $this->form->validate();
 
-        $registeredUser = $this->authService->register($this->form->except('id'), 'super-admin');
+            $registeredUser = $this->authService->register(
+                $this->form->except('id'),
+                \Modules\Permission\Enums\Role::SUPER_ADMIN->value,
+            );
 
-        if ($registeredUser) {
-            $this->dispatch('super-admin-registered', userId: $registeredUser->getKey());
+            if ($registeredUser) {
+                $this->dispatch('super-admin-registered', userId: $registeredUser->getKey());
+                notify(__('shared::messages.record_saved'), 'success');
+            }
+        } catch (\Modules\Exception\AppException $e) {
+            notify($e->getUserMessage(), 'error');
+        } catch (\Exception $e) {
+            notify(
+                __('shared::exceptions.creation_failed', ['record' => 'Administrator']),
+                'error',
+            );
+            \Illuminate\Support\Facades\Log::error('SuperAdmin Registration Failed.', [
+                'correlation_id' => \Illuminate\Support\Str::uuid()->toString(),
+                'error_type' => get_class($e),
+            ]);
         }
     }
 

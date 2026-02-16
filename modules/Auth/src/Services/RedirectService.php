@@ -20,7 +20,7 @@ final class RedirectService implements Contract
      */
     public function getTargetUrl(Authenticatable $user): string
     {
-        if (!$user->hasVerifiedEmail() && setting('require_email_verification', true)) {
+        if (! $user->hasVerifiedEmail() && setting('require_email_verification', true)) {
             return route('verification.notice');
         }
 

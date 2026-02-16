@@ -41,8 +41,7 @@ return [
             'work_topic' => 'Topik Pekerjaan',
             'work_topic_placeholder' => 'Misal: Instalasi OS, Troubleshooting Jaringan, dll',
             'description' => 'Deskripsi Aktivitas',
-            'description_placeholder' =>
-                'Jelaskan secara mendetail apa saja yang Anda kerjakan hari ini...',
+            'description_placeholder' => 'Jelaskan secara mendetail apa saja yang Anda kerjakan hari ini...',
             'competence' => 'Kompetensi Dasar / Skill',
             'competence_hint' => 'Pilih kompetensi yang relevan dengan pekerjaan hari ini.',
             'character' => 'Nilai-nilai Karakter',

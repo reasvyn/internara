@@ -2,11 +2,11 @@
     'label' => null,
     'icon' => null,
     'right' => false,
-    'priority' => 'secondary', // primary, secondary, tertiary
+    'variant' => 'secondary', // primary, secondary, tertiary
 ])
 
 @php
-    $priorityClasses = match ($priority) {
+    $variantClasses = match ($variant) {
         'primary' => 'btn-accent text-accent-content',
         'secondary' => 'btn-outline border-base-content/20 text-base-content/80',
         'tertiary' => 'btn-ghost text-base-content/70',
@@ -17,7 +17,7 @@
 @endphp
 
 <x-mary-dropdown 
-    {{ $attributes->class([$priorityClasses, 'min-h-[2.75rem]']) }}
+    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem]']) }}
     :right="$right"
 >
     @isset($trigger)
@@ -27,7 +27,7 @@
     @else
         <x-slot:trigger>
             <x-ui::button 
-                :priority="$priority" 
+                :variant="$variant" 
                 :icon="$icon" 
                 :label="$label" 
                 aria-label="{{ $ariaLabel }}" 

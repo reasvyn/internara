@@ -43,8 +43,8 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     ): \Modules\Internship\Models\RequirementSubmission {
         $requirement = $this->find($requirementId);
 
-        if (!$requirement) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException())->setModel(
+        if (! $requirement) {
+            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
                 InternshipRequirement::class,
                 [$requirementId],
             );
@@ -116,7 +116,7 @@ class InternshipRequirementService extends EloquentQuery implements Contract
             \Modules\Internship\Services\Contracts\RegistrationService::class,
         )->find($registrationId);
 
-        if (!$registration) {
+        if (! $registration) {
             return false;
         }
 

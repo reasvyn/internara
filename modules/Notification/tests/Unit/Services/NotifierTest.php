@@ -9,7 +9,7 @@ use Modules\Notification\Services\Contracts\Notifier as Contract;
 use Modules\Notification\Services\Notifier;
 
 test('it flashes notification to session', function () {
-    $service = new Notifier();
+    $service = new Notifier;
 
     $service->success('Success Message');
 
@@ -21,7 +21,7 @@ test('it flashes notification to session', function () {
 });
 
 test('it handles info notification by default', function () {
-    $service = new Notifier();
+    $service = new Notifier;
 
     $service->notify('Default Message');
 

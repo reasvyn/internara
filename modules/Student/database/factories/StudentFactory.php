@@ -31,7 +31,7 @@ class StudentFactory extends Factory
             'national_identifier' => (string) fake()
                 ->unique()
                 ->numberBetween(1000000000, 9999999999),
-            'class_name' => fake()->randomElement(['X', 'XI', 'XII']) . ' ' . fake()->word(),
+            'class_name' => fake()->randomElement(['X', 'XI', 'XII']).' '.fake()->word(),
         ];
     }
 }

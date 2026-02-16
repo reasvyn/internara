@@ -10,7 +10,7 @@
                         </span>
                     </div>
                     <div class="text-xs">
-                        <x-ui::badge :label="$activity->log_name" priority="secondary" class="badge-xs mr-1" />
+                        <x-ui::badge :label="$activity->log_name" variant="secondary" class="badge-xs mr-1" />
                         {{ $activity->description }}
                     </div>
                 </div>

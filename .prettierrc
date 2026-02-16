@@ -6,5 +6,19 @@
     "printWidth": 100,
     "proseWrap": "always",
     "endOfLine": "lf",
-    "plugins": ["prettier-plugin-blade", "@prettier/plugin-php"]
+    "plugins": ["prettier-plugin-blade", "@prettier/plugin-php"],
+    "overrides": [
+        {
+            "files": ["*.blade.php"],
+            "options": {
+                "parser": "blade"
+            }
+        },
+        {
+            "files": ["*.php"],
+            "options": {
+                "parser": "php"
+            }
+        }
+    ]
 }

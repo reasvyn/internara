@@ -1,5 +1,5 @@
 @props([
-    'priority' => 'primary', // primary, secondary, tertiary, metadata
+    'variant' => 'primary', // primary, secondary, tertiary, metadata
     'icon' => null,
     'label' => null,
     'spinner' => true,
@@ -7,7 +7,7 @@
 ])
 
 @php
-    $priorityClasses = match ($priority) {
+    $variantClasses = match ($variant) {
         'primary' => 'btn-primary text-primary-content font-bold',
         'secondary' => 'btn-outline border-base-content/20 hover:bg-base-content/5 text-base-content/80',
         'tertiary' => 'btn-ghost text-base-content/70 hover:text-base-content',
@@ -16,18 +16,18 @@
     };
 
     // Enforce minimum touch target (44x44px) for non-metadata buttons
-    $targetClasses = $priority !== 'metadata' ? 'min-h-[2.75rem] min-w-[2.75rem]' : '';
+    $targetClasses = $variant !== 'metadata' ? 'min-h-[2.75rem] min-w-[2.75rem]' : '';
     
     // Accessibility: Use label as aria-label if it's an icon-only button
     $ariaLabel = $attributes->get('aria-label') ?? $label;
 @endphp
 
 <x-mary-button
-    {{ $attributes->merge(['aria-label' => $ariaLabel])->class([$priorityClasses, $targetClasses]) }}
+    {{ $attributes->merge(['aria-label' => $ariaLabel])->class([$variantClasses, $targetClasses]) }}
     :icon="$icon"
     :label="$label"
     :spinner="$spinner"
-    :data-aos="$aos"
+    data-aos="{{ $aos }}"
 >
     {{ $slot }}
 </x-mary-button>

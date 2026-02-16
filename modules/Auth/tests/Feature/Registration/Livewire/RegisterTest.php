@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Modules\Auth\Tests\Feature\Registration\Livewire;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use Modules\Auth\Registration\Livewire\Register;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
-
 
 describe('Register Component', function () {
     beforeEach(function () {

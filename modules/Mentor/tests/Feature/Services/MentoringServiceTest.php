@@ -6,7 +6,6 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Mentor\Services\Contracts\MentoringService;
 use Modules\User\Models\User;
 
-
 test('it can record a mentoring visit', function () {
     $registration = InternshipRegistration::factory()->create();
     $teacher = User::factory()->create();

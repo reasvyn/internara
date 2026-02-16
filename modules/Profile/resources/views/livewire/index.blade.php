@@ -119,7 +119,7 @@
                                 :label="__('profile::ui.form.update_info')"
                                 type="submit"
                                 icon="tabler.check"
-                                priority="primary"
+                                variant="primary"
                                 spinner="saveInfo"
                             />
                         </x-slot>
@@ -183,7 +183,7 @@
                                     :label="__('profile::ui.form.save_fields')"
                                     type="submit"
                                     icon="tabler.check"
-                                    priority="primary"
+                                    variant="primary"
                                     spinner="saveSpecialFields"
                                 />
                             </x-slot>

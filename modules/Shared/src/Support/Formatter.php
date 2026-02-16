@@ -22,7 +22,7 @@ final class Formatter
      */
     public static function currency(int|float $value): string
     {
-        return 'Rp ' . number_format($value, 0, ',', '.');
+        return 'Rp '.number_format($value, 0, ',', '.');
     }
 
     /**
@@ -47,14 +47,14 @@ final class Formatter
         $cleaned = preg_replace('/[^0-9]/', '', $phone);
 
         if (str_starts_with($cleaned, '0')) {
-            $cleaned = '62' . substr($cleaned, 1);
+            $cleaned = '62'.substr($cleaned, 1);
         }
 
-        if (!str_starts_with($cleaned, '62')) {
-            $cleaned = '62' . $cleaned;
+        if (! str_starts_with($cleaned, '62')) {
+            $cleaned = '62'.$cleaned;
         }
 
-        return '+' . $cleaned;
+        return '+'.$cleaned;
     }
 
     /**

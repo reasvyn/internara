@@ -29,23 +29,23 @@ class InstallerService implements InstallerServiceContract
      */
     public function install(): bool
     {
-        if (!$this->ensureEnvFileExists()) {
+        if (! $this->ensureEnvFileExists()) {
             return false;
         }
 
-        if (!$this->auditor->passes()) {
+        if (! $this->auditor->passes()) {
             return false;
         }
 
-        if (!$this->generateAppKey()) {
+        if (! $this->generateAppKey()) {
             return false;
         }
 
-        if (!$this->runMigrations()) {
+        if (! $this->runMigrations()) {
             return false;
         }
 
-        if (!$this->runSeeders()) {
+        if (! $this->runSeeders()) {
             return false;
         }
 

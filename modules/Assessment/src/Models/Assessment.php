@@ -45,6 +45,6 @@ class Assessment extends Model
 
     public function isFinalized(): bool
     {
-        return !is_null($this->finalized_at);
+        return ! is_null($this->finalized_at);
     }
 }

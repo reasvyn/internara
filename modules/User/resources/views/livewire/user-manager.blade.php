@@ -1,7 +1,7 @@
 <div>
     <x-ui::header :title="$title" :subtitle="__('user::ui.manager.subtitle')">
         <x-slot:actions>
-            <x-ui::button :label="__('user::ui.manager.add_user')" icon="tabler.plus" priority="primary" wire:click="add" />
+            <x-ui::button :label="__('user::ui.manager.add_user')" icon="tabler.plus" variant="primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>
 
@@ -41,16 +41,16 @@
                     @endphp
                     <x-ui::badge 
                         :value="__('user::ui.manager.form.' . $statusName)" 
-                        :priority="$statusName === 'active' ? 'primary' : 'secondary'" 
+                        :variant="$statusName === 'active' ? 'primary' : 'secondary'" 
                         class="badge-sm" 
                     />
                 @endscope
 
                 @scope('actions', $user)
                     <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" priority="tertiary" class="text-info" wire:click="edit('{{ $user->id }}')" tooltip="{{ __('user::ui.manager.edit_user') }}" />
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $user->id }}')" tooltip="{{ __('user::ui.manager.edit_user') }}" />
                         @if(!$user->hasRole('super-admin'))
-                            <x-ui::button icon="tabler.trash" priority="tertiary" class="text-error" wire:click="discard('{{ $user->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $user->id }}')" tooltip="{{ __('ui::common.delete') }}" />
                         @endif
                     </div>
                 @endscope
@@ -118,7 +118,7 @@
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
-                <x-ui::button :label="__('ui::common.save')" type="submit" priority="primary" spinner="save" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

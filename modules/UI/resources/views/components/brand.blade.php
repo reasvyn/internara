@@ -2,14 +2,18 @@
 
 @php
     $brandName = setting('brand_name', setting('app_name', 'Internara'));
-    $brandLogo = setting('brand_logo', '/internara/logo.png');
+    $brandLogo = setting('brand_logo');
+
+    if (empty($brandLogo)) {
+        $brandLogo = asset('/internara/logo.png');
+    }
 @endphp
 
 <a 
     class="flex items-center gap-2" 
     href="/" 
     wire:navigate 
-    :data-aos="$aos"
+    data-aos="{{ $aos }}"
     aria-label="{{ __('ui::common.go_to_home', ['name' => $brandName]) }}"
 >
     <img 

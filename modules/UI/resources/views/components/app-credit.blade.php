@@ -3,7 +3,7 @@
     $authorGithub = setting('app_github', 'https://github.com/reasnov');
 @endphp
 
-<span {{ $attributes->merge(['class' => 'opacity-70 text-sm']) }}>
+<span {{ $attributes->merge(['class' => 'opacity-70 text-xs']) }}>
     {{ __('ui::common.built_with') }} 
     <span role="img" aria-label="{{ __('ui::common.love') }}">❤️</span> 
     {{ __('ui::common.by') }}

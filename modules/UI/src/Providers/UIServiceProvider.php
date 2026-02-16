@@ -67,8 +67,7 @@ class UIServiceProvider extends ServiceProvider
         return [
             SlotManagerContract::class => SlotManager::class,
             SlotRegistryContract::class => SlotRegistry::class,
-            \Modules\UI\Services\Contracts\LocalizationService::class =>
-                \Modules\UI\Services\LocalizationService::class,
+            \Modules\UI\Services\Contracts\LocalizationService::class => \Modules\UI\Services\LocalizationService::class,
         ];
     }
 

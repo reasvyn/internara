@@ -38,7 +38,7 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
         array $filters = [],
         array $columns = ['*'],
     ): \Illuminate\Database\Eloquent\Builder {
-        if (!$this->baseQuery) {
+        if (! $this->baseQuery) {
             $this->setBaseQuery($this->model->superAdmin());
         }
 
@@ -91,7 +91,7 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
         /** @var User|null $existingOwner */
         $existingOwner = $this->query(columns: ['id'])->first(); // Use the superAdmin scope to get the single SuperAdmin
 
-        if (!$existingOwner) {
+        if (! $existingOwner) {
             // No SuperAdmin exists at all
             throw new RecordNotFoundException(
                 userMessage: 'user::exceptions.super_admin_not_found',
@@ -147,7 +147,7 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
         /** @var User|null $superAdmin */
         $superAdmin = $this->find($id);
 
-        if (!$superAdmin) {
+        if (! $superAdmin) {
             throw new RecordNotFoundException(replace: ['record' => 'SuperAdmin', 'id' => $id]);
         }
 

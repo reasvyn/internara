@@ -55,10 +55,8 @@ class UserServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\User\Services\Contracts\UserService::class =>
-                \Modules\User\Services\UserService::class,
-            \Modules\User\Services\Contracts\SuperAdminService::class =>
-                \Modules\User\Services\SuperAdminService::class,
+            \Modules\User\Services\Contracts\UserService::class => \Modules\User\Services\UserService::class,
+            \Modules\User\Services\Contracts\SuperAdminService::class => \Modules\User\Services\SuperAdminService::class,
         ];
     }
 }

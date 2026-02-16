@@ -18,7 +18,7 @@
 
         <x-ui::form wire:submit="verify">
             <x-ui::button
-                priority="primary"
+                variant="primary"
                 class="w-full"
                 :label="__('auth::ui.verification.verify_button')"
                 type="submit"

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('setup')
     ->middleware(Modules\Setup\Http\Middleware\ProtectSetupRoute::class)
     ->group(function () {
-        Route::get('/', fn() => redirect()->route('setup.welcome'))->name('setup');
+        Route::get('/', fn () => redirect()->route('setup.welcome'))->name('setup');
         Route::get('/welcome', Modules\Setup\Livewire\SetupWelcome::class)->name('setup.welcome');
         Route::get('/environment', Modules\Setup\Livewire\EnvironmentSetup::class)->name(
             'setup.environment',

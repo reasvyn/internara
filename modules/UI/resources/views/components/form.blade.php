@@ -6,7 +6,7 @@
 
 <x-mary-form 
     {{ $attributes->merge(['class' => 'space-y-8']) }}
-    :data-aos="$aos"
+    data-aos="{{ $aos }}"
 >
     <div class="space-y-6">
         {{ $slot }}
