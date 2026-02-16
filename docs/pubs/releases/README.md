@@ -33,14 +33,14 @@ follows **Strict SemVer** syntax (e.g., `v0.13.0`).
 
 ## 2. Version History
 
-| Version     | Readiness | Support Policy | Current Status |
-| :---------- | :-------- | :------------- | :------------- |
-| **v0.13.x** | Alpha     | Experimental   | In Progress    |
-| **v0.12.x** | Alpha     | Experimental   | Released       |
-| **v0.11.x** | Alpha     | Experimental   | Released       |
-| **v0.10.x** | Alpha     | Experimental   | Released       |
-| **v0.9.x**  | Alpha     | Experimental   | Released       |
-| **v0.8.x**  | Alpha     | Experimental   | Released       |
+| Version     | Readiness   | Support Policy | Current Status |
+| :---------- | :---------- | :------------- | :------------- |
+| **v0.13.x** | Development | Experimental   | In Progress    |
+| **v0.12.x** | Development | Experimental   | Released       |
+| **v0.11.x** | Development | Experimental   | Released       |
+| **v0.10.x** | Development | Experimental   | Released       |
+| **v0.9.x**  | Development | Experimental   | Released       |
+| **v0.8.x**  | Development | Experimental   | Released       |
 
 ---
 
