@@ -30,53 +30,79 @@ composer test
 composer lint
 ```
 
-- **Objective**: Perform full-spectrum static analysis and formatting using Laravel Pint and
-  automated analysis tools. Ensures compliance with
-  **[Conventions and Rules](conventions-and-rules.md)**.
+- **Objective**: Perform full-spectrum static analysis and check code style compliance using Laravel
+  Pint (check mode) and Prettier.
+
+### 1.3 Automated Code Formatting
+
+```bash
+composer format
+```
+
+- **Objective**: Automatically fix code style violations across PHP, Blade, and JS files to maintain
+  consistency with the project's formatting standards.
 
 ---
 
-## 2. Modular Artifact Generators
+## 2. Modular Artifact Generators (Support Module)
 
-Generators are engineered to respect the **Architecture Description** invariants and the
-**src-Omission** namespace rule.
+Generators are engineered to respect the **Architecture Description** invariants, the
+**src-Omission** namespace rule, and the **Modular DDD** hierarchy.
 
-### 2.1 Service Construction
-
-```bash
-php artisan module:make-service {ServiceName} {ModuleName}
-```
-
-- **Invariant**: Generates a **Contract-First** service structure.
-
-### 2.2 Persistence Construction (Models & Migrations)
+### 2.1 Generic PHP Class
 
 ```bash
-php artisan module:make-model {ModelName} {ModuleName} --migration
+php artisan module:make-class {ClassName} {ModuleName} --interface={ContractPath}
 ```
 
-- **Standard**: Automatically incorporates **UUID Identity** and modular isolation constraints.
+- **Objective**: Generates a `final` class within the module's domain structure.
+
+### 2.2 Contract & Concern Construction
+
+```bash
+php artisan module:make-interface {InterfaceName} {ModuleName}
+php artisan module:make-trait {TraitName} {ModuleName}
+```
+
+- **Standard**: Places artifacts in the correct `Contracts/` or `Concerns/` sub-directories.
+
+### 2.3 Browser Testing Scaffolding
+
+```bash
+php artisan module:make-dusk {TestName} {ModuleName}
+```
+
+- **Standard**: Automatically incorporates **Dusk** boilerplate for visual verification.
 
 ---
 
 ## 3. System Identity & Orchestration
 
-### 3.1 Configuration Audit (App Info)
+### 3.1 Metadata & Version Audit
 
 ```bash
 php artisan app:info
 ```
 
-- **Objective**: Verifies system version, series code, and environment health.
+- **Objective**: Verifies system version, series code, and author attribution integrity.
 
-### 3.2 Dependency Synchronization (Refresh Bindings)
+### 3.2 Memory-Efficient Test Orchestration
 
 ```bash
-php artisan app:refresh-bindings
+php artisan app:test {ModuleName?} --no-browser
 ```
 
-- **Objective**: Synchronizes the **Auto-Discovery** cache for Service Contracts. Mandatory after
-  modifying the service layer.
+- **Objective**: Executes tests sequentially per module to cap memory usage. Mandatory for CI/CD
+  pipelines.
+
+### 3.3 Development Environment Orchestration
+
+```bash
+composer dev
+```
+
+- **Objective**: Starts the integrated development environment, including the local server, queue
+  listener, log tailing (Pail), and Vite development server in a single concurrent session.
 
 ---
 

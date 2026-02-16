@@ -6,7 +6,7 @@ integrity of schemas, the behavior of shared model concerns, and the accuracy of
 scoping within the modular monolith framework.
 
 > **Governance Mandate:** All persistence logic must demonstrate compliance with the
-> **[Data Integrity Protocols](../patterns.md)** through rigorous automated verification.
+> **[Data Integrity Protocols](../governance.md)** through rigorous automated verification.
 
 ---
 

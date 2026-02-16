@@ -41,7 +41,7 @@ baseline and maintain modular portability.
 Verification of security compliance is mandatory for all configuration baselines.
 
 - **Policy Invariant**: Direct permission verification within the presentation layer is prohibited.
-  Logic must be encapsulated within **[Authorization Policies](../patterns.md)**.
+  Logic must be encapsulated within **[Authorization Policies](../governance.md)**.
 - **Baseline Synchronization**: Updates to the modular RBAC baseline are performed via the
   **[Automated Tooling](../tooling.md)**: `php artisan permission:sync`.
 - **V&V Mandatory**: All security state transitions must be verified via **`composer test`**.

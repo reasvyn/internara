@@ -56,7 +56,7 @@ must identify which series it contributes to or fulfills.
 Create an **Annotated Git Tag** to establish an immutable reference to the release baseline. All
 tags must strictly adhere to the **Semantic Versioning (SemVer)** standard.
 
-- **Format**: `vX.Y.Z-{pre-release}+{build}` (e.g., `v0.13.0-alpha`, `v1.0.0-rc.1`)
+- **Format**: `vX.Y.Z-{pre-release}+{build}` (e.g., `v0.13.0`, `v1.0.0-rc.1`)
 - **Pre-release Suffixes**: Use `-alpha`, `-beta`, or `-rc` to identify the maturity of the
   baseline.
 - **Protocol**: `git tag -a vX.Y.Z-suffix -m "Release description and series identifier"`
@@ -161,6 +161,44 @@ authoritative levels:
 - **Security Only**: Critical fixes only. No new features or general bug fixes will be provided.
 - **End of Life (EOL)**: No longer supported. Institutions must upgrade to a newer version
   immediately.
+
+---
+
+## 7. Authoritative SemVer & Pre-release Syntax
+
+To prevent versioning ambiguity and ensure systemic compatibility, Internara enforces a **Strict
+SemVer Compliance** policy. Every version identifier MUST adhere to the following mathematical
+structure.
+
+### 7.1 The Version Anatomy
+
+**Format**: `v<Major>.<Minor>.<Patch>[-<PreRelease>[.<Iteration>]][+<Build>]`
+
+- **Major (`X`)**: Incremented for incompatible API changes or massive architectural shifts.
+- **Minor (`Y`)**: Incremented for functional additions in a backwards-compatible manner.
+- **Patch (`Z`)**: Incremented for backwards-compatible bug fixes or security patches.
+
+### 7.2 Pre-release Labels (Maturity Suffixes)
+
+Pre-release labels MUST be lowercase and separated from the patch version by a hyphen (`-`).
+Iterations within a pre-release stage MUST be numeric and separated by a dot (`.`).
+
+| Label       | Meaning                                            | Syntax Example                     |
+| :---------- | :------------------------------------------------- | :--------------------------------- |
+| **`alpha`** | Initial construction; experimental and unstable.   | `v0.13.0`, `v0.13.0.1` |
+| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v0.13.0-beta`, `v0.13.0-beta.2`   |
+| **`rc`**    | Release Candidate; final validation before stable. | `v0.13.0-rc`, `v0.13.0-rc.1`       |
+
+### 7.3 Firm Invariants
+
+1.  **Lower-Case Requirement**: All labels (`alpha`, `beta`, `rc`) MUST be lowercase.
+2.  **Hyphen Requirement**: There MUST be exactly one hyphen between the patch version and the
+    label.
+3.  **Iteration Dot**: If an iteration is needed (e.g., multiple betas), it MUST use a dot separator
+    (e.g., `-beta.1`, NOT `-beta1`).
+4.  **Zero-Padding**: Do NOT use leading zeros for version segments (e.g., `v0.1.0` is correct,
+    `v0.01.0` is FORBIDDEN).
+5.  **Tagging Parity**: The Git tag MUST exactly match the `version` field in `app_info.json`.
 
 ---
 

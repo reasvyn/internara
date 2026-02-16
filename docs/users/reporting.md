@@ -57,4 +57,4 @@ Heavy reports are generated in the background. Once you start a report:
 ---
 
 _For technical details on the reporting engine, refer to the
-**[Reporting Orchestration](../developers/patterns.md)** documentation._
+**[Reporting Orchestration](../developers/governance.md)** documentation._

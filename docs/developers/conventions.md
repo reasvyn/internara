@@ -25,20 +25,41 @@ defects.
 
 ---
 
-## 2. Semantic Namespacing (The `src` Invariant)
+## 2. Semantic Namespacing & Internal Structure
 
 To maintain brevity and semantic clarity in a modular environment, Internara enforces the **src
-Omission** rule for namespaces.
+Omission** rule and a **Domain-Driven** internal structure.
 
-- **Directory Structure**: All module-specific logic resides in `modules/{ModuleName}/src/`.
+### 2.1 The `src` Invariant
+
 - **Namespace Invariant**: The `src` segment **must be omitted** from the namespace declaration.
 - **Rationale**: Aligns modular namespaces with standard Laravel conventions and reduces cognitive
   load during cross-module integration.
 
-**Example**:
+### 2.2 Internal Directory Structure (Modular DDD)
 
-- **File Path**: `modules/Internship/src/Services/InternshipService.php`
-- **Namespace**: `namespace Modules\Internship\Services;` (✅ Correct)
+Modules utilize a DDD-inspired hierarchy to organize logic by business domain.
+
+- **Concrete Classes**: `modules/{ModuleName}/src/{Domain}/{Layer}/{StudlyName}.php`
+- **Contracts & Concerns**:
+  `modules/{ModuleName}/src/{Domain}/{Layer}/{Contracts|Concerns}/{StudlyName}.php`
+
+#### 2.2.1 Structural Rules
+
+1.  **Domain-to-Module Exception**: If the **Domain Name** is identical to the **Module Name**, the
+    domain folder must be omitted. Logic resides directly under the layer directory.
+    - _Example_: `modules/User/src/Models/User.php` (✅ Correct)
+    - _Example_: `modules/User/src/User/Models/User.php` (❌ Incorrect)
+2.  **Module-Global Items**: Contracts or Concerns that apply to the entire module (cross-domain)
+    reside in the root layer directory.
+    - _Location_: `src/Contracts/` or `src/Concerns/`.
+3.  **Layer Precision**: Layers must follow standard Laravel/Internara naming (Models, Services,
+    Livewire, Enums, etc.).
+
+**Example Hierarchy**:
+
+- **File Path**: `modules/Internship/src/Registration/Services/RegistrationService.php`
+- **Namespace**: `namespace Modules\Internship\Registration\Services;` (✅ Correct)
 
 ---
 
@@ -62,14 +83,15 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
 - **Models**: PascalCase, singular, reflecting the domain entity (e.g., `CompetencyRubric`).
 - **Contracts (Interfaces)**: PascalCase, named by capability. **The `Interface` suffix is
   prohibited**.
-    - **Layer-Specific Contracts**: reside within the layer's directory: `src/<Layer>/Contracts/`
-      (e.g., `src/Services/Contracts/InternshipService.php`).
+    - **Layer-Specific Contracts**: reside within the layer's directory:
+      `src/({Domain}/)<Layer>/Contracts/` (e.g.,
+      `src/Registration/Services/Contracts/RegistrationService.php`).
     - **Module-Global Contracts**: reside in the root contracts directory: `src/Contracts/` (e.g.,
       `src/Contracts/Authenticatable.php`).
 - **Concerns (Traits)**: PascalCase, prefixed with semantic verbs such as `Has`, `Can`, `Handles`,
   or `Manages` (e.g., `HasAuditLog`, `HandlesResponse`).
-    - **Layer-Specific Concerns**: reside within the layer's directory: `src/<Layer>/Concerns/`
-      (e.g., `src/Models/Concerns/HasUuid.php`).
+    - **Layer-Specific Concerns**: reside within the layer's directory:
+      `src/({Domain}/)<Layer>/Concerns/` (e.g., `src/Models/Concerns/HasUuid.php`).
     - **Module-Global Concerns**: reside in the root concerns directory: `src/Concerns/` (e.g.,
       `src/Concerns/HasModuleMetadata.php`).
 - **Enums**: PascalCase, located in `src/Enums/`, used for fixed status values and domain constants.
@@ -159,6 +181,11 @@ tools that provide technical capabilities without containing business logic.
   a path"), it resides in **Support**.
 - **Semantic Class Structure**: Utilities must be organized into semantic static classes based on
   their domain of responsibility (e.g., `Support\Formatter.php`, `Support\Module.php`).
+- **Pragmatic SOC**: While Separation of Concerns is vital, avoid systemic bloat. Logic that is
+  highly specific to a single class and unlikely to be reused should remain encapsulated within that
+  class rather than being forced into an external utility or trait.
+- **Finality Invariant**: All helper and support classes must be declared as **`final`** to prevent
+  inheritance and ensure stateless integrity.
 
 ### 6.1 Global Helper Functions (Wrappers)
 

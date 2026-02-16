@@ -9,6 +9,8 @@ deterministic verification artifacts.
 ## 1. Verification Philosophy
 
 - **[Verification Philosophy](../testing.md)**: Engineering reliability and the Pest v4 baseline.
+- **[Laravel Testing Basics](laravel-tests.md)**: Getting started guide for testing in the Laravel
+  ecosystem.
 
 ## 2. Specialized Verification Protocols
 
@@ -17,6 +19,8 @@ deterministic verification artifacts.
 - **[Endpoint Verification](http-tests.md)**: Standards for boundary protection and API state.
 - **[Infrastructure Verification](console-tests.md)**: Standards for CLI orchestration tools.
 - **[Dependency Mocking](mocking.md)**: Protocols for strict modular isolation during V&V.
+- **[Dusk Browser Verification](dusk-browser-test.md)**: Protocols for browser automation via
+  Laravel Dusk.
 
 ## 3. Pest v4 Technical Baseline
 

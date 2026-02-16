@@ -4,8 +4,8 @@
 
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.13.0--alpha-blue?style=flat-square)
-![Readiness](https://img.shields.io/badge/readiness-alpha-orange?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.13.0-blue?style=flat-square)
+![Readiness](https://img.shields.io/badge/readiness-development-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -72,8 +72,8 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 ### 👥 For Users & Administrators
 
-- **[Project Overview](docs/wiki/overview.md)**: Strategic vision and feature breakdown.
-- **[System Installation](docs/wiki/installation.md)**: Automated setup and deployment guide.
+- **[Project Overview](docs/users/overview.md)**: Strategic vision and feature breakdown.
+- **[System Installation](docs/users/installation.md)**: Automated setup and deployment guide.
 - **[Release Notes](docs/pubs/releases/README.md)**: Friendly history of updates and progress.
 
 ### 🛠 For Developers & Contributors
@@ -91,14 +91,14 @@ Internara is engineered for stability, security, and long-term maintainability.
 Internara is currently in **Active Development**. We follow a clear support policy to ensure
 transparency.
 
-| Version     | Readiness | Support Policy | Current Status |
-| :---------- | :-------- | :------------- | :------------- |
-| **v0.13.x** | Alpha     | Experimental   | In Progress    |
-| **v0.12.x** | Alpha     | Experimental   | Released       |
-| **v0.11.x** | Alpha     | Experimental   | Released       |
-| **v0.10.x** | Alpha     | Experimental   | Released       |
-| **v0.9.x**  | Alpha     | Experimental   | Released       |
-| **v0.8.x**  | Alpha     | Experimental   | Released       |
+| Version     | Readiness   | Support Policy | Current Status |
+| :---------- | :---------- | :------------- | :------------- |
+| **v0.13.x** | Development | Experimental   | In Progress    |
+| **v0.12.x** | Development | Experimental   | Released       |
+| **v0.11.x** | Development | Experimental   | Released       |
+| **v0.10.x** | Development | Experimental   | Released       |
+| **v0.9.x**  | Development | Experimental   | Released       |
+| **v0.8.x**  | Development | Experimental   | Released       |
 
 ---
 

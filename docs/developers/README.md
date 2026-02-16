@@ -15,10 +15,8 @@ This index centralizes the formal technical records for the Internara project.
 ## 2. Engineering Standards
 
 - **[Coding Conventions](conventions.md)**: Naming, namespace rules, and exception handling.
-- **[Orchestration Patterns](patterns.md)**: Service orchestration, DTOs, Events, and Data
-  Integrity.
+- **[Governance](governance.md)**: RBAC, Service orchestration, DTOs, Events, and Data Integrity.
 - **[Security & Privacy](security.md)**: System hardening and encryption protocols.
-- **[Access Control (RBAC)](access-control.md)**: Role and Permission management standards.
 - **[Code Quality](quality.md)**: ISO 25010 metrics and static analysis gates.
 - **[UI/UX Guidelines](ui-ux.md)**: Interface standards and design system implementation.
 

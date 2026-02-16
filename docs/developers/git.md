@@ -43,7 +43,9 @@ history of system evolution.
 
 Tags serve as immutable snapshots identifying specific **Configuration Baselines**.
 
-- **Standard**: Semantic Versioning (**SemVer**) with a `v` prefix.
+- **Standard**: Semantic Versioning (**SemVer**) with a `v` prefix. Tagging MUST strictly adhere to
+  the syntax defined in the
+  **[Release Protocols](releases.md#7-authoritative-semver--pre-release-syntax)**.
 - **Baseline Identification**: Mandatory use of **Annotated Tags** (`git tag -a`) to include
   metadata regarding the release series and maturity stage.
 

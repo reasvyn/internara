@@ -14,21 +14,21 @@ cross-module zero-coupling.
 
 These modules provide the technical backbone and shared services used by the entire ecosystem.
 
-| Name             | Scopes               | Purpose                                                                                                                |
-| :--------------- | :------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Shared**       | Infrastructure       | Provides business-agnostic technical infrastructure (UUIDs, `EloquentQuery`) and semantic technical utilities.         |
-| **Core**         | Technical Foundation | Acts as the system "glue," handling metadata SSoT (`MetadataService`), Artisan generators, and cross-domain analytics. |
-| **Support**      | Business Utility     | Provides business-aware administrative utilities, such as high-scale CSV onboarding and atomic mass operations.        |
-| **Exception**    | Error Handling       | Manages standardized, localized, and secure fault management with automated abstraction for production safety.         |
-| **Status**       | State Management     | Provides the foundational infrastructure and Enums for tracking auditable entity lifecycle transitions.                |
-| **UI**           | Design System        | Implements the headless Design System, standardized components, and the cross-module _Slot Injection_ mechanism.       |
-| **Auth**         | Authentication       | Handles secure multi-identifier entry points, session management, and role-based environment redirection.              |
-| **Permission**   | RBAC                 | Manages the Role-Based Access Control (RBAC) engine and granular capability mapping via indexed UUIDs.                 |
-| **Setting**      | Configuration        | Centralizes database-backed application configurations with SSoT metadata resolution.                                  |
-| **Notification** | Messaging            | Provides a unified infrastructure for real-time UI alerts (Native Toasts) and multi-channel system notifications.      |
-| **Media**        | File Management      | Manages secure file storage, image processing, and media collections via standardized model concerns.                  |
-| **Log**          | Audit Trail          | Records activity audit trails and forensic system logs with recursive automated PII masking.                           |
-| **Setup**        | Installation         | Orchestrates environment initialization, system auditing, and the Port-Aware Installation Wizard.                      |
+| Name             | Scopes               | Purpose                                                                                                                     |
+| :--------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| **Shared**       | Infrastructure       | Provides business-agnostic technical infrastructure (UUIDs, `EloquentQuery`) and technical utilities (Formatting, Masking). |
+| **Core**         | Technical Foundation | Acts as the system "glue," handling metadata SSoT (`MetadataService`), Academic Year scoping, and global middleware.        |
+| **Support**      | Business Utility     | Provides automated scaffolding (Artisan generators), Testing orchestration, and mass-operation tools (Onboarding).          |
+| **Exception**    | Error Handling       | Manages standardized, localized, and secure fault management with automated abstraction for production safety.              |
+| **Status**       | State Management     | Provides the foundational infrastructure and Enums for tracking auditable entity lifecycle transitions.                     |
+| **UI**           | Design System        | Implements the headless Design System, standardized components, and the cross-module _Slot Injection_ mechanism.            |
+| **Auth**         | Authentication       | Handles secure multi-identifier entry points, session management, and role-based environment redirection.                   |
+| **Permission**   | RBAC                 | Manages the Role-Based Access Control (RBAC) engine and granular capability mapping via indexed UUIDs.                      |
+| **Setting**      | Configuration        | Centralizes database-backed application configurations with SSoT metadata resolution.                                       |
+| **Notification** | Messaging            | Provides a unified infrastructure for real-time UI alerts (Native Toasts) and multi-channel system notifications.           |
+| **Media**        | File Management      | Manages secure file storage, image processing, and media collections via standardized model concerns.                       |
+| **Log**          | Audit Trail          | Records activity audit trails and forensic system logs with recursive automated PII masking.                                |
+| **Setup**        | Installation         | Orchestrates environment initialization, system auditing, and the Port-Aware Installation Wizard.                           |
 
 ## 2. Domain Modules (Business Logic)
 

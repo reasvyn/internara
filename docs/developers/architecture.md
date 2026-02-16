@@ -123,11 +123,12 @@ decoupling from the Internara domain. This classification governs the **Dependen
 
 | Category    | Functional Role          | Portability Requirement        | Example Artifacts           |
 | :---------- | :----------------------- | :----------------------------- | :-------------------------- |
-| **Shared**  | Abstract Utilities       | **High (Project-Agnostic)**    | `HasUuid`, `EloquentQuery`  |
+| **Shared**  | Abstract Utilities       | **High (Project-Agnostic)**    | `HasUuid`, `Formatter`      |
 | **Core**    | Domain Blueprint         | **Low (Business-Specific)**    | `AcademicYear`, `BaseRoles` |
-| **Support** | Infrastructure Bridge    | **Medium (Environment-Aware)** | `ModuleGenerators`, `Audit` |
-| **UI**      | Design System            | **Low (Identity-Specific)**    | `AppLayout`, `Instrument`   |
+| **Support** | Infrastructure Bridge    | **Medium (Environment-Aware)** | `Scaffolding`, `Onboarding` |
+| **UI**      | Design System            | **Low (Identity-Specific)**    | `AppLayout`, `NativeToasts` |
 | **Domain**  | Business Logic Execution | **High (Domain-Encapsulated)** | `Internship`, `Journal`     |
+| **Admin**   | System Monitoring        | **Medium (Operational-Focus)** | `Analytics`, `UserManager`  |
 
 ---
 

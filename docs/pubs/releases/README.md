@@ -8,7 +8,8 @@ improvements, and what to expect in each version.
 
 ## 1. How We Track Progress
 
-We use simple labels to let you know the readiness and maintenance level of each version:
+We use simple labels to let you know the readiness and maintenance level of each version. Internara
+follows **Strict SemVer** syntax (e.g., `v0.13.0`).
 
 ### Readiness
 
@@ -45,12 +46,12 @@ We use simple labels to let you know the readiness and maintenance level of each
 
 ## 3. Detailed Release Notes
 
-- **[v0.13.0](v0.13.0-alpha.md)** — **Beta Preparation**
-- **[v0.12.0](v0.12.0-alpha.md)** — **Timeline & Guidance**
-- **[v0.11.0](v0.11.0-alpha.md)** — **Instructional Execution**
-- **[v0.10.0](v0.10.0-alpha.md)** — **Integrative Excellence**
-- **[v0.9.0](v0.9.0-alpha.md)** — **Easy System Setup**
-- **[v0.8.0](v0.8.0-alpha.md)** — **Smart Reporting & Insights**
+- **[v0.13.0](v0.13.0.md)** — **System Stabilization**
+- **[v0.12.0](v0.12.0.md)** — **Timeline & Guidance**
+- **[v0.11.0](v0.11.0.md)** — **Instructional Execution**
+- **[v0.10.0](v0.10.0.md)** — **Integrative Excellence**
+- **[v0.9.0](v0.9.0.md)** — **Easy System Setup**
+- **[v0.8.0](v0.8.0.md)** — **Smart Reporting & Insights**
 
 ---
 

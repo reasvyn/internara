@@ -48,7 +48,7 @@ Domain entities requiring asset attachment must implement the `HasMedia` contrac
 ### 2.2 Orchestration via Service Layer
 
 Persistence of media artifacts must be orchestrated through the **Service Layer** to ensure
-compliance with **[Data Integrity Protocols](../patterns.md)**.
+compliance with **[Data Integrity Protocols](../governance.md)**.
 
 ---
 

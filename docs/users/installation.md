@@ -31,27 +31,27 @@ git clone https://github.com/reasnov/internara.git
 cd internara
 ```
 
-### Step 2: Dependency Orchestration
+### Step 2: Automated Bootstrapping
+
+Run the unified installation command to handle dependency orchestration, environment generation,
+application key assignment, database migration, and UI asset construction.
 
 ```bash
-composer install
-npm install
+composer setup
 ```
 
-### Step 3: Automated Bootstrapping
+### Step 3: Web-Based Setup Wizard
 
-Run the unified installation command to handle environment generation, application key assignment,
-and database migration.
+Access the application via your browser to launch the **Setup Wizard**. The system will
+automatically detect the uninstalled state and redirect you to the initialization portal.
 
-```bash
-php artisan app:install
-```
-
-### Step 4: UI Asset Construction
-
-```bash
-npm run build
-```
+- **Setup Token Security**: Initial access is protected by a `setup_token` generated during the
+  `app:install` command.
+- **Signed URL Security**: High-privilege setup actions are protected via **Expiring Signed URLs**
+  to prevent session hijacking during initialization.
+- **Institutional Branding**: Define your **Brand Name** (Institution name) vs **App Name**
+  (Software identity).
+- **Primary Admin**: Complete the creation of the first Super-Admin account.
 
 ---
 
@@ -65,8 +65,8 @@ php artisan app:info
 
 - **Objective**: Ensure the version, series code, and environment status match the intended
   deployment target.
-- **Access**: Access the web-based **Setup Wizard** via the browser to finalize institutional
-  branding and initial administrator registration as guided by the system.
+- **Verification**: Run `composer test` to perform a full technical pre-flight check of the modular
+  infrastructure.
 
 ---
 

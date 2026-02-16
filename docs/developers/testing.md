@@ -62,21 +62,30 @@ in constrained environments.
 | **Unit**         | Component Isolation   | Verify logic in mathematical isolation. | Pest (Mocking internal deps)  |
 | **Integration**  | Service Contracts     | Verify inter-module communication.      | Contracts & Public Concrete   |
 | **System**       | End-to-End User Flow  | Validate fulfillment of user stories.   | Feature tests (HTTP/Livewire) |
-| **Browser**      | Visual & UX Integrity | Verify UI/UX and frontend behavior.     | Pest Browser (Playwright)     |
+| **Browser**      | Visual & UX Integrity | Verify UI/UX and frontend behavior.     | Laravel Dusk (Preferred)      |
 | **Architecture** | Structural Invariants | Enforce modular isolation policies.     | Pest Arch Plugin              |
 
 ### 3.1 Structural Placement
 
 To ensure high discoverability and organization, the directory structure within the `tests` folder
-MUST mirror the internal layer structure of the module.
+MUST mirror the internal **Modular DDD** structure of the module's `src` directory.
 
 - **Unit Verification**: Testing atomic logic (Services, Concerns, Enums) in isolation.
-    - **Location**: `modules/{Module}/tests/Unit/{Layer}/`
+    - **Location**: `modules/{Module}/tests/Unit/({Domain}/){Layer}/`
 - **Feature Validation**: Testing integrated user stories and domain flows.
-    - **Location**: `modules/{Module}/tests/Feature/{Layer}/`
+    - **Location**: `modules/{Module}/tests/Feature/({Domain}/){Layer}/`
 - **Browser Validation**: Verifying frontend behavior, UI motion, and UX requirements.
-    - **Location**: `modules/{Module}/tests/Browser/{Layer}/` (e.g., `Browser/Components/`,
-      `Browser/Layouts/`)
+    - **Location**: `modules/{Module}/tests/Browser/({Domain}/){Layer}/`
+
+#### 3.1.1 Placement Rules
+
+1.  **Mirroring Invariant**: The test path must exactly mirror the `src` path, replacing `src` with
+    `tests/{Level}`.
+2.  **Domain-to-Module Exception**: If the **Domain Name** is identical to the **Module Name**, the
+    domain folder must be omitted in the test structure.
+    - _Example_: `modules/User/tests/Unit/Models/UserTest.php` (✅ Correct)
+3.  **Namespace Alignment**: Test namespaces must follow the same omission rules as source
+    namespaces, typically starting with `Modules\{Module}\Tests\{Level}\...`.
 
 ---
 
@@ -86,13 +95,17 @@ For detailed technical implementation of specific testing patterns, refer to the
 authoritative guides:
 
 - **[Unit Tests](tests/pestphp/writing-tests.md)**: Guidelines for testing atomic units of logic.
+- **[Laravel Testing Basics](tests/laravel-tests.md)**: Getting started guide for testing in the
+  Laravel ecosystem.
 - **[Feature Tests](tests/pestphp/writing-tests.md)**: Patterns for verifying integrated domain
   flows.
 - **[HTTP Tests](tests/http-tests.md)**: Protocols for verifying API endpoints and controller
   responses.
 - **[Console Tests](tests/console-tests.md)**: Verification of Artisan commands and CLI output.
-- **[Browser Tests](tests/pestphp/browser-testing.md)**: High-fidelity verification of frontend and
-  UX using Playwright.
+- **[Dusk Browser Tests](tests/dusk-browser-test.md)**: Primary guide for browser automation via
+  Laravel Dusk (Preferred for CPU compatibility).
+- **[Browser Tests (Legacy)](tests/pestphp/browser-testing.md)**: Playwright-based verification (Use
+  only if environment supports it).
 - **[Database Tests](tests/database-testing.md)**: Strategies for verifying persistence and complex
   query logic.
 - **[Mocking Standards](tests/mocking.md)**: Rules for when and how to utilize `Mockery` or Pest's
