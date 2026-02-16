@@ -11,7 +11,6 @@ use Modules\Permission\Models\Role;
 use Modules\Teacher\Livewire\AssessInternship;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'teacher', 'guard_name' => 'web']);

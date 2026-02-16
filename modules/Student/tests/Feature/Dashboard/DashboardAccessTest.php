@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Create roles if they don't exist (in case seeder didn't run in test env)

@@ -6,6 +6,10 @@ use Livewire\Livewire;
 use Modules\Student\Livewire\Dashboard;
 use Modules\User\Models\User;
 
+beforeEach(function () {
+    \Modules\Permission\Models\Role::create(['name' => 'student', 'guard_name' => 'web']);
+});
+
 test('student dashboard renders correctly', function () {
     $student = User::factory()->create()->assignRole('student');
 

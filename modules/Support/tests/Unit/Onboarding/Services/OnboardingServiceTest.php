@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Tests\Unit\Services;
+namespace Modules\Support\Tests\Unit\Onboarding\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Student\Services\Contracts\StudentService;
-use Modules\Support\Services\OnboardingService;
+use Modules\Support\Onboarding\Services\OnboardingService;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\User\Services\Contracts\UserService;
 
@@ -25,7 +25,7 @@ test('it generates correct template for students', function () {
 
     $template = $service->getTemplate('student');
 
-    expect($template)->toContain('name,email,username,password,phone,address,department_id,nisn');
+    expect($template)->toContain('name,email,username,password,phone,address,department_id,national_identifier,registration_number');
 });
 
 test('it returns error if file not found', function () {
@@ -54,8 +54,8 @@ test('it processes valid csv row', function () {
         $teacherService,
     );
 
-    $csvContent = "name,email,nisn,department_id\nJohn Doe,john@example.com,12345,dept-id";
-    $filePath = tempnam(sys_get_temp_dir(), 'test_').'.csv';
+    $csvContent = "name,email,national_identifier,department_id\nJohn Doe,john@example.com,12345,dept-id";
+    $filePath = tempnam(sys_get_temp_dir(), 'test_') . '.csv';
     file_put_contents($filePath, $csvContent);
 
     $userMock = mock(\Modules\User\Models\User::class);
@@ -63,7 +63,7 @@ test('it processes valid csv row', function () {
     $userService->shouldReceive('create')->once()->andReturn($userMock);
 
     // We mock DB::transaction
-    DB::shouldReceive('transaction')->once()->andReturnUsing(fn ($callback) => $callback());
+    DB::shouldReceive('transaction')->once()->andReturnUsing(fn($callback) => $callback());
 
     $results = $service->importFromCsv($filePath, 'student');
 
