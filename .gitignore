@@ -13,9 +13,15 @@
 
 # Environment & Private Config
 .env
+.env.*
+!.env.example
 .env.backup*
 .env.production
 /auth.json
+
+# Databases
+/database/*.sqlite
+/database/*.sqlite-journal
 Homestead.json
 Homestead.yaml
 
