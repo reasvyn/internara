@@ -93,7 +93,7 @@ transparency.
 
 | Version     | Readiness   | Support Policy | Current Status |
 | :---------- | :---------- | :------------- | :------------- |
-| **v0.13.x** | Development | Experimental   | In Progress    |
+| **v0.13.x** | Development | Experimental   | Released       |
 | **v0.12.x** | Development | Experimental   | Released       |
 | **v0.11.x** | Development | Experimental   | Released       |
 | **v0.10.x** | Development | Experimental   | Released       |
