@@ -39,8 +39,9 @@ Verify that the `app_info.json` exactly matches the intended configuration basel
 Support Policy, Readiness). Prior to tag creation, execute the mandatory transition of the version
 status to **Released** within the internal records and the Versions Overview table.
 
-- **Readiness Invariant**: Every new version baseline must begin with **Alpha** readiness to ensure
-  rigorous testing before stabilization.
+- **Readiness Invariant**: Version readiness (Alpha, Beta, RC, Stable) should reflect the actual
+  maturity of the baseline. For the `0.x.y` development phase, clean versions are preferred for
+  standard milestones.
 
 ### 2.2 Series-Based Release Relationship
 
@@ -56,10 +57,11 @@ must identify which series it contributes to or fulfills.
 Create an **Annotated Git Tag** to establish an immutable reference to the release baseline. All
 tags must strictly adhere to the **Semantic Versioning (SemVer)** standard.
 
-- **Format**: `vX.Y.Z-{pre-release}+{build}` (e.g., `v0.13.0`, `v1.0.0-rc.1`)
-- **Pre-release Suffixes**: Use `-alpha`, `-beta`, or `-rc` to identify the maturity of the
-  baseline.
-- **Protocol**: `git tag -a vX.Y.Z-suffix -m "Release description and series identifier"`
+- **Format**: `vX.Y.Z` or `vX.Y.Z-{pre-release}+{build}` (e.g., `v0.13.0`, `v1.0.0-rc.1`)
+- **Pre-release Suffixes**: Use `-alpha`, `-beta`, or `-rc` only when specifically marking a
+  stabilization track for a major milestone (e.g., preparing for `v1.0.0`). Standard development
+  versions in the `0.x.y` range should remain clean.
+- **Protocol**: `git tag -a vX.Y.Z -m "Release description and series identifier"`
 
 ### 2.4 Documentation Finalization (Doc-as-Code)
 
@@ -174,14 +176,14 @@ structure.
 
 **Format**: `v<Major>.<Minor>.<Patch>[-<PreRelease>[.<Iteration>]][+<Build>]`
 
-- **Major (`X`)**: Incremented for incompatible API changes or massive architectural shifts.
-- **Minor (`Y`)**: Incremented for functional additions in a backwards-compatible manner.
-- **Patch (`Z`)**: Incremented for backwards-compatible bug fixes or security patches.
+- **Major (`X`)**: Incremented for incompatible API changes.
+- **Minor (`Y`)**: Incremented for functional additions.
+- **Patch (`Z`)**: Incremented for bug fixes.
 
-### 7.2 Pre-release Labels (Maturity Suffixes)
+### 7.2 Pre-release Labels (Optional Suffixes)
 
-Pre-release labels MUST be lowercase and separated from the patch version by a hyphen (`-`).
-Iterations within a pre-release stage MUST be numeric and separated by a dot (`.`).
+Pre-release labels (e.g., `-alpha`, `-beta`) are optional and reserved for high-stakes release
+tracks. For standard `v0.x.y` development, clean versioning is the baseline.
 
 | Label       | Meaning                                            | Syntax Example                     |
 | :---------- | :------------------------------------------------- | :--------------------------------- |

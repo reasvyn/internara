@@ -54,8 +54,8 @@ on providing the authoritative documentation and metadata for new software basel
 ## Phase 1: Metadata & Version Synchronization
 
 - **SemVer Application**: Determine if the release is Major, Minor, or Patch.
-- **Strict Syntax Verification**: Ensure the version string strictly adheres to the anatomy defined
-  in `docs/developers/releases.md` (e.g., lowercase `-alpha`, `-beta`, `-rc` with dot iterations).
+- **Strict Syntax Verification**: Ensure the version string strictly adheres to SemVer. Clean
+  versions (e.g., `v0.13.0`) are the default for development milestones.
 - **Release Branch**: Switch to a release branch: `git checkout -b release/vX.Y.Z`.
 - **Metadata Patch**: Update `app_info.json`. Synchronize version fields in `package.json` and
   module descriptors.
