@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Blade;
 
+beforeEach(function () {
+    view()->share('errors', new \Illuminate\Support\ViewErrorBag());
+});
+
 test('it renders input with label and aria-label', function () {
     $html = Blade::render('<x-ui::input label="Email Address" placeholder="Enter your email" />');
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Blade;
 
 test('it renders brand with localized accessibility labels', function () {
     app()->setLocale('en');
-    setting(['app_name' => 'Internara Test']);
+    setting(['brand_name' => 'Internara Test']);
 
     $html = Blade::render('<x-ui::brand />');
 

@@ -18,5 +18,5 @@ test('it renders app credit with localized labels', function () {
         ->toContain('aria-label="love"')
         ->toContain('by')
         ->toContain('Reas Vyn')
-        ->toContain('aria-label="Visit Reas Vyn\'s GitHub profile"');
+        ->toContain('aria-label="Visit Reas Vyn&#039;s GitHub profile"');
 });

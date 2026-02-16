@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Blade;
 
+beforeEach(function () {
+    view()->share('errors', new \Illuminate\Support\ViewErrorBag());
+});
+
 test('it renders badge with correct priority class', function () {
     $html = Blade::render('<x-ui::badge priority="primary">New</x-ui::badge>');
     expect($html)->toContain('badge-primary')->toContain('New');

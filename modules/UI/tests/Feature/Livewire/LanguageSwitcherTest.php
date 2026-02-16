@@ -9,8 +9,8 @@ use Modules\UI\Services\Contracts\LocalizationService;
 test('it renders supported locales', function () {
     $service = mock(LocalizationService::class);
     $service->shouldReceive('getSupportedLocales')->andReturn([
-        'en' => ['name' => 'English', 'icon' => 'flag-en'],
-        'id' => ['name' => 'Indonesia', 'icon' => 'flag-id'],
+        'en' => ['name' => 'English', 'icon' => 'tabler.flag'],
+        'id' => ['name' => 'Indonesia', 'icon' => 'tabler.id'],
     ]);
     app()->instance(LocalizationService::class, $service);
 
@@ -19,7 +19,7 @@ test('it renders supported locales', function () {
 
 test('it can change locale', function () {
     $service = mock(LocalizationService::class);
-    $service->shouldReceive('getSupportedLocales')->andReturn(['id' => ['name' => 'ID']]);
+    $service->shouldReceive('getSupportedLocales')->andReturn(['id' => ['name' => 'ID', 'icon' => 'tabler.id']]);
     $service->shouldReceive('setLocale')->with('id')->once()->andReturn(true);
     app()->instance(LocalizationService::class, $service);
 
