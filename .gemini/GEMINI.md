@@ -1,137 +1,117 @@
-# Gemini Guidelines: Internara Project
+# Gemini Operational Guidelines: Internara Project
 
-This document formalizes the principles, project context, and operational guidelines for the AI
-assistant (“Gemini”) when orchestrating developmental activities for the Internara project. It
-ensures that all AI-driven interventions demonstrate 100% alignment with the system's authoritative
-engineering records and international standards.
-
-> **Single Source of Truth Mandate:** The document
-> **[`docs/developers/specs.md`](../docs/developers/specs.md)** is the **Authoritative
-> Specification** for this project. For a complete list of modules and their roles, refer to the
-> **[Module Catalog](../docs/wiki/modules.md)**. All architectural decisions, logic implementation,
-> and lifecycle events MUST satisfy its requirements.
+This document establishes the authoritative **Operational Baseline** for the AI assistant (“Gemini”)
+within the Internara ecosystem. It ensures that all AI-driven interventions demonstrate 100%
+alignment with the system's engineering records and international standards.
 
 ---
 
-## 1. Project Overview & Architectural Logic
+## 🏛 Strategic Context & Architecture
 
-**Internara** is an internship management ecosystem engineered as a **Modular Monolith**. Business
-rules are encapsulated within autonomous domain modules, orchestrated via a **Service-Oriented Logic
-Layer**.
+**Internara** is an internship management ecosystem engineered as a **Modular Monolith**. It
+prioritizes systemic integrity, domain isolation, and long-term maintainability.
 
-The architecture prioritizing systemic integrity and maintainability, adhering to the formal
-**[Architecture Description](../docs/developers/architecture.md)**.
-
----
-
-## 2. Interaction & Operational Principles
-
-Gemini must adhere to the following interaction invariants:
-
-### 2.1 Aesthetic-Natural Principle
-
-Maintain a calm, adaptive, and structured tone focused on clarity and cognitive efficiency. Answers
-must be structurally minimalist and oriented toward actionable engineering outcomes.
-
-### 2.2 Analytical Accountability
-
-- **Keypoints Summary**: Interaction must conclude with a concise, scannable summary of conclusion,
-  decisions, and verified outcomes.
-- **Privacy Protocol**: Strictly prohibit the storage or processing of personal or sensitive
-  information. Refuse non-compliant requests explicitly.
-- **Limited Initiative**: Do not execute strategic lifecycle transitions (e.g., Promotion to Stable)
-  without explicit user authorization.
-    - **Operational Safety**:
-        - **README Awareness**: ALWAYS treat `README.md` as a special, authoritative file whenever
-          and wherever it is found. Prioritize reading it first to gain local context and specific
-          module instructions.
-        - **Directory Exclusion**: ALWAYS exclude `node_modules/` and `vendor/` directories when
-          scanning or searching the codebase.
-
-    - **Force Flag Discipline**: Exercise extreme caution when using the `--force` flag (or
-      equivalent) in any command. Double-check the necessity and potential impact before execution.
+- **Authoritative Specification (SSoT)**:
+  **[`docs/developers/specs.md`](../docs/developers/specs.md)**.
+- **Architectural Pattern**: **Modular DDD** with a **Service-Oriented Logic Layer**.
+- **Domain Mapping**: `modules/{Module}/src/({Domain}/){Layer}/{Class}.php`.
 
 ---
 
-## 3. Engineering Workflows & Lifecycle Governance
+## ⚖️ Interaction & Operational Principles
 
-Gemini is mandated to follow the formal
-**[Software Life Cycle Processes](../docs/developers/lifecycle.md)**.
+### 1. Aesthetic-Natural Interaction
 
-### 3.1 Implementation Process
+Maintain a calm, structured, and adaptive tone. Responses must be structurally minimalist,
+cognitively non-aggressive, and oriented toward actionable engineering outcomes.
 
-- **Traceability Driven**: Every feature must be traceable to a specific requirement in the SyRS.
-- **Design Baseline**: Formulate an **Architectural Blueprint** and obtain explicit approval prior
-  to construction.
-- **TDD-First Construction**: Implementation must utilize the **`test(...)`** pattern via Pest v4.
-- **Analytical Documentation**: Every modification triggers a **Doc-as-Code** synchronization cycle.
-  Simplification or truncation of documentation is **STRICTLY PROHIBITED**.
+### 2. Analytical Accountability
 
-### 3.2 Verification Gates
-
-- **System Verification**: Mandatory execution of **`composer test`**.
-- **Static Analysis**: Mandatory execution of **`composer lint`**.
-- **Configuration Management**: Adherence to **Conventional Commits** and the
-  **[Repository Configuration Protocols](../docs/developers/git.md)**.
+- **Traceability**: Every action must trace back to a SyRS requirement or architectural mandate.
+- **Verification Gate**: No implementation is complete without a formal verification pass
+  (`composer test` and `composer lint`).
+- **Privacy Protocol**: Storage or processing of PII is strictly prohibited. Use masking and
+  encryption mandates.
 
 ---
 
-## 4. Technical Invariants (Systemic Record)
+## 🔄 Standardized Engineering Workflows
 
-### 4.1 Construction Baseline
+Gemini is mandated to operate within the following specialized lifecycles, hosted in the universal
+**[docs/agents/workflows/](../docs/agents/workflows/README.md)** repository:
 
-- **Identity Invariant**: Mandatory utilization of **UUID v4** for all entities.
-- **Isolation Invariant**: No physical foreign keys across modules. Use Service Contracts.
-- **Logic Invariant**: Direct `env()` calls are prohibited. Use the `setting()` registry.
-- **Presentation Invariant**: Livewire components must satisfy the **Thin Component** mandate.
-- **UI Decoupling Invariant**: Cross-module UI integration must utilize the **Slot Injection**
-  pattern via the `UI` module. Direct cross-module component calls are prohibited.
-
-### 4.2 Semantic Namespacing
-
-Namespaces MUST omit the `src` segment to maintain modular portability.
-
-- _Correct_: `namespace Modules\User\Services;`
-- _Mapping_: `modules/User/src/Services/UserService.php`
-
----
-
-## 5. Verification & Validation (V&V) Standards
-
-Gemini must verify all artifacts against the
-**[Testing & Verification Guide](../docs/developers/testing.md)** and the
-**[Coding Conventions](../docs/developers/conventions.md)**.
-
-- **V-Model Alignment**: Unit and Feature tests must verify both technical design and requirement
-  fulfillment.
-- **Multi-Language Integrity**: All user-facing output must be verified in **ID** and **EN**.
-- **Security Audit**: Proactive verification of RBAC Policies and potential injection vectors.
+1.  **[Planning](../docs/agents/workflows/planning.md)**: Requirement elicitation and strategy.
+2.  **[Designing](../docs/agents/workflows/designing.md)**: Architecture and contract design.
+3.  **[Developing](../docs/agents/workflows/developing.md)**: Feature construction and TDD.
+4.  **[Testing](../docs/agents/workflows/testing.md)**: Verification and V-Model validation.
+5.  **[Auditing](../docs/agents/workflows/auditing.md)**: Security and privacy compliance.
+6.  **[Refactoring](../docs/agents/workflows/refactoring.md)**: Structural realignment and
+    hardening.
+7.  **[Documenting](../docs/agents/workflows/documenting.md)**: Engineering record synchronization.
+8.  **[Publicating](../docs/agents/workflows/publicating.md)**: Release baseline and versioning.
+9.  **[Deploying](../docs/agents/workflows/deploying.md)**: Library distribution and registries.
+10. **[Maintenancing](../docs/agents/workflows/maintenancing.md)**: Evolution and technical debt.
 
 ---
 
-## 6. Supporting Orchestration
+## 🛠 Technical Invariants (The Systemic Record)
 
-Gemini is authorized to utilize the **GitHub CLI (`gh`)** and **Laravel Boost** tools to facilitate
-systemic synchronization and debugging.
+### 1. Construction Baseline
 
-- **Artisan Orchestration**: Utilization of modular generators defined in the
-  **[Automated Tooling](../docs/developers/tooling.md)**.
-- **Information Retrieval**: Prioritize `search-docs`, `tinker`, and `database-schema` for
-  contextual immersion.
+- **Strict Typing**: Every PHP file MUST declare `declare(strict_types=1);`.
+- **Identity**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for all
+  entities.
+- **Versioning**: Adherence to the **Clean Versioning Standard** (e.g., `v0.13.0`). Pre-release
+  suffixes (`-alpha`, `-beta`) are optional and reserved for major release tracks.
+- **Isolation**: Physical foreign keys across module boundaries are **STRICTLY PROHIBITED**.
+- **Logic**: No `env()` calls; utilize `config()` for static values and the `setting()` registry for
+  dynamic ones.
+- **Service Layer**: Business logic resides in Services extending `EloquentQuery`.
+- **UI**: Livewire components must be **Thin Components**; UI integration via **Slot Injection**.
+- **Typography**: Utilize **Instrument Sans** for all UI-driven artifacts.
 
-Refer to the **[Technical Index](../docs/developers/README.md)** for exhaustive engineering
-standards.
+### 2. Namespace & Semantic Omission
+
+- **The `src` Omission**: All namespaces MUST omit the `src` segment.
+- **Domain Exception**: If Domain Name == Module Name, the domain folder is omitted.
+- **Contracts**: Interfaces must NOT have an `Interface` suffix.
 
 ---
 
-## 7. Mandatory Context Reference
+## ⚡ Automated Tooling & Orchestration
 
-Gemini must always consider the following authoritative documents as active context:
+The following commands are the authoritative mechanisms for system interaction:
 
-- **[System Requirements Specification](../docs/developers/specs.md)**
-- **[Architecture Description](../docs/developers/architecture.md)**
-- **[Coding Conventions](../docs/developers/conventions.md)**
-- **[Repository Configuration Protocols](../docs/developers/git.md)**
-- **[Release Publication Protocols](../docs/developers/releases.md)**
-- **[Version Management](../docs/pubs/releases/README.md)**
-- **[Module Catalog](../docs/wiki/modules.md)**
+- **Initialization**: `composer setup` (Full environment bootstrapping).
+- **Development**: `composer dev` (Concurrent server, queue, logs, and vite).
+- **Verification**: `composer test` (Mandatory Pest v4 suite).
+- **Quality**: `composer lint` (Static analysis check) and `composer format` (Auto-fix).
+
+---
+
+## 📊 Verification & Validation (V&V) Standards
+
+Artifacts must be verified against the **[Testing Guide](../docs/developers/testing.md)**.
+
+- **Mirroring Invariant**: The `tests/` directory MUST exactly mirror the `src/` hierarchy.
+- **Coverage**: Minimum **90% behavioral coverage** per domain module.
+- **Complexity**: Cyclomatic Complexity **< 10** per method.
+- **Localization**: Zero hard-coded user-facing text; use `__('module::file.key')`.
+- **Documentation**: All public methods MUST have professional **English PHPDoc**.
+
+---
+
+## 🔗 Authoritative References
+
+- **[Laravel Boost Guidelines](../docs/agents/BOOST.md)**
+- **[System Specs](../docs/developers/specs.md)** |
+  **[Architecture](../docs/developers/architecture.md)**
+- **[Conventions](../docs/developers/conventions.md)** |
+  **[Lifecycle](../docs/developers/lifecycle.md)**
+- **[Testing Guide](../docs/developers/testing.md)** |
+  **[Module Catalog](../docs/users/modules.md)**
+
+---
+
+_This document constitutes the operational identity of Gemini within Internara. Non-compliance is an
+architectural defect._
