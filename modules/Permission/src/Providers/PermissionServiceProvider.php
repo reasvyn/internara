@@ -6,8 +6,12 @@ namespace Modules\Permission\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Modules\Permission\Contracts\PermissionManager as PermissionManagerContract;
+use Modules\Permission\Services\Contracts\PermissionManager as PermissionManagerContract;
+use Modules\Permission\Services\Contracts\PermissionService as PermissionServiceContract;
+use Modules\Permission\Services\Contracts\RoleService as RoleServiceContract;
 use Modules\Permission\Services\PermissionManager;
+use Modules\Permission\Services\PermissionService;
+use Modules\Permission\Services\RoleService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Modules\User\Models\User;
 
@@ -71,6 +75,8 @@ class PermissionServiceProvider extends ServiceProvider
     {
         return [
             PermissionManagerContract::class => PermissionManager::class,
+            RoleServiceContract::class => RoleService::class,
+            PermissionServiceContract::class => PermissionService::class,
         ];
     }
 }

@@ -58,4 +58,17 @@ interface SettingService extends EloquentQuery
      * Alias for setValue method.
      */
     public function set(string|array $key, mixed $value = null, array $extraAttributes = []): bool;
+
+    /**
+     * Temporarily override setting values for the current request.
+     * Useful for testing without affecting the database.
+     *
+     * @param array<string, mixed> $overrides
+     */
+    public function override(array $overrides): void;
+
+    /**
+     * Clear all temporary overrides.
+     */
+    public function clearOverrides(): void;
 }

@@ -207,6 +207,7 @@ return [
             // tests/
             'test-feature' => ['path' => 'tests/Feature', 'generate' => true],
             'test-unit' => ['path' => 'tests/Unit', 'generate' => true],
+            'test-browser' => ['path' => 'tests/Browser', 'generate' => true],
         ],
     ],
 
@@ -252,9 +253,10 @@ return [
     */
     'commands' => ConsoleServiceProvider::defaultCommands()
         ->merge([
-            \Modules\Core\Console\Commands\MakeClassCommand::class,
-            \Modules\Core\Console\Commands\MakeInterfaceCommand::class,
-            \Modules\Core\Console\Commands\MakeTraitCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeClassCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand::class,
         ])
         ->toArray(),
 

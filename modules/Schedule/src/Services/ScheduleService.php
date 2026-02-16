@@ -10,14 +10,12 @@ use Modules\Schedule\Services\Contracts\ScheduleService as ScheduleServiceContra
 use Modules\Shared\Services\EloquentQuery;
 
 /**
- * Class ScheduleService
- *
  * Implements the business logic for managing internship schedules and timelines.
  */
 class ScheduleService extends EloquentQuery implements ScheduleServiceContract
 {
     /**
-     * Create a new ScheduleService instance.
+     * Create a new service instance.
      */
     public function __construct(Schedule $model)
     {

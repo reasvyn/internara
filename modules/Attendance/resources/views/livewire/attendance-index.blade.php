@@ -2,7 +2,10 @@
     <x-ui::header :title="__('attendance::ui.index.title')" :subtitle="__('attendance::ui.index.subtitle')">
         <x-slot:actions>
             @if(auth()->user()->hasRole('student'))
-                <x-ui::button :label="__('attendance::ui.index.request_absence')" icon="tabler.user-off" wire:click="openAbsenceModal" priority="secondary" />
+                <div class="flex gap-2">
+                    <x-ui::button :label="__('attendance::ui.index.quick_check_in')" icon="tabler.check" wire:click="quickCheckIn" priority="primary" spinner="quickCheckIn" />
+                    <x-ui::button :label="__('attendance::ui.index.fill_attendance')" icon="tabler.edit" wire:click="openAttendanceModal" priority="secondary" />
+                </div>
             @endif
         </x-slot:actions>
     </x-ui::header>
@@ -23,6 +26,7 @@
                 ['key' => 'check_in_at', 'label' => __('attendance::ui.index.table.check_in')],
                 ['key' => 'check_out_at', 'label' => __('attendance::ui.index.table.check_out')],
                 ['key' => 'status', 'label' => __('attendance::ui.index.table.status')],
+                ['key' => 'notes', 'label' => __('attendance::ui.index.table.notes')],
             ]" :rows="$this->logs" with-pagination>
                 @scope('cell_date', $log)
                     <div class="font-medium">{{ $log->date->translatedFormat('d F Y') }}</div>
@@ -44,30 +48,35 @@
                         class="badge-sm" 
                     />
                 @endscope
+
+                @scope('cell_notes', $log)
+                    <span class="text-xs italic opacity-70">{{ $log->notes ?: '-' }}</span>
+                @endscope
             </x-ui::table>
         </x-ui::card>
     </x-ui::main>
 
-    <x-ui::modal wire:model="absenceModal" :title="__('attendance::ui.index.modal.title')" separator>
-        <x-ui::form wire:submit="submitAbsence">
-            <x-ui::input type="date" :label="__('attendance::ui.index.modal.date')" wire:model="absence_date" required />
+    <x-ui::modal wire:model="attendanceModal" :title="__('attendance::ui.index.modal.title')" separator>
+        <x-ui::form wire:submit="submitAttendance">
+            <x-ui::input type="date" :label="__('attendance::ui.index.modal.date')" wire:model="form_date" required />
             
             <x-ui::select 
-                :label="__('attendance::ui.index.modal.type')" 
-                wire:model="absence_type" 
+                :label="__('attendance::ui.index.modal.status')" 
+                wire:model="form_status" 
                 :options="[
-                    ['id' => 'leave', 'name' => __('attendance::ui.index.modal.types.leave')],
-                    ['id' => 'sick', 'name' => __('attendance::ui.index.modal.types.sick')],
-                    ['id' => 'permit', 'name' => __('attendance::ui.index.modal.types.permit')],
+                    ['id' => 'present', 'name' => __('attendance::status.present')],
+                    ['id' => 'sick', 'name' => __('attendance::status.sick')],
+                    ['id' => 'permitted', 'name' => __('attendance::status.permitted')],
+                    ['id' => 'unexplained', 'name' => __('attendance::status.unexplained')],
                 ]" 
                 required 
             />
 
-            <x-ui::textarea :label="__('attendance::ui.index.modal.reason')" wire:model="absence_reason" :placeholder="__('attendance::ui.index.modal.reason_placeholder')" required />
+            <x-ui::textarea :label="__('attendance::ui.index.modal.notes')" wire:model="form_notes" :placeholder="__('attendance::ui.index.modal.notes_placeholder')" />
 
             <x-slot:actions>
-                <x-ui::button :label="__('ui::common.cancel')" x-on:click="$wire.absenceModal = false" />
-                <x-ui::button :label="__('attendance::ui.index.modal.submit')" type="submit" priority="primary" spinner="submitAbsence" />
+                <x-ui::button :label="__('ui::common.cancel')" x-on:click="$wire.attendanceModal = false" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" priority="primary" spinner="submitAttendance" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>

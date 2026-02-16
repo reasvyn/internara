@@ -9,7 +9,6 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\SupervisorService;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Seed permissions and roles

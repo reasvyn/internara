@@ -30,7 +30,7 @@ class Dashboard extends Component
     #[Computed]
     public function scoreCard(): array
     {
-        if (! $this->registration) {
+        if (!$this->registration) {
             return ['final_grade' => null];
         }
 

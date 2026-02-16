@@ -60,21 +60,32 @@ interface SetupService
     public const SESSION_SETUP_AUTHORIZED = 'setup_authorized';
 
     /**
-     * Checks if the application is currently installed.
+     * Checks if the application is currently marked as installed in the settings registry.
      *
-     * @param bool $skipCache If true, bypasses the cache.
+     * This check is used by the `RequireSetupAccess` middleware to prevent re-running
+     * the installation wizard and to protect system settings from unauthorized overrides.
+     *
+     * @param bool $skipCache If true, bypasses the cache to ensure an authoritative state check.
      */
     public function isAppInstalled(bool $skipCache = true): bool;
 
     /**
      * Checks if a specific setup step has been completed.
      *
+     * Used to enforce the sequential flow of the installation wizard, ensuring that
+     * prerequisite data (like School info) is established before proceeding to
+     * dependent steps (like Account creation).
+     *
      * @param string $step The name of the setup step to check.
+     * @param bool $skipCache If true, bypasses the cache to ensure an authoritative state check.
      */
-    public function isStepCompleted(string $step): bool;
+    public function isStepCompleted(string $step, bool $skipCache = true): bool;
 
     /**
-     * Checks if a specific record exists in the system.
+     * Checks if a specific required record exists in the system.
+     *
+     * Provides a safeguard during the setup process to verify that crucial entities
+     * (SuperAdmin, School, etc.) have been physically persisted in the database.
      *
      * @param string $recordName The name of the record to check.
      */
@@ -82,21 +93,34 @@ interface SetupService
 
     /**
      * Requests access to the setup process, optionally checking against a previous step.
+     *
+     * Acts as the primary authorization logic for setup routes. If the application is
+     * already installed, it restricts access. If a previous step is required but
+     * not finished, it throws an exception to preserve the installation sequence.
      */
     public function requireSetupAccess(string $prevStep = ''): bool;
 
     /**
-     * Performs a specific setup step.
+     * Performs a specific setup step's business logic.
+     *
+     * Orchestrates the persistence of data for a given step and validates required
+     * record existence before allowing the step to be marked as complete.
      */
     public function performSetupStep(string $step, ?string $reqRecord = null): bool;
 
     /**
-     * Saves the system and SMTP settings.
+     * Saves the system and SMTP settings provided by the user.
+     *
+     * Persists environmental and institutional configuration to the setting registry,
+     * serving as the technical finalization of the system identity.
      */
     public function saveSystemSettings(array $settings): bool;
 
     /**
-     * Finalizes the current setup step.
+     * Finalizes the current setup step by persisting its completion state.
+     *
+     * Once called, the step is marked as complete in the registry, authorizing the
+     * user to move to the next logical stage of the installation.
      */
     public function finalizeSetupStep(): bool;
 }

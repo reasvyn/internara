@@ -43,7 +43,7 @@ class ReportIndex extends Component
         return $service
             ->getProviders()
             ->map(
-                fn (ExportableDataProvider $p) => [
+                fn(ExportableDataProvider $p) => [
                     'id' => $p->getIdentifier(),
                     'label' => $p->getLabel(),
                 ],
@@ -59,7 +59,7 @@ class ReportIndex extends Component
     {
         return app(\Modules\Internship\Services\Contracts\InternshipService::class)
             ->all(['id', 'title'])
-            ->map(fn ($i) => ['id' => $i->id, 'name' => $i->title])
+            ->map(fn($i) => ['id' => $i->id, 'name' => $i->title])
             ->toArray();
     }
 
@@ -80,7 +80,7 @@ class ReportIndex extends Component
      */
     public function generate(): void
     {
-        if (! $this->selectedProvider) {
+        if (!$this->selectedProvider) {
             return;
         }
 

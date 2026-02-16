@@ -39,6 +39,6 @@ final class Masker
         $end = substr($value, -$keepEnd);
         $mask = str_repeat('*', $length - $keepStart - $keepEnd);
 
-        return $start.$mask.$end;
+        return $start . $mask . $end;
     }
 }

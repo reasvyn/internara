@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\User\Livewire\Forms;
 
-use Illuminate\Validation\Rule;
 use Livewire\Form;
-use Modules\Department\Services\Contracts\DepartmentService;
-use Modules\Shared\Rules\Password;
+use Modules\User\Models\User;
 
 class UserForm extends Form
 {
@@ -25,38 +23,33 @@ class UserForm extends Form
 
     public string $status = 'active';
 
-    public array $profile = [];
+    /**
+     * Set form values from user.
+     */
+    public function setUser(User $user): void
+    {
+        $this->id = $user->id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->username = $user->username;
+        $this->roles = $user->roles->pluck('name')->toArray();
+        $this->status = $user->latestStatus()?->name ?? 'active';
+    }
 
+    /**
+     * Get validation rules.
+     */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->id)],
-            'username' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('users', 'username')->ignore($this->id),
-            ],
-            'password' => [$this->id ? 'nullable' : 'required', 'string', Password::auto()],
+            'email' => ['required', 'email', 'unique:users,email,' . $this->id],
+            'username' => ['required', 'string', 'unique:users,username,' . $this->id],
             'roles' => ['required', 'array', 'min:1'],
-            'status' => ['required', 'string', Rule::in(['active', 'inactive'])],
-            'profile' => ['nullable', 'array'],
-            'profile.identity_number' => ['nullable', 'string'], // NISN or NIP
-            'profile.department_id' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    if (! $value) {
-                        return;
-                    }
-                    /** @var DepartmentService $service */
-                    $service = app(DepartmentService::class);
-                    if (! $service->find($value)) {
-                        $fail(__('validation.exists'));
-                    }
-                },
-            ],
-            'profile.phone' => ['nullable', 'string'],
+            'status' => ['required', 'string', 'in:active,inactive,pending'],
+            'password' => $this->id
+                ? ['nullable', 'string', 'min:8']
+                : ['required', 'string', 'min:8'],
         ];
     }
 }

@@ -7,7 +7,6 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Services\Contracts\UserService;
 
-uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('it can register a student for a placement if capacity is available', function () {
     $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
@@ -66,7 +65,7 @@ test('it throws exception if student already registered for the same program', f
 
     // Second registration for same program but different placement
     $data['placement_id'] = $placement2->id;
-    expect(fn () => app(RegistrationService::class)->register($data))->toThrow(
+    expect(fn() => app(RegistrationService::class)->register($data))->toThrow(
         AppException::class,
         'internship::exceptions.student_already_registered',
     );
@@ -102,7 +101,7 @@ test('it throws exception if no capacity available', function () {
     // Try to register another student
     $data2 = $data1;
     $data2['student_id'] = $student2->id;
-    expect(fn () => app(RegistrationService::class)->register($data2))->toThrow(
+    expect(fn() => app(RegistrationService::class)->register($data2))->toThrow(
         AppException::class,
         'internship::exceptions.no_slots_available',
     );
@@ -204,7 +203,7 @@ test('it enforces advisor invariant', function () {
     $student = app(UserService::class)->factory()->create();
 
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -227,7 +226,7 @@ test('it enforces temporal integrity', function () {
 
     // Missing dates
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -237,7 +236,7 @@ test('it enforces temporal integrity', function () {
 
     // Invalid range
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -262,7 +261,7 @@ test('it restricts registration based on system phase', function () {
     setting(['system_phase' => 'operation']);
 
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,

@@ -13,4 +13,11 @@ return [
     'due_date' => 'Tenggat Waktu',
     'assignment_type' => 'Jenis Tugas',
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus tugas ini?',
+    'success_created' => 'Tugas berhasil dibuat.',
+    'success_updated' => 'Tugas berhasil diperbarui.',
+    'success_deleted' => 'Tugas berhasil dihapus.',
+    'success_submitted' => 'Tugas berhasil dikirim.',
+    'type_created' => 'Jenis tugas berhasil dibuat.',
+    'type_updated' => 'Jenis tugas berhasil diperbarui.',
+    'type_deleted' => 'Jenis tugas berhasil dihapus.',
 ];

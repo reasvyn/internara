@@ -20,7 +20,6 @@ use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Livewire\SystemSetup;
 use Modules\User\Services\Contracts\SuperAdminService;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);

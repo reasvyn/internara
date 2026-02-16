@@ -12,12 +12,12 @@ use Modules\Shared\Services\EloquentQuery;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @property School $model
+ * Implements the business logic for managing institutional information.
  */
 class SchoolService extends EloquentQuery implements SchoolServiceContract
 {
     /**
-     * SchoolService constructor.
+     * Create a new service instance.
      */
     public function __construct(School $model)
     {
@@ -34,7 +34,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSchool(array $columns = ['*']): ?School
     {
@@ -42,13 +42,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     }
 
     /**
-     * Create a new school, respecting the single-record configuration.
-     *
-     * @param array<string, mixed> $data The data for creating the school.
-     *
-     * @throws AppException If a school already exists and the system is in single-record mode.
-     *
-     * @return School The newly created school.
+     * Create a new school record.
      */
     public function create(array $data): School
     {
@@ -67,7 +61,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function update(mixed $id, array $data, array $columns = ['*']): School
     {
@@ -79,7 +73,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function save(array $attributes, array $values = []): School
     {

@@ -11,8 +11,6 @@ test('it renders activity feed with system entries', function () {
     Activity::create([
         'log_name' => 'system',
         'description' => 'System started',
-        'subject_id' => \Illuminate\Support\Str::uuid(),
-        'subject_type' => 'System',
     ]);
 
     Livewire::test(ActivityFeed::class)

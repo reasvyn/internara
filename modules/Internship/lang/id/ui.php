@@ -7,9 +7,22 @@ return [
     'placement_subtitle' => 'Kelola daftar mitra industri dan kuota penempatan magang.',
     'add_placement' => 'Tambah Penempatan',
     'edit_placement' => 'Edit Penempatan',
+    'company_title' => 'Mitra Industri',
+    'company_subtitle' => 'Data master instansi dan perusahaan mitra.',
+    'add_company' => 'Tambah Mitra',
+    'edit_company' => 'Edit Mitra',
+    'search_company' => 'Cari mitra...',
+    'delete_company_confirm' =>
+        'Apakah Anda yakin ingin menghapus data instansi ini? Seluruh data penempatan terkait juga akan terhapus.',
     'search_placement' => 'Cari mitra industri...',
-    'company_name' => 'Nama Perusahaan',
+    'company_name' => 'Nama Instansi/Perusahaan',
     'company_address' => 'Alamat Perusahaan',
+    'business_field' => 'Bidang Usaha',
+    'leader_name' => 'Nama Pemimpin',
+    'company_phone' => 'Telp Perusahaan',
+    'company_fax' => 'Fax Perusahaan',
+    'company_email' => 'Email Perusahaan',
+    'select_company' => 'Pilih Instansi/Perusahaan',
     'program' => 'Program Magang',
     'capacity_quota' => 'Kuota Penempatan',
     'contact' => 'Kontak',
@@ -17,7 +30,8 @@ return [
     'contact_number' => 'No. Telepon',
     'quota' => 'Kuota (Siswa)',
     'select_program' => 'Pilih Program Magang',
-    'delete_placement_confirm' => 'Apakah Anda yakin ingin menghapus penempatan magang ini? Pendaftaran siswa pada mitra ini juga akan terhapus.',
+    'delete_placement_confirm' =>
+        'Apakah Anda yakin ingin menghapus penempatan magang ini? Pendaftaran siswa pada mitra ini juga akan terhapus.',
 
     // Internship Program
     'program_title' => 'Program Magang',
@@ -32,7 +46,8 @@ return [
     'semester_even' => 'Genap',
     'date_start' => 'Tanggal Mulai',
     'date_finish' => 'Tanggal Selesai',
-    'delete_program_confirm' => 'Apakah Anda yakin ingin menghapus program magang ini? Seluruh data penempatan dan pendaftaran terkait juga akan terhapus.',
+    'delete_program_confirm' =>
+        'Apakah Anda yakin ingin menghapus program magang ini? Seluruh data penempatan dan pendaftaran terkait juga akan terhapus.',
 
     // Registration
     'registration_title' => 'Pendaftaran Siswa',
@@ -68,16 +83,19 @@ return [
     'document' => 'Dokumen',
     'skill' => 'Kemampuan',
     'condition' => 'Syarat/Kondisi',
-    'delete_requirement_confirm' => 'Apakah Anda yakin ingin menghapus prasyarat ini? Seluruh unggahan siswa terkait juga akan terhapus.',
+    'delete_requirement_confirm' =>
+        'Apakah Anda yakin ingin menghapus prasyarat ini? Seluruh unggahan siswa terkait juga akan terhapus.',
 
     // Submissions
     'requirements' => 'Prasyarat & Berkas',
-    'requirements_subtitle' => 'Lengkapi seluruh persyaratan wajib untuk melanjutkan proses magang Anda.',
+    'requirements_subtitle' =>
+        'Lengkapi seluruh persyaratan wajib untuk melanjutkan proses magang Anda.',
     'upload_document' => 'Unggah Dokumen',
     'self_rating' => 'Skor Penilaian Diri',
     'i_agree_confirm' => 'Saya mengerti dan menyetujui persyaratan ini.',
     'submit_requirement' => 'Kirim',
     'requirement_submitted' => 'Persyaratan berhasil dikirim.',
     'view_current_document' => 'Lihat Dokumen Terkirim',
-    'all_mandatory_requirements_cleared' => 'Seluruh persyaratan wajib telah diverifikasi. Anda siap untuk penempatan!',
+    'all_mandatory_requirements_cleared' =>
+        'Seluruh persyaratan wajib telah diverifikasi. Anda siap untuk penempatan!',
 ];

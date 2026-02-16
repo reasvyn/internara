@@ -44,7 +44,7 @@ class SchoolManager extends Component
             session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
             true;
 
-        if (! $isSetupPhase) {
+        if (!$isSetupPhase) {
             $this->authorize('school.manage');
         }
 

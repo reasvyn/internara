@@ -23,7 +23,7 @@ test('it can get profile by user id', function () {
     $builder
         ->shouldReceive('firstOrCreate')
         ->with(['user_id' => 'user-uuid'])
-        ->andReturn(new Profile);
+        ->andReturn(new Profile());
 
     $result = $service->getByUserId('user-uuid');
     expect($result)->toBeInstanceOf(Profile::class);
@@ -36,10 +36,10 @@ test('it can sync student profileable', function () {
 
     $service = new ProfileService($profileModel, $studentService, $teacherService);
 
-    $profile = mock(Profile::class);
+    $profile = mock(Profile::class)->makePartial();
     $profile->profileable_id = null; // Important for trigger
 
-    $student = new \Illuminate\Database\Eloquent\Model; // Dummy
+    $student = mock(\Modules\Student\Models\Student::class);
     $studentService->shouldReceive('createWithDefault')->once()->andReturn($student);
 
     $relation = mock(\Illuminate\Database\Eloquent\Relations\MorphTo::class);

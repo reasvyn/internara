@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Modules\User\Livewire\Users\Form;
-use Modules\User\Livewire\Users\Index;
+use Modules\User\Livewire\Form;
+use Modules\User\Livewire\Index;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('users')

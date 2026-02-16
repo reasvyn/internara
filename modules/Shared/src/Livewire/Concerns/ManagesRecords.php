@@ -179,7 +179,7 @@ trait ManagesRecords
         $this->{$property} = $visible;
 
         $event = $visible ? 'open-modal' : 'close-modal';
-        $this->dispatch($this->getEventPrefix().':'.$event, $name, $params);
+        $this->dispatch($this->getEventPrefix() . ':' . $event, $name, $params);
     }
 
     /**
@@ -196,7 +196,7 @@ trait ManagesRecords
     protected function getListeners(): array
     {
         return [
-            $this->getEventPrefix().':destroy-record' => 'remove',
+            $this->getEventPrefix() . ':destroy-record' => 'remove',
         ];
     }
 }

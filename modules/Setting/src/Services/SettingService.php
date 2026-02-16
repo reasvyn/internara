@@ -6,26 +6,29 @@ namespace Modules\Setting\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Modules\Core\Services\Contracts\MetadataService;
+use Modules\Core\Metadata\Services\Contracts\MetadataService;
 use Modules\Setting\Models\Setting;
 use Modules\Shared\Services\EloquentQuery;
 
 /**
- * Class SettingService
- *
  * Provides a cached, centralized API for managing application-wide dynamic settings.
- * This service acts as the orchestration layer for database-backed configurations,
- * config-based fallbacks, and SSoT metadata resolution.
  */
 class SettingService extends EloquentQuery implements Contracts\SettingService
 {
     /**
-     * Cache key constants.
+     * Cache key prefix.
      */
     protected const CACHE_PREFIX = 'settings.';
 
     /**
-     * Create a new SettingService instance.
+     * Runtime overrides for settings.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $overrides = [];
+
+    /**
+     * Create a new service instance.
      */
     public function __construct(Setting $model, protected MetadataService $metadataService)
     {
@@ -53,6 +56,11 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             return $results;
         }
 
+        // 0. Check Runtime Overrides (Testing/Ephemeral Source)
+        if (array_key_exists($key, $this->overrides)) {
+            return $this->overrides[$key];
+        }
+
         // 1. Check App Info SSoT (Override/Primary Source)
         if ($infoValue = $this->resolveAppInfoValue($key)) {
             return $infoValue;
@@ -60,7 +68,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
 
         // 2. Check Database (Cached)
         $dbValue = $this->remember(
-            self::CACHE_PREFIX.$key,
+            self::CACHE_PREFIX . $key,
             now()->addDay(),
             function () use ($key) {
                 $setting = $this->model->find($key);
@@ -97,7 +105,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             'app_license' => 'license',
         ];
 
-        if (! isset($map[$key])) {
+        if (!isset($map[$key])) {
             return null;
         }
 
@@ -117,7 +125,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             foreach ($key as $k => $v) {
                 $currentValue = is_array($v) ? $v['value'] ?? null : $v;
                 $attributes = is_array($v) ? array_diff_key($v, ['value' => null]) : [];
-                if (! $this->setValue($k, $currentValue, $attributes)) {
+                if (!$this->setValue($k, $currentValue, $attributes)) {
                     $success = false;
                 }
             }
@@ -141,9 +149,9 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     public function group(string $name, bool $skipCache = false): Collection
     {
         return $this->remember(
-            self::CACHE_PREFIX.'group.'.$name,
+            self::CACHE_PREFIX . 'group.' . $name,
             now()->addDay(),
-            fn () => $this->model->group($name)->get(),
+            fn() => $this->model->group($name)->get(),
             $skipCache,
         );
     }
@@ -157,16 +165,32 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function override(array $overrides): void
+    {
+        $this->overrides = array_merge($this->overrides, $overrides);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clearOverrides(): void
+    {
+        $this->overrides = [];
+    }
+
+    /**
      * Clear the cache for a specific setting and its related groups.
      */
     protected function clearCache(string $key, ?string $group = null): void
     {
-        Cache::forget(self::CACHE_PREFIX.$key);
+        Cache::forget(self::CACHE_PREFIX . $key);
 
         if ($group) {
-            Cache::forget(self::CACHE_PREFIX.'group.'.$group);
+            Cache::forget(self::CACHE_PREFIX . 'group.' . $group);
         }
 
-        Cache::forget(self::CACHE_PREFIX.'all');
+        Cache::forget(self::CACHE_PREFIX . 'all');
     }
 }

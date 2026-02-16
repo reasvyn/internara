@@ -10,7 +10,6 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
@@ -49,7 +48,7 @@ test('it throws exception when checking in before the internship period starts',
     ]);
     $registration->setStatus('active');
 
-    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
+    expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
         AppException::class,
         'attendance::messages.outside_internship_period',
     );
@@ -66,7 +65,7 @@ test('it throws exception when checking in after the internship period ends', fu
     ]);
     $registration->setStatus('active');
 
-    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
+    expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
         AppException::class,
         'attendance::messages.outside_internship_period',
     );

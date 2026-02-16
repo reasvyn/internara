@@ -29,6 +29,8 @@ class JournalForm extends Form
 
     public string $reflection = '';
 
+    public string $notes = '';
+
     public array $competency_ids = [];
 
     /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile[] */
@@ -49,6 +51,7 @@ class JournalForm extends Form
         $this->basic_competence = $entry->basic_competence ?? '';
         $this->character_values = $entry->character_values ?? '';
         $this->reflection = $entry->reflection ?? '';
+        $this->notes = $entry->notes ?? '';
 
         // Load competencies from pivot table (using DB directly to avoid cross-module model dep)
         $this->competency_ids = \Illuminate\Support\Facades\DB::table('journal_competency')
@@ -69,6 +72,7 @@ class JournalForm extends Form
             'basic_competence' => ['nullable', 'string', 'max:255'],
             'character_values' => ['nullable', 'string', 'max:255'],
             'reflection' => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
             'competency_ids' => ['nullable', 'array'],
             'competency_ids.*' => ['exists:competencies,id'],
             'attachments.*' => ['nullable', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf,doc,docx'], // 5MB limit

@@ -37,7 +37,7 @@ class RecordNotFoundException extends AppException
     ) {
         $context = [];
 
-        if (! empty($record)) {
+        if (!empty($record)) {
             $context['record'] = $record;
         }
 

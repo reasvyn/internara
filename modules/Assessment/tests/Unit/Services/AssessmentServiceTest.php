@@ -14,8 +14,8 @@ test('it can query assessments', function () {
     $service = new AssessmentService(
         mock(ComplianceService::class),
         mock(RegistrationService::class),
+        $assessment,
     );
-    $service->setModel($assessment);
 
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $assessment->shouldReceive('newQuery')->andReturn($builder);

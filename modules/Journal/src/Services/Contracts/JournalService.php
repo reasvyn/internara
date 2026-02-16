@@ -17,36 +17,51 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface JournalService extends EloquentQuery
 {
     /**
-     * Submit a journal entry for review.
+     * Finalizes and submits a journal entry for supervisory evaluation.
+     *
+     * Transitions the log from a "Draft" to a "Pending" state, certifying
+     * that the student has completed the vocational tasks for the day.
      */
     public function submit(mixed $id): JournalEntry;
 
     /**
-     * Approve a journal entry by a supervisor.
+     * Validates and approves a journal entry by an authorized supervisor.
+     *
+     * Certifies the vocational evidence provided by the student, locking
+     * the record to ensure historical and academic integrity.
      */
     public function approve(mixed $id, ?string $reason = null): JournalEntry;
 
     /**
-     * Reject a journal entry with a reason.
+     * Rejects a journal entry, providing pedagogical feedback for revision.
+     *
+     * Requires a mandatory reason to guide the student in improving the
+     * quality of their vocational reflections or evidence.
      */
     public function reject(mixed $id, string $reason): JournalEntry;
 
     /**
-     * Attach media files to a journal entry.
+     * Securely attaches digital evidence (Media) to a specific journal entry.
+     *
+     * Facilitates the persistence of photos or documents that serve as
+     * technical proof of activity execution.
      *
      * @param array<\Livewire\Features\SupportFileUploads\TemporaryUploadedFile> $files
      */
     public function attachMedia(mixed $id, array $files): void;
 
     /**
-     * Get the total count of journal entries for a specific registration.
+     * Aggregates the volume of journal entries for a specific registration.
      */
     public function getJournalCount(string $registrationId, ?string $status = null): int;
 
     /**
-     * Get engagement statistics for a set of registrations.
+     * Calculates engagement telemetry for a specific set of student cohorts.
      *
-     * @param array<string> $registrationIds
+     * Synthesizes data points to determine the "responsiveness" of students
+     * in fulfilling their logging mandates.
+     *
+     * @param array<string> $registrationIds Authoritative UUIDs.
      *
      * @return array{submitted: int, approved: int, responsiveness: float}
      */

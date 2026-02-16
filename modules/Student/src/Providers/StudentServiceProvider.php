@@ -32,7 +32,7 @@ class StudentServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
-                'ui::components.menu-item' => [
+                'ui::menu-item' => [
                     'title' => __('Dashboard'),
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/student',
@@ -60,7 +60,8 @@ class StudentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Student\Services\Contracts\StudentService::class => \Modules\Student\Services\StudentService::class,
+            \Modules\Student\Services\Contracts\StudentService::class =>
+                \Modules\Student\Services\StudentService::class,
         ];
     }
 }

@@ -58,7 +58,7 @@ class JournalEntryManager extends Component
                     'latest_status' => 'active',
                 ]);
 
-                if (! $registration) {
+                if (!$registration) {
                     throw new \Modules\Exception\AppException(
                         userMessage: 'internship::messages.no_active_registration',
                         code: 404,
@@ -76,7 +76,7 @@ class JournalEntryManager extends Component
             $status = $asDraft ? 'draft' : 'submitted';
             $entry->setStatus($status, $asDraft ? 'Journal saved as draft.' : 'Journal submitted.');
 
-            if (! empty($this->form->attachments)) {
+            if (!empty($this->form->attachments)) {
                 $this->journalService->attachMedia($entry->id, $this->form->attachments);
             }
 

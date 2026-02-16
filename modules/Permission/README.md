@@ -25,7 +25,8 @@ enforce the **Policy Patterns** defined in the project conventions.
 - **`RoleService`**: Orchestrates the management of system roles.
     - _Features_: Role creation, module-based filtering, and permission synchronization.
     - _Contract_: `Modules\Permission\Services\Contracts\RoleService`.
-- **`PermissionService`**: Manages granular system permissions.
+- **`PermissionService`**: Manages granular system permissions mapped to stakeholder roles.
+    - _API_: `syncRoles(user, roles)`, `can(user, permission)`.
 - **`PermissionManager`**: A specialized facade/service for complex permission evaluation across
   modular boundaries.
 

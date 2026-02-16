@@ -17,31 +17,48 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface AttendanceService extends EloquentQuery
 {
     /**
-     * Record a check-in for the current student.
+     * Records the temporal start of a student's vocational daily shift.
      *
-     * @throws \Exception If already checked in.
+     * Verifies that the student is not already active and captures
+     * the authoritative timestamp for presence auditing.
+     *
+     * @throws \Modules\Exception\AppException If check-in collision detected.
      */
     public function checkIn(string $studentId): AttendanceLog;
 
     /**
-     * Record a check-out for the current student's today log.
+     * Records the temporal conclusion of a student's vocational daily shift.
      *
-     * @throws \Exception If no check-in record found or already checked out.
+     * Matches the request with the current day's check-in record,
+     * calculating the total duration of presence.
+     *
+     * @throws \Modules\Exception\AppException If no active session found.
      */
     public function checkOut(string $studentId): AttendanceLog;
 
     /**
-     * Get the attendance log for a student for a specific date.
+     * Manually persists an attendance record with administrative context.
+     *
+     * Used for corrective logging or recording non-standard presence
+     * (e.g., Sick leave, Institutional events).
+     */
+    public function recordAttendance(string $studentId, array $data): AttendanceLog;
+
+    /**
+     * Retrieves the authoritative presence record for the current date.
      */
     public function getTodayLog(string $studentId): ?AttendanceLog;
 
     /**
-     * Get attendance count for a registration.
+     * Aggregates attendance telemetry for a specific registration.
      */
     public function getAttendanceCount(string $registrationId, ?string $status = null): int;
 
     /**
-     * Create a new absence request.
+     * Initiates a request for authorized absence.
+     *
+     * This method orchestrates the documentation required to justify
+     * non-presence, satisfying institutional compliance rules.
      */
     public function createAbsenceRequest(array $data): \Modules\Attendance\Models\AbsenceRequest;
 }

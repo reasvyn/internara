@@ -23,7 +23,8 @@ class GuidanceServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Guidance\Models\Handbook::class => \Modules\Guidance\Policies\HandbookPolicy::class,
+        \Modules\Guidance\Models\Handbook::class =>
+            \Modules\Guidance\Policies\HandbookPolicy::class,
     ];
 
     /**
@@ -44,7 +45,7 @@ class GuidanceServiceProvider extends ServiceProvider
                 \Modules\Setting\Services\Contracts\SettingService::class,
             );
 
-            if (! $settingService->getValue('feature_guidance_enabled', true)) {
+            if (!$settingService->getValue('feature_guidance_enabled', true)) {
                 return [];
             }
         } catch (\Throwable $e) {
@@ -64,7 +65,7 @@ class GuidanceServiceProvider extends ServiceProvider
                 ],
             ],
             'sidebar.menu' => [
-                'ui::components.menu-item#guidance' => [
+                'ui::menu-item#guidance' => [
                     'title' => __('Manajemen Panduan'),
                     'icon' => 'tabler.books',
                     'link' => '/guidance/manage',
@@ -92,7 +93,8 @@ class GuidanceServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Guidance\Services\Contracts\HandbookService::class => \Modules\Guidance\Services\HandbookService::class,
+            \Modules\Guidance\Services\Contracts\HandbookService::class =>
+                \Modules\Guidance\Services\HandbookService::class,
         ];
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Attendance\Services;
 
+use Modules\Attendance\Enums\AttendanceStatus;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService as Contract;
 use Modules\Exception\AppException;
@@ -38,6 +39,11 @@ class AttendanceService extends EloquentQuery implements Contract
             unset($filters['date']);
         }
 
+        if (isset($filters['status'])) {
+            $query->currentStatus($filters['status']);
+            unset($filters['status']);
+        }
+
         if (isset($filters['date_from'])) {
             $query->where('date', '>=', $filters['date_from']);
             unset($filters['date_from']);
@@ -56,13 +62,24 @@ class AttendanceService extends EloquentQuery implements Contract
      */
     public function checkIn(string $studentId): AttendanceLog
     {
-        // Gating Invariant: Briefing/Guidance must be completed if enabled
+        return $this->recordAttendance($studentId, [
+            'date' => now()->format('Y-m-d'),
+            'status' => AttendanceStatus::PRESENT->value,
+            'check_in_at' => now(),
+        ]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function recordAttendance(string $studentId, array $data): AttendanceLog
+    {
         $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
         $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
-            ! $guidanceService->hasCompletedMandatory($studentId)
+            !$guidanceService->hasCompletedMandatory($studentId)
         ) {
             throw new AppException(
                 userMessage: 'guidance::messages.must_complete_guidance',
@@ -70,48 +87,41 @@ class AttendanceService extends EloquentQuery implements Contract
             );
         }
 
-        $today = now()->startOfDay();
-
-        // Check if there is an approved absence request for today
-        $hasApprovedAbsence = \Modules\Attendance\Models\AbsenceRequest::query()
-            ->where('student_id', $studentId)
-            ->whereDate('date', today())
-            ->currentStatus('approved')
-            ->exists();
-
-        if ($hasApprovedAbsence) {
-            throw new AppException(
-                userMessage: 'attendance::messages.cannot_check_in_with_approved_absence',
-                code: 422,
-            );
+        $date = $data['date'] ?? now()->format('Y-m-d');
+        if ($date instanceof \DateTimeInterface) {
+            $date = $date->format('Y-m-d');
         }
+        $status = $data['status'] ?? AttendanceStatus::PRESENT->value;
 
-        // Check if already checked in
-        if ($this->getTodayLog($studentId)) {
-            throw new AppException(
-                userMessage: 'attendance::messages.already_checked_in',
-                code: 422,
-            );
-        }
-
-        // Find active registration
         $registration = $this->registrationService->first([
             'student_id' => $studentId,
             'latest_status' => 'active',
         ]);
 
-        if (! $registration) {
+        if (!$registration) {
             throw new AppException(
                 userMessage: 'internship::messages.no_active_registration',
                 code: 404,
             );
         }
 
-        // Period Invariant: activities are restricted to assigned date range
-        $todayStr = now()->format('Y-m-d');
+        // Check for approved absence requests for this date
+        $hasApprovedAbsence = \Modules\Attendance\Models\AbsenceRequest::query()
+            ->where('student_id', $studentId)
+            ->whereDate('date', $date)
+            ->currentStatus('approved')
+            ->exists();
+
+        if ($hasApprovedAbsence) {
+            throw new AppException(
+                userMessage: 'attendance::messages.cannot_check_in_with_approved_absence',
+                code: 403,
+            );
+        }
+
         if (
-            ($registration->start_date && $todayStr < $registration->start_date->format('Y-m-d')) ||
-            ($registration->end_date && $todayStr > $registration->end_date->format('Y-m-d'))
+            ($registration->start_date && $date < $registration->start_date->format('Y-m-d')) ||
+            ($registration->end_date && $date > $registration->end_date->format('Y-m-d'))
         ) {
             throw new AppException(
                 userMessage: 'attendance::messages.outside_internship_period',
@@ -119,22 +129,36 @@ class AttendanceService extends EloquentQuery implements Contract
             );
         }
 
+        // 4. Persistence: Update existing or create new
         /** @var AttendanceLog $log */
-        $log = $this->create([
-            'student_id' => $studentId,
-            'registration_id' => $registration->id,
-            'date' => $today->format('Y-m-d'),
-            'check_in_at' => now(),
-        ]);
+        $log = $this->model->newQuery()->updateOrCreate(
+            ['student_id' => $studentId, 'date' => $date],
+            [
+                'registration_id' => $registration->id,
+                'academic_year' => $registration->academic_year,
+                'check_in_at' => $data['check_in_at'] ?? null,
+                'check_out_at' => $data['check_out_at'] ?? null,
+                'notes' => $data['notes'] ?? null,
+            ],
+        );
 
-        // Determine status (Late vs Present) based on settings
-        $lateThreshold = setting('attendance_late_threshold', '08:00');
-        [$hour, $minute] = explode(':', $lateThreshold);
+        // 5. Apply Status
+        $reason = $data['reason'] ?? 'Attendance recorded via flexible entry.';
+        if ($status === AttendanceStatus::PRESENT->value && !empty($data['check_in_at'])) {
+            $lateThreshold = setting('attendance_late_threshold', '08:00');
+            [$hour, $minute] = explode(':', $lateThreshold);
+            $startTime = \Illuminate\Support\Carbon::parse($date)->setTime(
+                (int) $hour,
+                (int) $minute,
+                0,
+            );
 
-        $startTime = now()->setTime((int) $hour, (int) $minute, 0);
-        $status = now()->greaterThan($startTime) ? 'late' : 'present';
+            if (\Illuminate\Support\Carbon::parse($data['check_in_at'])->greaterThan($startTime)) {
+                $reason .= ' (Late)';
+            }
+        }
 
-        $log->setStatus($status, 'Checked in at '.now()->format('H:i:s'));
+        $log->setStatus($status, $reason);
 
         return $log;
     }
@@ -146,17 +170,10 @@ class AttendanceService extends EloquentQuery implements Contract
     {
         $log = $this->getTodayLog($studentId);
 
-        if (! $log) {
+        if (!$log) {
             throw new AppException(
                 userMessage: 'attendance::messages.no_check_in_record',
                 code: 404,
-            );
-        }
-
-        if ($log->check_out_at) {
-            throw new AppException(
-                userMessage: 'attendance::messages.already_checked_out',
-                code: 422,
             );
         }
 

@@ -6,10 +6,10 @@ namespace Modules\Internship\Tests\Feature\Livewire;
 
 use Livewire\Livewire;
 use Modules\Internship\Livewire\PlacementManager;
+use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\User\Models\User;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 beforeEach(function () {
     $role = \Modules\Permission\Models\Role::create(['name' => 'staff']);
@@ -35,33 +35,36 @@ test('it can create a new placement', function () {
     $internship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
         ->factory()
         ->create();
+    $company = Company::factory()->create(['name' => 'Google']);
 
     Livewire::test(PlacementManager::class)
         ->set('form.internship_id', $internship->id)
-        ->set('form.company_name', 'Google')
+        ->set('form.company_id', $company->id)
         ->set('form.capacity_quota', 5)
         ->call('save')
         ->assertHasNoErrors()
         ->assertSet('formModal', false);
 
     $this->assertDatabaseHas('internship_placements', [
-        'company_name' => 'Google',
+        'company_id' => $company->id,
         'capacity_quota' => 5,
         'internship_id' => $internship->id,
     ]);
 });
 
 test('it can update an existing placement', function () {
-    $placement = InternshipPlacement::factory()->create(['company_name' => 'Old Company']);
+    $company = Company::factory()->create(['name' => 'Old Company']);
+    $newCompany = Company::factory()->create(['name' => 'New Company']);
+    $placement = InternshipPlacement::factory()->create(['company_id' => $company->id]);
 
     Livewire::test(PlacementManager::class)
         ->call('edit', $placement->id)
-        ->assertSet('form.company_name', 'Old Company')
-        ->set('form.company_name', 'New Company')
+        ->assertSet('form.company_id', $company->id)
+        ->set('form.company_id', $newCompany->id)
         ->call('save')
         ->assertHasNoErrors();
 
-    expect($placement->refresh()->company_name)->toBe('New Company');
+    expect($placement->refresh()->company_id)->toBe($newCompany->id);
 });
 
 test('it can delete a placement', function () {

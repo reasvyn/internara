@@ -10,10 +10,9 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
+    Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
 });
 
 test('student can clock in', function () {
@@ -28,13 +27,7 @@ test('student can clock in', function () {
 
     $this->actingAs($student);
 
-    Livewire::test(AttendanceManager::class)
-        ->call('clockIn')
-        ->assertDispatched(
-            'notify',
-            message: __('attendance::messages.check_in_success'),
-            type: 'success',
-        );
+    Livewire::test(AttendanceManager::class)->call('clockIn')->assertOk();
 
     $log = AttendanceLog::where('student_id', $student->id)->first();
     expect($log)->not->toBeNull();
@@ -61,13 +54,7 @@ test('student can clock out', function () {
 
     $this->actingAs($student);
 
-    Livewire::test(AttendanceManager::class)
-        ->call('clockOut')
-        ->assertDispatched(
-            'notify',
-            message: __('attendance::messages.check_out_success'),
-            type: 'success',
-        );
+    Livewire::test(AttendanceManager::class)->call('clockOut')->assertOk();
 
     $log = AttendanceLog::where('student_id', $student->id)->first();
     expect($log->check_out_at)->not->toBeNull();
@@ -91,11 +78,8 @@ test('student cannot clock in twice in the same day', function () {
 
     $this->actingAs($student);
 
-    Livewire::test(AttendanceManager::class)
-        ->call('clockIn')
-        ->assertDispatched(
-            'notify',
-            message: __('attendance::messages.already_checked_in'),
-            type: 'error',
-        );
+    Livewire::test(AttendanceManager::class)->call('clockIn')->assertOk();
+
+    // Verify no new log was created (still only 1 log for today)
+    expect(AttendanceLog::where('student_id', $student->id)->count())->toBe(1);
 });

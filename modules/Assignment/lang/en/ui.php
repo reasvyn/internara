@@ -13,4 +13,11 @@ return [
     'due_date' => 'Due Date',
     'assignment_type' => 'Assignment Type',
     'delete_confirm' => 'Are you sure you want to delete this assignment?',
+    'success_created' => 'Assignment created successfully.',
+    'success_updated' => 'Assignment updated successfully.',
+    'success_deleted' => 'Assignment deleted successfully.',
+    'success_submitted' => 'Assignment submitted successfully.',
+    'type_created' => 'Assignment type created successfully.',
+    'type_updated' => 'Assignment type updated successfully.',
+    'type_deleted' => 'Assignment type deleted successfully.',
 ];

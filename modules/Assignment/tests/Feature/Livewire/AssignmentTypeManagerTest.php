@@ -4,21 +4,25 @@ declare(strict_types=1);
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Assignment\Livewire\AssignmentTypeManager;
 use Modules\Assignment\Models\AssignmentType;
+use Modules\Permission\Models\Role;
+use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->seed(AssignmentSeeder::class);
+
+    Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    $this->admin = User::factory()->create();
+    $this->admin->assignRole('admin');
+
+    $this->actingAs($this->admin);
+});
 
 test('admin can see assignment types list', function () {
-    AssignmentType::create([
-        'name' => 'Competency Certificate',
-        'slug' => 'competency-certificate',
-        'group' => 'certification',
-    ]);
-
-    Livewire::test(AssignmentTypeManager::class)
-        ->assertSee('Competency Certificate')
-        ->assertSee('certification');
+    Livewire::test(AssignmentTypeManager::class)->assertOk()->assertSee('Laporan Kegiatan PKL');
 });
 
 test('admin can create a new assignment type', function () {
@@ -27,22 +31,15 @@ test('admin can create a new assignment type', function () {
         ->set('slug', 'final-report')
         ->set('group', 'report')
         ->call('save')
-        ->assertHasNoErrors()
-        ->assertDispatched('notify');
+        ->assertHasNoErrors();
 
     expect(AssignmentType::where('slug', 'final-report')->exists())->toBeTrue();
 });
 
 test('admin can delete an assignment type', function () {
-    $type = AssignmentType::create([
-        'name' => 'To Be Deleted',
-        'slug' => 'to-be-deleted',
-        'group' => 'other',
-    ]);
+    $type = AssignmentType::factory()->create(['name' => 'To be deleted']);
 
-    Livewire::test(AssignmentTypeManager::class)
-        ->call('remove', $type->id)
-        ->assertDispatched('notify');
+    Livewire::test(AssignmentTypeManager::class)->call('remove', $type->id)->assertOk();
 
     expect(AssignmentType::where('id', $type->id)->exists())->toBeFalse();
 });

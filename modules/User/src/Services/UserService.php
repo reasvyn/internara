@@ -68,10 +68,10 @@ class UserService extends EloquentQuery implements Contract
         // Initialize Profile
         $profile = $this->profileService->getByUserId($user->id);
         if ($roles !== null) {
-            $this->profileService->syncProfileable($profile, $roles);
+            $this->profileService->syncProfileable($profile, $roles, $profileData);
         }
 
-        if (! empty($profileData)) {
+        if (!empty($profileData)) {
             $this->profileService->update($profile->id, $profileData);
         }
 
@@ -115,7 +115,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
@@ -144,7 +144,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
@@ -170,10 +170,10 @@ class UserService extends EloquentQuery implements Contract
         $profile = $this->profileService->getByUserId($updatedUser->id);
         if ($roles !== null) {
             $updatedUser->syncRoles($roles);
-            $this->profileService->syncProfileable($profile, Arr::wrap($roles));
+            $this->profileService->syncProfileable($profile, Arr::wrap($roles), $profileData);
         }
 
-        if (! empty($profileData)) {
+        if (!empty($profileData)) {
             $this->profileService->update($profile->id, $profileData);
         }
 
@@ -191,7 +191,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
@@ -219,7 +219,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($userId);
 
-        if (! $user) {
+        if (!$user) {
             return false;
         }
 

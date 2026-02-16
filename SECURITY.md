@@ -24,6 +24,9 @@ Our engineering process incorporates the following protections as mandated by th
 - **UUID Identity**: All entities utilize UUID v4 to prevent ID enumeration and data scraping.
 - **Authorization Baselines**: Every domain resource is protected by mandatory **Policies**
   enforcing role-based access control (RBAC).
+- **Setup Access Security**: The application installation process is protected by a mandatory
+  security gate (`RequireSetupAccess` middleware) that utilizes a one-time `setup_token` and
+  disables all setup routes once the application is marked as installed (404-by-default).
 
 ### 2. Data Isolation & Privacy
 

@@ -54,16 +54,17 @@ class JournalServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Journal\Services\Contracts\JournalService::class => \Modules\Journal\Services\JournalService::class,
+            \Modules\Journal\Services\Contracts\JournalService::class =>
+                \Modules\Journal\Services\JournalService::class,
         ];
     }
 
     protected function viewSlots(): array
     {
         return [
-            'navbar.items' => 'journal::components.nav-link',
+            'navbar.items' => 'journal::nav-link',
             'student.dashboard.quick-actions' => [
-                'ui::components.button' => [
+                'ui::button' => [
                     'label' => __('Jurnal Harian'),
                     'icon' => 'tabler.book',
                     'link' => '/journal',

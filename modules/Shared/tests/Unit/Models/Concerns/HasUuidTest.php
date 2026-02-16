@@ -18,26 +18,31 @@ class UuidTestModel extends Model
 
     protected $table = 'uuid_test_models';
 
-    protected $fillable = ['name'];
+    protected $guarded = [];
 }
 
-beforeEach(function () {
-    Schema::create('uuid_test_models', function (Blueprint $table) {
-        $table->uuid('id')->primary();
-        $table->string('name');
-        $table->timestamps();
+describe('HasUuid Trait', function () {
+    beforeEach(function () {
+        Schema::create('uuid_test_models', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name')->nullable();
+            $table->timestamps();
+        });
     });
-});
 
-afterEach(function () {
-    Schema::dropIfExists('uuid_test_models');
-});
+    test('it fulfills [SYRS-NF-504] by generating a valid uuid v4 on creation', function () {
+        $model = UuidTestModel::create();
 
-test('HasUuid trait generates uuid on creation', function () {
-    $model = UuidTestModel::create(['name' => 'Test']);
+        expect($model->id)
+            ->not->toBeNull()
+            ->and(\Illuminate\Support\Str::isUuid($model->id))
+            ->toBeTrue();
+    });
 
-    expect($model->id)
-        ->not->toBeNull()
-        ->and(strlen($model->id))
-        ->toBe(36);
+    test('it does not overwrite existing id if provided', function () {
+        $customId = \Illuminate\Support\Str::uuid()->toString();
+        $model = UuidTestModel::create(['id' => $customId]);
+
+        expect($model->id)->toBe($customId);
+    });
 });

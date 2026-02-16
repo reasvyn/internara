@@ -19,25 +19,27 @@ The `Journal` module manages the daily activity tracking (Logbook) for students.
 
 ### 1. Daily Logbook
 
-- **Guidance Gating:** Integration with the `Guidance` module to ensure mandatory briefings are
+- **Comprehensive Data**: Records day/date, work topics, detailed activity descriptions, basic
+  competencies, character values, and additional field notes.
+- **Guidance Gating**: Integration with the `Guidance` module to ensure mandatory briefings are
   completed before logging activities.
-- **Competency Tagging:** Students can tag specific skills/competencies from their department
+- **Competency Tagging**: Students can tag specific skills/competencies from their department
   rubric.
-- **Submission Windows:** Enforces timely logging via dynamic windows managed in system settings.
-- **Attachments:** Secure proof of work (Photos, Documents).
-- **i18n:** All log labels and status indicators are localized.
-- **Identity:** All journal entries use **UUIDs**.
+- **Submission Windows**: Enforces timely logging via dynamic windows managed in system settings.
+- **Attachments**: Secure proof of work (Photos, Documents).
+- **i18n**: All log labels and status indicators are localized.
+- **Identity**: All journal entries use **UUIDs**.
 
-### 2. Supervision Workflow
+### 2. Services
 
-- **Approval Logic:** Verified entries are locked to maintain historical integrity.
-- **Dual Verification:** Supports feedback from both academic and industry supervisors.
-- **Academic Scoping:** Automatically scoped to the active cycle via `HasAcademicYear`.
+- **JournalService**: Orchestrates the capture and validation of daily activities.
+    - _API_: `submit(studentId, data)`, `acknowledge(journalId, supervisorId)`.
+    - _Contract_: `Modules\Journal\Services\Contracts\JournalService`.
 
 ### 3. Mobile-First Experience
 
-- **Daily Logging:** Optimized interface for students to record logs on-site.
-- **Quick Review:** Streamlined workflow for supervisors to approve logs via mobile devices.
+- **Daily Logging**: Optimized interface for students to record logs on-site.
+- **Quick Review**: Streamlined workflow for supervisors to approve logs via mobile devices.
 
 ---
 

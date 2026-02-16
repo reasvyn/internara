@@ -18,6 +18,20 @@ class SupportServiceProvider extends ServiceProvider
     protected string $nameLower = 'support';
 
     /**
+     * Register commands for the module.
+     */
+    protected function registerCommands(): void
+    {
+        $this->commands([
+            \Modules\Support\Testing\Console\Commands\AppTestCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeClassCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand::class,
+            \Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand::class,
+        ]);
+    }
+
+    /**
      * Boot the application events.
      */
     public function boot(): void
@@ -48,7 +62,8 @@ class SupportServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Support\Services\Contracts\OnboardingService::class => \Modules\Support\Services\OnboardingService::class,
+            \Modules\Support\Onboarding\Services\Contracts\OnboardingService::class =>
+                \Modules\Support\Onboarding\Services\OnboardingService::class,
         ];
     }
 }

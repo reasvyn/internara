@@ -49,18 +49,19 @@ class ProfileService extends EloquentQuery implements Contract
     /**
      * Synchronize the profileable model based on user roles.
      */
-    public function syncProfileable(Profile $profile, array $roles): Profile
+    public function syncProfileable(Profile $profile, array $roles, array $extraData = []): Profile
     {
         if ($profile->profileable_id) {
+            // Optional: update extra data if needed even if exists
             return $profile;
         }
 
         if (in_array(Role::STUDENT->value, $roles)) {
-            $student = $this->studentService->createWithDefault();
+            $student = $this->studentService->createWithDefault($extraData);
             $profile->profileable()->associate($student);
             $profile->save();
         } elseif (in_array(Role::TEACHER->value, $roles)) {
-            $teacher = $this->teacherService->createWithDefault();
+            $teacher = $this->teacherService->createWithDefault($extraData);
             $profile->profileable()->associate($teacher);
             $profile->save();
         }

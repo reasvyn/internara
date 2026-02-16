@@ -30,7 +30,12 @@ class InternshipClassReportProvider implements ExportableDataProvider
      */
     public function getReportData(array $filters = []): array
     {
-        $query = InternshipRegistration::with(['user', 'placement', 'internship']);
+        $query = InternshipRegistration::with([
+            'user',
+            'placement.company',
+            'internship',
+            'mentor',
+        ]);
 
         if (isset($filters['academic_year'])) {
             $query->where('academic_year', $filters['academic_year']);
@@ -39,13 +44,14 @@ class InternshipClassReportProvider implements ExportableDataProvider
         $registrations = $query->get();
 
         return [
-            'headers' => ['Student Name', 'Program', 'Placement', 'Status'],
+            'headers' => ['Student Name', 'Program', 'Placement', 'Mentor', 'Status'],
             'rows' => $registrations
                 ->map(
-                    fn ($reg) => [
+                    fn($reg) => [
                         'Student Name' => $reg->user->name,
                         'Program' => $reg->internship->title,
-                        'Placement' => $reg->placement?->company_name ?? 'Not Assigned',
+                        'Placement' => $reg->placement?->company?->name ?? 'Not Assigned',
+                        'Mentor' => $reg->mentor?->name ?? 'Not Assigned',
                         'Status' => $reg->getStatusLabel(),
                     ],
                 )

@@ -25,15 +25,7 @@ class InternshipPlacement extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'company_name',
-        'company_address',
-        'contact_person',
-        'contact_number',
-        'capacity_quota',
-        'internship_id',
-        'mentor_id',
-    ];
+    protected $fillable = ['company_id', 'capacity_quota', 'internship_id', 'mentor_id'];
 
     /**
      * The name of the activity log for this model.
@@ -46,6 +38,14 @@ class InternshipPlacement extends Model
     protected static function newFactory(): InternshipPlacementFactory
     {
         return InternshipPlacementFactory::new();
+    }
+
+    /**
+     * Get the company (master data) for this placement.
+     */
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 
     /**

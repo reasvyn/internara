@@ -45,11 +45,11 @@ test('it checks if app is installed', function () {
 test('it checks if step is completed', function () {
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('setup_step_welcome', false)
+        ->with('setup_step_welcome', false, true)
         ->andReturn(true);
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('setup_step_non_existent_step', false)
+        ->with('setup_step_non_existent_step', false, true)
         ->andReturn(false);
 
     expect($this->service->isStepCompleted('welcome'))
@@ -82,14 +82,14 @@ test('it requires setup access', function () {
     // With prev step, check step completion
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('setup_step_welcome', false)
+        ->with('setup_step_welcome', false, true)
         ->andReturn(true);
     expect($this->service->requireSetupAccess('welcome'))->toBeTrue();
 
     // This should throw AppException because step is NOT completed
     $this->settingService
         ->shouldReceive('getValue')
-        ->with('setup_step_fail', false)
+        ->with('setup_step_fail', false, true)
         ->andReturn(false);
     $this->service->requireSetupAccess('fail');
 })->throws(AppException::class);

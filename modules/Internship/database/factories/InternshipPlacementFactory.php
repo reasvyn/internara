@@ -22,11 +22,8 @@ class InternshipPlacementFactory extends Factory
     {
         return [
             'internship_id' => app(InternshipService::class)->factory(),
-            'company_name' => $this->faker->company,
-            'company_address' => $this->faker->address,
-            'contact_person' => $this->faker->name,
-            'contact_number' => $this->faker->phoneNumber,
-            'capacity_quota' => 1,
+            'company_id' => \Modules\Internship\Models\Company::factory(),
+            'capacity_quota' => fake()->numberBetween(1, 10),
         ];
     }
 }

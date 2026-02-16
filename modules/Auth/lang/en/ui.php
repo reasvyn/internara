@@ -48,7 +48,8 @@ return [
             'password_confirmation' => 'Confirm Password',
             'password_confirmation_placeholder' => 'Repeat your password',
             'submit' => 'Register Now',
-            'policy_agreement' => 'By clicking **Register Now**, you automatically agree to our [Privacy Policy](:url).',
+            'policy_agreement' =>
+                'By clicking **Register Now**, you automatically agree to our [Privacy Policy](:url).',
             'has_account' => 'Already have an account?',
             'login_now' => 'Sign In',
         ],

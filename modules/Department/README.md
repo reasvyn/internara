@@ -25,6 +25,7 @@ As a **Core Domain Module**, the `Department` module provides structural metadat
 - **`DepartmentService`**: Orchestrates the lifecycle of department records.
     - _Features_: Standardized CRUD operations and automated school association management.
     - _Contract_: `Modules\Department\Services\Contracts\DepartmentService`.
+    - _API_: `syncWithSchool(schoolId, departments)`, `getStats(departmentId)`.
 
 ### 2.2 Persistence Layer
 

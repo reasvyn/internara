@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Modules\Schedule\Enums;
 
 /**
- * Enum ScheduleType
- *
  * Defines the authoritative types of institutional schedule milestones.
  */
 enum ScheduleType: string

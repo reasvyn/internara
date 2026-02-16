@@ -35,7 +35,7 @@ class PiiMaskingProcessor implements ProcessorInterface
     {
         $context = $record->context;
 
-        if (! empty($context)) {
+        if (!empty($context)) {
             $record = $record->with(context: $this->maskArray($context));
         }
 
@@ -63,7 +63,13 @@ class PiiMaskingProcessor implements ProcessorInterface
      */
     protected function maskValue(string $key, string $value): string
     {
-        if (str_contains(strtolower($key), 'email')) {
+        $keyLower = strtolower($key);
+
+        if (str_contains($keyLower, 'password')) {
+            return str_repeat('*', 9);
+        }
+
+        if (str_contains($keyLower, 'email')) {
             return Masker::email($value);
         }
 

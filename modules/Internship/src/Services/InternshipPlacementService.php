@@ -8,14 +8,20 @@ use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Services\Contracts\InternshipPlacementService as Contract;
 use Modules\Shared\Services\EloquentQuery;
 
+/**
+ * Implements the business logic for managing internship placements.
+ */
 class InternshipPlacementService extends EloquentQuery implements Contract
 {
+    /**
+     * Create a new service instance.
+     */
     public function __construct(InternshipPlacement $model)
     {
         $this->setModel($model);
-        $this->setBaseQuery($model->newQuery()->with('internship'));
-        $this->setSearchable(['company_name', 'contact_person']);
-        $this->setSortable(['company_name', 'capacity_quota', 'created_at']);
+        $this->setBaseQuery($model->newQuery()->with(['internship', 'company']));
+        $this->setSearchable(['company.name']);
+        $this->setSortable(['capacity_quota', 'created_at']);
     }
 
     /**
@@ -25,7 +31,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
     {
         $placement = $this->find($placementId);
 
-        if (! $placement) {
+        if (!$placement) {
             return 0;
         }
 

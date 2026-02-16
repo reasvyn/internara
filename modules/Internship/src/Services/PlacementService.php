@@ -33,7 +33,7 @@ class PlacementService extends EloquentQuery implements Contract
     {
         $registration = $this->find($registrationId);
 
-        if (! $registration) {
+        if (!$registration) {
             return false;
         }
 
@@ -50,7 +50,7 @@ class PlacementService extends EloquentQuery implements Contract
             ->where('academic_year', $academicYear)
             ->whereNull('placement_id')
             ->get()
-            ->filter(fn (InternshipRegistration $reg) => $reg->hasClearedAllMandatoryRequirements());
+            ->filter(fn(InternshipRegistration $reg) => $reg->hasClearedAllMandatoryRequirements());
     }
 
     /**
@@ -80,11 +80,11 @@ class PlacementService extends EloquentQuery implements Contract
         return DB::transaction(function () use ($registrationId, $placementId, $reason) {
             $registration = $this->find($registrationId);
 
-            if (! $registration || ! $this->isEligibleForPlacement($registrationId)) {
+            if (!$registration || !$this->isEligibleForPlacement($registrationId)) {
                 return false;
             }
 
-            if (! $this->placementService->hasAvailableSlots($placementId)) {
+            if (!$this->placementService->hasAvailableSlots($placementId)) {
                 return false;
             }
 
@@ -106,11 +106,11 @@ class PlacementService extends EloquentQuery implements Contract
         return DB::transaction(function () use ($registrationId, $newPlacementId, $reason) {
             $registration = $this->find($registrationId);
 
-            if (! $registration || ! $registration->placement_id) {
+            if (!$registration || !$registration->placement_id) {
                 return false;
             }
 
-            if (! $this->placementService->hasAvailableSlots($newPlacementId)) {
+            if (!$this->placementService->hasAvailableSlots($newPlacementId)) {
                 return false;
             }
 

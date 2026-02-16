@@ -7,8 +7,8 @@ namespace Modules\Attendance\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
 use Modules\Log\Concerns\InteractsWithActivityLog;
-use Modules\Shared\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatus;
 
@@ -37,6 +37,7 @@ class AttendanceLog extends Model
         'date',
         'check_in_at',
         'check_out_at',
+        'notes',
     ];
 
     /**

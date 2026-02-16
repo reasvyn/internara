@@ -9,7 +9,8 @@ return [
         'my_program' => 'Program Magang Saya',
         'requirements_incomplete' => [
             'title' => 'Persyaratan Belum Lengkap',
-            'description' => 'Mohon lengkapi persyaratan administrasi di bawah ini untuk melanjutkan proses magang.',
+            'description' =>
+                'Mohon lengkapi persyaratan administrasi di bawah ini untuk melanjutkan proses magang.',
         ],
         'waiting_placement' => [
             'title' => 'Menunggu Penempatan',

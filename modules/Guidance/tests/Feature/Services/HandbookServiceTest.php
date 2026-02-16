@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Guidance\Models\Handbook;
 use Modules\Guidance\Services\Contracts\HandbookService;
 
-uses(RefreshDatabase::class);
 
 test('it can record student acknowledgement', function () {
     $service = app(HandbookService::class);

@@ -47,7 +47,7 @@ class AppInstallCommand extends Command
         $this->newLine();
         $this->components->info('Internara System Installation');
 
-        if (! $this->confirmInstallation()) {
+        if (!$this->confirmInstallation()) {
             return self::FAILURE;
         }
 
@@ -55,7 +55,7 @@ class AppInstallCommand extends Command
 
         // 1. Environment Initialization
         $this->components->task('Ensuring .env file existence', function () use (&$success) {
-            if (! $this->installerService->ensureEnvFileExists()) {
+            if (!$this->installerService->ensureEnvFileExists()) {
                 $success = false;
 
                 return false;
@@ -64,7 +64,7 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        if (! $success) {
+        if (!$success) {
             return self::FAILURE;
         }
 
@@ -75,7 +75,7 @@ class AppInstallCommand extends Command
 
             // Check Requirements & Permissions
             foreach (['requirements', 'permissions'] as $category) {
-                if (! isset($audit[$category]) || ! is_array($audit[$category])) {
+                if (!isset($audit[$category]) || !is_array($audit[$category])) {
                     continue;
                 }
 
@@ -94,10 +94,10 @@ class AppInstallCommand extends Command
             }
 
             // Check Database specifically
-            if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
+            if (isset($audit['database']) && !($audit['database']['connection'] ?? false)) {
                 $this->newLine();
                 $this->components->error(
-                    'Database error: '.
+                    'Database error: ' .
                         (is_array($audit['database']['message'])
                             ? json_encode($audit['database']['message'])
                             : (string) ($audit['database']['message'] ?? 'Unknown error')),
@@ -114,13 +114,13 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        if (! $success) {
+        if (!$success) {
             return self::FAILURE;
         }
 
         // 3. Application Key Generation
         $this->components->task('Generating application key', function () use (&$success) {
-            if (! $this->installerService->generateAppKey()) {
+            if (!$this->installerService->generateAppKey()) {
                 $success = false;
 
                 return false;
@@ -129,13 +129,13 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        if (! $success) {
+        if (!$success) {
             return self::FAILURE;
         }
 
         // 4. Database Migrations
         $this->components->task('Initializing database schema', function () use (&$success) {
-            if (! $this->installerService->runMigrations()) {
+            if (!$this->installerService->runMigrations()) {
                 $success = false;
 
                 return false;
@@ -144,13 +144,13 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        if (! $success) {
+        if (!$success) {
             return self::FAILURE;
         }
 
         // 5. Core & Shared Seeding
         $this->components->task('Seeding foundational data', function () use (&$success) {
-            if (! $this->installerService->runSeeders()) {
+            if (!$this->installerService->runSeeders()) {
                 $success = false;
 
                 return false;
@@ -159,13 +159,13 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        if (! $success) {
+        if (!$success) {
             return self::FAILURE;
         }
 
         // 6. Storage Symlinking
         $this->components->task('Creating storage symbolic link', function () use (&$success) {
-            if (! $this->installerService->createStorageSymlink()) {
+            if (!$this->installerService->createStorageSymlink()) {
                 $success = false;
 
                 return false;
@@ -174,7 +174,7 @@ class AppInstallCommand extends Command
             return true;
         });
 
-        if (! $success) {
+        if (!$success) {
             return self::FAILURE;
         }
 

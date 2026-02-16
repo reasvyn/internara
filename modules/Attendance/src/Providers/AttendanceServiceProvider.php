@@ -23,7 +23,8 @@ class AttendanceServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Attendance\Models\AttendanceLog::class => \Modules\Attendance\Policies\AttendancePolicy::class,
+        \Modules\Attendance\Models\AttendanceLog::class =>
+            \Modules\Attendance\Policies\AttendancePolicy::class,
     ];
 
     /**
@@ -37,10 +38,10 @@ class AttendanceServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
-            'navbar.items' => 'attendance::components.nav-link',
+            'navbar.items' => 'attendance::nav-link',
             'student.dashboard.sidebar' => 'livewire:attendance::attendance-manager',
             'student.dashboard.quick-actions' => [
-                'ui::components.button' => [
+                'ui::button' => [
                     'label' => __('Log Presensi'),
                     'icon' => 'tabler.calendar',
                     'link' => '/attendance',
@@ -68,7 +69,8 @@ class AttendanceServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Attendance\Services\Contracts\AttendanceService::class => \Modules\Attendance\Services\AttendanceService::class,
+            \Modules\Attendance\Services\Contracts\AttendanceService::class =>
+                \Modules\Attendance\Services\AttendanceService::class,
         ];
     }
 }

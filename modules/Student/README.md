@@ -20,3 +20,10 @@ providing a personalized interface for managing their internship lifecycle.
 
 - **Overview:** Displays active internship program status.
 - **Quick Actions:** Shortcuts for daily tasks like attendance and journal logging.
+
+### 2. Identity Management
+
+- **Universal Identifiers:** Support for National Identifier and Internal Registration Number.
+- **Official Documentation:** Integration for 3x4 Passport Photo with automated top-center cropping
+  for systemic avatar fallbacks.
+- **Academic Scoping:** Integrated management of Class/Group assignments.

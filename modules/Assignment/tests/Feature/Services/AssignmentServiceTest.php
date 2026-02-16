@@ -12,7 +12,6 @@ use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);

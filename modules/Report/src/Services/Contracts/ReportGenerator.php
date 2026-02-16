@@ -5,12 +5,21 @@ declare(strict_types=1);
 namespace Modules\Report\Services\Contracts;
 
 /**
- * Report Generator Contract
+ * Defines the contract for orchestrating official document generation.
+ *
+ * This service manages the transition from domain-specific data providers
+ * into authoritative institutional records (PDF/Excel), ensuring that
+ * large-scale exports are handled asynchronously to preserve system
+ * responsiveness.
  */
 interface ReportGenerator
 {
     /**
-     * Dispatch a background job to generate a report.
+     * Dispatches an asynchronous generation request for a specific report.
+     *
+     * Orchestrates background workers to synthesize the document,
+     * satisfying the institutional mandate for high-volume data delivery
+     * without blocking the presentation layer.
      */
     public function queue(
         string $providerIdentifier,
@@ -19,7 +28,10 @@ interface ReportGenerator
     ): string;
 
     /**
-     * Generate a report immediately (Synchronous).
+     * Executes a synchronous document synthesis for immediate delivery.
+     *
+     * Note: Use only for low-complexity reports. High-volume data sets
+     * MUST utilize the `queue()` method to ensure systemic stability.
      */
     public function generate(
         string $providerIdentifier,
@@ -28,7 +40,7 @@ interface ReportGenerator
     ): string;
 
     /**
-     * Get all registered report providers.
+     * Retrieves the registry of authorized institutional data providers.
      *
      * @return \Illuminate\Support\Collection<string, \Modules\Shared\Contracts\ExportableDataProvider>
      */

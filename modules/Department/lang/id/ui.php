@@ -11,5 +11,6 @@ return [
     'name' => 'Nama Jurusan',
     'description' => 'Deskripsi',
     'created_at' => 'Dibuat Pada',
-    'delete_confirm' => 'Apakah Anda yakin ingin menghapus jurusan ini? Tindakan ini tidak dapat dibatalkan.',
+    'delete_confirm' =>
+        'Apakah Anda yakin ingin menghapus jurusan ini? Tindakan ini tidak dapat dibatalkan.',
 ];

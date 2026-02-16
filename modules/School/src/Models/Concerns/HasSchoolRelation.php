@@ -17,12 +17,12 @@ trait HasSchoolRelation
         $schoolService = app()->make(SchoolServiceContract::class);
 
         // Always use first school id record if it is single record
-        if (config('school.single_record', true) && ! $schoolId) {
+        if (config('school.single_record', true) && !$schoolId) {
             $schoolId = $schoolService->first(['id'])?->id;
         }
 
         // Skip if $schoolId is empty
-        if (! $schoolId || $this->school_id === $schoolId) {
+        if (!$schoolId || $this->school_id === $schoolId) {
             return true;
         }
 

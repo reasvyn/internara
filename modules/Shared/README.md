@@ -1,98 +1,63 @@
 # Shared Module
 
-The `Shared` module serves as the technical foundation of the Internara modular monolith. It
-provides business-agnostic infrastructure, technical utilities, and standardized behavioral concerns
-that are utilized across all domain modules.
+The `Shared` module serves as the project-agnostic engine room of Internara. It encapsulates
+universal software engineering patterns and technical utilities that are strictly decoupled from any
+business domain.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **Governance Mandate:** This module implements the foundational infrastructure required to satisfy
+> **[SYRS-NF-601]** (Isolation). All implementation must adhere to the
+> **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
 ## 1. Architectural Philosophy
 
-- **Business Agnosticism:** Contains zero business logic specific to internships, schools, or users.
-- **Zero Coupling:** Strictly prohibited from depending on any other module. It sits at the bottom
-  of the dependency graph.
-- **Protocol Standardization:** Enforces systemic consistency (e.g., UUIDs, Status management)
-  through shared contracts and concerns.
+- **Business Agnosticism**: Contains zero business logic specific to internships or vocational
+  education.
+- **Dependency Invariant**: Strictly prohibited from depending on any other module. It sits at the
+  absolute bottom of the dependency graph.
+- **Portability Invariant**: Components must remain reusable in any Laravel-based modular system
+  without modification.
 
 ---
 
-## 2. Layered Internal Structure
+## 2. Core Components
 
-Every component within the `Shared` module is organized according to its architectural layer.
+### 2.1 Support Layer (Technical Utilities)
 
-### 2.1 Service Layer (Business-Agnostic Logic)
+Resides in `src/Support/`. All classes are declared as **`final`**.
 
-- **`EloquentQuery`**: An abstract base service providing a standardized implementation for
-  model-based CRUD operations, filtering, sorting, and caching.
-    - _Features_: Built-in `withTrashed` support, automated filter application, and generic type
-      safety.
+- **`Formatter`**: Normalizes paths, namespaces, and provides Indonesian-aware formatting for
+  currency, dates, and phone numbers.
+- **`Masker`**: Redacts sensitive data (PII) from logs and UI views.
+- **`Asset`**: Orchestrates absolute URL resolution for modular static assets.
+
+### 2.2 Service Layer (Standardized CRUD)
+
+- **`EloquentQuery`**: An abstract base implementation for standardized model-based queries,
+  filtering, and persistence.
     - _Contract_: `Modules\Shared\Services\Contracts\EloquentQuery`.
 
-### 2.2 Support Layer (Technical Utilities)
+### 2.3 Persistence Layer (Foundation Concerns)
 
-Resides in `src/Support/`. Contains stateless tools for technical operations.
+- **`HasUuid`**: Implements mandatory **UUID v4** identity generation.
 
-- **`Formatter`**: Normalizes system strings, paths, and namespaces.
-- **`Masker`**: Redacts sensitive data (PII) such as emails and phone numbers to satisfy privacy
-  mandates.
-
-### 2.3 Functional Layer (Procedural Helpers)
-
-Resides in `src/Functions/`. Contains global procedural functions for module health and status
-checks.
-
-- **`is_active_module.php`**: Check if a module is currently enabled.
-- **`shared_static_url.php`**: Resolve absolute URLs for shared static assets.
-
-### 2.3 Persistence Layer (Model Concerns)
-
-Resides in `src/Models/Concerns/`. Standardizes data behavior.
-
-- **`HasUuid`**: Implements mandatory **UUID v4** identity generation (ISO/IEC 11179).
-- **`HasAcademicYear`**: Automatically scopes queries and data creation to the active academic
-  cycle.
-
-### 2.4 Presentation Layer (Livewire Concerns)
-
-Resides in `src/Livewire/Concerns/`.
+### 2.4 Presentation Layer (UI Orchestration)
 
 - **`ManagesRecords`**: A standardized trait for CRUD-heavy Livewire components, providing automated
-  pagination, searching, and modal orchestration.
-
-### 2.5 Infrastructure Layer (Provider Concerns)
-
-Resides in `src/Providers/Concerns/`.
-
-- **`ManagesModuleProvider`**: Automates the registration of configurations, translations, views,
-  migrations, and service bindings for all modules.
+  pagination and searching.
 
 ---
 
-## 3. Localization (i18n)
+## 3. Verification & Validation (V&V)
 
-The `Shared` module provides the baseline translations for systemic feedback and UI elements.
+Reliability is ensured through the mathematical verification of technical logic.
 
-- **Directory**: `lang/` (supporting `id` and `en`).
-- **Standardized Keys**:
-    - `shared::ui.*`: Common buttons and labels (Save, Cancel, Edit).
-    - `shared::messages.*`: Standard success/error notifications.
-    - `shared::exceptions.*`: Technical exception messages (Unique violation, Record not found).
-
----
-
-## 4. Verification & Validation (V&V)
-
-Quality is enforced through rigorous testing using **Pest v4**.
-
-- **Unit Tests**: 100% coverage for Support Layer utilities and Model concerns.
-- **Standards Compliance**: All code is verified against **PSR-12** and **Laravel Pint**.
+- **Unit Tests**: 100% behavioral coverage for all `Support` and `Concerns` classes.
+- **Standard**: Adheres to the **Mirroring Invariant** (`tests/Unit/Support/FormatterTest.php`).
 - **Command**: `php artisan test modules/Shared`
 
 ---
 
-_The Shared module is the engine room of Internara. It must remain clean, portable, and strictly
-agnostic to preserve systemic integrity._
+_The Shared module provides the technical certainty required to build complex business domains on a
+stable foundation._

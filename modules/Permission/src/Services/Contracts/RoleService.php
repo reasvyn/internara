@@ -4,33 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Permission\Services\Contracts;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Modules\Permission\Models\Role;
+use Modules\Shared\Services\Contracts\EloquentQuery;
 
-interface RoleService
+/**
+ * @template TModel of \Modules\Permission\Models\Role
+ *
+ * @extends EloquentQuery<TModel>
+ */
+interface RoleService extends EloquentQuery
 {
     /**
-     * List roles with optional filtering and pagination.
+     * Synchronize permissions for a role.
      *
-     * @param array<string, mixed> $filters Filter criteria (e.g., 'search', 'module').
-     * @param int $perPage Number of records per page.
-     * @param array<int, string> $columns Columns to retrieve.
-     *
-     * @return LengthAwarePaginator Paginated list of roles.
+     * @param array<string> $permissions
      */
-    public function list(
-        array $filters = [],
-        int $perPage = 10,
-        array $columns = ['*'],
-    ): LengthAwarePaginator;
-
-    /**
-     * Sync permissions to a role.
-     *
-     * @param string $id The UUID of the role.
-     * @param array<int, string> $permissions An array of permission names to sync.
-     *
-     * @return Role The role with updated permissions.
-     */
-    public function syncPermissions(string $id, array $permissions): Role;
+    public function syncPermissions(string $roleId, array $permissions): void;
 }

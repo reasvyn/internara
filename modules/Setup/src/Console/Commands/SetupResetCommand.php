@@ -45,7 +45,7 @@ class SetupResetCommand extends Command
         $this->newLine();
         $this->components->warn('EMERGENCY: Setup Recovery Mode');
 
-        if (! $this->confirmReset()) {
+        if (!$this->confirmReset()) {
             return self::FAILURE;
         }
 

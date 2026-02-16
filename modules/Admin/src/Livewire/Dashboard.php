@@ -7,7 +7,7 @@ namespace Modules\Admin\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Modules\Core\Services\Contracts\AnalyticsAggregator;
+use Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
 class Dashboard extends Component
@@ -18,7 +18,7 @@ class Dashboard extends Component
     #[Computed]
     public function registrations(): object
     {
-        return app(RegistrationService::class)->paginate(10);
+        return app(RegistrationService::class)->paginate([], 10);
     }
 
     /**

@@ -6,7 +6,8 @@ return [
     'complete_now' => 'Complete Now',
     'hub_title' => 'Guidance & Handbook Hub',
     'requirements_title' => 'Briefing Requirements',
-    'requirements_description' => 'You must read and agree to all internship guidelines marked as MANDATORY before you can proceed.',
+    'requirements_description' =>
+        'You must read and agree to all internship guidelines marked as MANDATORY before you can proceed.',
     'read_and_agree' => 'Read & Agree',
     'download_pdf' => 'Download PDF',
     'already_read' => 'Already read',

@@ -24,9 +24,10 @@ initial security context for every session.
 ### 2.1 Service Layer
 
 - **`AuthService`**: Manages the technical lifecycle of an authentication session.
-    - _Features_: Multi-identifier login (email/username), secure registration, password management,
-      and hashed verification tokens.
+    - _Features_: Multi-role entry (Student, Teacher, Mentor, Admin), session hardening, secure
+      registration, and hashed verification tokens.
     - _Contract_: `Modules\Auth\Services\Contracts\AuthService`.
+    - _API_: `login()`, `logout()`, `verifyEmail(id, hash)`.
 - **`RedirectService`**: Determines the appropriate destination URL after authentication based on
   the user's active roles and verification status.
     - _Contract_: `Modules\Auth\Services\Contracts\RedirectService`.

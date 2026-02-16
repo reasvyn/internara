@@ -33,7 +33,7 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
      */
     public function getReportData(array $filters = []): array
     {
-        $query = InternshipRegistration::with(['user', 'internship', 'placement']);
+        $query = InternshipRegistration::with(['user', 'internship', 'placement.company']);
 
         if (isset($filters['academic_year'])) {
             $query->where('academic_year', $filters['academic_year']);
@@ -46,7 +46,7 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
                 // Placeholder for competency achievement logic (to be expanded in v0.10.0)
                 return [
                     'Student Name' => $reg->user->name,
-                    'Placement' => $reg->placement?->company_name ?? '-',
+                    'Placement' => $reg->placement?->company?->name ?? '-',
                     'Technical Skills' => 'N/A', // Placeholder
                     'Soft Skills' => 'N/A', // Placeholder
                     'Total Progress' => '0%', // Placeholder

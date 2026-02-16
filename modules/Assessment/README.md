@@ -26,8 +26,10 @@ official credentials. It aggregates data from various sources to produce final g
 
 ### 2. Services
 
-- **AssessmentService:** Manages manual evaluations from Instructors and Supervisors.
-- **CompetencyService:** Orchestrates the registry of skills and their mapping to student
+- **AssessmentService**: Orchestrates competency evaluation and grading.
+    - _API_: `evaluate(studentId, rubricId, marks)`, `getFinalResult(studentId)`.
+    - _Contract_: `Modules\Assessment\Services\Contracts\AssessmentService`.
+- **CompetencyService**: Orchestrates the registry of skills and their mapping to student
   activities.
 - **ComplianceService:** Orchestrates the calculation of participation-driven scores via
   **Contracts**.

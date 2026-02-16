@@ -41,7 +41,7 @@ class AssignmentTypeManager extends Component
      */
     public function updatedName(string $value): void
     {
-        if (! $this->recordId) {
+        if (!$this->recordId) {
             $this->slug = Str::slug($value);
         }
     }
@@ -51,11 +51,7 @@ class AssignmentTypeManager extends Component
      */
     public function resetForm(): void
     {
-        $this->recordId = null;
-        $this->name = '';
-        $this->slug = '';
-        $this->group = 'report';
-        $this->description = '';
+        $this->reset(['recordId', 'name', 'slug', 'group', 'description']);
     }
 
     /**

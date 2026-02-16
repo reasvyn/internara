@@ -15,7 +15,7 @@
             <x-ui::card :title="__('admin::ui.dashboard.recent_assessments')" shadow separator>
                 <x-ui::table :rows="$this->registrations" :headers="[
                     ['key' => 'student.name', 'label' => __('admin::ui.dashboard.table.student')],
-                    ['key' => 'company_name', 'label' => __('admin::ui.dashboard.table.company')],
+                    ['key' => 'placement.company_name', 'label' => __('admin::ui.dashboard.table.company')],
                     ['key' => 'final_grade', 'label' => __('admin::ui.dashboard.table.final_grade')],
                     ['key' => 'actions', 'label' => '']
                 ]">
@@ -65,8 +65,8 @@
         <div class="lg:col-span-1 flex flex-col gap-6">
             <x-ui::card :title="__('admin::ui.dashboard.quick_links')" shadow separator>
                 <div class="flex flex-col gap-1">
-                    <x-ui::button :label="__('admin::ui.dashboard.user_management')" icon="tabler.users" priority="tertiary" class="justify-start w-full" link="{{ route('user.manager') }}" />
-                    <x-ui::button :label="__('admin::ui.dashboard.system_config')" icon="tabler.settings" priority="tertiary" class="justify-start w-full" link="{{ route('admin.settings') }}" />
+                    <x-ui::button :label="__('admin::ui.dashboard.user_management')" icon="tabler.users" priority="tertiary" class="justify-start w-full" link="{{ route('admin.students') }}" />
+                    <x-ui::button :label="__('admin::ui.dashboard.system_config')" icon="tabler.settings" priority="tertiary" class="justify-start w-full" link="{{ route('school.settings') }}" />
                 </div>
             </x-ui::card>
 

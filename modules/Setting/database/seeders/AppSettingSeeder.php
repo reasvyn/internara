@@ -117,8 +117,57 @@ class AppSettingSeeder extends Seeder
                 'group' => 'general',
             ],
             [
+                'key' => 'mail_from_address',
+                'value' => 'no-reply@internara.test',
+                'type' => 'string',
+                'description' => 'Global outgoing mail sender address',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'mail_from_name',
+                'value' => '',
+                'type' => 'string',
+                'description' => 'Global outgoing mail sender name (leave empty to use brand name)',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'mail_host',
+                'value' => config('mail.mailers.smtp.host', '127.0.0.1'),
+                'type' => 'string',
+                'description' => 'SMTP host address',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'mail_port',
+                'value' => config('mail.mailers.smtp.port', '587'),
+                'type' => 'string',
+                'description' => 'SMTP port number',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'mail_username',
+                'value' => config('mail.mailers.smtp.username', ''),
+                'type' => 'string',
+                'description' => 'SMTP username',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'mail_password',
+                'value' => config('mail.mailers.smtp.password', ''),
+                'type' => 'password',
+                'description' => 'SMTP password',
+                'group' => 'system',
+            ],
+            [
+                'key' => 'mail_encryption',
+                'value' => config('mail.mailers.smtp.encryption', 'tls'),
+                'type' => 'string',
+                'description' => 'SMTP encryption (tls/ssl)',
+                'group' => 'system',
+            ],
+            [
                 'key' => 'active_academic_year',
-                'value' => '2025/2026',
+                'value' => date('Y') - 1 . '/' . date('Y'),
                 'type' => 'string',
                 'description' => 'The current active academic year for operational data.',
                 'group' => 'operational',
@@ -140,8 +189,8 @@ class AppSettingSeeder extends Seeder
         ];
 
         $settingsToUpsert = [];
-        $caster = new SettingValueCast;
-        $dummyModel = new Setting; // A dummy model instance for the caster's set method
+        $caster = new SettingValueCast();
+        $dummyModel = new Setting(); // A dummy model instance for the caster's set method
 
         foreach ($rawSettings as $setting) {
             // Apply the SettingValueCast::set logic manually to each setting

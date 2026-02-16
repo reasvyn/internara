@@ -8,7 +8,6 @@ use Modules\Department\Livewire\DepartmentManager;
 use Modules\Department\Models\Department;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);

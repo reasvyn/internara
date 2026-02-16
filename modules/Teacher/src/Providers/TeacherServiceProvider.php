@@ -32,13 +32,13 @@ class TeacherServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
-                'ui::components.menu-item' => [
+                'ui::menu-item' => [
                     'title' => __('Dashboard'),
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/teacher',
                     'order' => 10,
                 ],
-                'ui::components.menu-item#reports' => [
+                'ui::menu-item#reports' => [
                     'title' => __('report::ui.title'),
                     'icon' => 'tabler.file-analytics',
                     'link' => '/teacher/reports',
@@ -66,7 +66,8 @@ class TeacherServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Teacher\Services\Contracts\TeacherService::class => \Modules\Teacher\Services\TeacherService::class,
+            \Modules\Teacher\Services\Contracts\TeacherService::class =>
+                \Modules\Teacher\Services\TeacherService::class,
         ];
     }
 }

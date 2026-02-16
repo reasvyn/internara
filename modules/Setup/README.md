@@ -22,8 +22,8 @@ operations (like `migrate:fresh`) during the installation lifecycle.
 
 ### 2.1 Service Layer
 
-- **`SetupService`**: Orchestrates the multi-step installation wizard.
-    - _Features_: Step completion tracking, record existence verification, and finalization logic.
+- **`SetupService`**: Orchestrates the stabilization and first-boot baseline.
+    - _API_: `initWizard()`, `finalize(id)`.
     - _Contract_: `Modules\Setup\Services\Contracts\SetupService`.
 - **`InstallerService`**: Handles low-level technical installation tasks.
     - _Features_: Migration execution, database seeding, symlink creation, and application key

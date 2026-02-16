@@ -83,12 +83,12 @@ class SlotManager implements SlotManagerContract
                     }
 
                     if (is_string($view)) {
-                        return $this->viewFactory->make($view, $data)->render();
+                        return \Illuminate\Support\Facades\Blade::render("<x-{$view} />", $data);
                     }
                 } catch (\Throwable $e) {
                     \Illuminate\Support\Facades\Log::error(
-                        'Slot Injection Error: Failed to render component ['.
-                            (is_string($view) ? $view : 'Closure').
+                        'Slot Injection Error: Failed to render component [' .
+                            (is_string($view) ? $view : 'Closure') .
                             "] in slot [{$slot}]. Error: {$e->getMessage()}",
                         [
                             'exception' => $e,

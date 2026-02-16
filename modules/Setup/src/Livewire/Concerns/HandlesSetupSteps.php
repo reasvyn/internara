@@ -58,7 +58,7 @@ trait HandlesSetupSteps
     {
         $prevStep = $this->setupStepProps['prevStep'] ?? null;
 
-        if (! $this->setupService->requireSetupAccess($prevStep)) {
+        if (!$this->setupService->requireSetupAccess($prevStep)) {
             $this->redirectToStep($prevStep);
         }
     }
@@ -103,7 +103,7 @@ trait HandlesSetupSteps
     {
         $record = $this->setupStepProps['extra']['req_record'] ?? null;
 
-        return $record ? ! $this->setupService->isRecordExists($record) : false;
+        return $record ? !$this->setupService->isRecordExists($record) : false;
     }
 
     /**

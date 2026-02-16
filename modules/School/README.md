@@ -26,6 +26,7 @@ management, while providing data to all other modules for display purposes.
   constraints if configured.
     - _Features_: Automated logo handling and standardized institutional data retrieval.
     - _Contract_: `Modules\School\Services\Contracts\SchoolService`.
+    - _API_: `register(data)`, `updateProfile(id, data)`, `getNpsnMaster()`.
 
 ### 2.2 Persistence Layer
 

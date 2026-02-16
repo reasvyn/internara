@@ -15,7 +15,15 @@ exporting administrative and academic data into document formats.
 - **Academic Reporting:** Exports student competency achievements and final internship transcripts.
 - **Administrative Insight:** Provides aggregated reports for institutional oversight.
 
-## 2. Key Features
+## 2. Core Components
+
+### 2.1 Service Layer
+
+- **ReportService**: Orchestrates certified document generation and verification.
+    - _API_: `generatePdf(studentId, type)`, `verify(checksum)`.
+    - _Contract_: `Modules\Report\Services\Contracts\ReportGenerator`.
+
+## 3. Key Features
 
 - **Standardized Templates:** Utilizes consistent layouts for institutional certificates and
   reports.

@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Modules\Core\Console\Commands\AppInfoCommand;
-use Modules\Core\Console\Commands\AppTestCommand;
-use Modules\Core\Console\Commands\MakeClassCommand;
-use Modules\Core\Console\Commands\MakeInterfaceCommand;
-use Modules\Core\Console\Commands\MakeTraitCommand;
+use Modules\Core\Metadata\Console\Commands\AppInfoCommand;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 
 class CoreServiceProvider extends ServiceProvider
@@ -45,13 +41,7 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        $this->commands([
-            AppInfoCommand::class,
-            AppTestCommand::class,
-            MakeClassCommand::class,
-            MakeInterfaceCommand::class,
-            MakeTraitCommand::class,
-        ]);
+        $this->commands([AppInfoCommand::class]);
     }
 
     /**
@@ -62,8 +52,10 @@ class CoreServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Core\Services\Contracts\AnalyticsAggregator::class => \Modules\Core\Services\AnalyticsAggregator::class,
-            \Modules\Core\Services\Contracts\MetadataService::class => \Modules\Core\Services\MetadataService::class,
+            \Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator::class =>
+                \Modules\Core\Analytics\Services\AnalyticsAggregator::class,
+            \Modules\Core\Metadata\Services\Contracts\MetadataService::class =>
+                \Modules\Core\Metadata\Services\MetadataService::class,
         ];
     }
 }

@@ -19,14 +19,14 @@ class AttendanceIndex extends Component
 
     public ?string $search = null;
 
-    // Absence Request Form
-    public bool $absenceModal = false;
+    // Flexible Attendance Form
+    public bool $attendanceModal = false;
 
-    public string $absence_date = '';
+    public string $form_date = '';
 
-    public string $absence_type = 'leave';
+    public string $form_status = 'present';
 
-    public string $absence_reason = '';
+    public string $form_notes = '';
 
     protected AttendanceService $attendanceService;
 
@@ -39,58 +39,60 @@ class AttendanceIndex extends Component
     }
 
     /**
-     * Show the absence request modal.
+     * Show the attendance recording modal.
      */
-    public function openAbsenceModal(): void
+    public function openAttendanceModal(): void
     {
-        $this->absence_date = now()->format('Y-m-d');
-        $this->absenceModal = true;
+        $this->form_date = now()->format('Y-m-d');
+        $this->form_status = 'present';
+        $this->form_notes = '';
+        $this->attendanceModal = true;
     }
 
     /**
-     * Submit the absence request.
+     * Submit the attendance record.
      */
-    public function submitAbsence(): void
+    public function submitAttendance(): void
     {
         $this->validate([
-            'absence_date' => 'required|date',
-            'absence_type' => 'required|in:leave,sick,permit',
-            'absence_reason' => 'required|string|max:500',
+            'form_date' => 'required|date',
+            'form_status' => 'required|in:present,sick,permitted,unexplained',
+            'form_notes' => 'nullable|string|max:500',
         ]);
 
-        $user = auth()->user();
-        $registration = app(
-            \Modules\Internship\Services\Contracts\RegistrationService::class,
-        )->first([
-            'student_id' => $user->id,
-            'latest_status' => 'active',
-        ]);
+        try {
+            $this->attendanceService->recordAttendance(auth()->id(), [
+                'date' => $this->form_date,
+                'status' => $this->form_status,
+                'notes' => $this->form_notes,
+            ]);
 
-        if (! $registration) {
+            $this->attendanceModal = false;
             $this->dispatch(
                 'notify',
-                message: __('internship::messages.no_active_registration'),
-                type: 'error',
+                message: __('attendance::messages.check_in_success'),
+                type: 'success',
             );
-
-            return;
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
         }
+    }
 
-        $this->attendanceService->createAbsenceRequest([
-            'registration_id' => $registration->id,
-            'student_id' => $user->id,
-            'date' => $this->absence_date,
-            'type' => $this->absence_type,
-            'reason' => $this->absence_reason,
-        ]);
-
-        $this->absenceModal = false;
-        $this->absence_reason = '';
-        $this->dispatch(
-            'notify',
-            message: __('attendance::messages.absence_request_submitted'),
-            type: 'success',
-        );
+    /**
+     * One-way click for today's presence.
+     */
+    public function quickCheckIn(): void
+    {
+        try {
+            $this->attendanceService->checkIn(auth()->id());
+            $this->dispatch(
+                'notify',
+                message: __('attendance::messages.check_in_success'),
+                type: 'success',
+            );
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+        }
     }
 
     /**
@@ -131,7 +133,7 @@ class AttendanceIndex extends Component
             // Filter by student name if search is provided
             if ($this->search) {
                 $query->whereHas('student', function ($q) {
-                    $q->where('name', 'like', '%'.$this->search.'%');
+                    $q->where('name', 'like', '%' . $this->search . '%');
                 });
             }
 
@@ -146,7 +148,7 @@ class AttendanceIndex extends Component
         return view('attendance::livewire.attendance-index')->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' => __('Log Presensi'),
+                'title' => __('attendance::ui.index.title'),
             ],
         );
     }

@@ -7,7 +7,6 @@ use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);

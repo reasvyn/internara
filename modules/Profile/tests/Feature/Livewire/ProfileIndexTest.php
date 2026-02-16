@@ -8,7 +8,6 @@ use Modules\Permission\Models\Role;
 use Modules\Profile\Livewire\Index;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Role::create(['name' => 'super-admin', 'guard_name' => 'web']);

@@ -43,9 +43,12 @@ class AssignmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Assignment\Services\Contracts\AssignmentService::class => \Modules\Assignment\Services\AssignmentService::class,
-            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class => \Modules\Assignment\Services\AssignmentTypeService::class,
-            \Modules\Assignment\Services\Contracts\SubmissionService::class => \Modules\Assignment\Services\SubmissionService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentService::class =>
+                \Modules\Assignment\Services\AssignmentService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class =>
+                \Modules\Assignment\Services\AssignmentTypeService::class,
+            \Modules\Assignment\Services\Contracts\SubmissionService::class =>
+                \Modules\Assignment\Services\SubmissionService::class,
         ];
     }
 
@@ -56,21 +59,21 @@ class AssignmentServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
-                'ui::components.menu-item#assignments' => [
+                'ui::menu-item#assignments' => [
                     'title' => __('Assignments'),
                     'icon' => 'tabler.checklist',
                     'link' => '/assignments',
                     'role' => 'student',
                     'order' => 40,
                 ],
-                'ui::components.menu-item#admin-assignments' => [
+                'ui::menu-item#admin-assignments' => [
                     'title' => __('Manage Assignments'),
                     'icon' => 'tabler.settings-automation',
                     'link' => '/admin/assignments',
                     'role' => 'admin|super-admin',
                     'order' => 41,
                 ],
-                'ui::components.menu-item#admin-assignment-types' => [
+                'ui::menu-item#admin-assignment-types' => [
                     'title' => __('Assignment Types'),
                     'icon' => 'tabler.category',
                     'link' => '/admin/assignments/types',
@@ -79,7 +82,7 @@ class AssignmentServiceProvider extends ServiceProvider
                 ],
             ],
             'student.dashboard.quick-actions' => [
-                'ui::components.button' => [
+                'ui::button' => [
                     'label' => __('Tugas Akhir'),
                     'icon' => 'tabler.certificate',
                     'link' => '/assignments',

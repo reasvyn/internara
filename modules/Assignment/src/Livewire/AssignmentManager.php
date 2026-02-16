@@ -44,12 +44,14 @@ class AssignmentManager extends Component
      */
     public function resetForm(): void
     {
-        $this->recordId = null;
-        $this->title = '';
-        $this->assignment_type_id = '';
-        $this->description = '';
-        $this->is_mandatory = true;
-        $this->due_date = null;
+        $this->reset([
+            'recordId',
+            'title',
+            'assignment_type_id',
+            'description',
+            'is_mandatory',
+            'due_date',
+        ]);
     }
 
     /**

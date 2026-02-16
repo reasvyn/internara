@@ -69,7 +69,7 @@ class CompetencyService extends EloquentQuery implements Contract
 
         $data = collect($competencyIds)
             ->map(
-                fn ($id) => [
+                fn($id) => [
                     'id' => \Illuminate\Support\Str::uuid()->toString(),
                     'journal_entry_id' => $journalEntryId,
                     'competency_id' => $id,

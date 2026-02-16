@@ -11,8 +11,6 @@ use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
     Role::create(['name' => 'student', 'guard_name' => 'web']);
 });
@@ -51,7 +49,7 @@ test('authorized student can download certificate', function () {
     $response->assertHeader('Content-Type', 'application/pdf');
     $response->assertHeader(
         'Content-Disposition',
-        'attachment; filename="certificate-'.$student->username.'.pdf"',
+        'attachment; filename="certificate-' . $student->username . '.pdf"',
     );
 });
 

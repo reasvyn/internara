@@ -19,10 +19,8 @@ trait HasUuid
      */
     public function initializeHasUuid(): void
     {
-        if ($this->usesUuid()) {
-            $this->incrementing = false;
-            $this->keyType = 'string';
-        }
+        $this->setIncrementing(false);
+        $this->setKeyType('string');
     }
 
     /**

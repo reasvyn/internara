@@ -48,7 +48,7 @@ class MediaServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            // 'SomeContract::class' => 'SomeConcrete::class'
-        ];
+                // 'SomeContract::class' => 'SomeConcrete::class'
+            ];
     }
 }

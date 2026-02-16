@@ -33,11 +33,11 @@ institutional handbooks and tracking student readiness.
 - **Acknowledgement Loop:** Simple digital "Read & Agree" mechanism for students.
 - **Secure Streaming:** Authenticated file downloads from private storage.
 
-### 3. Systematic Gating
+### 2. Services
 
-- **Integrity Invariant:** Automatically locks access to critical features (Journals, Attendance,
-  Assignments) if mandatory guidelines have not been acknowledged.
-- **Monitoring Table:** Real-time rekapitulasi for staff to monitor student compliance.
+- **GuidanceService**: Orchestrates mentoring relationships and site-visit logs.
+    - _API_: `recordVisit(teacherId, studentId, report)`, `getGuidanceHistory(studentId)`.
+    - _Contract_: `Modules\Guidance\Services\Contracts\GuidanceService`.
 
 ---
 

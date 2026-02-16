@@ -36,7 +36,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function customizeVerificationEmail(): void
     {
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return (new MailMessage)
+            return (new MailMessage())
                 ->subject(__('auth::emails.verification_subject'))
                 ->greeting(__('auth::emails.verification_greeting', ['name' => $notifiable->name]))
                 ->line(__('auth::emails.verification_line_1'))
@@ -71,16 +71,17 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Auth\Services\Contracts\AuthService::class => \Modules\Auth\Services\AuthService::class,
-            \Modules\Auth\Services\Contracts\RedirectService::class => \Modules\Auth\Services\RedirectService::class,
+            \Modules\Auth\Services\Contracts\AuthService::class =>
+                \Modules\Auth\Services\AuthService::class,
+            \Modules\Auth\Services\Contracts\RedirectService::class =>
+                \Modules\Auth\Services\RedirectService::class,
         ];
     }
 
     protected function viewSlots(): array
     {
         return [
-            // This needs to be updated. Livewire components are moving to Auth module
-            'register.super-admin' => 'livewire:auth::register-super-admin', // Changed 'user' to 'auth', removed 'auth' subdir
+            'register.super-admin' => 'livewire:auth::register-super-admin',
         ];
     }
 }

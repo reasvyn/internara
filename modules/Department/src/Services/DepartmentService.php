@@ -30,7 +30,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     {
         $schoolId = $data['school_id'] ?? null;
 
-        if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
+        if ($schoolId && !$this->schoolService->exists(['id' => $schoolId])) {
             throw new \Illuminate\Database\Eloquent\ModelNotFoundException(
                 __('school::exceptions.not_found'),
             );
@@ -46,7 +46,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     {
         $schoolId = $data['school_id'] ?? null;
 
-        if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
+        if ($schoolId && !$this->schoolService->exists(['id' => $schoolId])) {
             throw new \Illuminate\Database\Eloquent\ModelNotFoundException(
                 __('school::exceptions.not_found'),
             );
@@ -62,7 +62,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     {
         $schoolId = $attributes['school_id'] ?? ($values['school_id'] ?? null);
 
-        if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {
+        if ($schoolId && !$this->schoolService->exists(['id' => $schoolId])) {
             throw new \Illuminate\Database\Eloquent\ModelNotFoundException(
                 __('school::exceptions.not_found'),
             );

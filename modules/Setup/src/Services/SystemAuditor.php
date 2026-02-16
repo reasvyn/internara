@@ -106,8 +106,8 @@ class SystemAuditor implements SystemAuditorContract
     {
         $audit = $this->audit();
 
-        $requirementsPassed = ! in_array(false, $audit['requirements'], true);
-        $permissionsPassed = ! in_array(false, $audit['permissions'], true);
+        $requirementsPassed = !in_array(false, $audit['requirements'], true);
+        $permissionsPassed = !in_array(false, $audit['permissions'], true);
         $databasePassed = (bool) $audit['database']['connection'];
 
         return $requirementsPassed && $permissionsPassed && $databasePassed;

@@ -44,9 +44,12 @@ class SetupServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Setup\Services\Contracts\SetupService::class => \Modules\Setup\Services\SetupService::class,
-            \Modules\Setup\Services\Contracts\InstallerService::class => \Modules\Setup\Services\InstallerService::class,
-            \Modules\Setup\Services\Contracts\SystemAuditor::class => \Modules\Setup\Services\SystemAuditor::class,
+            \Modules\Setup\Services\Contracts\SetupService::class =>
+                \Modules\Setup\Services\SetupService::class,
+            \Modules\Setup\Services\Contracts\InstallerService::class =>
+                \Modules\Setup\Services\InstallerService::class,
+            \Modules\Setup\Services\Contracts\SystemAuditor::class =>
+                \Modules\Setup\Services\SystemAuditor::class,
         ];
     }
 

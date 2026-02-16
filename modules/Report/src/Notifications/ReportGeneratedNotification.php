@@ -22,7 +22,7 @@ class ReportGeneratedNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject(__('report::notifications.generated_subject'))
             ->line(__('report::notifications.generated_line_1', ['title' => $this->reportTitle]))
             ->action(__('report::notifications.download_action'), url($this->filePath))

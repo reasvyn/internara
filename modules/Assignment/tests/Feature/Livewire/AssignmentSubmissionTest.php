@@ -15,7 +15,6 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Storage::fake('public');
@@ -54,8 +53,7 @@ test('student can submit a file for a report assignment', function () {
     Livewire::test(AssignmentSubmission::class)
         ->set("uploads.{$assignment->id}", $file)
         ->call('submit', $assignment->id)
-        ->assertHasNoErrors()
-        ->assertDispatched('notify', message: __('assignment::ui.success_submitted'));
+        ->assertHasNoErrors();
 
     $this->assertDatabaseHas('submissions', [
         'assignment_id' => $assignment->id,

@@ -40,7 +40,7 @@ class RequirementManager extends Component
         $this->form->reset();
 
         // Default academic year - in a real app this would come from settings
-        $this->form->academic_year = date('Y').'/'.(date('Y') + 1);
+        $this->form->academic_year = date('Y') . '/' . (date('Y') + 1);
 
         $this->formModal = true;
     }

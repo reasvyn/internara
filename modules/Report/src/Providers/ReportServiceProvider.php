@@ -38,8 +38,10 @@ class ReportServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Report\Services\Contracts\ReportGenerator::class => \Modules\Report\Services\ReportService::class,
-            \Modules\Report\Services\Contracts\GeneratedReportService::class => \Modules\Report\Services\GeneratedReportService::class,
+            \Modules\Report\Services\Contracts\ReportGenerator::class =>
+                \Modules\Report\Services\ReportService::class,
+            \Modules\Report\Services\Contracts\GeneratedReportService::class =>
+                \Modules\Report\Services\GeneratedReportService::class,
         ];
     }
 

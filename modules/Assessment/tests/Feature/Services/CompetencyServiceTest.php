@@ -6,7 +6,6 @@ use Modules\Assessment\Models\Competency;
 use Modules\Assessment\Services\Contracts\CompetencyService;
 use Modules\Internship\Models\InternshipRegistration;
 
-uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('it can record student competency progress', function () {
     $registration = InternshipRegistration::factory()->create();

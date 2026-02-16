@@ -6,10 +6,12 @@ namespace Modules\Attendance\Tests\Unit\Services;
 
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\AttendanceService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 test('it can query attendance logs', function () {
     $log = mock(AttendanceLog::class);
-    $service = new AttendanceService($log);
+    $registrationService = mock(RegistrationService::class);
+    $service = new AttendanceService($registrationService, $log);
 
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $log->shouldReceive('newQuery')->andReturn($builder);

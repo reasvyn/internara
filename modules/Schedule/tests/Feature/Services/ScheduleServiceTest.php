@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Modules\Schedule\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Schedule\Enums\ScheduleType;
 use Modules\Schedule\Models\Schedule;
 use Modules\Schedule\Services\Contracts\ScheduleService;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     \Modules\Setting\Facades\Setting::shouldReceive('getValue')
@@ -23,7 +23,7 @@ test('it can create a schedule event via service', function () {
         'title' => 'Pembekalan PKL',
         'description' => 'Sesi briefing persiapan magang',
         'start_at' => now()->addDays(1)->toDateTimeString(),
-        'type' => 'briefing',
+        'type' => ScheduleType::BRIEFING,
         'academic_year' => '2025/2026',
     ];
 
@@ -34,14 +34,13 @@ test('it can create a schedule event via service', function () {
         ->and($schedule->title)
         ->toBe('Pembekalan PKL')
         ->and($schedule->type)
-        ->toBe('briefing');
+        ->toBe(ScheduleType::BRIEFING);
 });
 
 test('it can retrieve student timeline filtered by registration', function () {
     $service = app(ScheduleService::class);
     $studentId = (string) \Illuminate\Support\Str::uuid();
 
-    // Resolve external factories via Service Contracts
     $internship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
         ->factory()
         ->create();
@@ -52,19 +51,18 @@ test('it can retrieve student timeline filtered by registration', function () {
             'internship_id' => $internship->id,
         ]);
 
-    // Create global event
     Schedule::factory()->create([
         'title' => 'Global Event',
         'internship_id' => null,
         'academic_year' => '2025/2026',
     ]);
-    // Create specific event
+
     Schedule::factory()->create([
         'title' => 'Specific Event',
         'internship_id' => $internship->id,
         'academic_year' => '2025/2026',
     ]);
-    // Create other program's event
+
     $otherInternship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
         ->factory()
         ->create();

@@ -11,7 +11,6 @@ use Modules\Mentor\Livewire\EvaluateIntern;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'mentor', 'guard_name' => 'web']);

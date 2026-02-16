@@ -9,7 +9,6 @@ use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 test('submitEvaluation creates assessment and calculates score', function () {
     // Arrange
@@ -57,7 +56,7 @@ test('it throws exception for unauthorized evaluator', function () {
 
     // Act & Assert
     expect(
-        fn () => $service->submitEvaluation(
+        fn() => $service->submitEvaluation(
             $registration->id,
             $user->id,
             'teacher',

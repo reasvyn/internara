@@ -96,7 +96,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn (string $word) => Str::substr($word, 0, 1))
+            ->map(fn(string $word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 
@@ -113,7 +113,21 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->getFirstMediaUrl(self::COLLECTION_AVATAR) ?: null;
+        $avatar = $this->getFirstMediaUrl(self::COLLECTION_AVATAR);
+
+        if ($avatar) {
+            return $avatar;
+        }
+
+        // Fallback for Student passport photo
+        if ($this->profile?->profileable instanceof \Modules\Student\Models\Student) {
+            return $this->profile->profileable->getFirstMediaUrl(
+                \Modules\Student\Models\Student::COLLECTION_PASSPORT_PHOTO,
+                'avatar',
+            );
+        }
+
+        return null;
     }
 
     /**

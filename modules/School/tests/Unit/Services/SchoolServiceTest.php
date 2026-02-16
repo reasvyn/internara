@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Modules\School\Tests\Unit\Services;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\School\Models\School;
-use Modules\School\Services\SchoolService;
+use Modules\School\Services\Contracts\SchoolService;
+
+uses(RefreshDatabase::class);
 
 test('it can retrieve school instance', function () {
-    $school = mock(School::class);
-    $service = new SchoolService($school);
+    $school = School::factory()->create(['name' => 'SMK Internara']);
+    $service = app(SchoolService::class);
 
-    $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
-    $school->shouldReceive('newQuery')->andReturn($builder);
-    $builder->shouldReceive('first')->andReturn(new School);
+    $result = $service->getSchool();
 
-    $result = $service->get();
-    expect($result)->toBeInstanceOf(School::class);
+    expect($result)->toBeInstanceOf(School::class)->and($result->name)->toBe('SMK Internara');
 });

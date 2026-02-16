@@ -18,15 +18,15 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::get('login', Modules\Auth\Livewire\Login::class)->middleware('guest')->name('login');
 
-    Route::get('register', Modules\Auth\Livewire\Register::class)
+    Route::get('register', Modules\Auth\Registration\Livewire\Register::class)
         ->middleware('guest')
         ->name('register');
 
-    Route::get('email/verify/{id}/{hash}', Modules\Auth\Livewire\VerifyEmail::class)
+    Route::get('email/verify/{id}/{hash}', Modules\Auth\Verification\Livewire\VerifyEmail::class)
         ->middleware(['auth', 'signed'])
         ->name('verification.verify');
 
-    Route::get('email/verify', Modules\Auth\Livewire\VerificationNotice::class)
+    Route::get('email/verify', Modules\Auth\Verification\Livewire\VerificationNotice::class)
         ->middleware('auth')
         ->name('verification.notice');
 });

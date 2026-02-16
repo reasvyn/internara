@@ -13,7 +13,7 @@
 
 # Environment & Private Config
 .env
-.env.backup
+.env.backup*
 .env.production
 /auth.json
 Homestead.json
@@ -33,8 +33,9 @@ yarn-error.log
 .phpunit.result.cache
 
 # Testing & Browser Verification
-/tests/Browser/Screenshots
-/tests/Browser/Console/*.log
+/tests/Browser/screenshots/*.png
+/tests/Browser/console/*.log
+/tests/Browser/source/*.txt
 
 # Module-Level Exclusions
 /modules/*/node_modules

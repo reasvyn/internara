@@ -1,7 +1,7 @@
 <div>
     <x-ui::header 
-        title="{{ $form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru') }}" 
-        subtitle="{{ __('Catat aktivitas harian Anda dengan lengkap dan jujur.') }}" 
+        title="{{ $form->id ? __('journal::ui.index.actions.edit') : __('journal::ui.index.create_new') }}" 
+        subtitle="{{ __('journal::ui.index.subtitle') }}" 
     />
 
     <x-ui::main>
@@ -10,23 +10,24 @@
                 <x-ui::form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-ui::input 
-                            label="{{ __('Tanggal') }}" 
+                            label="{{ __('journal::ui.index.form.date') }}" 
                             type="date" 
                             wire:model="form.date" 
                             required 
+                            :hint="\Illuminate\Support\Carbon::parse($form->date)->translatedFormat('l')"
                         />
                     </div>
 
                     <x-ui::input 
-                        label="{{ __('Topik Pekerjaan') }}" 
-                        placeholder="{{ __('Misal: Instalasi OS, Troubleshooting Jaringan, dll') }}"
+                        label="{{ __('journal::ui.index.form.work_topic') }}" 
+                        placeholder="{{ __('journal::ui.index.form.work_topic_placeholder') }}"
                         wire:model="form.work_topic" 
                         required 
                     />
 
                     <x-ui::textarea 
-                        label="{{ __('Deskripsi Aktivitas') }}" 
-                        placeholder="{{ __('Jelaskan apa saja yang Anda kerjakan hari ini...') }}"
+                        label="{{ __('journal::ui.index.form.description') }}" 
+                        placeholder="{{ __('journal::ui.index.form.description_placeholder') }}"
                         wire:model="form.activity_description" 
                         rows="5"
                         required 
@@ -34,49 +35,56 @@
 
                     <div class="grid grid-cols-1 gap-4">
                         <x-ui::choices
-                            label="{{ __('Kompetensi / Skill yang Dilatih') }}"
+                            label="{{ __('journal::ui.index.form.competence') }}"
                             wire:model="form.competency_ids"
                             :options="$availableCompetencies"
-                            placeholder="{{ __('Pilih kompetensi...') }}"
-                            hint="{{ __('Anda dapat memilih lebih dari satu kompetensi') }}"
+                            placeholder="{{ __('journal::ui.index.search_placeholder') }}"
+                            hint="{{ __('journal::ui.index.form.competence_hint') }}"
                         />
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-ui::input 
-                            label="{{ __('Nilai-nilai Karakter') }}" 
-                            placeholder="{{ __('Misal: Disiplin, Tanggung Jawab') }}"
+                            label="{{ __('journal::ui.index.form.character') }}" 
+                            placeholder="{{ __('journal::ui.index.form.character_placeholder') }}"
                             wire:model="form.character_values" 
                         />
                     </div>
 
                     <x-ui::textarea 
-                        label="{{ __('Refleksi & Pembelajaran') }}" 
-                        placeholder="{{ __('Apa hal baru yang Anda pelajari hari ini?') }}"
+                        label="{{ __('journal::ui.index.form.reflection') }}" 
+                        placeholder="{{ __('journal::ui.index.form.reflection_placeholder') }}"
                         wire:model="form.reflection" 
                         rows="3"
                     />
 
+                    <x-ui::textarea 
+                        label="{{ __('journal::ui.index.form.notes') }}" 
+                        placeholder="{{ __('journal::ui.index.form.notes_placeholder') }}"
+                        wire:model="form.notes" 
+                        rows="2"
+                    />
+
                     <x-ui::file
-                        label="{{ __('Lampiran / Bukti') }}"
+                        label="{{ __('journal::ui.index.form.attachments') }}"
                         wire:model="form.attachments"
                         multiple
                         accept="image/*,application/pdf"
                     />
                     <x-slot:actions>
                         <x-ui::button 
-                            label="{{ __('Batal') }}" 
+                            label="{{ __('ui::common.cancel') }}" 
                             link="{{ route('journal.index') }}" 
                             class="btn-ghost" 
                         />
                         <x-ui::button 
-                            label="{{ __('Simpan sebagai Draf') }}" 
+                            label="{{ __('journal::ui.index.form.save_draft') }}" 
                             wire:click="save(true)" 
                             class="btn-outline" 
                             spinner="save(true)" 
                         />
                         <x-ui::button 
-                            label="{{ __('Kirim Jurnal') }}" 
+                            label="{{ __('journal::ui.index.form.submit') }}" 
                             wire:click="save(false)" 
                             class="btn-primary" 
                             spinner="save(false)" 

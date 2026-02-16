@@ -18,7 +18,7 @@ test('it can authenticate a user with email', function () {
         ->with(['email' => 'test@example.com', 'password' => 'password'], false)
         ->andReturn(true);
 
-    Auth::shouldReceive('user')->andReturn(new User);
+    Auth::shouldReceive('user')->andReturn(new User());
 
     $user = $service->login(['email' => 'test@example.com', 'password' => 'password']);
 
@@ -34,7 +34,7 @@ test('it can authenticate a user with username', function () {
         ->with(['username' => 'testuser', 'password' => 'password'], false)
         ->andReturn(true);
 
-    Auth::shouldReceive('user')->andReturn(new User);
+    Auth::shouldReceive('user')->andReturn(new User());
 
     $user = $service->login(['identifier' => 'testuser', 'password' => 'password']);
 

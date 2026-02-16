@@ -15,7 +15,7 @@ class SkillProgress extends Component
 
     public function mount(CompetencyService $service, ?string $registrationId = null)
     {
-        if (! $registrationId) {
+        if (!$registrationId) {
             $registration = app(
                 \Modules\Internship\Services\Contracts\RegistrationService::class,
             )->first([

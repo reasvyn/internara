@@ -28,11 +28,11 @@ class RegistrationManager extends Component
 
     public ?string $historyId = null;
 
-    protected \Modules\Notification\Contracts\Notifier $notifier;
+    protected \Modules\Notification\Services\Contracts\Notifier $notifier;
 
     public function boot(
         RegistrationService $registrationService,
-        \Modules\Notification\Contracts\Notifier $notifier,
+        \Modules\Notification\Services\Contracts\Notifier $notifier,
     ): void {
         $this->service = $registrationService;
         $this->notifier = $notifier;
@@ -57,7 +57,11 @@ class RegistrationManager extends Component
      */
     public function getPlacementsProperty(): \Illuminate\Support\Collection
     {
-        return app(InternshipPlacementService::class)->all(['id', 'company_name']);
+        return app(InternshipPlacementService::class)
+            ->query()
+            ->with('company')
+            ->get()
+            ->map(fn($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
     }
 
     /**
@@ -102,7 +106,7 @@ class RegistrationManager extends Component
                 )->isEligibleForPlacement($this->form->id ?? 'new'); // 'new' is dummy, eligibility check usually needs student_id context for new records
 
                 // For existing records, we can check the ID
-                if ($this->form->id && ! $isEligible) {
+                if ($this->form->id && !$isEligible) {
                     throw new \Modules\Exception\AppException(
                         __('Siswa belum melengkapi persyaratan wajib untuk ditempatkan.'),
                         code: 422,
@@ -137,7 +141,7 @@ class RegistrationManager extends Component
      */
     public function getHistoryProperty(): \Illuminate\Support\Collection
     {
-        if (! $this->historyId) {
+        if (!$this->historyId) {
             return collect();
         }
 
@@ -173,7 +177,7 @@ class RegistrationManager extends Component
      */
     public function executeBulkPlace(): void
     {
-        if (! $this->targetPlacementId) {
+        if (!$this->targetPlacementId) {
             notify(__('Pilih lokasi penempatan.'), 'error');
 
             return;

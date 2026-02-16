@@ -6,7 +6,6 @@ use Modules\Department\Models\Department;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Profile\Models\Profile;
 
-uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('a profile can belong to a department', function () {
     $department = app(DepartmentService::class)->factory()->create();

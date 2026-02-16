@@ -30,7 +30,7 @@ trait HasRequirements
     {
         $year = $academicYear ?? $this->academic_year;
 
-        if (! $year) {
+        if (!$year) {
             return false;
         }
 

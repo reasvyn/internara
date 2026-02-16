@@ -25,7 +25,7 @@ coupling.
 - **`Notifier`**: The primary service for dispatching UI-level notifications. It leverages
   Livewire's event bus to power real-time feedback (e.g., `mary-toast`).
     - _Features_: Support for Success, Error, Warning, and Info alerts.
-    - _Contract_: `Modules\Notification\Contracts\Notifier`.
+    - _Contract_: `Modules\Notification\Services\Contracts\Notifier`.
 
 ### 2.2 Global Protocols
 

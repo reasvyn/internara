@@ -22,7 +22,7 @@ class TeacherService extends EloquentQuery implements Contract
     public function createWithDefault(array $data = []): Teacher
     {
         if (empty($data['nip'])) {
-            $data['nip'] = 'PENDING-'.(string) \Illuminate\Support\Str::uuid();
+            $data['nip'] = 'PENDING-' . (string) \Illuminate\Support\Str::uuid();
         }
 
         return $this->create($data);

@@ -43,7 +43,8 @@ class LogServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Log\Services\Contracts\ActivityService::class => \Modules\Log\Services\ActivityService::class,
+            \Modules\Log\Services\Contracts\ActivityService::class =>
+                \Modules\Log\Services\ActivityService::class,
         ];
     }
 

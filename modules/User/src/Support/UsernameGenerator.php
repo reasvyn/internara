@@ -6,7 +6,7 @@ namespace Modules\User\Support;
 
 use Modules\User\Models\User;
 
-class UsernameGenerator
+final class UsernameGenerator
 {
     /**
      * Generate a unique username with a configurable prefix and random digit length.
@@ -25,7 +25,7 @@ class UsernameGenerator
                 $randomNumbers .= random_int(0, 9);
             }
 
-            $username = $prefix.$randomNumbers;
+            $username = $prefix . $randomNumbers;
             $attempt++;
 
             if ($attempt > $maxAttempts) {

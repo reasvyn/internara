@@ -4,26 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Permission\Services;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Modules\Permission\Models\Role;
-use Modules\Permission\Services\Contracts\RoleService as RoleServiceContract;
+use Modules\Permission\Services\Contracts\RoleService as Contract;
 use Modules\Shared\Services\EloquentQuery;
 
 /**
- * Service class for managing Role operations.
+ * Class RoleService
  *
- * @extends EloquentQuery<Role>
+ * Orchestrates the management of system roles and their permissions.
  */
-class RoleService extends EloquentQuery implements RoleServiceContract
+class RoleService extends EloquentQuery implements Contract
 {
     /**
-     * The name of the record for exception messages.
-     */
-    protected string $recordName = 'role';
-
-    /**
-     * RoleService constructor.
+     * Create a new role service instance.
      */
     public function __construct(Role $model)
     {
@@ -33,38 +26,12 @@ class RoleService extends EloquentQuery implements RoleServiceContract
     }
 
     /**
-     * {@inheritdoc}
+     * Synchronize permissions for a role.
      */
-    public function list(
-        array $filters = [],
-        int $perPage = 10,
-        array $columns = ['*'],
-    ): LengthAwarePaginator {
-        return $this->query($filters, $columns)
-            ->when($filters['module'] ?? null, function (Builder $query, string $module) {
-                $query->where('module', $module);
-            })
-            ->latest()
-            ->paginate($perPage);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function syncPermissions(string $id, array $permissions): Role
+    public function syncPermissions(string $roleId, array $permissions): void
     {
         /** @var Role $role */
-        $role = $this->find($id);
-
-        if (! $role) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
-                Role::class,
-                [$id],
-            );
-        }
-
+        $role = $this->find($roleId);
         $role->syncPermissions($permissions);
-
-        return $role;
     }
 }

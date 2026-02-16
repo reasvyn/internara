@@ -40,13 +40,13 @@ class SetupService implements Contracts\SetupService
     /**
      * {@inheritDoc}
      */
-    public function isStepCompleted(string $step): bool
+    public function isStepCompleted(string $step, bool $skipCache = true): bool
     {
         if (empty($step)) {
             return true;
         }
 
-        return $this->settingService->getValue("setup_step_{$step}", false);
+        return $this->settingService->getValue("setup_step_{$step}", false, $skipCache);
     }
 
     /**
@@ -70,11 +70,11 @@ class SetupService implements Contracts\SetupService
      */
     public function requireSetupAccess(string $prevStep = ''): bool
     {
-        if (! $prevStep) {
-            return ! $this->isAppInstalled();
+        if (!$prevStep) {
+            return !$this->isAppInstalled();
         }
 
-        if (! $this->isStepCompleted($prevStep)) {
+        if (!$this->isStepCompleted($prevStep)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -93,7 +93,7 @@ class SetupService implements Contracts\SetupService
             return $this->finalizeSetupStep();
         }
 
-        if ($reqRecord && ! $this->isRecordExists($reqRecord)) {
+        if ($reqRecord && !$this->isRecordExists($reqRecord)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_record_exists',
                 code: 403,
@@ -122,7 +122,7 @@ class SetupService implements Contracts\SetupService
         $settings = [
             self::SETTING_BRAND_NAME => $schoolRecord->name,
             self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
-            self::SETTING_SITE_TITLE => $schoolRecord->name.' - Sistem Informasi Manajemen PKL',
+            self::SETTING_SITE_TITLE => $schoolRecord->name . ' - Sistem Informasi Manajemen PKL',
             self::SETTING_APP_INSTALLED => true,
             self::SETTING_SETUP_TOKEN => null,
         ];

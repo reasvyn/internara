@@ -17,20 +17,21 @@ The `Attendance` module manages student presence tracking during the internship 
 
 ## Key Features
 
-### 1. Daily Check-in/Check-out
+### 1. Flexible Attendance Recording
 
+- **Adaptive Input:** Support for real-time check-in and retrospective manual entry to accommodate
+  field realities (e.g., informal permits).
+- **Comprehensive States:** Supports Present (Hadir), Sick (Sakit), Permitted (Izin), and
+  Unexplained (Tanpa Keterangan) states.
+- **Informal Justification:** Students can provide context/notes for their attendance status.
 - **Guidance Gating:** Integrity check to ensure students have acknowledged mandatory guidelines
   prior to first presence.
-- **Absence Integrity:** Automatically blocks clock-in if an approved absence (Leave/Sick) exists
-  for the day.
-- **Dynamic Thresholds:** Late thresholds are managed via the `Setting` module (No hard-coding).
 
-### 2. Absence Management
+### 2. Services
 
-- **Leave & Sick Requests:** A dedicated workflow for students to request absence with proof of
-  documentation.
-- **Approval Workflow:** Supervisors can review and approve absence requests, which then integrate
-  with attendance stats.
+- **AttendanceService**: Orchestrates secure temporal and spatial verification.
+    - _API_: `mark(studentId, type, location)`, `getSummary(studentId, month)`.
+    - _Contract_: `Modules\Attendance\Services\Contracts\AttendanceService`.
 
 ### 3. Supervisor Monitoring
 

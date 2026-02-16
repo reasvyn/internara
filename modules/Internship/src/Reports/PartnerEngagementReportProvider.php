@@ -33,7 +33,7 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
      */
     public function getReportData(array $filters = []): array
     {
-        $query = InternshipPlacement::with(['registrations']);
+        $query = InternshipPlacement::with(['registrations', 'company']);
 
         if (isset($filters['internship_id'])) {
             $query->where('internship_id', $filters['internship_id']);
@@ -54,10 +54,10 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
                 )->getAverageScore($registrationIds, 'mentor');
 
                 return [
-                    'Partner Name' => $placement->company_name,
+                    'Partner Name' => $placement->company?->name ?? 'Unknown',
                     'Total Interns' => count($registrationIds),
-                    'Responsiveness' => $journalStats['responsiveness'].'%',
-                    'Avg Feedback' => number_format($avgScore, 2).' / 100',
+                    'Responsiveness' => $journalStats['responsiveness'] . '%',
+                    'Avg Feedback' => number_format($avgScore, 2) . ' / 100',
                 ];
             })
             ->toArray();

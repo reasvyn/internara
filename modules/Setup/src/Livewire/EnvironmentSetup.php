@@ -12,7 +12,6 @@ use Modules\Setup\Services\Contracts\SystemAuditor;
 
 /**
  * Handles the environment validation step of the application setup wizard.
- * Displays system requirements, directory permissions, and database connectivity.
  */
 class EnvironmentSetup extends Component
 {
@@ -24,7 +23,7 @@ class EnvironmentSetup extends Component
     protected SystemAuditor $auditor;
 
     /**
-     * Initializes the component and performs the initial environment check.
+     * Initializes the component.
      */
     public function boot(SetupService $setupService): void
     {
@@ -41,8 +40,6 @@ class EnvironmentSetup extends Component
 
     /**
      * Retrieves the current system audit results.
-     *
-     * @return array<string, array<string, bool|string>>
      */
     #[Computed]
     public function audit(): array
@@ -51,16 +48,16 @@ class EnvironmentSetup extends Component
     }
 
     /**
-     * Determines if the 'Next' button should be disabled based on audit results.
+     * Determines if the 'Next' button should be disabled.
      */
     #[Computed]
     public function disableNextStep(): bool
     {
-        return ! app(SystemAuditor::class)->passes();
+        return !app(SystemAuditor::class)->passes();
     }
 
     /**
-     * Renders the environment setup view.
+     * Renders the component view.
      */
     public function render(): \Illuminate\Contracts\View\View
     {

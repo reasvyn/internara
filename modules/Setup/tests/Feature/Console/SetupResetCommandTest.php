@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Modules\Setting\Services\Contracts\SettingService;
 
-uses(RefreshDatabase::class);
 
 test('it resets setup state correctly', function () {
     $settingService = app(SettingService::class);

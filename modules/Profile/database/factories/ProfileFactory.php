@@ -31,6 +31,11 @@ class ProfileFactory extends Factory
             'user_id' => app(UserService::class)->factory(),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
+            'gender' => fake()->randomElement(['male', 'female']),
+            'blood_type' => fake()->randomElement(['A', 'B', 'AB', 'O']),
+            'emergency_contact_name' => fake()->name(),
+            'emergency_contact_phone' => fake()->phoneNumber(),
+            'emergency_contact_address' => fake()->address(),
             'bio' => fake()->paragraph(),
         ];
     }

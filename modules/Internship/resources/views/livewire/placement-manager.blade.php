@@ -12,10 +12,10 @@
             </div>
 
             <x-ui::table :headers="[
-                ['key' => 'company_name', 'label' => __('internship::ui.company_name')],
+                ['key' => 'company.name', 'label' => __('internship::ui.company_name')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
                 ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
-                ['key' => 'contact_person', 'label' => __('internship::ui.contact')],
+                ['key' => 'company.phone', 'label' => __('internship::ui.contact')],
             ]" :rows="$this->records" with-pagination>
                 @scope('cell_quota', $placement)
                     <div class="flex flex-col gap-1 min-w-[120px]">
@@ -47,12 +47,18 @@
                 placeholder="{{ __('internship::ui.select_program') }}"
                 required 
             />
-            <x-ui::input label="{{ __('internship::ui.company_name') }}" wire:model="form.company_name" required />
-            <x-ui::textarea label="{{ __('internship::ui.company_address') }}" wire:model="form.company_address" />
             
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::input label="{{ __('internship::ui.contact_person') }}" wire:model="form.contact_person" />
-                <x-ui::input label="{{ __('internship::ui.contact_number') }}" wire:model="form.contact_number" />
+            <div class="flex items-end gap-2">
+                <div class="flex-1">
+                    <x-ui::select 
+                        label="{{ __('internship::ui.company_name') }}" 
+                        wire:model="form.company_id" 
+                        :options="$this->companies" 
+                        placeholder="{{ __('internship::ui.select_company') }}"
+                        required 
+                    />
+                </div>
+                {{-- TODO: Add JIT Company Modal if needed --}}
             </div>
 
             <x-ui::input label="{{ __('internship::ui.capacity_quota') }}" type="number" wire:model="form.capacity_quota" required min="1" />

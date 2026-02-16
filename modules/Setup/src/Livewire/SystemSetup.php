@@ -51,7 +51,14 @@ class SystemSetup extends Component
 
         $this->requireSetupAccess();
 
-        $this->mail_from_name = setting('brand_name', setting('app_name'));
+        $this->mail_host = setting('mail_host', '');
+        $this->mail_port = (string) setting('mail_port', '587');
+        $this->mail_username = setting('mail_username', '');
+        $this->mail_password = setting('mail_password', '');
+        $this->mail_encryption = setting('mail_encryption', 'tls');
+        $this->mail_from_address = setting('mail_from_address', 'no-reply@internara.test');
+        $this->mail_from_name =
+            setting('mail_from_name') ?: setting('brand_name', setting('app_name'));
     }
 
     /**
@@ -81,7 +88,7 @@ class SystemSetup extends Component
                 throw new \Exception($errstr ?: 'Connection timed out.');
             }
         } catch (\Exception $e) {
-            notify('Connection failed: '.$e->getMessage(), 'error');
+            notify('Connection failed: ' . $e->getMessage(), 'error');
         }
     }
 
@@ -119,8 +126,9 @@ class SystemSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.system-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.system.title').
-                ' | '.
+            'title' =>
+                __('setup::wizard.system.title') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

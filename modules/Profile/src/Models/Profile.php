@@ -33,6 +33,11 @@ class Profile extends Model
         'department_id',
         'phone',
         'address',
+        'gender',
+        'blood_type',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'emergency_contact_address',
         'bio',
         'profileable_id',
         'profileable_type',
@@ -48,6 +53,8 @@ class Profile extends Model
         return [
             'phone' => 'encrypted',
             'address' => 'encrypted',
+            'emergency_contact_phone' => 'encrypted',
+            'emergency_contact_address' => 'encrypted',
             'bio' => 'encrypted',
         ];
     }

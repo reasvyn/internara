@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Modules\Auth\Services\Contracts\RedirectService as Contract;
 use Modules\Permission\Enums\Role;
-use Modules\User\Models\User;
 
 /**
  * Class RedirectService
  *
- * Handles logic for determining the destination URL after login/registration.
+ * Handles post-authentication redirection logic based on user roles and status.
  */
-class RedirectService implements Contract
+final class RedirectService implements Contract
 {
     /**
-     * Get the target URL for a user based on their roles and status.
+     * Get the target URL for the authenticated user.
      */
-    public function getTargetUrl(User $user): string
+    public function getTargetUrl(Authenticatable $user): string
     {
-        // If the user is not an admin and hasn't verified their email,
-        // redirect them to the verification notice page.
-        if (
-            ! $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value]) &&
-            ! $user->hasVerifiedEmail()
-        ) {
+        if (!$user->hasVerifiedEmail() && setting('require_email_verification', true)) {
             return route('verification.notice');
         }
 
@@ -39,10 +34,6 @@ class RedirectService implements Contract
 
         if ($user->hasRole(Role::MENTOR->value)) {
             return route('mentor.dashboard');
-        }
-
-        if ($user->hasRole(Role::STUDENT->value)) {
-            return route('student.dashboard');
         }
 
         return route('student.dashboard');

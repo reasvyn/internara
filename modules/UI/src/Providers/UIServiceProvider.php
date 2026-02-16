@@ -39,7 +39,7 @@ class UIServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(module_path('UI', 'resources/views/components'), 'ui');
 
         // Register class-based components
-        Blade::component('ui::components.user-menu', \Modules\UI\View\Components\UserMenu::class);
+        Blade::component('ui::user-menu', \Modules\UI\View\Components\UserMenu::class);
 
         // Register the custom Blade directive
         Blade::directive('slotRender', function ($expression) {
@@ -67,20 +67,21 @@ class UIServiceProvider extends ServiceProvider
         return [
             SlotManagerContract::class => SlotManager::class,
             SlotRegistryContract::class => SlotRegistry::class,
-            \Modules\UI\Services\Contracts\LocalizationService::class => \Modules\UI\Services\LocalizationService::class,
+            \Modules\UI\Services\Contracts\LocalizationService::class =>
+                \Modules\UI\Services\LocalizationService::class,
         ];
     }
 
     protected function viewSlots(): array
     {
         return [
-            'navbar.brand' => 'ui::components.brand',
+            'navbar.brand' => 'ui::brand',
             'navbar.actions' => [
                 'livewire:ui::language-switcher',
-                'ui::components.user-menu',
-                'ui::components.theme-toggle',
+                'ui::user-menu',
+                'ui::theme-toggle',
             ],
-            'footer.app-credit' => 'ui::components.app-credit',
+            'footer.app-credit' => 'ui::app-credit',
         ];
     }
 }

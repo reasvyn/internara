@@ -11,27 +11,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
- * Defines a standard contract for repository-like query classes.
+ * Defines the standard contract for domain-specific query and persistence logic.
  *
- * This interface provides a consistent API for performing common Eloquent operations,
- * including filtering, pagination, creation, and caching.
+ * This interface acts as the foundation for the Service Layer, ensuring that
+ * data access follows consistent patterns across all modules. It facilitates
+ * the enforcement of SLRI (Software-Level Referential Integrity) by
+ * centralizing validation and persistence rules within the Service boundary.
  *
  * @template TModel of \Illuminate\Database\Eloquent\Model
  */
 interface EloquentQuery
 {
     /**
-     * Default number of items per page for pagination.
+     * Default number of items per page for institutional data delivery.
      */
     public const DEFAULT_PER_PAGE = 15;
 
     /**
-     * Retrieves paginated records, applying optional filters.
+     * Retrieves a paginated segment of records with active filtering.
      *
-     * @param array<string, mixed> $filters
-     * @param list<string> $columns
+     * Facilitates the Mobile-First mandate by delivering lightweight data
+     * chunks suitable for responsive UI lists.
      *
-     * @return LengthAwarePaginator<TModel>
+     * @param array<string, mixed> $filters Contextual criteria (search, sort, scopes).
+     * @param list<string> $columns Specific attributes required by the consumer.
+     *
+     * @return LengthAwarePaginator<TModel> The paginated domain collection.
      */
     public function paginate(
         array $filters = [],
@@ -40,7 +45,10 @@ interface EloquentQuery
     ): LengthAwarePaginator;
 
     /**
-     * Retrieves all records, optionally limited to specific columns.
+     * Retrieves the entire collection of domain records.
+     *
+     * Note: Use sparingly for high-volume entities to prevent memory heap
+     * exhaustion. Prefer pagination for user-facing lists.
      *
      * @param list<string> $columns
      *
@@ -49,7 +57,10 @@ interface EloquentQuery
     public function all(array $columns = ['*']): Collection;
 
     /**
-     * Retrieves records based on a set of filters.
+     * Retrieves a filtered collection of records without pagination.
+     *
+     * Commonly used for internal service-to-service data synchronization
+     * or populating institutional selectors.
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
@@ -59,29 +70,33 @@ interface EloquentQuery
     public function get(array $filters = [], array $columns = ['*']): Collection;
 
     /**
-     * Retrieves the first record matching the given filters.
+     * Retrieves the singular leading record matching the criteria.
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
      *
-     * @return TModel|null
+     * @return TModel|null The leading entity or null if zero-match.
      */
     public function first(array $filters = [], array $columns = ['*']): ?Model;
 
     /**
-     * Retrieves the first record matching the filters or fails.
+     * Retrieves the leading record or terminates with a secure exception.
+     *
+     * Ensures that business logic does not proceed with missing data,
+     * satisfying the "Fail Securely" invariant.
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException<TModel>
-     *
-     * @return TModel
      */
     public function firstOrFail(array $filters = [], array $columns = ['*']): Model;
 
     /**
-     * Finds a record by its primary key.
+     * Finds a specific entity by its authoritative primary key.
+     *
+     * This is the primary method for cross-module identity lookup via
+     * Service Contracts.
      *
      * @param list<string> $columns
      *
@@ -90,65 +105,80 @@ interface EloquentQuery
     public function find(mixed $id, array $columns = ['*']): ?Model;
 
     /**
-     * Checks if any records exist that match the given filters.
+     * Verifies the physical existence of records matching the criteria.
+     *
+     * Acts as the PEP (Policy Enforcement Point) for verifying foreign
+     * identities across module boundaries without direct model access.
      *
      * @param array<string, mixed> $filters
      */
     public function exists(array $filters = []): bool;
 
     /**
-     * Creates a new record with the given data.
+     * Persists a new domain entity into the database registry.
      *
-     * @param array<string, mixed> $data
+     * Orchestrates the transition from raw input to a formal domain entity,
+     * applying UUID generation and default status assignments.
      *
-     * @return TModel
+     * @param array<string, mixed> $data Validated input attributes.
+     *
+     * @return TModel The newly persisted identity.
      */
     public function create(array $data): Model;
 
     /**
-     * Updates a record by its primary key with the given data.
+     * Modifies an existing domain entity identified by its primary key.
      *
-     * @param array<string, mixed> $data
+     * @param array<string, mixed> $data The updated attribute set.
      *
-     * @return TModel
+     * @return TModel The updated entity state.
      */
     public function update(mixed $id, array $data): Model;
 
     /**
-     * Updates an existing record or creates a new one.
+     * Atomically updates an existing record or creates a new baseline.
      *
-     * @param array<string, mixed> $attributes
-     * @param array<string, mixed> $values
+     * Implements the "Idempotent Persistence" pattern to ensure system
+     * stability during repeated onboarding or setup cycles.
      *
-     * @return TModel
+     * @param array<string, mixed> $attributes Unique identifiers for lookup.
+     * @param array<string, mixed> $values Attributes to be merged/updated.
+     *
+     * @return TModel The resulting domain entity.
      */
     public function save(array $attributes, array $values = []): Model;
 
     /**
-     * Deletes a record by its primary key.
+     * Removes an entity from the active system registry.
      *
-     * @param bool $force Permanently delete if true.
+     * This is a destructive operation. Implementation MUST verify that
+     * no cross-module dependencies prevent this deletion (SLRI).
+     *
+     * @param bool $force If true, executes a hard-delete bypassing soft-deletion.
      */
     public function delete(mixed $id, bool $force = false): bool;
 
     /**
-     * Performs a bulk insert operation.
+     * Executes a high-performance bulk record insertion.
      *
-     * @param list<array<string, mixed>> $data
+     * Warning: This method may bypass certain model-level events. Use only
+     * for high-volume technical data transitions.
+     *
+     * @param list<array<string, mixed>> $data Array of attribute sets.
      */
     public function insert(array $data): bool;
 
     /**
-     * Performs a bulk "upsert" operation.
+     * Performs an atomic bulk "upsert" across multiple entities.
      *
      * @param list<array<string, mixed>> $values
-     * @param list<string>|string $uniqueBy
-     * @param list<string>|null $update
+     * @param list<string>|string $uniqueBy Identifiers for existence check.
+     * @param list<string>|null $update Attributes to refresh on match.
      */
     public function upsert(array $values, array|string $uniqueBy, ?array $update = null): int;
 
     /**
-     * Destroys multiple records by their primary keys.
+     * Destroys a set of entities identified by their primary keys.
      *
      * @param Collection<int, mixed>|list<mixed>|mixed $ids
      * @param bool $force Permanently delete if true.
@@ -156,7 +186,10 @@ interface EloquentQuery
     public function destroy(mixed $ids, bool $force = false): int;
 
     /**
-     * Retrieves filtered records as a plain array.
+     * Converts a filtered collection into a projects standard array.
+     *
+     * Useful for delivering data to external APIs or lightweight
+     * front-end components.
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
@@ -166,7 +199,10 @@ interface EloquentQuery
     public function toArray(array $filters = [], array $columns = ['*']): array;
 
     /**
-     * Gets a new query builder instance with optional filters applied.
+     * Retrieves a scoped Query Builder instance for advanced orchestration.
+     *
+     * Allows consumers to build complex queries while adhering to the
+     * service's baseline filtering and authorization scopes.
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
@@ -176,11 +212,14 @@ interface EloquentQuery
     public function query(array $filters = [], array $columns = ['*']): Builder;
 
     /**
-     * Retrieves an item from cache, or executes the callback and caches the result.
+     * Orchestrates cached data delivery with authoritative fallback.
      *
-     * @param \DateTimeInterface|\DateInterval|int $ttl
-     * @param Closure(static): mixed $callback
-     * @param bool $skipCache If true, bypasses the cache and executes the callback directly.
+     * Implements the "Read-Through" caching pattern to enhance system
+     * performance for institutional static data.
+     *
+     * @param \DateTimeInterface|\DateInterval|int $ttl Time-to-live.
+     * @param Closure(static): mixed $callback Logic to execute on cache-miss.
+     * @param bool $skipCache If true, bypasses the persistence cache layer.
      */
     public function remember(
         string $cacheKey,
@@ -190,7 +229,7 @@ interface EloquentQuery
     ): mixed;
 
     /**
-     * Sets the Eloquent model instance for the query.
+     * Binds a specific Eloquent model instance to the query orchestrator.
      *
      * @param TModel $model
      *
@@ -199,14 +238,14 @@ interface EloquentQuery
     public function setModel(Model $model): self;
 
     /**
-     * Set whether to include soft-deleted records.
+     * Configures the orchestrator to include or exclude soft-deleted records.
      *
      * @return static
      */
     public function withTrashed(bool $value = true): self;
 
     /**
-     * Sets a base query to build upon.
+     * Sets the foundational query baseline for the orchestrator.
      *
      * @param Builder<TModel> $query
      *
@@ -215,7 +254,7 @@ interface EloquentQuery
     public function setBaseQuery(Builder $query): self;
 
     /**
-     * Defines the columns that are searchable.
+     * Formalizes the list of technical identifiers that support searching.
      *
      * @param list<string> $columns
      *
@@ -224,7 +263,7 @@ interface EloquentQuery
     public function setSearchable(array $columns = []): self;
 
     /**
-     * Defines the columns that are sortable.
+     * Formalizes the list of technical identifiers that support sorting.
      *
      * @param list<string> $columns
      *
@@ -233,21 +272,17 @@ interface EloquentQuery
     public function setSortable(array $columns = []): self;
 
     /**
-     * Get a new factory instance for the model.
+     * Retrieves an executable Factory instance for the bound model.
      *
+     * Used exclusively within verification suites to ensure consistent
+     * state generation.
      *
-     * @throws \RuntimeException If the model does not have a factory.
+     * @throws \RuntimeException If the entity does not support automated generation.
      */
     public function factory(): \Illuminate\Database\Eloquent\Factories\Factory;
 
     /**
-     * Define a polymorphic-style inverse one-to-one or many relationship from the service's model perspective.
-     * This acts as a wrapper for $relatedModel->belongsTo(ServiceBoundModel::class).
-     *
-     * @param Model $related The model instance that "belongs to" the service's model.
-     * @param string|null $foreignKey The foreign key on the related model.
-     * @param string|null $ownerKey The owner key on the service's model.
-     * @param string|null $relation The relation name.
+     * Defines a semantic 'Belongs To' relationship bridge.
      */
     public function defineBelongsTo(
         Model $related,
@@ -257,11 +292,7 @@ interface EloquentQuery
     ): \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
     /**
-     * Define a one-to-many relationship from the service's model perspective.
-     * This acts as a wrapper for $relatedModel->hasMany(ServiceBoundModel::class).
-     * Note: This is usually inverted logic. Typically services manage the parent.
-     *
-     * @param Model $related The model instance that "has many" of the service's model.
+     * Defines a semantic 'Has Many' relationship bridge.
      */
     public function defineHasMany(
         Model $related,
@@ -270,10 +301,7 @@ interface EloquentQuery
     ): \Illuminate\Database\Eloquent\Relations\HasMany;
 
     /**
-     * Define a one-to-one relationship from the service's model perspective.
-     * This acts as a wrapper for $relatedModel->hasOne(ServiceBoundModel::class).
-     *
-     * @param Model $related The model instance that "has one" of the service's model.
+     * Defines a semantic 'Has One' relationship bridge.
      */
     public function defineHasOne(
         Model $related,

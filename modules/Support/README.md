@@ -1,57 +1,55 @@
 # Support Module
 
-The `Support` module provides high-level administrative utilities and cross-domain orchestration
-tools that facilitate mass-operations and automated onboarding.
+The `Support` module provides the **Operational Bridge** between Internara's architectural standards
+and environmental reality. It centralizes development tooling, automated scaffolding, and complex
+administrative utilities.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
-
----
-
-## 1. Architectural Role
-
-While the `Shared` module provides business-agnostic technical utilities, the `Support` module
-provides **Business-Aware Utilities**. It orchestrates multiple domain services to perform complex
-administrative tasks that do not belong to a single business domain.
+> **Governance Mandate:** This module implements the infrastructure required to satisfy
+> **[SYRS-C-003]** (Service Layer Logic). All implementation must adhere to the
+> **[Coding Conventions](../../docs/developers/conventions.md)**.
 
 ---
 
-## 2. Key Features
+## 1. Domain Domains
 
-### 2.1 Batch Onboarding
+### 1.1 Scaffolding Domain
 
-- **`OnboardingService`**: Facilitates the mass-import of students, teachers, and mentors via CSV
-  files.
-    - _Features_: Automated user creation, profile initialization, role assignment, and
-      institutional ID (NISN/NIP) mapping.
-    - _Contract_: `Modules\Support\Services\Contracts\OnboardingService`.
-- **Validation**: Enforces data integrity during bulk operations, providing detailed row-level error
-  reporting.
+Provides custom Artisan generators that enforce the **Modular DDD**, **src Omission**, and
+**Finality** conventions during development.
+
+- `module:make-class`: Generates a final PHP class with direct namespacing.
+- `module:make-interface`: Generates a contract in the appropriate domain folder.
+- `module:make-trait`: Generates a reusable concern.
+- `module:make-dusk`: Generates browser testing boilerplate.
+
+### 1.2 Testing Domain
+
+- **`AppTestCommand`**: An orchestrated test runner (`php artisan app:test`) that executes modular
+  test suites sequentially to optimize memory usage.
+
+### 1.3 Onboarding Domain
+
+- **`OnboardingService`**: Orchestrates mass-import of stakeholders (Students, Teachers, Mentors)
+  via CSV data processing.
+    - _Terminology_: Supports universal identifiers (National Identifier & Registration Number).
 
 ---
 
-## 3. Implementation Standards
+## 2. Engineering Standards
 
-- **Service Exclusivity**: Logic resides entirely within the Service Layer to ensure transactional
-  integrity across module boundaries.
-- **Cross-Module Orchestration**: Interacts with `User`, `Profile`, `Student`, and `Teacher` modules
-  exclusively via their Service Contracts.
-- **Atomic Operations**: All batch processes are encapsulated within database transactions to
-  prevent partial data corruption.
+- **Environment Awareness**: This module is allowed to interact with low-level system resources
+  (Filesystem, Shell) to facilitate automation.
+- **Service Orchestration**: Complex utilities (like Onboarding) must delegate specific attribute
+  updates to the respective domain modules (User, Student, Teacher).
 
 ---
 
-## 4. Verification & Validation (V&V)
+## 3. Verification & Validation (V&V)
 
-Reliability is ensured through integration testing:
-
-- **Feature Tests**: Verifies complete CSV import lifecycles for all stakeholder types.
-- **Error Handling**: Validates the robustness of the import engine against malformed or incomplete
-  data.
+- **Feature Tests**: Validating mass CSV import workflows and generator output consistency.
+- **Command Tests**: Verifying the orchestrated sequential execution of test segments.
 - **Command**: `php artisan test modules/Support`
 
 ---
 
-_The Support module simplifies systemic administration by automating complex initialization
-workflows._
+_The Support module shields business domains from operational complexity through automation._

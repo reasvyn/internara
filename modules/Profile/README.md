@@ -43,8 +43,10 @@ decoupled integration with the `Department`, `Student`, and `Teacher` modules.
   physical foreign keys.
 - **Model Isolation**: Utilizes the `Role` Enum from the `Permission` module to perform role-based
   logic, avoiding direct dependency on the `User` model for constants.
-- **Privacy First**: Sensitive fields (phone, address) are subject to automated masking in system
-  logs via the `Log` module.
+- **Privacy First**: Sensitive fields (phone, address, emergency contacts) are subject to automated
+  encryption at rest and masking in system logs via the `Log` module.
+- **Enhanced Demographics**: Supports collection of Gender, Blood Type, and Emergency Contact
+  metadata to satisfy institutional safety requirements.
 
 ---
 

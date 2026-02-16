@@ -40,6 +40,14 @@ class PlacementManager extends Component
     }
 
     /**
+     * Get companies for the dropdown.
+     */
+    public function getCompaniesProperty(): \Illuminate\Support\Collection
+    {
+        return \Modules\Internship\Models\Company::all(['id', 'name']);
+    }
+
+    /**
      * Get internships for the dropdown.
      */
     public function getInternshipsProperty(): \Illuminate\Support\Collection

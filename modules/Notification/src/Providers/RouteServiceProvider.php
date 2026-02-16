@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'Notifications';
+    protected string $name = 'Notification';
 
     /**
      * Called before routes are registered.

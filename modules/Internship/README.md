@@ -11,7 +11,8 @@ to official registration.
 
 ## Purpose
 
-- **Placement Management:** Tracks industry locations and available quotas.
+- **Partner Management:** Reusable master data for industry partners (Companies/Agencies).
+- **Placement Management:** Tracks specific internship slots and available quotas per batch.
 - **Registration Orchestration:** Manages student applications and verification.
 - **Dynamic Prerequisites:** Enforces administrative requirements (Reports, Documents, Evaluations).
 
@@ -19,15 +20,19 @@ to official registration.
 
 ### 1. Models
 
-- **InternshipPlacement:** Location-specific opportunity with quota tracking.
+- **Company:** Master data for industry partners (Name, Leader, Contact).
+- **InternshipPlacement:** Batch-specific slot linking a Company to an Internship program.
 - **InternshipRegistration:** Student's official record (UUID identity).
 - **InternshipRequirement:** Dynamic prerequisites (e.g., Documents, Skills).
 
 ### 2. Services
 
-- **PlacementService:** Manages industry locations and slot allocation.
-- **RegistrationService:** Orchestrates student enrollment and requirement clearing.
-- **RequirementService:** Handles the lifecycle of prerequisite verification.
+- **CompanyService**: Manages authoritative industry partner master records.
+- **PlacementService**: Orchestrates batch-specific slot allocation and eligibility.
+    - _API_: `createSlot(companyId, academicYear)`, `getAvailableQuotas()`.
+- **RegistrationService**: Orchestrates student enrollment and requirement clearing.
+    - _API_: `enroll(studentId, placementId)`, `verify(registrationId)`, `cancel(registrationId)`.
+- **RequirementService**: Handles the lifecycle of prerequisite verification.
 
 ### 3. Key Features
 

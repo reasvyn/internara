@@ -6,7 +6,7 @@ namespace Modules\Schedule\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Shared\Models\Concerns\HasAcademicYear;
+use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class Schedule extends Model

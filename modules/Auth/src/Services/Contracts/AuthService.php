@@ -10,32 +10,43 @@ use Modules\User\Models\User;
 interface AuthService
 {
     /**
-     * Attempt to log in a user with the given credentials.
+     * Attempts to authenticate a user into the system using provided credentials.
      *
-     * @param array $credentials Contains 'email' (which can be an email or username), 'password'.
-     * @param bool $remember Whether to "remember" the user.
+     * This method acts as the primary security gateway, verifying identity
+     * while enforcing rate limiting and session protection to prevent
+     * brute-force attacks.
      *
-     * @throws \Modules\Exception\AppException If authentication fails.
+     * @param array $credentials Contains 'email' (identifier) and 'password'.
+     * @param bool $remember Whether to persist the session via long-lived cookies.
      *
-     * @return Authenticatable|User The authenticated user.
+     * @throws \Modules\Exception\AppException If authentication fails or account is locked.
+     *
+     * @return Authenticatable|User The verified stakeholder entity.
      */
     public function login(array $credentials, bool $remember = false): Authenticatable|User;
 
     /**
-     * Log out the currently authenticated user.
+     * Destroys the current user session and invalidates authentication tokens.
+     *
+     * Ensures that all session data is flushed to prevent session reuse
+     * or unauthorized access from shared devices.
      */
     public function logout(): void;
 
     /**
-     * Register a new user.
+     * Registers a new stakeholder into the ecosystem with assigned roles.
      *
-     * @param array $data Contains user data including 'name', 'email', 'password'.
-     * @param string|array|null $roles Roles to assign to the user upon registration.
-     * @param bool $sendEmailVerification Whether to send an email verification notification.
+     * This method orchestrates the creation of the User entity, assigning
+     * initial permissions, and optionally triggering the verification flow
+     * to satisfy institution-level security policies.
      *
-     * @throws \Modules\Exception\AppException If registration fails (e.g., duplicate email).
+     * @param array $data Basic identity data (name, email, password).
+     * @param string|array|null $roles Standard roles defined in the SSoT.
+     * @param bool $sendEmailVerification Flag to initiate the email trust loop.
      *
-     * @return User The newly registered user.
+     * @throws \Modules\Exception\AppException If identity constraints are violated.
+     *
+     * @return User The newly provisioned identity.
      */
     public function register(
         array $data,
@@ -44,67 +55,60 @@ interface AuthService
     ): User;
 
     /**
-     * Get the currently authenticated user.
+     * Retrieves the identity of the stakeholder in the current session context.
      *
-     * @return Authenticatable|User|null The authenticated user, or null if no user is authenticated.
+     * Acts as the internal accessor for authenticated data across all modules,
+     * ensuring that the system always operates within a verified user scope.
      */
     public function getAuthenticatedUser(): Authenticatable|User|null;
 
     /**
-     * Change the password for a user.
+     * Updates the user's secret credential with mandatory verification.
      *
-     * @param \Modules\User\Models\User $user The user whose password is to be changed.
-     * @param string $currentPassword The user's current password.
-     * @param string $newPassword The new password for the user.
+     * Enforces security by requiring the current secret before allowing a
+     * transition to a new one, mitigating unauthorized account takeover.
      *
-     * @throws \Modules\Exception\AppException If the current password does not match.
+     * @param \Modules\User\Models\User $user The identity being updated.
+     * @param string $currentPassword Verification of existing ownership.
+     * @param string $newPassword The new credential to be hashed.
      *
-     * @return bool True if the password was successfully changed, false otherwise.
+     * @throws \Modules\Exception\AppException If verification or complexity rules fail.
      */
     public function changePassword(User $user, string $currentPassword, string $newPassword): bool;
 
     /**
-     * Send the password reset link to a user.
+     * Initiates the password recovery protocol via secure communication.
      *
-     * @param string $email The email address of the user.
+     * Generates a time-limited, one-time-use token to allow users to
+     * regain access without compromising current security invariants.
      */
     public function sendPasswordResetLink(string $email): void;
 
     /**
-     * Reset the password for a user.
-     *
-     * @param array $credentials Contains 'token', 'email', 'password', 'password_confirmation'.
-     *
-     * @return bool True if the password was successfully reset, false otherwise.
+     * Finalizes the password recovery flow using a verified token.
      */
     public function resetPassword(array $credentials): bool;
 
     /**
-     * Verify a user's email address.
+     * Certifies the ownership of an email address within the system.
      *
-     * @param string $id The user ID.
-     * @param string $hash The email verification hash.
-     *
-     * @return bool True if the email was successfully verified, false otherwise.
+     * Completes the trust loop required for high-frequency notifications
+     * and institutional administrative compliance.
      */
     public function verifyEmail(string $id, string $hash): bool;
 
     /**
-     * Resend the email verification notification.
+     * Resends the verification challenge to the user's registered email.
      *
-     * @param \Modules\User\Models\User $user The user to resend the verification email to.
-     *
-     * @throws \Modules\Exception\AppException If the email is already verified.
+     * @throws \Modules\Exception\AppException If the trust loop is already complete.
      */
     public function resendVerificationEmail(User $user): void;
 
     /**
-     * Confirm a user's password.
+     * Performs a one-time secret verification for high-privilege actions.
      *
-     * @param \Modules\User\Models\User $user The user to confirm the password for.
-     * @param string $password The password to confirm.
-     *
-     * @return bool True if the password matches, false otherwise.
+     * Used as a temporary security elevation (PE) gate before allowing
+     * access to sensitive institutional configurations or PII.
      */
     public function confirmPassword(User $user, string $password): bool;
 }

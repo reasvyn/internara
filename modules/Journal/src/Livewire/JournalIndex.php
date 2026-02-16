@@ -41,7 +41,7 @@ class JournalIndex extends Component
 
             if (
                 $settingService->getValue('feature_guidance_enabled', true) &&
-                ! $guidanceService->hasCompletedMandatory(auth()->id())
+                !$guidanceService->hasCompletedMandatory(auth()->id())
             ) {
                 notify(__('guidance::messages.must_complete_guidance'), 'warning');
 
@@ -82,7 +82,7 @@ class JournalIndex extends Component
      */
     public function getWeekGlanceProperty(): array
     {
-        if (! auth()->user()->hasRole('student')) {
+        if (!auth()->user()->hasRole('student')) {
             return [];
         }
 
@@ -96,7 +96,7 @@ class JournalIndex extends Component
                 'end_date' => $endOfWeek->format('Y-m-d'),
             ])
             ->get()
-            ->keyBy(fn ($e) => $e->date->format('Y-m-d'));
+            ->keyBy(fn($e) => $e->date->format('Y-m-d'));
 
         $days = [];
         for ($date = $startOfWeek->copy(); $date <= $endOfWeek; $date->addDay()) {

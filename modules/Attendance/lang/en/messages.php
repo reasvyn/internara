@@ -14,6 +14,7 @@ return [
     'check_out' => 'Clock Out',
     'status' => 'Status',
     'outside_internship_period' => 'You cannot clock in outside your assigned internship period.',
-    'cannot_check_in_with_approved_absence' => 'You cannot clock in because you have an approved absence request for today.',
+    'cannot_check_in_with_approved_absence' =>
+        'You cannot clock in because you have an approved absence request for today.',
     'absence_request_submitted' => 'Absence request submitted successfully.',
 ];

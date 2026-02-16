@@ -62,11 +62,50 @@
                                 required
                             />
                             <x-ui::input :label="__('profile::ui.form.phone')" wire:model="phone" />
+                            <x-ui::select
+                                :label="__('profile::ui.form.gender')"
+                                wire:model="gender"
+                                :options="[
+                                    ['id' => 'male', 'name' => __('profile::enums.gender.male')],
+                                    ['id' => 'female', 'name' => __('profile::enums.gender.female')]
+                                ]"
+                                placeholder="---"
+                            />
+                            <x-ui::select
+                                :label="__('profile::ui.form.blood_type')"
+                                wire:model="blood_type"
+                                :options="[
+                                    ['id' => 'A', 'name' => 'A'],
+                                    ['id' => 'B', 'name' => 'B'],
+                                    ['id' => 'AB', 'name' => 'AB'],
+                                    ['id' => 'O', 'name' => 'O']
+                                ]"
+                                placeholder="---"
+                            />
                         </div>
+
                         <x-ui::textarea
                             :label="__('profile::ui.form.address')"
                             wire:model="address"
-                            rows="3"
+                            rows="2"
+                        />
+
+                        <div class="divider text-xs opacity-50">{{ __('profile::ui.form.emergency_contact') }}</div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <x-ui::input
+                                :label="__('profile::ui.form.emergency_contact_name')"
+                                wire:model="emergency_contact_name"
+                            />
+                            <x-ui::input
+                                :label="__('profile::ui.form.emergency_contact_phone')"
+                                wire:model="emergency_contact_phone"
+                            />
+                        </div>
+                        <x-ui::textarea
+                            :label="__('profile::ui.form.emergency_contact_address')"
+                            wire:model="emergency_contact_address"
+                            rows="2"
                         />
                         <x-ui::textarea
                             :label="__('profile::ui.form.bio')"
@@ -104,12 +143,39 @@
                             @endif
 
                             @if (auth()->user()->hasRole('student'))
-                                <x-ui::input
-                                    :label="__('profile::ui.form.nisn')"
-                                    wire:model="nisn"
-                                    required
-                                    :hint="__('profile::ui.form.nisn_hint')"
-                                />
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <x-ui::input
+                                        :label="__('profile::ui.form.national_identifier')"
+                                        wire:model="national_identifier"
+                                        required
+                                        :hint="__('profile::ui.form.national_identifier_hint')"
+                                    />
+                                    <x-ui::input
+                                        :label="__('profile::ui.form.registration_number')"
+                                        wire:model="registration_number"
+                                        :hint="__('profile::ui.form.registration_number_hint')"
+                                    />
+                                    <x-ui::input
+                                        :label="__('profile::ui.form.class_name')"
+                                        wire:model="class_name"
+                                        :hint="__('profile::ui.form.class_name_hint')"
+                                    />
+                                    
+                                    <x-ui::file
+                                        :label="__('profile::ui.form.passport_photo')"
+                                        wire:model="passport_photo"
+                                        accept="image/*"
+                                        :hint="__('profile::ui.form.passport_photo_hint')"
+                                    >
+                                        @php
+                                            $student = auth()->user()->profile->profileable;
+                                            $passportUrl = $student?->getFirstMediaUrl(\Modules\Student\Models\Student::COLLECTION_PASSPORT_PHOTO);
+                                        @endphp
+                                        @if($passportUrl)
+                                            <img src="{{ $passportUrl }}" class="w-24 h-32 object-cover rounded mt-2 border" />
+                                        @endif
+                                    </x-ui::file>
+                                </div>
                             @endif
 
                             <x-slot:actions>

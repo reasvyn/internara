@@ -24,6 +24,5 @@
     {{-- Right side actions --}}
     <x-slot:actions class="space-x-2 flex items-center">
         @slotRender('navbar.actions')
-        <x-ui::user-menu />
     </x-slot:actions>
 </x-ui::nav>

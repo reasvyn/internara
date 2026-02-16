@@ -6,10 +6,12 @@ namespace Modules\Department\Tests\Unit\Services;
 
 use Modules\Department\Models\Department;
 use Modules\Department\Services\DepartmentService;
+use Modules\School\Services\Contracts\SchoolService;
 
 test('it can search departments by name', function () {
     $department = mock(Department::class);
-    $service = new DepartmentService($department);
+    $schoolService = mock(SchoolService::class);
+    $service = new DepartmentService($department, $schoolService);
 
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $department->shouldReceive('newQuery')->andReturn($builder);
