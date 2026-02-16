@@ -76,6 +76,6 @@ class CertificateService implements Contract
     {
         $url = $this->getVerificationUrl($registrationId);
 
-        return base64_encode((string) QrCode::format('png')->size(150)->margin(1)->generate($url));
+        return base64_encode((string) QrCode::format('svg')->size(150)->margin(1)->generate($url));
     }
 }
