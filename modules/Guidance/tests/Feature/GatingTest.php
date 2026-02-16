@@ -13,7 +13,6 @@ use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Services\Contracts\UserService;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Seed roles and permissions via modular seeder

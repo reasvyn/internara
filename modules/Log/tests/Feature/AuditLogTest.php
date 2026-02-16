@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
+use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\User\Models\User;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 test('it records audit log when a placement is updated', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    $placement = InternshipPlacement::factory()->create(['company_name' => 'Old Company']);
+    $company = Company::factory()->create(['name' => 'Old Company']);
+    $newCompany = Company::factory()->create(['name' => 'New Company']);
+    $placement = InternshipPlacement::factory()->create(['company_id' => $company->id]);
 
-    $placement->update(['company_name' => 'New Company']);
+    $placement->update(['company_id' => $newCompany->id]);
 
     $this->assertDatabaseHas('audit_logs', [
         'user_id' => $user->id,
@@ -23,7 +25,7 @@ test('it records audit log when a placement is updated', function () {
     ]);
 
     $log = \Modules\Log\Models\AuditLog::first();
-    expect($log->payload['company_name'])->toBe('New Company');
+    expect($log->payload['company_id'])->toBe($newCompany->id);
 });
 
 test('it records audit log when a placement is deleted', function () {

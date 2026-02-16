@@ -11,7 +11,6 @@ use Modules\Internship\Models\RequirementSubmission;
 use Modules\Internship\Services\Contracts\PlacementService;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->placementService = app(PlacementService::class);

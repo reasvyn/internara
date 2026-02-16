@@ -9,7 +9,6 @@ use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->attendanceService = app(AttendanceService::class);
@@ -22,8 +21,8 @@ test('it prevents check-in if an approved absence request exists for today', fun
         'start_date' => now()->subDay()->format('Y-m-d'),
         'end_date' => now()->addMonth()->format('Y-m-d'),
     ]);
+    $registration->setStatus('active');
 
-    // Create approved absence for today
     $absence = AbsenceRequest::create([
         'student_id' => $student->id,
         'registration_id' => $registration->id,
@@ -33,7 +32,7 @@ test('it prevents check-in if an approved absence request exists for today', fun
     ]);
     $absence->setStatus('approved');
 
-    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
+    expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
         AppException::class,
         'attendance::messages.cannot_check_in_with_approved_absence',
     );

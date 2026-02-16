@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Livewire\Component;
-use Modules\Notification\Contracts\Notifier;
+use Modules\Notification\Services\Contracts\Notifier;
 
 class TestNotifyComponent extends Component
 {

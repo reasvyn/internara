@@ -2,47 +2,19 @@
 
 declare(strict_types=1);
 
-/*
-|--------------------------------------------------------------------------
-| Test Case
-|--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind a different classes or traits.
-|
-*/
+pest()
+    ->extend(Tests\DuskTestCase::class)
+    ->use(Illuminate\Foundation\Testing\DatabaseMigrations::class)
+    ->in(__DIR__ . '/Browser', __DIR__ . '/../modules/*/tests/Browser');
 
 pest()
     ->extend(\Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in(__DIR__.'/Feature', __DIR__.'/../modules/*/tests/Feature');
-
-// Browser testing configuration
-if (class_exists(\Pest\Browser\Browser::class)) {
-    pest()
-        ->extend(\Tests\TestCase::class)
-        ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-        ->use(\Pest\Browser\Browser::class)
-        ->in(__DIR__.'/Browser', __DIR__.'/../modules/*/tests/Browser');
-
-    // Global browser configuration for stability in Linux environments
-    pest()
-        ->browser()
-        ->arguments([
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-software-rasterizer',
-            '--no-zygote',
-            '--disable-features=VizDisplayCompositor',
-        ]);
-}
+    ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
+    ->in(__DIR__ . '/Feature', __DIR__ . '/../modules/*/tests/Feature');
 
 pest()
     ->extend(\Tests\TestCase::class)
-    ->in(__DIR__.'/Unit', __DIR__.'/../modules/*/tests/Unit');
+    ->in(__DIR__ . '/Unit', __DIR__ . '/../modules/*/tests/Unit');
 
 /*
 |--------------------------------------------------------------------------

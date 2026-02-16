@@ -8,8 +8,6 @@ use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
-
 test('it calculates readiness correctly', function () {
     $student = User::factory()->create();
     $teacher = User::factory()->create();
