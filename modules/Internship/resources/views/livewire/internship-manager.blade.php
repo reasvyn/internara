@@ -35,42 +35,42 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-
-        {{-- Form Modal --}}
-        <x-ui::modal id="internship-form-modal" wire:model="formModal" :title="$form->id ? __('internship::ui.edit_program') : __('internship::ui.add_program')">
-            <x-ui::form wire:submit="save">
-                <x-ui::input :label="__('internship::ui.title')" wire:model="form.title" required />
-                <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
-                
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <x-ui::input :label="__('internship::ui.year')" type="number" wire:model="form.year" required />
-                    <x-ui::select 
-                        :label="__('internship::ui.semester')" 
-                        wire:model="form.semester" 
-                        :options="[['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], ['id' => 'Genap', 'name' => __('internship::ui.semester_even')]]" 
-                        required 
-                    />
-                </div>
-
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <x-ui::input :label="__('internship::ui.date_start')" type="date" wire:model="form.date_start" required />
-                    <x-ui::input :label="__('internship::ui.date_finish')" type="date" wire:model="form.date_finish" required />
-                </div>
-
-                <x-slot:actions>
-                    <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
-                    <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
-                </x-slot:actions>
-            </x-ui::form>
-        </x-ui::modal>
-
-        {{-- Confirm Delete Modal --}}
-        <x-ui::modal id="internship-confirm-modal" wire:model="confirmModal" :title="__('ui::common.confirm')">
-            <p>{{ __('internship::ui.delete_program_confirm') }}</p>
-            <x-slot:actions>
-                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
-                <x-ui::button :label="__('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
-            </x-slot:actions>
-        </x-ui::modal>
     </x-ui::main>
+
+    {{-- Form Modal --}}
+    <x-ui::modal id="internship-form-modal" wire:model="formModal" :title="$form->id ? __('internship::ui.edit_program') : __('internship::ui.add_program')">
+        <x-ui::form wire:submit="save">
+            <x-ui::input :label="__('internship::ui.title')" wire:model="form.title" required />
+            <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
+            
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <x-ui::input :label="__('internship::ui.year')" type="number" wire:model="form.year" required />
+                <x-ui::select 
+                    :label="__('internship::ui.semester')" 
+                    wire:model="form.semester" 
+                    :options="[['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], ['id' => 'Genap', 'name' => __('internship::ui.semester_even')]]" 
+                    required 
+                />
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <x-ui::input :label="__('internship::ui.date_start')" type="date" wire:model="form.date_start" required />
+                <x-ui::input :label="__('internship::ui.date_finish')" type="date" wire:model="form.date_finish" required />
+            </div>
+
+            <x-slot:actions>
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
+            </x-slot:actions>
+        </x-ui::form>
+    </x-ui::modal>
+
+    {{-- Confirm Delete Modal --}}
+    <x-ui::modal id="internship-confirm-modal" wire:model="confirmModal" :title="__('ui::common.confirm')">
+        <p>{{ __('internship::ui.delete_program_confirm') }}</p>
+        <x-slot:actions>
+            <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
+            <x-ui::button :label="__('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
+        </x-slot:actions>
+    </x-ui::modal>
 </div>

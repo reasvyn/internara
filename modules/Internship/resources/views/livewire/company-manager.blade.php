@@ -25,40 +25,40 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-
-        {{-- Form Modal --}}
-        <x-ui::modal id="company-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_company') : __('internship::ui.add_company') }}">
-            <x-ui::form wire:submit="save">
-                <x-ui::input label="{{ __('internship::ui.company_name') }}" wire:model="form.name" required />
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-ui::input label="{{ __('internship::ui.business_field') }}" wire:model="form.business_field" />
-                    <x-ui::input label="{{ __('internship::ui.leader_name') }}" wire:model="form.leader_name" />
-                </div>
-
-                <x-ui::textarea label="{{ __('internship::ui.company_address') }}" wire:model="form.address" rows="2" />
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-ui::input label="{{ __('internship::ui.company_phone') }}" wire:model="form.phone" />
-                    <x-ui::input label="{{ __('internship::ui.company_fax') }}" wire:model="form.fax" />
-                </div>
-                
-                <x-ui::input label="{{ __('internship::ui.company_email') }}" type="email" wire:model="form.email" />
-
-                <x-slot:actions>
-                    <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
-                    <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
-                </x-slot:actions>
-            </x-ui::form>
-        </x-ui::modal>
-
-        {{-- Confirm Delete Modal --}}
-        <x-ui::modal id="company-confirm-modal" wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
-            <p>{{ __('internship::ui.delete_company_confirm') }}</p>
-            <x-slot:actions>
-                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
-                <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
-            </x-slot:actions>
-        </x-ui::modal>
     </x-ui::main>
+
+    {{-- Form Modal --}}
+    <x-ui::modal id="company-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_company') : __('internship::ui.add_company') }}">
+        <x-ui::form wire:submit="save">
+            <x-ui::input label="{{ __('internship::ui.company_name') }}" wire:model="form.name" required />
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <x-ui::input label="{{ __('internship::ui.business_field') }}" wire:model="form.business_field" />
+                <x-ui::input label="{{ __('internship::ui.leader_name') }}" wire:model="form.leader_name" />
+            </div>
+
+            <x-ui::textarea label="{{ __('internship::ui.company_address') }}" wire:model="form.address" rows="2" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <x-ui::input label="{{ __('internship::ui.company_phone') }}" wire:model="form.phone" />
+                <x-ui::input label="{{ __('internship::ui.company_fax') }}" wire:model="form.fax" />
+            </div>
+            
+            <x-ui::input label="{{ __('internship::ui.company_email') }}" type="email" wire:model="form.email" />
+
+            <x-slot:actions>
+                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
+                <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+            </x-slot:actions>
+        </x-ui::form>
+    </x-ui::modal>
+
+    {{-- Confirm Delete Modal --}}
+    <x-ui::modal id="company-confirm-modal" wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+        <p>{{ __('internship::ui.delete_company_confirm') }}</p>
+        <x-slot:actions>
+            <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
+            <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
+        </x-slot:actions>
+    </x-ui::modal>
 </div>

@@ -25,7 +25,7 @@
     @endif
 
     <x-slot name="content">
-        <div data-aos="{{ $aos }}">
+        <div @if($aos) data-aos="{{ $aos }}" @endif>
             {{ $slot }}
         </div>
     </x-slot>
