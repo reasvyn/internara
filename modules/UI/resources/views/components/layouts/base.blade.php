@@ -60,13 +60,7 @@
 
         <script>
             document.addEventListener('livewire:init', () => {
-                console.log('Internara Notification System: Initialized');
-                
-                // Handle Initial Session Flash
-                const sessionNotify = @json(session()->pull('notify'));
-                if (sessionNotify) {
-                    window.triggerNotify(sessionNotify);
-                }
+                // Initialized
             });
         </script>
 

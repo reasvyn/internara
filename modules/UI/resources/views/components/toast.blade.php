@@ -45,7 +45,9 @@
             // Trigger enter animation with a small delay to ensure DOM is ready
             setTimeout(() => {
                 const index = this.toasts.findIndex(t => t.id === id);
-                if (index !== -1) this.toasts[index].visible = true;
+                if (index !== -1) {
+                    this.toasts[index].visible = true;
+                }
             }, 50);
 
             // Progress bar animation
@@ -65,7 +67,9 @@
                     }
                 }, 50);
 
-                setTimeout(() => this.remove(id), timeout);
+                setTimeout(() => {
+                    this.remove(id);
+                }, timeout);
             } else {
                 // Keep progress bar full for non-autohide
                 const index = this.toasts.findIndex(t => t.id === id);

@@ -1,4 +1,4 @@
-<div class="container mx-auto flex flex-col items-center justify-center gap-8 text-center" data-aos="fade-up">
+<div class="container mx-auto flex flex-col items-center justify-center gap-8 text-center py-12" data-aos="fade-up">
     <div class="max-w-2xl text-center">
         <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" aos="fade-down" data-aos-delay="200" class="mb-12" />
 

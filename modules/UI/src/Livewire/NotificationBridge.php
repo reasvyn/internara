@@ -41,7 +41,11 @@ class NotificationBridge extends Component
      */
     protected function handleSessionNotifications(): void
     {
-        if ($payload = session('notify')) {
+        // Only pull notifications that were flashed in a PREVIOUS request.
+        // This avoids 'session stealing' in the same request that created the notification.
+        $flashedKeys = session()->get('_flash.old', []);
+        
+        if (in_array('notify', $flashedKeys) && $payload = session()->pull('notify')) {
             if (is_array($payload) && ! isset($payload['message'])) {
                 foreach ($payload as $item) {
                     $this->dispatch('notify', $item);
@@ -49,8 +53,6 @@ class NotificationBridge extends Component
             } else {
                 $this->dispatch('notify', $payload);
             }
-
-            session()->forget('notify');
         }
     }
 

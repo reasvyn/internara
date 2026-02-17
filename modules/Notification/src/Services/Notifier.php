@@ -85,7 +85,6 @@ class Notifier implements Contract
         $notifications[] = $payload;
 
         session()->flash('notify', $notifications);
-        session()->now('notify', $notifications);
 
         // 2. Livewire Event Bus (Real-time within the same request)
         if (app()->bound(\Livewire\EventBus::class)) {
