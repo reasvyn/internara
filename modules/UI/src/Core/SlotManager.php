@@ -99,7 +99,7 @@ class SlotManager implements SlotManagerContract
 
                     // If we are in local/debug mode, we let the exception bubble up
                     // to prevent corrupted component stacks and provide better debugging.
-                    if (config('app.debug')) {
+                    if (is_debug_mode()) {
                         throw $e;
                     }
                 }

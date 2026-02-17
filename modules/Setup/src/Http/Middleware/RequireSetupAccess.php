@@ -43,7 +43,7 @@ class RequireSetupAccess
     {
         return app()->runningInConsole() ||
             $this->isLivewireRequest($request) ||
-            app()->environment('testing');
+            is_testing();
     }
 
     /**

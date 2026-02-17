@@ -132,7 +132,7 @@ trait HandlesAppException
         if ($request->expectsJson()) {
             return response()->json(
                 [
-                    'message' => config('app.debug')
+                    'message' => is_debug_mode()
                         ? $exception->getMessage()
                         : __('exception::messages.unexpected_error'),
                 ],
@@ -147,7 +147,7 @@ trait HandlesAppException
             ->withInput($request->input())
             ->with(
                 'error',
-                config('app.debug')
+                is_debug_mode()
                     ? $exception->getMessage()
                     : __('exception::messages.unexpected_error'),
             );

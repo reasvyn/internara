@@ -25,7 +25,7 @@ class DepartmentManager extends Component
     {
         $isSetupPhase =
             session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
-                true || app()->runningUnitTests();
+                true || is_testing();
 
         if ($isSetupPhase) {
             return;

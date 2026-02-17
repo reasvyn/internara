@@ -19,6 +19,8 @@ class UserForm extends Form
 
     public string $password = '';
 
+    public string $password_confirmation = '';
+
     public array $roles = [];
 
     public string $status = 'active';
@@ -48,8 +50,8 @@ class UserForm extends Form
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
             'password' => $this->id
-                ? ['nullable', 'string', 'min:8']
-                : ['required', 'string', 'min:8'],
+                ? ['nullable', 'string', 'min:8', 'confirmed']
+                : ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 }

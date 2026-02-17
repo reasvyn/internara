@@ -69,7 +69,7 @@ test('it can navigate through the entire setup flow with token authorization', f
 
     Livewire::test(AccountSetup::class)
         ->assertStatus(200)
-        ->dispatch('super-admin-registered')
+        ->dispatch('super_admin_registered')
         ->assertRedirect(route('setup.department'));
 
     expect($settingService->getValue('setup_step_account'))->toBeTrue();

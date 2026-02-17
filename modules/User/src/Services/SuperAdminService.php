@@ -56,6 +56,12 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
      */
     public function create(array $data): User
     {
+        // If app is not installed, we use the save method (updateOrCreate) to ensure setup idempotency.
+        // This allows the authorized user to repeat the step or "correct" the SuperAdmin data.
+        if (! setting('app_installed', false)) {
+            return $this->save(['email' => $data['email'] ?? null], $data);
+        }
+
         if ($this->exists()) {
             throw new AppException(
                 userMessage: 'user::exceptions.super_admin_exists',

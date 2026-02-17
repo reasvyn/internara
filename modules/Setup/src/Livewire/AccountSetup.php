@@ -43,9 +43,9 @@ class AccountSetup extends Component
     }
 
     /**
-     * Handles the 'super-admin-registered' event to proceed to the next setup step.
+     * Handles the 'super_admin_registered' event to proceed to the next setup step.
      */
-    #[On('super-admin-registered')]
+    #[On('super_admin_registered')]
     public function handleSuperAdminRegistered(): void
     {
         $this->nextStep();

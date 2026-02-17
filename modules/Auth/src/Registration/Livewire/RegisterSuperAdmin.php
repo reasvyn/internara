@@ -41,6 +41,17 @@ class RegisterSuperAdmin extends Component
     public function register()
     {
         try {
+            // During setup phase, allow re-linking to an existing user record with the same email
+            // to prevent "Email already taken" errors when repeating this step.
+            if (! setting('app_installed', false)) {
+                $existing = app(\Modules\User\Services\Contracts\UserService::class)
+                    ->findByEmail($this->form->email);
+                
+                if ($existing) {
+                    $this->form->id = $existing->id;
+                }
+            }
+
             $this->form->validate();
 
             $registeredUser = $this->authService->register(
@@ -49,9 +60,11 @@ class RegisterSuperAdmin extends Component
             );
 
             if ($registeredUser) {
-                $this->dispatch('super-admin-registered', userId: $registeredUser->getKey());
                 notify(__('shared::messages.record_saved'), 'success');
+                $this->dispatch('super_admin_registered', userId: $registeredUser->getKey());
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Modules\Exception\AppException $e) {
             notify($e->getUserMessage(), 'error');
         } catch (\Exception $e) {

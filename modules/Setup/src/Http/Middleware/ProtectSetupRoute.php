@@ -38,7 +38,7 @@ class ProtectSetupRoute
             // During testing, we allow bypassing session check if we have a valid token in request
             $isAuthorized =
                 $request->session()->get('setup_authorized') ||
-                (app()->runningUnitTests() && $this->hasValidToken($request));
+                (is_testing() && $this->hasValidToken($request));
 
             // Verify authorized session AND ensure setup_token still exists in DB
             $storedToken = $this->settingService->getValue('setup_token');

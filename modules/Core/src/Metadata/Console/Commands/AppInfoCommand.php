@@ -95,7 +95,7 @@ class AppInfoCommand extends Command
         $this->components->twoColumnDetail('Environment', (string) App::environment());
         $this->components->twoColumnDetail(
             'Debug Mode',
-            config('app.debug') ? '<fg=yellow>Enabled</>' : '<fg=green>Disabled</>',
+            is_debug_mode() ? '<fg=yellow>Enabled</>' : '<fg=green>Disabled</>',
         );
         $this->components->twoColumnDetail(
             'Database Driver',

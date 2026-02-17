@@ -149,7 +149,7 @@ class AppException extends Exception
                 'message' => $this->getUserMessage(),
             ];
 
-            if (config('app.debug')) {
+            if (is_debug_mode()) {
                 $payload['context'] = $this->getContext();
                 $payload['stack'] = $this->getSubTrace();
             }
