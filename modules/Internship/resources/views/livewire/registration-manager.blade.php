@@ -41,7 +41,7 @@
                     <x-ui::badge :label="$registration->getStatusLabel()" :class="'badge-' . $registration->getStatusColor()" />
                 @endscope
 
-                @scope('actions', $registration)
+                @scope('cell_actions', $registration)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.history" class="btn-ghost btn-sm text-secondary" wire:click="viewHistory('{{ $registration->id }}')" tooltip="{{ __('Riwayat Penempatan') }}" />
                         @if($registration->latestStatus()?->name !== 'active')

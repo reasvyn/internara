@@ -28,7 +28,7 @@
                     <span class="text-xs opacity-70">{{ $program->date_finish->translatedFormat('d M Y') }}</span>
                 @endscope
 
-                @scope('actions', $program)
+                @scope('cell_actions', $program)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $program->id }}')" tooltip="{{ __('ui::common.edit') }}" />
                         <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $program->id }}')" tooltip="{{ __('ui::common.delete') }}" />

@@ -39,7 +39,7 @@
                         class="{{ $requirement->is_active ? 'badge-success' : 'badge-ghost' }} badge-sm" />
                 @endscope
 
-                @scope('actions', $requirement)
+                @scope('cell_actions', $requirement)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $requirement->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
                         <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $requirement->id }}')" tooltip="{{ __('shared::ui.delete') }}" />

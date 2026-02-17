@@ -18,7 +18,7 @@
                 ['key' => 'email', 'label' => __('internship::ui.company_email')],
                 ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->records" with-pagination>
-                @scope('actions', $company)
+                @scope('cell_actions', $company)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $company->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
                         <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $company->id }}')" tooltip="{{ __('shared::ui.delete') }}" />

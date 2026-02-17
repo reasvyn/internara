@@ -23,7 +23,7 @@
                     <span class="text-xs opacity-70">{{ $department->created_at->translatedFormat('d M Y H:i') }}</span>
                 @endscope
 
-                @scope('actions', $department)
+                @scope('cell_actions', $department)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $department->id }}')" tooltip="{{ __('ui::common.edit') }}" />
                         <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $department->id }}')" tooltip="{{ __('ui::common.delete') }}" />

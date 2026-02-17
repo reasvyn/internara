@@ -28,7 +28,7 @@
                     </div>
                 @endscope
 
-                @scope('actions', $placement)
+                @scope('cell_actions', $placement)
                     <div class="flex gap-2">
                         <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
                         <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $placement->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
