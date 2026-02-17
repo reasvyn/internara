@@ -13,6 +13,7 @@
     x-data="{ 
         show: @if($wireModel->value()) @entangle($wireModel) @else false @endif 
     }"
+    @keydown.escape.window="show = false"
     class="hidden"
 >
     @teleport('body')
