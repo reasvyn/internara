@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            <div class="w-full overflow-x-auto rounded-xl border border-base-200 bg-base-100 shadow-sm">
+            <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
                 <x-mary-table 
                     class="table-zebra table-md w-full"
                     :headers="[
