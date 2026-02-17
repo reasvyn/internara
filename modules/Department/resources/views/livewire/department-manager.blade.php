@@ -13,23 +13,30 @@
                 </div>
             </div>
 
-            <x-ui::table :headers="[
-                ['key' => 'name', 'label' => __('department::ui.name')],
-                ['key' => 'description', 'label' => __('department::ui.description')],
-                ['key' => 'created_at', 'label' => __('department::ui.created_at')],
-                ['key' => 'actions', 'label' => ''],
-            ]" :rows="$this->records" with-pagination>
-                @scope('cell_created_at', $department)
-                    <span class="text-xs opacity-70">{{ $department->created_at->translatedFormat('d M Y H:i') }}</span>
-                @endscope
+            <div class="w-full overflow-x-auto rounded-xl border border-base-200 bg-base-100 shadow-sm">
+                <x-mary-table 
+                    class="table-zebra table-md w-full"
+                    :headers="[
+                        ['key' => 'name', 'label' => __('department::ui.name')],
+                        ['key' => 'description', 'label' => __('department::ui.description')],
+                        ['key' => 'created_at', 'label' => __('department::ui.created_at')],
+                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+                    ]" 
+                    :rows="$this->records" 
+                    with-pagination
+                >
+                    @scope('cell_created_at', $department)
+                        <span class="text-xs opacity-70">{{ $department->created_at->translatedFormat('d M Y H:i') }}</span>
+                    @endscope
 
-                @scope('cell_actions', $department)
-                    <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $department->id }}')" tooltip="{{ __('ui::common.edit') }}" />
-                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $department->id }}')" tooltip="{{ __('ui::common.delete') }}" />
-                    </div>
-                @endscope
-            </x-ui::table>
+                    @scope('cell_actions', $department)
+                        <div class="flex items-center justify-end gap-1">
+                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $department->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $department->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                        </div>
+                    @endscope
+                </x-mary-table>
+            </div>
         </x-ui::card>
     </x-ui::main>
 
