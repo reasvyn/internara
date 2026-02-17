@@ -15,7 +15,7 @@
     }"
     class="hidden"
 >
-    <template x-teleport="body">
+    @teleport('body')
         <div 
             x-show="show" 
             class="fixed inset-0 z-[9999] overflow-y-auto"
@@ -88,5 +88,5 @@
                 </div>
             </div>
         </div>
-    </template>
+    @endteleport
 </div>

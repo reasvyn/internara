@@ -98,7 +98,7 @@ trait ManagesRecords
     /**
      * Retrieves the paginated collection of records.
      */
-    #[Computed(persist: true)]
+    #[Computed]
     public function records(): LengthAwarePaginator
     {
         $filters = array_filter([
