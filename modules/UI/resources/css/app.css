@@ -71,6 +71,8 @@
     --border: 1px;
     --depth: 1;
     --noise: 0;
+    --animation-btn: 0.3s;
+    --animation-input: 0.3s;
 }
 
 @plugin "daisyui/theme" {
@@ -106,4 +108,21 @@
     --border: 1px;
     --depth: 1;
     --noise: 0;
+    --animation-btn: 0.3s;
+    --animation-input: 0.3s;
+}
+
+/* Enforce 0.3s hover transition globally for interactive elements */
+@layer base {
+    a,
+    button,
+    .btn,
+    .card,
+    .alert,
+    [role='button'],
+    input,
+    select,
+    textarea {
+        transition-duration: 300ms !important;
+    }
 }
