@@ -28,7 +28,7 @@
                         ['key' => 'academic_year', 'label' => __('internship::ui.academic_year')],
                         ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
                     ]" 
-                    :rows="$this->records" 
+                    :rows="$records" 
                     with-pagination
                 >
                     @scope('cell_name', $requirement)

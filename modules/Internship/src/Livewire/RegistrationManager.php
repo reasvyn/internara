@@ -155,7 +155,9 @@ class RegistrationManager extends Component
 
     public function render()
     {
-        return view('internship::livewire.registration-manager');
+        return view('internship::livewire.registration-manager', [
+            'records' => $this->records,
+        ]);
     }
 
     /**

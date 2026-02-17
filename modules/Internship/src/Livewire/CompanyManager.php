@@ -58,6 +58,8 @@ class CompanyManager extends Component
 
     public function render(): View
     {
-        return view('internship::livewire.company-manager');
+        return view('internship::livewire.company-manager', [
+            'records' => $this->records,
+        ]);
     }
 }

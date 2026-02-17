@@ -94,6 +94,8 @@ class PlacementManager extends Component
 
     public function render(): View
     {
-        return view('internship::livewire.placement-manager');
+        return view('internship::livewire.placement-manager', [
+            'records' => $this->records,
+        ]);
     }
 }

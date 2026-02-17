@@ -47,6 +47,8 @@ class RequirementManager extends Component
 
     public function render()
     {
-        return view('internship::livewire.requirement-manager');
+        return view('internship::livewire.requirement-manager', [
+            'records' => $this->records,
+        ]);
     }
 }

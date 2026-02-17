@@ -59,6 +59,8 @@ class InternshipManager extends Component
 
     public function render()
     {
-        return view('internship::livewire.internship-manager');
+        return view('internship::livewire.internship-manager', [
+            'records' => $this->records,
+        ]);
     }
 }

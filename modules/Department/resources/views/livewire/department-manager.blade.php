@@ -26,7 +26,7 @@
                         ['key' => 'created_at', 'label' => __('ui::common.created_at')],
                         ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
                     ]" 
-                    :rows="$this->records" 
+                    :rows="$records" 
                     with-pagination
                 >
                     @scope('cell_created_at', $department)

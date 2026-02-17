@@ -25,11 +25,8 @@
                         ['key' => 'business_field', 'label' => __('internship::ui.business_field')],
                         ['key' => 'phone', 'label' => __('internship::ui.company_phone')],
                         ['key' => 'email', 'label' => __('internship::ui.company_email')],
-                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
-                    ]" 
-                    :rows="$this->records" 
-                    with-pagination
-                >
+                                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+                                    ]" :rows="$records" with-pagination>
                     @scope('cell_actions', $company)
                         <div class="flex items-center justify-end gap-1">
                             <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $company->id }}')" tooltip="{{ __('ui::common.edit') }}" />

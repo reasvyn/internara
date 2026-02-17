@@ -28,7 +28,7 @@
                         ['key' => 'date_finish', 'label' => __('internship::ui.date_finish')],
                         ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
                     ]" 
-                    :rows="$this->records" 
+                    :rows="$records" 
                     with-pagination
                 >
                     @scope('cell_date_start', $program)

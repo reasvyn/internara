@@ -451,12 +451,14 @@ abstract class EloquentQuery implements EloquentQueryContract
     protected function applyFilters(Builder &$query, array &$filters): void
     {
         // Sorting logic
-        if (isset($filters['sort_by']) && in_array($filters['sort_by'], $this->sortable)) {
-            $sortBy = $filters['sort_by'];
-            $sortDir = strtolower($filters['sort_dir'] ?? self::SORT_ASC);
+        if (isset($filters['sort_by'])) {
+            if (in_array($filters['sort_by'], $this->sortable)) {
+                $sortBy = $filters['sort_by'];
+                $sortDir = strtolower($filters['sort_dir'] ?? self::SORT_ASC);
 
-            if (in_array($sortDir, [self::SORT_ASC, self::SORT_DESC])) {
-                $query->orderBy($sortBy, $sortDir);
+                if (in_array($sortDir, [self::SORT_ASC, self::SORT_DESC])) {
+                    $query->orderBy($sortBy, $sortDir);
+                }
             }
             unset($filters['sort_by'], $filters['sort_dir']);
         }

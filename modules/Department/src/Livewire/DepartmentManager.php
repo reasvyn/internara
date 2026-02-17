@@ -36,6 +36,8 @@ class DepartmentManager extends Component
 
     public function render(): View
     {
-        return view('department::livewire.department-manager');
+        return view('department::livewire.department-manager', [
+            'records' => $this->records,
+        ]);
     }
 }
