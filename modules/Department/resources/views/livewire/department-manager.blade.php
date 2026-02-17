@@ -18,8 +18,8 @@
                     class="table-zebra table-md w-full"
                     :headers="[
                         ['key' => 'name', 'label' => __('department::ui.name')],
-                        ['key' => 'description', 'label' => __('department::ui.description')],
-                        ['key' => 'created_at', 'label' => __('department::ui.created_at')],
+                        ['key' => 'description', 'label' => __('ui::common.description')],
+                        ['key' => 'created_at', 'label' => __('ui::common.created_at')],
                         ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
                     ]" 
                     :rows="$this->records" 
@@ -44,7 +44,7 @@
     <x-ui::modal id="department-form-modal" wire:model="formModal" :title="$form->id ? __('department::ui.edit') : __('department::ui.add')">
         <x-ui::form wire:submit="save">
             <x-ui::input :label="__('department::ui.name')" wire:model="form.name" required />
-            <x-ui::textarea :label="__('department::ui.description')" wire:model="form.description" />
+            <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
