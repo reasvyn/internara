@@ -32,6 +32,14 @@ Internara adopts a **Spec-Driven**, **TDD-First**, and **Isolation-Aware** verif
 The testing environment is orchestrated through three core files that ensure consistency and modular
 scalability.
 
+### 2.1 Environmental Testing Standards
+
+To ensure predictable behavior across different runtime states, tests must utilize the standard environment helpers.
+
+- **Detection**: Use `is_testing()` to verify the application is correctly identifying the test environment.
+- **Conditional Logic**: Avoid using `isDebugMode()` or `isDevelopment()` to drive test logic. Tests should aim to verify production-like behavior unless explicitly testing diagnostic features.
+- **Maintenance Mode**: When testing system resilience, use `is_maintenance()` to verify that the application responds correctly to maintenance lockdowns.
+
 ### 2.1 `phpunit.xml` (Environment Blueprint)
 
 The **PHPUnit Configuration** defines the global testing environment, including database drivers

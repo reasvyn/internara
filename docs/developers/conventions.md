@@ -276,6 +276,17 @@ Migrations must ensure modular portability and data integrity without physical c
 
 Fault management must be disciplined, secure, and localized.
 
+### 12.1 Environment & Debugging Standards
+
+To ensure security and prevent information leakage, all debugging activities must be environment-aware.
+
+- **Global Helpers**: Use `is_debug_mode()`, `is_development()`, `is_testing()`, and `is_maintenance()` helpers instead of direct `env()` or `config()` calls for environment detection.
+- **Conditional Logging**: All `Log::debug()` or `console.log()` statements MUST be wrapped in a debug mode check.
+    - *PHP*: `if (is_debug_mode()) { ... }`
+    - *JS*: `if (isDebugMode()) { ... }`
+- **PII Redaction**: Never log raw Personally Identifiable Information (PII). Use the `Masker` utility if logging is necessary.
+- **Production Hygiene**: All experimental or diagnostic code must be removed or strictly guarded by `is_development()` before merging into the `main` branch.
+
 - **Semantic Exceptions**: Throw custom, module-specific exceptions (e.g., `JournalLockedException`)
   from the Service Layer.
 - **Sanitization Invariant**: Exceptions rendered to end-users must NEVER expose system internals

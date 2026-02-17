@@ -11,6 +11,9 @@
 
         <script>
             window.isDebugMode = window.isDebugMode || (() => {{ is_debug_mode() ? 'true' : 'false' }});
+            window.isDevelopment = window.isDevelopment || (() => {{ is_development() ? 'true' : 'false' }});
+            window.isTesting = window.isTesting || (() => {{ is_testing() ? 'true' : 'false' }});
+            window.isMaintenance = window.isMaintenance || (() => {{ is_maintenance() ? 'true' : 'false' }});
 
             window.hidePreloader = window.hidePreloader || (() => {
                 const preloader = document.getElementById('preloader');
