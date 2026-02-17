@@ -1,5 +1,13 @@
 @import 'aos/dist/aos.css';
 
+/* AOS Performance Optimization (Fixes Blurry Text) */
+[data-aos] {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
 @font-face {
     font-family: 'Instrument Sans';
     font-style: normal;

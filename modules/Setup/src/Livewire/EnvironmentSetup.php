@@ -61,8 +61,13 @@ class EnvironmentSetup extends Component
      */
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('setup::livewire.environment-setup')
-            ->layout('setup::components.layouts.setup')
-            ->title(__('setup::setup.environment_validation'));
+        return view('setup::livewire.environment-setup')->layout(
+            'setup::components.layouts.setup',
+            [
+                'title' => __('setup::wizard.environment.title').
+                    ' | '.
+                    setting('site_title', setting('app_name')),
+            ],
+        );
     }
 }

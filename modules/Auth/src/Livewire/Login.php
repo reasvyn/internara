@@ -93,6 +93,8 @@ class Login extends Component
                 $this->remember,
             );
 
+            notify(__('auth::ui.login.welcome_back', ['name' => $user->name]), 'success');
+
             $this->redirect($this->redirectService->getTargetUrl($user), navigate: true);
         } catch (AppException $e) {
             $this->addError('identifier', $e->getUserMessage());

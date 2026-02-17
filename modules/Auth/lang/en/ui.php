@@ -25,6 +25,7 @@ return [
     'login' => [
         'title' => 'Sign In to Your Account',
         'subtitle' => 'Use your email or username to continue.',
+        'welcome_back' => 'Welcome back, :name!',
         'form' => [
             'identifier' => 'Email or Username',
             'identifier_placeholder' => 'Enter your Email or Username',
@@ -40,6 +41,7 @@ return [
     'register' => [
         'title' => 'Register Student Account',
         'subtitle' => 'Fill in your details to start your internship journey.',
+        'welcome' => 'Welcome to :app, :name! Your account has been successfully created.',
         'form' => [
             'name' => 'Full Name',
             'name_placeholder' => 'Enter your full name',

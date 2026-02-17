@@ -17,13 +17,41 @@ use Livewire\EventBus;
 class NotificationBridge extends Component
 {
     /**
+     * Component mount logic.
+     */
+    public function mount(): void
+    {
+        $this->handleSessionNotifications();
+    }
+
+    /**
      * Component boot logic.
      */
     public function boot(EventBus $bus): void
     {
         $bus->on('notify', function (array $payload) {
-            $this->dispatch('notify-browser', $payload);
+            $this->dispatch('notify', $payload);
         });
+
+        $this->handleSessionNotifications();
+    }
+
+    /**
+     * Handle notifications stored in the session.
+     */
+    protected function handleSessionNotifications(): void
+    {
+        if ($payload = session('notify')) {
+            if (is_array($payload) && ! isset($payload['message'])) {
+                foreach ($payload as $item) {
+                    $this->dispatch('notify', $item);
+                }
+            } else {
+                $this->dispatch('notify', $payload);
+            }
+
+            session()->forget('notify');
+        }
     }
 
     /**

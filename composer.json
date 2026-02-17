@@ -85,6 +85,9 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --env=dusk.local\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"vite -m \\\"dusk.local\\\"\" --names=server,queue,logs,vite --kill-others"
         ],
+        "check": [
+            "@php artisan about"
+        ],
         "lint": [
             "npm run lint",
             "vendor/bin/pint --test"

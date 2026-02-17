@@ -6,20 +6,17 @@ import AOS from 'aos'
 const initAOS = () => {
     AOS.init({
         duration: 800,
-        easing: 'ease-out-cubic',
+        easing: 'ease-out-quad',
         once: true,
-        offset: 20,
+        offset: 60,
+        anchorPlacement: 'top-bottom',
     })
 }
 
-// Initial Load
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initAOS, 150)
-    })
-} else {
-    setTimeout(initAOS, 150)
-}
+// Initial Load - Delay until after preloader logic usually fires
+window.addEventListener('load', () => {
+    setTimeout(initAOS, 200)
+})
 
 // Livewire Integration
 document.addEventListener('livewire:init', () => {
@@ -27,9 +24,12 @@ document.addEventListener('livewire:init', () => {
 })
 
 document.addEventListener('livewire:navigated', () => {
+    // Force scroll to top on navigation
+    window.scrollTo({ top: 0, behavior: 'instant' })
+
     // Refresh and re-init to handle new DOM elements in SPA mode
     setTimeout(() => {
         AOS.refresh()
         initAOS()
-    }, 50)
+    }, 100)
 })

@@ -23,6 +23,13 @@ class School extends Model implements HasMedia
     use InteractsWithMedia;
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = ['logo_url'];
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = ['name', 'address', 'email', 'phone', 'fax', 'principal_name'];

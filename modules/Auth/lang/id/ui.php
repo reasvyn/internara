@@ -25,6 +25,7 @@ return [
     'login' => [
         'title' => 'Masuk ke Akun Anda',
         'subtitle' => 'Gunakan email atau nama pengguna Anda untuk melanjutkan.',
+        'welcome_back' => 'Selamat datang kembali, :name!',
         'form' => [
             'identifier' => 'Email atau Nama Pengguna',
             'identifier_placeholder' => 'Masukkan Email atau Nama Pengguna Anda',
@@ -40,6 +41,7 @@ return [
     'register' => [
         'title' => 'Daftar Akun Siswa',
         'subtitle' => 'Isi data diri Anda untuk memulai perjalanan magang.',
+        'welcome' => 'Selamat datang di :app, :name! Akun Anda telah berhasil dibuat.',
         'form' => [
             'name' => 'Nama Lengkap',
             'name_placeholder' => 'Masukkan Nama Lengkap Anda',

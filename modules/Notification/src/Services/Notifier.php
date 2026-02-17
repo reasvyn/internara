@@ -14,13 +14,6 @@ use Modules\Notification\Services\Contracts\Notifier as Contract;
 class Notifier implements Contract
 {
     /**
-     * Store hashes of recently sent notifications to prevent duplicates.
-     *
-     * @var list<string>
-     */
-    protected static array $sentHashes = [];
-
-    /**
      * {@inheritdoc}
      */
     public function success(string $message, ?string $title = null, array $options = []): self
@@ -83,16 +76,16 @@ class Notifier implements Contract
             $options,
         );
 
-        // Prevent duplicates by checking payload hash
-        $hash = md5(json_encode([$payload['message'], $payload['type'], $payload['title']]));
-        if (in_array($hash, self::$sentHashes)) {
-            return $this;
-        }
-        self::$sentHashes[] = $hash;
-
         // 1. Session Storage (Standard Redirects & Initial Load)
-        session()->flash('notify', $payload);
-        session()->now('notify', $payload);
+        // We append to an array to allow multiple notifications in a single request/session
+        $notifications = session()->get('notify', []);
+        if (! is_array($notifications)) {
+            $notifications = [$notifications];
+        }
+        $notifications[] = $payload;
+
+        session()->flash('notify', $notifications);
+        session()->now('notify', $notifications);
 
         // 2. Livewire Event Bus (Real-time within the same request)
         if (app()->bound(\Livewire\EventBus::class)) {

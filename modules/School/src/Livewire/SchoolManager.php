@@ -29,10 +29,14 @@ class SchoolManager extends Component
 
     protected function initFormData(): void
     {
-        $school = $this->schoolService->first()?->append('logo_url');
+        $school = $this->schoolService->getSchool();
 
         if ($school) {
-            $this->form->fill($school);
+            // Explicitly ensure logo_url is present in the fill data
+            $data = array_merge($school->toArray(), [
+                'logo_url' => $school->logo_url,
+            ]);
+            $this->form->fill($data);
         }
     }
 
@@ -57,8 +61,8 @@ class SchoolManager extends Component
         // Refresh form with persisted data, including new logo URLs
         $this->form->fill($school->append('logo_url'));
 
+		notify(__('shared::messages.record_saved'), 'success');
         $this->dispatch('school_saved', schoolId: $school->id);
-        notify(__('shared::messages.record_saved'), 'success');
     }
 
     public function render()
