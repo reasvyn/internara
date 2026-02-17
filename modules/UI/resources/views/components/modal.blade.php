@@ -3,21 +3,20 @@
     'title' => null,
     'subtitle' => null,
     'separator' => true,
-    'aos' => 'zoom-in',
 ])
 
-@teleport('body')
+<template x-teleport="body">
     <x-mary-modal 
-        {{ $attributes->merge(['class' => 'backdrop-blur-sm']) }}
+        {{ $attributes->merge(['class' => 'backdrop-blur-md']) }}
         id="{{ $id }}"
         aria-labelledby="{{ $id }}-title"
     >
-        <div class="p-6 lg:p-8" data-aos="{{ $aos }}">
+        <div class="p-6 lg:p-8">
             @if($title)
                 <div class="mb-6">
-                    <h3 id="{{ $id }}-title" class="text-2xl font-bold text-base-content">{{ $title }}</h3>
+                    <h3 id="{{ $id }}-title" class="text-2xl font-black tracking-tight text-base-content">{{ $title }}</h3>
                     @if($subtitle)
-                        <p class="text-base-content/60 mt-1 text-sm">{{ $subtitle }}</p>
+                        <p class="text-base-content/60 mt-1 text-sm leading-relaxed">{{ $subtitle }}</p>
                     @endif
                     
                     @if($separator)
@@ -37,4 +36,4 @@
             @endisset
         </div>
     </x-mary-modal>
-@endteleport
+</template>
