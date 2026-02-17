@@ -8,6 +8,7 @@
             info: '{{ __('ui::common.notification') }}'
         },
         add(payload) {
+            if (isDebugMode()) console.log('Toast: Received', payload);
             if (!payload) return;
 
             // Handle array of notifications
@@ -17,12 +18,16 @@
             }
 
             const message = typeof payload === 'string' ? payload : (payload.message || payload.description);
-            if (!message) return;
+            if (!message) {
+                if (isDebugMode()) console.warn('Toast: Missing message', payload);
+                return;
+            }
 
             const type = payload.type || 'info';
             
             // Prevent duplicates in current active/visible queue
             if (this.toasts.some(t => t.message === message && t.type === type && t.visible)) {
+                if (isDebugMode()) console.log('Toast: Duplicate skipped');
                 return;
             }
 
@@ -46,6 +51,7 @@
             setTimeout(() => {
                 const index = this.toasts.findIndex(t => t.id === id);
                 if (index !== -1) {
+                    if (isDebugMode()) console.log('Toast: Visible', id);
                     this.toasts[index].visible = true;
                 }
             }, 50);
@@ -77,6 +83,7 @@
             }
         },
         remove(id) {
+            if (isDebugMode()) console.log('Toast: Removing', id);
             const index = this.toasts.findIndex(t => t.id === id);
             if (index !== -1) {
                 this.toasts[index].visible = false;

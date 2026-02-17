@@ -10,6 +10,8 @@
         <x-ui::layouts.base.preloader />
 
         <script>
+            window.isDebugMode = window.isDebugMode || (() => {{ is_debug_mode() ? 'true' : 'false' }});
+
             window.hidePreloader = window.hidePreloader || (() => {
                 const preloader = document.getElementById('preloader');
                 if (preloader && !preloader.classList.contains('opacity-0')) {
@@ -22,14 +24,15 @@
                 if (!payload) return;
 
                 const notify = (item) => {
-                    const data = {
-                        message: item.message || item.description || (typeof item === 'string' ? item : ''),
-                        type: item.type || 'info',
-                        title: item.title || null,
-                        timeout: item.timeout || 5000,
-                        autohide: item.autohide !== undefined ? item.autohide : true
-                    };
-                    window.dispatchEvent(new CustomEvent('notify', { detail: data }));
+                    window.dispatchEvent(new CustomEvent('notify', { 
+                        detail: {
+                            message: item.message || item.description || (typeof item === 'string' ? item : ''),
+                            type: item.type || 'info',
+                            title: item.title || null,
+                            timeout: item.timeout || 5000,
+                            autohide: item.autohide !== undefined ? item.autohide : true
+                        } 
+                    }));
                 };
 
                 if (Array.isArray(payload)) {

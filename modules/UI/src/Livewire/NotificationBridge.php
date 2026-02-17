@@ -30,6 +30,9 @@ class NotificationBridge extends Component
     public function boot(EventBus $bus): void
     {
         $bus->on('notify', function (array $payload) {
+            if (is_debug_mode()) {
+                \Illuminate\Support\Facades\Log::debug('NotificationBridge: Relaying EventBus notification', $payload);
+            }
             $this->dispatch('notify', $payload);
         });
 
@@ -46,6 +49,12 @@ class NotificationBridge extends Component
         $flashedKeys = session()->get('_flash.old', []);
         
         if (in_array('notify', $flashedKeys) && $payload = session()->pull('notify')) {
+            if (is_debug_mode()) {
+                \Illuminate\Support\Facades\Log::debug('NotificationBridge: Pulling session notifications', [
+                    'count' => is_array($payload) && ! isset($payload['message']) ? count($payload) : 1,
+                ]);
+            }
+
             if (is_array($payload) && ! isset($payload['message'])) {
                 foreach ($payload as $item) {
                     $this->dispatch('notify', $item);

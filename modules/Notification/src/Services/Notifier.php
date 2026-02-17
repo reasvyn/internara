@@ -84,6 +84,14 @@ class Notifier implements Contract
         }
         $notifications[] = $payload;
 
+        if (is_debug_mode()) {
+            \Illuminate\Support\Facades\Log::debug('Notifier: Notification queued', [
+                'type' => $type,
+                'message' => $message,
+                'total_in_session' => count($notifications),
+            ]);
+        }
+
         session()->flash('notify', $notifications);
 
         // 2. Livewire Event Bus (Real-time within the same request)

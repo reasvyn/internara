@@ -16,6 +16,8 @@
     "autoload": {
         "files": [
             "src/Functions/is_active_module.php",
+            "src/Functions/is_debug_mode.php",
+            "src/Functions/shared_static_url.php",
             "src/Functions/shared_url.php"
         ],
         "psr-4": {
