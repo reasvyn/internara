@@ -1,6 +1,10 @@
 <div>
-    <x-ui::header :title="__('department::ui.title')" :subtitle="__('department::ui.subtitle')">
-        <x-slot:actions>
+    <x-ui::header 
+        wire:key="department-manager-header"
+        :title="__('department::ui.title')" 
+        :subtitle="__('department::ui.subtitle')"
+    >
+        <x-slot:actions wire:key="department-manager-actions">
             <x-ui::button :label="__('department::ui.add')" icon="tabler.plus" variant="primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>

@@ -4,7 +4,7 @@
     'middle' => null, 
     'actions' => null,
     'separator' => false,
-    'aos' => 'fade-down',
+    'aos' => null,
 ])
 
 <x-mary-header 
