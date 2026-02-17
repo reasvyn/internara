@@ -17,6 +17,7 @@
                 ['key' => 'name', 'label' => __('department::ui.name')],
                 ['key' => 'description', 'label' => __('department::ui.description')],
                 ['key' => 'created_at', 'label' => __('department::ui.created_at')],
+                ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->records" with-pagination>
                 @scope('cell_created_at', $department)
                     <span class="text-xs opacity-70">{{ $department->created_at->translatedFormat('d M Y H:i') }}</span>

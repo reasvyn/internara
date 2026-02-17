@@ -16,6 +16,7 @@
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
                 ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
                 ['key' => 'company.phone', 'label' => __('internship::ui.contact')],
+                ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->records" with-pagination>
                 @scope('cell_quota', $placement)
                     <div class="flex flex-col gap-1 min-w-[120px]">

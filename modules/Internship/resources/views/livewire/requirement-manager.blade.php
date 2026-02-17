@@ -17,6 +17,7 @@
                 ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory')],
                 ['key' => 'is_active', 'label' => __('internship::ui.active')],
                 ['key' => 'academic_year', 'label' => __('internship::ui.academic_year')],
+                ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->records" with-pagination>
                 @scope('cell_name', $requirement)
                     <div class="font-semibold">{{ $requirement->name }}</div>

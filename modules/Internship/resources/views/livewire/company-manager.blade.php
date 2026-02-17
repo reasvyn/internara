@@ -16,6 +16,7 @@
                 ['key' => 'business_field', 'label' => __('internship::ui.business_field')],
                 ['key' => 'phone', 'label' => __('internship::ui.company_phone')],
                 ['key' => 'email', 'label' => __('internship::ui.company_email')],
+                ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->records" with-pagination>
                 @scope('actions', $company)
                     <div class="flex gap-2">

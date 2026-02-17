@@ -19,6 +19,7 @@
                 ['key' => 'semester', 'label' => __('internship::ui.semester')],
                 ['key' => 'date_start', 'label' => __('internship::ui.date_start')],
                 ['key' => 'date_finish', 'label' => __('internship::ui.date_finish')],
+                ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->records" with-pagination>
                 @scope('cell_date_start', $program)
                     <span class="text-xs opacity-70">{{ $program->date_start->translatedFormat('d M Y') }}</span>
