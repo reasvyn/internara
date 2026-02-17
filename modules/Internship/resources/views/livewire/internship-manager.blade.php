@@ -1,6 +1,10 @@
 <div>
-    <x-ui::header :title="__('internship::ui.program_title')" :subtitle="__('internship::ui.program_subtitle')">
-        <x-slot:actions>
+    <x-ui::header 
+        wire:key="internship-manager-header"
+        :title="__('internship::ui.program_title')" 
+        :subtitle="__('internship::ui.program_subtitle')"
+    >
+        <x-slot:actions wire:key="internship-manager-actions">
             <x-ui::button :label="__('internship::ui.add_program')" icon="tabler.plus" variant="primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>
@@ -13,28 +17,35 @@
                 </div>
             </div>
 
-            <x-ui::table :headers="[
-                ['key' => 'title', 'label' => __('internship::ui.title')],
-                ['key' => 'year', 'label' => __('internship::ui.year')],
-                ['key' => 'semester', 'label' => __('internship::ui.semester')],
-                ['key' => 'date_start', 'label' => __('internship::ui.date_start')],
-                ['key' => 'date_finish', 'label' => __('internship::ui.date_finish')],
-                ['key' => 'actions', 'label' => ''],
-            ]" :rows="$this->records" with-pagination>
-                @scope('cell_date_start', $program)
-                    <span class="text-xs opacity-70">{{ $program->date_start->translatedFormat('d M Y') }}</span>
-                @endscope
-                @scope('cell_date_finish', $program)
-                    <span class="text-xs opacity-70">{{ $program->date_finish->translatedFormat('d M Y') }}</span>
-                @endscope
+            <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
+                <x-mary-table 
+                    class="table-zebra table-md w-full"
+                    :headers="[
+                        ['key' => 'title', 'label' => __('internship::ui.title')],
+                        ['key' => 'year', 'label' => __('internship::ui.year')],
+                        ['key' => 'semester', 'label' => __('internship::ui.semester')],
+                        ['key' => 'date_start', 'label' => __('internship::ui.date_start')],
+                        ['key' => 'date_finish', 'label' => __('internship::ui.date_finish')],
+                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+                    ]" 
+                    :rows="$this->records" 
+                    with-pagination
+                >
+                    @scope('cell_date_start', $program)
+                        <span class="text-xs opacity-70">{{ $program->date_start->translatedFormat('d M Y') }}</span>
+                    @endscope
+                    @scope('cell_date_finish', $program)
+                        <span class="text-xs opacity-70">{{ $program->date_finish->translatedFormat('d M Y') }}</span>
+                    @endscope
 
-                @scope('cell_actions', $program)
-                    <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $program->id }}')" tooltip="{{ __('ui::common.edit') }}" />
-                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $program->id }}')" tooltip="{{ __('ui::common.delete') }}" />
-                    </div>
-                @endscope
-            </x-ui::table>
+                    @scope('cell_actions', $program)
+                        <div class="flex items-center justify-end gap-1">
+                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $program->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $program->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                        </div>
+                    @endscope
+                </x-mary-table>
+            </div>
         </x-ui::card>
     </x-ui::main>
 

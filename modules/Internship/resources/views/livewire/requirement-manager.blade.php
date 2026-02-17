@@ -1,9 +1,15 @@
 <div>
-    <x-ui::main title="{{ __('internship::ui.requirement_title') }}" subtitle="{{ __('internship::ui.requirement_subtitle') }}">
-        <x-slot:actions>
+    <x-ui::header 
+        wire:key="requirement-manager-header"
+        title="{{ __('internship::ui.requirement_title') }}" 
+        subtitle="{{ __('internship::ui.requirement_subtitle') }}"
+    >
+        <x-slot:actions wire:key="requirement-manager-actions">
             <x-ui::button label="{{ __('internship::ui.add_requirement') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
+    </x-ui::header>
 
+    <x-ui::main>
         <x-ui::card>
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
@@ -11,41 +17,48 @@
                 </div>
             </div>
 
-            <x-ui::table :headers="[
-                ['key' => 'name', 'label' => __('internship::ui.requirement_name')],
-                ['key' => 'type', 'label' => __('internship::ui.requirement_type')],
-                ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory')],
-                ['key' => 'is_active', 'label' => __('internship::ui.active')],
-                ['key' => 'academic_year', 'label' => __('internship::ui.academic_year')],
-                ['key' => 'actions', 'label' => ''],
-            ]" :rows="$this->records" with-pagination>
-                @scope('cell_name', $requirement)
-                    <div class="font-semibold">{{ $requirement->name }}</div>
-                    @if($requirement->description)
-                        <div class="text-xs opacity-70">{{ $requirement->description }}</div>
-                    @endif
-                @endscope
+            <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
+                <x-mary-table 
+                    class="table-zebra table-md w-full"
+                    :headers="[
+                        ['key' => 'name', 'label' => __('internship::ui.requirement_name')],
+                        ['key' => 'type', 'label' => __('internship::ui.requirement_type')],
+                        ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory')],
+                        ['key' => 'is_active', 'label' => __('internship::ui.active')],
+                        ['key' => 'academic_year', 'label' => __('internship::ui.academic_year')],
+                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+                    ]" 
+                    :rows="$this->records" 
+                    with-pagination
+                >
+                    @scope('cell_name', $requirement)
+                        <div class="font-semibold">{{ $requirement->name }}</div>
+                        @if($requirement->description)
+                            <div class="text-xs opacity-70">{{ $requirement->description }}</div>
+                        @endif
+                    @endscope
 
-                @scope('cell_type', $requirement)
-                    <x-ui::badge :label="__('internship::ui.' . $requirement->type)" class="badge-outline" />
-                @endscope
+                    @scope('cell_type', $requirement)
+                        <x-ui::badge :label="__('internship::ui.' . $requirement->type)" class="badge-outline" />
+                    @endscope
 
-                @scope('cell_is_mandatory', $requirement)
-                    <x-ui::icon :name="$requirement->is_mandatory ? 'tabler.check' : 'tabler.x'" class="{{ $requirement->is_mandatory ? 'text-success' : 'text-error' }}" />
-                @endscope
+                    @scope('cell_is_mandatory', $requirement)
+                        <x-ui::icon :name="$requirement->is_mandatory ? 'tabler.check' : 'tabler.x'" class="{{ $requirement->is_mandatory ? 'text-success' : 'text-error' }}" />
+                    @endscope
 
-                @scope('cell_is_active', $requirement)
-                    <x-ui::badge :label="$requirement->is_active ? __('internship::ui.active') : __('shared::ui.inactive')" 
-                        class="{{ $requirement->is_active ? 'badge-success' : 'badge-ghost' }} badge-sm" />
-                @endscope
+                    @scope('cell_is_active', $requirement)
+                        <x-ui::badge :label="$requirement->is_active ? __('internship::ui.active') : __('shared::ui.inactive')" 
+                            class="{{ $requirement->is_active ? 'badge-success' : 'badge-ghost' }} badge-sm" />
+                    @endscope
 
-                @scope('cell_actions', $requirement)
-                    <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $requirement->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
-                        <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $requirement->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
-                    </div>
-                @endscope
-            </x-ui::table>
+                    @scope('cell_actions', $requirement)
+                        <div class="flex items-center justify-end gap-1">
+                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $requirement->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $requirement->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                        </div>
+                    @endscope
+                </x-mary-table>
+            </div>
         </x-ui::card>
     </x-ui::main>
 

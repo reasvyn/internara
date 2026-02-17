@@ -1,9 +1,15 @@
 <div>
-    <x-ui::main title="{{ __('internship::ui.company_title') }}" subtitle="{{ __('internship::ui.company_subtitle') }}">
-        <x-slot:actions>
+    <x-ui::header 
+        wire:key="company-manager-header"
+        title="{{ __('internship::ui.company_title') }}" 
+        subtitle="{{ __('internship::ui.company_subtitle') }}"
+    >
+        <x-slot:actions wire:key="company-manager-actions">
             <x-ui::button label="{{ __('internship::ui.add_company') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
+    </x-ui::header>
 
+    <x-ui::main>
         <x-ui::card>
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
@@ -11,20 +17,27 @@
                 </div>
             </div>
 
-            <x-ui::table :headers="[
-                ['key' => 'name', 'label' => __('internship::ui.company_name')],
-                ['key' => 'business_field', 'label' => __('internship::ui.business_field')],
-                ['key' => 'phone', 'label' => __('internship::ui.company_phone')],
-                ['key' => 'email', 'label' => __('internship::ui.company_email')],
-                ['key' => 'actions', 'label' => ''],
-            ]" :rows="$this->records" with-pagination>
-                @scope('cell_actions', $company)
-                    <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm text-info" wire:click="edit('{{ $company->id }}')" tooltip="{{ __('shared::ui.edit') }}" />
-                        <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="discard('{{ $company->id }}')" tooltip="{{ __('shared::ui.delete') }}" />
-                    </div>
-                @endscope
-            </x-ui::table>
+            <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
+                <x-mary-table 
+                    class="table-zebra table-md w-full"
+                    :headers="[
+                        ['key' => 'name', 'label' => __('internship::ui.company_name')],
+                        ['key' => 'business_field', 'label' => __('internship::ui.business_field')],
+                        ['key' => 'phone', 'label' => __('internship::ui.company_phone')],
+                        ['key' => 'email', 'label' => __('internship::ui.company_email')],
+                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+                    ]" 
+                    :rows="$this->records" 
+                    with-pagination
+                >
+                    @scope('cell_actions', $company)
+                        <div class="flex items-center justify-end gap-1">
+                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $company->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $company->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                        </div>
+                    @endscope
+                </x-mary-table>
+            </div>
         </x-ui::card>
     </x-ui::main>
 
@@ -48,18 +61,18 @@
             <x-ui::input label="{{ __('internship::ui.company_email') }}" type="email" wire:model="form.email" />
 
             <x-slot:actions>
-                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
-                <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+                <x-ui::button label="{{ __('ui::common.cancel') }}" wire:click="$set('formModal', false)" />
+                <x-ui::button label="{{ __('ui::common.save') }}" type="submit" class="btn-primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>
 
     {{-- Confirm Delete Modal --}}
-    <x-ui::modal id="company-confirm-modal" wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+    <x-ui::modal id="company-confirm-modal" wire:model="confirmModal" title="{{ __('ui::common.confirm') }}">
         <p>{{ __('internship::ui.delete_company_confirm') }}</p>
         <x-slot:actions>
-            <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
-            <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
+            <x-ui::button label="{{ __('ui::common.cancel') }}" wire:click="$set('confirmModal', false)" />
+            <x-ui::button label="{{ __('ui::common.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
         </x-slot:actions>
     </x-ui::modal>
 </div>
