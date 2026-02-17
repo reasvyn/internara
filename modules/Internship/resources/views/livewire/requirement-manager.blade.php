@@ -46,46 +46,46 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-    </x-ui::main>
 
-    {{-- Form Modal --}}
-    <x-ui::modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_requirement') : __('internship::ui.add_requirement') }}">
-        <x-ui::form wire:submit="save">
-            <x-ui::input label="{{ __('internship::ui.requirement_name') }}" wire:model="form.name" required />
-            <x-ui::textarea label="{{ __('shared::ui.description') }}" wire:model="form.description" />
-            
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::select 
-                    label="{{ __('internship::ui.requirement_type') }}" 
-                    wire:model="form.type" 
-                    :options="[
-                        ['id' => 'document', 'name' => __('internship::ui.document')],
-                        ['id' => 'skill', 'name' => __('internship::ui.skill')],
-                        ['id' => 'condition', 'name' => __('internship::ui.condition')],
-                    ]" 
-                    required 
-                />
-                <x-ui::input label="{{ __('internship::ui.academic_year') }}" wire:model="form.academic_year" placeholder="YYYY/YYYY" required />
-            </div>
+        {{-- Form Modal --}}
+        <x-ui::modal id="requirement-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_requirement') : __('internship::ui.add_requirement') }}">
+            <x-ui::form wire:submit="save">
+                <x-ui::input label="{{ __('internship::ui.requirement_name') }}" wire:model="form.name" required />
+                <x-ui::textarea label="{{ __('shared::ui.description') }}" wire:model="form.description" />
+                
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <x-ui::select 
+                        label="{{ __('internship::ui.requirement_type') }}" 
+                        wire:model="form.type" 
+                        :options="[
+                            ['id' => 'document', 'name' => __('internship::ui.document')],
+                            ['id' => 'skill', 'name' => __('internship::ui.skill')],
+                            ['id' => 'condition', 'name' => __('internship::ui.condition')],
+                        ]" 
+                        required 
+                    />
+                    <x-ui::input label="{{ __('internship::ui.academic_year') }}" wire:model="form.academic_year" placeholder="YYYY/YYYY" required />
+                </div>
 
-            <div class="flex gap-4">
-                <x-ui::checkbox label="{{ __('internship::ui.mandatory') }}" wire:model="form.is_mandatory" />
-                <x-ui::checkbox label="{{ __('internship::ui.active') }}" wire:model="form.is_active" />
-            </div>
+                <div class="flex gap-4">
+                    <x-ui::checkbox label="{{ __('internship::ui.mandatory') }}" wire:model="form.is_mandatory" />
+                    <x-ui::checkbox label="{{ __('internship::ui.active') }}" wire:model="form.is_active" />
+                </div>
 
+                <x-slot:actions>
+                    <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
+                    <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+                </x-slot:actions>
+            </x-ui::form>
+        </x-ui::modal>
+
+        {{-- Confirm Delete Modal --}}
+        <x-ui::modal id="requirement-confirm-modal" wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+            <p>{{ __('internship::ui.delete_requirement_confirm') }}</p>
             <x-slot:actions>
-                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
-                <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
+                <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
             </x-slot:actions>
-        </x-ui::form>
-    </x-ui::modal>
-
-    {{-- Confirm Delete Modal --}}
-    <x-ui::modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
-        <p>{{ __('internship::ui.delete_requirement_confirm') }}</p>
-        <x-slot:actions>
-            <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
-            <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
-        </x-slot:actions>
-    </x-ui::modal>
+        </x-ui::modal>
+    </x-ui::main>
 </div>

@@ -58,120 +58,120 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-    </x-ui::main>
 
-    {{-- Form Modal --}}
-    <x-ui::modal wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">
-        <x-ui::form wire:submit="save">
-            <x-ui::select 
-                label="{{ __('internship::ui.student') }}" 
-                wire:model="form.student_id" 
-                :options="$this->students" 
-                placeholder="{{ __('internship::ui.select_student') }}"
-                required 
-            />
-            <x-ui::select 
-                label="{{ __('internship::ui.program') }}" 
-                wire:model="form.internship_id" 
-                :options="$this->internships" 
-                placeholder="{{ __('internship::ui.select_program') }}"
-                required 
-            />
-            <x-ui::select 
-                label="{{ __('internship::ui.placement') }}" 
-                wire:model="form.placement_id" 
-                :options="$this->placements" 
-                placeholder="{{ __('internship::ui.select_placement') }}"
-                required 
-            />
-
-            <hr class="my-4 opacity-20" />
-
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {{-- Form Modal --}}
+        <x-ui::modal id="registration-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">
+            <x-ui::form wire:submit="save">
                 <x-ui::select 
-                    label="{{ __('internship::ui.teacher') }}" 
-                    wire:model="form.teacher_id" 
-                    :options="$this->teachers" 
-                    placeholder="{{ __('internship::ui.select_teacher') }}"
-                    required
+                    label="{{ __('internship::ui.student') }}" 
+                    wire:model="form.student_id" 
+                    :options="$this->students" 
+                    placeholder="{{ __('internship::ui.select_student') }}"
+                    required 
                 />
                 <x-ui::select 
-                    label="{{ __('internship::ui.mentor') }}" 
-                    wire:model="form.mentor_id" 
-                    :options="$this->mentors" 
-                    placeholder="{{ __('internship::ui.select_mentor') }}"
+                    label="{{ __('internship::ui.program') }}" 
+                    wire:model="form.internship_id" 
+                    :options="$this->internships" 
+                    placeholder="{{ __('internship::ui.select_program') }}"
+                    required 
                 />
+                <x-ui::select 
+                    label="{{ __('internship::ui.placement') }}" 
+                    wire:model="form.placement_id" 
+                    :options="$this->placements" 
+                    placeholder="{{ __('internship::ui.select_placement') }}"
+                    required 
+                />
+
+                <hr class="my-4 opacity-20" />
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <x-ui::select 
+                        label="{{ __('internship::ui.teacher') }}" 
+                        wire:model="form.teacher_id" 
+                        :options="$this->teachers" 
+                        placeholder="{{ __('internship::ui.select_teacher') }}"
+                        required
+                    />
+                    <x-ui::select 
+                        label="{{ __('internship::ui.mentor') }}" 
+                        wire:model="form.mentor_id" 
+                        :options="$this->mentors" 
+                        placeholder="{{ __('internship::ui.select_mentor') }}"
+                    />
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <x-ui::input label="{{ __('internship::ui.date_start') }}" type="date" wire:model="form.start_date" required />
+                    <x-ui::input label="{{ __('internship::ui.date_finish') }}" type="date" wire:model="form.end_date" required />
+                </div>
+
+                <x-slot:actions>
+                    <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
+                    <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+                </x-slot:actions>
+            </x-ui::form>
+        </x-ui::modal>
+
+        {{-- Confirm Delete Modal --}}
+        <x-ui::modal id="registration-confirm-modal" wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
+            <p>{{ __('internship::ui.delete_registration_confirm') }}</p>
+            <x-slot:actions>
+                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
+                <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
+            </x-slot:actions>
+        </x-ui::modal>
+
+        {{-- Bulk Placement Modal --}}
+        <x-ui::modal id="registration-bulk-modal" wire:model="bulkPlaceModal" title="{{ __('Penempatan Massal') }}">
+            <div class="mb-4">
+                <p class="text-sm opacity-70">{{ __(':count siswa terpilih akan ditempatkan di lokasi yang sama.', ['count' => count($selectedIds)]) }}</p>
+                <p class="text-xs text-warning mt-1">{{ __('Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.') }}</p>
             </div>
 
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::input label="{{ __('internship::ui.date_start') }}" type="date" wire:model="form.start_date" required />
-                <x-ui::input label="{{ __('internship::ui.date_finish') }}" type="date" wire:model="form.end_date" required />
-            </div>
+            <x-ui::form wire:submit="executeBulkPlace">
+                <x-ui::select 
+                    label="{{ __('Lokasi Penempatan') }}" 
+                    wire:model="targetPlacementId" 
+                    :options="$this->placements" 
+                    placeholder="{{ __('Pilih Industri Partner') }}"
+                    required 
+                />
 
-            <x-slot:actions>
-                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
-                <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
-            </x-slot:actions>
-        </x-ui::form>
-    </x-ui::modal>
+                <x-slot:actions>
+                    <x-ui::button label="{{ __('Batal') }}" wire:click="$set('bulkPlaceModal', false)" />
+                    <x-ui::button label="{{ __('Proses Penempatan') }}" type="submit" class="btn-primary" spinner="executeBulkPlace" />
+                </x-slot:actions>
+            </x-ui::form>
+        </x-ui::modal>
 
-    {{-- Confirm Delete Modal --}}
-    <x-ui::modal wire:model="confirmModal" title="{{ __('shared::ui.confirmation') }}">
-        <p>{{ __('internship::ui.delete_registration_confirm') }}</p>
-        <x-slot:actions>
-            <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('confirmModal', false)" />
-            <x-ui::button label="{{ __('shared::ui.delete') }}" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
-        </x-slot:actions>
-    </x-ui::modal>
-
-    {{-- Bulk Placement Modal --}}
-    <x-ui::modal wire:model="bulkPlaceModal" title="{{ __('Penempatan Massal') }}">
-        <div class="mb-4">
-            <p class="text-sm opacity-70">{{ __(':count siswa terpilih akan ditempatkan di lokasi yang sama.', ['count' => count($selectedIds)]) }}</p>
-            <p class="text-xs text-warning mt-1">{{ __('Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.') }}</p>
-        </div>
-
-        <x-ui::form wire:submit="executeBulkPlace">
-            <x-ui::select 
-                label="{{ __('Lokasi Penempatan') }}" 
-                wire:model="targetPlacementId" 
-                :options="$this->placements" 
-                placeholder="{{ __('Pilih Industri Partner') }}"
-                required 
-            />
-
-            <x-slot:actions>
-                <x-ui::button label="{{ __('Batal') }}" wire:click="$set('bulkPlaceModal', false)" />
-                <x-ui::button label="{{ __('Proses Penempatan') }}" type="submit" class="btn-primary" spinner="executeBulkPlace" />
-            </x-slot:actions>
-        </x-ui::form>
-    </x-ui::modal>
-
-    {{-- History Modal --}}
-    <x-ui::modal wire:model="historyModal" title="{{ __('Riwayat Penempatan Siswa') }}" separator>
-        @if($historyId)
-            <div class="flex flex-col gap-4">
-                @forelse($this->history as $log)
-                    <div class="flex gap-4 border-l-2 border-primary/30 pl-4 py-2 relative">
-                        <div class="absolute -left-[5px] top-4 w-2 h-2 rounded-full bg-primary"></div>
-                        <div class="flex-1">
-                            <div class="flex justify-between items-start">
-                                <span class="font-bold text-sm uppercase text-primary">{{ $log->action }}</span>
-                                <span class="text-xs opacity-50">{{ $log->created_at->format('d M Y, H:i') }}</span>
+        {{-- History Modal --}}
+        <x-ui::modal id="registration-history-modal" wire:model="historyModal" title="{{ __('Riwayat Penempatan Siswa') }}" separator>
+            @if($historyId)
+                <div class="flex flex-col gap-4">
+                    @forelse($this->history as $log)
+                        <div class="flex gap-4 border-l-2 border-primary/30 pl-4 py-2 relative">
+                            <div class="absolute -left-[5px] top-4 w-2 h-2 rounded-full bg-primary"></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <span class="font-bold text-sm uppercase text-primary">{{ $log->action }}</span>
+                                    <span class="text-xs opacity-50">{{ $log->created_at->format('d M Y, H:i') }}</span>
+                                </div>
+                                <div class="text-sm font-semibold mt-1">{{ $log->placement?->company_name ?? __('N/A') }}</div>
+                                @if($log->reason)
+                                    <div class="text-xs opacity-70 italic mt-1">"{{ $log->reason }}"</div>
+                                @endif
                             </div>
-                            <div class="text-sm font-semibold mt-1">{{ $log->placement?->company_name ?? __('N/A') }}</div>
-                            @if($log->reason)
-                                <div class="text-xs opacity-70 italic mt-1">"{{ $log->reason }}"</div>
-                            @endif
                         </div>
-                    </div>
-                @empty
-                    <p class="text-center py-8 opacity-50">{{ __('Belum ada riwayat penempatan.') }}</p>
-                @endforelse
-            </div>
-        @endif
-        <x-slot:actions>
-            <x-ui::button label="{{ __('Tutup') }}" wire:click="$set('historyModal', false)" />
-        </x-slot:actions>
-    </x-ui::modal>
+                    @empty
+                        <p class="text-center py-8 opacity-50">{{ __('Belum ada riwayat penempatan.') }}</p>
+                    @endforelse
+                </div>
+            @endif
+            <x-slot:actions>
+                <x-ui::button label="{{ __('Tutup') }}" wire:click="$set('historyModal', false)" />
+            </x-slot:actions>
+        </x-ui::modal>
+    </x-ui::main>
 </div>

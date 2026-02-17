@@ -30,27 +30,27 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-    </x-ui::main>
 
-    {{-- Form Modal --}}
-    <x-ui::modal wire:model="formModal" :title="$form->id ? __('department::ui.edit') : __('department::ui.add')">
-        <x-ui::form wire:submit="save">
-            <x-ui::input :label="__('department::ui.name')" wire:model="form.name" required />
-            <x-ui::textarea :label="__('department::ui.description')" wire:model="form.description" />
+        {{-- Form Modal --}}
+        <x-ui::modal id="department-form-modal" wire:model="formModal" :title="$form->id ? __('department::ui.edit') : __('department::ui.add')">
+            <x-ui::form wire:submit="save">
+                <x-ui::input :label="__('department::ui.name')" wire:model="form.name" required />
+                <x-ui::textarea :label="__('department::ui.description')" wire:model="form.description" />
 
+                <x-slot:actions>
+                    <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
+                    <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
+                </x-slot:actions>
+            </x-ui::form>
+        </x-ui::modal>
+
+        {{-- Confirm Delete Modal --}}
+        <x-ui::modal id="department-confirm-modal" wire:model="confirmModal" :title="__('ui::common.confirm')">
+            <p>{{ __('department::ui.delete_confirm') }}</p>
             <x-slot:actions>
-                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
-                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
+                <x-ui::button :label="__('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
             </x-slot:actions>
-        </x-ui::form>
-    </x-ui::modal>
-
-    {{-- Confirm Delete Modal --}}
-    <x-ui::modal wire:model="confirmModal" :title="__('ui::common.confirm')">
-        <p>{{ __('department::ui.delete_confirm') }}</p>
-        <x-slot:actions>
-            <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
-            <x-ui::button :label="__('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
-        </x-slot:actions>
-    </x-ui::modal>
+        </x-ui::modal>
+    </x-ui::main>
 </div>

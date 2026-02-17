@@ -7,6 +7,7 @@ namespace Modules\Shared\Livewire\Concerns;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
+use Livewire\WithPagination;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
@@ -18,6 +19,8 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  */
 trait ManagesRecords
 {
+    use WithPagination;
+
     /**
      * The standard sorting configurations.
      */
