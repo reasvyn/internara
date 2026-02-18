@@ -33,31 +33,45 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
      */
     public function getReportData(array $filters = []): array
     {
-        $query = InternshipPlacement::with(['registrations', 'company']);
+        $query = InternshipPlacement::query()
+            ->select(['id', 'company_id', 'internship_id'])
+            ->with(['company:id,name', 'registrations:id,placement_id']);
 
         if (isset($filters['internship_id'])) {
             $query->where('internship_id', $filters['internship_id']);
         }
 
         $placements = $query->get();
+        
+        // 1. Collect all registration IDs for bulk processing
+        $allRegistrationIds = $placements->flatMap->registrations->pluck('id')->toArray();
+        
+        // 2. Fetch required stats in single bulk calls
+        $journalService = app(\Modules\Journal\Services\Contracts\JournalService::class);
+        $assessmentService = app(\Modules\Assessment\Services\Contracts\AssessmentService::class);
+        
+        $allJournalStats = $journalService->getEngagementStats($allRegistrationIds);
+        $allAvgScores = $assessmentService->getAverageScore($allRegistrationIds, 'mentor');
 
         $rows = $placements
-            ->map(function ($placement) {
+            ->map(function ($placement) use ($allJournalStats, $allAvgScores) {
                 $registrationIds = $placement->registrations->pluck('id')->toArray();
-
-                $journalStats = app(
-                    \Modules\Journal\Services\Contracts\JournalService::class,
-                )->getEngagementStats($registrationIds);
-
-                $avgScore = app(
-                    \Modules\Assessment\Services\Contracts\AssessmentService::class,
-                )->getAverageScore($registrationIds, 'mentor');
+                
+                // Aggregate stats for this specific placement from the bulk data
+                $responsivenessSum = 0;
+                $scoreSum = 0;
+                $count = count($registrationIds);
+                
+                foreach ($registrationIds as $regId) {
+                    $responsivenessSum += $allJournalStats[$regId]['responsiveness'] ?? 0;
+                    $scoreSum += $allAvgScores[$regId] ?? 0;
+                }
 
                 return [
                     'Partner Name' => $placement->company?->name ?? 'Unknown',
-                    'Total Interns' => count($registrationIds),
-                    'Responsiveness' => $journalStats['responsiveness'].'%',
-                    'Avg Feedback' => number_format($avgScore, 2).' / 100',
+                    'Total Interns' => $count,
+                    'Responsiveness' => ($count > 0 ? round($responsivenessSum / $count, 2) : 0).'%',
+                    'Avg Feedback' => number_format($count > 0 ? $scoreSum / $count : 0, 2).' / 100',
                 ];
             })
             ->toArray();

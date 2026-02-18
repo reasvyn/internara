@@ -30,32 +30,37 @@ class InternshipClassReportProvider implements ExportableDataProvider
      */
     public function getReportData(array $filters = []): array
     {
-        $query = InternshipRegistration::with([
-            'user',
-            'placement.company',
-            'internship',
-            'mentor',
-        ]);
+        $query = InternshipRegistration::query()
+            ->select(['id', 'student_id', 'internship_id', 'placement_id', 'mentor_id', 'status', 'academic_year'])
+            ->with([
+                'student:id,name',
+                'internship:id,title',
+                'placement:id,company_id',
+                'placement.company:id,name',
+                'mentor:id,name',
+            ]);
 
         if (isset($filters['academic_year'])) {
             $query->where('academic_year', $filters['academic_year']);
         }
 
-        $registrations = $query->get();
+        $rows = [];
+        
+        // Using cursor to iterate through records without loading all into memory at once
+        // although we return an array, this helps during the hydration phase.
+        foreach ($query->cursor() as $reg) {
+            $rows[] = [
+                'Student Name' => $reg->student->name,
+                'Program' => $reg->internship->title,
+                'Placement' => $reg->placement?->company?->name ?? 'Not Assigned',
+                'Mentor' => $reg->mentor?->name ?? 'Not Assigned',
+                'Status' => $reg->getStatusLabel(),
+            ];
+        }
 
         return [
             'headers' => ['Student Name', 'Program', 'Placement', 'Mentor', 'Status'],
-            'rows' => $registrations
-                ->map(
-                    fn ($reg) => [
-                        'Student Name' => $reg->user->name,
-                        'Program' => $reg->internship->title,
-                        'Placement' => $reg->placement?->company?->name ?? 'Not Assigned',
-                        'Mentor' => $reg->mentor?->name ?? 'Not Assigned',
-                        'Status' => $reg->getStatusLabel(),
-                    ],
-                )
-                ->toArray(),
+            'rows' => $rows,
         ];
     }
 

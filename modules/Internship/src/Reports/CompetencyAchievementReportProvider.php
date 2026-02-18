@@ -33,26 +33,26 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
      */
     public function getReportData(array $filters = []): array
     {
-        $query = InternshipRegistration::with(['user', 'internship', 'placement.company']);
+        $query = InternshipRegistration::query()
+            ->select(['id', 'student_id', 'internship_id', 'placement_id', 'status', 'academic_year'])
+            ->with(['student:id,name', 'internship:id,title', 'placement:id,company_id', 'placement.company:id,name']);
 
         if (isset($filters['academic_year'])) {
             $query->where('academic_year', $filters['academic_year']);
         }
 
-        $registrations = $query->get();
-
-        $rows = $registrations
-            ->map(function ($reg) {
-                // Placeholder for competency achievement logic (to be expanded in v0.10.0)
-                return [
-                    'Student Name' => $reg->user->name,
-                    'Placement' => $reg->placement?->company?->name ?? '-',
-                    'Technical Skills' => 'N/A', // Placeholder
-                    'Soft Skills' => 'N/A', // Placeholder
-                    'Total Progress' => '0%', // Placeholder
-                ];
-            })
-            ->toArray();
+        $rows = [];
+        
+        foreach ($query->cursor() as $reg) {
+            // Placeholder for competency achievement logic (to be expanded in v0.10.0)
+            $rows[] = [
+                'Student Name' => $reg->student->name,
+                'Placement' => $reg->placement?->company?->name ?? '-',
+                'Technical Skills' => 'N/A', // Placeholder
+                'Soft Skills' => 'N/A', // Placeholder
+                'Total Progress' => '0%', // Placeholder
+            ];
+        }
 
         return [
             'headers' => [
