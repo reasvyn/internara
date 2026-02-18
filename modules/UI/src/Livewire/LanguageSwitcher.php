@@ -22,10 +22,10 @@ class LanguageSwitcher extends Component
     /**
      * Change the application locale.
      */
-    public function changeLocale(string $locale, LocalizationService $service): void
+    public function changeLocale(string $locale, LocalizationService $service)
     {
         if ($service->setLocale($locale)) {
-            $this->js('window.location.reload()');
+            return $this->redirect(request()->header('Referer', '/'), navigate: false);
         }
     }
 
