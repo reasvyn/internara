@@ -242,30 +242,44 @@ class JournalService extends EloquentQuery implements Contract
     public function getEngagementStats(array $registrationIds): array
     {
         if (empty($registrationIds)) {
-            return ['submitted' => 0, 'approved' => 0, 'responsiveness' => 0.0];
+            return [];
         }
 
-        $submitted = $this->model
+        // Fetch counts in a single query grouped by registration_id
+        $results = $this->model
             ->newQuery()
+            ->select('registration_id')
+            ->selectRaw("COUNT(CASE WHEN EXISTS (
+                SELECT 1 FROM statuses 
+                WHERE statuses.model_id = journal_entries.id 
+                AND statuses.model_type = ? 
+                AND name IN ('submitted', 'approved', 'verified')
+            ) THEN 1 END) as submitted_count", [$this->model->getMorphClass()])
+            ->selectRaw("COUNT(CASE WHEN EXISTS (
+                SELECT 1 FROM statuses 
+                WHERE statuses.model_id = journal_entries.id 
+                AND statuses.model_type = ? 
+                AND name IN ('approved', 'verified')
+            ) THEN 1 END) as approved_count", [$this->model->getMorphClass()])
             ->whereIn('registration_id', $registrationIds)
-            ->whereHas(
-                'statuses',
-                fn ($q) => $q->whereIn('name', ['submitted', 'approved', 'verified']),
-            )
-            ->count();
+            ->groupBy('registration_id')
+            ->get()
+            ->keyBy('registration_id');
 
-        $approved = $this->model
-            ->newQuery()
-            ->whereIn('registration_id', $registrationIds)
-            ->currentStatus(['approved', 'verified'])
-            ->count();
+        $statsMap = [];
+        foreach ($registrationIds as $id) {
+            $row = $results->get($id);
+            $submitted = (int) ($row->submitted_count ?? 0);
+            $approved = (int) ($row->approved_count ?? 0);
+            $responsiveness = $submitted > 0 ? ($approved / $submitted) * 100 : 0.0;
 
-        $responsiveness = $submitted > 0 ? ($approved / $submitted) * 100 : 0.0;
+            $statsMap[$id] = [
+                'submitted' => $submitted,
+                'approved' => $approved,
+                'responsiveness' => round($responsiveness, 2),
+            ];
+        }
 
-        return [
-            'submitted' => $submitted,
-            'approved' => $approved,
-            'responsiveness' => round($responsiveness, 2),
-        ];
+        return $statsMap;
     }
 }

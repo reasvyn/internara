@@ -54,21 +54,35 @@ class AnalyticsAggregator implements Contract
      */
     public function getAtRiskStudents(int $limit = 5): array
     {
-        // Retrieve the most recent active registrations for analysis
+        // 1. Retrieve the most recent active registrations
         $activeRegistrations = $this->registrationService
             ->query(['latest_status' => 'active'])
+            ->with('user:id,name') // Select only required columns
             ->limit(20)
             ->get();
+
+        if ($activeRegistrations->isEmpty()) {
+            return [];
+        }
+
+        $registrationIds = $activeRegistrations->pluck('id')->toArray();
+
+        // 2. Fetch required stats in bulk (Eliminating N+1)
+        $allEngagementStats = $this->journalService->getEngagementStats($registrationIds);
+        $allAverageScores = $this->assessmentService->getAverageScore($registrationIds, 'mentor');
 
         $atRisk = [];
 
         foreach ($activeRegistrations as $registration) {
-            $stats = $this->journalService->getEngagementStats([$registration->id]);
-            $avgScore = $this->assessmentService->getAverageScore([$registration->id], 'mentor');
+            $registrationId = (string) $registration->id;
+            
+            // Get stats from pre-fetched maps
+            $stats = $allEngagementStats[$registrationId] ?? ['responsiveness' => 0];
+            $avgScore = $allAverageScores[$registrationId] ?? 0;
 
             $riskReasons = [];
 
-            if ($stats['responsiveness'] < 50) {
+            if (($stats['responsiveness'] ?? 0) < 50) {
                 $riskReasons[] = __('core::analytics.risks.low_verification');
             }
 
