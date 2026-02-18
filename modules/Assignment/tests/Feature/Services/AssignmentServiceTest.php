@@ -32,7 +32,7 @@ test('it can create default assignments for an internship program', function () 
         'title' => 'Presentasi Kegiatan PKL',
     ]);
 
-    expect(Assignment::where('internship_id', $internship->id)->count())->toBe(2);
+    expect(Assignment::where('internship_id', $internship->id)->count())->toBe(4);
 });
 
 test('it determines fulfillment complete when all mandatory assignments are verified', function () {

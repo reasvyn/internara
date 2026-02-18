@@ -22,7 +22,7 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function createDefaults(string $internshipId, ?string $academicYear = null): void
     {
-        $types = AssignmentType::all();
+        $types = AssignmentType::select(['id', 'name', 'group', 'description'])->get();
 
         foreach ($types as $type) {
             $this->model->newQuery()->firstOrCreate(
@@ -58,6 +58,7 @@ class AssignmentService extends EloquentQuery implements Contract
 
         $query = $this->model
             ->newQuery()
+            ->select(['id'])
             ->where('internship_id', $registration->internship_id)
             ->where('is_mandatory', true);
 
@@ -71,23 +72,18 @@ class AssignmentService extends EloquentQuery implements Contract
             return true;
         }
 
-        // 2. Check if every mandatory assignment has a verified submission
-        foreach ($mandatoryAssignments as $assignment) {
-            $hasVerified = Submission::query()
-                ->where('assignment_id', $assignment->id)
-                ->where('registration_id', $registrationId)
-                ->whereHas('statuses', function ($query) {
-                    $query->where('name', 'verified')->where(function ($q) {
-                        $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
-                    });
-                })
-                ->exists();
+        // 2. Efficiently count unique verified mandatory assignments in one query
+        $verifiedCount = Submission::query()
+            ->whereIn('assignment_id', $mandatoryAssignments->pluck('id'))
+            ->where('registration_id', $registrationId)
+            ->whereHas('statuses', function ($query) {
+                $query->where('name', 'verified')->where(function ($q) {
+                    $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                });
+            })
+            ->distinct('assignment_id')
+            ->count('assignment_id');
 
-            if (! $hasVerified) {
-                return false;
-            }
-        }
-
-        return true;
+        return $verifiedCount === $mandatoryAssignments->count();
     }
 }
