@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Modules\Journal\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Journal\Models\JournalEntry;
-use Modules\Journal\Services\Contracts\JournalService;
 
 class JournalIndex extends Component
 {
@@ -53,7 +52,8 @@ class JournalIndex extends Component
     /**
      * Get the journals based on user role.
      */
-    public function getJournalsProperty()
+    #[Computed]
+    public function journals()
     {
         $user = auth()->user();
         $filters = [
@@ -63,10 +63,19 @@ class JournalIndex extends Component
             'sort_dir' => 'desc',
         ];
 
+        // Ensure all columns needed by @scope and policy checks are loaded
+        $columns = ['id', 'registration_id', 'student_id', 'date', 'work_topic', 'created_at'];
+
         if ($user->hasRole('student')) {
             $filters['student_id'] = $user->id;
         } elseif ($user->hasRole(['teacher', 'mentor'])) {
-            $query = $this->journalService->query($filters);
+            $query = $this->journalService->query($filters, $columns);
+            $query->with([
+                'student:id,name', 
+                'registration:id,placement_id', 
+                'registration.placement:id,company_id', 
+                'registration.placement.company:id,name'
+            ]);
             $query->whereHas('registration', function ($q) use ($user) {
                 $q->where('teacher_id', $user->id)->orWhere('mentor_id', $user->id);
             });
@@ -74,13 +83,14 @@ class JournalIndex extends Component
             return $query->paginate(10);
         }
 
-        return $this->journalService->paginate($filters, 10);
+        return $this->journalService->paginate($filters, 10, $columns);
     }
 
     /**
      * Get the current week's journal status for students.
      */
-    public function getWeekGlanceProperty(): array
+    #[Computed]
+    public function weekGlance(): array
     {
         if (! auth()->user()->hasRole('student')) {
             return [];
@@ -94,7 +104,7 @@ class JournalIndex extends Component
                 'student_id' => auth()->id(),
                 'start_date' => $startOfWeek->format('Y-m-d'),
                 'end_date' => $endOfWeek->format('Y-m-d'),
-            ])
+            ], ['id', 'date'])
             ->get()
             ->keyBy(fn ($e) => $e->date->format('Y-m-d'));
 

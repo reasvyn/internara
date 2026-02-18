@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Attendance\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Attendance\Services\Contracts\AttendanceService;
@@ -100,7 +101,8 @@ class AttendanceIndex extends Component
     /**
      * Get the attendance logs based on user role.
      */
-    public function getLogsProperty()
+    #[Computed]
+    public function logs()
     {
         $this->authorize('viewAny', \Modules\Attendance\Models\AttendanceLog::class);
 
@@ -112,10 +114,13 @@ class AttendanceIndex extends Component
             'date_to' => $this->date_to,
         ];
 
+        $columns = ['id', 'registration_id', 'student_id', 'date', 'status', 'notes', 'created_at'];
+
         if ($user->hasRole('student')) {
             $filters['student_id'] = $user->id;
         } elseif ($user->hasRole(['teacher', 'mentor'])) {
-            $query = $this->attendanceService->query($filters);
+            $query = $this->attendanceService->query($filters, $columns);
+            $query->with(['student:id,name']);
 
             // Filter by assigned students
             $query->whereHas('registration', function ($q) use ($user) {
@@ -132,7 +137,7 @@ class AttendanceIndex extends Component
             return $query->paginate(15);
         }
 
-        return $this->attendanceService->paginate($filters, 15);
+        return $this->attendanceService->paginate($filters, 15, $columns);
     }
 
     public function render(): View

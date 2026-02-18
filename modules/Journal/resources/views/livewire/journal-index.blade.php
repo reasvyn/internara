@@ -55,6 +55,7 @@
                 ['key' => 'student.name', 'label' => __('journal::ui.index.table.student'), 'hidden' => auth()->user()->hasRole('student')],
                 ['key' => 'work_topic', 'label' => __('journal::ui.index.table.work_topic')],
                 ['key' => 'status', 'label' => __('journal::ui.index.table.status')],
+                ['key' => 'actions', 'label' => ''],
             ]" :rows="$this->journals" with-pagination>
                 @scope('cell_date', $entry)
                     <div class="font-medium text-sm">{{ $entry->date->translatedFormat('d F Y') }}</div>
