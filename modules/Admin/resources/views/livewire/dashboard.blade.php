@@ -49,7 +49,7 @@
                 </x-ui::table>
             </x-ui::card>
             
-            <x-ui::card :title="__('admin::ui.dashboard.at_risk_students')" shadow separator class="border-error/20">
+            <x-ui::card :title="__('admin::ui.dashboard.at_risk_students')" shadow separator>
                 <x-ui::table :rows="$atRiskStudents" :headers="[
                     ['key' => 'student_name', 'label' => __('admin::ui.dashboard.table.student')],
                     ['key' => 'reason', 'label' => __('admin::ui.dashboard.table.reason')],

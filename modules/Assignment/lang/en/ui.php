@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'menu' => [
+        'assignments' => 'Assignments',
+        'manage_assignments' => 'Manage Assignments',
+        'assignment_types' => 'Assignment Types',
+        'final_assignment' => 'Final Assignment',
+    ],
     'manage_assignments' => 'Manage Assignments',
     'subtitle' => 'Define mandatory tasks and institutional policies for students.',
     'add_assignment' => 'Add Assignment',

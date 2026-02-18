@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 return [
+    'index' => [
+        'title' => 'Manajemen Magang',
+    ],
     'placement_title' => 'Penempatan Magang',
     'placement_subtitle' => 'Kelola daftar mitra industri dan kuota penempatan magang.',
     'add_placement' => 'Tambah Penempatan',

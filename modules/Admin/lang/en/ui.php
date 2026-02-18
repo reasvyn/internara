@@ -33,5 +33,9 @@ return [
         'administrators' => 'Administrators',
         'job_monitor' => 'Job Monitor',
         'readiness' => 'Graduation Readiness',
+        'group_core' => 'Core',
+        'group_management' => 'Data Management',
+        'group_intelligence' => 'Intelligence & Reports',
+        'group_system' => 'System',
     ],
 ];

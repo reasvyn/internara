@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'user_management' => 'Manajemen Pengguna',
     'manager' => [
         'title' => 'Manajemen Pengguna',
         'subtitle' => 'Kelola pengguna platform dan peran mereka.',

@@ -61,6 +61,8 @@ class InternshipManager extends Component
     {
         return view('internship::livewire.internship-manager', [
             'records' => $this->records,
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('internship::ui.index.title'),
         ]);
     }
 }

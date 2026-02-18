@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 return [
+    'index' => [
+        'title' => 'Internship Management',
+    ],
     'placement_title' => 'Internship Placements',
     'placement_subtitle' => 'Manage the list of industry partners and placement quotas.',
     'add_placement' => 'Add Placement',

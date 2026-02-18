@@ -33,5 +33,9 @@ return [
         'administrators' => 'Administrator',
         'job_monitor' => 'Pantau Antrean',
         'readiness' => 'Kesiapan Lulus',
+        'group_core' => 'Utama',
+        'group_management' => 'Manajemen Data',
+        'group_intelligence' => 'Intelijen & Laporan',
+        'group_system' => 'Sistem',
     ],
 ];

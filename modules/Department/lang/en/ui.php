@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'manage_departments' => 'Manage Departments',
     'title' => 'Department Management',
     'subtitle' => 'Manage the list of departments available in the school.',
     'add' => 'Add Department',

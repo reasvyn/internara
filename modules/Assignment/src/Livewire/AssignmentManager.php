@@ -122,6 +122,8 @@ class AssignmentManager extends Component
         return view('assignment::livewire.assignment-manager', [
             'assignments' => Assignment::with('type')->latest()->paginate(10),
             'types' => AssignmentType::all(),
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('assignment::ui.manage_assignments'),
         ]);
     }
 }

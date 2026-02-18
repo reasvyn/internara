@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'manage_departments' => 'Manajemen Jurusan',
     'title' => 'Manajemen Jurusan',
     'subtitle' => 'Kelola daftar jurusan yang tersedia di sekolah.',
     'add' => 'Tambah Jurusan',

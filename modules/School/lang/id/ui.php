@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'settings' => 'Konfigurasi Sekolah',
     'title' => 'Data Sekolah',
     'subtitle' => 'Perbarui data sekolah.',
     'name' => 'Nama Sekolah',

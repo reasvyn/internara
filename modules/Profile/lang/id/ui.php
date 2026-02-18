@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'profile_settings' => 'Pengaturan Profil',
     'title' => 'Profil Saya',
     'subtitle' => 'Kelola informasi pribadi dan keamanan Anda.',
     'tabs' => [

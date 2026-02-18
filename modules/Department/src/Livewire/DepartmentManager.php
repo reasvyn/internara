@@ -39,6 +39,8 @@ class DepartmentManager extends Component
     {
         return view('department::livewire.department-manager', [
             'records' => $this->records,
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('department::ui.manage_departments'),
         ]);
     }
 }

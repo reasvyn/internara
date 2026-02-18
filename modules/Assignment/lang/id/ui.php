@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'menu' => [
+        'assignments' => 'Tugas Siswa',
+        'manage_assignments' => 'Kelola Tugas',
+        'assignment_types' => 'Jenis Tugas',
+        'final_assignment' => 'Tugas Akhir',
+    ],
     'manage_assignments' => 'Kelola Tugas',
     'subtitle' => 'Tentukan tugas wajib dan kebijakan institusi untuk siswa.',
     'add_assignment' => 'Tambah Tugas',

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'profile_settings' => 'Profile Settings',
     'title' => 'My Profile',
     'subtitle' => 'Manage your personal information and security.',
     'tabs' => [

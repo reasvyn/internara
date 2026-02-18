@@ -125,6 +125,8 @@ class AssignmentTypeManager extends Component
                 'certification' => __('Certification'),
                 'other' => __('Other'),
             ],
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('assignment::ui.assignment_type'),
         ]);
     }
 }

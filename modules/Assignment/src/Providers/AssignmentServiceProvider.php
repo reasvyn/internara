@@ -56,22 +56,30 @@ class AssignmentServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
+                // Student View
                 'ui::menu-item#assignments' => [
-                    'title' => __('Assignments'),
+                    'title' => 'assignment::ui.menu.assignments',
                     'icon' => 'tabler.checklist',
                     'link' => '/assignments',
                     'role' => 'student',
                     'order' => 40,
                 ],
+
+                // Admin/Teacher View Group
+                'ui::menu-separator#assignment-mgmt' => [
+                    'title' => 'assignment::ui.menu.manage_assignments',
+                    'role' => 'admin|super-admin|teacher',
+                    'order' => 40,
+                ],
                 'ui::menu-item#admin-assignments' => [
-                    'title' => __('Manage Assignments'),
+                    'title' => 'assignment::ui.menu.manage_assignments',
                     'icon' => 'tabler.settings-automation',
                     'link' => '/admin/assignments',
                     'role' => 'admin|super-admin',
                     'order' => 41,
                 ],
                 'ui::menu-item#admin-assignment-types' => [
-                    'title' => __('Assignment Types'),
+                    'title' => 'assignment::ui.menu.assignment_types',
                     'icon' => 'tabler.category',
                     'link' => '/admin/assignments/types',
                     'role' => 'admin|super-admin',
@@ -80,7 +88,7 @@ class AssignmentServiceProvider extends ServiceProvider
             ],
             'student.dashboard.quick-actions' => [
                 'ui::button' => [
-                    'label' => __('Tugas Akhir'),
+                    'label' => 'assignment::ui.menu.final_assignment',
                     'icon' => 'tabler.certificate',
                     'link' => '/assignments',
                     'class' => 'btn-ghost justify-start w-full',

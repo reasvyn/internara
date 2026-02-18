@@ -37,12 +37,25 @@ class AdminServiceProvider extends ServiceProvider
                 ],
             ],
             'sidebar.menu' => [
+                // --- CORE ---
+                'ui::menu-separator#core' => [
+                    'title' => 'admin::ui.menu.group_core',
+                    'role' => 'admin|super-admin',
+                    'order' => 5,
+                ],
                 'ui::menu-item' => [
                     'title' => 'admin::ui.menu.dashboard',
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/admin',
                     'role' => 'admin|super-admin',
                     'order' => 10,
+                ],
+
+                // --- DATA MANAGEMENT ---
+                'ui::menu-separator#management' => [
+                    'title' => 'admin::ui.menu.group_management',
+                    'role' => 'admin|super-admin',
+                    'order' => 45,
                 ],
                 'ui::menu-item#students' => [
                     'title' => 'admin::ui.menu.students',
@@ -65,20 +78,12 @@ class AdminServiceProvider extends ServiceProvider
                     'role' => 'admin|super-admin',
                     'order' => 52,
                 ],
-                'ui::menu-item#administrators' => [
-                    'title' => 'admin::ui.menu.administrators',
-                    'icon' => 'tabler.shield-lock',
-                    'link' => '/admin/administrators',
-                    'role' => 'super-admin',
-                    'permission' => 'super-admin',
-                    'order' => 90,
-                ],
-                'ui::menu-item#job-monitor' => [
-                    'title' => 'admin::ui.menu.job_monitor',
-                    'icon' => 'tabler.activity',
-                    'link' => '/admin/jobs',
+
+                // --- INTELLIGENCE ---
+                'ui::menu-separator#intelligence' => [
+                    'title' => 'admin::ui.menu.group_intelligence',
                     'role' => 'admin|super-admin',
-                    'order' => 91,
+                    'order' => 75,
                 ],
                 'ui::menu-item#reports' => [
                     'title' => 'report::ui.title',
@@ -93,6 +98,28 @@ class AdminServiceProvider extends ServiceProvider
                     'link' => '/admin/readiness',
                     'role' => 'admin|super-admin',
                     'order' => 81,
+                ],
+
+                // --- SYSTEM ---
+                'ui::menu-separator#system' => [
+                    'title' => 'admin::ui.menu.group_system',
+                    'role' => 'admin|super-admin',
+                    'order' => 85,
+                ],
+                'ui::menu-item#administrators' => [
+                    'title' => 'admin::ui.menu.administrators',
+                    'icon' => 'tabler.shield-lock',
+                    'link' => '/admin/administrators',
+                    'role' => 'super-admin',
+                    'permission' => 'super-admin',
+                    'order' => 90,
+                ],
+                'ui::menu-item#job-monitor' => [
+                    'title' => 'admin::ui.menu.job_monitor',
+                    'icon' => 'tabler.activity',
+                    'link' => '/admin/jobs',
+                    'role' => 'admin|super-admin',
+                    'order' => 91,
                 ],
             ],
         ];

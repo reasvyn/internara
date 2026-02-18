@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'settings' => 'School Settings',
     'title' => 'School Data',
     'subtitle' => 'Update school information.',
     'name' => 'School Name',
