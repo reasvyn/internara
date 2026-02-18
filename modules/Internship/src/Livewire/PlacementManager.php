@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Modules\Internship\Livewire\Forms\PlacementForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
@@ -42,7 +43,8 @@ class PlacementManager extends Component
     /**
      * Get companies for the dropdown.
      */
-    public function getCompaniesProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function companies(): \Illuminate\Support\Collection
     {
         return \Modules\Internship\Models\Company::all(['id', 'name']);
     }
@@ -50,7 +52,8 @@ class PlacementManager extends Component
     /**
      * Get internships for the dropdown.
      */
-    public function getInternshipsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function internships(): \Illuminate\Support\Collection
     {
         return app(InternshipService::class)->all(['id', 'title']);
     }
@@ -58,7 +61,8 @@ class PlacementManager extends Component
     /**
      * Get mentors for the dropdown.
      */
-    public function getMentorsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function mentors(): \Illuminate\Support\Collection
     {
         return app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']);
     }
