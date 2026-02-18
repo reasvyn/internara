@@ -108,17 +108,23 @@ class AssessmentService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function getAverageScore(array $registrationIds, string $type = 'mentor'): float
+    public function getAverageScore(array $registrationIds, string $type = 'mentor'): array
     {
         if (empty($registrationIds)) {
-            return 0.0;
+            return [];
         }
 
-        return (float) ($this->model
+        return $this->model
             ->newQuery()
+            ->select('registration_id')
+            ->selectRaw('AVG(score) as avg_score')
             ->whereIn('registration_id', $registrationIds)
             ->where('type', $type)
-            ->avg('score') ?? 0.0);
+            ->groupBy('registration_id')
+            ->get()
+            ->pluck('avg_score', 'registration_id')
+            ->map(fn($score) => (float) $score)
+            ->toArray();
     }
 
     /**

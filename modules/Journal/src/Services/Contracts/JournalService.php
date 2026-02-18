@@ -63,7 +63,7 @@ interface JournalService extends EloquentQuery
      *
      * @param array<string> $registrationIds Authoritative UUIDs.
      *
-     * @return array{submitted: int, approved: int, responsiveness: float}
+     * @return array<string, array{submitted: int, approved: int, responsiveness: float}> Map of registration ID to stats.
      */
     public function getEngagementStats(array $registrationIds): array;
 }

@@ -21,6 +21,11 @@ test('it calculates institutional summary', function () {
         ->with('active_academic_year', \Mockery::any(), \Mockery::any())
         ->andReturn('2025/2026');
 
+    // Bypass actual caching to avoid missing table issues in test environment
+    \Illuminate\Support\Facades\Cache::shouldReceive('remember')
+        ->once()
+        ->andReturnUsing(fn ($key, $ttl, $callback) => $callback());
+
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
     $builder->shouldReceive('count')->andReturn(10);
@@ -48,11 +53,16 @@ test('it identifies at risk students', function () {
 
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
+    $builder->shouldReceive('with')->andReturnSelf();
     $builder->shouldReceive('limit')->andReturnSelf();
     $builder->shouldReceive('get')->andReturn(collect([$student]));
 
-    $journalService->shouldReceive('getEngagementStats')->andReturn(['responsiveness' => 40]);
-    $assessmentService->shouldReceive('getAverageScore')->andReturn(60);
+    $journalService->shouldReceive('getEngagementStats')->andReturn([
+        'uuid-1' => ['responsiveness' => 40],
+    ]);
+    $assessmentService->shouldReceive('getAverageScore')->andReturn([
+        'uuid-1' => 60,
+    ]);
 
     $aggregator = new AnalyticsAggregator(
         $registrationService,

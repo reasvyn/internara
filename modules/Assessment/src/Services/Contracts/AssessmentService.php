@@ -46,8 +46,10 @@ interface AssessmentService extends EloquentQuery
      *
      * Facilitates institutional analytics by aggregating scoring trends
      * for specific cohorts or departments.
+     *
+     * @return array<string, float> Map of registration ID to average score.
      */
-    public function getAverageScore(array $registrationIds, string $type = 'mentor'): float;
+    public function getAverageScore(array $registrationIds, string $type = 'mentor'): array;
 
     /**
      * Assesses the student's eligibility for program finalization.
