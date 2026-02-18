@@ -64,7 +64,7 @@ class RegistrationManager extends Component
      */
     public function getStudentsProperty(): \Illuminate\Support\Collection
     {
-        return app(UserService::class)->get(['roles.name' => 'student'], ['id', 'name']);
+        return app(UserService::class)->get(['roles.name' => 'student'], ['id', 'name', 'username']);
     }
 
     /**
@@ -147,6 +147,25 @@ class RegistrationManager extends Component
             ->with('placement')
             ->latest()
             ->get();
+    }
+
+    /**
+     * Get records property for the table.
+     */
+    public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return $this->service
+            ->query(
+                ['search' => $this->search, 'sort_by' => $this->sortBy, 'sort_dir' => $this->sortDir],
+                ['id', 'student_id', 'internship_id', 'placement_id', 'status', 'created_at']
+            )
+            ->with([
+                'student:id,name,username', 
+                'internship:id,title', 
+                'placement:id,company_id', 
+                'placement.company:id,name'
+            ])
+            ->paginate($this->perPage);
     }
 
     public function render()

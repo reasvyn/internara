@@ -59,7 +59,10 @@ class UserManager extends Component
             $filters['roles.name'] = $this->targetRole;
         }
 
-        return $this->service->paginate(array_filter($filters), $this->perPage);
+        return $this->service
+            ->query(array_filter($filters), ['id', 'name', 'email', 'username', 'created_at'])
+            ->with(['roles:id,name'])
+            ->paginate($this->perPage);
     }
 
     /**
