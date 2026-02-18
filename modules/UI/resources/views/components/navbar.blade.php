@@ -1,5 +1,5 @@
 <x-ui::nav 
-    {{ $attributes->merge(['class' => 'bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm sticky top-0 z-30']) }}
+    {{ $attributes->merge(['class' => 'bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm sticky top-0 z-50']) }}
 >
     <x-slot:brand>
         @isset($hamburger)

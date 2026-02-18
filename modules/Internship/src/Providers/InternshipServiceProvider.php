@@ -94,15 +94,6 @@ class InternshipServiceProvider extends ServiceProvider
         return [
             'internship-manager' => 'livewire:internship::internship-manager',
             'student.dashboard.requirements' => 'livewire:internship::requirement-submission-manager',
-            'sidebar.menu' => [
-                'ui::menu-item' => [
-                    'title' => __('internship::ui.requirement_title'),
-                    'icon' => 'tabler.checklist',
-                    'link' => '/internships/requirements',
-                    'role' => 'student',
-                    'order' => 25,
-                ],
-            ],
         ];
     }
 }

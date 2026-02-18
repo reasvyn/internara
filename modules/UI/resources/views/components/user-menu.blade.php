@@ -15,28 +15,30 @@
                 </div>
             </x-slot:label>
 
-            <x-mary-menu-item 
-                icon="tabler.user" 
-                :title="__('ui::common.profile')" 
-                :link="$profileRoute" 
-            />
-
-            @if($user->hasRole('super-admin'))
+            <div class="z-[100]">
                 <x-mary-menu-item 
-                    icon="tabler.settings" 
-                    :title="__('ui::common.settings')" 
-                    :link="route('profile.index', ['tab' => 'security'])" 
+                    icon="tabler.user" 
+                    :title="__('ui::common.profile')" 
+                    :link="$profileRoute" 
                 />
-            @endif
-            
-            <x-mary-menu-separator />
-            
-            <x-mary-menu-item 
-                icon="tabler.logout" 
-                :title="__('ui::common.logout')" 
-                :link="$logoutRoute"
-                no-wire-navigate 
-            />
+
+                @if($user->hasRole('super-admin'))
+                    <x-mary-menu-item 
+                        icon="tabler.settings" 
+                        :title="__('ui::common.settings')" 
+                        :link="route('profile.index', ['tab' => 'security'])" 
+                    />
+                @endif
+                
+                <x-mary-menu-separator />
+                
+                <x-mary-menu-item 
+                    icon="tabler.logout" 
+                    :title="__('ui::common.logout')" 
+                    :link="$logoutRoute"
+                    no-wire-navigate 
+                />
+            </div>
         </x-mary-dropdown>
     @else
         <div class="flex flex-nowrap items-center gap-2">

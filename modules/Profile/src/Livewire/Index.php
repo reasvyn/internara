@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Livewire;
 
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\Exception\Concerns\HandlesAppException;
@@ -20,6 +21,12 @@ class Index extends Component
 {
     use HandlesAppException;
     use WithFileUploads;
+
+    /**
+     * Current active tab.
+     */
+    #[Url]
+    public string $tab = 'info';
 
     /**
      * User data.
@@ -70,6 +77,8 @@ class Index extends Component
     /**
      * Security data.
      */
+    public string $current_password = '';
+
     public string $password = '';
 
     public string $password_confirmation = '';
@@ -130,7 +139,6 @@ class Index extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|unique:users,username,'.auth()->id(),
             'email' => 'required|email|unique:users,email,'.auth()->id(),
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
@@ -151,11 +159,16 @@ class Index extends Component
         ]);
 
         try {
-            $this->userService->update(auth()->id(), [
-                'name' => $this->name,
-                'username' => $this->username,
+            $userData = [
                 'email' => $this->email,
-            ]);
+            ];
+
+            // Only update name if not SuperAdmin (since UI is display-only for them)
+            if (!auth()->user()->hasRole('super-admin')) {
+                $userData['name'] = $this->name;
+            }
+
+            $this->userService->update(auth()->id(), $userData);
 
             $this->profileService->update(auth()->user()->profile->id, [
                 'phone' => $this->phone,
@@ -230,7 +243,8 @@ class Index extends Component
     public function savePassword(): void
     {
         $this->validate([
-            'password' => 'required|string|min:8|confirmed',
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         try {
@@ -238,6 +252,7 @@ class Index extends Component
                 'password' => $this->password,
             ]);
 
+            $this->current_password = '';
             $this->password = '';
             $this->password_confirmation = '';
             flash()->success(__('Password updated successfully.'));

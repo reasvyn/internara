@@ -41,78 +41,123 @@
         </div>
 
         <div class="lg:col-span-2">
-            <x-ui::tabs wire:model="activeTab" class="bg-base-100 rounded-lg shadow">
-                <x-ui::tab name="info-tab" :label="__('profile::ui.tabs.basic_info')" icon="tabler.user">
+            <x-ui::tabs wire:model="tab">
+                <x-ui::tab name="info" :label="__('profile::ui.tabs.basic_info')" icon="tabler.user">
                     <x-ui::form wire:submit="saveInfo">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-ui::input
-                                :label="__('profile::ui.form.full_name')"
-                                wire:model="name"
-                                required
-                            />
+                            @if(auth()->user()->hasRole('super-admin'))
+                                <x-ui::input
+                                    :label="__('profile::ui.form.full_name')"
+                                    :value="$name"
+                                    icon="tabler.signature"
+                                    displayed
+                                    :hint="__('profile::ui.form.system_protected_hint')"
+                                />
+                            @else
+                                <x-ui::input
+                                    :label="__('profile::ui.form.full_name')"
+                                    wire:model="name"
+                                    icon="tabler.signature"
+                                    :placeholder="__('profile::ui.placeholders.full_name')"
+                                    required
+                                />
+                            @endif
+
                             <x-ui::input
                                 :label="__('profile::ui.form.username')"
-                                wire:model="username"
-                                required
+                                :value="$username"
+                                icon="tabler.at"
+                                displayed
+                                :hint="__('profile::ui.form.username_immutable_hint')"
                             />
                             <x-ui::input
                                 :label="__('profile::ui.form.email')"
                                 wire:model="email"
+                                icon="tabler.mail"
                                 type="email"
+                                :placeholder="__('profile::ui.placeholders.email')"
                                 required
                             />
-                            <x-ui::input :label="__('profile::ui.form.phone')" wire:model="phone" />
-                            <x-ui::select
-                                :label="__('profile::ui.form.gender')"
-                                wire:model="gender"
-                                :options="[
-                                    ['id' => 'male', 'name' => __('profile::enums.gender.male')],
-                                    ['id' => 'female', 'name' => __('profile::enums.gender.female')]
-                                ]"
-                                placeholder="---"
+                            <x-ui::input 
+                                :label="auth()->user()->hasRole('super-admin') ? __('profile::ui.form.phone_institutional') : __('profile::ui.form.phone')" 
+                                icon="tabler.phone" 
+                                wire:model="phone" 
+                                :placeholder="__('profile::ui.placeholders.phone')"
                             />
-                            <x-ui::select
-                                :label="__('profile::ui.form.blood_type')"
-                                wire:model="blood_type"
-                                :options="[
-                                    ['id' => 'A', 'name' => 'A'],
-                                    ['id' => 'B', 'name' => 'B'],
-                                    ['id' => 'AB', 'name' => 'AB'],
-                                    ['id' => 'O', 'name' => 'O']
-                                ]"
-                                placeholder="---"
-                            />
+                            
+                            {{-- Personal Details --}}
+                            @if(auth()->user()->hasAnyRole(['student', 'teacher', 'mentor']))
+                                <x-ui::select
+                                    :label="__('profile::ui.form.gender')"
+                                    wire:model="gender"
+                                    icon="tabler.gender-male-female"
+                                    :options="[
+                                        ['id' => 'male', 'name' => __('profile::enums.gender.male')],
+                                        ['id' => 'female', 'name' => __('profile::enums.gender.female')]
+                                    ]"
+                                    placeholder="---"
+                                />
+                                <x-ui::select
+                                    :label="__('profile::ui.form.blood_type')"
+                                    wire:model="blood_type"
+                                    icon="tabler.droplet"
+                                    :options="[
+                                        ['id' => 'A', 'name' => 'A'],
+                                        ['id' => 'B', 'name' => 'B'],
+                                        ['id' => 'AB', 'name' => 'AB'],
+                                        ['id' => 'O', 'name' => 'O']
+                                    ]"
+                                    placeholder="---"
+                                />
+                            @endif
                         </div>
 
                         <x-ui::textarea
-                            :label="__('profile::ui.form.address')"
+                            :label="auth()->user()->hasRole('super-admin') ? __('profile::ui.form.address_institutional') : __('profile::ui.form.address')"
                             wire:model="address"
+                            icon="tabler.map-pin"
+                            :placeholder="__('profile::ui.placeholders.address')"
                             rows="2"
                         />
 
-                        <div class="divider text-xs opacity-50">{{ __('profile::ui.form.emergency_contact') }}</div>
+                        {{-- Social/Work Context --}}
+                        @if(auth()->user()->hasAnyRole(['teacher', 'mentor']))
+                            <x-ui::textarea
+                                :label="__('profile::ui.form.bio')"
+                                wire:model="bio"
+                                icon="tabler.info-circle"
+                                :placeholder="__('profile::ui.placeholders.bio')"
+                                rows="2"
+                                :hint="__('profile::ui.form.bio_hint')"
+                            />
+                        @endif
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-ui::input
-                                :label="__('profile::ui.form.emergency_contact_name')"
-                                wire:model="emergency_contact_name"
+                        {{-- Emergency Contact - More critical for Students --}}
+                        @if(auth()->user()->hasRole('student'))
+                            <div class="divider text-xs opacity-50">{{ __('profile::ui.form.emergency_contact') }}</div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <x-ui::input
+                                    :label="__('profile::ui.form.emergency_contact_name')"
+                                    wire:model="emergency_contact_name"
+                                    icon="tabler.user-check"
+                                    :placeholder="__('profile::ui.placeholders.emergency_contact_name')"
+                                />
+                                <x-ui::input
+                                    :label="__('profile::ui.form.emergency_contact_phone')"
+                                    wire:model="emergency_contact_phone"
+                                    icon="tabler.phone-call"
+                                    :placeholder="__('profile::ui.placeholders.emergency_contact_phone')"
+                                />
+                            </div>
+                            <x-ui::textarea
+                                :label="__('profile::ui.form.emergency_contact_address')"
+                                wire:model="emergency_contact_address"
+                                icon="tabler.map-pin-2"
+                                :placeholder="__('profile::ui.placeholders.emergency_contact_address')"
+                                rows="2"
                             />
-                            <x-ui::input
-                                :label="__('profile::ui.form.emergency_contact_phone')"
-                                wire:model="emergency_contact_phone"
-                            />
-                        </div>
-                        <x-ui::textarea
-                            :label="__('profile::ui.form.emergency_contact_address')"
-                            wire:model="emergency_contact_address"
-                            rows="2"
-                        />
-                        <x-ui::textarea
-                            :label="__('profile::ui.form.bio')"
-                            wire:model="bio"
-                            rows="2"
-                            :hint="__('profile::ui.form.bio_hint')"
-                        />
+                        @endif
 
                         <x-slot:actions>
                             <x-ui::button
@@ -128,7 +173,7 @@
 
                 @if (auth()->user()->hasAnyRole(['teacher', 'student']))
                     <x-ui::tab
-                        name="special-tab"
+                        name="special"
                         :label="__('profile::ui.tabs.special_fields')"
                         icon="tabler.school"
                     >
@@ -137,6 +182,8 @@
                                 <x-ui::input
                                     :label="__('profile::ui.form.nip')"
                                     wire:model="nip"
+                                    icon="tabler.id-badge-2"
+                                    :placeholder="__('profile::ui.placeholders.nip')"
                                     required
                                     :hint="__('profile::ui.form.nip_hint')"
                                 />
@@ -147,17 +194,23 @@
                                     <x-ui::input
                                         :label="__('profile::ui.form.national_identifier')"
                                         wire:model="national_identifier"
+                                        icon="tabler.id"
+                                        :placeholder="__('profile::ui.placeholders.national_identifier')"
                                         required
                                         :hint="__('profile::ui.form.national_identifier_hint')"
                                     />
                                     <x-ui::input
                                         :label="__('profile::ui.form.registration_number')"
                                         wire:model="registration_number"
+                                        icon="tabler.hash"
+                                        :placeholder="__('profile::ui.placeholders.registration_number')"
                                         :hint="__('profile::ui.form.registration_number_hint')"
                                     />
                                     <x-ui::input
                                         :label="__('profile::ui.form.class_name')"
                                         wire:model="class_name"
+                                        icon="tabler.school"
+                                        :placeholder="__('profile::ui.placeholders.class_name')"
                                         :hint="__('profile::ui.form.class_name_hint')"
                                     />
                                     
@@ -191,21 +244,39 @@
                     </x-ui::tab>
                 @endif
 
-                <x-ui::tab name="security-tab" :label="__('profile::ui.tabs.security')" icon="tabler.key">
+                <x-ui::tab name="security" :label="__('profile::ui.tabs.security')" icon="tabler.key">
                     <x-ui::form wire:submit="savePassword">
+                        <x-ui::input
+                            :label="__('profile::ui.form.current_password')"
+                            wire:model="current_password"
+                            type="password"
+                            :placeholder="__('profile::ui.placeholders.current_password')"
+                            required
+                        />
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <x-ui::input
                                 :label="__('profile::ui.form.new_password')"
                                 wire:model="password"
                                 type="password"
+                                :placeholder="__('profile::ui.placeholders.new_password')"
                                 required
                             />
                             <x-ui::input
                                 :label="__('profile::ui.form.confirm_password')"
                                 wire:model="password_confirmation"
                                 type="password"
+                                :placeholder="__('profile::ui.placeholders.confirm_password')"
                                 required
                             />
+                        </div>
+
+                        <div class="flex justify-end">
+                            @if (\Illuminate\Support\Facades\Route::has('password.request'))
+                                <a href="{{ route('password.request') }}" class="text-xs underline opacity-50 hover:opacity-100 transition-opacity">
+                                    {{ __('auth::ui.login.form.forgot_password') }}
+                                </a>
+                            @endif
                         </div>
 
                         <x-slot:actions>

@@ -29,6 +29,9 @@ class UIServiceProvider extends ServiceProvider
     {
         $this->bootModule();
 
+        // Register Centralized Sidebar Menu
+        \Modules\UI\Core\Navigation\SidebarRegistry::register();
+
         // Register anonymous components
         Blade::anonymousComponentPath(module_path('UI', 'resources/views/components'), 'ui');
 

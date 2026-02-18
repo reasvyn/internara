@@ -55,37 +55,6 @@ class AssignmentServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
-            'sidebar.menu' => [
-                // Student View
-                'ui::menu-item#assignments' => [
-                    'title' => 'assignment::ui.menu.assignments',
-                    'icon' => 'tabler.checklist',
-                    'link' => '/assignments',
-                    'role' => 'student',
-                    'order' => 40,
-                ],
-
-                // Admin/Teacher View Group
-                'ui::menu-separator#assignment-mgmt' => [
-                    'title' => 'assignment::ui.menu.manage_assignments',
-                    'role' => 'admin|super-admin|teacher',
-                    'order' => 40,
-                ],
-                'ui::menu-item#admin-assignments' => [
-                    'title' => 'assignment::ui.menu.manage_assignments',
-                    'icon' => 'tabler.settings-automation',
-                    'link' => '/admin/assignments',
-                    'role' => 'admin|super-admin',
-                    'order' => 41,
-                ],
-                'ui::menu-item#admin-assignment-types' => [
-                    'title' => 'assignment::ui.menu.assignment_types',
-                    'icon' => 'tabler.category',
-                    'link' => '/admin/assignments/types',
-                    'role' => 'admin|super-admin',
-                    'order' => 42,
-                ],
-            ],
             'student.dashboard.quick-actions' => [
                 'ui::button' => [
                     'label' => 'assignment::ui.menu.final_assignment',
