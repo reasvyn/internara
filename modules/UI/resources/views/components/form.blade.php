@@ -5,7 +5,6 @@
 
 <x-mary-form 
     {{ $attributes->merge(['class' => 'space-y-8']) }}
-    @submit.prevent=""
 >
     <div class="space-y-6">
         {{ $slot }}

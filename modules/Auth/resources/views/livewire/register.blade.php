@@ -43,7 +43,7 @@
         </div>
 
         <div wire:key="reg-captcha">
-            <x-ui::turnstile field-name="captcha_token" />
+            <x-ui::turnstile fieldName="captcha_token" />
         </div>
 
         @php

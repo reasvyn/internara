@@ -41,7 +41,7 @@
                 </div>
 
                 <div wire:key="login-captcha">
-                    <x-ui::turnstile field-name="captcha_token" />
+                    <x-ui::turnstile fieldName="captcha_token" />
                 </div>
 
                 <div class="mt-4 flex w-full flex-col gap-8" wire:key="login-actions">
