@@ -43,7 +43,9 @@
         </div>
 
         <div wire:key="reg-captcha">
-            <x-ui::turnstile fieldName="captcha_token" />
+            @if(config('services.cloudflare.turnstile.site_key'))
+                <x-ui::turnstile fieldName="captcha_token" />
+            @endif
         </div>
 
         @php

@@ -1,11 +1,21 @@
 @props(['fieldName' => 'cf-turnstile-response'])
 
+@php
+    $siteKey = config('services.cloudflare.turnstile.site_key');
+@endphp
+
 <div 
     x-data="{
+        siteKey: '{{ $siteKey }}',
         initTurnstile() {
+            if (!this.siteKey) {
+                if (isDebugMode()) console.warn('Turnstile: Site key is missing. Skipping render.');
+                return;
+            }
+
             if (window.turnstile) {
                 turnstile.render($refs.turnstile, {
-                    sitekey: '{{ config('services.cloudflare.turnstile.site_key') }}',
+                    sitekey: this.siteKey,
                     callback: (token) => {
                         $wire.set('{{ $fieldName }}', token);
                     },

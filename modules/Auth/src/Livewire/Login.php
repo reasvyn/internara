@@ -46,15 +46,20 @@ class Login extends Component
      */
     protected function rules(): array
     {
-        return [
+        $rules = [
             'identifier' => [
                 'required',
                 'string',
                 $this->isEmail($this->identifier) ? 'email' : null,
             ],
             'password' => 'required|string',
-            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile],
         ];
+
+        if (config('services.cloudflare.turnstile.site_key')) {
+            $rules['captcha_token'] = ['required', new \Modules\Shared\Rules\Turnstile];
+        }
+
+        return $rules;
     }
 
     /**

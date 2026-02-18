@@ -29,12 +29,17 @@ class Register extends Component
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required|string|min:3',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'string', 'confirmed', Password::auto()],
-            'captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile],
         ];
+
+        if (config('services.cloudflare.turnstile.site_key')) {
+            $rules['captcha_token'] = ['required', new \Modules\Shared\Rules\Turnstile];
+        }
+
+        return $rules;
     }
 
     public function boot(AuthService $authService, RedirectService $redirectService): void
