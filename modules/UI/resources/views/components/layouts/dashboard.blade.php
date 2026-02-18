@@ -25,12 +25,6 @@
 
             {{-- Main Content --}}
             <div id="main-content" class="h-full overflow-y-auto p-6 lg:p-10 custom-scrollbar">
-                @if($title)
-                    <div class="mb-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-base-content">{{ $title }}</h1>
-                    </div>
-                @endif
-
                 <div class="space-y-8 pb-20">
                     {{ $slot }}
                 </div>

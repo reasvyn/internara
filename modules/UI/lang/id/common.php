@@ -25,6 +25,7 @@ return [
     'built_with' => 'Dibuat dengan',
     'by' => 'oleh',
     'profile' => 'Profil',
+    'settings' => 'Pengaturan',
     'logout' => 'Keluar',
     'login' => 'Masuk',
     'register' => 'Daftar',

@@ -20,6 +20,14 @@
                 :title="__('ui::common.profile')" 
                 :link="$profileRoute" 
             />
+
+            @if($user->hasRole('super-admin'))
+                <x-mary-menu-item 
+                    icon="tabler.settings" 
+                    :title="__('ui::common.settings')" 
+                    :link="route('profile.index', ['tab' => 'security'])" 
+                />
+            @endif
             
             <x-mary-menu-separator />
             

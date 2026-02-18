@@ -99,6 +99,11 @@ class UserManager extends Component
         $user = $this->service->find($id);
 
         if ($user) {
+            if ($user->hasRole('super-admin')) {
+                flash()->error(__('SuperAdmin accounts cannot be managed from here.'));
+                return;
+            }
+
             $this->form->setUser($user);
             $this->formModal = true;
         }
@@ -130,12 +135,12 @@ class UserManager extends Component
      */
     public function render(): View
     {
-        $title = $this->targetRole
-            ? ucfirst($this->targetRole).' Management'
-            : __('user::ui.user_management');
+        $roleKey = $this->targetRole ?: 'user';
+        $title = __("user::ui.{$roleKey}_management");
 
         return view('user::livewire.user-manager', [
             'title' => $title,
+            'roleKey' => $roleKey,
         ])->layout('ui::components.layouts.dashboard', [
             'title' => $title,
         ]);

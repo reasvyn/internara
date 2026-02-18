@@ -18,19 +18,31 @@ class AssignmentSeeder extends Seeder
             [
                 'name' => 'Laporan Kegiatan PKL',
                 'slug' => 'laporan-pkl',
-                'group' => 'assignment',
-                'description' => 'Mandatory internship final report in PDF format.',
+                'group' => 'report',
+                'description' => 'Laporan akhir pelaksanaan Praktik Kerja Lapangan (PKL) dalam format PDF.',
             ],
             [
                 'name' => 'Presentasi Kegiatan PKL',
                 'slug' => 'presentasi-pkl',
-                'group' => 'assignment',
-                'description' => 'Mandatory internship presentation materials in PPT/PDF format.',
+                'group' => 'presentation',
+                'description' => 'Materi presentasi hasil pelaksanaan PKL dalam format PPT atau PDF.',
+            ],
+            [
+                'name' => 'Sertifikat Industri',
+                'slug' => 'sertifikat-industri',
+                'group' => 'certification',
+                'description' => 'Bukti sertifikasi atau piagam penghargaan dari mitra industri.',
+            ],
+            [
+                'name' => 'Dokumentasi Teknis',
+                'slug' => 'dokumentasi-teknis',
+                'group' => 'report',
+                'description' => 'Kumpulan dokumentasi teknis atau portofolio pekerjaan selama PKL.',
             ],
         ];
 
         foreach ($defaults as $type) {
-            AssignmentType::firstOrCreate(['slug' => $type['slug']], $type);
+            AssignmentType::updateOrCreate(['slug' => $type['slug']], $type);
         }
     }
 }

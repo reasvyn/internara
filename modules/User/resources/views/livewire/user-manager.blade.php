@@ -1,25 +1,35 @@
 <div>
-    <x-ui::header :title="$title" :subtitle="__('user::ui.manager.subtitle')">
+    <x-ui::header 
+        :title="$title" 
+        :subtitle="__('user::ui.manager.subtitle')"
+        :context="'user::ui.' . ($roleKey ?? 'user') . '_management'"
+    >
         <x-slot:actions>
-            <x-ui::button :label="__('user::ui.manager.add_user')" icon="tabler.plus" variant="primary" wire:click="add" />
+            <x-ui::button :label="__('user::ui.manager.add_' . $roleKey)" icon="tabler.plus" variant="primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>
 
-    <x-ui::main>
-        <x-ui::card>
-            <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div class="w-full md:w-1/3">
-                    <x-ui::input :placeholder="__('user::ui.manager.search_placeholder')" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
-                </div>
+    <x-ui::card>
+        <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="w-full md:w-1/3">
+                <x-ui::input :placeholder="__('user::ui.manager.search_placeholder')" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
             </div>
+        </div>
 
-            <x-ui::table :headers="[
-                ['key' => 'name', 'label' => __('user::ui.manager.table.name')],
-                ['key' => 'email', 'label' => __('user::ui.manager.table.email')],
-                ['key' => 'username', 'label' => __('user::ui.manager.table.username')],
-                ['key' => 'roles', 'label' => __('user::ui.manager.table.roles')],
-                ['key' => 'status', 'label' => __('user::ui.manager.table.status')],
-            ]" :rows="$this->records" with-pagination>
+        <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
+            <x-mary-table 
+                class="table-zebra table-md"
+                :headers="[
+                    ['key' => 'name', 'label' => __('user::ui.manager.table.name')],
+                    ['key' => 'email', 'label' => __('user::ui.manager.table.email')],
+                    ['key' => 'username', 'label' => __('user::ui.manager.table.username')],
+                    ['key' => 'roles', 'label' => __('user::ui.manager.table.roles')],
+                    ['key' => 'account_status', 'label' => __('user::ui.manager.table.status')],
+                    ['key' => 'actions', 'label' => ''],
+                ]" 
+                :rows="$this->records" 
+                with-pagination
+            >
                 @scope('cell_name', $user)
                     <div class="flex items-center gap-3">
                         <x-ui::avatar :image="$user->avatar_url" :title="$user->name" size="w-8" />
@@ -35,7 +45,7 @@
                     </div>
                 @endscope
 
-                @scope('cell_status', $user)
+                @scope('cell_account_status', $user)
                     @php
                         $statusName = $user->latestStatus()?->name ?? 'active';
                     @endphp
@@ -47,19 +57,28 @@
                 @endscope
 
                 @scope('actions', $user)
-                    <div class="flex gap-2">
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info" wire:click="edit('{{ $user->id }}')" tooltip="{{ __('user::ui.manager.edit_user') }}" />
+                    <div class="flex justify-end gap-2">
                         @if(!$user->hasRole('super-admin'))
-                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error" wire:click="discard('{{ $user->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                            <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $user->id }}')" class="text-info" tooltip="{{ __('user::ui.manager.edit_' . $roleKey) }}" />
+                            <x-ui::button 
+                                icon="tabler.trash" 
+                                variant="tertiary" 
+                                wire:click="discard('{{ $user->id }}')" 
+                                wire:confirm="{{ __('ui::common.delete_confirm') }}"
+                                class="text-error" 
+                                tooltip="{{ __('ui::common.delete') }}" 
+                            />
+                        @else
+                            <x-ui::badge :value="__('System Protected')" variant="secondary" class="badge-sm opacity-50" />
                         @endif
                     </div>
                 @endscope
-            </x-ui::table>
-        </x-ui::card>
-    </x-ui::main>
+            </x-mary-table>
+        </div>
+    </x-ui::card>
 
     {{-- Form Modal --}}
-    <x-ui::modal wire:model="formModal" :title="$form->id ? __('user::ui.manager.edit_user') : __('user::ui.manager.add_user')">
+    <x-ui::modal wire:model="formModal" :title="$form->id ? __('user::ui.manager.edit_' . $roleKey) : __('user::ui.manager.add_' . $roleKey)">
         <x-ui::form wire:submit="save">
             <x-ui::input :label="__('user::ui.manager.form.full_name')" wire:model="form.name" required />
             

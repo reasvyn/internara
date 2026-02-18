@@ -25,6 +25,7 @@ return [
     'built_with' => 'Built with',
     'by' => 'by',
     'profile' => 'Profile',
+    'settings' => 'Settings',
     'logout' => 'Log out',
     'login' => 'Log in',
     'register' => 'Register',
