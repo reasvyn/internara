@@ -63,4 +63,9 @@ return [
         'confirm_password' => 'Ulangi kata sandi baru...',
         'current_password' => 'Masukkan kata sandi saat ini untuk verifikasi...',
     ],
+    'messages' => [
+        'avatar_updated' => 'Foto profil berhasil diperbarui.',
+        'profile_updated' => 'Informasi profil berhasil diperbarui.',
+        'password_updated' => 'Kata sandi berhasil diubah.',
+    ],
 ];

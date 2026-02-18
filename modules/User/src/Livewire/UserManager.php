@@ -38,7 +38,7 @@ class UserManager extends Component
 
         // Security: Only SuperAdmins can manage 'admin' role
         if ($this->targetRole === 'admin' && ! auth()->user()->hasRole('super-admin')) {
-            abort(403, 'Only SuperAdmins can manage administrator accounts.');
+            abort(403, __('user::exceptions.super_admin_unauthorized'));
         }
 
         $this->authorize('user.view');
@@ -100,7 +100,7 @@ class UserManager extends Component
 
         if ($user) {
             if ($user->hasRole('super-admin')) {
-                flash()->error(__('SuperAdmin accounts cannot be managed from here.'));
+                flash()->error(__('user::exceptions.super_admin_readonly'));
                 return;
             }
 

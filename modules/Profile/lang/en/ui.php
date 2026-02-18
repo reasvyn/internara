@@ -63,4 +63,9 @@ return [
         'confirm_password' => 'Repeat your new password...',
         'current_password' => 'Enter your current password for verification...',
     ],
+    'messages' => [
+        'avatar_updated' => 'Profile picture updated successfully.',
+        'profile_updated' => 'Profile information updated successfully.',
+        'password_updated' => 'Password changed successfully.',
+    ],
 ];

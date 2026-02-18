@@ -181,7 +181,7 @@ class Index extends Component
                 'bio' => $this->bio,
             ]);
 
-            flash()->success(__('Profile updated successfully.'));
+            flash()->success(__('profile::ui.messages.profile_updated'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
@@ -255,7 +255,7 @@ class Index extends Component
             $this->current_password = '';
             $this->password = '';
             $this->password_confirmation = '';
-            flash()->success(__('Password updated successfully.'));
+            flash()->success(__('profile::ui.messages.password_updated'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
@@ -272,7 +272,9 @@ class Index extends Component
             /** @var User $user */
             $user = auth()->user();
             $user->setAvatar($this->avatar);
-            flash()->success(__('Avatar updated.'));
+            
+            $this->avatar = null;
+            flash()->success(__('profile::ui.messages.avatar_updated'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }

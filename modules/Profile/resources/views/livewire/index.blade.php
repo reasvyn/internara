@@ -9,7 +9,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-1">
             <x-ui::card shadow class="text-center">
-                <x-ui::file wire:model="avatar" accept="image/*" crop-after-change>
+                <x-ui::file wire:model.live="avatar" accept="image/*" crop-after-change>
                     <x-ui::avatar 
                         :image="auth()->user()->avatar_url" 
                         :title="$name" 
