@@ -1,35 +1,17 @@
-import AOS from 'aos'
-
 /**
- * Initialize AOS (Animate on Scroll).
+ * UI Module Main Entry Point
  */
-const initAOS = () => {
-    AOS.init({
-        duration: 800,
-        easing: 'ease-out-quad',
-        once: true,
-        offset: 60,
-        anchorPlacement: 'top-bottom',
-    })
-}
 
-// Initial Load - Delay until after preloader logic usually fires
+// Initial Load
 window.addEventListener('load', () => {
-    setTimeout(initAOS, 200)
+    // Reserved for future core UI logic
 })
 
 // Livewire Integration
 document.addEventListener('livewire:init', () => {
-    initAOS()
+    // Reserved for Livewire initialization
 })
 
 document.addEventListener('livewire:navigated', () => {
-    // Force scroll to top on navigation
-    window.scrollTo({ top: 0, behavior: 'instant' })
-
-    // Refresh and re-init to handle new DOM elements in SPA mode
-    setTimeout(() => {
-        AOS.refresh()
-        initAOS()
-    }, 100)
+    // Revserved for future core UI logic
 })

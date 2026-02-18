@@ -1,13 +1,3 @@
-@import 'aos/dist/aos.css';
-
-/* AOS Performance Optimization (Fixes Blurry Text) */
-[data-aos] {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-}
-
 @font-face {
     font-family: 'Instrument Sans';
     font-style: normal;
@@ -125,4 +115,25 @@
     textarea {
         transition-duration: 300ms !important;
     }
+}
+
+/* PHPFlasher Emerald Theme Customization */
+.fl-emerald {
+    --fl-font: 'Instrument Sans', sans-serif !important;
+}
+
+.fl-emerald .fl-title, 
+.fl-emerald .fl-message {
+    font-weight: 500 !important; /* Medium weight */
+}
+
+/* Ensure background transparency and blur if possible */
+.fl-emerald {
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+html.fl-dark .fl-emerald {
+    background-color: rgba(26, 26, 26, 0.8) !important;
+    color: #f3f4f6 !important;
 }

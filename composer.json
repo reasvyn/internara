@@ -19,6 +19,7 @@
         "livewire/volt": "^1.10",
         "mhmiton/laravel-modules-livewire": "^5.2",
         "nwidart/laravel-modules": "^12.0",
+        "php-flasher/flasher-laravel": "^2.4",
         "postare/blade-mdi": "^1.1",
         "robsontenorio/mary": "^2.4",
         "secondnetwork/blade-tabler-icons": "^3.36",

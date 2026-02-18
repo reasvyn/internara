@@ -43,7 +43,7 @@ class JournalIndex extends Component
                 $settingService->getValue('feature_guidance_enabled', true) &&
                 ! $guidanceService->hasCompletedMandatory(auth()->id())
             ) {
-                notify(__('guidance::messages.must_complete_guidance'), 'warning');
+                flash()->warning(__('guidance::messages.must_complete_guidance'));
 
                 $this->redirect(route('student.dashboard'), navigate: true);
             }
@@ -146,7 +146,7 @@ class JournalIndex extends Component
             $this->selectedEntry = $this->journalService->find($id);
         }
 
-        notify(__('shared::messages.record_approved'), 'success');
+        flash()->success(__('shared::messages.record_approved'));
     }
 
     /**
@@ -164,7 +164,7 @@ class JournalIndex extends Component
             $this->selectedEntry = $this->journalService->find($id);
         }
 
-        notify(__('shared::messages.record_rejected'), 'error');
+        flash()->error(__('shared::messages.record_rejected'));
     }
 
     public function render(): View

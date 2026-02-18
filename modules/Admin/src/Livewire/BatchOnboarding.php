@@ -60,15 +60,18 @@ class BatchOnboarding extends Component
             $path = $this->file->getRealPath();
             $this->results = $service->importFromCsv($path, $this->type);
 
-            notify(
-                __('Import completed with :success success and :failure failure.', [
-                    'success' => $this->results['success'],
-                    'failure' => $this->results['failure'],
-                ]),
-                $this->results['failure'] > 0 ? 'warning' : 'success',
-            );
+            $message = __('Import completed with :success success and :failure failure.', [
+                'success' => $this->results['success'],
+                'failure' => $this->results['failure'],
+            ]);
+
+            if ($this->results['failure'] > 0) {
+                flash()->warning($message);
+            } else {
+                flash()->success($message);
+            }
         } catch (\Throwable $e) {
-            notify($e->getMessage(), 'error');
+            flash()->error($e->getMessage());
         }
     }
 

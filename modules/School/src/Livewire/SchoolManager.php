@@ -61,7 +61,7 @@ class SchoolManager extends Component
         // Refresh form with persisted data, including new logo URLs
         $this->form->fill($school->append('logo_url'));
 
-        notify(__('shared::messages.record_saved'), 'success');
+        flash()->success(__('shared::messages.record_saved'));
         $this->dispatch('school_saved', schoolId: $school->id);
     }
 

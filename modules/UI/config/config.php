@@ -9,7 +9,7 @@ return [
      * Supported application locales.
      */
     'locales' => [
-        'en' => ['name' => 'English', 'icon' => 'tabler.flag'],
-        'id' => ['name' => 'Indonesia', 'icon' => 'tabler.id'],
+        'en' => ['name' => 'English (US)', 'icon' => 'tabler.flag'],
+        'id' => ['name' => 'Bahasa Indonesia', 'icon' => 'tabler.id'],
     ],
 ];

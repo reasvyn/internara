@@ -60,17 +60,16 @@ class RegisterSuperAdmin extends Component
             );
 
             if ($registeredUser) {
-                notify(__('shared::messages.record_saved'), 'success');
+                flash()->success(__('shared::messages.record_saved'));
                 $this->dispatch('super_admin_registered', userId: $registeredUser->getKey());
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Modules\Exception\AppException $e) {
-            notify($e->getUserMessage(), 'error');
+            flash()->error($e->getUserMessage());
         } catch (\Exception $e) {
-            notify(
+            flash()->error(
                 __('shared::exceptions.creation_failed', ['record' => 'Administrator']),
-                'error',
             );
             \Illuminate\Support\Facades\Log::error('SuperAdmin Registration Failed.', [
                 'correlation_id' => \Illuminate\Support\Str::uuid()->toString(),

@@ -26,7 +26,8 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $supportedLocales = ['id', 'en'];
+        $service = app(\Modules\UI\Services\Contracts\LocalizationService::class);
+        $supportedLocales = array_keys($service->getSupportedLocales());
         $locale = Session::get('locale');
 
         if ($locale && in_array($locale, $supportedLocales)) {

@@ -86,9 +86,9 @@ class PlacementManager extends Component
             $this->form->mentor_id = $mentor->id;
             $this->mentorModal = false;
 
-            notify(__('Mentor created and assigned successfully.'), 'success');
+            flash()->success(__('Mentor created and assigned successfully.'));
         } catch (\Throwable $e) {
-            notify($e->getMessage(), 'error');
+            flash()->error($e->getMessage());
         }
     }
 

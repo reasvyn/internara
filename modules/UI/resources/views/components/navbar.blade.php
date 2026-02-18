@@ -1,8 +1,5 @@
-@props(['aos' => 'fade-down'])
-
 <x-ui::nav 
     {{ $attributes->merge(['class' => 'bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm sticky top-0 z-30']) }}
-    data-aos="{{ $aos }}"
 >
     <x-slot:brand>
         @isset($hamburger)

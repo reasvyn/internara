@@ -30,9 +30,8 @@ class SetupWelcome extends Component
     {
         $this->initSetupStepProps(currentStep: 'welcome', nextStep: 'environment');
 
-        notify(
+        flash()->info(
             __('setup::wizard.welcome.toast_greeting', ['app' => setting('app_name', 'Internara')]),
-            'info',
         );
     }
 

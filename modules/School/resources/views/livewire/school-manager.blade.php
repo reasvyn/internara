@@ -1,12 +1,13 @@
 <div class="flex size-full flex-col items-center justify-center">
     <x-ui::card
+        wire:key="school-manager-card"
         class="w-full max-w-prose text-center"
         :title="__('school::ui.title')"
         :subtitle="__('school::ui.subtitle')"
     >
         <x-ui::form class="flex w-full flex-col gap-8" wire:submit="save">
             <div class="grid grid-cols-1 gap-4 text-start lg:grid-cols-2">
-                <div class="col-span-full">
+                <div class="col-span-full" wire:key="sm-logo">
                     <x-ui::file
                         :label="__('school::ui.logo')"
                         wire:model="form.logo_file"
@@ -17,7 +18,7 @@
                     />
                 </div>
 
-                <div class="col-span-full">
+                <div class="col-span-full" wire:key="sm-name">
                     <x-ui::input
                         type="text"
                         :label="__('school::ui.name')"
@@ -28,7 +29,7 @@
                     />
                 </div>
 
-                <div class="col-span-full">
+                <div class="col-span-full" wire:key="sm-address">
                     <x-ui::textarea
                         :label="__('school::ui.address')"
                         :placeholder="__('school::ui.address')"
@@ -36,7 +37,7 @@
                     />
                 </div>
 
-                <div class="col-span-full">
+                <div class="col-span-full" wire:key="sm-email">
                     <x-ui::input
                         type="email"
                         :label="__('school::ui.email')"
@@ -45,21 +46,25 @@
                     />
                 </div>
 
-                <x-ui::input
-                    type="tel"
-                    :label="__('school::ui.phone')"
-                    :placeholder="__('school::ui.phone')"
-                    wire:model="form.phone"
-                />
+                <div wire:key="sm-phone">
+                    <x-ui::input
+                        type="tel"
+                        :label="__('school::ui.phone')"
+                        :placeholder="__('school::ui.phone')"
+                        wire:model="form.phone"
+                    />
+                </div>
 
-                <x-ui::input
-                    type="tel"
-                    :label="__('school::ui.fax')"
-                    :placeholder="__('school::ui.fax')"
-                    wire:model="form.fax"
-                />
+                <div wire:key="sm-fax">
+                    <x-ui::input
+                        type="tel"
+                        :label="__('school::ui.fax')"
+                        :placeholder="__('school::ui.fax')"
+                        wire:model="form.fax"
+                    />
+                </div>
 
-                <div class="col-span-full">
+                <div class="col-span-full" wire:key="sm-principal">
                     <x-ui::input
                         type="text"
                         :label="__('school::ui.principal_name')"
@@ -69,7 +74,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col items-center gap-8">
+            <div class="flex flex-col items-center gap-8" wire:key="sm-actions">
                 <x-ui::button variant="primary" class="w-full" :label="__('ui::common.save')" type="submit" />
             </div>
         </x-ui::form>

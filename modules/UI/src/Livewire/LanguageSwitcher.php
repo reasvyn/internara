@@ -25,7 +25,7 @@ class LanguageSwitcher extends Component
     public function changeLocale(string $locale, LocalizationService $service): void
     {
         if ($service->setLocale($locale)) {
-            $this->redirect(request()->header('Referer') ?: '/', navigate: true);
+            $this->js('window.location.reload()');
         }
     }
 

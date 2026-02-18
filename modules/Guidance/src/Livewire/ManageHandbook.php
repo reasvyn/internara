@@ -74,7 +74,7 @@ class ManageHandbook extends Component
         $this->authorize('delete', Handbook::class);
 
         if ($service->delete($id)) {
-            notify(__('guidance::messages.handbook_deleted'), 'success');
+            flash()->success(__('guidance::messages.handbook_deleted'));
         }
     }
 
@@ -84,7 +84,7 @@ class ManageHandbook extends Component
     public function handbookSaved(): void
     {
         $this->showForm = false;
-        notify(__('guidance::messages.handbook_saved'), 'success');
+        flash()->success(__('guidance::messages.handbook_saved'));
     }
 
     /**

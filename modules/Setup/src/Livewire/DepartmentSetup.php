@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setup\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Modules\Setup\Services\Contracts\SetupService;
 

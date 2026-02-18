@@ -1,18 +1,20 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <x-ui::badge variant="metadata" aos="fade-down" data-aos-delay="200" class="mb-12">
-            {{ __('setup::wizard.steps', ['current' => 2, 'total' => 8]) }}
-        </x-ui::badge>
+        <div>
+            <x-ui::badge variant="metadata" class="mb-12">
+                {{ __('setup::wizard.steps', ['current' => 2, 'total' => 8]) }}
+            </x-ui::badge>
 
-        <h1 class="text-4xl font-bold tracking-tight text-base-content" data-aos="fade-right" data-aos-delay="400">
-            {{ __('setup::wizard.environment.title') }}
-        </h1>
+            <h1 class="text-4xl font-bold tracking-tight text-base-content">
+                {{ __('setup::wizard.environment.title') }}
+            </h1>
 
-        <p class="mt-4 text-base-content/60 leading-relaxed" data-aos="fade-right" data-aos-delay="600">
-            {{ __('setup::wizard.environment.description', ['app' => setting('app_name')]) }}
-        </p>
+            <p class="mt-4 text-base-content/60 leading-relaxed">
+                {{ __('setup::wizard.environment.description', ['app' => setting('app_name')]) }}
+            </p>
+        </div>
 
-        <div class="mt-10 flex items-center gap-4" data-aos="fade-up" data-aos-delay="800">
+        <div class="mt-10 flex items-center gap-4">
             <x-ui::button
                 variant="secondary"
                 :label="__('setup::wizard.buttons.back')"
@@ -34,8 +36,6 @@
             <x-ui::card
                 title="{{ __('setup::wizard.environment.requirements') }}"
                 separator
-                aos="fade-left"
-                data-aos-delay="400"
             >
                 <div class="space-y-4">
                     @foreach($this->audit['requirements'] as $name => $passed)
@@ -58,8 +58,6 @@
             <x-ui::card
                 title="{{ __('setup::wizard.environment.permissions') }}"
                 separator
-                aos="fade-left"
-                data-aos-delay="600"
             >
                 <div class="space-y-4">
                     @foreach($this->audit['permissions'] as $path => $writable)
@@ -82,8 +80,6 @@
             <x-ui::card
                 title="{{ __('setup::wizard.environment.database') }}"
                 separator
-                aos="fade-left"
-                data-aos-delay="800"
             >
                 <div class="flex items-center justify-between">
                     <div>

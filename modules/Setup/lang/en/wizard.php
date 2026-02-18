@@ -21,6 +21,7 @@ return [
     ],
     'common' => [
         'back' => 'Back',
+        'save' => 'Save',
         'continue' => 'Continue',
         'save_continue' => 'Save & Continue',
         'finish' => 'Finish',

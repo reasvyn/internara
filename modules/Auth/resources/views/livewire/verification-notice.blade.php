@@ -1,4 +1,5 @@
 <x-ui::card
+    wire:key="verification-notice-card"
     class="w-full max-w-lg text-center"
     :title="__('auth::ui.verification.title')"
     :subtitle="__('auth::ui.verification.subtitle')"

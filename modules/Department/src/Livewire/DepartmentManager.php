@@ -19,6 +19,7 @@ class DepartmentManager extends Component
         \Modules\Department\Services\Contracts\DepartmentService $departmentService,
     ): void {
         $this->service = $departmentService;
+        $this->eventPrefix = 'department';
     }
 
     public function mount(): void

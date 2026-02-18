@@ -2,7 +2,6 @@
     'sidebar' => null,
     'actions' => null, 
     'footer' => null,
-    'aos' => null,
 ])
 
 <x-mary-main {{ $attributes }}>
@@ -25,8 +24,6 @@
     @endif
 
     <x-slot name="content">
-        <div @if($aos) data-aos="{{ $aos }}" @endif>
-            {{ $slot }}
-        </div>
+        {{ $slot }}
     </x-slot>
 </x-mary-main>

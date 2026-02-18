@@ -26,6 +26,6 @@ if (! function_exists('notify')) {
             return $notifier;
         }
 
-        $notifier->notify($message, $type, $options);
+        return $notifier->notify($message, $type, $options);
     }
 }

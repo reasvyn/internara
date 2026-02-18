@@ -155,7 +155,8 @@ trait ManagesRecords
             $this->service->save(['id' => $this->form->id], $this->form->except('id'));
 
             $this->toggleModal(self::MODAL_FORM, false);
-            notify(__('shared::messages.record_saved'), 'success');
+            flash()->success(__('shared::messages.record_saved'));
+            $this->dispatch($this->getEventPrefix().':saved', exists: true);
         }
     }
 
@@ -169,7 +170,8 @@ trait ManagesRecords
         if ($id && $this->service->delete($id)) {
             $this->toggleModal(self::MODAL_CONFIRM, false);
             $this->recordId = null;
-            notify(__('shared::messages.record_deleted'), 'success');
+            flash()->success(__('shared::messages.record_deleted'));
+            $this->dispatch($this->getEventPrefix().':deleted', exists: $this->service->exists());
         }
     }
 

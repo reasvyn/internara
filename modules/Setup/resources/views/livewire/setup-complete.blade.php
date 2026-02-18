@@ -1,16 +1,16 @@
-<div class="container mx-auto flex flex-col items-center justify-center gap-8 text-center py-12" data-aos="fade-up">
+<div class="container mx-auto flex flex-col items-center justify-center gap-8 text-center py-12">
     <div class="max-w-2xl text-center">
-        <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" aos="fade-down" data-aos-delay="200" class="mb-12" />
+        <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" class="mb-12" />
 
-        <p class="mb-6 font-bold text-success text-lg" data-aos="zoom-in" data-aos-delay="400">
+        <p class="mb-6 font-bold text-success text-lg">
             {{ __('setup::wizard.complete.badge') }}
         </p>
 
-        <h1 class="text-4xl font-bold tracking-tight text-base-content md:text-5xl" data-aos="fade-up" data-aos-delay="600">
+        <h1 class="text-4xl font-bold tracking-tight text-base-content md:text-5xl">
             {{ __('setup::wizard.complete.headline', ['app' => setting('app_name', 'Internara')]) }}
         </h1>
 
-        <div class="mt-8 space-y-4" data-aos="fade-up" data-aos-delay="800">
+        <div class="mt-8 space-y-4">
             <p class="text-base-content/70 leading-relaxed text-lg">
                 {{ __('setup::wizard.complete.description', ['app' => setting('app_name', 'Internara')]) }}
             </p>
@@ -19,7 +19,7 @@
             </p>
         </div>
 
-        <div class="mt-12 flex items-center justify-center gap-4" data-aos="fade-up" data-aos-delay="1000" data-aos-offset="0">
+        <div class="mt-12 flex items-center justify-center gap-4">
             <x-ui::button
                 variant="primary"
                 class="btn-lg px-12 shadow-lg shadow-accent/20"

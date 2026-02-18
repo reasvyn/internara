@@ -23,12 +23,12 @@
         {{-- Main Content --}}
         <div id="main-content" class="p-4 lg:p-8">
             @if($title)
-                <div class="mb-8" data-aos="fade-down" data-aos-duration="600">
+                <div class="mb-8">
                     <h1 class="text-3xl font-bold tracking-tight text-base-content">{{ $title }}</h1>
                 </div>
             @endif
 
-            <div class="space-y-8" data-aos="fade-up" data-aos-delay="100">
+            <div class="space-y-8">
                 {{ $slot }}
             </div>
         </div>

@@ -63,7 +63,7 @@
 
     {{-- Form Modal --}}
     <x-ui::modal id="registration-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">
-        <x-ui::form wire:submit="save">
+        <x-ui::form wire:submit.prevent="save">
             <x-ui::select 
                 label="{{ __('internship::ui.student') }}" 
                 wire:model="form.student_id" 
@@ -132,7 +132,7 @@
             <p class="text-xs text-warning mt-1">{{ __('Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.') }}</p>
         </div>
 
-        <x-ui::form wire:submit="executeBulkPlace">
+        <x-ui::form wire:submit.prevent="executeBulkPlace">
             <x-ui::select 
                 label="{{ __('Lokasi Penempatan') }}" 
                 wire:model="targetPlacementId" 

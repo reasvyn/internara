@@ -4,7 +4,6 @@
     'icon' => null,
     'description' => null,
     'variant' => 'primary', // primary, secondary, accent, info, success, warning, error
-    'aos' => 'fade-up',
 ])
 
 @php
@@ -22,7 +21,7 @@
 
 <div 
     {{ $attributes->merge(['class' => 'stats shadow-sm border border-base-200 bg-base-100 rounded-2xl w-full']) }}
-    data-aos="{{ $aos }}"
+    
 >
     <div class="stat">
         @if($icon)

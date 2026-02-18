@@ -1,12 +1,11 @@
 @props([
     'actions' => null,
     'separator' => false,
-    'aos' => null,
 ])
 
 <x-mary-form 
     {{ $attributes->merge(['class' => 'space-y-8']) }}
-    data-aos="{{ $aos }}"
+    @submit.prevent=""
 >
     <div class="space-y-6">
         {{ $slot }}

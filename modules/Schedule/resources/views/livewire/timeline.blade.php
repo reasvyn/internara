@@ -1,7 +1,7 @@
 <div>
     <x-ui::card :title="__('schedule::ui.timeline_title')" shadow separator>
         @if($schedules->isEmpty())
-            <div class="text-center py-12 opacity-50" role="status" data-aos="fade-in">
+            <div class="text-center py-12 opacity-50" role="status" >
                 <x-ui::icon name="tabler.calendar-off" class="size-12 mx-auto mb-3" aria-hidden="true" />
                 <p class="font-medium">{{ __('schedule::ui.empty_timeline') }}</p>
             </div>
@@ -12,7 +12,7 @@
 
                 <div class="space-y-10">
                     @foreach($schedules as $index => $schedule)
-                        <div class="relative pl-10" role="listitem" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                        <div class="relative pl-10" role="listitem"  >
                             {{-- Bullet --}}
                             <div @class([
                                 'absolute left-0 top-1 size-6 rounded-full border-4 border-base-100 flex items-center justify-center shadow-sm',

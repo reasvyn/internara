@@ -1,7 +1,6 @@
 @props([
     'value' => null,
     'variant' => 'primary',
-    'aos' => null,
 ])
 
 @php
@@ -14,6 +13,6 @@
     };
 @endphp
 
-<x-mary-badge {{ $attributes->class([$variantClasses]) }} data-aos="{{ $aos }}">
+<x-mary-badge {{ $attributes->class([$variantClasses]) }}>
     <x-slot:value>{{ $value ?? $slot }}</x-slot:value>
 </x-mary-badge>

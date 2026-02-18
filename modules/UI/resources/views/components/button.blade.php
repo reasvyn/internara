@@ -3,7 +3,6 @@
     'icon' => null,
     'label' => null,
     'spinner' => true,
-    'aos' => null,
 ])
 
 @php
@@ -27,7 +26,6 @@
     :icon="$icon"
     :label="$label"
     :spinner="$spinner"
-    data-aos="{{ $aos }}"
 >
     {{ $slot }}
 </x-mary-button>

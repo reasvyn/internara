@@ -83,12 +83,12 @@ class SystemSetup extends Component
 
             if ($socket) {
                 fclose($socket);
-                notify('SMTP Connection successful!', 'success');
+                flash()->success('SMTP Connection successful!');
             } else {
                 throw new \Exception($errstr ?: 'Connection timed out.');
             }
         } catch (\Exception $e) {
-            notify('Connection failed: '.$e->getMessage(), 'error');
+            flash()->error('Connection failed: '.$e->getMessage());
         }
     }
 

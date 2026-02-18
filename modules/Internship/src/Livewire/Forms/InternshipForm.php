@@ -36,7 +36,7 @@ class InternshipForm extends Form
             ],
             'description' => ['nullable', 'string'],
             'year' => ['required', 'integer', 'min:2000', 'max:2100'],
-            'semester' => ['required', 'string', Rule::in(['Ganjil', 'Genap'])],
+            'semester' => ['required', 'string', Rule::in(['Ganjil', 'Genap', 'Tahunan'])],
             'date_start' => ['required', 'date'],
             'date_finish' => ['required', 'date', 'after:date_start'],
             'school_id' => ['required', 'uuid'],

@@ -21,6 +21,7 @@ return [
     ],
     'common' => [
         'back' => 'Kembali',
+        'save' => 'Simpan',
         'continue' => 'Lanjutkan',
         'save_continue' => 'Simpan & Lanjutkan',
         'finish' => 'Selesai',

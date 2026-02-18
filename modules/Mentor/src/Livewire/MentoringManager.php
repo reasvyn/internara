@@ -54,7 +54,7 @@ class MentoringManager extends Component
 
         $this->reset(['visit_notes']);
         $this->visitModal = false;
-        notify(__('Kunjungan berhasil dicatat'), 'success');
+        flash()->success(__('Kunjungan berhasil dicatat'));
     }
 
     public function recordLog(MentoringService $service)
@@ -75,7 +75,7 @@ class MentoringManager extends Component
 
         $this->reset(['log_subject', 'log_content', 'log_type']);
         $this->logModal = false;
-        notify(__('Log bimbingan berhasil dicatat'), 'success');
+        flash()->success(__('Log bimbingan berhasil dicatat'));
     }
 
     public function render()

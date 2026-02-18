@@ -1,0 +1,50 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | Default PHPFlasher configuration
+    |--------------------------------------------------------------------------
+    */
+
+    'default' => 'emerald',
+
+    'main_script' => '/vendor/flasher/flasher.min.js',
+
+    'styles' => [
+        '/vendor/flasher/flasher.min.css',
+    ],
+
+    'options' => [
+        'timeout' => 5000,
+        'position' => 'bottom-right',
+        'darkMode' => 'auto', // Support for light/dark mode
+    ],
+
+    'themes' => [
+        'emerald' => [
+            'scripts' => [
+                '/vendor/flasher/themes/emerald/emerald.min.js',
+            ],
+            'styles' => [
+                '/vendor/flasher/flasher.min.css',
+                '/vendor/flasher/themes/emerald/emerald.min.css',
+            ],
+            'options' => [
+                'timeout' => 5000,
+                'position' => 'bottom-right',
+            ],
+        ],
+    ],
+
+    'flash_bag' => [
+        'success' => ['success'],
+        'error' => ['error', 'danger'],
+        'warning' => ['warning', 'alarm'],
+        'info' => ['info', 'notice', 'alert'],
+    ],
+
+    'filter' => [],
+];

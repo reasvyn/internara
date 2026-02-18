@@ -90,9 +90,9 @@ class ReportIndex extends Component
         try {
             $fileName = $service->generate($this->selectedProvider, $this->filters);
 
-            notify(__('report::messages.generated', ['file' => $fileName]), 'success');
+            flash()->success(__('report::messages.generated', ['file' => $fileName]));
         } catch (\Exception $e) {
-            notify($e->getMessage(), 'error');
+            flash()->error($e->getMessage());
         }
     }
 

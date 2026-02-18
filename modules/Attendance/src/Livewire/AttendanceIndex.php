@@ -68,13 +68,9 @@ class AttendanceIndex extends Component
             ]);
 
             $this->attendanceModal = false;
-            $this->dispatch(
-                'notify',
-                message: __('attendance::messages.check_in_success'),
-                type: 'success',
-            );
+            flash()->success(__('attendance::messages.check_in_success'));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            flash()->error($e->getMessage());
         }
     }
 
@@ -85,13 +81,9 @@ class AttendanceIndex extends Component
     {
         try {
             $this->attendanceService->checkIn(auth()->id());
-            $this->dispatch(
-                'notify',
-                message: __('attendance::messages.check_in_success'),
-                type: 'success',
-            );
+            flash()->success(__('attendance::messages.check_in_success'));
         } catch (\Throwable $e) {
-            $this->dispatch('notify', message: $e->getMessage(), type: 'error');
+            flash()->error($e->getMessage());
         }
     }
 

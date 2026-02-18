@@ -95,6 +95,17 @@ trait HandlesSetupSteps
     }
 
     /**
+     * Determines if the required record for the current step exists.
+     */
+    #[Computed]
+    public function isRecordExists(): bool
+    {
+        $record = $this->setupStepProps['extra']['req_record'] ?? null;
+
+        return $record ? $this->setupService->isRecordExists($record) : true;
+    }
+
+    /**
      * Determines if the 'next step' button should be disabled.
      * The button is disabled if a required record for the current step does not exist.
      */
@@ -104,6 +115,15 @@ trait HandlesSetupSteps
         $record = $this->setupStepProps['extra']['req_record'] ?? null;
 
         return $record ? ! $this->setupService->isRecordExists($record) : false;
+    }
+
+    /**
+     * Re-evaluates the step completion status.
+     * Use this method as an event listener to invalidate the cached computed properties.
+     */
+    public function updateStepStatus(): void
+    {
+        unset($this->disableNextStep);
     }
 
     /**

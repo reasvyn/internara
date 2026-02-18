@@ -10,7 +10,7 @@
     </x-ui::header>
 
     <x-ui::main>
-        <x-ui::card>
+        <x-ui::card wire:key="internship-manager-card">
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
                     <x-ui::input :placeholder="__('internship::ui.search_program')" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
@@ -51,7 +51,7 @@
 
     {{-- Form Modal --}}
     <x-ui::modal id="internship-form-modal" wire:model="formModal" :title="$form->id ? __('internship::ui.edit_program') : __('internship::ui.add_program')">
-        <x-ui::form wire:submit="save">
+        <x-ui::form wire:submit.prevent="save">
             <x-ui::input :label="__('internship::ui.title')" wire:model="form.title" required />
             <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
             
@@ -60,7 +60,11 @@
                 <x-ui::select 
                     :label="__('internship::ui.semester')" 
                     wire:model="form.semester" 
-                    :options="[['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], ['id' => 'Genap', 'name' => __('internship::ui.semester_even')]]" 
+                    :options="[
+                        ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
+                        ['id' => 'Genap', 'name' => __('internship::ui.semester_even')],
+                        ['id' => 'Tahunan', 'name' => __('internship::ui.semester_full')]
+                    ]" 
                     required 
                 />
             </div>

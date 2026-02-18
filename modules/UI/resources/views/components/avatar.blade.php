@@ -3,14 +3,12 @@
     'title' => null,
     'subtitle' => null,
     'size' => 'w-12',
-    'aos' => null,
 ])
 
 <div 
     class="avatar {{ $image ? '' : 'placeholder' }}"
     role="img" 
     aria-label="{{ $title ?? __('ui::common.user_avatar') }}"
-    data-aos="{{ $aos }}"
 >
     <div {{ $attributes->merge(['class' => "rounded-2xl $size aspect-square"]) }}>
         @if($image)

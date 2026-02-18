@@ -4,7 +4,6 @@
     'middle' => null, 
     'actions' => null,
     'separator' => false,
-    'aos' => null,
 ])
 
 <x-mary-header 
@@ -12,7 +11,6 @@
     :title="$title"
     :subtitle="$subtitle"
     :separator="$separator"
-    data-aos="{{ $aos }}"
 >
     @if($middle)
         <x-slot:middle>

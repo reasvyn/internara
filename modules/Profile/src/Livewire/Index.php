@@ -168,7 +168,7 @@ class Index extends Component
                 'bio' => $this->bio,
             ]);
 
-            $this->dispatch('success', message: __('Profile updated successfully.'));
+            flash()->success(__('Profile updated successfully.'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
@@ -218,7 +218,7 @@ class Index extends Component
                 }
             }
 
-            $this->dispatch('success', message: __('Special fields updated.'));
+            flash()->success(__('Special fields updated.'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
@@ -240,7 +240,7 @@ class Index extends Component
 
             $this->password = '';
             $this->password_confirmation = '';
-            $this->dispatch('success', message: __('Password updated successfully.'));
+            flash()->success(__('Password updated successfully.'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
@@ -257,7 +257,7 @@ class Index extends Component
             /** @var User $user */
             $user = auth()->user();
             $user->setAvatar($this->avatar);
-            $this->dispatch('success', message: __('Avatar updated.'));
+            flash()->success(__('Avatar updated.'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }

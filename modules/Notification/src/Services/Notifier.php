@@ -65,39 +65,15 @@ class Notifier implements Contract
         string $type = self::TYPE_INFO,
         array $options = [],
     ): self {
-        $payload = array_merge(
-            [
-                'message' => $message,
-                'type' => $type,
-                'title' => $options['title'] ?? null,
-                'autohide' => $options['autohide'] ?? true,
-                'timeout' => $options['timeout'] ?? 5000,
-            ],
-            $options,
-        );
+        $title = $options['title'] ?? null;
+        $flasher = \flash();
 
-        // 1. Session Storage (Standard Redirects & Initial Load)
-        // We append to an array to allow multiple notifications in a single request/session
-        $notifications = session()->get('notify', []);
-        if (! is_array($notifications)) {
-            $notifications = [$notifications];
-        }
-        $notifications[] = $payload;
-
-        if (is_debug_mode()) {
-            \Illuminate\Support\Facades\Log::debug('Notifier: Notification queued', [
-                'type' => $type,
-                'message' => $message,
-                'total_in_session' => count($notifications),
-            ]);
-        }
-
-        session()->flash('notify', $notifications);
-
-        // 2. Livewire Event Bus (Real-time within the same request)
-        if (app()->bound(\Livewire\EventBus::class)) {
-            app(\Livewire\EventBus::class)->trigger('notify', $payload);
-        }
+        $envelop = match ($type) {
+            self::TYPE_SUCCESS => $flasher->addSuccess($message, [], $title),
+            self::TYPE_ERROR => $flasher->addError($message, [], $title),
+            self::TYPE_WARNING => $flasher->addWarning($message, [], $title),
+            default => $flasher->addInfo($message, [], $title),
+        };
 
         return $this;
     }

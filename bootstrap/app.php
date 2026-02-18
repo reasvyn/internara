@@ -43,6 +43,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(
             prepend: [
                 \Modules\Setup\Http\Middleware\RequireSetupAccess::class,
+            ],
+            append: [
                 \Modules\Core\Localization\Http\Middleware\SetLocale::class,
             ],
         );

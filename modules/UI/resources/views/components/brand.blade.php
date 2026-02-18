@@ -1,4 +1,3 @@
-@props(['aos' => null])
 
 @php
     $brandName = setting('brand_name', setting('app_name', 'Internara'));
@@ -13,7 +12,7 @@
     class="flex items-center gap-2" 
     href="/" 
     wire:navigate 
-    data-aos="{{ $aos }}"
+    
     aria-label="{{ __('ui::common.go_to_home', ['name' => $brandName]) }}"
 >
     <img 

@@ -67,7 +67,7 @@ class AttendanceManager extends Component
             $settingService->getValue('feature_guidance_enabled', true) &&
             ! $guidanceService->hasCompletedMandatory((string) auth()->id())
         ) {
-            notify(__('guidance::messages.must_complete_guidance'), 'warning');
+            flash()->warning(__('guidance::messages.must_complete_guidance'));
 
             return;
         }
@@ -75,14 +75,14 @@ class AttendanceManager extends Component
         try {
             $this->attendanceService->checkIn((string) auth()->id());
             $this->loadTodayLog();
-            notify(__('attendance::messages.check_in_success'), 'success');
+            flash()->success(__('attendance::messages.check_in_success'));
         } catch (\Throwable $e) {
             $message =
                 $e instanceof \Modules\Exception\AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
-            notify($message, 'error');
+            flash()->error($message);
         }
     }
 
@@ -94,14 +94,14 @@ class AttendanceManager extends Component
         try {
             $this->attendanceService->checkOut((string) auth()->id());
             $this->loadTodayLog();
-            notify(__('attendance::messages.check_out_success'), 'success');
+            flash()->success(__('attendance::messages.check_out_success'));
         } catch (\Throwable $e) {
             $message =
                 $e instanceof \Modules\Exception\AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
-            notify($message, 'error');
+            flash()->error($message);
         }
     }
 

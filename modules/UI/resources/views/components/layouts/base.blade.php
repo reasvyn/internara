@@ -23,33 +23,15 @@
                 }
             });
 
-            window.triggerNotify = window.triggerNotify || ((payload) => {
-                if (!payload) return;
-
-                const notify = (item) => {
-                    window.dispatchEvent(new CustomEvent('notify', { 
-                        detail: {
-                            message: item.message || item.description || (typeof item === 'string' ? item : ''),
-                            type: item.type || 'info',
-                            title: item.title || null,
-                            timeout: item.timeout || 5000,
-                            autohide: item.autohide !== undefined ? item.autohide : true
-                        } 
-                    }));
-                };
-
-                if (Array.isArray(payload)) {
-                    payload.forEach(item => notify(item));
-                } else {
-                    notify(payload);
-                }
+            // Handle initial load
+            window.addEventListener('load', () => {
+                window.hidePreloader();
             });
 
-            // Handle initial load (waits for all assets: images, fonts, etc.)
-            window.addEventListener('load', window.hidePreloader);
-
             // Handle Livewire SPA navigation
-            document.addEventListener('livewire:navigated', window.hidePreloader);
+            document.addEventListener('livewire:navigated', () => {
+                window.hidePreloader();
+            });
         </script>
 
         <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-base-100 focus:text-primary">
@@ -61,12 +43,25 @@
             {{ $slot }}
         </div>
 
-        <livewire:ui::notification-bridge />
-        <x-ui::toast />
-
         <script>
             document.addEventListener('livewire:init', () => {
-                // Initialized
+                // PHPFlasher Theme Sync
+                const syncFlasherTheme = () => {
+                    const theme = document.documentElement.getAttribute('data-theme');
+                    if (theme === 'dark') {
+                        document.documentElement.classList.add('fl-dark');
+                    } else {
+                        document.documentElement.classList.remove('fl-dark');
+                    }
+                };
+                
+                syncFlasherTheme();
+                
+                // Watch for theme changes from mary-theme-toggle
+                new MutationObserver(syncFlasherTheme).observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['data-theme']
+                });
             });
         </script>
 

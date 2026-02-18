@@ -23,6 +23,7 @@
 
         {{-- Right side actions --}}
         <x-slot:actions class="flex items-center space-x-2">
+            <livewire:ui::language-switcher />
             <x-ui::theme-toggle />
         </x-slot>
     </x-ui::nav>

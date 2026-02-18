@@ -1,45 +1,56 @@
 <x-ui::card
+    wire:key="register-card"
     class="w-full max-w-lg text-center"
     :title="__('auth::ui.register.title')"
     :subtitle="__('auth::ui.register.subtitle')"
 >
     <x-ui::form class="text-start" wire:submit="register">
-        <x-ui::input
-            type="text"
-            :label="__('auth::ui.register.form.name')"
-            :placeholder="__('auth::ui.register.form.name_placeholder')"
-            wire:model="name"
-            required
-        />
-        <x-ui::input
-            type="email"
-            :label="__('auth::ui.register.form.email')"
-            :placeholder="__('auth::ui.register.form.email_placeholder')"
-            wire:model="email"
-            required
-        />
-        <x-ui::input
-            type="password"
-            :label="__('auth::ui.register.form.password')"
-            :placeholder="__('auth::ui.register.form.password_placeholder')"
-            wire:model="password"
-            required
-        />
-        <x-ui::input
-            type="password"
-            :label="__('auth::ui.register.form.password_confirmation')"
-            :placeholder="__('auth::ui.register.form.password_confirmation_placeholder')"
-            wire:model="password_confirmation"
-            required
-        />
+        <div wire:key="reg-name">
+            <x-ui::input
+                type="text"
+                :label="__('auth::ui.register.form.name')"
+                :placeholder="__('auth::ui.register.form.name_placeholder')"
+                wire:model="name"
+                required
+            />
+        </div>
+        <div wire:key="reg-email">
+            <x-ui::input
+                type="email"
+                :label="__('auth::ui.register.form.email')"
+                :placeholder="__('auth::ui.register.form.email_placeholder')"
+                wire:model="email"
+                required
+            />
+        </div>
+        <div wire:key="reg-password">
+            <x-ui::input
+                type="password"
+                :label="__('auth::ui.register.form.password')"
+                :placeholder="__('auth::ui.register.form.password_placeholder')"
+                wire:model="password"
+                required
+            />
+        </div>
+        <div wire:key="reg-password-conf">
+            <x-ui::input
+                type="password"
+                :label="__('auth::ui.register.form.password_confirmation')"
+                :placeholder="__('auth::ui.register.form.password_confirmation_placeholder')"
+                wire:model="password_confirmation"
+                required
+            />
+        </div>
 
-        <x-ui::turnstile field-name="captcha_token" />
+        <div wire:key="reg-captcha">
+            <x-ui::turnstile field-name="captcha_token" />
+        </div>
 
         @php
             $policyRoute = \Illuminate\Support\Facades\Route::has('privacy-policy') ? route('privacy-policy') : '#';
         @endphp
 
-        <div class="mt-4 flex flex-col gap-8">
+        <div class="mt-4 flex flex-col gap-8" wire:key="reg-actions">
             <div class="w-full space-y-2">
                 <x-ui::button
                     variant="primary"

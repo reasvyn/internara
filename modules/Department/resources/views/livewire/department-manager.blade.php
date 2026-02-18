@@ -10,7 +10,7 @@
     </x-ui::header>
 
     <x-ui::main>
-        <x-ui::card>
+        <x-ui::card wire:key="department-manager-card">
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
                     <x-ui::input :placeholder="__('department::ui.search_placeholder')" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
@@ -46,7 +46,7 @@
 
     {{-- Form Modal --}}
     <x-ui::modal id="department-form-modal" wire:model="formModal" :title="$form->id ? __('department::ui.edit') : __('department::ui.add')">
-        <x-ui::form wire:submit="save">
+        <x-ui::form wire:submit.prevent="save">
             <x-ui::input :label="__('department::ui.name')" wire:model="form.name" required />
             <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
 

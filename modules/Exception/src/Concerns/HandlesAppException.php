@@ -106,10 +106,7 @@ trait HandlesAppException
             $message = $exception->getUserMessage();
         }
 
-        // Use the standardized Notifier service
-        if (interface_exists(\Modules\Notification\Services\Contracts\Notifier::class)) {
-            app(\Modules\Notification\Services\Contracts\Notifier::class)->notify($message, $type);
-        }
+        flash()->error($message);
     }
 
     /**
