@@ -35,18 +35,21 @@ class AnalyticsAggregator implements Contract
     public function getInstitutionalSummary(): array
     {
         $activeAcademicYear = setting('active_academic_year');
+        $cacheKey = "institutional_summary_{$activeAcademicYear}";
 
-        $totalInterns = $this->registrationService
-            ->query(['academic_year' => $activeAcademicYear])
-            ->count();
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addMinutes(15), function () use ($activeAcademicYear) {
+            $totalInterns = $this->registrationService
+                ->query(['academic_year' => $activeAcademicYear])
+                ->count();
 
-        $activePartners = $this->placementService->all()->count();
+            $activePartners = $this->placementService->all(['id'])->count();
 
-        return [
-            'total_interns' => $totalInterns,
-            'active_partners' => $activePartners,
-            'placement_rate' => $this->calculatePlacementRate($totalInterns),
-        ];
+            return [
+                'total_interns' => $totalInterns,
+                'active_partners' => $activePartners,
+                'placement_rate' => $this->calculatePlacementRate($totalInterns),
+            ];
+        });
     }
 
     /**
