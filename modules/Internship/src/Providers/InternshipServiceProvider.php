@@ -99,6 +99,7 @@ class InternshipServiceProvider extends ServiceProvider
                     'title' => __('internship::ui.requirement_title'),
                     'icon' => 'tabler.checklist',
                     'link' => '/internships/requirements',
+                    'role' => 'student',
                     'order' => 25,
                 ],
             ],

@@ -36,6 +36,7 @@ class StudentServiceProvider extends ServiceProvider
                     'title' => __('Dashboard'),
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/student',
+                    'role' => 'student',
                     'order' => 10,
                 ],
             ],

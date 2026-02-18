@@ -57,6 +57,25 @@ class SlotManager implements SlotManagerContract
     public function render(string $slot): string
     {
         return collect($this->registry->getSlotsFor($slot))
+            ->filter(function ($item) {
+                $data = $item['data'];
+                $user = auth()->user();
+
+                // 1. Check for specific permissions
+                if (isset($data['permission']) && ! $user?->can($data['permission'])) {
+                    return false;
+                }
+
+                // 2. Check for required roles (e.g., 'admin|super-admin')
+                if (isset($data['role'])) {
+                    $roles = explode('|', $data['role']);
+                    if (! $user?->hasRole($roles)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            })
             ->map(function ($item) use ($slot) {
                 $view = $item['view'];
                 $data = $item['data'];
@@ -84,7 +103,15 @@ class SlotManager implements SlotManagerContract
                     }
 
                     if (is_string($view)) {
-                        return \Illuminate\Support\Facades\Blade::render("<x-{$view} />", $data);
+                        $componentName = Str::before($view, '#');
+
+                        return \Illuminate\Support\Facades\Blade::render(
+                            '<x-dynamic-component :component="$component" {{ $attributes }} />',
+                            [
+                                'component' => $componentName,
+                                'attributes' => new \Illuminate\View\ComponentAttributeBag($data),
+                            ],
+                        );
                     }
                 } catch (\Throwable $e) {
                     \Illuminate\Support\Facades\Log::error(
