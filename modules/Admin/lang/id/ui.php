@@ -25,4 +25,13 @@ return [
         'user_management' => 'Manajemen Pengguna',
         'system_config' => 'Konfigurasi Sistem',
     ],
+    'menu' => [
+        'dashboard' => 'Dasbor',
+        'students' => 'Data Siswa',
+        'teachers' => 'Guru Pembimbing',
+        'mentors' => 'Pembimbing Industri',
+        'administrators' => 'Administrator',
+        'job_monitor' => 'Pantau Antrean',
+        'readiness' => 'Kesiapan Lulus',
+    ],
 ];

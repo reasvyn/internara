@@ -1,4 +1,4 @@
-@props(['title' => null])
+@props(['title' => null, 'bodyClass' => 'bg-base-100'])
 
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -6,7 +6,7 @@
         <x-ui::layouts.base.head :$title />
     </head>
 
-    <body class="max-w-screen size-full overflow-x-hidden font-sans antialiased">
+    <body class="{{ $bodyClass }} max-w-screen size-full overflow-x-hidden font-sans antialiased">
         <x-ui::layouts.base.preloader />
 
         <script>

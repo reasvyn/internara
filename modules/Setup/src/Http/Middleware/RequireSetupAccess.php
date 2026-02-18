@@ -41,9 +41,7 @@ class RequireSetupAccess
 
     protected function bypassSpecificRequests(Request $request): bool
     {
-        return app()->runningInConsole() ||
-            $this->isLivewireRequest($request) ||
-            is_testing();
+        return app()->runningInConsole() || $this->isLivewireRequest($request) || is_testing();
     }
 
     /**

@@ -20,8 +20,7 @@
 @endphp
 
 <div 
-    {{ $attributes->merge(['class' => 'stats shadow-sm border border-base-200 bg-base-100 rounded-2xl w-full']) }}
-    
+    {{ $attributes->merge(['class' => 'stats shadow-md border border-base-200 bg-base-100 rounded-2xl w-full']) }}
 >
     <div class="stat">
         @if($icon)

@@ -56,10 +56,12 @@ class Register extends Component
             // Register user and trigger email verification
             $user = $this->authService->register($validated, sendEmailVerification: true);
 
-            flash()->success(__('auth::ui.register.welcome', [
-                'app' => setting('app_name', 'Internara'),
-                'name' => $user->name,
-            ]));
+            flash()->success(
+                __('auth::ui.register.welcome', [
+                    'app' => setting('app_name', 'Internara'),
+                    'name' => $user->name,
+                ]),
+            );
 
             $this->authService->login([
                 'email' => $user->email,

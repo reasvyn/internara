@@ -33,40 +33,40 @@ class AdminServiceProvider extends ServiceProvider
         return [
             'admin.dashboard.side' => [
                 'livewire:admin::widgets.app-info-widget' => [
-                    'order' => 100,
+                    'order' => 999,
                 ],
             ],
             'sidebar.menu' => [
                 'ui::menu-item' => [
-                    'title' => __('Dashboard'),
+                    'title' => 'admin::ui.menu.dashboard',
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/admin',
                     'role' => 'admin|super-admin',
                     'order' => 10,
                 ],
                 'ui::menu-item#students' => [
-                    'title' => __('Students'),
+                    'title' => 'admin::ui.menu.students',
                     'icon' => 'tabler.users',
                     'link' => '/admin/students',
                     'role' => 'admin|super-admin',
                     'order' => 50,
                 ],
                 'ui::menu-item#teachers' => [
-                    'title' => __('Teachers'),
+                    'title' => 'admin::ui.menu.teachers',
                     'icon' => 'tabler.school',
                     'link' => '/admin/teachers',
                     'role' => 'admin|super-admin',
                     'order' => 51,
                 ],
                 'ui::menu-item#mentors' => [
-                    'title' => __('Industry Mentors'),
+                    'title' => 'admin::ui.menu.mentors',
                     'icon' => 'tabler.briefcase',
                     'link' => '/admin/mentors',
                     'role' => 'admin|super-admin',
                     'order' => 52,
                 ],
                 'ui::menu-item#administrators' => [
-                    'title' => __('Administrators'),
+                    'title' => 'admin::ui.menu.administrators',
                     'icon' => 'tabler.shield-lock',
                     'link' => '/admin/administrators',
                     'role' => 'super-admin',
@@ -74,21 +74,21 @@ class AdminServiceProvider extends ServiceProvider
                     'order' => 90,
                 ],
                 'ui::menu-item#job-monitor' => [
-                    'title' => __('Job Monitor'),
+                    'title' => 'admin::ui.menu.job_monitor',
                     'icon' => 'tabler.activity',
                     'link' => '/admin/jobs',
                     'role' => 'admin|super-admin',
                     'order' => 91,
                 ],
                 'ui::menu-item#reports' => [
-                    'title' => __('report::ui.title'),
+                    'title' => 'report::ui.title',
                     'icon' => 'tabler.file-analytics',
                     'link' => '/admin/reports',
                     'role' => 'admin|super-admin',
                     'order' => 80,
                 ],
                 'ui::menu-item#readiness' => [
-                    'title' => __('Graduation Readiness'),
+                    'title' => 'admin::ui.menu.readiness',
                     'icon' => 'tabler.user-check',
                     'link' => '/admin/readiness',
                     'role' => 'admin|super-admin',

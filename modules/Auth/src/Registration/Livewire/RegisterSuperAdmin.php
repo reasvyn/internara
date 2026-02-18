@@ -44,9 +44,10 @@ class RegisterSuperAdmin extends Component
             // During setup phase, allow re-linking to an existing user record with the same email
             // to prevent "Email already taken" errors when repeating this step.
             if (! setting('app_installed', false)) {
-                $existing = app(\Modules\User\Services\Contracts\UserService::class)
-                    ->findByEmail($this->form->email);
-                
+                $existing = app(\Modules\User\Services\Contracts\UserService::class)->findByEmail(
+                    $this->form->email,
+                );
+
                 if ($existing) {
                     $this->form->id = $existing->id;
                 }
@@ -68,9 +69,7 @@ class RegisterSuperAdmin extends Component
         } catch (\Modules\Exception\AppException $e) {
             flash()->error($e->getUserMessage());
         } catch (\Exception $e) {
-            flash()->error(
-                __('shared::exceptions.creation_failed', ['record' => 'Administrator']),
-            );
+            flash()->error(__('shared::exceptions.creation_failed', ['record' => 'Administrator']));
             \Illuminate\Support\Facades\Log::error('SuperAdmin Registration Failed.', [
                 'correlation_id' => \Illuminate\Support\Str::uuid()->toString(),
                 'error_type' => get_class($e),

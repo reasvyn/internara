@@ -16,7 +16,14 @@ class InternshipService extends EloquentQuery implements Contracts\InternshipSer
     ) {
         $this->setModel($internship);
         $this->setSearchable(['title', 'description', 'year', 'semester']);
-        $this->setSortable(['title', 'year', 'semester', 'date_start', 'date_finish', 'created_at']);
+        $this->setSortable([
+            'title',
+            'year',
+            'semester',
+            'date_start',
+            'date_finish',
+            'created_at',
+        ]);
     }
 
     /**

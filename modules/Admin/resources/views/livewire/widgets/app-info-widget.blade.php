@@ -1,5 +1,5 @@
 <div>
-    <x-ui::card class="bg-base-200/50 border-none shadow-none">
+    <x-ui::card class="bg-transparent border-none shadow-none">
         <div class="flex flex-col gap-3">
             <div class="flex items-center gap-3">
                 <div class="bg-primary/10 p-2 rounded-lg">
@@ -29,8 +29,8 @@
                     &copy; {{ date('Y') }} {{ $appInfo['author']['name'] ?? 'Developer' }}
                 </div>
                 <div class="flex gap-2">
-                    <a href="mailto:{{ $appInfo['author']['email'] ?? '' }}" class="btn btn-ghost btn-xs btn-circle opacity-40 hover:opacity-100">
-                        <x-ui::icon name="tabler.mail" class="w-3 h-3" />
+                    <a href="{{ $appInfo['author']['github'] ?? 'https://github.com/reasnov' }}" target="_blank" class="btn btn-ghost btn-xs btn-circle opacity-40 hover:opacity-100">
+                        <x-ui::icon name="tabler.brand-github" class="w-3 h-3" />
                     </a>
                 </div>
             </div>

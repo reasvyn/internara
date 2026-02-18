@@ -25,4 +25,13 @@ return [
         'user_management' => 'User Management',
         'system_config' => 'System Configuration',
     ],
+    'menu' => [
+        'dashboard' => 'Dashboard',
+        'students' => 'Students',
+        'teachers' => 'Teachers',
+        'mentors' => 'Industry Mentors',
+        'administrators' => 'Administrators',
+        'job_monitor' => 'Job Monitor',
+        'readiness' => 'Graduation Readiness',
+    ],
 ];

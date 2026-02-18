@@ -1,6 +1,6 @@
-@props(['title' => null, 'footer' => null])
+@props(['title' => null, 'footer' => null, 'bodyClass' => 'bg-base-100'])
 
-<x-ui::layouts.base :$title>
+<x-ui::layouts.base :$title :$bodyClass>
     <div class="flex flex-1 flex-col">
         <x-ui::navbar sticky full-width />
 

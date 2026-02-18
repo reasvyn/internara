@@ -13,9 +13,7 @@ return [
 
     'main_script' => '/vendor/flasher/flasher.min.js',
 
-    'styles' => [
-        '/vendor/flasher/flasher.min.css',
-    ],
+    'styles' => ['/vendor/flasher/flasher.min.css'],
 
     'options' => [
         'theme' => 'emerald',

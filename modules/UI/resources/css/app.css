@@ -33,9 +33,9 @@
     default: true;
     prefersdark: false;
     color-scheme: 'light';
-    --color-base-100: oklch(100% 0 0); /* White */
-    --color-base-200: oklch(97% 0 0);
-    --color-base-300: oklch(94% 0 0);
+    --color-base-100: oklch(100% 0 0); /* Pure White - Cards */
+    --color-base-200: oklch(97% 0 0); /* Sidebar */
+    --color-base-300: oklch(94% 0 0); /* Dashboard Background */
     --color-base-content: oklch(10% 0 0); /* Soft Black */
     --color-primary: oklch(0% 0 0); /* Pure Black */
     --color-primary-content: oklch(100% 0 0); /* Pure White */
@@ -70,9 +70,9 @@
     default: false;
     prefersdark: true;
     color-scheme: 'dark';
-    --color-base-100: oklch(0% 0 0); /* Pure Black */
-    --color-base-200: oklch(10% 0 0); /* Dark Gray */
-    --color-base-300: oklch(15% 0 0); /* Lighter Dark Gray */
+    --color-base-100: oklch(15% 0 0); /* Cards */
+    --color-base-200: oklch(10% 0 0); /* Sidebar */
+    --color-base-300: oklch(7% 0 0); /* Dashboard Background */
     --color-base-content: oklch(95% 0 0); /* Soft White */
     --color-primary: oklch(100% 0 0); /* Pure White */
     --color-primary-content: oklch(0% 0 0); /* Pure Black */
@@ -122,7 +122,7 @@
     --fl-font: 'Instrument Sans', sans-serif !important;
 }
 
-.fl-emerald .fl-title, 
+.fl-emerald .fl-title,
 .fl-emerald .fl-message {
     font-weight: 500 !important; /* Medium weight */
 }

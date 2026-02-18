@@ -28,9 +28,8 @@ class RegistrationManager extends Component
 
     public ?string $historyId = null;
 
-    public function boot(
-        RegistrationService $registrationService,
-    ): void {
+    public function boot(RegistrationService $registrationService): void
+    {
         $this->service = $registrationService;
         $this->eventPrefix = 'registration';
     }
