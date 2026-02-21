@@ -28,7 +28,7 @@
 
                     @if (\Illuminate\Support\Facades\Route::has('forgot-password'))
                         <a
-                            class="absolute right-0 top-2 text-xs font-medium underline"
+                            class="absolute right-0 top-0 text-xs font-medium underline"
                             href="{{ route('forgot-password') }}"
                         >
                             {{ __('auth::ui.login.form.forgot_password') }}

@@ -2,249 +2,196 @@
     'label' => null,
     'name' => 'file',
     'id' => null,
-    'accept' => '*',
-    'preview' => [],
+    'accept' => 'image/*',
+    'preview' => null,
     'multiple' => false,
     'hint' => null,
-    'ratio' => '1/1', // Default to square
+    'placeholder' => null,
+    'ratio' => 1,
+    'crop' => true,
 ])
 
 @php
-    $id = $id ?? $name;
+    $id = $id ?? $name . '_' . Str::random(5);
     $isMultiple = filter_var($multiple, FILTER_VALIDATE_BOOLEAN);
-    $preview_array = array_filter(is_array($preview) ? $preview : [$preview]);
-
-    // Construct crop config based on ratio
-    $cropConfig = $attributes->get('crop-config', []);
-    if ($ratio) {
-        $cropConfig['aspectRatio'] = $ratio === 'square' ? 1 : (str_contains($ratio, '/') ? eval("return $ratio;") : $ratio);
-    }
-
-    // Extract wire:model and other mary-specific attributes
-    $maryAttributes = $attributes->only(['wire:model', 'wire:model.live', 'wire:model.blur', 'crop-after-change']);
-    $otherAttributes = $attributes->except(['wire:model', 'wire:model.live', 'wire:model.blur', 'crop-after-change', 'crop-config']);
+    $isCrop = filter_var($crop, FILTER_VALIDATE_BOOLEAN);
+    
+    // Wire model for AlpineJS
+    $model = $attributes->get('wire:model') ?: ($attributes->get('wire:model.live') ?: $attributes->get('wire:model.blur'));
 @endphp
 
 <div
-    x-data="{
-        isDropping: false,
-        files: [],
-        isMultiple: {{ $isMultiple ? 'true' : 'false' }},
-        
-        init() {
-            this.loadInitialPreviews();
-        },
-
-        loadInitialPreviews() {
-            const initial = {{ json_encode($preview_array) }};
-            this.files = initial.map(url => ({
-                id: 'old-' + Math.random().toString(36).substring(2, 9),
-                url: url,
-                name: url.split('/').pop().split('?')[0] || 'Existing File',
-                size: null,
-                isNew: false,
-                file: null,
-                extension: (url.split('.').pop() || '').toLowerCase()
-            }));
-        },
-
-        getFileInput() {
-            return this.$refs.maryFile.querySelector('input[type=file]');
-        },
-
-        handleFileChange(event) {
-            this.syncFiles(event.target.files);
-        },
-
-        handleDrop(event) {
-            this.isDropping = false;
-            if (event.dataTransfer.files.length > 0) {
-                const input = this.getFileInput();
-                input.files = event.dataTransfer.files;
-                input.dispatchEvent(new Event('change', { bubbles: true }));
-                this.syncFiles(event.dataTransfer.files);
-            }
-        },
-
-        syncFiles(fileList) {
-            const newFiles = Array.from(fileList).map(file => ({
-                id: 'new-' + Math.random().toString(36).substring(2, 9),
-                url: URL.createObjectURL(file),
-                name: file.name,
-                size: file.size,
-                isNew: true,
-                file: file,
-                extension: file.name.split('.').pop().toLowerCase()
-            }));
-
-            if (this.isMultiple) {
-                this.files = [...this.files, ...newFiles];
-            } else {
-                this.files.forEach(f => { if(f.isNew) URL.revokeObjectURL(f.url) });
-                this.files = newFiles;
-            }
-        },
-
-        removeFile(id) {
-            const file = this.files.find(f => f.id === id);
-            if (file && file.isNew) URL.revokeObjectURL(file.url);
-            
-            this.files = this.files.filter(f => f.id !== id);
-            
-            if (file && file.isNew) {
-                const input = this.getFileInput();
-                if (!this.isMultiple) {
-                    input.value = '';
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                } else {
-                    this.rebuildInputFiles();
-                }
-            }
-        },
-
-        rebuildInputFiles() {
-            const input = this.getFileInput();
-            const dataTransfer = new DataTransfer();
-            this.files.filter(f => f.isNew).forEach(f => dataTransfer.items.add(f.file));
-            input.files = dataTransfer.files;
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-        },
-
-        formatBytes(bytes) {
-            if (!bytes) return '';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        },
-
-        isImage(file) {
-            if (!file) return false;
-            const ext = file.extension || '';
-            return ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext.toLowerCase());
-        }
-    }"
-    {{ $otherAttributes->merge(['class' => 'w-full']) }}
+    x-data="fileComponent({
+        model: @js($model),
+        preview: @js($preview),
+        ratio: @js($ratio),
+        isCrop: @js($isCrop),
+        isMultiple: @js($isMultiple)
+    })"
+    class="w-full"
+    @dragover.prevent="isDropping = true"
+    @dragenter.prevent="isDropping = true"
+    @dragleave.prevent="isDropping = false"
+    @drop.prevent="handleDrop($event)"
 >
     @isset($label)
-        <label class="label mb-1 px-1">
-            <span class="label-text font-semibold text-base-content/80">{{ $label }}</span>
+        <label class="label mb-2 px-1 font-bold text-base-content/70" for="{{ $id }}">
+            {{ $label }}
         </label>
     @endisset
 
-    {{-- Hidden Mary File Engine --}}
-    <div class="hidden" x-ref="maryFile">
-        <x-mary-file 
-            id="{{ $id }}"
-            name="{{ $name . ($isMultiple ? '[]' : '') }}"
-            accept="{{ $accept }}"
-            :multiple="$isMultiple"
-            :crop-config="$cropConfig"
-            x-on:change="handleFileChange($event)"
-            {{ $maryAttributes }}
-        />
+    {{-- Native Hidden Input --}}
+    <input
+        type="file"
+        id="{{ $id }}"
+        class="hidden"
+        accept="{{ $accept }}"
+        x-ref="input"
+        x-on:change="handleSelect"
+    />
+
+    {{-- Aesthetic Dropzone --}}
+    <div 
+        class="relative flex min-h-[160px] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed bg-base-100 p-8 transition-all duration-300 shadow-sm"
+        x-on:click="$refs.input.click()"
+        :class="isDropping ? 'border-accent bg-accent/5 scale-[1.01]' : 'border-base-300 hover:border-accent/50 hover:bg-base-200'"
+    >
+        {{-- Empty State Content --}}
+        <div x-show="files.length === 0" class="flex flex-col items-center gap-4 text-center">
+            <div class="flex size-14 items-center justify-center rounded-xl bg-base-200 text-base-content/40">
+                <x-tabler-cloud-upload class="size-8" />
+            </div>
+            <div class="space-y-1">
+                <p class="text-sm font-bold text-base-content/80">
+                    <span>{{ $placeholder ?? __('ui::file.instruction') }}</span>
+                    <span class="text-accent underline underline-offset-4">{{ __('ui::file.upload_now') }}</span>
+                </p>
+                @isset($hint)
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-base-content/40">{{ $hint }}</p>
+                @endisset
+            </div>
+        </div>
+
+        {{-- Preview State Content --}}
+        <div x-show="files.length > 0" class="flex flex-col items-center gap-4" x-cloak>
+            <div class="relative group">
+                <img :src="files[0]?.url" class="h-32 w-32 rounded-xl object-cover shadow-xl border border-base-200 ring-4 ring-base-100" />
+                <button 
+                    type="button" 
+                    x-on:click.stop.prevent="removeFile" 
+                    class="btn btn-error btn-circle btn-xs absolute -right-2 -top-2 shadow-lg hover:scale-110 transition-transform"
+                >
+                    <x-tabler-x class="size-3" />
+                </button>
+            </div>
+            <div class="text-center">
+                <p class="max-w-[200px] truncate text-xs font-bold text-base-content/60" x-text="files[0]?.name"></p>
+                <p class="mt-1 text-[10px] font-bold uppercase tracking-widest text-accent">{{ __('ui::file.change_file') }}</p>
+            </div>
+        </div>
+
+        {{-- Drop Overlay Indicator --}}
+        <div 
+            x-show="isDropping" 
+            x-transition.opacity
+            class="absolute inset-0 z-30 flex flex-col items-center justify-center rounded-2xl bg-base-100/80 backdrop-blur-md pointer-events-none border-2 border-accent"
+        >
+            <div class="flex flex-col items-center gap-4">
+                <div class="flex size-20 items-center justify-center rounded-full bg-accent/20 text-accent">
+                    <x-tabler-upload class="size-10 animate-bounce" />
+                </div>
+                <div class="text-center">
+                    <p class="text-lg font-black tracking-tight text-accent">{{ __('ui::file.release_to_upload') }}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-accent/60">{{ __('ui::file.release_to_upload_hint') }}</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    @if($slot->isNotEmpty())
-        {{-- Custom Trigger Mode (e.g., Avatar) --}}
-        <div 
-            class="cursor-pointer transition-all active:scale-95"
-            x-on:click="getFileInput().click()"
-            x-on:dragover.prevent="isDropping = true"
-            x-on:dragleave.prevent="isDropping = false"
-            x-on:drop.prevent="handleDrop($event)"
+    {{-- Native Teleported Cropper Modal --}}
+    <template x-teleport="body">
+        <div
+            x-show="showCropper"
+            class="fixed inset-0 z-[10000] overflow-y-auto"
+            style="display: none;"
+            x-cloak
         >
-            {{ $slot }}
-        </div>
-    @else
-        {{-- Standard Dropzone Mode --}}
-        <div class="h-full min-h-24 w-full rounded-2xl border border-base-200 bg-base-100 p-4 shadow-sm transition-all">
-            <div
-                class="flex h-full w-full cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-base-200 p-4 hover:border-accent/50 hover:bg-accent/5 transition-colors group/dropzone relative"
-                x-on:dragover.prevent="isDropping = true"
-                x-on:dragleave.prevent="isDropping = false"
-                x-on:drop.prevent="handleDrop($event)"
-                x-bind:class="{ 'border-accent bg-accent/10': isDropping }"
-                x-on:click="getFileInput().click()"
-            >
-                <div class="text-center text-xs text-base-content/60 relative w-full pointer-events-none">
-                    {{-- Drag-over Overlay --}}
-                    <div
-                        x-show="isDropping"
-                        class="absolute inset-0 z-10 flex size-full flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-base-100/90 p-4 text-center font-medium"
-                    >
-                        <x-ui::icon name="tabler.upload" class="size-12 text-accent animate-bounce" />
-                        <p class="text-accent text-sm">{{ $isMultiple ? __('ui::file.drop_to_add') : __('ui::file.drop_to_replace') }}</p>
-                    </div>
+            {{-- Backdrop --}}
+            <div 
+                x-show="showCropper"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-base-300/60 backdrop-blur-md" 
+                @click="closeCropper()"
+            ></div>
 
-                    {{-- Previews --}}
-                    <div x-show="files.length > 0" class="w-full">
-                        @if($isMultiple)
-                            <ul class="w-full space-y-3 p-2 text-left pointer-events-auto">
-                                <template x-for="fileItem in files" :key="fileItem.id">
-                                    <li class="flex items-center gap-3 p-3 bg-base-200/50 rounded-xl border border-base-200">
-                                        <template x-if="isImage(fileItem) && fileItem.url">
-                                            <img x-bind:src="fileItem.url" class="size-10 flex-shrink-0 rounded-lg object-cover shadow-sm" />
-                                        </template>
-                                        <template x-if="!isImage(fileItem)">
-                                            <div class="size-10 flex items-center justify-center bg-base-300 rounded-lg flex-shrink-0">
-                                                <x-ui::icon name="tabler.file" class="size-6 text-base-content/40" />
-                                            </div>
-                                        </template>
-                                        <div class="flex-grow overflow-hidden text-left">
-                                            <p class="truncate text-sm font-bold text-base-content" x-text="fileItem.name"></p>
-                                            <p class="text-[10px] uppercase tracking-wider text-base-content/50 font-semibold">
-                                                <span x-text="formatBytes(fileItem.size)"></span>
-                                                <span class="ml-1" x-text="fileItem.extension"></span>
-                                            </p>
-                                        </div>
-                                        <button type="button" x-on:click.stop="removeFile(fileItem.id)" class="btn btn-ghost btn-circle btn-sm hover:bg-error/10 hover:text-error transition-colors flex-shrink-0">
-                                            <x-ui::icon name="tabler.trash" class="size-4" />
-                                        </button>
-                                    </li>
-                                </template>
-                            </ul>
-                        @else
-                            <div class="flex items-center justify-center py-4 pointer-events-auto">
-                                <div class="relative group/preview">
-                                    <template x-if="isImage(files[0])">
-                                        <img x-bind:src="files[0]?.url" class="h-40 w-40 rounded-2xl object-cover shadow-lg border border-base-200" />
-                                    </template>
-                                    <template x-if="!isImage(files[0])">
-                                        <div class="flex h-40 w-40 flex-col items-center justify-center rounded-2xl bg-base-200 border border-base-300">
-                                            <x-ui::icon name="tabler.file-text" class="size-16 text-base-content/20" />
-                                            <p class="mt-2 w-full truncate px-4 text-center text-xs font-bold text-base-content/60" x-text="files[0]?.name"></p>
-                                        </div>
-                                    </template>
-                                    <button type="button" x-on:click.stop="removeFile(files[0].id)" class="btn btn-error btn-circle btn-sm absolute -right-3 -top-3 z-10 shadow-lg opacity-0 group-hover/preview:opacity-100 transition-opacity">
-                                        <x-ui::icon name="tabler.x" class="size-4" />
-                                    </button>
-                                </div>
+            {{-- Modal Container --}}
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div 
+                    x-show="showCropper"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-95 translate-y-8 sm:translate-y-0"
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 scale-95 translate-y-8 sm:translate-y-0"
+                    class="relative w-full max-w-2xl transform overflow-hidden rounded-[2.5rem] bg-base-100 p-6 text-left align-middle shadow-2xl transition-all border border-base-200 lg:p-10"
+                    @click.stop
+                >
+                    {{-- Header --}}
+                    <div class="mb-8">
+                        <div class="flex items-start justify-between gap-6">
+                            <div class="flex-1">
+                                <h3 class="text-3xl font-black tracking-tight text-base-content">{{ __('ui::file.cropper.title') }}</h3>
+                                <p class="mt-2 text-sm leading-relaxed text-base-content/60">{{ __('ui::file.cropper.subtitle') }}</p>
                             </div>
-                        @endif
+                            <button 
+                                @click="closeCropper()" 
+                                class="btn btn-ghost btn-circle btn-sm -mt-2 -mr-2 bg-base-200 hover:bg-error/10 hover:text-error"
+                            >
+                                <x-tabler-x class="size-6 opacity-40" />
+                            </button>
+                        </div>
+                        <div class="divider my-6 opacity-10"></div>
                     </div>
 
-                    {{-- Empty State --}}
-                    <div x-show="files.length === 0" class="flex flex-col items-center justify-center text-center gap-3 py-8">
-                        <div class="size-16 flex items-center justify-center bg-base-200 rounded-full mb-2">
-                            <x-ui::icon name="tabler.cloud-upload" class="size-8 text-base-content/30" />
+                    {{-- Cropping Area --}}
+                    <div class="relative min-h-[450px] w-full overflow-hidden rounded-3xl border border-base-200 bg-base-300 shadow-inner">
+                        <img x-ref="cropperImage" class="block max-w-full" style="display: block; max-width: 100%;" />
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="mt-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
+                        <div class="flex gap-2">
+                            <button type="button" x-on:click="rotate(-90)" class="btn btn-ghost btn-circle bg-base-200" title="{{ __('ui::file.cropper.rotate_left') }}">
+                                <x-tabler-rotate-2 class="size-5 opacity-60" />
+                            </button>
+                            <button type="button" x-on:click="rotate(90)" class="btn btn-ghost btn-circle bg-base-200" title="{{ __('ui::file.cropper.rotate_right') }}">
+                                <x-tabler-rotate-clockwise-2 class="size-5 opacity-60" />
+                            </button>
                         </div>
-                        <p class="text-sm">
-                            {{ __('ui::file.instruction') }} 
-                            <span class="text-accent font-bold">{{ __('ui::file.click_to_upload') }}</span>
-                        </p>
-                        @isset($hint)
-                            <p class="text-[11px] text-base-content/40 font-medium uppercase tracking-tight">{{ $hint }}</p>
-                        @endisset
+                        
+                        <div class="flex w-full gap-3 sm:w-auto">
+                            <button type="button" x-on:click="closeCropper()" class="btn btn-ghost flex-1 font-bold text-base-content/60 sm:flex-none sm:px-10">
+                                {{ __('ui::file.cropper.cancel') }}
+                            </button>
+                            <button type="button" x-on:click="applyCrop()" class="btn btn-primary flex-1 px-12 font-bold shadow-xl shadow-primary/20 sm:flex-none">
+                                {{ __('ui::file.cropper.save') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
+    </template>
 
     @error($name)
-        <p class="mt-2 text-sm text-error font-medium px-1 flex items-center gap-1">
-            <x-ui::icon name="tabler.alert-circle" class="size-4" />
+        <p class="mt-2 text-xs font-bold text-error flex items-center gap-1 px-1">
+            <x-tabler-alert-circle class="size-4" />
             {{ $message }}
         </p>
     @enderror

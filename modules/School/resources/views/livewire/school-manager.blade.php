@@ -12,7 +12,8 @@
                         :label="__('school::ui.logo')"
                         wire:model="form.logo_file"
                         accept="image/*"
-                        crop-after-change
+                        crop
+                        ratio="1/1"
                         :preview="$form->logo_url"
                         :hint="__('school::ui.logo_hint')"
                     />
@@ -23,6 +24,7 @@
                         type="text"
                         :label="__('school::ui.name')"
                         :placeholder="__('school::ui.name')"
+                        icon="tabler.school"
                         required
                         autofocus
                         wire:model="form.name"
@@ -33,6 +35,7 @@
                     <x-ui::textarea
                         :label="__('school::ui.address')"
                         :placeholder="__('school::ui.address')"
+                        icon="tabler.map-pin"
                         wire:model="form.address"
                     />
                 </div>
@@ -42,6 +45,7 @@
                         type="email"
                         :label="__('school::ui.email')"
                         :placeholder="__('school::ui.email')"
+                        icon="tabler.mail"
                         wire:model="form.email"
                     />
                 </div>
@@ -51,6 +55,7 @@
                         type="tel"
                         :label="__('school::ui.phone')"
                         :placeholder="__('school::ui.phone')"
+                        icon="tabler.phone"
                         wire:model="form.phone"
                     />
                 </div>
@@ -60,6 +65,7 @@
                         type="tel"
                         :label="__('school::ui.fax')"
                         :placeholder="__('school::ui.fax')"
+                        icon="tabler.printer"
                         wire:model="form.fax"
                     />
                 </div>
@@ -69,6 +75,7 @@
                         type="text"
                         :label="__('school::ui.principal_name')"
                         :placeholder="__('school::ui.principal_name')"
+                        icon="tabler.user-star"
                         wire:model="form.principal_name"
                     />
                 </div>

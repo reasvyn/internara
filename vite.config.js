@@ -16,7 +16,6 @@ export default defineConfig({
                     './modules/**/*.blade.php',
                     './modules/**/*.js',
                 ],
-
                 plugins: [daisyui],
             },
         }),
