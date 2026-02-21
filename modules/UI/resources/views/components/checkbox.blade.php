@@ -6,7 +6,7 @@
 <div class="form-control">
     <label class="label cursor-pointer justify-start gap-4 min-h-[2.75rem]">
         <x-mary-checkbox 
-            {{ $attributes->merge(['class' => 'checkbox checkbox-accent', 'aria-label' => $label]) }} 
+            {{ $attributes->merge(['class' => 'checkbox checkbox-primary', 'aria-label' => $label]) }} 
         />
         
         @if($label)

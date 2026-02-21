@@ -10,6 +10,7 @@
                 <div wire:key="login-identifier">
                     <x-ui::input
                         type="text"
+                        icon="tabler.user"
                         :label="__('auth::ui.login.form.identifier')"
                         :placeholder="__('auth::ui.login.form.identifier_placeholder')"
                         wire:model="identifier"
@@ -20,6 +21,7 @@
                 <div class="relative w-full" wire:key="login-password">
                     <x-ui::input
                         type="password"
+                        icon="tabler.lock"
                         :label="__('auth::ui.login.form.password')"
                         :placeholder="__('auth::ui.login.form.password_placeholder')"
                         wire:model="password"

@@ -48,7 +48,7 @@
                             @if(auth()->user()->hasRole('super-admin'))
                                 <x-ui::input
                                     :label="__('profile::ui.form.full_name')"
-                                    :value="$name"
+                                    wire:model="name"
                                     icon="tabler.signature"
                                     displayed
                                     :hint="__('profile::ui.form.system_protected_hint')"
@@ -65,7 +65,7 @@
 
                             <x-ui::input
                                 :label="__('profile::ui.form.username')"
-                                :value="$username"
+                                wire:model="username"
                                 icon="tabler.at"
                                 displayed
                                 :hint="__('profile::ui.form.username_immutable_hint')"

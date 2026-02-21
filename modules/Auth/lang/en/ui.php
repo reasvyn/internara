@@ -65,4 +65,28 @@ return [
         'resend_button' => 'Click here to request another',
         'verify_button' => 'Verify Email',
     ],
+    'forgot_password' => [
+        'title' => 'Forgot Password',
+        'subtitle' => 'Enter your email and we will send you a link to reset your password.',
+        'form' => [
+            'email' => 'Email Address',
+            'email_placeholder' => 'Enter your account email address',
+            'submit' => 'Send Reset Link',
+            'back_to_login' => 'Back to sign in',
+        ],
+        'sent' => 'We have emailed your password reset link!',
+    ],
+    'reset_password' => [
+        'title' => 'Reset Password',
+        'subtitle' => 'Please enter a new password for your account.',
+        'form' => [
+            'email' => 'Email Address',
+            'password' => 'New Password',
+            'password_placeholder' => 'Create a new password',
+            'password_confirmation' => 'Confirm New Password',
+            'password_confirmation_placeholder' => 'Repeat your new password',
+            'submit' => 'Reset Now',
+        ],
+        'success' => 'Your password has been reset!',
+    ],
 ];

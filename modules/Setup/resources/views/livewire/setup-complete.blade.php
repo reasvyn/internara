@@ -22,7 +22,7 @@
         <div class="mt-12 flex items-center justify-center gap-4">
             <x-ui::button
                 variant="primary"
-                class="btn-lg px-12 shadow-lg shadow-accent/20"
+                class="btn-lg px-12 shadow-lg shadow-primary/20"
                 :label="__('setup::wizard.complete.cta')"
                 wire:click="nextStep"
                 spinner

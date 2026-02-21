@@ -65,4 +65,28 @@ return [
         'resend_button' => 'Klik di sini untuk mengirim ulang',
         'verify_button' => 'Verifikasi Email',
     ],
+    'forgot_password' => [
+        'title' => 'Lupa Kata Sandi',
+        'subtitle' => 'Masukkan email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.',
+        'form' => [
+            'email' => 'Alamat Email',
+            'email_placeholder' => 'Masukkan alamat email akun Anda',
+            'submit' => 'Kirim Tautan Reset',
+            'back_to_login' => 'Kembali ke halaman masuk',
+        ],
+        'sent' => 'Kami telah mengirimkan tautan reset kata sandi ke email Anda!',
+    ],
+    'reset_password' => [
+        'title' => 'Atur Ulang Kata Sandi',
+        'subtitle' => 'Silakan masukkan kata sandi baru untuk akun Anda.',
+        'form' => [
+            'email' => 'Alamat Email',
+            'password' => 'Kata Sandi Baru',
+            'password_placeholder' => 'Buat kata sandi baru',
+            'password_confirmation' => 'Konfirmasi Kata Sandi Baru',
+            'password_confirmation_placeholder' => 'Ulangi kata sandi baru',
+            'submit' => 'Atur Ulang Sekarang',
+        ],
+        'success' => 'Kata sandi Anda telah berhasil diatur ulang!',
+    ],
 ];

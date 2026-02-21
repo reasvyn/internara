@@ -9,17 +9,16 @@
             <div wire:key="rsa-name">
                 <x-ui::input
                     wire:model="form.name"
-                    type="text"
+                    icon="tabler.user"
                     :label="__('auth::ui.register_super_admin.form.name')"
-                    :placeholder="__('auth::ui.register_super_admin.form.name_placeholder')"
-                    required
-                    disabled
+                    displayed
                 />
             </div>
             <div wire:key="rsa-email">
                 <x-ui::input
                     wire:model="form.email"
                     type="email"
+                    icon="tabler.mail"
                     :label="__('auth::ui.register_super_admin.form.email')"
                     :placeholder="__('auth::ui.register_super_admin.form.email_placeholder')"
                     required
@@ -30,6 +29,7 @@
                 <x-ui::input
                     wire:model="form.password"
                     type="password"
+                    icon="tabler.lock"
                     :label="__('auth::ui.register_super_admin.form.password')"
                     :placeholder="__('auth::ui.register_super_admin.form.password_placeholder')"
                     :hint="__('auth::ui.register_super_admin.form.password_hint')"
@@ -40,6 +40,7 @@
                 <x-ui::input
                     wire:model="form.password_confirmation"
                     type="password"
+                    icon="tabler.lock-check"
                     :label="__('auth::ui.register_super_admin.form.password_confirmation')"
                     :placeholder="__('auth::ui.register_super_admin.form.password_confirmation_placeholder')"
                     required

@@ -18,6 +18,14 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::get('login', Modules\Auth\Livewire\Login::class)->middleware('guest')->name('login');
 
+    Route::get('forgot-password', Modules\Auth\Livewire\ForgotPassword::class)
+        ->middleware('guest')
+        ->name('forgot-password');
+
+    Route::get('reset-password/{token}', Modules\Auth\Livewire\ResetPassword::class)
+        ->middleware('guest')
+        ->name('password.reset');
+
     Route::get('register', Modules\Auth\Registration\Livewire\Register::class)
         ->middleware('guest')
         ->name('register');

@@ -52,13 +52,14 @@
     {{-- Form Modal --}}
     <x-ui::modal id="internship-form-modal" wire:model="formModal" :title="$form->id ? __('internship::ui.edit_program') : __('internship::ui.add_program')">
         <x-ui::form wire:submit.prevent="save">
-            <x-ui::input :label="__('internship::ui.title')" wire:model="form.title" required />
-            <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
+            <x-ui::input :label="__('internship::ui.title')" icon="tabler.presentation" wire:model="form.title" required />
+            <x-ui::textarea :label="__('ui::common.description')" icon="tabler.align-left" wire:model="form.description" />
             
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::input :label="__('internship::ui.year')" type="number" wire:model="form.year" required />
+                <x-ui::input :label="__('internship::ui.year')" icon="tabler.calendar-event" type="number" wire:model="form.year" required />
                 <x-ui::select 
                     :label="__('internship::ui.semester')" 
+                    icon="tabler.timeline"
                     wire:model="form.semester" 
                     :options="[
                         ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
@@ -70,8 +71,8 @@
             </div>
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::input :label="__('internship::ui.date_start')" type="date" wire:model="form.date_start" required />
-                <x-ui::input :label="__('internship::ui.date_finish')" type="date" wire:model="form.date_finish" required />
+                <x-ui::input :label="__('internship::ui.date_start')" icon="tabler.calendar" type="date" wire:model="form.date_start" required />
+                <x-ui::input :label="__('internship::ui.date_finish')" icon="tabler.calendar" type="date" wire:model="form.date_finish" required />
             </div>
 
             <x-slot:actions>

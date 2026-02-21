@@ -19,7 +19,9 @@
             @if($icon)
                 <x-ui::icon :name="$icon" class="size-3 mr-2 opacity-50" />
             @endif
-            <span class="text-sm font-medium">{{ $attributes->get('value') ?? $slot }}</span>
+            <span class="text-sm font-medium">
+                {{ $attributes->wire('model')->value() ? ${$attributes->wire('model')->value()} : ($attributes->get('value') ?? $slot) }}
+            </span>
         </div>
         @if($hint)
             <div class="px-1 mt-1">

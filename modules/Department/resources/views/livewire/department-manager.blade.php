@@ -47,8 +47,8 @@
     {{-- Form Modal --}}
     <x-ui::modal id="department-form-modal" wire:model="formModal" :title="$form->id ? __('department::ui.edit') : __('department::ui.add')">
         <x-ui::form wire:submit.prevent="save">
-            <x-ui::input :label="__('department::ui.name')" wire:model="form.name" required />
-            <x-ui::textarea :label="__('ui::common.description')" wire:model="form.description" />
+            <x-ui::input :label="__('department::ui.name')" icon="tabler.category" wire:model="form.name" required />
+            <x-ui::textarea :label="__('ui::common.description')" icon="tabler.align-left" wire:model="form.description" />
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
