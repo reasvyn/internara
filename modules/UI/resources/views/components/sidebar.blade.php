@@ -12,19 +12,26 @@
     <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
         {{-- Mobile Actions (Hidden on Desktop) --}}
         <div class="lg:hidden mb-6 flex flex-col gap-4 px-2">
-            <div class="flex items-center justify-between border-b border-base-300 pb-4">
-                <span class="text-xs font-bold uppercase tracking-widest text-base-content/40">{{ __('ui::common.account') }}</span>
-                <x-ui::theme-toggle />
+            {{-- Header Label --}}
+            <div class="border-b border-base-300 pb-2 mb-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-base-content/40">{{ __('ui::common.menu') }}</span>
+            </div>
+
+            {{-- 1. Primary User Identity (Top) --}}
+            <div class="bg-base-300/30 rounded-2xl p-4 shadow-inner border border-base-content/5">
+                @slotRender('navbar.actions', ['filter' => 'ui::user-menu'])
             </div>
             
-            <div class="flex flex-col gap-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium">{{ __('ui::common.language') }}</span>
+            {{-- 2. Configuration Group (Bottom Flex Row) --}}
+            <div class="flex items-center justify-between gap-4 bg-base-300/30 rounded-2xl px-4 py-2 border border-base-content/5">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold">{{ __('ui::common.language') }}</span>
                     @slotRender('navbar.actions', ['filter' => 'livewire:ui::language-switcher'])
                 </div>
-                
-                <div class="bg-base-300/30 rounded-2xl p-4">
-                    @slotRender('navbar.actions', ['filter' => 'ui::user-menu'])
+                <div class="h-6 w-px bg-base-content/10"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold">{{ __('ui::common.toggle_theme') }}</span>
+                    <x-ui::theme-toggle class="scale-90" />
                 </div>
             </div>
         </div>
