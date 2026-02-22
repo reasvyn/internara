@@ -13,10 +13,6 @@
         @slotRender('navbar.brand')
     </x-slot:brand>
 
-    <div class="flex items-center gap-4">
-        @slotRender('navbar.items')
-    </div>
-
     <x-slot:actions>
         @slotRender('navbar.actions', ['filter' => 'livewire:ui::language-switcher'])
         @slotRender('navbar.actions', ['filter' => 'ui::user-menu'])

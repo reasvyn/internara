@@ -22,11 +22,6 @@
         </div>
     </div>
 
-    {{-- Center Side: Navigation Items --}}
-    <div class="navbar-center hidden md:flex flex-1 justify-center items-center">
-        {{ $slot }}
-    </div>
-
     {{-- Right Side: User Menu / Actions --}}
     <div class="navbar-end w-auto hidden lg:flex items-center gap-2">
         {{ $actions ?? '' }}
