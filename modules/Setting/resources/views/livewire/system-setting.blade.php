@@ -22,24 +22,17 @@
                             wire:model="site_title" 
                             required 
                         />
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-ui::input 
-                                :label="__('setting::ui.fields.app_version')" 
-                                icon="tabler.versions"
-                                wire:model="app_version" 
-                                required 
-                            />
-                            <x-ui::select 
-                                :label="__('setting::ui.fields.default_locale')" 
-                                icon="tabler.language"
-                                wire:model="default_locale" 
-                                :options="[
-                                    ['id' => 'id', 'name' => 'Bahasa Indonesia'],
-                                    ['id' => 'en', 'name' => 'English'],
-                                ]"
-                                required 
-                            />
-                        </div>
+                        
+                        <x-ui::select 
+                            :label="__('setting::ui.fields.default_locale')" 
+                            icon="tabler.language"
+                            wire:model="default_locale" 
+                            :options="[
+                                ['id' => 'id', 'name' => 'Bahasa Indonesia'],
+                                ['id' => 'en', 'name' => 'English'],
+                            ]"
+                            required 
+                        />
                     </div>
                 </x-ui::card>
             </div>

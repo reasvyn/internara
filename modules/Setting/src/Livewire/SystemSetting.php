@@ -22,7 +22,6 @@ class SystemSetting extends Component
      */
     public string $brand_name = '';
     public string $site_title = '';
-    public string $app_version = '';
 
     /**
      * Identity assets.
@@ -50,7 +49,6 @@ class SystemSetting extends Component
 
         $this->brand_name = $service->getValue('brand_name', 'Internara');
         $this->site_title = $service->getValue('site_title', 'Internara - Internship Management');
-        $this->app_version = $service->getValue('app_version', 'v0.13.0');
         $this->default_locale = $service->getValue('default_locale', 'id');
 
         $this->current_logo_url = $service->getValue('brand_logo');
@@ -67,7 +65,6 @@ class SystemSetting extends Component
         $this->validate([
             'brand_name' => 'required|string|max:50',
             'site_title' => 'required|string|max:100',
-            'app_version' => 'required|string|max:20',
             'brand_logo' => 'nullable|image|max:1024',
             'site_favicon' => 'nullable|image|max:512',
             'default_locale' => 'required|in:id,en',
@@ -76,7 +73,6 @@ class SystemSetting extends Component
         $settings = [
             'brand_name' => $this->brand_name,
             'site_title' => $this->site_title,
-            'app_version' => $this->app_version,
             'default_locale' => $this->default_locale,
         ];
 
