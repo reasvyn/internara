@@ -18,6 +18,7 @@
     </div>
 
     <x-slot:actions>
-        @slotRender('navbar.actions')
+        @slotRender('navbar.actions', ['filter' => 'livewire:ui::language-switcher'])
+        @slotRender('navbar.actions', ['filter' => 'ui::user-menu'])
     </x-slot:actions>
 </x-ui::nav>

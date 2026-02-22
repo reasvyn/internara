@@ -28,7 +28,7 @@
     </div>
 
     {{-- Right Side: User Menu / Actions --}}
-    <div class="navbar-end w-auto flex items-center gap-2">
+    <div class="navbar-end w-auto hidden lg:flex items-center gap-2">
         {{ $actions ?? '' }}
     </div>
 </nav>

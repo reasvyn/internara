@@ -48,20 +48,27 @@ class SlotManager implements SlotManagerContract
     }
 
     /**
-     * Render all registered components for a given slot.
+     * Render registered components for a given slot with optional filtering.
      *
      * @param string $slot The name of the slot to render.
+     * @param array $options Optional rendering options (e.g., 'filter' => 'view-name').
      *
      * @return string The rendered components.
      */
-    public function render(string $slot): string
+    public function render(string $slot, array $options = []): string
     {
         return collect($this->registry->getSlotsFor($slot))
-            ->filter(function ($item) {
+            ->filter(function ($item) use ($options) {
+                $view = $item['view'];
                 $data = $item['data'];
                 $user = auth()->user();
 
-                // 1. Check for specific permissions
+                // 1. Check for specific filter
+                if (isset($options['filter']) && $view !== $options['filter']) {
+                    return false;
+                }
+
+                // 2. Check for specific permissions
                 if (isset($data['permission']) && ! $user?->can($data['permission'])) {
                     return false;
                 }

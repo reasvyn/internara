@@ -6,7 +6,7 @@
         
         <select 
             wire:change="changeLocale($event.target.value)"
-            class="select select-ghost select-sm pl-9 pr-8 font-medium text-xs focus:bg-base-200/50 focus:outline-none border-none transition-all hover:bg-base-200/30"
+            class="appearance-none bg-transparent h-8 pl-9 pr-8 font-medium text-xs focus:bg-base-200/50 focus:outline-none border-none transition-all hover:bg-base-200/30 rounded-lg cursor-pointer"
             aria-label="{{ __('ui::common.language') }}"
         >
             @foreach($this->locales as $code => $data)
