@@ -218,5 +218,36 @@ storytelling and flow of the application without causing cognitive overload.
 
 ---
 
+## 8. UI Evolution Strategy: The Path to TALL Core
+
+Internara adopts an **Evolutionary UI Strategy** designed to balance rapid prototyping with
+long-term architectural independence.
+
+### 8.1 Library Minimization Principle
+
+As the application matures, the system shall systematically minimize reliance on third-party UI
+libraries (e.g., **MaryUI**, **DaisyUI**) to reduce the "Black Box" effect and ensure absolute
+design control.
+
+- **Phase 1: Bootstrapping (Library-Heavy)**: Utilize UI libraries for rapid scaffolding of complex
+  components (Modals, Dropdowns, Navbars) during initial domain construction.
+- **Phase 2: Refinement (Native Transition)**: Incrementally refactor library-based components into
+  **Native TALL** implementations (Tailwind CSS, AlpineJS, Livewire) during feature updates or UI
+  audits.
+- **Phase 3: Mature Core (Zero-Dependency UI)**: The ultimate goal is a system that depends
+  exclusively on the core TALL stack, where all UI components are authored locally within the
+  `modules/UI` foundation.
+
+### 8.2 Migration Mandate
+
+- **Incrementalism**: Migration to native TALL should occur naturally during the development
+  lifecycle, not as a separate, high-risk "Big Bang" refactor.
+- **Maintainability**: Custom native components must prioritize readability and utilize standard
+  Tailwind v4 utility patterns to ensure they remain accessible to future maintainers.
+- **Performance**: Native components must demonstrate superior performance (smaller bundle size,
+  fewer DOM nodes) compared to their library-based predecessors.
+
+---
+
 _By adhering to these standards, Internara provides a professional, accessible, and high-performance
 experience._
