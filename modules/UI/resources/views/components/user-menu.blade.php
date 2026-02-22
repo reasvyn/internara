@@ -8,7 +8,7 @@
                         :title="$user->name" 
                         size="w-9"
                     />
-                    <div class="hidden lg:flex flex-col items-start text-left">
+                    <div class="flex flex-col items-start text-left">
                         <span class="text-sm font-bold leading-none">{{ $user->name }}</span>
                         <span class="text-[10px] uppercase tracking-wider text-base-content/60 font-semibold">{{ $role }}</span>
                     </div>
