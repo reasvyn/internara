@@ -1,40 +1,53 @@
-@props(['title' => null])
+@props([
+    'title' => null,
+    'recordTitle' => null,
+])
 
 <x-ui::layouts.base :$title body-class="bg-base-300 overflow-hidden">
-    <div class="flex h-screen flex-col">
-        {{-- Main Navbar --}}
-        <x-ui::navbar sticky full-width>
+    <div class="flex h-screen flex-col overflow-hidden">
+        {{-- 1. Full Width Navbar (Top) --}}
+        <x-ui::navbar class="z-50 flex-none">
             <x-slot:hamburger>
-                <label for="main-drawer" class="lg:hidden mr-3" aria-label="{{ __('ui::common.open_menu') }}">
-                    <x-ui::icon name="tabler.menu-2" class="cursor-pointer size-6" aria-hidden="true" />
+                <label for="main-drawer" class="btn btn-ghost btn-sm btn-circle lg:hidden mr-2" aria-label="{{ __('ui::common.open_menu') }}">
+                    <x-ui::icon name="tabler.menu-2" class="size-6" />
                 </label>
             </x-slot:hamburger>
         </x-ui::navbar>
 
-        {{-- Main Container --}}
-        <x-ui::main full-width drawer="main-drawer" class="flex-1 min-h-0">
-            {{-- Sidebar --}}
-            <x-slot:sidebar collapsible class="bg-base-200 border-r border-base-300 lg:bg-base-200">
-                <div class="h-[calc(100vh-4rem)] overflow-y-auto custom-scrollbar p-2">
-                    {{-- Sidebar Menu --}}
-                    <x-mary-menu activate-by-route class="gap-1 p-0">
-                        <x-ui::slot-render name="sidebar.menu" />
-                    </x-mary-menu>
-                </div>
-            </x-slot:sidebar>
+        {{-- 2. Layout Container (Bottom) --}}
+        <div class="drawer lg:drawer-open flex-1 overflow-hidden">
+            <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+            
+            {{-- Main Content Area --}}
+            <div class="drawer-content flex flex-col overflow-y-auto custom-scrollbar bg-base-300">
+                <main id="main-content" class="flex-1">
+                    <div class="py-8 px-4 sm:px-6 lg:px-10 max-w-7xl mx-auto">
+                        {{-- Optional Record Title --}}
+                        @if($recordTitle)
+                            <div class="mb-10">
+                                <h1 class="text-4xl font-black tracking-tight text-base-content">{{ $recordTitle }}</h1>
+                            </div>
+                        @endif
 
-            {{-- Main Content --}}
-            <div id="main-content" class="h-[calc(100vh-4rem)] overflow-y-auto p-6 lg:p-10 custom-scrollbar bg-base-300">
-                @if($title)
-                    <div class="mb-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-base-content">{{ $title }}</h1>
+                        {{-- Page Content --}}
+                        <div class="space-y-8 pb-20">
+                            {{ $slot }}
+                        </div>
                     </div>
-                @endif
+                </main>
 
-                <div class="space-y-8 pb-20">
-                    {{ $slot }}
-                </div>
+                {{-- Dashboard Footer --}}
+                <footer class="py-6 px-10 flex-none">
+                    <x-ui::app-credit />
+                </footer>
+            </div> 
+
+            {{-- Sidebar Area --}}
+            <div class="drawer-side z-40 h-full">
+                <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label> 
+                {{-- Sidebar is placed below navbar on desktop because its parent (drawer) is below navbar --}}
+                <x-ui::sidebar class="h-full border-t border-base-300 lg:border-t-0 shadow-xl lg:shadow-none" />
             </div>
-        </x-ui::main>
+        </div>
     </div>
 </x-ui::layouts.base>

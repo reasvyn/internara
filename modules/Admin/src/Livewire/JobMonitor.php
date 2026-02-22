@@ -65,6 +65,8 @@ class JobMonitor extends Component
         return view('admin::livewire.job-monitor', [
             'pendingJobs' => $pendingJobs,
             'failedJobs' => $failedJobs,
-        ])->layout('ui::components.layouts.dashboard', ['title' => 'Job Monitor']);
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('admin::ui.menu.job_monitor') . ' | ' . setting('brand_name', setting('app_name')),
+        ]);
     }
 }

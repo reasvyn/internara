@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/internara/logo.png" alt="Internara Logo" width="128">
+  <img src="public/brand/logo.png" alt="Internara Logo" width="128">
 </p>
 
 # Internara

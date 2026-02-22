@@ -77,6 +77,10 @@ class Form extends Component
      */
     public function render()
     {
-        return view('user::livewire.users.form');
+        $title = $this->form->id ? __('Edit User') : __('New User');
+
+        return view('user::livewire.users.form')->layout('ui::components.layouts.dashboard', [
+            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
+        ]);
     }
 }

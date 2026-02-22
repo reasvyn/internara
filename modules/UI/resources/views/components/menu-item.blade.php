@@ -1,5 +1,18 @@
-@props(['title' => null])
+@props([
+    'title' => null,
+    'icon' => null,
+    'spinner' => null,
+])
 
-<x-mary-menu-item {{ $attributes->merge(['aria-label' => __($title)]) }} :title="__($title)">
+@php
+    $resolvedSpinner = $spinner ?? $attributes->get('wire:click');
+@endphp
+
+<x-mary-menu-item 
+    {{ $attributes->merge(['aria-label' => __($title)]) }} 
+    :title="__($title)" 
+    :icon="$icon"
+    :spinner="$resolvedSpinner"
+>
     {{ $slot }}
 </x-mary-menu-item>

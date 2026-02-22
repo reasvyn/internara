@@ -2,6 +2,7 @@
     <x-ui::header
         :title="__('profile::ui.title')"
         :subtitle="__('profile::ui.subtitle')"
+        :context="'profile::ui.title'"
         separator
         progress-indicator
     />

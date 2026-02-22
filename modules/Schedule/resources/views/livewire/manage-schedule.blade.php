@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header title="{{ __('schedule::ui.manage_title') }}" subtitle="{{ __('schedule::ui.manage_subtitle') }}">
+    <x-ui::header 
+        :title="__('schedule::ui.manage_title')" 
+        :subtitle="__('schedule::ui.manage_subtitle')"
+        :context="'schedule::ui.manage_title'"
+    >
         <x-slot:actions>
             <x-ui::button 
                 label="{{ __('schedule::ui.add_schedule') }}" 

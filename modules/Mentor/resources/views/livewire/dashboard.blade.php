@@ -2,6 +2,7 @@
     <x-ui::header 
         :title="__('mentor::ui.dashboard.title')" 
         :subtitle="__('mentor::ui.dashboard.subtitle')" 
+        :context="'admin::ui.menu.dashboard'"
     />
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 mb-8">

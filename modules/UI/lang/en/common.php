@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'options' => 'Options',
     'select_option' => 'Select an option',
+    'select_file' => 'Select file',
     'skip_to_content' => 'Skip to content',
     'error' => 'Error',
     'success' => 'Success',
@@ -39,4 +40,11 @@ return [
     'love' => 'love',
     'visit_author_github' => 'Visit :name\'s GitHub profile',
     'user_avatar' => 'User Avatar',
+    'imported_successfully' => 'Successfully imported :count records.',
+    'export' => 'Export',
+    'import' => 'Import',
+    'print' => 'Print',
+    'download_template' => 'Download Template',
+    'generated_at' => 'Generated at',
+    'view_all' => 'View All',
 ];

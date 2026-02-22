@@ -2,7 +2,7 @@
     'variant' => 'primary', // primary, secondary, tertiary, metadata
     'icon' => null,
     'label' => null,
-    'spinner' => true,
+    'spinner' => null,
 ])
 
 @php
@@ -19,13 +19,16 @@
     
     // Accessibility: Use label as aria-label if it's an icon-only button
     $ariaLabel = $attributes->get('aria-label') ?? $label;
+
+    // Smart Spinner: Default to the wire:click action if spinner is not explicitly set
+    $resolvedSpinner = $spinner ?? $attributes->get('wire:click');
 @endphp
 
 <x-mary-button
     {{ $attributes->merge(['aria-label' => $ariaLabel])->class([$variantClasses, $targetClasses]) }}
     :icon="$icon"
     :label="$label"
-    :spinner="$spinner"
+    :spinner="$resolvedSpinner"
 >
     {{ $slot }}
 </x-mary-button>

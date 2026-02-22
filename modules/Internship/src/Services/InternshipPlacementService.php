@@ -20,7 +20,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
     {
         $this->setModel($model);
         $this->setBaseQuery($model->newQuery()->with(['internship', 'company']));
-        $this->setSearchable(['company.name']);
+        $this->setSearchable(['company.name', 'internship.title']);
         $this->setSortable(['capacity_quota', 'created_at']);
     }
 

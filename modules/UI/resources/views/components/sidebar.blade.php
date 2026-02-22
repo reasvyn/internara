@@ -1,3 +1,26 @@
-<div>
-    <!-- Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less. - Marie Curie -->
-</div>
+@props([
+    'collapsible' => false,
+])
+
+<aside {{ $attributes->merge(['class' => 'bg-base-200 border-r border-base-300 w-80 flex flex-col transition-all duration-300 shadow-sm']) }}>
+    {{-- Sidebar Top / Brand (Mobile only) --}}
+    <div class="lg:hidden flex items-center h-16 min-h-[4rem] px-6 border-b border-base-300 bg-base-100">
+        <x-ui::brand class="h-8" />
+    </div>
+
+    {{-- Sidebar Content / Menu --}}
+    <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
+        <nav class="space-y-1">
+            <ul class="menu p-0 gap-1 w-full text-base-content/80 font-medium">
+                @slotRender('sidebar.menu')
+            </ul>
+        </nav>
+    </div>
+
+    {{-- Sidebar Footer / Bottom Actions --}}
+    @isset($footer)
+        <div class="p-4 border-t border-base-300 bg-base-300/30">
+            {{ $footer }}
+        </div>
+    @endisset
+</aside>

@@ -1,10 +1,15 @@
-<div class="flex size-full flex-col items-center justify-center">
-    <x-ui::card
-        wire:key="school-manager-card"
-        class="w-full max-w-prose text-center"
-        :title="__('school::ui.title')"
+<div>
+    <x-ui::header 
+        :title="__('school::ui.title')" 
         :subtitle="__('school::ui.subtitle')"
-    >
+        :context="'school::ui.title'"
+    />
+
+    <div class="flex size-full flex-col items-center justify-center">
+        <x-ui::card
+            wire:key="school-manager-card"
+            class="w-full max-w-prose text-center"
+        >
         <x-ui::form class="flex w-full flex-col gap-8" wire:submit="save">
             <div class="grid grid-cols-1 gap-4 text-start lg:grid-cols-2">
                 <div class="col-span-full" wire:key="sm-logo">

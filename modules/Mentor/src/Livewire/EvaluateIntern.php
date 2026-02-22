@@ -88,6 +88,8 @@ class EvaluateIntern extends Component
         return view('mentor::livewire.evaluate-intern', [
             'registration' => $registration,
             'claimedCompetencies' => $claimedCompetencies,
-        ])->layout('ui::components.layouts.dashboard', ['title' => 'Evaluate Intern']);
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('Evaluate Intern') . ' | ' . setting('brand_name', setting('app_name')),
+        ]);
     }
 }

@@ -1,7 +1,8 @@
 <div>
     <x-ui::header
-        title="{{ $user ? __('Edit User') : __('New User') }}"
-        subtitle="{{ $user ? __('Update user details and roles.') : __('Create a new system user.') }}"
+        :title="$form->id ? __('Edit User') : __('New User')"
+        :subtitle="$form->id ? __('Update user details and roles.') : __('Create a new system user.')"
+        :context="'admin::ui.dashboard.user_management'"
         separator
         progress-indicator
     />

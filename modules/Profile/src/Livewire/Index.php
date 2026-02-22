@@ -286,7 +286,7 @@ class Index extends Component
     public function render()
     {
         return view('profile::livewire.index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('profile::ui.profile_settings'),
+            'title' => __('profile::ui.profile_settings') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

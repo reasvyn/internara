@@ -39,7 +39,7 @@
                 </div>
 
                 <div wire:key="login-remember">
-                    <x-ui::checkbox :label="__('auth::ui.login.form.remember_me')" wire:model="remember" />
+                    <x-ui::checkbox class="checkbox-sm" label-class="text-sm" :label="__('auth::ui.login.form.remember_me')" wire:model="remember" />
                 </div>
 
                 @if(config('services.cloudflare.turnstile.site_key'))

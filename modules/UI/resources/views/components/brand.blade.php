@@ -4,15 +4,14 @@
     $brandLogo = setting('brand_logo');
 
     if (empty($brandLogo)) {
-        $brandLogo = asset('/internara/logo.png');
+        $brandLogo = asset('/brand/logo.png');
     }
 @endphp
 
 <a 
-    class="flex items-center gap-2" 
+    {{ $attributes->merge(['class' => 'flex items-center gap-2']) }}
     href="/" 
     wire:navigate 
-    
     aria-label="{{ __('ui::common.go_to_home', ['name' => $brandName]) }}"
 >
     <img 

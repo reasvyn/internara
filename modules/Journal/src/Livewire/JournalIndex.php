@@ -180,7 +180,7 @@ class JournalIndex extends Component
     public function render(): View
     {
         return view('journal::livewire.journal-index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('Jurnal Harian'),
+            'title' => __('journal::ui.index.title') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

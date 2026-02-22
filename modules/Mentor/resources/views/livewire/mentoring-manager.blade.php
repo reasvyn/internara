@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header title="{{ __('Manajemen Pembimbingan') }}" subtitle="{{ $registration->student->name }} - {{ $registration->placement->name }}">
+    <x-ui::header 
+        :title="__('Manajemen Pembimbingan')" 
+        :subtitle="$registration->student->name . ' - ' . $registration->placement->name"
+        :context="'mentor::ui.dashboard.title'"
+    >
         <x-slot:actions>
             @if(auth()->user()->hasRole('teacher'))
                 <x-ui::button label="{{ __('Catat Kunjungan') }}" icon="tabler.map-pin" class="btn-primary" @click="$wire.visitModal = true" />

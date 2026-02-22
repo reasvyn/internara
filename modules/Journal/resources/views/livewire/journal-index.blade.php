@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header :title="__('journal::ui.index.title')" :subtitle="__('journal::ui.index.subtitle')">
+    <x-ui::header 
+        :title="__('journal::ui.index.title')" 
+        :subtitle="__('journal::ui.index.subtitle')"
+        :context="'journal::ui.index.title'"
+    >
         <x-slot:actions>
             @can('create', \Modules\Journal\Models\JournalEntry::class)
                 <x-ui::button :label="__('journal::ui.index.create_new')" icon="tabler.plus" variant="primary" link="{{ route('journal.create') }}" />
@@ -7,8 +11,8 @@
         </x-slot:actions>
     </x-ui::header>
 
-    <x-ui::main>
-        <x-slot:sidebar>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div class="lg:col-span-1 order-2 lg:order-1">
             @if(auth()->user()->hasRole('student'))
                 <x-ui::card :title="__('journal::ui.index.this_week')" :subtitle="__('journal::ui.index.week_subtitle')" shadow separator>
                     <div class="space-y-4">
@@ -35,60 +39,62 @@
                     </div>
                 </x-ui::card>
             @endif
-        </x-slot:sidebar>
+        </div>
 
-        <x-ui::card>
-            <div class="mb-4 flex flex-col md:flex-row gap-4">
-                <div class="flex-grow">
-                    <x-ui::input :placeholder="__('journal::ui.index.search_placeholder')" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
+        <div class="lg:col-span-3 order-1 lg:order-2">
+            <x-ui::card>
+                <div class="mb-4 flex flex-col md:flex-row gap-4">
+                    <div class="flex-grow">
+                        <x-ui::input :placeholder="__('journal::ui.index.search_placeholder')" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
+                    </div>
+                    @if($date)
+                        <div class="flex items-center gap-2">
+                            <x-ui::badge :value="__('journal::ui.index.filter_date', ['date' => \Carbon\Carbon::parse($date)->translatedFormat('d M Y')])" variant="primary" />
+                            <x-ui::button icon="tabler.x" variant="tertiary" class="btn-xs" wire:click="$set('date', '')" />
+                        </div>
+                    @endif
                 </div>
-                @if($date)
-                    <div class="flex items-center gap-2">
-                        <x-ui::badge :value="__('journal::ui.index.filter_date', ['date' => \Carbon\Carbon::parse($date)->translatedFormat('d M Y')])" variant="primary" />
-                        <x-ui::button icon="tabler.x" variant="tertiary" class="btn-xs" wire:click="$set('date', '')" />
-                    </div>
-                @endif
-            </div>
 
-            <x-ui::table :headers="[
-                ['key' => 'date', 'label' => __('journal::ui.index.table.date')],
-                ['key' => 'student.name', 'label' => __('journal::ui.index.table.student'), 'hidden' => auth()->user()->hasRole('student')],
-                ['key' => 'work_topic', 'label' => __('journal::ui.index.table.work_topic')],
-                ['key' => 'status', 'label' => __('journal::ui.index.table.status')],
-                ['key' => 'actions', 'label' => ''],
-            ]" :rows="$this->journals" with-pagination>
-                @scope('cell_date', $entry)
-                    <div class="font-medium text-sm">{{ $entry->date->translatedFormat('d F Y') }}</div>
-                    <div class="text-[10px] uppercase tracking-wider opacity-50">{{ $entry->date->translatedFormat('l') }}</div>
-                @endscope
+                <x-ui::table :headers="[
+                    ['key' => 'date', 'label' => __('journal::ui.index.table.date')],
+                    ['key' => 'student.name', 'label' => __('journal::ui.index.table.student'), 'hidden' => auth()->user()->hasRole('student')],
+                    ['key' => 'work_topic', 'label' => __('journal::ui.index.table.work_topic')],
+                    ['key' => 'status', 'label' => __('journal::ui.index.table.status')],
+                    ['key' => 'actions', 'label' => ''],
+                ]" :rows="$this->journals" with-pagination>
+                    @scope('cell_date', $entry)
+                        <div class="font-medium text-sm">{{ $entry->date->translatedFormat('d F Y') }}</div>
+                        <div class="text-[10px] uppercase tracking-wider opacity-50">{{ $entry->date->translatedFormat('l') }}</div>
+                    @endscope
 
-                @scope('cell_status', $entry)
-                    <x-ui::badge 
-                        :value="$entry->getStatusLabel()" 
-                        :variant="$entry->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
-                        class="badge-sm" 
-                    />
-                @endscope
+                    @scope('cell_status', $entry)
+                        <x-ui::badge 
+                            :value="$entry->getStatusLabel()" 
+                            :variant="$entry->getStatusColor() === 'success' ? 'primary' : 'secondary'" 
+                            class="badge-sm" 
+                        />
+                    @endscope
 
-                @scope('actions', $entry)
-                    <div class="flex gap-1">
-                        <x-ui::button icon="tabler.eye" variant="tertiary" class="text-info btn-sm" tooltip="{{ __('journal::ui.index.actions.view_detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
-                        
-                        @can('update', $entry)
-                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-warning btn-sm" tooltip="{{ __('ui::common.edit') }}" link="{{ route('journal.edit', $entry->id) }}" />
-                        @endcan
+                    @scope('actions', $entry)
+                        <div class="flex gap-1">
+                            <x-ui::button icon="tabler.eye" variant="tertiary" class="text-info btn-sm" tooltip="{{ __('journal::ui.index.actions.view_detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
+                            
+                            @can('update', $entry)
+                                <x-ui::button icon="tabler.edit" variant="tertiary" class="text-warning btn-sm" tooltip="{{ __('ui::common.edit') }}" link="{{ route('journal.edit', $entry->id) }}" />
+                            @endcan
 
-                        @can('validate', $entry)
-                            @if($entry->latestStatus()?->name !== 'approved')
-                                <x-ui::button icon="tabler.check" variant="tertiary" class="text-success btn-sm" tooltip="{{ __('journal::ui.index.actions.approve') }}" wire:click="approve('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.approve_confirm') }}" />
-                                <x-ui::button icon="tabler.x" variant="tertiary" class="text-error btn-sm" tooltip="{{ __('journal::ui.index.actions.reject') }}" wire:click="reject('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.reject_confirm') }}" />
-                            @endif
-                        @endcan
-                    </div>
-                @endscope
-            </x-ui::table>
-        </x-ui::card>
-    </x-ui::main>
+                            @can('validate', $entry)
+                                @if($entry->latestStatus()?->name !== 'approved')
+                                    <x-ui::button icon="tabler.check" variant="tertiary" class="text-success btn-sm" tooltip="{{ __('journal::ui.index.actions.approve') }}" wire:click="approve('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.approve_confirm') }}" />
+                                    <x-ui::button icon="tabler.x" variant="tertiary" class="text-error btn-sm" tooltip="{{ __('journal::ui.index.actions.reject') }}" wire:click="reject('{{ $entry->id }}')" wire:confirm="{{ __('journal::ui.index.actions.reject_confirm') }}" />
+                                @endif
+                            @endcan
+                        </div>
+                    @endscope
+                </x-ui::table>
+            </x-ui::card>
+        </div>
+    </div>
 
     <x-ui::modal wire:model="journalDetailModal" :title="__('journal::ui.index.modal.title')" :subtitle="$selectedEntry?->date->translatedFormat('d F Y')" separator>
         @if($selectedEntry)

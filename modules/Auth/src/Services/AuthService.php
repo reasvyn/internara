@@ -58,7 +58,7 @@ class AuthService implements AuthServiceContract
                 : \Modules\Shared\Support\Masker::sensitive($identifier);
 
             throw new AppException(
-                userMessage: 'user::exceptions.invalid_credentials',
+                userMessage: 'auth::exceptions.invalid_credentials',
                 logMessage: 'Authentication attempt failed for: '.$maskedIdentifier,
                 code: Response::HTTP_UNAUTHORIZED,
             );
@@ -121,7 +121,7 @@ class AuthService implements AuthServiceContract
     {
         if (! Hash::check($currentPassword, $user->password)) {
             throw new AppException(
-                userMessage: 'user::exceptions.password_mismatch',
+                userMessage: 'auth::exceptions.password_mismatch',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
             );
         }
@@ -198,7 +198,7 @@ class AuthService implements AuthServiceContract
     {
         if ($user->hasVerifiedEmail()) {
             throw new AppException(
-                userMessage: 'user::exceptions.email_already_verified',
+                userMessage: 'auth::exceptions.email_already_verified',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
             );
         }

@@ -1,8 +1,11 @@
 <div>
-    <x-ui::header :title="__('report::ui.title')" :subtitle="__('report::ui.subtitle')" />
+    <x-ui::header 
+        :title="__('report::ui.title')" 
+        :subtitle="__('report::ui.subtitle')" 
+        :context="'report::ui.title'"
+    />
 
-    <x-ui::main>
-        <x-ui::card>
+    <x-ui::card>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <x-ui::select 
                     :label="__('report::ui.select_report')" 
@@ -66,5 +69,5 @@
                 @endif
             </x-ui::card>
         </div>
-    </x-ui::main>
+    </div>
 </div>

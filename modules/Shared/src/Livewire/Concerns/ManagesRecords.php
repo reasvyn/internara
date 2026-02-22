@@ -7,6 +7,7 @@ namespace Modules\Shared\Livewire\Concerns;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
@@ -19,6 +20,7 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  */
 trait ManagesRecords
 {
+    use WithFileUploads;
     use WithPagination;
 
     /**
@@ -34,6 +36,8 @@ trait ManagesRecords
     protected const MODAL_FORM = 'form-modal';
 
     protected const MODAL_CONFIRM = 'confirm-modal';
+
+    protected const MODAL_IMPORT = 'import-modal';
 
     /**
      * The service instance responsible for domain logic.
@@ -80,9 +84,19 @@ trait ManagesRecords
     public bool $confirmModal = false;
 
     /**
+     * Visibility state of the import modal.
+     */
+    public bool $importModal = false;
+
+    /**
      * The ID of the record currently being processed (e.g., for deletion).
      */
     public ?string $recordId = null;
+
+    /**
+     * The file instance for CSV imports.
+     */
+    public $csvFile;
 
     /**
      * Initializes the trait's default state.
@@ -96,6 +110,14 @@ trait ManagesRecords
     }
 
     /**
+     * Handle updated search term by resetting pagination.
+     */
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
      * Retrieves the paginated collection of records.
      */
     #[Computed]
@@ -105,7 +127,7 @@ trait ManagesRecords
             'search' => $this->search,
             'sort_by' => $this->sortBy,
             'sort_dir' => $this->sortDir,
-        ]);
+        ], fn ($value) => $value !== null && $value !== '');
 
         return $this->service->paginate($filters, $this->perPage);
     }
@@ -173,6 +195,155 @@ trait ManagesRecords
             flash()->success(__('shared::messages.record_deleted'));
             $this->dispatch($this->getEventPrefix().':deleted', exists: $this->service->exists());
         }
+    }
+
+    /**
+     * Export all records to CSV format.
+     */
+    public function exportCsv()
+    {
+        $records = $this->service->all();
+        $filename = $this->getEventPrefix() . '-' . now()->format('Y-m-d-His') . '.csv';
+        $headers = $this->getExportHeaders();
+
+        $callback = function () use ($records, $headers) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, array_values($headers));
+
+            foreach ($records as $record) {
+                fputcsv($file, $this->mapRecordForExport($record, array_keys($headers)));
+            }
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
+    }
+
+    /**
+     * Downloads a CSV template for bulk data ingestion.
+     */
+    public function downloadTemplate()
+    {
+        $filename = $this->getEventPrefix() . '-template.csv';
+        $headers = $this->getExportHeaders();
+
+        $callback = function () use ($headers) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, array_values($headers));
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
+    }
+
+    /**
+     * Processes bulk record ingestion from a CSV file.
+     */
+    public function importCsv(): void
+    {
+        $this->validate([
+            'csvFile' => 'required|mimes:csv,txt|max:2048',
+        ]);
+
+        $path = $this->csvFile->getRealPath();
+        $file = fopen($path, 'r');
+        fgetcsv($file); // Skip authoritative header row
+
+        $data = [];
+        $keys = array_keys($this->getExportHeaders());
+
+        while (($row = fgetcsv($file)) !== false) {
+            $mapped = $this->mapImportRow($row, $keys);
+            if ($mapped) {
+                $data[] = $mapped;
+            }
+        }
+        fclose($file);
+
+        if (empty($data)) {
+            flash()->error(__('ui::common.error'));
+            return;
+        }
+
+        $count = $this->service->import($data);
+
+        $this->importModal = false;
+        $this->csvFile = null;
+
+        $this->dispatch($this->getEventPrefix().':imported');
+        flash()->success(__('ui::common.imported_successfully', ['count' => $count]));
+    }
+
+    /**
+     * Orchestrates the generation of a domain PDF document.
+     */
+    public function printPdf()
+    {
+        $records = $this->service->all();
+        $view = $this->getPdfView();
+
+        if (! $view) {
+            flash()->error('PDF view not defined for this component.');
+            return null;
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($view, $this->getPdfData($records));
+
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            $this->getEventPrefix() . '-' . now()->format('Y-m-d') . '.pdf'
+        );
+    }
+
+    /**
+     * Defines the authoritative headers for CSV operations.
+     */
+    protected function getExportHeaders(): array
+    {
+        return ['id' => 'ID', 'created_at' => 'Created At'];
+    }
+
+    /**
+     * Maps a singular domain entity into a CSV-compatible array.
+     */
+    protected function mapRecordForExport($record, array $keys): array
+    {
+        return array_map(fn($key) => $record->{$key}, $keys);
+    }
+
+    /**
+     * Maps a raw CSV row into a domain-specific attribute set.
+     */
+    protected function mapImportRow(array $row, array $keys): ?array
+    {
+        $data = [];
+        foreach ($keys as $index => $key) {
+            $data[$key] = $row[$index] ?? null;
+        }
+        return $data;
+    }
+
+    /**
+     * Resolves the view path for PDF rendering.
+     */
+    protected function getPdfView(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Constructs the data payload for the PDF view.
+     */
+    protected function getPdfData($records): array
+    {
+        return [
+            'records' => $records,
+            'date' => now()->translatedFormat('d F Y'),
+        ];
     }
 
     /**

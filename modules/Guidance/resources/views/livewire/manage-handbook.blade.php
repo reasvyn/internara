@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header title="{{ __('guidance::ui.manage_title') }}" subtitle="{{ __('guidance::ui.manage_subtitle') }}">
+    <x-ui::header 
+        :title="__('guidance::ui.manage_title')" 
+        :subtitle="__('guidance::ui.manage_subtitle')"
+        :context="'guidance::ui.manage_title'"
+    >
         <x-slot:actions>
             <x-ui::button label="{{ __('guidance::ui.add_handbook') }}" icon="tabler.plus" class="btn-primary" wire:click="create" />
         </x-slot:actions>

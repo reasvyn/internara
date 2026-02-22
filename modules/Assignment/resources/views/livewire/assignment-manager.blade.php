@@ -2,7 +2,7 @@
     <x-ui::header 
         :title="__('assignment::ui.manage_assignments')" 
         :subtitle="__('assignment::ui.subtitle')"
-        context="assignment::ui.menu.assignments"
+        :context="'assignment::ui.menu.assignments'"
     >
         <x-slot:actions>
             <x-ui::button :label="__('assignment::ui.add_assignment')" icon="tabler.plus" variant="primary" wire:click="add" />

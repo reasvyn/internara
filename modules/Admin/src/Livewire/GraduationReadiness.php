@@ -37,7 +37,7 @@ class GraduationReadiness extends Component
         return view('admin::livewire.graduation-readiness', [
             'registrations' => $query->with(['student', 'placement'])->paginate(15),
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('Kesiapan Kelulusan'),
+            'title' => __('admin::ui.menu.readiness') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

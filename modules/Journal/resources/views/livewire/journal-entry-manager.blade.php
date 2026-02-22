@@ -1,11 +1,11 @@
 <div>
     <x-ui::header 
-        title="{{ $form->id ? __('journal::ui.index.actions.edit') : __('journal::ui.index.create_new') }}" 
-        subtitle="{{ __('journal::ui.index.subtitle') }}" 
+        :title="$form->id ? __('journal::ui.index.actions.edit') : __('journal::ui.index.create_new')" 
+        :subtitle="__('journal::ui.index.subtitle')" 
+        :context="'journal::ui.index.title'"
     />
 
-    <x-ui::main>
-        <div class="max-w-3xl mx-auto">
+    <div class="max-w-3xl mx-auto">
             <x-ui::card>
                 <x-ui::form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -92,6 +92,7 @@
                     </x-slot:actions>
                 </x-ui::form>
             </x-ui::card>
+                </div>
+            </div>
         </div>
-    </x-ui::main>
-</div>
+        

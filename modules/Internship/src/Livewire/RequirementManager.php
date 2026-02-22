@@ -50,7 +50,7 @@ class RequirementManager extends Component
         return view('internship::livewire.requirement-manager', [
             'records' => $this->records,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.requirement_title'),
+            'title' => __('internship::ui.requirement_title') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

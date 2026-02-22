@@ -1,11 +1,18 @@
 <div>
-    <x-ui::main title="{{ __('internship::ui.registration_title') }}" subtitle="{{ __('internship::ui.registration_subtitle') }}">
+    <x-ui::header 
+        wire:key="registration-manager-header"
+        :title="__('internship::ui.registration_title')" 
+        :subtitle="__('internship::ui.registration_subtitle')"
+        :context="'internship::ui.index.title'"
+    >
         <x-slot:actions>
             <x-ui::button label="{{ __('Bulk Penempatan') }}" icon="tabler.layers-intersect" class="btn-outline" wire:click="openBulkPlace" />
             <x-ui::button label="{{ __('internship::ui.add_registration') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
-
+        </x-ui::header>
+    
         <x-ui::card>
+    
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
                     <x-ui::input placeholder="{{ __('internship::ui.search_registration') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
@@ -59,7 +66,6 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-    </x-ui::main>
 
     {{-- Form Modal --}}
     <x-ui::modal id="registration-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">

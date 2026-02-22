@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'options' => 'Opsi',
     'select_option' => 'Pilih opsi',
+    'select_file' => 'Pilih berkas',
     'skip_to_content' => 'Lompat ke konten',
     'error' => 'Gagal',
     'success' => 'Berhasil',
@@ -39,4 +40,11 @@ return [
     'love' => 'cinta',
     'visit_author_github' => 'Kunjungi profil GitHub :name',
     'user_avatar' => 'Avatar Pengguna',
+    'imported_successfully' => 'Berhasil mengimpor :count data.',
+    'export' => 'Ekspor',
+    'import' => 'Impor',
+    'print' => 'Cetak',
+    'download_template' => 'Unduh Templat',
+    'generated_at' => 'Dibuat pada',
+    'view_all' => 'Lihat Semua',
 ];

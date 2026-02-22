@@ -1,8 +1,11 @@
 <div>
-    <x-ui::header title="{{ __('Assess Student') }}" subtitle="{{ $registration->student->name }} - {{ $registration->placement->company_name }}" />
+    <x-ui::header 
+        :title="__('Assess Student')" 
+        :subtitle="$registration->student->name . ' - ' . $registration->placement->company_name" 
+        :context="'teacher::ui.dashboard.title'"
+    />
 
-    <x-ui::main>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <x-ui::card class="bg-base-200">
                 <div class="flex items-center gap-4">
                     <div class="p-3 bg-primary/10 rounded-lg">
@@ -88,5 +91,5 @@
                 @endif
             </x-ui::card>
         </div>
-    </x-ui::main>
+    </div>
 </div>

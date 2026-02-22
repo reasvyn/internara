@@ -20,7 +20,11 @@
                 <x-ui::icon :name="$icon" class="size-3 mr-2 opacity-50" />
             @endif
             <span class="text-sm font-medium">
-                {{ $attributes->wire('model')->value() ? ${$attributes->wire('model')->value()} : ($attributes->get('value') ?? $slot) }}
+                @php
+                    $modelName = $attributes->wire('model')->value();
+                    $value = $modelName && isset($__livewire) ? data_get($__livewire, $modelName) : ($attributes->get('value') ?? $slot);
+                @endphp
+                {{ $value }}
             </span>
         </div>
         @if($hint)

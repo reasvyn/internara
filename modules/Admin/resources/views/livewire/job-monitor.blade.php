@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header title="{{ __('Batch Job Monitor') }}" subtitle="{{ __('Monitor and manage background processing tasks.') }}">
+    <x-ui::header 
+        :title="__('admin::ui.menu.job_monitor')" 
+        :subtitle="__('admin::ui.dashboard.job_monitor_subtitle', 'Monitor and manage background processing tasks.')" 
+        :context="'admin::ui.menu.job_monitor'"
+    >
         <x-slot:actions>
             @if($tab === 'failed')
                 <x-ui::button label="{{ __('Flush All Failed') }}" icon="tabler.trash" class="btn-error" wire:click="flush" confirm="{{ __('Are you sure you want to delete all failed jobs?') }}" />
@@ -7,8 +11,7 @@
         </x-slot:actions>
     </x-ui::header>
 
-    <x-ui::main>
-        <x-ui::tabs wire:model="tab">
+    <x-ui::tabs wire:model="tab">
             <x-ui::tab name="pending" label="{{ __('Pending Jobs') }}" icon="tabler.loader" />
             <x-ui::tab name="failed" label="{{ __('Failed Jobs') }}" icon="tabler.alert-triangle" />
         </x-ui::tabs>
@@ -50,5 +53,4 @@
                 </x-ui::table>
             @endif
         </x-ui::card>
-    </x-ui::main>
 </div>

@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header :title="__('assignment::ui.menu.assignment_types')" :subtitle="__('assignment::ui.type_subtitle')">
+    <x-ui::header 
+        :title="__('assignment::ui.menu.assignment_types')" 
+        :subtitle="__('assignment::ui.type_subtitle')"
+        :context="'assignment::ui.menu.assignments'"
+    >
         <x-slot:actions>
             <x-ui::button :label="__('assignment::ui.add_type')" icon="tabler.plus" wire:click="add" variant="primary" />
         </x-slot:actions>

@@ -101,6 +101,8 @@ class Index extends Component
                 ['id', 'name', 'email', 'username', 'created_at'],
             ),
             'headers' => $this->getHeaders(),
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('User Management') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 

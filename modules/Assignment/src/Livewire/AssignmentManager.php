@@ -123,7 +123,7 @@ class AssignmentManager extends Component
             'assignments' => Assignment::with('type')->latest()->paginate(10),
             'types' => AssignmentType::all(),
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('assignment::ui.manage_assignments'),
+            'title' => __('assignment::ui.manage_assignments') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

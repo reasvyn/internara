@@ -1,16 +1,16 @@
 <div>
     <x-ui::header 
         wire:key="company-manager-header"
-        title="{{ __('internship::ui.company_title') }}" 
-        subtitle="{{ __('internship::ui.company_subtitle') }}"
+        :title="__('internship::ui.company_title')" 
+        :subtitle="__('internship::ui.company_subtitle')"
+        :context="'internship::ui.index.title'"
     >
         <x-slot:actions wire:key="company-manager-actions">
             <x-ui::button label="{{ __('internship::ui.add_company') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
         </x-slot:actions>
     </x-ui::header>
 
-    <x-ui::main>
-        <x-ui::card>
+    <x-ui::card>
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
                     <x-ui::input placeholder="{{ __('internship::ui.search_company') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
@@ -36,7 +36,6 @@
                 </x-mary-table>
             </div>
         </x-ui::card>
-    </x-ui::main>
 
     {{-- Form Modal --}}
     <x-ui::modal id="company-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_company') : __('internship::ui.add_company') }}">

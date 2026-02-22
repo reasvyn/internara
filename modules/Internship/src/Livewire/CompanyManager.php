@@ -60,6 +60,8 @@ class CompanyManager extends Component
     {
         return view('internship::livewire.company-manager', [
             'records' => $this->records,
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('internship::ui.company_title') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

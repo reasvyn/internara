@@ -68,7 +68,7 @@ class SchoolManager extends Component
     public function render()
     {
         return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
-            'title' => __('school::ui.settings'),
+            'title' => __('school::ui.settings') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

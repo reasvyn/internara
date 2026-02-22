@@ -2,6 +2,7 @@
     <x-ui::header 
         :title="__('student::ui.dashboard.title')" 
         :subtitle="__('student::ui.dashboard.welcome', ['name' => auth()->user()->name])" 
+        :context="'admin::ui.menu.dashboard'"
     />
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -145,7 +145,7 @@ class UserManager extends Component
             'title' => $title,
             'roleKey' => $roleKey,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title,
+            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

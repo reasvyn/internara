@@ -93,6 +93,8 @@ class MentoringManager extends Component
             'registration' => $registration,
             'stats' => $stats,
             'timeline' => $timeline,
-        ])->layout('ui::components.layouts.dashboard', ['title' => __('Manajemen Pembimbingan')]);
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('Manajemen Pembimbingan') . ' | ' . setting('brand_name', setting('app_name')),
+        ]);
     }
 }

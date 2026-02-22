@@ -3,6 +3,7 @@
         wire:key="department-manager-header"
         :title="__('department::ui.title')" 
         :subtitle="__('department::ui.subtitle')"
+        :context="'department::ui.title'"
     >
         <x-slot:actions wire:key="department-manager-actions">
             <x-ui::button :label="__('department::ui.add')" icon="tabler.plus" variant="primary" wire:click="add" />

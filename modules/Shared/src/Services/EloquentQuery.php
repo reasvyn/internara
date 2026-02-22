@@ -468,7 +468,14 @@ abstract class EloquentQuery implements EloquentQueryContract
             $search = $filters['search'];
             $query->where(function (Builder $q) use ($search) {
                 foreach ($this->searchable as $column) {
-                    $q->orWhere($column, 'like', "%{$search}%");
+                    if (str_contains($column, '.')) {
+                        $segments = explode('.', $column);
+                        $col = array_pop($segments);
+                        $relation = implode('.', $segments);
+                        $q->orWhereRelation($relation, $col, 'like', "%{$search}%");
+                    } else {
+                        $q->orWhere($column, 'like', "%{$search}%");
+                    }
                 }
             });
             unset($filters['search']);
@@ -549,5 +556,23 @@ abstract class EloquentQuery implements EloquentQueryContract
         ?string $localKey = null,
     ): \Illuminate\Database\Eloquent\Relations\HasOne {
         return $related->hasOne(get_class($this->model), $foreignKey, $localKey);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function import(array $rows): int
+    {
+        $count = 0;
+        foreach ($rows as $row) {
+            try {
+                $this->create($row);
+                $count++;
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Bulk import failed for row in " . get_class($this->model) . ": " . json_encode($row) . ". Error: " . $e->getMessage());
+            }
+        }
+
+        return $count;
     }
 }

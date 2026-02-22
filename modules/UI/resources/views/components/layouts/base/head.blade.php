@@ -2,6 +2,13 @@
     'title' => setting('site_title', setting('app_name')),
 ])
 
+@php
+    $favicon = setting('site_favicon', setting('brand_logo'));
+    $fallbackFavicon = asset('/brand/favicon.ico');
+    $appleTouchIcon = asset('/brand/apple-touch-icon.png');
+    $manifest = asset('/brand/site.webmanifest');
+@endphp
+
 <!-- Performance Hints -->
 <link rel="preconnect" href="{{ config('app.url') }}" crossorigin>
 <link rel="dns-prefetch" href="{{ config('app.url') }}">
@@ -16,11 +23,17 @@
 <title>{{ $title }}</title>
 
 <!-- Favicon -->
-<link rel="icon" href="{{ asset('/internara/favicon.ico') }}" sizes="any" />
-<link rel="icon" href="{{ asset('/internara/favicon-32x32.png') }}" type="image/png" sizes="32x32" />
-<link rel="icon" href="{{ asset('/internara/favicon-16x16.png') }}" type="image/png" sizes="16x16" />
-<link rel="apple-touch-icon" href="{{ asset('/internara/apple-touch-icon.png') }}" />
-<link rel="manifest" href="{{ asset('/internara/site.webmanifest') }}">
+@if($favicon)
+    <link rel="icon" href="{{ $favicon }}" sizes="any" />
+    <link rel="apple-touch-icon" href="{{ $favicon }}" />
+@else
+    <link rel="icon" href="{{ $fallbackFavicon }}" sizes="any" />
+    <link rel="icon" href="{{ asset('/brand/favicon-32x32.png') }}" type="image/png" sizes="32x32" />
+    <link rel="icon" href="{{ asset('/brand/favicon-16x16.png') }}" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="{{ $appleTouchIcon }}" />
+@endif
+
+<link rel="manifest" href="{{ $manifest }}">
 
 <!-- Vite Assets -->
 @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -3,7 +3,7 @@
     $brandLogo = setting('brand_logo');
 
     if (empty($brandLogo)) {
-        $brandLogo = asset('/internara/logo.png');
+        $brandLogo = asset('/brand/logo.png');
     }
 @endphp
 

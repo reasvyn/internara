@@ -17,7 +17,7 @@
 @endphp
 
 <x-mary-dropdown 
-    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem]']) }}
+    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-50']) }}
     :right="$right"
 >
     @isset($trigger)
@@ -30,6 +30,7 @@
                 :variant="$variant" 
                 :icon="$icon" 
                 :label="$label" 
+                :spinner="false"
                 aria-label="{{ $ariaLabel }}" 
             />
         </x-slot:trigger>

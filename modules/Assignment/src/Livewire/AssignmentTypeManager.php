@@ -126,7 +126,7 @@ class AssignmentTypeManager extends Component
                 'other' => __('Other'),
             ],
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('assignment::ui.assignment_type'),
+            'title' => __('assignment::ui.menu.assignment_types') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

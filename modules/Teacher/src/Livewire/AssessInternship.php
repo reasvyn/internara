@@ -89,6 +89,8 @@ class AssessInternship extends Component
         return view('teacher::livewire.assess-internship', [
             'registration' => $registration,
             'claimedCompetencies' => $claimedCompetencies,
-        ])->layout('ui::components.layouts.dashboard', ['title' => 'Assess Student']);
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' => __('Assess Student') . ' | ' . setting('brand_name', setting('app_name')),
+        ]);
     }
 }

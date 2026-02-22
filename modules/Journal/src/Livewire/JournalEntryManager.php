@@ -119,7 +119,7 @@ class JournalEntryManager extends Component
         return view('journal::livewire.journal-entry-manager', [
             'availableCompetencies' => $availableCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $this->form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru'),
+            'title' => ($this->form->id ? __('Edit Jurnal') : __('Buat Jurnal Baru')) . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

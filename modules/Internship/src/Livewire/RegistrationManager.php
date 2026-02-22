@@ -173,7 +173,7 @@ class RegistrationManager extends Component
         return view('internship::livewire.registration-manager', [
             'records' => $this->records,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.registration_title'),
+            'title' => __('internship::ui.registration_title') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 

@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header title="{{ __('Evaluate Intern') }}" subtitle="{{ $registration->student->name }}" />
+    <x-ui::header 
+        :title="__('Evaluate Intern')" 
+        :subtitle="$registration->student->name" 
+        :context="'mentor::ui.dashboard.title'"
+    />
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <x-ui::card class="bg-base-200">

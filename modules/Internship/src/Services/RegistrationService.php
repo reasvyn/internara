@@ -23,6 +23,7 @@ class RegistrationService extends EloquentQuery implements Contract
         protected AssignmentService $assignmentService,
     ) {
         $this->setModel($model);
+        $this->setSearchable(['status', 'academic_year', 'student.name', 'internship.title', 'placement.company.name']);
         $this->setSortable(['created_at']);
     }
 

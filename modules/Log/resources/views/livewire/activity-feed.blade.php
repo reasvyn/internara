@@ -1,5 +1,11 @@
 <div>
-    <x-ui::card :title="__('log::ui.activity_feed')" :subtitle="__('log::ui.activity_feed_subtitle')" shadow separator>
+    <x-ui::header 
+        :title="__('log::ui.activity_log')" 
+        :subtitle="__('log::ui.activity_feed_subtitle')"
+        :context="'log::ui.activity_log'"
+    />
+
+    <x-ui::card shadow separator>
         <div class="space-y-4" role="log" aria-label="{{ __('log::ui.activity_feed') }}">
             @forelse($activities as $activity)
                 <div class="flex flex-col gap-1 p-2 hover:bg-base-200 rounded-lg transition-colors border-b border-base-300 last:border-0">

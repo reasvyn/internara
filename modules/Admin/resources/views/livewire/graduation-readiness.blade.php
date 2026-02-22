@@ -1,8 +1,11 @@
 <div>
-    <x-ui::header title="{{ __('Kesiapan Kelulusan') }}" subtitle="{{ __('Verifikasi pemenuhan syarat kelulusan magang siswa.') }}" />
+    <x-ui::header 
+        :title="__('admin::ui.menu.readiness')" 
+        :subtitle="__('admin::ui.dashboard.graduation_readiness_subtitle', 'Verifikasi pemenuhan syarat kelulusan magang siswa.')" 
+        :context="'admin::ui.menu.readiness'"
+    />
 
-    <x-ui::main>
-        <div class="mb-4">
+    <div class="mb-4">
             <x-ui::input icon="tabler.search" placeholder="{{ __('Cari siswa...') }}" wire:model.live.debounce="search" />
         </div>
 
@@ -42,5 +45,4 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-    </x-ui::main>
 </div>

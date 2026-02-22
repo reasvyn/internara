@@ -1,7 +1,8 @@
 <div>
     <x-ui::header
-        title="{{ __('User Management') }}"
-        subtitle="{{ __('Manage all system users and their roles.') }}"
+        :title="__('User Management')"
+        :subtitle="__('Manage all system users and their roles.')"
+        :context="'admin::ui.dashboard.user_management'"
         separator
         progress-indicator
     >

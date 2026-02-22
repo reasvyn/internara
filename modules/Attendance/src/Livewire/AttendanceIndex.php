@@ -145,7 +145,7 @@ class AttendanceIndex extends Component
         return view('attendance::livewire.attendance-index')->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' => __('attendance::ui.index.title'),
+                'title' => __('attendance::ui.index.title') . ' | ' . setting('brand_name', setting('app_name')),
             ],
         );
     }

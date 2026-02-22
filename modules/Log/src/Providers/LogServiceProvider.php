@@ -53,7 +53,7 @@ class LogServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
-            'admin.dashboard.side' => 'livewire:log::activity-feed',
+            'admin.dashboard.side' => 'livewire:log::activity-widget',
         ];
     }
 }

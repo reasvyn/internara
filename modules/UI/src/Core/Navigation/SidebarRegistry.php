@@ -201,6 +201,13 @@ class SidebarRegistry
                 'role' => 'admin|super-admin',
                 'order' => 100,
             ],
+            'ui::menu-item#activity-log' => [
+                'title' => 'log::ui.activity_log',
+                'icon' => 'tabler.history',
+                'link' => '/admin/activities',
+                'role' => 'admin|super-admin',
+                'order' => 105,
+            ],
         ];
     }
 }

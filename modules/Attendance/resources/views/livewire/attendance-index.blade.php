@@ -1,5 +1,9 @@
 <div>
-    <x-ui::header :title="__('attendance::ui.index.title')" :subtitle="__('attendance::ui.index.subtitle')">
+    <x-ui::header 
+        :title="__('attendance::ui.index.title')" 
+        :subtitle="__('attendance::ui.index.subtitle')"
+        :context="'attendance::ui.index.title'"
+    >
         <x-slot:actions>
             @if(auth()->user()->hasRole('student'))
                 <div class="flex gap-2">
@@ -10,8 +14,7 @@
         </x-slot:actions>
     </x-ui::header>
 
-    <x-ui::main>
-        <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
             @if(!auth()->user()->hasRole('student'))
                 <x-ui::input icon="tabler.search" :placeholder="__('attendance::ui.index.search_student')" wire:model.live.debounce="search" />
             @endif
@@ -54,7 +57,6 @@
                 @endscope
             </x-ui::table>
         </x-ui::card>
-    </x-ui::main>
 
     <x-ui::modal wire:model="attendanceModal" :title="__('attendance::ui.index.modal.title')" separator>
         <x-ui::form wire:submit="submitAttendance">
