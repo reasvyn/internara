@@ -23,16 +23,10 @@
             </div>
             
             {{-- 2. Configuration Group (Bottom Flex Row) --}}
-            <div class="flex items-center justify-between gap-4 bg-base-300/30 rounded-2xl px-4 py-2 border border-base-content/5">
-                <div class="flex items-center gap-2">
-                    <span class="text-sm font-semibold">{{ __('ui::common.language') }}</span>
-                    @slotRender('navbar.actions', ['filter' => 'livewire:ui::language-switcher'])
-                </div>
+            <div class="flex items-center justify-center gap-6 bg-base-300/30 rounded-2xl px-4 py-2 border border-base-content/5">
+                @slotRender('navbar.actions', ['filter' => 'livewire:ui::language-switcher'])
                 <div class="h-6 w-px bg-base-content/10"></div>
-                <div class="flex items-center gap-2">
-                    <span class="text-sm font-semibold">{{ __('ui::common.toggle_theme') }}</span>
-                    <x-ui::theme-toggle class="scale-90" />
-                </div>
+                <x-ui::theme-toggle class="scale-110" />
             </div>
         </div>
 
