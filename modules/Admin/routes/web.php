@@ -18,21 +18,16 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
         'admin.readiness',
     );
 
+    // Comprehensive User Management
+    Route::get('/admin/users', \Modules\User\Livewire\UserManager::class)->name('admin.users.index');
+
     // Stakeholder Management
-    Route::get('/admin/students', \Modules\User\Livewire\UserManager::class)
-        ->name('admin.students')
-        ->defaults('targetRole', 'student');
-    Route::get('/admin/teachers', \Modules\User\Livewire\UserManager::class)
-        ->name('admin.teachers')
-        ->defaults('targetRole', 'teacher');
-    Route::get('/admin/mentors', \Modules\User\Livewire\UserManager::class)
-        ->name('admin.mentors')
-        ->defaults('targetRole', 'mentor');
+    Route::get('/admin/students', \Modules\Student\Livewire\StudentManager::class)->name('admin.students');
+    Route::get('/admin/teachers', \Modules\Teacher\Livewire\TeacherManager::class)->name('admin.teachers');
+    Route::get('/admin/mentors', \Modules\Mentor\Livewire\MentorManager::class)->name('admin.mentors');
 
     // Admin Management (SuperAdmin Only)
     Route::middleware(['role:super-admin'])->group(function () {
-        Route::get('/admin/administrators', \Modules\User\Livewire\UserManager::class)
-            ->name('admin.administrators')
-            ->defaults('targetRole', 'admin');
+        Route::get('/admin/administrators', \Modules\Admin\Livewire\AdminManager::class)->name('admin.administrators');
     });
 });

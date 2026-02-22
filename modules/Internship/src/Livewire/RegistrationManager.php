@@ -34,6 +34,54 @@ class RegistrationManager extends Component
         $this->eventPrefix = 'registration';
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function getExportHeaders(): array
+    {
+        return [
+            'student_name' => __('internship::ui.student'),
+            'internship_title' => __('internship::ui.program'),
+            'placement_company' => __('internship::ui.placement'),
+            'teacher_name' => __('internship::ui.teacher'),
+            'status' => __('internship::ui.status'),
+            'created_at' => __('ui::common.created_at'),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function mapRecordForExport($record, array $keys): array
+    {
+        return [
+            $record->student->name,
+            $record->internship->title,
+            $record->placement?->company?->name ?? 'N/A',
+            $record->teacher?->name ?? 'N/A',
+            $record->latestStatus()?->name ?? 'pending',
+            $record->created_at->format('Y-m-d H:i'),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function mapImportRow(array $row, array $keys): ?array
+    {
+        // Import for registrations is complex due to IDs, usually handled via specialized logic
+        // For now, providing a basic mapper placeholder
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPdfView(): ?string
+    {
+        return 'internship::pdf.registrations';
+    }
+
     public function mount(): void
     {
         $this->authorize('internship.update');
@@ -59,13 +107,16 @@ class RegistrationManager extends Component
             ->map(fn ($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
     }
 
-    /**
-     * Get students for the dropdown.
-     */
-    public function getStudentsProperty(): \Illuminate\Support\Collection
-    {
-        return app(UserService::class)->get(['roles.name' => 'student'], ['id', 'name', 'username']);
-    }
+        /**
+         * Get students for the dropdown.
+         */
+        public function getStudentsProperty(): \Illuminate\Support\Collection
+        {
+            return app(UserService::class)
+                ->get(['roles.name' => 'student'], ['id', 'name', 'username'])
+                ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name . ' (' . $u->username . ')']);
+        }
+    
 
     /**
      * Get teachers for the dropdown.
@@ -213,6 +264,24 @@ class RegistrationManager extends Component
             $this->targetPlacementId = null;
 
             flash()->success(__(':count siswa berhasil ditempatkan.', ['count' => $count]));
+        } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    /**
+     * Remove all selected registrations.
+     */
+    public function removeSelected(): void
+    {
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        try {
+            $count = $this->service->destroy($this->selectedIds);
+            $this->selectedIds = [];
+            flash()->success(__(':count data pendaftaran berhasil dihapus.', ['count' => $count]));
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }

@@ -38,6 +38,7 @@ return [
         'group_operations' => 'Operations',
         'group_intelligence' => 'Intelligence',
         'group_system' => 'System',
+        'group_administrator' => 'Administrator',
         'departments' => 'Departments',
         'school_settings' => 'School Profile',
         'internships' => 'Internship Batches',

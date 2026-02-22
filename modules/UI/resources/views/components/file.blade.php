@@ -9,6 +9,7 @@
     'placeholder' => null,
     'ratio' => 1,
     'crop' => true,
+    'previewType' => null,
 ])
 
 @php
@@ -24,6 +25,7 @@
     x-data="fileComponent({
         model: @js($model),
         preview: @js($preview),
+        previewType: @js($previewType),
         ratio: @js($ratio),
         isCrop: @js($isCrop),
         isMultiple: @js($isMultiple)
@@ -75,7 +77,21 @@
         {{-- Preview State Content --}}
         <div x-show="files.length > 0" class="flex flex-col items-center gap-4" x-cloak>
             <div class="relative group">
-                <img :src="files[0]?.url" class="h-32 w-32 rounded-xl object-cover shadow-xl border border-base-200 ring-4 ring-base-100" />
+                {{-- Image Preview --}}
+                <template x-if="files[0]?.type?.startsWith('image/')">
+                    <img :src="files[0]?.url" class="h-32 w-32 rounded-xl object-cover shadow-xl border border-base-200 ring-4 ring-base-100" />
+                </template>
+
+                {{-- Non-Image Placeholder --}}
+                <template x-if="!files[0]?.type?.startsWith('image/')">
+                    <div class="flex h-32 w-32 flex-col items-center justify-center rounded-xl border border-base-200 bg-base-200 shadow-xl ring-4 ring-base-100 relative overflow-hidden">
+                        <x-tabler-file-description class="size-12 text-base-content/30" />
+                        <div class="absolute bottom-0 w-full bg-base-300 py-1 text-center">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-base-content/50" x-text="files[0]?.name.split('.').pop()"></span>
+                        </div>
+                    </div>
+                </template>
+
                 <button 
                     type="button" 
                     x-on:click.stop.prevent="removeFile" 

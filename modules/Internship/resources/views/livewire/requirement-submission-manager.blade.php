@@ -24,15 +24,18 @@
                     <div class="w-full md:w-1/2">
                         <div class="flex flex-col gap-2">
                             @if($requirement->type->value === 'document')
-                                <x-ui::file wire:model="files.{{ $requirement->id }}" label="{{ __('internship::ui.upload_document') }}" accept=".pdf,.doc,.docx,.jpg,.png" />
-                                @if($submission && $submission->hasMedia('document'))
-                                    <div class="text-xs">
-                                        <a href="{{ $submission->getFirstMediaUrl('document') }}" target="_blank" class="link-primary flex items-center gap-1">
-                                            <x-ui::icon name="tabler.file-download" class="w-4 h-4" />
-                                            {{ __('internship::ui.view_current_document') }}
-                                        </a>
-                                    </div>
-                                @endif
+                                @php
+                                    $media = $submission?->getFirstMedia('document');
+                                    $previewUrl = $media?->getUrl();
+                                    $previewType = $media?->mime_type;
+                                @endphp
+                                <x-ui::file 
+                                    wire:model="files.{{ $requirement->id }}" 
+                                    label="{{ __('internship::ui.upload_document') }}" 
+                                    accept=".pdf,.doc,.docx,.jpg,.png" 
+                                    :preview="$previewUrl"
+                                    :preview-type="$previewType"
+                                />
                             @elseif($requirement->type->value === 'skill')
                                 <x-ui::select 
                                     wire:model="values.{{ $requirement->id }}" 

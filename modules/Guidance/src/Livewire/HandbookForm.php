@@ -40,6 +40,11 @@ class HandbookForm extends Component
     public $file;
 
     /**
+     * The existing file URL.
+     */
+    public ?string $fileUrl = null;
+
+    /**
      * Initialize the component.
      */
     public function mount(?string $handbookId, HandbookService $service): void
@@ -56,6 +61,7 @@ class HandbookForm extends Component
                     'is_active' => $handbook->is_active,
                     'is_mandatory' => $handbook->is_mandatory,
                 ];
+                $this->fileUrl = $handbook->getFirstMediaUrl('document');
             }
         }
     }

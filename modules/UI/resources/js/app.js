@@ -19,7 +19,13 @@ document.addEventListener('alpine:init', () => {
 
         init() {
             if (config.preview) {
-                this.files = [{ id: 'existing', url: config.preview, name: 'Existing Image', isNew: false }];
+                this.files = [{ 
+                    id: 'existing', 
+                    url: config.preview, 
+                    name: 'Existing File', 
+                    type: config.previewType || 'image/jpeg', 
+                    isNew: false 
+                }];
             }
         },
 
@@ -114,6 +120,7 @@ document.addEventListener('alpine:init', () => {
                 id: 'new-' + Math.random(),
                 url: URL.createObjectURL(file),
                 name: file.name,
+                type: file.type,
                 isNew: true
             }];
 

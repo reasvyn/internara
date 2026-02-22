@@ -17,6 +17,6 @@
     };
 @endphp
 
-<x-mary-badge {{ $attributes->class([$variantClasses]) }}>
+<x-mary-badge {{ $attributes->class(['text-nowrap ' . $variantClasses]) }}>
     <x-slot:value>{{ $value ?? $slot }}</x-slot:value>
 </x-mary-badge>

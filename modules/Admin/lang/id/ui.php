@@ -38,6 +38,7 @@ return [
         'group_operations' => 'Operasional',
         'group_intelligence' => 'Intelijen',
         'group_system' => 'Sistem',
+        'group_administrator' => 'Administrator',
         'departments' => 'Data Jurusan',
         'school_settings' => 'Profil Sekolah',
         'internships' => 'Program Magang',

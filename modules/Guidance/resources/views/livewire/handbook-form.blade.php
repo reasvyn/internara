@@ -34,6 +34,8 @@
                 wire:model="file" 
                 accept="application/pdf" 
                 hint="{{ __('guidance::ui.file_hint') }}"
+                :preview="$fileUrl"
+                preview-type="application/pdf"
             />
 
             @if($handbookId && !$file)

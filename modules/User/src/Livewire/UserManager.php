@@ -18,6 +18,8 @@ class UserManager extends Component
 
     public UserForm $form;
 
+    public array $selectedIds = [];
+
     public string $targetRole = '';
 
     /**
@@ -30,11 +32,49 @@ class UserManager extends Component
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getExportHeaders(): array
+    {
+        return [
+            'name' => __('user::ui.manager.table.name'),
+            'email' => __('user::ui.manager.table.email'),
+            'username' => __('user::ui.manager.table.username'),
+            'roles' => __('user::ui.manager.table.roles'),
+            'created_at' => __('ui::common.created_at'),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function mapRecordForExport($record, array $keys): array
+    {
+        return [
+            $record->name,
+            $record->email,
+            $record->username,
+            $record->roles->pluck('name')->implode(', '),
+            $record->created_at->format('Y-m-d H:i'),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPdfView(): ?string
+    {
+        return 'user::pdf.users';
+    }
+
+    /**
      * Mount the component.
      */
-    public function mount(string $targetRole = ''): void
+    public function mount(?string $targetRole = null): void
     {
-        $this->targetRole = $targetRole;
+        if ($targetRole !== null) {
+            $this->targetRole = $targetRole;
+        }
 
         // Security: Only SuperAdmins can manage 'admin' role
         if ($this->targetRole === 'admin' && ! auth()->user()->hasRole('super-admin')) {
@@ -78,6 +118,31 @@ class UserManager extends Component
         }
 
         return collect();
+    }
+
+    /**
+     * Remove all selected users.
+     */
+    public function removeSelected(): void
+    {
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        try {
+            // Filter out super-admins before deletion for safety
+            $targets = \Modules\User\Models\User::whereIn('id', $this->selectedIds)
+                ->get()
+                ->reject(fn ($u) => $u->hasRole('super-admin'))
+                ->pluck('id')
+                ->toArray();
+
+            $count = $this->service->destroy($targets);
+            $this->selectedIds = [];
+            flash()->success(__(':count data pengguna berhasil dihapus.', ['count' => $count]));
+        } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     /**
@@ -139,7 +204,7 @@ class UserManager extends Component
     public function render(): View
     {
         $roleKey = $this->targetRole ?: 'user';
-        $title = __("user::ui.{$roleKey}_management");
+        $title = $this->targetRole ? __("user::ui.{$roleKey}_management") : __('User Management');
 
         return view('user::livewire.user-manager', [
             'title' => $title,

@@ -7,33 +7,46 @@
     'separator' => false,
 ])
 
-<div class="mb-10">
+<div {{ $attributes->merge(['class' => 'mb-10']) }}>
+    {{-- Breadcrumb Context --}}
     @if($context)
-        <div class="mb-1 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-base-content/40">
+        <div class="mb-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-base-content/40">
             <span>{{ setting('brand_name', 'Internara') }}</span>
             <x-ui::icon name="tabler.chevron-right" class="size-2.5" />
             <span>{{ __($context) }}</span>
         </div>
     @endif
 
-    <x-mary-header 
-        {{ $attributes->merge(['class' => '']) }}
-        :title="$title"
-        :subtitle="$subtitle"
-        :separator="$separator"
-    >
+    {{-- Main Header Content --}}
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex-1 space-y-1">
+            @if($title)
+                <h2 class="text-3xl font-black tracking-tight text-base-content lg:text-4xl">
+                    {{ $title }}
+                </h2>
+            @endif
+
+            @if($subtitle)
+                <p class="text-sm leading-relaxed text-base-content/60 max-w-2xl">
+                    {{ $subtitle }}
+                </p>
+            @endif
+        </div>
+
         @if($middle)
-            <x-slot:middle>
+            <div class="flex items-center">
                 {{ $middle }}
-            </x-slot:middle>
+            </div>
         @endif
 
         @if($actions)
-            <x-slot:actions>
-                <div class="flex items-center gap-3">
-                    {{ $actions }}
-                </div>
-            </x-slot:actions>
+            <div class="flex flex-none items-center gap-3">
+                {{ $actions }}
+            </div>
         @endif
-    </x-mary-header>
+    </div>
+
+    @if($separator)
+        <div class="divider mt-8 opacity-10"></div>
+    @endif
 </div>

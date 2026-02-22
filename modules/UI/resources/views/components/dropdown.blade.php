@@ -3,6 +3,7 @@
     'icon' => null,
     'right' => false,
     'variant' => 'secondary', // primary, secondary, tertiary
+    'disabled' => false,
 ])
 
 @php
@@ -14,10 +15,11 @@
     };
     
     $ariaLabel = $attributes->get('aria-label') ?? $label ?? __('ui::common.options');
+    $isDisabled = filter_var($disabled, FILTER_VALIDATE_BOOLEAN);
 @endphp
 
 <x-mary-dropdown 
-    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-50']) }}
+    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-50', 'pointer-events-none opacity-50' => $isDisabled]) }}
     :right="$right"
 >
     @isset($trigger)
@@ -31,6 +33,7 @@
                 :icon="$icon" 
                 :label="$label" 
                 :spinner="false"
+                :class="$isDisabled ? 'btn-disabled' : ''"
                 aria-label="{{ $ariaLabel }}" 
             />
         </x-slot:trigger>

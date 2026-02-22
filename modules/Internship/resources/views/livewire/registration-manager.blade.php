@@ -5,21 +5,73 @@
         :subtitle="__('internship::ui.registration_subtitle')"
         :context="'internship::ui.index.title'"
     >
-        <x-slot:actions>
-            <x-ui::button label="{{ __('Bulk Penempatan') }}" icon="tabler.layers-intersect" class="btn-outline" wire:click="openBulkPlace" />
-            <x-ui::button label="{{ __('internship::ui.add_registration') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
+        <x-slot:actions wire:key="registration-manager-actions">
+            <div class="flex items-center gap-3 relative z-50">
+                <x-ui::dropdown icon="tabler.dots" variant="tertiary" right>
+                    <x-ui::menu-item :title="__('ui::common.print')" icon="tabler.printer" wire:click="printPdf" />
+                    <x-ui::menu-item :title="__('ui::common.export')" icon="tabler.download" wire:click="exportCsv" />
+                    <x-ui::menu-item :title="__('ui::common.import')" icon="tabler.upload" wire:click="$set('importModal', true)" />
+                </x-ui::dropdown>
+
+                <x-ui::dropdown 
+                    :label="__('Aksi Massal')" 
+                    icon="tabler.layers-intersect" 
+                    variant="secondary" 
+                    :disabled="count($selectedIds) === 0"
+                >
+                    <x-ui::menu-item 
+                        :title="__('Penempatan Massal')" 
+                        icon="tabler.map-pin-up" 
+                        wire:click="openBulkPlace" 
+                    />
+                    <x-ui::menu-item 
+                        :title="__('Hapus Terpilih')" 
+                        icon="tabler.trash" 
+                        class="text-error" 
+                        wire:click="removeSelected" 
+                        wire:confirm="{{ __('ui::common.delete_confirm') }}"
+                    />
+                </x-ui::dropdown>
+
+                <x-ui::button :label="__('internship::ui.add_registration')" icon="tabler.plus" variant="primary" wire:click="add" />
+            </div>
         </x-slot:actions>
-        </x-ui::header>
+    </x-ui::header>
     
         <x-ui::card>
-    
+        <div 
+            x-data="{ 
+                search: $wire.entangle('search', true),
+                applyFilter() {
+                    let term = this.search.toLowerCase();
+                    let rows = this.$el.querySelectorAll('table tbody tr:not(.mary-table-empty)');
+                    rows.forEach(row => {
+                        let text = row.innerText.toLowerCase();
+                        row.style.display = text.includes(term) ? '' : 'none';
+                    });
+                }
+            }" 
+            x-init="$watch('search', () => applyFilter())"
+        >
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
-                    <x-ui::input placeholder="{{ __('internship::ui.search_registration') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
+                    <x-ui::input 
+                        :placeholder="__('internship::ui.search_registration')" 
+                        icon="tabler.search" 
+                        wire:model.live.debounce.250ms="search" 
+                        x-model="search"
+                        clearable 
+                    />
                 </div>
             </div>
 
-            <x-ui::table :headers="[
+            <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh] relative">
+                {{-- Instant Loading Overlay --}}
+                <div wire:loading.flex wire:target="search" class="absolute inset-0 bg-base-100/60 backdrop-blur-[1px] z-20 items-center justify-center">
+                    <span class="loading loading-spinner loading-md text-base-content/20"></span>
+                </div>
+
+                <x-ui::table :headers="[
                 ['key' => 'student.name', 'label' => __('internship::ui.student')],
                 ['key' => 'internship.title', 'label' => __('internship::ui.program')],
                 ['key' => 'requirements', 'label' => __('internship::ui.requirements')],
@@ -65,59 +117,77 @@
                     </div>
                 @endscope
             </x-ui::table>
-        </x-ui::card>
+        </div>
+    </x-ui::card>
 
     {{-- Form Modal --}}
-    <x-ui::modal id="registration-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration') }}">
+    <x-ui::modal id="registration-form-modal" wire:model="formModal" :title="$form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration')">
         <x-ui::form wire:submit.prevent="save">
             <x-ui::select 
-                label="{{ __('internship::ui.student') }}" 
+                :label="__('internship::ui.student')" 
+                icon="tabler.user"
                 wire:model="form.student_id" 
                 :options="$this->students" 
-                placeholder="{{ __('internship::ui.select_student') }}"
+                :placeholder="__('internship::ui.select_student')"
                 required 
             />
             <x-ui::select 
-                label="{{ __('internship::ui.program') }}" 
+                :label="__('internship::ui.program')" 
+                icon="tabler.presentation"
                 wire:model="form.internship_id" 
                 :options="$this->internships" 
-                placeholder="{{ __('internship::ui.select_program') }}"
+                :placeholder="__('internship::ui.select_program')"
                 required 
             />
             <x-ui::select 
-                label="{{ __('internship::ui.placement') }}" 
+                :label="__('internship::ui.placement')" 
+                icon="tabler.building-community"
                 wire:model="form.placement_id" 
                 :options="$this->placements" 
-                placeholder="{{ __('internship::ui.select_placement') }}"
+                :placeholder="__('internship::ui.select_placement')"
                 required 
             />
 
-            <hr class="my-4 opacity-20" />
+            <div class="divider opacity-10"></div>
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <x-ui::select 
-                    label="{{ __('internship::ui.teacher') }}" 
+                    :label="__('internship::ui.teacher')" 
+                    icon="tabler.school"
                     wire:model="form.teacher_id" 
                     :options="$this->teachers" 
-                    placeholder="{{ __('internship::ui.select_teacher') }}"
+                    :placeholder="__('internship::ui.select_teacher')"
                     required
                 />
                 <x-ui::select 
-                    label="{{ __('internship::ui.mentor') }}" 
+                    :label="__('internship::ui.mentor')" 
+                    icon="tabler.briefcase"
                     wire:model="form.mentor_id" 
                     :options="$this->mentors" 
-                    placeholder="{{ __('internship::ui.select_mentor') }}"
+                    :placeholder="__('internship::ui.select_mentor')"
                 />
             </div>
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-ui::input label="{{ __('internship::ui.date_start') }}" type="date" wire:model="form.start_date" required />
-                <x-ui::input label="{{ __('internship::ui.date_finish') }}" type="date" wire:model="form.end_date" required />
+                <x-ui::input 
+                    :label="__('internship::ui.date_start')" 
+                    icon="tabler.calendar-event"
+                    type="date" 
+                    wire:model="form.start_date" 
+                    required 
+                />
+                <x-ui::input 
+                    :label="__('internship::ui.date_finish')" 
+                    icon="tabler.calendar-check"
+                    type="date" 
+                    wire:model="form.end_date" 
+                    required 
+                />
             </div>
 
             <x-slot:actions>
-                <x-ui::button label="{{ __('shared::ui.cancel') }}" wire:click="$set('formModal', false)" />
-                <x-ui::button label="{{ __('shared::ui.save') }}" type="submit" class="btn-primary" spinner="save" />
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>
@@ -180,5 +250,27 @@
         <x-slot:actions>
             <x-ui::button label="{{ __('Tutup') }}" wire:click="$set('historyModal', false)" />
         </x-slot:actions>
+    </x-ui::modal>
+
+    {{-- Import Modal --}}
+    <x-ui::modal id="registration-import-modal" wire:model="importModal" :title="__('ui::common.import')">
+        <x-ui::form wire:submit.prevent="importCsv">
+            <div class="mb-4 flex items-center justify-between px-1">
+                <span class="text-xs font-bold uppercase tracking-widest text-base-content/40">{{ __('ui::common.select_file') }}</span>
+                <x-ui::button :label="__('ui::common.download_template')" icon="tabler.file-download" variant="tertiary" class="btn-xs" wire:click="downloadTemplate" />
+            </div>
+
+            <x-ui::file 
+                wire:model="csvFile" 
+                accept=".csv"
+                :crop="false"
+                required
+            />
+
+            <x-slot:actions>
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('importModal', false)" />
+                <x-ui::button :label="__('ui::common.import')" type="submit" variant="primary" spinner="importCsv" />
+            </x-slot:actions>
+        </x-ui::form>
     </x-ui::modal>
 </div>
