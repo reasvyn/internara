@@ -27,6 +27,7 @@ return [
     'by' => 'by',
     'profile' => 'Profile',
     'settings' => 'Settings',
+    'account' => 'Account',
     'logout' => 'Log out',
     'login' => 'Log in',
     'register' => 'Register',

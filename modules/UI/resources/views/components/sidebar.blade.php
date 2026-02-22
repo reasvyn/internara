@@ -13,7 +13,7 @@
         {{-- Mobile Actions (Hidden on Desktop) --}}
         <div class="lg:hidden mb-6 flex flex-col gap-4 px-2">
             <div class="flex items-center justify-between border-b border-base-300 pb-4">
-                <span class="text-xs font-bold uppercase tracking-widest text-base-content/40">{{ __('ui::common.settings') }}</span>
+                <span class="text-xs font-bold uppercase tracking-widest text-base-content/40">{{ __('ui::common.account') }}</span>
                 <x-ui::theme-toggle />
             </div>
             

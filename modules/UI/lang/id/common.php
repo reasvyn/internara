@@ -27,6 +27,7 @@ return [
     'by' => 'oleh',
     'profile' => 'Profil',
     'settings' => 'Pengaturan',
+    'account' => 'Akun',
     'logout' => 'Keluar',
     'login' => 'Masuk',
     'register' => 'Daftar',
