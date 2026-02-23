@@ -4,19 +4,35 @@ declare(strict_types=1);
 
 namespace Modules\Teacher\Tests\Unit\Services;
 
+use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Teacher\Models\Teacher;
 use Modules\Teacher\Services\TeacherService;
+use Modules\User\Services\Contracts\UserService;
 
-test('it can create teacher with default values', function () {
-    $teacher = mock(Teacher::class);
-    $teacher->shouldReceive('getFillable')->andReturn(['nip']);
+test('it can create teacher account and profile', function () {
+    $user = mock(\Modules\User\Models\User::class);
+    $userService = mock(UserService::class);
+    $profileService = mock(ProfileService::class);
+    $profile = mock(\Modules\Profile\Models\Profile::class);
 
-    $service = new TeacherService($teacher);
+    $service = new TeacherService($user, $userService, $profileService);
 
-    $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
-    $teacher->shouldReceive('newQuery')->andReturn($builder);
-    $builder->shouldReceive('create')->once()->andReturn(new Teacher);
+    $data = [
+        'name' => 'Jane Smith',
+        'email' => 'jane@example.com',
+        'profile' => [
+            'registration_number' => 'NIP123',
+        ],
+    ];
 
-    $result = $service->createWithDefault();
-    expect($result)->toBeInstanceOf(Teacher::class);
+    $createdUser = mock(\Modules\User\Models\User::class);
+    $createdUser->id = 'user-uuid';
+    $userService->shouldReceive('create')->once()->andReturn($createdUser);
+
+    $profileService->shouldReceive('getByUserId')->with('user-uuid')->once()->andReturn($profile);
+    $profile->id = 'profile-uuid';
+    $profileService->shouldReceive('update')->with('profile-uuid', ['registration_number' => 'NIP123'])->once();
+
+    $result = $service->create($data);
+    expect($result)->toBe($createdUser);
 });

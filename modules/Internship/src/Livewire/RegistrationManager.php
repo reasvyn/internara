@@ -18,8 +18,6 @@ class RegistrationManager extends Component
 
     public RegistrationForm $form;
 
-    public array $selectedIds = [];
-
     public ?string $targetPlacementId = null;
 
     public bool $bulkPlaceModal = false;
@@ -84,7 +82,7 @@ class RegistrationManager extends Component
 
     public function mount(): void
     {
-        $this->authorize('internship.update');
+        $this->authorize('registration.view');
     }
 
     /**
@@ -225,6 +223,7 @@ class RegistrationManager extends Component
             'records' => $this->records,
         ])->layout('ui::components.layouts.dashboard', [
             'title' => __('internship::ui.registration_title') . ' | ' . setting('brand_name', setting('app_name')),
+            'context' => 'internship::ui.index.title',
         ]);
     }
 
@@ -264,24 +263,6 @@ class RegistrationManager extends Component
             $this->targetPlacementId = null;
 
             flash()->success(__(':count siswa berhasil ditempatkan.', ['count' => $count]));
-        } catch (\Throwable $e) {
-            flash()->error($e->getMessage());
-        }
-    }
-
-    /**
-     * Remove all selected registrations.
-     */
-    public function removeSelected(): void
-    {
-        if (empty($this->selectedIds)) {
-            return;
-        }
-
-        try {
-            $count = $this->service->destroy($this->selectedIds);
-            $this->selectedIds = [];
-            flash()->success(__(':count data pendaftaran berhasil dihapus.', ['count' => $count]));
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }

@@ -85,7 +85,7 @@
                             <br><small style="color: #6b7280;">{{ Str::limit($record->description, 50) }}</small>
                         @endif
                     </td>
-                    <td class="text-center">{{ $record->year }}</td>
+                    <td class="text-center">{{ $record->academic_year }}</td>
                     <td>{{ $record->semester }}</td>
                     <td class="text-center">{{ $record->date_start?->translatedFormat('d M Y') ?? '-' }}</td>
                     <td class="text-center">{{ $record->date_finish?->translatedFormat('d M Y') ?? '-' }}</td>

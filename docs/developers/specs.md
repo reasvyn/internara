@@ -1,7 +1,6 @@
-# System Requirements Specification (System Requirements Specification): Internara
+# System Requirements Specification (SyRS): Internara
 
-This document constitutes the formal **System Requirements Specification (System Requirements
-Specification)** for the Internara project, standardized according to **ISO/IEC 29148**
+This document constitutes the formal **System Requirements Specification (SyRS)** for the Internara project, standardized according to **ISO/IEC 29148**
 (Requirements Engineering). It establishes the authoritative baseline for all developmental,
 architectural, and verification activities.
 
@@ -36,7 +35,7 @@ The system must satisfy the operational needs of the following identified stakeh
 
 ---
 
-## 3. Functional Requirements (System Requirements Specification-F)
+## 3. Functional Requirements (SyRS-F)
 
 The system shall implement the following core capabilities:
 
@@ -62,7 +61,7 @@ The system shall implement the following core capabilities:
 
 ---
 
-## 4. Non-Functional Requirements (System Requirements Specification-NF)
+## 4. Non-Functional Requirements (SyRS-NF)
 
 The system shall adhere to the following quality and technical constraints:
 
@@ -82,8 +81,9 @@ The system shall adhere to the following quality and technical constraints:
   (RBAC)** as defined in section 2.
 - **[SYRS-NF-503]**: **Data Privacy**: Sensitive data (PII) must be encrypted at rest and masked
   during logging.
-- **[SYRS-NF-504]**: **Identity Protection**: All primary keys must utilize **UUID v4** to prevent
-  ID enumeration attacks.
+- **[SYRS-NF-504]**: **Identity Protection**: All domain primary keys must utilize **UUID v4** to
+  prevent ID enumeration attacks. System-level tables (e.g., jobs, migrations) may utilize standard
+  sequences.
 
 ### 4.3 Architecture & Maintainability (ISO/IEC 25010)
 

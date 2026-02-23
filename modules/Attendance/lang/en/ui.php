@@ -28,4 +28,14 @@ return [
             'submit' => 'Save Attendance',
         ],
     ],
+    'manager' => [
+        'title' => 'Daily Attendance',
+        'check_in' => 'Check In',
+        'check_out' => 'Check Out',
+        'label_check_in' => 'Check In Time',
+        'label_check_out' => 'Check Out Time',
+        'status' => 'Status',
+        'not_checked_in' => 'You haven\'t checked in today.',
+        'completed' => 'You have completed your attendance for today.',
+    ],
 ];

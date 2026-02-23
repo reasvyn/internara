@@ -32,8 +32,8 @@ class StudentServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
-                'ui::menu-item' => [
-                    'title' => __('Dashboard'),
+                'ui::menu-item#student-dashboard' => [
+                    'title' => 'student::ui.dashboard.title',
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/student',
                     'role' => 'student',

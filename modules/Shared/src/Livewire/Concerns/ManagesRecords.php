@@ -56,16 +56,12 @@ trait ManagesRecords
     public string $search = '';
 
     /**
-     * The field to sort the records by.
+     * The sorting configuration (column and direction).
+     *
+     * @var array{column: string, direction: string}
      */
-    #[Url(except: self::DEFAULT_SORT_BY)]
-    public string $sortBy = self::DEFAULT_SORT_BY;
-
-    /**
-     * The direction to sort the records.
-     */
-    #[Url(except: self::DEFAULT_SORT_DIR)]
-    public string $sortDir = self::DEFAULT_SORT_DIR;
+    #[Url]
+    public array $sortBy = ['column' => self::DEFAULT_SORT_BY, 'direction' => self::DEFAULT_SORT_DIR];
 
     /**
      * Number of records to display per page.
@@ -110,8 +106,7 @@ trait ManagesRecords
     {
         $this->search = '';
         $this->perPage = EloquentQuery::DEFAULT_PER_PAGE;
-        $this->sortBy = self::DEFAULT_SORT_BY;
-        $this->sortDir = self::DEFAULT_SORT_DIR;
+        $this->sortBy = ['column' => self::DEFAULT_SORT_BY, 'direction' => self::DEFAULT_SORT_DIR];
         $this->selectedIds = [];
     }
 
@@ -132,8 +127,8 @@ trait ManagesRecords
     {
         $filters = array_filter([
             'search' => $this->search,
-            'sort_by' => $this->sortBy,
-            'sort_dir' => $this->sortDir,
+            'sort_by' => $this->sortBy['column'] ?? self::DEFAULT_SORT_BY,
+            'sort_dir' => $this->sortBy['direction'] ?? self::DEFAULT_SORT_DIR,
         ], fn ($value) => $value !== null && $value !== '');
 
         return $this->service->paginate($filters, $this->perPage);

@@ -25,14 +25,15 @@ class EnvironmentSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(SetupService $setupService, SystemAuditor $auditor): void
     {
         $this->setupService = $setupService;
+        $this->auditor = $auditor;
 
         $this->initSetupStepProps(
-            currentStep: 'environment',
-            nextStep: 'school',
-            prevStep: 'welcome',
+            currentStep: SetupService::STEP_ENVIRONMENT,
+            nextStep: SetupService::STEP_SCHOOL,
+            prevStep: SetupService::STEP_WELCOME,
         );
 
         $this->requireSetupAccess();
@@ -44,7 +45,7 @@ class EnvironmentSetup extends Component
     #[Computed]
     public function audit(): array
     {
-        return app(SystemAuditor::class)->audit();
+        return $this->auditor->audit();
     }
 
     /**
@@ -53,7 +54,7 @@ class EnvironmentSetup extends Component
     #[Computed]
     public function disableNextStep(): bool
     {
-        return ! app(SystemAuditor::class)->passes();
+        return ! $this->auditor->passes();
     }
 
     /**

@@ -2,7 +2,6 @@
     <x-ui::header 
         :title="__('admin::ui.menu.job_monitor')" 
         :subtitle="__('admin::ui.dashboard.job_monitor_subtitle', 'Monitor and manage background processing tasks.')" 
-        :context="'admin::ui.menu.job_monitor'"
     >
         <x-slot:actions>
             @if($tab === 'failed')

@@ -7,7 +7,7 @@ verified, and aligned with architectural design invariants.
 
 > **Governance Mandate:** All repository operations must facilitate the **Verification &
 > Validation** of requirements defined in the
-> **[System Requirements Specification](system-requirements-specification.md)**.
+> **[System Requirements Specification](specs.md)**.
 
 ---
 
@@ -62,7 +62,7 @@ A PR is only eligible for merging when it satisfies the following technical requ
 1.  **Full Verification**: Successful execution of **`composer test`**.
 2.  **Full Linting**: Successful execution of **`composer lint`**.
 3.  **Isolation Audit**: Reviewer verification of **Strict Modular Isolation** as defined in the
-    **[Architecture Description](architecture-description.md)**.
+    **[Architecture Description](architecture.md)**.
 4.  **Traceability**: Demonstrated alignment with the corresponding blueprint and System
     Requirements Specification.
 

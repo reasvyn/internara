@@ -23,5 +23,11 @@ return [
             'assess' => 'Penilaian',
             'transcript' => 'Transkrip',
         ],
+        'assess_student' => 'Penilaian Siswa',
+        'evaluation' => 'Evaluasi Akademik',
+        'competency_recap' => 'Rekap Kompetensi',
+        'competency_recap_subtitle' => 'Keahlian yang diklaim dalam jurnal harian',
+        'submit_evaluation' => 'Simpan Penilaian',
+        'placeholder_notes' => 'Tuliskan catatan atau umpan balik untuk siswa...',
     ],
 ];

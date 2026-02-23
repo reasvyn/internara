@@ -38,6 +38,7 @@ class GraduationReadiness extends Component
             'registrations' => $query->with(['student', 'placement'])->paginate(15),
         ])->layout('ui::components.layouts.dashboard', [
             'title' => __('admin::ui.menu.readiness') . ' | ' . setting('brand_name', setting('app_name')),
+            'context' => 'admin::ui.menu.readiness',
         ]);
     }
 }

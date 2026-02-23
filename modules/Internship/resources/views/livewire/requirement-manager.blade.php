@@ -3,7 +3,6 @@
         wire:key="requirement-manager-header"
         :title="__('internship::ui.requirement_title')" 
         :subtitle="__('internship::ui.requirement_subtitle')"
-        :context="'internship::ui.index.title'"
     >
         <x-slot:actions wire:key="requirement-manager-actions">
             <x-ui::button label="{{ __('internship::ui.add_requirement') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />

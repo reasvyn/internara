@@ -3,7 +3,6 @@
         wire:key="company-manager-header"
         :title="__('internship::ui.company_title')" 
         :subtitle="__('internship::ui.company_subtitle')"
-        :context="'internship::ui.index.title'"
     >
         <x-slot:actions wire:key="company-manager-actions">
             <x-ui::button label="{{ __('internship::ui.add_company') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />

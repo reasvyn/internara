@@ -29,7 +29,7 @@ interface ProfileService extends EloquentQuery
     public function getByUserId(string $userId): Profile;
 
     /**
-     * Synchronize the profileable model based on user roles.
+     * Synchronize the profileable model for a profile.
      */
-    public function syncProfileable(Profile $profile, array $roles): Profile;
+    public function syncProfileable(Profile $profile, Model $profileable): Profile;
 }

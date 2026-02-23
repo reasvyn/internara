@@ -10,19 +10,14 @@ use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService as Contract;
 use Modules\Shared\Services\EloquentQuery;
-use Modules\Student\Services\Contracts\StudentService;
-use Modules\Teacher\Services\Contracts\TeacherService;
 
 /**
  * @property Profile $model
  */
 class ProfileService extends EloquentQuery implements Contract
 {
-    public function __construct(
-        Profile $model,
-        protected StudentService $studentService,
-        protected TeacherService $teacherService,
-    ) {
+    public function __construct(Profile $model)
+    {
         $this->setModel($model);
     }
 
@@ -47,24 +42,16 @@ class ProfileService extends EloquentQuery implements Contract
     }
 
     /**
-     * Synchronize the profileable model based on user roles.
+     * Synchronize the profileable model for a profile.
      */
-    public function syncProfileable(Profile $profile, array $roles, array $extraData = []): Profile
+    public function syncProfileable(Profile $profile, Model $profileable): Profile
     {
-        if ($profile->profileable_id) {
-            // Optional: update extra data if needed even if exists
+        if ($profile->profileable_id === $profileable->getKey()) {
             return $profile;
         }
 
-        if (in_array(Role::STUDENT->value, $roles)) {
-            $student = $this->studentService->createWithDefault($extraData);
-            $profile->profileable()->associate($student);
-            $profile->save();
-        } elseif (in_array(Role::TEACHER->value, $roles)) {
-            $teacher = $this->teacherService->createWithDefault($extraData);
-            $profile->profileable()->associate($teacher);
-            $profile->save();
-        }
+        $profile->profileable()->associate($profileable);
+        $profile->save();
 
         return $profile;
     }

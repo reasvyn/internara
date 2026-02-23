@@ -7,14 +7,9 @@ namespace Modules\Teacher\Services\Contracts;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
- * @template TModel of \Modules\Teacher\Models\Teacher
- *
- * @extends EloquentQuery<TModel>
+ * @extends EloquentQuery<User>
  */
 interface TeacherService extends EloquentQuery
 {
-    /**
-     * Create a teacher record with default values.
-     */
-    public function createWithDefault(array $data = []): \Modules\Teacher\Models\Teacher;
+    //
 }

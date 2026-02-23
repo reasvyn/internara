@@ -37,6 +37,8 @@ class ProfileFactory extends Factory
             'emergency_contact_phone' => fake()->phoneNumber(),
             'emergency_contact_address' => fake()->address(),
             'bio' => fake()->paragraph(),
+            'national_identifier' => fake()->numerify('##########'),
+            'registration_number' => fake()->numerify('########'),
         ];
     }
 }

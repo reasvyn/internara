@@ -74,7 +74,7 @@ class SetupService implements Contracts\SetupService
             return ! $this->isAppInstalled();
         }
 
-        if (! $this->isStepCompleted($prevStep)) {
+        if (! $this->isStepCompleted($prevStep, true)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -129,11 +129,15 @@ class SetupService implements Contracts\SetupService
 
         $this->settingService->setValue($settings);
 
+        // Targeted session cleanup
         Session::forget(self::SESSION_SETUP_AUTHORIZED);
-        Session::flush();
+        foreach (range(1, 8) as $step) {
+            Session::forget("setup_step_{$step}");
+        }
+        
         Session::regenerate();
 
-        return $this->isAppInstalled();
+        return $this->isAppInstalled(true);
     }
 
     /**

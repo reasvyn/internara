@@ -24,6 +24,10 @@ return [
         'quick_links' => 'Quick Links',
         'user_management' => 'User Management',
         'system_config' => 'System Configuration',
+        'widget' => [
+            'series' => 'Series',
+            'license' => 'License',
+        ],
     ],
     'menu' => [
         'dashboard' => 'Main Dashboard',
@@ -45,5 +49,16 @@ return [
         'registrations' => 'Student Registrations',
         'placements' => 'Industry Placements',
         'requirements' => 'Requirements',
+    ],
+    'readiness' => [
+        'student' => 'Student',
+        'username' => 'Username',
+        'placement' => 'Placement Location',
+        'status' => 'Readiness Status',
+        'ready' => 'Ready to Graduate',
+        'not_ready' => 'Not Ready',
+        'certificate' => 'Certificate',
+        'transcript' => 'Transcript',
+        'view_detail' => 'View Detail',
     ],
 ];

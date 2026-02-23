@@ -5,42 +5,74 @@ declare(strict_types=1);
 namespace Modules\Department\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Component;
 use Modules\Department\Livewire\Forms\DepartmentForm;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\Department\Models\Department;
+use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\UI\Livewire\RecordManager;
 
-class DepartmentManager extends Component
+/**
+ * Class DepartmentManager
+ *
+ * Handles the administrative interface for managing academic departments (Jurusan).
+ */
+class DepartmentManager extends RecordManager
 {
-    use ManagesRecords;
-
     public DepartmentForm $form;
 
-    public function boot(
-        \Modules\Department\Services\Contracts\DepartmentService $departmentService,
-    ): void {
+    /**
+     * Initialize the component metadata and services.
+     */
+    public function boot(DepartmentService $departmentService): void
+    {
         $this->service = $departmentService;
         $this->eventPrefix = 'department';
+        $this->modelClass = Department::class;
     }
 
-    public function mount(): void
+    /**
+     * Configure the component's basic properties.
+     */
+    public function initialize(): void
     {
+        $this->title = __('department::ui.title');
+        $this->subtitle = __('department::ui.subtitle');
+        $this->context = 'admin::ui.menu.departments';
+        $this->addLabel = __('department::ui.add');
+        $this->deleteConfirmMessage = __('department::ui.delete_confirm');
+
         $isSetupPhase =
             session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
                 true || is_testing();
 
-        if ($isSetupPhase) {
-            return;
+        if (! $isSetupPhase) {
+            $this->viewPermission = 'department.view';
+            $this->createPermission = 'department.create';
+            $this->updatePermission = 'department.update';
+            $this->deletePermission = 'department.delete';
         }
-
-        $this->authorize('department.view');
     }
 
+    /**
+     * Define the table structure.
+     */
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('department::ui.name'), 'sortable' => true],
+            ['key' => 'description', 'label' => __('ui::common.description')],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+        ];
+    }
+
+    /**
+     * Render the component view.
+     */
     public function render(): View
     {
-        return view('department::livewire.department-manager', [
-            'records' => $this->records,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('department::ui.manage_departments') . ' | ' . setting('brand_name', setting('app_name')),
+        return view('department::livewire.department-manager')->layout('ui::components.layouts.dashboard', [
+            'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
+            'context' => $this->context,
         ]);
     }
 }

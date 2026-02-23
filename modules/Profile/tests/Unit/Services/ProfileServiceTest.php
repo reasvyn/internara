@@ -12,11 +12,7 @@ use Modules\Teacher\Services\Contracts\TeacherService;
 
 test('it can get profile by user id', function () {
     $profile = mock(Profile::class);
-    $service = new ProfileService(
-        $profile,
-        mock(StudentService::class),
-        mock(TeacherService::class),
-    );
+    $service = new ProfileService($profile);
 
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $profile->shouldReceive('newQuery')->andReturn($builder);
@@ -29,24 +25,21 @@ test('it can get profile by user id', function () {
     expect($result)->toBeInstanceOf(Profile::class);
 });
 
-test('it can sync student profileable', function () {
+test('it can sync profileable model', function () {
     $profileModel = mock(Profile::class);
-    $studentService = mock(StudentService::class);
-    $teacherService = mock(TeacherService::class);
-
-    $service = new ProfileService($profileModel, $studentService, $teacherService);
+    $service = new ProfileService($profileModel);
 
     $profile = mock(Profile::class)->makePartial();
-    $profile->profileable_id = null; // Important for trigger
+    $profile->profileable_id = null;
 
     $student = mock(\Modules\Student\Models\Student::class);
-    $studentService->shouldReceive('createWithDefault')->once()->andReturn($student);
+    $student->shouldReceive('getKey')->andReturn('student-uuid');
 
     $relation = mock(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
     $profile->shouldReceive('profileable')->andReturn($relation);
     $relation->shouldReceive('associate')->with($student)->once();
     $profile->shouldReceive('save')->once();
 
-    $result = $service->syncProfileable($profile, [Role::STUDENT->value]);
+    $result = $service->syncProfileable($profile, $student);
     expect($result)->toBe($profile);
 });

@@ -32,7 +32,7 @@
 
                 {{-- Actions --}}
                 <div class="mt-10 flex justify-end gap-3">
-                    <button type="button" class="btn btn-ghost px-10 font-bold text-base-content/60">{{ __('Batal') }}</button>
+                    <button type="button" class="btn btn-ghost px-10 font-bold text-base-content/60">{{ __('ui::common.cancel') }}</button>
                     <button type="button" class="btn btn-primary px-12 font-bold shadow-xl shadow-primary/20">
                         {{ __('Simpan Potongan') }}
                     </button>

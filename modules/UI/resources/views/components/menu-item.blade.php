@@ -3,6 +3,7 @@
     'icon' => null,
     'link' => null,
     'external' => false,
+    'exact' => false,
 ])
 
 @php
@@ -10,7 +11,9 @@
     
     if ($link) {
         $path = ltrim($link, '/');
-        $isActive = request()->is($path) || request()->is($path . '/*');
+        $isActive = $exact 
+            ? request()->is($path) 
+            : (request()->is($path) || request()->is($path . '/*'));
     }
 
     $classes = $isActive 

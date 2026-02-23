@@ -47,7 +47,7 @@ class ScheduleServiceProvider extends ServiceProvider
             ],
             'sidebar.menu' => [
                 'ui::menu-item#schedules' => [
-                    'title' => __('schedule::ui.manage_title'),
+                    'title' => 'schedule::ui.manage_title',
                     'icon' => 'tabler.calendar-stats',
                     'link' => '/schedules',
                     'order' => 60,

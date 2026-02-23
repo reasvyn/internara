@@ -57,7 +57,6 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
     public function create(array $data): User
     {
         // If app is not installed, we use the save method (updateOrCreate) to ensure setup idempotency.
-        // This allows the authorized user to repeat the step or "correct" the SuperAdmin data.
         if (! setting('app_installed', false)) {
             return $this->save(['email' => $data['email'] ?? null], $data);
         }
@@ -75,6 +74,10 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
         $this->handleSuperAdminAvatar($superAdmin, $data['avatar_file'] ?? null);
 
         $superAdmin->assignRole('super-admin');
+        
+        // Clear permission cache to ensure role existence checks work immediately
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         $superAdmin->markEmailAsVerified();
 
         return $superAdmin;
@@ -130,18 +133,29 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
     /**
      * Update an existing SuperAdmin or create a new one if not found.
      *
-     * @param array<string, mixed> $data The data for creating or updating the SuperAdmin.
+     * @param array<string, mixed> $attributes Unique identifiers for lookup (e.g. email).
+     * @param array<string, mixed> $values Attributes to be merged/updated.
      *
      * @return \Modules\User\Models\User The created or updated SuperAdmin user.
      */
     public function save(array $attributes, array $values = []): User
     {
-        $superAdmin = parent::save($attributes, $values);
+        // During setup, we bypass the super-admin scope to allow promoting existing users.
+        $query = setting('app_installed', false) ? $this->model->newQuery() : $this->query();
+        
+        // CRITICAL: Filter only fillable attributes for the User model
+        $fillableValues = \Illuminate\Support\Arr::only($values, $this->model->getFillable());
+        
+        $superAdmin = $query->updateOrCreate($attributes, $fillableValues);
 
         $allData = array_merge($attributes, $values);
         $this->handleSuperAdminAvatar($superAdmin, $allData['avatar_file'] ?? null);
 
         $superAdmin->assignRole('super-admin');
+        
+        // Clear permission cache to ensure role existence checks work immediately
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         $superAdmin->markEmailAsVerified();
         $superAdmin->loadMissing(['roles', 'permissions']);
 

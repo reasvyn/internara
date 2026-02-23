@@ -32,10 +32,10 @@ class InternshipSetup extends Component
     public function mount(): void
     {
         $this->initSetupStepProps(
-            currentStep: 'internship',
-            nextStep: 'system',
-            prevStep: 'department',
-            extra: ['req_record' => 'internship'],
+            currentStep: SetupService::STEP_INTERNSHIP,
+            nextStep: SetupService::STEP_SYSTEM,
+            prevStep: SetupService::STEP_DEPARTMENT,
+            extra: ['req_record' => SetupService::RECORD_INTERNSHIP],
         );
 
         $this->requireSetupAccess();

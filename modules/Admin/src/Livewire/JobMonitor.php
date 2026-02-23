@@ -67,6 +67,7 @@ class JobMonitor extends Component
             'failedJobs' => $failedJobs,
         ])->layout('ui::components.layouts.dashboard', [
             'title' => __('admin::ui.menu.job_monitor') . ' | ' . setting('brand_name', setting('app_name')),
+            'context' => 'admin::ui.menu.job_monitor',
         ]);
     }
 }

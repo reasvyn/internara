@@ -3,7 +3,6 @@
         wire:key="placement-manager-header"
         :title="__('internship::ui.placement_title')" 
         :subtitle="__('internship::ui.placement_subtitle')"
-        :context="'internship::ui.index.title'"
     >
         <x-slot:actions wire:key="placement-manager-actions">
             <x-ui::button label="{{ __('internship::ui.add_placement') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
@@ -54,6 +53,7 @@
                 label="{{ __('internship::ui.program') }}" 
                 wire:model="form.internship_id" 
                 :options="$this->internships" 
+                option-label="title"
                 placeholder="{{ __('internship::ui.select_program') }}"
                 required 
             />

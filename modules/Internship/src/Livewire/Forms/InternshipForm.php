@@ -15,7 +15,7 @@ class InternshipForm extends Form
 
     public ?string $description = null;
 
-    public ?int $year = null;
+    public ?string $academic_year = null;
 
     public ?string $semester = null;
 
@@ -35,7 +35,7 @@ class InternshipForm extends Form
                 Rule::unique('internships', 'title')->ignore($this->id),
             ],
             'description' => ['nullable', 'string'],
-            'year' => ['required', 'integer', 'min:2000', 'max:2100'],
+            'academic_year' => ['required', 'string', 'max:20'],
             'semester' => ['required', 'string', Rule::in(['Ganjil', 'Genap', 'Tahunan'])],
             'date_start' => ['required', 'date'],
             'date_finish' => ['required', 'date', 'after:date_start'],

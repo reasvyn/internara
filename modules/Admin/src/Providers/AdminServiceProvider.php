@@ -57,7 +57,7 @@ class AdminServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            // \Modules\Example\Services\Contract\YourContractService::class => \Modules\Example\Services\YourService::class
+            \Modules\Admin\Services\Contracts\AdminService::class => \Modules\Admin\Services\AdminService::class,
         ];
     }
 }

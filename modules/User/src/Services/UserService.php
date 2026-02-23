@@ -41,50 +41,45 @@ class UserService extends EloquentQuery implements Contract
      */
     public function create(array $data): User
     {
-        $roles = $data['roles'] ?? null;
+        $roles = Arr::wrap($data['roles'] ?? [Role::STUDENT->value]);
         $status = $data['status'] ?? User::STATUS_ACTIVE;
         $profileData = $data['profile'] ?? [];
-        unset($data['roles'], $data['status'], $data['profile']);
-
-        // Default role for new users if not specified (e.g., from public registration)
-        if ($roles === null) {
-            $roles = [Role::STUDENT->value];
-        }
-
-        if ($roles !== null) {
-            $roles = Arr::wrap($roles);
-            if (in_array(Role::SUPER_ADMIN->value, $roles)) {
-                // Specialized SuperAdmin creation logic
-                return $this->superAdminService->create($data);
-            }
-        }
-
+        
+        // Prepare Password
         $plainPassword = $data['password'] ?? \Illuminate\Support\Str::password(16);
         $data['password'] = $plainPassword;
 
-        $user = parent::create($data);
-        $this->handleUserAvatar($user, $data['avatar_file'] ?? null);
-
-        // Initialize Profile
-        $profile = $this->profileService->getByUserId($user->id);
-        if ($roles !== null) {
-            $this->profileService->syncProfileable($profile, $roles, $profileData);
+        // Enforce hierarchical authority for user creation, except during initial setup
+        if (setting('app_installed', false)) {
+            Gate::authorize('create', [User::class, $roles]);
         }
 
-        if (! empty($profileData)) {
-            $this->profileService->update($profile->id, $profileData);
-        }
-
-        if ($roles !== null) {
+        // Specialized Delegation
+        if (in_array(Role::SUPER_ADMIN->value, $roles)) {
+            $user = $this->superAdminService->create(array_merge($data, [
+                'status' => $status,
+                'roles' => $roles,
+            ]));
+        } else {
+            // Standard User Creation
+            $filteredData = \Illuminate\Support\Arr::except($data, ['roles', 'status', 'profile']);
+            $user = parent::create($filteredData);
+            
+            $this->handleUserAvatar($user, $data['avatar_file'] ?? null);
             $user->assignRole($roles);
+            $user->setStatus($status);
 
             // Automatically verify Admin accounts created by other administrators
-            if (in_array(Role::ADMIN->value, Arr::wrap($roles))) {
+            if (in_array(Role::ADMIN->value, $roles)) {
                 $user->markEmailAsVerified();
             }
         }
 
-        $user->setStatus($status);
+        // UNIFIED: Initialize & Update Profile for ALL user types
+        $profile = $this->profileService->getByUserId($user->id);
+        if (! empty($profileData)) {
+            $this->profileService->update($profile->id, $profileData);
+        }
 
         // Notify the new user
         $user->notify(new WelcomeUserNotification($plainPassword));
@@ -166,15 +161,9 @@ class UserService extends EloquentQuery implements Contract
         $updatedUser = parent::update($id, $data);
         $this->handleUserAvatar($updatedUser, $data['avatar_file'] ?? null);
 
-        // Update Profile
-        $profile = $this->profileService->getByUserId($updatedUser->id);
+        // Update basic User details
         if ($roles !== null) {
             $updatedUser->syncRoles($roles);
-            $this->profileService->syncProfileable($profile, Arr::wrap($roles), $profileData);
-        }
-
-        if (! empty($profileData)) {
-            $this->profileService->update($profile->id, $profileData);
         }
 
         if ($status !== null) {

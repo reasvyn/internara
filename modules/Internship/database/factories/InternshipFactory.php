@@ -22,7 +22,7 @@ class InternshipFactory extends Factory
         return [
             'title' => $this->faker->unique()->sentence(3),
             'description' => $this->faker->paragraph,
-            'year' => (int) date('Y'),
+            'academic_year' => date('Y').'/'.(date('Y') + 1),
             'semester' => 'Ganjil',
             'date_start' => now()->toDateString(),
             'date_finish' => now()->addMonths(3)->toDateString(),

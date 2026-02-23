@@ -8,8 +8,12 @@
 <div {{ $attributes->merge(['class' => 'bg-base-100 border border-base-200 rounded-2xl flex flex-col' . ($shadow ? ' shadow-md hover:shadow-lg transition-all duration-300' : '')]) }}>
     {{-- Card Header --}}
     @if($title || $subtitle || isset($menu))
-        <div class="px-6 py-5 flex items-center justify-between gap-4">
-            <div>
+        <div @class([
+            'px-6 py-5 flex items-center gap-4',
+            'justify-between' => isset($menu),
+            'justify-center' => !isset($menu) && str_contains($attributes->get('class', ''), 'text-center')
+        ])>
+            <div @class(['flex-1' => !isset($menu) && str_contains($attributes->get('class', ''), 'text-center')])>
                 @if($title)
                     <h3 class="text-lg font-black tracking-tight text-base-content">{{ $title }}</h3>
                 @endif

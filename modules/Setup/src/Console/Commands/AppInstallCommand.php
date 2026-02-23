@@ -51,130 +51,145 @@ class AppInstallCommand extends Command
             return self::FAILURE;
         }
 
-        $success = true;
+        try {
+            $success = true;
 
-        // 1. Environment Initialization
-        $this->components->task('Ensuring .env file existence', function () use (&$success) {
-            if (! $this->installerService->ensureEnvFileExists()) {
-                $success = false;
+            // 0. System Cleanup
+            $this->components->task('Clearing application cache', function () {
+                $this->callSilent('optimize:clear');
 
-                return false;
-            }
+                return true;
+            });
 
-            return true;
-        });
+            // 1. Environment Initialization
+            $this->components->task('Ensuring .env file existence', function () use (&$success) {
+                if (! $this->installerService->ensureEnvFileExists()) {
+                    $success = false;
 
-        if (! $success) {
-            return self::FAILURE;
-        }
-
-        // 2. Environment Validation
-        $this->components->task('Validating environment requirements', function () use (&$success) {
-            $audit = $this->installerService->validateEnvironment();
-            $failedCount = 0;
-
-            // Check Requirements & Permissions
-            foreach (['requirements', 'permissions'] as $category) {
-                if (! isset($audit[$category]) || ! is_array($audit[$category])) {
-                    continue;
+                    return false;
                 }
 
-                foreach ($audit[$category] as $name => $status) {
-                    if ($status === false) {
-                        $this->newLine();
-                        $label = is_string($name)
-                            ? $name
-                            : (is_numeric($name)
-                                ? (string) $name
-                                : json_encode($name));
-                        $this->components->error("Audit failed for: {$label}");
-                        $failedCount++;
+                return true;
+            });
+
+            if (! $success) {
+                return self::FAILURE;
+            }
+
+            // 2. Environment Validation
+            $this->components->task('Validating environment requirements', function () use (&$success) {
+                $audit = $this->installerService->validateEnvironment();
+                $failedCount = 0;
+
+                // Check Requirements & Permissions
+                foreach (['requirements', 'permissions'] as $category) {
+                    if (! isset($audit[$category]) || ! is_array($audit[$category])) {
+                        continue;
+                    }
+
+                    foreach ($audit[$category] as $name => $status) {
+                        if ($status === false) {
+                            $this->newLine();
+                            $label = is_string($name)
+                                ? $name
+                                : (is_numeric($name)
+                                    ? (string) $name
+                                    : json_encode($name));
+                            $this->components->error("Audit failed for: {$label}");
+                            $failedCount++;
+                        }
                     }
                 }
+
+                // Check Database specifically
+                if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
+                    $this->newLine();
+                    $this->components->error(
+                        'Database error: '.
+                            (is_array($audit['database']['message'])
+                                ? json_encode($audit['database']['message'])
+                                : (string) ($audit['database']['message'] ?? 'Unknown error')),
+                    );
+                    $failedCount++;
+                }
+
+                if ($failedCount > 0) {
+                    $success = false;
+
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (! $success) {
+                return self::FAILURE;
             }
 
-            // Check Database specifically
-            if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
-                $this->newLine();
-                $this->components->error(
-                    'Database error: '.
-                        (is_array($audit['database']['message'])
-                            ? json_encode($audit['database']['message'])
-                            : (string) ($audit['database']['message'] ?? 'Unknown error')),
-                );
-                $failedCount++;
+            // 3. Application Key Generation
+            $this->components->task('Generating application key', function () use (&$success) {
+                if (! $this->installerService->generateAppKey()) {
+                    $success = false;
+
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (! $success) {
+                return self::FAILURE;
             }
 
-            if ($failedCount > 0) {
-                $success = false;
+            // 4. Database Migrations
+            $this->components->task('Initializing database schema', function () use (&$success) {
+                if (! $this->installerService->runMigrations()) {
+                    $success = false;
 
-                return false;
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (! $success) {
+                return self::FAILURE;
             }
 
-            return true;
-        });
+            // 5. Core & Shared Seeding
+            $this->components->task('Seeding foundational data', function () use (&$success) {
+                if (! $this->installerService->runSeeders()) {
+                    $success = false;
 
-        if (! $success) {
-            return self::FAILURE;
-        }
+                    return false;
+                }
 
-        // 3. Application Key Generation
-        $this->components->task('Generating application key', function () use (&$success) {
-            if (! $this->installerService->generateAppKey()) {
-                $success = false;
+                return true;
+            });
 
-                return false;
+            if (! $success) {
+                return self::FAILURE;
             }
 
-            return true;
-        });
+            // 6. Storage Symlinking
+            $this->components->task('Creating storage symbolic link', function () use (&$success) {
+                if (! $this->installerService->createStorageSymlink()) {
+                    $success = false;
 
-        if (! $success) {
-            return self::FAILURE;
-        }
+                    return false;
+                }
 
-        // 4. Database Migrations
-        $this->components->task('Initializing database schema', function () use (&$success) {
-            if (! $this->installerService->runMigrations()) {
-                $success = false;
+                return true;
+            });
 
-                return false;
+            if (! $success) {
+                return self::FAILURE;
             }
-
-            return true;
-        });
-
-        if (! $success) {
-            return self::FAILURE;
-        }
-
-        // 5. Core & Shared Seeding
-        $this->components->task('Seeding foundational data', function () use (&$success) {
-            if (! $this->installerService->runSeeders()) {
-                $success = false;
-
-                return false;
-            }
-
-            return true;
-        });
-
-        if (! $success) {
-            return self::FAILURE;
-        }
-
-        // 6. Storage Symlinking
-        $this->components->task('Creating storage symbolic link', function () use (&$success) {
-            if (! $this->installerService->createStorageSymlink()) {
-                $success = false;
-
-                return false;
-            }
-
-            return true;
-        });
-
-        if (! $success) {
+        } catch (\Throwable $e) {
+            $this->newLine();
+            $this->components->error('Installation Failed: ' . $e->getMessage());
+            $this->error($e->getTraceAsString());
+            
             return self::FAILURE;
         }
 

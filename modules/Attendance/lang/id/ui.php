@@ -28,4 +28,14 @@ return [
             'submit' => 'Simpan Kehadiran',
         ],
     ],
+    'manager' => [
+        'title' => 'Presensi Harian',
+        'check_in' => 'Presensi Masuk',
+        'check_out' => 'Presensi Keluar',
+        'label_check_in' => 'Jam Masuk',
+        'label_check_out' => 'Jam Keluar',
+        'status' => 'Status',
+        'not_checked_in' => 'Anda belum melakukan presensi masuk hari ini.',
+        'completed' => 'Anda telah menyelesaikan presensi hari ini.',
+    ],
 ];

@@ -48,4 +48,10 @@ return [
     'download_template' => 'Download Template',
     'generated_at' => 'Generated at',
     'view_all' => 'View All',
+    'delete_confirm' => 'Are you sure you want to delete this record?',
+    'not_applicable' => 'N/A',
+    'bulk_actions' => 'Bulk Actions',
+    'delete_selected' => 'Delete Selected',
+    'avatar' => 'Avatar',
+    'avatar_hint' => 'Recommended: Square image, max 1MB.',
 ];

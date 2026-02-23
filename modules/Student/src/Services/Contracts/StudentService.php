@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Modules\Student\Services\Contracts;
 
 use Modules\Shared\Services\Contracts\EloquentQuery;
+use Modules\User\Models\User;
 
 /**
- * @template TModel of \Modules\Student\Models\Student
- *
- * @extends EloquentQuery<TModel>
+ * @extends EloquentQuery<User>
  */
 interface StudentService extends EloquentQuery
 {
-    /**
-     * Create a student record with default values.
-     */
-    public function createWithDefault(array $data = []): \Modules\Student\Models\Student;
+    //
 }

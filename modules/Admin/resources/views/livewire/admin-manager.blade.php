@@ -3,23 +3,22 @@
         wire:key="admin-manager-header"
         :title="$title" 
         :subtitle="__('user::ui.manager.subtitle')"
-        :context="'admin::ui.menu.administrators'"
     >
         <x-slot:actions wire:key="admin-manager-actions">
             <div class="flex items-center gap-3 relative z-50">
                 <x-ui::dropdown icon="tabler.dots" variant="tertiary" right>
-                    <x-ui::menu-item :title="__('ui::common.print')" icon="tabler.printer" wire:click="printPdf" />
-                    <x-ui::menu-item :title="__('ui::common.export')" icon="tabler.download" wire:click="exportCsv" />
+                    <x-ui::menu-item title="ui::common.print" icon="tabler.printer" wire:click="printPdf" />
+                    <x-ui::menu-item title="ui::common.export" icon="tabler.download" wire:click="exportCsv" />
                 </x-ui::dropdown>
 
                 <x-ui::dropdown 
-                    :label="__('Aksi Massal')" 
+                    :label="__('ui::common.bulk_actions')" 
                     icon="tabler.layers-intersect" 
                     variant="secondary" 
                     :disabled="count($selectedIds) === 0"
                 >
                     <x-ui::menu-item 
-                        :title="__('Hapus Terpilih')" 
+                        title="ui::common.delete_selected" 
                         icon="tabler.trash" 
                         class="text-error" 
                         wire:click="removeSelected" 
@@ -126,7 +125,9 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-ui::input :label="__('user::ui.manager.form.email')" icon="tabler.mail" type="email" wire:model="form.email" required />
-                <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" required />
+                @if($form->id)
+                    <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" readonly />
+                @endif
             </div>
 
             <x-ui::input 
@@ -136,6 +137,22 @@
                 wire:model="form.password" 
                 :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
             />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <x-ui::input :label="__('user::ui.manager.form.phone')" icon="tabler.phone" wire:model="form.profile.phone" />
+                <x-ui::select 
+                    :label="__('user::ui.manager.form.gender')" 
+                    icon="tabler.gender-intersex"
+                    wire:model="form.profile.gender" 
+                    :options="[
+                        ['id' => 'male', 'name' => __('profile::enums.gender.male')],
+                        ['id' => 'female', 'name' => __('profile::enums.gender.female')],
+                    ]" 
+                    :placeholder="__('user::ui.manager.form.select_gender')"
+                />
+            </div>
+
+            <x-ui::textarea :label="__('user::ui.manager.form.address')" icon="tabler.map-pin" wire:model="form.profile.address" />
 
             <x-ui::select 
                 :label="__('user::ui.manager.form.status')" 

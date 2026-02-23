@@ -32,10 +32,10 @@ class DepartmentSetup extends Component
     public function mount(): void
     {
         $this->initSetupStepProps(
-            currentStep: 'department',
-            nextStep: 'internship',
-            prevStep: 'account',
-            extra: ['req_record' => 'department'],
+            currentStep: SetupService::STEP_DEPARTMENT,
+            nextStep: SetupService::STEP_INTERNSHIP,
+            prevStep: SetupService::STEP_ACCOUNT,
+            extra: ['req_record' => SetupService::RECORD_DEPARTMENT],
         );
 
         $this->requireSetupAccess();

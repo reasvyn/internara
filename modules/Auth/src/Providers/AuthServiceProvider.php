@@ -30,6 +30,22 @@ class AuthServiceProvider extends BaseAuthServiceProvider
 
         // Customize the verification email to sound like it's from the school
         $this->customizeVerificationEmail();
+
+        $this->configureRateLimiting();
+    }
+
+    /**
+     * Configure the rate limiters for the module.
+     */
+    protected function configureRateLimiting(): void
+    {
+        \Illuminate\Support\Facades\RateLimiter::for('auth', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('registration', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($request->ip());
+        });
     }
 
     /**

@@ -74,6 +74,11 @@ class SettingServiceProvider extends ServiceProvider
         $this->registerModule();
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->singleton(
+            \Modules\Setting\Services\Contracts\SettingService::class,
+            \Modules\Setting\Services\SettingService::class
+        );
     }
 
     /**
@@ -83,8 +88,6 @@ class SettingServiceProvider extends ServiceProvider
      */
     protected function bindings(): array
     {
-        return [
-            \Modules\Setting\Services\Contracts\SettingService::class => \Modules\Setting\Services\SettingService::class,
-        ];
+        return [];
     }
 }

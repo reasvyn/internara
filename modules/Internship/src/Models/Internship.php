@@ -23,7 +23,7 @@ class Internship extends Model
     protected $fillable = [
         'title',
         'description',
-        'year',
+        'academic_year',
         'semester',
         'date_start',
         'date_finish',
@@ -36,7 +36,7 @@ class Internship extends Model
      * @var array
      */
     protected $casts = [
-        'year' => 'integer', // Changed from year to integer for better compatibility
+        'academic_year' => 'string',
         'semester' => 'string',
         'date_start' => 'date',
         'date_finish' => 'date',

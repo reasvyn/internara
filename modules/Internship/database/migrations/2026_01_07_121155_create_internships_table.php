@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title')->unique();
             $table->text('description')->nullable();
-            $table->year('year');
+            $table->string('academic_year')->index();
             $table->string('semester');
             $table->date('date_start');
             $table->date('date_finish');

@@ -29,4 +29,4 @@ constructing deterministic verification suites.
 ---
 
 _For Internara-specific verification patterns and domain invariants, refer to the
-**[Testing & Verification Standards](../testing-verification-guide.md)**._
+**[Testing & Verification Standards](../testing.md)**._

@@ -107,7 +107,7 @@ capabilities.
 
 > **Governance Mandate:** All engineering activities demonstrate adherence to the authoritative
 > **[System Requirements Specification](specs.md)** and the
-> **[Architecture Description](architecture-description.md)**.
+> **[Architecture Description](architecture.md)**.
 
 ---
 
@@ -205,7 +205,7 @@ The final phase ensures that the engineering record converges with the realized 
     - **README Update**: Update the project-level `README.md` and any affected module-specific
       `README.md` files to reflect new capabilities and architectural changes.
 - **Repository**: Stage and commit changes according to the
-  **[GitHub Protocols](github-protocols.md)**.
+  **[GitHub Protocols](git.md)**.
 
 ---
 

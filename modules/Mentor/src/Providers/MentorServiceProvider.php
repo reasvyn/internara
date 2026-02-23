@@ -32,8 +32,8 @@ class MentorServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
-                'ui::menu-item' => [
-                    'title' => __('Dashboard'),
+                'ui::menu-item#mentor-dashboard' => [
+                    'title' => 'mentor::ui.dashboard.title',
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/mentor',
                     'role' => 'mentor',
@@ -62,6 +62,7 @@ class MentorServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Mentor\Services\Contracts\MentoringService::class => \Modules\Mentor\Services\MentoringService::class,
+            \Modules\Mentor\Services\Contracts\MentorService::class => \Modules\Mentor\Services\MentorService::class,
         ];
     }
 }

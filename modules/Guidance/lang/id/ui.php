@@ -25,6 +25,7 @@ return [
     'cancel' => 'Batal',
     'list_tab' => 'Daftar Panduan',
     'monitoring_tab' => 'Monitoring Siswa',
+    'manage_title' => 'Manajemen Panduan',
     'manage_subtitle' => 'Kelola buku panduan dan pedoman resmi untuk siswa.',
     'add_handbook' => 'Tambah Panduan',
     'edit_handbook' => 'Edit Panduan',

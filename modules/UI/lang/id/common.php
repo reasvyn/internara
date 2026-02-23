@@ -48,4 +48,10 @@ return [
     'download_template' => 'Unduh Templat',
     'generated_at' => 'Dibuat pada',
     'view_all' => 'Lihat Semua',
+    'delete_confirm' => 'Apakah Anda yakin ingin menghapus data ini?',
+    'not_applicable' => 'N/A',
+    'bulk_actions' => 'Aksi Massal',
+    'delete_selected' => 'Hapus Terpilih',
+    'avatar' => 'Avatar',
+    'avatar_hint' => 'Disarankan: Gambar persegi, maks 1MB.',
 ];

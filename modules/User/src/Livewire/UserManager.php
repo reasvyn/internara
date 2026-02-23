@@ -5,90 +5,91 @@ declare(strict_types=1);
 namespace Modules\User\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Component;
-use Modules\Exception\Concerns\HandlesAppException;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
+use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
-class UserManager extends Component
+/**
+ * Class UserManager
+ *
+ * Provides a unified interface for managing system users, supporting role-based filtering
+ * and standard CRUD operations via the RecordManager abstraction.
+ */
+class UserManager extends RecordManager
 {
     use Concerns\InteractsWithDepartments;
-    use HandlesAppException;
-    use ManagesRecords;
 
     public UserForm $form;
 
     /**
-     * Initialize the component.
+     * The specific role being managed (optional).
+     */
+    public ?string $targetRole = null;
+
+    /**
+     * Initialize the component metadata and services.
      */
     public function boot(UserService $userService): void
     {
         $this->service = $userService;
         $this->eventPrefix = 'user';
+        $this->modelClass = User::class;
     }
 
     /**
-     * {@inheritdoc}
+     * Configure the component's basic properties.
      */
-    protected function getExportHeaders(): array
+    public function initialize(): void
+    {
+        $roleKey = $this->targetRole ?: 'user';
+        $this->title = $this->targetRole ? __("user::ui.{$roleKey}_management") : __('user::ui.manager.title');
+        $this->subtitle = __('user::ui.manager.subtitle');
+        $this->context = 'admin::ui.menu.users';
+        $this->addLabel = __('user::ui.manager.add_' . $roleKey);
+        $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
+
+        $this->viewPermission = 'user.view';
+        $this->createPermission = 'user.manage';
+        $this->updatePermission = 'user.manage';
+        $this->deletePermission = 'user.manage';
+    }
+
+    /**
+     * Define the table structure.
+     */
+    protected function getTableHeaders(): array
     {
         return [
-            'name' => __('user::ui.manager.table.name'),
-            'email' => __('user::ui.manager.table.email'),
-            'username' => __('user::ui.manager.table.username'),
-            'roles' => __('user::ui.manager.table.roles'),
-            'created_at' => __('ui::common.created_at'),
+            ['key' => 'name', 'label' => __('user::ui.manager.table.name'), 'sortable' => true],
+            ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
+            ['key' => 'username', 'label' => __('user::ui.manager.table.username'), 'sortable' => true],
+            ['key' => 'roles', 'label' => __('user::ui.manager.table.roles')],
+            ['key' => 'account_status', 'label' => __('user::ui.manager.table.status')],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * Customize the query to include roles and profiles.
      */
-    protected function mapRecordForExport($record, array $keys): array
+    #[\Livewire\Attributes\Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return [
-            $record->name,
-            $record->email,
-            $record->username,
-            $record->roles->pluck('name')->implode(', '),
-            \Modules\Shared\Support\Formatter::date($record->created_at, 'Y-m-d H:i'),
-        ];
-    }
+        $appliedFilters = array_filter(array_merge($this->filters, [
+            'search' => $this->search,
+            'sort_by' => $this->sortBy['column'] ?? 'created_at',
+            'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+        ]), fn ($value) => $value !== null && $value !== '' && $value !== []);
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPdfView(): ?string
-    {
-        return 'user::pdf.users';
-    }
-
-    /**
-     * Mount the component.
-     */
-    public function mount(): void
-    {
-        $this->authorize('user.view');
-    }
-
-    /**
-     * Get records property for the table.
-     */
-    public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
-    {
         return $this->service
-            ->query([
-                'search' => $this->search,
-                'sort_by' => $this->sortBy,
-                'sort_dir' => $this->sortDir,
-            ], ['id', 'name', 'email', 'username', 'created_at'])
-            ->with(['roles:id,name'])
+            ->query($appliedFilters)
+            ->with(['roles:id,name', 'profile'])
             ->paginate($this->perPage);
     }
 
     /**
-     * Remove all selected users.
+     * Remove all selected users with safety checks.
      */
     public function removeSelected(): void
     {
@@ -97,8 +98,8 @@ class UserManager extends Component
         }
 
         try {
-            // Filter out super-admins before deletion for safety
-            $targets = \Modules\User\Models\User::whereIn('id', $this->selectedIds)
+            // Security: Prevent deletion of super-admins via bulk actions
+            $targets = User::whereIn('id', $this->selectedIds)
                 ->get()
                 ->reject(fn ($u) => $u->hasRole('super-admin'))
                 ->pluck('id')
@@ -113,7 +114,7 @@ class UserManager extends Component
     }
 
     /**
-     * Open form for adding a new user.
+     * Prepare form for a new user, pre-assigning target role if applicable.
      */
     public function add(): void
     {
@@ -123,62 +124,20 @@ class UserManager extends Component
             $this->form->roles = [$this->targetRole];
         }
 
-        $this->formModal = true;
+        $this->toggleModal(self::MODAL_FORM, true);
     }
 
     /**
-     * Open the form modal for editing a record.
-     */
-    public function edit(string $id): void
-    {
-        $user = $this->service->find($id);
-
-        if ($user) {
-            $this->authorize('update', $user);
-            $this->form->setUser($user);
-            $this->formModal = true;
-        }
-    }
-
-    /**
-     * Save the user record.
-     */
-    public function save(): void
-    {
-        $this->form->validate();
-
-        try {
-            if ($this->form->id) {
-                $user = $this->service->find($this->form->id);
-                if ($user) {
-                    $this->authorize('update', $user);
-                }
-                $this->service->update($this->form->id, $this->form->all());
-            } else {
-                $this->authorize('create', [User::class, $this->form->roles]);
-                $this->service->create($this->form->all());
-            }
-
-            $this->formModal = false;
-            flash()->success(__('shared::messages.record_saved'));
-        } catch (\Throwable $e) {
-            $this->handleAppExceptionInLivewire($e);
-        }
-    }
-
-    /**
-     * Render the user manager view.
+     * Render the component view.
      */
     public function render(): View
     {
         $roleKey = $this->targetRole ?: 'user';
-        $title = $this->targetRole ? __("user::ui.{$roleKey}_management") : __('User Management');
 
         return view('user::livewire.user-manager', [
-            'title' => $title,
             'roleKey' => $roleKey,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

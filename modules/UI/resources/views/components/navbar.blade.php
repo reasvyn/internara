@@ -15,6 +15,7 @@
 
     <x-slot:actions>
         @slotRender('navbar.actions', ['filter' => 'livewire:ui::language-switcher'])
+        @slotRender('navbar.actions', ['filter' => 'ui::theme-toggle'])
         @slotRender('navbar.actions', ['filter' => 'ui::user-menu'])
     </x-slot:actions>
 </x-ui::nav>

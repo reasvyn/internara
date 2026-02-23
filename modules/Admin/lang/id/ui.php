@@ -24,6 +24,10 @@ return [
         'quick_links' => 'Tautan Cepat',
         'user_management' => 'Manajemen Pengguna',
         'system_config' => 'Konfigurasi Sistem',
+        'widget' => [
+            'series' => 'Seri',
+            'license' => 'Lisensi',
+        ],
     ],
     'menu' => [
         'dashboard' => 'Dasbor Utama',
@@ -45,5 +49,16 @@ return [
         'registrations' => 'Pendaftaran Siswa',
         'placements' => 'Penempatan Magang',
         'requirements' => 'Prasyarat Magang',
+    ],
+    'readiness' => [
+        'student' => 'Siswa',
+        'username' => 'Username',
+        'placement' => 'Tempat Magang',
+        'status' => 'Status Kesiapan',
+        'ready' => 'Siap Lulus',
+        'not_ready' => 'Belum Siap',
+        'certificate' => 'Sertifikat',
+        'transcript' => 'Transkrip',
+        'view_detail' => 'Lihat Detail',
     ],
 ];

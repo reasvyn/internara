@@ -28,7 +28,10 @@ class SetupWelcome extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(currentStep: 'welcome', nextStep: 'environment');
+        $this->initSetupStepProps(
+            currentStep: SetupService::STEP_WELCOME,
+            nextStep: SetupService::STEP_ENVIRONMENT
+        );
 
         flash()->info(
             __('setup::wizard.welcome.toast_greeting', ['app' => setting('app_name', 'Internara')]),

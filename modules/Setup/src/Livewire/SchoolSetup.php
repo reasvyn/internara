@@ -33,10 +33,10 @@ class SchoolSetup extends Component
     public function mount(): void
     {
         $this->initSetupStepProps(
-            currentStep: 'school',
-            nextStep: 'account',
-            prevStep: 'environment',
-            extra: ['req_record' => 'school'],
+            currentStep: SetupService::STEP_SCHOOL,
+            nextStep: SetupService::STEP_ACCOUNT,
+            prevStep: SetupService::STEP_ENVIRONMENT,
+            extra: ['req_record' => SetupService::RECORD_SCHOOL],
         );
 
         $this->requireSetupAccess();

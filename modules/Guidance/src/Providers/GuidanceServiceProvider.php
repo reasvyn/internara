@@ -65,7 +65,7 @@ class GuidanceServiceProvider extends ServiceProvider
             ],
             'sidebar.menu' => [
                 'ui::menu-item#guidance' => [
-                    'title' => __('Manajemen Panduan'),
+                    'title' => 'guidance::ui.manage_title',
                     'icon' => 'tabler.books',
                     'link' => '/guidance/manage',
                     'order' => 61,

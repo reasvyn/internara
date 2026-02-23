@@ -85,7 +85,7 @@ class RegisterSuperAdmin extends Component
         return view('auth::livewire.register-super-admin')->layout(
             'auth::components.layouts.auth',
             [
-                'title' => __('Buat Akun Utama | :site_title', [
+                'title' => __('auth::ui.register_super_admin.page_title', [
                     'site_title' => setting('site_title', 'Internara'),
                 ]),
             ],

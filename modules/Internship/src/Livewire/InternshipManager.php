@@ -4,19 +4,30 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Livewire\Component;
 use Modules\Internship\Livewire\Forms\InternshipForm;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 
-class InternshipManager extends Component
+class InternshipManager extends RecordManager
 {
-    use ManagesRecords {
-        getPdfData as traitGetPdfData;
-    }
-
     public InternshipForm $form;
+
+    /**
+     * Define the model class for Policy-based authorization.
+     */
+    protected string $modelClass = \Modules\Internship\Models\Internship::class;
+
+    /**
+     * Define granular permissions for Internship management.
+     */
+    protected string $viewPermission = 'internship.view';
+
+    protected string $createPermission = 'internship.manage';
+
+    protected string $updatePermission = 'internship.manage';
+
+    protected string $deletePermission = 'internship.manage';
 
     /**
      * Initialize the component.
@@ -28,19 +39,47 @@ class InternshipManager extends Component
     }
 
     /**
-     * Mount the component.
+     * {@inheritdoc}
      */
-    public function mount(): void
+    public function initialize(): void
     {
-        $isSetupPhase =
-            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
-                true || is_testing();
+        $this->title = __('internship::ui.program_title');
+        $this->subtitle = __('internship::ui.program_subtitle');
+        $this->context = 'internship::ui.index.title';
+        $this->addLabel = __('internship::ui.add_program');
+        $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
+    }
 
-        if ($isSetupPhase) {
-            return;
-        }
+    /**
+     * {@inheritdoc}
+     */
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'title', 'label' => __('internship::ui.title'), 'sortable' => true],
+            ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
+            ['key' => 'semester', 'label' => __('internship::ui.semester'), 'sortable' => true],
+            ['key' => 'date_start', 'label' => __('internship::ui.date_start'), 'sortable' => true],
+            ['key' => 'date_finish', 'label' => __('internship::ui.date_finish'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+        ];
+    }
 
-        $this->authorize('internship.view');
+    /**
+     * {@inheritdoc}
+     */
+    protected function mapRecord(mixed $record): array
+    {
+        return [
+            'id' => $record->id,
+            'title' => $record->title,
+            'description' => $record->description,
+            'academic_year' => $record->academic_year,
+            'semester' => $record->semester,
+            'date_start' => $record->date_start->translatedFormat('d M Y'),
+            'date_finish' => $record->date_finish->translatedFormat('d M Y'),
+            'created_at' => $record->created_at->format('Y-m-d H:i'),
+        ];
     }
 
     /**
@@ -56,7 +95,7 @@ class InternshipManager extends Component
             $this->form->school_id = $school->id;
         }
 
-        $this->formModal = true;
+        $this->toggleModal(self::MODAL_FORM, true);
     }
 
     /**
@@ -67,7 +106,7 @@ class InternshipManager extends Component
         return [
             'title' => __('internship::ui.title'),
             'description' => __('ui::common.description'),
-            'year' => __('internship::ui.year'),
+            'academic_year' => __('internship::ui.academic_year'),
             'semester' => __('internship::ui.semester'),
             'date_start' => __('internship::ui.date_start'),
             'date_finish' => __('internship::ui.date_finish'),
@@ -82,10 +121,10 @@ class InternshipManager extends Component
         return [
             $record->title,
             $record->description,
-            $record->year,
+            $record->academic_year,
             $record->semester,
-            $record->date_start?->format('Y-m-d'),
-            $record->date_finish?->format('Y-m-d'),
+            $record->date_start, // Already formatted string from mapRecord
+            $record->date_finish, // Already formatted string from mapRecord
         ];
     }
 
@@ -101,7 +140,7 @@ class InternshipManager extends Component
         return [
             'title' => $row[0],
             'description' => $row[1] ?? '',
-            'year' => (int) $row[2],
+            'academic_year' => $row[2],
             'semester' => $row[3],
             'date_start' => ! empty($row[4]) ? $row[4] : null,
             'date_finish' => ! empty($row[5]) ? $row[5] : null,
@@ -122,17 +161,24 @@ class InternshipManager extends Component
      */
     protected function getPdfData($records): array
     {
-        return array_merge($this->traitGetPdfData($records), [
+        return array_merge([
+            'records' => $records,
+            'date' => now()->translatedFormat('d F Y'),
             'school' => app(SchoolService::class)->getSchool(),
         ]);
     }
 
-    public function render()
+    /**
+     * Render the component.
+     */
+    public function render(): \Illuminate\View\View
     {
         return view('internship::livewire.internship-manager', [
             'records' => $this->records,
+            'headers' => $this->getTableHeaders(),
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.index.title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
+            'context' => $this->context,
         ]);
     }
 }

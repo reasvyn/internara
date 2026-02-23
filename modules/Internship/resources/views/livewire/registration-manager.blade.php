@@ -3,29 +3,28 @@
         wire:key="registration-manager-header"
         :title="__('internship::ui.registration_title')" 
         :subtitle="__('internship::ui.registration_subtitle')"
-        :context="'internship::ui.index.title'"
     >
         <x-slot:actions wire:key="registration-manager-actions">
             <div class="flex items-center gap-3 relative z-50">
                 <x-ui::dropdown icon="tabler.dots" variant="tertiary" right>
-                    <x-ui::menu-item :title="__('ui::common.print')" icon="tabler.printer" wire:click="printPdf" />
-                    <x-ui::menu-item :title="__('ui::common.export')" icon="tabler.download" wire:click="exportCsv" />
-                    <x-ui::menu-item :title="__('ui::common.import')" icon="tabler.upload" wire:click="$set('importModal', true)" />
+                    <x-ui::menu-item title="ui::common.print" icon="tabler.printer" wire:click="printPdf" />
+                    <x-ui::menu-item title="ui::common.export" icon="tabler.download" wire:click="exportCsv" />
+                    <x-ui::menu-item title="ui::common.import" icon="tabler.upload" wire:click="$set('importModal', true)" />
                 </x-ui::dropdown>
 
                 <x-ui::dropdown 
-                    :label="__('Aksi Massal')" 
+                    :label="__('internship::ui.bulk_actions')" 
                     icon="tabler.layers-intersect" 
                     variant="secondary" 
                     :disabled="count($selectedIds) === 0"
                 >
                     <x-ui::menu-item 
-                        :title="__('Penempatan Massal')" 
+                        title="internship::ui.bulk_placement" 
                         icon="tabler.map-pin-up" 
                         wire:click="openBulkPlace" 
                     />
                     <x-ui::menu-item 
-                        :title="__('Hapus Terpilih')" 
+                        title="internship::ui.delete_selected" 
                         icon="tabler.trash" 
                         class="text-error" 
                         wire:click="removeSelected" 
@@ -102,12 +101,12 @@
 
                 @scope('cell_actions', $registration)
                     <div class="flex gap-2">
-                        <x-ui::button icon="tabler.history" class="btn-ghost btn-sm text-secondary" wire:click="viewHistory('{{ $registration->id }}')" tooltip="{{ __('Riwayat Penempatan') }}" />
+                        <x-ui::button icon="tabler.history" class="btn-ghost btn-sm text-secondary" wire:click="viewHistory('{{ $registration->id }}')" tooltip="{{ __('internship::ui.placement_history') }}" />
                         @if($registration->latestStatus()?->name !== 'active')
                             <x-ui::button icon="tabler.check" class="btn-ghost btn-sm text-success" wire:click="approve('{{ $registration->id }}')" tooltip="{{ __('shared::ui.approve') }}" />
                         @endif
                         @if($registration->latestStatus()?->name === 'active')
-                            <x-ui::button icon="tabler.award" class="btn-ghost btn-sm text-primary" wire:click="complete('{{ $registration->id }}')" tooltip="{{ __('Selesaikan Program') }}" />
+                            <x-ui::button icon="tabler.award" class="btn-ghost btn-sm text-primary" wire:click="complete('{{ $registration->id }}')" tooltip="{{ __('internship::ui.complete_program') }}" />
                         @endif
                         @if($registration->latestStatus()?->name !== 'inactive')
                             <x-ui::button icon="tabler.x" class="btn-ghost btn-sm text-warning" wire:click="reject('{{ $registration->id }}')" tooltip="{{ __('shared::ui.reject') }}" />
@@ -136,6 +135,7 @@
                 icon="tabler.presentation"
                 wire:model="form.internship_id" 
                 :options="$this->internships" 
+                option-label="title"
                 :placeholder="__('internship::ui.select_program')"
                 required 
             />
@@ -202,30 +202,30 @@
     </x-ui::modal>
 
     {{-- Bulk Placement Modal --}}
-    <x-ui::modal id="registration-bulk-modal" wire:model="bulkPlaceModal" title="{{ __('Penempatan Massal') }}">
+    <x-ui::modal id="registration-bulk-modal" wire:model="bulkPlaceModal" title="{{ __('internship::ui.bulk_placement_title') }}">
         <div class="mb-4">
-            <p class="text-sm opacity-70">{{ __(':count siswa terpilih akan ditempatkan di lokasi yang sama.', ['count' => count($selectedIds)]) }}</p>
-            <p class="text-xs text-warning mt-1">{{ __('Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.') }}</p>
+            <p class="text-sm opacity-70">{{ __('internship::ui.bulk_placement_description', ['count' => count($selectedIds)]) }}</p>
+            <p class="text-xs text-warning mt-1">{{ __('internship::ui.bulk_placement_note') }}</p>
         </div>
 
         <x-ui::form wire:submit.prevent="executeBulkPlace">
             <x-ui::select 
-                label="{{ __('Lokasi Penempatan') }}" 
+                label="{{ __('internship::ui.placement_location') }}" 
                 wire:model="targetPlacementId" 
                 :options="$this->placements" 
-                placeholder="{{ __('Pilih Industri Partner') }}"
+                placeholder="{{ __('internship::ui.select_industry_partner') }}"
                 required 
             />
 
             <x-slot:actions>
-                <x-ui::button label="{{ __('Batal') }}" wire:click="$set('bulkPlaceModal', false)" />
-                <x-ui::button label="{{ __('Proses Penempatan') }}" type="submit" class="btn-primary" spinner="executeBulkPlace" />
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('bulkPlaceModal', false)" />
+                <x-ui::button :label="__('internship::ui.process_placement')" type="submit" variant="primary" spinner="executeBulkPlace" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>
 
     {{-- History Modal --}}
-    <x-ui::modal id="registration-history-modal" wire:model="historyModal" title="{{ __('Riwayat Penempatan Siswa') }}" separator>
+    <x-ui::modal id="registration-history-modal" wire:model="historyModal" title="{{ __('internship::ui.student_placement_history') }}" separator>
         @if($historyId)
             <div class="flex flex-col gap-4">
                 @forelse($this->history as $log)
@@ -236,19 +236,19 @@
                                 <span class="font-bold text-sm uppercase text-primary">{{ $log->action }}</span>
                                 <span class="text-xs opacity-50">{{ $log->created_at->format('d M Y, H:i') }}</span>
                             </div>
-                            <div class="text-sm font-semibold mt-1">{{ $log->placement?->company_name ?? __('N/A') }}</div>
+                            <div class="text-sm font-semibold mt-1">{{ $log->placement?->company_name ?? __('ui::common.not_applicable') }}</div>
                             @if($log->reason)
                                 <div class="text-xs opacity-70 italic mt-1">"{{ $log->reason }}"</div>
                             @endif
                         </div>
                     </div>
                 @empty
-                    <p class="text-center py-8 opacity-50">{{ __('Belum ada riwayat penempatan.') }}</p>
+                    <p class="text-center py-8 opacity-50">{{ __('internship::ui.no_history_yet') }}</p>
                 @endforelse
             </div>
         @endif
         <x-slot:actions>
-            <x-ui::button label="{{ __('Tutup') }}" wire:click="$set('historyModal', false)" />
+            <x-ui::button :label="__('ui::common.close')" wire:click="$set('historyModal', false)" />
         </x-slot:actions>
     </x-ui::modal>
 

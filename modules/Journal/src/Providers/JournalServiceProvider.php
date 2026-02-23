@@ -64,7 +64,7 @@ class JournalServiceProvider extends ServiceProvider
             'navbar.items' => 'journal::nav-link',
             'student.dashboard.quick-actions' => [
                 'ui::button' => [
-                    'label' => __('Jurnal Harian'),
+                    'label' => __('journal::ui.index.menu_title'),
                     'icon' => 'tabler.book',
                     'link' => '/journal',
                     'class' => 'btn-ghost justify-start w-full',

@@ -17,14 +17,14 @@
 
             <x-ui::menu-item 
                 icon="tabler.user" 
-                :title="__('ui::common.profile')" 
+                title="ui::common.profile" 
                 :link="$profileRoute" 
             />
 
             @if($user->hasRole('super-admin'))
                 <x-ui::menu-item 
                     icon="tabler.settings" 
-                    :title="__('ui::common.settings')" 
+                    title="ui::common.settings" 
                     :link="route('profile.index', ['tab' => 'security'])" 
                 />
             @endif
@@ -33,7 +33,7 @@
             
             <x-ui::menu-item 
                 icon="tabler.logout" 
-                :title="__('ui::common.logout')" 
+                title="ui::common.logout" 
                 :link="$logoutRoute"
                 external
             />

@@ -23,5 +23,11 @@ return [
             'assess' => 'Assess',
             'transcript' => 'Transcript',
         ],
+        'assess_student' => 'Assess Student',
+        'evaluation' => 'Academic Evaluation',
+        'competency_recap' => 'Competency Recap',
+        'competency_recap_subtitle' => 'Skills claimed in daily journals',
+        'submit_evaluation' => 'Submit Evaluation',
+        'placeholder_notes' => 'Write notes or feedback for the student...',
     ],
 ];

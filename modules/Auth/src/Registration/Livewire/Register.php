@@ -70,14 +70,14 @@ class Register extends Component
 
             $this->redirect($this->redirectService->getTargetUrl($user), navigate: true);
         } catch (AppException $e) {
-            $this->addError('email', $e->getMessage());
+            $this->addError('email', $e->getUserMessage());
         }
     }
 
     public function render(): View
     {
         return view('auth::livewire.register')->layout('auth::components.layouts.auth', [
-            'title' => __('Daftar Akun | :site_title', [
+            'title' => __('auth::ui.register.page_title', [
                 'site_title' => setting('site_title', 'Internara'),
             ]),
         ]);

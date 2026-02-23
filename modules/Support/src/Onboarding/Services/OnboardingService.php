@@ -141,7 +141,6 @@ class OnboardingService implements Contract
             'email' => $email,
             'username' => $data['username'] ?? null,
             'password' => $data['password'] ?? Str::random(12),
-            'roles' => [$type],
             'profile' => [
                 'phone' => $data['phone'] ?? null,
                 'address' => $data['address'] ?? null,
@@ -149,27 +148,26 @@ class OnboardingService implements Contract
             ],
         ];
 
-        // 3. Create User via Service (Orchestrates User, Auth, and Profile initialization)
-        $user = $this->userService->create($userData);
+        // 3. Create User & Profile via Domain Services (Orchestrates User, Auth, and Profile)
+        if ($type === 'student') {
+            $studentProfile = [
+                'national_identifier' => $data['national_identifier'] ?? null,
+                'registration_number' => $data['registration_number'] ?? null,
+            ];
+            $userData['profile'] = array_merge($userData['profile'], $studentProfile);
 
-        // 4. Update Stakeholder-specific attributes via Domain Services
-        $profile = $user->profile;
-        if ($profile && $profile->profileable_id) {
-            if ($type === 'student') {
-                $studentData = [];
-                if (! empty($data['national_identifier'])) {
-                    $studentData['national_identifier'] = $data['national_identifier'];
-                }
-                if (! empty($data['registration_number'])) {
-                    $studentData['registration_number'] = $data['registration_number'];
-                }
+            $this->studentService->create($userData);
+        } elseif ($type === 'teacher') {
+            $teacherProfile = [
+                'nip' => $data['nip'] ?? null,
+            ];
+            $userData['profile'] = array_merge($userData['profile'], $teacherProfile);
 
-                if (! empty($studentData)) {
-                    $this->studentService->update($profile->profileable_id, $studentData);
-                }
-            } elseif ($type === 'teacher' && ! empty($data['nip'])) {
-                $this->teacherService->update($profile->profileable_id, ['nip' => $data['nip']]);
-            }
+            $this->teacherService->create($userData);
+        } else {
+            // Fallback for roles without specialized services
+            $userData['roles'] = [$type];
+            $this->userService->create($userData);
         }
     }
 }

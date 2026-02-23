@@ -41,6 +41,14 @@ class CompanyManager extends Component
     }
 
     /**
+     * Mount the component.
+     */
+    public function mount(): void
+    {
+        $this->authorize('company.view');
+    }
+
+    /**
      * Rules for validation.
      */
     protected function rules(): array

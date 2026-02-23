@@ -25,6 +25,7 @@ return [
     'cancel' => 'Cancel',
     'list_tab' => 'Handbook List',
     'monitoring_tab' => 'Student Monitoring',
+    'manage_title' => 'Guidance Management',
     'manage_subtitle' => 'Manage official handbooks and guidelines for students.',
     'add_handbook' => 'Add Handbook',
     'edit_handbook' => 'Edit Handbook',

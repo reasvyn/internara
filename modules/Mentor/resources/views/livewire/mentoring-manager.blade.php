@@ -1,14 +1,13 @@
 <div>
     <x-ui::header 
-        :title="__('Manajemen Pembimbingan')" 
-        :subtitle="$registration->student->name . ' - ' . $registration->placement->name"
-        :context="'mentor::ui.dashboard.title'"
+        :title="__('mentor::ui.manager.title')" 
+        :subtitle="$registration->student->name . ' - ' . $registration->placement->company_name"
     >
         <x-slot:actions>
             @if(auth()->user()->hasRole('teacher'))
-                <x-ui::button label="{{ __('Catat Kunjungan') }}" icon="tabler.map-pin" class="btn-primary" @click="$wire.visitModal = true" />
+                <x-ui::button :label="__('mentor::ui.manager.record_visit')" icon="tabler.map-pin" variant="primary" @click="$wire.visitModal = true" />
             @endif
-            <x-ui::button label="{{ __('Berikan Feedback') }}" icon="tabler.message-plus" class="btn-secondary" @click="$wire.logModal = true" />
+            <x-ui::button :label="__('mentor::ui.manager.give_feedback')" icon="tabler.message-plus" variant="secondary" @click="$wire.logModal = true" />
         </x-slot:actions>
     </x-ui::header>
 
@@ -103,7 +102,7 @@
             <x-ui::textarea label="{{ __('Catatan Temuan') }}" wire:model="visit_notes" rows="4" placeholder="{{ __('Jelaskan kondisi siswa dan progres di industri...') }}" />
             
             <x-slot:actions>
-                <x-ui::button label="{{ __('Batal') }}" @click="$wire.visitModal = false" />
+                <x-ui::button label="{{ __('ui::common.cancel') }}" @click="$wire.visitModal = false" />
                 <x-ui::button label="{{ __('Simpan Kunjungan') }}" type="submit" icon="tabler.check" class="btn-primary" spinner="recordVisit" />
             </x-slot:actions>
         </x-ui::form>
@@ -121,7 +120,7 @@
             <x-ui::textarea label="{{ __('Isi Feedback/Log') }}" wire:model="log_content" rows="4" placeholder="{{ __('Tuliskan detail bimbingan atau feedback...') }}" required />
             
             <x-slot:actions>
-                <x-ui::button label="{{ __('Batal') }}" @click="$wire.logModal = false" />
+                <x-ui::button label="{{ __('ui::common.cancel') }}" @click="$wire.logModal = false" />
                 <x-ui::button label="{{ __('Simpan Log') }}" type="submit" icon="tabler.check" class="btn-secondary" spinner="recordLog" />
             </x-slot:actions>
         </x-ui::form>

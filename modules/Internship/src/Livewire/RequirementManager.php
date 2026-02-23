@@ -29,7 +29,7 @@ class RequirementManager extends Component
      */
     public function mount(): void
     {
-        $this->authorize('internship.update');
+        $this->authorize('internship.view');
     }
 
     /**

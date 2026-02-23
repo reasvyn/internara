@@ -34,6 +34,11 @@ class SetupServiceProvider extends ServiceProvider
 
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->singleton(
+            \Modules\Setup\Services\Contracts\SetupService::class,
+            \Modules\Setup\Services\SetupService::class
+        );
     }
 
     /**
@@ -44,7 +49,6 @@ class SetupServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Setup\Services\Contracts\SetupService::class => \Modules\Setup\Services\SetupService::class,
             \Modules\Setup\Services\Contracts\InstallerService::class => \Modules\Setup\Services\InstallerService::class,
             \Modules\Setup\Services\Contracts\SystemAuditor::class => \Modules\Setup\Services\SystemAuditor::class,
         ];

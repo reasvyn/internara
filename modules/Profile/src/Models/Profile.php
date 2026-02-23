@@ -39,8 +39,8 @@ class Profile extends Model
         'emergency_contact_phone',
         'emergency_contact_address',
         'bio',
-        'profileable_id',
-        'profileable_type',
+        'national_identifier',
+        'registration_number',
     ];
 
     /**
@@ -56,15 +56,9 @@ class Profile extends Model
             'emergency_contact_phone' => 'encrypted',
             'emergency_contact_address' => 'encrypted',
             'bio' => 'encrypted',
+            'national_identifier' => 'encrypted',
+            'registration_number' => 'encrypted',
         ];
-    }
-
-    /**
-     * Get the associated profileable model (Student, Teacher, etc.).
-     */
-    public function profileable(): \Illuminate\Database\Eloquent\Relations\MorphTo
-    {
-        return $this->morphTo();
     }
 
     /**

@@ -58,8 +58,14 @@ trait HandlesSetupSteps
     {
         $prevStep = $this->setupStepProps['prevStep'] ?? null;
 
-        if (! $this->setupService->requireSetupAccess($prevStep)) {
-            $this->redirectToStep($prevStep);
+        try {
+            if (! $this->setupService->requireSetupAccess($prevStep)) {
+                $this->redirectToStep($prevStep ?: SetupService::STEP_WELCOME);
+            }
+        } catch (\Modules\Exception\AppException $e) {
+            // Log for developers but redirect for users
+            report($e);
+            $this->redirectToStep($prevStep ?: SetupService::STEP_WELCOME);
         }
     }
 
@@ -75,7 +81,7 @@ trait HandlesSetupSteps
 
         $success = $this->setupService->performSetupStep($currentStep, $reqRecord);
 
-        if ($success && $currentStep === 'complete') {
+        if ($success && $currentStep === SetupService::STEP_COMPLETE) {
             $this->redirectToLanding();
 
             return;
@@ -91,7 +97,7 @@ trait HandlesSetupSteps
      */
     public function backToPrev(): void
     {
-        $this->redirectToStep($this->setupStepProps['prevStep'] ?? 'welcome');
+        $this->redirectToStep($this->setupStepProps['prevStep'] ?? SetupService::STEP_WELCOME);
     }
 
     /**

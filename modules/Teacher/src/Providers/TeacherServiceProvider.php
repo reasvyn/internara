@@ -32,15 +32,15 @@ class TeacherServiceProvider extends ServiceProvider
     {
         return [
             'sidebar.menu' => [
-                'ui::menu-item' => [
-                    'title' => __('Dashboard'),
+                'ui::menu-item#teacher-dashboard' => [
+                    'title' => 'teacher::ui.dashboard.title',
                     'icon' => 'tabler.layout-dashboard',
                     'link' => '/teacher',
                     'role' => 'teacher',
                     'order' => 10,
                 ],
                 'ui::menu-item#reports' => [
-                    'title' => __('report::ui.title'),
+                    'title' => 'report::ui.title',
                     'icon' => 'tabler.file-analytics',
                     'link' => '/teacher/reports',
                     'role' => 'teacher',

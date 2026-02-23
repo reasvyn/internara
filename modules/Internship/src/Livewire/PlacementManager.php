@@ -37,7 +37,7 @@ class PlacementManager extends Component
      */
     public function mount(): void
     {
-        $this->authorize('internship.update');
+        $this->authorize('placement.view');
     }
 
     /**

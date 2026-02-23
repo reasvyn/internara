@@ -25,8 +25,9 @@ return new class extends Migration
             $table->text('emergency_contact_address')->nullable();
             $table->text('bio')->nullable();
 
-            // Polymorphic relationship for role-specific data (Student, Teacher, etc.)
-            $table->nullableMorphs('profileable');
+            // International identity standards (e.g. NISN, NIS, NIP)
+            $table->string('national_identifier')->nullable()->comment('e.g. NISN');
+            $table->string('registration_number')->nullable()->comment('e.g. NIS or NIP');
 
             $table->uuid('department_id')->nullable()->index();
 

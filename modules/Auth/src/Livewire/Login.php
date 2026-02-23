@@ -112,7 +112,7 @@ class Login extends Component
     public function render(): View
     {
         return view('auth::livewire.login')->layout('auth::components.layouts.auth', [
-            'title' => __('Login to Dashboard | :site_title', [
+            'title' => __('auth::ui.login.page_title', [
                 'site_title' => setting('site_title', 'Internara'),
             ]),
         ]);

@@ -17,7 +17,7 @@ describe('UserService', function () {
         Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
         Role::create(['name' => 'admin', 'guard_name' => 'web']);
         Role::create(['name' => 'student', 'guard_name' => 'web']);
-        Permission::create(['name' => 'user.delete', 'guard_name' => 'web']);
+        Permission::create(['name' => 'user.manage', 'guard_name' => 'web']);
     });
 
     test('it automatically verifies email for admin role [SYRS-NF-501]', function () {
@@ -76,7 +76,7 @@ describe('UserService', function () {
 
         $admin = User::factory()->create();
         $admin->assignRole('admin');
-        $admin->givePermissionTo('user.delete');
+        $admin->givePermissionTo('user.manage');
 
         expect($admin->can('delete', $superAdmin))->toBeFalse();
     });

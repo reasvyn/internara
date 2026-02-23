@@ -1,10 +1,11 @@
 @props([
     'title' => null,
     'recordTitle' => null,
+    'context' => null,
 ])
 
-<x-ui::layouts.base :$title body-class="bg-base-300 overflow-hidden">
-    <div class="flex h-screen flex-col overflow-hidden">
+<x-ui::layouts.base :$title body-class="bg-base-300">
+    <div class="flex min-h-screen flex-col">
         {{-- 1. Full Width Navbar (Top) --}}
         <x-ui::navbar class="z-50 flex-none">
             <x-slot:hamburger>
@@ -15,13 +16,22 @@
         </x-ui::navbar>
 
         {{-- 2. Layout Container (Bottom) --}}
-        <div class="drawer lg:drawer-open flex-1 overflow-hidden">
+        <div class="drawer lg:drawer-open flex-1">
             <input id="main-drawer" type="checkbox" class="drawer-toggle" />
             
             {{-- Main Content Area --}}
-            <div class="drawer-content flex flex-col overflow-y-auto custom-scrollbar bg-base-300">
+            <div class="drawer-content flex flex-col bg-base-300">
                 <main id="main-content" class="flex-1">
                     <div class="py-8 px-4 sm:px-6 lg:px-10 max-w-7xl mx-auto">
+                        {{-- Sitemap / Context Navigation --}}
+                        @if($context)
+                            <div class="mb-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-base-content/40">
+                                <span>{{ setting('brand_name', 'Internara') }}</span>
+                                <x-ui::icon name="tabler.chevron-right" class="size-2.5" />
+                                <span>{{ __($context) }}</span>
+                            </div>
+                        @endif
+
                         {{-- Optional Record Title --}}
                         @if($recordTitle)
                             <div class="mb-10">
@@ -37,16 +47,15 @@
                 </main>
 
                 {{-- Dashboard Footer --}}
-                <footer class="py-6 px-10 flex-none">
+                <footer class="py-6 px-10 flex-none mt-auto">
                     <x-ui::app-credit />
                 </footer>
             </div> 
 
             {{-- Sidebar Area --}}
-            <div class="drawer-side z-40 h-full">
+            <div class="drawer-side z-40">
                 <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label> 
-                {{-- Sidebar is placed below navbar on desktop because its parent (drawer) is below navbar --}}
-                <x-ui::sidebar class="h-full border-t border-base-300 lg:border-t-0 shadow-xl lg:shadow-none" />
+                <x-ui::sidebar class="min-h-screen border-t border-base-300 lg:border-t-0 shadow-xl lg:shadow-none" />
             </div>
         </div>
     </div>

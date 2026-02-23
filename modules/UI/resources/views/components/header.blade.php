@@ -1,22 +1,12 @@
 @props([
     'title' => null,
     'subtitle' => null,
-    'context' => null,
     'middle' => null, 
     'actions' => null,
     'separator' => false,
 ])
 
 <div {{ $attributes->merge(['class' => 'mb-10']) }}>
-    {{-- Breadcrumb Context --}}
-    @if($context)
-        <div class="mb-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-base-content/40">
-            <span>{{ setting('brand_name', 'Internara') }}</span>
-            <x-ui::icon name="tabler.chevron-right" class="size-2.5" />
-            <span>{{ __($context) }}</span>
-        </div>
-    @endif
-
     {{-- Main Header Content --}}
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div class="flex-1 space-y-1">
