@@ -4,7 +4,7 @@
 
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.13.0-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.13.1-blue?style=flat-square)
 ![Readiness](https://img.shields.io/badge/readiness-development-orange?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
@@ -51,7 +51,8 @@ learning objectives are met on-site. The system supports detailed competency sco
 ### 📱 Mobile-First Experience
 
 Recognizing that internships happen in the field, Internara is built with a **"Mobile-First"**
-design philosophy. The interface is fully optimized for smartphones and tablets.
+design philosophy. The interface is fully optimized for smartphones and tablets, utilizing
+**Instrument Sans** and an **Emerald** accent for a clean, professional aesthetic.
 
 ---
 
@@ -61,8 +62,8 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 - **Modular Architecture:** Built on **Laravel 12**, utilizing a **Modular Monolith** structure to
   ensure domain isolation and system integrity.
-- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) for a
-  fast, app-like experience.
+- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) and
+  **maryUI** for a fast, app-like experience.
 - **Rigorous Standards:** Development is governed by **ISO/IEC** standards, ensuring high-quality
   code and documentation.
 
@@ -72,8 +73,8 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 ### 👥 For Users & Administrators
 
-- **[Project Overview](docs/users/overview.md)**: Strategic vision and feature breakdown.
-- **[System Installation](docs/users/installation.md)**: Automated setup and deployment guide.
+- **[Project Overview](docs/wiki/overview.md)**: Strategic vision and feature breakdown.
+- **[System Installation](docs/wiki/installation.md)**: Automated setup and deployment guide.
 - **[Release Notes](docs/pubs/releases/README.md)**: Friendly history of updates and progress.
 
 ### 🛠 For Developers & Contributors

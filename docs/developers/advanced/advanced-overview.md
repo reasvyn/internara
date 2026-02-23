@@ -6,7 +6,7 @@ guides are intended for senior engineers responsible for evolving the **Architec
 (AD)** and the **Automated Tooling** ecosystem.
 
 > **Governance Mandate:** All advanced engineering activities must demonstrate traceability to the
-> authoritative **[System Requirements Specification](../system-requirements-specification.md)**.
+> authoritative **[System Requirements Specification](../specs.md)**.
 > Extensions must never violate the **Strict Isolation** invariants of the modular monolith.
 
 ---
@@ -28,7 +28,7 @@ persistence cycles.
 ## 2. Applicability & Compliance
 
 These protocols should be utilized only when standard
-**[Conventions and Rules](../conventions-and-rules.md)** are insufficient for fulfilling a complex
+**[Conventions and Rules](../conventions.md)** are insufficient for fulfilling a complex
 functional requirement.
 
 ### Engineering Invariants:
@@ -36,7 +36,7 @@ functional requirement.
 - **Pragmatic Minimalism**: Complexity must be justifiable through demonstrated architectural or
   performance necessity.
 - **Maintainability Invariant**: Advanced extensions must satisfy the
-  **[Code Quality Standardization](../code-quality-standardization.md)** and be accompanied by
+  **[Code Quality Standardization](../quality.md)** and be accompanied by
   comprehensive verification suites.
 - **V&V Mandatory**: All extensions must pass the full verification gate via **`composer test`** and
   **`composer lint`**.

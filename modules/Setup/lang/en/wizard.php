@@ -80,6 +80,8 @@ return [
         'description_extra' => 'You can use a free SMTP service provider or one provided by your institution.',
         'test_connection' => 'Test Connection',
         'skip' => 'Skip for Now',
+        'smtp_connection_success' => 'SMTP Connection successful!',
+        'smtp_connection_failed' => 'Connection failed: :message',
         'fields' => [
             'smtp_host' => 'SMTP Host',
             'smtp_port' => 'SMTP Port',

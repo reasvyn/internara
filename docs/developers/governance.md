@@ -245,7 +245,7 @@ To prevent the system from becoming a "Black Box," all cross-module events must 
 
 - **Documentation**: Significant domain events must be mentioned in the Architectural Blueprint of
   the version series.
-- **Monitoring**: Utilize the `AuditLog` concern to record the dispatching of critical domain events
+- **Monitoring**: Utilize the `HandlesAuditLog` concern to record the dispatching of critical domain events
   for forensic analysis.
 
 ---
@@ -531,7 +531,7 @@ Used for immediate response to a user action (e.g., "Record saved successfully")
 
 - **Path**: Dispatched via the `Notifier` service contract.
 - **Mechanism**: Livewire browser events (Toasts).
-- **Service**: `Modules\Notification\Contracts\Notifier`.
+- **Service**: `Modules\Notification\Services\Contracts\Notifier`.
 
 #### 10.1.2 System & User Notifications (Persistent/External)
 

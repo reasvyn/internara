@@ -7,7 +7,7 @@ maintainability, reliability, and security from **Conceptual Design** to **Artif
 
 > **Governance Mandate:** Adherence to these standards is mandatory for all construction activities.
 > Verification of these quality gates is a prerequisite for baseline promotion in the
-> **[Software Life Cycle Processes](software-lifecycle-processes.md)**.
+> **[Software Life Cycle Processes](lifecycle.md)**.
 
 ---
 
@@ -27,7 +27,7 @@ ensure architectural integrity.
   from other modules is a critical quality violation.
 - **Analyzability**: Source code must utilize explicit typing (PHP 8.4+), professional PHPDoc, and
   semantic naming that reflects domain concepts as defined in the
-  **[System Requirements Specification](system-requirements-specification.md)**.
+  **[System Requirements Specification](specs.md)**.
 - **Testability**: Every capability must have an accompanying behavioral verification suite (Pest
   v4) to ensure deterministic outcomes.
 
@@ -91,7 +91,7 @@ Internara utilizes the following metrics as mandatory automated quality gates:
 - **Blueprint Alignment**: All implementation must demonstrate traceability to an approved
   Architectural Blueprint.
 - **Architectural Compliance**: Every modification is validated against the
-  **[Architecture Description](architecture-description.md)**.
+  **[Architecture Description](architecture.md)**.
 
 ### 4.2 Automated Verification Gates
 

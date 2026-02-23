@@ -114,7 +114,9 @@ class BindServiceProvider extends ServiceProvider
                 }
             }
         } catch (\Throwable $e) {
-            Log::debug('BindServiceProvider: Failed to scan modules. '.$e->getMessage());
+            if (is_debug_mode()) {
+                Log::debug('BindServiceProvider: Failed to scan modules. '.$e->getMessage());
+            }
         }
 
         return $paths;

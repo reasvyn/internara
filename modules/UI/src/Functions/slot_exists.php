@@ -13,13 +13,3 @@ if (! function_exists('slot_exists')) {
         return Slot::exists($name);
     }
 }
-
-if (! function_exists('slotExists')) {
-    /**
-     * @deprecated Use slot_exists() instead.
-     */
-    function slotExists(string $name): bool
-    {
-        return slot_exists($name);
-    }
-}

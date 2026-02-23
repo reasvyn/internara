@@ -94,6 +94,11 @@ trait ManagesRecords
     public ?string $recordId = null;
 
     /**
+     * Selected record IDs for bulk actions.
+     */
+    public array $selectedIds = [];
+
+    /**
      * The file instance for CSV imports.
      */
     public $csvFile;
@@ -107,6 +112,7 @@ trait ManagesRecords
         $this->perPage = EloquentQuery::DEFAULT_PER_PAGE;
         $this->sortBy = self::DEFAULT_SORT_BY;
         $this->sortDir = self::DEFAULT_SORT_DIR;
+        $this->selectedIds = [];
     }
 
     /**
@@ -115,6 +121,7 @@ trait ManagesRecords
     public function updatedSearch(): void
     {
         $this->resetPage();
+        $this->selectedIds = [];
     }
 
     /**
@@ -195,6 +202,33 @@ trait ManagesRecords
             flash()->success(__('shared::messages.record_deleted'));
             $this->dispatch($this->getEventPrefix().':deleted', exists: $this->service->exists());
         }
+    }
+
+    /**
+     * Remove all selected records.
+     */
+    public function removeSelected(): void
+    {
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        try {
+            $count = $this->service->destroy($this->selectedIds);
+            $this->selectedIds = [];
+            flash()->success($this->getBulkDeleteMessage($count));
+            $this->dispatch($this->getEventPrefix().':bulk-deleted', count: $count);
+        } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    /**
+     * Get the success message after a bulk delete operation.
+     */
+    protected function getBulkDeleteMessage(int $count): string
+    {
+        return __('shared::messages.records_deleted', ['count' => $count]);
     }
 
     /**
@@ -287,7 +321,7 @@ trait ManagesRecords
         $view = $this->getPdfView();
 
         if (! $view) {
-            flash()->error('PDF view not defined for this component.');
+            flash()->error(__('shared::exceptions.pdf_view_undefined'));
             return null;
         }
 

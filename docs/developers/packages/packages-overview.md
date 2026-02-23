@@ -9,7 +9,7 @@ modular monolith.
 
 ## 1. Architectural Drivers (Modularity Engine)
 
-### 1.1 [nwidart/laravel-modules](nwidart-laravel-modules.md)
+### 1.1 [nwidart/laravel-modules](laravel-modules.md)
 
 The foundational orchestrator for domain isolation. It provides the structural baseline and
 autoloading logic required to maintain autonomous modular boundaries.

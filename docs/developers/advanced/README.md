@@ -15,8 +15,8 @@ evolution, specialized orchestrations, and future architectural roadmaps.
 
 ## 2. Strategic Performance Roadmaps
 
-- **Modular Hydration Tuning**: Protocols for the optimization of auto-discovery and state
-  persistence cycles (Planned).
+- **[Performance & Optimization](performance-optimization.md)**: Protocols for optimized modular
+  hydration, persistence, and memory-efficient queries.
 - **Service Mesh Architecture**: Internal communication scaling strategies for high-concurrency
   environments (Planned).
 

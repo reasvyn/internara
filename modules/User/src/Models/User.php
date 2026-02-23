@@ -74,7 +74,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     protected function usesUuid(): bool
     {
-        return config('user.type_id') === 'uuid';
+        return true;
     }
 
     /**
@@ -113,21 +113,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function getAvatarUrlAttribute(): ?string
     {
-        $avatar = $this->getFirstMediaUrl(self::COLLECTION_AVATAR);
-
-        if ($avatar) {
-            return $avatar;
-        }
-
-        // Fallback for Student passport photo
-        if ($this->profile?->profileable instanceof \Modules\Student\Models\Student) {
-            return $this->profile->profileable->getFirstMediaUrl(
-                \Modules\Student\Models\Student::COLLECTION_PASSPORT_PHOTO,
-                'avatar',
-            );
-        }
-
-        return null;
+        return $this->getFirstMediaUrl(self::COLLECTION_AVATAR);
     }
 
     /**

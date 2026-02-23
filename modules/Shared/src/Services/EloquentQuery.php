@@ -569,7 +569,7 @@ abstract class EloquentQuery implements EloquentQueryContract
                 $this->create($row);
                 $count++;
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error("Bulk import failed for row in " . get_class($this->model) . ": " . json_encode($row) . ". Error: " . $e->getMessage());
+                \Illuminate\Support\Facades\Log::error("Bulk import failed for row in " . get_class($this->model) . ": PII REDACTED. Error: " . $e->getMessage());
             }
         }
 

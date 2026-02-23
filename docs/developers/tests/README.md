@@ -11,6 +11,7 @@ deterministic verification artifacts.
 - **[Verification Philosophy](../testing.md)**: Engineering reliability and the Pest v4 baseline.
 - **[Laravel Testing Basics](laravel-tests.md)**: Getting started guide for testing in the Laravel
   ecosystem.
+- **[Troubleshooting & FAQ](troubleshooting.md)**: Common issues and fixes for the engineering team.
 
 ## 2. Specialized Verification Protocols
 

@@ -6,8 +6,8 @@ description). It defines the architectural viewpoints, structural frameworks, an
 required to ensure system integrity, maintainability, and modularity.
 
 > **Governance Mandate:** This architecture implements the technical requirements mandated by the
-> authoritative **[System Requirements Specification](specs.md)**. All architectural decisions
-> demonstrate traceability to the STRS and System Requirements Specification requirements.
+> authoritative **[SyRS](specs.md)**. All architectural decisions
+> demonstrate traceability to the STRS and SyRS requirements.
 
 ---
 
@@ -79,7 +79,7 @@ Cross-cutting technical concerns are distributed across specialized foundational
 ### 3.1 Security & Access Control (ISO/IEC 27034)
 
 - **RBAC Invariant**: Access to domain resources is strictly governed by **Policies** and **Gates**
-  mapped to the stakeholder roles defined in the System Requirements Specification.
+  mapped to the stakeholder roles defined in the SyRS.
 - **Identity Invariant**: Mandatory use of **UUID v4** for all entities to prevent enumeration.
 
 ### 3.2 Data Integrity & Isolation
@@ -140,8 +140,8 @@ software engineering patterns.
 - **Portability Invariant**: Components must remain strictly agnostic of Internara's specific
   business rules. They should be reusable in any Laravel-based system without modification.
 - **Composition**:
-    - **Cross-Cutting Concerns**: `HasUuid`, `HasStatuses`, `HasAuditLog`.
-    - **Base Abstractions**: `EloquentQuery`, `BaseServiceContract`.
+    - **Cross-Cutting Concerns**: `HasUuid` (Shared), `HasStatus` (Status), `InteractsWithActivityLog` (Log).
+    - **Base Abstractions**: `EloquentQuery`.
     - **General Utilities**: String manipulation, mathematical validators, and data transformers.
 
 ---

@@ -89,7 +89,7 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
     - **Module-Global Contracts**: reside in the root contracts directory: `src/Contracts/` (e.g.,
       `src/Contracts/Authenticatable.php`).
 - **Concerns (Traits)**: PascalCase, prefixed with semantic verbs such as `Has`, `Can`, `Handles`,
-  or `Manages` (e.g., `HasAuditLog`, `HandlesResponse`).
+  or `Manages` (e.g., `InteractsWithActivityLog`, `HandlesResponse`).
     - **Layer-Specific Concerns**: reside within the layer's directory:
       `src/({Domain}/)<Layer>/Concerns/` (e.g., `src/Models/Concerns/HasUuid.php`).
     - **Module-Global Concerns**: reside in the root concerns directory: `src/Concerns/` (e.g.,
@@ -102,23 +102,24 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
 
 ### 4.1 Identity: UUID Invariant
 
-All entities must utilize **UUID v4** for identification to prevent enumeration and ensure modular
-portability.
+All domain entities must utilize **UUID v4** for identification to prevent enumeration and ensure
+modular portability. System-level tables or key-value stores (e.g., `Setting`, migrations, jobs)
+may utilize standard sequences or string keys.
 
 - **Implementation**: Utilize the `HasUuid` concern from the `Shared` module.
 - **Isolation Constraint**: **Physical foreign keys across module boundaries are forbidden**.
   Referential integrity is maintained at the Service Layer using indexed UUID columns.
 
-### 4.2 State Lifecycle: `HasStatuses`
+### 4.2 State Lifecycle: `HasStatus`
 
-Operational entities must track their lifecycle transitions using the `HasStatuses` concern.
+Operational entities must track their lifecycle transitions using the `HasStatus` concern from the `Status` module.
 
 - **Rationale**: Provides an immutable audit trail of state changes ("who", "when", "why") as
   required for monitoring.
 
 ### 4.3 Temporal Scoping: `HasAcademicYear`
 
-Data must be automatically scoped by the active academic cycle.
+Data must be automatically scoped by the active academic cycle using the `HasAcademicYear` concern from the `Core` module.
 
 - **Mechanism**: The `HasAcademicYear` concern filters all queries by the value of
   `setting('active_academic_year')`.
@@ -198,7 +199,8 @@ helper functions. These functions must strictly adhere to the following protocol
 - **Naming Convention**: Utilize `snake_case` for global functions to align with Laravel's core
   helper conventions (e.g., `is_active_module()` wraps `Module::isActive()`).
 - **Organization**: Each global function must reside in its own file within the `src/Functions/`
-  directory, named after the function (e.g., `src/Functions/shared_url.php`).
+  directory, named after the function (e.g., `src/Functions/is_testing.php`). Multiple functions
+  within a single file are prohibited.
 - **Autoloading**: Functions must be registered via the `autoload.files` section of the module's
   `composer.json`.
 
@@ -215,6 +217,26 @@ Livewire components serve as thin orchestrators between the UI and the Service L
 - **Validation Invariant (ISO/IEC 27034)**: Validation must occur at the earliest possible boundary
   (PEP). Livewire components must utilize `rules()` or Form Requests to ensure data integrity before
   Service invocation.
+
+### 7.1 Unified Record Management: `RecordManager`
+
+For Livewire components that manage data records requiring a complete CRUD lifecycle (Create, Read,
+Update, Delete, Search, Sort, and Bulk Actions), it is recommended to extend the
+`Modules\UI\Livewire\RecordManager` base component and utilize the `<x-ui::record-manager />` Blade
+template.
+
+- **Purpose**: Provides a standardized orchestration layer and UI structure, ensuring consistent
+  behavior and visual identity while significantly reducing boilerplate code.
+- **Applicability**: Intended for standard, list-based management pages. It is **NOT mandatory** for:
+    - **Single-Record Management**: Components that manage a single system entity (e.g.,
+      `SchoolManager`).
+    - **Complex Dashboards**: Pages with non-standard data flows or unique interactive requirements.
+- **Implementation Mandates**:
+    - **Logic**: Implement `initialize()`, `getTableHeaders()`, and optionally `mapRecord()`.
+    - **UI**: Utilize the `<x-ui::record-manager>` component in your Blade view, injecting specific
+      fields via slots (`formFields`, `tableCells`, `filters`).
+- **Standardized UI**: This pattern enforces the project's visual identity for tables, modals, and
+  action buttons across all modules.
 
 ---
 

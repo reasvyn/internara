@@ -80,6 +80,8 @@ return [
         'description_extra' => 'Anda dapat menggunakan penyedia layanan SMTP gratis atau yang disediakan oleh institusi Anda.',
         'test_connection' => 'Tes Koneksi',
         'skip' => 'Lewati Dulu',
+        'smtp_connection_success' => 'Koneksi SMTP berhasil!',
+        'smtp_connection_failed' => 'Koneksi gagal: :message',
         'fields' => [
             'smtp_host' => 'SMTP Host',
             'smtp_port' => 'SMTP Port',

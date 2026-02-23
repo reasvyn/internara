@@ -36,7 +36,9 @@ class ForgotPassword extends Component
             if ($user) {
                 // Log masked email for flow verification
                 $maskedEmail = \Modules\Shared\Support\Masker::email($this->email);
+            if (is_development()) {
                 \Illuminate\Support\Facades\Log::info("Development: Password reset initiated for {$maskedEmail}. Redirecting to shortcut.");
+            }
 
                 $token = \Illuminate\Support\Facades\Password::broker()->createToken($user);
 

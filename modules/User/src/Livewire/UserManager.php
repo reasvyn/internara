@@ -13,14 +13,11 @@ use Modules\User\Services\Contracts\UserService;
 
 class UserManager extends Component
 {
+    use Concerns\InteractsWithDepartments;
     use HandlesAppException;
     use ManagesRecords;
 
     public UserForm $form;
-
-    public array $selectedIds = [];
-
-    public string $targetRole = '';
 
     /**
      * Initialize the component.
@@ -55,7 +52,7 @@ class UserManager extends Component
             $record->email,
             $record->username,
             $record->roles->pluck('name')->implode(', '),
-            $record->created_at->format('Y-m-d H:i'),
+            \Modules\Shared\Support\Formatter::date($record->created_at, 'Y-m-d H:i'),
         ];
     }
 
@@ -70,17 +67,8 @@ class UserManager extends Component
     /**
      * Mount the component.
      */
-    public function mount(?string $targetRole = null): void
+    public function mount(): void
     {
-        if ($targetRole !== null) {
-            $this->targetRole = $targetRole;
-        }
-
-        // Security: Only SuperAdmins can manage 'admin' role
-        if ($this->targetRole === 'admin' && ! auth()->user()->hasRole('super-admin')) {
-            abort(403, __('user::exceptions.super_admin_unauthorized'));
-        }
-
         $this->authorize('user.view');
     }
 
@@ -89,35 +77,14 @@ class UserManager extends Component
      */
     public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $filters = [
-            'search' => $this->search,
-            'sort_by' => $this->sortBy,
-            'sort_dir' => $this->sortDir,
-        ];
-
-        if ($this->targetRole) {
-            $filters['roles.name'] = $this->targetRole;
-        }
-
         return $this->service
-            ->query(array_filter($filters), ['id', 'name', 'email', 'username', 'created_at'])
+            ->query([
+                'search' => $this->search,
+                'sort_by' => $this->sortBy,
+                'sort_dir' => $this->sortDir,
+            ], ['id', 'name', 'email', 'username', 'created_at'])
             ->with(['roles:id,name'])
             ->paginate($this->perPage);
-    }
-
-    /**
-     * Get departments for the select input.
-     */
-    public function getDepartmentsProperty(): \Illuminate\Support\Collection
-    {
-        if (class_exists(\Modules\Department\Services\Contracts\DepartmentService::class)) {
-            return app(\Modules\Department\Services\Contracts\DepartmentService::class)->all([
-                'id',
-                'name',
-            ]);
-        }
-
-        return collect();
     }
 
     /**
@@ -139,7 +106,7 @@ class UserManager extends Component
 
             $count = $this->service->destroy($targets);
             $this->selectedIds = [];
-            flash()->success(__(':count data pengguna berhasil dihapus.', ['count' => $count]));
+            flash()->success(__('user::ui.manager.deleted_successfully', ['count' => $count]));
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
@@ -167,11 +134,7 @@ class UserManager extends Component
         $user = $this->service->find($id);
 
         if ($user) {
-            if ($user->hasRole('super-admin')) {
-                flash()->error(__('user::exceptions.super_admin_readonly'));
-                return;
-            }
-
+            $this->authorize('update', $user);
             $this->form->setUser($user);
             $this->formModal = true;
         }
@@ -186,8 +149,13 @@ class UserManager extends Component
 
         try {
             if ($this->form->id) {
+                $user = $this->service->find($this->form->id);
+                if ($user) {
+                    $this->authorize('update', $user);
+                }
                 $this->service->update($this->form->id, $this->form->all());
             } else {
+                $this->authorize('create', [User::class, $this->form->roles]);
                 $this->service->create($this->form->all());
             }
 

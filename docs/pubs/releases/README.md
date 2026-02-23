@@ -46,6 +46,7 @@ follows **Strict SemVer** syntax (e.g., `v0.13.0`).
 
 ## 3. Detailed Release Notes
 
+- **[v0.13.1](v0.13.1.md)** — **System Stabilization Refinement**
 - **[v0.13.0](v0.13.0.md)** — **System Stabilization**
 - **[v0.12.0](v0.12.0.md)** — **Timeline & Guidance**
 - **[v0.11.0](v0.11.0.md)** — **Instructional Execution**

@@ -42,7 +42,7 @@
   `HasUuid` concern.
 - **Referential Integrity**: SLRI (Service Layer Referential Integrity) pattern using indexed UUID
   columns. Physical foreign keys across module boundaries are strictly forbidden.
-- **State Audit**: Implementation of `HasStatuses` to track and audit entity lifecycle transitions.
+- **State Audit**: Implementation of `HasStatus` to track and audit entity lifecycle transitions.
 
 ---
 

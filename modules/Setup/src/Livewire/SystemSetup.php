@@ -44,9 +44,9 @@ class SystemSetup extends Component
     public function mount(): void
     {
         $this->initSetupStepProps(
-            currentStep: 'system',
-            nextStep: 'complete',
-            prevStep: 'internship',
+            currentStep: SetupService::STEP_SYSTEM,
+            nextStep: SetupService::STEP_COMPLETE,
+            prevStep: SetupService::STEP_INTERNSHIP,
         );
 
         $this->requireSetupAccess();
@@ -83,12 +83,12 @@ class SystemSetup extends Component
 
             if ($socket) {
                 fclose($socket);
-                flash()->success('SMTP Connection successful!');
+                flash()->success(__('setup::wizard.system.smtp_connection_success'));
             } else {
                 throw new \Exception($errstr ?: 'Connection timed out.');
             }
         } catch (\Exception $e) {
-            flash()->error('Connection failed: '.$e->getMessage());
+            flash()->error(__('setup::wizard.system.smtp_connection_failed', ['message' => $e->getMessage()]));
         }
     }
 

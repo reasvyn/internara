@@ -22,7 +22,7 @@ Internara prioritizes forensic transparency for all operational entities.
 ### 2.1 Domain Application
 
 Entities with non-binary lifecycles (e.g., `Internship`, `Assessment`) must implement the
-`HasStatuses` concern.
+`HasStatus` concern from the `Status` module.
 
 - **Requirement**: Entities must demonstrate compliance with the state transition rules defined in
   the **[Architecture Description](../architecture.md)**.

@@ -24,6 +24,9 @@ compliance with the **Modular Monolith** architectural invariants.
 - **[Laravel Permission](spatie-laravel-permission.md)**: Modular IAM orchestration standards.
 - **[Activity Log](spatie-laravel-activitylog.md)**: Forensic audit orchestration standards.
 - **[Media Library](spatie-laravel-medialibrary.md)**: Asset management orchestration standards.
+- **[Spatie Honeypot](spatie-laravel-honeypot.md)**: Automated bot protection standards.
+- **[PHP Flasher](php-flasher.md)**: Standardized notification delivery protocols.
+- **[UI Assets & Visualization](ui-assets.md)**: Standardized icons and QR code integration.
 
 ---
 
