@@ -9,63 +9,85 @@ use Livewire\WithFileUploads;
 use Modules\School\Livewire\Forms\SchoolForm;
 use Modules\School\Services\Contracts\SchoolService;
 
+/**
+ * Class SchoolManager
+ *
+ * Orchestrates the management of institutional metadata, including branding and contact information.
+ */
 class SchoolManager extends Component
 {
     use WithFileUploads;
 
+    /**
+     * The form object holding school data.
+     */
     public SchoolForm $form;
 
+    /**
+     * The service responsible for institutional logic.
+     */
     protected SchoolService $schoolService;
 
+    /**
+     * Injects dependencies into the component.
+     */
     public function boot(SchoolService $schoolService): void
     {
         $this->schoolService = $schoolService;
     }
 
+    /**
+     * Initializes the component state.
+     */
     public function mount(): void
     {
-        $this->initFormData();
+        $this->loadSchoolData();
     }
 
-    protected function initFormData(): void
+    /**
+     * Retrieves the current school record and populates the form.
+     */
+    protected function loadSchoolData(): void
     {
         $school = $this->schoolService->getSchool();
 
         if ($school) {
-            // Explicitly ensure logo_url is present in the fill data
-            $data = array_merge($school->toArray(), [
-                'logo_url' => $school->logo_url,
-            ]);
-            $this->form->fill($data);
+            $this->form->fill($school->toArray());
         }
     }
 
+    /**
+     * Persists institutional changes to the database.
+     */
     public function save(): void
     {
-        // Allow saving without 'school.manage' permission ONLY during the initial setup wizard.
-        // The wizard is already protected by Signed URLs and specific session tokens.
-        $isSetupPhase =
-            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
-            true;
+        // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
+        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
 
-        if (! $isSetupPhase) {
+        if (! $isSetupAuthorized) {
             $this->authorize('school.manage');
         }
 
         $this->form->validate();
 
-        // Pass all relevant values including logo_file to the service
-        $values = $this->form->except(['id', 'logo_url']);
-        $school = $this->schoolService->save(['id' => $this->form->id], $values);
+        // Pass attributes to the service for persistence
+        $school = $this->schoolService->save(
+            ['id' => $this->form->id],
+            $this->form->except(['id', 'logo_url'])
+        );
 
-        // Refresh form with persisted data, including new logo URLs
-        $this->form->fill($school->append('logo_url'));
+        // Synchronize form with the fresh record state
+        $this->form->fill($school->toArray());
 
         flash()->success(__('shared::messages.record_saved'));
+        
         $this->dispatch('school_saved', schoolId: $school->id);
     }
 
-    public function render()
+    /**
+     * Renders the administrative interface.
+     */
+    public function render(): \Illuminate\View\View
     {
         return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
             'title' => __('school::ui.settings') . ' | ' . setting('brand_name', setting('app_name')),

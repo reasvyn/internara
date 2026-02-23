@@ -208,13 +208,15 @@ abstract class RecordManager extends Component
         try {
             if ($this->form->id) {
                 $record = $this->service->find($this->form->id);
-                if ($record) {
-                    $this->authorize('update', $record);
+                if ($record && $this->updatePermission) {
+                    $this->authorize($this->updatePermission, $record);
                 }
                 $this->service->update($this->form->id, $this->form->all());
             } else {
-                $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
-                $this->authorize('create', [$this->modelClass ?: \Modules\User\Models\User::class, $roles]);
+                if ($this->createPermission) {
+                    $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
+                    $this->authorize($this->createPermission, [$this->modelClass ?: \Modules\User\Models\User::class, $roles]);
+                }
                 $this->service->create($this->form->all());
             }
 

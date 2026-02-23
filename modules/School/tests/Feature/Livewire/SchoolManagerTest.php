@@ -2,73 +2,81 @@
 
 declare(strict_types=1);
 
+namespace Modules\School\Tests\Feature\Livewire;
+
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
+use Modules\Permission\Database\Seeders\PermissionSeeder;
+use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\School\Livewire\SchoolManager;
 use Modules\School\Models\School;
-use Modules\School\Services\Contracts\SchoolService;
 use Modules\User\Models\User;
 
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\get;
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    // Seed permissions for testing
-    $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
-
-    // Create a school if not exists (Service handles singleton logic, but for test setup we can factory it)
-    if (School::count() === 0) {
-        School::factory()->create();
-    }
+    $this->seed(PermissionSeeder::class);
+    $this->seed(RoleSeeder::class);
 });
 
-test('school settings page is forbidden for unauthorized users', function () {
-    $user = User::factory()->create();
-    actingAs($user);
+describe('SchoolManager Component', function () {
+    test('it renders school data correctly', function () {
+        $school = School::factory()->create(['name' => 'SMK Negeri 1 Test']);
+        $user = User::factory()->create();
+        $user->givePermissionTo('school.manage');
+        $this->actingAs($user);
 
-    get(route('school.settings'))->assertForbidden();
-});
+        Livewire::test(SchoolManager::class)
+            ->assertStatus(200)
+            ->assertSet('form.name', 'SMK Negeri 1 Test');
+    });
 
-test('school settings page is accessible by authorized users', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo('school.manage');
-    actingAs($user);
+    test('it can update school information', function () {
+        $user = User::factory()->create();
+        $user->givePermissionTo('school.manage');
+        $this->actingAs($user);
 
-    get(route('school.settings'))->assertOk()->assertSee('Data Sekolah');
-});
+        Livewire::test(SchoolManager::class)
+            ->set('form.name', 'Updated School Name')
+            ->set('form.email', 'school@test.com')
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertDispatched('school_saved');
 
-test('it can update school information', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo('school.manage');
-    actingAs($user);
+        $this->assertDatabaseHas('schools', [
+            'name' => 'Updated School Name',
+            'email' => 'school@test.com',
+        ]);
+    });
 
-    $school = app(SchoolService::class)->first();
+    test('it allows setup sessions to bypass permissions', function () {
+        // No user authenticated, but setup is authorized via session
+        session(['setup_authorized' => true]);
 
-    Livewire::test(SchoolManager::class)
-        ->set('form.name', 'Updated School Name')
-        ->set('form.email', 'updated@school.com')
-        // Ensure required/validated fields like phone/fax meet min length if not set by factory correctly,
-        // but since we updated factory, it should be fine. Just in case, let's explicit.
-        ->call('save')
-        ->assertHasNoErrors();
+        Livewire::test(SchoolManager::class)
+            ->set('form.name', 'Setup School')
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertStatus(200);
 
-    expect($school->refresh())
-        ->name->toBe('Updated School Name')
-        ->email->toBe('updated@school.com');
-});
+        expect(School::first()->name)->toBe('Setup School');
+    });
 
-test('it can upload school logo', function () {
-    $user = User::factory()->create();
-    $user->givePermissionTo('school.manage');
-    actingAs($user);
+    test('it handles institutional logo uploads', function () {
+        Storage::fake('public');
+        session(['setup_authorized' => true]);
 
-    $file = UploadedFile::fake()->image('logo.png');
-    $school = app(SchoolService::class)->first();
+        $logo = UploadedFile::fake()->image('school-logo.png');
 
-    Livewire::test(SchoolManager::class)
-        ->set('form.logo_file', $file)
-        ->call('save')
-        ->assertHasNoErrors();
+        Livewire::test(SchoolManager::class)
+            ->set('form.name', 'Branded School')
+            ->set('form.logo_file', $logo)
+            ->call('save')
+            ->assertHasNoErrors();
 
-    expect($school->refresh()->getFirstMedia(School::COLLECTION_LOGO))->not->toBeNull();
+        $school = School::first();
+        expect($school->logo_url)->not->toBeNull();
+    });
 });

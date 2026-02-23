@@ -60,9 +60,19 @@ class DepartmentManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('department::ui.name'), 'sortable' => true],
             ['key' => 'description', 'label' => __('ui::common.description')],
-            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+            ['key' => 'created_at_formatted', 'label' => __('ui::common.created_at'), 'sort_by' => 'created_at'],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
+    }
+
+    /**
+     * Transform raw department record for UI display.
+     */
+    protected function mapRecord(mixed $record): array
+    {
+        return array_merge($record->toArray(), [
+            'created_at_formatted' => $record->created_at->translatedFormat('d M Y H:i'),
+        ]);
     }
 
     /**
