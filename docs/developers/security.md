@@ -62,9 +62,7 @@ Systemic isolation and encryption of Personally Identifiable Information (PII).
 - **Policy**: All fields identified as PII must be encrypted at the database level.
 - **Implementation**: Utilization of Eloquent's `encrypted` cast in the relevant domain models.
 - **PII Distribution**:
-    - **`Profile`**: `phone`, `address`, and `bio`.
-    - **`Student`**: `nisn` (National Student ID).
-    - **`Teacher`**: `nip` (Staff ID).
+    - **`Profile`**: `phone`, `address`, `bio`, `national_identifier` (NISN), and `registration_number` (NIP/NIS).
 - **Rationale**: Ensures that even in the event of a raw database breach, sensitive user data
   remains unreadable ciphertext.
 

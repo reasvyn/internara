@@ -121,20 +121,18 @@ class SlotManager implements SlotManagerContract
                         );
                     }
                 } catch (\Throwable $e) {
-                    \Illuminate\Support\Facades\Log::error(
-                        'Slot Injection Error: Failed to render component ['.
-                            (is_string($view) ? $view : 'Closure').
-                            "] in slot [{$slot}]. Error: {$e->getMessage()}",
-                        [
-                            'exception' => $e,
-                            'slot' => $slot,
-                            'data' => $item['data'],
-                        ],
-                    );
-
-                    // If we are in local/debug mode, we let the exception bubble up
-                    // to prevent corrupted component stacks and provide better debugging.
                     if (is_debug_mode()) {
+                        \Illuminate\Support\Facades\Log::error(
+                            'Slot Injection Error: Failed to render component ['.
+                                (is_string($view) ? $view : 'Closure').
+                                "] in slot [{$slot}]. Error: {$e->getMessage()}",
+                            [
+                                'exception' => $e,
+                                'slot' => $slot,
+                                'data' => $item['data'],
+                            ],
+                        );
+
                         throw $e;
                     }
                 }

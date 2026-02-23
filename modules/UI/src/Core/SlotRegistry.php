@@ -65,9 +65,11 @@ class SlotRegistry implements SlotRegistryContract
             ! str_contains($view, '::') &&
             ! str_starts_with($view, 'livewire:')
         ) {
-            Log::warning(
-                "Slot Injection: Registering potentially invalid component name [{$view}] into slot [{$slot}]. Ensure it's a valid Blade component or view alias.",
-            );
+            if (is_debug_mode()) {
+                Log::warning(
+                    "Slot Injection: Registering potentially invalid component name [{$view}] into slot [{$slot}]. Ensure it's a valid Blade component or view alias.",
+                );
+            }
         }
 
         $this->slots[$slot][] = [
