@@ -18,16 +18,20 @@ class ReportServiceProvider extends ServiceProvider
     protected string $nameLower = 'report';
 
     /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected array $policies = [
+        \Modules\Report\Models\GeneratedReport::class => \Modules\Report\Policies\ReportPolicy::class,
+    ];
+
+    /**
      * Boot the application events.
      */
     public function boot(): void
     {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bootModule();
     }
 
     /**
@@ -49,10 +53,6 @@ class ReportServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerModule();
-        $this->app->singleton(
-            \Modules\Report\Services\Contracts\ReportGenerator::class,
-            \Modules\Report\Services\ReportService::class,
-        );
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }

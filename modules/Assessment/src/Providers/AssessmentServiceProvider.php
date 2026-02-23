@@ -18,6 +18,18 @@ class AssessmentServiceProvider extends ServiceProvider
     protected string $nameLower = 'assessment';
 
     /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected array $policies = [
+        \Modules\Assessment\Models\Assessment::class => \Modules\Assessment\Policies\AssessmentPolicy::class,
+        \Modules\Assessment\Models\Competency::class => \Modules\Assessment\Policies\CompetencyPolicy::class,
+        \Modules\Assessment\Models\DepartmentCompetency::class => \Modules\Assessment\Policies\CompetencyPolicy::class,
+        \Modules\Assessment\Models\StudentCompetencyLog::class => \Modules\Assessment\Policies\AssessmentPolicy::class,
+    ];
+
+    /**
      * Boot the application events.
      */
     public function boot(): void

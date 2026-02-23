@@ -31,6 +31,8 @@ class InternshipServiceProvider extends ServiceProvider
         InternshipPlacement::class => InternshipPolicy::class,
         \Modules\Internship\Models\Company::class => \Modules\Internship\Policies\CompanyPolicy::class,
         InternshipRegistration::class => \Modules\Internship\Policies\InternshipRegistrationPolicy::class,
+        \Modules\Internship\Models\InternshipRequirement::class => InternshipPolicy::class,
+        \Modules\Internship\Models\RequirementSubmission::class => \Modules\Internship\Policies\InternshipRegistrationPolicy::class,
     ];
 
     /**

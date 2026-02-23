@@ -152,7 +152,7 @@ class RegistrationManager extends Component
                 // For existing records, we can check the ID
                 if ($this->form->id && ! $isEligible) {
                     throw new \Modules\Exception\AppException(
-                        __('Siswa belum melengkapi persyaratan wajib untuk ditempatkan.'),
+                        'internship::ui.not_eligible_for_placement',
                         code: 422,
                     );
                 }
@@ -233,7 +233,7 @@ class RegistrationManager extends Component
     public function openBulkPlace(): void
     {
         if (empty($this->selectedIds)) {
-            flash()->warning(__('Pilih setidaknya satu siswa.'));
+            flash()->warning(__('internship::ui.select_at_least_one_student'));
 
             return;
         }
@@ -247,7 +247,7 @@ class RegistrationManager extends Component
     public function executeBulkPlace(): void
     {
         if (! $this->targetPlacementId) {
-            flash()->error(__('Pilih lokasi penempatan.'));
+            flash()->error(__('internship::ui.select_placement_location'));
 
             return;
         }
@@ -262,7 +262,7 @@ class RegistrationManager extends Component
             $this->selectedIds = [];
             $this->targetPlacementId = null;
 
-            flash()->success(__(':count siswa berhasil ditempatkan.', ['count' => $count]));
+            flash()->success(__('internship::ui.bulk_placement_success', ['count' => $count]));
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }

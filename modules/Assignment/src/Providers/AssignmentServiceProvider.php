@@ -18,6 +18,17 @@ class AssignmentServiceProvider extends ServiceProvider
     protected string $nameLower = 'assignment';
 
     /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected array $policies = [
+        \Modules\Assignment\Models\Assignment::class => \Modules\Assignment\Policies\AssignmentPolicy::class,
+        \Modules\Assignment\Models\AssignmentType::class => \Modules\Assignment\Policies\AssignmentPolicy::class,
+        \Modules\Assignment\Models\Submission::class => \Modules\Assignment\Policies\SubmissionPolicy::class,
+    ];
+
+    /**
      * Boot the application events.
      */
     public function boot(): void

@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
+use Modules\Report\Livewire\ReportIndex;
+use Modules\Report\Http\Controllers\ReportDownloadController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +16,10 @@ declare(strict_types=1);
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/reports', ReportIndex::class)->name('reports.index');
+    Route::get('/reports/download/{report}', [ReportDownloadController::class, 'download'])
+        ->name('reports.download')
+        ->middleware('signed');
+});

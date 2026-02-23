@@ -24,6 +24,7 @@ class AttendanceServiceProvider extends ServiceProvider
      */
     protected array $policies = [
         \Modules\Attendance\Models\AttendanceLog::class => \Modules\Attendance\Policies\AttendancePolicy::class,
+        \Modules\Attendance\Models\AbsenceRequest::class => \Modules\Attendance\Policies\AttendancePolicy::class,
     ];
 
     /**

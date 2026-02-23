@@ -114,4 +114,8 @@ return [
     'student_placement_history' => 'Riwayat Penempatan Siswa',
     'no_history_yet' => 'Belum ada riwayat penempatan.',
     'bulk_delete_program_success' => ':count program magang berhasil dihapus.',
+    'select_at_least_one_student' => 'Pilih setidaknya satu siswa.',
+    'select_placement_location' => 'Pilih lokasi penempatan.',
+    'bulk_placement_success' => ':count siswa berhasil ditempatkan.',
+    'not_eligible_for_placement' => 'Siswa belum melengkapi persyaratan wajib untuk ditempatkan.',
 ];

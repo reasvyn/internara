@@ -114,4 +114,8 @@ return [
     'student_placement_history' => 'Student Placement History',
     'no_history_yet' => 'No placement history yet.',
     'bulk_delete_program_success' => ':count internship programs successfully deleted.',
+    'select_at_least_one_student' => 'Select at least one student.',
+    'select_placement_location' => 'Select a placement location.',
+    'bulk_placement_success' => ':count students placed successfully.',
+    'not_eligible_for_placement' => 'Student has not fulfilled mandatory requirements for placement.',
 ];

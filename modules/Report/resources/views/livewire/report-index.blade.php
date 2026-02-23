@@ -63,7 +63,13 @@
                         @endscope
 
                         @scope('actions', $report)
-                            <x-ui::button icon="tabler.download" variant="tertiary" class="btn-sm" link="{{ \Illuminate\Support\Facades\Storage::url($report->file_path) }}" external />
+                            <x-ui::button 
+                                icon="tabler.download" 
+                                variant="tertiary" 
+                                class="btn-sm" 
+                                link="{{ \Illuminate\Support\Facades\URL::temporarySignedRoute('reports.download', now()->addMinutes(30), ['report' => $report->id]) }}" 
+                                external 
+                            />
                         @endscope
                     </x-ui::table>
                 @endif
