@@ -37,7 +37,7 @@ class ResetPassword extends Component
         return [
             'token' => 'required',
             'email' => 'required|email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
         ];
     }
 

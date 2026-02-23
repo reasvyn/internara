@@ -23,6 +23,16 @@ class UserForm extends Form
 
     public array $roles = [];
 
+    public array $profile = [
+        'phone' => '',
+        'address' => '',
+        'department_id' => '',
+        'national_identifier' => '',
+        'registration_number' => '',
+        'gender' => '',
+        'blood_type' => '',
+    ];
+
     public string $status = 'active';
 
     /**
@@ -36,6 +46,18 @@ class UserForm extends Form
         $this->username = $user->username;
         $this->roles = $user->roles->pluck('name')->toArray();
         $this->status = $user->latestStatus()?->name ?? 'active';
+
+        if ($user->profile) {
+            $this->profile = [
+                'phone' => $user->profile->phone ?? '',
+                'address' => $user->profile->address ?? '',
+                'department_id' => $user->profile->department_id ?? '',
+                'national_identifier' => $user->profile->national_identifier ?? '',
+                'registration_number' => $user->profile->registration_number ?? '',
+                'gender' => $user->profile->gender ?? '',
+                'blood_type' => $user->profile->blood_type ?? '',
+            ];
+        }
     }
 
     /**
@@ -50,8 +72,15 @@ class UserForm extends Form
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
             'password' => $this->id
-                ? ['nullable', 'string', 'min:8', 'confirmed']
-                : ['required', 'string', 'min:8', 'confirmed'],
+                ? ['nullable', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()]
+                : ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
+            'profile.phone' => ['nullable', 'string', 'max:20'],
+            'profile.address' => ['nullable', 'string', 'max:500'],
+            'profile.department_id' => ['nullable', 'uuid', 'exists:departments,id'],
+            'profile.national_identifier' => ['nullable', 'string', 'max:50'],
+            'profile.registration_number' => ['nullable', 'string', 'max:50'],
+            'profile.gender' => ['nullable', 'string', 'in:male,female'],
+            'profile.blood_type' => ['nullable', 'string', 'max:5'],
         ];
     }
 }

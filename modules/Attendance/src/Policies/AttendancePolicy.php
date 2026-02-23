@@ -17,6 +17,10 @@ class AttendancePolicy
      */
     public function view(User $user, AttendanceLog $log): bool
     {
+        if (! $user->can('attendance.view')) {
+            return false;
+        }
+
         // Student can view their own
         if ($user->id === $log->student_id) {
             return true;
@@ -33,6 +37,6 @@ class AttendancePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['student', 'teacher', 'mentor', 'admin']);
+        return $user->can('attendance.view');
     }
 }

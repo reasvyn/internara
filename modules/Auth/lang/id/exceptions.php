@@ -12,4 +12,6 @@ return [
     'email_already_verified' => 'Alamat email ini sudah diverifikasi.',
     'super_admin_not_found' => 'Akun SuperAdmin dengan ID :id tidak dapat ditemukan.',
     'super_admin_exists' => 'Akun SuperAdmin sudah ada. Hanya satu akun SuperAdmin yang diizinkan.',
+    'invalid_verification_link' => 'Tautan verifikasi tidak valid atau email sudah diverifikasi.',
+    'verification_resend_error' => 'Email Anda sudah diverifikasi atau Anda belum masuk.',
 ];

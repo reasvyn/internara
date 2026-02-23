@@ -26,7 +26,7 @@ class Role extends BaseRole
      */
     protected function usesUuid(): bool
     {
-        return config('permission.model_key_type') === 'uuid';
+        return true;
     }
 
     protected static function newFactory(): RoleFactory

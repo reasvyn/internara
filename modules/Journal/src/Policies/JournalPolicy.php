@@ -17,6 +17,10 @@ class JournalPolicy
      */
     public function view(User $user, JournalEntry $entry): bool
     {
+        if (! $user->can('journal.view')) {
+            return false;
+        }
+
         // Student can view their own
         if ($user->id === $entry->student_id) {
             return true;
@@ -33,7 +37,7 @@ class JournalPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can('journal.create') && $user->hasRole('student');
     }
 
     /**
@@ -41,6 +45,10 @@ class JournalPolicy
      */
     public function update(User $user, JournalEntry $entry): bool
     {
+        if (! $user->can('journal.update')) {
+            return false;
+        }
+
         // Only student can update their own, and only if not approved
         return $user->id === $entry->student_id && $entry->latestStatus()?->name !== 'approved';
     }
@@ -50,6 +58,10 @@ class JournalPolicy
      */
     public function validate(User $user, JournalEntry $entry): bool
     {
+        if (! $user->can('journal.validate')) {
+            return false;
+        }
+
         $registration = $entry->registration;
 
         // Either assigned Teacher OR assigned Mentor can validate
@@ -61,6 +73,10 @@ class JournalPolicy
      */
     public function delete(User $user, JournalEntry $entry): bool
     {
+        if (! $user->can('journal.delete')) {
+            return false;
+        }
+
         // Only student can delete their own draft.
         // Cannot delete once submitted or approved.
         return $user->id === $entry->student_id && $entry->latestStatus()?->name === 'draft';

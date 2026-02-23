@@ -6,6 +6,7 @@ return [
     'register_super_admin' => [
         'title' => 'Daftar Akun Administrator',
         'subtitle' => 'Buat akun utama untuk mengelola seluruh data sistem.',
+        'page_title' => 'Buat Akun Utama | :site_title',
         'form' => [
             'name' => 'Nama Lengkap',
             'name_placeholder' => 'Masukkan Nama Lengkap Anda',
@@ -25,6 +26,7 @@ return [
     'login' => [
         'title' => 'Masuk ke Akun Anda',
         'subtitle' => 'Gunakan email atau nama pengguna Anda untuk melanjutkan.',
+        'page_title' => 'Masuk ke Dasbor | :site_title',
         'welcome_back' => 'Selamat datang kembali, :name!',
         'form' => [
             'identifier' => 'Email atau Nama Pengguna',
@@ -41,6 +43,7 @@ return [
     'register' => [
         'title' => 'Daftar Akun Siswa',
         'subtitle' => 'Isi data diri Anda untuk memulai perjalanan magang.',
+        'page_title' => 'Daftar Akun | :site_title',
         'welcome' => 'Selamat datang di :app, :name! Akun Anda telah berhasil dibuat.',
         'form' => [
             'name' => 'Nama Lengkap',
@@ -64,6 +67,8 @@ return [
         'resend_prompt' => 'Tidak menerima email?',
         'resend_button' => 'Klik di sini untuk mengirim ulang',
         'verify_button' => 'Verifikasi Email',
+        'success' => 'Email Anda telah berhasil diverifikasi!',
+        'resend_success' => 'Tautan verifikasi baru telah dikirimkan ke alamat email Anda.',
     ],
     'forgot_password' => [
         'title' => 'Lupa Kata Sandi',

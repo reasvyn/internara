@@ -22,7 +22,7 @@ class InternshipPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, \Modules\Internship\Models\Internship $internship): bool
     {
         return $user->hasAnyPermission(['internship.view', 'internship.manage']);
     }
@@ -38,7 +38,7 @@ class InternshipPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user): bool
+    public function update(User $user, \Modules\Internship\Models\Internship $internship): bool
     {
         return $user->hasAnyPermission(['internship.update', 'internship.manage']);
     }
@@ -46,7 +46,7 @@ class InternshipPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user): bool
+    public function delete(User $user, \Modules\Internship\Models\Internship $internship): bool
     {
         return $user->hasPermissionTo('internship.manage');
     }

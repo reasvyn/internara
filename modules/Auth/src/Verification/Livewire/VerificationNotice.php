@@ -31,19 +31,16 @@ class VerificationNotice extends Component
     public function resend()
     {
         if (! auth()->check()) {
-            session()->flash('error', 'You must be logged in to resend the verification email.');
+            flash()->error(__('exception::messages.unauthorized'));
 
             return;
         }
 
         try {
             $this->authService->resendVerificationEmail(auth()->user());
-            session()->flash(
-                'status',
-                'A fresh verification link has been sent to your email address.',
-            );
+            flash()->success(__('auth::ui.verification.resend_success'));
         } catch (AppException $e) {
-            session()->flash('error', $e->getUserMessage());
+            flash()->error($e->getUserMessage());
         }
     }
 

@@ -6,6 +6,7 @@ return [
     'register_super_admin' => [
         'title' => 'Register Administrator Account',
         'subtitle' => 'Create a primary account to manage all system data.',
+        'page_title' => 'Create Primary Account | :site_title',
         'form' => [
             'name' => 'Full Name',
             'name_placeholder' => 'Enter your full name',
@@ -25,6 +26,7 @@ return [
     'login' => [
         'title' => 'Sign In to Your Account',
         'subtitle' => 'Use your email or username to continue.',
+        'page_title' => 'Sign In to Dashboard | :site_title',
         'welcome_back' => 'Welcome back, :name!',
         'form' => [
             'identifier' => 'Email or Username',
@@ -41,6 +43,7 @@ return [
     'register' => [
         'title' => 'Register Student Account',
         'subtitle' => 'Fill in your details to start your internship journey.',
+        'page_title' => 'Create Account | :site_title',
         'welcome' => 'Welcome to :app, :name! Your account has been successfully created.',
         'form' => [
             'name' => 'Full Name',
@@ -64,6 +67,8 @@ return [
         'resend_prompt' => 'Didn\'t receive the email?',
         'resend_button' => 'Click here to request another',
         'verify_button' => 'Verify Email',
+        'success' => 'Your email has been successfully verified!',
+        'resend_success' => 'A fresh verification link has been sent to your email address.',
     ],
     'forgot_password' => [
         'title' => 'Forgot Password',

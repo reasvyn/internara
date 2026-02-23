@@ -39,18 +39,18 @@ class VerifyEmail extends Component
 
         // Ensure the authenticated user is the one being verified
         if ((string) auth()->id() !== (string) $this->id) {
-            session()->flash('error', 'Tindakan ini tidak sah.');
+            flash()->error(__('exception::messages.unauthorized'));
 
             return redirect()->route('verification.notice');
         }
 
         if ($this->authService->verifyEmail($this->id, $this->hash)) {
-            session()->flash('status', 'Email Anda telah berhasil diverifikasi!');
+            flash()->success(__('auth::ui.verification.success'));
 
             return redirect()->intended($this->redirectService->getTargetUrl(auth()->user()));
         }
 
-        session()->flash('error', 'Tautan verifikasi tidak valid atau email sudah diverifikasi.');
+        flash()->error(__('auth::exceptions.invalid_verification_link'));
 
         return redirect()->route('verification.notice');
     }
@@ -59,12 +59,9 @@ class VerifyEmail extends Component
     {
         if (auth()->check() && ! auth()->user()->hasVerifiedEmail()) {
             $this->authService->resendVerificationEmail(auth()->user());
-            session()->flash(
-                'status',
-                'A fresh verification link has been sent to your email address.',
-            );
+            flash()->success(__('auth::ui.verification.resend_success'));
         } else {
-            session()->flash('error', 'You are already verified or not logged in.');
+            flash()->error(__('auth::exceptions.verification_resend_error'));
         }
 
         return redirect()->back();

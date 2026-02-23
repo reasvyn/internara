@@ -17,9 +17,8 @@ class InternshipRegistrationPolicy
      */
     public function view(User $user, InternshipRegistration $registration): bool
     {
-        // Admins can view everything
-        if ($user->hasRole('super-admin')) {
-            return true;
+        if (! $user->can('registration.view')) {
+            return false;
         }
 
         // Students can view their own registration

@@ -12,4 +12,6 @@ return [
     'email_already_verified' => 'This email address is already verified.',
     'super_admin_not_found' => 'The SuperAdmin account with ID :id could not be found.',
     'super_admin_exists' => 'A SuperAdmin account already exists. Only one SuperAdmin account is allowed.',
+    'invalid_verification_link' => 'The verification link is invalid or the email has already been verified.',
+    'verification_resend_error' => 'You are already verified or not logged in.',
 ];
