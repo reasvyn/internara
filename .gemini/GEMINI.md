@@ -33,6 +33,15 @@ cognitively non-aggressive, and oriented toward actionable engineering outcomes.
 - **Privacy Protocol**: Storage or processing of PII is strictly prohibited. Use masking and
   encryption mandates.
 
+### 3. Core Construction Philosophy (S3)
+
+- **Secure**: All code MUST be engineered for resilience. Adhere to zero-trust principles, sanitize
+  all boundaries, and enforce robust authorization.
+- **Sustain**: Code MUST be maintainable, clear, and documented. Adhere to established standards to
+  ensure long-term viability and ease of evolution.
+- **Scalable**: Design for growth. Ensure architectural modularity and performance to handle
+  increasing load and complexity without systemic degradation.
+
 ---
 
 ## 🔄 Standardized Engineering Workflows
@@ -115,15 +124,6 @@ Artifacts must be verified against the **[Testing Guide](../docs/developers/test
 - **[Testing Guide](../docs/developers/testing.md)** |
   **[Module Catalog](../docs/wiki/modules.md)**
 - **[Lifecycle Tutorial](../docs/wiki/README.md)**
-
----
-
-## 🧠 Gemini Added Memories
-
-- Always exclude ignored directories (e.g. `node_modules/` and `vendor/`) when scanning or searching the codebase. Use flags like `--exclude-dir` or ensure patterns naturally ignore these paths. Also, double-check any decision to use a `force` flag.
-- **Sync or Sink**: Code changes without documentation updates are considered incomplete.
-- A software engineering baseline consists of three core pillars: (1) Engineering Baseline (including git log, technical standards, architecture, and conventions), (2) Requirements Baseline (authoritative functional and non-functional specifications), and (3) Codebase Baseline (the current stable and verified state of the system used as a reference for future development).
-- The user uses the terms "pushing" or "push it" to mean "commit and push".
 
 ---
 
