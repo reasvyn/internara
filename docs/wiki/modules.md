@@ -17,7 +17,7 @@ These modules provide the technical backbone and shared services used by the ent
 | Name             | Scopes               | Purpose                                                                                                                     |
 | :--------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
 | **Shared**       | Infrastructure       | Provides business-agnostic technical infrastructure (UUIDs, `EloquentQuery`) and technical utilities (Formatting, Masking). |
-| **Core**         | Technical Foundation | Acts as the system "glue," handling metadata SSoT (`MetadataService`), Academic Year scoping, and global middleware.        |
+| **Core**         | Technical Foundation | Acts as the system "glue," handling metadata SSoT (`MetadataService`), Academic Year scoping (`AcademicYearManager`), and global middleware.        |
 | **Support**      | Business Utility     | Provides automated scaffolding (Artisan generators), Testing orchestration, and mass-operation tools (Onboarding).          |
 | **Exception**    | Error Handling       | Manages standardized, localized, and secure fault management with automated abstraction for production safety.              |
 | **Status**       | State Management     | Provides the foundational infrastructure and Enums for tracking auditable entity lifecycle transitions.                     |

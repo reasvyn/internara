@@ -78,19 +78,19 @@ The system shall adhere to the following quality and technical constraints:
 
 - **[SYRS-NF-501]**: **Authentication**: Secure entry via email/password or authorized tokens.
 - **[SYRS-NF-502]**: **Access Control**: Implementation of strict **Role-Based Access Control
-  (RBAC)** as defined in section 2.
+  (RBAC)** as defined in section 2, managed via the **Permission** module.
 - **[SYRS-NF-503]**: **Data Privacy**: Sensitive data (PII) must be encrypted at rest and masked
   during logging.
-- **[SYRS-NF-504]**: **Identity Protection**: All domain primary keys must utilize **UUID v4** to
-  prevent ID enumeration attacks. System-level tables (e.g., jobs, migrations) may utilize standard
-  sequences.
+- **[SYRS-NF-504]**: **Identity Protection**: All domain primary keys must utilize **UUID v4** 
+  (implemented via `Shared\Models\Concerns\HasUuid`) to prevent ID enumeration attacks. 
+  System-level tables (e.g., jobs, migrations) may utilize standard sequences.
 
 ### 4.3 Architecture & Maintainability (ISO/IEC 25010)
 
 - **[SYRS-NF-601]**: **Modular Monolith**: The system must maintain strict domain isolation with no
   physical foreign keys across module boundaries.
-- **[SYRS-NF-602]**: **TALL Stack**: Implementation must utilize Laravel v12, Livewire v3, and
-  AlpineJS.
+- **[SYRS-NF-602]**: **TALL Stack**: Implementation must utilize Laravel v12, Livewire v3, Volt, 
+  and Tailwind CSS v4.
 - **[SYRS-NF-603]**: **Database**: Support for SQLite, PostgreSQL, or MySQL as persistence engines.
 
 ---
@@ -101,6 +101,9 @@ The system shall adhere to the following quality and technical constraints:
   work; it does not cover curriculum development.
 - **[SYRS-C-002]**: Multi-language support is mandatory for all user-facing interfaces.
 - **[SYRS-C-003]**: All logic must reside within the **Service Layer** to ensure testability.
+- **[SYRS-C-004]**: **System Identity**: The system distinguishes between `app_name` (Product 
+  Identity, e.g., "Internara") and `brand_name` (Instance Identity, e.g., "SMK Negeri 1 Jakarta") 
+  to ensure institutional flexibility.
 
 ---
 

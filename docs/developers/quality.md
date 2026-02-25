@@ -108,6 +108,39 @@ Internara utilizes the following metrics as mandatory automated quality gates:
 
 ---
 
+## 5. Comprehensive S3 & Performance Audit Checklist
+
+Prior to any artifact delivery, all modules must be audited against the following comprehensive checklist to ensure alignment with the S3 (Secure, Sustain, Scalable) philosophy and resource efficiency.
+
+### 5.1 SECURE (Security & Integrity)
+- **Identity Invariant (UUID v4)**: Verify usage of UUID v4 (via `Shared\Models\Concerns\HasUuid`) 
+  on all Domain Models. No auto-increment integers exposed.
+- **Authorization Enforcement (RBAC)**: Ensure every entry point (Livewire, API) is protected by a 
+  Laravel Policy or Gate corresponding to stakeholder roles, managed via the **Permission** module.
+- **Zero-Trust Boundary Validation**: Input from outside the module must be strictly validated at the Service/Livewire layer.
+- **PII Masking & Encryption**: Sensitive data (email, NIK, phone) must be encrypted at rest and redacted in all logging sinks.
+- **Credential & Secret Protection**: No `env()` calls within application logic. Use `config()` for static values and `setting()` for dynamic ones.
+
+### 5.2 SUSTAIN (Maintainability & Standards)
+- **Strict Typing Invariant**: Every PHP file MUST declare `declare(strict_types=1);`.
+- **Professional Documentation**: All public methods must have English DocBlocks explaining intent, parameters, return types, and exceptions.
+- **Localization (i18n)**: Zero hard-coded user-facing text. All text must use `__('module::file.key')`.
+- **Semantic Integrity**: Verify strict separation of Livewire, Service, and Model layers, and ensure the `src` segment is omitted in namespaces.
+
+### 5.3 SCALABLE (Architecture & Growth)
+- **Physical Isolation**: No physical foreign keys across module boundaries in the database. Referential integrity is managed at the Service Layer.
+- **Contract-First Interaction**: Cross-module communication must exclusively use Service Contracts (Interfaces).
+- **Service-Oriented Logic**: 100% of business logic must reside in the Service Layer (`EloquentQuery`). UI components only manage presentation state.
+- **Asynchronous Processing**: Heavy or cross-domain side-effects must utilize Laravel's Queue/Job or Event/Listener subsystems.
+
+### 5.4 PERFORMANCE & RESOURCE MANAGEMENT
+- **Heavy Query & N+1 Audit**: Detect and eliminate queries inside loops. Enforce Eager Loading (`with()`).
+- **Memory Leak Prevention**: Ban the use of `->get()` or `->all()` on massive datasets. Mandate `->paginate()`, `->chunk()`, or `->cursor()`.
+- **Bottleneck Identification**: Identify heavy synchronous logic during page renders. Ensure proper database indexing on `searchable` and `sortable` columns.
+- **Caching Strategy**: Audit usage of `EloquentQuery::remember()` for frequently accessed, rarely changing data.
+
+---
+
 _By strictly adhering to these ISO-standardized quality gates, Internara ensures a high-fidelity,
 secure, and maintainable software ecosystem that remains fully aligned with its foundational
 specifications._

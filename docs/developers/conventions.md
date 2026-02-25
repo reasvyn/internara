@@ -201,8 +201,18 @@ helper functions. These functions must strictly adhere to the following protocol
 - **Organization**: Each global function must reside in its own file within the `src/Functions/`
   directory, named after the function (e.g., `src/Functions/is_testing.php`). Multiple functions
   within a single file are prohibited.
-- **Autoloading**: Functions must be registered via the `autoload.files` section of the module's
-  `composer.json`.
+- **Autoloading**: Functions must be registered via the `autoload.files` section of the module's 
+  `composer.json`. Each file path must be explicitly listed to ensure proper discovery by the 
+  Composer autoloader.
+    - _Example_:
+      ```json
+      "autoload": {
+          "files": [
+              "src/Functions/is_active_module.php",
+              "src/Functions/setting.php"
+          ]
+      }
+      ```
 
 ---
 

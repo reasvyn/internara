@@ -64,7 +64,8 @@ Cross-cutting technical concerns are distributed across specialized foundational
 - **Shared**: Universal, project-agnostic utilities (e.g., `HasUuid`, `EloquentQuery`).
 - **Core**: Business-specific baseline data (e.g., RBAC, Academic Years).
 - **Support**: Infrastructure tooling and generators.
-- **UI**: Standardized design system implementing the **Instrument Sans** identity.
+- **UI**: Standardized design system implementing the **Instrument Sans** identity using 
+  **maryUI** and **Volt**.
 
 ### 2.3 Process View: Communication Protocols
 
@@ -78,9 +79,10 @@ Cross-cutting technical concerns are distributed across specialized foundational
 
 ### 3.1 Security & Access Control (ISO/IEC 27034)
 
-- **RBAC Invariant**: Access to domain resources is strictly governed by **Policies** and **Gates**
-  mapped to the stakeholder roles defined in the SyRS.
-- **Identity Invariant**: Mandatory use of **UUID v4** for all entities to prevent enumeration.
+- **RBAC Invariant**: Access to domain resources is strictly governed by **Policies** and **Gates** 
+  managed by the **Permission** module and mapped to the stakeholder roles defined in the SyRS.
+- **Identity Invariant**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for 
+  all entities to prevent enumeration.
 
 ### 3.2 Data Integrity & Isolation
 
