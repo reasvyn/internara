@@ -74,7 +74,7 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
         $this->handleSuperAdminAvatar($superAdmin, $data['avatar_file'] ?? null);
 
         $superAdmin->assignRole('super-admin');
-        
+
         // Clear permission cache to ensure role existence checks work immediately
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
@@ -142,17 +142,17 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
     {
         // During setup, we bypass the super-admin scope to allow promoting existing users.
         $query = setting('app_installed', false) ? $this->model->newQuery() : $this->query();
-        
+
         // CRITICAL: Filter only fillable attributes for the User model
         $fillableValues = \Illuminate\Support\Arr::only($values, $this->model->getFillable());
-        
+
         $superAdmin = $query->updateOrCreate($attributes, $fillableValues);
 
         $allData = array_merge($attributes, $values);
         $this->handleSuperAdminAvatar($superAdmin, $allData['avatar_file'] ?? null);
 
         $superAdmin->assignRole('super-admin');
-        
+
         // Clear permission cache to ensure role existence checks work immediately
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 

@@ -61,10 +61,10 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 - **Modular Architecture:** Built on **Laravel 12**, utilizing a **Modular Monolith** structure to
   ensure domain isolation and system integrity.
-- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) 
-  using **DaisyUI** and **maryUI** for a fast, responsive, and institution-ready experience.
-- **Rigorous Standards:** Development is governed by **ISO/IEC** standards and the **3S 
-  (Secure, Sustain, Scalable)** philosophy.
+- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) using
+  **DaisyUI** and **maryUI** for a fast, responsive, and institution-ready experience.
+- **Rigorous Standards:** Development is governed by **ISO/IEC** standards and the **3S (Secure,
+  Sustain, Scalable)** philosophy.
 
 ---
 
@@ -82,7 +82,8 @@ Internara is engineered for stability, security, and long-term maintainability.
   invariants.
 - **[Feature Engineering Workflow](docs/developers/lifecycle.md)**: Our systematic implementation
   process.
-- **[Technical Index](docs/developers/engineering-index.md)**: Full catalog of engineering standards.
+- **[Technical Index](docs/developers/engineering-index.md)**: Full catalog of engineering
+  standards.
 
 ---
 

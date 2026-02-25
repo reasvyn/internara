@@ -1,6 +1,6 @@
 # Testing & Verification Guide: Engineering Reliability
 
-This document formalizes the **Verification & Validation (V&V)** protocols for the Internara 
+This document formalizes the **Verification & Validation (V&V)** protocols for the Internara
 project, adhering to **IEEE Std 1012** and **ISO/IEC 29119**.
 
 ---
@@ -10,7 +10,7 @@ project, adhering to **IEEE Std 1012** and **ISO/IEC 29119**.
 Verification ensures technical correctness, while Validation ensures requirement fulfillment.
 
 1.  **TDD-First**: Automated verification must exist prior to logic implementation.
-2.  **Modular Isolation**: Tests must verify a module's behavior without dependent implementation 
+2.  **Modular Isolation**: Tests must verify a module's behavior without dependent implementation
     leakage.
 3.  **Behavioral Coverage**: A minimum of **90% coverage** is required for all domain logic.
 
@@ -18,7 +18,8 @@ Verification ensures technical correctness, while Validation ensures requirement
 
 ## 1. Verification Philosophy
 
-- **[Verification Philosophy](#1-verification-philosophy)**: Engineering reliability and the Pest v4 baseline.
+- **[Verification Philosophy](#1-verification-philosophy)**: Engineering reliability and the Pest v4
+  baseline.
 - **[Laravel Testing Basics](laravel-tests.md)**: Getting started guide for testing in the Laravel
   ecosystem.
 - **[Troubleshooting & FAQ](troubleshooting.md)**: Common issues and fixes for the engineering team.

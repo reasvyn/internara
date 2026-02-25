@@ -37,7 +37,12 @@ class ResetPassword extends Component
         return [
             'token' => 'required',
             'email' => 'required|email',
-            'password' => ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                \Modules\Shared\Rules\Password::auto(),
+            ],
         ];
     }
 
@@ -64,7 +69,7 @@ class ResetPassword extends Component
     public function render(): View
     {
         return view('auth::livewire.reset-password')->layout('auth::components.layouts.auth', [
-            'title' => __('auth::ui.reset_password.title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::ui.reset_password.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

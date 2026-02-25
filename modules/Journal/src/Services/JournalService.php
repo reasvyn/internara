@@ -251,18 +251,24 @@ class JournalService extends EloquentQuery implements Contract
         $results = $this->model
             ->newQuery()
             ->select('registration_id')
-            ->selectRaw("COUNT(CASE WHEN EXISTS (
+            ->selectRaw(
+                "COUNT(CASE WHEN EXISTS (
                 SELECT 1 FROM statuses 
                 WHERE statuses.model_id = journal_entries.id 
                 AND statuses.model_type = ? 
                 AND name IN ('submitted', 'approved', 'verified')
-            ) THEN 1 END) as submitted_count", [$this->model->getMorphClass()])
-            ->selectRaw("COUNT(CASE WHEN EXISTS (
+            ) THEN 1 END) as submitted_count",
+                [$this->model->getMorphClass()],
+            )
+            ->selectRaw(
+                "COUNT(CASE WHEN EXISTS (
                 SELECT 1 FROM statuses 
                 WHERE statuses.model_id = journal_entries.id 
                 AND statuses.model_type = ? 
                 AND name IN ('approved', 'verified')
-            ) THEN 1 END) as approved_count", [$this->model->getMorphClass()])
+            ) THEN 1 END) as approved_count",
+                [$this->model->getMorphClass()],
+            )
             ->whereIn('registration_id', $registrationIds)
             ->groupBy('registration_id')
             ->get()

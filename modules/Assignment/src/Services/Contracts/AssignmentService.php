@@ -21,4 +21,9 @@ interface AssignmentService extends EloquentQuery
      * Verify if all mandatory assignments for a registration are completed.
      */
     public function isFulfillmentComplete(string $registrationId, ?string $group = null): bool;
+
+    /**
+     * Get all available assignment types.
+     */
+    public function getTypes(): \Illuminate\Support\Collection;
 }

@@ -8,8 +8,9 @@ use Illuminate\Support\Collection;
 use Modules\Report\Jobs\GenerateReportJob;
 use Modules\Report\Services\Contracts\ReportGenerator;
 use Modules\Shared\Contracts\ExportableDataProvider;
+use Modules\Shared\Services\BaseService;
 
-class ReportService implements ReportGenerator
+class ReportService extends BaseService implements ReportGenerator
 {
     /** @var Collection<string, ExportableDataProvider> */
     protected Collection $providers;

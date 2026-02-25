@@ -60,7 +60,11 @@ class DepartmentManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('department::ui.name'), 'sortable' => true],
             ['key' => 'description', 'label' => __('ui::common.description')],
-            ['key' => 'created_at_formatted', 'label' => __('ui::common.created_at'), 'sort_by' => 'created_at'],
+            [
+                'key' => 'created_at_formatted',
+                'label' => __('ui::common.created_at'),
+                'sort_by' => 'created_at',
+            ],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
     }
@@ -80,9 +84,12 @@ class DepartmentManager extends RecordManager
      */
     public function render(): View
     {
-        return view('department::livewire.department-manager')->layout('ui::components.layouts.dashboard', [
-            'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-            'context' => $this->context,
-        ]);
+        return view('department::livewire.department-manager')->layout(
+            'ui::components.layouts.dashboard',
+            [
+                'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
+                'context' => $this->context,
+            ],
+        );
     }
 }

@@ -61,7 +61,10 @@ trait ManagesRecords
      * @var array{column: string, direction: string}
      */
     #[Url]
-    public array $sortBy = ['column' => self::DEFAULT_SORT_BY, 'direction' => self::DEFAULT_SORT_DIR];
+    public array $sortBy = [
+        'column' => self::DEFAULT_SORT_BY,
+        'direction' => self::DEFAULT_SORT_DIR,
+    ];
 
     /**
      * Number of records to display per page.
@@ -125,11 +128,14 @@ trait ManagesRecords
     #[Computed]
     public function records(): LengthAwarePaginator
     {
-        $filters = array_filter([
-            'search' => $this->search,
-            'sort_by' => $this->sortBy['column'] ?? self::DEFAULT_SORT_BY,
-            'sort_dir' => $this->sortBy['direction'] ?? self::DEFAULT_SORT_DIR,
-        ], fn ($value) => $value !== null && $value !== '');
+        $filters = array_filter(
+            [
+                'search' => $this->search,
+                'sort_by' => $this->sortBy['column'] ?? self::DEFAULT_SORT_BY,
+                'sort_dir' => $this->sortBy['direction'] ?? self::DEFAULT_SORT_DIR,
+            ],
+            fn ($value) => $value !== null && $value !== '',
+        );
 
         return $this->service->paginate($filters, $this->perPage);
     }
@@ -232,7 +238,7 @@ trait ManagesRecords
     public function exportCsv()
     {
         $records = $this->service->all();
-        $filename = $this->getEventPrefix() . '-' . now()->format('Y-m-d-His') . '.csv';
+        $filename = $this->getEventPrefix().'-'.now()->format('Y-m-d-His').'.csv';
         $headers = $this->getExportHeaders();
 
         $callback = function () use ($records, $headers) {
@@ -255,7 +261,7 @@ trait ManagesRecords
      */
     public function downloadTemplate()
     {
-        $filename = $this->getEventPrefix() . '-template.csv';
+        $filename = $this->getEventPrefix().'-template.csv';
         $headers = $this->getExportHeaders();
 
         $callback = function () use ($headers) {
@@ -295,6 +301,7 @@ trait ManagesRecords
 
         if (empty($data)) {
             flash()->error(__('ui::common.error'));
+
             return;
         }
 
@@ -317,14 +324,15 @@ trait ManagesRecords
 
         if (! $view) {
             flash()->error(__('shared::exceptions.pdf_view_undefined'));
+
             return null;
         }
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($view, $this->getPdfData($records));
 
         return response()->streamDownload(
-            fn () => print($pdf->output()),
-            $this->getEventPrefix() . '-' . now()->format('Y-m-d') . '.pdf'
+            fn () => print $pdf->output(),
+            $this->getEventPrefix().'-'.now()->format('Y-m-d').'.pdf',
         );
     }
 
@@ -341,7 +349,7 @@ trait ManagesRecords
      */
     protected function mapRecordForExport($record, array $keys): array
     {
-        return array_map(fn($key) => $record->{$key}, $keys);
+        return array_map(fn ($key) => $record->{$key}, $keys);
     }
 
     /**
@@ -353,6 +361,7 @@ trait ManagesRecords
         foreach ($keys as $index => $key) {
             $data[$key] = $row[$index] ?? null;
         }
+
         return $data;
     }
 

@@ -23,7 +23,7 @@ class StudentService extends EloquentQuery implements Contract
     public function __construct(
         User $model,
         protected UserService $userService,
-        protected ProfileService $profileService
+        protected ProfileService $profileService,
     ) {
         $this->setModel($model);
         $this->setSearchable(['name', 'email', 'username', 'profile.national_identifier']);
@@ -73,7 +73,7 @@ class StudentService extends EloquentQuery implements Contract
 
         if (! $user || ! $user->hasRole('student')) {
             throw new \Modules\Exception\RecordNotFoundException(
-                replace: ['record' => 'Student', 'id' => $id]
+                replace: ['record' => 'Student', 'id' => $id],
             );
         }
 

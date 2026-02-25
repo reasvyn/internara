@@ -6,7 +6,6 @@ namespace Modules\Profile\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService as Contract;
 use Modules\Shared\Services\EloquentQuery;

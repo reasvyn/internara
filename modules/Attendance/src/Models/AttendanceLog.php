@@ -69,7 +69,7 @@ class AttendanceLog extends Model
         return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
             $this,
             'student_id',
-            relation: 'student'
+            relation: 'student',
         );
     }
 }

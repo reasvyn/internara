@@ -8,7 +8,7 @@ use Livewire\Component;
 
 /**
  * Class ActivityWidget
- * 
+ *
  * Simplified activity feed designed to be embedded as a dashboard widget.
  */
 class ActivityWidget extends Component

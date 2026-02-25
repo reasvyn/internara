@@ -7,13 +7,14 @@ namespace Modules\Auth\Services;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Modules\Auth\Services\Contracts\RedirectService as Contract;
 use Modules\Permission\Enums\Role;
+use Modules\Shared\Services\BaseService;
 
 /**
  * Class RedirectService
  *
  * Handles post-authentication redirection logic based on user roles and status.
  */
-final class RedirectService implements Contract
+final class RedirectService extends BaseService implements Contract
 {
     /**
      * Get the target URL for the authenticated user.

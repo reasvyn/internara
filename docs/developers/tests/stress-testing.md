@@ -9,8 +9,8 @@ description:
 
 # Stress Testing (Optional Plugin)
 
-> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
-> To enable it, follow the installation instructions below.
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. To
+> enable it, follow the installation instructions below.
 
 Stress Testing is a type of testing that inspects the stability and reliability of your application
 under realistic or extreme conditions.

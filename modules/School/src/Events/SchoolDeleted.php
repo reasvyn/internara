@@ -9,8 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 /**
  * Fired when a school record is deleted.
- * 
- * This event allows other modules (e.g., Department) to perform 
+ *
+ * This event allows other modules (e.g., Department) to perform
  * necessary cleanup without physical foreign keys.
  */
 class SchoolDeleted
@@ -21,7 +21,5 @@ class SchoolDeleted
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public string $schoolId
-    ) {}
+    public function __construct(public string $schoolId) {}
 }

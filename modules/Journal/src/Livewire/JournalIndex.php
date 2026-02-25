@@ -71,10 +71,10 @@ class JournalIndex extends Component
         } elseif ($user->hasRole(['teacher', 'mentor'])) {
             $query = $this->journalService->query($filters, $columns);
             $query->with([
-                'student:id,name', 
-                'registration:id,placement_id', 
-                'registration.placement:id,company_id', 
-                'registration.placement.company:id,name'
+                'student:id,name',
+                'registration:id,placement_id',
+                'registration.placement:id,company_id',
+                'registration.placement.company:id,name',
             ]);
             $query->whereHas('registration', function ($q) use ($user) {
                 $q->where('teacher_id', $user->id)->orWhere('mentor_id', $user->id);
@@ -100,11 +100,14 @@ class JournalIndex extends Component
         $endOfWeek = now()->endOfWeek();
 
         $entries = $this->journalService
-            ->query([
-                'student_id' => auth()->id(),
-                'start_date' => $startOfWeek->format('Y-m-d'),
-                'end_date' => $endOfWeek->format('Y-m-d'),
-            ], ['id', 'date'])
+            ->query(
+                [
+                    'student_id' => auth()->id(),
+                    'start_date' => $startOfWeek->format('Y-m-d'),
+                    'end_date' => $endOfWeek->format('Y-m-d'),
+                ],
+                ['id', 'date'],
+            )
             ->get()
             ->keyBy(fn ($e) => $e->date->format('Y-m-d'));
 
@@ -180,7 +183,7 @@ class JournalIndex extends Component
     public function render(): View
     {
         return view('journal::livewire.journal-index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('journal::ui.index.title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('journal::ui.index.title').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

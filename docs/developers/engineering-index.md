@@ -8,8 +8,8 @@ This index centralizes the formal technical records for the Internara project.
 
 - **[System Requirements Specification](specs.md)**: **SSoT** - ISO/IEC 29148 requirements baseline.
 - **[Architecture Description](architecture.md)**: ISO/IEC 42010 structural views and decomposition.
-- **[Design Blueprints](blueprints/blueprint-index.md)**: Strategic design records and active architectural
-  plans.
+- **[Design Blueprints](blueprints/blueprint-index.md)**: Strategic design records and active
+  architectural plans.
 - **[Version History](releases.md)**: Release baselines and change logs.
 
 ## 2. Engineering Standards
@@ -22,14 +22,17 @@ This index centralizes the formal technical records for the Internara project.
 
 ## 3. Workflows & Process
 
-- **[Standardized Workflow](workflow.md)**: Authoritative 8-step engineering lifecycle (ISO/IEC 12207).
+- **[Standardized Workflow](workflow.md)**: Authoritative 8-step engineering lifecycle (ISO/IEC
+  12207).
 - **[Git Protocols](git.md)**: Repository configuration and branching strategy.
 - **[Release Protocols](releases.md)**: Baseline promotion and publication standards.
-- **[Blueprint Guidelines](blueprints/blueprint-index.md)**: Standards for writing design blueprints.
+- **[Blueprint Guidelines](blueprints/blueprint-index.md)**: Standards for writing design
+  blueprints.
 
 ## 4. Reference & Tooling
 
-- **[Testing Guide](tests/verification-index.md)**: Verification strategy (Pest v4) and TDD protocols.
+- **[Testing Guide](tests/verification-index.md)**: Verification strategy (Pest v4) and TDD
+  protocols.
 - **[Automated Tooling](tooling.md)**: CLI tools and generators.
 - **[Advanced Topics](advanced/advanced-index.md)**: Deep-dive engineering guides.
 - **[Package Ecosystem](packages/package-index.md)**: Documentation for 3rd-party integrations.

@@ -1,8 +1,8 @@
 # Spatie Honeypot: Automated Bot Protection
 
 This document formalizes the integration of the `spatie/laravel-honeypot` package, which powers the
-**Bot & Spam Protection** baseline for the Internara project. It establishes the technical
-protocols required to silently trap and reject non-human interactions at system boundaries.
+**Bot & Spam Protection** baseline for the Internara project. It establishes the technical protocols
+required to silently trap and reject non-human interactions at system boundaries.
 
 ---
 

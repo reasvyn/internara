@@ -21,7 +21,7 @@ return [
         'brand_logo' => 'Logo Brand',
         'site_favicon' => 'Favicon Situs',
         'default_locale' => 'Bahasa Utama',
-        
+
         'active_academic_year' => 'Tahun Pelajaran Aktif',
         'attendance_check_in_start' => 'Jam Mulai Masuk',
         'attendance_late_threshold' => 'Batas Waktu Terlambat',

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Analytics\Services;
 
-use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator as Contract;
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
@@ -37,19 +37,23 @@ class AnalyticsAggregator implements Contract
         $activeAcademicYear = setting('active_academic_year');
         $cacheKey = "institutional_summary_{$activeAcademicYear}";
 
-        return \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addMinutes(15), function () use ($activeAcademicYear) {
-            $totalInterns = $this->registrationService
-                ->query(['academic_year' => $activeAcademicYear])
-                ->count();
+        return \Illuminate\Support\Facades\Cache::remember(
+            $cacheKey,
+            now()->addMinutes(15),
+            function () use ($activeAcademicYear) {
+                $totalInterns = $this->registrationService
+                    ->query(['academic_year' => $activeAcademicYear])
+                    ->count();
 
-            $activePartners = $this->placementService->all(['id'])->count();
+                $activePartners = $this->placementService->all(['id'])->count();
 
-            return [
-                'total_interns' => $totalInterns,
-                'active_partners' => $activePartners,
-                'placement_rate' => $this->calculatePlacementRate($totalInterns),
-            ];
-        });
+                return [
+                    'total_interns' => $totalInterns,
+                    'active_partners' => $activePartners,
+                    'placement_rate' => $this->calculatePlacementRate($totalInterns),
+                ];
+            },
+        );
     }
 
     /**
@@ -78,7 +82,7 @@ class AnalyticsAggregator implements Contract
 
         foreach ($activeRegistrations as $registration) {
             $registrationId = (string) $registration->id;
-            
+
             // Get stats from pre-fetched maps
             $stats = $allEngagementStats[$registrationId] ?? ['responsiveness' => 0];
             $avgScore = $allAverageScores[$registrationId] ?? 0;

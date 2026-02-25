@@ -10,11 +10,19 @@ pest()
 pest()
     ->extend(\Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
-    ->in(__DIR__.'/Feature', __DIR__.'/../modules/*/tests/Feature', __DIR__.'/../modules/*/Tests/Feature');
+    ->in(
+        __DIR__.'/Feature',
+        __DIR__.'/../modules/*/tests/Feature',
+        __DIR__.'/../modules/*/Tests/Feature',
+    );
 
 pest()
     ->extend(\Tests\TestCase::class)
-    ->in(__DIR__.'/Unit', __DIR__.'/../modules/*/tests/Unit', __DIR__.'/../modules/*/Tests/Unit');
+    ->in(
+        __DIR__.'/Unit',
+        __DIR__.'/../modules/*/tests/Unit',
+        __DIR__.'/../modules/*/Tests/Unit',
+    );
 
 /*
 |--------------------------------------------------------------------------

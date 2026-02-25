@@ -61,9 +61,11 @@ Authorization must be enforced at the UI level to prevent unauthorized interacti
 
 The Service Layer provides the final defense against unauthorized execution.
 
-- **Invariant**: Services must verify authorization before performing state-altering operations, especially for destructive actions (Delete/Force-Delete).
-- **Mandatory Execution**: Every administrative method (Create/Update/Delete) within a Service MUST explicitly invoke `Gate::authorize()` to ensure security even when called from non-HTTP contexts (e.g., CLI, Jobs, or Inter-Module calls).
-
+- **Invariant**: Services must verify authorization before performing state-altering operations,
+  especially for destructive actions (Delete/Force-Delete).
+- **Mandatory Execution**: Every administrative method (Create/Update/Delete) within a Service MUST
+  explicitly invoke `Gate::authorize()` to ensure security even when called from non-HTTP contexts
+  (e.g., CLI, Jobs, or Inter-Module calls).
 
 #### 1.4.3 Policy Pattern (The Governance Layer)
 
@@ -246,8 +248,8 @@ To prevent the system from becoming a "Black Box," all cross-module events must 
 
 - **Documentation**: Significant domain events must be mentioned in the Architectural Blueprint of
   the version series.
-- **Monitoring**: Utilize the `HandlesAuditLog` concern to record the dispatching of critical domain events
-  for forensic analysis.
+- **Monitoring**: Utilize the `HandlesAuditLog` concern to record the dispatching of critical domain
+  events for forensic analysis.
 
 ---
 
@@ -266,7 +268,8 @@ constraints across module boundaries are prohibited.
 Because Internara enforces **Strict Modular Isolation**, data relationships across modules must be
 orchestrated by the **Service Layer** rather than the database engine.
 
-- **Invariant**: The "Parent" module's Service Contract is the authoritative source for validating
+- **Invariant**: **Physical foreign keys across module boundaries are strictly prohibited**.
+- **Authority**: The "Parent" module's Service Contract is the authoritative source for validating
   the existence of a foreign entity.
 - **Protocol**: Never query a foreign module's model directly to verify existence; utilize the
   designated Service Contract.
@@ -275,15 +278,15 @@ orchestrated by the **Service Layer** rather than the database engine.
 
 #### 4.2.1 Creation & Assignment Verification
 
-When creating a record that refers to a foreign module (e.g., assigning a Student to a Placement),
-the service must verify the foreign entity's existence.
+When creating a record that refers to a foreign module, the service must verify the foreign entity's
+existence via its Service Contract.
 
 ```php
 public function create(array $data): Model
 {
-    // Verification: Utilize the foreign Service Contract to validate the identity
-    if (! $this->studentService->exists($data['student_id'])) {
-        throw new EntityNotFoundException(__('student::exceptions.not_found'));
+    // Verification: Invoke the foreign Service Contract to validate the identity
+    if (! $this->foreignService->exists($data['foreign_id'])) {
+        throw new EntityNotFoundException(__('module::exceptions.not_found'));
     }
 
     return parent::create($data);

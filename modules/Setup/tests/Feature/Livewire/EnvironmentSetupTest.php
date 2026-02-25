@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\EnvironmentSetup;
-use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Setup\Services\Contracts\SystemAuditor;
 
 uses(LazilyRefreshDatabase::class);
@@ -83,7 +82,8 @@ describe('EnvironmentSetup Component', function () {
         $template = file_get_contents($viewPath);
 
         // Verify structural card-based layout and navigation triggers
-        expect($template)->toContain('x-setup::layouts.setup-wizard')
+        expect($template)
+            ->toContain('x-setup::layouts.setup-wizard')
             ->toContain('x-ui::card')
             ->toContain('wire:click="nextStep"');
     });

@@ -33,14 +33,17 @@ Internara provides tailored environments for five primary roles:
 ## 3. Core Capabilities
 
 ### ⚡ Operational Orchestration
+
 Manages the entire internship lifecycle—from initial program creation and student registration to
 final certification.
 
 ### 📊 Intelligence & Monitoring
+
 Provides real-time dashboards and analytical reports to track attendance, journal compliance, and
 learning outcomes.
 
 ### 📱 Mobile-First Experience
+
 Optimized for smartphones to support students and mentors in the field, featuring quick check-ins
 and easy document uploads.
 
@@ -48,41 +51,41 @@ and easy document uploads.
 
 ## 4. Institutional Readiness (Step Zero)
 
-Before proceeding with the installation, we recommend gathering the following foundational data
-to ensure a smooth onboarding process:
+Before proceeding with the installation, we recommend gathering the following foundational data to
+ensure a smooth onboarding process:
 
 - **Institutional Identity**: Official school name, address, logo, and legal identifiers (e.g.,
   NPSN).
 - **Academic Structure**: A comprehensive list of active Departments or Study Programs.
-- **Stakeholder Directory**: A spreadsheet of Instructors (Teachers) and Students, including 
-  emails and registration identifiers.
+- **Stakeholder Directory**: A spreadsheet of Instructors (Teachers) and Students, including emails
+  and registration identifiers.
 - **Industry Partners**: A list of current companies or agencies authorized for student placement.
 
 ### 4.1 Operational Workflow Validation
 
-Internara is designed around a specific, high-integrity internship model. Ensure your 
-institutional policies align with these core flows:
+Internara is designed around a specific, high-integrity internship model. Ensure your institutional
+policies align with these core flows:
 
-- **Dual Supervision**: Every student must be assigned both a Monitoring Teacher (Academic) and 
-  an Industry Mentor (Field).
-- **Daily Validation**: Students submit daily logs that require verification from their 
-  respective supervisors to be counted toward competency achievement.
-- **Academic Scoping**: Data is strictly partitioned by Academic Years. Ensure you have 
-  defined your current active cycle.
-- **Evidence-Based Assessment**: Grades are derived from a combination of attendance, 
-  journal consistency, and final evaluation from industry partners.
+- **Dual Supervision**: Every student must be assigned both a Monitoring Teacher (Academic) and an
+  Industry Mentor (Field).
+- **Daily Validation**: Students submit daily logs that require verification from their respective
+  supervisors to be counted toward competency achievement.
+- **Academic Scoping**: Data is strictly partitioned by Academic Years. Ensure you have defined your
+  current active cycle.
+- **Evidence-Based Assessment**: Grades are derived from a combination of attendance, journal
+  consistency, and final evaluation from industry partners.
 
 ### 4.2 Infrastructure & Service Requirements
 
-Beyond server hosting, ensure you have access to the following external services required for 
-full system functionality:
+Beyond server hosting, ensure you have access to the following external services required for full
+system functionality:
 
-- **Mail Server (SMTP)**: Necessary for sending automated account credentials, password 
-  recovery, and system alerts to stakeholders.
-- **Bot Protection**: Internara utilizes Cloudflare Turnstile for secure form submissions. 
-  You will need a Site Key and Secret Key (optional for local dev, mandatory for production).
-- **Public URL**: To utilize Mobile-First features effectively in the field, the system 
-  should be accessible via a public domain or a secured tunnel.
+- **Mail Server (SMTP)**: Necessary for sending automated account credentials, password recovery,
+  and system alerts to stakeholders.
+- **Bot Protection**: Internara utilizes Cloudflare Turnstile for secure form submissions. You will
+  need a Site Key and Secret Key (optional for local dev, mandatory for production).
+- **Public URL**: To utilize Mobile-First features effectively in the field, the system should be
+  accessible via a public domain or a secured tunnel.
 
 ---
 

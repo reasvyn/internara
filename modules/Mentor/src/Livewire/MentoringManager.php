@@ -94,7 +94,7 @@ class MentoringManager extends Component
             'stats' => $stats,
             'timeline' => $timeline,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('mentor::ui.manager.title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('mentor::ui.manager.title').' | '.setting('brand_name', setting('app_name')),
             'context' => 'mentor::ui.dashboard.title',
         ]);
     }

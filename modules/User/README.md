@@ -26,9 +26,9 @@ coupling with other domain modules.
   role-based initialization.
     - _Features_: Automated email verification for admins, welcome notification dispatching, and
       secure deletion guards.
-    - **Composite Pattern**: Provides atomic creation of both `User` and `Profile` entities 
-      via the `createWithProfile()` method, delegating profile-specific logic to the 
-      `ProfileService` contract while maintaining a single transactional boundary for DX.
+    - **Composite Pattern**: Provides atomic creation of both `User` and `Profile` entities via the
+      `createWithProfile()` method, delegating profile-specific logic to the `ProfileService`
+      contract while maintaining a single transactional boundary for DX.
     - _Contract_: `Modules\User\Services\Contracts\UserService`.
 - **`SuperAdminService`**: Specialized service for managing the highest-privileged system accounts.
 

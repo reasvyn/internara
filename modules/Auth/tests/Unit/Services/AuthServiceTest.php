@@ -6,9 +6,9 @@ namespace Modules\Auth\Tests\Unit\Services;
 
 use Illuminate\Support\Facades\Auth;
 use Modules\Auth\Services\AuthService;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
-use Modules\Permission\Enums\Role;
 
 describe('Auth Service', function () {
     beforeEach(function () {
@@ -24,7 +24,10 @@ describe('Auth Service', function () {
 
         Auth::shouldReceive('user')->andReturn(new User);
 
-        $user = $this->service->login(['identifier' => 'test@example.com', 'password' => 'password']);
+        $user = $this->service->login([
+            'identifier' => 'test@example.com',
+            'password' => 'password',
+        ]);
 
         expect($user)->toBeInstanceOf(User::class);
     });
@@ -50,12 +53,15 @@ describe('Auth Service', function () {
             'role' => Role::SUPER_ADMIN->value, // Unauthorized role injection
         ];
 
-        $this->userService->shouldReceive('create')
+        $this->userService
+            ->shouldReceive('create')
             ->once()
-            ->with(\Mockery::on(function ($arg) {
-                // Ensure 'role' or 'roles' from input is removed/ignored
-                return !isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
-            }))
+            ->with(
+                \Mockery::on(function ($arg) {
+                    // Ensure 'role' or 'roles' from input is removed/ignored
+                    return ! isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
+                }),
+            )
             ->andReturn(new User);
 
         $this->service->register($data, Role::STUDENT->value);

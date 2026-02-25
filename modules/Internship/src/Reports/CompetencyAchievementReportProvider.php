@@ -34,15 +34,27 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
     public function getReportData(array $filters = []): array
     {
         $query = InternshipRegistration::query()
-            ->select(['id', 'student_id', 'internship_id', 'placement_id', 'status', 'academic_year'])
-            ->with(['student:id,name', 'internship:id,title', 'placement:id,company_id', 'placement.company:id,name']);
+            ->select([
+                'id',
+                'student_id',
+                'internship_id',
+                'placement_id',
+                'status',
+                'academic_year',
+            ])
+            ->with([
+                'student:id,name',
+                'internship:id,title',
+                'placement:id,company_id',
+                'placement.company:id,name',
+            ]);
 
         if (isset($filters['academic_year'])) {
             $query->where('academic_year', $filters['academic_year']);
         }
 
         $rows = [];
-        
+
         foreach ($query->cursor() as $reg) {
             // Placeholder for competency achievement logic (to be expanded in v0.10.0)
             $rows[] = [

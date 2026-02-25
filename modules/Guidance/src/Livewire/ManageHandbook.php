@@ -107,7 +107,9 @@ class ManageHandbook extends Component
             'handbooks' => $handbooks,
             'headers' => $headers,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('guidance::ui.manage_title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('guidance::ui.manage_title').
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

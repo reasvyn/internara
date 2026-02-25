@@ -39,11 +39,15 @@ class AuthServiceProvider extends BaseAuthServiceProvider
      */
     protected function configureRateLimiting(): void
     {
-        \Illuminate\Support\Facades\RateLimiter::for('auth', function (\Illuminate\Http\Request $request) {
+        \Illuminate\Support\Facades\RateLimiter::for('auth', function (
+            \Illuminate\Http\Request $request,
+        ) {
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
         });
 
-        \Illuminate\Support\Facades\RateLimiter::for('registration', function (\Illuminate\Http\Request $request) {
+        \Illuminate\Support\Facades\RateLimiter::for('registration', function (
+            \Illuminate\Http\Request $request,
+        ) {
             return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($request->ip());
         });
     }
@@ -78,7 +82,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function customizeVerificationEmail(): void
     {
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return (new MailMessage)
+            return new MailMessage()
                 ->subject(__('auth::emails.verification_subject'))
                 ->greeting(__('auth::emails.verification_greeting', ['name' => $notifiable->name]))
                 ->line(__('auth::emails.verification_line_1'))

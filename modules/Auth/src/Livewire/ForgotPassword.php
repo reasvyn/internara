@@ -36,9 +36,11 @@ class ForgotPassword extends Component
             if ($user) {
                 // Log masked email for flow verification
                 $maskedEmail = \Modules\Shared\Support\Masker::email($this->email);
-            if (is_development()) {
-                \Illuminate\Support\Facades\Log::info("Development: Password reset initiated for {$maskedEmail}. Redirecting to shortcut.");
-            }
+                if (is_development()) {
+                    \Illuminate\Support\Facades\Log::info(
+                        "Development: Password reset initiated for {$maskedEmail}. Redirecting to shortcut.",
+                    );
+                }
 
                 $token = \Illuminate\Support\Facades\Password::broker()->createToken($user);
 
@@ -47,7 +49,7 @@ class ForgotPassword extends Component
                         'token' => $token,
                         'email' => $this->email,
                     ]),
-                    navigate: true
+                    navigate: true,
                 );
 
                 return;
@@ -64,7 +66,7 @@ class ForgotPassword extends Component
     public function render(): View
     {
         return view('auth::livewire.forgot-password')->layout('auth::components.layouts.auth', [
-            'title' => __('auth::ui.forgot_password.title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::ui.forgot_password.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

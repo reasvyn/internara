@@ -8,7 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\URL;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Assessment\Services\Contracts\CertificateService as Contract;
-use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Shared\Services\BaseService;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
@@ -16,7 +16,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
  *
  * Implements PDF generation logic for certificates and transcripts.
  */
-class CertificateService implements Contract
+class CertificateService extends BaseService implements Contract
 {
     public function __construct(
         protected RegistrationService $registrationService,

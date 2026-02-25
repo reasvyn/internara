@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Assignment\Models\AssignmentType;
 use Modules\Assignment\Services\Contracts\AssignmentTypeService;
 
 /**
@@ -66,9 +65,14 @@ class AssignmentTypeManager extends Component
     /**
      * Show the form to edit an existing assignment type.
      */
-    public function edit(string $id): void
+    public function edit(string $id, AssignmentTypeService $service): void
     {
-        $type = AssignmentType::findOrFail($id);
+        $type = $service->find($id);
+
+        if (! $type) {
+            return;
+        }
+
         $this->recordId = $id;
         $this->name = $type->name;
         $this->slug = $type->slug;
@@ -115,10 +119,10 @@ class AssignmentTypeManager extends Component
     /**
      * Render the component.
      */
-    public function render()
+    public function render(AssignmentTypeService $service)
     {
         return view('assignment::livewire.assignment-type-manager', [
-            'types' => AssignmentType::latest()->paginate(10),
+            'types' => $service->paginate([], 10),
             'groups' => [
                 'report' => __('Report'),
                 'presentation' => __('Presentation'),
@@ -126,7 +130,9 @@ class AssignmentTypeManager extends Component
                 'other' => __('Other'),
             ],
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('assignment::ui.menu.assignment_types') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('assignment::ui.menu.assignment_types').
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

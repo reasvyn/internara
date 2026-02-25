@@ -7,13 +7,13 @@ namespace Modules\Mentor\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Mentor\Services\Contracts\MentorService;
 use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Modules\User\Livewire\Forms\UserForm;
-use Modules\Mentor\Services\Contracts\MentorService;
 
 /**
  * Class MentorManager
- * 
+ *
  * Manages industry mentors with specialized logic and role enforcement.
  */
 class MentorManager extends Component
@@ -115,7 +115,7 @@ class MentorManager extends Component
         return view('mentor::livewire.mentor-manager', [
             'title' => $title,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.mentors',
         ]);
     }

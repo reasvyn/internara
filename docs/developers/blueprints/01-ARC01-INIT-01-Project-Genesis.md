@@ -1,80 +1,119 @@
 # Application Blueprint: Project Genesis (ARC01-INIT-01)
 
-**Series Code**: `ARC01-INIT` | **Scope**: `Infrastructure & Foundational Engine` | **Compliance**: `ISO/IEC 12207`
+**Series Code**: `ARC01-INIT` | **Scope**: `Infrastructure & Foundational Engine` | **Compliance**:
+`ISO/IEC 12207`
 
 ---
 
-## 1. Strategic Context
+## 1. Context & Strategic Intent
 
-- **Spec Alignment**: This blueprint authorizes the creation of the authoritative *Modular Monolith* infrastructure required to satisfy **[SYRS-NF-601]** (Isolation), **[SYRS-NF-602]** (TALL Stack), and **[SYRS-NF-504]** (Identity Integrity).
-- **Objective**: To establish the "Engine Room" of Internara. This phase defines the behavioral protocols, technical utilities, and systemic invariants that will govern every subsequent domain module.
-- **Rationale**: A disciplined foundation prevents architectural decay. By formalizing infrastructure before domain logic, we ensure a predictable and secure engineering environment.
+This blueprint authorizes the construction of the authoritative **Modular Monolith** infrastructure.
+It establishes the "Engine Room" of Internara, defining the behavioral protocols and technical
+utilities required to satisfy the foundational system requirements.
 
----
-
-## 2. Logic & Architecture (The Modular Engine)
-
-### 2.1 Autonomous Module Discovery
-- **Mechanism**: Implementation of an autonomous module loader that detects and initializes modules within the `modules/` directory without requiring manual registration in the central application core.
-- **Namespace Invariant**: Strict enforcement of the **"src Omission"** rule (omitting the `src` segment in namespaces) to align modular structures with standard Laravel conventions and reduce cognitive load.
-
-### 2.2 Standardized Service Orchestration
-- **The EloquentQuery Engine**: Implementation of `Modules\Shared\Services\EloquentQuery` as the single standard for query and persistence operations.
-    - **Features**: Automatic relational searching, type-safe filtering, and transparent caching via the `remember()` method.
-- **Contract-First Communication**: All inter-module interactions MUST occur via **Service Contracts** (Interfaces). The use of external concrete classes is strictly prohibited.
+- **SyRS Traceability**:
+    - **[SYRS-NF-601]**: Modular Monolith & Domain Isolation.
+    - **[SYRS-NF-602]**: TALL Stack Baseline (Laravel 12, Livewire 3, Tailwind v4).
+    - **[SYRS-NF-504]**: Identity Integrity (UUID v4).
+    - **[SYRS-C-004]**: Product Identity vs. Institutional Branding.
 
 ---
 
-## 3. Data Architecture (Persistence Invariants)
+## 2. User Roles & Stakeholders
 
-### 3.1 Identity & State
-- **UUID v4 Invariant**: Mandatory usage of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) as the primary identity for all domain entities to prevent ID enumeration attacks **[SYRS-NF-504]**.
-- **Auditable Lifecycle**: Implementation of `HasStatus` (via the `Status` module) to track and audit entity state transitions ("who", "when", "why") as an immutable audit trail.
+While this phase is primarily technical, it addresses the requirements of:
 
-### 3.2 Software-Level Referential Integrity (SLRI)
-- **Physical Isolation**: Prohibition of physical foreign key constraints across module boundaries at the database level.
-- **Service Verification**: Referential integrity is manually verified at the **Service Layer** utilizing indexed UUID columns to ensure modular portability.
-
----
-
-## 4. Security & Governance (Access Control)
-
-### 4.1 RBAC Baseline
-- **Least Privilege**: Implementation of a Role-Based Access Control (RBAC) engine (via the `Permission` module) governed by the principle of minimum necessary permissions.
-- **Explicit Deny**: Access is denied by default unless explicitly granted through a **Policy Class** associated with each domain model.
-
-### 4.2 Privacy & Hardening
-- **PII Encryption**: Usage of the `encrypted` cast on Eloquent models for PII data (phone, address, national identifiers) to protect data at rest **[SYRS-NF-503]**.
-- **Forensic Logging**: Integration of the `Log` module with automated masking processors to redact sensitive information in all logging sinks.
+- **[STRS-05] System Administrator**: Initial system initialization, metadata configuration, and
+  institutional branding setup.
+- **Engineering Team**: Provides a disciplined, predictable, and isolated environment for feature
+  construction.
 
 ---
 
-## 5. Presentation & UX (The Face of Internara)
+## 3. Modular Impact Assessment
 
-### 5.1 Slot Injection Pattern
-- **Decoupled UI**: Implementation of the `SlotRegistry` within the `UI` module to allow domain modules to inject UI elements (menus, widgets, buttons) into global layouts without physical coupling.
+The Genesis phase establishes the **Foundational Layer**, consisting of four primary modules:
 
-### 5.2 Responsive & Mobile-First
-- **Layout Tiering**: Standardization of the layout structure (Base -> Page -> Component) utilizing Tailwind v4 to ensure a consistent **Mobile-First** experience **[SYRS-NF-401]**.
-
----
-
-## 6. Verification Strategy (V&V View)
-
-### 6.1 Mirroring Invariant
-- **Standard**: The `tests/` directory MUST mirror the `src/` structure 1:1.
-- **Tooling**: Utilization of **Pest v4** for unit and feature testing with a target of >90% behavioral coverage.
-
-### 6.2 Architecture Audit
-- **Isolation Enforcement**: Utilization of Pest Arch to ensure that the `Shared` and `Core` modules remain domain-agnostic and that no isolation leaks occur between domain modules.
+1.  **Shared**: Business-agnostic technical utilities (UUIDs, Base Services, Masking).
+2.  **Core**: System orchestration (Module Discovery, Academic Year, Metadata SSoT).
+3.  **UI**: Headless Design System and the Slot Injection mechanism.
+4.  **Support**: Automated scaffolding and testing orchestration.
 
 ---
 
-## 7. Exit Criteria & Quality Gates
+## 4. Contract & Interface Definition
 
-- **Acceptance Criteria**: Modular infrastructure is operational; autonomous loader is active; standardized CRUD patterns are verified.
-- **Quality Gate**: 100% pass rate in **`composer test`** and **`composer lint`**. Zero violations in PHPStan Level 8 static analysis.
+To ensure **Strict Modular Isolation**, inter-module communication is governed by interfaces.
+
+### 4.1 Persistence Orchestration
+
+- **`Modules\Shared\Services\EloquentQuery`**: The abstract base for all domain services.
+    - `find(string $uuid)`: Safe retrieval via UUID.
+    - `search(array $criteria)`: Standardized filtering.
+    - `paginate(int $perPage)`: Mandatory memory-efficient listing.
+
+### 4.2 Module Orchestration
+
+- **`Modules\Core\Services\Contracts\MetadataService`**: Single source of truth for `app_name`,
+  `brand_name`, and versioning.
+- **`Modules\Core\Providers\ModuleServiceProvider`**: Autonomous loader for modular discovery,
+  service binding, and namespace omission.
 
 ---
 
-_This blueprint constitutes the authoritative engineering record. Every technical modification must be validated against these Genesis principles._
+## 5. Data Persistence Strategy
+
+### 5.1 Identity & State (The Uuid Invariant)
+
+- **Mandate**: Every domain model MUST implement the `Shared\Models\Concerns\HasUuid` trait.
+- **Protocol**:
+    - UUIDs are generated during the `creating` Eloquent event.
+    - Primary keys are binary/string UUIDs (Non-sequential).
+- **SLRI (Software-Level Referential Integrity)**: No physical foreign keys across modules.
+  Integrity is verified in the Service Layer using UUID lookups.
+
+### 5.2 System Metadata
+
+- **Identity Scoping**: The system distinguishes between the **Product Identity** (Internara) and
+  the **Instance Identity** (e.g., SMKN 1 Jakarta).
+- **Scoping**: All domain data must be scoped by the **Active Academic Year** managed by the `Core`
+  module.
+
+---
+
+## 6. Authorization Governance
+
+### 6.1 Policy-First Security
+
+- **Mandate**: Access is denied by default.
+- **Mechanism**: Every domain model must have a corresponding **Laravel Policy**.
+- **Governance**: Policies must verify both functional permission (RBAC) and data ownership (IDOR
+  protection).
+
+### 6.2 Privacy Redaction
+
+- **Masking**: The `Shared\Utils\PiiMasker` must be active in all logging sinks.
+- **Encryption**: Sensitive PII fields (phone, national IDs) must be encrypted at rest using
+  Eloquent `encrypted` casts.
+
+---
+
+## 7. Verification Plan (V&V Strategy)
+
+### 7.1 The Architecture Police
+
+- **Tool**: Pest Arch.
+- **Standard**:
+    - Domain modules MUST NOT depend on other domain modules directly (Interface only).
+    - Domain modules MUST NOT use Models from other modules.
+    - All logic MUST reside in Services (Thin Component rule).
+
+### 7.2 The Mirroring Invariant
+
+- **Standard**: `tests/Unit/Services/` must mirror `src/Services/` 1:1.
+- **Threshold**: Minimum **90% behavioral coverage** for all foundational services.
+
+---
+
+_This blueprint constitutes the authoritative engineering record for the Project Genesis phase. Any
+deviation is considered an architectural defect._

@@ -25,8 +25,8 @@ operations (like `migrate:fresh`) during the installation lifecycle.
 - **`SetupService`**: Orchestrates the stabilization and first-boot baseline.
     - _API_: `initWizard()`, `finalize(id)`.
     - _Contract_: `Modules\Setup\Services\Contracts\SetupService`.
-- **`OnboardingService`**: Provides administrative orchestration for batch onboarding 
-  stakeholders through CSV data processing.
+- **`OnboardingService`**: Provides administrative orchestration for batch onboarding stakeholders
+  through CSV data processing.
     - _Contract_: `Modules\Setup\Onboarding\Services\Contracts\OnboardingService`.
 - **`InstallerService`**: Handles low-level technical installation tasks.
     - _Features_: Migration execution, database seeding, symlink creation, and application key

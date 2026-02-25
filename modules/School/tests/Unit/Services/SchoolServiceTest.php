@@ -19,8 +19,7 @@ describe('School Service', function () {
 
         $result = $service->getSchool();
 
-        expect($result)->toBeInstanceOf(School::class)
-            ->and($result->name)->toBe('SMK Internara');
+        expect($result)->toBeInstanceOf(School::class)->and($result->name)->toBe('SMK Internara');
     });
 
     test('it enforces authorization for school creation [SYRS-NF-502]', function () {
@@ -36,7 +35,7 @@ describe('School Service', function () {
     test('it validates NPSN format (must be 8 digits) [ARC01-INST-01]', function () {
         Gate::shouldReceive('authorize')->andReturn(true);
         $service = app(SchoolService::class);
-        
+
         $service->create(['name' => 'Test School', 'npsn' => '123']);
     })->throws(AppException::class);
 });

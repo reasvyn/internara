@@ -89,7 +89,7 @@ class EvaluateIntern extends Component
             'registration' => $registration,
             'claimedCompetencies' => $claimedCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('Evaluate Intern') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('Evaluate Intern').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

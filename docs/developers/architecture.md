@@ -6,8 +6,8 @@ description). It defines the architectural viewpoints, structural frameworks, an
 required to ensure system integrity, maintainability, and modularity.
 
 > **Governance Mandate:** This architecture implements the technical requirements mandated by the
-> authoritative **[SyRS](specs.md)**. All architectural decisions
-> demonstrate traceability to the STRS and SyRS requirements.
+> authoritative **[SyRS](specs.md)**. All architectural decisions demonstrate traceability to the
+> STRS and SyRS requirements.
 
 ---
 
@@ -62,26 +62,24 @@ Every module adheres to a strict 3-tier internal hierarchy:
 Cross-cutting technical concerns are distributed across specialized foundational modules:
 
 - **Shared**: Universal, project-agnostic utilities (e.g., `HasUuid`, `EloquentQuery`).
-- **Core**: Business-specific baseline data (e.g., RBAC, Academic Years).
+- **Core**: System orchestration (Module Discovery, Academic Year, Metadata SSoT).
 - **Support**: Infrastructure tooling and generators.
-- **UI**: Standardized design system implementing the **Instrument Sans** identity using 
-  **DaisyUI**, **Tailwind CSS v4**, and **Livewire v3**. The strategy focuses on library 
-  minimization towards native TALL components.
+- **UI**: Standardized design system implementing the **Instrument Sans** identity using
+  **DaisyUI**, **Tailwind CSS v4**, and **Livewire v3**.
 
 ### 2.3 Process View: Communication Protocols
 
-Internara utilizes a tiered communication strategy to balance **Developer Experience (DX)** 
-with **Strict Modular Isolation**:
+Internara utilizes a tiered communication strategy to balance **Developer Experience (DX)** with
+**Strict Modular Isolation**:
 
-1.  **Read-Only Operations (Queries)**: Modules may interact with external domains via 
-    **Service Contracts** (Interfaces) to retrieve data (e.g., `Admin` querying `Internship`). 
-    This ensures simple, traceable data flow.
-2.  **State-Changing Operations (Commands)**: Side-effects that cross module boundaries 
-    (e.g., "Cleanup" tasks when a User is deleted) must be handled via **Domain Events** 
-    (asynchronous listeners). This prevents high coupling and protects the "Zero-Coupling" 
-    invariant.
-3.  **Rationale**: Prevents "Chatty Communication" for reads while ensuring no module has 
-    the authority to directly modify the state of another domain.
+1.  **Read-Only Operations (Queries)**: Modules may interact with external domains via **Service
+    Contracts** (Interfaces) to retrieve data. This ensures simple, traceable data flow and fulfills
+    the **Contract-First** mandate.
+2.  **State-Changing Operations (Commands)**: Side-effects that cross module boundaries MUST be
+    handled via **Domain Events** (asynchronous listeners). This prevents high coupling and protects
+    the "Zero-Coupling" invariant.
+3.  **Rationale**: Prevents "Chatty Communication" for reads while ensuring no module has the
+    authority to directly modify the state of another domain.
 
 ---
 
@@ -89,17 +87,18 @@ with **Strict Modular Isolation**:
 
 ### 3.1 Security & Access Control (ISO/IEC 27034)
 
-- **RBAC Invariant**: Access to domain resources is strictly governed by **Policies** and **Gates** 
+- **RBAC Invariant**: Access to domain resources is strictly governed by **Policies** and **Gates**
   managed by the **Permission** module and mapped to the stakeholder roles defined in the SyRS.
-- **Identity Invariant**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for 
+- **Identity Invariant**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for
   all entities to prevent enumeration.
-- **PII Protection**: Personally Identifiable Information is encrypted at rest using Eloquent's 
+- **PII Protection**: Personally Identifiable Information is encrypted at rest using Eloquent's
   `encrypted` cast and automatically masked in all logging sinks via the `PiiMaskingProcessor`.
 
 ### 3.2 Architectural Governance (The Architecture Police)
 
-To prevent architectural drift and ensure modular isolation, Internara utilizes an automated 
+To prevent architectural drift and ensure modular isolation, Internara utilizes an automated
 **Architecture Verification Suite (tests/Arch.php)**. This suite enforces:
+
 - **Strict Isolation**: No direct model usage across module boundaries.
 - **Thin Component Rule**: Delegation of logic from Livewire to the Service Layer.
 - **Contract Enforcement**: Mandatory use of Service Contracts for inter-module logic.
@@ -162,7 +161,8 @@ software engineering patterns.
 - **Portability Invariant**: Components must remain strictly agnostic of Internara's specific
   business rules. They should be reusable in any Laravel-based system without modification.
 - **Composition**:
-    - **Cross-Cutting Concerns**: `HasUuid` (Shared), `HasStatus` (Status), `InteractsWithActivityLog` (Log).
+    - **Cross-Cutting Concerns**: `HasUuid` (Shared), `HasStatus` (Status),
+      `InteractsWithActivityLog` (Log).
     - **Base Abstractions**: `EloquentQuery`.
     - **General Utilities**: String manipulation, mathematical validators, and data transformers.
 

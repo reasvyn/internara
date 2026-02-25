@@ -9,7 +9,6 @@ use Livewire\Livewire;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SchoolSetup;
-use Modules\Setup\Services\Contracts\SetupService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -35,8 +34,7 @@ describe('SchoolSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'environment' not completed, should redirect to it (as it is the prevStep)
-        Livewire::test(SchoolSetup::class)
-            ->assertRedirect(route('setup.environment'));
+        Livewire::test(SchoolSetup::class)->assertRedirect(route('setup.environment'));
     });
 
     test('it adheres to [SYRS-NF-401] with slot-based UI integration', function () {
@@ -46,7 +44,8 @@ describe('SchoolSetup Component', function () {
         $template = file_get_contents($viewPath);
 
         // Verify slot injection and responsive layout components
-        expect($template)->toContain('x-setup::layouts.setup-wizard')
+        expect($template)
+            ->toContain('x-setup::layouts.setup-wizard')
             ->toContain("@slotRender('school-manager')")
             ->toContain('text-4xl');
     });

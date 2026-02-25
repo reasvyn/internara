@@ -1,21 +1,21 @@
 # Release Management: Version Index & Protocols
 
-This document provides the authoritative index for **Internara Release Notes** and formalizes 
-the **Release Management** protocols, standardized according to **ISO/IEC 12207**.
+This document provides the authoritative index for **Internara Release Notes** and formalizes the
+**Release Management** protocols, standardized according to **ISO/IEC 12207**.
 
 ---
 
 ## 📅 Release History (Recent)
 
-| Version     | Readiness   | Support Policy | Current Status | Detailed Notes           |
-| :---------- | :---------- | :------------- | :------------- | :----------------------- |
-| **v0.14.x** | Development | Experimental   | Released       | **[v0.14.0](v0.14.0.md)**|
-| **v0.13.x** | Development | Experimental   | Released       | **[v0.13.0](v0.13.0.md)**|
-| **v0.12.x** | Development | Experimental   | Released       | **[v0.12.0](v0.12.0.md)**|
-| **v0.11.x** | Development | Experimental   | Released       | **[v0.11.0](v0.11.0.md)**|
-| **v0.10.x** | Development | Experimental   | Released       | **[v0.10.0](v0.10.0.md)**|
-| **v0.9.x**  | Development | Experimental   | Released       | **[v0.9.0](v0.9.0.md)**  |
-| **v0.8.x**  | Development | Experimental   | Released       | **[v0.8.0](v0.8.0.md)**  |
+| Version     | Readiness   | Support Policy | Current Status | Detailed Notes            |
+| :---------- | :---------- | :------------- | :------------- | :------------------------ |
+| **v0.14.x** | Development | Experimental   | Released       | **[v0.14.0](v0.14.0.md)** |
+| **v0.13.x** | Development | Experimental   | Released       | **[v0.13.0](v0.13.0.md)** |
+| **v0.12.x** | Development | Experimental   | Released       | **[v0.12.0](v0.12.0.md)** |
+| **v0.11.x** | Development | Experimental   | Released       | **[v0.11.0](v0.11.0.md)** |
+| **v0.10.x** | Development | Experimental   | Released       | **[v0.10.0](v0.10.0.md)** |
+| **v0.9.x**  | Development | Experimental   | Released       | **[v0.9.0](v0.9.0.md)**   |
+| **v0.8.x**  | Development | Experimental   | Released       | **[v0.8.0](v0.8.0.md)**   |
 
 > **Note**: For older releases, refer to the files in `docs/pubs/releases/`.
 
@@ -24,6 +24,7 @@ the **Release Management** protocols, standardized according to **ISO/IEC 12207*
 ## 🛠️ How We Track Progress
 
 ### Readiness Levels
+
 - **Development**: Initial development phase (`0.x.y`). System is inherently unstable.
 - **Alpha**: Early testing phase. New features are being added rapidly.
 - **Beta**: Feature complete. Focusing on fixing bugs and polishing the experience.
@@ -31,6 +32,7 @@ the **Release Management** protocols, standardized according to **ISO/IEC 12207*
 - **Stable**: Production-ready. Verified baseline ready for everyday use.
 
 ### Support Policies
+
 - **Experimental**: Active development. No stability guarantees.
 - **Stable/LTS**: Long-term support. Guaranteed reliability and critical updates.
 - **Maintenance**: Actively maintained with regular improvements and security fixes.
@@ -41,7 +43,7 @@ the **Release Management** protocols, standardized according to **ISO/IEC 12207*
 
 ## ⚖️ Release Publication Protocols
 
-This section formalizes the procedures for promoting verified software configurations to an 
+This section formalizes the procedures for promoting verified software configurations to an
 authoritative delivery baseline.
 
 > **Governance Mandate:** No release baseline may be authorized unless it demonstrates 100%
@@ -93,14 +95,13 @@ must identify which series it contributes to or fulfills.
 
 ### 2.3 Configuration Baseline Identification (Tagging)
 
-Create an **Annotated Git Tag** to establish an immutable reference to the release baseline. 
+Create an **Annotated Git Tag** to establish an immutable reference to the release baseline.
 
 - **Format**: `vX.Y.Z` (e.g., `v0.14.0`)
-- **Clean Versioning Invariant**: All versions within the `0.x.y` development phase **MUST** 
-  remain "clean" (no suffixes like `-alpha` or `-beta`). Because the entire `0.x.y` range is 
-  mathematically considered unstable according to SemVer, adding pre-release labels is 
-  redundant and prohibited.
-- **Pre-release Exception**: Suffixes (`-alpha`, `-beta`, `-rc`) are strictly reserved for 
+- **Clean Versioning Invariant**: All versions within the `0.x.y` development phase **MUST** remain
+  "clean" (no suffixes like `-alpha` or `-beta`). Because the entire `0.x.y` range is mathematically
+  considered unstable according to SemVer, adding pre-release labels is redundant and prohibited.
+- **Pre-release Exception**: Suffixes (`-alpha`, `-beta`, `-rc`) are strictly reserved for
   stabilization tracks of major stable milestones (e.g., `v1.0.0-rc.1`).
 - **Protocol**: `git tag -a vX.Y.Z -m "Release description and series identifier"`
 
@@ -128,8 +129,8 @@ Synchronize the configuration baseline with the remote repository according to t
 ### 3.2 Post-Promotion Audit
 
 - **Artifact Locking**: Once promoted, the release baseline and its documentation are immutable.
-- **Transparency**: Update the **Versions Overview** (`releases.md`) to reflect the
-  newly released configuration.
+- **Transparency**: Update the **Versions Overview** (`releases.md`) to reflect the newly released
+  configuration.
 - **Visibility Limit**: To maintain minimalist clarity, the Versions Overview table and detailed
   notes must be limited to the **6 most recent versions**. Older records remain available in the
   filesystem but are removed from the overview document.
@@ -223,14 +224,14 @@ structure.
 
 ### 7.2 Pre-release Labels (Reserved for v1.0.0+)
 
-Pre-release labels are **prohibited** for standard `v0.x.y` development. They are used 
-exclusively when preparing for a stable `v1.x.y` baseline.
+Pre-release labels are **prohibited** for standard `v0.x.y` development. They are used exclusively
+when preparing for a stable `v1.x.y` baseline.
 
-| Label       | Meaning                                            | Syntax Example                   |
-| :---------- | :------------------------------------------------- | :------------------------------- |
-| **`alpha`** | Initial construction; experimental and unstable.   | `v1.0.0-alpha.1`                 |
-| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v1.0.0-beta.2`                  |
-| **`rc`**    | Release Candidate; final validation before stable. | `v1.0.0-rc.1`                    |
+| Label       | Meaning                                            | Syntax Example   |
+| :---------- | :------------------------------------------------- | :--------------- |
+| **`alpha`** | Initial construction; experimental and unstable.   | `v1.0.0-alpha.1` |
+| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v1.0.0-beta.2`  |
+| **`rc`**    | Release Candidate; final validation before stable. | `v1.0.0-rc.1`    |
 
 ### 7.3 Firm Invariants
 

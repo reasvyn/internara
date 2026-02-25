@@ -15,7 +15,11 @@ describe('Journal Service', function () {
         $this->registrationService = mock(RegistrationService::class);
         $this->competencyService = mock(CompetencyService::class);
         $this->model = mock(JournalEntry::class);
-        $this->service = new JournalService($this->registrationService, $this->competencyService, $this->model);
+        $this->service = new JournalService(
+            $this->registrationService,
+            $this->competencyService,
+            $this->model,
+        );
     });
 
     test('it enforces authorization for journal creation [SYRS-NF-502]', function () {

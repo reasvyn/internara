@@ -77,7 +77,7 @@ class SettingServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             \Modules\Setting\Services\Contracts\SettingService::class,
-            \Modules\Setting\Services\SettingService::class
+            \Modules\Setting\Services\SettingService::class,
         );
     }
 

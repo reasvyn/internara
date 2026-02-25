@@ -6,8 +6,8 @@ namespace Modules\Setup\Tests\Unit\Onboarding\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Profile\Services\Contracts\ProfileService;
-use Modules\Student\Services\Contracts\StudentService;
 use Modules\Setup\Onboarding\Services\OnboardingService;
+use Modules\Student\Services\Contracts\StudentService;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\User\Services\Contracts\UserService;
 

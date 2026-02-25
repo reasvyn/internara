@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Tests\Unit\Services;
 
-use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\ProfileService;
-use Modules\Student\Services\Contracts\StudentService;
-use Modules\Teacher\Services\Contracts\TeacherService;
 
 test('it can get profile by user id', function () {
     $profile = mock(Profile::class);

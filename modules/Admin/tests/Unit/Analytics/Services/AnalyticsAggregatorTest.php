@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Tests\Unit\Analytics\Services;
 
-use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Admin\Analytics\Services\AnalyticsAggregator;
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;

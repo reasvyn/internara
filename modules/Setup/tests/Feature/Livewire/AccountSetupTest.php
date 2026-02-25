@@ -10,7 +10,6 @@ use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\AccountSetup;
-use Modules\Setup\Services\Contracts\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
 
 uses(LazilyRefreshDatabase::class);
@@ -42,8 +41,7 @@ describe('AccountSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Prev step 'school' is NOT completed, should redirect to it
-        Livewire::test(AccountSetup::class)
-            ->assertRedirect(route('setup.school'));
+        Livewire::test(AccountSetup::class)->assertRedirect(route('setup.school'));
     });
 
     test('it adheres to [SYRS-NF-401] with slot-based registration UI', function () {
@@ -53,7 +51,8 @@ describe('AccountSetup Component', function () {
         $template = file_get_contents($viewPath);
 
         // Verify slot-based UI integration and responsive typography
-        expect($template)->toContain('x-setup::layouts.setup-wizard')
+        expect($template)
+            ->toContain('x-setup::layouts.setup-wizard')
             ->toContain("@slotRender('register.super-admin')")
             ->toContain('text-4xl');
     });

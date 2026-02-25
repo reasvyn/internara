@@ -31,7 +31,6 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->registerModule();
 
-        $this->app->register(AliasServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
     }

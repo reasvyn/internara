@@ -7,11 +7,12 @@ namespace Modules\Setup\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Modules\Setup\Services\Contracts\SystemAuditor as SystemAuditorContract;
+use Modules\Shared\Services\BaseService;
 
 /**
  * Service implementation for performing pre-flight system audits.
  */
-class SystemAuditor implements SystemAuditorContract
+class SystemAuditor extends BaseService implements SystemAuditorContract
 {
     /**
      * Required PHP extensions.

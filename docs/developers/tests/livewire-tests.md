@@ -1,16 +1,16 @@
 # Presentation Verification: Livewire & UI Standards
 
-This guide formalizes the protocols for verifying the **Presentation Layer**, ensuring 
+This guide formalizes the protocols for verifying the **Presentation Layer**, ensuring
 responsiveness, reactivity, and architectural purity according to **ISO 9241-210**.
 
 ---
 
 ## 1. The Thin Component Invariant
 
-Livewire components must be verified as "Thin Orchestrators." 
+Livewire components must be verified as "Thin Orchestrators."
 
 - **Requirement**: Components must not contain business logic or direct database queries.
-- **Verification**: Ensure the component calls a **Service Layer** method for all state-altering 
+- **Verification**: Ensure the component calls a **Service Layer** method for all state-altering
   operations.
 
 ---
@@ -32,14 +32,12 @@ test('it updates the search query state', function () {
 
 ### 2.2 Event Orchestration
 
-Verify that components correctly dispatch and respond to events, especially for 
-cross-module UI updates.
+Verify that components correctly dispatch and respond to events, especially for cross-module UI
+updates.
 
 ```php
 test('it dispatches a notification upon success', function () {
-    Livewire::test('attendance::check-in')
-        ->call('submit')
-        ->assertDispatched('notify');
+    Livewire::test('attendance::check-in')->call('submit')->assertDispatched('notify');
 });
 ```
 
@@ -47,10 +45,10 @@ test('it dispatches a notification upon success', function () {
 
 ## 3. Visual & Aesthetic Invariants
 
-- **Localization**: Verify that all user-facing text is resolved via translation keys. 
+- **Localization**: Verify that all user-facing text is resolved via translation keys.
   `assertSee(__('module::file.key'))`.
-- **Role-Based Visibility**: Verify that UI elements are suppressed based on user 
-  permissions (`@can` logic).
+- **Role-Based Visibility**: Verify that UI elements are suppressed based on user permissions
+  (`@can` logic).
 
 ---
 

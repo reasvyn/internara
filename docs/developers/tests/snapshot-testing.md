@@ -7,8 +7,8 @@ description:
 
 # Snapshot Testing (Optional Plugin)
 
-> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
-> To enable it, follow the installation instructions below.
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. To
+> enable it, follow the installation instructions below.
 
 Snapshot Testing is a great way to test your code by comparing by the given expectation value to a
 previously stored snapshot of the same value. This is useful when you want to ensure that your code

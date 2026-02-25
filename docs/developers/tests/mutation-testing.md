@@ -9,8 +9,8 @@ description:
 
 # Mutation Testing (Optional Plugin)
 
-> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
-> To enable it, follow the installation instructions below.
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. To
+> enable it, follow the installation instructions below.
 
 - **[Get Started](#get-started)**
 - **[Tested Vs Untested Mutations](#tested-vs-untested-mutations)**

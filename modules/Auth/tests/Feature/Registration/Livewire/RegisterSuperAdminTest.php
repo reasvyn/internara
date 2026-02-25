@@ -10,7 +10,6 @@ use Modules\Auth\Registration\Livewire\RegisterSuperAdmin;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\User\Models\User;
-use Modules\User\Services\Contracts\SuperAdminService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -38,8 +37,7 @@ describe('RegisterSuperAdmin Component', function () {
             ->assertDispatched('super_admin_registered');
 
         $user = User::where('email', 'admin@internara.test')->first();
-        expect($user)->not->toBeNull()
-            ->and($user->hasRole('super-admin'))->toBeTrue();
+        expect($user)->not->toBeNull()->and($user->hasRole('super-admin'))->toBeTrue();
     });
 
     test('it validates password requirements [SYRS-NF-501]', function () {
@@ -51,10 +49,16 @@ describe('RegisterSuperAdmin Component', function () {
     });
 
     test('it supports account re-linking during setup', function () {
-        app(\Modules\Setting\Services\Contracts\SettingService::class)->setValue('app_installed', false);
-        
+        app(\Modules\Setting\Services\Contracts\SettingService::class)->setValue(
+            'app_installed',
+            false,
+        );
+
         // Pre-create user
-        $existing = User::factory()->create(['email' => 'link@internara.test', 'name' => 'Old Name']);
+        $existing = User::factory()->create([
+            'email' => 'link@internara.test',
+            'name' => 'Old Name',
+        ]);
 
         Livewire::test(RegisterSuperAdmin::class)
             ->set('form.email', 'link@internara.test')
@@ -65,7 +69,9 @@ describe('RegisterSuperAdmin Component', function () {
             ->assertHasNoErrors();
 
         // Should update existing record instead of failing with "email taken"
-        expect(User::where('email', 'link@internara.test')->count())->toBe(1)
-            ->and(User::where('email', 'link@internara.test')->first()->name)->toBe('New Name');
+        expect(User::where('email', 'link@internara.test')->count())
+            ->toBe(1)
+            ->and(User::where('email', 'link@internara.test')->first()->name)
+            ->toBe('New Name');
     });
 });

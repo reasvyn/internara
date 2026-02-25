@@ -7,20 +7,20 @@ namespace Modules\Student\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Student\Services\Contracts\StudentService;
 use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Modules\User\Livewire\Forms\UserForm;
-use Modules\Student\Services\Contracts\StudentService;
 
 /**
  * Class StudentManager
- * 
+ *
  * Manages student users with specialized logic and role enforcement.
  */
 class StudentManager extends Component
 {
-    use \Modules\User\Livewire\Concerns\InteractsWithDepartments;
     use HandlesAppException;
     use ManagesRecords;
+    use \Modules\User\Livewire\Concerns\InteractsWithDepartments;
 
     public UserForm $form;
 
@@ -115,7 +115,7 @@ class StudentManager extends Component
         return view('student::livewire.student-manager', [
             'title' => $title,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.students',
         ]);
     }

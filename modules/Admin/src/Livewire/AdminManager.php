@@ -6,14 +6,14 @@ namespace Modules\Admin\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
+use Modules\Admin\Livewire\Forms\AdminForm;
+use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Exception\Concerns\HandlesAppException;
 use Modules\UI\Livewire\Concerns\ManagesRecords;
-use Modules\User\Livewire\Forms\UserForm;
-use Modules\Admin\Services\Contracts\AdminService;
 
 /**
  * Class AdminManager
- * 
+ *
  * Manages system administrators with specialized logic and role enforcement.
  * Only SuperAdmins are authorized to manage Admin accounts.
  */
@@ -22,7 +22,7 @@ class AdminManager extends Component
     use HandlesAppException;
     use ManagesRecords;
 
-    public UserForm $form;
+    public AdminForm $form;
 
     /**
      * Initialize the component.
@@ -51,14 +51,14 @@ class AdminManager extends Component
      */
     public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->service
-            ->query([
+        return $this->service->paginate(
+            [
                 'search' => $this->search,
                 'sort_by' => $this->sortBy,
                 'sort_dir' => $this->sortDir,
-            ])
-            ->with(['roles:id,name', 'profile'])
-            ->paginate($this->perPage);
+            ],
+            $this->perPage,
+        );
     }
 
     /**
@@ -76,11 +76,10 @@ class AdminManager extends Component
      */
     public function edit(string $id): void
     {
-        $user = $this->service->find($id);
+        $admin = $this->service->find($id);
 
-        if ($user) {
-            $this->authorize('update', $user);
-            $this->form->setUser($user);
+        if ($admin) {
+            $this->form->fillData($admin);
             $this->formModal = true;
         }
     }
@@ -94,13 +93,8 @@ class AdminManager extends Component
 
         try {
             if ($this->form->id) {
-                $user = $this->service->find($this->form->id);
-                if ($user) {
-                    $this->authorize('update', $user);
-                }
                 $this->service->update($this->form->id, $this->form->all());
             } else {
-                $this->authorize('create', [User::class, ['admin']]);
                 $this->service->create($this->form->all());
             }
 
@@ -121,7 +115,7 @@ class AdminManager extends Component
         return view('admin::livewire.admin-manager', [
             'title' => $title,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.administrators',
         ]);
     }

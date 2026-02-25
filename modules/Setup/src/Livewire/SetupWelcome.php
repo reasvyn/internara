@@ -30,7 +30,7 @@ class SetupWelcome extends Component
     {
         $this->initSetupStepProps(
             currentStep: SetupService::STEP_WELCOME,
-            nextStep: SetupService::STEP_ENVIRONMENT
+            nextStep: SetupService::STEP_ENVIRONMENT,
         );
 
         flash()->info(

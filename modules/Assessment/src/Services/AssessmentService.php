@@ -123,7 +123,7 @@ class AssessmentService extends EloquentQuery implements Contract
             ->groupBy('registration_id')
             ->get()
             ->pluck('avg_score', 'registration_id')
-            ->map(fn($score) => (float) $score)
+            ->map(fn ($score) => (float) $score)
             ->toArray();
     }
 

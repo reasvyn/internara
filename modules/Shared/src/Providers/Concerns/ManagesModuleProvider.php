@@ -72,7 +72,7 @@ trait ManagesModuleProvider
             if (
                 is_string($concrete) &&
                 class_exists($concrete) &&
-                (new \ReflectionClass($concrete))->isInstantiable()
+                new \ReflectionClass($concrete)->isInstantiable()
             ) {
                 $this->app->singleton($abstract, $concrete);
             } else {

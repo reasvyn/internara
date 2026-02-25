@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Modules\Department\Tests\Feature\Listeners;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\School\Events\SchoolDeleted;
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Department\Services\Contracts\DepartmentService;
-use Illuminate\Support\Facades\Event;
 
 uses(RefreshDatabase::class);
 
@@ -18,7 +18,7 @@ test('it deletes all departments when a school is deleted', function () {
     $departmentService = app(DepartmentService::class);
 
     $school = $schoolService->create(['name' => 'SMK Cleanup Test', 'npsn' => '12345678']);
-    
+
     // Create departments for this school
     $dept1 = $departmentService->create(['name' => 'RPL', 'school_id' => $school->id]);
     $dept2 = $departmentService->create(['name' => 'TKJ', 'school_id' => $school->id]);
@@ -37,6 +37,6 @@ test('it is registered in the EventServiceProvider', function () {
     Event::fake();
     Event::assertListening(
         SchoolDeleted::class,
-        \Modules\Department\Listeners\DeleteDepartmentsBySchool::class
+        \Modules\Department\Listeners\DeleteDepartmentsBySchool::class,
     );
 });

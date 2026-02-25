@@ -30,8 +30,8 @@ Resides in `src/Support/`. All classes are declared as **`final`**.
 - **`Formatter`**: Normalizes paths, namespaces, and provides Indonesian-aware formatting for
   currency, dates, and phone numbers.
 - **`Masker`**: Redacts sensitive data (PII) from logs and UI views.
-- **`AppInfo`**: Static provider for application-wide metadata (name, version, license) stored 
-  in `app_info.json`.
+- **`AppInfo`**: Static provider for application-wide metadata (name, version, license) stored in
+  `app_info.json`.
 - **`Asset`**: Orchestrates absolute URL resolution for modular static assets.
 
 ### 2.2 Service Layer (Standardized CRUD)
@@ -39,17 +39,17 @@ Resides in `src/Support/`. All classes are declared as **`final`**.
 - **`EloquentQuery`**: An abstract base implementation for standardized model-based queries,
   filtering, and persistence.
     - _Contract_: `Modules\Shared\Services\Contracts\EloquentQuery`.
-    - _Search & Sort_: Automatically handles `$searchable` and `$sortable` array properties. 
+    - _Search & Sort_: Automatically handles `$searchable` and `$sortable` array properties.
       Supports nested relationship searching (e.g., `['name', 'user.email']`).
     - _API_: `paginate(['search' => 'query', 'sort_by' => 'created_at'])`.
 
 ### 2.3 Persistence Layer (Foundation Concerns)
 
 - **`HasUuid`**: Implements mandatory **UUID v4** identity generation.
-- **`HasAcademicYear` (Core Integration)**: Automatically scopes queries to the active 
-  institutional cycle.
-    - _Bypassing_: To query historical data, use the `withoutAcademicYear()` scope or the 
-      underlying Eloquent `withoutGlobalScope` method in specific service logic.
+- **`HasAcademicYear` (Core Integration)**: Automatically scopes queries to the active institutional
+  cycle.
+    - _Bypassing_: To query historical data, use the `withoutAcademicYear()` scope or the underlying
+      Eloquent `withoutGlobalScope` method in specific service logic.
 
 ---
 

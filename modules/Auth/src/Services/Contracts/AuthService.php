@@ -73,7 +73,11 @@ interface AuthService
      *
      * @throws \Modules\Exception\AppException If verification or complexity rules fail.
      */
-    public function changePassword(Authenticatable $user, string $currentPassword, string $newPassword): bool;
+    public function changePassword(
+        Authenticatable $user,
+        string $currentPassword,
+        string $newPassword,
+    ): bool;
 
     /**
      * Initiates the password recovery protocol via secure communication.

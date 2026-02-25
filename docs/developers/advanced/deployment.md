@@ -1,6 +1,6 @@
 # Deployment Guide: Production Orchestration
 
-This document formalizes the protocols for deploying the Internara ecosystem into production 
+This document formalizes the protocols for deploying the Internara ecosystem into production
 environments, ensuring compliance with **ISO/IEC 12207** (Maintenance Process).
 
 ---
@@ -34,6 +34,7 @@ Before deployment, your environment must satisfy the following hardened requirem
 ### 2.2 Environment Hardening (`.env`)
 
 Ensure the following production invariants are set:
+
 - `APP_ENV=production`
 - `APP_DEBUG=false`
 - `LOG_LEVEL=info` (or `error` to minimize disk I/O)
@@ -44,13 +45,17 @@ Ensure the following production invariants are set:
 ## 3. Maintenance & Monitoring
 
 ### 3.1 Persistence & Migration
+
 Always perform a backup before executing migrations in production:
+
 ```bash
 php artisan migrate --force
 ```
 
 ### 3.2 Performance Optimization
+
 Execute the framework's native optimization commands to cache the baseline:
+
 ```bash
 php artisan optimize
 php artisan view:cache
@@ -58,7 +63,9 @@ php artisan config:cache
 ```
 
 ### 3.3 Health Checks
+
 Monitor the system health using the built-in audit tools:
+
 - **Metadata Audit**: `php artisan app:info`
 - **Queue Status**: `php artisan queue:monitor`
 
@@ -67,11 +74,11 @@ Monitor the system health using the built-in audit tools:
 ## 4. Security & Privacy Compliance
 
 - **SSL/TLS**: Mandatory for all endpoints.
-- **PII Encryption**: Ensure the `APP_KEY` is securely backed up; losing it will render 
-  encrypted student data unrecoverable.
+- **PII Encryption**: Ensure the `APP_KEY` is securely backed up; losing it will render encrypted
+  student data unrecoverable.
 - **Honeypot & Turnstile**: Verify these protection layers are active in the `Setting` module.
 
 ---
 
-_Proactive deployment management ensures the resilience and availability of the Internara platform 
+_Proactive deployment management ensures the resilience and availability of the Internara platform
 for institutional stakeholders._

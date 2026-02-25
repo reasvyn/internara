@@ -6,8 +6,7 @@ Internara project, standardized according to **ISO/IEC 12207** (CM Process) and 
 verified, and aligned with architectural design invariants.
 
 > **Governance Mandate:** All repository operations must facilitate the **Verification &
-> Validation** of requirements defined in the
-> **[System Requirements Specification](specs.md)**.
+> Validation** of requirements defined in the **[System Requirements Specification](specs.md)**.
 
 ---
 

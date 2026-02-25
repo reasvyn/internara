@@ -6,6 +6,7 @@ namespace Modules\UI\Services;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Modules\Shared\Services\BaseService;
 use Modules\UI\Services\Contracts\LocalizationService as Contract;
 
 /**
@@ -13,7 +14,7 @@ use Modules\UI\Services\Contracts\LocalizationService as Contract;
  *
  * Handles the logic for retrieving and switching application locales.
  */
-class LocalizationService implements Contract
+class LocalizationService extends BaseService implements Contract
 {
     /**
      * {@inheritdoc}

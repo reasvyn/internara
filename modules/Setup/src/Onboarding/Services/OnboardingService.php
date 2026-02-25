@@ -7,8 +7,8 @@ namespace Modules\Setup\Onboarding\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Profile\Services\Contracts\ProfileService;
-use Modules\Student\Services\Contracts\StudentService;
 use Modules\Setup\Onboarding\Services\Contracts\OnboardingService as Contract;
+use Modules\Student\Services\Contracts\StudentService;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\User\Services\Contracts\UserService;
 

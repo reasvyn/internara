@@ -64,7 +64,7 @@ class RegisterSuperAdmin extends Component
 
                 $registeredUser = app(\Modules\User\Services\Contracts\UserService::class)->update(
                     $this->form->id,
-                    $this->form->all()
+                    $this->form->all(),
                 );
             } else {
                 $registeredUser = $this->authService->register(

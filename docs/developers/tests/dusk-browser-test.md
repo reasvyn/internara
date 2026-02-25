@@ -1,6 +1,10 @@
 # Laravel Dusk
 
-**Robust Client-Side Verification Recommendation:** Browser automation via Laravel Dusk often encounters environment-specific instabilities. For a more resilient and performant alternative, it is **strongly recommended** to utilize **Livewire Tests** and **Blade Rendering** assertions to verify UI structure and reactivity. Refer to the **[Presentation Verification Guide](livewire-tests.md)**.
+**Robust Client-Side Verification Recommendation:** Browser automation via Laravel Dusk often
+encounters environment-specific instabilities. For a more resilient and performant alternative, it
+is **strongly recommended** to utilize **Livewire Tests** and **Blade Rendering** assertions to
+verify UI structure and reactivity. Refer to the
+**[Presentation Verification Guide](livewire-tests.md)**.
 
 - [Introduction](#introduction)
 - [Installation](#installation)

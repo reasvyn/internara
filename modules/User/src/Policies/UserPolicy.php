@@ -36,7 +36,7 @@ class UserPolicy
 
     /**
      * Determine whether the user can create users.
-     * 
+     *
      * @param User|null $user The currently authenticated user.
      * @param array|null $roles The intended roles for the new user.
      */
@@ -118,7 +118,7 @@ class UserPolicy
             return $target->hasAnyRole([
                 Role::STUDENT->value,
                 Role::TEACHER->value,
-                Role::MENTOR->value
+                Role::MENTOR->value,
             ]);
         }
 

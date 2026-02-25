@@ -10,7 +10,7 @@ use Modules\Setting\Services\Contracts\SettingService;
 
 /**
  * Class SystemSetting
- * 
+ *
  * Provides an interface for administrators to manage essential system-wide settings.
  */
 class SystemSetting extends Component
@@ -21,43 +21,56 @@ class SystemSetting extends Component
      * General settings.
      */
     public string $brand_name = '';
+
     public string $site_title = '';
 
     /**
      * Read-only system metadata.
      */
     public string $app_name = '';
+
     public string $app_version = '';
+
     public string $app_series = '';
 
     /**
      * Operational settings.
      */
     public string $active_academic_year = '';
+
     public string $attendance_check_in_start = '07:00';
+
     public string $attendance_late_threshold = '08:00';
 
     /**
      * Mail settings.
      */
     public string $mail_from_address = '';
+
     public string $mail_from_name = '';
+
     public string $mail_host = '';
+
     public string $mail_port = '';
+
     public string $mail_encryption = 'tls';
+
     public string $mail_username = '';
+
     public string $mail_password = '';
 
     /**
      * Identity assets.
      */
     public $brand_logo;
+
     public $site_favicon;
 
     /**
      * Existing URLs for preview.
      */
     public ?string $current_logo_url = null;
+
     public ?string $current_favicon_url = null;
 
     /**
@@ -87,7 +100,10 @@ class SystemSetting extends Component
         $this->current_favicon_url = $service->getValue('site_favicon');
 
         // Operational
-        $this->active_academic_year = $service->getValue('active_academic_year', date('Y').'/'.(date('Y')+1));
+        $this->active_academic_year = $service->getValue(
+            'active_academic_year',
+            date('Y').'/'.(date('Y') + 1),
+        );
         $this->attendance_check_in_start = $service->getValue('attendance_check_in_start', '07:00');
         $this->attendance_late_threshold = $service->getValue('attendance_late_threshold', '08:00');
 
@@ -153,18 +169,22 @@ class SystemSetting extends Component
         if ($this->brand_logo) {
             $settings['brand_logo'] = $this->brand_logo->store('brand', 'public');
             // Convert to URL if using public disk
-            $settings['brand_logo'] = \Illuminate\Support\Facades\Storage::url($settings['brand_logo']);
+            $settings['brand_logo'] = \Illuminate\Support\Facades\Storage::url(
+                $settings['brand_logo'],
+            );
         }
 
         if ($this->site_favicon) {
             $settings['site_favicon'] = $this->site_favicon->store('brand', 'public');
-            $settings['site_favicon'] = \Illuminate\Support\Facades\Storage::url($settings['site_favicon']);
+            $settings['site_favicon'] = \Illuminate\Support\Facades\Storage::url(
+                $settings['site_favicon'],
+            );
         }
 
         $service->setValue($settings);
 
         flash()->success(__('setting::ui.messages.saved'));
-        
+
         // Force refresh to update layout branding immediately
         $this->redirect(route('admin.settings'), navigate: true);
     }
@@ -174,9 +194,11 @@ class SystemSetting extends Component
      */
     public function render()
     {
-        return view('setting::livewire.system-setting')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => __('setting::ui.title') . ' | ' . setting('brand_name', setting('app_name')),
-            ]);
+        return view('setting::livewire.system-setting')->layout(
+            'ui::components.layouts.dashboard',
+            [
+                'title' => __('setting::ui.title').' | '.setting('brand_name', setting('app_name')),
+            ],
+        );
     }
 }

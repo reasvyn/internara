@@ -31,7 +31,15 @@ class InternshipClassReportProvider implements ExportableDataProvider
     public function getReportData(array $filters = []): array
     {
         $query = InternshipRegistration::query()
-            ->select(['id', 'student_id', 'internship_id', 'placement_id', 'mentor_id', 'status', 'academic_year'])
+            ->select([
+                'id',
+                'student_id',
+                'internship_id',
+                'placement_id',
+                'mentor_id',
+                'status',
+                'academic_year',
+            ])
             ->with([
                 'student:id,name',
                 'internship:id,title',
@@ -45,7 +53,7 @@ class InternshipClassReportProvider implements ExportableDataProvider
         }
 
         $rows = [];
-        
+
         // Using cursor to iterate through records without loading all into memory at once
         // although we return an array, this helps during the hydration phase.
         foreach ($query->cursor() as $reg) {

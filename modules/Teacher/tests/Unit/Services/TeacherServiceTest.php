@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Teacher\Tests\Unit\Services;
 
 use Modules\Profile\Services\Contracts\ProfileService;
-use Modules\Teacher\Models\Teacher;
 use Modules\Teacher\Services\TeacherService;
 use Modules\User\Services\Contracts\UserService;
 
@@ -31,7 +30,10 @@ test('it can create teacher account and profile', function () {
 
     $profileService->shouldReceive('getByUserId')->with('user-uuid')->once()->andReturn($profile);
     $profile->id = 'profile-uuid';
-    $profileService->shouldReceive('update')->with('profile-uuid', ['registration_number' => 'NIP123'])->once();
+    $profileService
+        ->shouldReceive('update')
+        ->with('profile-uuid', ['registration_number' => 'NIP123'])
+        ->once();
 
     $result = $service->create($data);
     expect($result)->toBe($createdUser);

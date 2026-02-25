@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\UI\Livewire;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Modules\Exception\Concerns\HandlesAppException;
@@ -107,11 +104,14 @@ abstract class RecordManager extends Component
     #[\Livewire\Attributes\Computed]
     public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $appliedFilters = array_filter(array_merge($this->filters, [
-            'search' => $this->search,
-            'sort_by' => $this->sortBy['column'] ?? 'created_at',
-            'sort_dir' => $this->sortBy['direction'] ?? 'desc',
-        ]), fn ($value) => $value !== null && $value !== '' && $value !== []);
+        $appliedFilters = array_filter(
+            array_merge($this->filters, [
+                'search' => $this->search,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+            ]),
+            fn ($value) => $value !== null && $value !== '' && $value !== [],
+        );
 
         $paginator = $this->service->paginate($appliedFilters, $this->perPage);
 
@@ -166,8 +166,16 @@ abstract class RecordManager extends Component
         return match ($action) {
             'view' => $this->viewPermission ? $user->can($this->viewPermission) : true,
             'create' => $this->createPermission ? $user->can($this->createPermission) : true,
-            'update' => $this->updatePermission ? $user->can($this->updatePermission) : ($target && ! $isClassLevel ? $user->can('update', $target) : true),
-            'delete' => $this->deletePermission ? $user->can($this->deletePermission) : ($target && ! $isClassLevel ? $user->can('delete', $target) : true),
+            'update' => $this->updatePermission
+                ? $user->can($this->updatePermission)
+                : ($target && ! $isClassLevel
+                    ? $user->can('update', $target)
+                    : true),
+            'delete' => $this->deletePermission
+                ? $user->can($this->deletePermission)
+                : ($target && ! $isClassLevel
+                    ? $user->can('delete', $target)
+                    : true),
             default => false,
         };
     }
@@ -215,7 +223,10 @@ abstract class RecordManager extends Component
             } else {
                 if ($this->createPermission) {
                     $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
-                    $this->authorize($this->createPermission, [$this->modelClass ?: \Modules\User\Models\User::class, $roles]);
+                    $this->authorize($this->createPermission, [
+                        $this->modelClass ?: \Modules\User\Models\User::class,
+                        $roles,
+                    ]);
                 }
                 $this->service->create($this->form->all());
             }

@@ -16,7 +16,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     // Ensure cache driver is 'array' for unit tests to avoid missing table issues
     Config::set('cache.default', 'array');
-    
+
     $this->metadataPath = base_path('app_info.json');
     $this->originalContent = File::exists($this->metadataPath)
         ? File::get($this->metadataPath)

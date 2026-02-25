@@ -9,7 +9,6 @@ use Livewire\Livewire;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\InternshipSetup;
-use Modules\Setup\Services\Contracts\SetupService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -44,8 +43,7 @@ describe('InternshipSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'department' not completed
-        Livewire::test(InternshipSetup::class)
-            ->assertRedirect(route('setup.department'));
+        Livewire::test(InternshipSetup::class)->assertRedirect(route('setup.department'));
     });
 
     test('it adheres to [SYRS-NF-401] with slot-based internship UI', function () {
@@ -55,7 +53,8 @@ describe('InternshipSetup Component', function () {
         $template = file_get_contents($viewPath);
 
         // Verify slot-based UI integration
-        expect($template)->toContain('x-setup::layouts.setup-wizard')
+        expect($template)
+            ->toContain('x-setup::layouts.setup-wizard')
             ->toContain("@slotRender('internship-manager')")
             ->toContain('text-4xl');
     });

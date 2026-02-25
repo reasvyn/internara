@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Modules\Auth\Services\Contracts\AuthService as AuthServiceContract;
 use Modules\Exception\AppException;
+use Modules\Shared\Services\BaseService;
 use Modules\User\Services\Contracts\UserService;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Service to manage user authentication, registration, password management, and email verification.
  */
-class AuthService implements AuthServiceContract
+class AuthService extends BaseService implements AuthServiceContract
 {
     /**
      * Create a new AuthService instance.
@@ -116,8 +117,11 @@ class AuthService implements AuthServiceContract
      *
      * @return bool True if the password was successfully changed, false otherwise.
      */
-    public function changePassword(Authenticatable $user, string $currentPassword, string $newPassword): bool
-    {
+    public function changePassword(
+        Authenticatable $user,
+        string $currentPassword,
+        string $newPassword,
+    ): bool {
         if (! Hash::check($currentPassword, $user->getAuthPassword())) {
             throw new AppException(
                 userMessage: 'auth::exceptions.password_mismatch',
@@ -149,10 +153,15 @@ class AuthService implements AuthServiceContract
      */
     public function resetPassword(array $credentials): bool
     {
-        $response = Password::reset($credentials, function (Authenticatable $user, string $password) {
-            $user->forceFill([
-                'password' => Hash::make($password),
-            ])->save();
+        $response = Password::reset($credentials, function (
+            Authenticatable $user,
+            string $password,
+        ) {
+            $user
+                ->forceFill([
+                    'password' => Hash::make($password),
+                ])
+                ->save();
         });
 
         return $response === Password::PASSWORD_RESET;

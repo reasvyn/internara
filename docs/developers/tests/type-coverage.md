@@ -7,8 +7,8 @@ description:
 
 # Type Coverage (Optional Plugin)
 
-> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
-> To enable it, follow the installation instructions below.
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. To
+> enable it, follow the installation instructions below.
 
 **Source code**:
 [github.com/pestphp/pest-plugin-type-coverage](https://github.com/pestphp/pest-plugin-type-coverage)

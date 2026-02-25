@@ -42,7 +42,7 @@ class ActivityFeed extends Component
         return view('log::livewire.activity-feed', [
             'activities' => $activities,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('log::ui.activity_log') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('log::ui.activity_log').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

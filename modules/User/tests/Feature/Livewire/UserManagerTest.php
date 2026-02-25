@@ -10,7 +10,6 @@ use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\User\Livewire\UserManager;
 use Modules\User\Models\User;
-use Tests\TestCase;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -49,8 +48,7 @@ describe('UserManager Component', function () {
             ->assertSet('formModal', false);
 
         $user = User::where('email', 'student@internara.test')->first();
-        expect($user)->not->toBeNull()
-            ->and($user->hasRole('student'))->toBeTrue();
+        expect($user)->not->toBeNull()->and($user->hasRole('student'))->toBeTrue();
     });
 
     test('it protects super-admins from deletion', function () {

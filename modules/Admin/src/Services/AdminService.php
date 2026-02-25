@@ -4,70 +4,85 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Services;
 
-use Illuminate\Database\Eloquent\Builder;
 use Modules\Admin\Services\Contracts\AdminService as Contract;
-use Modules\Shared\Services\EloquentQuery;
-use Modules\User\Models\User;
+use Modules\Shared\Services\BaseService;
 use Modules\User\Services\Contracts\UserService;
 
 /**
  * Orchestrator for Administrative users.
+ *
+ * This service manages administrators by delegating core user operations to the UserService
+ * and enforcing the 'admin' role context.
  */
-class AdminService extends EloquentQuery implements Contract
+class AdminService extends BaseService implements Contract
 {
-    public function __construct(
-        User $model,
-        protected UserService $userService
-    ) {
-        $this->setModel($model);
+    public function __construct(protected UserService $userService) {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function paginate(
+        array $filters = [],
+        int $perPage = 15,
+    ): \Illuminate\Pagination\LengthAwarePaginator {
+        // Enforce the 'admin' role filter
+        $filters['role'] = 'admin';
+
+        return $this->userService->paginate($filters, $perPage);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function query(array $filters = [], array $columns = ['*']): Builder
+    public function find(string $id): ?array
     {
-        if (! $this->baseQuery) {
-            $this->setBaseQuery($this->model->role('admin'));
+        $user = $this->userService->find($id);
+
+        if (! $user || ! $user->hasRole('admin')) {
+            return null;
         }
 
-        return parent::query($filters, $columns);
+        return $user->toArray();
     }
 
     /**
-     * Create a new Admin account.
+     * {@inheritdoc}
      */
-    public function create(array $data): User
+    public function create(array $data): array
     {
         $data['roles'] = ['admin'];
 
-        return $this->userService->create($data);
+        $user = $this->userService->create($data);
+
+        return $user->toArray();
     }
 
     /**
-     * Update an Admin account.
+     * {@inheritdoc}
      */
-    public function update(mixed $id, array $data): User
+    public function update(string $id, array $data): array
     {
-        $user = $this->find($id);
+        $admin = $this->find($id);
 
-        if (! $user || ! $user->hasRole('admin')) {
+        if (! $admin) {
             throw new \Modules\Exception\RecordNotFoundException(
-                replace: ['record' => 'Admin', 'id' => $id]
+                replace: ['record' => 'Admin', 'id' => $id],
             );
         }
 
-        return $this->userService->update($id, $data);
+        $user = $this->userService->update($id, $data);
+
+        return $user->toArray();
     }
 
     /**
-     * Delete an Admin account.
+     * {@inheritdoc}
      */
-    public function delete(mixed $id, bool $force = false): bool
+    public function delete(string $id, bool $force = false): bool
     {
-        $user = $this->find($id);
+        $admin = $this->find($id);
 
-        if (! $user || ! $user->hasRole('admin')) {
+        if (! $admin) {
             return false;
         }
 

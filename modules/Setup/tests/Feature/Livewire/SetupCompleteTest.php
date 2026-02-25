@@ -9,7 +9,6 @@ use Livewire\Livewire;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SetupComplete;
-use Modules\Setup\Services\Contracts\SetupService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -30,9 +29,11 @@ describe('SetupComplete Component', function () {
 
     test('it finalizes setup and redirects to landing', function () {
         app(SettingService::class)->setValue('setup_step_system', true);
-        
+
         // Mock school record for finalization logic
-        app(SchoolService::class)->factory()->create(['name' => 'Test School']);
+        app(SchoolService::class)
+            ->factory()
+            ->create(['name' => 'Test School']);
 
         Livewire::withQueryParams(['token' => 'test-token'])
             ->test(SetupComplete::class)
@@ -44,7 +45,6 @@ describe('SetupComplete Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'system' not completed
-        Livewire::test(SetupComplete::class)
-            ->assertRedirect(route('setup.system'));
+        Livewire::test(SetupComplete::class)->assertRedirect(route('setup.system'));
     });
 });

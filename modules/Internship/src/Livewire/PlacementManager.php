@@ -101,7 +101,9 @@ class PlacementManager extends Component
         return view('internship::livewire.placement-manager', [
             'records' => $this->records,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.placement_title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('internship::ui.placement_title').
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

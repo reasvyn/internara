@@ -43,10 +43,12 @@ class UserManager extends RecordManager
     public function initialize(): void
     {
         $roleKey = $this->targetRole ?: 'user';
-        $this->title = $this->targetRole ? __("user::ui.{$roleKey}_management") : __('user::ui.manager.title');
+        $this->title = $this->targetRole
+            ? __("user::ui.{$roleKey}_management")
+            : __('user::ui.manager.title');
         $this->subtitle = __('user::ui.manager.subtitle');
         $this->context = 'admin::ui.menu.users';
-        $this->addLabel = __('user::ui.manager.add_' . $roleKey);
+        $this->addLabel = __('user::ui.manager.add_'.$roleKey);
         $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
 
         $this->viewPermission = 'user.view';
@@ -63,7 +65,11 @@ class UserManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('user::ui.manager.table.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
-            ['key' => 'username', 'label' => __('user::ui.manager.table.username'), 'sortable' => true],
+            [
+                'key' => 'username',
+                'label' => __('user::ui.manager.table.username'),
+                'sortable' => true,
+            ],
             ['key' => 'roles', 'label' => __('user::ui.manager.table.roles')],
             ['key' => 'account_status', 'label' => __('user::ui.manager.table.status')],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
@@ -76,11 +82,14 @@ class UserManager extends RecordManager
     #[\Livewire\Attributes\Computed]
     public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $appliedFilters = array_filter(array_merge($this->filters, [
-            'search' => $this->search,
-            'sort_by' => $this->sortBy['column'] ?? 'created_at',
-            'sort_dir' => $this->sortBy['direction'] ?? 'desc',
-        ]), fn ($value) => $value !== null && $value !== '' && $value !== []);
+        $appliedFilters = array_filter(
+            array_merge($this->filters, [
+                'search' => $this->search,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+            ]),
+            fn ($value) => $value !== null && $value !== '' && $value !== [],
+        );
 
         return $this->service
             ->query($appliedFilters)
@@ -137,7 +146,7 @@ class UserManager extends RecordManager
         return view('user::livewire.user-manager', [
             'roleKey' => $roleKey,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

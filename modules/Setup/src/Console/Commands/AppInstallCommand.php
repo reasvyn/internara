@@ -77,7 +77,9 @@ class AppInstallCommand extends Command
             }
 
             // 2. Environment Validation
-            $this->components->task('Validating environment requirements', function () use (&$success) {
+            $this->components->task('Validating environment requirements', function () use (
+                &$success,
+            ) {
                 $audit = $this->installerService->validateEnvironment();
                 $failedCount = 0;
 
@@ -187,9 +189,9 @@ class AppInstallCommand extends Command
             }
         } catch (\Throwable $e) {
             $this->newLine();
-            $this->components->error('Installation Failed: ' . $e->getMessage());
+            $this->components->error('Installation Failed: '.$e->getMessage());
             $this->error($e->getTraceAsString());
-            
+
             return self::FAILURE;
         }
 

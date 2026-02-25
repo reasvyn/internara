@@ -90,7 +90,7 @@ class AssessInternship extends Component
             'registration' => $registration,
             'claimedCompetencies' => $claimedCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('Assess Student') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('Assess Student').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

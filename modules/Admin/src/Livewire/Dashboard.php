@@ -30,7 +30,9 @@ class Dashboard extends Component
             'summary' => $analytics->getInstitutionalSummary(),
             'atRiskStudents' => $analytics->getAtRiskStudents(),
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('admin::ui.dashboard.title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('admin::ui.dashboard.title').
+                ' | '.
+                setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.dashboard',
         ]);
     }

@@ -33,7 +33,7 @@ class SetupComplete extends Component
     {
         $this->initSetupStepProps(
             currentStep: SetupService::STEP_COMPLETE,
-            prevStep: SetupService::STEP_SYSTEM
+            prevStep: SetupService::STEP_SYSTEM,
         );
 
         $this->requireSetupAccess();

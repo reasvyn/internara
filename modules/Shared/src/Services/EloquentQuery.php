@@ -26,7 +26,7 @@ use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
  *
  * @implements EloquentQueryContract<TModel>
  */
-abstract class EloquentQuery implements EloquentQueryContract
+abstract class EloquentQuery extends BaseService implements EloquentQueryContract
 {
     /**
      * Sort direction constants.
@@ -267,7 +267,7 @@ abstract class EloquentQuery implements EloquentQueryContract
         $model = $this->find($id);
 
         if (! $model) {
-            throw (new ModelNotFoundException)->setModel(get_class($this->model), [$id]);
+            throw new ModelNotFoundException()->setModel(get_class($this->model), [$id]);
         }
 
         $filteredData = $this->filterFillable($data);
@@ -569,7 +569,12 @@ abstract class EloquentQuery implements EloquentQueryContract
                 $this->create($row);
                 $count++;
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error("Bulk import failed for row in " . get_class($this->model) . ": PII REDACTED. Error: " . $e->getMessage());
+                \Illuminate\Support\Facades\Log::error(
+                    'Bulk import failed for row in '.
+                        get_class($this->model).
+                        ': PII REDACTED. Error: '.
+                        $e->getMessage(),
+                );
             }
         }
 

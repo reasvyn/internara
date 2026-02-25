@@ -114,7 +114,9 @@ class ManageSchedule extends Component
             'schedules' => $schedules,
             'headers' => $headers,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('schedule::ui.manage_title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('schedule::ui.manage_title').
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

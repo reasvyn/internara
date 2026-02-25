@@ -7,11 +7,12 @@ namespace Modules\Internship\Services;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Models\PlacementHistory;
 use Modules\Internship\Services\Contracts\PlacementLogger as Contract;
+use Modules\Shared\Services\BaseService;
 
 /**
  * Service for logging placement lifecycle events.
  */
-class PlacementLoggerService implements Contract
+class PlacementLoggerService extends BaseService implements Contract
 {
     /**
      * {@inheritdoc}

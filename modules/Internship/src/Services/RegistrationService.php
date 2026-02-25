@@ -23,7 +23,13 @@ class RegistrationService extends EloquentQuery implements Contract
         protected AssignmentService $assignmentService,
     ) {
         $this->setModel($model);
-        $this->setSearchable(['status', 'academic_year', 'student.name', 'internship.title', 'placement.company.name']);
+        $this->setSearchable([
+            'status',
+            'academic_year',
+            'student.name',
+            'internship.title',
+            'placement.company.name',
+        ]);
         $this->setSortable(['created_at']);
     }
 
@@ -116,7 +122,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -143,7 +149,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -165,7 +171,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -203,7 +209,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );

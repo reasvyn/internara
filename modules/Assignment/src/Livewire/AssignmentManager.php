@@ -7,8 +7,6 @@ namespace Modules\Assignment\Livewire;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Assignment\Models\Assignment;
-use Modules\Assignment\Models\AssignmentType;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 
 /**
@@ -27,7 +25,7 @@ class AssignmentManager extends Component
     #[Validate('required|string|max:255')]
     public string $title = '';
 
-    #[Validate('required|exists:assignment_types,id')]
+    #[Validate('required|string')]
     public string $assignment_type_id = '';
 
     #[Validate('nullable|string')]
@@ -66,9 +64,14 @@ class AssignmentManager extends Component
     /**
      * Show the form to edit an existing assignment.
      */
-    public function edit(string $id): void
+    public function edit(string $id, AssignmentService $service): void
     {
-        $assignment = Assignment::findOrFail($id);
+        $assignment = $service->find($id);
+
+        if (! $assignment) {
+            return;
+        }
+
         $this->recordId = $id;
         $this->title = $assignment->title;
         $this->assignment_type_id = $assignment->assignment_type_id;
@@ -117,13 +120,15 @@ class AssignmentManager extends Component
     /**
      * Render the component.
      */
-    public function render()
+    public function render(AssignmentService $service)
     {
         return view('assignment::livewire.assignment-manager', [
-            'assignments' => Assignment::with('type')->latest()->paginate(10),
-            'types' => AssignmentType::all(),
+            'assignments' => $service->paginate([], 10),
+            'types' => $service->getTypes(),
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('assignment::ui.manage_assignments') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('assignment::ui.manage_assignments').
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

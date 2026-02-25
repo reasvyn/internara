@@ -10,11 +10,12 @@ use Illuminate\Support\Str;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallerService as InstallerServiceContract;
 use Modules\Setup\Services\Contracts\SystemAuditor;
+use Modules\Shared\Services\BaseService;
 
 /**
  * Service implementation for handling the technical installation process.
  */
-class InstallerService implements InstallerServiceContract
+class InstallerService extends BaseService implements InstallerServiceContract
 {
     /**
      * InstallerService constructor.

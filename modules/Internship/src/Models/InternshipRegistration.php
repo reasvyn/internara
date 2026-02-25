@@ -72,7 +72,7 @@ class InternshipRegistration extends Model
         return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
             $this,
             'student_id',
-            relation: 'user'
+            relation: 'user',
         );
     }
 
@@ -84,7 +84,7 @@ class InternshipRegistration extends Model
         return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
             $this,
             'teacher_id',
-            relation: 'teacher'
+            relation: 'teacher',
         );
     }
 
@@ -96,7 +96,7 @@ class InternshipRegistration extends Model
         return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
             $this,
             'mentor_id',
-            relation: 'mentor'
+            relation: 'mentor',
         );
     }
 
@@ -121,11 +121,9 @@ class InternshipRegistration extends Model
      */
     public function student(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
-            $this,
-            'student_id',
-            relation: 'student'
-        )->whereRelation('roles', 'name', 'student');
+        return app(\Modules\User\Services\Contracts\UserService::class)
+            ->defineBelongsTo($this, 'student_id', relation: 'student')
+            ->whereRelation('roles', 'name', 'student');
     }
 
     /**

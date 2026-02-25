@@ -33,8 +33,8 @@ Logs are enhanced with modular metadata to establish domain sovereignty.
 
 ### 2.1 Automated Entity Tracking
 
-Domain models must track state changes through the application of the
-`InteractsWithActivityLog` concern from the `Log` module.
+Domain models must track state changes through the application of the `InteractsWithActivityLog`
+concern from the `Log` module.
 
 - **Invariant**: Only "Dirty" (modified) attributes should be recorded to minimize log bloat.
 - **Protocol**: Configuration must utilize `logOnlyDirty()` and `dontSubmitEmptyLogs()`.

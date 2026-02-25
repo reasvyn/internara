@@ -9,8 +9,9 @@ use Modules\Assessment\Services\Contracts\ComplianceService as Contract;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
+use Modules\Shared\Services\BaseService;
 
-class ComplianceService implements Contract
+class ComplianceService extends BaseService implements Contract
 {
     public function __construct(
         protected RegistrationService $registrationService,
@@ -27,7 +28,7 @@ class ComplianceService implements Contract
         $registration = $this->registrationService->find($registrationId);
 
         if (! $registration) {
-            throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
                 \Modules\Internship\Models\InternshipRegistration::class,
                 [$registrationId],
             );

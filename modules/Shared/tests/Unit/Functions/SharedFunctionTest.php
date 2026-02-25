@@ -20,10 +20,10 @@ describe('Shared Global Helpers', function () {
     });
 
     test('is_development detects local environment', function () {
-        app()->detectEnvironment(fn() => 'local');
+        app()->detectEnvironment(fn () => 'local');
         expect(is_development())->toBeTrue();
 
-        app()->detectEnvironment(fn() => 'production');
+        app()->detectEnvironment(fn () => 'production');
         expect(is_development())->toBeFalse();
     });
 

@@ -17,6 +17,7 @@ interface InternshipService extends EloquentQuery
      * Bulk import internship programs.
      *
      * @param array<int, array<string, mixed>> $rows
+     *
      * @return int Number of successfully imported records.
      */
     public function import(array $rows): int;

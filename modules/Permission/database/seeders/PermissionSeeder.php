@@ -19,7 +19,7 @@ class PermissionSeeder extends Seeder
             'core.manage' => ['Manage core settings', 'Core'],
             'core.view-dashboard' => ['View dashboard', 'Core'],
             'school.manage' => ['Full school management', 'School'],
-            
+
             // User & Stakeholder Management
             'user.view' => ['View users list', 'User'],
             'user.manage' => ['General user management', 'User'],
@@ -52,7 +52,7 @@ class PermissionSeeder extends Seeder
             'journal.manage' => ['Manage and verify journals', 'Journal'],
             'mentoring.manage' => ['Manage mentoring visits and logs', 'Mentor'],
             'assessment.manage' => ['Manage competency assessments', 'Assessment'],
-            
+
             // Reporting
             'report.view' => ['Access system reports', 'Report'],
         ];

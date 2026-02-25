@@ -1,13 +1,13 @@
 # Performance & Optimization: Systemic Tuning Standards
 
 This document formalizes the **Performance Optimization** protocols for the Internara project,
-standardized according to **ISO/IEC 25010** (Efficiency) and **ISO/IEC 12207** (Maintenance Process).
-It provides a technical record of optimized patterns for modular hydration, database persistence,
-and memory-efficient query orchestration.
+standardized according to **ISO/IEC 25010** (Efficiency) and **ISO/IEC 12207** (Maintenance
+Process). It provides a technical record of optimized patterns for modular hydration, database
+persistence, and memory-efficient query orchestration.
 
 > **Governance Mandate:** Performance optimization must not compromise the **Strict Isolation**
-> invariants of the modular monolith. All optimizations must satisfy the **[Code Quality
-> Standardization](../quality.md)**.
+> invariants of the modular monolith. All optimizations must satisfy the
+> **[Code Quality Standardization](../quality.md)**.
 
 ---
 

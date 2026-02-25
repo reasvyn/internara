@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Modules\Notification\Services;
 
 use Modules\Notification\Services\Contracts\Notifier as Contract;
+use Modules\Shared\Services\BaseService;
 
 /**
  * Class Notifier
  *
  * Implements the Notifier contract to handle UI notifications via Livewire event dispatching.
  */
-class Notifier implements Contract
+class Notifier extends BaseService implements Contract
 {
     /**
      * {@inheritdoc}

@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SystemSetup;
-use Modules\Setup\Services\Contracts\SetupService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -53,7 +52,6 @@ describe('SystemSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'internship' not completed
-        Livewire::test(SystemSetup::class)
-            ->assertRedirect(route('setup.internship'));
+        Livewire::test(SystemSetup::class)->assertRedirect(route('setup.internship'));
     });
 });

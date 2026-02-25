@@ -103,35 +103,38 @@ Names must reflect the **conceptual intent** of the entity, not its implementati
 ### 4.1 Identity: UUID Invariant
 
 All domain entities must utilize **UUID v4** for identification to prevent enumeration and ensure
-modular portability. System-level tables or key-value stores (e.g., `Setting`, migrations, jobs)
-may utilize standard sequences or string keys.
+modular portability. System-level tables or key-value stores (e.g., `Setting`, migrations, jobs) may
+utilize standard sequences or string keys.
 
 - **Implementation**: Utilize the `HasUuid` concern from the `Shared` module.
-- **Isolation Constraint**: **Physical foreign keys across module boundaries are forbidden**.
-  Referential integrity is maintained at the Service Layer using indexed UUID columns.
+- **SLRI (Software-Level Referential Integrity)**: **Physical foreign keys across module boundaries
+  are strictly prohibited**. Referential integrity is maintained exclusively at the **Service
+  Layer** using indexed UUID columns and contract-driven verification.
 
 ### 4.2 User Identifiers: The Single Profile Strategy
 
-To prevent identity fragmentation, all institutional and national user identifiers must reside 
+To prevent identity fragmentation, all institutional and national user identifiers must reside
 exclusively within the `Profile` model.
 
-- **`national_identifier`**: The authoritative field for national-level IDs (e.g., NIP for 
-  teachers, NISN for students).
-- **`registration_number`**: The authoritative field for institution-specific IDs (e.g., NIS 
-  for students).
-- **Mandate**: No other module or model may define columns for these identifiers. They must be 
+- **`national_identifier`**: The authoritative field for national-level IDs (e.g., NIP for teachers,
+  NISN for students).
+- **`registration_number`**: The authoritative field for institution-specific IDs (e.g., NIS for
+  students).
+- **Mandate**: No other module or model may define columns for these identifiers. They must be
   retrieved or verified through the `ProfileService`.
 
 ### 4.3 State Lifecycle: `HasStatus`
 
-Operational entities must track their lifecycle transitions using the `HasStatus` concern from the `Status` module.
+Operational entities must track their lifecycle transitions using the `HasStatus` concern from the
+`Status` module.
 
 - **Rationale**: Provides an immutable audit trail of state changes ("who", "when", "why") as
   required for monitoring.
 
 ### 4.3 Temporal Scoping: `HasAcademicYear`
 
-Data must be automatically scoped by the active academic cycle using the `HasAcademicYear` concern from the `Core` module.
+Data must be automatically scoped by the active academic cycle using the `HasAcademicYear` concern
+from the `Core` module.
 
 - **Mechanism**: The `HasAcademicYear` concern filters all queries by the value of
   `setting('active_academic_year')`.
@@ -162,11 +165,13 @@ The **Service Layer** is the exclusive repository for business logic and orchest
 
 ### 5.1 The `EloquentQuery` Pattern
 
-Domain services should extend `Modules\Shared\Services\EloquentQuery` to utilize standardized CRUD
-operations.
+**Mandate**: All domain services MUST extend `Modules\Shared\Services\EloquentQuery`.
 
 - **Standardized API**: `all()`, `paginate()`, `create()`, `update()`, `delete()`, `find()`,
   `query()`.
+- **Logic Placement**: Use the Service to encapsulate a complete "Business Use Case."
+- **Verification Invariant**: Every state-altering method (Create/Update/Delete) within a Service
+  MUST explicitly invoke `Gate::authorize()` to ensure Policy-First security.
 - **Overriding Logic**: Only override base methods when injecting cross-module side-effects or
   complex domain events. Always utilize database **Transactions** for multi-entity operations.
 
@@ -213,18 +218,18 @@ helper functions. These functions must strictly adhere to the following protocol
 - **Organization**: Each global function must reside in its own file within the `src/Functions/`
   directory, named after the function (e.g., `src/Functions/is_testing.php`). Multiple functions
   within a single file are prohibited.
-- **Autoloading**: Functions must be registered via the `autoload.files` section of the module's 
-  `composer.json`. Each file path must be explicitly listed to ensure proper discovery by the 
+- **Autoloading**: Functions must be registered via the `autoload.files` section of the module's
+  `composer.json`. Each file path must be explicitly listed to ensure proper discovery by the
   Composer autoloader.
     - _Example_:
-      ```json
-      "autoload": {
-          "files": [
-              "src/Functions/is_active_module.php",
-              "src/Functions/setting.php"
-          ]
-      }
-      ```
+        ```json
+        "autoload": {
+            "files": [
+                "src/Functions/is_active_module.php",
+                "src/Functions/setting.php"
+            ]
+        }
+        ```
 
 ---
 
@@ -246,18 +251,18 @@ Livewire components serve as thin orchestrators between the UI and the Service L
 
 ### 7.2 Volt Components (Functional UI)
 
-For reactive UI elements that require minimal server-side state, Internara utilizes **Livewire 
+For reactive UI elements that require minimal server-side state, Internara utilizes **Livewire
 Volt**.
 
-- **Location**: Volt files must reside in the module's `resources/views/livewire/` directory 
-  (e.g., `modules/Admin/resources/views/livewire/dashboard.blade.php`).
-- **Registration**: These components are automatically discovered and registered via the 
+- **Location**: Volt files must reside in the module's `resources/views/livewire/` directory (e.g.,
+  `modules/Admin/resources/views/livewire/dashboard.blade.php`).
+- **Registration**: These components are automatically discovered and registered via the
   `Volt::mount()` mechanism integrated into the `Shared` module's foundational providers.
 
 ### 7.3 Slot Injection Implementation
 
-Modules register their UI contributions into the design system using the following syntax in 
-their `ServiceProvider`:
+Modules register their UI contributions into the design system using the following syntax in their
+`ServiceProvider`:
 
 ```php
 protected function viewSlots(): array

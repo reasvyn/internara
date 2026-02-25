@@ -29,7 +29,7 @@ business domains.
 
 ## 📏 Architectural Blueprint Standards
 
-To ensure consistency and technical depth, every blueprint must demonstrate compliance with the 
+To ensure consistency and technical depth, every blueprint must demonstrate compliance with the
 following structural standards (IEEE 1016).
 
 ### 1. Mandatory Section Definitions
@@ -45,7 +45,7 @@ following structural standards (IEEE 1016).
 ### 2. The Blueprint Invariant
 
 - **Traceability**: Every functional requirement in the blueprint must map to a SyRS ID.
-- **Contract-First**: Interfaces must be defined *before* implementation details.
+- **Contract-First**: Interfaces must be defined _before_ implementation details.
 - **Zero-Coupling**: Blueprints must explicitly state how modular isolation is preserved.
 
 ---

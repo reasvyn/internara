@@ -15,7 +15,7 @@ class TeacherService extends EloquentQuery implements Contract
     public function __construct(
         User $model,
         protected UserService $userService,
-        protected ProfileService $profileService
+        protected ProfileService $profileService,
     ) {
         $this->setModel($model);
         $this->setSearchable(['profile.registration_number']);
@@ -33,7 +33,8 @@ class TeacherService extends EloquentQuery implements Contract
 
         // Set default registration number if missing
         if (empty($profileData['registration_number'])) {
-            $profileData['registration_number'] = 'PENDING-'.(string) \Illuminate\Support\Str::uuid();
+            $profileData['registration_number'] =
+                'PENDING-'.(string) \Illuminate\Support\Str::uuid();
         }
 
         // 1. Create User account
@@ -55,7 +56,7 @@ class TeacherService extends EloquentQuery implements Contract
 
         if (! $user || ! $user->hasRole('teacher')) {
             throw new \Modules\Exception\RecordNotFoundException(
-                replace: ['record' => 'Teacher', 'id' => $id]
+                replace: ['record' => 'Teacher', 'id' => $id],
             );
         }
 

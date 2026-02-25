@@ -43,7 +43,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $profileData = $data['profile'] ?? [];
         unset($data['profile']);
-        
+
         return $this->createWithProfile($data, $profileData);
     }
 
@@ -52,10 +52,13 @@ class UserService extends EloquentQuery implements Contract
      */
     public function createWithProfile(array $userData, array $profileData = []): User
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($userData, $profileData) {
+        return \Illuminate\Support\Facades\DB::transaction(function () use (
+            $userData,
+            $profileData,
+        ) {
             $roles = Arr::wrap($userData['roles'] ?? [Role::STUDENT->value]);
             $status = $userData['status'] ?? User::STATUS_ACTIVE;
-            
+
             // Prepare Password
             $plainPassword = $userData['password'] ?? \Illuminate\Support\Str::password(16);
             $userData['password'] = $plainPassword;
@@ -67,15 +70,17 @@ class UserService extends EloquentQuery implements Contract
 
             // Specialized Delegation
             if (in_array(Role::SUPER_ADMIN->value, $roles)) {
-                $user = $this->superAdminService->create(array_merge($userData, [
-                    'status' => $status,
-                    'roles' => $roles,
-                ]));
+                $user = $this->superAdminService->create(
+                    array_merge($userData, [
+                        'status' => $status,
+                        'roles' => $roles,
+                    ]),
+                );
             } else {
                 // Standard User Creation
                 $filteredData = Arr::except($userData, ['roles', 'status']);
                 $user = parent::create($filteredData);
-                
+
                 $this->handleUserAvatar($user, $userData['avatar_file'] ?? null);
                 $user->assignRole($roles);
                 $user->setStatus($status);

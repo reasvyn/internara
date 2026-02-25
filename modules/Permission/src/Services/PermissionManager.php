@@ -7,8 +7,9 @@ namespace Modules\Permission\Services;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 use Modules\Permission\Services\Contracts\PermissionManager as PermissionManagerContract;
+use Modules\Shared\Services\BaseService;
 
-class PermissionManager implements PermissionManagerContract
+class PermissionManager extends BaseService implements PermissionManagerContract
 {
     public function createPermission(
         string $name,

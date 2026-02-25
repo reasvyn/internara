@@ -42,26 +42,26 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
         }
 
         $placements = $query->get();
-        
+
         // 1. Collect all registration IDs for bulk processing
         $allRegistrationIds = $placements->flatMap->registrations->pluck('id')->toArray();
-        
+
         // 2. Fetch required stats in single bulk calls
         $journalService = app(\Modules\Journal\Services\Contracts\JournalService::class);
         $assessmentService = app(\Modules\Assessment\Services\Contracts\AssessmentService::class);
-        
+
         $allJournalStats = $journalService->getEngagementStats($allRegistrationIds);
         $allAvgScores = $assessmentService->getAverageScore($allRegistrationIds, 'mentor');
 
         $rows = $placements
             ->map(function ($placement) use ($allJournalStats, $allAvgScores) {
                 $registrationIds = $placement->registrations->pluck('id')->toArray();
-                
+
                 // Aggregate stats for this specific placement from the bulk data
                 $responsivenessSum = 0;
                 $scoreSum = 0;
                 $count = count($registrationIds);
-                
+
                 foreach ($registrationIds as $regId) {
                     $responsivenessSum += $allJournalStats[$regId]['responsiveness'] ?? 0;
                     $scoreSum += $allAvgScores[$regId] ?? 0;

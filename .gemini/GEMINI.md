@@ -21,10 +21,12 @@ prioritizes systemic integrity, domain isolation, and long-term maintainability.
 ## ⚖️ Interaction & Operational Principles
 
 ### 1. Aesthetic-Natural Interaction
+
 Maintain a calm, structured, and adaptive tone. Responses must be structurally minimalist,
 cognitively non-aggressive, and oriented toward actionable engineering outcomes.
 
 ### 2. Analytical Accountability
+
 - **Traceability**: Every action must trace back to a SyRS requirement ID (e.g., `[SYRS-F-101]`).
 - **Verification Gate**: No implementation is complete without a formal verification pass
   (`composer test`, `composer lint`).
@@ -32,15 +34,17 @@ cognitively non-aggressive, and oriented toward actionable engineering outcomes.
   encryption mandates.
 
 ### 3. Core Construction Philosophy (S3)
+
 - **Secure (S1)**: Engineered for resilience. Zero-trust, sanitized boundaries, RBAC via Policies.
 - **Sustain (S2)**: Maintainable and clear. Strict typing, translation keys, professional PHPDoc.
-- **Scalable (S3)**: Designed for growth. Modular isolation, Service-oriented, asynchronous side-effects.
+- **Scalable (S3)**: Designed for growth. Modular isolation, Service-oriented, asynchronous
+  side-effects.
 
 ---
 
 ## 🔄 Agentic Workflow Discipline (ISO/IEC 12207)
 
-Gemini MUST adhere to the **8-Step Engineering Workflow** defined in 
+Gemini MUST adhere to the **8-Step Engineering Workflow** defined in
 **[`docs/developers/workflow.md`](../docs/developers/workflow.md)**:
 
 1.  **Step 1: Analysis**: Audit SyRS IDs and technical impacts.
@@ -57,21 +61,24 @@ Gemini MUST adhere to the **8-Step Engineering Workflow** defined in
 ## 🛠️ Technical Invariants (The Systemic Record)
 
 ### 1. Construction Baseline
+
 - **Strict Typing**: Every PHP file MUST declare `declare(strict_types=1);`.
 - **Identity**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for all domain
-  entities. 
+  entities.
 - **Isolation**: Physical foreign keys across module boundaries are **STRICTLY PROHIBITED**.
 - **Logic**: No `env()` calls; utilize `config()` for static values and the `setting()` registry.
-- **Service Layer**: Logic resides in Services extending `EloquentQuery`. Communication MUST use 
+- **Service Layer**: Logic resides in Services extending `EloquentQuery`. Communication MUST use
   **Service Contracts** (Interfaces).
 - **UI**: Tailwind CSS v4, maryUI, and Livewire v3. Components MUST be **Thin Components**.
 
 ### 2. Namespace & Semantic Omission
+
 - **The `src` Omission**: All namespaces MUST omit the `src` segment.
 - **Domain Exception**: If Domain Name == Module Name, the domain folder is omitted.
 - **Contracts**: Interfaces must NOT have an `Interface` suffix.
 
 ### 3. Resilience & Security
+
 - **Logging**: All `Log::debug()` MUST be wrapped in an `is_debug_mode()` check.
 - **PII Redaction**: Personally Identifiable Information MUST be masked in all logging sinks.
 - **Sanitization**: External input must be validated at the system boundary (PEP).
@@ -93,7 +100,8 @@ The following commands are the authoritative mechanisms for system interaction:
 
 ## 📊 Verification & Validation (V&V) Standards
 
-Artifacts must be verified against the **[`Testing Guide`](../docs/developers/tests/verification-index.md)**.
+Artifacts must be verified against the
+**[`Testing Guide`](../docs/developers/tests/verification-index.md)**.
 
 - **Mirroring Invariant**: The `tests/` directory MUST exactly mirror the `src/` hierarchy.
 - **Coverage**: Minimum **90% behavioral coverage** per domain module.
@@ -105,9 +113,12 @@ Artifacts must be verified against the **[`Testing Guide`](../docs/developers/te
 
 ## 🔗 Authoritative References
 
-- **[System Specs](../docs/developers/specs.md)** | **[Architecture](../docs/developers/architecture.md)**
-- **[Conventions](../docs/developers/conventions.md)** | **[Engineering Lifecycle](../docs/developers/workflow.md)**
-- **[Testing Guide](../docs/developers/tests/verification-index.md)** | **[Workflow Guide](../docs/developers/workflow.md)**
+- **[System Specs](../docs/developers/specs.md)** |
+  **[Architecture](../docs/developers/architecture.md)**
+- **[Conventions](../docs/developers/conventions.md)** |
+  **[Engineering Lifecycle](../docs/developers/workflow.md)**
+- **[Testing Guide](../docs/developers/tests/verification-index.md)** |
+  **[Workflow Guide](../docs/developers/workflow.md)**
 
 ---
 

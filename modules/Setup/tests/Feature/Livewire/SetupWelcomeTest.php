@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use Modules\Setup\Livewire\SetupWelcome;
-use Modules\Setup\Services\Contracts\SetupService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -30,7 +29,8 @@ describe('SetupWelcome Component', function () {
         ]);
 
         // Verify Tailwind v4 responsive classes and structural integrity
-        expect($rendered)->toContain('container mx-auto')
+        expect($rendered)
+            ->toContain('container mx-auto')
             ->toContain('grid grid-cols-1')
             ->toContain('md:grid-cols-3')
             ->toContain('text-4xl');
@@ -45,12 +45,10 @@ describe('SetupWelcome Component', function () {
     test('it adheres to [SYRS-NF-403] by supporting localization', function () {
         app()->setLocale('id');
 
-        Livewire::test(SetupWelcome::class)
-            ->assertSee(__('setup::wizard.welcome.headline'));
+        Livewire::test(SetupWelcome::class)->assertSee(__('setup::wizard.welcome.headline'));
 
         app()->setLocale('en');
 
-        Livewire::test(SetupWelcome::class)
-            ->assertSee(__('setup::wizard.welcome.headline'));
+        Livewire::test(SetupWelcome::class)->assertSee(__('setup::wizard.welcome.headline'));
     });
 });

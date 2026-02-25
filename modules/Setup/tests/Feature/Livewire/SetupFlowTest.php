@@ -6,6 +6,7 @@ namespace Modules\Setup\Tests\Feature\Livewire;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
+use Modules\Core\Academic\Support\AcademicYear;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
@@ -21,14 +22,13 @@ use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Livewire\SystemSetup;
 use Modules\User\Services\Contracts\SuperAdminService;
-use Modules\Core\Academic\Support\AcademicYear;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);
     $this->seed(RoleSeeder::class);
-    
+
     app(SettingService::class)->setValue('app_installed', false);
 });
 
@@ -63,11 +63,13 @@ describe('Setup Wizard Transitions', function () {
         session(['setup_authorized' => true]);
         $superAdmin = app(SuperAdminService::class)->factory()->create();
         $superAdmin->assignRole('super-admin');
-        
+
         // Final sanity check for role
-        expect($superAdmin->hasRole('super-admin'))->toBeTrue()
-            ->and(app(SuperAdminService::class)->exists())->toBeTrue();
-        
+        expect($superAdmin->hasRole('super-admin'))
+            ->toBeTrue()
+            ->and(app(SuperAdminService::class)->exists())
+            ->toBeTrue();
+
         Livewire::test(AccountSetup::class)
             ->dispatch('super_admin_registered')
             ->assertRedirect(route('setup.department'));
@@ -83,7 +85,9 @@ describe('Setup Wizard Transitions', function () {
 
         // 6. Internship
         session(['setup_authorized' => true]);
-        app(InternshipService::class)->factory()->create(['academic_year' => $currentYear]);
+        app(InternshipService::class)
+            ->factory()
+            ->create(['academic_year' => $currentYear]);
         Livewire::test(InternshipSetup::class)
             ->call('nextStep')
             ->assertRedirect(route('setup.system'));
@@ -102,9 +106,7 @@ describe('Setup Wizard Transitions', function () {
 
         // 8. Complete
         session(['setup_authorized' => true]);
-        Livewire::test(SetupComplete::class)
-            ->call('nextStep')
-            ->assertRedirect(route('login'));
+        Livewire::test(SetupComplete::class)->call('nextStep')->assertRedirect(route('login'));
 
         expect($settings->getValue('app_installed', false, true))->toBeTrue();
     });

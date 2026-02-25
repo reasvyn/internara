@@ -105,16 +105,15 @@ class RegistrationManager extends Component
             ->map(fn ($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
     }
 
-        /**
-         * Get students for the dropdown.
-         */
-        public function getStudentsProperty(): \Illuminate\Support\Collection
-        {
-            return app(UserService::class)
-                ->get(['roles.name' => 'student'], ['id', 'name', 'username'])
-                ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name . ' (' . $u->username . ')']);
-        }
-    
+    /**
+     * Get students for the dropdown.
+     */
+    public function getStudentsProperty(): \Illuminate\Support\Collection
+    {
+        return app(UserService::class)
+            ->get(['roles.name' => 'student'], ['id', 'name', 'username'])
+            ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name.' ('.$u->username.')']);
+    }
 
     /**
      * Get teachers for the dropdown.
@@ -205,14 +204,18 @@ class RegistrationManager extends Component
     {
         return $this->service
             ->query(
-                ['search' => $this->search, 'sort_by' => $this->sortBy, 'sort_dir' => $this->sortDir],
-                ['id', 'student_id', 'internship_id', 'placement_id', 'status', 'created_at']
+                [
+                    'search' => $this->search,
+                    'sort_by' => $this->sortBy,
+                    'sort_dir' => $this->sortDir,
+                ],
+                ['id', 'student_id', 'internship_id', 'placement_id', 'status', 'created_at'],
             )
             ->with([
-                'student:id,name,username', 
-                'internship:id,title', 
-                'placement:id,company_id', 
-                'placement.company:id,name'
+                'student:id,name,username',
+                'internship:id,title',
+                'placement:id,company_id',
+                'placement.company:id,name',
             ])
             ->paginate($this->perPage);
     }
@@ -222,7 +225,9 @@ class RegistrationManager extends Component
         return view('internship::livewire.registration-manager', [
             'records' => $this->records,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.registration_title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('internship::ui.registration_title').
+                ' | '.
+                setting('brand_name', setting('app_name')),
             'context' => 'internship::ui.index.title',
         ]);
     }

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\File;
 /**
  * Utility class for managing authoritative application metadata.
  *
- * This class provides a portable, project-agnostic way to access 
+ * This class provides a portable, project-agnostic way to access
  * technical metadata from the system's app_info.json record.
  */
 final class AppInfo

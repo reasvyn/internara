@@ -102,7 +102,7 @@ class ReportIndex extends Component
     public function render()
     {
         return view('report::livewire.report-index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('report::ui.title') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('report::ui.title').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

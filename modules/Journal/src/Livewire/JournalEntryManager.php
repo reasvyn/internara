@@ -119,7 +119,11 @@ class JournalEntryManager extends Component
         return view('journal::livewire.journal-entry-manager', [
             'availableCompetencies' => $availableCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => ($this->form->id ? __('journal::ui.index.edit_title') : __('journal::ui.index.create_title')) . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => ($this->form->id
+                    ? __('journal::ui.index.edit_title')
+                    : __('journal::ui.index.create_title')).
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

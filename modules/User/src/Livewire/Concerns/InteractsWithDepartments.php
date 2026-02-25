@@ -9,7 +9,7 @@ use Modules\Department\Services\Contracts\DepartmentService;
 
 /**
  * Trait InteractsWithDepartments
- * 
+ *
  * Provides access to department data for Livewire components.
  */
 trait InteractsWithDepartments
@@ -21,10 +21,7 @@ trait InteractsWithDepartments
     public function departments(): \Illuminate\Support\Collection
     {
         if (interface_exists(DepartmentService::class)) {
-            return app(DepartmentService::class)->all([
-                'id',
-                'name',
-            ]);
+            return app(DepartmentService::class)->all(['id', 'name']);
         }
 
         return collect();

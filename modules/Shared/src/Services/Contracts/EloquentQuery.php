@@ -313,6 +313,7 @@ interface EloquentQuery
      * Executes a high-performance bulk data ingestion.
      *
      * @param array<int, array<string, mixed>> $rows
+     *
      * @return int Number of successfully imported records.
      */
     public function import(array $rows): int;

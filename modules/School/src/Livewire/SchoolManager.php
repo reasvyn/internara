@@ -62,7 +62,9 @@ class SchoolManager extends Component
     public function save(): void
     {
         // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized =
+            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            true;
 
         if (! $isSetupAuthorized) {
             $this->authorize('school.manage');
@@ -73,14 +75,14 @@ class SchoolManager extends Component
         // Pass attributes to the service for persistence
         $school = $this->schoolService->save(
             ['id' => $this->form->id],
-            $this->form->except(['id', 'logo_url'])
+            $this->form->except(['id', 'logo_url']),
         );
 
         // Synchronize form with the fresh record state
         $this->form->fill($school->toArray());
 
         flash()->success(__('shared::messages.record_saved'));
-        
+
         $this->dispatch('school_saved', schoolId: $school->id);
     }
 
@@ -90,7 +92,7 @@ class SchoolManager extends Component
     public function render(): \Illuminate\View\View
     {
         return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
-            'title' => __('school::ui.settings') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('school::ui.settings').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

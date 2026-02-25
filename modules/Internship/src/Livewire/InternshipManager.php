@@ -40,7 +40,9 @@ class InternshipManager extends RecordManager
         $this->addLabel = __('internship::ui.add_program');
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true || is_testing();
+        $isSetupAuthorized =
+            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+                true || is_testing();
 
         if (! $isSetupAuthorized) {
             $this->viewPermission = 'internship.view';
@@ -57,10 +59,22 @@ class InternshipManager extends RecordManager
     {
         return [
             ['key' => 'title', 'label' => __('internship::ui.title'), 'sortable' => true],
-            ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
+            [
+                'key' => 'academic_year',
+                'label' => __('internship::ui.academic_year'),
+                'sortable' => true,
+            ],
             ['key' => 'semester', 'label' => __('internship::ui.semester'), 'sortable' => true],
-            ['key' => 'date_start_formatted', 'label' => __('internship::ui.date_start'), 'sort_by' => 'date_start'],
-            ['key' => 'date_finish_formatted', 'label' => __('internship::ui.date_finish'), 'sort_by' => 'date_finish'],
+            [
+                'key' => 'date_start_formatted',
+                'label' => __('internship::ui.date_start'),
+                'sort_by' => 'date_start',
+            ],
+            [
+                'key' => 'date_finish_formatted',
+                'label' => __('internship::ui.date_finish'),
+                'sort_by' => 'date_finish',
+            ],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
     }
@@ -86,7 +100,7 @@ class InternshipManager extends RecordManager
 
         // Standard Auto-fills for institutional consistency
         $this->form->academic_year = \Modules\Core\Academic\Support\AcademicYear::current();
-        
+
         $school = app(SchoolService::class)->getSchool();
         if ($school) {
             $this->form->school_id = $school->id;
@@ -170,9 +184,12 @@ class InternshipManager extends RecordManager
      */
     public function render(): \Illuminate\View\View
     {
-        return view('internship::livewire.internship-manager')->layout('ui::components.layouts.dashboard', [
-            'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-            'context' => $this->context,
-        ]);
+        return view('internship::livewire.internship-manager')->layout(
+            'ui::components.layouts.dashboard',
+            [
+                'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
+                'context' => $this->context,
+            ],
+        );
     }
 }

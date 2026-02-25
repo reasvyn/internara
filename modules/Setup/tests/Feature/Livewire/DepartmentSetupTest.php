@@ -9,7 +9,6 @@ use Livewire\Livewire;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\DepartmentSetup;
-use Modules\Setup\Services\Contracts\SetupService;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -48,8 +47,7 @@ describe('DepartmentSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'account' not completed
-        Livewire::test(DepartmentSetup::class)
-            ->assertRedirect(route('setup.account'));
+        Livewire::test(DepartmentSetup::class)->assertRedirect(route('setup.account'));
     });
 
     test('it adheres to [SYRS-NF-401] with slot-based department UI', function () {
@@ -59,7 +57,8 @@ describe('DepartmentSetup Component', function () {
         $template = file_get_contents($viewPath);
 
         // Verify slot-based UI integration
-        expect($template)->toContain('x-setup::layouts.setup-wizard')
+        expect($template)
+            ->toContain('x-setup::layouts.setup-wizard')
             ->toContain("@slotRender('department-manager')")
             ->toContain('text-4xl');
     });

@@ -88,7 +88,9 @@ class SystemSetup extends Component
                 throw new \Exception($errstr ?: 'Connection timed out.');
             }
         } catch (\Exception $e) {
-            flash()->error(__('setup::wizard.system.smtp_connection_failed', ['message' => $e->getMessage()]));
+            flash()->error(
+                __('setup::wizard.system.smtp_connection_failed', ['message' => $e->getMessage()]),
+            );
         }
     }
 

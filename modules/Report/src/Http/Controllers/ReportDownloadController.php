@@ -20,7 +20,6 @@ class ReportDownloadController extends Controller
      * Download a generated report.
      *
      * @param GeneratedReport $report The report record.
-     * @return StreamedResponse
      */
     public function download(GeneratedReport $report): StreamedResponse
     {

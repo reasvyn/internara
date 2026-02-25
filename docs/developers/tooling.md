@@ -8,10 +8,10 @@ ensure code quality.
 
 ## 1. Lifecycle & Environment
 
-| Command           | Objective                                                                 |
-| :---------------- | :------------------------------------------------------------------------ |
-| `composer setup`  | Full environment bootstrapping (Install, Migrate, Build).                 |
-| `composer dev`    | Integrated concurrent environment (Server, Queue, Logs, Vite).             |
+| Command                | Objective                                                                |
+| :--------------------- | :----------------------------------------------------------------------- |
+| `composer setup`       | Full environment bootstrapping (Install, Migrate, Build).                |
+| `composer dev`         | Integrated concurrent environment (Server, Queue, Logs, Vite).           |
 | `php artisan app:info` | Display application identity, version, and technical stack (SSoT Audit). |
 
 ---
@@ -20,12 +20,12 @@ ensure code quality.
 
 Mandatory verification passes prior to any repository synchronization.
 
-| Command           | Objective                                                                 |
-| :---------------- | :------------------------------------------------------------------------ |
-| `composer test`   | Execute all behavioral verification suites (Pest v4).                     |
-| `composer lint`   | Perform static analysis and check code style compliance (Pint & Prettier). |
-| `composer format` | Automatically fix code style violations across PHP, Blade, and JS.        |
-| `php artisan app:test` | Sequential module execution to minimize memory heap usage.            |
+| Command                | Objective                                                                  |
+| :--------------------- | :------------------------------------------------------------------------- |
+| `composer test`        | Execute all behavioral verification suites (Pest v4).                      |
+| `composer lint`        | Perform static analysis and check code style compliance (Pint & Prettier). |
+| `composer format`      | Automatically fix code style violations across PHP, Blade, and JS.         |
+| `php artisan app:test` | Sequential module execution to minimize memory heap usage.                 |
 
 ---
 

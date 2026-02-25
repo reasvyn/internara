@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Department\Listeners;
 
-use Modules\School\Events\SchoolDeleted;
 use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\School\Events\SchoolDeleted;
 
 /**
  * Handles the autonomous cleanup of departments when a school is deleted.
@@ -15,9 +15,7 @@ class DeleteDepartmentsBySchool
     /**
      * Create the event listener.
      */
-    public function __construct(
-        protected DepartmentService $departmentService
-    ) {}
+    public function __construct(protected DepartmentService $departmentService) {}
 
     /**
      * Handle the event.

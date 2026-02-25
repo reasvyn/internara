@@ -48,13 +48,21 @@ final class Masker
     public static function maskArray(array $data): array
     {
         $sensitiveKeys = [
-            'password', 'password_confirmation', 'token', 'secret',
-            'api_key', 'national_identifier', 'nip', 'phone', 'email'
+            'password',
+            'password_confirmation',
+            'token',
+            'secret',
+            'api_key',
+            'national_identifier',
+            'nip',
+            'phone',
+            'email',
         ];
 
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $data[$key] = self::maskArray($value);
+
                 continue;
             }
 

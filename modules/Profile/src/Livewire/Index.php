@@ -164,7 +164,7 @@ class Index extends Component
             ];
 
             // Only update name if not SuperAdmin (since UI is display-only for them)
-            if (!auth()->user()->hasRole('super-admin')) {
+            if (! auth()->user()->hasRole('super-admin')) {
                 $userData['name'] = $this->name;
             }
 
@@ -272,7 +272,7 @@ class Index extends Component
             /** @var User $user */
             $user = auth()->user();
             $user->setAvatar($this->avatar);
-            
+
             $this->avatar = null;
             flash()->success(__('profile::ui.messages.avatar_updated'));
         } catch (\Throwable $e) {
@@ -286,7 +286,9 @@ class Index extends Component
     public function render()
     {
         return view('profile::livewire.index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('profile::ui.profile_settings') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('profile::ui.profile_settings').
+                ' | '.
+                setting('brand_name', setting('app_name')),
         ]);
     }
 }

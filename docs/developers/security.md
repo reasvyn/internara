@@ -62,7 +62,8 @@ Systemic isolation and encryption of Personally Identifiable Information (PII).
 - **Policy**: All fields identified as PII must be encrypted at the database level.
 - **Implementation**: Utilization of Eloquent's `encrypted` cast in the relevant domain models.
 - **PII Distribution**:
-    - **`Profile`**: `phone`, `address`, `bio`, `national_identifier` (NISN), and `registration_number` (NIP/NIS).
+    - **`Profile`**: `phone`, `address`, `bio`, `national_identifier` (NISN), and
+      `registration_number` (NIP/NIS).
 - **Rationale**: Ensures that even in the event of a raw database breach, sensitive user data
   remains unreadable ciphertext.
 
@@ -103,8 +104,10 @@ Every new feature involving user input or sensitive data must demonstrate compli
 2. **PII Classification**: Encryption casts applied to new models.
 3. **Link Security**: Signed routes for administrative actions.
 4. **Validation**: Use of `Password::auto()` for all credential inputs.
-5. **Zero-Trust Boundary Validation**: All external input must be strictly validated before processing.
-6. **Logic Isolation**: Strict prohibition of `env()` calls in business logic; rely entirely on `config()` and `setting()`.
+5. **Zero-Trust Boundary Validation**: All external input must be strictly validated before
+   processing.
+6. **Logic Isolation**: Strict prohibition of `env()` calls in business logic; rely entirely on
+   `config()` and `setting()`.
 
 ### 5.2 Verification Gate
 

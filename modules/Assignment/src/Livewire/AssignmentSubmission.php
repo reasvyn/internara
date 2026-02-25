@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Modules\Assignment\Models\Assignment;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Assignment\Services\Contracts\SubmissionService;
 use Modules\Internship\Services\Contracts\RegistrationService;
@@ -55,15 +54,22 @@ class AssignmentSubmission extends Component
     /**
      * Submit an assignment.
      */
-    public function submit(string $assignmentId, SubmissionService $service): void
-    {
-        $assignment = Assignment::findOrFail($assignmentId);
+    public function submit(
+        string $assignmentId,
+        SubmissionService $service,
+        AssignmentService $assignmentService,
+    ): void {
+        $assignment = $assignmentService->find($assignmentId);
+
+        if (! $assignment) {
+            return;
+        }
 
         $rules = [];
-        if (
-            $assignment->type->slug === 'laporan-pkl' ||
-            $assignment->type->slug === 'presentasi-pkl'
-        ) {
+        // Assuming assignment type slug is available in the retrieved object/array
+        $typeSlug = $assignment->type->slug ?? '';
+
+        if ($typeSlug === 'laporan-pkl' || $typeSlug === 'presentasi-pkl') {
             $rules["uploads.{$assignmentId}"] = 'required|file|max:20480';
         } else {
             $rules["contents.{$assignmentId}"] = 'required|string';

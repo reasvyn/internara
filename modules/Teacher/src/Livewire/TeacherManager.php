@@ -7,20 +7,20 @@ namespace Modules\Teacher\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Modules\User\Livewire\Forms\UserForm;
-use Modules\Teacher\Services\Contracts\TeacherService;
 
 /**
  * Class TeacherManager
- * 
+ *
  * Manages academic teachers with specialized logic and role enforcement.
  */
 class TeacherManager extends Component
 {
-    use \Modules\User\Livewire\Concerns\InteractsWithDepartments;
     use HandlesAppException;
     use ManagesRecords;
+    use \Modules\User\Livewire\Concerns\InteractsWithDepartments;
 
     public UserForm $form;
 
@@ -116,7 +116,7 @@ class TeacherManager extends Component
         return view('teacher::livewire.teacher-manager', [
             'title' => $title,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => $title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.teachers',
         ]);
     }

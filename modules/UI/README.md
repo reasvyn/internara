@@ -13,9 +13,9 @@ and presentation layouts without containing business logic or data persistence.
 ## 1. Architectural Role
 
 As a **Public Module**, the `UI` module provides the shared presentation layer for all domain
-modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) with **Volt** 
-for reactive components, transitioning towards a **Native TALL** implementation using **DaisyUI** 
-while minimizing third-party library dependency.
+modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) with **Volt** for
+reactive components, transitioning towards a **Native TALL** implementation using **DaisyUI** while
+minimizing third-party library dependency.
 
 ---
 
@@ -26,15 +26,14 @@ while minimizing third-party library dependency.
 - **Centralized Styling**: Configuration for Tailwind v4 and DaisyUI themes.
 - **Typography**: Enforces the use of **Instrument Sans** as the primary font (**[SYRS-NF-402]**).
 - **Theming**: Native support for Light/Dark modes and responsive layouts.
-- **Evolutionary UI**: Adherence to the **UI library minimization** strategy to ensure absolute 
+- **Evolutionary UI**: Adherence to the **UI library minimization** strategy to ensure absolute
   design control.
 
 ### 2.2 Component Library
 
 - **Livewire & Volt Components**: Shared interactive elements like the `LanguageSwitcher`.
-- **`ManagesRecords` Concern**: A standardized trait for CRUD-heavy Livewire components, 
-  providing automated pagination, searching, and sorting logic aligned with the 
-  `EloquentQuery` pattern.
+- **`ManagesRecords` Concern**: A standardized trait for CRUD-heavy Livewire components, providing
+  automated pagination, searching, and sorting logic aligned with the `EloquentQuery` pattern.
 
 ### 2.3 Cross-Module View Orchestration (Slot Injection)
 

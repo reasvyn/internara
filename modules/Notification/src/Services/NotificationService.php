@@ -7,8 +7,9 @@ namespace Modules\Notification\Services;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Modules\Notification\Services\Contracts\NotificationService as Contract;
+use Modules\Shared\Services\BaseService;
 
-class NotificationService implements Contract
+class NotificationService extends BaseService implements Contract
 {
     /**
      * {@inheritdoc}

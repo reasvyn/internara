@@ -19,7 +19,7 @@ class MentorService extends EloquentQuery implements Contract
     public function __construct(
         User $model,
         protected UserService $userService,
-        protected ProfileService $profileService
+        protected ProfileService $profileService,
     ) {
         $this->setModel($model);
     }
@@ -66,7 +66,7 @@ class MentorService extends EloquentQuery implements Contract
 
         if (! $user || ! $user->hasRole('mentor')) {
             throw new \Modules\Exception\RecordNotFoundException(
-                replace: ['record' => 'Mentor', 'id' => $id]
+                replace: ['record' => 'Mentor', 'id' => $id],
             );
         }
 

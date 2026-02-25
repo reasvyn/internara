@@ -39,27 +39,30 @@ composer setup
 ```
 
 **What this command does:**
+
 1.  Installs PHP dependencies via Composer.
 2.  Initializes the `.env` file from the template.
 3.  Generates the application encryption key.
 4.  Executes database migrations.
 5.  Installs Node dependencies and builds frontend assets.
 
-> **Troubleshooting**: If this command fails during step 4, verify your database credentials in 
-> the `.env` file and ensure the database exists. After fixing, you can run `php artisan migrate` 
-> to resume the process.
+> **Troubleshooting**: If this command fails during step 4, verify your database credentials in the
+> `.env` file and ensure the database exists. After fixing, you can run `php artisan migrate` to
+> resume the process.
 
 ---
 
 ## 4. System Integrity & Attribution Verification
 
-Internara includes a low-level security mechanism to protect the system's core metadata and ensure 
+Internara includes a low-level security mechanism to protect the system's core metadata and ensure
 proper attribution.
 
-- **Authoritative Metadata**: The system relies on `app_info.json` for technical identity and versioning.
-- **Bootstrapping Guard**: During the application boot process, the system verifies the integrity 
-  of the metadata and the author's identity. If `app_info.json` is missing or tampered with, the 
-  application will terminate with a 403 error to prevent unauthorized redistribution or architectural drift.
+- **Authoritative Metadata**: The system relies on `app_info.json` for technical identity and
+  versioning.
+- **Bootstrapping Guard**: During the application boot process, the system verifies the integrity of
+  the metadata and the author's identity. If `app_info.json` is missing or tampered with, the
+  application will terminate with a 403 error to prevent unauthorized redistribution or
+  architectural drift.
 
 ---
 
@@ -71,9 +74,9 @@ To start the server and all necessary background processes (Queue, Logs, and Vit
 composer dev
 ```
 
-The system will be accessible at `http://localhost:8000`. 
+The system will be accessible at `http://localhost:8000`.
 
-> **Note**: `composer dev` is intended for evaluation and local development. For high-availability 
+> **Note**: `composer dev` is intended for evaluation and local development. For high-availability
 > production deployment, follow the **[Production Deployment Guide](advanced/deployment.md)**.
 
 ## 6. Post-Installation Wizard

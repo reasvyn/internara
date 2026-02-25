@@ -11,12 +11,13 @@ use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Shared\Services\BaseService;
 use Modules\User\Services\Contracts\SuperAdminService;
 
 /**
  * Service implementation for handling the application setup process.
  */
-class SetupService implements Contracts\SetupService
+class SetupService extends BaseService implements Contracts\SetupService
 {
     /**
      * Create a new SetupService instance.
@@ -134,7 +135,7 @@ class SetupService implements Contracts\SetupService
         foreach (range(1, 8) as $step) {
             Session::forget("setup_step_{$step}");
         }
-        
+
         Session::regenerate();
 
         return $this->isAppInstalled(true);

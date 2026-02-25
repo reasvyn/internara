@@ -36,8 +36,8 @@ onboarding.
 
 ### 2.1 `simplesoftwareio/simple-qrcode`
 
-- **Purpose**: Generate dynamic QR codes for student IDs, internship placements, and verified
-  report validation.
+- **Purpose**: Generate dynamic QR codes for student IDs, internship placements, and verified report
+  validation.
 - **Implementation**: Integrated via the `QrCode` facade in Blade templates or Service Layer
   orchestration.
 - **Standard**:
@@ -51,11 +51,11 @@ onboarding.
 
 ### 3.1 Color & Branding Consistency
 
-All UI assets must respect the **Emerald** accent theme defined in the **[UI/UX
-Guidelines](../ui-ux.md)**.
+All UI assets must respect the **Emerald** accent theme defined in the
+**[UI/UX Guidelines](../ui-ux.md)**.
 
-- **Standard**: Apply the `text-emerald-600` or `bg-emerald-500` classes to icon wrappers to maintain
-  the institutional aesthetic.
+- **Standard**: Apply the `text-emerald-600` or `bg-emerald-500` classes to icon wrappers to
+  maintain the institutional aesthetic.
 
 ### 3.2 Accessibility (A11y)
 
