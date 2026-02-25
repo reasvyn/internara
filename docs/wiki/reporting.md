@@ -39,4 +39,4 @@ The system uses a standardized calculation model to ensure evaluation fairness:
 
 ---
 
-**Return to:** [Tutorial Index](README.md) | [Module Catalog](modules.md)
+**Return to:** [Tutorial Index](stakeholder-index.md) | [Module Catalog](modules.md)

@@ -89,8 +89,8 @@ The system shall adhere to the following quality and technical constraints:
 
 - **[SYRS-NF-601]**: **Modular Monolith**: The system must maintain strict domain isolation with no
   physical foreign keys across module boundaries.
-- **[SYRS-NF-602]**: **TALL Stack**: Implementation must utilize Laravel v12, Livewire v3, Volt, 
-  and Tailwind CSS v4.
+- **[SYRS-NF-602]**: **TALL Stack**: Implementation must utilize Laravel v12, Livewire v3, 
+  Tailwind CSS v4, and DaisyUI.
 - **[SYRS-NF-603]**: **Database**: Support for SQLite, PostgreSQL, or MySQL as persistence engines.
 
 ---

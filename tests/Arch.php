@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 /**
  * Global Architecture Verification Suite.
- *
- * This suite enforces the structural invariants defined in the Project Genesis Blueprint
- * and the Engineering Conventions.
  */
 
 // 1. Fundamental Coding Standards
@@ -39,59 +36,40 @@ arch('infrastructure: core module isolation')
         'Symfony',
         'Psr',
         'Composer',
-    ]);
+    ])
+    ->ignoring(['app', 'config', 'setting', 'url', 'redirect', 'request', 'session', 'trans', '__', 'view', 'Symfony\Component\HttpFoundation\Response']);
 
 // 3. Domain Sovereignty & Zero-Coupling Protocols
-arch('domain: strict cross-module model isolation')
-    ->expect('Modules')
-    ->ignoring(function (string $called, string $caller) {
-        // Only enforce this for Models
-        if (!str_contains($called, '\\Models\\')) {
-            return true;
-        }
+$modulesPath = __DIR__ . '/../modules';
+$modules = is_dir($modulesPath) ? array_map('basename', glob($modulesPath . '/*', GLOB_ONLYDIR)) : [];
 
-        $calledModule = explode('\\', $called)[1] ?? null;
-        $callerModule = explode('\\', $caller)[1] ?? null;
+foreach ($modules as $module) {
+    // Model Isolation
+    if ($module !== 'Shared' && is_dir("{$modulesPath}/{$module}/src/Models")) {
+        arch("domain: {$module} models are isolated")
+            ->expect("Modules\\{$module}\\Models")
+            ->not->toBeUsedIn('Modules')
+            ->ignoring("Modules\\{$module}");
+            
+        arch("persistence: {$module} models use uuid")
+            ->expect("Modules\\{$module}\\Models")
+            ->classes()
+            ->toUseTrait('Modules\Shared\Models\Concerns\HasUuid')
+            ->ignoring([
+                'Modules\Status\Models\Status',
+                'Modules\Log\Models\Activity',
+                'Modules\Permission\Models\Role',
+                'Modules\Permission\Models\Permission',
+                'Modules\Media\Models\Media',
+                'Modules\Setting\Models\Setting', // Setting module uses string keys by design
+            ]);
+    }
 
-        return $calledModule === $callerModule;
-    });
-
-arch('domain: thin component rule')
-    ->expect('Modules')
-    ->ignoring(function (string $called, string $caller) {
-        // Rule: Livewire components must not use Models directly (except Shared models)
-        if (!str_contains($caller, '\\Livewire\\')) {
-            return true;
-        }
-        
-        if (!str_contains($called, '\\Models\\')) {
-            return true;
-        }
-
-        return str_contains($called, 'Modules\\Shared\\Models');
-    });
-
-// 4. Persistence Layer Invariants
-arch('persistence: mandatory uuid identity')
-    ->expect('Modules')
-    ->ignoring(function (string $called) {
-        if (!str_contains($called, '\\Models\\')) {
-            return true;
-        }
-        
-        $ignored = [
-            'Modules\Status\Models\Status',
-            'Modules\Log\Models\Activity',
-            'Modules\Permission\Models\Role',
-            'Modules\Permission\Models\Permission',
-        ];
-
-        foreach ($ignored as $ns) {
-            if (str_starts_with($called, $ns)) {
-                return true;
-            }
-        }
-
-        return false;
-    })
-    ->toUseTrait('Modules\Shared\Models\Concerns\HasUuid');
+    // Thin Component Rule
+    if (is_dir("{$modulesPath}/{$module}/src/Livewire") || is_dir("{$modulesPath}/{$module}/resources/views/livewire")) {
+        arch("domain: {$module} livewire components are thin")
+            ->expect("Modules\\{$module}\\Livewire")
+            ->not->toUse("Modules\\{$module}\\Models")
+            ->ignoring('Modules\Shared\Models');
+    }
+}

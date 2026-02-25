@@ -65,7 +65,8 @@ Cross-cutting technical concerns are distributed across specialized foundational
 - **Core**: Business-specific baseline data (e.g., RBAC, Academic Years).
 - **Support**: Infrastructure tooling and generators.
 - **UI**: Standardized design system implementing the **Instrument Sans** identity using 
-  **maryUI** and **Volt**.
+  **DaisyUI**, **Tailwind CSS v4**, and **Livewire v3**. The strategy focuses on library 
+  minimization towards native TALL components.
 
 ### 2.3 Process View: Communication Protocols
 
@@ -92,8 +93,18 @@ with **Strict Modular Isolation**:
   managed by the **Permission** module and mapped to the stakeholder roles defined in the SyRS.
 - **Identity Invariant**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for 
   all entities to prevent enumeration.
+- **PII Protection**: Personally Identifiable Information is encrypted at rest using Eloquent's 
+  `encrypted` cast and automatically masked in all logging sinks via the `PiiMaskingProcessor`.
 
-### 3.2 Data Integrity & Isolation
+### 3.2 Architectural Governance (The Architecture Police)
+
+To prevent architectural drift and ensure modular isolation, Internara utilizes an automated 
+**Architecture Verification Suite (tests/Arch.php)**. This suite enforces:
+- **Strict Isolation**: No direct model usage across module boundaries.
+- **Thin Component Rule**: Delegation of logic from Livewire to the Service Layer.
+- **Contract Enforcement**: Mandatory use of Service Contracts for inter-module logic.
+
+### 3.3 Data Integrity & Isolation
 
 - **Referential Integrity**: Managed at the **Service Layer**. Physical foreign keys across module
   boundaries are prohibited to maintain modular portability.

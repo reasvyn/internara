@@ -1,112 +1,57 @@
-# Livewire Verification: Presentation Layer Standards
+# Presentation Verification: Livewire & UI Standards
 
-This document formalizes the **Presentation Verification** protocols for the Internara project,
-standardized according to **ISO 9241-210** (Human-Centered Design). Livewire tests ensure that
-interactive interfaces, reactive state transitions, and logic delegation invariants behave
-deterministically.
-
-> **Governance Mandate:** All presentation logic must demonstrate compliance with the
-> **[Thin Component Mandate](../architecture.md)** through rigorous automated verification.
+This guide formalizes the protocols for verifying the **Presentation Layer**, ensuring 
+responsiveness, reactivity, and architectural purity according to **ISO 9241-210**.
 
 ---
 
-## 1. Localization & UI Invariants
+## 1. The Thin Component Invariant
 
-Verification artifacts must ensure that the user interface correctly implements the
-**Multi-Language** and **Identity** requirements defined in the System Requirements Specification.
+Livewire components must be verified as "Thin Orchestrators." 
 
-### 1.1 Multi-Language Verification [SYRS-NF-403]
+- **Requirement**: Components must not contain business logic or direct database queries.
+- **Verification**: Ensure the component calls a **Service Layer** method for all state-altering 
+  operations.
+
+---
+
+## 2. Reactivity & State Verification
+
+Utilize the Livewire testing API to verify component behavior without a full browser session.
+
+### 2.1 State Assertions
 
 ```php
-test('it renders the authoritative localized baseline', function () {
-    app()->setLocale('id');
+test('it updates the search query state', function () {
+    Livewire::test('user::list')
+        ->set('search', 'John')
+        ->assertSet('search', 'John')
+        ->assertSee('John Doe');
+});
+```
 
-    Livewire::test(Dashboard::class)->assertSee(__('core::ui.welcome'));
+### 2.2 Event Orchestration
+
+Verify that components correctly dispatch and respond to events, especially for 
+cross-module UI updates.
+
+```php
+test('it dispatches a notification upon success', function () {
+    Livewire::test('attendance::check-in')
+        ->call('submit')
+        ->assertDispatched('notify');
 });
 ```
 
 ---
 
-## 2. Functional & Transactional Verification
+## 3. Visual & Aesthetic Invariants
 
-Verification must confirm that user interactions are correctly delegated to the **Service Layer**
-and result in valid systemic state transitions.
-
-### 2.1 Orchestration Verification
-
-```php
-test('it delegates domain orchestration to the service contract', function () {
-    Livewire::test(CreateInternship::class)
-        ->set('placement_id', 'uuid-string')
-        ->call('orchestrate')
-        ->assertHasNoErrors();
-
-    $this->assertDatabaseHas('internships', ['placement_id' => 'uuid-string']);
-});
-```
+- **Localization**: Verify that all user-facing text is resolved via translation keys. 
+  `assertSee(__('module::file.key'))`.
+- **Role-Based Visibility**: Verify that UI elements are suppressed based on user 
+  permissions (`@can` logic).
 
 ---
 
-## 3. Access Control Verification (RBAC)
-
-Verification must confirm that the presentation layer strictly enforces the **Least Privilege**
-protocol defined in the System Requirements Specification.
-
-```php
-test('unauthorized roles are prohibited from executing restricted actions', function () {
-    $student = User::factory()->create()->assignRole('student');
-
-    actingAs($student)->livewire(AdministrativeDashboard::class)->assertForbidden();
-});
-```
-
----
-
-## 4. Construction Invariants for Livewire Tests
-
-- **Logic Invariant**: Direct verification of business rules within Livewire tests is prohibited.
-  Verification must focus on the correct **Delegation** to the service layer.
-- **Responsiveness Audit**: Verification of state-dependent UI visibility (e.g., Drawer toggling).
-- **V&V Mandatory**: All presentation verification must pass the **`composer test`** gate.
-
----
-
-## 5. Client-Side Integrity & Blade Rendering
-
-Given the potential instabilities of full-browser (Dusk) testing in CI/CD environments, utilizing
-**Livewire Render** and **Blade Rendering** assertions is the authoritative alternative for
-verifying client-side integrity.
-
-### 5.1 Verifying UI Structure and Attributes
-
-Use Blade rendering to verify that the generated HTML satisfies the **Accessibility (A11y)** 
-and **Mobile-First** mandates without the overhead of a headless browser.
-
-```php
-test('it renders semantic and accessible HTML structure', function () {
-    $view = $this->view('ui::components.record-manager', [
-        'title' => 'Test Manager'
-    ]);
-
-    $view->assertSee('<main', false)
-         ->assertSee('aria-label="Test Manager"', false);
-});
-```
-
-### 5.2 Functional Livewire Interaction
-
-Livewire tests provide high-fidelity verification of the presentation layer's reactivity.
-
-```php
-test('it updates reactive state upon interaction', function () {
-    Livewire::test(InternshipManager::class)
-        ->set('search', 'Project A')
-        ->assertSet('search', 'Project A')
-        ->assertEmitted('internship:open-modal');
-});
-```
-
----
-
-_Livewire verification ensures that the Internara presentation layer remains resilient, accessible,
-and architecturally pure across its modular ecosystem._
+_High-fidelity UI verification ensures a professional and resilient user experience._

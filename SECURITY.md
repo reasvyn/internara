@@ -10,7 +10,7 @@ integrity, and availability of institutional and student data.
 
 Security updates are provided exclusively for the **latest stable release**. For more details on the
 support status of specific versions, refer to the
-**[Versions Overview](docs/pubs/releases/README.md)**.
+**[Versions Overview](docs/developers/releases.md)**.
 
 ---
 

@@ -1,74 +1,60 @@
-# Database Verification: Persistence Integrity Standards
+# Persistence Verification: Data Integrity Standards
 
-This document formalizes the **Persistence Verification** protocols for the Internara project,
-standardized according to **ISO/IEC 25010** (Reliability). Database tests verify the structural
-integrity of schemas, the behavior of shared model concerns, and the accuracy of complex query
-scoping within the modular monolith framework.
-
-> **Governance Mandate:** All persistence logic must demonstrate compliance with the
-> **[Data Integrity Protocols](../governance.md)** through rigorous automated verification.
+This guide formalizes the protocols for verifying the **Persistence Layer** and ensuring data 
+integrity according to **ISO/IEC 25010** (Reliability).
 
 ---
 
-## 1. Structural Verification (Schema Invariants)
+## 1. Schema & Migration Verification
 
-Verification artifacts must ensure that database migrations correctly implement the technical
-requirements defined in the System Requirements Specification.
+Every migration must be verified to ensure it satisfies the systemic invariants.
 
-### 1.1 Identity Invariant: UUID Verification
+- **UUID Invariant**: Primary keys must be binary or string UUIDs.
+- **Zero Cross-Module Keys**: No physical foreign keys (`foreignId`) are permitted across module 
+  boundaries. Use `string('foreign_uuid')` instead.
 
-```php
-test('it implements uuid v4 identification', function () {
-    $model = User::factory()->create();
-    expect(Str::isUuid($model->id))->toBeTrue();
-});
-```
-
-### 1.2 Isolation Invariant: No Physical Foreign Keys
-
-Verification must confirm the absence of cross-module physical constraints, ensuring modular
-portability as defined in the **[Architecture Description](../architecture.md)**.
-
----
-
-## 2. Behavioral Verification: Shared Concerns
-
-Verification of the `Shared` module concerns must be performed within each domain context to ensure
-consistent application of global business rules.
-
-### 2.1 Lifecycle State Transitions
+### 1.1 Writing Schema Tests
 
 ```php
-test('it captures an immutable audit trail for status modifications', function () {
-    $registration = InternshipRegistration::factory()->create();
-    $registration->setStatus('verified', 'Analytical justification');
-
-    expect($registration->statuses)->toHaveCount(2);
-});
-```
-
-### 2.2 Temporal Scoping Invariant
-
-```php
-test('it filters operational data by the active academic cycle', function () {
-    setting(['active_academic_year' => '2025/2026']);
-    $journal = Journal::factory()->create();
-
-    expect($journal->academic_year)->toBe('2025/2026');
+test('it has the correct schema structure', function () {
+    expect('users')->toHaveColumns([
+        'uuid', 'email', 'password', 'created_at'
+    ]);
 });
 ```
 
 ---
 
-## 3. Construction Invariants for Persistence Tests
+## 2. Model & Factory Integrity
 
-- **Environment Isolation**: Mandatory use of the `RefreshDatabase` trait to ensure zero state
-  contamination between verification cycles.
-- **Strict Isolation**: Cross-module relationship testing must utilize manual ID assignment to
-  prevent concrete factory coupling.
-- **V&V Mandatory**: All persistence tests must pass the **`composer test`** gate.
+### 2.1 The `HasUuid` Requirement
+Models must be verified to ensure they correctly implement the `Shared\Models\Concerns\HasUuid` 
+concern.
+
+### 2.2 Factory Reliability
+Factories must be deterministic and capable of creating valid, ready-to-use entities.
+
+```php
+test('the student factory is valid', function () {
+    $student = Student::factory()->create();
+    
+    expect($student->uuid)->toBeUuid()
+        ->and($student->user)->toBeInstanceOf(User::class);
+});
+```
 
 ---
 
-_Database verification is the critical defense against data corruption and architectural decay,
-ensuring the systemic reliability of the Internara platform._
+## 3. Software-Level Referential Integrity (SLRI)
+
+Because physical foreign keys are prohibited across modules, we must verify that the 
+**Service Layer** correctly orchestrates data relationships.
+
+- **Existence Check**: Verify that services throw `EntityNotFoundException` when a referenced 
+  UUID from another module does not exist.
+- **Deletion Protocols**: Verify that deleting a parent record triggers the appropriate 
+  consequence (Restriction, Cascade, or Nullification) in related modules.
+
+---
+
+_Data is the systemic record. Verification ensures its integrity is absolute._

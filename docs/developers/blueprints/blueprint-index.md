@@ -27,14 +27,26 @@ business domains.
 
 ---
 
-## ⚖️ Governance
+## 📏 Architectural Blueprint Standards
 
-All blueprints in this directory must adhere to the standards defined in
-**[Blueprint Guidelines](../blueprints.md)**.
+To ensure consistency and technical depth, every blueprint must demonstrate compliance with the 
+following structural standards (IEEE 1016).
 
-- **Status**: Blueprints are living documents.
-- **Traceability**: Every design must trace back to the **[System Specs](../specs.md)**.
-- **Verification**: Milestone fulfillment requires a 100% verification pass.
+### 1. Mandatory Section Definitions
+
+- **Context & Strategic Intent**: Explain the "Why" and the relationship to the SyRS.
+- **User Roles & Stakeholders**: Identify which user types (STRS) are impacted.
+- **Modular Impact Assessment**: List the modules being modified or introduced.
+- **Contract & Interface Definition**: Formalize the Service Contracts (Interfaces) and DTOs.
+- **Data Persistence Strategy**: Define the UUID-based schema and relationships.
+- **Authorization Governance**: Define the RBAC requirements and Policy logic.
+- **Verification Plan**: Outline the TDD strategy and mandatory quality gates.
+
+### 2. The Blueprint Invariant
+
+- **Traceability**: Every functional requirement in the blueprint must map to a SyRS ID.
+- **Contract-First**: Interfaces must be defined *before* implementation details.
+- **Zero-Coupling**: Blueprints must explicitly state how modular isolation is preserved.
 
 ---
 

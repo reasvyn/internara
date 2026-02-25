@@ -5,7 +5,10 @@ description:
     brings the power of stress testing to the PHP ecosystem.'
 ---
 
-# Announcing Stressless
+# Announcing Stressless (Optional Plugin)
+
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
+> To enable it, follow the installation instructions below.
 
 We are thrilled to announce the release of a brand new plugin for Pest PHP:
 **[Stressless](/docs/stress-testing)**.

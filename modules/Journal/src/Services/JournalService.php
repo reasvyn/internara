@@ -54,6 +54,8 @@ class JournalService extends EloquentQuery implements Contract
      */
     public function create(array $data): JournalEntry
     {
+        \Illuminate\Support\Facades\Gate::authorize('create', JournalEntry::class);
+
         // Gating Invariant: Briefing/Guidance must be completed if enabled
         $registrationId = $data['registration_id'];
         $registration = $this->registrationService->find($registrationId);

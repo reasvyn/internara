@@ -21,21 +21,17 @@
 
 ### 2.1 Capabilities
 
-- **Industry Slot Management**: Tracking available internship positions per batch and academic
-  cycle.
-- **Enrolment Orchestration**: Guiding students through the application process and mandatory
-  requirement clearing (e.g., prerequisite documents).
-- **Lifecycle Auditing**: Immutable tracking of registration states (Draft, Pending, Verified,
-  Active).
+- **Enrolment Orchestration**: Guiding students through the application process and mandatory requirement clearing.
+- **Daily Evidence Collection**: Systematic logging of student activities via the `Journal` module, supporting supervisor verification and media attachments.
+- **Presence Tracking**: Real-time attendance orchestration (Check-in/Check-out) via the `Attendance` module.
+- **Lifecycle Auditing**: Immutable tracking of registration states (Draft, Pending, Verified, Active).
 
 ### 2.2 Service Contract Specifications
 
-- **`Modules\Internship\Services\Contracts\PlacementService`**: Responsible for industry partner
-  slots, batch-specific quotas, and availability calculations.
-- **`Modules\Internship\Services\Contracts\RegistrationService`**: Managing student enrolment,
-  verification workflows, and cancellation logic.
-- **`Modules\Internship\Services\Contracts\RequirementService`**: Orchestrating the validation of
-  digital proof required for internship eligibility.
+- **`Modules\Internship\Services\Contracts\RegistrationService`**: Managing student enrolment, verification workflows, and active period validation.
+- **`Modules\Journal\Services\Contracts\JournalService`**: Orchestrating daily logbooks, submission windows, and competency mapping.
+- **`Modules\Attendance\Services\Contracts\AttendanceService`**: Handling presence records and leave requests.
+- **`Modules\Internship\Services\Contracts\PlacementService`**: Responsible for industry partner slots and availability calculations.
 
 ### 2.3 Data Architecture
 

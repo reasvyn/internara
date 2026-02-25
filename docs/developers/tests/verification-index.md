@@ -1,14 +1,24 @@
-# Verification Records: Systematic Testing Index
+# Testing & Verification Guide: Engineering Reliability
 
-This index centralizes the **Verification & Validation (V&V)** records for the Internara project,
-consistent with **IEEE Std 1012**. It provides technical guidance for constructing and executing
-deterministic verification artifacts.
+This document formalizes the **Verification & Validation (V&V)** protocols for the Internara 
+project, adhering to **IEEE Std 1012** and **ISO/IEC 29119**.
+
+---
+
+## 🏛️ The V&V Invariant: Deterministic Quality
+
+Verification ensures technical correctness, while Validation ensures requirement fulfillment.
+
+1.  **TDD-First**: Automated verification must exist prior to logic implementation.
+2.  **Modular Isolation**: Tests must verify a module's behavior without dependent implementation 
+    leakage.
+3.  **Behavioral Coverage**: A minimum of **90% coverage** is required for all domain logic.
 
 ---
 
 ## 1. Verification Philosophy
 
-- **[Verification Philosophy](../testing.md)**: Engineering reliability and the Pest v4 baseline.
+- **[Verification Philosophy](#1-verification-philosophy)**: Engineering reliability and the Pest v4 baseline.
 - **[Laravel Testing Basics](laravel-tests.md)**: Getting started guide for testing in the Laravel
   ecosystem.
 - **[Troubleshooting & FAQ](troubleshooting.md)**: Common issues and fixes for the engineering team.
@@ -25,9 +35,9 @@ deterministic verification artifacts.
 
 ## 3. Pest v4 Technical Baseline
 
-- **[Pest Documentation Index](pestphp/README.md)**: Comprehensive technical catalog for the Pest
+- **[Pest Documentation Index](pest-index.md)**: Comprehensive technical catalog for the Pest
   verification framework.
 
 ---
 
-_All verification activities must satisfy the **[Testing & Verification Guide](../testing.md)**._
+_All verification activities must satisfy this **Testing & Verification Guide**._

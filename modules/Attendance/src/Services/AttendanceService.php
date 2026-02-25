@@ -74,6 +74,8 @@ class AttendanceService extends EloquentQuery implements Contract
      */
     public function recordAttendance(string $studentId, array $data): AttendanceLog
     {
+        \Illuminate\Support\Facades\Gate::authorize('create', AttendanceLog::class);
+
         $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
         $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
 

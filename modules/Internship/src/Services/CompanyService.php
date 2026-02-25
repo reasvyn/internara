@@ -24,4 +24,14 @@ class CompanyService extends EloquentQuery implements Contract
         $this->setSearchable(['name', 'business_field', 'email']);
         $this->setSortable(['name', 'created_at']);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(array $data): Company
+    {
+        \Illuminate\Support\Facades\Gate::authorize('create', Company::class);
+
+        return parent::create($data);
+    }
 }

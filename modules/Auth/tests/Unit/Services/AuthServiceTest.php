@@ -8,45 +8,63 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Auth\Services\AuthService;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
+use Modules\Permission\Enums\Role;
 
-test('it can authenticate a user with email', function () {
-    $userService = mock(UserService::class);
-    $service = new AuthService($userService);
+describe('Auth Service', function () {
+    beforeEach(function () {
+        $this->userService = mock(UserService::class);
+        $this->service = new AuthService($this->userService);
+    });
 
-    Auth::shouldReceive('attempt')
-        ->once()
-        ->with(['email' => 'test@example.com', 'password' => 'password'], false)
-        ->andReturn(true);
+    test('it can authenticate a user with email', function () {
+        Auth::shouldReceive('attempt')
+            ->once()
+            ->with(['email' => 'test@example.com', 'password' => 'password'], false)
+            ->andReturn(true);
 
-    Auth::shouldReceive('user')->andReturn(new User);
+        Auth::shouldReceive('user')->andReturn(new User);
 
-    $user = $service->login(['email' => 'test@example.com', 'password' => 'password']);
+        $user = $this->service->login(['identifier' => 'test@example.com', 'password' => 'password']);
 
-    expect($user)->toBeInstanceOf(User::class);
-});
+        expect($user)->toBeInstanceOf(User::class);
+    });
 
-test('it can authenticate a user with username', function () {
-    $userService = mock(UserService::class);
-    $service = new AuthService($userService);
+    test('it can authenticate a user with username', function () {
+        Auth::shouldReceive('attempt')
+            ->once()
+            ->with(['username' => 'testuser', 'password' => 'password'], false)
+            ->andReturn(true);
 
-    Auth::shouldReceive('attempt')
-        ->once()
-        ->with(['username' => 'testuser', 'password' => 'password'], false)
-        ->andReturn(true);
+        Auth::shouldReceive('user')->andReturn(new User);
 
-    Auth::shouldReceive('user')->andReturn(new User);
+        $user = $this->service->login(['identifier' => 'testuser', 'password' => 'password']);
 
-    $user = $service->login(['identifier' => 'testuser', 'password' => 'password']);
+        expect($user)->toBeInstanceOf(User::class);
+    });
 
-    expect($user)->toBeInstanceOf(User::class);
-});
+    test('it prevents role escalation during registration [SYRS-NF-502]', function () {
+        $data = [
+            'name' => 'Attacker',
+            'email' => 'attacker@example.com',
+            'password' => 'password',
+            'role' => Role::SUPER_ADMIN->value, // Unauthorized role injection
+        ];
 
-test('it can logout a user', function () {
-    $userService = mock(UserService::class);
-    $service = new AuthService($userService);
+        $this->userService->shouldReceive('create')
+            ->once()
+            ->with(\Mockery::on(function ($arg) {
+                // Ensure 'role' or 'roles' from input is removed/ignored
+                return !isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
+            }))
+            ->andReturn(new User);
 
-    Auth::shouldReceive('logout')->once();
+        $this->service->register($data, Role::STUDENT->value);
+    });
 
-    $service->logout();
-    expect(true)->toBeTrue();
+    test('it can logout a user', function () {
+        Auth::shouldReceive('logout')->once();
+
+        $this->service->logout();
+        expect(true)->toBeTrue();
+    });
 });

@@ -6,7 +6,7 @@ alignment with the system's engineering records and international standards.
 
 ---
 
-## 🏛 Strategic Context & Architecture
+## 🏛️ Strategic Context & Architecture
 
 **Internara** is an internship management ecosystem engineered as a **Modular Monolith**. It
 prioritizes systemic integrity, domain isolation, and long-term maintainability.
@@ -21,71 +21,58 @@ prioritizes systemic integrity, domain isolation, and long-term maintainability.
 ## ⚖️ Interaction & Operational Principles
 
 ### 1. Aesthetic-Natural Interaction
-
 Maintain a calm, structured, and adaptive tone. Responses must be structurally minimalist,
 cognitively non-aggressive, and oriented toward actionable engineering outcomes.
 
 ### 2. Analytical Accountability
-
-- **Traceability**: Every action must trace back to a SyRS requirement or architectural mandate.
+- **Traceability**: Every action must trace back to a SyRS requirement ID (e.g., `[SYRS-F-101]`).
 - **Verification Gate**: No implementation is complete without a formal verification pass
-  (`composer test`, `composer lint`, and **PHPStan Level 8**).
+  (`composer test`, `composer lint`).
 - **Privacy Protocol**: Storage or processing of PII is strictly prohibited. Use masking and
   encryption mandates.
 
 ### 3. Core Construction Philosophy (S3)
-
-- **Secure**: All code MUST be engineered for resilience. Adhere to zero-trust principles, sanitize
-  all boundaries, and enforce robust authorization.
-- **Sustain**: Code MUST be maintainable, clear, and documented. Adhere to established standards to
-  ensure long-term viability and ease of evolution.
-- **Scalable**: Design for growth. Ensure architectural modularity and performance to handle
-  increasing load and complexity without systemic degradation.
+- **Secure (S1)**: Engineered for resilience. Zero-trust, sanitized boundaries, RBAC via Policies.
+- **Sustain (S2)**: Maintainable and clear. Strict typing, translation keys, professional PHPDoc.
+- **Scalable (S3)**: Designed for growth. Modular isolation, Service-oriented, asynchronous side-effects.
 
 ---
 
-## 🔄 Standardized Engineering Workflows
+## 🔄 Agentic Workflow Discipline (ISO/IEC 12207)
 
-Gemini is mandated to operate within the specialized engineering lifecycles defined in the
-**[Lifecycle Processes](../docs/developers/lifecycle.md)**. These processes ensure a disciplined,
-traceable, and ISO-compliant engineering environment:
+Gemini MUST adhere to the **8-Step Engineering Workflow** defined in 
+**[`docs/developers/workflow.md`](../docs/developers/workflow.md)**:
 
-1.  **Requirements Analysis**: Traceability check against the SSoT.
-2.  **Architectural Design**: Blueprinting and contract formalization.
-3.  **Construction**: TDD-First implementation (Services, Models, Livewire).
-4.  **Verification & Validation**: Automated testing and manual quality gates.
-5.  **Artifact Synchronization**: Documentation and repository closure.
+1.  **Step 1: Analysis**: Audit SyRS IDs and technical impacts.
+2.  **Step 2: Design**: Open with an **Application Blueprint** update.
+3.  **Step 3: TDD RED**: Write failing Pest v4 tests mirroring the `src` structure.
+4.  **Step 4: Construction**: Implement logic using the **S3 Doctrine**.
+5.  **Step 5: Validation**: Ensure green pass, zero lint violations, and performance audit.
+6.  **Step 6: Sync**: Close with **Release Notes** and Documentation updates (**Sync or Sink**).
+7.  **Step 7: Commit**: Atomic commits using **Conventional Commits**.
+8.  **Step 8: Push**: Final gate check before remote synchronization.
 
 ---
 
-## 🛠 Technical Invariants (The Systemic Record)
+## 🛠️ Technical Invariants (The Systemic Record)
 
 ### 1. Construction Baseline
-
 - **Strict Typing**: Every PHP file MUST declare `declare(strict_types=1);`.
 - **Identity**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for all domain
-  entities. System-level tables (e.g., `Setting`, jobs) may utilize string keys.
-- **Versioning**: Adherence to the **Clean Versioning Standard** (Current: `v0.14.0`).
+  entities. 
 - **Isolation**: Physical foreign keys across module boundaries are **STRICTLY PROHIBITED**.
-- **Logic**: No `env()` calls; utilize `config()` for static values and the `setting()` registry for
-  dynamic ones.
-- **Helper Organization**: Global functions must reside in individual files within `src/Functions/`
-  (one function per file).
-- **Service Layer**: Business logic resides in Services extending `EloquentQuery`. Inter-module
-  communication MUST use **Service Contracts** (Auto-bound via `BindServiceProvider`).
-- **UI**: Implementation utilizes **Tailwind CSS v4**, **maryUI**, and **Livewire v3**. Components
-  must be **Thin Components**; UI integration via **Slot Injection**.
-- **Branding**: Utilize **Instrument Sans** typography with an **Emerald** accent theme.
+- **Logic**: No `env()` calls; utilize `config()` for static values and the `setting()` registry.
+- **Service Layer**: Logic resides in Services extending `EloquentQuery`. Communication MUST use 
+  **Service Contracts** (Interfaces).
+- **UI**: Tailwind CSS v4, maryUI, and Livewire v3. Components MUST be **Thin Components**.
 
 ### 2. Namespace & Semantic Omission
-
 - **The `src` Omission**: All namespaces MUST omit the `src` segment.
 - **Domain Exception**: If Domain Name == Module Name, the domain folder is omitted.
 - **Contracts**: Interfaces must NOT have an `Interface` suffix.
 
 ### 3. Resilience & Security
-
-- **Logging Discipline**: All `Log::debug()` calls MUST be wrapped in an `is_debug_mode()` check.
+- **Logging**: All `Log::debug()` MUST be wrapped in an `is_debug_mode()` check.
 - **PII Redaction**: Personally Identifiable Information MUST be masked in all logging sinks.
 - **Sanitization**: External input must be validated at the system boundary (PEP).
 
@@ -95,17 +82,18 @@ traceable, and ISO-compliant engineering environment:
 
 The following commands are the authoritative mechanisms for system interaction:
 
-- **Initialization**: `composer setup` (Full environment bootstrapping).
-- **Development**: `composer dev` (Concurrent server, queue, logs, and vite).
-- **Verification**: `composer test` (Mandatory **Pest v4** suite).
-- **Quality**: `composer lint` (Static analysis check) and `composer format` (Auto-fix).
-- **Audit**: `php artisan app:info` (Metadata and stack verification).
+- **Initialization**: `composer setup` (Bootstrapping).
+- **Development**: `composer dev` (Concurrent server, queue, logs, vite).
+- **Verification**: `composer test` (Pest v4 + Arch audit).
+- **Quality**: `composer lint` (Pint + Prettier + PHPStan).
+- **Formatting**: `composer format` (Pint + Prettier auto-fix).
+- **Orchestration**: `php artisan app:test` (Sequential module testing).
 
 ---
 
 ## 📊 Verification & Validation (V&V) Standards
 
-Artifacts must be verified against the **[Testing Guide](../docs/developers/testing.md)**.
+Artifacts must be verified against the **[`Testing Guide`](../docs/developers/tests/verification-index.md)**.
 
 - **Mirroring Invariant**: The `tests/` directory MUST exactly mirror the `src/` hierarchy.
 - **Coverage**: Minimum **90% behavioral coverage** per domain module.
@@ -117,13 +105,9 @@ Artifacts must be verified against the **[Testing Guide](../docs/developers/test
 
 ## 🔗 Authoritative References
 
-- **[System Specs](../docs/developers/specs.md)** |
-  **[Architecture](../docs/developers/architecture.md)**
-- **[Conventions](../docs/developers/conventions.md)** |
-  **[Lifecycle](../docs/developers/lifecycle.md)**
-- **[Testing Guide](../docs/developers/testing.md)** |
-  **[Module Catalog](../docs/wiki/modules.md)**
-- **[Lifecycle Tutorial](../docs/wiki/README.md)**
+- **[System Specs](../docs/developers/specs.md)** | **[Architecture](../docs/developers/architecture.md)**
+- **[Conventions](../docs/developers/conventions.md)** | **[Engineering Lifecycle](../docs/developers/workflow.md)**
+- **[Testing Guide](../docs/developers/tests/verification-index.md)** | **[Workflow Guide](../docs/developers/workflow.md)**
 
 ---
 

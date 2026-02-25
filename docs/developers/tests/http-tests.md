@@ -1,66 +1,54 @@
-# HTTP Verification: Endpoint Orchestration Standards
+# Endpoint Verification: Boundary Protection Standards
 
-This document formalizes the **Endpoint Verification** protocols for the Internara project,
-standardized according to **ISO/IEC 27034** (Application Security). HTTP tests verify the integrity
-of routing architectures, the effectiveness of security middleware, and the deterministic structure
-of system responses.
-
-> **Governance Mandate:** All systemic entry points must demonstrate compliance with the
-> **[Security & Isolation Protocols](../architecture.md)** through rigorous automated verification.
+This guide formalizes the protocols for verifying **System Boundaries** (Web & API), ensuring 
+security and contract compliance according to **ISO/IEC 27001**.
 
 ---
 
-## 1. Boundary Protection Verification (Middleware)
+## 1. The Policy Enforcement Point (PEP)
 
-Verification artifacts must ensure that the application baseline strictly enforces the security
-middleware defined in the System Requirements Specification.
+Every endpoint must demonstrate adherence to the **Authorization Governance** standards.
 
-### 1.1 Authentication Baseline Verification
+- **Mandate**: All routes must be protected by middleware (`auth`, `permission`) and 
+  verified against their respective **Policies**.
+
+### 1.1 Writing Boundary Tests
 
 ```php
-test('it redirects unauthenticated subjects to the identity baseline', function () {
-    $this->get('/admin/dashboard')->assertRedirect('/login');
+test('unauthorized users cannot access the administration dashboard', function () {
+    $this->get('/admin/dashboard')
+         ->assertRedirect('/login');
 });
-```
 
-### 1.2 Authorization (RBAC) Invariant Verification [SYRS-NF-502]
-
-```php
-test('it grants access to authorized stakeholder roles', function () {
-    $instructor = User::factory()->create()->assignRole('instructor');
-
-    actingAs($instructor)->get('/instructor/dashboard')->assertOk();
+test('students can access their own profile', function () {
+    $student = Student::factory()->create();
+    
+    $this->actingAs($student->user)
+         ->get("/profile/{$student->uuid}")
+         ->assertOk();
 });
 ```
 
 ---
 
-## 2. Media & Secure Orchestration Verification
+## 2. Response Contract Verification
 
-For sensitive document access (e.g., Certificates, Logbooks), verification must ensure the integrity
-of cryptographic signatures.
-
-### 2.1 Cryptographic Signature Verification
-
-```php
-test('it permits access via validated signed configuration', function () {
-    $url = URL::signedRoute('certificate.verify', ['identity' => 'uuid-string']);
-
-    $this->get($url)->assertOk()->assertSee('Certified Outcome');
-});
-```
+- **Status Codes**: Verify correct usage of `200 OK`, `201 Created`, `403 Forbidden`, and 
+  `404 Not Found`.
+- **Data Structure**: For API endpoints, verify the JSON structure and the inclusion of 
+  mandatory UUIDs.
 
 ---
 
-## 3. Construction Invariants for HTTP Tests
+## 3. Input Validation Invariants
 
-- **Response Invariant**: Verification must assert the correct HTTP status baseline (`200`, `302`,
-  `403`, `404`).
-- **Semantic Structure**: Utilization of `assertSee()` to verify the presence of authoritative
-  localized UI identifiers.
-- **V&V Mandatory**: All endpoint verification must pass the **`composer test`** gate.
+Verify that the system correctly sanitizes and validates all boundary inputs.
+
+- **Scenario**: Provide invalid data (e.g., malformed UUIDs, missing required fields).
+- **Assertion**: Ensure the system responds with `422 Unprocessable Entity` and localized 
+  error messages.
 
 ---
 
-_HTTP verification ensures that the security perimeters of Internara remain resilient, protecting
-stakeholder data and preserving systemic integrity._
+_Boundary protection is the first line of systemic defense. Verification ensures it is 
+impenetrable._

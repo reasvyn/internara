@@ -1,76 +1,165 @@
-# Mocking Strategy: Dependency Isolation Standards
-
-This document defines the **Dependency Mocking** protocols for the Internara project, standardized
-according to the **[Architecture Description](../architecture.md)**. Mocking is utilized to enforce
-**Strict Modular Isolation**, enabling the verification of domain logic without triggering
-side-effects across module boundaries.
-
+---
+title: Mocking
+description:
+    When testing your applications, you may want to "mock" specific classes to prevent them from
+    actually being invoked during a particular test. For instance, if your application interacts
+    with an API that initiates a payment, you likely want to "mock" the API client locally to
+    prevent the actual payment from being made.
 ---
 
-## 1. Mocking Service Contracts (The Authoritative Method)
+# Mocking
 
-Internara utilizes constructor-based injection of **Service Contracts**. Verification suites must
-leverage Laravel's Service Container to swap concrete implementations with verified mocks.
+> **Requirements:** [Mockery 1.0+](https://github.com/mockery/mockery/)
 
-### 1.1 Standard Contract Mocking
+When testing your applications, you may want to "mock" specific classes to prevent them from
+actually being invoked during a particular test. For instance, if your application interacts with an
+API that initiates a payment, you likely want to "mock" the API client locally to prevent the actual
+payment from being made.
+
+Before getting started, you will need to install a mocking library. We recommend
+[Mockery](https://github.com/mockery/mockery/), but you are free to choose any other library that
+suits your needs.
+
+To begin using Mockery, require it using the Composer package manager.
+
+```bash
+composer require mockery/mockery --dev
+```
+
+While comprehensive documentation for Mockery can be found on the
+[Mockery website](https://docs.mockery.io), this section will discuss the most common use cases for
+mocking.
+
+## Method Expectations
+
+Mock objects are essential for isolating the code being tested and simulating specific behaviors or
+conditions from other pieces of the application. After creating a mock using the `Mockery::mock()`
+method, we can indicate that we expect a certain method to be invoked by calling the
+`shouldReceive()` method.
 
 ```php
-test('it orchestrates user creation via the service contract', function () {
-    // 1. Create a mock of the Service Contract (Interface)
-    $userService = mock(UserService::class);
+use App\Repositories\BookRepository;
+use Mockery;
 
-    // 2. Define behavioral expectations
-    $userService->shouldReceive('create')->once()->andReturn(new User());
+test('may buy a book', function () {
+    $client = Mockery::mock(PaymentClient::class);
+    $client->shouldReceive('post');
 
-    // 3. Register the mock baseline in the Service Container
-    app()->instance(UserService::class, $userService);
-
-    // 4. Execute the orchestrating logic
-    $registrationService->registerNewStudent($data);
+    $books = new BookRepository($client);
+    $books->buy(); // The API is not actually invoked since `$client->post()` has been mocked...
 });
+```
+
+It is possible to mock multiple method calls using the same syntax shown above.
+
+```php
+$client->shouldReceive('post');
+$client->shouldReceive('delete');
+```
+
+## Argument Expectations
+
+In order to make our expectations for a method more specific, we can use constraints to limit the
+expected argument list for a method call. This can be done by utilizing the `with()` method, as
+demonstrated in the following example.
+
+```php
+$client->shouldReceive('post')->with($firstArgument, $secondArgument);
+```
+
+In order to increase the flexibility of argument matching, Mockery provides built-in matcher classes
+that can be used in place of specific values. For example, instead of using specific values, we can
+use `Mockery::any()` to match any argument.
+
+```php
+$client->shouldReceive('post')->with($firstArgument, Mockery::any());
+```
+
+It is important to note that expectations defined using `shouldReceive()` and `with()` only apply
+when the method is invoked with the exact arguments that you expected. Otherwise, Mockery will throw
+an exception.
+
+```php
+$client->shouldReceive('post')->with(1);
+
+$client->post(2); // fails, throws a `NoMatchingExpectationException`
+```
+
+In certain cases, it may be more appropriate to use a closure to match all passed arguments
+simultaneously, rather than relying on built-in matchers for each individual argument. The
+`withArgs()` method accepts a closure that receives all of the arguments passed to the expected
+method call. As a result, this expectation will only be applied to method calls in which the passed
+arguments cause the closure to evaluate to true.
+
+```php
+$client->shouldReceive('post')->withArgs(function ($arg) {
+    return $arg === 1;
+});
+
+$client->post(1); // passes, matches the expectation
+$client->post(2); // fails, throws a `NoMatchingExpectationException`
+```
+
+## Return Values
+
+When working with mock objects, we can use the `andReturn()` method to tell Mockery what to return
+from the mocked methods.
+
+```php
+$client->shouldReceive('post')->andReturn('post response');
+```
+
+We can define a sequence of return values by passing multiple return values to the `andReturn()`
+method.
+
+```php
+$client->shouldReceive('post')->andReturn(1, 2);
+
+$client->post(); // int(1)
+$client->post(); // int(2)
+```
+
+Sometimes, we may need to calculate the return results of method calls based on the arguments passed
+to the method. This can be accomplished using the `andReturnUsing()` method, which accepts one or
+more closures.
+
+```php
+$mock->shouldReceive('post')->andReturnUsing(fn() => 1, fn() => 2);
+```
+
+In addition, we can instruct mocked methods to throw exceptions.
+
+```php
+$client->shouldReceive('post')->andThrow(new Exception());
+```
+
+## Method Call "Count" Expectations
+
+Along with specifying expected arguments and return values for method calls, we can also set
+expectations for how many times a particular method should be invoked.
+
+```php
+$mock->shouldReceive('post')->once();
+$mock->shouldReceive('put')->twice();
+$mock->shouldReceive('delete')->times(3);
+// ...
+```
+
+To specify a minimum number of times a method should be called, we may use the `atLeast()` method.
+
+```php
+$mock->shouldReceive('delete')->atLeast()->times(3);
+```
+
+Mockery's `atMost()` method allows us to specify the maximum number of times a method can be called.
+
+```php
+$mock->shouldReceive('delete')->atMost()->times(3);
 ```
 
 ---
 
-## 2. Temporal & Environmental Orchestration
-
-Certain domain rules depend on systemic state, such as temporal invariants or configuration
-baselines.
-
-### 2.1 Temporal Verification (Time Travel)
-
-Utilize Pest's temporal helpers to verify time-sensitive logic (e.g., Attendance deadlines).
-
-```php
-test('it rejects check-in attempts following the temporal deadline', function () {
-    freezeTime('2026-01-28 09:00:00'); // Post-deadline baseline
-
-    expect($service->canCheckIn())->toBeFalse();
-});
-```
-
-### 2.2 Configuration Baselining
-
-```php
-test('it respects the modular late-threshold setting', function () {
-    setting(['late_threshold' => 15]);
-
-    // Behavioral verification logic...
-});
-```
-
----
-
-## 3. Construction Invariants for Mocking
-
-- **Interface Invariant**: Always mock the **Service Contract**, never the concrete class. This
-  ensures verification is independent of internal implementation details.
-- **Model Invariant**: Direct mocking of Eloquent models is prohibited. Utilize **Factories** and
-  the `RefreshDatabase` concern to manage persistence state.
-- **Side-Effect Verification**: Utilize **Spies** when only the occurrence of an event (e.g.,
-  Notification dispatch) needs to be verified without strict return expectations.
-
----
-
-_By strictly isolating dependencies through mocking, Internara ensures that verification suites
-remain performant, focused, and resilient to changes in external modules._
+The primary objective of this section is to provide you with an introduction to Mockery, the mocking
+library we prefer. However, for a more comprehensive understanding of Mockery, we suggest checking
+out its [official documentation](https://docs.mockery.io). Next, let's explore Pest's plugins and
+discover how they can enhance your Pest experience: [Plugins](/docs/plugins)

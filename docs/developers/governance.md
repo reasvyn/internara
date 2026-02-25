@@ -61,8 +61,9 @@ Authorization must be enforced at the UI level to prevent unauthorized interacti
 
 The Service Layer provides the final defense against unauthorized execution.
 
-- **Invariant**: Services must verify authorization before performing state-altering operations,
-  especially for destructive actions (Delete/Force-Delete).
+- **Invariant**: Services must verify authorization before performing state-altering operations, especially for destructive actions (Delete/Force-Delete).
+- **Mandatory Execution**: Every administrative method (Create/Update/Delete) within a Service MUST explicitly invoke `Gate::authorize()` to ensure security even when called from non-HTTP contexts (e.g., CLI, Jobs, or Inter-Module calls).
+
 
 #### 1.4.3 Policy Pattern (The Governance Layer)
 

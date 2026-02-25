@@ -31,9 +31,12 @@ decoupled integration with the `Department`, `Student`, and `Teacher` modules.
 ### 2.2 Persistence Layer
 
 - **`Profile` Model**: The central entity for extended personal data.
+    - _Identifiers_: Utilizes **national_identifier** (SSoT for NIP/NISN or national IDs) and 
+      **registration_number** (SSoT for institutional/school IDs like NIS) to consolidate all 
+      stakeholder identities into a single record.
     - _Relationships_: Linked to `User` (Identity), `Department` (Academic Scoping), and a
       polymorphic `profileable` (Domain Specifics).
-    - _Identities_: Uses **UUID v4** for secure identification.
+    - _Security_: Uses **UUID v4** for secure identification.
 
 ---
 

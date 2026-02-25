@@ -8,9 +8,9 @@ This index centralizes the formal technical records for the Internara project.
 
 - **[System Requirements Specification](specs.md)**: **SSoT** - ISO/IEC 29148 requirements baseline.
 - **[Architecture Description](architecture.md)**: ISO/IEC 42010 structural views and decomposition.
-- **[Design Blueprints](blueprints/README.md)**: Strategic design records and active architectural
+- **[Design Blueprints](blueprints/blueprint-index.md)**: Strategic design records and active architectural
   plans.
-- **[Version History](../pubs/releases/README.md)**: Release baselines and change logs.
+- **[Version History](releases.md)**: Release baselines and change logs.
 
 ## 2. Engineering Standards
 
@@ -22,21 +22,21 @@ This index centralizes the formal technical records for the Internara project.
 
 ## 3. Workflows & Process
 
-- **[Software Lifecycle](lifecycle.md)**: ISO/IEC 12207 implementation and engineering workflows.
+- **[Standardized Workflow](workflow.md)**: Authoritative 8-step engineering lifecycle (ISO/IEC 12207).
 - **[Git Protocols](git.md)**: Repository configuration and branching strategy.
 - **[Release Protocols](releases.md)**: Baseline promotion and publication standards.
-- **[Blueprint Guidelines](blueprints.md)**: Standards for writing design blueprints.
+- **[Blueprint Guidelines](blueprints/blueprint-index.md)**: Standards for writing design blueprints.
 
 ## 4. Reference & Tooling
 
-- **[Testing Guide](testing.md)**: Verification strategy (Pest v4) and TDD protocols.
+- **[Testing Guide](tests/verification-index.md)**: Verification strategy (Pest v4) and TDD protocols.
 - **[Automated Tooling](tooling.md)**: CLI tools and generators.
-- **[Advanced Topics](advanced/README.md)**: Deep-dive engineering guides.
-- **[Package Ecosystem](packages/README.md)**: Documentation for 3rd-party integrations.
-- **[Technical Debt](debts/README.md)**: Management of refactoring and upgrades.
-- **[Testing Reference](tests/README.md)**: Specific testing patterns and examples.
+- **[Advanced Topics](advanced/advanced-index.md)**: Deep-dive engineering guides.
+- **[Package Ecosystem](packages/package-index.md)**: Documentation for 3rd-party integrations.
+- **[Technical Debt](debts/debt-index.md)**: Management of refactoring and upgrades.
+- **[Testing Reference](tests/verification-index.md)**: Specific testing patterns and examples.
 
 ---
 
 _This registry is for engineering use. Stakeholder guides are available in the
-**[Wiki](../wiki/README.md)**._
+**[Wiki](../wiki/stakeholder-index.md)**._

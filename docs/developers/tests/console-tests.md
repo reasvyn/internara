@@ -1,70 +1,46 @@
-# Console Verification: CLI Infrastructure Standards
+# Infrastructure Verification: CLI & Orchestration Standards
 
-This document formalizes the **CLI Verification** protocols for the Internara project, standardized
-according to **ISO/IEC 12207** (Infrastructure Process). Console tests verify that custom Artisan
-commands produce deterministic output and execute intended side-effects without architectural
-regression.
-
-> **Governance Mandate:** All administrative orchestration tools must demonstrate compliance with
-> the **[Automated Tooling Reference](../tooling.md)** through comprehensive automated verification.
+This guide formalizes the protocols for verifying **System Orchestration** tools, specifically 
+**Artisan Commands** and background jobs, adhering to **ISO/IEC 12207**.
 
 ---
 
-## 1. Execution Verification (Command State)
+## 1. Artisan Command Verification
 
-Verification artifacts utilize the `artisan` helper to orchestrate command execution and assert
-against the resulting systemic state.
+Orchestration tools must be verified for deterministic behavior and correct user feedback.
 
-### 1.1 Output Invariant Verification
-
-```php
-test('it displays the authoritative system metadata', function () {
-    $this->artisan('app:info')
-        ->expectsOutputToContain('Internara')
-        ->expectsOutputToContain('ARC01')
-        ->assertExitCode(0);
-});
-```
-
-### 1.2 Side-Effect Invariant Verification
-
-Verification must confirm that state-altering commands (e.g., RBAC synchronization) correctly modify
-the persistence baseline.
+### 1.1 Feedback & Interaction
 
 ```php
-test('it synchronizes the modular permission baseline', function () {
-    $this->artisan('permission:sync')->assertExitCode(0);
-
-    expect(Permission::where('name', 'attendance.report')->exists())->toBeTrue();
+test('it successfully generates a new module', function () {
+    $this->artisan('module:make NewModule')
+         ->expectsOutput('Module [NewModule] created successfully.')
+         ->assertExitCode(0);
 });
 ```
 
 ---
 
-## 2. Interactive Orchestration Verification
+## 2. Background Process Orchestration
 
-For commands requiring subject interaction (e.g., confirmation prompts), verification must simulate
-valid and invalid inputs to ensure fault tolerance.
+Verify that asynchronous tasks are correctly dispatched and handled by the queue system.
 
-```php
-test('it mandates confirmation prior to baseline cache destruction', function () {
-    $this->artisan('app:flush-cache')
-        ->expectsConfirmation('Proceed with systemic cleanup?', 'yes')
-        ->assertExitCode(0);
-});
-```
+- **Protocol**: Use `Queue::fake()` to verify that the job was pushed with the correct 
+  payload (e.g., UUID of the target entity).
+- **Execution**: Verify the job's internal logic by manually invoking the `handle()` method 
+  within a controlled test environment.
 
 ---
 
-## 3. Construction Invariants for Console Tests
+## 3. System Health & Metadata Verification
 
-- **Exit Code Invariant**: Successful execution must return exit code `0`. Analytical verification
-  of error codes is mandatory for negative scenarios.
-- **Dependency Isolation**: Infrastructure interactions (Email, API) must be mocked using the
-  **[Mocking Strategy](mocking.md)**.
-- **V&V Mandatory**: All CLI verification must pass the **`composer test`** gate.
+Specific infrastructure tests must verify the integrity of the **Product Identity**.
+
+- **App Info Audit**: Verify that `app_info.json` exists and matches the expected 
+  series code and author attribution.
+- **Module Discovery**: Verify that the module loader correctly identifies and activates 
+  modules defined in `modules_statuses.json`.
 
 ---
 
-_CLI verification ensures that the administrative maintenance interface of Internara remains
-resilient and safe for operational orchestration._
+_Infrastructure reliability ensures the operational stability of the Internara ecosystem._

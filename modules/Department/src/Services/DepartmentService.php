@@ -28,6 +28,8 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
      */
     public function create(array $data): Department
     {
+        \Illuminate\Support\Facades\Gate::authorize('create', Department::class);
+
         $schoolId = $data['school_id'] ?? null;
 
         if ($schoolId && ! $this->schoolService->exists(['id' => $schoolId])) {

@@ -46,6 +46,15 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
      */
     public function create(array $data): School
     {
+        \Illuminate\Support\Facades\Gate::authorize('create', School::class);
+
+        if (isset($data['npsn']) && strlen((string) $data['npsn']) !== 8) {
+            throw new AppException(
+                userMessage: 'school::exceptions.invalid_npsn',
+                code: Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
         if (config('school.single_record') && $this->exists()) {
             throw new AppException(
                 userMessage: 'school::exceptions.single_record_exists',
@@ -70,6 +79,20 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
         $this->handleSchoolLogo($school, $data['logo_file'] ?? null);
 
         return $school;
+    }
+
+    /**
+     * Delete a school record and notify other modules.
+     */
+    public function delete(mixed $id, bool $force = false): bool
+    {
+        $deleted = parent::delete($id, $force);
+
+        if ($deleted) {
+            \Modules\School\Events\SchoolDeleted::dispatch((string) $id);
+        }
+
+        return $deleted;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 This document constitutes the definitive technical guide for the migration of the Internara
 presentation baseline from Livewire v3 to v4. This evolution is a prioritized technical debt item
-targeted for stabilization in the **v0.8.x** developmental series.
+targeted for stabilization in the **v1.0.x** (Future Major) developmental series.
 
 > **Governance Mandate:** This migration must demonstrate 100% preservation of the **Mobile-First**
 > and **Localization** invariants defined in the authoritative

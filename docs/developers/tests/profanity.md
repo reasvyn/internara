@@ -5,10 +5,10 @@ description:
     and properties
 ---
 
-# Profanity
+# Profanity (Optional Plugin)
 
-**Source code**:
-[github.com/pestphp/pest-plugin-profanity](https://github.com/pestphp/pest-plugin-profanity)
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
+> To enable it, follow the installation instructions below.
 
 The Profanity plugin will scan your codebase for profanity in places like comments, constants and
 properties. This can help you maintain a more professional and respectful codebase. As developers,

@@ -110,7 +110,19 @@ may utilize standard sequences or string keys.
 - **Isolation Constraint**: **Physical foreign keys across module boundaries are forbidden**.
   Referential integrity is maintained at the Service Layer using indexed UUID columns.
 
-### 4.2 State Lifecycle: `HasStatus`
+### 4.2 User Identifiers: The Single Profile Strategy
+
+To prevent identity fragmentation, all institutional and national user identifiers must reside 
+exclusively within the `Profile` model.
+
+- **`national_identifier`**: The authoritative field for national-level IDs (e.g., NIP for 
+  teachers, NISN for students).
+- **`registration_number`**: The authoritative field for institution-specific IDs (e.g., NIS 
+  for students).
+- **Mandate**: No other module or model may define columns for these identifiers. They must be 
+  retrieved or verified through the `ProfileService`.
+
+### 4.3 State Lifecycle: `HasStatus`
 
 Operational entities must track their lifecycle transitions using the `HasStatus` concern from the `Status` module.
 

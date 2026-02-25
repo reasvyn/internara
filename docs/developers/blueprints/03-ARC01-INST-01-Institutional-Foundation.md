@@ -27,18 +27,16 @@
 
 ### 2.2 Service Contract Specifications
 
-- **`Modules\School\Services\Contracts\SchoolService`**: Managing school identities, branding
-  (logos), and NPSN-based validation.
-- **`Modules\Department\Services\Contracts\DepartmentService`**: Managing academic specializations
-  and their relationship with institutional parents.
+- **`Modules\School\Services\Contracts\SchoolService`**: Managing school identities, branding (logos), and NPSN-based validation.
+- **`Modules\Department\Services\Contracts\DepartmentService`**: Managing academic specializations and their relationship with institutional parents.
+- **`Modules\Internship\Services\Contracts\CompanyService`**: Orchestrating industry partner master data (Companies), enabling the "Industry-School" connection.
 
 ### 2.3 Data Architecture
 
 - **Identity Protocol**: Mandatory use of **UUID v4** for all institutional records.
-- **Natural Key Integrity**: NPSN utilized as a secondary natural key with strict 8-digit
-  validation.
-- **SLRI Constraint**: Referential integrity between modules handled at the service layer using
-  indexed UUID columns.
+- **Natural Key Integrity**: NPSN utilized as a secondary natural key with strict 8-digit validation. This identifier is mandatory for institutional recognition.
+- **SLRI Constraint**: Referential integrity between modules handled at the service layer using indexed UUID columns.
+- **Authorization Guard**: All institutional management services MUST enforce `Gate::authorize()` for administrative actions to ensure compliance with the **Security-by-Design** mandate.
 
 ---
 

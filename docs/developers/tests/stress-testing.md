@@ -7,12 +7,13 @@ description:
     requests or that it can handle a large amount of data.
 ---
 
-# Stress Testing
+# Stress Testing (Optional Plugin)
+
+> **Note**: This plugin is **NOT** currently part of the core Internara verification baseline. 
+> To enable it, follow the installation instructions below.
 
 Stress Testing is a type of testing that inspects the stability and reliability of your application
-under realistic or extreme conditions — depending on the scenario you setup. For example, you can
-use stress testing to verify that your application can handle a large number of requests or that it
-can handle a large amount of data.
+under realistic or extreme conditions.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/SaMoPZwdOCY?si=KBskkVWLUUSyK0u0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 

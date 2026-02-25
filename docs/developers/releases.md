@@ -1,9 +1,48 @@
-# Release Publication Protocols: Baseline Management
+# Release Management: Version Index & Protocols
 
-This document formalizes the **Release Management** protocols for the Internara project,
-standardized according to **ISO/IEC 12207** (Software Release Process) and **ISO/IEC 20000**
-(Service Management). It defines the systematic procedures for promoting verified software
-configurations to an authoritative delivery baseline.
+This document provides the authoritative index for **Internara Release Notes** and formalizes 
+the **Release Management** protocols, standardized according to **ISO/IEC 12207**.
+
+---
+
+## 📅 Release History (Recent)
+
+| Version     | Readiness   | Support Policy | Current Status | Detailed Notes           |
+| :---------- | :---------- | :------------- | :------------- | :----------------------- |
+| **v0.14.x** | Development | Experimental   | Released       | **[v0.14.0](v0.14.0.md)**|
+| **v0.13.x** | Development | Experimental   | Released       | **[v0.13.0](v0.13.0.md)**|
+| **v0.12.x** | Development | Experimental   | Released       | **[v0.12.0](v0.12.0.md)**|
+| **v0.11.x** | Development | Experimental   | Released       | **[v0.11.0](v0.11.0.md)**|
+| **v0.10.x** | Development | Experimental   | Released       | **[v0.10.0](v0.10.0.md)**|
+| **v0.9.x**  | Development | Experimental   | Released       | **[v0.9.0](v0.9.0.md)**  |
+| **v0.8.x**  | Development | Experimental   | Released       | **[v0.8.0](v0.8.0.md)**  |
+
+> **Note**: For older releases, refer to the files in `docs/pubs/releases/`.
+
+---
+
+## 🛠️ How We Track Progress
+
+### Readiness Levels
+- **Development**: Initial development phase (`0.x.y`). System is inherently unstable.
+- **Alpha**: Early testing phase. New features are being added rapidly.
+- **Beta**: Feature complete. Focusing on fixing bugs and polishing the experience.
+- **Release Candidate (RC)**: Final validation phase. Stable enough for evaluation.
+- **Stable**: Production-ready. Verified baseline ready for everyday use.
+
+### Support Policies
+- **Experimental**: Active development. No stability guarantees.
+- **Stable/LTS**: Long-term support. Guaranteed reliability and critical updates.
+- **Maintenance**: Actively maintained with regular improvements and security fixes.
+- **Security Only**: Critical fixes only. No new features.
+- **End of Life (EOL)**: No longer supported.
+
+---
+
+## ⚖️ Release Publication Protocols
+
+This section formalizes the procedures for promoting verified software configurations to an 
+authoritative delivery baseline.
 
 > **Governance Mandate:** No release baseline may be authorized unless it demonstrates 100%
 > compliance with the authoritative **[System Requirements Specification](specs.md)**.
@@ -18,7 +57,7 @@ mandatory quality gates:
 1.  **Validation Audit**: Every capability defined in the blueprint must be verified against the
     System Requirements Specification.
 2.  **Configuration Integrity**: All system artifacts (Source Code, Engineering Records, Stakeholder
-    Documentation) must be fully synchronized. The `README.md` must accurately reflect the target
+    Documentation) must be fully synchronized. The `releases.md` must accurately reflect the target
     configuration baseline, project status, and version support matrix.
 3.  **Status Transition Invariant**: The version status must be formally updated to **Released**
     within the strategic registries and analytical records prior to final baseline promotion.
@@ -89,7 +128,7 @@ Synchronize the configuration baseline with the remote repository according to t
 ### 3.2 Post-Promotion Audit
 
 - **Artifact Locking**: Once promoted, the release baseline and its documentation are immutable.
-- **Transparency**: Update the **Versions Overview** (`README.md` in `pubs/releases`) to reflect the
+- **Transparency**: Update the **Versions Overview** (`releases.md`) to reflect the
   newly released configuration.
 - **Visibility Limit**: To maintain minimalist clarity, the Versions Overview table and detailed
   notes must be limited to the **6 most recent versions**. Older records remain available in the
