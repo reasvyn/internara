@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Analytics\Services;
+namespace Modules\Admin\Analytics\Services;
 
 use Modules\Assessment\Services\Contracts\AssessmentService;
-use Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator as Contract;
+use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator as Contract;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;

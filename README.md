@@ -4,8 +4,7 @@
 
 # Internara
 
-![Version](https://img.shields.io/badge/version-v0.13.1-blue?style=flat-square)
-![Readiness](https://img.shields.io/badge/readiness-development-orange?style=flat-square)
+![Version](https://img.shields.io/badge/version-v0.14.0-blue?style=flat-square)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
@@ -62,10 +61,10 @@ Internara is engineered for stability, security, and long-term maintainability.
 
 - **Modular Architecture:** Built on **Laravel 12**, utilizing a **Modular Monolith** structure to
   ensure domain isolation and system integrity.
-- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) and
-  **maryUI** for a fast, app-like experience.
-- **Rigorous Standards:** Development is governed by **ISO/IEC** standards, ensuring high-quality
-  code and documentation.
+- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) 
+  using **DaisyUI** and **maryUI** for a fast, responsive, and institution-ready experience.
+- **Rigorous Standards:** Development is governed by **ISO/IEC** standards and the **3S 
+  (Secure, Sustain, Scalable)** philosophy.
 
 ---
 
@@ -94,12 +93,11 @@ transparency.
 
 | Version     | Readiness   | Support Policy | Current Status |
 | :---------- | :---------- | :------------- | :------------- |
-| **v0.13.x** | Development | Experimental   | Released       |
+| **v0.14.0** | Development | Experimental   | Released       |
+| **v0.13.0** | Development | Experimental   | Released       |
 | **v0.12.x** | Development | Experimental   | Released       |
 | **v0.11.x** | Development | Experimental   | Released       |
 | **v0.10.x** | Development | Experimental   | Released       |
-| **v0.9.x**  | Development | Experimental   | Released       |
-| **v0.8.x**  | Development | Experimental   | Released       |
 
 ---
 

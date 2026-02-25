@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Shared\Livewire\Concerns;
+namespace Modules\UI\Livewire\Concerns;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;

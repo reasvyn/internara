@@ -13,6 +13,7 @@ follows **Strict SemVer** syntax (e.g., `v0.13.0`).
 
 ### Readiness
 
+- **Development**: Initial development phase (`0.x.y`). System is inherently unstable.
 - **Alpha**: Early testing phase. New features are being added rapidly.
 - **Beta**: Feature complete. Focusing on fixing bugs and polishing the experience.
 - **Release Candidate (RC)**: Final validation phase. Stable enough for evaluation, pending final
@@ -35,6 +36,7 @@ follows **Strict SemVer** syntax (e.g., `v0.13.0`).
 
 | Version     | Readiness   | Support Policy | Current Status |
 | :---------- | :---------- | :------------- | :------------- |
+| **v0.14.x** | Development | Experimental   | Released       |
 | **v0.13.x** | Development | Experimental   | Released       |
 | **v0.12.x** | Development | Experimental   | Released       |
 | **v0.11.x** | Development | Experimental   | Released       |
@@ -46,7 +48,7 @@ follows **Strict SemVer** syntax (e.g., `v0.13.0`).
 
 ## 3. Detailed Release Notes
 
-- **[v0.13.1](v0.13.1.md)** — **System Stabilization Refinement**
+- **[v0.14.0](v0.14.0.md)** — **Security Hardening & UI Evolution**
 - **[v0.13.0](v0.13.0.md)** — **System Stabilization**
 - **[v0.12.0](v0.12.0.md)** — **Timeline & Guidance**
 - **[v0.11.0](v0.11.0.md)** — **Instructional Execution**

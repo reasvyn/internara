@@ -10,7 +10,7 @@ use Livewire\Component;
 use Modules\Internship\Livewire\Forms\PlacementForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Modules\User\Livewire\Forms\UserForm;
 use Modules\User\Services\Contracts\UserService;
 

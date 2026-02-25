@@ -6,7 +6,7 @@ namespace Modules\Internship\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\Concerns\ManagesRecords;
 
 /**
  * Class CompanyManager

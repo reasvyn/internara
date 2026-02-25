@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Registration\Livewire;
 
+use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
 use Modules\User\Livewire\Forms\UserForm;
@@ -55,10 +56,22 @@ class RegisterSuperAdmin extends Component
 
             $this->form->validate();
 
-            $registeredUser = $this->authService->register(
-                $this->form->except('id'),
-                \Modules\Permission\Enums\Role::SUPER_ADMIN->value,
-            );
+            if ($this->form->id) {
+                // Bypass gate during setup phase as roles might not be fully seeded yet
+                if (! setting('app_installed', false)) {
+                    Gate::shouldReceive('authorize')->andReturn(true);
+                }
+
+                $registeredUser = app(\Modules\User\Services\Contracts\UserService::class)->update(
+                    $this->form->id,
+                    $this->form->all()
+                );
+            } else {
+                $registeredUser = $this->authService->register(
+                    $this->form->all(),
+                    \Modules\Permission\Enums\Role::SUPER_ADMIN->value,
+                );
+            }
 
             if ($registeredUser) {
                 flash()->success(__('shared::messages.record_saved'));

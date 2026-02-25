@@ -54,13 +54,15 @@ must identify which series it contributes to or fulfills.
 
 ### 2.3 Configuration Baseline Identification (Tagging)
 
-Create an **Annotated Git Tag** to establish an immutable reference to the release baseline. All
-tags must strictly adhere to the **Semantic Versioning (SemVer)** standard.
+Create an **Annotated Git Tag** to establish an immutable reference to the release baseline. 
 
-- **Format**: `vX.Y.Z` or `vX.Y.Z-{pre-release}+{build}` (e.g., `v0.13.0`, `v1.0.0-rc.1`)
-- **Pre-release Suffixes**: Use `-alpha`, `-beta`, or `-rc` only when specifically marking a
-  stabilization track for a major milestone (e.g., preparing for `v1.0.0`). Standard development
-  versions in the `0.x.y` range should remain clean.
+- **Format**: `vX.Y.Z` (e.g., `v0.14.0`)
+- **Clean Versioning Invariant**: All versions within the `0.x.y` development phase **MUST** 
+  remain "clean" (no suffixes like `-alpha` or `-beta`). Because the entire `0.x.y` range is 
+  mathematically considered unstable according to SemVer, adding pre-release labels is 
+  redundant and prohibited.
+- **Pre-release Exception**: Suffixes (`-alpha`, `-beta`, `-rc`) are strictly reserved for 
+  stabilization tracks of major stable milestones (e.g., `v1.0.0-rc.1`).
 - **Protocol**: `git tag -a vX.Y.Z -m "Release description and series identifier"`
 
 ### 2.4 Documentation Finalization (Doc-as-Code)
@@ -180,16 +182,16 @@ structure.
 - **Minor (`Y`)**: Incremented for functional additions.
 - **Patch (`Z`)**: Incremented for bug fixes.
 
-### 7.2 Pre-release Labels (Optional Suffixes)
+### 7.2 Pre-release Labels (Reserved for v1.0.0+)
 
-Pre-release labels (e.g., `-alpha`, `-beta`) are optional and reserved for high-stakes release
-tracks. For standard `v0.x.y` development, clean versioning is the baseline.
+Pre-release labels are **prohibited** for standard `v0.x.y` development. They are used 
+exclusively when preparing for a stable `v1.x.y` baseline.
 
 | Label       | Meaning                                            | Syntax Example                   |
 | :---------- | :------------------------------------------------- | :------------------------------- |
-| **`alpha`** | Initial construction; experimental and unstable.   | `v0.13.0`, `v0.13.0.1`           |
-| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v0.13.0-beta`, `v0.13.0-beta.2` |
-| **`rc`**    | Release Candidate; final validation before stable. | `v0.13.0-rc`, `v0.13.0-rc.1`     |
+| **`alpha`** | Initial construction; experimental and unstable.   | `v1.0.0-alpha.1`                 |
+| **`beta`**  | Feature complete; focusing on bugs and stability.  | `v1.0.0-beta.2`                  |
+| **`rc`**    | Release Candidate; final validation before stable. | `v1.0.0-rc.1`                    |
 
 ### 7.3 Firm Invariants
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Auth\Services\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Modules\User\Models\User;
 
 interface AuthService
 {
@@ -23,7 +22,7 @@ interface AuthService
      *
      * @return Authenticatable|User The verified stakeholder entity.
      */
-    public function login(array $credentials, bool $remember = false): Authenticatable|User;
+    public function login(array $credentials, bool $remember = false): Authenticatable;
 
     /**
      * Destroys the current user session and invalidates authentication tokens.
@@ -46,13 +45,13 @@ interface AuthService
      *
      * @throws \Modules\Exception\AppException If identity constraints are violated.
      *
-     * @return User The newly provisioned identity.
+     * @return Authenticatable The newly provisioned identity.
      */
     public function register(
         array $data,
         string|array|null $roles = null,
         bool $sendEmailVerification = false,
-    ): User;
+    ): Authenticatable;
 
     /**
      * Retrieves the identity of the stakeholder in the current session context.
@@ -60,7 +59,7 @@ interface AuthService
      * Acts as the internal accessor for authenticated data across all modules,
      * ensuring that the system always operates within a verified user scope.
      */
-    public function getAuthenticatedUser(): Authenticatable|User|null;
+    public function getAuthenticatedUser(): ?Authenticatable;
 
     /**
      * Updates the user's secret credential with mandatory verification.
@@ -68,13 +67,13 @@ interface AuthService
      * Enforces security by requiring the current secret before allowing a
      * transition to a new one, mitigating unauthorized account takeover.
      *
-     * @param \Modules\User\Models\User $user The identity being updated.
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user The identity being updated.
      * @param string $currentPassword Verification of existing ownership.
      * @param string $newPassword The new credential to be hashed.
      *
      * @throws \Modules\Exception\AppException If verification or complexity rules fail.
      */
-    public function changePassword(User $user, string $currentPassword, string $newPassword): bool;
+    public function changePassword(Authenticatable $user, string $currentPassword, string $newPassword): bool;
 
     /**
      * Initiates the password recovery protocol via secure communication.
@@ -102,7 +101,7 @@ interface AuthService
      *
      * @throws \Modules\Exception\AppException If the trust loop is already complete.
      */
-    public function resendVerificationEmail(User $user): void;
+    public function resendVerificationEmail(Authenticatable $user): void;
 
     /**
      * Performs a one-time secret verification for high-privilege actions.
@@ -110,5 +109,5 @@ interface AuthService
      * Used as a temporary security elevation (PE) gate before allowing
      * access to sensitive institutional configurations or PII.
      */
-    public function confirmPassword(User $user, string $password): bool;
+    public function confirmPassword(Authenticatable $user, string $password): bool;
 }

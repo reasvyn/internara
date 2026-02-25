@@ -37,54 +37,66 @@ class UserService extends EloquentQuery implements Contract
     }
 
     /**
-     * Create a new user with specific business rules.
+     * Create a new user with specific business rules (Backward compatibility).
      */
     public function create(array $data): User
     {
-        $roles = Arr::wrap($data['roles'] ?? [Role::STUDENT->value]);
-        $status = $data['status'] ?? User::STATUS_ACTIVE;
         $profileData = $data['profile'] ?? [];
+        unset($data['profile']);
         
-        // Prepare Password
-        $plainPassword = $data['password'] ?? \Illuminate\Support\Str::password(16);
-        $data['password'] = $plainPassword;
+        return $this->createWithProfile($data, $profileData);
+    }
 
-        // Enforce hierarchical authority for user creation, except during initial setup
-        if (setting('app_installed', false)) {
-            Gate::authorize('create', [User::class, $roles]);
-        }
-
-        // Specialized Delegation
-        if (in_array(Role::SUPER_ADMIN->value, $roles)) {
-            $user = $this->superAdminService->create(array_merge($data, [
-                'status' => $status,
-                'roles' => $roles,
-            ]));
-        } else {
-            // Standard User Creation
-            $filteredData = \Illuminate\Support\Arr::except($data, ['roles', 'status', 'profile']);
-            $user = parent::create($filteredData);
+    /**
+     * Create a new user and their profile atomically.
+     */
+    public function createWithProfile(array $userData, array $profileData = []): User
+    {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($userData, $profileData) {
+            $roles = Arr::wrap($userData['roles'] ?? [Role::STUDENT->value]);
+            $status = $userData['status'] ?? User::STATUS_ACTIVE;
             
-            $this->handleUserAvatar($user, $data['avatar_file'] ?? null);
-            $user->assignRole($roles);
-            $user->setStatus($status);
+            // Prepare Password
+            $plainPassword = $userData['password'] ?? \Illuminate\Support\Str::password(16);
+            $userData['password'] = $plainPassword;
 
-            // Automatically verify Admin accounts created by other administrators
-            if (in_array(Role::ADMIN->value, $roles)) {
-                $user->markEmailAsVerified();
+            // Enforce hierarchical authority for user creation, except during initial setup
+            if (setting('app_installed', false)) {
+                Gate::authorize('create', [User::class, $roles]);
             }
-        }
 
-        // UNIFIED: Initialize & Update Profile for ALL user types
-        $profile = $this->profileService->getByUserId($user->id);
-        if (! empty($profileData)) {
-            $this->profileService->update($profile->id, $profileData);
-        }
+            // Specialized Delegation
+            if (in_array(Role::SUPER_ADMIN->value, $roles)) {
+                $user = $this->superAdminService->create(array_merge($userData, [
+                    'status' => $status,
+                    'roles' => $roles,
+                ]));
+            } else {
+                // Standard User Creation
+                $filteredData = Arr::except($userData, ['roles', 'status']);
+                $user = parent::create($filteredData);
+                
+                $this->handleUserAvatar($user, $userData['avatar_file'] ?? null);
+                $user->assignRole($roles);
+                $user->setStatus($status);
 
-        // Notify the new user
-        $user->notify(new WelcomeUserNotification($plainPassword));
+                // Automatically verify Admin accounts created by other administrators
+                if (in_array(Role::ADMIN->value, $roles)) {
+                    $user->markEmailAsVerified();
+                }
+            }
 
-        return $user;
+            // UNIFIED: Initialize & Update Profile for ALL user types
+            $profile = $this->profileService->getByUserId($user->id);
+            if (! empty($profileData)) {
+                $this->profileService->update($profile->id, $profileData);
+            }
+
+            // Notify the new user
+            $user->notify(new WelcomeUserNotification($plainPassword));
+
+            return $user;
+        });
     }
 
     /**

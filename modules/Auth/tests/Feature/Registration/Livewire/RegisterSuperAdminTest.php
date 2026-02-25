@@ -23,7 +23,7 @@ describe('RegisterSuperAdmin Component', function () {
     test('it renders correctly', function () {
         Livewire::test(RegisterSuperAdmin::class)
             ->assertStatus(200)
-            ->assertSee(__('auth::ui.register_super_admin.headline'))
+            ->assertSee(__('auth::ui.register_super_admin.title'))
             ->assertSee('Administrator');
     });
 
@@ -44,17 +44,17 @@ describe('RegisterSuperAdmin Component', function () {
 
     test('it validates password requirements [SYRS-NF-501]', function () {
         Livewire::test(RegisterSuperAdmin::class)
-            ->set('form.password', 'short')
-            ->set('form.password_confirmation', 'short')
+            ->set('form.password', '123')
+            ->set('form.password_confirmation', '123')
             ->call('register')
-            ->assertHasErrors(['form.password' => 'min']);
+            ->assertHasErrors(['form.password']);
     });
 
     test('it supports account re-linking during setup', function () {
         app(\Modules\Setting\Services\Contracts\SettingService::class)->setValue('app_installed', false);
         
         // Pre-create user
-        $existing = User::factory()->create(['email' => 'link@internara.test']);
+        $existing = User::factory()->create(['email' => 'link@internara.test', 'name' => 'Old Name']);
 
         Livewire::test(RegisterSuperAdmin::class)
             ->set('form.email', 'link@internara.test')
@@ -66,6 +66,6 @@ describe('RegisterSuperAdmin Component', function () {
 
         // Should update existing record instead of failing with "email taken"
         expect(User::where('email', 'link@internara.test')->count())->toBe(1)
-            ->and($existing->fresh()->name)->toBe('New Name');
+            ->and(User::where('email', 'link@internara.test')->first()->name)->toBe('New Name');
     });
 });

@@ -69,9 +69,18 @@ Cross-cutting technical concerns are distributed across specialized foundational
 
 ### 2.3 Process View: Communication Protocols
 
-- **Synchronous**: Cross-module interaction via **Service Contracts**.
-- **Asynchronous**: Cross-domain side-effects handled via Laravel's **Event/Listener** subsystem.
-- **Rationale**: Prevents temporal coupling and ensures system scalability.
+Internara utilizes a tiered communication strategy to balance **Developer Experience (DX)** 
+with **Strict Modular Isolation**:
+
+1.  **Read-Only Operations (Queries)**: Modules may interact with external domains via 
+    **Service Contracts** (Interfaces) to retrieve data (e.g., `Admin` querying `Internship`). 
+    This ensures simple, traceable data flow.
+2.  **State-Changing Operations (Commands)**: Side-effects that cross module boundaries 
+    (e.g., "Cleanup" tasks when a User is deleted) must be handled via **Domain Events** 
+    (asynchronous listeners). This prevents high coupling and protects the "Zero-Coupling" 
+    invariant.
+3.  **Rationale**: Prevents "Chatty Communication" for reads while ensuring no module has 
+    the authority to directly modify the state of another domain.
 
 ---
 

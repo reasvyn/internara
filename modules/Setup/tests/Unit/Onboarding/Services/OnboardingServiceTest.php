@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Tests\Unit\Onboarding\Services;
+namespace Modules\Setup\Tests\Unit\Onboarding\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Student\Services\Contracts\StudentService;
-use Modules\Support\Onboarding\Services\OnboardingService;
+use Modules\Setup\Onboarding\Services\OnboardingService;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\User\Services\Contracts\UserService;
 
@@ -63,7 +63,7 @@ test('it processes valid csv row', function () {
 
     $userMock = mock(\Modules\User\Models\User::class);
     $userMock->shouldReceive('getAttribute')->with('profile')->andReturn(null);
-    $userService->shouldReceive('create')->once()->andReturn($userMock);
+    $studentService->shouldReceive('create')->once()->andReturn($userMock);
 
     // We mock DB::transaction
     DB::shouldReceive('transaction')->once()->andReturnUsing(fn ($callback) => $callback());

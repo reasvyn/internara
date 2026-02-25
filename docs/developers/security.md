@@ -103,6 +103,8 @@ Every new feature involving user input or sensitive data must demonstrate compli
 2. **PII Classification**: Encryption casts applied to new models.
 3. **Link Security**: Signed routes for administrative actions.
 4. **Validation**: Use of `Password::auto()` for all credential inputs.
+5. **Zero-Trust Boundary Validation**: All external input must be strictly validated before processing.
+6. **Logic Isolation**: Strict prohibition of `env()` calls in business logic; rely entirely on `config()` and `setting()`.
 
 ### 5.2 Verification Gate
 

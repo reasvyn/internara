@@ -230,23 +230,37 @@ Livewire components serve as thin orchestrators between the UI and the Service L
 
 ### 7.1 Unified Record Management: `RecordManager`
 
-For Livewire components that manage data records requiring a complete CRUD lifecycle (Create, Read,
-Update, Delete, Search, Sort, and Bulk Actions), it is recommended to extend the
-`Modules\UI\Livewire\RecordManager` base component and utilize the `<x-ui::record-manager />` Blade
-template.
+... (existing content) ...
 
-- **Purpose**: Provides a standardized orchestration layer and UI structure, ensuring consistent
-  behavior and visual identity while significantly reducing boilerplate code.
-- **Applicability**: Intended for standard, list-based management pages. It is **NOT mandatory** for:
-    - **Single-Record Management**: Components that manage a single system entity (e.g.,
-      `SchoolManager`).
-    - **Complex Dashboards**: Pages with non-standard data flows or unique interactive requirements.
-- **Implementation Mandates**:
-    - **Logic**: Implement `initialize()`, `getTableHeaders()`, and optionally `mapRecord()`.
-    - **UI**: Utilize the `<x-ui::record-manager>` component in your Blade view, injecting specific
-      fields via slots (`formFields`, `tableCells`, `filters`).
-- **Standardized UI**: This pattern enforces the project's visual identity for tables, modals, and
-  action buttons across all modules.
+### 7.2 Volt Components (Functional UI)
+
+For reactive UI elements that require minimal server-side state, Internara utilizes **Livewire 
+Volt**.
+
+- **Location**: Volt files must reside in the module's `resources/views/livewire/` directory 
+  (e.g., `modules/Admin/resources/views/livewire/dashboard.blade.php`).
+- **Registration**: These components are automatically discovered and registered via the 
+  `Volt::mount()` mechanism integrated into the `Shared` module's foundational providers.
+
+### 7.3 Slot Injection Implementation
+
+Modules register their UI contributions into the design system using the following syntax in 
+their `ServiceProvider`:
+
+```php
+protected function viewSlots(): array
+{
+    return [
+        'sidebar.menu' => [
+            'internship::menu-item',
+            'attendance::menu-item',
+        ],
+        'dashboard.widgets' => [
+            'admin::analytics-widget' => ['role' => 'admin'],
+        ],
+    ];
+}
+```
 
 ---
 

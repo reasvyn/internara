@@ -15,7 +15,7 @@ test('admin dashboard renders correctly', function () {
     $admin = User::factory()->create()->assignRole('admin');
 
     // Mock analytics aggregator
-    $analytics = mock(\Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator::class);
+    $analytics = mock(\Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class);
     $analytics->shouldReceive('getInstitutionalSummary')->andReturn([
         'total_interns' => 10,
         'active_partners' => 5,
@@ -23,7 +23,7 @@ test('admin dashboard renders correctly', function () {
     ]);
     $analytics->shouldReceive('getAtRiskStudents')->andReturn([]);
     app()->instance(
-        \Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator::class,
+        \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class,
         $analytics,
     );
 

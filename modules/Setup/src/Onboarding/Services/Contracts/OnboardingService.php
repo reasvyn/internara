@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Onboarding\Services\Contracts;
+namespace Modules\Setup\Onboarding\Services\Contracts;
 
 /**
  * Interface OnboardingService

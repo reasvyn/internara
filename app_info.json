@@ -1,7 +1,7 @@
 {
     "name": "Internara",
-    "version": "0.13.1",
-    "series_code": "ARC01-FIX-01",
+    "version": "0.14.0",
+    "series_code": "ARC01-ORCH-01",
     "support": "Experimental",
     "author": {
         "name": "Reas Vyn",

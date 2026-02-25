@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Onboarding\Services;
+namespace Modules\Setup\Onboarding\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Student\Services\Contracts\StudentService;
-use Modules\Support\Onboarding\Services\Contracts\OnboardingService as Contract;
+use Modules\Setup\Onboarding\Services\Contracts\OnboardingService as Contract;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\User\Services\Contracts\UserService;
 
@@ -42,7 +42,7 @@ class OnboardingService implements Contract
         ];
 
         if (! file_exists($filePath) || ! is_readable($filePath)) {
-            $results['errors'][] = __('support::onboarding.errors.file_not_readable');
+            $results['errors'][] = __('setup::onboarding.errors.file_not_readable');
 
             return $results;
         }
@@ -51,7 +51,7 @@ class OnboardingService implements Contract
         $header = fgetcsv($handle);
 
         if (! $header) {
-            $results['errors'][] = __('support::onboarding.errors.empty_file');
+            $results['errors'][] = __('setup::onboarding.errors.empty_file');
             fclose($handle);
 
             return $results;
@@ -71,7 +71,7 @@ class OnboardingService implements Contract
 
             if (count($header) !== count($row)) {
                 $results['failure']++;
-                $results['errors'][] = __('support::onboarding.errors.column_mismatch', [
+                $results['errors'][] = __('setup::onboarding.errors.column_mismatch', [
                     'row' => $rowCount,
                 ]);
 
@@ -128,11 +128,11 @@ class OnboardingService implements Contract
         $email = $data['email'] ?? null;
 
         if (empty($name) || empty($email)) {
-            throw new \InvalidArgumentException(__('support::onboarding.errors.required_fields'));
+            throw new \InvalidArgumentException(__('setup::onboarding.errors.required_fields'));
         }
 
         if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException(__('support::onboarding.errors.invalid_email'));
+            throw new \InvalidArgumentException(__('setup::onboarding.errors.invalid_email'));
         }
 
         // 2. Prepare Unified User Data structure
@@ -159,7 +159,7 @@ class OnboardingService implements Contract
             $this->studentService->create($userData);
         } elseif ($type === 'teacher') {
             $teacherProfile = [
-                'nip' => $data['nip'] ?? null,
+                'national_identifier' => $data['nip'] ?? null,
             ];
             $userData['profile'] = array_merge($userData['profile'], $teacherProfile);
 

@@ -61,8 +61,6 @@ class SupportServiceProvider extends ServiceProvider
      */
     protected function bindings(): array
     {
-        return [
-            \Modules\Support\Onboarding\Services\Contracts\OnboardingService::class => \Modules\Support\Onboarding\Services\OnboardingService::class,
-        ];
+        return [];
     }
 }

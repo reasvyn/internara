@@ -12,8 +12,9 @@ functional modules.
 
 ## 1. Architectural Role
 
-As a **Global Domain Module**, `Core` acts as the system's "glue." It manages concepts that are
-fundamental to the vocational education business domain but transcend individual functional modules.
+As a **Global Domain Module**, `Core` acts as the system's "glue," providing the authoritative 
+baseline data and technical context required by all functional modules. It focuses on systemic 
+identity and temporal scoping.
 
 ---
 
@@ -23,13 +24,15 @@ fundamental to the vocational education business domain but transcend individual
 
 - **`HasAcademicYear`**: A persistence-layer concern that automatically scopes queries and data
   creation to the active academic cycle.
-- **`AcademicYear` Support**: A final utility that generates dynamic academic year strings (e.g.,
-  "2025/2026") based on the current date (transitioning in July).
+- **`AcademicYearManager`**: The authoritative service for managing temporal context and 
+  institutional cycle scoping (e.g., "2025/2026").
+    - _Contract_: `Modules\Core\Academic\Contracts\AcademicYearManager`.
 
 ### 2.2 Metadata Domain
 
-- **`MetadataService`**: The single source of truth for application versioning, series code, and
-  author attribution. It enforces architectural integrity and protects author rights.
+- **`MetadataService`**: The single source of truth for **Product Identity** (`app_name`), 
+  versioning, series code, and author attribution. It protects institutional flexibility while 
+  ensuring architectural integrity.
     - _Contract_: `Modules\Core\Metadata\Services\Contracts\MetadataService`.
     - _API_: `getVersion()`, `getSeriesCode()`, `getAuthor()`.
 - **`AppInfoCommand`**: Artisan command to audit and display system metadata.

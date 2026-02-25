@@ -71,5 +71,42 @@ test('unauthorized roles are prohibited from executing restricted actions', func
 
 ---
 
+## 5. Client-Side Integrity & Blade Rendering
+
+Given the potential instabilities of full-browser (Dusk) testing in CI/CD environments, utilizing
+**Livewire Render** and **Blade Rendering** assertions is the authoritative alternative for
+verifying client-side integrity.
+
+### 5.1 Verifying UI Structure and Attributes
+
+Use Blade rendering to verify that the generated HTML satisfies the **Accessibility (A11y)** 
+and **Mobile-First** mandates without the overhead of a headless browser.
+
+```php
+test('it renders semantic and accessible HTML structure', function () {
+    $view = $this->view('ui::components.record-manager', [
+        'title' => 'Test Manager'
+    ]);
+
+    $view->assertSee('<main', false)
+         ->assertSee('aria-label="Test Manager"', false);
+});
+```
+
+### 5.2 Functional Livewire Interaction
+
+Livewire tests provide high-fidelity verification of the presentation layer's reactivity.
+
+```php
+test('it updates reactive state upon interaction', function () {
+    Livewire::test(InternshipManager::class)
+        ->set('search', 'Project A')
+        ->assertSet('search', 'Project A')
+        ->assertEmitted('internship:open-modal');
+});
+```
+
+---
+
 _Livewire verification ensures that the Internara presentation layer remains resilient, accessible,
 and architecturally pure across its modular ecosystem._

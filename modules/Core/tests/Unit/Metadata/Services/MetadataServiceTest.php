@@ -26,6 +26,7 @@ describe('Metadata Service', function () {
         ];
 
         File::put($this->metadataPath, json_encode($this->testMetadata));
+        \Modules\Shared\Support\AppInfo::clearCache();
         $this->service = new MetadataService;
     });
 
@@ -35,6 +36,7 @@ describe('Metadata Service', function () {
         } else {
             File::delete($this->metadataPath);
         }
+        \Modules\Shared\Support\AppInfo::clearCache();
     });
 
     test('it can retrieve specific metadata values', function () {

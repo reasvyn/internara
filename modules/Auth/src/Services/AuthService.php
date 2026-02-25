@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Modules\Auth\Services\Contracts\AuthService as AuthServiceContract;
 use Modules\Exception\AppException;
-use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,7 +35,7 @@ class AuthService implements AuthServiceContract
      *
      * @return Authenticatable|User The authenticated user.
      */
-    public function login(array $credentials, bool $remember = false): Authenticatable|User
+    public function login(array $credentials, bool $remember = false): Authenticatable
     {
         // The 'identifier' field from the form can be either an email or a username.
         $identifier =
@@ -79,7 +78,7 @@ class AuthService implements AuthServiceContract
         array $data,
         string|array|null $roles = null,
         bool $sendEmailVerification = false,
-    ): User {
+    ): Authenticatable {
         // Prevent role escalation by filtering roles from user input
         $sanitizedData = \Illuminate\Support\Arr::except($data, ['roles', 'role']);
 
@@ -89,7 +88,7 @@ class AuthService implements AuthServiceContract
             ]),
         );
 
-        if ($sendEmailVerification) {
+        if ($sendEmailVerification && $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail) {
             $user->sendEmailVerificationNotification();
         }
 
@@ -101,7 +100,7 @@ class AuthService implements AuthServiceContract
      *
      * @return Authenticatable|User|null The authenticated user, or null if no user is authenticated.
      */
-    public function getAuthenticatedUser(): Authenticatable|User|null
+    public function getAuthenticatedUser(): ?Authenticatable
     {
         return Auth::user();
     }
@@ -117,9 +116,9 @@ class AuthService implements AuthServiceContract
      *
      * @return bool True if the password was successfully changed, false otherwise.
      */
-    public function changePassword(User $user, string $currentPassword, string $newPassword): bool
+    public function changePassword(Authenticatable $user, string $currentPassword, string $newPassword): bool
     {
-        if (! Hash::check($currentPassword, $user->password)) {
+        if (! Hash::check($currentPassword, $user->getAuthPassword())) {
             throw new AppException(
                 userMessage: 'auth::exceptions.password_mismatch',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -150,9 +149,10 @@ class AuthService implements AuthServiceContract
      */
     public function resetPassword(array $credentials): bool
     {
-        $response = Password::reset($credentials, function (User $user, string $password) {
-            $user->password = Hash::make($password);
-            $user->save();
+        $response = Password::reset($credentials, function (Authenticatable $user, string $password) {
+            $user->forceFill([
+                'password' => Hash::make($password),
+            ])->save();
         });
 
         return $response === Password::PASSWORD_RESET;
@@ -168,7 +168,11 @@ class AuthService implements AuthServiceContract
      */
     public function verifyEmail(string $id, string $hash): bool
     {
-        $user = User::findOrFail($id);
+        $user = $this->userService->find($id);
+
+        if (! $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail) {
+            return false;
+        }
 
         if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
             return false;
@@ -194,8 +198,12 @@ class AuthService implements AuthServiceContract
      *
      * @throws AppException If the email is already verified.
      */
-    public function resendVerificationEmail(User $user): void
+    public function resendVerificationEmail(Authenticatable $user): void
     {
+        if (! $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail) {
+            return;
+        }
+
         if ($user->hasVerifiedEmail()) {
             throw new AppException(
                 userMessage: 'auth::exceptions.email_already_verified',
@@ -214,8 +222,8 @@ class AuthService implements AuthServiceContract
      *
      * @return bool True if the password matches, false otherwise.
      */
-    public function confirmPassword(User $user, string $password): bool
+    public function confirmPassword(Authenticatable $user, string $password): bool
     {
-        return Hash::check($password, $user->password);
+        return Hash::check($password, $user->getAuthPassword());
     }
 }

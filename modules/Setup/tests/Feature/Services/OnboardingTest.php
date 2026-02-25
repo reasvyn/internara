@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use Modules\Student\Models\Student;
-use Modules\Support\Onboarding\Services\Contracts\OnboardingService;
-use Modules\Teacher\Models\Teacher;
+use Modules\Setup\Onboarding\Services\Contracts\OnboardingService;
 use Modules\User\Models\User;
 
 beforeEach(function () {
@@ -32,8 +30,7 @@ test('it can import students from CSV', function () {
 
     $john = User::where('email', 'john@example.com')->first();
     expect($john->hasRole('student'))->toBeTrue();
-    expect($john->profile->profileable)->toBeInstanceOf(Student::class);
-    expect($john->profile->profileable->national_identifier)->toBe('1234567890');
+    expect($john->profile->national_identifier)->toBe('1234567890');
 
     unlink($filePath);
 });
@@ -52,8 +49,7 @@ test('it can import teachers from CSV', function () {
 
     $teacher = User::where('email', 'teacher1@example.com')->first();
     expect($teacher->hasRole('teacher'))->toBeTrue();
-    expect($teacher->profile->profileable)->toBeInstanceOf(Teacher::class);
-    expect($teacher->profile->profileable->nip)->toBe('19900101');
+    expect($teacher->profile->national_identifier)->toBe('19900101');
 
     unlink($filePath);
 });

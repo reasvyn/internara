@@ -18,6 +18,11 @@ interface UserService extends EloquentQuery
     public function findByEmail(string $email): ?User;
 
     /**
+     * Create a new user and their profile atomically.
+     */
+    public function createWithProfile(array $userData, array $profileData = []): User;
+
+    /**
      * Find a user by their username.
      */
     public function findByUsername(string $username): ?User;

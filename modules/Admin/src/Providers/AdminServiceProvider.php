@@ -58,6 +58,7 @@ class AdminServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Admin\Services\Contracts\AdminService::class => \Modules\Admin\Services\AdminService::class,
+            \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class => \Modules\Admin\Analytics\Services\AnalyticsAggregator::class,
         ];
     }
 }

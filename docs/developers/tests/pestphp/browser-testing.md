@@ -5,6 +5,8 @@ description:
 
 # Browser Testing
 
+**Robust Client-Side Verification Recommendation:** Browser testing via Playwright/Pest often encounters environment-specific instabilities. For a more resilient and performant alternative, it is **strongly recommended** to utilize **Livewire Tests** and **Blade Rendering** assertions to verify UI structure and reactivity. Refer to the **[Presentation Verification Guide](../livewire-tests.md)**.
+
 Browser testing is an essential part of modern web development, allowing you to ensure that your
 application works correctly across different browsers and devices. Pest provides a simple and
 elegant way to write browser tests. Here is an example of how to write a browser test using Pest:

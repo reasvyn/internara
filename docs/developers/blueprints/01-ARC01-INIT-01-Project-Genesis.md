@@ -1,148 +1,80 @@
 # Application Blueprint: Project Genesis (ARC01-INIT-01)
 
-**Series Code**: `ARC01-INIT` | **Scope**: `Infrastructure & Foundation`
+**Series Code**: `ARC01-INIT` | **Scope**: `Infrastructure & Foundational Engine` | **Compliance**: `ISO/IEC 12207`
 
 ---
 
 ## 1. Strategic Context
 
-- **Spec Alignment**: This blueprint authorizes the creation of the foundational modular monolith
-  infrastructure required to satisfy **[SYRS-NF-601]** (Isolation), **[SYRS-NF-602]** (TALL Stack),
-  and **[SYRS-NF-403]** (Localization).
-- **Objective**: Establish the "Engine Room" and architectural DNA of Internara. This phase defines
-  the behavioral protocols, technical utilities, and systemic invariants that will govern every
-  subsequent domain module.
-- **Rationale**: A system is only as strong as its foundation. By formalizing infrastructure before
-  domain logic, we prevent architectural drift and ensure a predictable engineering environment for
-  future developers.
+- **Spec Alignment**: This blueprint authorizes the creation of the authoritative *Modular Monolith* infrastructure required to satisfy **[SYRS-NF-601]** (Isolation), **[SYRS-NF-602]** (TALL Stack), and **[SYRS-NF-504]** (Identity Integrity).
+- **Objective**: To establish the "Engine Room" of Internara. This phase defines the behavioral protocols, technical utilities, and systemic invariants that will govern every subsequent domain module.
+- **Rationale**: A disciplined foundation prevents architectural decay. By formalizing infrastructure before domain logic, we ensure a predictable and secure engineering environment.
 
 ---
 
-## 2. Logic & Architecture (Systemic View)
+## 2. Logic & Architecture (The Modular Engine)
 
-### 2.1 The Modular Engine
+### 2.1 Autonomous Module Discovery
+- **Mechanism**: Implementation of an autonomous module loader that detects and initializes modules within the `modules/` directory without requiring manual registration in the central application core.
+- **Namespace Invariant**: Strict enforcement of the **"src Omission"** rule (omitting the `src` segment in namespaces) to align modular structures with standard Laravel conventions and reduce cognitive load.
 
-- **Autonomous Loader**: Development of a custom bootstrapping mechanism to discover and initialize
-  modules located in the `modules/` directory.
-- **Domain Isolation**: Implementation of namespaces and service providers that prevent leakage
-  between business domains.
-
-### 2.2 Service Contract Specifications
-
-- **`Modules\Shared\Services\Contracts\EloquentQuery`**: Standardized API for query, persistence,
-  and filtering, allowing for cross-module referential integrity checks.
-- **`Modules\Core\Metadata\Services\Contracts\MetadataService`**: Authoritative source for system
-  identity, versioning, and attribution protection.
-- **`Modules\Core\Academic\Contracts\AcademicYearManager`**: Providing temporal context for data
-  scoping based on institutional cycles.
-
-### 2.3 Data Architecture
-
-- **Identity Invariant**: Mandatory use of **UUID v4** for all entities via the foundational
-  `HasUuid` concern.
-- **Referential Integrity**: SLRI (Service Layer Referential Integrity) pattern using indexed UUID
-  columns. Physical foreign keys across module boundaries are strictly forbidden.
-- **State Audit**: Implementation of `HasStatus` to track and audit entity lifecycle transitions.
+### 2.2 Standardized Service Orchestration
+- **The EloquentQuery Engine**: Implementation of `Modules\Shared\Services\EloquentQuery` as the single standard for query and persistence operations.
+    - **Features**: Automatic relational searching, type-safe filtering, and transparent caching via the `remember()` method.
+- **Contract-First Communication**: All inter-module interactions MUST occur via **Service Contracts** (Interfaces). The use of external concrete classes is strictly prohibited.
 
 ---
 
-## 3. Presentation Strategy (User Experience View)
+## 3. Data Architecture (Persistence Invariants)
 
-### 3.1 UX Workflow
+### 3.1 Identity & State
+- **UUID v4 Invariant**: Mandatory usage of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) as the primary identity for all domain entities to prevent ID enumeration attacks **[SYRS-NF-504]**.
+- **Auditable Lifecycle**: Implementation of `HasStatus` (via the `Status` module) to track and audit entity state transitions ("who", "when", "why") as an immutable audit trail.
 
-- **Layout Hierarchy**: Definition of the base administrative shell (`AppLayout`) and minimalist
-  entry shell (`AuthLayout`).
-- **Mobile-First Navigation**: Prioritizing bottom-heavy actions and responsive menus for one-handed
-  mobile operability.
-
-### 3.2 Interface Design
-
-- **Slot Injection Pattern**: Implementation of the `UI` module's slot registry to facilitate
-  cross-module UI integration without tight coupling.
-- **Design Baseline**: Enforcement of **Instrument Sans** typography and the institutional emerald
-  theme via Tailwind v4 and MaryUI.
+### 3.2 Software-Level Referential Integrity (SLRI)
+- **Physical Isolation**: Prohibition of physical foreign key constraints across module boundaries at the database level.
+- **Service Verification**: Referential integrity is manually verified at the **Service Layer** utilizing indexed UUID columns to ensure modular portability.
 
 ---
 
-## 4. Verification Strategy (V&V View)
+## 4. Security & Governance (Access Control)
 
-### 4.1 Unit Verification
+### 4.1 RBAC Baseline
+- **Least Privilege**: Implementation of a Role-Based Access Control (RBAC) engine (via the `Permission` module) governed by the principle of minimum necessary permissions.
+- **Explicit Deny**: Access is denied by default unless explicitly granted through a **Policy Class** associated with each domain model.
 
-- **Shared Integrity**: 100% behavioral coverage for technical formatters and UUID generation logic.
-- **Contract Adherence**: Unit tests verifying that all foundational services strictly adhere to
-  their defined contracts.
-
-### 4.2 Feature Validation
-
-- **Module Discovery**: Verification that the autonomous loader correctly discovers and initializes
-  modules from the `modules/` directory.
-- **Layout Rendering**: Tests verifying the correct rendering of base layouts across different
-  viewports.
-
-### 4.3 Architecture Verification
-
-- **Isolation Enforcement**: Pest Arch tests ensuring foundational modules (Shared, Core) remain
-  strictly agnostic of domain modules.
-- **Constraint Audit**: Verification of the `src` omission rule in namespaces and the `final`
-  keyword on all utility classes.
+### 4.2 Privacy & Hardening
+- **PII Encryption**: Usage of the `encrypted` cast on Eloquent models for PII data (phone, address, national identifiers) to protect data at rest **[SYRS-NF-503]**.
+- **Forensic Logging**: Integration of the `Log` module with automated masking processors to redact sensitive information in all logging sinks.
 
 ---
 
-## 5. Compliance & Standardization (Integrity View)
+## 5. Presentation & UX (The Face of Internara)
 
-### 5.1 i18n & Localization
+### 5.1 Slot Injection Pattern
+- **Decoupled UI**: Implementation of the `SlotRegistry` within the `UI` module to allow domain modules to inject UI elements (menus, widgets, buttons) into global layouts without physical coupling.
 
-- **Multi-Locale Support**: Implementation of the localization bridge supporting Indonesian (`id`)
-  and English (`en`) with zero hard-coded user-facing strings.
-
-### 5.2 Security & Privacy
-
-- **Least Privilege**: Adherence to the least privilege principle in early-boot middleware.
-- **PII Hardening**: Standardizing the `encrypted` cast for foundational identity data.
-
-### 5.3 Zero-Coupling
-
-- **Service-Based Interaction**: Ensuring foundational modules provide capabilities exclusively via
-  Service Contracts to prevent concrete coupling.
+### 5.2 Responsive & Mobile-First
+- **Layout Tiering**: Standardization of the layout structure (Base -> Page -> Component) utilizing Tailwind v4 to ensure a consistent **Mobile-First** experience **[SYRS-NF-401]**.
 
 ---
 
-## 6. Documentation Strategy (Knowledge View)
+## 6. Verification Strategy (V&V View)
 
-### 6.1 Engineering Record
+### 6.1 Mirroring Invariant
+- **Standard**: The `tests/` directory MUST mirror the `src/` structure 1:1.
+- **Tooling**: Utilization of **Pest v4** for unit and feature testing with a target of >90% behavioral coverage.
 
-- **Standards Publication**: Formalization of `specs.md`, `architecture.md`, `governance.md`, and
-  `testing.md`.
-- **Glossary Definition**: Establishment of the technical terminology used throughout the project.
-
-### 6.2 Stakeholder Manuals
-
-- **Wiki Genesis**: Creation of the initial Wiki structure covering system overview and
-  installation.
-
-### 6.3 Release Narration
-
-- **Genesis Message**: Highlighting the architectural birth of Internara and its commitment to
-  modular stability and Indonesian vocational excellence.
-
-### 6.4 Strategic GitHub Integration
-
-- **Issue #1**: Creation of the custom Module Bootstrapper.
-- **Issue #2**: Implementation of the `Shared` utility tier (UUID, Formatter).
-- **Issue #3**: Construction of the base `App` and `Auth` layouts.
-- **Milestone**: ARC01-INIT (Project Genesis Baseline).
+### 6.2 Architecture Audit
+- **Isolation Enforcement**: Utilization of Pest Arch to ensure that the `Shared` and `Core` modules remain domain-agnostic and that no isolation leaks occur between domain modules.
 
 ---
 
 ## 7. Exit Criteria & Quality Gates
 
-- **Acceptance Criteria**: Foundational infrastructure operational; autonomous loader active;
-  standardized CRUD patterns verified.
-- **Verification Protocols**: 100% pass rate in **`composer test`** across all foundational modules.
-- **Quality Gate**: Zero violations in static analysis (`composer lint`) and architectural
-  invariants verified via Pest Arch.
+- **Acceptance Criteria**: Modular infrastructure is operational; autonomous loader is active; standardized CRUD patterns are verified.
+- **Quality Gate**: 100% pass rate in **`composer test`** and **`composer lint`**. Zero violations in PHPStan Level 8 static analysis.
 
 ---
 
-_Application Blueprints prevent architectural decay and ensure continuous alignment with the
-foundational specifications._
+_This blueprint constitutes the authoritative engineering record. Every technical modification must be validated against these Genesis principles._

@@ -9,7 +9,7 @@ use Modules\Internship\Livewire\Forms\RegistrationForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Modules\User\Services\Contracts\UserService;
 
 class RegistrationManager extends Component

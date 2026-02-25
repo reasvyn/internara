@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Core\Analytics\Services\Contracts;
+namespace Modules\Admin\Analytics\Services\Contracts;
 
 /**
  * Interface AnalyticsAggregator

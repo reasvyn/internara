@@ -65,7 +65,7 @@ traceable, and ISO-compliant engineering environment:
 - **Strict Typing**: Every PHP file MUST declare `declare(strict_types=1);`.
 - **Identity**: Mandatory use of **UUID v4** (via `Shared\Models\Concerns\HasUuid`) for all domain
   entities. System-level tables (e.g., `Setting`, jobs) may utilize string keys.
-- **Versioning**: Adherence to the **Clean Versioning Standard** (Current: `v0.13.1`).
+- **Versioning**: Adherence to the **Clean Versioning Standard** (Current: `v0.14.0`).
 - **Isolation**: Physical foreign keys across module boundaries are **STRICTLY PROHIBITED**.
 - **Logic**: No `env()` calls; utilize `config()` for static values and the `setting()` registry for
   dynamic ones.

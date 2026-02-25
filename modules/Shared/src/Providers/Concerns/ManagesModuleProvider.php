@@ -7,7 +7,6 @@ namespace Modules\Shared\Providers\Concerns;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Modules\UI\Facades\SlotRegistry;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -264,8 +263,8 @@ trait ManagesModuleProvider
      */
     protected function registerViewSlots(): void
     {
-        if (class_exists(SlotRegistry::class)) {
-            SlotRegistry::configure($this->viewSlots());
+        if (class_exists(\Modules\UI\Facades\SlotRegistry::class)) {
+            \Modules\UI\Facades\SlotRegistry::configure($this->viewSlots());
         }
     }
 

@@ -27,12 +27,6 @@ Provides custom Artisan generators that enforce the **Modular DDD**, **src Omiss
 - **`AppTestCommand`**: An orchestrated test runner (`php artisan app:test`) that executes modular
   test suites sequentially to optimize memory usage.
 
-### 1.3 Onboarding Domain
-
-- **`OnboardingService`**: Orchestrates mass-import of stakeholders (Students, Teachers, Mentors)
-  via CSV data processing.
-    - _Terminology_: Supports universal identifiers (National Identifier & Registration Number).
-
 ---
 
 ## 2. Engineering Standards

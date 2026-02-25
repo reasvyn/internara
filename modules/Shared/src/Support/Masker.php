@@ -41,4 +41,32 @@ final class Masker
 
         return $start.$mask.$end;
     }
+
+    /**
+     * Recursively mask sensitive keys in an array.
+     */
+    public static function maskArray(array $data): array
+    {
+        $sensitiveKeys = [
+            'password', 'password_confirmation', 'token', 'secret',
+            'api_key', 'national_identifier', 'nip', 'phone', 'email'
+        ];
+
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = self::maskArray($value);
+                continue;
+            }
+
+            if (is_string($key) && in_array(strtolower($key), $sensitiveKeys)) {
+                if (strtolower($key) === 'email') {
+                    $data[$key] = self::email((string) $value);
+                } else {
+                    $data[$key] = self::sensitive((string) $value);
+                }
+            }
+        }
+
+        return $data;
+    }
 }

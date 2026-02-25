@@ -132,7 +132,7 @@ class AppException extends Exception
     {
         Log::error($this->getLogMessage(), [
             'user_message' => $this->getUserMessage(),
-            'context' => $this->getContext(),
+            'context' => \Modules\Shared\Support\Masker::maskArray($this->getContext()),
             'exception_trace' => $this->getSubTrace(),
         ]);
 

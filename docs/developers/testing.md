@@ -74,7 +74,7 @@ in constrained environments.
 | **Unit**         | Component Isolation   | Verify logic in mathematical isolation. | Pest (Mocking internal deps)  |
 | **Integration**  | Service Contracts     | Verify inter-module communication.      | Contracts & Public Concrete   |
 | **System**       | End-to-End User Flow  | Validate fulfillment of user stories.   | Feature tests (HTTP/Livewire) |
-| **Browser**      | Visual & UX Integrity | Verify UI/UX and frontend behavior.     | Laravel Dusk (Preferred)      |
+| **Browser**      | Visual & UX Integrity | Verify UI/UX and frontend behavior.     | Laravel Dusk (See §3.2)       |
 | **Architecture** | Structural Invariants | Enforce modular isolation policies.     | Pest Arch Plugin              |
 
 ### 3.1 Structural Placement
@@ -88,6 +88,17 @@ MUST mirror the internal **Modular DDD** structure of the module's `src` directo
     - **Location**: `modules/{Module}/tests/Feature/({Domain}/){Layer}/`
 - **Browser Validation**: Verifying frontend behavior, UI motion, and UX requirements.
     - **Location**: `modules/{Module}/tests/Browser/({Domain}/){Layer}/`
+
+### 3.2 Robust Client-Side Verification
+
+While **Laravel Dusk** is available for full-browser automation, it often encounters environment-specific
+instabilities. For more resilient and performant client-side verification, it is **strongly recommended**
+to utilize **Livewire Tests** and **Blade Rendering** assertions.
+
+- **Livewire Tests**: Ideal for verifying reactive UI state, event dispatching, and component-to-service 
+  orchestration.
+- **Blade Assertions**: Efficiently verify the final HTML structure, accessibility attributes (ARIA), 
+  and localization fulfillment without the overhead of a headless browser.
 
 #### 3.1.1 Placement Rules
 
@@ -174,7 +185,17 @@ The following commands are the **Mandatory Verification Gates**:
 composer test
 ```
 
-### 6.1 Aggressive Lifecycle Cleanup
+### 6.1 Verification Audit Checklist
+
+Before accepting a test suite as valid, it must pass the following audit points:
+- **Mirroring Invariant**: The `tests/` directory structure must 1:1 mirror the `src/` directory.
+- **Behavioral Focus**: Tests must verify business outcomes, not just implementation details (chasing line coverage).
+- **Mocking Discipline**: External dependencies must be mocked via Service Contracts to ensure module test isolation.
+- **Data Isolation**: Every test must run within an isolated database transaction to prevent data leakage.
+- **Negative & Edge Cases**: Tests must exist for failure scenarios (e.g., invalid input, unauthorized access, not found).
+- **Factory Efficiency**: Factories must not generate excessive, unnecessary relational data that degrades test performance.
+
+### 6.2 Aggressive Lifecycle Cleanup
 
 To ensure stability in memory-constrained environments, verification artifacts must implement strict
 resource management.
@@ -183,7 +204,7 @@ resource management.
   and `gc_collect_cycles()` to clear the service container and trigger garbage collection.
 - **Mocking**: Minimize the use of complex `Mockery` objects for large-scale integration tests.
 
-### 6.2 The `app:test` Orchestrator
+### 6.3 The `app:test` Orchestrator
 
 Developers should utilize the `php artisan app:test` command for sequential module execution. It
 ensures that the memory heap is reset between module runs, effectively capping memory usage to the

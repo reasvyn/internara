@@ -7,11 +7,14 @@ namespace Modules\Assessment\Tests\Feature\Controllers;
 use Illuminate\Support\Facades\URL;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
+    $role = Role::create(['name' => 'student', 'guard_name' => 'web']);
+    $permission = Permission::create(['name' => 'registration.view', 'guard_name' => 'web']);
+    $role->givePermissionTo($permission);
 });
 
 test('authorized student can download certificate', function () {

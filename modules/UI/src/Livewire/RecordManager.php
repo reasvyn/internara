@@ -10,7 +10,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Modules\Exception\Concerns\HandlesAppException;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\Concerns\ManagesRecords;
 
 /**
  * Class RecordManager

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Core\Metadata\Services;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\File;
 use Modules\Core\Metadata\Services\Contracts\MetadataService as Contract;
+use Modules\Shared\Support\AppInfo;
 
 /**
  * Class MetadataService
@@ -16,16 +15,11 @@ use Modules\Core\Metadata\Services\Contracts\MetadataService as Contract;
 class MetadataService implements Contract
 {
     /**
-     * Cached application information.
-     */
-    protected ?array $info = null;
-
-    /**
      * {@inheritdoc}
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        return Arr::get($this->getAll(), $key, $default);
+        return AppInfo::get($key, $default);
     }
 
     /**
@@ -33,17 +27,7 @@ class MetadataService implements Contract
      */
     public function getAll(): array
     {
-        if ($this->info === null) {
-            $path = base_path('app_info.json');
-
-            if (! File::exists($path)) {
-                $this->info = [];
-            } else {
-                $this->info = json_decode(File::get($path), true) ?? [];
-            }
-        }
-
-        return $this->info;
+        return AppInfo::all();
     }
 
     /**

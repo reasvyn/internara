@@ -6,9 +6,9 @@ namespace Modules\Setting\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Modules\Core\Metadata\Services\Contracts\MetadataService;
 use Modules\Setting\Models\Setting;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\Shared\Support\AppInfo;
 
 /**
  * Provides a cached, centralized API for managing application-wide dynamic settings.
@@ -30,13 +30,11 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
     /**
      * Create a new service instance.
      */
-    public function __construct(Setting $model, protected MetadataService $metadataService)
+    public function __construct(Setting $model)
     {
         $this->setModel($model);
         $this->setSearchable(['key', 'group']);
         $this->setSortable(['key', 'group']);
-
-        $this->metadataService->verifyIntegrity();
     }
 
     /**
@@ -109,7 +107,7 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             return null;
         }
 
-        return $this->metadataService->get($map[$key]);
+        return AppInfo::get($map[$key]);
     }
 
     /**

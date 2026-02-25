@@ -7,7 +7,7 @@ namespace Modules\Admin\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Exception\Concerns\HandlesAppException;
-use Modules\Shared\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Modules\User\Livewire\Forms\UserForm;
 use Modules\Admin\Services\Contracts\AdminService;
 

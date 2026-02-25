@@ -1,5 +1,7 @@
 # Laravel Dusk
 
+**Robust Client-Side Verification Recommendation:** Browser automation via Laravel Dusk often encounters environment-specific instabilities. For a more resilient and performant alternative, it is **strongly recommended** to utilize **Livewire Tests** and **Blade Rendering** assertions to verify UI structure and reactivity. Refer to the **[Presentation Verification Guide](livewire-tests.md)**.
+
 - [Introduction](#introduction)
 - [Installation](#installation)
     - [Managing ChromeDriver Installations](#managing-chromedriver-installations)
@@ -54,9 +56,9 @@
 
 ## Introduction
 
-> [!WARNING] [Pest 4](https://pestphp.com/) now includes automated browser testing which offers
-> significant performance and usability improvements compared to Laravel Dusk. For new projects, we
-> recommend using Pest for browser testing.
+**Warning:** [Pest 4](https://pestphp.com/) now includes automated browser testing which offers
+significant performance and usability improvements compared to Laravel Dusk. For new projects, we
+recommend using Pest for browser testing.
 
 [Laravel Dusk](https://github.com/laravel/dusk) provides an expressive, easy-to-use browser
 automation and testing API. By default, Dusk does not require you to install JDK or Selenium on your
@@ -75,9 +77,9 @@ To get started, you should install [Google Chrome](https://www.google.com/chrome
 composer require laravel/dusk --dev
 ```
 
-> [!WARNING] If you are manually registering Dusk's service provider, you should **never** register
-> it in your production environment, as doing so could lead to arbitrary users being able to
-> authenticate with your application.
+**Warning:** If you are manually registering Dusk's service provider, you should **never** register
+it in your production environment, as doing so could lead to arbitrary users being able to
+authenticate with your application.
 
 After installing the Dusk package, execute the `dusk:install` Artisan command. The `dusk:install`
 command will create a `tests/Browser` directory, an example Dusk test, and install the Chrome Driver
@@ -90,9 +92,9 @@ php artisan dusk:install
 Next, set the `APP_URL` environment variable in your application's `.env` file. This value should
 match the URL you use to access your application in a browser.
 
-> [!NOTE] If you are using [Laravel Sail](/docs/{{version}}/sail) to manage your local development
-> environment, please also consult the Sail documentation on
-> [configuring and running Dusk tests](/docs/{{version}}/sail#laravel-dusk).
+**Note:** If you are using [Laravel Sail](/docs/{{version}}/sail) to manage your local development
+environment, please also consult the Sail documentation on
+[configuring and running Dusk tests](/docs/{{version}}/sail#laravel-dusk).
 
 <a name="managing-chromedriver-installations"></a>
 
@@ -115,9 +117,9 @@ php artisan dusk:chrome-driver --all
 php artisan dusk:chrome-driver --detect
 ```
 
-> [!WARNING] Dusk requires the `chromedriver` binaries to be executable. If you're having problems
-> running Dusk, you should ensure the binaries are executable using the following command:
-> `chmod -R 0755 vendor/laravel/dusk/bin/`.
+**Warning:** Dusk requires the `chromedriver` binaries to be executable. If you're having problems
+running Dusk, you should ensure the binaries are executable using the following command:
+`chmod -R 0755 vendor/laravel/dusk/bin/`.
 
 <a name="using-other-browsers"></a>
 
@@ -220,9 +222,9 @@ class ExampleTest extends DuskTestCase
 }
 ```
 
-> [!WARNING] SQLite in-memory databases may not be used when executing Dusk tests. Since the browser
-> executes within its own process, it will not be able to access the in-memory databases of other
-> processes.
+**Warning:** SQLite in-memory databases may not be used when executing Dusk tests. Since the browser
+executes within its own process, it will not be able to access the in-memory databases of other
+processes.
 
 <a name="reset-truncation"></a>
 
@@ -265,8 +267,8 @@ By default, this trait will truncate all tables except the `migrations` table. I
 customize the tables that should be truncated, you may define a `$tablesToTruncate` property on your
 test class:
 
-> [!NOTE] If you are using Pest, you should define properties or methods on the base `DuskTestCase`
-> class or on any class your test file extends.
+**Note:** If you are using Pest, you should define properties or methods on the base `DuskTestCase`
+class or on any class your test file extends.
 
 ```php
 /**
@@ -629,8 +631,8 @@ $this->browse(function (Browser $browser) {
 });
 ```
 
-> [!WARNING] After using the `loginAs` method, the user session will be maintained for all tests
-> within the file.
+**Warning:** After using the `loginAs` method, the user session will be maintained for all tests
+within the file.
 
 <a name="cookies"></a>
 
@@ -932,8 +934,8 @@ will search for a `file` input with a matching `name` attribute:
 $browser->attach('photo', __DIR__ . '/photos/mountains.png');
 ```
 
-> [!WARNING] The attach function requires the `Zip` PHP extension to be installed and enabled on
-> your server.
+**Warning:** The attach function requires the `Zip` PHP extension to be installed and enabled on
+your server.
 
 <a name="pressing-buttons"></a>
 
@@ -978,8 +980,8 @@ if ($browser->seeLink($linkText)) {
 }
 ```
 
-> [!WARNING] These methods interact with jQuery. If jQuery is not available on the page, Dusk will
-> automatically inject it into the page so it is available for the test's duration.
+**Warning:** These methods interact with jQuery. If jQuery is not available on the page, Dusk will
+automatically inject it into the page so it is available for the test's duration.
 
 <a name="using-the-keyboard"></a>
 
@@ -1002,9 +1004,9 @@ primary CSS selector for your application:
 $browser->keys('.app', ['{command}', 'j']);
 ```
 
-> [!NOTE] All modifier keys such as `{command}` are wrapped in `{}` characters, and match the
-> constants defined in the `Facebook\WebDriver\WebDriverKeys` class, which can be
-> [found on GitHub](https://github.com/php-webdriver/php-webdriver/blob/master/lib/WebDriverKeys.php).
+**Note:** All modifier keys such as `{command}` are wrapped in `{}` characters, and match the
+constants defined in the `Facebook\WebDriver\WebDriverKeys` class, which can be
+[found on GitHub](https://github.com/php-webdriver/php-webdriver/blob/master/lib/WebDriverKeys.php).
 
 <a name="fluent-keyboard-interactions"></a>
 

@@ -5,9 +5,9 @@ standardized according to **ISO/IEC 12207** (Systems and software engineering â€
 processes). It defines the technical and managerial processes required to transform stakeholder
 needs into a verified and validated modular system.
 
-**[System Requirements Specification](specs.md)**. Every process
-
-> output is a configuration baseline subject to audit.
+> **Governance Mandate:** All lifecycle processes demonstrate adherence to the authoritative
+> **[System Requirements Specification](specs.md)**. Every process output is a configuration 
+> baseline subject to audit.
 
 ---
 

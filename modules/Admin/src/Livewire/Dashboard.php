@@ -7,7 +7,7 @@ namespace Modules\Admin\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Modules\Core\Analytics\Services\Contracts\AnalyticsAggregator;
+use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
 class Dashboard extends Component
