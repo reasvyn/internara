@@ -91,8 +91,8 @@ Ensure the implementation meets both functional and non-functional quality stand
 
 Close the loop between implementation and the technical record.
 
-- **Release Narration**: Document the changes, fixed bugs, and remaining debt in the active
-  **Release Note** (e.g., `docs/pubs/releases/`).
+- **Release Narration**: Document the changes, fixed bugs, and remaining debt in the 
+  **GitHub Release** or Git commit history.
 - **Knowledge Update**: If new protocols are introduced, update the **Developer Wiki** or technical
   guides.
 - **Metadata Sync**: Update `app_info.json` if a version milestone is reached.

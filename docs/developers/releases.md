@@ -17,7 +17,8 @@ This document provides the authoritative index for **Internara Release Notes** a
 | **v0.9.x**  | Development | Experimental   | Released       | **[v0.9.0](v0.9.0.md)**   |
 | **v0.8.x**  | Development | Experimental   | Released       | **[v0.8.0](v0.8.0.md)**   |
 
-> **Note**: For older releases, refer to the files in `docs/pubs/releases/`.
+> **Note**: For historical release data and full change logs, refer to the **Git Tags** and 
+> **GitHub Releases** page.
 
 ---
 
