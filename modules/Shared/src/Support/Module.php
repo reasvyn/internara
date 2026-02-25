@@ -18,6 +18,8 @@ final class Module
      */
     public static function isActive(string $name): bool
     {
-        return NwidartModule::isEnabled($name);
+        $module = NwidartModule::find($name);
+
+        return $module && $module->isEnabled();
     }
 }

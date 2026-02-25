@@ -40,19 +40,21 @@ Omission** rule and a **Domain-Driven** internal structure.
 
 Modules utilize a DDD-inspired hierarchy to organize logic by business domain.
 
-- **Concrete Classes**: `modules/{ModuleName}/src/{Domain}/{Layer}/{StudlyName}.php`
-- **Contracts & Concerns**:
-  `modules/{ModuleName}/src/{Domain}/{Layer}/{Contracts|Concerns}/{StudlyName}.php`
+- **Standard Path**: `modules/{ModuleName}/src/{Domain}/{Layer}/{StudlyName}.php`
+- **Simplified Path (Preferred)**: `modules/{ModuleName}/src/{Layer}/{StudlyName}.php`
 
-#### 2.2.1 Structural Rules
+#### 2.2.1 The Omission Invariant
 
-1.  **Domain-to-Module Exception**: If the **Domain Name** is identical to the **Module Name**, the
-    domain folder must be omitted. Logic resides directly under the layer directory.
-    - _Example_: `modules/User/src/Models/User.php` (✅ Correct)
-    - _Example_: `modules/User/src/User/Models/User.php` (❌ Incorrect)
-2.  **Module-Global Items**: Contracts or Concerns that apply to the entire module (cross-domain)
-    reside in the root layer directory.
-    - _Location_: `src/Contracts/` or `src/Concerns/`.
+To prevent "Redundant Nesting," Internara enforces the following omission rules:
+
+1.  **Domain-to-Module Omission**: If the **Domain Name** is identical to the **Module Name**, the
+    domain folder MUST be omitted.
+    - _Correct_: `Modules/User/src/Models/User.php`
+    - _Incorrect_: `Modules/User/src/User/Models/User.php`
+2.  **src Omission**: The `src` segment is always omitted from the **PHP Namespace**, but present 
+    in the **File System**.
+    - _File Path_: `modules/User/src/Models/User.php`
+    - _Namespace_: `namespace Modules\User\Models;` (✅ Correct)
 3.  **Layer Precision**: Layers must follow standard Laravel/Internara naming (Models, Services,
     Livewire, Enums, etc.).
 

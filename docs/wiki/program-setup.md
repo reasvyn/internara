@@ -1,4 +1,4 @@
-# Step Four: Program Preparation
+# Phase 3: Program Preparation (Step Five)
 
 Before any student can step into the field, you must define the "Rules of Engagement." Step Four is
 about establishing the temporal boundaries and industrial connections required for an internship
@@ -44,4 +44,4 @@ This is where you bridge school departments with industrial partners.
 
 ---
 
-**Next Step:** [Enrollment and Placement Matching](enrollment-matching.md)
+**Next Step:** [Phase 3: Enrollment & Matching (Step Six)](enrollment-matching.md)

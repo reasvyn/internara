@@ -58,6 +58,9 @@ To ensure **Strict Modular Isolation**, inter-module communication is governed b
   `brand_name`, and versioning.
 - **`Modules\Core\Providers\ModuleServiceProvider`**: Autonomous loader for modular discovery,
   service binding, and namespace omission.
+- **Autonomous Service Binding**: Implementation of a global \`BindServiceProvider\` that 
+  automatically maps Interfaces to Implementations based on folder signatures (\`src/Services/Contracts\`), 
+  enabling Zero-Config cross-module dependency injection.
 
 ---
 

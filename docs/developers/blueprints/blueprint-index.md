@@ -1,52 +1,79 @@
 # Application Blueprints: Strategic Design Archive
 
 This directory serves as the authoritative repository for **Architecture Design Records (ADR)** and
-strategic blueprints for the Internara project.
+strategic blueprints for the Internara project. Our construction strategy is organized into
+**Five Strategic Phases**, ensuring maximum architectural integrity and traceability.
 
 ---
 
-## 🏗️ Active Series: ARC01 (Foundational Architecture)
+## 🏗️ Phase 0: The Engine (Foundation)
 
-The ARC01 series defines the primary construction of the modular monolith infrastructure and core
-business domains.
+The foundational layer establishes the infrastructure and technical protocols required for a 
+high-performance modular monolith.
 
-1.  **[Project Genesis (ARC01-INIT-01)](01-ARC01-INIT-01-Project-Genesis.md)**
-    - Focus: Infrastructure, Module Loader, Shared Utilities.
-2.  **[Identity & Security (ARC01-AUTH-01)](02-ARC01-AUTH-01-Identity-Security.md)**
-    - Focus: Authentication, RBAC, User Management.
-3.  **[Institutional Foundation (ARC01-INST-01)](03-ARC01-INST-01-Institutional-Foundation.md)**
-    - Focus: Schools, Departments, Institutional Hierarchy.
-4.  **[Operational Lifecycle (ARC01-ORCH-01)](04-ARC01-ORCH-01-Operational-Lifecycle.md)**
-    - Focus: Internship Placements, Student Registrations.
-5.  **[Instructional Execution (ARC01-GAP-01)](05-ARC01-GAP-01-Instructional-Execution.md)**
-    - Focus: Journals, Attendance, Supervisory Guidance.
-6.  **[Intelligence Delivery (ARC01-INTEL-01)](06-ARC01-INTEL-01-Intelligence-Delivery.md)**
-    - Focus: Assessment, Rubrics, Certified Reporting.
-7.  **[System Stabilization (ARC01-FIX-01)](07-ARC01-FIX-01-System-Stabilization.md)**
-    - Focus: Hardening, i18n, Technical Debt Resolution.
+- **[P0-01: Project Genesis (ARC01-INIT-01)](01-ARC01-INIT-01-Project-Genesis.md)**
+    - **Focus**: Autonomous Module Loader, UUID Invariants, Service Layer abstraction.
+    - **Status**: [COMPLETED] - Baseline Verified.
+
+---
+
+## 🔐 Phase 1: The WHO (Identity & Security)
+
+Establishing the secure perimeter and the "Identity Anchor" used across all system modules.
+
+- **[P1-01: Identity & Security (ARC01-AUTH-01)](02-ARC01-AUTH-01-Identity-Security.md)**
+    - **Focus**: Dual-Entity Identity, RBAC Engine, Account Lifecycle States.
+    - **Status**: [DRAFT] - Pending Phase 1 Execution.
+
+---
+
+## 🏫 Phase 2: The WHERE (Institutional Foundation)
+
+Defining the organizational hierarchy where users and programs reside.
+
+- **[P2-01: Institutional Foundation (ARC01-INST-01)](03-ARC01-INST-01-Institutional-Foundation.md)**
+    - **Focus**: School Sovereignty, Department Isolation, Institutional Branding logic.
+    - **Status**: [DRAFT] - Verified against SyRS.
+
+---
+
+## 💼 Phase 3: The WHAT (Operational Program)
+
+Constructing the core business objects and internship lifecycle orchestration.
+
+- **[P3-01: Operational Program (ARC01-ORCH-01)](04-ARC01-ORCH-01-Operational-Program.md)**
+    - **Focus**: Batching, Slot Management, Multi-Stage Registration, Placement.
+    - **Status**: [DRAFT] - Verified against SyRS.
+
+---
+
+## 📋 Phase 4: The HOW (Execution & Monitoring)
+
+Orchestrating daily operational activities and supervisory oversight telemetry.
+
+- **[P4-01: Execution & Monitoring (ARC01-GAP-01)](05-ARC01-GAP-01-Execution-Monitoring.md)**
+    - **Focus**: Forensic Journals, Attendance Telemetry, Advisory Guidance Loops.
+    - **Status**: [DRAFT] - Verified against SyRS.
+
+---
+
+## 📊 Phase 5: The RESULTS (Intelligence & Delivery)
+
+Finalizing the value loop through assessment, certification, and institutional reporting.
+
+- **[P5-01: Intelligence & Delivery (ARC01-INTEL-01)](06-ARC01-INTEL-01-Intelligence-Delivery.md)**
+    - **Focus**: Composite Scoring, PDF Certificate Synthesis, Analytical Dashboards.
+    - **Status**: [DRAFT] - Verified against SyRS.
 
 ---
 
 ## 📏 Architectural Blueprint Standards
 
-To ensure consistency and technical depth, every blueprint must demonstrate compliance with the
-following structural standards (IEEE 1016).
+Every blueprint must satisfy **IEEE 1016** and **ISO/IEC 12207** standards.
 
-### 1. Mandatory Section Definitions
-
-- **Context & Strategic Intent**: Explain the "Why" and the relationship to the SyRS.
-- **User Roles & Stakeholders**: Identify which user types (STRS) are impacted.
-- **Modular Impact Assessment**: List the modules being modified or introduced.
-- **Contract & Interface Definition**: Formalize the Service Contracts (Interfaces) and DTOs.
-- **Data Persistence Strategy**: Define the UUID-based schema and relationships.
-- **Authorization Governance**: Define the RBAC requirements and Policy logic.
-- **Verification Plan**: Outline the TDD strategy and mandatory quality gates.
-
-### 2. The Blueprint Invariant
-
-- **Traceability**: Every functional requirement in the blueprint must map to a SyRS ID.
-- **Contract-First**: Interfaces must be defined _before_ implementation details.
-- **Zero-Coupling**: Blueprints must explicitly state how modular isolation is preserved.
+1.  **Traceability**: Every functional requirement MUST map to a **SyRS ID**.
+2.  **Contract-First**: Interfaces and DTOs MUST be defined *before* logic.
+3.  **Strict Isolation**: Cross-module communication MUST be explicit and minimized.
 
 ---
 

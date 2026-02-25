@@ -16,11 +16,26 @@ final class Masker
      */
     public static function email(?string $email): string
     {
-        if (empty($email)) {
+        if (empty($email) || ! str_contains($email, '@')) {
             return '';
         }
 
-        return (string) preg_replace('/(?<=.{1}).(?=.*@)/', '*', $email);
+        [$user, $domain] = explode('@', $email);
+        $length = strlen($user);
+
+        if ($length <= 1) {
+            return '*@' . $domain;
+        }
+
+        if ($length === 2) {
+            return substr($user, 0, 1) . '*@' . $domain;
+        }
+
+        $first = substr($user, 0, 1);
+        $last = substr($user, -1);
+        $mask = str_repeat('*', $length - 2);
+
+        return $first . $mask . $last . '@' . $domain;
     }
 
     /**

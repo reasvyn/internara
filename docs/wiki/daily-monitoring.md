@@ -1,4 +1,4 @@
-# Step Six: Daily Monitoring
+# Phase 4: Daily Monitoring (Step Seven)
 
 This is the "Pulse" of the internship. Step Six is the most active phase, where Internara captures
 high-fidelity evidence of student progress in the field through a mobile-first monitoring loop.
@@ -45,4 +45,4 @@ Instructors use Internara to document their periodic field visits and guidance s
 
 ---
 
-**Next Step:** [Assessment and Evaluation](assessment-and-evaluation.md)
+**Next Step:** [Phase 5: Assessment & Evaluation (Step Eight)](assessment-and-evaluation.md)

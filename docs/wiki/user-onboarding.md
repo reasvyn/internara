@@ -1,4 +1,4 @@
-# Step Three: User Onboarding
+# Phase 1: User Onboarding (Step Two)
 
 With your school's foundation set, you must now bring the people into the system. Internara
 orchestrates the lifecycle of accounts for Teachers, Students, and Mentors, ensuring everyone starts
@@ -49,4 +49,4 @@ Once accounts are created, Internara handles the secure distribution of initial 
 
 ---
 
-**Next Step:** [Program Setup: Cycles & Partners](program-setup.md)
+**Next Step:** [Phase 1: Data Management (Step Three)](data-management.md)

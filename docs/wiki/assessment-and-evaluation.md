@@ -1,4 +1,4 @@
-# Step Seven: Assessment & Evaluation
+# Phase 5: Assessment & Evaluation (Step Eight)
 
 As the internship cycle reaches its conclusion, Internara transforms thousands of daily data points
 into an authoritative record of student competency. Step Seven is about summarizing the field
@@ -45,7 +45,7 @@ Once evaluations are finalized, the system generates the "Output" of the entire 
 
 ---
 
-**Next Step:** [Reporting & Insights](reporting.md)
+**Next Step:** [Phase 5: Intelligence & Reporting (Step Nine)](reporting.md)
 
 _This concludes the Internara 101 Tutorial. For further assistance, refer to the
 **[Module Catalog](modules.md)**._

@@ -8,13 +8,16 @@ use Modules\Shared\Support\Module;
 use Nwidart\Modules\Facades\Module as NwidartModule;
 
 test('Module::isActive returns true for enabled module', function () {
-    NwidartModule::shouldReceive('isEnabled')->with('Shared')->andReturn(true);
+    $moduleMock = mock(\Nwidart\Modules\Module::class);
+    $moduleMock->shouldReceive('isEnabled')->twice()->andReturn(true);
+
+    NwidartModule::shouldReceive('find')->with('Shared')->twice()->andReturn($moduleMock);
 
     expect(Module::isActive('Shared'))->toBeTrue()->and(is_active_module('Shared'))->toBeTrue();
 });
 
 test('Module::isActive returns false for disabled module', function () {
-    NwidartModule::shouldReceive('isEnabled')->with('NonExistent')->andReturn(false);
+    NwidartModule::shouldReceive('find')->with('NonExistent')->twice()->andReturn(null);
 
     expect(Module::isActive('NonExistent'))
         ->toBeFalse()

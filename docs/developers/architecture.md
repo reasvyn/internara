@@ -216,9 +216,11 @@ Domain modules (e.g., `User`, `Internship`) execute the actual business logic of
 - **Dependency Invariant**:
     1.  **Strict Downward Dependency**: Domain modules primarily depend on the `Shared` tier.
     2.  **Contractual Access**: Dependencies on the `Core` tier must be resolved via **Service
-        Contracts** or framework-level Policies to prevent concrete coupling.
-    3.  **Physical Integrity**: **No physical foreign keys** across modules. Referential integrity
-        is enforced at the Service Layer.
+        Contracts** or framework-level Policies.
+    3.  **Physical Integrity**: **No physical foreign keys** across modules.
+    4.  **Identity Anchors**: The `User` and `Profile` models are recognized as **Global Identity 
+        Anchors**. They are exempt from the strict isolation rule and may be utilized across 
+        all tiers for authentication and authorization context.
 
 ---
 

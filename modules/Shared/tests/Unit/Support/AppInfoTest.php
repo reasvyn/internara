@@ -40,7 +40,7 @@ describe('AppInfo Support Utility', function () {
     test('it returns default value for missing keys', function () {
         File::put($this->path, json_encode([]));
 
-        expect(AppInfo::get('missing', 'fallback'))->toBe('default');
+        expect(AppInfo::get('missing', 'fallback'))->toBe('fallback');
     });
 
     test('it provides helper for version', function () {

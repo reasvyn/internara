@@ -1,4 +1,4 @@
-# Step Two: Institutional Foundation
+# Phase 2: Institutional Setup (Step Four)
 
 After completing the **Setup Wizard**, Internara is technically "live," but it remains a blank
 canvas. Step Two is about claiming the system for your institution and defining the academic
@@ -46,4 +46,4 @@ linked to an **Academic Year**.
 
 ---
 
-**Next Step:** [User Onboarding: Teachers & Students](user-onboarding.md)
+**Next Step:** [Phase 3: Program Preparation (Step Five)](program-setup.md)

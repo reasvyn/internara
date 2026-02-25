@@ -1,4 +1,4 @@
-# Data Management: Systemic Maintenance & Audit
+# Phase 1: Data Management (Step Three)
 
 This guide formalizes the procedures for managing, auditing, and maintaining the data integrity of
 the Internara ecosystem.
@@ -63,5 +63,7 @@ For developers and advanced administrators, refer to the following technical gui
 
 ---
 
-_Maintaining a clean and accurate data base is essential for the reliability of Internara's
+**Next Step:** [Phase 2: Institutional Setup (Step Four)](institutional-foundation.md)
+
+_Maintaining a clean and accurate data base is essential for the reliability of Internara's 
 analytical reporting._

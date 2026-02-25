@@ -22,7 +22,7 @@ final class Environment
      */
     public static function isDevelopment(): bool
     {
-        return config('app.env') === 'local' || config('app.env') === 'dev';
+        return app()->environment('local', 'dev');
     }
 
     /**
@@ -30,7 +30,10 @@ final class Environment
      */
     public static function isTesting(): bool
     {
-        return config('app.env') === 'testing' || app()->runningUnitTests();
+        return app()->environment('testing') 
+            || app()->runningUnitTests() 
+            || defined('PHPUNIT_COMPOSER_INSTALL') 
+            || defined('__PEST__');
     }
 
     /**

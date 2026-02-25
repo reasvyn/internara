@@ -52,7 +52,7 @@ process.
 | **Guidance**   | Onboarding         | Manages official handbooks and digital readiness verification through acknowledgement loops.        |
 | **Assessment** | Evaluation         | Central engine for performance evaluation, automated compliance scoring, and credentialing.         |
 | **Report**     | Data Export        | Reporting engine for generating authoritative institutional records in PDF and Excel formats.       |
-| **Admin**      | System Monitoring  | Central command center for administrators to orchestrate settings and monitor system-wide activity. |
+| **Admin**       | System Monitoring  | Central command center for administrators to orchestrate system-wide settings, monitor operational health, and manage cross-module telemetry. |
 
 ---
 

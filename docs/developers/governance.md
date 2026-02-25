@@ -166,7 +166,7 @@ When a business process impacts multiple modules, the **Initiating Service** mus
 transactional control.
 
 ```php
-public function register(InternshipRegistrationData $data): Internship
+public function register(InternshipRegistrationData $data): string
 {
     return DB::transaction(function () use ($data) {
         // 1. Internal Persistence
@@ -176,9 +176,9 @@ public function register(InternshipRegistrationData $data): Internship
         $this->accountService->initializeAccess($data->studentId);
 
         // 3. Event Dispatching
-        event(new InternshipRegistered($internship));
+        event(new InternshipRegistered($internship->uuid));
 
-        return $internship;
+        return $internship->uuid;
     });
 }
 ```

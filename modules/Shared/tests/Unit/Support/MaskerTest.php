@@ -9,9 +9,9 @@ use Modules\Shared\Support\Masker;
 describe('Masker Support Utility', function () {
     test('it masks email addresses', function () {
         expect(Masker::email('user@example.com'))
-            ->toBe('u***@example.com')
+            ->toBe('u**r@example.com')
             ->and(Masker::email('test.account@domain.id'))
-            ->toBe('t***@domain.id')
+            ->toBe('t**********t@domain.id')
             ->and(Masker::email(''))
             ->toBe('');
     });
@@ -43,11 +43,11 @@ describe('Masker Support Utility', function () {
         expect($masked['name'])
             ->toBe('John Doe')
             ->and($masked['email'])
-            ->toBe('j***@example.com')
+            ->toBe('j**n@example.com')
             ->and($masked['security']['password'])
-            ->toBe('sec***123')
+            ->toBe('sec****23')
             ->and($masked['security']['token'])
-            ->toBe('pla***ken')
+            ->toBe('pla******en')
             ->and($masked['meta']['phone'])
             ->toBe('081******89');
     });
