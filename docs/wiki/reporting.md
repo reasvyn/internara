@@ -1,60 +1,42 @@
 # Intelligence & Reporting Guide
 
-This guide explains how to utilize Internara's reporting engine and analytical dashboards to monitor
-and evaluate internship programs.
+Step Eight is about "Closing the Loop." Internara doesn't just collect data; it transforms 
+it into institutional intelligence. This guide helps you navigate the reporting engine and 
+understand the analytical metrics provided by the **Admin** and **Report** modules.
 
 ---
 
 ## 1. Institutional Dashboards
+Administrators have access to the **Intelligence Dashboard**, a real-time synthesis of 
+engagement and performance metrics.
 
-Administrators and Staff members have access to the **Intelligence Dashboard**, which provides a
-real-time synthesis of engagement and performance metrics.
+- **Checklist for Monitoring**:
+    - [ ] **Attendance Rate**: Monitor the "Pulse" of the program across all departments.
+    - [ ] **Journal Compliance**: Identify gaps in student reflections and mentor validation.
+    - [ ] **"At-Risk" Identification**: Proactively intervene when students fall below 
+      75% engagement or receive negative field feedback.
+- **Why?**: Real-time intelligence ensures that no student is "lost" in the field, satisfying 
+  the mandate for continuous institutional oversight (**S2 - Sustain**).
 
-### 1.1 Engagement Metrics
+## 2. Generating Authoritative Reports
+Internara allows you to export high-fidelity PDF documents for official records.
 
-- **Attendance Rate**: The percentage of students checking in consistently.
-- **Journal Compliance**: The percentage of approved daily logs relative to the total internship
-  duration.
+- **Report Checklist**:
+    - [ ] **Competency Achievement**: Print the final transcript for each student.
+    - [ ] **Class Summary**: Export aggregated progress for instructors and heads of department.
+    - [ ] **Partner Analytics**: Analyze which industrial partners provide the best 
+      learning outcomes.
+- **Performance Note**: Heavy reports are generated in the **Background**. You will 
+  receive a notification and a secure download link once the file is ready.
 
-### 1.2 "At-Risk" Identification
+## 3. Interpreting the Composite Metrics
+The system uses a standardized calculation model to ensure evaluation fairness:
 
-The system automatically flags students who meet the following criteria:
-
-- Attendance falls below 75%.
-- Journal submissions are overdue by more than 7 days.
-- Negative feedback from industry supervisors.
-
----
-
-## 2. Generating Reports
-
-Internara allows stakeholders to export data into professional PDF documents.
-
-### 2.1 Report Types
-
-- **Competency Achievement**: A detailed transcript of skills acquired by a student during their
-  placement.
-- **Class Summary**: An aggregated report for instructors to see the progress of an entire cohort.
-- **Partner Engagement**: Analysis of industry placement utilization and mentor feedback.
-
-### 2.2 Asynchronous Generation
-
-Heavy reports are generated in the background. Once you start a report:
-
-1.  You will receive a notification that the process has started.
-2.  You can continue using the application.
-3.  A download link will be sent to your **Notifications** and **Email** once ready.
+- **Participation Score**: A weighted calculation representing the student's operational 
+  discipline (Attendance + Journaling).
+- **Final Grade**: A composite score involving evaluations from both the **Monitoring Teacher** 
+  and the **Industry Mentor**.
 
 ---
 
-## 3. Interpreting Results
-
-- **Participation Score**: A weighted calculation (50% Attendance, 50% Journaling) representing the
-  student's operational commitment.
-- **Final Grade**: A composite score involving evaluations from both Teachers (40%) and Mentors
-  (40%), plus Participation (20%).
-
----
-
-_For technical details on the reporting engine, refer to the
-**[Reporting Orchestration](../developers/governance.md)** documentation._
+**Return to:** [Tutorial Index](README.md) | [Module Catalog](modules.md)

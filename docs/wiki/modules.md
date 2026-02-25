@@ -18,7 +18,7 @@ These modules provide the technical backbone and shared services used by the ent
 | :--------------- | :------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
 | **Shared**       | Infrastructure       | Provides business-agnostic technical infrastructure (UUIDs, `EloquentQuery`) and technical utilities (Formatting, Masking). |
 | **Core**         | Technical Foundation | Acts as the system "glue," handling metadata SSoT (`MetadataService`), Academic Year scoping (`AcademicYearManager`), and global middleware.        |
-| **Support**      | Business Utility     | Provides automated scaffolding (Artisan generators), Testing orchestration, and mass-operation tools (Onboarding).          |
+| **Support**      | Business Utility     | Provides automated scaffolding (Artisan generators), testing orchestration, and modular development tools.                 |
 | **Exception**    | Error Handling       | Manages standardized, localized, and secure fault management with automated abstraction for production safety.              |
 | **Status**       | State Management     | Provides the foundational infrastructure and Enums for tracking auditable entity lifecycle transitions.                     |
 | **UI**           | Design System        | Implements the headless Design System, standardized components, and the cross-module _Slot Injection_ mechanism.            |
@@ -28,7 +28,7 @@ These modules provide the technical backbone and shared services used by the ent
 | **Notification** | Messaging            | Provides a unified infrastructure for real-time UI alerts (Native Toasts) and multi-channel system notifications.           |
 | **Media**        | File Management      | Manages secure file storage, image processing, and media collections via standardized model concerns.                       |
 | **Log**          | Audit Trail          | Records activity audit trails and forensic system logs with recursive automated PII masking.                                |
-| **Setup**        | Installation         | Orchestrates environment initialization, system auditing, and the Port-Aware Installation Wizard.                           |
+| **Setup**        | Installation         | Orchestrates environment initialization, system auditing, Onboarding orchestration, and the Installation Wizard.           |
 
 ## 2. Domain Modules (Business Logic)
 

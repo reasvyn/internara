@@ -10,18 +10,19 @@ structured as a step-by-step lifecycle tutorial to help you manage a complete in
 Follow these guides in order to bootstrap and operate your system effectively:
 
 ### Phase 1: Setup & Foundation
-1.  **[Project Overview](overview.md)**: Vision, stakeholders, and capabilities.
-2.  **[Technical Setup](installation.md)**: Cloning the repository and installation.
-3.  **[Initial Configuration](institutional-foundation.md)**: School, Departments, and Active Period.
+0.  **[Step Zero: Project Overview](overview.md)**: Preparation and readiness checklist.
+1.  **[Step One: Technical Setup](installation.md)**: Cloning and environment initialization.
+2.  **[Step Two: Institutional Foundation](institutional-foundation.md)**: Identity and academic structure.
 
 ### Phase 2: Management & Enrollment
-4.  **[User Onboarding](user-onboarding.md)**: Registering Teachers and Students.
-5.  **[Program Preparation](program-setup.md)**: Defining cycles and industry partners.
-6.  **[Enrollment & Matching](enrollment-matching.md)**: Registrations and placement assignments.
+3.  **[Step Three: User Onboarding](user-onboarding.md)**: Registering Teachers and Students.
+4.  **[Step Four: Program Preparation](program-setup.md)**: Defining cycles and industry partners.
+5.  **[Step Five: Enrollment & Matching](enrollment-matching.md)**: Registrations and placement matching.
 
 ### Phase 3: Execution & Assessment
-7.  **[Daily Monitoring](daily-monitoring.md)**: Journals, Attendance, and Guidance.
-8.  **[Assessment & Evaluation](assessment-and-evaluation.md)**: Scoring and Certification.
+6.  **[Step Six: Daily Monitoring](daily-monitoring.md)**: Journals, Attendance, and Mentoring.
+7.  **[Step Seven: Assessment & Evaluation](assessment-and-evaluation.md)**: Scoring and Certification.
+8.  **[Step Eight: Intelligence & Reporting](reporting.md)**: Analytics and final insights.
 
 ---
 
