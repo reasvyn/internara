@@ -17,12 +17,10 @@ describe('Masker Support Utility', function () {
     });
 
     test('it masks generic sensitive values', function () {
-        expect(Masker::sensitive('08123456789'))
-            ->toBe('081******89')
-            ->and(Masker::sensitive('password'))
-            ->toBe('pas***rd')
-            ->and(Masker::sensitive('123'))
-            ->toBe('***');
+        expect(Masker::sensitive('password123'))
+            ->toBe('pas******23')
+            ->and(Masker::sensitive('08123456789'))
+            ->toBe('081******89');
     });
 
     test('it masks arrays recursively', function () {

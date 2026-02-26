@@ -31,8 +31,6 @@ class SystemSetting extends Component
 
     public string $app_version = '';
 
-    public string $app_series = '';
-
     /**
      * Operational settings.
      */
@@ -93,7 +91,6 @@ class SystemSetting extends Component
         // Metadata
         $this->app_name = $service->getValue('app_name', 'Internara');
         $this->app_version = $service->getValue('app_version', 'v0.13.0');
-        $this->app_series = $service->getValue('app_series', 'N/A');
 
         // Assets
         $this->current_logo_url = $service->getValue('brand_logo');

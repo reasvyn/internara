@@ -105,4 +105,4 @@ system functionality:
 **Next Step:** [Phase 0: Technical Setup (Step One)](installation.md)
 
 _For technical specifications, refer to the
-**[System Requirements Specification](../developers/specs.md)**._
+**[System Requirements Specification](../dev/specs.md)**._

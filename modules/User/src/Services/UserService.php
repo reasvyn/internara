@@ -29,7 +29,7 @@ class UserService extends EloquentQuery implements Contract
     public function __construct(
         User $model,
         protected SuperAdminService $superAdminService,
-        protected ProfileService $profileService,
+        protected \Modules\Profile\Services\Contracts\ProfileService $profileService,
     ) {
         $this->setModel($model);
         $this->setSearchable(['name', 'email', 'username']);
@@ -45,6 +45,14 @@ class UserService extends EloquentQuery implements Contract
         unset($data['profile']);
 
         return $this->createWithProfile($data, $profileData);
+    }
+
+    /**
+     * Internal proxy to call parent's create without triggering local overrides.
+     */
+    protected function parentCreate(array $data): User
+    {
+        return parent::create($data);
     }
 
     /**
@@ -79,7 +87,7 @@ class UserService extends EloquentQuery implements Contract
             } else {
                 // Standard User Creation
                 $filteredData = Arr::except($userData, ['roles', 'status']);
-                $user = parent::create($filteredData);
+                $user = $this->withoutAuthorization()->parentCreate($filteredData);
 
                 $this->handleUserAvatar($user, $userData['avatar_file'] ?? null);
                 $user->assignRole($roles);
@@ -175,7 +183,7 @@ class UserService extends EloquentQuery implements Contract
             unset($data['password']);
         }
 
-        $updatedUser = parent::update($id, $data);
+        $updatedUser = $this->withoutAuthorization()->parentUpdate($id, $data);
         $this->handleUserAvatar($updatedUser, $data['avatar_file'] ?? null);
 
         // Update basic User details
@@ -188,6 +196,22 @@ class UserService extends EloquentQuery implements Contract
         }
 
         return $updatedUser;
+    }
+
+    /**
+     * Internal proxy to call parent's update without triggering local overrides.
+     */
+    protected function parentUpdate(mixed $id, array $data): User
+    {
+        return parent::update($id, $data);
+    }
+
+    /**
+     * Internal proxy to call parent's delete without triggering local overrides.
+     */
+    protected function parentDelete(mixed $id, bool $force = false): bool
+    {
+        return parent::delete($id, $force);
     }
 
     /**
@@ -207,7 +231,7 @@ class UserService extends EloquentQuery implements Contract
             return $this->superAdminService->delete($id, $force);
         }
 
-        return parent::delete($id, $force);
+        return $this->withoutAuthorization()->parentDelete($id, $force);
     }
 
     /**

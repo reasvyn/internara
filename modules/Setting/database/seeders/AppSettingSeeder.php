@@ -37,20 +37,6 @@ class AppSettingSeeder extends Seeder
                 'group' => 'system',
             ],
             [
-                'key' => 'app_series_code',
-                'value' => $info['series_code'] ?? 'Unknown',
-                'type' => 'string',
-                'description' => 'Application series code',
-                'group' => 'system',
-            ],
-            [
-                'key' => 'app_status',
-                'value' => $info['status'] ?? 'Unknown',
-                'type' => 'string',
-                'description' => 'Application development status',
-                'group' => 'system',
-            ],
-            [
                 'key' => 'app_author_name',
                 'value' => $info['author']['name'] ?? 'Unknown',
                 'type' => 'string',

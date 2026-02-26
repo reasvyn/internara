@@ -129,10 +129,6 @@
                             <span class="text-base-content/60">{{ __('setting::ui.fields.app_version') }}</span>
                             <x-ui::badge :value="$app_version" variant="neutral" outline size="badge-sm" />
                         </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-base-content/60">{{ __('setting::ui.fields.app_series') }}</span>
-                            <span class="font-mono text-xs opacity-80">{{ $app_series }}</span>
-                        </div>
                     </div>
                 </x-ui::card>
 

@@ -30,10 +30,10 @@ final class Environment
      */
     public static function isTesting(): bool
     {
-        return app()->environment('testing') 
+        return defined('PHPUNIT_COMPOSER_INSTALL') 
+            || defined('__PEST__') 
             || app()->runningUnitTests() 
-            || defined('PHPUNIT_COMPOSER_INSTALL') 
-            || defined('__PEST__');
+            || app()->environment('testing');
     }
 
     /**

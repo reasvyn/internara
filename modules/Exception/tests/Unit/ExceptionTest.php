@@ -27,7 +27,12 @@ test('RecordNotFoundException has correct defaults', function () {
     expect($exception->getCode())
         ->toBe(404)
         ->and($exception->getContext())
-        ->toBe(['record' => ['id' => '123']]);
+        ->toBe([
+            'uuid' => null,
+            'module' => null,
+            'record' => ['id' => '123'],
+            'replace' => [],
+        ]);
 });
 
 test('AppException renders json response correctly', function () {

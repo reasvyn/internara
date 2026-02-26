@@ -170,7 +170,8 @@ class Index extends Component
 
             $this->userService->update(auth()->id(), $userData);
 
-            $this->profileService->update(auth()->user()->profile->id, [
+            $userProfile = $this->profileService->getByUserId(auth()->id());
+            $this->profileService->withoutAuthorization()->update($userProfile->id, [
                 'phone' => $this->phone,
                 'address' => $this->address,
                 'gender' => $this->gender,

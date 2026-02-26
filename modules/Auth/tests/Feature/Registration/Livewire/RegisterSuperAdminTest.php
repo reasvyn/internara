@@ -27,6 +27,10 @@ describe('RegisterSuperAdmin Component', function () {
     });
 
     test('it can register a super admin successfully', function () {
+        $user = User::factory()->create();
+        $user->assignRole('super-admin');
+        $this->actingAs($user);
+
         Livewire::test(RegisterSuperAdmin::class)
             ->set('form.name', 'System Admin')
             ->set('form.email', 'admin@internara.test')
@@ -49,6 +53,10 @@ describe('RegisterSuperAdmin Component', function () {
     });
 
     test('it supports account re-linking during setup', function () {
+        $admin = User::factory()->create();
+        $admin->assignRole('super-admin');
+        $this->actingAs($admin);
+
         app(\Modules\Setting\Services\Contracts\SettingService::class)->setValue(
             'app_installed',
             false,

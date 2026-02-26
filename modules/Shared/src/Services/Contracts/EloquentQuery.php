@@ -35,6 +35,7 @@ interface EloquentQuery
      *
      * @param array<string, mixed> $filters Contextual criteria (search, sort, scopes).
      * @param list<string> $columns Specific attributes required by the consumer.
+     * @param list<string> $with Relationships to eager load.
      *
      * @return LengthAwarePaginator<TModel> The paginated domain collection.
      */
@@ -42,6 +43,7 @@ interface EloquentQuery
         array $filters = [],
         int $perPage = self::DEFAULT_PER_PAGE,
         array $columns = ['*'],
+        array $with = [],
     ): LengthAwarePaginator;
 
     /**
@@ -51,10 +53,11 @@ interface EloquentQuery
      * exhaustion. Prefer pagination for user-facing lists.
      *
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return Collection<int, TModel>
      */
-    public function all(array $columns = ['*']): Collection;
+    public function all(array $columns = ['*'], array $with = []): Collection;
 
     /**
      * Retrieves a filtered collection of records without pagination.
@@ -64,20 +67,22 @@ interface EloquentQuery
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return Collection<int, TModel>
      */
-    public function get(array $filters = [], array $columns = ['*']): Collection;
+    public function get(array $filters = [], array $columns = ['*'], array $with = []): Collection;
 
     /**
      * Retrieves the singular leading record matching the criteria.
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return TModel|null The leading entity or null if zero-match.
      */
-    public function first(array $filters = [], array $columns = ['*']): ?Model;
+    public function first(array $filters = [], array $columns = ['*'], array $with = []): ?Model;
 
     /**
      * Retrieves the leading record or terminates with a secure exception.
@@ -87,10 +92,13 @@ interface EloquentQuery
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException<TModel>
+     * @throws \Modules\Exception\RecordNotFoundException
+     *
+     * @return TModel
      */
-    public function firstOrFail(array $filters = [], array $columns = ['*']): Model;
+    public function firstOrFail(array $filters = [], array $columns = ['*'], array $with = []): Model;
 
     /**
      * Finds a specific entity by its authoritative primary key.
@@ -99,10 +107,18 @@ interface EloquentQuery
      * Service Contracts.
      *
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return TModel|null
      */
-    public function find(mixed $id, array $columns = ['*']): ?Model;
+    public function find(mixed $id, array $columns = ['*'], array $with = []): ?Model;
+
+    /**
+     * Find a record by its identity or throw a localized exception.
+     *
+     * @throws \Modules\Exception\RecordNotFoundException
+     */
+    public function findOrFail(mixed $id, array $columns = ['*'], array $with = []): Model;
 
     /**
      * Verifies the physical existence of records matching the criteria.
@@ -130,6 +146,8 @@ interface EloquentQuery
      * Modifies an existing domain entity identified by its primary key.
      *
      * @param array<string, mixed> $data The updated attribute set.
+     *
+     * @throws \Modules\Exception\RecordNotFoundException
      *
      * @return TModel The updated entity state.
      */
@@ -193,10 +211,11 @@ interface EloquentQuery
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return array<int, array<string, mixed>>
      */
-    public function toArray(array $filters = [], array $columns = ['*']): array;
+    public function toArray(array $filters = [], array $columns = ['*'], array $with = []): array;
 
     /**
      * Retrieves a scoped Query Builder instance for advanced orchestration.
@@ -206,10 +225,11 @@ interface EloquentQuery
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return Builder<TModel>
      */
-    public function query(array $filters = [], array $columns = ['*']): Builder;
+    public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder;
 
     /**
      * Orchestrates cached data delivery with authoritative fallback.

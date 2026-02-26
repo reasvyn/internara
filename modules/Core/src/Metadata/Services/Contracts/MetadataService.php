@@ -21,7 +21,7 @@ interface MetadataService
      * Retrieves a metadata value by key from the application information registry.
      *
      * This acts as the technical accessor for static system data defined in
-     * app_info.json, ensuring that versioning and series codes are consistent
+     * app_info.json, ensuring that versioning and Blueprint IDs are consistent
      * across all modules.
      *
      * @param string $key The dot-notation key (e.g., 'author.name').
@@ -43,17 +43,24 @@ interface MetadataService
     public function getVersion(): string;
 
     /**
-     * Retrieves the application's series code identifier.
-     *
-     * The series code represents the current architectural milestone or
-     * development sprint (e.g., ARC01-FIX).
-     */
-    public function getSeriesCode(): string;
-
-    /**
      * Retrieves the authoritative author information registry.
      */
     public function getAuthor(): array;
+
+    /**
+     * Retrieves the Product Identity (App Name).
+     *
+     * This represents the software itself (e.g., "Internara"), defined in app_info.json.
+     */
+    public function getAppName(): string;
+
+    /**
+     * Retrieves the Instance Identity (Brand Name).
+     *
+     * This represents the institution using the system (e.g., "SMKN 1 Jakarta"),
+     * managed via settings with a fallback to the App Name.
+     */
+    public function getBrandName(): string;
 
     /**
      * Verifies the integrity of the application metadata and author attribution.

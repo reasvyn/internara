@@ -4,51 +4,66 @@ declare(strict_types=1);
 
 namespace Modules\Exception;
 
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
+use DomainException;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Class RecordNotFoundException.
+ * Standardized Exception for localized resource discovery failures.
  *
- * A specialized exception for scenarios where a requested data record
- * or resource cannot be located in the system.
+ * This exception is caught by the global handler and transformed into
+ * a consistent, localized UI feedback.
  */
-class RecordNotFoundException extends AppException
+final class RecordNotFoundException extends DomainException
 {
     /**
-     * Create a new RecordNotFoundException instance.
-     *
-     * @param string $userMessage The translation key for the user-friendly message (e.g., "records::exception.not_found").
-     * @param array $replace Parameters to pass to the translator for replacement.
-     * @param string|null $locale Specific locale to use for the user message.
-     * @param array $record The record identifier(s) that were not found, for logging context.
-     * @param string $logMessage The log message to use for logging purposes.
-     * @param int $code The HTTP status code, defaulting to 404 (Not Found).
-     * @param Throwable|null $previous The previous exception used for chaining.
+     * @param string|null $message Optional localized translation key.
+     * @param string|null $uuid The UUID of the missing record.
+     * @param string|null $module The module where the record was sought.
+     * @param array $replace Replacement data for translation keys.
+     * @param mixed $record Legacy record data for backward compatibility.
      */
     public function __construct(
-        string $userMessage = 'exception::messages.not_found',
-        array $replace = [],
-        ?string $locale = null,
-        array $record = [],
-        string $logMessage = 'Record not found.',
-        int $code = Response::HTTP_NOT_FOUND,
-        ?Throwable $previous = null,
+        ?string $message = null,
+        public ?string $uuid = null,
+        public ?string $module = null,
+        public array $replace = [],
+        public mixed $record = null
     ) {
-        $context = [];
+        $message = $message ?? __('exception::messages.record_not_found');
+        parent::__construct($message, 404);
 
-        if (! empty($record)) {
-            $context['record'] = $record;
-        }
+        $this->logDiscoveryFailure();
+    }
 
-        parent::__construct(
-            userMessage: $userMessage,
-            replace: $replace,
-            locale: $locale,
-            logMessage: $logMessage,
-            code: $code,
-            previous: $previous,
-            context: $context,
-        );
+    /**
+     * Get the context for the exception.
+     */
+    public function getContext(): array
+    {
+        return [
+            'uuid'    => $this->uuid,
+            'module'  => $this->module,
+            'record'  => $this->record ?? $this->replace['record'] ?? null,
+            'replace' => $this->replace,
+        ];
+    }
+
+    /**
+     * Create a new instance for a specific UUID and module context.
+     */
+    public static function for(string $uuid, string $module, ?string $message = null): self
+    {
+        return new self($message, $uuid, $module);
+    }
+
+    /**
+     * Log the discovery failure for forensic analysis.
+     */
+    protected function logDiscoveryFailure(): void
+    {
+        Log::warning("[RecordNotFound] Resource not found in module [{$this->module}] with UUID [{$this->uuid}]", [
+            'uuid'   => $this->uuid,
+            'module' => $this->module,
+        ]);
     }
 }

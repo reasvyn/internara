@@ -11,9 +11,11 @@ use Modules\Internship\Models\InternshipPlacement;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    $role = \Modules\Permission\Models\Role::create(['name' => 'staff']);
-    $permission = \Modules\Permission\Models\Permission::create(['name' => 'internship.update']);
-    $role->givePermissionTo($permission);
+    $role = \Modules\Permission\Models\Role::create(['name' => 'staff', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Permission::create(['name' => 'placement.view', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Permission::create(['name' => 'placement.manage', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Permission::create(['name' => 'internship.manage', 'guard_name' => 'web']);
+    $role->givePermissionTo(['placement.view', 'placement.manage', 'internship.manage']);
 
     $this->user = User::factory()->create();
     $this->user->assignRole('staff');

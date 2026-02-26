@@ -35,8 +35,10 @@ test('mentor can view evaluation page', function () {
 });
 
 test('mentor can submit evaluation', function () {
+    \Modules\Permission\Models\Permission::firstOrCreate(['name' => 'assessment.manage', 'guard_name' => 'web']);
     $mentor = User::factory()->create();
     $mentor->assignRole('mentor');
+    $mentor->givePermissionTo('assessment.manage');
 
     $student = User::factory()->create();
     $student->assignRole('student');

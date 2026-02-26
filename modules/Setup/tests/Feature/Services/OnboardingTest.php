@@ -7,9 +7,14 @@ use Modules\User\Models\User;
 
 beforeEach(function () {
     // Setup roles
-    \Modules\Permission\Models\Role::create(['name' => 'student']);
-    \Modules\Permission\Models\Role::create(['name' => 'teacher']);
-    \Modules\Permission\Models\Role::create(['name' => 'mentor']);
+    \Modules\Permission\Models\Role::create(['name' => 'student', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Role::create(['name' => 'teacher', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Role::create(['name' => 'mentor', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('super-admin');
+    $this->actingAs($admin);
 });
 
 test('it can import students from CSV', function () {
@@ -85,7 +90,7 @@ test('it can handle a larger batch of student imports', function () {
     $results = $service->importFromCsv($filePath, 'student');
 
     expect($results['success'])->toBe($count);
-    $this->assertDatabaseCount('users', $count);
+    $this->assertDatabaseCount('users', $count + 1);
 
     // Verify one of them
     $student = User::where('email', 'student10@example.com')->first();

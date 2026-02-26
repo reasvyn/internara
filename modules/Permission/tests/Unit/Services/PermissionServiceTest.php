@@ -14,6 +14,7 @@ test('it can search permissions by name', function () {
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $permission->shouldReceive('newQuery')->andReturn($builder);
     $builder->shouldReceive('select')->andReturnSelf();
+    $builder->shouldReceive('with')->andReturnSelf();
 
     // expectations for applyFilters
     $builder

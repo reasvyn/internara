@@ -27,13 +27,13 @@ class MentorService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function query(array $filters = [], array $columns = ['*']): Builder
+    public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
     {
         if (! $this->baseQuery) {
             $this->setBaseQuery($this->model->role('mentor'));
         }
 
-        return parent::query($filters, $columns);
+        return parent::query($filters, $columns, $with);
     }
 
     /**

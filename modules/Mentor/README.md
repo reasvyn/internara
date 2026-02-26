@@ -4,8 +4,8 @@ The `Mentor` module is the dedicated workspace for industry mentors. It is desig
 mobile-friendly to facilitate quick feedback from busy professionals.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

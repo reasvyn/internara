@@ -17,7 +17,6 @@ return [
         'brand_name' => 'Nama Brand',
         'site_title' => 'Judul Situs (Tab Browser)',
         'app_version' => 'Versi Aplikasi',
-        'app_series' => 'Kode Seri',
         'brand_logo' => 'Logo Brand',
         'site_favicon' => 'Favicon Situs',
         'default_locale' => 'Bahasa Utama',

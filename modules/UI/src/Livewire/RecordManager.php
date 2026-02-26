@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Modules\UI\Livewire;
 
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Modules\Exception\Concerns\HandlesAppException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Throwable;
 
 /**
  * Class RecordManager
@@ -17,7 +19,6 @@ use Modules\UI\Livewire\Concerns\ManagesRecords;
  */
 abstract class RecordManager extends Component
 {
-    use HandlesAppException;
     use ManagesRecords;
 
     /**
@@ -82,7 +83,7 @@ abstract class RecordManager extends Component
     /**
      * Retrieves the table headers.
      */
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function headers(): array
     {
         return $this->getTableHeaders();
@@ -101,8 +102,8 @@ abstract class RecordManager extends Component
     /**
      * Retrieves the paginated and formatted collection of records.
      */
-    #[\Livewire\Attributes\Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    #[Computed]
+    public function records(): LengthAwarePaginator
     {
         $appliedFilters = array_filter(
             array_merge($this->filters, [
@@ -213,18 +214,26 @@ abstract class RecordManager extends Component
 
         $this->form->validate();
 
+        $isSetupAuthorized =
+            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            true;
+
         try {
             if ($this->form->id) {
                 $record = $this->service->find($this->form->id);
                 if ($record && $this->updatePermission) {
-                    $this->authorize($this->updatePermission, $record);
+                    \Illuminate\Support\Facades\Gate::authorize($this->updatePermission, $record);
                 }
                 $this->service->update($this->form->id, $this->form->all());
             } else {
                 if ($this->createPermission) {
                     $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
-                    $this->authorize($this->createPermission, [
-                        $this->modelClass ?: \Modules\User\Models\User::class,
+                    
+                    // Use modelClass or default to authenticated user class for policy check
+                    $authModel = $this->modelClass ?: config('auth.providers.users.model');
+                    
+                    \Illuminate\Support\Facades\Gate::authorize($this->createPermission, [
+                        $authModel,
                         $roles,
                     ]);
                 }
@@ -233,8 +242,12 @@ abstract class RecordManager extends Component
 
             $this->toggleModal(self::MODAL_FORM, false);
             flash()->success(__('shared::messages.record_saved'));
-        } catch (\Throwable $e) {
-            $this->handleAppExceptionInLivewire($e);
+        } catch (Throwable $e) {
+            if (is_debug_mode()) {
+                throw $e;
+            }
+            
+            flash()->error(__('shared::messages.error_occurred'));
         }
     }
 
@@ -277,7 +290,7 @@ abstract class RecordManager extends Component
             $count = $this->service->destroy($this->selectedIds);
             $this->selectedIds = [];
             flash()->success($this->getBulkDeleteMessage($count));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             flash()->error($e->getMessage());
         }
     }

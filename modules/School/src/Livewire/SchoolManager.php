@@ -72,10 +72,15 @@ class SchoolManager extends Component
 
         $this->form->validate();
 
+        // Ensure we use the existing school ID if available to prevent duplicate record errors
+        $schoolRecord = $this->schoolService->getSchool(['id']);
+        $schoolId = $this->form->id ?: $schoolRecord?->id;
+        $this->form->id = $schoolId;
+
         // Pass attributes to the service for persistence
         $school = $this->schoolService->save(
             ['id' => $this->form->id],
-            $this->form->except(['id', 'logo_url']),
+            $this->form->all(),
         );
 
         // Synchronize form with the fresh record state

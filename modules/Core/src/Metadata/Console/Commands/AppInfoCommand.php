@@ -43,7 +43,6 @@ class AppInfoCommand extends Command
             (string) $metadata->get('name', config('app.name', 'Unknown')),
         );
         $this->components->twoColumnDetail('Version', $metadata->getVersion());
-        $this->components->twoColumnDetail('Series Code', $metadata->getSeriesCode());
         $this->components->twoColumnDetail(
             'Support',
             (string) $metadata->get('support', 'Unknown'),

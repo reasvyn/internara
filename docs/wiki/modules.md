@@ -5,7 +5,7 @@ Internara system. Each module is designed to adhere to the principles of domain 
 cross-module zero-coupling.
 
 > **Governance Mandate:** All listed modules must comply with the
-> **[Coding Conventions](../developers/conventions.md)**. Any violation of domain isolation (such as
+> **[Coding Conventions](../dev/conventions.md)**. Any violation of domain isolation (such as
 > cross-domain Model calls) is considered an architectural defect.
 
 ---

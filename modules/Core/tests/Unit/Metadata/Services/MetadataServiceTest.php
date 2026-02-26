@@ -6,69 +6,49 @@ namespace Modules\Core\Tests\Unit\Metadata\Services;
 
 use Illuminate\Support\Facades\File;
 use Modules\Core\Metadata\Services\MetadataService;
-use RuntimeException;
 
 describe('Metadata Service', function () {
     beforeEach(function () {
-        $this->metadataPath = base_path('app_info.json');
-        $this->originalContent = File::exists($this->metadataPath)
-            ? File::get($this->metadataPath)
-            : null;
-
-        $this->testMetadata = [
-            'name' => 'Internara Test',
-            'version' => '1.0.0-test',
-            'series_code' => 'TEST-01',
-            'author' => [
-                'name' => 'Reas Vyn',
-                'email' => 'test@example.com',
-            ],
-        ];
-
-        File::put($this->metadataPath, json_encode($this->testMetadata));
-        \Modules\Shared\Support\AppInfo::clearCache();
+        $this->path = base_path('app_info.json');
+        $this->original = \Illuminate\Support\Facades\File::exists($this->path) ? \Illuminate\Support\Facades\File::get($this->path) : null;
         $this->service = new MetadataService;
+        \Modules\Shared\Support\AppInfo::clearCache();
     });
 
     afterEach(function () {
-        if ($this->originalContent) {
-            File::put($this->metadataPath, $this->originalContent);
+        if ($this->original) {
+            \Illuminate\Support\Facades\File::put($this->path, $this->original);
         } else {
-            File::delete($this->metadataPath);
+            \Illuminate\Support\Facades\File::delete($this->path);
         }
         \Modules\Shared\Support\AppInfo::clearCache();
     });
 
-    test('it can retrieve specific metadata values', function () {
-        expect($this->service->get('name'))
-            ->toBe('Internara Test')
-            ->and($this->service->getVersion())
-            ->toBe('1.0.0-test')
-            ->and($this->service->getSeriesCode())
-            ->toBe('TEST-01');
+    test('test retrieves product identity accurately', function () {
+        $data = ['name' => 'Internara', 'version' => '1.0.0'];
+        File::put($this->path, json_encode($data));
+
+        expect($this->service->get('name'))->toBe('Internara')
+            ->and($this->service->getVersion())->toBe('1.0.0');
     });
 
-    test('it can retrieve nested metadata values', function () {
-        expect($this->service->get('author.name'))->toBe('Reas Vyn');
+    test('test returns fallback for missing metadata', function () {
+        File::put($this->path, json_encode([]));
+        expect($this->service->get('nonexistent', 'fallback'))->toBe('fallback');
     });
 
-    test('it returns default value for missing keys', function () {
-        expect($this->service->get('non_existent', 'default'))->toBe('default');
-    });
+    test('test validates system integrity via author attribution', function () {
+        $data = ['author' => ['name' => 'Reas Vyn']];
+        File::put($this->path, json_encode($data));
 
-    test('it verifies system integrity based on author identity', function () {
-        // Since self::AUTHOR_IDENTITY is likely hardcoded in the service
-        // Let's assume it matches for now.
+        // It should pass without exception if author is correct
         $this->service->verifyIntegrity();
         expect(true)->toBeTrue();
-    });
 
-    test('it throws exception if author identity is tampered', function () {
-        $tamperedMetadata = $this->testMetadata;
-        $tamperedMetadata['author']['name'] = 'Tampered Author';
-        File::put($this->metadataPath, json_encode($tamperedMetadata));
+        // It should throw exception if author is modified
+        $data = ['author' => ['name' => 'Unauthorized User']];
+        File::put($this->path, json_encode($data));
 
-        $service = new MetadataService; // Fresh instance to clear cache
-        $service->verifyIntegrity();
-    })->throws(RuntimeException::class, 'Integrity Violation');
+        $this->service->verifyIntegrity();
+    })->throws(\RuntimeException::class);
 });

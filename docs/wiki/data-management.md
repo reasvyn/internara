@@ -58,8 +58,8 @@ Ensure all critical student evidence (Journals, Reports) is backed up before mas
 
 For developers and advanced administrators, refer to the following technical guides:
 
-- **[Data Integrity Protocols](../developers/governance.md)**
-- **[Performance & Optimization](../developers/advanced/performance-optimization.md)**
+- **[Data Integrity Protocols](../dev/governance.md)**
+- **[Performance & Optimization](../dev/advanced/performance-optimization.md)**
 
 ---
 

@@ -29,22 +29,19 @@ describe('HasUuid Trait', function () {
         Schema::dropIfExists('uuid_model_stubs');
     });
 
-    test('it fulfills [SYRS-NF-504] by generating a UUID on creation', function () {
+    test('test fulfills identity protection by generating uuid on creation', function () {
         $model = new UuidModelStub;
         $model->save();
 
         expect($model->id)
             ->not->toBeNull()
-            ->and(strlen($model->id))
-            ->toBe(36)
-            ->and($model->getIncrementing())
-            ->toBeFalse()
-            ->and($model->getKeyType())
-            ->toBe('string');
+            ->and(strlen($model->id))->toBe(36)
+            ->and($model->getIncrementing())->toBeFalse()
+            ->and($model->getKeyType())->toBe('string');
     });
 
-    test('it does not overwrite existing id if provided', function () {
-        $customId = 'custom-id';
+    test('test preserves manually provided uuid', function () {
+        $customId = '550e8400-e29b-41d4-a716-446655440000';
         $model = new UuidModelStub(['id' => $customId]);
         $model->save();
 

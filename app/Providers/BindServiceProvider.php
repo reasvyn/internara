@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use DirectoryIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Throwable;
 
 class BindServiceProvider extends ServiceProvider
 {
@@ -101,25 +103,41 @@ class BindServiceProvider extends ServiceProvider
         }
 
         try {
-            foreach (new \DirectoryIterator($modulesPath) as $moduleDir) {
+            foreach (new DirectoryIterator($modulesPath) as $moduleDir) {
                 if ($moduleDir->isDir() && ! $moduleDir->isDot()) {
                     $moduleName = $moduleDir->getBasename();
-                    $baseNamespace = $modulesNamespace.'\\'.$moduleName;
-                    $contractPath =
-                        $moduleDir->getPathname().'/'.trim($moduleAppPath, '/').'/Contracts';
+                    $baseNamespace = $modulesNamespace . '\\' . $moduleName;
+                    $srcPath = $moduleDir->getPathname() . '/' . trim($moduleAppPath, '/');
 
-                    if (file_exists($contractPath)) {
-                        $paths[$contractPath] = $baseNamespace;
+                    if (is_dir($srcPath)) {
+                        $this->findContractDirectories($srcPath, $baseNamespace, $paths);
                     }
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if (is_debug_mode()) {
-                Log::debug('BindServiceProvider: Failed to scan modules. '.$e->getMessage());
+                Log::debug('BindServiceProvider: Failed to scan modules. ' . $e->getMessage());
             }
         }
 
         return $paths;
+    }
+
+    /**
+     * Recursively find all 'Contracts' directories.
+     */
+    protected function findContractDirectories(string $dir, string $namespace, array &$paths): void
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($iterator as $file) {
+            if ($file->isDir() && $file->getBasename() === 'Contracts') {
+                $paths[$file->getPathname()] = $namespace;
+            }
+        }
     }
 
     /**
@@ -232,20 +250,33 @@ class BindServiceProvider extends ServiceProvider
      *
      * @return array<string>
      */
-    protected function getConcreteCandidates(string $rootNamespace, string $shortNamespace): array
+    protected function getConcreteCandidates(string $rootNamespace, string $shortName): array
     {
+        // If shortName already ends with 'Service', we also want to try without the redundant suffix
+        $shortBase = $shortName;
+        if (str_ends_with($shortName, 'Service')) {
+            $shortBase = substr($shortName, 0, -7);
+        }
+
         $patterns = config('bindings.patterns', [
             '{{root}}\Services\{{short}}Service',
             '{{root}}\Services\{{short}}',
+            '{{root}}\{{short}}Service',
+            '{{root}}\{{short}}',
         ]);
 
-        return array_map(function ($pattern) use ($rootNamespace, $shortNamespace) {
-            return str_replace(
-                ['{{root}}', '{{short}}'],
-                [$rootNamespace, $shortNamespace],
-                $pattern,
-            );
-        }, $patterns);
+        $candidates = [];
+        foreach ($patterns as $pattern) {
+            // Try with the base name (e.g. Metadata)
+            $candidates[] = str_replace(['{{root}}', '{{short}}'], [$rootNamespace, $shortBase], $pattern);
+            
+            // If shortName was different (e.g. MetadataService), also try with that exactly
+            if ($shortBase !== $shortName) {
+                $candidates[] = str_replace(['{{root}}', '{{short}}'], [$rootNamespace, $shortName], $pattern);
+            }
+        }
+
+        return array_unique($candidates);
     }
 
     /**

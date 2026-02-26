@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\Event;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\School\Events\SchoolDeleted;
 use Modules\School\Services\Contracts\SchoolService;
-
-uses(RefreshDatabase::class);
+use Modules\User\Models\User;
 
 test('it deletes all departments when a school is deleted', function () {
     // Arrange
+    \Modules\Permission\Models\Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
+    $admin = User::factory()->create();
+    $admin->assignRole('super-admin');
+    $this->actingAs($admin);
+
     $schoolService = app(SchoolService::class);
     $departmentService = app(DepartmentService::class);
 

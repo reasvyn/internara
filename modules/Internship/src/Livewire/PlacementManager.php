@@ -96,6 +96,29 @@ class PlacementManager extends Component
         }
     }
 
+    /**
+     * Save the placement record.
+     */
+    public function save(): void
+    {
+        $this->form->validate();
+
+        try {
+            $this->service->save(
+                ['id' => $this->form->id],
+                $this->form->all(),
+            );
+
+            $this->toggleModal(self::MODAL_FORM, false);
+            flash()->success(__('shared::messages.record_saved'));
+        } catch (\Throwable $e) {
+            if (is_debug_mode()) {
+                throw $e;
+            }
+            flash()->error(__('shared::messages.error_occurred'));
+        }
+    }
+
     public function render(): View
     {
         return view('internship::livewire.placement-manager', [

@@ -6,7 +6,7 @@ business domain, adhering to the **S3 (Secure, Sustain, Scalable)** philosophy.
 
 > **Governance Mandate:** This module implements the foundational infrastructure required to satisfy
 > **[SYRS-NF-601]** (Isolation). All implementation must adhere to the
-> **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

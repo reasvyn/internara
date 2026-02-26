@@ -5,8 +5,8 @@ transitions of all entities within the Internara ecosystem. It centralizes state
 ensures that lifecycle changes are auditable, localized, and consistent.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

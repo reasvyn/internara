@@ -10,14 +10,14 @@ integrity, and availability of institutional and student data.
 
 Security updates are provided exclusively for the **latest stable release**. For more details on the
 support status of specific versions, refer to the
-**[Versions Overview](docs/developers/releases.md)**.
+**[Versions Overview](docs/dev/releases.md)**.
 
 ---
 
 ## 🔐 Foundational Security Protocols
 
 Our engineering process incorporates the following protections as mandated by the authoritative
-**[System Requirements Specification](docs/developers/specs.md)**:
+**[System Requirements Specification](docs/dev/specs.md)**:
 
 ### 1. Identity & Access Management (IAM)
 

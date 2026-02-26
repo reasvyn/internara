@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace Modules\Shared\Services;
 
 use Closure;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Modules\Exception\RecordNotFoundException;
 use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
+use RuntimeException;
 
 /**
  * Provides a base implementation for Eloquent query classes.
@@ -74,6 +80,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     protected bool $withTrashed = false;
 
     /**
+     * Whether to skip authorization checks for the current operation.
+     */
+    protected bool $skipAuthorization = false;
+
+    /**
      * Set the primary model instance for the service.
      *
      * @param TModel $model
@@ -83,6 +94,18 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     public function setModel(Model $model): self
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * Temporarily disable authorization checks for the next operation.
+     *
+     * @return $this
+     */
+    public function withoutAuthorization(): self
+    {
+        $this->skipAuthorization = true;
 
         return $this;
     }
@@ -146,6 +169,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return LengthAwarePaginator<TModel>
      */
@@ -153,20 +177,22 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         array $filters = [],
         int $perPage = self::DEFAULT_PER_PAGE,
         array $columns = ['*'],
+        array $with = [],
     ): LengthAwarePaginator {
-        return $this->query($filters, $columns)->paginate($perPage, $columns);
+        return $this->query($filters, $columns, $with)->paginate($perPage, $columns);
     }
 
     /**
      * Retrieve all records for the model without any filtering.
      *
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return Collection<int, TModel>
      */
-    public function all(array $columns = ['*']): Collection
+    public function all(array $columns = ['*'], array $with = []): Collection
     {
-        return $this->model->newQuery()->get($columns);
+        return $this->model->newQuery()->with($with)->get($columns);
     }
 
     /**
@@ -174,12 +200,13 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return Collection<int, TModel>
      */
-    public function get(array $filters = [], array $columns = ['*']): Collection
+    public function get(array $filters = [], array $columns = ['*'], array $with = []): Collection
     {
-        return $this->query($filters, $columns)->get();
+        return $this->query($filters, $columns, $with)->get();
     }
 
     /**
@@ -187,12 +214,13 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return TModel|null
      */
-    public function first(array $filters = [], array $columns = ['*']): ?Model
+    public function first(array $filters = [], array $columns = ['*'], array $with = []): ?Model
     {
-        return $this->query($filters, $columns)->first();
+        return $this->query($filters, $columns, $with)->first();
     }
 
     /**
@@ -200,26 +228,55 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
-     * @throws ModelNotFoundException
+     * @throws RecordNotFoundException
      *
      * @return TModel
      */
-    public function firstOrFail(array $filters = [], array $columns = ['*']): Model
+    public function firstOrFail(array $filters = [], array $columns = ['*'], array $with = []): Model
     {
-        return $this->query($filters, $columns)->firstOrFail();
+        $model = $this->first($filters, $columns, $with);
+
+        if (! $model) {
+            throw new RecordNotFoundException(
+                module: property_exists($this, 'moduleName') ? $this->moduleName : 'Shared',
+            );
+        }
+
+        return $model;
     }
 
     /**
      * Find a specific record by its primary identity (UUID).
      *
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return TModel|null
      */
-    public function find(mixed $id, array $columns = ['*']): ?Model
+    public function find(mixed $id, array $columns = ['*'], array $with = []): ?Model
     {
-        return $this->query()->find($id, $columns);
+        return $this->query([], $columns, $with)->find($id, $columns);
+    }
+
+    /**
+     * Find a record by its identity or throw a localized exception.
+     *
+     * @throws RecordNotFoundException
+     */
+    public function findOrFail(mixed $id, array $columns = ['*'], array $with = []): Model
+    {
+        $model = $this->find($id, $columns, $with);
+
+        if (! $model) {
+            throw new RecordNotFoundException(
+                uuid: (string) $id,
+                module: property_exists($this, 'moduleName') ? $this->moduleName : 'Shared',
+            );
+        }
+
+        return $model;
     }
 
     /**
@@ -237,17 +294,23 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $data
      *
-     * @throws \Modules\Exception\AppException
+     * @throws RuntimeException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return TModel
      */
     public function create(array $data): Model
     {
+        if (! $this->skipAuthorization) {
+            Gate::authorize('create', $this->model);
+        }
+
+        $this->skipAuthorization = false;
         $filteredData = $this->filterFillable($data);
 
         try {
             return $this->model->newQuery()->create($filteredData);
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             $this->handleQueryException($e, 'creation_failed');
         }
     }
@@ -257,24 +320,26 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $data
      *
-     * @throws ModelNotFoundException
-     * @throws \Modules\Exception\AppException
+     * @throws RecordNotFoundException
+     * @throws \RuntimeException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return TModel
      */
     public function update(mixed $id, array $data): Model
     {
-        $model = $this->find($id);
+        $model = $this->findOrFail($id);
 
-        if (! $model) {
-            throw new ModelNotFoundException()->setModel(get_class($this->model), [$id]);
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $model);
         }
 
+        $this->skipAuthorization = false;
         $filteredData = $this->filterFillable($data);
 
         try {
             $model->update($filteredData);
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             $this->handleQueryException($e, 'update_failed');
         }
 
@@ -287,17 +352,30 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      * @param array<string, mixed> $attributes
      * @param array<string, mixed> $values
      *
-     * @throws \Modules\Exception\AppException
+     * @throws RuntimeException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return TModel
      */
     public function save(array $attributes, array $values = []): Model
     {
+        // Try to find the existing record to authorize properly
+        $searchAttributes = array_filter($attributes, fn ($val) => ! empty($val));
+        $model = ! empty($searchAttributes)
+            ? $this->model->newQuery()->where($searchAttributes)->first()
+            : null;
+
+        if ($model) {
+            Gate::authorize('update', $model);
+        } else {
+            Gate::authorize('create', $this->model);
+        }
+
         $filteredValues = $this->filterFillable($values);
 
         try {
             return $this->query()->updateOrCreate($attributes, $filteredValues);
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             $this->handleQueryException($e, 'save_failed');
         }
     }
@@ -306,24 +384,18 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      * Handle Database exceptions and encapsulate them in a localized AppException.
      *
      *
-     * @throws \Modules\Exception\AppException
+     * @throws RuntimeException
      */
     protected function handleQueryException(
-        \Illuminate\Database\QueryException $e,
+        QueryException $e,
         string $defaultKey,
     ): never {
         $recordName = property_exists($this, 'recordName') ? $this->recordName : 'record';
-        $userMessage =
-            'shared::exceptions.'.
-            ($e->getCode() === self::SQL_STATE_UNIQUE_VIOLATION ? 'unique_violation' : $defaultKey);
-
-        // Sanitize log message to prevent PII leakage
-        $sanitizedLogMessage = "Database error during {$recordName} operation. SQL State: {$e->getCode()}";
-
-        throw new \Modules\Exception\AppException(
-            userMessage: $userMessage,
-            replace: ['record' => $recordName, 'column' => 'data'],
-            logMessage: $sanitizedLogMessage,
+        
+        // Use a generic RuntimeException for infrastructure layer
+        // The Exception handler will be responsible for mapping this if needed.
+        throw new RuntimeException(
+            message: "Database error during {$recordName} operation. SQL State: {$e->getCode()}",
             code: $e->getCode() === self::SQL_STATE_UNIQUE_VIOLATION ? 409 : 500,
             previous: $e,
         );
@@ -331,13 +403,19 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
 
     /**
      * Remove a record from the database by its identity.
+     *
+     * @throws RecordNotFoundException
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function delete(mixed $id, bool $force = false): bool
     {
-        $model = $this->find($id);
-        if (! $model) {
-            return false;
+        $model = $this->findOrFail($id);
+        
+        if (! $this->skipAuthorization) {
+            Gate::authorize('delete', $model);
         }
+
+        $this->skipAuthorization = false;
 
         return $force ? $model->forceDelete() : $model->delete();
     }
@@ -368,18 +446,21 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      * Remove multiple records by their identities.
      *
      * @param list<mixed>|mixed $ids
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(mixed $ids, bool $force = false): int
     {
         $ids = Arr::wrap($ids);
 
+        // Security check for each record
+        $records = $this->model->newQuery()->whereIn($this->model->getKeyName(), $ids)->get();
+        foreach ($records as $record) {
+            Gate::authorize('delete', $record);
+        }
+
         if ($force) {
-            return $this->model
-                ->newQuery()
-                ->whereIn($this->model->getKeyName(), $ids)
-                ->get()
-                ->each(fn (Model $model) => $model->forceDelete())
-                ->count();
+            return $records->each(fn (Model $model) => $model->forceDelete())->count();
         }
 
         return $this->model->destroy($ids);
@@ -390,12 +471,13 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return array<int, array<string, mixed>>
      */
-    public function toArray(array $filters = [], array $columns = ['*']): array
+    public function toArray(array $filters = [], array $columns = ['*'], array $with = []): array
     {
-        return $this->query($filters, $columns)->get()->toArray();
+        return $this->query($filters, $columns, $with)->get()->toArray();
     }
 
     /**
@@ -403,10 +485,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $filters
      * @param list<string> $columns
+     * @param list<string> $with Relationships to eager load.
      *
      * @return Builder<TModel>
      */
-    public function query(array $filters = [], array $columns = ['*']): Builder
+    public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
     {
         $query = $this->baseQuery ? clone $this->baseQuery : $this->model->newQuery();
 
@@ -414,7 +497,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
             $query->withTrashed();
         }
 
-        $query->select($columns);
+        $query->select($columns)->with($with);
 
         $this->applyFilters($query, $filters);
 
@@ -505,7 +588,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      */
     protected function filterFillable(array $data): array
     {
-        return Arr::only($data, $this->model->getFillable());
+        return array_filter(
+            $data,
+            fn ($key) => $this->model->isFillable($key),
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 
     /**
@@ -568,8 +655,8 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
             try {
                 $this->create($row);
                 $count++;
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error(
+            } catch (Exception $e) {
+                Log::error(
                     'Bulk import failed for row in '.
                         get_class($this->model).
                         ': PII REDACTED. Error: '.

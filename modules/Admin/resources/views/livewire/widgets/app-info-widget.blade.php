@@ -13,10 +13,6 @@
 
             <div class="space-y-1">
                 <div class="flex justify-between text-[11px] opacity-70">
-                    <span>{{ __('admin::ui.dashboard.widget.series') }}</span>
-                    <span class="font-mono">{{ $appInfo['series_code'] ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between text-[11px] opacity-70">
                     <span>{{ __('admin::ui.dashboard.widget.license') }}</span>
                     <span>{{ $appInfo['license'] ?? '-' }}</span>
                 </div>

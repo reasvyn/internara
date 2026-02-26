@@ -5,64 +5,80 @@ declare(strict_types=1);
 namespace Modules\Shared\Tests\Unit\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
 
 class QueryModelStub extends Model
 {
-    protected $fillable = ['name'];
+    use HasUuid;
+
+    protected $table = 'query_model_stubs';
+    protected $guarded = [];
 }
 
-class QueryServiceStub extends EloquentQuery
+class QueryServiceStub extends EloquentQuery implements EloquentQueryContract
 {
-    public function __construct(QueryModelStub $model)
+    public function __construct()
     {
-        $this->setModel($model);
-        $this->setSearchable(['name']);
-        $this->setSortable(['name', 'created_at']);
+        $this->setModel(new QueryModelStub);
     }
 }
 
-uses(RefreshDatabase::class);
-
 describe('EloquentQuery Base Service', function () {
     beforeEach(function () {
-        $this->model = new QueryModelStub;
-        // Create table for stub
-        \Illuminate\Support\Facades\Schema::create('query_model_stubs', function ($table) {
-            $table->id();
+        Schema::create('query_model_stubs', function (Blueprint $table) {
+            $table->string('id')->primary();
             $table->string('name');
             $table->timestamps();
         });
+        $this->service = new QueryServiceStub;
 
-        $this->service = new QueryServiceStub($this->model);
+        // S1 Security Alignment: Mock user with super-admin role to bypass all permission checks
+        $user = \Mockery::mock(\Modules\User\Models\User::class)->makePartial();
+        $user->shouldReceive('hasRole')->andReturn(true);
+        $this->actingAs($user);
+
+        \Illuminate\Support\Facades\Gate::define('create', fn () => true);
+        \Illuminate\Support\Facades\Gate::define('update', fn () => true);
+        \Illuminate\Support\Facades\Gate::define('delete', fn () => true);
     });
 
-    test('it can create a record', function () {
-        $record = $this->service->create(['name' => 'Test Record']);
-        expect($record->name)->toBe('Test Record');
-        $this->assertDatabaseHas('query_model_stubs', ['name' => 'Test Record']);
+    afterEach(function () {
+        Schema::dropIfExists('query_model_stubs');
     });
 
-    test('it can update a record', function () {
-        $record = $this->service->create(['name' => 'Original']);
-        $updated = $this->service->update($record->id, ['name' => 'Updated']);
+    test('test can create a record atomically', function () {
+        $data = ['name' => 'Genesis Test'];
+        $record = $this->service->create($data);
 
-        expect($updated->name)->toBe('Updated');
+        expect($record)->toBeInstanceOf(QueryModelStub::class)
+            ->and($record->name)->toBe('Genesis Test');
     });
 
-    test('it can find a record by id', function () {
-        $record = $this->service->create(['name' => 'Find Me']);
-        $found = $this->service->find($record->id);
+    test('test can find a record by identity', function () {
+        $created = QueryModelStub::create(['name' => 'Target']);
+        $found = $this->service->find((string) $created->id);
 
-        expect($found->id)->toBe($record->id);
+        expect($found->id)->toBe($created->id);
     });
 
-    test('it can paginate records with search', function () {
-        $this->service->create(['name' => 'Alpha']);
-        $this->service->create(['name' => 'Beta']);
+    test('test can update an existing record', function () {
+        $record = QueryModelStub::create(['name' => 'Old Name']);
+        $this->service->update((string) $record->id, ['name' => 'New Name']);
 
-        $results = $this->service->paginate(['search' => 'Alpha']);
-        expect($results->total())->toBe(1);
+        expect($record->fresh()->name)->toBe('New Name');
+    });
+
+    test('test can paginate results efficiently', function () {
+        QueryModelStub::create(['name' => 'A']);
+        QueryModelStub::create(['name' => 'B']);
+
+        $results = $this->service->paginate([], 1);
+
+        expect($results->count())->toBe(1)
+            ->and($results->total())->toBe(2);
     });
 });

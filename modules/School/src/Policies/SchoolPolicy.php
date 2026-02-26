@@ -15,41 +15,68 @@ class SchoolPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        return $user->hasPermissionTo('school.view') || $user->hasPermissionTo('school.manage');
+        if ($this->isSetupAuthorized()) {
+            return true;
+        }
+
+        return $user?->hasPermissionTo('school.view') || $user?->hasPermissionTo('school.manage');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, School $school): bool
+    public function view(?User $user, School|string|null $school = null): bool
     {
-        return $user->hasPermissionTo('school.view') || $user->hasPermissionTo('school.manage');
+        if ($this->isSetupAuthorized()) {
+            return true;
+        }
+
+        return $user?->hasPermissionTo('school.view') || $user?->hasPermissionTo('school.manage');
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(?User $user, School|string|null $school = null): bool
     {
-        // Biasanya school hanya satu (single record), jadi create dibatasi
-        return $user->hasPermissionTo('school.manage');
+        if ($this->isSetupAuthorized()) {
+            return true;
+        }
+
+        return $user?->hasPermissionTo('school.manage') ?? false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, School $school): bool
+    public function update(?User $user, School|string|null $school = null): bool
     {
-        return $user->hasPermissionTo('school.update') || $user->hasPermissionTo('school.manage');
+        if ($this->isSetupAuthorized()) {
+            return true;
+        }
+
+        return $user?->hasPermissionTo('school.update') || $user?->hasPermissionTo('school.manage');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, School $school): bool
+    public function delete(?User $user, School|string|null $school = null): bool
     {
-        return $user->hasPermissionTo('school.manage');
+        if ($this->isSetupAuthorized()) {
+            return true;
+        }
+
+        return $user?->hasPermissionTo('school.manage') ?? false;
+    }
+
+    /**
+     * Check if the current session is an authorized setup session.
+     */
+    protected function isSetupAuthorized(): bool
+    {
+        return session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
     }
 }

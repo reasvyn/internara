@@ -13,7 +13,9 @@ test('it can create student account and profile', function () {
     $user = mock(User::class);
     $userService = mock(UserService::class);
     $profileService = mock(ProfileService::class);
-    $profile = mock(\Modules\Profile\Models\Profile::class);
+    $profile = new class extends \Modules\Profile\Models\Profile {
+        protected $keyType = 'string';
+    };
 
     $service = new StudentService($user, $userService, $profileService);
 
@@ -25,12 +27,14 @@ test('it can create student account and profile', function () {
         ],
     ];
 
-    $createdUser = mock(User::class);
+    $createdUser = new class extends User {
+        protected $keyType = 'string';
+    };
     $createdUser->id = 'user-uuid';
     $userService->shouldReceive('create')->once()->andReturn($createdUser);
 
-    $profileService->shouldReceive('getByUserId')->with('user-uuid')->once()->andReturn($profile);
     $profile->id = 'profile-uuid';
+    $profileService->shouldReceive('getByUserId')->with('user-uuid')->once()->andReturn($profile);
     $profileService
         ->shouldReceive('update')
         ->with('profile-uuid', ['national_identifier' => '12345'])

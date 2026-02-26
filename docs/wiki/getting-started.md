@@ -58,4 +58,4 @@ Once your foundation is set, you are ready to:
 ---
 
 _For technical issues during onboarding, refer to the
-**[Troubleshooting Guide](../developers/tests/troubleshooting.md)**._
+**[Troubleshooting Guide](../dev/tests/troubleshooting.md)**._

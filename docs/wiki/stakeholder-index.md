@@ -37,14 +37,14 @@ Follow these guides in order to bootstrap and operate your system effectively:
 
 - **[Module Catalog](modules.md)**: Detailed breakdown of system modules.
 - **[Intelligence & Reporting](reporting.md)**: Guide on analytics and exports.
-- **[Release History](../developers/releases.md)**: Track progress and updates on GitHub.
+- **[Release History](../dev/releases.md)**: Track progress and updates on GitHub.
 
 ---
 
 ## 🛠 Developer Resources
 
-- **[Developer Zone](../developers/engineering-index.md)**: Access the full technical engineering index.
-- **[System Specifications](../developers/specs.md)**: Authoritative ISO/IEC 29148 requirements.
+- **[Developer Zone](../dev/engineering-index.md)**: Access the full technical engineering index.
+- **[System Specifications](../dev/specs.md)**: Authoritative ISO/IEC 29148 requirements.
 
 ---
 

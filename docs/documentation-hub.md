@@ -12,14 +12,14 @@ Documentation for end-users, administrators, and stakeholders who operate the sy
 - **[Modules](wiki/modules.md)**: Functional catalog.
 - **[Overview](wiki/overview.md)**: Project vision and scope.
 
-### 2. [Developer Zone (Engineering)](developers/engineering-index.md)
+### 2. [Developer Zone (Engineering)](dev/engineering-index.md)
 
 Technical documentation for software engineers, contributors, and architects.
 
 - **Specs & Architecture**: System baselines and structural design.
 - **Standards**: Coding, security, and quality protocols.
-- **Workflows**: [Engineering Lifecycle](developers/workflow.md).
-- **Reference**: [Testing & Verification Guide](developers/tests/verification-index.md).
+- **Workflows**: [Engineering Lifecycle](dev/workflow.md).
+- **Reference**: [Testing & Verification Guide](dev/tests/verification-index.md).
 
 ---
 

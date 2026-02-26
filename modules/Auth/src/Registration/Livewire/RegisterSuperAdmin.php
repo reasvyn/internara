@@ -54,6 +54,10 @@ class RegisterSuperAdmin extends Component
                 }
             }
 
+            if (empty($this->form->username) && ! empty($this->form->email)) {
+                $this->form->username = strstr($this->form->email, '@', true) ?: $this->form->email;
+            }
+
             $this->form->validate();
 
             if ($this->form->id) {

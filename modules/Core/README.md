@@ -5,8 +5,8 @@ Internara**. It encapsulates global domain logic and static configurations requi
 functional modules.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/developers/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
+> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 
@@ -31,10 +31,10 @@ identity and temporal scoping.
 ### 2.2 Metadata Domain
 
 - **`MetadataService`**: The single source of truth for **Product Identity** (`app_name`),
-  versioning, series code, and author attribution. It protects institutional flexibility while
+  versioning, Blueprint IDs, and author attribution. It protects institutional flexibility while
   ensuring architectural integrity.
     - _Contract_: `Modules\Core\Metadata\Services\Contracts\MetadataService`.
-    - _API_: `getVersion()`, `getSeriesCode()`, `getAuthor()`.
+    - _API_: `getVersion()`, `getAuthor()`.
 - **`AppInfoCommand`**: Artisan command to audit and display system metadata.
 
 ### 2.3 Localization Domain

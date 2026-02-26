@@ -5,7 +5,7 @@ oversight, system-wide monitoring, and mass-operation orchestration.
 
 > **Governance Mandate:** This module implements the requirements for centralized management defined
 > in **[SYRS-F-101]**. All implementation must adhere to the
-> **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

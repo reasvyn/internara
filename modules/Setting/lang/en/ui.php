@@ -17,7 +17,6 @@ return [
         'brand_name' => 'Brand Name',
         'site_title' => 'Site Title (Browser Tab)',
         'app_version' => 'Application Version',
-        'app_series' => 'Series Code',
         'brand_logo' => 'Brand Logo',
         'site_favicon' => 'Site Favicon',
         'default_locale' => 'Default Language',

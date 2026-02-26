@@ -100,10 +100,15 @@ trait HandlesAppException
         $this->reportException($exception);
 
         $message = __('exception::messages.unexpected_error');
-        $type = 'error';
 
         if ($this->isAppException($exception)) {
             $message = $exception->getUserMessage();
+        }
+
+        if ($exception instanceof \Modules\Exception\RecordNotFoundException) {
+            $message = $exception->getMessage();
+            flash()->warning($message);
+            return;
         }
 
         flash()->error($message);

@@ -14,6 +14,9 @@
         }
     },
     "autoload": {
+        "files": [
+            "src/Functions/setting.php"
+        ],
         "psr-4": {
             "Modules\\Setting\\": "src/",
             "Modules\\Setting\\Database\\Factories\\": "database/factories/",

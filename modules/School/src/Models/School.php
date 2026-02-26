@@ -48,7 +48,14 @@ class School extends Model implements HasMedia
     }
 
     /**
-     * Get the URL of the school's logo.
+     * The URL of the school's logo.
+     */
+    public ?string $logoUrl {
+        get => $this->getLogoUrlAttribute();
+    }
+
+    /**
+     * Legacy accessor for logo_url to support appends and toArray().
      */
     public function getLogoUrlAttribute(): ?string
     {

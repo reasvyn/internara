@@ -13,7 +13,12 @@ use Modules\User\Services\Contracts\UserService;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    $role = Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
     Role::create(['name' => 'student', 'guard_name' => 'web']);
+    
+    $admin = User::factory()->create();
+    $admin->assignRole('super-admin');
+    $this->actingAs($admin);
 });
 
 test(
@@ -45,7 +50,6 @@ test(
 
 test('it rolls back user creation if profile creation fails (atomicity check)', function () {
     // Arrange
-    $service = app(UserService::class);
     $userData = [
         'name' => 'Failing Student',
         'email' => 'fail@example.com',
@@ -53,11 +57,12 @@ test('it rolls back user creation if profile creation fails (atomicity check)', 
     ];
 
     // We force a failure in ProfileService by mocking it
-    $profileService = $this->mock(ProfileService::class);
-    $profileService->shouldReceive('getByUserId')->andThrow(new \Exception('Profile failure'));
+    $profileService = $this->mock(\Modules\Profile\Services\Contracts\ProfileService::class);
+    $profileService->shouldReceive('getByUserId')->andReturn(new \Modules\Profile\Models\Profile());
+    $profileService->shouldReceive('update')->andThrow(new \Exception('Profile failure'));
 
-    // Re-bind to use the mock
-    $this->app->instance(ProfileService::class, $profileService);
+    // Resolve service AFTER mocking dependencies
+    $service = app(UserService::class);
 
     // Act & Assert
     expect(fn () => $service->createWithProfile($userData, ['phone' => '123']))->toThrow(
@@ -67,4 +72,32 @@ test('it rolls back user creation if profile creation fails (atomicity check)', 
 
     // User should NOT exist in database due to rollback
     $this->assertDatabaseMissing('users', ['email' => 'fail@example.com']);
+});
+
+test('it enforces authorization on account creation', function () {
+    // 1. Create a regular student user (unauthorized to create others)
+    $student = User::factory()->create();
+    $student->assignRole('student');
+    
+    $this->actingAs($student);
+    $service = app(UserService::class);
+
+    // 2. Act & Assert
+    expect(fn () => $service->createWithProfile([], []))
+        ->toThrow(\Illuminate\Auth\Access\AuthorizationException::class);
+});
+
+test('it records activity log when a user is created', function () {
+    $service = app(UserService::class);
+    
+    $user = $service->createWithProfile([
+        'name' => 'Log Test',
+        'email' => 'log@example.com',
+        'roles' => ['student']
+    ], ['phone' => '123']);
+
+    $this->assertDatabaseHas('activities', [
+        'subject_id' => $user->id,
+        'description' => 'created',
+    ]);
 });

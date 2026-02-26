@@ -6,7 +6,7 @@ administrative utilities.
 
 > **Governance Mandate:** This module implements the infrastructure required to satisfy
 > **[SYRS-C-003]** (Service Layer Logic). All implementation must adhere to the
-> **[Coding Conventions](../../docs/developers/conventions.md)**.
+> **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

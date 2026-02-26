@@ -29,6 +29,7 @@ class Profile extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'id',
         'user_id',
         'department_id',
         'phone',

@@ -28,6 +28,7 @@ test('it calculates institutional summary', function () {
 
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
+    $builder->shouldReceive('with')->andReturnSelf();
     $builder->shouldReceive('count')->andReturn(10);
     $placementService->shouldReceive('all')->andReturn(collect([1, 2, 3]));
 

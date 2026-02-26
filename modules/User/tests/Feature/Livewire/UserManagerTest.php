@@ -31,7 +31,7 @@ describe('UserManager Component', function () {
 
     test('it can create a student user', function () {
         $admin = User::factory()->create();
-        $admin->assignRole('admin');
+        $admin->assignRole('super-admin');
         $this->actingAs($admin);
 
         $test = Livewire::test(UserManager::class)

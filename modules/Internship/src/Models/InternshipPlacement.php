@@ -76,11 +76,10 @@ class InternshipPlacement extends Model
     }
 
     /**
-     * Get the remaining available slots.
+     * The remaining available slots.
      */
-    public function getRemainingSlotsAttribute(): int
-    {
-        return max(
+    public int $remainingSlots {
+        get => max(
             0,
             $this->capacity_quota -
                 $this->registrations()->whereRelation('statuses', 'name', 'active')->count(),
@@ -88,16 +87,17 @@ class InternshipPlacement extends Model
     }
 
     /**
-     * Get the utilization percentage.
+     * The utilization percentage.
      */
-    public function getUtilizationPercentageAttribute(): int
-    {
-        if ($this->capacity_quota === 0) {
-            return 0;
+    public int $utilizationPercentage {
+        get {
+            if ($this->capacity_quota === 0) {
+                return 0;
+            }
+
+            $activeCount = $this->registrations()->whereRelation('statuses', 'name', 'active')->count();
+
+            return (int) min(100, round(($activeCount / $this->capacity_quota) * 100));
         }
-
-        $activeCount = $this->registrations()->whereRelation('statuses', 'name', 'active')->count();
-
-        return (int) min(100, round(($activeCount / $this->capacity_quota) * 100));
     }
 }

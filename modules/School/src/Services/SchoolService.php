@@ -28,9 +28,9 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     /**
      * Retrieve schools based on conditions.
      */
-    public function get(array $filters = [], array $columns = ['*']): \Illuminate\Support\Collection
+    public function get(array $filters = [], array $columns = ['*'], array $with = []): \Illuminate\Support\Collection
     {
-        return parent::get($filters, $columns);
+        return parent::get($filters, $columns, $with);
     }
 
     /**
@@ -72,7 +72,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     /**
      * {@inheritdoc}
      */
-    public function update(mixed $id, array $data, array $columns = ['*']): School
+    public function update(mixed $id, array $data): School
     {
         /** @var School $school */
         $school = parent::update($id, $data);
@@ -100,19 +100,26 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
      */
     public function save(array $attributes, array $values = []): School
     {
-        $school = parent::save($attributes, $values);
-        $allData = array_merge($attributes, $values);
-        $this->handleSchoolLogo($school, $allData['logo_file'] ?? null);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($attributes, $values) {
+            $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $data = array_merge($attributes, $values);
+            $schoolId = $data['id'] ?? $this->model->newQuery()->first(['id'])?->id;
+            unset($data['id']);
 
-        return $school;
+            $query = $isSetupAuthorized ? $this->withoutAuthorization()->query() : $this->query();
+            $school = $query->updateOrCreate(['id' => $schoolId], $data);
+            $this->handleSchoolLogo($school, $data['logo_file'] ?? null);
+
+            return $school;
+        });
     }
 
     /**
      * Retrieve the first school record.
      */
-    public function first(array $filters = [], array $columns = ['*']): ?School
+    public function first(array $filters = [], array $columns = ['*'], array $with = []): ?School
     {
-        return parent::first($filters, $columns);
+        return parent::first($filters, $columns, $with);
     }
 
     /**

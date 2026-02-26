@@ -68,16 +68,63 @@ trait ManagesModuleProvider
             );
         }
 
+        // 1. Manual Bindings from the provider
         foreach ($this->bindings() as $abstract => $concrete) {
-            if (
-                is_string($concrete) &&
-                class_exists($concrete) &&
-                new \ReflectionClass($concrete)->isInstantiable()
-            ) {
-                $this->app->singleton($abstract, $concrete);
-            } else {
+            $this->bindToContainer($abstract, $concrete);
+        }
+
+        // 2. Autonomous Bindings (src/Services/Contracts -> src/Services)
+        $this->registerAutonomousBindings();
+    }
+
+    /**
+     * Automatically discover and bind services based on folder signature.
+     */
+    protected function registerAutonomousBindings(): void
+    {
+        $contractsPath = base_path("modules/{$this->name}/src/Services/Contracts");
+
+        if (! is_dir($contractsPath)) {
+            return;
+        }
+
+        $namespace = "Modules\\{$this->name}\\Services";
+        $files = scandir($contractsPath);
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..' || ! str_ends_with($file, '.php')) {
+                continue;
+            }
+
+            $interfaceName = str_replace('.php', '', $file);
+            $abstract = "{$namespace}\\Contracts\\{$interfaceName}";
+            $concrete = "{$namespace}\\{$interfaceName}";
+
+            if (interface_exists($abstract) && class_exists($concrete)) {
+                $this->bindToContainer($abstract, $concrete);
+            }
+        }
+    }
+
+    /**
+     * Binds a service to the container.
+     */
+    private function bindToContainer(string $abstract, string|\Closure $concrete): void
+    {
+        if (is_string($concrete) && class_exists($concrete)) {
+            try {
+                $reflection = new \ReflectionClass($concrete);
+                if ($reflection->isInstantiable()) {
+                    $this->app->singleton($abstract, $concrete);
+                } else {
+                    $this->app->bind($abstract, $concrete);
+                }
+            } catch (\Throwable $e) {
+                // If resolution fails during early boot, bind simply or skip
                 $this->app->bind($abstract, $concrete);
             }
+        } else {
+            $this->app->bind($abstract, $concrete);
         }
     }
 

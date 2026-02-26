@@ -23,10 +23,11 @@ interface SchoolService extends EloquentQuery
      *
      * @param array<string, mixed> $filters Conditions to filter the query.
      * @param array<int, string> $columns Columns to retrieve.
+     * @param list<string> $with Relationships to eager load.
      *
      * @return \Illuminate\Support\Collection The found school or a collection of schools.
      */
-    public function get(array $filters = [], array $columns = ['*']): Collection;
+    public function get(array $filters = [], array $columns = ['*'], array $with = []): Collection;
 
     public function getSchool(array $columns = ['*']): ?School;
 

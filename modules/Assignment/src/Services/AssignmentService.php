@@ -45,7 +45,35 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function isFulfillmentComplete(string $registrationId, ?string $group = null): bool
     {
-        // ... (existing logic)
+        // 1. Resolve Registration Metadata (via Contract)
+        $registration = app(\Modules\Internship\Services\Contracts\RegistrationService::class)
+            ->find($registrationId);
+
+        if (! $registration) {
+            return false;
+        }
+
+        // 2. Identify Mandatory Assignments for this program
+        $query = Assignment::where('internship_id', $registration->internship_id)
+            ->where('is_mandatory', true);
+
+        if ($group) {
+            $query->where('group', $group);
+        }
+
+        $mandatoryCount = $query->count();
+
+        if ($mandatoryCount === 0) {
+            return true;
+        }
+
+        // 3. Count Verified Submissions
+        $verifiedCount = Submission::where('registration_id', $registrationId)
+            ->whereRelation('statuses', 'name', 'verified')
+            ->whereIn('assignment_id', $query->pluck('id'))
+            ->count();
+
+        return $verifiedCount >= $mandatoryCount;
     }
 
     /**

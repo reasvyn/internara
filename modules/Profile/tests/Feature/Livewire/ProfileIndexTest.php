@@ -27,3 +27,19 @@ test('a user can update their basic profile information', function () {
     expect($user->fresh()->name)->toBe('Updated Name');
     expect($user->fresh()->profile->phone)->toBe('08123456789');
 });
+
+test('a user cannot update another user profile via the index component', function () {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+    
+    $this->actingAs($user);
+
+    // Livewire Index component usually works on the authenticated user
+    // But if it accepted a user_id as a property, we must ensure it's gated
+    Livewire::test(Index::class, ['user_id' => $otherUser->id])
+        ->set('name', 'Hacked Name')
+        ->call('saveInfo')
+        ->assertForbidden();
+
+    expect($otherUser->fresh()->name)->not->toBe('Hacked Name');
+});

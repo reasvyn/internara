@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'ignored_namespaces' => ['Modules\Core'],
+    'ignored_namespaces' => [],
 
     /*
     |--------------------------------------------------------------------------

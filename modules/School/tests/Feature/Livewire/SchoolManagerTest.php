@@ -23,7 +23,7 @@ beforeEach(function () {
 
 describe('SchoolManager Component', function () {
     test('it renders school data correctly', function () {
-        $school = School::factory()->create(['name' => 'SMK Negeri 1 Test']);
+        $school = School::factory()->create(['name' => 'SMK Negeri 1 Test', 'npsn' => '12345678']);
         $user = User::factory()->create();
         $user->givePermissionTo('school.manage');
         $this->actingAs($user);
@@ -41,6 +41,7 @@ describe('SchoolManager Component', function () {
         Livewire::test(SchoolManager::class)
             ->set('form.name', 'Updated School Name')
             ->set('form.email', 'school@test.com')
+            ->set('form.npsn', '12345678')
             ->call('save')
             ->assertHasNoErrors()
             ->assertDispatched('school_saved');
@@ -48,6 +49,7 @@ describe('SchoolManager Component', function () {
         $this->assertDatabaseHas('schools', [
             'name' => 'Updated School Name',
             'email' => 'school@test.com',
+            'npsn' => '12345678',
         ]);
     });
 
@@ -57,6 +59,7 @@ describe('SchoolManager Component', function () {
 
         Livewire::test(SchoolManager::class)
             ->set('form.name', 'Setup School')
+            ->set('form.npsn', '12345678')
             ->call('save')
             ->assertHasNoErrors()
             ->assertStatus(200);
@@ -72,6 +75,7 @@ describe('SchoolManager Component', function () {
 
         Livewire::test(SchoolManager::class)
             ->set('form.name', 'Branded School')
+            ->set('form.npsn', '12345678')
             ->set('form.logo_file', $logo)
             ->call('save')
             ->assertHasNoErrors();

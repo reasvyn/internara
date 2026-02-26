@@ -16,6 +16,7 @@ test('it can search departments by name', function () {
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $department->shouldReceive('newQuery')->andReturn($builder);
     $builder->shouldReceive('select')->andReturnSelf();
+    $builder->shouldReceive('with')->andReturnSelf();
 
     // expectations for applyFilters
     $builder

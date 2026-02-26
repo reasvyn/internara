@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Services;
 
+use Closure;
+use Illuminate\Support\Facades\DB;
+use Throwable;
+
 /**
  * Base abstract class for all domain services.
  *
@@ -12,5 +16,19 @@ namespace Modules\Shared\Services;
  */
 abstract class BaseService
 {
-    // Common logic for all services can be placed here.
+    /**
+     * Executes a callback within a database transaction.
+     *
+     * This provides a reliable, standardized way to ensure atomicity for complex
+     * business operations involving multiple database interactions.
+     *
+     * @template TReturn
+     * @param Closure(): TReturn $callback
+     * @return TReturn
+     * @throws Throwable
+     */
+    protected function transaction(Closure $callback): mixed
+    {
+        return DB::transaction($callback);
+    }
 }

@@ -99,7 +99,6 @@ class SettingService extends EloquentQuery implements Contracts\SettingService
             'app_version' => 'version',
             'app_author' => 'author.name',
             'app_support' => 'support',
-            'app_series' => 'series_code',
             'app_license' => 'license',
         ];
 

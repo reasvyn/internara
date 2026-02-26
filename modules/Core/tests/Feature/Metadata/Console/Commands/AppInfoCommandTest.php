@@ -15,7 +15,6 @@ test('it displays correct metadata from app_info.json', function () {
     artisan('app:info')
         ->expectsOutputToContain('Internara Application Information')
         ->expectsOutputToContain($info['version'])
-        ->expectsOutputToContain($info['series_code'])
         ->expectsOutputToContain($info['author']['name'])
         ->assertExitCode(0);
 });

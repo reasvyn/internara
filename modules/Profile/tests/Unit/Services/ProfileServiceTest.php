@@ -29,8 +29,10 @@ test('it can sync profileable model', function () {
     $profile = mock(Profile::class)->makePartial();
     $profile->profileable_id = null;
 
-    $student = mock(\Modules\Student\Models\Student::class);
-    $student->shouldReceive('getKey')->andReturn('student-uuid');
+    $student = new class extends \Illuminate\Database\Eloquent\Model {
+        protected $keyType = 'string';
+        public function getKey() { return 'student-uuid'; }
+    };
 
     $relation = mock(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
     $profile->shouldReceive('profileable')->andReturn($relation);

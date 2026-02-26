@@ -37,12 +37,13 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
     public function query(
         array $filters = [],
         array $columns = ['*'],
+        array $with = [],
     ): \Illuminate\Database\Eloquent\Builder {
         if (! $this->baseQuery) {
             $this->setBaseQuery($this->model->superAdmin());
         }
 
-        return parent::query($filters, $columns);
+        return parent::query($filters, $columns, $with);
     }
 
     /**
@@ -200,7 +201,7 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
      *
      * @throws \Modules\Exception\AppException
      */
-    public function get(array $filters = [], array $columns = ['*']): \Illuminate\Support\Collection
+    public function get(array $filters = [], array $columns = ['*'], array $with = []): \Illuminate\Support\Collection
     {
         throw new AppException(
             userMessage: 'user::exceptions.cannot_get_multiple_super_admins',
