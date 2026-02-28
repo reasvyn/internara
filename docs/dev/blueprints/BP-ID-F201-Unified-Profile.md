@@ -1,51 +1,128 @@
-# Blueprint: Unified Profile (BP-ID-F201)
+# Application Blueprint: Unified Profile (BP-ID-F201)
 
-**Blueprint ID**: `BP-ID-F201` | **Requirement ID**: `SYRS-F-201` | **Scope**: Identity & Security
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the single-profile mapping for NISN/NIP and the protection of Sensitive Personal Information (PII). It ensures that every user has a unique institutional identity secured by encryption.
+**Blueprint ID**: `BP-ID-F201` | **Requirement ID**: `SYRS-F-201` | **Scope**: `Identity & Security`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 PII Protection (S1 - Secure)
-- **Field Encryption**: Sensitive fields (Phone, Address, National ID) MUST be stored using Laravel's `encrypted` cast.
-- **Zero-Exposure**: PII MUST NOT be written to plain-text system logs.
-
-### 2.2 Atomic Mapping (S2 - Sustain)
-- **One-to-One**: Every `User` record MUST be atomically linked to exactly one `Profile` record.
-- **UUID Identity**: Both models MUST use UUID v4 as their primary identifier.
+- **Spec Alignment**: This blueprint authorizes the single-profile mapping strategy and PII protection required to satisfy **[SYRS-F-201]** (Unified Profile) and **[SYRS-NF-503]** (Data Privacy).
+- **Objective**: Establish a centralized, encrypted, and immutable identity foundation that links system authentication (`User`) with institutional metadata (`Profile`).
+- **Rationale**: Handling PII (Personally Identifiable Information) such as NISN, phone numbers, and addresses requires a "Security-by-Design" approach. By centralizing these in an encrypted profile model, we simplify compliance and minimize the surface area for data leaks.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 2. Logic & Architecture (Systemic View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Encryption Audit**: Verify that raw database queries return ciphertext for `phone` and `national_identifier`.
-    - **IDOR Protection**: Verify that a user cannot update another user's profile UUID.
-- **Unit (`Unit/`)**:
-    - **Hydration Audit**: Verify that sensitive fields are automatically decrypted when the Model is retrieved.
+### 2.1 The Dual-Entity Identity Model
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Architectural (`arch/`)**:
-    - **Identity Standards**: Verify all Identity models use `HasUuid` trait.
-    - **Namespace Rules**: Ensure Models are in `Modules\*\Models` and use property hooks for hooks.
+Internara separates the **Authentication Subject** from the **Institutional Object**:
+- **`Modules\User\Models\User`**: Responsible for credentials, roles, and session state.
+- **`Modules\Profile\Models\Profile`**: Responsible for PII, national identifiers, and institutional metadata.
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Architectural (`arch/`)**:
-    - **Modular Sovereignty**: Ensure only `User` and `Profile` modules contain identity-related Eloquent models.
-- **Feature (`Feature/`)**:
-    - **Atomic Creation**: Verify that a transaction rollback on Profile creation correctly rolls back the User record.
-    - **N+1 Audit**: Verify that loading user-profiles for 50 records uses only 2 queries.
+### 2.2 System Interaction Diagram (Identity Mapping)
+
+```mermaid
+sequenceDiagram
+    participant S as Staff/Admin
+    participant UI as ProfileEditor (Livewire)
+    participant P as ProfileService
+    participant DB as Persistence (SQLite/PG)
+
+    S->>UI: Input PII (NISN, Phone, Address)
+    UI->>P: updateProfile(userUuid, data)
+    P->>P: encryptData(data)
+    P->>DB: UPDATE profiles SET encrypted_data = ... WHERE user_uuid = ...
+    DB-->>P: Success
+    P-->>UI: Result(Success)
+    UI-->>S: Masked Output (e.g. 0812-****-5678)
+```
+
+### 2.3 Persistence Specification (Schema)
+
+| Column | Type | Index | Nullable | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `UUID` | Primary | No | Primary key for the profile record. |
+| `user_id` | `UUID` | Unique | No | Atomic link to the `users` table. |
+| `national_identifier` | `String` | Indexed | Yes | Encrypted NISN/NIP. |
+| `registration_number` | `String` | Indexed | Yes | Encrypted institutional ID (NIS/NIP). |
+| `phone` | `String` | No | Yes | Encrypted contact number. |
+| `address` | `Text` | No | Yes | Encrypted physical address. |
+
+### 2.4 Data Security Invariants
+
+- **Field-Level Encryption**: Sensitive fields MUST use Laravel's `encrypted` cast.
+- **Zero-Logging**: The `PiiMaskingProcessor` MUST redact profile fields from all logging sinks.
 
 ---
 
-## 4. Documentation Strategy
-- **Governance Standards**: Update `docs/dev/governance.md` to document the PII protection invariants and the single-profile strategy.
-- **Developer Guide**: Update `modules/Profile/README.md` to list encrypted fields and the atomic relationship with the `User` model.
-- **Privacy Audit**: Ensure the `PiiMaskingProcessor` configuration is documented in `docs/dev/security.md`.
+## 3. Presentation Strategy (User Experience View)
+
+### 3.1 UX Workflow
+
+- **Synchronized Registration**: During account creation, the system populates both tables in a single transaction.
+- **Masked Display**: UI components should default to masking sensitive fields unless explicitly "revealed" by authorized subjects.
+
+### 3.2 Interface Design
+
+- **Profile Card**: A standardized UI component (`ui::profile-card`) providing a consistent view of identity across all modules.
+
+---
+
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Encryption Audit**: Unit tests verifying that raw SQL queries return ciphertext while Eloquent returns plaintext.
+- **Hydration Logic**: Verification that `HasUuid` correctly initializes identifiers.
+
+### 4.2 Feature Validation
+
+- **Atomic Rollback**: Ensures failure in Profile creation triggers rollback of the User record.
+- **IDOR Protection**: Verification that students cannot update another user's Profile UUID.
+
+### 4.3 Architecture Verification
+
+- **Modular Sovereignty**: Pest Arch tests ensuring only `User` and `Profile` modules contain identity models.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Privacy & GDPR Alignment
+
+- **Right to Erasure**: Implementation of `SoftDeletes` for both User and Profile entities.
+- **Data Minimization**: Only store PII explicitly required for internship administration.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Governance Standards**: Update `docs/dev/governance.md` to document the PII protection invariants.
+
+### 6.2 Stakeholder Manuals
+
+- **Privacy Policy**: Drafting of the data protection notice in the Wiki.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Profile1**: Migration for `profiles` table with atomic unique UUID link to `users`.
+2.  **Issue #Profile2**: Implement `encrypted` casts on the `Profile` model.
+3.  **Issue #Profile3**: Construct `ProfileService` with cross-module hydration logic.
+4.  **Issue #Profile4**: Develop the masked `ProfileCard` component.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Encryption active; atomic linkage verified; IDOR protection confirmed.
+- **Verification Protocols**: 100% pass rate in the identity and security test suite.
+- **Quality Gate**: Security audit confirms zero plain-text PII storage.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

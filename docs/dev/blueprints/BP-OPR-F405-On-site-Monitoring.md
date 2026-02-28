@@ -1,48 +1,134 @@
-# Blueprint: On-site Monitoring (BP-OPR-F405)
+# Application Blueprint: On-site Monitoring (BP-OPR-F405)
 
-**Blueprint ID**: `BP-OPR-F405` | **Requirement ID**: `SYRS-F-405` | **Scope**: Monitoring & Vocational Telemetry
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the formal documentation mechanism for physical site visits. It ensures that Academic Supervisors (Teachers) can record their on-site monitoring activities, providing auditable proof of institutional oversight and evaluating the student's physical condition at the placement.
+**Blueprint ID**: `BP-OPR-F405` | **Requirement ID**: `SYRS-F-405` | **Scope**: `Operational Monitoring`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
+
+- **Spec Alignment**: This blueprint authorizes the formal documentation mechanism for physical site visits required to satisfy **[SYRS-F-405]** (On-site Monitoring).
+- **Objective**: Establish a systematic framework for Academic Supervisors (Teachers) to record their monitoring activities at industrial placement locations, ensuring institutional presence and qualitative evaluation of student conditions.
+- **Rationale**: Physical visits are a cornerstone of vocational quality assurance. By formalizing these visits as auditable system records, we capture critical "ground truth" data that cannot be fully reflected in student-submitted journals.
+
+---
+
+## 2. Logic & Architecture (Systemic View)
 
 ### 2.1 The Mentoring Visit Entity
-- **Domain Module**: This logic resides within the `Mentor` module, specifically focusing on the `MentoringVisit` model.
-- **Persistence**: The `mentoring_visits` table MUST enforce referential integrity at the service layer by linking `registration_id` and `teacher_id` (UUIDs).
-- **Condition State**: The on-site condition of the student MUST be captured using a standardized `Enum` (e.g., `Excellent`, `Good`, `Fair`, `Poor`) to facilitate future data synthesis.
 
-### 2.2 Security & Accountability (S1 - Secure)
-- **Role Isolation**: Only the assigned `Teacher` for a specific registration is authorized to create or modify a visit record.
-- **Traceability**: The creation and modification of visit records MUST be logged via the `InteractsWithActivityLog` concern.
+- **Domain Module**: This logic is encapsulated within the `Mentor` module.
+- **Model**: `Modules\Mentor\Models\MentoringVisit`.
+- **Data Invariants**: Every record MUST capture:
+    - **Context**: Student Registration UUID and Teacher UUID.
+    - **Temporal**: Exact Date of Visit.
+    - **Qualitative**: Student Condition (Enum: `Excellent`, `Good`, `Fair`, `Poor`) and detailed Monitoring Notes.
+
+### 2.2 System Interaction Diagram (Process Flow)
+
+```mermaid
+sequenceDiagram
+    participant T as Teacher (Academic Supervisor)
+    participant UI as Monitoring Component (Livewire)
+    participant S as MentoringService
+    participant DB as Persistence (SQLite/PG)
+    participant L as ActivityLog
+
+    T->>UI: Input Visit Details (Condition, Notes, Date)
+    UI->>S: recordVisit(registrationId, data)
+    S->>S: authorize('create', MentoringVisit::class)
+    S->>DB: INSERT INTO mentoring_visits (UUID, registration_id, teacher_id, condition, content, visit_date)
+    DB-->>S: Success
+    S->>L: logAction('visit_recorded', MentoringVisit)
+    S-->>UI: Result(Success)
+    UI-->>T: Toast("Visit recorded successfully")
+```
+
+### 2.3 Persistence Specification (Schema)
+
+| Column | Type | Index | Nullable | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `UUID` | Primary | No | Unique identifier for the visit record. |
+| `registration_id` | `UUID` | Indexed | No | Link to the student's internship registration. |
+| `teacher_id` | `UUID` | Indexed | No | The ID of the supervisor performing the visit. |
+| `visit_date` | `Date` | Indexed | No | The calendar date when the visit occurred. |
+| `condition` | `Enum` | No | No | (excellent, good, fair, poor) |
+| `content` | `Text/JSON` | No | No | Qualitative monitoring notes and feedback. |
+| `created_at` | `Timestamp` | No | No | Audit timestamp. |
+
+### 2.4 Security & Accountability
+
+- **Authorization Invariant**: Only the `Teacher` explicitly assigned to a student registration is authorized to create or modify a visit record for that student.
+- **Scoping**: All visit queries are automatically filtered by the `HasAcademicYear` global scope to ensure cohort isolation.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Authorization Audit**: Verify that a teacher attempting to log a visit for an unassigned student receives a `403 Forbidden` response.
-    - **Data Integrity**: Verify that submitting a visit without the mandatory `condition` enum throws a `ValidationException`.
+### 3.1 UX Workflow
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Architectural (`arch/`)**:
-    - **Identity Standards**: Ensure the `MentoringVisit` model implements the `HasUuid` trait.
-- **Unit (`Unit/`)**:
-    - **State Management**: Test the enum casting and validation logic for the student condition field.
+- **Mobile Visit Entry**: A streamlined mobile interface allowing Teachers to log visit details while still at the industrial location.
+- **Student Condition Pulse**: Visual indicators on the Teacher's dashboard highlighting students who have not received a visit within the mandated period (e.g., "Due for Visit").
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Feature (`Feature/`)**:
-    - **Academic Scoping**: Verify that visit queries are automatically filtered by the `HasAcademicYear` global scope, preventing data drift between cohorts.
+### 3.2 Interface Design
+
+- **Monitoring Log Component**: A chronological view of all visits for a specific student, providing a "Guidance History" for academic coordinators.
+- **Form Component**: `mentor::livewire.visit-editor` (Functional Volt component).
 
 ---
 
-## 4. Documentation Strategy
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Enum Integrity**: Unit tests ensuring that only valid student condition enums are accepted by the persistence layer.
+- **Scoping Guard**: Verification that the `HasAcademicYear` concern correctly partitions visit data.
+
+### 4.2 Feature Validation
+
+- **Authorization Audit**: Integration tests verifying that a Teacher attempting to log a visit for a student in another department receives a `403 Forbidden` response.
+- **Validation Audit**: Tests ensuring that empty notes or missing condition ratings trigger appropriate validation errors.
+
+### 4.3 Architecture Verification
+
+- **Model Invariants**: Pest Arch tests ensuring that `MentoringVisit` implements `HasUuid` and `InteractsWithActivityLog`.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Auditability
+
+- **Forensic Records**: Every visit record creation MUST result in an `ActivityLog` entry capturing the complete state of the visit for future verification.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Developer Guide**: Update `modules/Mentor/README.md` to include the `mentoring_visits` schema and service contract definitions.
+
+### 6.2 Stakeholder Manuals
+
 - **Staff Guide**: Update `docs/wiki/daily-monitoring.md` to document the physical visit recording process for Teachers.
-- **Developer Guide**: Update `modules/Mentor/README.md` to include the `mentoring_visits` schema and relationship mappings.
-- **Reporting Guide**: Update `docs/wiki/reporting.md` to explain how on-site monitoring data is aggregated in institutional reports.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Visit1**: Migration for `mentoring_visits` table with indexed UUIDs and Enum.
+2.  **Issue #Visit2**: Implementation of `MentoringVisit` model with `HasUuid` and `HasAcademicYear`.
+3.  **Issue #Visit3**: Construction of `MentoringService::recordVisit` with Policy enforcement.
+4.  **Issue #Visit4**: Development of the `VisitEditor` Volt component for mobile-optimized entry.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Visit recording operational; Authorization enforced; Academic scoping verified.
+- **Verification Protocols**: 100% pass rate in the monitoring and guidance test suite.
+- **Quality Gate**: Institutional audit confirms that visit records accurately reflect Teacher field activities.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

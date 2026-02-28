@@ -1,46 +1,113 @@
-# Blueprint: Compliance Automation (BP-EVAL-F502)
+# Application Blueprint: Compliance Automation (BP-EVAL-F502)
 
-**Blueprint ID**: `BP-EVAL-F502` | **Requirement ID**: `SYRS-F-502` | **Scope**: Assessment & Performance Synthesis
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the automated participation scoring engine. It ensures that student engagement, derived from real-time telemetry (Attendance and Journals), is automatically synthesized into a numerical score.
+**Blueprint ID**: `BP-EVAL-F502` | **Requirement ID**: `SYRS-F-502` | **Scope**: `Assessment & Synthesis`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
+
+- **Spec Alignment**: This blueprint authorizes the participation scoring engine required to satisfy **[SYRS-F-502]** (Compliance Automation).
+- **Objective**: Establish a deterministic mechanism for converting telemetry (Attendance/Journals) into participation scores.
+- **Rationale**: Manual scoring is biased. Automating compliance provides real-time feedback and ensures final grades reflect vocational consistency.
+
+---
+
+## 2. Logic & Architecture (Systemic View)
 
 ### 2.1 The Scoring Algorithm
-- **Participation Telemetry**: The `ComplianceService` calculates scores based on the ratio of actual vs. expected presence and logbook submissions.
-- **Weighted Synthesis**: Automated scores are combined with manual rubric marks based on program-level weight configurations (e.g., 20% Attendance, 30% Journal).
+
+`ComplianceService` calculates score via:
+1.  **Attendance Consistency**: (Present / Total Days) * 100.
+2.  **Journal Responsiveness**: (On-time Journals / Required) * 100.
+
+### 2.2 System Interaction Diagram (Aggregation Flow)
+
+```mermaid
+sequenceDiagram
+    participant AS as AssessmentService
+    participant CS as ComplianceService
+    participant AT as AttendanceService
+    participant JS as JournalService
+    participant DB as Persistence
+
+    AS->>CS: getParticipationScore(registrationUuid)
+    CS->>AT: getAttendanceStats(registrationUuid)
+    AT-->>CS: {present: 20, total: 22}
+    CS->>JS: getJournalStats(registrationUuid)
+    JS-->>CS: {submitted: 18, expected: 22}
+    CS->>CS: runAlgorithm()
+    CS-->>AS: {score: 86.5, status: Good}
+```
+
+### 2.3 Data Synthesis Invariants
+
+- **Capping**: Score strictly capped at 100.00.
+- **Authorized Absence**: Approved absences excluded from denominator.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 3. Presentation Strategy (User Experience View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Unit (`Unit/`)**:
-    - **Participation Capping**: Verify that if a student has >100% participation (overtime), the score is capped at 100.00.
-- **Feature (`Feature/`)**:
-    - **Data Integrity**: Verify that the scoring engine cannot be triggered for registrations in `inactive` status.
+### 3.1 UX Workflow
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Unit (`Unit/`)**:
-    - **Mathematical Verification**: Create test cases with specific engagement metrics and verify that the calculated score matches the expected weighted average.
-- **Architectural (`arch/`)**:
-    - **Standard Compliance**: Ensure the scoring logic is encapsulated within a dedicated `WeightedCalculator` utility.
+- **Progress Gauge**: Real-time "Compliance Meter" on student dashboard.
+- **Drill-down**: Click score to see contributing logs.
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Architectural (`arch/`)**:
-    - **Isolation**: Verify the `Assessment` module does not query telemetry tables directly (must use Service Contracts).
-- **Unit (`Unit/`)**:
-    - **Memory Efficiency**: Verify retrieval of 10,000 telemetry records uses `cursor()` to maintain memory stability.
+### 3.2 Interface Design
+
+- **Telemetry Summary**: Component (`assessment::telemetry-status`) visualizing ratios.
 
 ---
 
-## 4. Documentation Strategy
-- **Admin Guide**: Update `docs/wiki/assessment-and-evaluation.md` to explain the participation scoring algorithm and weighting configuration.
-- **Developer Guide**: Update `modules/Assessment/README.md` to document the `ComplianceService` and its dependency on `Attendance` and `Journal` contracts.
-- **Architecture**: Document the telemetry aggregation strategy in `docs/dev/architecture.md` (Process View).
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Math Accuracy**: Verify synthesized output against raw payloads.
+- **Edge Cases**: Handle 0 expected days gracefully.
+
+### 4.2 Feature Validation
+
+- **Data Integrity**: Guard against scoring inactive registrations.
+- **Capping Enforcement**: Verification of max score boundary.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Performance
+
+- **Memory Stability**: Large telemetry sets use cursors.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Developer Guide**: Update `modules/Assessment/README.md` for algorithm.
+
+### 6.2 Stakeholder Manuals
+
+- **Admin Guide**: Update `docs/wiki/assessment-and-evaluation.md` for weights.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Comp1**: Implement `ComplianceService` aggregator.
+2.  **Issue #Comp2**: Create weighted synthesis logic.
+3.  **Issue #Comp3**: Develop the Dashboard Gauge component.
+4.  **Issue #Comp4**: Build the Telemetry Drill-down interface.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Scoring verified; Absences handled; Capping enforced.
+- **Verification Protocols**: 100% pass rate in compliance test suite.
+- **Quality Gate**: Manual vs Automated score variance audit (Target: 0).
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

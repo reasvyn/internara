@@ -1,45 +1,117 @@
-# Blueprint: Absence Orchestration (BP-OPR-F402)
+# Application Blueprint: Absence Orchestration (BP-OPR-F402)
 
-**Blueprint ID**: `BP-OPR-F402` | **Requirement ID**: `SYRS-F-402` | **Scope**: Monitoring & Vocational Telemetry
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the lifecycle of student leave requests. It ensures that non-presence is formally justified with digital evidence and verified by supervisors to maintain academic integrity.
+**Blueprint ID**: `BP-OPR-F402` | **Requirement ID**: `SYRS-F-402` | **Scope**: `Vocational Telemetry`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 The Absence Lifecycle (S1 - Secure)
-- **Justification**: Every request MUST include a category and digital evidence (e.g., doctor's note).
-- **Conflict Invariant**: An `approved` absence MUST block any `Check-In` attempts for that day.
-
----
-
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
-
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Conflict Audit**: Verify that `AttendanceService::checkIn()` throws an exception if an approved absence exists.
-    - **Evidence Audit**: Verify that "Sick" category requires a file upload.
-
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Unit (`Unit/`)**:
-    - **Status Trail**: Verify that `AbsenceRequest` captures the `verified_by` UUID correctly.
-- **Architectural (`arch/`)**:
-    - **Standard Compliance**: Ensure `AbsenceRequest` model uses `HasStatus` concern.
-
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Architectural (`arch/`)**:
-    - **Isolation**: Ensure `Attendance` module interacts with `Media` strictly via Service Contracts for evidence.
-- **Feature (`Feature/`)**:
-    - **Scoring Integration**: Verify that `ComplianceService` treats approved absences as neutral/authorized.
+- **Spec Alignment**: This blueprint authorizes the management of authorized absences required to satisfy **[SYRS-F-402]** (Absence Orchestration).
+- **Objective**: Establish an auditable workflow for student leave requests justified by digital evidence.
+- **Rationale**: Students have legitimate reasons for absence (illness). Formalizing "Authorized Absences" ensures they are treated correctly in automated scoring and academic integrity audits.
 
 ---
 
-## 4. Documentation Strategy
-- **Student Guide**: Update `docs/wiki/daily-monitoring.md` to document the process for submitting absence requests and required evidence.
-- **Staff Guide**: Update `docs/wiki/daily-monitoring.md` on how to verify and approve absence requests.
-- **Developer Guide**: Update `modules/Attendance/README.md` to document the absence lifecycle and its integration with the participation scoring engine.
+## 2. Logic & Architecture (Systemic View)
+
+### 2.1 The Absence State Machine
+
+Requests follow a strict lifecycle:
+1.  **Draft**: Created by student.
+2.  **Pending**: Awaiting verification.
+3.  **Approved**: Authorized; Check-In blocked for the date.
+4.  **Rejected**: Unauthorized; counts as penalty.
+
+### 2.2 System Interaction Diagram (Authorization Flow)
+
+```mermaid
+sequenceDiagram
+    participant S as Student
+    participant UI as AbsencePortal (Livewire)
+    participant AS as AbsenceService
+    participant MS as MediaService
+    participant T as Teacher (Staff)
+
+    S->>UI: Submit Request (Date, Reason, Photo)
+    UI->>MS: storeEvidence(photo)
+    MS-->>UI: mediaUuid
+    UI->>AS: requestAbsence(data, mediaUuid)
+    AS->>DB: INSERT absence_request (Status: Pending)
+    T->>UI: Review Evidence via Signed URL
+    UI->>AS: approveAbsence(requestUuid)
+    AS->>DB: UPDATE status (Approved)
+    AS->>DB: BLOCK attendance for date
+```
+
+### 2.3 Functional Invariants
+
+- **Conflict Prevention**: `AttendanceService` rejects `Check-In` if `Approved` absence exists for the date.
+- **Evidence Mandate**: "Sick" category REQUIRES media attachment.
+
+---
+
+## 3. Presentation Strategy (User Experience View)
+
+### 3.1 UX Workflow
+
+- **Mobile Submission**: Streamlined form for photo evidence capture.
+- **Supervisor Inbox**: Dedicated verification interface for Teachers.
+
+### 3.2 Interface Design
+
+- **Evidence Viewer**: Secure component using temporary signed URLs.
+
+---
+
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Status Transitions**: Verify correct logging and authorization.
+- **Evidence Validation**: Ensure "Sick" enforces `media_id`.
+
+### 4.2 Feature Validation
+
+- **Attendance Block**: Verify `AttendanceService` throws `ConflictException` on approved absence date.
+- **Scoring Neutrality**: Ensure `ComplianceService` treats approved absences as neutral.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Forensic Traceability
+
+- **Audit Trail**: Capture `verified_by` UUID and rejection rationale.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Developer Guide**: Update `modules/Attendance/README.md` for absence lifecycle.
+
+### 6.2 Stakeholder Manuals
+
+- **Student Guide**: Update `docs/wiki/daily-monitoring.md` for submission process.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Absence1**: Create `absence_requests` migration and model with `HasStatus`.
+2.  **Issue #Absence2**: Implement `AbsenceService` logic.
+3.  **Issue #Absence3**: Develop the mobile submission form component.
+4.  **Issue #Absence4**: Build the Supervisor Review component with Secure Evidence Viewer.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Lifecycle functional; Conflicts blocked; Scoring neutrality verified.
+- **Verification Protocols**: 100% pass rate in absence test suite.
+- **Quality Gate**: Security audit confirms evidence protection via signed URLs.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

@@ -1,50 +1,120 @@
-# Blueprint: Rubric-Based Evaluation (BP-EVAL-F501)
+# Application Blueprint: Rubric-Based Evaluation (BP-EVAL-F501)
 
-**Blueprint ID**: `BP-EVAL-F501` | **Requirement ID**: `SYRS-F-501` | **Scope**: Assessment & Performance Synthesis
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the formal competency scoring mechanism. It ensures that supervisors can evaluate student performance based on institutional rubrics, providing qualitative marks that contribute to the final grade.
+**Blueprint ID**: `BP-EVAL-F501` | **Requirement ID**: `SYRS-F-501` | **Scope**: `Assessment & Synthesis`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 Rubric Strategy
-- **JSON Flexibility**: Rubrics are stored as JSON blobs, allowing for dynamic curriculum updates without database schema changes.
-- **Role-Based Scoring**: Supports distinct rubric inputs from both the **Industry Mentor** and the **Academic Teacher**.
-
-### 2.2 Constructing the Grade
-- **PHP 8.4 Excellence**: Use **Property Hooks** for virtual score representations (e.g., `letter_grade`, `is_passing`).
-- **Authorization**: Every evaluation MUST be authorized via Policy to ensure only assigned supervisors can submit marks.
+- **Spec Alignment**: This blueprint authorizes the rubric-based scoring mechanism required to satisfy **[SYRS-F-501]** (Rubric-Based Evaluation).
+- **Objective**: Establish a flexible assessment framework allowing qualitative evaluation based on institutional competency rubrics.
+- **Rationale**: Vocational success requires qualitative assessment. JSON-based rubrics allow curriculum evolution without code changes, ensuring marks are traceable to academic criteria.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 2. Logic & Architecture (Systemic View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Authorization Audit**: Test that an unassigned supervisor attempting to evaluate a student receives a `403 Forbidden`.
-- **Unit (`Unit/`)**:
-    - **JSON Schema Audit**: Verify that saving a rubric with an invalid JSON structure (e.g., missing mandatory criteria fields) triggers a validation error.
+### 2.1 The Rubric Strategy
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Architectural (`arch/`)**:
-    - **Domain Isolation**: Ensure the `Assessment` module does not contain hard-coded rubric labels (must be dynamic).
-- **Feature (`Feature/`)**:
-    - **Audit Trail**: Verify that every rubric submission is recorded in the `ActivityLog` with its score payload.
+- **JSON Flexibility**: Rubrics MUST be stored as structured JSON blobs.
+- **Weighted Input**: Supports distinct inputs from Industry Mentor and Academic Teacher.
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Architectural (`arch/`)**:
-    - **Contract Compliance**: Verify that the evaluation logic is exposed via a Service Contract.
-- **Unit (`Unit/`)**:
-    - **Calculation Speed**: Verify that the grade conversion (marks to letter) performs in < 1ms.
+### 2.2 System Interaction Diagram (Scoring Flow)
+
+```mermaid
+sequenceDiagram
+    participant S as Supervisor (Mentor/Teacher)
+    participant UI as RubricForm (Livewire)
+    participant AS as AssessmentService
+    participant DB as Persistence
+
+    S->>UI: Select Student & Program
+    UI->>AS: getActiveRubric(programUuid)
+    AS-->>UI: RubricJSON
+    UI->>UI: Render Dynamic Form Fields
+    S->>UI: Submit Scores per Criterion
+    UI->>AS: submitAssessment(registrationUuid, scores)
+    AS->>AS: calculateWeightedAverage(scores)
+    AS->>DB: INSERT assessment (Scores, Average, Sig)
+    AS-->>UI: Success
+    UI-->>S: Toast("Assessment finalized")
+```
+
+### 2.3 Persistence Specification (Schema)
+
+| Column | Type | Index | Nullable | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `id` | `UUID` | Primary | No | Record identifier. |
+| `registration_id` | `UUID` | Indexed | No | Registration link. |
+| `supervisor_id` | `UUID` | No | No | Evaluator link. |
+| `scores` | `JSON` | No | No | Raw criteria scores. |
+| `final_score` | `Decimal` | Indexed | No | Synthesized average. |
+| `letter_grade` | `String` | No | Yes | Hook-computed grade. |
 
 ---
 
-## 4. Documentation Strategy
-- **Staff Guide**: Update `docs/wiki/assessment-and-evaluation.md` to document the rubric-based evaluation process for Teachers and Mentors.
-- **Developer Guide**: Update `modules/Assessment/README.md` to include the JSON schema for rubrics and the authorization policy logic.
-- **Registry**: Update `docs/wiki/institutional-foundation.md` on how to configure institutional rubrics.
+## 3. Presentation Strategy (User Experience View)
+
+### 3.1 UX Workflow
+
+- **Dynamic Form**: UI renders fields based on rubric JSON (sliders, radios).
+- **Performance Radar**: Visualization of achievement across criteria.
+
+### 3.2 Interface Design
+
+- **Assessment Wizard**: Component (`assessment::rubric-form`) guiding through levels.
+
+---
+
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Schema Validation**: Ensure JSON adheres to internal spec.
+- **Math Accuracy**: Verify weighted average logic.
+
+### 4.2 Feature Validation
+
+- **Authorization Leak**: unassigned Teacher cannot assess student (403).
+- **Validation Audit**: Mandatory criteria enforced.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Curriculum Alignment
+
+- **Traceability**: Score record linked to rubric version.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Developer Guide**: Update `modules/Assessment/README.md` for JSON schema.
+
+### 6.2 Stakeholder Manuals
+
+- **Staff Guide**: Update `docs/wiki/assessment-and-evaluation.md` for evaluation process.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Assess1**: Define standard Rubric JSON Schema.
+2.  **Issue #Assess2**: Implement `AssessmentService` with weighted logic.
+3.  **Issue #Assess3**: Build Dynamic Rubric Form component.
+4.  **Issue #Assess4**: Create the Performance Radar visualization component.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Form functional; Weighted scoring verified; Authorization enforced.
+- **Verification Protocols**: 100% pass rate in assessment test suite.
+- **Quality Gate**: Expert audit confirms grade synthesis matches standards.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

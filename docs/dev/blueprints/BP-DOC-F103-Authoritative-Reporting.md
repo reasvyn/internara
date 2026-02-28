@@ -1,49 +1,95 @@
-# Blueprint: Authoritative Reporting (BP-DOC-F103)
+# Application Blueprint: Authoritative Reporting (BP-DOC-F103)
 
-**Blueprint ID**: `BP-DOC-F103` | **Requirement ID**: `SYRS-F-103` | **Scope**: Intelligence & Delivery
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the generation of QR-signed institutional records and competency reports. It ensures that output documents are verifiable, accessible, and correctly branded.
+**Blueprint ID**: `BP-DOC-F103` | **Requirement ID**: `SYRS-F-103` | **Scope**: `Intelligence & Delivery`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 QR Verification Loop (S1 - Secure)
-- **Signature Hash**: Every PDF MUST contain a QR code encoding a Signed URL that links back to the system's verification endpoint.
-- **Tamper Evidence**: Modifying the document metadata or the QR code payload MUST result in a "Verification Failed" state on the portal.
-
-### 2.2 Branded Synthesis (S2 - Sustain)
-- **Branding Injection**: The PDF generator MUST automatically inject the school logo and brand colors from the `School` and `Setting` modules.
-- **i18n Metadata**: Generated files MUST contain metadata (Title, Author, Lang) matching the system locale (WCAG 2.1 AA).
+- **Spec Alignment**: This blueprint authorizes the generation of QR-signed institutional records and competency reports required to satisfy **[SYRS-F-103]** (Authoritative Reporting).
+- **Objective**: Establish a secure, verifiable, and professionally branded document synthesis engine that converts student vocational data into authoritative PDF/Excel certificates.
+- **Rationale**: Institutional reports (certificates, competency records) are the final output of the internship program. By implementing cryptographic signatures (via QR codes) and standardized branding, we ensure these documents are tamper-proof and reflect the prestige of the institution.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 2. Logic & Architecture (Systemic View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Signature Audit**: Test that scanning a QR code with a modified UUID or tampered hash returns a `403` or "Invalid" state.
-    - **Private Disk Sovereignty**: Verify that generated reports are stored on the `private` disk and are NOT accessible via public URLs.
+### 2.1 The Synthesis Engine
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Unit (`Unit/`)**:
-    - **Metadata Audit**: Use a PDF parser to verify that generated documents contain correct `Lang` and `Author` tags.
-- **Architectural (`arch/`)**:
-    - **Contract Compliance**: Ensure all Report providers implement the `ReportProvider` interface.
+- **Asynchronous Pipeline**: Report generation MUST be handled via queued jobs (`ReportGeneratorJob`) to prevent UI blocking during complex PDF rendering.
+- **Template System**: Utilization of a Blade-based PDF template engine that automatically injects institutional metadata (Logo, Brand Colors, Signatories).
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Feature (`Feature/`)**:
-    - **Queue Invariant**: Verify that calling the report generation service pushes a job to the `default` queue instead of blocking the request.
-- **Architectural (`arch/`)**:
-    - **Isolation**: Verify that the `Report` module does not depend on UI-specific Livewire state for generation logic.
+### 2.2 QR Verification Loop
+
+Every generated PDF MUST contain a unique **Verification QR Code**:
+1.  **Generation**: The system creates a Signed URL pointing to the `Public/Verification` portal.
+2.  **Encoding**: The URL is hashed and encoded into a QR image embedded in the document footer.
+3.  **Validation**: External parties (employers, universities) scan the code to verify the document's authenticity against the system's live database.
+
+### 2.3 Service Contract Specifications
+
+- **`Modules\Report\Services\Contracts\ReportService`**: The master orchestrator for initiating generation, managing document storage, and verifying QR signatures.
+- **`Modules\Report\Contracts\ReportProvider`**: An interface that domain modules MUST implement to provide data for specific report types (e.g., `CompetencyReportProvider`).
 
 ---
 
-## 4. Documentation Strategy
+## 3. Presentation Strategy (User Experience View)
+
+### 3.1 UX Workflow
+
+- **Background Generation**: When a user clicks "Download", the UI displays a "Preparing Document" state while the job executes in the background.
+- **Verification Portal**: A clean, public-facing portal where stakeholders can upload or scan documents to see a "Green/Red" authenticity status.
+
+### 3.2 Interface Design
+
+- **Branded Layout**: The PDF layout MUST strictly follow the institutional style guide, including the mandated **Instrument Sans** typography and 1px border invariants.
+
+---
+
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Signature Hash Integrity**: Unit tests verifying that changing a single character in the report's UUID results in a "Signature Invalid" state.
+- **Metadata Audit**: Verification that generated PDFs contain correct accessibility tags (Title, Author, Lang) matching the system locale.
+
+### 4.2 Feature Validation
+
+- **Private Disk Sovereignty**: Integration tests ensuring that generated reports are stored on the `private` disk and return `404` when accessed via direct public URLs.
+- **Queue Invariant**: Tests verifying that the `ReportService` correctly dispatches a job to the `default` queue.
+
+### 4.3 Architecture Verification
+
+- **Module Isolation**: Pest Arch tests ensuring that the `Report` module remains independent of UI-specific Livewire state during the generation process.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Document Accessibility
+
+- **WCAG 2.1 AA**: All generated PDF documents MUST be optimized for screen readers, including proper tagging of headings and alt-text for images.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Developer Guide**: Update `modules/Report/README.md` to document the PDF template system and the QR signature hashing algorithm.
+
+### 6.2 Stakeholder Manuals
+
 - **Admin Guide**: Update `docs/wiki/reporting.md` to document the types of authoritative reports available and the QR verification process.
-- **Developer Guide**: Update `modules/Report/README.md` to document the PDF template system and QR signature hashing algorithm.
-- **User Guide**: Add instructions in `docs/wiki/reporting.md` for external stakeholders on how to verify documents using the QR code.
+
+---
+
+## 7. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: PDF generation operational; QR verification loop verified; Private storage enforced; Accessibility metadata confirmed.
+- **Verification Protocols**: 100% pass rate in the reporting and synthesis test suite.
+- **Quality Gate**: Physical scan test of 10 sample QR codes on varied devices confirms 100% verification success rate.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

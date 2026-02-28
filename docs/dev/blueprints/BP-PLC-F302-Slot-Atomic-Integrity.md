@@ -1,48 +1,117 @@
-# Blueprint: Slot Atomic Integrity (BP-PLC-F302)
+# Application Blueprint: Slot Atomic Integrity (BP-PLC-F302)
 
-**Blueprint ID**: `BP-PLC-F302` | **Requirement ID**: `SYRS-F-302` | **Scope**: Internship Lifecycle Management
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the atomic industry placement availability and quota management. It ensures that industrial slots are never over-allocated, even under concurrent registration attempts.
+**Blueprint ID**: `BP-PLC-F302` | **Requirement ID**: `SYRS-F-302` | **Scope**: `Internship Lifecycle`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 Transactional Quota (S1 - Secure)
-- **Atomic Deduction**: The `RegistrationService` MUST use `DB::transaction()` with a "Shared Lock" or atomic decrement to ensure quota integrity.
-- **One-Placement Law**: Systemic invariant preventing a student from holding two active placements in the same cycle.
-
-### 2.2 Dynamic Calculation (S3 - Scalable)
-- **Property Hooks**: The `remaining_slots` attribute in `InternshipPlacement` MUST be computed dynamically based on current `active` registration statuses.
+- **Spec Alignment**: This blueprint authorizes the atomic industry placement availability and quota management required to satisfy **[SYRS-F-302]** (Slot Atomic Integrity).
+- **Objective**: Establish a concurrency-safe mechanism for managing industrial placement slots, ensuring no over-allocation even during high-volume registration periods.
+- **Rationale**: Industrial partners provide finite slots. Race conditions must be prevented at the database level to maintain institutional credibility and partnership integrity.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 2. Logic & Architecture (Systemic View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Concurrency Audit**: Simulate 10 simultaneous registration attempts for a placement with only 1 slot (Only 1 must succeed).
-    - **Atomic Rollback**: Verify that if a registration fails halfway, the slot count remains unchanged.
+### 2.1 Transactional Quota Orchestration
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Unit (`Unit/`)**:
-    - **Calculation Logic**: Test the `remainingSlots` property hook with various registration status combinations (pending, active, rejected).
-- **Architectural (`arch/`)**:
-    - **Service Standards**: Verify `InternshipPlacementService` implements the corresponding Contract.
+Slot allocation MUST be atomic:
+1.  **Lock**: Apply `lockForUpdate()` on the `Placement` record.
+2.  **Verify**: Recalculate availability based on `Active/Pending` registrations.
+3.  **Decrement**: If slots > 0, bind the student registration.
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Architectural (`arch/`)**:
-    - **Isolation**: Ensure `Placement` models are never instantiated outside the `Internship` module.
-- **Unit (`Unit/`)**:
-    - **Query Efficiency**: Verify that the slot calculation query is optimized and indexed.
+### 2.2 System Interaction Diagram (Concurrent Flow)
+
+```mermaid
+sequenceDiagram
+    participant S1 as Student A
+    participant S2 as Student B
+    participant RS as RegistrationService
+    participant DB as Persistence (ACID)
+
+    S1->>RS: Register for Placement X (Last 1 Slot)
+    S2->>RS: Register for Placement X (Last 1 Slot)
+    RS->>DB: TRANSACTION: lockForUpdate(Placement X)
+    DB-->>RS: Locked for S1
+    RS->>DB: UPDATE Quota (Successful for S1)
+    DB-->>RS: Success
+    RS->>DB: COMMIT (S1)
+    RS->>DB: TRANSACTION: lockForUpdate(Placement X)
+    DB-->>RS: Locked for S2
+    RS->>RS: Verify Slots (0 remaining)
+    RS-->>S2: Error ("Slot No Longer Available")
+    RS->>DB: ROLLBACK (S2)
+```
+
+### 2.3 Data Architecture Invariants
+
+- **The One-Placement Law**: Unique constraint preventing a student from holding >1 active/pending registration in the same cycle.
+- **Property Hooks**: `InternshipPlacement::remaining_slots` MUST compute dynamically from registration counts.
 
 ---
 
-## 4. Documentation Strategy
-- **Admin Guide**: Update `docs/wiki/enrollment-matching.md` to explain industry placement quota management.
-- **Developer Guide**: Update `modules/Internship/README.md` to document the transactional quota deduction logic and concurrency guards.
-- **Architecture**: Document the "One-Placement Law" invariant in `docs/dev/architecture.md`.
+## 3. Presentation Strategy (User Experience View)
+
+### 3.1 UX Workflow
+
+- **Live Counters**: Catalog displays real-time "Slots Available" with async refreshing.
+- **Panic Protection**: Graceful "Slot Taken" alert if availability changes during view.
+
+### 3.2 Interface Design
+
+- **Slot Pulse**: Visual badge (`ui::slot-indicator`) showing quota pressure (Green/Yellow/Red).
+
+---
+
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Calculation Logic**: Unit tests for the property hook across all status permutations.
+
+### 4.2 Feature Validation
+
+- **Concurrency Stress Test**: Integration tests simulating simultaneous attempts for a single slot.
+- **Atomic Rollback**: Verification that failed registration leaves quota unchanged.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Data Consistency
+
+- **Indexed UUIDs**: Ensuring performant locking during heavy concurrent transactions.
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Architecture**: Document the "One-Placement Law" and locking strategy in `docs/dev/architecture.md`.
+
+### 6.2 Stakeholder Manuals
+
+- **Admin Guide**: Update `docs/wiki/enrollment-matching.md` to explain quota management.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Slot1**: Implement `lockForUpdate` logic in `RegistrationService::register`.
+2.  **Issue #Slot2**: Create the `remaining_slots` property hook on `InternshipPlacement`.
+3.  **Issue #Slot3**: Develop the concurrent stress test suite (Pest).
+4.  **Issue #Slot4**: Build the Livewire "Live Counter" component.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Locking operational; Over-allocation impossible; Counters verified.
+- **Verification Protocols**: 100% pass rate in the concurrency test suite.
+- **Quality Gate**: Stress test confirms zero "Phantom Registrations" under high load.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

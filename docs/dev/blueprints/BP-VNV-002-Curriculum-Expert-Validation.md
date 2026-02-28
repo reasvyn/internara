@@ -1,45 +1,70 @@
-# Blueprint: Curriculum Expert Validation (BP-VNV-002)
+# Application Blueprint: Curriculum Expert Validation (BP-VNV-002)
 
-**Blueprint ID**: `BP-VNV-002` | **Requirement ID**: `SYRS-V-002` | **Scope**: Verification & Validation
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the validation of system workflows against official educational regulations. It ensures that the software's business logic faithfully replicates the institutional requirements for internship supervision and assessment as mandated by the curriculum.
+**Blueprint ID**: `BP-VNV-002` | **Requirement ID**: `SYRS-V-002` | **Scope**: `Verification & Validation`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 Workflow Alignment
-- **Dual-Supervision Logic**: The system MUST enforce the policy that both an Academic Teacher and an Industry Mentor participate in the evaluation and journal verification process.
-- **Cohort Isolation**: The `AcademicYear` scoping MUST be validated to ensure it correctly segregates multi-cycle internship programs as mandated by the curriculum.
-
-### 2.2 Reporting Fidelity
-- **Data Completeness**: Generated competency reports MUST include all mandatory institutional identifiers, specifically the student's NISN and institutional registration number.
+- **Spec Alignment**: This blueprint authorizes the operational workflow audit required to satisfy **[SYRS-V-002]** (Curriculum Expert Validation) and **[SYRS-C-001]** (Logic Scope).
+- **Objective**: Ensure that the system's business logic, scoring algorithms, and reporting formats faithfully replicate official vocational internship regulations.
+- **Rationale**: The system operates within a regulated educational environment. By requiring formal curriculum expert validation, we ensure that the software facilitates academic compliance and that generated certificates are legally and institutionally valid.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 2. Logic & Architecture (Systemic View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Data Sovereignty**: Verify that a report generated for one academic year definitively excludes any telemetry or assessment data from previous cohorts.
+### 2.1 Workflow Fidelity
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Unit (`Unit/`)**:
-    - **Scoring Parity**: Verify that the mathematical outputs of the `ComplianceService` and `AssessmentService` precisely match the manual calculation examples provided by the curriculum experts.
-- **Architectural (`arch/`)**:
-    - **Naming Semantics**: Ensure that domain terminology in the code (e.g., "Registration", "Assessment") aligns with the official ubiquitous language of the institution.
+The audit MUST verify the following "Ground Truth" logic:
+1.  **Dual-Supervision Enforcement**: The system physically prevents final assessment without both Mentor and Teacher input.
+2.  **Scoring Weighting**: The mathematical weights defined in the `ComplianceService` precisely match the current year's curriculum requirements.
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Feature (`Feature/`)**:
-    - **Reporting Speed**: Verify that the generation of a complex, multi-page curriculum report performs efficiently under load.
+### 2.2 Reporting Completeness
+
+- **Mandatory Identifiers**: Verification that competency achievement reports include student NISN, NIP of signatories, and official institutional logos as per regulatory standards.
 
 ---
 
-## 4. Documentation Strategy
+## 3. Verification Strategy (V&V View)
+
+### 3.1 Unit Verification
+
+- **Math Accuracy**: Verification of the `AssessmentService` outputs against manual calculation spreadsheets provided by the curriculum experts.
+
+### 3.2 Feature Validation
+
+- **Cohort Sovereignty**: Integration tests verifying that academic scoping correctly segregates multi-cycle internship programs as mandated by the curriculum.
+- **Terminology Audit**: Verification that all user-facing domain terms (e.g., "Industrial Work Practice") align with the institution's Ubiquitous Language.
+
+---
+
+## 4. Compliance & Standardization (Integrity View)
+
+### 4.1 Regulatory Alignment
+
+- **Archival Policy**: Verification that the `SoftDeletes` implementation satisfies institutional data retention requirements for student vocational records.
+
+---
+
+## 5. Documentation Strategy (Knowledge View)
+
+### 5.1 Engineering Record
+
 - **Audit Records**: Create `docs/dev/audits/curriculum-validation-v1.md` to store formal expert feedback and compliance sign-offs.
-- **Spec Sync**: Update `docs/dev/specs.md` if the curriculum audit results in new functional requirements or invariants.
+
+### 5.2 Stakeholder Manuals
+
 - **User Guide**: Update `docs/wiki/assessment-and-evaluation.md` with verified curriculum workflows and scoring rules.
+
+---
+
+## 6. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Workflow compliance verified; Scoring parity achieved; Reporting fidelity confirmed.
+- **Verification Protocols**: Formal sign-off by the Curriculum Expert in the release notes.
+- **Quality Gate**: Comparison audit between manual and automated scores for 10 test subjects confirms zero variance.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._

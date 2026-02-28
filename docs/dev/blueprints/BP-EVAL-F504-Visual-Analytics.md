@@ -1,47 +1,114 @@
-# Blueprint: Visual Analytics (BP-EVAL-F504)
+# Application Blueprint: Visual Analytics (BP-EVAL-F504)
 
-**Blueprint ID**: `BP-EVAL-F504` | **Requirement ID**: `SYRS-F-504` | **Scope**: Assessment & Performance Synthesis
-
----
-
-## 1. Context & Strategic Intent
-
-This blueprint defines the visual data aggregation engine. It provides stakeholders (Admins and Teachers) with actionable insights and visual representations of student competency achievements, derived from raw assessment and telemetry data.
+**Blueprint ID**: `BP-EVAL-F504` | **Requirement ID**: `SYRS-F-504` | **Scope**: `Assessment & Synthesis`
 
 ---
 
-## 2. Technical Implementation
+## 1. Strategic Context
 
-### 2.1 Aggregation Engine (S3 - Scalable)
-- **Performance Caching**: Heavy mathematical aggregations (e.g., department-wide average scores) MUST utilize the Laravel `remember` cache pattern within the `AssessmentService`.
-- **Query Optimization**: Data retrieval for visual charts MUST avoid N+1 queries by leveraging advanced Eloquent eager loading and raw SQL aggregations where appropriate.
-
-### 2.2 Role-Based Context (S1 - Secure)
-- **Contextual Filtering**: The visual analytics endpoints MUST enforce scope isolation: Admins view school-wide data, while Teachers are restricted to their assigned department's data.
+- **Spec Alignment**: This blueprint authorizes the visual aggregation engine required to satisfy **[SYRS-F-504]** (Visual Analytics).
+- **Objective**: Provide visual insights into competency achievements and participation trends.
+- **Rationale**: Raw data is hard to interpret. Visual charts enable rapid identification of high performance and friction points.
 
 ---
 
-## 3. Verification & Validation - TDD Strategy (3S Aligned)
+## 2. Logic & Architecture (Systemic View)
 
-### 3.1 Secure (S1) - Boundary & Integrity Protection
-- **Feature (`Feature/`)**:
-    - **Scope Leak Audit**: Verify that a Teacher cannot view analytics data belonging to a department they are not assigned to.
+### 2.1 The Aggregation Engine
 
-### 3.2 Sustain (S2) - Maintainability & Semantic Clarity
-- **Unit (`Unit/`)**:
-    - **Data Accuracy**: Verify that the aggregated metrics correctly match the manually calculated averages from the raw `Assessment` and `Attendance` data sets.
-- **Feature (`Feature/`)**:
-    - **Accessibility Audit**: Ensure the rendered chart components include appropriate `aria-labels` and fallback text for screen readers (WCAG 2.1 AA compliance).
+- **Scalability**: Aggregations MUST use Laravel `remember` cache.
+- **Partitioning**: Data partitioned by `AcademicYear` and `Department`.
 
-### 3.3 Scalable (S3) - Structural Modularity & Performance
-- **Unit (`Unit/`)**:
-    - **Cache Integrity**: Test the cache invalidation logic to ensure charts reflect new data when significant assessments are finalized.
-- **Feature (`Feature/`)**:
-    - **N+1 Prevention Audit**: Verify that loading the dashboard for a department with 100 students does not trigger an N+1 database query cascade.
+### 2.2 System Interaction Diagram (Visual Flow)
+
+```mermaid
+sequenceDiagram
+    participant U as User (Admin/Teacher)
+    participant UI as Dashboard (Livewire)
+    participant AS as AnalyticsService
+    participant C as Cache (Redis/File)
+    participant DB as Persistence
+
+    U->>UI: Access Dashboard
+    UI->>AS: getCompetencyStats(scope)
+    AS->>C: getCachedResult(scopeKey)
+    C-->>AS: Miss
+    AS->>DB: AGGREGATE scores FROM assessments
+    DB-->>AS: ResultData
+    AS->>C: storeResult(scopeKey, ResultData)
+    AS-->>UI: JSON for Chart.js
+    UI-->>U: Render Radar Chart
+```
+
+### 2.3 Core Metrics
+
+1.  **Competency Radar**: Expected vs Actual scores.
+2.  **Participation Trend**: Attendance vs Journal consistency.
 
 ---
 
-## 4. Documentation Strategy
-- **Admin Guide**: Update `docs/wiki/reporting.md` to document the visual analytics dashboard and its key metrics.
-- **Technical Reference**: Update `docs/dev/ui-ux.md` with the charting library standards and responsive design rules for data visualization.
-- **Performance Guide**: Document the aggregation caching strategy in `docs/dev/architecture.md`.
+## 3. Presentation Strategy (User Experience View)
+
+### 3.1 UX Workflow
+
+- **Role-Aware**: Admins see school trends; Teachers see students.
+- **Student View**: Personal achievement vs cohort average.
+
+### 3.2 Interface Design
+
+- **Analytics Shell**: Standard layout (`ui::analytics-shell`) ensuring responsiveness.
+
+---
+
+## 4. Verification Strategy (V&V View)
+
+### 4.1 Unit Verification
+
+- **Cache Integrity**: Verify invalidation when assessments finalized.
+- **Math Accuracy**: verify aggregated radar scores match raw records.
+
+### 4.2 Feature Validation
+
+- **Scope Isolation**: Teacher restricted from foreign department data.
+- **Responsive Audit**: Mobile viewport overflow check.
+
+---
+
+## 5. Compliance & Standardization (Integrity View)
+
+### 5.1 Accessibility
+
+- **ARIA Charts**: fallback labels for screen readers (WCAG 2.1 AA).
+
+---
+
+## 6. Documentation Strategy (Knowledge View)
+
+### 6.1 Engineering Record
+
+- **Technical Reference**: Update `docs/dev/ui-ux.md` for charting standards.
+
+### 6.2 Stakeholder Manuals
+
+- **Admin Guide**: Update `docs/wiki/reporting.md` for dashboard KPIs.
+
+---
+
+## 7. Actionable Implementation Path
+
+1.  **Issue #Chart1**: Integrate Charting Library (Vanilla/Alpine wrapper).
+2.  **Issue #Chart2**: Implement `AnalyticsService` with caching.
+3.  **Issue #Chart3**: Build the Role-Aware Dashboard layouts.
+4.  **Issue #Chart4**: Implement WCAG fallback for SVG/Canvas elements.
+
+---
+
+## 8. Exit Criteria & Quality Gates
+
+- **Acceptance Criteria**: Dashboards functional; Role-scoping enforced; Caching verified.
+- **Verification Protocols**: 100% pass rate in analytics test suite.
+- **Quality Gate**: Dashboard load < 500ms for 1,000 students.
+
+---
+
+_Application Blueprints prevent architectural decay and ensure continuous alignment with the foundational specifications._
