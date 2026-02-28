@@ -82,7 +82,16 @@ class InternshipPlacement extends Model
         get => max(
             0,
             $this->capacity_quota -
-                $this->registrations()->whereRelation('statuses', 'name', 'active')->count(),
+                $this->registrations()
+                    ->whereHas('statuses', function ($query) {
+                        $query->where('name', 'active')
+                            ->whereIn('id', function ($sub) {
+                                $sub->selectRaw('max(id)')
+                                    ->from('statuses')
+                                    ->whereColumn('model_id', 'internship_registrations.id')
+                                    ->where('model_type', InternshipRegistration::class);
+                            });
+                    })->count(),
         );
     }
 

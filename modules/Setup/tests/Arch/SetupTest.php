@@ -8,7 +8,7 @@ use Modules\Shared\Services\BaseService;
 
 test('setup module should not depend on domain modules')
     ->expect('Modules\Setup')
-    ->not->toDependOn([
+    ->not->toUse([
         'Modules\Internship',
         'Modules\Journal',
         'Modules\Attendance',

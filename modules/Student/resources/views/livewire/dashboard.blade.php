@@ -8,7 +8,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             @if($this->registration)
-                {{-- Phase 1: Requirements --}}
+                
                 @if(!$this->registration->hasClearedAllMandatoryRequirements())
                     <x-ui::alert type="warning" shadow :title="__('student::ui.dashboard.requirements_incomplete.title')">
                         {{ __('student::ui.dashboard.requirements_incomplete.description') }}
@@ -16,7 +16,7 @@
                     
                     <x-ui::slot-render name="student.dashboard.requirements" />
 
-                {{-- Phase 2: Placement & Activity --}}
+                
                 @elseif($this->registration->placement)
                     <x-ui::card :title="__('student::ui.dashboard.my_program')" shadow separator>
                         <div class="flex flex-col gap-6">

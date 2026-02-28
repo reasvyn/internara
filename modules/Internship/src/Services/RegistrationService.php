@@ -51,67 +51,69 @@ class RegistrationService extends EloquentQuery implements Contract
      */
     public function register(array $data): InternshipRegistration
     {
-        // 0. Enforce Phase Invariant: Registration restricted by system phase
-        if (setting('system_phase', 'registration') !== 'registration') {
-            throw new AppException(
-                userMessage: 'internship::exceptions.registration_closed_for_current_phase',
-                code: 403,
-            );
-        }
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+            // 0. Enforce Phase Invariant: Registration restricted by system phase
+            if (setting('system_phase', 'registration') !== 'registration') {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.registration_closed_for_current_phase',
+                    code: 403,
+                );
+            }
 
-        $placementId = $data['placement_id'];
-        $studentId = $data['student_id'];
+            $placementId = $data['placement_id'];
+            $studentId = $data['student_id'];
 
-        // 1. Check if student is already registered for THIS internship program
-        if (
-            $this->exists(['internship_id' => $data['internship_id'], 'student_id' => $studentId])
-        ) {
-            throw new AppException(
-                userMessage: 'internship::exceptions.student_already_registered',
-                code: 422,
-            );
-        }
+            // 1. Check if student is already registered for THIS internship program
+            if (
+                $this->exists(['internship_id' => $data['internship_id'], 'student_id' => $studentId])
+            ) {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.student_already_registered',
+                    code: 422,
+                );
+            }
 
-        // 2. Check slot availability
-        if (! $this->placementService->hasAvailableSlots($placementId)) {
-            throw new AppException(
-                userMessage: 'internship::exceptions.no_slots_available',
-                code: 422,
-            );
-        }
+            // 2. Check slot availability
+            if (! $this->placementService->hasAvailableSlots($placementId)) {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.no_slots_available',
+                    code: 422,
+                );
+            }
 
-        // 3. Enforce Advisor Invariant: teacher_id is mandatory
-        if (empty($data['teacher_id'])) {
-            throw new AppException(
-                userMessage: 'internship::exceptions.advisor_required_for_placement',
-                code: 422,
-            );
-        }
+            // 3. Enforce Advisor Invariant: teacher_id is mandatory
+            if (empty($data['teacher_id'])) {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.advisor_required_for_placement',
+                    code: 422,
+                );
+            }
 
-        // 4. Enforce Temporal Integrity: start_date and end_date are mandatory
-        if (empty($data['start_date']) || empty($data['end_date'])) {
-            throw new AppException(
-                userMessage: 'internship::exceptions.period_dates_required',
-                code: 422,
-            );
-        }
+            // 4. Enforce Temporal Integrity: start_date and end_date are mandatory
+            if (empty($data['start_date']) || empty($data['end_date'])) {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.period_dates_required',
+                    code: 422,
+                );
+            }
 
-        if ($data['start_date'] > $data['end_date']) {
-            throw new AppException(
-                userMessage: 'internship::exceptions.invalid_period_range',
-                code: 422,
-            );
-        }
+            if ($data['start_date'] > $data['end_date']) {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.invalid_period_range',
+                    code: 422,
+                );
+            }
 
-        // 5. Inject active academic year
-        $data['academic_year'] = setting('active_academic_year', '2025/2026');
+            // 5. Inject active academic year
+            $data['academic_year'] = setting('active_academic_year', '2025/2026');
 
-        $registration = $this->create($data);
+            $registration = $this->create($data);
 
-        // 6. Log initial assignment
-        $this->logger->logAssignment($registration);
+            // 6. Log initial assignment
+            $this->logger->logAssignment($registration);
 
-        return $registration;
+            return $registration;
+        });
     }
 
     /**
@@ -168,37 +170,43 @@ class RegistrationService extends EloquentQuery implements Contract
         string $newPlacementId,
         ?string $reason = null,
     ): InternshipRegistration {
-        $registration = $this->find($registrationId);
-
-        if (! $registration) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
-                InternshipRegistration::class,
-                [$registrationId],
-            );
-        }
-
-        $oldPlacementId = $registration->placement_id;
-
-        // 1. Check slot availability for new placement
-        if (! $this->placementService->hasAvailableSlots($newPlacementId)) {
-            throw new AppException(
-                userMessage: 'internship::exceptions.no_slots_available',
-                code: 422,
-            );
-        }
-
-        // 2. Log the change
-        $this->logger->logChange(
-            $registration,
-            $oldPlacementId,
+        return \Illuminate\Support\Facades\DB::transaction(function () use (
+            $registrationId,
             $newPlacementId,
-            $reason ?: 'Placement reassignment',
-        );
+            $reason,
+        ) {
+            $registration = $this->find($registrationId);
 
-        // 3. Update the registration
-        return $this->update($registrationId, [
-            'placement_id' => $newPlacementId,
-        ]);
+            if (! $registration) {
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+                    InternshipRegistration::class,
+                    [$registrationId],
+                );
+            }
+
+            $oldPlacementId = $registration->placement_id;
+
+            // 1. Check slot availability for new placement
+            if (! $this->placementService->hasAvailableSlots($newPlacementId)) {
+                throw new AppException(
+                    userMessage: 'internship::exceptions.no_slots_available',
+                    code: 422,
+                );
+            }
+
+            // 2. Log the change
+            $this->logger->logChange(
+                $registration,
+                $oldPlacementId,
+                $newPlacementId,
+                $reason ?: 'Placement reassignment',
+            );
+
+            // 3. Update the registration
+            return $this->update($registrationId, [
+                'placement_id' => $newPlacementId,
+            ]);
+        });
     }
 
     /**

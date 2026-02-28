@@ -17,20 +17,7 @@ providing a centralized digital ecosystem, the system ensures:
 
 ---
 
-## 2. The Five Strategic Phases
-
-To achieve this vision, Internara is built upon **Five Strategic Phases** that govern the 
-entire operational lifecycle:
-
-1.  **Phase 1: The WHO (Identity)**: Establishing secure accounts and persona profiles.
-2.  **Phase 2: The WHERE (Institutional)**: Defining school hierarchy and departmental isolation.
-3.  **Phase 3: The WHAT (Operational)**: Orchestrating programs, partners, and placements.
-4.  **Phase 4: The HOW (Monitoring)**: Capturing attendance and forensic journal telemetry.
-5.  **Phase 5: The RESULTS (Intelligence)**: Synthesizing evaluations into certified outcomes.
-
----
-
-## 3. Key Stakeholders
+## 2. Key Stakeholders
 
 Internara provides tailored environments for five primary roles:
 
@@ -102,7 +89,7 @@ system functionality:
 
 ---
 
-**Next Step:** [Phase 0: Technical Setup (Step One)](installation.md)
+**Next Step:** [Technical Setup (Step One)](installation.md)
 
 _For technical specifications, refer to the
 **[System Requirements Specification](../dev/specs.md)**._

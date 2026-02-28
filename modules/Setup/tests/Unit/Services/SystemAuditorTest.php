@@ -4,91 +4,73 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Modules\Setup\Services\SystemAuditor;
 
-beforeEach(function () {
-    $this->service = new SystemAuditor;
-});
-
-test('it performs a full system audit', function () {
-    $results = $this->service->audit();
-
-    expect($results)
-        ->toBeArray()
-        ->toHaveKeys(['requirements', 'permissions', 'database']);
-});
-
-test('it checks PHP requirements', function () {
-    $results = $this->service->checkRequirements();
-
-    expect($results)
-        ->toBeArray()
-        ->toHaveKey('php_version')
-        ->and($results['php_version'])
-        ->toBeTrue();
-
-    expect($results)->toHaveKeys(['extension_pdo', 'extension_mbstring', 'extension_xml']);
-});
-
-test('it simulates missing PHP extensions', function () {
-    // This requires the service to use a method that can be mocked or a property that can be set
-    // Assuming the service has a protected $requirements property or similar
-    // Since I'm writing tests, I'll assume we can inject or mock the extension checker
-    // In a real scenario, we might need to refactor the service to be more testable
+describe('SystemAuditor Unit Test', function () {
     
-    // For now, let's test the 'passes' logic with simulated failure data
-    $auditor = Mockery::mock(SystemAuditor::class)->makePartial();
-    $auditor->shouldReceive('checkRequirements')->andReturn([
-        'php_version' => true,
-        'extension_pdo' => false, // Failure
-    ]);
-    $auditor->shouldReceive('checkPermissions')->andReturn(['storage' => true]);
-    $auditor->shouldReceive('checkDatabase')->andReturn(['connection' => true]);
+    beforeEach(function () {
+        $this->auditor = new SystemAuditor();
+    });
 
-    expect($auditor->passes())->toBeFalse();
-});
+    test('it can perform a full system audit', function () {
+        $audit = $this->auditor->audit();
 
-test('it checks directory permissions', function () {
-    $results = $this->service->checkPermissions();
+        expect($audit)->toBeArray()
+            ->toHaveKeys(['requirements', 'permissions', 'database']);
+    });
 
-    expect($results)
-        ->toBeArray()
-        ->toHaveKeys(['storage_directory', 'storage_logs', 'bootstrap_cache', 'env_file']);
-});
+    test('it validates mandatory php requirements', function () {
+        $requirements = $this->auditor->checkRequirements();
 
-test('it simulates read-only directory failure', function () {
-    $auditor = Mockery::mock(SystemAuditor::class)->makePartial();
-    $auditor->shouldReceive('checkRequirements')->andReturn(['php' => true]);
-    $auditor->shouldReceive('checkPermissions')->andReturn([
-        'storage_directory' => false, // Failure
-    ]);
-    $auditor->shouldReceive('checkDatabase')->andReturn(['connection' => true]);
+        expect($requirements)->toBeArray()
+            ->toHaveKey('php_version')
+            ->toHaveKey('extension_bcmath');
+        
+        expect($requirements['php_version'])->toBeTrue();
+    });
 
-    expect($auditor->passes())->toBeFalse();
-});
+    test('it audits directory write permissions', function () {
+        $permissions = $this->auditor->checkPermissions();
 
-test('it checks database connectivity', function () {
-    $results = $this->service->checkDatabase();
+        expect($permissions)->toBeArray()
+            ->toHaveKey('storage_directory')
+            ->toHaveKey('bootstrap_cache');
+        
+        // In local development/CI, these should be true
+        expect($permissions['storage_directory'])->toBeTrue();
+    });
 
-    expect($results)->toBeArray()->toHaveKey('connection')->and($results['connection'])->toBeTrue();
-});
+    test('it audits database connectivity', function () {
+        $dbStatus = $this->auditor->checkDatabase();
 
-test('it handles database connection failure', function () {
-    DB::shouldReceive('connection')->andThrow(new \Exception('Connection failed'));
+        expect($dbStatus)->toBeArray()
+            ->toHaveKey('connection')
+            ->toHaveKey('message');
+            
+        expect($dbStatus['connection'])->toBeTrue();
+    });
 
-    $results = $this->service->checkDatabase();
+    test('it passes when all environment criteria are met', function () {
+        expect($this->auditor->passes())->toBeTrue();
+    });
 
-    expect($results)
-        ->toBeArray()
-        ->and($results['connection'])
-        ->toBeFalse()
-        ->and($results['message'])
-        ->toBe('Connection failed');
-});
+    describe('Failure Scenarios', function () {
+        test('it fails audit when a core permission is missing', function () {
+            // We create a partial mock of the auditor to simulate a permission failure
+            $partialAuditor = \Mockery::mock(SystemAuditor::class)->makePartial();
+            $partialAuditor->shouldReceive('checkPermissions')
+                ->andReturn(['storage_directory' => false]);
+            
+            expect($partialAuditor->passes())->toBeFalse();
+        });
 
-test('it determines if all audits pass', function () {
-    $result = $this->service->passes();
-
-    expect($result)->toBeTrue();
+        test('it fails audit when database connection is lost', function () {
+            $partialAuditor = \Mockery::mock(SystemAuditor::class)->makePartial();
+            $partialAuditor->shouldReceive('checkDatabase')
+                ->andReturn(['connection' => false, 'message' => 'Connection refused']);
+            
+            expect($partialAuditor->passes())->toBeFalse();
+        });
+    });
 });

@@ -1,4 +1,4 @@
-# Phase 3: Enrollment & Matching (Step Six)
+# Enrollment & Matching (Step Six)
 
 This is the "Coupling" phase. Internara connects the three pillars of a successful internship: the
 **Student**, the **Academic Supervisor** (Teacher), and the **Industrial Partner** (Mentor). Proper
@@ -44,4 +44,4 @@ Once matched, the student's internship becomes "Active" on their official Start 
 
 ---
 
-**Next Step:** [Phase 4: Daily Monitoring (Step Seven)](daily-monitoring.md)
+**Next Step:** [Daily Monitoring (Step Seven)](daily-monitoring.md)

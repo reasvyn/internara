@@ -1,7 +1,7 @@
 # Internara Wiki
 
 Welcome to the central knowledge base for Internara users and administrators. This wiki is
-structured around our **Strategic Phases** to help you manage a complete internship program.
+structured to help you manage a complete internship program.
 
 ---
 
@@ -9,25 +9,23 @@ structured around our **Strategic Phases** to help you manage a complete interns
 
 Follow these guides in order to bootstrap and operate your system effectively:
 
-### Phase 0: The Engine (Foundational)
+### Technical Setup & Installation
 - **[Step Zero: Project Overview](overview.md)**: Preparation and readiness checklist.
 - **[Step One: Technical Setup](installation.md)**: Cloning and environment initialization.
-
-### Phase 1: The WHO (Identity & Security)
 - **[Step Two: User Onboarding](user-onboarding.md)**: Registering Teachers and Students.
-- **[Step Three: Data Management](data-management.md)**: Auditing and identity protection.
 
-### Phase 2: The WHERE (Institutional Foundation)
+### Institutional Foundation
+- **[Step Three: Data Management](data-management.md)**: Auditing and identity protection.
 - **[Step Four: Institutional Setup](institutional-foundation.md)**: School and department isolation.
 
-### Phase 3: The WHAT (Operational Program)
+### Operational Program Orchestration
 - **[Step Five: Program Preparation](program-setup.md)**: Defining cycles and industry partners.
 - **[Step Six: Enrollment & Matching](enrollment-matching.md)**: Registrations and placement matching.
 
-### Phase 4: The HOW (Execution & Monitoring)
+### Execution & Monitoring
 - **[Step Seven: Daily Monitoring](daily-monitoring.md)**: Journals, Attendance, and Mentoring.
 
-### Phase 5: The RESULTS (Intelligence & Delivery)
+### Results & Intelligence
 - **[Step Eight: Assessment & Evaluation](assessment-and-evaluation.md)**: Scoring and Certification.
 - **[Step Nine: Intelligence & Reporting](reporting.md)**: Analytics and final insights.
 

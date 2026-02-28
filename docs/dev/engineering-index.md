@@ -8,8 +8,8 @@ This index centralizes the formal technical records for the Internara project.
 
 - **[System Requirements Specification](specs.md)**: **SSoT** - ISO/IEC 29148 requirements baseline.
 - **[Architecture Description](architecture.md)**: ISO/IEC 42010 structural views and decomposition.
-- **[Design Blueprints](blueprints/blueprint-index.md)**: Strategic design records and active
-  architectural plans.
+- **[Engineering Roadmap](roadmap.md)**: Authoritative mapping between requirements and blueprints.
+- **[Design Blueprints](blueprints/)**: Strategic design records and active architectural plans.
 - **[Version History](releases.md)**: Release baselines and change logs.
 
 ## 2. Engineering Standards
@@ -26,8 +26,7 @@ This index centralizes the formal technical records for the Internara project.
   12207).
 - **[Git Protocols](git.md)**: Repository configuration and branching strategy.
 - **[Release Protocols](releases.md)**: Baseline promotion and publication standards.
-- **[Blueprint Guidelines](blueprints/blueprint-index.md)**: Standards for writing design
-  blueprints.
+- **[Roadmap Guidelines](roadmap.md)**: Standards for mapping design blueprints.
 
 ## 4. Reference & Tooling
 

@@ -1,4 +1,4 @@
-# Phase 0: Technical Setup (Step One)
+# Technical Setup (Step One)
 
 This guide provides the technical procedures for cloning the Internara repository and initializing
 the system environment.
@@ -91,7 +91,7 @@ redirected to the **Setup Wizard**, which will guide you through:
 
 ---
 
-**Next Step:** [Phase 1: User Onboarding (Step Two)](user-onboarding.md)
+**Next Step:** [User Onboarding (Step Two)](user-onboarding.md)
 
 _Once completed, refer to the **[Getting Started](getting-started.md)** guide for your first
 administrative steps._
