@@ -129,6 +129,18 @@ To ensure the product meets its intended educational and operational goals, it m
 
 ---
 
+## 7. Developer Notice (UNAUTHORIZED MODIFICATION PROHIBITED)
+
+- **This document constitutes the authoritative configuration for Internara.** All engineering
+  artifacts, architectural decisions, and source code must demonstrate compliance with the
+  requirements defined herein.
+- **No content, functional requirement, or technical constraint may be altered** without formal
+  approval from the project lead or the designated architecture board. 
+- **Any deviation** from this specification must be formally documented, justified, and approved
+  prior to implementation to ensure system integrity and compliance with institutional goals.
+
+---
+
 _This System Requirements Specification establishes the authoritative configuration for Internara.
 Every subsequent engineering artifact must demonstrate compliance with these requirements to satisfy
 the V&V phase._
