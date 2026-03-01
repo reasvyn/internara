@@ -108,7 +108,7 @@ DevOps & Operations:
 
 Planning:
 
-- docs/roadmap.md
+- docs/software-roadmap.md
 
 ---
 
@@ -129,7 +129,7 @@ ENTERPRISE OPEN SOURCE (Recommended):
 - MAINTAINERS.md
 - SUPPORT.md
 - versioning-policy.md
-- roadmap.md
+- software-roadmap.md
 - software-bill-of-materials.md
 - vulnerability-management.md
 

@@ -174,30 +174,14 @@ Upon Step 8 completion:
 - `EnsureNotInstalled` middleware enforces installation lock invariant.
 - Installation flag is stored in persistent configuration.
 
----
+### 6.3 Mandatory 3S Audit Alignment
 
-## 6.3 Mandatory 3S Audit Alignment
+To guarantee architectural integrity and prevent systemic entropy, this implementation MUST strictly
+adhere to the project's 3S Protocol:
 
-### S1 — Secure
-
-- Every state-altering method must invoke `Gate::authorize()`.
-- Sensitive fields use `encrypted` casts.
-- `InstallerService` executes within a database transaction.
-- No partial commits permitted.
-
-### S2 — Sustain
-
-- `declare(strict_types=1);` required in all files.
-- All public methods must contain professional PHPDoc.
-- No magic strings.
-- Exceptions and validation errors must be localized.
-
-### S3 — Scalable
-
-- Interface-first cross-module communication.
-- Domain models implement UUID identity.
-- Asynchronous side-effects handled via Domain Events with UUID-only payloads.
-- No direct cross-module model hydration.
+- **S1 (Secure)**: Every state-altering method must invoke `Gate::authorize()`.
+- **S2 (Sustain)**: All files MUST declare `strict_types=1`. All public methods MUST contain professional PHPDoc.
+- **S3 (Scalable)**: Interface-first cross-module communication.
 
 ---
 
