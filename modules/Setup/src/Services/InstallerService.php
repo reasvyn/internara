@@ -6,6 +6,7 @@ namespace Modules\Setup\Services;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallerService as InstallerServiceContract;
@@ -30,6 +31,8 @@ class InstallerService extends BaseService implements InstallerServiceContract
      */
     public function install(): bool
     {
+        Gate::authorize('install', self::class);
+
         if (! $this->ensureEnvFileExists()) {
             return false;
         }

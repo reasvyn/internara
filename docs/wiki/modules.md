@@ -35,24 +35,24 @@ These modules provide the technical backbone and shared services used by the ent
 These modules execute the specific business rules and workflows of the internship management
 process.
 
-| Name           | Scopes             | Purpose                                                                                             |
-| :------------- | :----------------- | :-------------------------------------------------------------------------------------------------- |
-| **User**       | Identity           | Manages authoritative stakeholder identities and account lifecycles.                                |
-| **Profile**    | Personal Data      | Handles extended personal data, contact information, and role-based model associations.             |
-| **School**     | Institutional      | Manages educational institution identity, institutional data, and visual branding.                  |
-| **Department** | Academic Structure | Manages academic specializations and organizational grouping within the institution.                |
-| **Student**    | Student Workspace  | Dedicated environment for students to track their internship progress and self-service tasks.       |
-| **Teacher**    | Supervision        | Dedicated workspace for academic supervisors to monitor progress and evaluate assigned students.    |
-| **Mentor**     | Industry Feedback  | Streamlined interface for industry mentors to track attendance and submit student assessments.      |
-| **Internship** | Orchestration      | Manages the internship lifecycle, including placement availability and student registration.        |
-| **Attendance** | Time Tracking      | Manages student presence tracking, absence requests, and real-time monitoring.                      |
-| **Journal**    | Activity Logging   | Documents daily student activities, competency mapping, and dual supervision verification.          |
-| **Assignment** | Task Management    | Manages the dynamic assignment engine for mandatory tasks and institutional policy submissions.     |
-| **Schedule**   | Timeline           | Manages institutional milestones, events, and vertical student journey visualization.               |
-| **Guidance**   | Onboarding         | Manages official handbooks and digital readiness verification through acknowledgement loops.        |
-| **Assessment** | Evaluation         | Central engine for performance evaluation, automated compliance scoring, and credentialing.         |
-| **Report**     | Data Export        | Reporting engine for generating authoritative institutional records in PDF and Excel formats.       |
-| **Admin**       | System Monitoring  | Central command center for administrators to orchestrate system-wide settings, monitor operational health, and manage cross-module telemetry. |
+| Name           | Scopes             | Purpose                                                                                                                                       |
+| :------------- | :----------------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| **User**       | Identity           | Manages authoritative stakeholder identities and account lifecycles.                                                                          |
+| **Profile**    | Personal Data      | Handles extended personal data, contact information, and role-based model associations.                                                       |
+| **School**     | Institutional      | Manages educational institution identity, institutional data, and visual branding.                                                            |
+| **Department** | Academic Structure | Manages academic specializations and organizational grouping within the institution.                                                          |
+| **Student**    | Student Workspace  | Dedicated environment for students to track their internship progress and self-service tasks.                                                 |
+| **Teacher**    | Supervision        | Dedicated workspace for academic supervisors to monitor progress and evaluate assigned students.                                              |
+| **Mentor**     | Industry Feedback  | Streamlined interface for industry mentors to track attendance and submit student assessments.                                                |
+| **Internship** | Orchestration      | Manages the internship lifecycle, including placement availability and student registration.                                                  |
+| **Attendance** | Time Tracking      | Manages student presence tracking, absence requests, and real-time monitoring.                                                                |
+| **Journal**    | Activity Logging   | Documents daily student activities, competency mapping, and dual supervision verification.                                                    |
+| **Assignment** | Task Management    | Manages the dynamic assignment engine for mandatory tasks and institutional policy submissions.                                               |
+| **Schedule**   | Timeline           | Manages institutional milestones, events, and vertical student journey visualization.                                                         |
+| **Guidance**   | Onboarding         | Manages official handbooks and digital readiness verification through acknowledgement loops.                                                  |
+| **Assessment** | Evaluation         | Central engine for performance evaluation, automated compliance scoring, and credentialing.                                                   |
+| **Report**     | Data Export        | Reporting engine for generating authoritative institutional records in PDF and Excel formats.                                                 |
+| **Admin**      | System Monitoring  | Central command center for administrators to orchestrate system-wide settings, monitor operational health, and manage cross-module telemetry. |
 
 ---
 

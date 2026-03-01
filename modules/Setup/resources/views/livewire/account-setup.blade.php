@@ -35,7 +35,8 @@
     </x-slot>
 
     <x-slot:content>
-        <div>
+        <div class="space-y-6">
+            <x-ui::turnstile wire:model="turnstile" class="mb-4" />
             @slotRender('register.super-admin')
         </div>
     </x-slot>

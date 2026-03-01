@@ -5,7 +5,6 @@ declare(strict_types=1);
 /**
  * Domain Sovereignty and Structural Invariants Verification.
  */
-
 $modulesPath = __DIR__.'/../../modules';
 $modules = is_dir($modulesPath)
     ? array_map('basename', glob($modulesPath.'/*', GLOB_ONLYDIR))
@@ -76,15 +75,6 @@ foreach ($modules as $module) {
                 'Modules\Shared\Models',
                 'Modules\User\Models\User',
                 'Modules\Profile\Models\Profile',
-                // Existing violators to be refactored in future sprints
-                'Modules\Attendance\Models',
-                'Modules\Department\Models',
-                'Modules\Guidance\Models',
-                'Modules\Internship\Models',
-                'Modules\Journal\Models',
-                'Modules\Permission\Models',
-                'Modules\Schedule\Models',
-                'Modules\User\Models',
             ]);
     }
 }

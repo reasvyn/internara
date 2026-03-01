@@ -9,8 +9,8 @@ To ensure a smooth contribution process, please follow these steps:
 
 1.  **Fork the repository** on GitHub.
 2.  **Create a new branch** following our naming convention (`feature/module/description`).
-3.  **Plan your change**: Create or update an **Architectural Blueprint** in
-    `docs/dev/blueprints/` to define your design intent.
+3.  **Plan your change**: Create or update an **Architectural Blueprint** in `docs/dev/blueprints/`
+    to define your design intent.
 4.  **Implement your changes**: Adhere to the authoritative
     **[Coding Conventions](docs/dev/conventions.md)**.
 5.  **Verify**: Execute the full verification suite via **`composer test`** and ensure static

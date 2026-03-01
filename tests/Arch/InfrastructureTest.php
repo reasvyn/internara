@@ -5,7 +5,6 @@ declare(strict_types=1);
 /**
  * Modular Infrastructure Purity Verification.
  */
-
 arch('infrastructure: shared module isolation')
     ->expect('Modules\Shared')
     ->not->toUse('Modules')
@@ -33,7 +32,6 @@ arch('infrastructure: core module baseline')
         'Spatie',
         'Nwidart',
         'Livewire',
-        'Livewire\Volt',
         'Symfony',
         'Psr',
         'Composer',

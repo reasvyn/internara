@@ -8,7 +8,10 @@ use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Services\Contracts\UserService;
 
 beforeEach(function () {
-    \Modules\Permission\Models\Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Role::firstOrCreate([
+        'name' => 'super-admin',
+        'guard_name' => 'web',
+    ]);
     $admin = \Modules\User\Models\User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
@@ -291,19 +294,22 @@ test('atomic rollback audit: it rolls back slot allocation if registration fails
             'internship_id' => $program->id,
             'capacity_quota' => 1,
         ]);
-    
+
     $student = app(UserService::class)->factory()->create();
     $teacher = app(UserService::class)->factory()->create();
 
     // We mock the database to throw exception during creation
     // To ensure transaction rolls back
-    \Illuminate\Support\Facades\Event::listen(\Illuminate\Database\Events\TransactionBeginning::class, function () {
-         // This is a bit tricky to mock perfectly without touching DB engine
-    });
+    \Illuminate\Support\Facades\Event::listen(
+        \Illuminate\Database\Events\TransactionBeginning::class,
+        function () {
+            // This is a bit tricky to mock perfectly without touching DB engine
+        },
+    );
 
     // Instead, let's test that the slot remains 1 if an exception is thrown
     // after the capacity check but before the final commit
-    
+
     // We assume the implementation uses DB::transaction correctly as per blueprint
 });
 
@@ -317,7 +323,7 @@ test('quota release audit: cancelling a registration releases the slot', functio
             'internship_id' => $program->id,
             'capacity_quota' => 1,
         ]);
-    
+
     $student = app(UserService::class)->factory()->create();
     $teacher = app(UserService::class)->factory()->create();
 
@@ -332,13 +338,21 @@ test('quota release audit: cancelling a registration releases the slot', functio
     ];
 
     $registration = $service->register($data);
-    
+
     // Quota should be full now
-    expect(app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)->hasAvailableSlots($placement->id))->toBeFalse();
+    expect(
+        app(
+            \Modules\Internship\Services\Contracts\InternshipPlacementService::class,
+        )->hasAvailableSlots($placement->id),
+    )->toBeFalse();
 
     // Cancel registration
     $service->reject($registration->id, 'Student cancelled');
 
     // Quota should be available again
-    expect(app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)->hasAvailableSlots($placement->id))->toBeTrue();
+    expect(
+        app(
+            \Modules\Internship\Services\Contracts\InternshipPlacementService::class,
+        )->hasAvailableSlots($placement->id),
+    )->toBeTrue();
 });

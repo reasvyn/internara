@@ -166,28 +166,40 @@ test('it orchestrates the complete installation process', function () {
 test('it is idempotent and can be run multiple times safely', function () {
     // 1. Mock Environment Validation
     $this->auditor->shouldReceive('passes')->twice()->andReturn(true);
-    
+
     // 2. Mock File Existence
     File::shouldReceive('exists')->andReturn(true);
 
     // 3. Mock Key Generate
-    Artisan::shouldReceive('call')->with('key:generate', ['--force' => true])->twice()->andReturn(0);
+    Artisan::shouldReceive('call')
+        ->with('key:generate', ['--force' => true])
+        ->twice()
+        ->andReturn(0);
 
     // 4. Mock Migrations (migrations table exists on second run)
     \Illuminate\Support\Facades\Schema::shouldReceive('hasTable')
         ->with('migrations')
         ->andReturn(false, true); // First false, then true
-    
+
     \Illuminate\Support\Facades\DB::shouldReceive('table')
         ->with('migrations')
         ->andReturn(Mockery::mock(['count' => 5]));
 
-    Artisan::shouldReceive('call')->with('migrate', ['--force' => true])->once()->andReturn(0);
-    Artisan::shouldReceive('call')->with('migrate:fresh', ['--force' => true])->once()->andReturn(0);
+    Artisan::shouldReceive('call')
+        ->with('migrate', ['--force' => true])
+        ->once()
+        ->andReturn(0);
+    Artisan::shouldReceive('call')
+        ->with('migrate:fresh', ['--force' => true])
+        ->once()
+        ->andReturn(0);
 
     // 5. Mock Seeders
-    Artisan::shouldReceive('call')->with('db:seed', ['--force' => true])->twice()->andReturn(0);
-    
+    Artisan::shouldReceive('call')
+        ->with('db:seed', ['--force' => true])
+        ->twice()
+        ->andReturn(0);
+
     $this->settingService->shouldReceive('setValue')->twice();
 
     // 6. Mock Symlink
@@ -195,7 +207,7 @@ test('it is idempotent and can be run multiple times safely', function () {
 
     // First run
     expect($this->service->install())->toBeTrue();
-    
+
     // Second run
     expect($this->service->install())->toBeTrue();
 });

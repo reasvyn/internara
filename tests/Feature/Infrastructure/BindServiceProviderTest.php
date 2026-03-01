@@ -13,19 +13,22 @@ describe('Infrastructure: BindServiceProvider Discovery', function () {
         expect($instance)->toBeInstanceOf(MetadataService::class);
     });
 
-    test('it follows the folder signature src/Services/Contracts for automatic mapping', function () {
-        // This test ensures that even if a service is in a nested domain, it gets bound
-        $bindings = app()->getBindings();
-        
-        expect(isset($bindings[MetadataContract::class]))->toBeTrue();
-    });
+    test(
+        'it follows the folder signature src/Services/Contracts for automatic mapping',
+        function () {
+            // This test ensures that even if a service is in a nested domain, it gets bound
+            $bindings = app()->getBindings();
+
+            expect(isset($bindings[MetadataContract::class]))->toBeTrue();
+        },
+    );
 
     test('it distinguishes between product identity and instance identity', function () {
         $service = app(MetadataContract::class);
-        
+
         // App name should match app_info.json name
         expect($service->getAppName())->toBe('Internara');
-        
+
         // Brand name defaults to app name if not set
         expect($service->getBrandName())->toBe($service->getAppName());
     });

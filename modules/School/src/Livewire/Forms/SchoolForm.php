@@ -33,7 +33,12 @@ class SchoolForm extends Form
     public function rules(): array
     {
         return [
-            'npsn' => ['required', 'string', 'size:8', Rule::unique('schools', 'npsn')->ignore($this->id)],
+            'npsn' => [
+                'required',
+                'string',
+                'size:8',
+                Rule::unique('schools', 'npsn')->ignore($this->id),
+            ],
             'name' => ['required', 'string', Rule::unique('schools', 'name')->ignore($this->id)],
             'address' => ['nullable', 'string', 'max:1000'],
             'email' => [

@@ -9,17 +9,14 @@ use Livewire\Component;
 use Modules\Setup\Services\Contracts\SetupService;
 
 /**
- * Represents the 'Internship Data' step in the application setup process.
- * This component is responsible for setting up initial internship-related data.
+ * Represents the 'Internship Setup' step in the application setup process.
  */
 class InternshipSetup extends Component
 {
     use Concerns\HandlesSetupSteps;
 
     /**
-     * Boots the component and injects the SetupService.
-     *
-     * @param SetupService $setupService The service for handling setup logic.
+     * Initializes the component.
      */
     public function boot(SetupService $setupService): void
     {
@@ -27,7 +24,7 @@ class InternshipSetup extends Component
     }
 
     /**
-     * Mounts the component, initializes setup properties, and ensures step progression is valid.
+     * Mounts the component.
      */
     public function mount(): void
     {
@@ -35,16 +32,14 @@ class InternshipSetup extends Component
             currentStep: SetupService::STEP_INTERNSHIP,
             nextStep: SetupService::STEP_SYSTEM,
             prevStep: SetupService::STEP_DEPARTMENT,
-            extra: ['req_record' => SetupService::RECORD_INTERNSHIP],
+            extra: ['req_record' => 'internship'],
         );
 
         $this->requireSetupAccess();
     }
 
     /**
-     * Renders the component's view.
-     *
-     * @return \Illuminate\View\View The view for the internship setup step.
+     * Renders the component view.
      */
     public function render(): View
     {

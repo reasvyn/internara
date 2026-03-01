@@ -65,5 +65,5 @@ For developers and advanced administrators, refer to the following technical gui
 
 **Next Step:** [Institutional Setup (Step Four)](institutional-foundation.md)
 
-_Maintaining a clean and accurate data base is essential for the reliability of Internara's 
+_Maintaining a clean and accurate data base is essential for the reliability of Internara's
 analytical reporting._

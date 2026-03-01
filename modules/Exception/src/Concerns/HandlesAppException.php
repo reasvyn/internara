@@ -108,6 +108,7 @@ trait HandlesAppException
         if ($exception instanceof \Modules\Exception\RecordNotFoundException) {
             $message = $exception->getMessage();
             flash()->warning($message);
+
             return;
         }
 

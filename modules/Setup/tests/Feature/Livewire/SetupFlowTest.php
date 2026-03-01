@@ -30,6 +30,7 @@ beforeEach(function () {
     $this->seed(RoleSeeder::class);
 
     app(SettingService::class)->setValue('app_installed', false);
+    session(['setup_authorized' => true]);
 });
 
 describe('Setup Wizard Transitions', function () {
@@ -38,29 +39,26 @@ describe('Setup Wizard Transitions', function () {
         $currentYear = AcademicYear::current();
 
         // 1. Welcome
-        session(['setup_authorized' => true]);
         Livewire::test(SetupWelcome::class)
             ->call('nextStep')
             ->assertRedirect(route('setup.environment'));
         $settings->setValue('setup_step_welcome', true);
 
         // 2. Environment
-        session(['setup_authorized' => true]);
         Livewire::test(EnvironmentSetup::class)
             ->call('nextStep')
             ->assertRedirect(route('setup.school'));
         $settings->setValue('setup_step_environment', true);
 
         // 3. School
-        session(['setup_authorized' => true]);
         app(SchoolService::class)->factory()->create();
         Livewire::test(SchoolSetup::class)
+            ->set('turnstile', 'mock-token')
             ->dispatch('school_saved')
             ->assertRedirect(route('setup.account'));
         $settings->setValue('setup_step_school', true);
 
         // 4. Account
-        session(['setup_authorized' => true]);
         $superAdmin = app(SuperAdminService::class)->factory()->create();
         $superAdmin->assignRole('super-admin');
 
@@ -71,12 +69,12 @@ describe('Setup Wizard Transitions', function () {
             ->toBeTrue();
 
         Livewire::test(AccountSetup::class)
+            ->set('turnstile', 'mock-token')
             ->dispatch('super_admin_registered')
             ->assertRedirect(route('setup.department'));
         $settings->setValue('setup_step_account', true);
 
         // 5. Department
-        session(['setup_authorized' => true]);
         app(DepartmentService::class)->factory()->create();
         Livewire::test(DepartmentSetup::class)
             ->call('nextStep')
@@ -84,7 +82,6 @@ describe('Setup Wizard Transitions', function () {
         $settings->setValue('setup_step_department', true);
 
         // 6. Internship
-        session(['setup_authorized' => true]);
         app(InternshipService::class)
             ->factory()
             ->create(['academic_year' => $currentYear]);
@@ -94,8 +91,8 @@ describe('Setup Wizard Transitions', function () {
         $settings->setValue('setup_step_internship', true);
 
         // 7. System
-        session(['setup_authorized' => true]);
         Livewire::test(SystemSetup::class)
+            ->set('turnstile', 'mock-token')
             ->set('mail_host', 'localhost')
             ->set('mail_port', '1025')
             ->set('mail_from_address', 'noreply@internara.id')
@@ -105,7 +102,6 @@ describe('Setup Wizard Transitions', function () {
         $settings->setValue('setup_step_system', true);
 
         // 8. Complete
-        session(['setup_authorized' => true]);
         Livewire::test(SetupComplete::class)->call('nextStep')->assertRedirect(route('login'));
 
         expect($settings->getValue('app_installed', false, true))->toBeTrue();

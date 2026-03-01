@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Core\Providers;
 
+use DirectoryIterator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
-use DirectoryIterator;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Throwable;
 
@@ -28,24 +28,6 @@ class ModuleServiceProvider extends ServiceProvider
     {
         $this->registerAllModuleTranslations();
         $this->registerAllModuleViews();
-        $this->registerAllModuleVoltComponents();
-    }
-
-    /**
-     * Automatically register Volt components for all active modules.
-     */
-    protected function registerAllModuleVoltComponents(): void
-    {
-        if (! class_exists(\Livewire\Volt\Volt::class)) {
-            return;
-        }
-
-        $this->traverseModules(function (string $name, string $path) {
-            $voltPath = $path . '/resources/views/livewire';
-            if (is_dir($voltPath)) {
-                \Livewire\Volt\Volt::mount([$voltPath]);
-            }
-        });
     }
 
     /**
@@ -62,7 +44,7 @@ class ModuleServiceProvider extends ServiceProvider
     protected function registerAllModuleTranslations(): void
     {
         $this->traverseModules(function (string $name, string $path) {
-            $langPath = $path . '/lang';
+            $langPath = $path.'/lang';
             if (is_dir($langPath)) {
                 $this->loadTranslationsFrom($langPath, strtolower($name));
             }
@@ -75,7 +57,7 @@ class ModuleServiceProvider extends ServiceProvider
     protected function registerAllModuleViews(): void
     {
         $this->traverseModules(function (string $name, string $path) {
-            $viewPath = $path . '/resources/views';
+            $viewPath = $path.'/resources/views';
             if (is_dir($viewPath)) {
                 $this->loadViewsFrom($viewPath, strtolower($name));
             }
@@ -88,7 +70,7 @@ class ModuleServiceProvider extends ServiceProvider
     protected function traverseModules(callable $callback): void
     {
         $modulesPath = base_path('modules');
-        
+
         if (! is_dir($modulesPath)) {
             return;
         }
@@ -101,7 +83,7 @@ class ModuleServiceProvider extends ServiceProvider
             }
         } catch (Throwable $e) {
             if (is_debug_mode()) {
-                Log::debug('ModuleServiceProvider: Traversal failed. ' . $e->getMessage());
+                Log::debug('ModuleServiceProvider: Traversal failed. '.$e->getMessage());
             }
         }
     }

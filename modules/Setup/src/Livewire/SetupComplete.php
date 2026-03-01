@@ -9,17 +9,14 @@ use Livewire\Component;
 use Modules\Setup\Services\Contracts\SetupService;
 
 /**
- * Represents the final 'Completion' step in the application setup process.
- * This component handles the finalization of the setup.
+ * Represents the final 'Complete' screen of the application setup process.
  */
 class SetupComplete extends Component
 {
     use Concerns\HandlesSetupSteps;
 
     /**
-     * Boots the component and injects the SetupService.
-     *
-     * @param \Modules\Setup\Contracts\Services\SetupService $setupService The service for handling setup logic.
+     * Initializes the component.
      */
     public function boot(SetupService $setupService): void
     {
@@ -27,13 +24,15 @@ class SetupComplete extends Component
     }
 
     /**
-     * Mounts the component, initializes setup properties, and ensures step progression is valid.
+     * Mounts the component.
      */
     public function mount(): void
     {
         $this->initSetupStepProps(
             currentStep: SetupService::STEP_COMPLETE,
+            nextStep: '',
             prevStep: SetupService::STEP_SYSTEM,
+            extra: ['landing_route' => 'login'],
         );
 
         $this->requireSetupAccess();
@@ -41,8 +40,6 @@ class SetupComplete extends Component
 
     /**
      * Renders the component's view.
-     *
-     * @return \Illuminate\View\View The view for the setup completion step.
      */
     public function render(): View
     {

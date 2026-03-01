@@ -98,7 +98,11 @@ interface EloquentQuery
      *
      * @return TModel
      */
-    public function firstOrFail(array $filters = [], array $columns = ['*'], array $with = []): Model;
+    public function firstOrFail(
+        array $filters = [],
+        array $columns = ['*'],
+        array $with = [],
+    ): Model;
 
     /**
      * Finds a specific entity by its authoritative primary key.

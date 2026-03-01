@@ -31,7 +31,7 @@ test('a user can update their basic profile information', function () {
 test('a user cannot update another user profile via the index component', function () {
     $user = User::factory()->create();
     $otherUser = User::factory()->create();
-    
+
     $this->actingAs($user);
 
     // Livewire Index component usually works on the authenticated user

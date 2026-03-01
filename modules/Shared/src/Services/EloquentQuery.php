@@ -8,7 +8,6 @@ use Closure;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -234,8 +233,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @return TModel
      */
-    public function firstOrFail(array $filters = [], array $columns = ['*'], array $with = []): Model
-    {
+    public function firstOrFail(
+        array $filters = [],
+        array $columns = ['*'],
+        array $with = [],
+    ): Model {
         $model = $this->first($filters, $columns, $with);
 
         if (! $model) {
@@ -386,12 +388,10 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @throws RuntimeException
      */
-    protected function handleQueryException(
-        QueryException $e,
-        string $defaultKey,
-    ): never {
+    protected function handleQueryException(QueryException $e, string $defaultKey): never
+    {
         $recordName = property_exists($this, 'recordName') ? $this->recordName : 'record';
-        
+
         // Use a generic RuntimeException for infrastructure layer
         // The Exception handler will be responsible for mapping this if needed.
         throw new RuntimeException(
@@ -410,7 +410,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     public function delete(mixed $id, bool $force = false): bool
     {
         $model = $this->findOrFail($id);
-        
+
         if (! $this->skipAuthorization) {
             Gate::authorize('delete', $model);
         }
@@ -454,7 +454,10 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         $ids = Arr::wrap($ids);
 
         // Security check for each record
-        $records = $this->model->newQuery()->whereIn($this->model->getKeyName(), $ids)->get();
+        $records = $this->model
+            ->newQuery()
+            ->whereIn($this->model->getKeyName(), $ids)
+            ->get();
         foreach ($records as $record) {
             Gate::authorize('delete', $record);
         }

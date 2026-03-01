@@ -28,8 +28,11 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     /**
      * Retrieve schools based on conditions.
      */
-    public function get(array $filters = [], array $columns = ['*'], array $with = []): \Illuminate\Support\Collection
-    {
+    public function get(
+        array $filters = [],
+        array $columns = ['*'],
+        array $with = [],
+    ): \Illuminate\Support\Collection {
         return parent::get($filters, $columns, $with);
     }
 
@@ -101,7 +104,10 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     public function save(array $attributes, array $values = []): School
     {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($attributes, $values) {
-            $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $isSetupAuthorized =
+                session(
+                    \Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED,
+                ) === true;
             $data = array_merge($attributes, $values);
             $schoolId = $data['id'] ?? $this->model->newQuery()->first(['id'])?->id;
             unset($data['id']);

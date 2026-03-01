@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Services;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
 use Modules\Department\Services\Contracts\DepartmentService;
@@ -90,6 +91,8 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function performSetupStep(string $step, ?string $reqRecord = null): bool
     {
+        Gate::authorize('performStep', self::class);
+
         if ($step === self::STEP_COMPLETE) {
             return $this->finalizeSetupStep();
         }
@@ -109,6 +112,8 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function saveSystemSettings(array $settings): bool
     {
+        Gate::authorize('saveSettings', self::class);
+
         $this->settingService->setValue($settings);
 
         return true;
@@ -119,6 +124,8 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function finalizeSetupStep(): bool
     {
+        Gate::authorize('finalize', self::class);
+
         $schoolRecord = $this->schoolService->getSchool();
         $settings = [
             self::SETTING_BRAND_NAME => $schoolRecord->name,

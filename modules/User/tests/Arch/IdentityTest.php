@@ -16,13 +16,9 @@ test('identity anchors should be isolated')
         'Modules\Profile',
         'Modules\Permission',
         'Modules\Shared', // For base abstractions
-        'Modules\Core',   // For global metadata
+        'Modules\Core', // For global metadata
     ]);
 
 test('profile models should be isolated')
     ->expect('Modules\Profile\Models\Profile')
-    ->not->toBeUsedOutside([
-        'Modules\User',
-        'Modules\Profile',
-        'Modules\Shared',
-    ]);
+    ->not->toBeUsedOutside(['Modules\User', 'Modules\Profile', 'Modules\Shared']);

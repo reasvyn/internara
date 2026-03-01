@@ -12,7 +12,8 @@ test('it can create teacher account and profile', function () {
     $user = mock(\Modules\User\Models\User::class);
     $userService = mock(UserService::class);
     $profileService = mock(ProfileService::class);
-    $profile = new class extends \Modules\Profile\Models\Profile {
+    $profile = new class extends \Modules\Profile\Models\Profile
+    {
         protected $keyType = 'string';
     };
 
@@ -26,7 +27,8 @@ test('it can create teacher account and profile', function () {
         ],
     ];
 
-    $createdUser = new class extends \Modules\User\Models\User {
+    $createdUser = new class extends \Modules\User\Models\User
+    {
         protected $keyType = 'string';
     };
     $createdUser->id = 'user-uuid';

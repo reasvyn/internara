@@ -68,7 +68,7 @@ class ReportService extends BaseService implements ReportGenerator
             'filters' => $filters,
         ]);
 
-        \Illuminate\Support\Facades\Storage::disk('local')->put($fileName, $pdf->output());
+        \Illuminate\Support\Facades\Storage::disk('private')->put($fileName, $pdf->output());
 
         $userId = $userId ?: auth()->id();
 

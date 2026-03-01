@@ -5,8 +5,8 @@ institution. It serves as the primary source for branding data (name, logo) util
 Internara ecosystem.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
+> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

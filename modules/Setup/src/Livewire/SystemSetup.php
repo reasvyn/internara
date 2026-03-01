@@ -7,6 +7,7 @@ namespace Modules\Setup\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Shared\Rules\Turnstile;
 
 /**
  * Represents the 'System & SMTP' setup step in the application setup process.
@@ -31,6 +32,11 @@ class SystemSetup extends Component
     public string $mail_from_name = '';
 
     /**
+     * Turnstile token for S1 security compliance.
+     */
+    public ?string $turnstile = null;
+
+    /**
      * Boots the component and injects the SetupService.
      */
     public function boot(SetupService $setupService): void
@@ -51,14 +57,14 @@ class SystemSetup extends Component
 
         $this->requireSetupAccess();
 
-        $this->mail_host = setting('mail_host', '');
+        $this->mail_host = (string) setting('mail_host', '');
         $this->mail_port = (string) setting('mail_port', '587');
-        $this->mail_username = setting('mail_username', '');
-        $this->mail_password = setting('mail_password', '');
-        $this->mail_encryption = setting('mail_encryption', 'tls');
-        $this->mail_from_address = setting('mail_from_address', 'no-reply@internara.test');
+        $this->mail_username = (string) setting('mail_username', '');
+        $this->mail_password = (string) setting('mail_password', '');
+        $this->mail_encryption = (string) setting('mail_encryption', 'tls');
+        $this->mail_from_address = (string) setting('mail_from_address', 'no-reply@internara.test');
         $this->mail_from_name =
-            setting('mail_from_name') ?: setting('brand_name', setting('app_name'));
+            (string) (setting('mail_from_name') ?: setting('brand_name', setting('app_name')));
     }
 
     /**
@@ -73,12 +79,6 @@ class SystemSetup extends Component
         ]);
 
         try {
-            $transport = match ($this->mail_encryption) {
-                'ssl' => "ssl://{$this->mail_host}:{$this->mail_port}",
-                'tls', 'starttls' => "tcp://{$this->mail_host}:{$this->mail_port}",
-                default => "tcp://{$this->mail_host}:{$this->mail_port}",
-            };
-
             $socket = @fsockopen($this->mail_host, (int) $this->mail_port, $errno, $errstr, 5);
 
             if ($socket) {
@@ -108,6 +108,7 @@ class SystemSetup extends Component
     public function save(): void
     {
         $validated = $this->validate([
+            'turnstile' => ['required', new Turnstile],
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',
             'mail_username' => 'nullable|string',
@@ -128,7 +129,7 @@ class SystemSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.system-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.system.title').
+            'title' => __('setup::wizard.system.headline').
                 ' | '.
                 setting('site_title', setting('app_name')),
         ]);

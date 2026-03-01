@@ -2,8 +2,16 @@
 
 declare(strict_types=1);
 
+namespace Modules\Report\Tests\Feature;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
+use Modules\Permission\Models\Role;
 use Modules\Report\Services\Contracts\ReportGenerator;
 use Modules\Shared\Contracts\ExportableDataProvider;
+use Modules\User\Models\User;
+
+uses(RefreshDatabase::class);
 
 test('report service can register and list providers', function () {
     $service = app(ReportGenerator::class);
@@ -43,16 +51,62 @@ test('report service can register and list providers', function () {
     expect($providers)->not->toBeEmpty();
 });
 
-test('report index component can be rendered', function () {
-    \Modules\Permission\Models\Role::create(['name' => 'admin', 'guard_name' => 'web']);
+test('it synthesizes a PDF and stores it on the private disk', function () {
+    Storage::fake('private');
 
-    $this->actingAs(createAdmin())->get(route('admin.reports'))->assertOk();
+    $user = User::factory()->create();
+    $service = app(ReportGenerator::class);
+
+    // Register a dummy provider
+    $service->registerProvider(
+        new class implements ExportableDataProvider
+        {
+            public function getIdentifier(): string
+            {
+                return 'test_report';
+            }
+
+            public function getLabel(): string
+            {
+                return 'Test Report';
+            }
+
+            public function getReportData(array $filters = []): array
+            {
+                return ['key' => 'value'];
+            }
+
+            public function getTemplate(): string
+            {
+                return 'report::templates.generic';
+            }
+
+            public function getFilterRules(): array
+            {
+                return [];
+            }
+        },
+    );
+
+    $filePath = $service->generate('test_report', [], $user->id);
+
+    expect($filePath)->toContain('reports/test_report_');
+
+    // Verify physical storage on PRIVATE disk
+    Storage::disk('private')->assertExists($filePath);
+
+    // Verify DB record
+    $this->assertDatabaseHas('generated_reports', [
+        'user_id' => $user->id,
+        'file_path' => $filePath,
+        'provider_identifier' => 'test_report',
+    ]);
 });
 
-function createAdmin()
-{
-    $user = \Modules\User\Models\User::factory()->create();
+test('report index component can be rendered', function () {
+    Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    $user = User::factory()->create();
     $user->assignRole('admin');
 
-    return $user;
-}
+    $this->actingAs($user)->get(route('admin.reports'))->assertOk();
+});

@@ -18,6 +18,11 @@ class AccountSetup extends Component
     use Concerns\HandlesSetupSteps;
 
     /**
+     * Turnstile token for S1 security compliance.
+     */
+    public ?string $turnstile = null;
+
+    /**
      * Boots the component and injects the SetupService.
      *
      * @param SetupService $setupService The service for handling setup logic.

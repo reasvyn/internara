@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Department\Tests\Feature\Listeners;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\School\Events\SchoolDeleted;

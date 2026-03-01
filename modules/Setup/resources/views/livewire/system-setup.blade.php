@@ -40,6 +40,7 @@
 
     <x-slot:content>
         <div class="space-y-6">
+            <x-ui::turnstile wire:model="turnstile" class="mb-4" />
             <x-ui::card title="{{ __('SMTP Configuration') }}" separator>
                 <div class="grid grid-cols-1 gap-6">
                     <x-ui::input

@@ -40,8 +40,9 @@
     </x-slot>
 
     <x-slot:content>
-        <div>
-            @slotRender('school-manager')
+        <div class="space-y-6">
+            <x-ui::turnstile wire:model="turnstile" class="mb-4" />
+            @slotRender('school.identity')
         </div>
     </x-slot>
 </x-setup::layouts.setup-wizard>

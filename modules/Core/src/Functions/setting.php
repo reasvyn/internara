@@ -16,7 +16,7 @@ if (! function_exists('setting')) {
      * This is necessary because this file is loaded early via composer autoload.
      */
     $isSettingModuleActive = (function () {
-        $statusPath = dirname(__DIR__, 3) . '/modules_statuses.json';
+        $statusPath = dirname(__DIR__, 3).'/modules_statuses.json';
 
         if (! file_exists($statusPath)) {
             return false;

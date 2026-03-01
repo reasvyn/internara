@@ -5,16 +5,16 @@ language and shared frontend components. it encapsulates the design system, inte
 and presentation layouts without containing business logic or data persistence.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
+> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 
 ## 1. Architectural Role
 
 As a **Public Module**, the `UI` module provides the shared presentation layer for all domain
-modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) with **Volt** for
-reactive components, transitioning towards a **Native TALL** implementation using **DaisyUI** while
+modules. It relies on the **TALL Stack** (Tailwind, AlpineJS, Livewire, Laravel) for reactive
+components, transitioning towards a **Native TALL** implementation using **DaisyUI** while
 minimizing third-party library dependency.
 
 ---
@@ -31,7 +31,7 @@ minimizing third-party library dependency.
 
 ### 2.2 Component Library
 
-- **Livewire & Volt Components**: Shared interactive elements like the `LanguageSwitcher`.
+- **Livewire Components**: Shared interactive elements like the `LanguageSwitcher`.
 - **`ManagesRecords` Concern**: A standardized trait for CRUD-heavy Livewire components, providing
   automated pagination, searching, and sorting logic aligned with the `EloquentQuery` pattern.
 
