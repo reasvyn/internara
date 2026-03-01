@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Mentor\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Modules\Mentor\Models\MentoringLog;
 use Modules\Mentor\Models\MentoringVisit;
 use Modules\Mentor\Services\Contracts\MentoringService as Contract;
@@ -37,13 +38,17 @@ class MentoringService extends EloquentQuery implements Contract
      */
     public function getMentoringStats(string $registrationId): array
     {
-        return [
-            'visits_count' => MentoringVisit::where('registration_id', $registrationId)->count(),
-            'logs_count' => MentoringLog::where('registration_id', $registrationId)->count(),
-            'last_visit' => MentoringVisit::where('registration_id', $registrationId)
-                ->latest('visit_date')
-                ->first(),
-        ];
+        return Cache::remember(
+            "mentoring_stats:{$registrationId}",
+            now()->addDays(7),
+            fn () => [
+                'visits_count' => MentoringVisit::where('registration_id', $registrationId)->count(),
+                'logs_count' => MentoringLog::where('registration_id', $registrationId)->count(),
+                'last_visit' => MentoringVisit::where('registration_id', $registrationId)
+                    ->latest('visit_date')
+                    ->first(),
+            ]
+        );
     }
 
     /**
