@@ -6,12 +6,12 @@ namespace Modules\Status\Tests\Unit\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Illuminate\Support\Facades\Schema;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatus;
 
-uses(RefreshDatabase::class);
+
 
 class StatusTestModel extends Model
 {

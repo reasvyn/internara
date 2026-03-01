@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\User\Services\Contracts\UserService;
 
-uses(RefreshDatabase::class);
+
 
 test('concurrent enrollment audit: only one student can take the last slot', function () {
     $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)

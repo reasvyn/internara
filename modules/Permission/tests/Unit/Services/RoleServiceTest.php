@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Permission\Tests\Unit\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Permission\Models\Role;
 use Modules\Permission\Services\RoleService;
 
-uses(RefreshDatabase::class);
+
 
 test('it can list roles with filtering', function () {
     Role::create(['name' => 'admin', 'module' => 'core']);

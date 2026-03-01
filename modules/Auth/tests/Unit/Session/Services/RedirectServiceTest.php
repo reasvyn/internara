@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Tests\Unit\Session\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Auth\Services\RedirectService;
 use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
-uses(RefreshDatabase::class);
+
 
 test('it redirects unverified users to verification notice', function () {
     $user = mock(User::class);

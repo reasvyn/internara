@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Tests\Feature\Gating;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\Guidance\Services\Contracts\HandbookService;
 use Modules\User\Services\Contracts\UserService;
 
-uses(RefreshDatabase::class);
+
 
 test('blocked access audit: student cannot create journal without acknowledging handbooks', function () {
     $student = app(UserService::class)->factory()->create();

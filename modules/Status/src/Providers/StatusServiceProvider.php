@@ -26,6 +26,8 @@ class StatusServiceProvider extends ServiceProvider
 
         // Override Spatie Model Status configuration at runtime
         config(['model-status.status_model' => config('status.status_model')]);
+
+        \Modules\Status\Models\Status::observe(\Modules\Status\Observers\StatusObserver::class);
     }
 
     /**

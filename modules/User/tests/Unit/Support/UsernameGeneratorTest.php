@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\User\Tests\Unit\Support;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\User\Support\UsernameGenerator;
 
-uses(RefreshDatabase::class);
+
 
 test('it generates username from name', function () {
     $username = UsernameGenerator::generate('john');

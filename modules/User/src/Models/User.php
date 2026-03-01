@@ -111,8 +111,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     /**
      * The URL of the user's avatar.
      */
-    public ?string $avatarUrl {
-        get => $this->getFirstMediaUrl(self::COLLECTION_AVATAR);
+    public function getAvatarUrlAttribute(): ?string {
+        return $this->getFirstMediaUrl(self::COLLECTION_AVATAR);
     }
 
     /**

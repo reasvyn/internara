@@ -28,7 +28,7 @@ class ComplianceService extends BaseService implements Contract
         $registration = $this->registrationService->find($registrationId);
 
         if (! $registration) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
                 \Modules\Internship\Models\InternshipRegistration::class,
                 [$registrationId],
             );

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Registration;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Illuminate\Support\Facades\Event;
 use Modules\Internship\Events\InternshipRegistered;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\User\Services\Contracts\UserService;
 
-uses(RefreshDatabase::class);
+
 
 beforeEach(function () {
     \Modules\Permission\Models\Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);

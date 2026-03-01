@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Report\Tests\Feature\Synthesis;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Illuminate\Support\Facades\URL;
 
-uses(RefreshDatabase::class);
+
 
 test('qr signature tampering audit: modified signatures are rejected', function () {
     $registrationId = \Str::uuid()->toString();

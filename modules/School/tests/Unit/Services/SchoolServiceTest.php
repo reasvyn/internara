@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\School\Tests\Unit\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Illuminate\Support\Facades\Gate;
 use Modules\Exception\AppException;
 use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService;
 
-uses(RefreshDatabase::class);
+
 
 describe('School Service', function () {
     test('it can retrieve school instance', function () {

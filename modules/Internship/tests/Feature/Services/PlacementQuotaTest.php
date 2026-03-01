@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Illuminate\Support\Facades\DB;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipPlacement;

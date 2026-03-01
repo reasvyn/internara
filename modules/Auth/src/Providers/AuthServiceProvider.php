@@ -82,7 +82,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function customizeVerificationEmail(): void
     {
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return new MailMessage()
+            return (new MailMessage())
                 ->subject(__('auth::emails.verification_subject'))
                 ->greeting(__('auth::emails.verification_greeting', ['name' => $notifiable->name]))
                 ->line(__('auth::emails.verification_line_1'))

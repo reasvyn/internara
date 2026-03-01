@@ -124,7 +124,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -151,7 +151,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -178,7 +178,7 @@ class RegistrationService extends EloquentQuery implements Contract
             $registration = $this->find($registrationId);
 
             if (! $registration) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+                $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
                     InternshipRegistration::class,
                     [$registrationId],
                 );
@@ -217,7 +217,7 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );

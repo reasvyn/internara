@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Tests\Feature\Fulfillment;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
-uses(RefreshDatabase::class);
+
 
 test('completion guard audit: registration cannot be completed if tasks are pending', function () {
     // 1. Setup registration

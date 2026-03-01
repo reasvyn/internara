@@ -19,6 +19,29 @@ class Status extends SpatieStatus
     use HasUuid;
     use InteractsWithActivityLog;
 
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->{$model->getKeyName()})) {
+                $model->{$model->getKeyName()} = (string) \Illuminate\Support\Str::uuid();
+            }
+        });
+    }
+
+    /**
+     * Determine if the model should use UUIDs.
+     */
+    public function usesUuid(): bool
+    {
+        return true;
+    }
+
     /**
      * The name of the activity log for this model.
      */
@@ -43,7 +66,7 @@ class Status extends SpatieStatus
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'reason', 'model_id', 'model_type', 'expires_at'];
+    protected $fillable = ['id', 'name', 'reason', 'model_id', 'model_type', 'expires_at'];
 
     /**
      * The attributes that should be cast.

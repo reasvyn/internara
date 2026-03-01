@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Tests\Unit\Models;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Profile\Models\Profile;
 
-uses(RefreshDatabase::class);
+
 
 test('profile model has the expected fields and encryption', function () {
     $profile = Profile::factory()->create([
