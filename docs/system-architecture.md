@@ -213,7 +213,7 @@ Internara enforces architectural integrity through:
 ### S2 — Sustainable
 
 - `strict_types=1` required.
-- PHP 8.4 Property Hooks recommended.
+- PHP 8.4 features like Constructor Property Promotion recommended.
 - Thin presentation components.
 - No hard-coded strings.
 - Mandatory localization.

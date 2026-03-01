@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Modules\Log\Tests\Unit\Services;
 
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Log\Models\Activity;
 use Modules\Log\Services\ActivityService;
 
-
+uses(RefreshDatabase::class);
 
 test('it can query activities with filters', function () {
     Activity::create([

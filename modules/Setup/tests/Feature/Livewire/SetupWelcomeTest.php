@@ -15,6 +15,7 @@ uses(LazilyRefreshDatabase::class);
 beforeEach(function () {
     Gate::define('performStep', fn () => true);
     Gate::define('finalize', fn () => true);
+    session(['setup_authorized' => true]);
 });
 
 describe('SetupWelcome Component', function () {

@@ -21,7 +21,7 @@ Internara is governed by the **3S Doctrine**, ensuring it remains a high-fidelit
 
 ## 🛠 Tech Stack
 
-- **Backend**: PHP 8.4 (Property Hooks, Strict Types), Laravel 12.
+- **Backend**: PHP 8.4 (Strict Types), Laravel 12.
 - **Frontend**: Livewire 3, Tailwind CSS 4, Mary UI.
 - **Database**: PostgreSQL / MySQL / SQLite (UUID v4 Primary Keys).
 - **Testing**: Pest PHP (TDD-first).

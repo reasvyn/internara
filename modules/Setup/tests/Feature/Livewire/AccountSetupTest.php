@@ -18,6 +18,8 @@ uses(LazilyRefreshDatabase::class);
 beforeEach(function () {
     Gate::define("performStep", fn () => true);
     Gate::define("finalize", fn () => true);
+    session(["setup_authorized" => true]);
+    session(["setup_authorized" => true]);
 });
 
 beforeEach(function () {
@@ -38,7 +40,8 @@ describe('AccountSetup Component', function () {
         app(SettingService::class)->setValue('setup_step_school', true);
 
         // Required record 'super-admin' must exist for nextStep() to succeed
-        app(SuperAdminService::class)->factory()->create()->assignRole('super-admin');
+        $superAdmin = app(SuperAdminService::class)->factory()->create();
+        $superAdmin->assignRole('super-admin');
 
         Livewire::test(AccountSetup::class)
             ->dispatch('super_admin_registered')

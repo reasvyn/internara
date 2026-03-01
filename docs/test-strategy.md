@@ -124,7 +124,7 @@ with the system's foundational principles and resource efficiency.
 
 ### 5.2 Stage 2: Sustainability Verification (S2)
 
-- **PHP 8.4 Compliance**: Verify use of **Property Hooks** for virtual/calculated attributes.
+- **PHP 8.4 Compliance**: Verify use of explicit typing and modern features.
 - **Strict Typing Invariant**: Every PHP file MUST declare `declare(strict_types=1);`.
 - **Clean Code & i18n**: Adhere to SOLID/DRY/KISS. Zero hard-coded user-facing text (`__('key')`).
 - **Professional Documentation**: All public methods must have English DocBlocks explaining intent.

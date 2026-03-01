@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Modules\User\Tests\Unit\Services;
 
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Permission\Models\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
-
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $role = Role::create(['name' => 'super-admin', 'guard_name' => 'web']);

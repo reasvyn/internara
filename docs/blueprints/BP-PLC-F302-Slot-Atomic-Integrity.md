@@ -53,7 +53,7 @@ sequenceDiagram
 
 - **The One-Placement Law**: Unique constraint preventing a student from holding >1 active/pending
   registration in the same cycle.
-- **Property Hooks**: `InternshipPlacement::remaining_slots` MUST compute dynamically from
+- **Standard Methods**: `InternshipPlacement::remaining_slots` MUST compute dynamically from
   registration counts.
 
 ---
@@ -75,7 +75,7 @@ sequenceDiagram
 
 ### 4.1 Unit Verification
 
-- **Calculation Logic**: Unit tests for the property hook across all status permutations.
+- **Calculation Logic**: Unit tests for the standard method across all status permutations.
 
 ### 4.2 Feature Validation
 
@@ -101,7 +101,7 @@ adhere to the project's 3S Protocol:
   `Gate::authorize()` prior to execution to prevent IDOR and Broken Access Control. Sensitive PII
   fields MUST utilize the `encrypted` cast.
 - **S2 (Sustain)**: All files MUST declare `strict_types=1`. Virtual attributes MUST be implemented
-  using PHP 8.4 Property Hooks. All user-facing strings and exceptions MUST be localized via
+  using explicit typing and standard methods. All user-facing strings and exceptions MUST be localized via
   `__('key')`. Every public method MUST contain professional PHPDoc explaining its intent.
 - **S3 (Scalable)**: Cross-module interactions MUST use **Contract-First** dependency injection
   (Interfaces). All domain models MUST implement `HasUuid` (and `HasStatus`, `HasAcademicYear` where
@@ -124,7 +124,7 @@ adhere to the project's 3S Protocol:
 ## 7. Actionable Implementation Path
 
 1.  **Issue #Slot1**: Implement `lockForUpdate` logic in `RegistrationService::register`.
-2.  **Issue #Slot2**: Create the `remaining_slots` property hook on `InternshipPlacement`.
+2.  **Issue #Slot2**: Create the `remaining_slots` standard method on `InternshipPlacement`.
 3.  **Issue #Slot3**: Develop the concurrent stress test suite (Pest).
 4.  **Issue #Slot4**: Build the Livewire "Live Counter" component.
 

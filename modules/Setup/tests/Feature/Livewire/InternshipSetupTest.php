@@ -16,6 +16,8 @@ uses(LazilyRefreshDatabase::class);
 beforeEach(function () {
     Gate::define("performStep", fn () => true);
     Gate::define("finalize", fn () => true);
+    session(["setup_authorized" => true]);
+    session(["setup_authorized" => true]);
 });
 
 beforeEach(function () {
@@ -36,13 +38,11 @@ describe('InternshipSetup Component', function () {
 
     test('it proceeds to system setup step on next action', function () {
         app(SettingService::class)->setValue('setup_step_department', true);
-        session(['setup_authorized' => true]);
 
         // Required record 'internship' must exist
         app(InternshipService::class)->factory()->create();
 
-        Livewire::withQueryParams(['token' => 'test-token'])
-            ->test(InternshipSetup::class)
+        Livewire::test(InternshipSetup::class)
             ->call('nextStep')
             ->assertRedirect(route('setup.system'));
     });

@@ -6,12 +6,15 @@ namespace Modules\Shared\Tests\Unit\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Modules\Exception\RecordNotFoundException;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
 use Modules\Shared\Services\EloquentQuery;
+
+uses(RefreshDatabase::class);
 
 class SecurityModelStub extends Model
 {

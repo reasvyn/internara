@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Modules\Setting\Tests\Unit\Services;
 
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Modules\Setting\Models\Setting;
 use Modules\Setting\Services\SettingService;
 use Modules\Shared\Support\AppInfo;
 
-
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Ensure cache driver is 'array' for unit tests to avoid missing table issues

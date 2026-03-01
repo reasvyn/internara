@@ -84,7 +84,7 @@ adhere to the project's 3S Protocol:
   `Gate::authorize()` prior to execution to prevent IDOR and Broken Access Control. Sensitive PII
   fields MUST utilize the `encrypted` cast.
 - **S2 (Sustain)**: All files MUST declare `strict_types=1`. Virtual attributes MUST be implemented
-  using PHP 8.4 Property Hooks. All user-facing strings and exceptions MUST be localized via
+  using explicit typing and standard methods. All user-facing strings and exceptions MUST be localized via
   `__('key')`. Every public method MUST contain professional PHPDoc explaining its intent.
 - **S3 (Scalable)**: Cross-module interactions MUST use **Contract-First** dependency injection
   (Interfaces). All domain models MUST implement `HasUuid` (and `HasStatus`, `HasAcademicYear` where

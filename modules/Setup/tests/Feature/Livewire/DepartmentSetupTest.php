@@ -16,6 +16,8 @@ uses(LazilyRefreshDatabase::class);
 beforeEach(function () {
     Gate::define("performStep", fn () => true);
     Gate::define("finalize", fn () => true);
+    session(["setup_authorized" => true]);
+    session(["setup_authorized" => true]);
 });
 
 beforeEach(function () {
@@ -37,16 +39,12 @@ describe('DepartmentSetup Component', function () {
     });
 
     test('it proceeds to internship setup step on next action', function () {
-        app(SettingService::class)->setValue('setup_step_welcome', true);
-        app(SettingService::class)->setValue('setup_step_environment', true);
-        app(SettingService::class)->setValue('setup_step_school', true);
         app(SettingService::class)->setValue('setup_step_account', true);
 
         // Required record 'department' must exist
         app(DepartmentService::class)->factory()->create();
 
-        Livewire::withQueryParams(['token' => 'test-token'])
-            ->test(DepartmentSetup::class)
+        Livewire::test(DepartmentSetup::class)
             ->call('nextStep')
             ->assertRedirect(route('setup.internship'));
     });

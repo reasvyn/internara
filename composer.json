@@ -79,7 +79,7 @@
         ],
         "test": [
             "@php artisan optimize:clear --ansi",
-            "@php artisan app:test --stop-on-failure"
+            "@php artisan app:test"
         ],
         "test:dev": [
             "Composer\\Config::disableProcessTimeout",

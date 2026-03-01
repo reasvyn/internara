@@ -6,13 +6,13 @@ namespace Modules\Media\Tests\Unit\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
-
+uses(RefreshDatabase::class);
 
 class MediaTestModel extends Model implements HasMedia
 {

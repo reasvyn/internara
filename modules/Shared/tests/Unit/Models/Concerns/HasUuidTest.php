@@ -6,8 +6,11 @@ namespace Modules\Shared\Tests\Unit\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Modules\Shared\Models\Concerns\HasUuid;
+
+uses(RefreshDatabase::class);
 
 class UuidModelStub extends Model
 {

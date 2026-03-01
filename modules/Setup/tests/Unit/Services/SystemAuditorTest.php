@@ -51,6 +51,7 @@ describe('SystemAuditor Unit Test', function () {
     });
 
     test('it passes when all environment criteria are met', function () {
+        // Use a partial mock to bypass the actual file system and DB calls
         $partialService = \Mockery::mock(SystemAuditor::class)->makePartial();
         $partialService->shouldReceive('checkRequirements')->andReturn(['php_version' => true]);
         $partialService->shouldReceive('checkPermissions')->andReturn(['env_file' => true]);

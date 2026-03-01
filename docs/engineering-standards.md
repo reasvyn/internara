@@ -29,9 +29,10 @@ Internara further adheres to established global engineering doctrines:
 - **Strict Typing**: `declare(strict_types=1);` is mandatory in every PHP file.
 - **Automated Formatting**: `Laravel Pint` must be executed before repository synchronization.
 
-### 1.2 PHP 8.4 Modernization Protocol
+### 1.2 PHP 8.4 Framework Alignment
 
-- Property Hooks supersede legacy `get...Attribute()` / `set...Attribute()` patterns.
+- Use standard Laravel `get...Attribute()` and `set...Attribute()` patterns for model attributes
+  to ensure maximum compatibility with frontend tooling and serialization layers.
 - Type declarations must be explicit and non-ambiguous.
 - Avoid dynamic properties and untyped arrays unless structurally unavoidable.
 
