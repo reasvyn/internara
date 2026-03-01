@@ -29,6 +29,6 @@
         "daisyui": "^5.5.19",
         "prettier": "^3.8.1",
         "prettier-plugin-blade": "^2.1.21",
-        "tailwindcss": "^4.1.18"
+        "tailwindcss": "^4.2.1"
     }
 }
