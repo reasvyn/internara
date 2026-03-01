@@ -105,7 +105,7 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Technical Reference**: Update `docs/dev/ui-ux.md` for charting standards.
+- **Technical Reference**: Update `../user-interface-design.md` for charting standards.
 
 ### 6.2 Stakeholder Manuals
 

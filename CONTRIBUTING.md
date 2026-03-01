@@ -12,7 +12,7 @@ To ensure a smooth contribution process, please follow these steps:
 3.  **Plan your change**: Create or update an **Architectural Blueprint** in `docs/dev/blueprints/`
     to define your design intent.
 4.  **Implement your changes**: Adhere to the authoritative
-    **[Coding Conventions](docs/dev/conventions.md)**.
+    **[Coding Conventions](docs/engineering-standards.md)**.
 5.  **Verify**: Execute the full verification suite via **`composer test`** and ensure static
     analysis passes via **`composer lint`**.
 6.  **Synchronize Artifacts**: Update relevant documentation and analytical release notes.

@@ -61,7 +61,7 @@
 
 ### 5.1 Engineering Record
 
-- **UAT Records**: Create `docs/dev/audits/uat-results-v1.md` to document the user testing sessions,
+- **UAT Records**: Create `../audits/uat-results-v1.md` to document the user testing sessions,
   feedback matrix, and acceptance sign-offs.
 
 ### 5.2 Stakeholder Manuals

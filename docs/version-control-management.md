@@ -6,7 +6,7 @@ Internara project, standardized according to **ISO/IEC 12207** (CM Process) and 
 verified, and aligned with architectural design invariants.
 
 > **Governance Mandate:** All repository operations must facilitate the **Verification &
-> Validation** of requirements defined in the **[System Requirements Specification](specs.md)**.
+> Validation** of requirements defined in the **[System Requirements Specification](software-requirements.md)**.
 
 ---
 
@@ -44,7 +44,7 @@ Tags serve as immutable snapshots identifying specific **Configuration Baselines
 
 - **Standard**: Semantic Versioning (**SemVer**) with a `v` prefix. Tagging MUST strictly adhere to
   the syntax defined in the
-  **[Release Protocols](releases.md#7-authoritative-semver--pre-release-syntax)**.
+  **[Release Protocols](release-management.md#7-authoritative-semver--pre-release-syntax)**.
 - **Baseline Identification**: Mandatory use of **Annotated Tags** (`git tag -a`) to include
   metadata regarding the release series and maturity stage.
 
@@ -61,7 +61,7 @@ A PR is only eligible for merging when it satisfies the following technical requ
 1.  **Full Verification**: Successful execution of **`composer test`**.
 2.  **Full Linting**: Successful execution of **`composer lint`**.
 3.  **Isolation Audit**: Reviewer verification of **Strict Modular Isolation** as defined in the
-    **[Architecture Description](architecture.md)**.
+    **[Architecture Description](system-architecture.md)**.
 4.  **Traceability**: Demonstrated alignment with the corresponding blueprint and System
     Requirements Specification.
 

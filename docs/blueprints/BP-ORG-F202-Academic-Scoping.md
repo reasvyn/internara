@@ -109,7 +109,7 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Governance**: Update `docs/dev/conventions.md` to mandate academic scoping for all cohort-based
+- **Governance**: Update `../engineering-standards.md` to mandate academic scoping for all cohort-based
   domain models.
 
 ### 6.2 Stakeholder Manuals

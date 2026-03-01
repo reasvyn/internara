@@ -95,12 +95,12 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Audit Records**: Create `docs/dev/audits/media-validation-v1.md` to store formal expert feedback
+- **Audit Records**: Create `../audits/media-validation-v1.md` to store formal expert feedback
   and heuristic scores.
 
 ### 6.2 Stakeholder Manuals
 
-- **UI Guidelines**: Update `docs/dev/ui-ux.md` with refinements to UI invariants based on expert
+- **UI Guidelines**: Update `../user-interface-design.md` with refinements to UI invariants based on expert
   feedback.
 
 ---

@@ -64,7 +64,7 @@ The audit MUST verify the following "Ground Truth" logic:
 
 ### 5.1 Engineering Record
 
-- **Audit Records**: Create `docs/dev/audits/curriculum-validation-v1.md` to store formal expert
+- **Audit Records**: Create `../audits/curriculum-validation-v1.md` to store formal expert
   feedback and compliance sign-offs.
 
 ### 5.2 Stakeholder Manuals

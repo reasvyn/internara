@@ -48,7 +48,7 @@ Detailed technical and governance documentation can be found in the `docs/` dire
 
 - **[System Architecture](docs/system-architecture.md)**: Deep dive into the modular monolith.
 - **[Software Requirements](docs/software-requirements.md)**: Authoritative SyRS (ISO/IEC 29148).
-- **[Engineering Conventions](docs/conventions.md)**: Standards, naming, and patterns.
+- **[Engineering Conventions](docs/engineering-standards.md)**: Standards, naming, and patterns.
 - **[Test Strategy](docs/test-strategy.md)**: Quality gates and verification models.
 - **[Deployment Guide](docs/deployment-guide.md)**: Environment orchestration.
 

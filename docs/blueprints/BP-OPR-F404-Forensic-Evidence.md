@@ -104,7 +104,7 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Infrastructure Guide**: Update `docs/dev/security.md` for private storage policy.
+- **Infrastructure Guide**: Update `../security-architecture.md` for private storage policy.
 
 ### 6.2 Stakeholder Manuals
 

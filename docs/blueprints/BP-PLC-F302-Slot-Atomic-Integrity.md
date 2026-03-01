@@ -113,7 +113,7 @@ adhere to the project's 3S Protocol:
 ### 6.1 Engineering Record
 
 - **Architecture**: Document the "One-Placement Law" and locking strategy in
-  `docs/dev/architecture.md`.
+  `../system-architecture.md`.
 
 ### 6.2 Stakeholder Manuals
 

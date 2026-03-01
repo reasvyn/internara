@@ -12,7 +12,7 @@ Internara is a high-fidelity project, and we prioritize structured, technical co
 Before seeking external help, please consult the authoritative documentation in the `docs/` directory:
 - **[Software Requirements](docs/software-requirements.md)**: For functional understanding.
 - **[System Architecture](docs/system-architecture.md)**: For technical structure and orchestration.
-- **[Engineering Conventions](docs/conventions.md)**: For development standards and patterns.
+- **[Engineering Conventions](docs/engineering-standards.md)**: For development standards and patterns.
 
 ### 2. GitHub Issues (Bugs & Feature Requests)
 If you encounter a bug or have a specific technical feature request:

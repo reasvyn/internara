@@ -27,7 +27,7 @@ persistence cycles.
 
 ## 2. Applicability & Compliance
 
-These protocols should be utilized only when standard **[Conventions and Rules](../conventions.md)**
+These protocols should be utilized only when standard **[Conventions and Rules](../engineering-standards.md)**
 are insufficient for fulfilling a complex functional requirement.
 
 ### Engineering Invariants:

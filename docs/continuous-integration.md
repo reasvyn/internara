@@ -33,4 +33,4 @@ The CI pipeline executes the following sequence on every push and pull request:
 Upon a successful merge to `main` and the creation of a Git Tag:
 1.  **Release Creation**: Automated generation of a GitHub Release following the **[Versioning Policy](../versioning-policy.md)**.
 2.  **Artifact Synthesis**: Bundling of production-ready assets (Vite build) and finalized documentation.
-3.  **Audit Log**: Capture of the release baseline in the `releases.md`.
+3.  **Audit Log**: Capture of the release baseline in the `release-management.md`.

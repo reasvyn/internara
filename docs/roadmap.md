@@ -88,8 +88,8 @@ No requirement may exist without:
 
 # 6. Non-Functional Blueprint Mapping (SyRS-NF)
 
-Untuk memastikan kuantifikasi dan auditabilitas sebagaimana direkomendasikan dalam ISO/IEC 25010,
-seluruh SyRS-NF wajib memiliki blueprint tersendiri.
+To ensure quantification and auditability as recommended in ISO/IEC 25010,
+all SyRS-NF must have their own blueprint.
 
 | NFR ID          | Blueprint Reference | Verification Artifact               |
 | --------------- | ------------------- | ----------------------------------- |

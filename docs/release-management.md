@@ -48,7 +48,7 @@ This section formalizes the procedures for promoting verified software configura
 authoritative delivery baseline.
 
 > **Governance Mandate:** No release baseline may be authorized unless it demonstrates 100%
-> compliance with the authoritative **[System Requirements Specification](specs.md)**.
+> compliance with the authoritative **[System Requirements Specification](software-requirements.md)**.
 
 ---
 
@@ -60,7 +60,7 @@ mandatory quality gates:
 1.  **Validation Audit**: Every capability defined in the blueprint must be verified against the
     System Requirements Specification.
 2.  **Configuration Integrity**: All system artifacts (Source Code, Engineering Records, Stakeholder
-    Documentation) must be fully synchronized. The `releases.md` must accurately reflect the target
+    Documentation) must be fully synchronized. The `release-management.md` must accurately reflect the target
     configuration baseline, project status, and version support matrix.
 3.  **Status Transition Invariant**: The version status must be formally updated to **Released**
     within the strategic registries and analytical records prior to final baseline promotion.
@@ -113,7 +113,7 @@ Create an **Annotated Git Tag** to establish an immutable reference to the relea
 ### 3.1 GitHub Baseline Synchronization
 
 Synchronize the configuration baseline with the remote repository according to the
-**[Git Protocols](git.md)**.
+**[Git Protocols](version-control-management.md)**.
 
 - **Action**: Utilize `gh release create` to promote the baseline and its associated metadata.
 - **Title Convention**: Use the format `vX.Y.Z — {Release Theme}`.
@@ -122,7 +122,7 @@ Synchronize the configuration baseline with the remote repository according to t
 ### 3.2 Post-Promotion Audit
 
 - **Artifact Locking**: Once promoted, the release baseline is immutable.
-- **Transparency**: Update the **Version Registry** (`releases.md`) to reflect the newly released
+- **Transparency**: Update the **Version Registry** (`release-management.md`) to reflect the newly released
   configuration.
 - **Visibility Limit**: To maintain minimalist clarity, the Version Registry table must be limited
   to the **7 most recent versions**.
@@ -139,7 +139,7 @@ delivery package to ensure zero configuration drift.
 ### 4.2 Corrective Maintenance (Hotfix)
 
 If a defect is identified in a released baseline, a **Hotfix** configuration must be established
-targeting the current baseline tag, as defined in the **[Software Lifecycle](lifecycle.md)**.
+targeting the current baseline tag, as defined in the **[Software Lifecycle](incident-response-procedure.md)**.
 
 ---
 

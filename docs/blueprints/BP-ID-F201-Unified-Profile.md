@@ -128,7 +128,7 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Governance Standards**: Update `docs/dev/governance.md` to document the PII protection
+- **Governance Standards**: Update `../security-architecture.md` to document the PII protection
   invariants.
 
 ### 6.2 Stakeholder Manuals

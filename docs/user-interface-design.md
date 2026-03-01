@@ -5,7 +5,7 @@ Internara project, adhering to **ISO 9241-210** (Human-Centered Design), **ISO/I
 Accessibility), and **ISO/IEC 29148** (Requirements Engineering).
 
 > **Governance Mandate:** All UI/UX implementation must strictly adhere to the visual design,
-> typography, and thematic invariants defined in the authoritative **[Internara Specs](specs.md)**.
+> typography, and thematic invariants defined in the authoritative **[Internara Specs](software-requirements.md)**.
 
 ---
 
@@ -170,7 +170,7 @@ must reside here to ensure visual consistency across the modular monolith.
 ### 7.2 Decoupled UI: Slot Injection Pattern
 
 To maintain zero-coupling between domain modules, Internara uses a **Slot Injection** mechanism as
-detailed in the **[Presentation Isolation](conventions.md#174-presentation-isolation-slot-pattern)**
+detailed in the **[Presentation Isolation](engineering-standards.md#174-presentation-isolation-slot-pattern)**
 section.
 
 - **The Registrar**: Modules register their UI elements into named slots via `viewSlots()`.

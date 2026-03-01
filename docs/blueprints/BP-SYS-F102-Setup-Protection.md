@@ -118,7 +118,7 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Security Policy**: Update `docs/dev/policy.md` to document the setup-locking invariant as a core
+- **Security Policy**: Update `../conflict-resolution-policy.md` to document the setup-locking invariant as a core
   system security protocol.
 
 ### 6.2 Stakeholder Manuals

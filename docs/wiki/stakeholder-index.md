@@ -43,7 +43,7 @@ Follow these guides in order to bootstrap and operate your system effectively:
 
 - **[Module Catalog](modules.md)**: Detailed breakdown of system modules.
 - **[Intelligence & Reporting](reporting.md)**: Guide on analytics and exports.
-- **[Release History](../dev/releases.md)**: Track progress and updates on GitHub.
+- **[Release History](../release-management.md)**: Track progress and updates on GitHub.
 
 ---
 

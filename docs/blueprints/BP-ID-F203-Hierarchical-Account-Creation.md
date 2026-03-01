@@ -121,7 +121,7 @@ adhere to the project's 3S Protocol:
 
 ### 6.1 Engineering Record
 
-- **Security Guide**: Update `docs/dev/governance.md` to include the formal hierarchical
+- **Security Guide**: Update `../security-architecture.md` to include the formal hierarchical
   authorization mapping.
 
 ### 6.2 Stakeholder Manuals

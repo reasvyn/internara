@@ -33,7 +33,7 @@ Incidents are detected via:
 - **V&V Pass**: Ensure the hotfix passes all existing and new regression tests.
 
 ### 2.4 Recovery & Baseline Promotion
-- **Promotion**: Deploy the hotfix following the **[Release Protocols](releases.md)**.
+- **Promotion**: Deploy the hotfix following the **[Release Protocols](release-management.md)**.
 - **Communication**: Notify impacted institutional stakeholders of the resolution.
 
 ---

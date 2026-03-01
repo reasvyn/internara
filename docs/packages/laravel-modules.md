@@ -44,7 +44,7 @@ Every module must adhere to the following internal directory baseline:
 
 ### 2.1 Automated Scaffolding (Stubs)
 
-Modular artifacts must be generated via the **[Automated Tooling](../tooling.md)** to ensure
+Modular artifacts must be generated via the **[Automated Tooling](../development-tooling.md)** to ensure
 compliance with the Internara structural baseline. Custom stubs located in `stubs/modules/` are
 utilized to enforce strict typing and DocBlock standards upon generation.
 

@@ -9,7 +9,7 @@ integrity, and availability of institutional and student data.
 ## 🛠 Support Policy
 
 Security updates are provided exclusively for the **latest stable release**. For more details on the
-support status of specific versions, refer to the **[Versions Overview](docs/dev/releases.md)**.
+support status of specific versions, refer to the **[Versions Overview](docs/release-management.md)**.
 
 ---
 

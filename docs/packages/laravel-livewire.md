@@ -52,7 +52,7 @@ to asynchronous browser events.
 ## 3. Human-Centered Design Standards
 
 Livewire implementation must demonstrate compliance with **ISO 9241-210** and the **Mobile-First**
-mandate defined in the **[UI/UX Development Guide](../ui-ux.md)**.
+mandate defined in the **[UI/UX Development Guide](../user-interface-design.md)**.
 
 - **Responsiveness**: Utilization of Tailwind v4 utility classes for progressive enhancement.
 - **Localization**: Native support for translation keys; zero hard-coding of user-facing text.

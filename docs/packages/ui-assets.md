@@ -52,7 +52,7 @@ onboarding.
 ### 3.1 Color & Branding Consistency
 
 All UI assets must respect the **Emerald** accent theme defined in the
-**[UI/UX Guidelines](../ui-ux.md)**.
+**[UI/UX Guidelines](../user-interface-design.md)**.
 
 - **Standard**: Apply the `text-emerald-600` or `bg-emerald-500` classes to icon wrappers to
   maintain the institutional aesthetic.

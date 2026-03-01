@@ -54,7 +54,6 @@ Use uppercase where industry convention requires it:
 - README.md
 - LICENSE
 - NOTICE
-- CHANGELOG.md
 - CONTRIBUTING.md
 - CODE_OF_CONDUCT.md
 - SECURITY.md
