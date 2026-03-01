@@ -29,7 +29,11 @@ test('it calculates institutional summary', function () {
     $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
     $builder->shouldReceive('with')->andReturnSelf();
-    $builder->shouldReceive('count')->andReturn(10);
+    $builder->shouldReceive('whereNotNull')->with('placement_id')->andReturnSelf();
+
+    // Total interns call and Placed interns call
+    $builder->shouldReceive('count')->andReturn(10, 8);
+
     $placementService->shouldReceive('all')->andReturn(collect([1, 2, 3]));
 
     $aggregator = new AnalyticsAggregator(
@@ -41,7 +45,9 @@ test('it calculates institutional summary', function () {
 
     $summary = $aggregator->getInstitutionalSummary();
 
-    expect($summary['total_interns'])->toBe(10)->and($summary['active_partners'])->toBe(3);
+    expect($summary['total_interns'])->toBe(10)
+        ->and($summary['active_partners'])->toBe(3)
+        ->and($summary['placement_rate'])->toBe(80.0);
 });
 
 test('it identifies at risk students', function () {

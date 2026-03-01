@@ -50,7 +50,7 @@ class AnalyticsAggregator implements Contract
                 return [
                     'total_interns' => $totalInterns,
                     'active_partners' => $activePartners,
-                    'placement_rate' => $this->calculatePlacementRate($totalInterns),
+                    'placement_rate' => $this->calculatePlacementRate($totalInterns, (string) $activeAcademicYear),
                 ];
             },
         );
@@ -117,14 +117,19 @@ class AnalyticsAggregator implements Contract
      * Calculates the institutional placement rate.
      *
      * @param int $totalInterns The total number of registered interns.
+     * @param string $academicYear The active academic year.
      */
-    protected function calculatePlacementRate(int $totalInterns): float
+    protected function calculatePlacementRate(int $totalInterns, string $academicYear): float
     {
         if ($totalInterns === 0) {
             return 0.0;
         }
 
-        // TODO: Implement actual placement count logic via RegistrationService query
-        return 100.0;
+        $placedInterns = $this->registrationService
+            ->query(['academic_year' => $academicYear])
+            ->whereNotNull('placement_id')
+            ->count();
+
+        return round(($placedInterns / $totalInterns) * 100, 2);
     }
 }
