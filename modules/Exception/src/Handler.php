@@ -28,7 +28,7 @@ final class Handler
             // Extract module name from model namespace (Modules\{Module}\Models\...)
             $modelClass = $e->getModel();
             $module = 'shared';
-            
+
             if (preg_match('/Modules\\\\([^\\\\]+)/', $modelClass, $matches)) {
                 $module = strtolower($matches[1]);
             }

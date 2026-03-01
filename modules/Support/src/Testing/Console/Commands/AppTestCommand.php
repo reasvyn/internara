@@ -11,7 +11,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Advanced Orchestrator for modular testing.
- * 
+ *
  * This command provides high-fidelity verification by running test segments
  * in isolated processes to prevent memory accumulation and ensuring
  * alignment with Internara's 3S engineering doctrine.
@@ -55,14 +55,16 @@ class AppTestCommand extends Command
     {
         $startTime = microtime(true);
         $requestedModules = array_map('strtolower', $this->argument('modules'));
-        
+
         // 1. Target Identification
         $targets = $this->identifyTargets($requestedModules, $missing);
 
         if (! empty($missing)) {
             $this->newLine();
             foreach ($missing as $module) {
-                $this->components->error("Target module [{$module}] was not found or is currently disabled.");
+                $this->components->error(
+                    "Target module [{$module}] was not found or is currently disabled.",
+                );
             }
             $this->newLine();
 
@@ -70,7 +72,9 @@ class AppTestCommand extends Command
         }
 
         if (empty($targets)) {
-            $this->components->warn('No testable targets identified for the current configuration.');
+            $this->components->warn(
+                'No testable targets identified for the current configuration.',
+            );
 
             return self::SUCCESS;
         }
@@ -112,6 +116,7 @@ class AppTestCommand extends Command
                 if (File::isDirectory($testPath)) {
                     if ($this->shouldSkipSegment($sub)) {
                         $row[$sub] = '<fg=yellow>SKIP</>';
+
                         continue;
                     }
 
@@ -130,7 +135,7 @@ class AppTestCommand extends Command
                         $currentSegment,
                         $totalSegments,
                         $segmentOutput,
-                        $segmentError
+                        $segmentError,
                     );
 
                     $duration = microtime(true) - $segmentStart;
@@ -171,7 +176,7 @@ class AppTestCommand extends Command
     protected function shouldSkipSegment(string $sub): bool
     {
         $subLower = strtolower($sub);
-        
+
         $onlyFlagsActive =
             $this->option('arch-only') ||
             $this->option('unit-only') ||
@@ -183,7 +188,11 @@ class AppTestCommand extends Command
         }
 
         // Browser tests are skipped by default unless explicitly requested
-        if ($sub === 'Browser' && ! $this->option('with-browser') && ! $this->option('browser-only')) {
+        if (
+            $sub === 'Browser' &&
+            ! $this->option('with-browser') &&
+            ! $this->option('browser-only')
+        ) {
             return true;
         }
 
@@ -196,7 +205,7 @@ class AppTestCommand extends Command
 
     /**
      * Identifies all testable targets, supporting git diff for "dirty" detection.
-     * 
+     *
      * @param array<string> $requestedModules
      * @param array<string> $missing
      */
@@ -205,19 +214,27 @@ class AppTestCommand extends Command
         $targets = [];
         $foundRequested = [];
         $missing = [];
-        
+
         $dirtyModules = $this->option('dirty') ? $this->getDirtyModules() : null;
 
         // 1. System Level Targets
         if (File::isDirectory(base_path('tests/Arch'))) {
             if ($this->shouldIncludeTarget('system', $requestedModules, $dirtyModules)) {
-                $targets[] = ['label' => 'System', 'path' => base_path('tests'), 'segments' => ['Arch']];
+                $targets[] = [
+                    'label' => 'System',
+                    'path' => base_path('tests'),
+                    'segments' => ['Arch'],
+                ];
                 $foundRequested[] = 'system';
             }
         }
 
         if ($this->shouldIncludeTarget('root', $requestedModules, $dirtyModules)) {
-            $targets[] = ['label' => 'Root', 'path' => base_path('tests'), 'segments' => ['Unit', 'Feature', 'Browser']];
+            $targets[] = [
+                'label' => 'Root',
+                'path' => base_path('tests'),
+                'segments' => ['Unit', 'Feature', 'Browser'],
+            ];
             $foundRequested[] = 'root';
         }
 
@@ -226,8 +243,10 @@ class AppTestCommand extends Command
         if (File::exists($statusPath)) {
             $statuses = json_decode(File::get($statusPath), true) ?: [];
             foreach ($statuses as $moduleName => $isActive) {
-                if ($isActive !== true) continue;
-                
+                if ($isActive !== true) {
+                    continue;
+                }
+
                 $lowerName = strtolower($moduleName);
                 if ($this->shouldIncludeTarget($lowerName, $requestedModules, $dirtyModules)) {
                     $foundRequested[] = $lowerName;
@@ -256,7 +275,7 @@ class AppTestCommand extends Command
     protected function shouldIncludeTarget(string $label, array $requested, ?array $dirty): bool
     {
         $label = strtolower($label);
-        
+
         // If specific modules requested, only include those
         if (! empty($requested)) {
             return in_array($label, $requested);
@@ -272,22 +291,26 @@ class AppTestCommand extends Command
 
     /**
      * Detects changed modules using git.
-     * 
+     *
      * @return array<string>
      */
     protected function getDirtyModules(): array
     {
         $process = new Process(['git', 'status', '--porcelain'], base_path());
         $process->run();
-        
-        if (! $process->isSuccessful()) return [];
+
+        if (! $process->isSuccessful()) {
+            return [];
+        }
 
         $output = $process->getOutput();
         $changedModules = [];
 
         foreach (explode("\n", $output) as $line) {
             $line = trim($line);
-            if (empty($line)) continue;
+            if (empty($line)) {
+                continue;
+            }
 
             $file = substr($line, 3);
             if (str_starts_with($file, 'modules/')) {
@@ -313,11 +336,15 @@ class AppTestCommand extends Command
         foreach ($targets as $target) {
             $subsegments = $target['segments'] ?? ['Arch', 'Unit', 'Feature', 'Browser'];
             foreach ($subsegments as $sub) {
-                if (File::isDirectory($target['path'].DIRECTORY_SEPARATOR.$sub) && ! $this->shouldSkipSegment($sub)) {
+                if (
+                    File::isDirectory($target['path'].DIRECTORY_SEPARATOR.$sub) &&
+                    ! $this->shouldSkipSegment($sub)
+                ) {
                     $count++;
                 }
             }
         }
+
         return $count;
     }
 
@@ -357,7 +384,7 @@ class AppTestCommand extends Command
         int $current,
         int $total,
         string &$output,
-        string &$errorOutput
+        string &$errorOutput,
     ): bool {
         $isSuccessful = false;
 
@@ -365,12 +392,16 @@ class AppTestCommand extends Command
             $path,
             &$output,
             &$errorOutput,
-            &$isSuccessful
+            &$isSuccessful,
         ) {
             $command = [base_path('vendor/bin/pest'), $path];
 
-            if ($this->option('parallel')) $command[] = '--parallel';
-            if ($this->option('stop-on-failure')) $command[] = '--stop-on-failure';
+            if ($this->option('parallel')) {
+                $command[] = '--parallel';
+            }
+            if ($this->option('stop-on-failure')) {
+                $command[] = '--stop-on-failure';
+            }
             if ($filter = $this->option('filter')) {
                 $command[] = '--filter';
                 $command[] = $filter;
@@ -384,10 +415,12 @@ class AppTestCommand extends Command
                 $output = $process->getOutput();
                 $errorOutput = $process->getErrorOutput();
                 $isSuccessful = $process->isSuccessful();
+
                 return $isSuccessful;
             } catch (ProcessSignaledException $e) {
                 $errorOutput = "Process terminated by signal: {$e->getSignal()}";
                 $isSuccessful = false;
+
                 return false;
             }
         });
@@ -398,8 +431,12 @@ class AppTestCommand extends Command
     /**
      * Display the comprehensive verification summary.
      */
-    protected function displaySummary(array $results, array $failures, float $totalDuration, bool $success): void
-    {
+    protected function displaySummary(
+        array $results,
+        array $failures,
+        float $totalDuration,
+        bool $success,
+    ): void {
         $this->newLine();
         $this->components->info('Section 1: Modular Verification Matrix');
         $this->table(['Module', 'Arch', 'Unit', 'Feature', 'Browser', 'Total'], $results);
@@ -408,12 +445,14 @@ class AppTestCommand extends Command
         $failedSegments = count($failures);
         foreach ($results as $row) {
             for ($i = 1; $i <= 4; $i++) {
-                if (! in_array($row[$i], ['-', '<fg=yellow>SKIP</>'])) $totalSegments++;
+                if (! in_array($row[$i], ['-', '<fg=yellow>SKIP</>'])) {
+                    $totalSegments++;
+                }
             }
         }
-        
+
         $passedSegments = $totalSegments - $failedSegments;
-        $peakMemory = number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) . ' MB';
+        $peakMemory = number_format(memory_get_peak_usage(true) / 1024 / 1024, 2).' MB';
 
         $this->newLine();
         $this->components->info('Section 2: High-Fidelity Performance Metrics');
@@ -422,10 +461,13 @@ class AppTestCommand extends Command
             [
                 ['Total Segments Processed', $totalSegments],
                 ['Successful (Green)', "<fg=green>{$passedSegments}</>"],
-                ['Failed (Red)', $failedSegments > 0 ? "<fg=red>{$failedSegments}</>" : "<fg=green>0</>"],
-                ['Total Execution Time', number_format($totalDuration, 2) . ' s'],
+                [
+                    'Failed (Red)',
+                    $failedSegments > 0 ? "<fg=red>{$failedSegments}</>" : '<fg=green>0</>',
+                ],
+                ['Total Execution Time', number_format($totalDuration, 2).' s'],
                 ['Orchestrator Peak Memory', $peakMemory],
-            ]
+            ],
         );
 
         if (! empty($failures)) {
@@ -433,18 +475,26 @@ class AppTestCommand extends Command
             $this->components->warn('Section 3: Failure Traceability (Forensic View)');
             foreach ($failures as $failure) {
                 $this->components->twoColumnDetail("<fg=red>FAIL</> {$failure['label']}");
-                if (! empty($failure['error'])) $this->error($failure['error']);
-                if (! empty($failure['output'])) $this->line("<fg=gray>{$failure['output']}</>");
+                if (! empty($failure['error'])) {
+                    $this->error($failure['error']);
+                }
+                if (! empty($failure['output'])) {
+                    $this->line("<fg=gray>{$failure['output']}</>");
+                }
                 $this->newLine();
             }
         }
 
         $this->newLine();
         if ($success) {
-            $this->components->info('VERIFICATION PASSED: System configuration matches authoritative specifications.');
+            $this->components->info(
+                'VERIFICATION PASSED: System configuration matches authoritative specifications.',
+            );
             $this->components->twoColumnDetail('Baseline Promotion', '<fg=green>AUTHORIZED</>');
         } else {
-            $this->components->error('VERIFICATION FAILED: Structural or behavioral defects identified.');
+            $this->components->error(
+                'VERIFICATION FAILED: Structural or behavioral defects identified.',
+            );
             $this->components->twoColumnDetail('Baseline Promotion', '<fg=red>REJECTED</>');
         }
         $this->newLine();

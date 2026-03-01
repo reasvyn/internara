@@ -15,13 +15,15 @@ use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
 class AcademicTestModel extends Model
 {
     use HasAcademicYear;
+
     protected $table = 'academic_test_models';
+
     protected $fillable = ['name', 'academic_year'];
 }
 
 beforeEach(function () {
     static $created = false;
-    if (!$created) {
+    if (! $created) {
         Schema::create('academic_test_models', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -47,12 +49,14 @@ test('it automatically scopes queries to the active academic year', function () 
     $yearB = '550e8400-e29b-41d4-a716-446655440001';
 
     // Create record in Year B manually (bypassing scope for setup)
-    AcademicTestModel::query()->withoutGlobalScopes()->insert([
-        'name' => 'Hidden Record',
-        'academic_year' => $yearB,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
+    AcademicTestModel::query()
+        ->withoutGlobalScopes()
+        ->insert([
+            'name' => 'Hidden Record',
+            'academic_year' => $yearB,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
     // Set active to Year A
     setting(['active_academic_year' => $yearA]);
@@ -60,7 +64,7 @@ test('it automatically scopes queries to the active academic year', function () 
 
     // Querying should only return Year A record
     $results = AcademicTestModel::all();
-    
+
     expect($results)->toHaveCount(1);
     expect($results->first()->name)->toBe('Visible Record');
     expect($results->first()->academic_year)->toBe($yearA);
@@ -72,7 +76,7 @@ test('it can bypass academic year scope when explicitly requested', function () 
 
     setting(['active_academic_year' => $yearA]);
     AcademicTestModel::create(['name' => 'Year A']);
-    
+
     setting(['active_academic_year' => $yearB]);
     AcademicTestModel::create(['name' => 'Year B']);
 

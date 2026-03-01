@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Services;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
 use Modules\Department\Services\Contracts\DepartmentService;
@@ -19,6 +20,11 @@ use Modules\User\Services\Contracts\SuperAdminService;
  */
 class SetupService extends BaseService implements Contracts\SetupService
 {
+    /**
+     * Setting key for application name.
+     */
+    public const SETTING_APP_NAME = 'app_name';
+
     /**
      * Create a new SetupService instance.
      */
@@ -90,6 +96,8 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function performSetupStep(string $step, ?string $reqRecord = null): bool
     {
+        Gate::authorize('performStep', self::class);
+
         if ($step === self::STEP_COMPLETE) {
             return $this->finalizeSetupStep();
         }
@@ -109,6 +117,8 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function saveSystemSettings(array $settings): bool
     {
+        Gate::authorize('saveSettings', self::class);
+
         $this->settingService->setValue($settings);
 
         return true;
@@ -119,26 +129,37 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function finalizeSetupStep(): bool
     {
-        $schoolRecord = $this->schoolService->getSchool();
-        $settings = [
-            self::SETTING_BRAND_NAME => $schoolRecord->name,
-            self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
-            self::SETTING_SITE_TITLE => $schoolRecord->name.' - Sistem Informasi Manajemen PKL',
-            self::SETTING_APP_INSTALLED => true,
-            self::SETTING_SETUP_TOKEN => null,
-        ];
+        Gate::authorize('finalize', self::class);
 
-        $this->settingService->setValue($settings);
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            $schoolRecord = $this->schoolService->getSchool();
+            $settings = [
+                // [SYRS-C-004] Branding Invariant
+                self::SETTING_BRAND_NAME => $schoolRecord->name,
+                self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
+                self::SETTING_SITE_TITLE => $schoolRecord->name . ' - ' . $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
+                self::SETTING_APP_INSTALLED => true,
+                self::SETTING_SETUP_TOKEN => null,
+            ];
 
-        // Targeted session cleanup
-        Session::forget(self::SESSION_SETUP_AUTHORIZED);
-        foreach (range(1, 8) as $step) {
-            Session::forget("setup_step_{$step}");
-        }
+            $this->settingService->setValue($settings);
 
-        Session::regenerate();
+            // [S3 - Scalable] Dispatch finalization event
+            event(new \Modules\Setup\Events\SetupFinalized(
+                schoolName: $schoolRecord->name,
+                installedAt: now()->toIso8601String(),
+            ));
 
-        return $this->isAppInstalled(true);
+            // Targeted session cleanup
+            Session::forget(self::SESSION_SETUP_AUTHORIZED);
+            foreach (range(1, 8) as $step) {
+                Session::forget("setup_step_{$step}");
+            }
+
+            Session::regenerate();
+
+            return $this->isAppInstalled(true);
+        });
     }
 
     /**

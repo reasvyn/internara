@@ -5,8 +5,8 @@ fault tolerance within the Internara ecosystem. It ensures that technical failur
 logged, and presented to users in a secure, localized, and context-aware manner.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
+> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

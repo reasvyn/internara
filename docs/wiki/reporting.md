@@ -1,4 +1,5 @@
 # Intelligence & Reporting (Step Nine) Internara doesn't just collect data; it transforms it into
+
 institutional intelligence. This guide helps you navigate the reporting engine and understand the
 analytical metrics provided by the **Admin** and **Report** modules.
 

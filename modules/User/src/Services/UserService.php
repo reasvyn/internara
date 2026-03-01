@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Gate;
 use Modules\Exception\AppException;
 use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
-use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
@@ -239,7 +238,7 @@ class UserService extends EloquentQuery implements Contract
      */
     protected function handleUserAvatar(User &$user, UploadedFile|string|null $avatar = null): bool
     {
-        return isset($avatar) ? $user->setAvatar($avatar) : false;
+        return isset($avatar) ? $user->changeAvatar($avatar) : false;
     }
 
     /**

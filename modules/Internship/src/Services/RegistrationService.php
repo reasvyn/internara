@@ -63,9 +63,17 @@ class RegistrationService extends EloquentQuery implements Contract
             $placementId = $data['placement_id'];
             $studentId = $data['student_id'];
 
-            // 1. Check if student is already registered for THIS internship program
+            // 1. Enforce Atomic Lock on Placement to prevent race conditions (BP-PLC-F302)
+            \Modules\Internship\Models\InternshipPlacement::where('id', $placementId)
+                ->lockForUpdate()
+                ->first();
+
+            // 2. Check if student is already registered for THIS internship program
             if (
-                $this->exists(['internship_id' => $data['internship_id'], 'student_id' => $studentId])
+                $this->exists([
+                    'internship_id' => $data['internship_id'],
+                    'student_id' => $studentId,
+                ])
             ) {
                 throw new AppException(
                     userMessage: 'internship::exceptions.student_already_registered',

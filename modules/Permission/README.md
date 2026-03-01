@@ -5,8 +5,8 @@ Internara ecosystem. It defines granular access levels for Instructors, Students
 ensuring that every system action is authorized according to the stakeholder's role.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
+> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

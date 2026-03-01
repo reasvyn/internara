@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use DirectoryIterator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use DirectoryIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -106,8 +106,8 @@ class BindServiceProvider extends ServiceProvider
             foreach (new DirectoryIterator($modulesPath) as $moduleDir) {
                 if ($moduleDir->isDir() && ! $moduleDir->isDot()) {
                     $moduleName = $moduleDir->getBasename();
-                    $baseNamespace = $modulesNamespace . '\\' . $moduleName;
-                    $srcPath = $moduleDir->getPathname() . '/' . trim($moduleAppPath, '/');
+                    $baseNamespace = $modulesNamespace.'\\'.$moduleName;
+                    $srcPath = $moduleDir->getPathname().'/'.trim($moduleAppPath, '/');
 
                     if (is_dir($srcPath)) {
                         $this->findContractDirectories($srcPath, $baseNamespace, $paths);
@@ -116,7 +116,7 @@ class BindServiceProvider extends ServiceProvider
             }
         } catch (Throwable $e) {
             if (is_debug_mode()) {
-                Log::debug('BindServiceProvider: Failed to scan modules. ' . $e->getMessage());
+                Log::debug('BindServiceProvider: Failed to scan modules. '.$e->getMessage());
             }
         }
 
@@ -130,7 +130,7 @@ class BindServiceProvider extends ServiceProvider
     {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::SELF_FIRST
+            RecursiveIteratorIterator::SELF_FIRST,
         );
 
         foreach ($iterator as $file) {
@@ -268,11 +268,19 @@ class BindServiceProvider extends ServiceProvider
         $candidates = [];
         foreach ($patterns as $pattern) {
             // Try with the base name (e.g. Metadata)
-            $candidates[] = str_replace(['{{root}}', '{{short}}'], [$rootNamespace, $shortBase], $pattern);
-            
+            $candidates[] = str_replace(
+                ['{{root}}', '{{short}}'],
+                [$rootNamespace, $shortBase],
+                $pattern,
+            );
+
             // If shortName was different (e.g. MetadataService), also try with that exactly
             if ($shortBase !== $shortName) {
-                $candidates[] = str_replace(['{{root}}', '{{short}}'], [$rootNamespace, $shortName], $pattern);
+                $candidates[] = str_replace(
+                    ['{{root}}', '{{short}}'],
+                    [$rootNamespace, $shortName],
+                    $pattern,
+                );
             }
         }
 

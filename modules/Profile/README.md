@@ -6,8 +6,8 @@ core authentication credentials, such as institutional IDs, contact details, and
 affiliations.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must
-> adhere to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
+> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
 
 ---
 

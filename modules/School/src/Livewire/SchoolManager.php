@@ -78,10 +78,7 @@ class SchoolManager extends Component
         $this->form->id = $schoolId;
 
         // Pass attributes to the service for persistence
-        $school = $this->schoolService->save(
-            ['id' => $this->form->id],
-            $this->form->all(),
-        );
+        $school = $this->schoolService->save(['id' => $this->form->id], $this->form->all());
 
         // Synchronize form with the fresh record state
         $this->form->fill($school->toArray());

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\UI\Livewire;
 
-use Livewire\Attributes\Url;
-use Livewire\Attributes\Computed;
-use Livewire\Component;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
+use Livewire\Component;
 use Modules\UI\Livewire\Concerns\ManagesRecords;
 use Throwable;
 
@@ -228,10 +228,10 @@ abstract class RecordManager extends Component
             } else {
                 if ($this->createPermission) {
                     $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
-                    
+
                     // Use modelClass or default to authenticated user class for policy check
                     $authModel = $this->modelClass ?: config('auth.providers.users.model');
-                    
+
                     \Illuminate\Support\Facades\Gate::authorize($this->createPermission, [
                         $authModel,
                         $roles,
@@ -246,7 +246,7 @@ abstract class RecordManager extends Component
             if (is_debug_mode()) {
                 throw $e;
             }
-            
+
             flash()->error(__('shared::messages.error_occurred'));
         }
     }

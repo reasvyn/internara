@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Shared\Services\EloquentQuery;
 use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
+use Modules\Shared\Services\EloquentQuery;
 
 class QueryModelStub extends Model
 {
     use HasUuid;
 
     protected $table = 'query_model_stubs';
+
     protected $guarded = [];
 }
 
@@ -54,8 +55,10 @@ describe('EloquentQuery Base Service', function () {
         $data = ['name' => 'Genesis Test'];
         $record = $this->service->create($data);
 
-        expect($record)->toBeInstanceOf(QueryModelStub::class)
-            ->and($record->name)->toBe('Genesis Test');
+        expect($record)
+            ->toBeInstanceOf(QueryModelStub::class)
+            ->and($record->name)
+            ->toBe('Genesis Test');
     });
 
     test('test can find a record by identity', function () {
@@ -78,7 +81,6 @@ describe('EloquentQuery Base Service', function () {
 
         $results = $this->service->paginate([], 1);
 
-        expect($results->count())->toBe(1)
-            ->and($results->total())->toBe(2);
+        expect($results->count())->toBe(1)->and($results->total())->toBe(2);
     });
 });

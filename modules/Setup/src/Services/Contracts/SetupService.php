@@ -54,6 +54,8 @@ interface SetupService
 
     public const SETTING_BRAND_LOGO = 'brand_logo';
 
+    public const SETTING_APP_NAME = 'app_name';
+
     /**
      * Session identifiers.
      */

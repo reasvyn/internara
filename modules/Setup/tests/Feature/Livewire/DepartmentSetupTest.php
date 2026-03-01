@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
@@ -11,6 +12,11 @@ use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\DepartmentSetup;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    Gate::define("performStep", fn () => true);
+    Gate::define("finalize", fn () => true);
+});
 
 beforeEach(function () {
     app(SettingService::class)->setValue('setup_token', 'test-token');

@@ -78,27 +78,28 @@ class InternshipPlacement extends Model
     /**
      * The remaining available slots.
      */
-    public function getRemainingSlotsAttribute(): int {
+    public function remainingSlots(): int
+    {
         return max(
             0,
             $this->capacity_quota -
                 $this->registrations()
                     ->whereHas('statuses', function ($query) {
-                        $query->where('name', 'active')
-                            ->whereIn('id', function ($sub) {
-                                $sub->selectRaw('max(id)')
-                                    ->from('statuses')
-                                    ->whereColumn('model_id', 'internship_registrations.id')
-                                    ->where('model_type', InternshipRegistration::class);
-                            });
-                    })->count(),
+                        $query->where('name', 'active')->whereIn('id', function ($sub) {
+                            $sub->selectRaw('max(id)')
+                                ->from('statuses')
+                                ->whereColumn('model_id', 'internship_registrations.id')
+                                ->where('model_type', InternshipRegistration::class);
+                        });
+                    })
+                    ->count(),
         );
     }
 
     /**
      * The utilization percentage.
      */
-    public function getUtilizationPercentageAttribute(): int
+    public function utilizationPercentage(): int
     {
         if ($this->capacity_quota === 0) {
             return 0;

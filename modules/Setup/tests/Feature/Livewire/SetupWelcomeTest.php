@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Blade;
@@ -10,6 +11,11 @@ use Livewire\Livewire;
 use Modules\Setup\Livewire\SetupWelcome;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    Gate::define('performStep', fn () => true);
+    Gate::define('finalize', fn () => true);
+});
 
 describe('SetupWelcome Component', function () {
     test('it renders correctly', function () {

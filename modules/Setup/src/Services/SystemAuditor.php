@@ -34,7 +34,7 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
     /**
      * Minimum PHP version.
      */
-    protected const MIN_PHP_VERSION = '8.2.0';
+    protected const MIN_PHP_VERSION = '8.4.0';
 
     /**
      * {@inheritdoc}

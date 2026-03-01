@@ -27,7 +27,7 @@ final class RecordNotFoundException extends DomainException
         public ?string $uuid = null,
         public ?string $module = null,
         public array $replace = [],
-        public mixed $record = null
+        public mixed $record = null,
     ) {
         $message = $message ?? __('exception::messages.record_not_found');
         parent::__construct($message, 404);
@@ -41,9 +41,9 @@ final class RecordNotFoundException extends DomainException
     public function getContext(): array
     {
         return [
-            'uuid'    => $this->uuid,
-            'module'  => $this->module,
-            'record'  => $this->record ?? $this->replace['record'] ?? null,
+            'uuid' => $this->uuid,
+            'module' => $this->module,
+            'record' => $this->record ?? ($this->replace['record'] ?? null),
             'replace' => $this->replace,
         ];
     }
@@ -61,9 +61,12 @@ final class RecordNotFoundException extends DomainException
      */
     protected function logDiscoveryFailure(): void
     {
-        Log::warning("[RecordNotFound] Resource not found in module [{$this->module}] with UUID [{$this->uuid}]", [
-            'uuid'   => $this->uuid,
-            'module' => $this->module,
-        ]);
+        Log::warning(
+            "[RecordNotFound] Resource not found in module [{$this->module}] with UUID [{$this->uuid}]",
+            [
+                'uuid' => $this->uuid,
+                'module' => $this->module,
+            ],
+        );
     }
 }

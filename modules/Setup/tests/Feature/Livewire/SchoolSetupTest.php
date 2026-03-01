@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
@@ -11,6 +12,11 @@ use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SchoolSetup;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    Gate::define("performStep", fn () => true);
+    Gate::define("finalize", fn () => true);
+});
 
 describe('SchoolSetup Component', function () {
     test('it renders correctly and contains the school manager slot', function () {
@@ -46,7 +52,7 @@ describe('SchoolSetup Component', function () {
         // Verify slot injection and responsive layout components
         expect($template)
             ->toContain('x-setup::layouts.setup-wizard')
-            ->toContain("@slotRender('school-manager')")
+            ->toContain("@slotRender('school.identity')")
             ->toContain('text-4xl');
     });
 });

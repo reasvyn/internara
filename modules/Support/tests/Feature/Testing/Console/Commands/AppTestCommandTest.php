@@ -32,7 +32,6 @@ describe('AppTestCommand Orchestrator', function () {
 
     test('it filters segments correctly in list mode', function () {
         // Just verify it doesn't crash and returns success
-        $this->artisan('app:test Root --unit-only --no-arch --list')
-            ->assertExitCode(0);
+        $this->artisan('app:test Root --unit-only --no-arch --list')->assertExitCode(0);
     });
 });

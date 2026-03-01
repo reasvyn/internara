@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
@@ -13,6 +14,11 @@ use Modules\Setup\Livewire\AccountSetup;
 use Modules\User\Services\Contracts\SuperAdminService;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    Gate::define("performStep", fn () => true);
+    Gate::define("finalize", fn () => true);
+});
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);

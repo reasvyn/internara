@@ -8,8 +8,11 @@ use Modules\Internship\Services\Contracts\InternshipService;
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);
-    
-    \Modules\Permission\Models\Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+
+    \Modules\Permission\Models\Role::firstOrCreate([
+        'name' => 'super-admin',
+        'guard_name' => 'web',
+    ]);
     $admin = \Modules\User\Models\User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);

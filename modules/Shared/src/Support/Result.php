@@ -21,23 +21,28 @@ final readonly class Result
         public bool $success,
         public mixed $data = null,
         public ?string $message = null,
-        public array $meta = []
-    ) {
-    }
+        public array $meta = [],
+    ) {}
 
     /**
      * Create a successful result.
      */
-    public static function success(mixed $data = null, ?string $message = null, array $meta = []): self
-    {
+    public static function success(
+        mixed $data = null,
+        ?string $message = null,
+        array $meta = [],
+    ): self {
         return new self(true, $data, $message, $meta);
     }
 
     /**
      * Create a failed result.
      */
-    public static function failure(?string $message = null, mixed $data = null, array $meta = []): self
-    {
+    public static function failure(
+        ?string $message = null,
+        mixed $data = null,
+        array $meta = [],
+    ): self {
         return new self(false, $data, $message, $meta);
     }
 }

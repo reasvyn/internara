@@ -10,10 +10,8 @@ describe('UI: Architecture Invariants', function () {
     });
 
     test('it uses the consolidated SlotRegistry from Core', function () {
-        expect('Modules\UI\Support\SlotRegistry')
-            ->not->toBeClasses();
-        
-        expect('Modules\UI\Facades\SlotRegistry')
-            ->toExtend('Illuminate\Support\Facades\Facade');
+        expect('Modules\UI\Support\SlotRegistry')->not->toBeClasses();
+
+        expect('Modules\UI\Facades\SlotRegistry')->toExtend('Illuminate\Support\Facades\Facade');
     });
 });

@@ -7,7 +7,7 @@ namespace Modules\Shared\Tests\Unit\Functions;
 use Tests\TestCase;
 
 describe('Shared Global Helpers', function () {
-    // We use the 'pest()->extend(TestCase::class)' in Pest.php, 
+    // We use the 'pest()->extend(TestCase::class)' in Pest.php,
     // but individual files can also define their context.
 
     test('it detects debug mode correctly', function () {
@@ -28,7 +28,7 @@ describe('Shared Global Helpers', function () {
 
         app()->detectEnvironment(fn () => 'production');
         expect(is_development())->toBeFalse();
-        
+
         // Restore for cleanup
         app()->detectEnvironment(fn () => 'testing');
     });
@@ -40,7 +40,7 @@ describe('Shared Global Helpers', function () {
     test('it generates standardized shared urls', function () {
         $path = 'assets/test.js';
         $url = shared_url($path);
-        
+
         expect($url)->toContain($path);
     });
 });

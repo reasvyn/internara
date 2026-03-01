@@ -104,10 +104,7 @@ class PlacementManager extends Component
         $this->form->validate();
 
         try {
-            $this->service->save(
-                ['id' => $this->form->id],
-                $this->form->all(),
-            );
+            $this->service->save(['id' => $this->form->id], $this->form->all());
 
             $this->toggleModal(self::MODAL_FORM, false);
             flash()->success(__('shared::messages.record_saved'));

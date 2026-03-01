@@ -5,7 +5,6 @@ declare(strict_types=1);
 /**
  * Fundamental Coding Standards Verification.
  */
-
 arch('global: strict types')
     ->expect(['App', 'Modules', 'Tests'])
     ->toUseStrictTypes();

@@ -77,6 +77,7 @@ class SchoolPolicy
      */
     protected function isSetupAuthorized(): bool
     {
-        return session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        return session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            true;
     }
 }

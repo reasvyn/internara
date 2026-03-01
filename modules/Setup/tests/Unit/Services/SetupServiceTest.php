@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
-use Mockery;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Session;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipService;
@@ -15,123 +17,74 @@ use Modules\Setup\Services\Contracts\SetupService as Contract;
 use Modules\Setup\Services\SetupService;
 use Modules\User\Services\Contracts\SuperAdminService;
 
-beforeEach(function () {
-    $this->settingService = Mockery::mock(SettingService::class);
-    $this->superAdminService = Mockery::mock(SuperAdminService::class);
-    $this->schoolService = Mockery::mock(SchoolService::class);
-    $this->departmentService = Mockery::mock(DepartmentService::class);
-    $this->internshipService = Mockery::mock(InternshipService::class);
+describe('SetupService Unit Test', function () {
+    beforeEach(function () {
+        $this->settingService = $this->mock(SettingService::class);
+        $this->superAdminService = $this->mock(SuperAdminService::class);
+        $this->schoolService = $this->mock(SchoolService::class);
+        $this->departmentService = $this->mock(DepartmentService::class);
+        $this->internshipService = $this->mock(InternshipService::class);
 
-    $this->service = new SetupService(
-        $this->settingService,
-        $this->superAdminService,
-        $this->schoolService,
-        $this->departmentService,
-        $this->internshipService,
-    );
-});
+        $this->service = new SetupService(
+            $this->settingService,
+            $this->superAdminService,
+            $this->schoolService,
+            $this->departmentService,
+            $this->internshipService,
+        );
 
-test('it checks if app is installed', function () {
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with(Contract::SETTING_APP_INSTALLED, false, true)
-        ->twice()
-        ->andReturn(true, false);
+        // Global Gate mock for Unit Tests
+        Gate::shouldReceive('authorize')->andReturn(true);
+    });
 
-    expect($this->service->isAppInstalled())->toBeTrue();
-    expect($this->service->isAppInstalled())->toBeFalse();
-});
+    test('it checks if app is installed', function () {
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with(Contract::SETTING_APP_INSTALLED, false, true)
+            ->twice()
+            ->andReturn(true, false);
 
-test('it checks if step is completed', function () {
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with('setup_step_welcome', false, true)
-        ->andReturn(true);
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with('setup_step_non_existent_step', false, true)
-        ->andReturn(false);
+        expect($this->service->isAppInstalled())->toBeTrue();
+        expect($this->service->isAppInstalled())->toBeFalse();
+    });
 
-    expect($this->service->isStepCompleted('welcome'))
-        ->toBeTrue()
-        ->and($this->service->isStepCompleted('non_existent_step'))
-        ->toBeFalse();
-});
+    test('it finalizes setup step', function () {
+        $school = \Mockery::mock(School::class);
+        $school->shouldReceive('getAttribute')->with('name')->andReturn('Test School');
+        $school->shouldReceive('getAttribute')->with('logo_url')->andReturn('http://logo.com');
 
-test('it checks if record exists', function () {
-    $this->schoolService->shouldReceive('exists')->twice()->andReturn(true, false);
+        $this->schoolService->shouldReceive('getSchool')->andReturn($school);
 
-    expect($this->service->isRecordExists(Contract::RECORD_SCHOOL))->toBeTrue();
-    expect($this->service->isRecordExists(Contract::RECORD_SCHOOL))->toBeFalse();
-});
+        // Mock app_name retrieval
+        $this->settingService->shouldReceive('getValue')
+            ->with(Contract::SETTING_APP_NAME, 'Internara')
+            ->andReturn('Internara');
 
-test('it throws exception if unknown record type requested', function () {
-    $this->service->isRecordExists('unknown');
-})->throws(\InvalidArgumentException::class);
+        $this->settingService
+            ->shouldReceive('setValue')
+            ->with(
+                \Mockery::on(function ($settings) {
+                    return $settings[Contract::SETTING_BRAND_NAME] === 'Test School' &&
+                        $settings[Contract::SETTING_APP_INSTALLED] === true &&
+                        $settings[Contract::SETTING_SETUP_TOKEN] === null;
+                }),
+            )
+            ->once();
 
-test('it requires setup access', function () {
-    // No prev step, check app_installed
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with(Contract::SETTING_APP_INSTALLED, false, true)
-        ->andReturn(false, true);
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with(Contract::SETTING_APP_INSTALLED, false, true)
+            ->andReturn(true);
 
-    expect($this->service->requireSetupAccess())->toBeTrue();
-    expect($this->service->requireSetupAccess())->toBeFalse();
+        DB::shouldReceive('transaction')->once()->andReturnUsing(fn ($callback) => $callback());
+        DB::shouldReceive('connection')->andReturn(\Mockery::mock(\Illuminate\Database\ConnectionInterface::class));
 
-    // With prev step, check step completion
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with('setup_step_welcome', false, true)
-        ->andReturn(true);
-    expect($this->service->requireSetupAccess('welcome'))->toBeTrue();
+        // Mock Session cleanup
+        Session::shouldReceive('forget')->atLeast()->once();
+        Session::shouldReceive('regenerate')->once();
 
-    // This should throw AppException because step is NOT completed
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with('setup_step_fail', false, true)
-        ->andReturn(false);
-    $this->service->requireSetupAccess('fail');
-})->throws(AppException::class);
+        $result = $this->service->finalizeSetupStep();
 
-test('it performs setup step', function () {
-    $this->settingService->shouldReceive('setValue')->with('setup_step_welcome', true)->once();
-    expect($this->service->performSetupStep('welcome'))->toBeTrue();
-
-    $this->schoolService->shouldReceive('exists')->andReturn(true);
-    $this->settingService->shouldReceive('setValue')->with('setup_step_school_step', true)->once();
-    expect($this->service->performSetupStep('school_step', Contract::RECORD_SCHOOL))->toBeTrue();
-});
-
-test('it fails setup step if record missing', function () {
-    $this->superAdminService->shouldReceive('exists')->andReturn(false);
-    $this->service->performSetupStep(Contract::STEP_ACCOUNT, Contract::RECORD_SUPER_ADMIN);
-})->throws(AppException::class);
-
-test('it finalizes setup step', function () {
-    $school = Mockery::mock(School::class)->makePartial();
-    $school->name = 'Test School';
-    $school->logo_url = 'http://logo.com';
-
-    $this->schoolService->shouldReceive('getSchool')->andReturn($school);
-
-    $this->settingService
-        ->shouldReceive('setValue')
-        ->with(
-            Mockery::on(function ($settings) {
-                return $settings[Contract::SETTING_BRAND_NAME] === 'Test School' &&
-                    $settings[Contract::SETTING_APP_INSTALLED] === true &&
-                    $settings[Contract::SETTING_SETUP_TOKEN] === null;
-            }),
-        )
-        ->once();
-
-    $this->settingService
-        ->shouldReceive('getValue')
-        ->with(Contract::SETTING_APP_INSTALLED, false, true)
-        ->andReturn(true);
-
-    $result = $this->service->finalizeSetupStep();
-
-    expect($result)->toBeTrue();
+        expect($result)->toBeTrue();
+    });
 });

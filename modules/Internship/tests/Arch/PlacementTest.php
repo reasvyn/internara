@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Arch;
 
-use Modules\Shared\Services\EloquentQuery;
 use Modules\Shared\Services\BaseService;
+use Modules\Shared\Services\EloquentQuery;
 
 test('placement manager should extend BaseService')
     ->expect('Modules\Internship\Services\PlacementService')
@@ -17,7 +17,4 @@ test('company service should extend EloquentQuery')
 
 test('placement models should be isolated')
     ->expect('Modules\Internship\Models\InternshipPlacement')
-    ->not->toBeUsedOutside([
-        'Modules\Internship',
-        'Modules\Shared',
-    ]);
+    ->not->toBeUsedOutside(['Modules\Internship', 'Modules\Shared']);

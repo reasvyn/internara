@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Providers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -23,6 +24,23 @@ class SetupServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootModule();
+        $this->registerSetupGates();
+    }
+
+    /**
+     * Register authorization gates for the setup process.
+     */
+    protected function registerSetupGates(): void
+    {
+        // Define common authorization for all setup actions
+        $setupAuth = function (?Modules\User\Models\User $user) {
+            return session()->get('setup_authorized') === true;
+        };
+
+        Gate::define('install', $setupAuth);
+        Gate::define('performStep', $setupAuth);
+        Gate::define('saveSettings', $setupAuth);
+        Gate::define('finalize', $setupAuth);
     }
 
     /**

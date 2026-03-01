@@ -12,22 +12,17 @@ describe('Module Support Utility', function () {
         $moduleMock = \Mockery::mock(\Nwidart\Modules\Module::class);
         $moduleMock->shouldReceive('isEnabled')->twice()->andReturn(true);
 
-        NwidartModule::shouldReceive('find')
-            ->with('Shared')
-            ->twice()
-            ->andReturn($moduleMock);
+        NwidartModule::shouldReceive('find')->with('Shared')->twice()->andReturn($moduleMock);
 
-        expect(Module::isActive('Shared'))->toBeTrue()
-            ->and(is_active_module('Shared'))->toBeTrue();
+        expect(Module::isActive('Shared'))->toBeTrue()->and(is_active_module('Shared'))->toBeTrue();
     });
 
     test('it returns false for inactive or missing modules', function () {
-        NwidartModule::shouldReceive('find')
-            ->with('NonExistent')
-            ->twice()
-            ->andReturn(null);
+        NwidartModule::shouldReceive('find')->with('NonExistent')->twice()->andReturn(null);
 
-        expect(Module::isActive('NonExistent'))->toBeFalse()
-            ->and(is_active_module('NonExistent'))->toBeFalse();
+        expect(Module::isActive('NonExistent'))
+            ->toBeFalse()
+            ->and(is_active_module('NonExistent'))
+            ->toBeFalse();
     });
 });

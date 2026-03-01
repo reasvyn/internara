@@ -14,6 +14,7 @@ class UuidModelStub extends Model
     use HasUuid;
 
     protected $table = 'uuid_model_stubs';
+
     protected $guarded = [];
 }
 
@@ -35,9 +36,12 @@ describe('HasUuid Trait', function () {
 
         expect($model->id)
             ->not->toBeNull()
-            ->and(strlen($model->id))->toBe(36)
-            ->and($model->getIncrementing())->toBeFalse()
-            ->and($model->getKeyType())->toBe('string');
+            ->and(strlen($model->id))
+            ->toBe(36)
+            ->and($model->getIncrementing())
+            ->toBeFalse()
+            ->and($model->getKeyType())
+            ->toBe('string');
     });
 
     test('test preserves manually provided uuid', function () {

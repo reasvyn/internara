@@ -1,116 +1,70 @@
-<p align="center">
-  <img src="public/brand/logo.png" alt="Internara Logo" width="128">
-</p>
+# Internara: Practical Work Management Information System
 
-# Internara
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.14.0-blue.svg)](CHANGELOG.md)
+[![PHP](https://img.shields.io/badge/PHP-8.4-777bb4.svg)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-12-ff2d20.svg)](https://laravel.com/)
 
-![Version](https://img.shields.io/badge/version-v0.14.0-blue?style=flat-square)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-![PHP](https://img.shields.io/badge/PHP-%3E%3D%208.4-777bb4?style=flat-square&logo=php)
-![Laravel](https://img.shields.io/badge/Laravel-v12-ff2d20?style=flat-square&logo=laravel)
-
-**Internara** is a comprehensive **Practical Work Management Information System (SIM-PKL)** designed
-to modernize how educational institutions manage internships and vocational training programs.
-
-Built to bridge the gap between academic administration and industrial practice, Internara provides
-a centralized, digital ecosystem for managing the entire lifecycle of practical work—from initial
-registration to final competency evaluation.
+**Internara** is an enterprise-grade, human-centered Practical Work Management Information System (SIM-PKL) built with a **Domain-Aligned Modular Monolith** architecture. It is designed to orchestrate the entire internship lifecycle for educational institutions and industry partners with rigorous engineering standards.
 
 ---
 
-## 🚀 System Overview
+## 🚀 Architectural Doctrine: The 3S Principles
 
-Internara replaces fragmented manual processes with a unified, role-based platform that connects all
-stakeholders:
+Internara is governed by the **3S Doctrine**, ensuring it remains a high-fidelity engineering benchmark:
 
-- **For Institutions:** Automate administrative workflows, track student placement, and generate
-  compliance reports with ease.
-- **For Instructors:** Monitor student progress in real-time, record guidance sessions, and assess
-  competencies through a streamlined dashboard.
-- **For Industry Mentors:** A dedicated portal to provide feedback, validate logbooks, and
-  collaborate with academic supervisors.
-- **For Students:** A mobile-responsive hub to manage daily logs, view schedules, and track
-  competency achievements.
+1.  **SECURE (S1)**: Rigorous RBAC, UUID identity, and PII encryption by default (ISO/IEC 27001 aligned).
+2.  **SUSTAINABLE (S2)**: Strict typing, modular isolation, and comprehensive TDD (ISO/IEC 25010 aligned).
+3.  **SCALABLE (S3)**: Contract-first inter-module communication and event-driven orchestration.
 
 ---
 
-## ✨ Key Capabilities
+## 🛠 Tech Stack
 
-### ⚡ Streamlined Administration
-
-Eliminate paperwork with digital document management. Internara handles the heavy lifting of student
-data verification, placement management, and automated requirement checks.
-
-### 📊 Real-Time Monitoring
-
-Move beyond retroactive reporting. Instructors can monitor student activities daily, ensuring
-learning objectives are met on-site. The system supports detailed competency scoring and feedback.
-
-### 📱 Mobile-First Experience
-
-Recognizing that internships happen in the field, Internara is built with a **"Mobile-First"**
-design philosophy. The interface is fully optimized for smartphones and tablets, utilizing
-**Instrument Sans** and an **Emerald** accent for a clean, professional aesthetic.
+- **Backend**: PHP 8.4 (Property Hooks, Strict Types), Laravel 12.
+- **Frontend**: Livewire 3, Tailwind CSS 4, Mary UI.
+- **Database**: PostgreSQL / MySQL / SQLite (UUID v4 Primary Keys).
+- **Testing**: Pest PHP (TDD-first).
+- **Standards**: ISO/IEC 25010, 29148, 29119.
 
 ---
 
-## 🛠 Technical Foundation
+## 📦 Modular Ecosystem
 
-Internara is engineered for stability, security, and long-term maintainability.
+Internara is decomposed into cohesive domain modules:
 
-- **Modular Architecture:** Built on **Laravel 12**, utilizing a **Modular Monolith** structure to
-  ensure domain isolation and system integrity.
-- **Reactive Interface:** Powered by the **TALL Stack** (Tailwind CSS v4, Alpine.js, Livewire) using
-  **DaisyUI** and **maryUI** for a fast, responsive, and institution-ready experience.
-- **Rigorous Standards:** Development is governed by **ISO/IEC** standards and the **3S (Secure,
-  Sustain, Scalable)** philosophy.
-
----
-
-## 📂 Documentation
-
-### 👥 For Users & Administrators
-
-- **[Project Overview](docs/wiki/overview.md)**: Strategic vision and feature breakdown.
-- **[System Installation](docs/wiki/installation.md)**: Automated setup and deployment guide.
-- **[Release Notes](docs/dev/releases.md)**: Friendly history of updates and progress.
-
-### 🛠 For Developers & Contributors
-
-- **[Architecture Description](docs/dev/architecture.md)**: Deep dive into the modular system
-  invariants.
-- **[Feature Engineering Workflow](docs/dev/lifecycle.md)**: Our systematic implementation
-  process.
-- **[Technical Index](docs/dev/engineering-index.md)**: Full catalog of engineering
-  standards.
+- **Core**: System identity, academic scoping, and configuration.
+- **Internship**: Lifecycle, placements, registrations, and requirements.
+- **Journal & Attendance**: High-frequency vocational telemetry.
+- **Assessment**: Rubric-based evaluation and compliance scoring.
+- **User & Profile**: Unified identity and institutional identifiers.
+- **Report**: Authoritative document synthesis.
 
 ---
 
-## 📈 Project Status
+## 📚 Documentation
 
-Internara is currently in **Active Development**. We follow a clear support policy to ensure
-transparency.
+Detailed technical and governance documentation can be found in the `docs/` directory:
 
-| Version     | Readiness   | Support Policy | Current Status |
-| :---------- | :---------- | :------------- | :------------- |
-| **v0.14.0** | Development | Experimental   | Released       |
-| **v0.13.0** | Development | Experimental   | Released       |
-| **v0.12.x** | Development | Experimental   | Released       |
-| **v0.11.x** | Development | Experimental   | Released       |
-| **v0.10.x** | Development | Experimental   | Released       |
+- **[System Architecture](docs/system-architecture.md)**: Deep dive into the modular monolith.
+- **[Software Requirements](docs/software-requirements.md)**: Authoritative SyRS (ISO/IEC 29148).
+- **[Engineering Conventions](docs/engineering-standards.md)**: Standards, naming, and patterns.
+- **[Test Strategy](docs/test-strategy.md)**: Quality gates and verification models.
+- **[Deployment Guide](docs/deployment-guide.md)**: Environment orchestration.
 
 ---
 
-## ⚖️ License & Credits
+## 🤝 Community & Governance
 
-Internara is open-sourced software licensed under the **[MIT license](LICENSE)**. Contributors must
-adhere to the **[Code of Conduct](CODE_OF_CONDUCT.md)**.
+We follow strict open-source governance standards:
 
-- **Author:** [Reas Vyn](https://github.com/reasnov)
-- **Contact:** [reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)
+- **[Contributing](CONTRIBUTING.md)**: Guidelines for code and documentation.
+- **[Governance](GOVERNANCE.md)**: Project oversight and decision-making.
+- **[Security Policy](SECURITY.md)**: Reporting and management of vulnerabilities.
+- **[Code of Conduct](CODE_OF_CONDUCT.md)**: Community behavior standards.
 
 ---
 
-_**AI Disclosure:** This project utilizes AI for development. Contributors must prioritize security
-and user privacy in every modification._
+## ⚖️ License
+
+Internara is open-source software licensed under the **MIT License**.

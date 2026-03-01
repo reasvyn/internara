@@ -10,13 +10,15 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Modules\Exception\RecordNotFoundException;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Shared\Services\EloquentQuery;
 use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
+use Modules\Shared\Services\EloquentQuery;
 
 class SecurityModelStub extends Model
 {
     use HasUuid;
+
     protected $table = 'security_model_stubs';
+
     protected $guarded = [];
 }
 
@@ -60,7 +62,7 @@ describe('EloquentQuery S1 & S2 Compliance', function () {
 
     test('it enforces Gate::authorize on update operations', function () {
         $record = SecurityModelStub::create(['name' => 'Original']);
-        
+
         Gate::define('update', function ($user, $model) {
             return $model instanceof SecurityModelStub ? false : true;
         });

@@ -1,0 +1,26 @@
+# Notice: Internara Project
+
+Internara - Practical Work Management Information System (SIM-PKL)
+Copyright (c) 2026 reasnov and Internara Contributors.
+
+This product includes software developed by the Internara Project (https://github.com/reasnov/internara).
+
+---
+
+## 🏗 Built-With & Attribution
+
+Internara incorporates and utilizes several high-quality open-source components:
+
+- **Laravel Framework**: (c) Taylor Otwell. Licensed under MIT.
+- **Livewire**: (c) Caleb Porzio. Licensed under MIT.
+- **Tailwind CSS**: (c) Tailwind Labs. Licensed under MIT.
+- **Spatie Packages**: (c) Spatie. Various licenses (MIT).
+- **Mary UI**: (c) robsontenorio. Licensed under MIT.
+
+---
+
+## 📜 Intellectual Property
+
+All documentation, architectural blueprints, and engineering standards within this repository are the intellectual property of the project maintainers unless otherwise specified.
+
+Permission is granted to use, copy, modify, and distribute this software and its documentation for any purpose, with or without fee, is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.

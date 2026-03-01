@@ -35,7 +35,10 @@ test('teacher can view assessment page', function () {
 });
 
 test('teacher can submit assessment', function () {
-    \Modules\Permission\Models\Permission::firstOrCreate(['name' => 'assessment.manage', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Permission::firstOrCreate([
+        'name' => 'assessment.manage',
+        'guard_name' => 'web',
+    ]);
     $teacher = User::factory()->create();
     $teacher->assignRole('teacher');
     $teacher->givePermissionTo('assessment.manage');

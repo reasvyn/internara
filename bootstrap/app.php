@@ -53,7 +53,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->map(
             \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-            fn (\Illuminate\Database\Eloquent\ModelNotFoundException $e) => \Modules\Exception\Handler::map($e)
+            fn (
+                \Illuminate\Database\Eloquent\ModelNotFoundException $e,
+            ) => \Modules\Exception\Handler::map($e),
         );
     })
     ->create();

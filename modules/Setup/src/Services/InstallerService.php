@@ -6,6 +6,7 @@ namespace Modules\Setup\Services;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallerService as InstallerServiceContract;
@@ -30,6 +31,8 @@ class InstallerService extends BaseService implements InstallerServiceContract
      */
     public function install(): bool
     {
+        Gate::authorize('install', self::class);
+
         if (! $this->ensureEnvFileExists()) {
             return false;
         }
@@ -124,14 +127,16 @@ class InstallerService extends BaseService implements InstallerServiceContract
     public function runSeeders(): bool
     {
         try {
-            $seeded = Artisan::call('db:seed', ['--force' => true]) === 0;
+            return \Illuminate\Support\Facades\DB::transaction(function () {
+                $seeded = Artisan::call('db:seed', ['--force' => true]) === 0;
 
-            if ($seeded) {
-                $token = Str::random(32);
-                $this->settingService->setValue('setup_token', $token);
-            }
+                if ($seeded) {
+                    $token = Str::random(32);
+                    $this->settingService->setValue('setup_token', $token);
+                }
 
-            return $seeded;
+                return $seeded;
+            });
         } catch (\Exception $e) {
             return false;
         }

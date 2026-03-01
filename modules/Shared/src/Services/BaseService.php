@@ -23,9 +23,12 @@ abstract class BaseService
      * business operations involving multiple database interactions.
      *
      * @template TReturn
+     *
      * @param Closure(): TReturn $callback
-     * @return TReturn
+     *
      * @throws Throwable
+     *
+     * @return TReturn
      */
     protected function transaction(Closure $callback): mixed
     {

@@ -201,8 +201,11 @@ class SuperAdminService extends EloquentQuery implements Contracts\SuperAdminSer
      *
      * @throws \Modules\Exception\AppException
      */
-    public function get(array $filters = [], array $columns = ['*'], array $with = []): \Illuminate\Support\Collection
-    {
+    public function get(
+        array $filters = [],
+        array $columns = ['*'],
+        array $with = [],
+    ): \Illuminate\Support\Collection {
         throw new AppException(
             userMessage: 'user::exceptions.cannot_get_multiple_super_admins',
             logMessage: 'Attempted to get a collection of SuperAdmins, which is not allowed.',

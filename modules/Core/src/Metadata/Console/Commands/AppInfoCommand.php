@@ -59,10 +59,6 @@ class AppInfoCommand extends Command
             $composer['require']['livewire/livewire'] ?? 'v3.x',
         );
         $this->components->twoColumnDetail(
-            'Livewire Volt',
-            $composer['require']['livewire/volt'] ?? 'v1.x',
-        );
-        $this->components->twoColumnDetail(
             'MaryUI',
             $composer['require']['robsontenorio/mary'] ?? 'v2.x',
         );

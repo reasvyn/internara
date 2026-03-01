@@ -25,7 +25,8 @@ class InternshipRegistrationPolicy
      */
     public function update(User $user, InternshipRegistration $registration): bool
     {
-        return $user->id === $registration->student_id || $user->hasAnyRole(['super-admin', 'admin', 'staff']);
+        return $user->id === $registration->student_id ||
+            $user->hasAnyRole(['super-admin', 'admin', 'staff']);
     }
 
     /**

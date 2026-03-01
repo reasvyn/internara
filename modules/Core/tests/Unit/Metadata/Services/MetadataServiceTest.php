@@ -10,7 +10,9 @@ use Modules\Core\Metadata\Services\MetadataService;
 describe('Metadata Service', function () {
     beforeEach(function () {
         $this->path = base_path('app_info.json');
-        $this->original = \Illuminate\Support\Facades\File::exists($this->path) ? \Illuminate\Support\Facades\File::get($this->path) : null;
+        $this->original = \Illuminate\Support\Facades\File::exists($this->path)
+            ? \Illuminate\Support\Facades\File::get($this->path)
+            : null;
         $this->service = new MetadataService;
         \Modules\Shared\Support\AppInfo::clearCache();
     });
@@ -28,8 +30,10 @@ describe('Metadata Service', function () {
         $data = ['name' => 'Internara', 'version' => '1.0.0'];
         File::put($this->path, json_encode($data));
 
-        expect($this->service->get('name'))->toBe('Internara')
-            ->and($this->service->getVersion())->toBe('1.0.0');
+        expect($this->service->get('name'))
+            ->toBe('Internara')
+            ->and($this->service->getVersion())
+            ->toBe('1.0.0');
     });
 
     test('test returns fallback for missing metadata', function () {
