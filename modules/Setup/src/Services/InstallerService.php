@@ -127,14 +127,16 @@ class InstallerService extends BaseService implements InstallerServiceContract
     public function runSeeders(): bool
     {
         try {
-            $seeded = Artisan::call('db:seed', ['--force' => true]) === 0;
+            return \Illuminate\Support\Facades\DB::transaction(function () {
+                $seeded = Artisan::call('db:seed', ['--force' => true]) === 0;
 
-            if ($seeded) {
-                $token = Str::random(32);
-                $this->settingService->setValue('setup_token', $token);
-            }
+                if ($seeded) {
+                    $token = Str::random(32);
+                    $this->settingService->setValue('setup_token', $token);
+                }
 
-            return $seeded;
+                return $seeded;
+            });
         } catch (\Exception $e) {
             return false;
         }

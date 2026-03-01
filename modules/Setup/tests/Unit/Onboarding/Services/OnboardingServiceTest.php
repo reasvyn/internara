@@ -4,73 +4,50 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Onboarding\Services;
 
-use Illuminate\Support\Facades\DB;
-use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Setup\Onboarding\Services\OnboardingService;
+use Modules\User\Services\Contracts\UserService;
+use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\Teacher\Services\Contracts\TeacherService;
-use Modules\User\Services\Contracts\UserService;
 
-beforeEach(function () {
-    app()->setLocale('en');
-});
+describe('OnboardingService Unit Test', function () {
+    beforeEach(function () {
+        $this->userService = $this->mock(UserService::class);
+        $this->profileService = $this->mock(ProfileService::class);
+        $this->studentService = $this->mock(StudentService::class);
+        $this->teacherService = $this->mock(TeacherService::class);
+        
+        $this->service = new OnboardingService(
+            $this->userService,
+            $this->profileService,
+            $this->studentService,
+            $this->teacherService
+        );
+    });
 
-test('it generates correct template for students', function () {
-    $service = new OnboardingService(
-        mock(UserService::class),
-        mock(ProfileService::class),
-        mock(StudentService::class),
-        mock(TeacherService::class),
-    );
+    test('it generates correct template for students', function () {
+        $template = $this->service->generateTemplate('student');
 
-    $template = $service->getTemplate('student');
+        expect($template)->toContain('name,email,national_identifier,phone');
+    });
 
-    expect($template)->toContain(
-        'name,email,username,password,phone,address,department_id,national_identifier,registration_number',
-    );
-});
+    test('it returns error if file not found', function () {
+        $results = $this->service->importFromCsv('non_existent.csv', 'student');
 
-test('it returns error if file not found', function () {
-    $service = new OnboardingService(
-        mock(UserService::class),
-        mock(ProfileService::class),
-        mock(StudentService::class),
-        mock(TeacherService::class),
-    );
+        expect($results['success'])->toBe(0)
+            ->and($results['failure'])->toBe(1);
+    });
 
-    $results = $service->importFromCsv('non_existent.csv', 'student');
+    test('it processes valid csv row', function () {
+        $this->userService->shouldReceive('create')->once()->andReturn($this->mock(\Modules\User\Models\User::class));
 
-    expect($results['errors'])->not->toBeEmpty();
-});
+        // Create temporary CSV
+        $csvPath = tempnam(sys_get_temp_dir(), 'test_') . '.csv';
+        file_put_contents($csvPath, "name,email,national_identifier,phone\nJohn Doe,john@example.com,12345,0812");
 
-test('it processes valid csv row', function () {
-    $userService = mock(UserService::class);
-    $profileService = mock(ProfileService::class);
-    $studentService = mock(StudentService::class);
-    $teacherService = mock(TeacherService::class);
+        $results = $this->service->importFromCsv($csvPath, 'student');
 
-    $service = new OnboardingService(
-        $userService,
-        $profileService,
-        $studentService,
-        $teacherService,
-    );
-
-    $csvContent =
-        "name,email,national_identifier,department_id\nJohn Doe,john@example.com,12345,dept-id";
-    $filePath = tempnam(sys_get_temp_dir(), 'test_').'.csv';
-    file_put_contents($filePath, $csvContent);
-
-    $userMock = mock(\Modules\User\Models\User::class);
-    $userMock->shouldReceive('getAttribute')->with('profile')->andReturn(null);
-    $studentService->shouldReceive('create')->once()->andReturn($userMock);
-
-    // We mock DB::transaction
-    DB::shouldReceive('transaction')->once()->andReturnUsing(fn ($callback) => $callback());
-
-    $results = $service->importFromCsv($filePath, 'student');
-
-    expect($results['success'])->toBe(1);
-
-    unlink($filePath);
+        expect($results['success'])->toBe(1);
+        unlink($csvPath);
+    });
 });

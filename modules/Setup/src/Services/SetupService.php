@@ -21,6 +21,11 @@ use Modules\User\Services\Contracts\SuperAdminService;
 class SetupService extends BaseService implements Contracts\SetupService
 {
     /**
+     * Setting key for application name.
+     */
+    public const SETTING_APP_NAME = 'app_name';
+
+    /**
      * Create a new SetupService instance.
      */
     public function __construct(
@@ -126,26 +131,35 @@ class SetupService extends BaseService implements Contracts\SetupService
     {
         Gate::authorize('finalize', self::class);
 
-        $schoolRecord = $this->schoolService->getSchool();
-        $settings = [
-            self::SETTING_BRAND_NAME => $schoolRecord->name,
-            self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
-            self::SETTING_SITE_TITLE => $schoolRecord->name.' - Sistem Informasi Manajemen PKL',
-            self::SETTING_APP_INSTALLED => true,
-            self::SETTING_SETUP_TOKEN => null,
-        ];
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            $schoolRecord = $this->schoolService->getSchool();
+            $settings = [
+                // [SYRS-C-004] Branding Invariant
+                self::SETTING_BRAND_NAME => $schoolRecord->name,
+                self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
+                self::SETTING_SITE_TITLE => $schoolRecord->name . ' - ' . $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
+                self::SETTING_APP_INSTALLED => true,
+                self::SETTING_SETUP_TOKEN => null,
+            ];
 
-        $this->settingService->setValue($settings);
+            $this->settingService->setValue($settings);
 
-        // Targeted session cleanup
-        Session::forget(self::SESSION_SETUP_AUTHORIZED);
-        foreach (range(1, 8) as $step) {
-            Session::forget("setup_step_{$step}");
-        }
+            // [S3 - Scalable] Dispatch finalization event
+            event(new \Modules\Setup\Events\SetupFinalized(
+                schoolName: $schoolRecord->name,
+                installedAt: now()->toIso8601String(),
+            ));
 
-        Session::regenerate();
+            // Targeted session cleanup
+            Session::forget(self::SESSION_SETUP_AUTHORIZED);
+            foreach (range(1, 8) as $step) {
+                Session::forget("setup_step_{$step}");
+            }
 
-        return $this->isAppInstalled(true);
+            Session::regenerate();
+
+            return $this->isAppInstalled(true);
+        });
     }
 
     /**
