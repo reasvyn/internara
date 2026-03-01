@@ -55,7 +55,7 @@ class CompetencyAchievementReportProvider implements ExportableDataProvider
 
         $rows = [];
 
-        foreach ($query->cursor() as $reg) {
+        foreach ($query->lazy() as $reg) {
             // Placeholder for competency achievement logic (to be expanded in v0.10.0)
             $rows[] = [
                 'Student Name' => $reg->student->name,
