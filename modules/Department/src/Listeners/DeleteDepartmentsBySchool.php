@@ -25,8 +25,8 @@ class DeleteDepartmentsBySchool
         // Fetch all departments belonging to the deleted school
         $departments = $this->departmentService->get(['school_id' => $event->schoolId]);
 
-        foreach ($departments as $department) {
-            $this->departmentService->delete($department->id);
+        if ($departments->isNotEmpty()) {
+            $this->departmentService->destroy($departments->pluck('id')->toArray());
         }
     }
 }
