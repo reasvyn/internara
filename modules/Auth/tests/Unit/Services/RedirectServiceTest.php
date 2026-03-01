@@ -8,6 +8,7 @@ namespace Modules\Auth\Tests\Unit\Services;
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\Services\RedirectService;
 use Modules\Permission\Enums\Role;
+use Modules\Setting\Facades\Setting;
 use Modules\User\Models\User;
 
 
@@ -15,6 +16,9 @@ use Modules\User\Models\User;
 describe('Redirect Service', function () {
     beforeEach(function () {
         $this->service = new RedirectService;
+
+        // Mock Setting Facade
+        Setting::shouldReceive('getValue')->andReturn(true);
 
         // Mock standard routes to avoid RouteNotFoundException during testing
         Route::get('/login', fn () => 'login')->name('login');

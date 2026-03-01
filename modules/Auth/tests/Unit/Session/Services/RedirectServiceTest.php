@@ -7,9 +7,12 @@ namespace Modules\Auth\Tests\Unit\Session\Services;
 
 use Modules\Auth\Services\RedirectService;
 use Modules\Permission\Enums\Role;
+use Modules\Setting\Facades\Setting;
 use Modules\User\Models\User;
 
-
+beforeEach(function () {
+    Setting::shouldReceive('getValue')->andReturn(true);
+});
 
 test('it redirects unverified users to verification notice', function () {
     $user = mock(User::class);
