@@ -280,8 +280,10 @@ abstract class RecordManager extends Component
         }
 
         try {
-            foreach ($this->selectedIds as $id) {
-                $record = $this->service->find($id);
+            $query = $this->service->query();
+            $records = $query->whereIn('id', $this->selectedIds)->get();
+
+            foreach ($records as $record) {
                 if ($record) {
                     $this->authorize('delete', $record);
                 }
