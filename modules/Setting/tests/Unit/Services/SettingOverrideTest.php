@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Setting\Services\Contracts\SettingService;
 
-uses(RefreshDatabase::class);
+
 
 test('setting helper can be overridden for testing', function () {
     // Ensure we are using the Setting module's implementation

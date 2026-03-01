@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Tests\Feature\Telemetry;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Services\Contracts\UserService;
 
-uses(RefreshDatabase::class);
+
 
 test('edit lock audit: student cannot update an approved journal', function () {
     $student = app(UserService::class)->factory()->create();
@@ -71,7 +71,7 @@ test('immutability audit: journal is locked immediately upon first verification'
     app(JournalService::class)->verifyField($entry->id);
 
     // 2. Attempt to Update by Student
-    $student = User::factory()->create();
+    $student = \Modules\User\Models\User::factory()->create();
     $this->actingAs($student);
 
     expect(

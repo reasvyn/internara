@@ -29,7 +29,7 @@ class AppTestCommand extends Command
     protected $signature = 'app:test 
                             {modules?* : Optional module name(s) to target specifically}
                             {--p|parallel : Run tests within each module in parallel}
-                            {--f|stop-on-failure : Stop execution on the first test failure}
+                            {--c|continue-on-failure : Continue execution even if a test failure occurs}
                             {--dirty : Only run tests for modules with uncommitted changes (Git)}
                             {--no-arch : Skip architectural tests}
                             {--no-unit : Skip unit tests}
@@ -151,7 +151,7 @@ class AppTestCommand extends Command
                             'error' => $segmentError,
                         ];
 
-                        if ($this->option('stop-on-failure')) {
+                        if (! $this->option('continue-on-failure')) {
                             $this->recordResult($results, $row);
                             break 2;
                         }
@@ -399,7 +399,7 @@ class AppTestCommand extends Command
             if ($this->option('parallel')) {
                 $command[] = '--parallel';
             }
-            if ($this->option('stop-on-failure')) {
+            if (! $this->option('continue-on-failure')) {
                 $command[] = '--stop-on-failure';
             }
             if ($filter = $this->option('filter')) {

@@ -63,12 +63,12 @@ class MakeClassCommand extends GeneratorCommand
             $imports = "use $interface;\n";
         }
 
-        return new Stub($this->getStub(), [
+        return (new Stub($this->getStub(), [
             'NAMESPACE' => $this->getTargetNamespace(),
             'IMPORTS' => $imports,
             'CLASS' => $this->getTargetName(),
             'IMPLEMENTS' => $implements,
-        ])->render();
+        ]))->render();
     }
 
     /**

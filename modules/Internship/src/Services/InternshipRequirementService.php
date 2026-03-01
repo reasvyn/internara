@@ -44,7 +44,7 @@ class InternshipRequirementService extends EloquentQuery implements Contract
         $requirement = $this->find($requirementId);
 
         if (! $requirement) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException()->setModel(
+            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
                 InternshipRequirement::class,
                 [$requirementId],
             );
