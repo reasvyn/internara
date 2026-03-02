@@ -56,10 +56,7 @@ class SchoolSetup extends Component
     public function handleSchoolSaved(): void
     {
         $this->validate([
-            'turnstile' => [
-                config('services.cloudflare.turnstile.site_key') ? 'required' : 'nullable',
-                new \Modules\Shared\Rules\Turnstile,
-            ],
+            'turnstile' => [new \Modules\Shared\Rules\Turnstile],
             'contact_me' => [new \Modules\Shared\Rules\Honeypot],
         ]);
 

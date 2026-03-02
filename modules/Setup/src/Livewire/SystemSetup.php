@@ -113,10 +113,7 @@ class SystemSetup extends Component
     public function save(): void
     {
         $validated = $this->validate([
-            'turnstile' => [
-                config('services.cloudflare.turnstile.site_key') ? 'required' : 'nullable',
-                new Turnstile,
-            ],
+            'turnstile' => [new Turnstile],
             'contact_me' => [new \Modules\Shared\Rules\Honeypot],
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',

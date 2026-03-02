@@ -59,10 +59,7 @@ class AccountSetup extends Component
     public function handleSuperAdminRegistered(): void
     {
         $this->validate([
-            'turnstile' => [
-                config('services.cloudflare.turnstile.site_key') ? 'required' : 'nullable',
-                new \Modules\Shared\Rules\Turnstile,
-            ],
+            'turnstile' => [new \Modules\Shared\Rules\Turnstile],
             'contact_me' => [new \Modules\Shared\Rules\Honeypot],
         ]);
 
