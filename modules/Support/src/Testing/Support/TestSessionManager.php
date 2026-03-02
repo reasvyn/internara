@@ -6,12 +6,15 @@ namespace Modules\Support\Testing\Support;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /**
- * Manages persistent testing sessions for modular verification.
+ * Manages persistent testing sessions for modular verification with integrity checks.
  *
  * This service enables long-running test suites to be executed across
- * multiple process lifetimes by persisting segment results to disk.
+ * multiple process lifetimes by persisting segment results to disk and
+ * invalidating them if source files have changed.
  */
 class TestSessionManager
 {
@@ -30,17 +33,19 @@ class TestSessionManager
     }
 
     /**
-     * Record the result of a test segment.
+     * Record the result of a test segment with integrity metadata.
      */
     public function record(string $module, string $type, bool $success, string $output = '', string $error = ''): void
     {
         $file = $this->getSegmentFile($module, $type);
+        $modulePath = $this->resolveModulePath($module);
         
         $data = [
             'module' => $module,
             'type' => $type,
             'success' => $success,
             'timestamp' => now()->toIso8601String(),
+            'integrity_hash' => $modulePath ? $this->calculateIntegrityHash($modulePath) : null,
             'output' => $output,
             'error' => $error,
         ];
@@ -49,7 +54,7 @@ class TestSessionManager
     }
 
     /**
-     * Check if a segment has already passed in the current session.
+     * Check if a segment has already passed and remains valid (no file changes).
      */
     public function isPassed(string $module, string $type): bool
     {
@@ -60,7 +65,60 @@ class TestSessionManager
         }
 
         $data = json_decode(File::get($file), true);
-        return (bool) ($data['success'] ?? false);
+        
+        if (!($data['success'] ?? false)) {
+            return false;
+        }
+
+        // Integrity Check: Compare stored hash with current state
+        $modulePath = $this->resolveModulePath($module);
+        if ($modulePath) {
+            $currentHash = $this->calculateIntegrityHash($modulePath);
+            if ($currentHash !== ($data['integrity_hash'] ?? null)) {
+                return false; // Files have changed, invalidate PASS
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Calculate a lightweight integrity hash based on file modification times.
+     */
+    protected function calculateIntegrityHash(string $path): string
+    {
+        if (!is_dir($path)) {
+            return File::exists($path) ? (string) File::lastModified($path) : '';
+        }
+
+        $lastMtime = 0;
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+
+        foreach ($files as $file) {
+            $mtime = $file->getMTime();
+            if ($mtime > $lastMtime) {
+                $lastMtime = $mtime;
+            }
+        }
+
+        return (string) $lastMtime;
+    }
+
+    /**
+     * Resolve the physical path for a module or system target.
+     */
+    protected function resolveModulePath(string $label): ?string
+    {
+        $labelLower = strtolower($label);
+
+        if ($labelLower === 'system' || $labelLower === 'root') {
+            return base_path('tests');
+        }
+
+        $path = base_path("modules/{$label}");
+        return is_dir($path) ? $path : null;
     }
 
     /**
@@ -103,7 +161,6 @@ class TestSessionManager
             return null;
         }
 
-        // Sort by modification time to get the newest
         usort($directories, fn($a, $b) => File::lastModified($b) <=> File::lastModified($a));
 
         return basename($directories[0]);
