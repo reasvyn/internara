@@ -101,6 +101,11 @@ class UserService extends EloquentQuery implements Contract
             // UNIFIED: Initialize & Update Profile for ALL user types
             $profile = $this->profileService->getByUserId($user->id);
             if (! empty($profileData)) {
+                // Bypass profile authorization during initial setup
+                if (! setting('app_installed', false)) {
+                    $this->profileService->withoutAuthorization();
+                }
+
                 $this->profileService->update($profile->id, $profileData);
             }
 
