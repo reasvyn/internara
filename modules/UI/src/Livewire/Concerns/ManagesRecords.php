@@ -10,6 +10,7 @@ use Livewire\Attributes\Url;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Modules\Shared\Services\Contracts\EloquentQuery;
+use Throwable;
 
 /**
  * Trait ManagesRecords
@@ -17,18 +18,14 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  * Provides a standardized workflow for managing Eloquent records within Livewire components.
  * This trait orchestrates pagination, sorting, searching, and basic CRUD interactions,
  * delegating business logic to the injected Service layer.
+ *
+ * @deprecated Use \Modules\UI\Livewire\RecordManager instead for unified record management.
+ * This trait will be removed in future versions.
  */
 trait ManagesRecords
 {
     use WithFileUploads;
     use WithPagination;
-
-    /**
-     * The standard sorting configurations.
-     */
-    protected const DEFAULT_SORT_BY = 'created_at';
-
-    protected const DEFAULT_SORT_DIR = 'desc';
 
     /**
      * Standard modal and event identifiers.
@@ -62,8 +59,8 @@ trait ManagesRecords
      */
     #[Url]
     public array $sortBy = [
-        'column' => self::DEFAULT_SORT_BY,
-        'direction' => self::DEFAULT_SORT_DIR,
+        'column' => 'created_at',
+        'direction' => 'desc',
     ];
 
     /**
@@ -107,9 +104,16 @@ trait ManagesRecords
      */
     public function initializeManagesRecords(): void
     {
+        if (is_debug_mode()) {
+            \Illuminate\Support\Facades\Log::warning(
+                'Trait [ManagesRecords] is deprecated in '.get_class($this).
+                '. Please extend [Modules\UI\Livewire\RecordManager] instead.'
+            );
+        }
+
         $this->search = '';
         $this->perPage = EloquentQuery::DEFAULT_PER_PAGE;
-        $this->sortBy = ['column' => self::DEFAULT_SORT_BY, 'direction' => self::DEFAULT_SORT_DIR];
+        $this->sortBy = ['column' => 'created_at', 'direction' => 'desc'];
         $this->selectedIds = [];
     }
 
@@ -128,11 +132,25 @@ trait ManagesRecords
     #[Computed]
     public function records(): LengthAwarePaginator
     {
+        // UI Fix: Only allow sorting on fields registered as sortable
+        $sortByColumn = $this->sortBy['column'] ?? 'created_at';
+
+        if (method_exists($this, 'getTableHeaders')) {
+            $sortableColumns = collect($this->getTableHeaders())
+                ->filter(fn ($h) => ($h['sortable'] ?? false) === true)
+                ->map(fn ($h) => $h['key'])
+                ->toArray();
+
+            if (! in_array($sortByColumn, $sortableColumns) && $sortByColumn !== 'created_at') {
+                $sortByColumn = 'created_at';
+            }
+        }
+
         $filters = array_filter(
             [
                 'search' => $this->search,
-                'sort_by' => $this->sortBy['column'] ?? self::DEFAULT_SORT_BY,
-                'sort_dir' => $this->sortBy['direction'] ?? self::DEFAULT_SORT_DIR,
+                'sort_by' => $sortByColumn,
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
             ],
             fn ($value) => $value !== null && $value !== '',
         );
@@ -159,9 +177,20 @@ trait ManagesRecords
     {
         $record = $this->service->find($id);
 
-        if ($record && property_exists($this, 'form')) {
-            $this->form->fill($record);
-            $this->toggleModal(self::MODAL_FORM, true, ['id' => $id]);
+        if ($record) {
+            if (method_exists($this, 'can') && ! $this->can('update', $record)) {
+                $this->authorize('update', $record);
+            }
+
+            if (property_exists($this, 'form')) {
+                // Ensure form supports setUser (common in our modules)
+                if (method_exists($this->form, 'setUser')) {
+                    $this->form->setUser($record);
+                } else {
+                    $this->form->fill($record);
+                }
+                $this->toggleModal(self::MODAL_FORM, true, ['id' => $id]);
+            }
         }
     }
 
@@ -182,11 +211,44 @@ trait ManagesRecords
         if (property_exists($this, 'form')) {
             $this->form->validate();
 
-            $this->service->save(['id' => $this->form->id], $this->form->except('id'));
+            $isSetupAuthorized =
+                session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+                true;
 
-            $this->toggleModal(self::MODAL_FORM, false);
-            flash()->success(__('shared::messages.record_saved'));
-            $this->dispatch($this->getEventPrefix().':saved', exists: true);
+            try {
+                if ($isSetupAuthorized) {
+                    $this->service->withoutAuthorization();
+                }
+
+                if ($this->form->id) {
+                    $record = $this->service->find($this->form->id);
+                    if (! $isSetupAuthorized && $record && property_exists($this, 'updatePermission') && $this->updatePermission) {
+                        \Illuminate\Support\Facades\Gate::authorize($this->updatePermission, $record);
+                    }
+                    $this->service->update($this->form->id, $this->form->all());
+                } else {
+                    if (! $isSetupAuthorized && property_exists($this, 'createPermission') && $this->createPermission) {
+                        $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
+                        $authModel = property_exists($this, 'modelClass') && $this->modelClass ? $this->modelClass : config('auth.providers.users.model');
+
+                        \Illuminate\Support\Facades\Gate::authorize($this->createPermission, [
+                            $authModel,
+                            $roles,
+                        ]);
+                    }
+                    $this->service->create($this->form->all());
+                }
+
+                $this->toggleModal(self::MODAL_FORM, false);
+                flash()->success(__('shared::messages.record_saved'));
+                $this->dispatch($this->getEventPrefix().':saved', exists: true);
+            } catch (Throwable $e) {
+                if (is_debug_mode()) {
+                    throw $e;
+                }
+
+                flash()->error(__('shared::messages.error_occurred'));
+            }
         }
     }
 
@@ -196,12 +258,29 @@ trait ManagesRecords
     public function remove(mixed $id = null): void
     {
         $id = $id ?: $this->recordId;
+        $record = $this->service->find($id);
 
-        if ($id && $this->service->delete($id)) {
-            $this->toggleModal(self::MODAL_CONFIRM, false);
-            $this->recordId = null;
-            flash()->success(__('shared::messages.record_deleted'));
-            $this->dispatch($this->getEventPrefix().':deleted', exists: $this->service->exists());
+        if ($record) {
+            $isSetupAuthorized =
+                session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+                true;
+
+            if ($isSetupAuthorized) {
+                $this->service->withoutAuthorization();
+            } elseif (method_exists($this, 'can')) {
+                if (! $this->can('delete', $record)) {
+                    $this->authorize('delete', $record);
+                }
+            } else {
+                $this->authorize('delete', $record);
+            }
+
+            if ($this->service->delete($id)) {
+                $this->toggleModal(self::MODAL_CONFIRM, false);
+                $this->recordId = null;
+                flash()->success(__('shared::messages.record_deleted'));
+                $this->dispatch($this->getEventPrefix().':deleted', exists: $this->service->exists());
+            }
         }
     }
 
@@ -214,12 +293,35 @@ trait ManagesRecords
             return;
         }
 
+        $isSetupAuthorized =
+            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            true;
+
         try {
+            $query = $this->service->query();
+            $records = $query->whereIn('id', $this->selectedIds)->get();
+
+            if ($isSetupAuthorized) {
+                $this->service->withoutAuthorization();
+            } else {
+                foreach ($records as $record) {
+                    if ($record) {
+                        if (method_exists($this, 'can')) {
+                            if (! $this->can('delete', $record)) {
+                                $this->authorize('delete', $record);
+                            }
+                        } else {
+                            $this->authorize('delete', $record);
+                        }
+                    }
+                }
+            }
+
             $count = $this->service->destroy($this->selectedIds);
             $this->selectedIds = [];
             flash()->success($this->getBulkDeleteMessage($count));
             $this->dispatch($this->getEventPrefix().':bulk-deleted', count: $count);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             flash()->error($e->getMessage());
         }
     }
