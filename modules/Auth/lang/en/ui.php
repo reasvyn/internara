@@ -21,6 +21,7 @@ return [
             'password_confirmation_placeholder' => 'Repeat your password',
             'submit' => 'Create Account',
             'footer_warning' => 'Be careful! Do not share account information with anyone.',
+            'registration_failed' => 'Failed to create Administrator.',
         ],
     ],
     'login' => [

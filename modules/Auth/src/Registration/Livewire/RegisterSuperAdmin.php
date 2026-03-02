@@ -61,12 +61,14 @@ class RegisterSuperAdmin extends Component
             $this->form->validate();
 
             if ($this->form->id) {
-                // Bypass gate during setup phase as roles might not be fully seeded yet
+                $userService = app(\Modules\User\Services\Contracts\UserService::class);
+
+                // Bypass authorization during setup phase as roles might not be fully seeded yet
                 if (! setting('app_installed', false)) {
-                    Gate::shouldReceive('authorize')->andReturn(true);
+                    $userService->withoutAuthorization();
                 }
 
-                $registeredUser = app(\Modules\User\Services\Contracts\UserService::class)->update(
+                $registeredUser = $userService->update(
                     $this->form->id,
                     $this->form->all(),
                 );
@@ -86,7 +88,7 @@ class RegisterSuperAdmin extends Component
         } catch (\Modules\Exception\AppException $e) {
             flash()->error($e->getUserMessage());
         } catch (\Exception $e) {
-            flash()->error(__('shared::exceptions.creation_failed', ['record' => 'Administrator']));
+            flash()->error(__('auth::ui.register_super_admin.form.registration_failed'));
             \Illuminate\Support\Facades\Log::error('SuperAdmin Registration Failed.', [
                 'correlation_id' => \Illuminate\Support\Str::uuid()->toString(),
                 'error_type' => get_class($e),

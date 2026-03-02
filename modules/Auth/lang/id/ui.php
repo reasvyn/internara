@@ -21,6 +21,7 @@ return [
             'password_confirmation_placeholder' => 'Ulangi Kata Sandi Anda',
             'submit' => 'Buat Akun',
             'footer_warning' => 'Hati-hati! Jangan berikan informasi akun kepada siapapun.',
+            'registration_failed' => 'Gagal membuat Administrator.',
         ],
     ],
     'login' => [

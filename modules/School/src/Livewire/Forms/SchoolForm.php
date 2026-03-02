@@ -36,7 +36,7 @@ class SchoolForm extends Form
             'institutional_code' => [
                 'required',
                 'string',
-                'size:8',
+                'min:3',
                 Rule::unique('schools', 'institutional_code')->ignore($this->id),
             ],
             'name' => ['required', 'string', Rule::unique('schools', 'name')->ignore($this->id)],
