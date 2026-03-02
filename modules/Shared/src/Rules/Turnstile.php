@@ -36,7 +36,7 @@ class Turnstile implements ValidationRule
         );
 
         if (! $response->json('success')) {
-            $fail(__('shared::validation.turnstile_failed'));
+            $fail(__('shared::exceptions.turnstile_failed'));
         }
     }
 }

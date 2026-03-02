@@ -10,4 +10,5 @@ return [
     'unique_violation' => 'The provided :column is already in use by another :record.',
     'cannot_delete_associated' => 'Cannot delete this :record because it has associated :relation.',
     'pdf_view_undefined' => 'PDF view not defined for this component.',
+    'turnstile_failed' => 'Cloudflare Turnstile verification failed. Please try again.',
 ];

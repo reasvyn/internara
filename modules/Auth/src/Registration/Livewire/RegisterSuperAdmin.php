@@ -88,7 +88,7 @@ class RegisterSuperAdmin extends Component
         } catch (\Modules\Exception\AppException $e) {
             flash()->error($e->getUserMessage());
         } catch (\Exception $e) {
-            flash()->error(__('auth::ui.register_super_admin.form.registration_failed'));
+            flash()->error(__('auth::exceptions.registration_failed'));
             \Illuminate\Support\Facades\Log::error('SuperAdmin Registration Failed.', [
                 'correlation_id' => \Illuminate\Support\Str::uuid()->toString(),
                 'error_type' => get_class($e),

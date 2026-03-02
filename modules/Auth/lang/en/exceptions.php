@@ -14,4 +14,5 @@ return [
     'super_admin_exists' => 'A SuperAdmin account already exists. Only one SuperAdmin account is allowed.',
     'invalid_verification_link' => 'The verification link is invalid or the email has already been verified.',
     'verification_resend_error' => 'You are already verified or not logged in.',
+    'registration_failed' => 'Failed to create Administrator.',
 ];

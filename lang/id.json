@@ -3,7 +3,6 @@
     "Not Found": "Tidak Ditemukan",
     "This action is unauthorized.": "Tindakan ini tidak diizinkan.",
     "Data berhasil disimpan.": "Data berhasil disimpan.",
-    "Unauthorized setup access. Please use the signed link provided by the CLI.": "Akses penyiapan tidak sah. Silakan gunakan tautan bertanda tangan yang disediakan oleh CLI.",
     "User message": "Pesan pengguna",
     "Error message": "Pesan kesalahan"
 }
