@@ -27,25 +27,16 @@ class TargetDiscovery
 
         $dirtyModules = $onlyDirty ? $this->getDirtyModules() : null;
 
-        // 1. System Level Targets
-        if (File::isDirectory(base_path('tests/Arch'))) {
+        // 1. Consolidated System Level Target (Previously System & Root)
+        if (File::isDirectory(base_path('tests'))) {
             if ($this->shouldInclude('system', $requestedModules, $dirtyModules)) {
                 $targets[] = [
                     'label' => 'System',
                     'path' => base_path('tests'),
-                    'segments' => ['Arch'],
+                    'segments' => ['Arch', 'Unit', 'Feature', 'Browser'],
                 ];
                 $foundRequested[] = 'system';
             }
-        }
-
-        if ($this->shouldInclude('root', $requestedModules, $dirtyModules)) {
-            $targets[] = [
-                'label' => 'Root',
-                'path' => base_path('tests'),
-                'segments' => ['Unit', 'Feature', 'Browser'],
-            ];
-            $foundRequested[] = 'root';
         }
 
         // 2. Modular Targets
@@ -114,8 +105,7 @@ class TargetDiscovery
         $output = $process->getOutput();
         $changedModules = [];
 
-        foreach (explode("
-", $output) as $line) {
+        foreach (explode("\n", $output) as $line) {
             $line = trim($line);
             if (empty($line)) {
                 continue;
@@ -128,7 +118,6 @@ class TargetDiscovery
                     $changedModules[] = strtolower($parts[1]);
                 }
             } else {
-                $changedModules[] = 'root';
                 $changedModules[] = 'system';
             }
         }
