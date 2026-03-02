@@ -32,10 +32,6 @@ class SetupWelcome extends Component
             currentStep: SetupService::STEP_WELCOME,
             nextStep: SetupService::STEP_ENVIRONMENT,
         );
-
-        flash()->info(
-            __('setup::wizard.welcome.toast_greeting', ['app' => setting('app_name', 'Internara')]),
-        );
     }
 
     /**

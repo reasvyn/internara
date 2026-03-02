@@ -43,7 +43,6 @@ return [
             'description' => 'Proses setup ini adalah langkah pertama Anda menuju program magang yang lebih terorganisir dan berdampak.',
         ],
         'cta' => 'Mulai Instalasi',
-        'toast_greeting' => 'Selamat datang di :app! Mari mulai konfigurasi sistem untuk pengalaman manajemen magang yang lebih baik.',
     ],
     'environment' => [
         'title' => 'Pengecekan Lingkungan',

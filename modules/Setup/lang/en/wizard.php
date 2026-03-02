@@ -43,7 +43,6 @@ return [
             'description' => 'This setup process is your first step towards a more organized and impactful internship program.',
         ],
         'cta' => 'Start Installation',
-        'toast_greeting' => 'Welcome to :app! Let\'s start configuring the system for a better internship management experience.',
     ],
     'environment' => [
         'title' => 'Environment Check',
