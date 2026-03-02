@@ -51,9 +51,9 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     {
         \Illuminate\Support\Facades\Gate::authorize('create', School::class);
 
-        if (isset($data['npsn']) && strlen((string) $data['npsn']) !== 8) {
+        if (isset($data['institutional_code']) && strlen((string) $data['institutional_code']) !== 8) {
             throw new AppException(
-                userMessage: 'school::exceptions.invalid_npsn',
+                userMessage: 'school::exceptions.invalid_institutional_code',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
             );
         }

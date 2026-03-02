@@ -42,7 +42,7 @@
     <x-slot:content>
         <div class="space-y-6">
             <x-ui::turnstile wire:model="turnstile" class="mb-4" />
-            @slotRender('school.identity')
+            @slotRender('school-manager')
         </div>
     </x-slot>
 </x-setup::layouts.setup-wizard>

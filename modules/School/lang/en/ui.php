@@ -7,6 +7,7 @@ return [
     'title' => 'School Data',
     'subtitle' => 'Update school information.',
     'name' => 'School Name',
+    'institutional_code' => 'Institutional Code',
     'address' => 'School Address',
     'email' => 'School Email',
     'phone' => 'School Phone',

@@ -20,7 +20,7 @@ test('it deletes all departments when a school is deleted', function () {
     $schoolService = app(SchoolService::class);
     $departmentService = app(DepartmentService::class);
 
-    $school = $schoolService->create(['name' => 'SMK Cleanup Test', 'npsn' => '12345678']);
+    $school = $schoolService->create(['name' => 'SMK Cleanup Test', 'institutional_code' => '12345678']);
 
     // Create departments for this school
     $dept1 = $departmentService->create(['name' => 'RPL', 'school_id' => $school->id]);

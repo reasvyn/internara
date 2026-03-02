@@ -7,6 +7,7 @@ return [
     'title' => 'Data Sekolah',
     'subtitle' => 'Perbarui data sekolah.',
     'name' => 'Nama Sekolah',
+    'institutional_code' => 'Kode Institusi (NPSN)',
     'address' => 'Alamat Sekolah',
     'email' => 'Email Sekolah',
     'phone' => 'Telepon Sekolah',

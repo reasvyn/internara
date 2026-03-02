@@ -12,7 +12,7 @@ class SchoolForm extends Form
 {
     public ?string $id = null;
 
-    public ?string $npsn = null;
+    public ?string $institutional_code = null;
 
     public ?string $name = null;
 
@@ -33,11 +33,11 @@ class SchoolForm extends Form
     public function rules(): array
     {
         return [
-            'npsn' => [
+            'institutional_code' => [
                 'required',
                 'string',
                 'size:8',
-                Rule::unique('schools', 'npsn')->ignore($this->id),
+                Rule::unique('schools', 'institutional_code')->ignore($this->id),
             ],
             'name' => ['required', 'string', Rule::unique('schools', 'name')->ignore($this->id)],
             'address' => ['nullable', 'string', 'max:1000'],

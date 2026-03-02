@@ -33,10 +33,10 @@ describe('School Service', function () {
         $service->create(['name' => 'Unauthorized School']);
     })->throws(\Illuminate\Auth\Access\AuthorizationException::class);
 
-    test('it validates NPSN format (must be 8 digits) [ARC01-INST-01]', function () {
+    test('it validates Institutional Code format (must be 8 digits) [ARC01-INST-01]', function () {
         Gate::shouldReceive('authorize')->andReturn(true);
         $service = app(SchoolService::class);
 
-        $service->create(['name' => 'Test School', 'npsn' => '123']);
+        $service->create(['name' => 'Test School', 'institutional_code' => '123']);
     })->throws(AppException::class);
 });

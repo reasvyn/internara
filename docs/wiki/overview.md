@@ -55,7 +55,7 @@ Before proceeding with the installation, we recommend gathering the following fo
 ensure a smooth onboarding process:
 
 - **Institutional Identity**: Official school name, address, logo, and legal identifiers (e.g.,
-  NPSN).
+  Institutional Code).
 - **Academic Structure**: A comprehensive list of active Departments or Study Programs.
 - **Stakeholder Directory**: A spreadsheet of Instructors (Teachers) and Students, including emails
   and registration identifiers.

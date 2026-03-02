@@ -32,7 +32,7 @@ class School extends Model implements HasMedia
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['npsn', 'name', 'address', 'email', 'phone', 'fax', 'principal_name'];
+    protected $fillable = ['institutional_code', 'name', 'address', 'email', 'phone', 'fax', 'principal_name'];
 
     protected static function newFactory(): SchoolFactory
     {

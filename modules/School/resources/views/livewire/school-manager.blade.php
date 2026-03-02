@@ -36,6 +36,17 @@
                     />
                 </div>
 
+                <div class="col-span-full" wire:key="sm-code">
+                    <x-ui::input
+                        type="text"
+                        :label="__('school::ui.institutional_code')"
+                        :placeholder="__('school::ui.institutional_code')"
+                        icon="tabler.id"
+                        required
+                        wire:model="form.institutional_code"
+                    />
+                </div>
+
                 <div class="col-span-full" wire:key="sm-address">
                     <x-ui::textarea
                         :label="__('school::ui.address')"

@@ -54,7 +54,7 @@ describe('SchoolSetup Component', function () {
         // Verify slot injection and responsive layout components
         expect($template)
             ->toContain('x-setup::layouts.setup-wizard')
-            ->toContain("@slotRender('school.identity')")
+            ->toContain("@slotRender('school-manager')")
             ->toContain('text-4xl');
     });
 });
