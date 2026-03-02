@@ -52,10 +52,10 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-101** | Installation Wizard | BP-SYS-F101 | `SYS` | 🔵 | SYRS-NF-501, SYRS-NF-701 |
-| **SYRS-F-102** | Setup Protection | BP-SYS-F102 | `SYS` | 🔵 | SYRS-NF-502, SYRS-NF-504 |
+| **SYRS-F-101** | Installation Wizard | BP-SYS-F101 | `SYS` | 🟢 | SYRS-NF-501, SYRS-NF-701 |
+| **SYRS-F-102** | Setup Protection | BP-SYS-F102 | `SYS` | 🟢 | SYRS-NF-502, SYRS-NF-504 |
 | **SYRS-F-201** | Unified Profile | BP-ID-F201 | `ID` | 🟢 | SYRS-NF-503, SYRS-NF-504 |
-| **SYRS-F-202** | Academic Scoping | BP-ORG-F202 | `ORG` | 🔵 | SYRS-NF-601 |
+| **SYRS-F-202** | Academic Scoping | BP-ORG-F202 | `ORG` | 🟢 | SYRS-NF-601 |
 | **SYRS-F-203** | Hierarchical Account Creation | BP-ID-F203 | `ID` | 🟢 | SYRS-NF-502 |
 
 ---
@@ -64,10 +64,10 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-301** | Pre-Placement Checklist | BP-REG-F301 | `REG` | 🔴 | SYRS-NF-601 |
-| **SYRS-F-302** | Slot Atomic Integrity | BP-PLC-F302 | `PLC` | 🔴 | SYRS-NF-601, SYRS-NF-701 |
-| **SYRS-F-303** | Digital Guidance | BP-OPR-F303 | `OPR` | 🟡 | SYRS-NF-403 |
-| **SYRS-F-304** | Task Management | BP-OPR-F304 | `OPR` | 🔴 | SYRS-NF-702 |
+| **SYRS-F-301** | Pre-Placement Checklist | BP-REG-F301 | `REG` | 🟢 | SYRS-NF-601 |
+| **SYRS-F-302** | Slot Atomic Integrity | BP-PLC-F302 | `PLC` | 🟢 | SYRS-NF-601, SYRS-NF-701 |
+| **SYRS-F-303** | Digital Guidance | BP-OPR-F303 | `OPR` | 🟢 | SYRS-NF-403 |
+| **SYRS-F-304** | Task Management | BP-OPR-F304 | `OPR` | 🟢 | SYRS-NF-702 |
 
 **Special Enforcement for SYRS-F-302:** Blueprint must explicitly document:
 
@@ -81,11 +81,11 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-401** | Temporal Presence | BP-OPR-F401 | `OPR` | 🔴 | SYRS-NF-401 |
-| **SYRS-F-402** | Absence Orchestration | BP-OPR-F402 | `OPR` | 🔴 | SYRS-NF-502 |
-| **SYRS-F-403** | Dual-Supervision Journals | BP-OPR-F403 | `OPR` | 🔴 | SYRS-NF-502, SYRS-NF-503 |
-| **SYRS-F-404** | Forensic Evidence | BP-OPR-F404 | `OPR` | 🔴 | SYRS-NF-503 |
-| **SYRS-F-405** | On-site Monitoring | BP-OPR-F405 | `OPR` | 🔴 | SYRS-NF-701 |
+| **SYRS-F-401** | Temporal Presence | BP-OPR-F401 | `OPR` | 🟢 | SYRS-NF-401 |
+| **SYRS-F-402** | Absence Orchestration | BP-OPR-F402 | `OPR` | 🟢 | SYRS-NF-502 |
+| **SYRS-F-403** | Dual-Supervision Journals | BP-OPR-F403 | `OPR` | 🟢 | SYRS-NF-502, SYRS-NF-503 |
+| **SYRS-F-404** | Forensic Evidence | BP-OPR-F404 | `OPR` | 🟢 | SYRS-NF-503 |
+| **SYRS-F-405** | On-site Monitoring | BP-OPR-F405 | `OPR` | 🟢 | SYRS-NF-701 |
 
 ---
 
@@ -93,11 +93,11 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-103** | Authoritative Reporting | BP-DOC-F103 | `DOC` | 🟡 | SYRS-NF-503 |
-| **SYRS-F-501** | Rubric-Based Evaluation | BP-EVAL-F501 | `EVAL` | 🔴 | SYRS-NF-702 |
-| **SYRS-F-502** | Compliance Automation | BP-EVAL-F502 | `EVAL` | 🔴 | SYRS-NF-702 |
-| **SYRS-F-503** | Readiness Auditing | BP-EVAL-F503 | `EVAL` | 🔴 | SYRS-NF-701 |
-| **SYRS-F-504** | Visual Analytics | BP-EVAL-F504 | `EVAL` | 🔴 | SYRS-NF-401 |
+| **SYRS-F-103** | Authoritative Reporting | BP-DOC-F103 | `DOC` | 🟢 | SYRS-NF-503 |
+| **SYRS-F-501** | Rubric-Based Evaluation | BP-EVAL-F501 | `EVAL` | 🟢 | SYRS-NF-702 |
+| **SYRS-F-502** | Compliance Automation | BP-EVAL-F502 | `EVAL` | 🟢 | SYRS-NF-702 |
+| **SYRS-F-503** | Readiness Auditing | BP-EVAL-F503 | `EVAL` | 🟢 | SYRS-NF-701 |
+| **SYRS-F-504** | Visual Analytics | BP-EVAL-F504 | `EVAL` | 🟢 | SYRS-NF-401 |
 
 ---
 
@@ -164,7 +164,7 @@ all SyRS-NF have their own dedicated architectural blueprint.
 | **Modular Construction** | `modular-construction-guide.md` | Modular Invariants (SRP) |
 | **Development Tooling** | `development-tooling.md` | Life-Cycle Orchestration |
 | **Engineering Standards** | `engineering-standards.md` | 3S Doctrine Enforcement |
-| **Conflict Resolution** | `conflict-resolution-policy.md` | Architectural Decisioning |
+| **Conflict Resolution** | `conflict-resolution-policy.md" | Architectural Decisioning |
 
 ---
 

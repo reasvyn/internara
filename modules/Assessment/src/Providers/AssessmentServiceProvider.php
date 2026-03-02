@@ -56,6 +56,7 @@ class AssessmentServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Assessment\Services\Contracts\AssessmentService::class => \Modules\Assessment\Services\AssessmentService::class,
+            \Modules\Assessment\Services\Contracts\AnalyticsService::class => \Modules\Assessment\Services\AnalyticsService::class,
             \Modules\Assessment\Services\Contracts\CertificateService::class => \Modules\Assessment\Services\CertificateService::class,
             \Modules\Assessment\Services\Contracts\ComplianceService::class => \Modules\Assessment\Services\ComplianceService::class,
             \Modules\Assessment\Services\Contracts\CompetencyService::class => \Modules\Assessment\Services\CompetencyService::class,

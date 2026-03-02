@@ -8,6 +8,7 @@ return [
         'no_data' => 'No competency data recorded yet.',
     ],
     'evaluation' => [
+        'rubric_title' => 'Competency Assessment',
         'attendance' => 'Attendance',
         'journal_completion' => 'Journal Completion',
         'compliance_score' => 'Compliance Score',
@@ -18,5 +19,6 @@ return [
         'date' => 'Date',
         'days' => 'days',
         'entries' => 'entries',
+        'submit_action' => 'Submit Evaluation',
     ],
 ];
