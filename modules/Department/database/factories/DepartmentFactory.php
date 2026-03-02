@@ -20,6 +20,7 @@ class DepartmentFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'name' => $this->faker->unique()->sentence(2),
             'description' => $this->faker->paragraph(3),
             'school_id' => app(SchoolService::class)->factory(),

@@ -17,4 +17,4 @@ test('company service should extend EloquentQuery')
 
 test('placement models should be isolated')
     ->expect('Modules\Internship\Models\InternshipPlacement')
-    ->not->toBeUsedOutside(['Modules\Internship', 'Modules\Shared']);
+    ->toOnlyBeUsedIn(['Modules\Internship', 'Modules\Shared']);

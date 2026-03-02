@@ -77,7 +77,8 @@ class AppTestCommand extends Command
 
         $startTime = microtime(true);
         $missing = [];
-        $targets = $discovery->identify($this->argument('modules'), (bool) $this->option('dirty'), $missing);
+        $requestedModules = array_map('strtolower', $this->argument('modules'));
+        $targets = $discovery->identify($requestedModules, (bool) $this->option('dirty'), $missing);
 
         if (! empty($missing)) {
             $this->newLine();
@@ -135,10 +136,11 @@ class AppTestCommand extends Command
                     $segmentOutput = '';
                     $segmentError = '';
 
-                    $success = $this->components->task("Segment ({$currentSegment}/{$totalSegments}): {$segmentLabel}", function () use (
-                        $executor, $testPath, &$segmentOutput, &$segmentError
+                    $success = false;
+                    $this->components->task("Segment ({$currentSegment}/{$totalSegments}): {$segmentLabel}", function () use (
+                        $executor, $testPath, &$segmentOutput, &$segmentError, &$success
                     ) {
-                        return $executor->execute(
+                        $success = $executor->execute(
                             $testPath,
                             (bool) $this->option('parallel'),
                             !$this->option('continue-on-failure'),
@@ -146,6 +148,7 @@ class AppTestCommand extends Command
                             $segmentOutput,
                             $segmentError
                         );
+                        return $success;
                     });
 
                     $session->record($target['label'], $sub, $success, $segmentOutput, $segmentError);

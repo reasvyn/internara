@@ -19,6 +19,7 @@ class SchoolFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'institutional_code' => $this->faker->unique()->numerify('########'), // 8 digits
             'name' => $this->faker->company,
             'address' => $this->faker->address,

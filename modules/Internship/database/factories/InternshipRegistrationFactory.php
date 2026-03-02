@@ -23,6 +23,7 @@ class InternshipRegistrationFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'internship_id' => app(InternshipService::class)->factory(),
             'placement_id' => app(InternshipPlacementService::class)->factory(),
             'student_id' => app(UserService::class)->factory(),

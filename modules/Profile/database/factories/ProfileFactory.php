@@ -28,6 +28,7 @@ class ProfileFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'user_id' => app(UserService::class)->factory(),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
