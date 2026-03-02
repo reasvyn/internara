@@ -49,8 +49,6 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
      */
     public function create(array $data): School
     {
-        \Illuminate\Support\Facades\Gate::authorize('create', School::class);
-
         if (isset($data['institutional_code']) && strlen((string) $data['institutional_code']) < 3) {
             throw new AppException(
                 userMessage: 'school::exceptions.invalid_institutional_code',

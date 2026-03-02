@@ -23,6 +23,11 @@ class AccountSetup extends Component
     public ?string $turnstile = null;
 
     /**
+     * Honeypot field for bot protection.
+     */
+    public ?string $contact_me = null;
+
+    /**
      * Boots the component and injects the SetupService.
      *
      * @param SetupService $setupService The service for handling setup logic.
@@ -53,6 +58,14 @@ class AccountSetup extends Component
     #[On('super_admin_registered')]
     public function handleSuperAdminRegistered(): void
     {
+        $this->validate([
+            'turnstile' => [
+                config('services.cloudflare.turnstile.site_key') ? 'required' : 'nullable',
+                new \Modules\Shared\Rules\Turnstile,
+            ],
+            'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+        ]);
+
         $this->nextStep();
     }
 

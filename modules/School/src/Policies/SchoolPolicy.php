@@ -8,6 +8,11 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\School\Models\School;
 use Modules\User\Models\User;
 
+/**
+ * Class SchoolPolicy
+ * 
+ * Controls access to institutional metadata.
+ */
 class SchoolPolicy
 {
     use HandlesAuthorization;
@@ -17,67 +22,40 @@ class SchoolPolicy
      */
     public function viewAny(?User $user): bool
     {
-        if ($this->isSetupAuthorized()) {
-            return true;
-        }
-
-        return $user?->hasPermissionTo('school.view') || $user?->hasPermissionTo('school.manage');
+        // Publicly visible or requires basic access
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, School|string|null $school = null): bool
+    public function view(?User $user, School $school): bool
     {
-        if ($this->isSetupAuthorized()) {
-            return true;
-        }
-
-        return $user?->hasPermissionTo('school.view') || $user?->hasPermissionTo('school.manage');
+        return true;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(?User $user, School|string|null $school = null): bool
+    public function create(User $user): bool
     {
-        if ($this->isSetupAuthorized()) {
-            return true;
-        }
-
-        return $user?->hasPermissionTo('school.manage') ?? false;
+        return $user->hasPermissionTo('school.manage');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(?User $user, School|string|null $school = null): bool
+    public function update(User $user, School $school): bool
     {
-        if ($this->isSetupAuthorized()) {
-            return true;
-        }
-
-        return $user?->hasPermissionTo('school.update') || $user?->hasPermissionTo('school.manage');
+        return $user->hasPermissionTo('school.manage');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(?User $user, School|string|null $school = null): bool
+    public function delete(User $user, School $school): bool
     {
-        if ($this->isSetupAuthorized()) {
-            return true;
-        }
-
-        return $user?->hasPermissionTo('school.manage') ?? false;
-    }
-
-    /**
-     * Check if the current session is an authorized setup session.
-     */
-    protected function isSetupAuthorized(): bool
-    {
-        return session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
-            true;
+        // Institutional records are rarely deleted, but managed by authorized personnel.
+        return $user->hasPermissionTo('school.manage');
     }
 }

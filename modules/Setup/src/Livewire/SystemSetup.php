@@ -37,6 +37,11 @@ class SystemSetup extends Component
     public ?string $turnstile = null;
 
     /**
+     * Honeypot field for bot protection.
+     */
+    public ?string $contact_me = null;
+
+    /**
      * Boots the component and injects the SetupService.
      */
     public function boot(SetupService $setupService): void
@@ -108,7 +113,11 @@ class SystemSetup extends Component
     public function save(): void
     {
         $validated = $this->validate([
-            'turnstile' => ['required', new Turnstile],
+            'turnstile' => [
+                config('services.cloudflare.turnstile.site_key') ? 'required' : 'nullable',
+                new Turnstile,
+            ],
+            'contact_me' => [new \Modules\Shared\Rules\Honeypot],
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',
             'mail_username' => 'nullable|string',

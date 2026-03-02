@@ -22,6 +22,11 @@ class SchoolSetup extends Component
     public ?string $turnstile = null;
 
     /**
+     * Honeypot field for bot protection.
+     */
+    public ?string $contact_me = null;
+
+    /**
      * Initializes the component.
      */
     public function boot(SetupService $setupService): void
@@ -50,6 +55,14 @@ class SchoolSetup extends Component
     #[On('school_saved')]
     public function handleSchoolSaved(): void
     {
+        $this->validate([
+            'turnstile' => [
+                config('services.cloudflare.turnstile.site_key') ? 'required' : 'nullable',
+                new \Modules\Shared\Rules\Turnstile,
+            ],
+            'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+        ]);
+
         $this->nextStep();
     }
 
