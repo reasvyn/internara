@@ -42,7 +42,7 @@ class ProtectSetupRoute
             if (! $isAuthorized || empty($storedToken)) {
                 return abort(
                     403,
-                    'Unauthorized setup access. Please use the signed link provided by the CLI.',
+                    __('setup::exceptions.unauthorized_setup_access'),
                 );
             }
         }

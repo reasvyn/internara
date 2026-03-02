@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'not_found' => ':record yang diminta tidak ditemukan.',
+    'record_not_found' => ':record yang diminta tidak ditemukan.',
     'unauthorized' => 'Anda tidak memiliki izin untuk melakukan tindakan ini.',
     'forbidden' => 'Akses ke sumber daya ini dilarang.',
     'internal_error' => 'Terjadi kesalahan internal pada server.',

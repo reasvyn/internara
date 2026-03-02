@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'not_found' => 'The requested :record was not found.',
+    'record_not_found' => 'The requested :record was not found.',
     'unauthorized' => 'You do not have permission to perform this action.',
     'forbidden' => 'Access to this resource is forbidden.',
     'internal_error' => 'An internal server error occurred.',
