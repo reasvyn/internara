@@ -21,6 +21,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Grant full access during installation phase if authorized via session
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $isAppInstalled = setting('app_installed', false);
+
+            if (! $isAppInstalled && $isSetupAuthorized) {
+                return true;
+            }
+        });
+
         if (is_debug_mode()) {
             $this->app
                 ->make('translator')

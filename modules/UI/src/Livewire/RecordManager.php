@@ -122,6 +122,12 @@ abstract class RecordManager extends Component
     #[Computed]
     public function records(): LengthAwarePaginator
     {
+        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+
+        if ($isSetupAuthorized) {
+            $this->service->withoutAuthorization();
+        }
+
         // 1. Get base query from Server (Service Layer)
         // We only pass 'filters' (scoping), not UI-level search/sort.
         $query = $this->service->query($this->filters);
