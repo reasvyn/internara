@@ -6,6 +6,7 @@ namespace Modules\Support\Testing\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Modules\Support\Testing\Support\TestSessionManager;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
 
@@ -41,6 +42,10 @@ class AppTestCommand extends Command
                             {--feature-only : Run only feature tests}
                             {--browser-only : Run only browser tests}
                             {--filter= : Filter tests by name (Pest filter)}
+                            {--session= : Specify a custom session ID for the test run}
+                            {--continue : Resume the latest test session, skipping successful segments}
+                            {--report : Display the comprehensive report from the current or latest session}
+                            {--clear-sessions : Remove all persistent testing session data}
                             {--l|list : Display the identified test segments without executing them}';
 
     /**
@@ -49,10 +54,27 @@ class AppTestCommand extends Command
     protected $description = 'Orchestrate sophisticated modular verification with memory isolation';
 
     /**
+     * The test session manager instance.
+     */
+    protected TestSessionManager $session;
+
+    /**
      * Execute the console command.
      */
     public function handle(): int
     {
+        if ($this->option('clear-sessions')) {
+            TestSessionManager::clearAll();
+            $this->components->info('Persistent testing sessions cleared.');
+            return self::SUCCESS;
+        }
+
+        $this->session = new TestSessionManager($this->option('session'));
+        
+        if ($this->option('report')) {
+            return $this->displaySessionReport();
+        }
+
         $startTime = microtime(true);
         $requestedModules = array_map('strtolower', $this->argument('modules'));
 
@@ -85,6 +107,7 @@ class AppTestCommand extends Command
 
         $this->newLine();
         $this->components->info(config('app.name', 'Internara').' Advanced Verification Engine');
+        $this->components->detail('Session ID', $this->session->getSessionId());
 
         if ($this->option('list')) {
             $this->displayTargets($targets);
@@ -104,7 +127,6 @@ class AppTestCommand extends Command
                 'Feature' => '-',
                 'Browser' => '-',
                 'total' => 0.0,
-                'memory' => 0,
             ];
 
             $hasTests = false;
@@ -116,7 +138,13 @@ class AppTestCommand extends Command
                 if (File::isDirectory($testPath)) {
                     if ($this->shouldSkipSegment($sub)) {
                         $row[$sub] = '<fg=yellow>SKIP</>';
+                        continue;
+                    }
 
+                    // Handle Session Persistence (Skip passed segments if --continue)
+                    if ($this->option('continue') && $this->session->isPassed($target['label'], $sub)) {
+                        $row[$sub] = '<fg=green>PASS</> (Saved)';
+                        $currentSegment++;
                         continue;
                     }
 
@@ -138,6 +166,9 @@ class AppTestCommand extends Command
                         $segmentError,
                     );
 
+                    // Persist Result to Session
+                    $this->session->record($target['label'], $sub, $success, $segmentOutput, $segmentError);
+
                     $duration = microtime(true) - $segmentStart;
                     $row[$sub] = number_format($duration, 2).'s';
                     $row['total'] += $duration;
@@ -155,19 +186,62 @@ class AppTestCommand extends Command
                             $this->recordResult($results, $row);
                             break 2;
                         }
+                    } else {
+                        $row[$sub] = '<fg=green>PASS</> (' . number_format($duration, 2) . 's)';
                     }
                 }
             }
 
-            if ($hasTests) {
-                $this->recordResult($results, $row);
-            }
+            $this->recordResult($results, $row);
         }
 
         $totalDuration = microtime(true) - $startTime;
         $this->displaySummary($results, $failures, $totalDuration, $overallSuccess);
 
         return $overallSuccess ? self::SUCCESS : self::FAILURE;
+    }
+
+    /**
+     * Display a comprehensive report from the current test session.
+     */
+    protected function displaySessionReport(): int
+    {
+        $sessionResults = $this->session->getResults();
+        
+        if (empty($sessionResults)) {
+            $this->components->warn('No results found for session: ' . $this->session->getSessionId());
+            return self::SUCCESS;
+        }
+
+        $this->newLine();
+        $this->components->info('Module-Aware Testing Session Report');
+        $this->components->detail('Session ID', $this->session->getSessionId());
+
+        $grouped = [];
+        $totalSuccess = true;
+
+        foreach ($sessionResults as $result) {
+            $module = $result['module'];
+            if (!isset($grouped[$module])) {
+                $grouped[$module] = ['Arch' => '-', 'Unit' => '-', 'Feature' => '-', 'Browser' => '-'];
+            }
+            
+            $status = $result['success'] ? '<fg=green>PASS</>' : '<fg=red>FAIL</>';
+            $grouped[$module][$result['type']] = $status;
+            
+            if (!$result['success']) {
+                $totalSuccess = false;
+            }
+        }
+
+        $rows = [];
+        foreach ($grouped as $module => $types) {
+            $rows[] = [$module, $types['Arch'], $types['Unit'], $types['Feature'], $types['Browser']];
+        }
+
+        $this->table(['Module', 'Arch', 'Unit', 'Feature', 'Browser'], $rows);
+
+        return $totalSuccess ? self::SUCCESS : self::FAILURE;
     }
 
     /**
@@ -205,9 +279,6 @@ class AppTestCommand extends Command
 
     /**
      * Identifies all testable targets, supporting git diff for "dirty" detection.
-     *
-     * @param array<string> $requestedModules
-     * @param array<string> $missing
      */
     protected function identifyTargets(array $requestedModules, ?array &$missing = []): array
     {
@@ -359,7 +430,7 @@ class AppTestCommand extends Command
             $row['Unit'],
             $row['Feature'],
             $row['Browser'],
-            number_format($row['total'], 2).'s',
+            number_format($row['total'] ?? 0, 2).'s',
         ];
     }
 
@@ -481,22 +552,15 @@ class AppTestCommand extends Command
                 if (! empty($failure['output'])) {
                     $this->line("<fg=gray>{$failure['output']}</>");
                 }
-                $this->newLine();
             }
         }
 
-        $this->newLine();
         if ($success) {
-            $this->components->info(
-                'VERIFICATION PASSED: System configuration matches authoritative specifications.',
-            );
-            $this->components->twoColumnDetail('Baseline Promotion', '<fg=green>AUTHORIZED</>');
+            $this->newLine();
+            $this->components->info('All test segments passed successfully.');
         } else {
-            $this->components->error(
-                'VERIFICATION FAILED: Structural or behavioral defects identified.',
-            );
-            $this->components->twoColumnDetail('Baseline Promotion', '<fg=red>REJECTED</>');
+            $this->newLine();
+            $this->components->error('Some test segments failed. Use --continue to resume after fixing.');
         }
-        $this->newLine();
     }
 }
