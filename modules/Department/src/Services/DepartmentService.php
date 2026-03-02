@@ -42,15 +42,13 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
 
     /**
      * {@inheritdoc}
+     * 
+     * Optimization Audit: 
+     * Removed manual Gate::authorize to prevent double check and premature skipAuthorization reset.
+     * Delegated all persistence and authorization orchestration to EloquentQuery parent.
      */
     public function create(array $data): Department
     {
-        if (! $this->skipAuthorization) {
-            \Illuminate\Support\Facades\Gate::authorize('create', Department::class);
-        }
-
-        $this->skipAuthorization = false;
-
         $data['school_id'] = $this->ensureSchoolId($data['school_id'] ?? null);
 
         /** @var Department */
@@ -62,12 +60,6 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
      */
     public function update(mixed $id, array $data): Department
     {
-        if (! $this->skipAuthorization) {
-            $model = $this->findOrFail($id);
-            \Illuminate\Support\Facades\Gate::authorize('update', $model);
-        }
-
-        // Parent EloquentQuery will handle the rest and reset skipAuthorization
         if (isset($data['school_id'])) {
             $this->validateSchool($data['school_id']);
         }
@@ -81,19 +73,6 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
      */
     public function save(array $attributes, array $values = []): Department
     {
-        if (! $this->skipAuthorization) {
-            $searchAttributes = array_filter($attributes, fn ($val) => ! empty($val));
-            $model = ! empty($searchAttributes)
-                ? $this->model->newQuery()->where($searchAttributes)->first()
-                : null;
-
-            if ($model) {
-                \Illuminate\Support\Facades\Gate::authorize('update', $model);
-            } else {
-                \Illuminate\Support\Facades\Gate::authorize('create', $this->model);
-            }
-        }
-
         $schoolId = $attributes['school_id'] ?? ($values['school_id'] ?? null);
 
         if ($schoolId) {

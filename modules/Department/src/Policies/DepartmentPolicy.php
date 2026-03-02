@@ -8,16 +8,35 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Department\Models\Department;
 use Modules\User\Models\User;
 
+/**
+ * Class DepartmentPolicy
+ * 
+ * Controls access to Department resources.
+ */
 class DepartmentPolicy
 {
     use HandlesAuthorization;
+
+    /**
+     * Internal: Check if the user has the master management permission.
+     */
+    protected function canManage(User $user): bool
+    {
+        // 1. SuperAdmin bypass
+        if ($user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value)) {
+            return true;
+        }
+
+        // 2. Standard permission check
+        return $user->hasPermissionTo('department.manage');
+    }
 
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('department.view');
+        return $this->canManage($user) || $user->hasPermissionTo('department.view');
     }
 
     /**
@@ -25,7 +44,7 @@ class DepartmentPolicy
      */
     public function view(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('department.view');
+        return $this->viewAny($user);
     }
 
     /**
@@ -33,7 +52,7 @@ class DepartmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('department.create');
+        return $this->canManage($user);
     }
 
     /**
@@ -41,7 +60,7 @@ class DepartmentPolicy
      */
     public function update(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('department.update');
+        return $this->canManage($user);
     }
 
     /**
@@ -49,6 +68,6 @@ class DepartmentPolicy
      */
     public function delete(User $user, Department $department): bool
     {
-        return $user->hasPermissionTo('department.delete');
+        return $this->canManage($user);
     }
 }

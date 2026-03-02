@@ -41,7 +41,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
-            prepend: [\Modules\Setup\Http\Middleware\RequireSetupAccess::class],
+            prepend: [
+                \Modules\Setup\Http\Middleware\RequireSetupAccess::class,
+                \Modules\Setup\Http\Middleware\BypassSetupAuthorization::class,
+            ],
             append: [\Modules\Core\Localization\Http\Middleware\SetLocale::class],
         );
         $middleware->alias([
