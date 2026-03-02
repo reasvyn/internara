@@ -4,9 +4,15 @@ This document constitutes the formal **System Requirements Specification (SyRS)*
 project, standardized according to ISO/IEC 29148. It establishes the authoritative baseline for all
 developmental, architectural, and verification activities.
 
-> **Governance Mandate:** This document is the **Single Source of Truth (SSoT)**. All technical
-> modifications, architectural designs, and software artifacts must demonstrate traceability to the
-> requirements defined herein.
+> **Authority & Governance Mandate:** This document is the **Authoritative Single Source of Truth
+> (SSoT)**. It must NOT be modified freely or without explicit authorization. Any modification to
+> the requirements or structure defined herein requires a formal architectural review.
+>
+> **ID Permanency & Backward Compatibility:** All **Requirement IDs** (e.g., `SYRS-F-101`) and
+> **Blueprint IDs** (e.g., `BP-SYS-F101`) are **Permanent and Immutable**. Once defined and
+> referenced in the baseline, these identifiers must NOT be changed. Modifying an existing ID is
+> strictly classified as a **Backward Incompatibility** violation and is prohibited to preserve
+> end-to-end traceability.
 
 ---
 

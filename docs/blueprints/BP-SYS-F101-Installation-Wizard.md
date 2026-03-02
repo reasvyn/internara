@@ -160,7 +160,7 @@ artifacts must be established and maintained.
   Super-Admin access post-setup.
 
 ### 7.3 Traceability Artifacts
-- **Requirement Mapping**: Ensure the `docs/software-roadmap.md` reflects the current mapping 
+- **Requirement Mapping**: Ensure the `docs/traceability-matrix.md` reflects the current mapping
   from `SYRS-F-101` to this blueprint.
 - **V&V Evidence**: Link the results of the 3S Audit and Test Coverage reports to the 
   `verification-and-validation-report.md`.

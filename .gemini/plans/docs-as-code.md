@@ -108,7 +108,7 @@ DevOps & Operations:
 
 Planning:
 
-- docs/software-roadmap.md
+- docs/traceability-matrix.md
 
 ---
 
@@ -121,7 +121,6 @@ COMMUNITY BASELINE (Mandatory):
 - CONTRIBUTING.md
 - CODE_OF_CONDUCT.md
 - SECURITY.md
-- CHANGELOG.md
 
 ENTERPRISE OPEN SOURCE (Recommended):
 
@@ -129,7 +128,7 @@ ENTERPRISE OPEN SOURCE (Recommended):
 - MAINTAINERS.md
 - SUPPORT.md
 - versioning-policy.md
-- software-roadmap.md
+- traceability-matrix.md
 - software-bill-of-materials.md
 - vulnerability-management.md
 
