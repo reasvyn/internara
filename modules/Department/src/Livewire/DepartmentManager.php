@@ -65,7 +65,6 @@ class DepartmentManager extends RecordManager
     {
         return [
             ['key' => 'name', 'label' => __('department::ui.name'), 'sortable' => true],
-            ['key' => 'school.name', 'label' => __('school::ui.title')],
             ['key' => 'description', 'label' => __('ui::common.description')],
             [
                 'key' => 'created_at_formatted',
