@@ -240,14 +240,14 @@ trait ManagesRecords
                 }
 
                 $this->toggleModal(self::MODAL_FORM, false);
-                flash()->success(__('shared::messages.record_saved'));
+                flash()->success('shared::messages.record_saved');
                 $this->dispatch($this->getEventPrefix().':saved', exists: true);
             } catch (Throwable $e) {
                 if (is_debug_mode()) {
                     throw $e;
                 }
 
-                flash()->error(__('shared::messages.error_occurred'));
+                flash()->error('shared::messages.error_occurred');
             }
         }
     }
@@ -278,7 +278,7 @@ trait ManagesRecords
             if ($this->service->delete($id)) {
                 $this->toggleModal(self::MODAL_CONFIRM, false);
                 $this->recordId = null;
-                flash()->success(__('shared::messages.record_deleted'));
+                flash()->success('shared::messages.record_deleted');
                 $this->dispatch($this->getEventPrefix().':deleted', exists: $this->service->exists());
             }
         }

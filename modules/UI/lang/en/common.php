@@ -49,6 +49,7 @@ return [
     'download_template' => 'Download Template',
     'generated_at' => 'Generated at',
     'view_all' => 'View All',
+    'no_results' => 'No results found.',
     'delete_confirm' => 'Are you sure you want to delete this record?',
     'not_applicable' => 'N/A',
     'bulk_actions' => 'Bulk Actions',

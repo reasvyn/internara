@@ -20,7 +20,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     public function __construct(Department $model, protected SchoolService $schoolService)
     {
         $this->setModel($model);
-        $this->setSearchable(['name', 'school_id']);
+        $this->setSearchable(['name', 'school.name']);
         $this->setSortable(['name', 'created_at']);
     }
 

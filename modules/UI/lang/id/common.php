@@ -49,6 +49,7 @@ return [
     'download_template' => 'Unduh Templat',
     'generated_at' => 'Dibuat pada',
     'view_all' => 'Lihat Semua',
+    'no_results' => 'Data tidak ditemukan.',
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus data ini?',
     'not_applicable' => 'N/A',
     'bulk_actions' => 'Aksi Massal',

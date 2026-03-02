@@ -34,6 +34,9 @@ class DepartmentManager extends RecordManager
      */
     public function initialize(): void
     {
+        $this->searchable = ['name', 'school.name'];
+        $this->sortable = ['name', 'created_at'];
+
         $this->title = __('department::ui.title');
         $this->subtitle = __('department::ui.subtitle');
         $this->context = 'admin::ui.menu.departments';
@@ -68,6 +71,7 @@ class DepartmentManager extends RecordManager
                 'key' => 'created_at_formatted',
                 'label' => __('ui::common.created_at'),
                 'sort_by' => 'created_at',
+                'sortable' => true,
             ],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
