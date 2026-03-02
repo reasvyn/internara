@@ -66,12 +66,17 @@ class UserService extends EloquentQuery implements Contract
             $roles = Arr::wrap($userData['roles'] ?? [Role::STUDENT->value]);
             $status = $userData['status'] ?? User::STATUS_ACTIVE;
 
+            // Security: Prevent unauthorized SuperAdmin creation
+            if (in_array(Role::SUPER_ADMIN->value, $roles) && setting('app_installed', false)) {
+                Gate::authorize('assignRole', [User::class, Role::SUPER_ADMIN->value]);
+            }
+
             // Prepare Password
             $plainPassword = $userData['password'] ?? \Illuminate\Support\Str::password(16);
             $userData['password'] = $plainPassword;
 
             // Enforce hierarchical authority for user creation, except during initial setup
-            if (setting('app_installed', false)) {
+            if (setting('app_installed', false) && ! $this->skipAuthorization) {
                 Gate::authorize('create', [User::class, $roles]);
             }
 
@@ -101,13 +106,15 @@ class UserService extends EloquentQuery implements Contract
             // UNIFIED: Initialize & Update Profile for ALL user types
             $profile = $this->profileService->getByUserId($user->id);
             if (! empty($profileData)) {
-                // Bypass profile authorization during initial setup
-                if (! setting('app_installed', false)) {
+                // Bypass profile authorization during initial setup or if explicitly skipped
+                if (! setting('app_installed', false) || $this->skipAuthorization) {
                     $this->profileService->withoutAuthorization();
                 }
 
                 $this->profileService->update($profile->id, $profileData);
             }
+
+            $this->skipAuthorization = false;
 
             // Notify the new user
             $user->notify(new WelcomeUserNotification($plainPassword));
@@ -143,7 +150,9 @@ class UserService extends EloquentQuery implements Contract
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
-        Gate::authorize('update', $user);
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $user);
+        }
 
         if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             throw new AppException(
@@ -157,6 +166,7 @@ class UserService extends EloquentQuery implements Contract
             $currentStatus === User::STATUS_ACTIVE ? User::STATUS_INACTIVE : User::STATUS_ACTIVE;
 
         $user->setStatus($newStatus);
+        $this->skipAuthorization = false;
 
         return $user;
     }
@@ -172,7 +182,9 @@ class UserService extends EloquentQuery implements Contract
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
-        Gate::authorize('update', $user);
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $user);
+        }
 
         $roles = $data['roles'] ?? null;
         $status = $data['status'] ?? null;
@@ -180,6 +192,8 @@ class UserService extends EloquentQuery implements Contract
         unset($data['roles'], $data['status'], $data['profile']);
 
         if ($user->hasRole(Role::SUPER_ADMIN->value)) {
+            $this->skipAuthorization = false;
+
             return $this->superAdminService->update($id, $data);
         }
 
@@ -198,6 +212,8 @@ class UserService extends EloquentQuery implements Contract
         if ($status !== null) {
             $updatedUser->setStatus($status);
         }
+
+        $this->skipAuthorization = false;
 
         return $updatedUser;
     }
@@ -229,13 +245,20 @@ class UserService extends EloquentQuery implements Contract
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
         }
 
-        Gate::authorize('delete', $user);
+        if (! $this->skipAuthorization) {
+            Gate::authorize('delete', $user);
+        }
 
         if ($user->hasRole(Role::SUPER_ADMIN->value)) {
+            $this->skipAuthorization = false;
+
             return $this->superAdminService->delete($id, $force);
         }
 
-        return $this->withoutAuthorization()->parentDelete($id, $force);
+        $result = $this->withoutAuthorization()->parentDelete($id, $force);
+        $this->skipAuthorization = false;
+
+        return $result;
     }
 
     /**
