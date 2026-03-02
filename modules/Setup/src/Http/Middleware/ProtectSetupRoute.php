@@ -7,8 +7,8 @@ namespace Modules\Setup\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Setup\Services\Contracts\SetupService;
-use Modules\User\Services\Contracts\SuperAdminService;
 
 class ProtectSetupRoute
 {

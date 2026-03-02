@@ -11,7 +11,7 @@ use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\AccountSetup;
-use Modules\User\Services\Contracts\SuperAdminService;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 
 uses(LazilyRefreshDatabase::class);
 

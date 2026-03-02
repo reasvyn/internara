@@ -7,13 +7,12 @@ namespace Modules\Setup\Services;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Department\Services\Contracts\DepartmentService;
-use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Shared\Services\BaseService;
-use Modules\User\Services\Contracts\SuperAdminService;
 
 /**
  * Service implementation for handling the application setup process.

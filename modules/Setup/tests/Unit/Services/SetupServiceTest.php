@@ -11,7 +11,7 @@ use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\SetupService as Contract;
 use Modules\Setup\Services\SetupService;
-use Modules\User\Services\Contracts\SuperAdminService;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 
 describe('SetupService Unit Test', function () {
     beforeEach(function () {

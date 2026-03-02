@@ -22,7 +22,7 @@ use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Livewire\SystemSetup;
-use Modules\User\Services\Contracts\SuperAdminService;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 
 uses(LazilyRefreshDatabase::class);
 

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Session;
 use Modules\Setup\Events\SetupFinalized;
 use Modules\Setup\Services\SetupService;
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Setting\Services\Contracts\SettingService;
-use Modules\User\Services\Contracts\SuperAdminService;
+use Modules\Admin\Services\Contracts\SuperAdminService;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
 

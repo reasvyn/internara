@@ -49,41 +49,17 @@ class SuperAdminService extends EloquentQuery implements Contract
      */
     public function create(array $data): User
     {
-        // Enforce setup idempotency if app is not installed
-        if (! setting('app_installed', false)) {
-            return $this->save(['email' => $data['email'] ?? null], $data);
-        }
-
-        if ($this->getSuperAdmin()) {
+        // STRICT: SuperAdmin registration is ONLY allowed during initial setup.
+        if (setting('app_installed', false)) {
             throw new AppException(
-                userMessage: 'auth::exceptions.super_admin_already_exists',
-                code: Response::HTTP_CONFLICT,
+                userMessage: 'auth::exceptions.registration_failed',
+                logMessage: 'Attempted to register SuperAdmin after application installation.',
+                code: Response::HTTP_FORBIDDEN,
             );
         }
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
-            $plainPassword = $data['password'] ?? \Illuminate\Support\Str::password(16);
-            $data['password'] = $plainPassword;
-            $data['email_verified_at'] = now();
-
-            // Create record without user-level authorization checks
-            /** @var User $user */
-            $user = $this->withoutAuthorization()->model->newQuery()->create(
-                Arr::only($data, $this->model->getFillable())
-            );
-
-            $user->assignRole(Role::SUPER_ADMIN->value);
-            $user->setStatus(User::STATUS_ACTIVE);
-
-            // Handle Avatar if provided
-            if (isset($data['avatar_file'])) {
-                $user->changeAvatar($data['avatar_file']);
-            }
-
-            $user->notify(new WelcomeUserNotification($plainPassword));
-
-            return $user;
-        });
+        // Enforce setup idempotency: update existing if found by email
+        return $this->save(['email' => $data['email'] ?? null], $data);
     }
 
     /**
@@ -101,16 +77,25 @@ class SuperAdminService extends EloquentQuery implements Contract
             );
         }
 
+        // Security: Enforce standard policy if the app is already installed
+        if (setting('app_installed', false) && ! $this->skipAuthorization) {
+            \Illuminate\Support\Facades\Gate::authorize('update', $superAdmin);
+        }
+
+        $this->skipAuthorization = false;
+
         return \Illuminate\Support\Facades\DB::transaction(function () use ($superAdmin, $data) {
-            // Protect role and status from unauthorized changes via this service
+            // Protect role and status from unauthorized changes
             unset($data['roles'], $data['status']);
 
-            if (isset($data['password']) && empty($data['password'])) {
+            if (array_key_exists('password', $data) && empty($data['password'])) {
                 unset($data['password']);
             }
 
-            // Perform update bypassing standard UserPolicy
-            $this->withoutAuthorization()->update($superAdmin->id, $data);
+            // Perform update using the underlying model query to bypass standard policies when needed
+            $this->model->newQuery()
+                ->where($this->model->getKeyName(), $superAdmin->id)
+                ->update(Arr::only($data, $this->model->getFillable()));
 
             if (isset($data['avatar_file'])) {
                 $superAdmin->changeAvatar($data['avatar_file']);
@@ -125,18 +110,21 @@ class SuperAdminService extends EloquentQuery implements Contract
      */
     public function save(array $attributes, array $values = []): User
     {
+        // STRICT: Save (updateOrCreate) is ONLY allowed during initial setup phase.
+        if (setting('app_installed', false)) {
+            throw new AppException(
+                userMessage: 'auth::exceptions.registration_failed',
+                code: Response::HTTP_FORBIDDEN,
+            );
+        }
+
         return \Illuminate\Support\Facades\DB::transaction(function () use ($attributes, $values) {
-            $isSetup = ! setting('app_installed', false);
-            
             // Filter only fillable attributes
             $data = array_merge($attributes, $values);
             $fillableData = Arr::only($data, $this->model->getFillable());
 
-            // If setup, allow promoting existing user to SuperAdmin
-            $query = $isSetup ? $this->model->newQuery() : $this->model->newQuery()->role(Role::SUPER_ADMIN->value);
-            
             /** @var User $user */
-            $user = $query->updateOrCreate($attributes, $fillableData);
+            $user = $this->model->newQuery()->updateOrCreate($attributes, $fillableData);
 
             if (! $user->hasRole(Role::SUPER_ADMIN->value)) {
                 $user->assignRole(Role::SUPER_ADMIN->value);
