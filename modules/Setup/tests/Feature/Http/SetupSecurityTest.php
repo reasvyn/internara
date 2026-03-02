@@ -9,6 +9,7 @@ use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setting\Services\Contracts\SettingService;
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);

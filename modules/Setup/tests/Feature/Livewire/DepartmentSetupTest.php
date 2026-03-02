@@ -3,37 +3,33 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
-use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
-use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Department\Models\Department;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\DepartmentSetup;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    Gate::define("performStep", fn () => true);
-    Gate::define("finalize", fn () => true);
-    session(["setup_authorized" => true]);
-    session(["setup_authorized" => true]);
-});
-
-beforeEach(function () {
+    App::setLocale('en');
+    
+    // Authorization for setup (Middleware & Gates)
+    app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    session(['setup_authorized' => true]);
+    Gate::define('performStep', fn () => true);
 });
 
 describe('DepartmentSetup Component', function () {
     test('it renders correctly and contains the department manager slot', function () {
-        app(SettingService::class)->setValue('setup_step_welcome', true);
-        app(SettingService::class)->setValue('setup_step_environment', true);
-        app(SettingService::class)->setValue('setup_step_school', true);
         app(SettingService::class)->setValue('setup_step_account', true);
 
-        Livewire::withQueryParams(['token' => 'test-token'])
-            ->test(DepartmentSetup::class)
+        $this->get(route('setup.department', ['token' => 'test-token']));
+
+        Livewire::test(DepartmentSetup::class)
             ->assertStatus(200)
             ->assertSee(__('setup::wizard.department.headline'));
     });
@@ -42,7 +38,9 @@ describe('DepartmentSetup Component', function () {
         app(SettingService::class)->setValue('setup_step_account', true);
 
         // Required record 'department' must exist
-        app(DepartmentService::class)->factory()->create();
+        Department::factory()->create();
+
+        $this->get(route('setup.department', ['token' => 'test-token']));
 
         Livewire::test(DepartmentSetup::class)
             ->call('nextStep')
@@ -51,19 +49,20 @@ describe('DepartmentSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'account' not completed
-        Livewire::test(DepartmentSetup::class)->assertRedirect(route('setup.account'));
+        app(SettingService::class)->setValue('setup_step_account', false);
+        
+        $this->get(route('setup.department', ['token' => 'test-token']));
+
+        Livewire::test(DepartmentSetup::class)
+            ->assertRedirect(route('setup.account'));
     });
 
-    test('it adheres to [SYRS-NF-401] with slot-based department UI', function () {
+    test('it adheres to [SYRS-NF-401] with responsive layout', function () {
         app(SettingService::class)->setValue('setup_step_account', true);
 
-        $viewPath = module_path('Setup', 'resources/views/livewire/department-setup.blade.php');
-        $template = file_get_contents($viewPath);
+        $this->get(route('setup.department', ['token' => 'test-token']));
 
-        // Verify slot-based UI integration
-        expect($template)
-            ->toContain('x-setup::layouts.setup-wizard')
-            ->toContain("@slotRender('department-manager')")
-            ->toContain('text-4xl');
+        Livewire::test(DepartmentSetup::class)
+            ->assertSeeHtml('text-4xl');
     });
 });

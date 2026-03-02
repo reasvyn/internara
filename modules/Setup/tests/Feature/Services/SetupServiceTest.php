@@ -10,9 +10,10 @@ use Modules\Setup\Events\SetupFinalized;
 use Modules\Setup\Services\SetupService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\SetupService as SetupServiceContract;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Setting\Services\Contracts\SettingService;
 
 describe('SetupService Feature Test', function () {
     beforeEach(function () {
@@ -35,10 +36,9 @@ describe('SetupService Feature Test', function () {
         Event::fake();
         Session::start();
 
-        $schoolMock = (object) [
+        $schoolMock = \Modules\School\Models\School::factory()->make([
             'name' => 'SMK Internara Test',
-            'logo_url' => 'https://example.com/logo.png'
-        ];
+        ]);
 
         $this->schoolService->shouldReceive('getSchool')->once()->andReturn($schoolMock);
         

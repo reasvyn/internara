@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Arch;
 
 use Modules\Shared\Services\BaseService;
+use Modules\Setup\Services\Contracts\SetupService as SetupServiceContract;
 
 test('setup module should not depend on domain modules')
     ->expect('Modules\Setup')

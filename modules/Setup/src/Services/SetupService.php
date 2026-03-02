@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;

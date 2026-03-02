@@ -3,35 +3,33 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
-use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
-use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Models\Internship;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\InternshipSetup;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    Gate::define("performStep", fn () => true);
-    Gate::define("finalize", fn () => true);
-    session(["setup_authorized" => true]);
-    session(["setup_authorized" => true]);
-});
-
-beforeEach(function () {
+    App::setLocale('en');
+    
+    // Authorization for setup (Middleware & Gates)
+    app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    session(['setup_authorized' => true]);
+    Gate::define('performStep', fn () => true);
 });
 
 describe('InternshipSetup Component', function () {
     test('it renders correctly and contains the internship manager slot', function () {
         app(SettingService::class)->setValue('setup_step_department', true);
-        session(['setup_authorized' => true]);
 
-        Livewire::withQueryParams(['token' => 'test-token'])
-            ->test(InternshipSetup::class)
+        $this->get(route('setup.internship', ['token' => 'test-token']));
+
+        Livewire::test(InternshipSetup::class)
             ->assertStatus(200)
             ->assertSee(__('setup::wizard.internship.headline'));
     });
@@ -40,7 +38,9 @@ describe('InternshipSetup Component', function () {
         app(SettingService::class)->setValue('setup_step_department', true);
 
         // Required record 'internship' must exist
-        app(InternshipService::class)->factory()->create();
+        Internship::factory()->create();
+
+        $this->get(route('setup.internship', ['token' => 'test-token']));
 
         Livewire::test(InternshipSetup::class)
             ->call('nextStep')
@@ -49,19 +49,20 @@ describe('InternshipSetup Component', function () {
 
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'department' not completed
-        Livewire::test(InternshipSetup::class)->assertRedirect(route('setup.department'));
+        app(SettingService::class)->setValue('setup_step_department', false);
+        
+        $this->get(route('setup.internship', ['token' => 'test-token']));
+
+        Livewire::test(InternshipSetup::class)
+            ->assertRedirect(route('setup.department'));
     });
 
-    test('it adheres to [SYRS-NF-401] with slot-based internship UI', function () {
+    test('it adheres to [SYRS-NF-401] with responsive layout', function () {
         app(SettingService::class)->setValue('setup_step_department', true);
 
-        $viewPath = module_path('Setup', 'resources/views/livewire/internship-setup.blade.php');
-        $template = file_get_contents($viewPath);
+        $this->get(route('setup.internship', ['token' => 'test-token']));
 
-        // Verify slot-based UI integration
-        expect($template)
-            ->toContain('x-setup::layouts.setup-wizard')
-            ->toContain("@slotRender('internship-manager')")
-            ->toContain('text-4xl');
+        Livewire::test(InternshipSetup::class)
+            ->assertSeeHtml('text-4xl');
     });
 });

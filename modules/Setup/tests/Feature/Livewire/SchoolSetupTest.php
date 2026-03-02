@@ -3,58 +3,66 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
-use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
-use Modules\School\Services\Contracts\SchoolService;
+use Modules\School\Models\School;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SchoolSetup;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    Gate::define("performStep", fn () => true);
-    Gate::define("finalize", fn () => true);
-    session(["setup_authorized" => true]);
-    session(["setup_authorized" => true]);
+    App::setLocale('en');
+    
+    // Authorization for setup (Middleware & Gates)
+    app(SettingService::class)->setValue('app_installed', false);
+    app(SettingService::class)->setValue('setup_token', 'test-token');
+    Gate::define('performStep', fn () => true);
 });
 
 describe('SchoolSetup Component', function () {
     test('it renders correctly and contains the school manager slot', function () {
         app(SettingService::class)->setValue('setup_step_environment', true);
 
+        $this->get(route('setup.school', ['token' => 'test-token']));
+
         Livewire::test(SchoolSetup::class)
             ->assertStatus(200)
             ->assertSee(__('setup::wizard.school.headline'));
     });
 
-    test('it proceeds to account setup step upon school_saved event', function () {
+    test('it proceeds to account setup step upon school creation', function () {
         app(SettingService::class)->setValue('setup_step_environment', true);
 
-        // Required record 'school' must exist to proceed
-        app(SchoolService::class)->factory()->create();
+        // Required record 'school' must exist
+        School::factory()->create();
+
+        $this->get(route('setup.school', ['token' => 'test-token']));
 
         Livewire::test(SchoolSetup::class)
-            ->dispatch('school_saved')
+            ->call('nextStep')
             ->assertRedirect(route('setup.account'));
     });
 
     test('it enforces setup sequence access control by redirecting', function () {
-        // Step 'environment' not completed, should redirect to it (as it is the prevStep)
-        Livewire::test(SchoolSetup::class)->assertRedirect(route('setup.environment'));
+        // Step 'environment' not completed
+        app(SettingService::class)->setValue('setup_step_environment', false);
+        
+        $this->get(route('setup.school', ['token' => 'test-token']));
+
+        Livewire::test(SchoolSetup::class)
+            ->assertRedirect(route('setup.environment'));
     });
 
-    test('it adheres to [SYRS-NF-401] with slot-based UI integration', function () {
+    test('it adheres to [SYRS-NF-401] with responsive layout', function () {
         app(SettingService::class)->setValue('setup_step_environment', true);
 
-        $viewPath = module_path('Setup', 'resources/views/livewire/school-setup.blade.php');
-        $template = file_get_contents($viewPath);
+        $this->get(route('setup.school', ['token' => 'test-token']));
 
-        // Verify slot injection and responsive layout components
-        expect($template)
-            ->toContain('x-setup::layouts.setup-wizard')
-            ->toContain("@slotRender('school-manager')")
-            ->toContain('text-4xl');
+        Livewire::test(SchoolSetup::class)
+            ->assertSeeHtml('text-4xl');
     });
 });

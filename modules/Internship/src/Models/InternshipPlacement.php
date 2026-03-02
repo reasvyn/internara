@@ -78,35 +78,43 @@ class InternshipPlacement extends Model
     /**
      * The remaining available slots.
      */
-    public function remainingSlots(): int
+    protected function remainingSlots(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        return max(
-            0,
-            $this->capacity_quota -
-                $this->registrations()
-                    ->whereHas('statuses', function ($query) {
-                        $query->where('name', 'active')->whereIn('id', function ($sub) {
-                            $sub->selectRaw('max(id)')
-                                ->from('statuses')
-                                ->whereColumn('model_id', 'internship_registrations.id')
-                                ->where('model_type', InternshipRegistration::class);
-                        });
-                    })
-                    ->count(),
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: fn () => max(
+                0,
+                $this->capacity_quota -
+                    $this->registrations()
+                        ->whereHas('statuses', function ($query) {
+                            $query->where('name', 'active')->whereIn('id', function ($sub) {
+                                $sub->selectRaw('max(id)')
+                                    ->from('statuses')
+                                    ->whereColumn('model_id', 'internship_registrations.id')
+                                    ->where('model_type', InternshipRegistration::class);
+                            });
+                        })
+                        ->count(),
+            )
         );
     }
 
     /**
      * The utilization percentage.
      */
-    public function utilizationPercentage(): int
+    protected function utilizationPercentage(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
-        if ($this->capacity_quota === 0) {
-            return 0;
-        }
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: function () {
+                if ($this->capacity_quota === 0) {
+                    return 0;
+                }
 
-        $activeCount = $this->registrations()->whereRelation('statuses', 'name', 'active')->count();
+                $activeCount = $this->registrations()
+                    ->whereRelation('statuses', 'name', 'active')
+                    ->count();
 
-        return (int) min(100, round(($activeCount / $this->capacity_quota) * 100));
+                return (int) min(100, round(($activeCount / $this->capacity_quota) * 100));
+            }
+        );
     }
 }

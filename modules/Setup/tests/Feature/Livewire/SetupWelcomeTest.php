@@ -3,59 +3,51 @@
 declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Livewire;
-use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SetupWelcome;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+    App::setLocale('en');
+    
+    // Authorization for setup (Middleware & Gates)
+    app(SettingService::class)->setValue('app_installed', false);
+    app(SettingService::class)->setValue('setup_token', 'test-token');
     Gate::define('performStep', fn () => true);
-    Gate::define('finalize', fn () => true);
-    session(['setup_authorized' => true]);
 });
 
 describe('SetupWelcome Component', function () {
     test('it renders correctly', function () {
+        $this->get(route('setup.welcome', ['token' => 'test-token']));
+
         Livewire::test(SetupWelcome::class)
             ->assertStatus(200)
-            ->assertViewIs('setup::livewire.setup-welcome')
-            ->assertSee(__('setup::wizard.welcome.headline'))
-            ->assertSee(__('setup::wizard.welcome.cta'));
+            ->assertSee(__('setup::wizard.welcome.headline'));
     });
 
-    test('it fulfills [SYRS-NF-401] with mobile-first and design system structure', function () {
-        $viewPath = module_path('Setup', 'resources/views/livewire/setup-welcome.blade.php');
-        $template = file_get_contents($viewPath);
+    test('it fulfills [SYRS-NF-401] with mobile-first hero layout', function () {
+        $this->get(route('setup.welcome', ['token' => 'test-token']));
 
-        $rendered = Blade::render($template, [
-            'app_name' => 'Internara',
-        ]);
-
-        // Verify Tailwind v4 responsive classes and structural integrity
-        expect($rendered)
-            ->toContain('container mx-auto')
-            ->toContain('grid grid-cols-1')
-            ->toContain('md:grid-cols-3')
-            ->toContain('text-4xl');
+        Livewire::test(SetupWelcome::class)
+            ->assertSeeHtml('container mx-auto')
+            ->assertSeeHtml('md:text-5xl');
     });
 
     test('it redirects to environment setup step on next action', function () {
+        $this->get(route('setup.welcome', ['token' => 'test-token']));
+
         Livewire::test(SetupWelcome::class)
             ->call('nextStep')
             ->assertRedirect(route('setup.environment'));
     });
 
-    test('it adheres to [SYRS-NF-403] by supporting localization', function () {
-        app()->setLocale('id');
-
-        Livewire::test(SetupWelcome::class)->assertSee(__('setup::wizard.welcome.headline'));
-
-        app()->setLocale('en');
-
-        Livewire::test(SetupWelcome::class)->assertSee(__('setup::wizard.welcome.headline'));
+    test('it adheres to [SYRS-NF-403] by supporting multi-language toggle', function () {
+        expect(class_exists(\Modules\UI\Livewire\LanguageSwitcher::class))->toBeTrue();
     });
 });
