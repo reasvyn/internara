@@ -17,6 +17,7 @@ return [
     'cancel' => 'Batal',
     'confirm' => 'Konfirmasi',
     'search' => 'Cari',
+    'search_placeholder' => 'Cari data...',
     'name' => 'Nama',
     'description' => 'Deskripsi',
     'created_at' => 'Dibuat Pada',

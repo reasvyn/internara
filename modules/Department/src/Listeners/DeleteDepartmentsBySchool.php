@@ -22,11 +22,11 @@ class DeleteDepartmentsBySchool
      */
     public function handle(SchoolDeleted $event): void
     {
-        // Fetch all departments belonging to the deleted school
-        $departments = $this->departmentService->get(['school_id' => $event->schoolId]);
-
-        if ($departments->isNotEmpty()) {
-            $this->departmentService->destroy($departments->pluck('id')->toArray());
-        }
+        // Direct deletion for high efficiency in cleanup operations
+        $this->departmentService
+            ->withoutAuthorization()
+            ->query()
+            ->where('school_id', $event->schoolId)
+            ->delete();
     }
 }

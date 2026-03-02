@@ -60,14 +60,14 @@ class RegisterSuperAdmin extends Component
 
             $this->form->validate();
 
+            $userService = app(\Modules\User\Services\Contracts\UserService::class);
+
+            // Bypass authorization during setup phase
+            if (! setting('app_installed', false)) {
+                $userService->withoutAuthorization();
+            }
+
             if ($this->form->id) {
-                $userService = app(\Modules\User\Services\Contracts\UserService::class);
-
-                // Bypass authorization during setup phase as roles might not be fully seeded yet
-                if (! setting('app_installed', false)) {
-                    $userService->withoutAuthorization();
-                }
-
                 $registeredUser = $userService->update(
                     $this->form->id,
                     $this->form->all(),

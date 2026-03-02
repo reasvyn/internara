@@ -39,6 +39,9 @@ class DepartmentManager extends RecordManager
         $this->context = 'admin::ui.menu.departments';
         $this->addLabel = __('department::ui.add');
         $this->deleteConfirmMessage = __('department::ui.delete_confirm');
+        $this->importInstructions = __('department::ui.import_instructions', [
+            'columns' => 'name, description',
+        ]);
 
         $isSetupPhase =
             session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
@@ -59,6 +62,7 @@ class DepartmentManager extends RecordManager
     {
         return [
             ['key' => 'name', 'label' => __('department::ui.name'), 'sortable' => true],
+            ['key' => 'school.name', 'label' => __('school::ui.title')],
             ['key' => 'description', 'label' => __('ui::common.description')],
             [
                 'key' => 'created_at_formatted',

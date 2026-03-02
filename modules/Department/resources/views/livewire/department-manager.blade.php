@@ -1,8 +1,8 @@
 <x-ui::record-manager>
     {{-- Custom Table Cells --}}
     <x-slot:tableCells>
-        @scope('cell_created_at', $department)
-            <span class="text-xs opacity-70">{{ \Carbon\Carbon::parse($department->created_at)->translatedFormat('d M Y H:i') }}</span>
+        @scope('cell_created_at_formatted', $department)
+            <span class="text-xs opacity-70">{{ $department->created_at_formatted }}</span>
         @endscope
     </x-slot:tableCells>
 

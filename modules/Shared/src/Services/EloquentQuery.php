@@ -453,17 +453,22 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     {
         $ids = Arr::wrap($ids);
 
-        // Security check for each record
-        $records = $this->model
-            ->newQuery()
-            ->whereIn($this->model->getKeyName(), $ids)
-            ->get();
-        foreach ($records as $record) {
-            Gate::authorize('delete', $record);
+        $query = $this->model->newQuery()->whereIn($this->model->getKeyName(), $ids);
+
+        // Security check for each record if authorization is not skipped
+        if (! $this->skipAuthorization) {
+            $records = $query->get();
+            foreach ($records as $record) {
+                Gate::authorize('delete', $record);
+            }
         }
 
+        $this->skipAuthorization = false;
+
         if ($force) {
-            return $records->each(fn (Model $model) => $model->forceDelete())->count();
+            return $this->model->newQuery()
+                ->whereIn($this->model->getKeyName(), $ids)
+                ->forceDelete();
         }
 
         return $this->model->destroy($ids);

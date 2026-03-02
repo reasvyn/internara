@@ -13,4 +13,5 @@ return [
     'description' => 'Description',
     'created_at' => 'Created At',
     'delete_confirm' => 'Are you sure you want to delete this department? This action cannot be undone.',
+    'import_instructions' => 'CSV file must have columns: :columns.',
 ];

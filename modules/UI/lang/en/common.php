@@ -17,6 +17,7 @@ return [
     'cancel' => 'Cancel',
     'confirm' => 'Confirm',
     'search' => 'Search',
+    'search_placeholder' => 'Search...',
     'name' => 'Name',
     'description' => 'Description',
     'created_at' => 'Created At',
