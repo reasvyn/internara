@@ -20,7 +20,8 @@ class InternshipFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->unique()->sentence(3),
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph,
             'academic_year' => date('Y').'/'.(date('Y') + 1),
             'semester' => 'Ganjil',

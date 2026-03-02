@@ -14,6 +14,10 @@ use Modules\User\Services\Contracts\UserService;
 
 
 beforeEach(function () {
+    \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+        return $user->hasRole('super-admin') ? true : null;
+    });
+
     \Modules\Permission\Models\Role::firstOrCreate([
         'name' => 'super-admin',
         'guard_name' => 'web',

@@ -27,6 +27,7 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'name' => fake()->company(),
             'address' => fake()->address(),
             'business_field' => fake()->jobTitle(),

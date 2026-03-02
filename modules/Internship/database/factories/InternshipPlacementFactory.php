@@ -21,6 +21,7 @@ class InternshipPlacementFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'internship_id' => app(InternshipService::class)->factory(),
             'company_id' => \Modules\Internship\Models\Company::factory(),
             'capacity_quota' => fake()->numberBetween(1, 10),
