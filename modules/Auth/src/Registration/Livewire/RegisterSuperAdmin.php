@@ -6,6 +6,7 @@ namespace Modules\Auth\Registration\Livewire;
 
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Auth\Services\Contracts\AuthService;
 use Modules\User\Livewire\Forms\UserForm;
 
@@ -20,10 +21,10 @@ class RegisterSuperAdmin extends Component
      */
     public function boot(
         AuthService $authService,
-        \Modules\User\Services\Contracts\SuperAdminService $superAdminService,
+        SuperAdminService $superAdminService,
     ): void {
         $this->authService = $authService;
-        $this->form->id = $superAdminService->getSuperAdmin(['id'])?->id;
+        $this->form->id = $superAdminService->getSuperAdmin()?->id;
     }
 
     /**
@@ -42,6 +43,8 @@ class RegisterSuperAdmin extends Component
     public function register()
     {
         try {
+            $superAdminService = app(SuperAdminService::class);
+
             // During setup phase, allow re-linking to an existing user record with the same email
             // to prevent "Email already taken" errors when repeating this step.
             if (! setting('app_installed', false)) {
@@ -60,23 +63,13 @@ class RegisterSuperAdmin extends Component
 
             $this->form->validate();
 
-            $userService = app(\Modules\User\Services\Contracts\UserService::class);
-
-            // Bypass authorization during setup phase
-            if (! setting('app_installed', false)) {
-                $userService->withoutAuthorization();
-            }
-
             if ($this->form->id) {
-                $registeredUser = $userService->update(
+                $registeredUser = $superAdminService->update(
                     $this->form->id,
                     $this->form->all(),
                 );
             } else {
-                $registeredUser = $this->authService->register(
-                    $this->form->all(),
-                    \Modules\Permission\Enums\Role::SUPER_ADMIN->value,
-                );
+                $registeredUser = $superAdminService->create($this->form->all());
             }
 
             if ($registeredUser) {

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Admin\Services;
 
 use Modules\Admin\Services\Contracts\AdminService as Contract;
+use Modules\Exception\RecordNotFoundException;
+use Modules\Permission\Enums\Role;
 use Modules\Shared\Services\BaseService;
 use Modules\User\Services\Contracts\UserService;
 
@@ -25,8 +27,7 @@ class AdminService extends BaseService implements Contract
         array $filters = [],
         int $perPage = 15,
     ): \Illuminate\Pagination\LengthAwarePaginator {
-        // Enforce the 'admin' role filter
-        $filters['role'] = 'admin';
+        $filters['role'] = Role::ADMIN->value;
 
         return $this->userService->paginate($filters, $perPage);
     }
@@ -38,7 +39,7 @@ class AdminService extends BaseService implements Contract
     {
         $user = $this->userService->find($id);
 
-        if (! $user || ! $user->hasRole('admin')) {
+        if (! $user || ! $user->hasRole(Role::ADMIN->value)) {
             return null;
         }
 
@@ -50,8 +51,7 @@ class AdminService extends BaseService implements Contract
      */
     public function create(array $data): array
     {
-        $data['roles'] = ['admin'];
-
+        $data['roles'] = [Role::ADMIN->value];
         $user = $this->userService->create($data);
 
         return $user->toArray();
@@ -65,7 +65,7 @@ class AdminService extends BaseService implements Contract
         $admin = $this->find($id);
 
         if (! $admin) {
-            throw new \Modules\Exception\RecordNotFoundException(
+            throw new RecordNotFoundException(
                 replace: ['record' => 'Admin', 'id' => $id],
             );
         }
