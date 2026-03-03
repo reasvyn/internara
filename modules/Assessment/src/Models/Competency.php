@@ -11,5 +11,19 @@ class Competency extends Model
 {
     use HasUuid;
 
-    protected $fillable = ['name', 'slug', 'description', 'category'];
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    protected $fillable = ['id', 'name', 'slug', 'description', 'category'];
 }

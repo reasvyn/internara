@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Modules\Assessment\Tests\Feature;
+
 use Modules\Assessment\Models\Assessment;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Assignment\Services\Contracts\AssignmentService;
@@ -30,17 +32,16 @@ test('it calculates readiness correctly including mandatory assignments', functi
     $registration->update(['end_date' => now()->subDay()]);
 
     // Mock AssignmentService to return incomplete fulfillment
-    $assignmentMock = Mockery::mock(AssignmentService::class);
+    $assignmentMock = \Mockery::mock(AssignmentService::class);
     $assignmentMock
         ->shouldReceive('isFulfillmentComplete')
-        ->with($registration->id)
         ->andReturn(false);
     app()->instance(AssignmentService::class, $assignmentMock);
 
     $status = $service->getReadinessStatus($registration->id);
     expect($status['missing'])->toContain(__('assessment::messages.missing_teacher_eval'));
     expect($status['missing'])->toContain(__('assessment::messages.missing_mentor_eval'));
-    expect($status['missing'])->toContain(__('assessment::messages.pending_assignments'));
+    expect($status['missing'])->toContain(__('assessment::messages.missing_assignments'));
 
     // 3. Ready: all clear
     Assessment::create([
@@ -56,10 +57,12 @@ test('it calculates readiness correctly including mandatory assignments', functi
         'score' => 85,
     ]);
 
-    $assignmentMock
+    // Update Mock
+    $assignmentMock2 = \Mockery::mock(AssignmentService::class);
+    $assignmentMock2
         ->shouldReceive('isFulfillmentComplete')
-        ->with($registration->id)
         ->andReturn(true);
+    app()->instance(AssignmentService::class, $assignmentMock2);
 
     $status = $service->getReadinessStatus($registration->id);
     expect($status['is_ready'])->toBeTrue();

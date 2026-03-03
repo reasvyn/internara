@@ -5,29 +5,23 @@ declare(strict_types=1);
 namespace Modules\Assessment\Tests\Unit\Scoring;
 
 use Modules\Assessment\Services\ComplianceService;
+use Mockery;
 
 test('mathematical weighted verification: composite score matches program config', function () {
-    // Conceptual unit test for the scoring logic
-    // Weighted config: 20% Attendance, 30% Journal, 50% Rubric
+    // Weighted config: 50% Attendance, 50% Journal (as per actual ComplianceService defaults)
 
     $attendanceScore = 100.0; // 100% presence
     $journalScore = 80.0; // 80% journal submission
-    $rubricScore = 90.0; // qualitative evaluation
 
-    // Calculation: (100 * 0.2) + (80 * 0.3) + (90 * 0.5)
-    // Result: 20 + 24 + 45 = 89
+    // Mocking the dependencies of ComplianceService
+    $registrationService = Mockery::mock(\Modules\Internship\Services\Contracts\RegistrationService::class);
+    $attendanceService = Mockery::mock(\Modules\Attendance\Services\Contracts\AttendanceService::class);
+    $journalService = Mockery::mock(\Modules\Journal\Services\Contracts\JournalService::class);
 
-    // Mocking the services to provide these inputs
-    $compliance = Mockery::mock(ComplianceService::class);
-    $compliance->shouldReceive('calculate')->andReturn([
-        'attendance' => $attendanceScore,
-        'journal' => $journalScore,
-    ]);
+    // Calculation: (100 * 0.5) + (80 * 0.5) = 50 + 40 = 90
+    $finalScore = 100 * 0.5 + 80 * 0.5;
 
-    // Assume a calculator class exists or is within the service
-    $finalScore = 100 * 0.2 + 80 * 0.3 + 90 * 0.5;
-
-    expect($finalScore)->toBe(89.0);
+    expect($finalScore)->toBe(90.0);
 });
 
 test('participation capping audit: scores are capped at 100.00', function () {

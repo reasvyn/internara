@@ -16,7 +16,22 @@ class Assessment extends Model
 {
     use HasFactory, HasUuid, SoftDeletes;
 
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
     protected $fillable = [
+        'id',
         'registration_id',
         'academic_year',
         'evaluator_id',
