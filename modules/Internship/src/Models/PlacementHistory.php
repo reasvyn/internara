@@ -21,6 +21,20 @@ class PlacementHistory extends Model
     use HasUuid;
 
     /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -32,7 +46,7 @@ class PlacementHistory extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['registration_id', 'placement_id', 'action', 'reason', 'metadata'];
+    protected $fillable = ['id', 'registration_id', 'placement_id', 'action', 'reason', 'metadata'];
 
     /**
      * The attributes that should be cast.

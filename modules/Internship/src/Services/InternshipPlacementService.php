@@ -35,9 +35,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
             return 0;
         }
 
-        $occupiedSlots = $placement->registrations()->count();
-
-        return max(0, $placement->capacity_quota - $occupiedSlots);
+        return $placement->remainingSlots;
     }
 
     /**

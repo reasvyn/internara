@@ -68,13 +68,14 @@ describe('Partner Quota Management Deep Audit (BP-PLC-01)', function () {
             $registration = $this->registrationService->register($data);
             $registration->setStatus('active');
 
-            expect($placement->refresh()->remainingSlots)->toBe(0);
+            expect($placement->refresh()->unsetRelation('registrations')->remainingSlots)->toBe(0);
 
-            // 2. Cancel/Deactivate the registration
+            // 2. Cancel/Deactivate the registration with time travel to ensure ordering
+            $this->travel(1)->second();
             $registration->setStatus('inactive');
 
             // 3. Quota should be restored
-            expect($placement->refresh()->remainingSlots)->toBe(1);
+            expect($placement->refresh()->unsetRelation('registrations')->remainingSlots)->toBe(1);
         },
     );
 });

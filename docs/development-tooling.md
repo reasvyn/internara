@@ -25,7 +25,7 @@ Mandatory verification passes prior to any repository synchronization.
 | `composer test`        | Execute all behavioral verification suites (Pest v4).                      |
 | `composer lint`        | Perform static analysis and check code style compliance (Pint & Prettier). |
 | `composer format`      | Automatically fix code style violations across PHP, Blade, and JS.         |
-| `php artisan app:test` | Sequential module execution to minimize memory heap usage.                 |
+| `php artisan app:test` | Advanced orchestrator with session persistence, auto-invalidation, and stability reporting. |
 
 ---
 

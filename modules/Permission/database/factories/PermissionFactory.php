@@ -14,6 +14,7 @@ class PermissionFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'name' => fake()->unique()->word,
             'guard_name' => 'web',
             'module' => fake()->word(),

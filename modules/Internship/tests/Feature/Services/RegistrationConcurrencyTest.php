@@ -9,7 +9,15 @@ use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Services\Contracts\UserService;
 
-
+beforeEach(function () {
+    \Modules\Permission\Models\Role::firstOrCreate([
+        'name' => 'super-admin',
+        'guard_name' => 'web',
+    ]);
+    $admin = \Modules\User\Models\User::factory()->create();
+    $admin->assignRole('super-admin');
+    $this->actingAs($admin);
+});
 
 test('concurrent enrollment audit: only one student can take the last slot', function () {
     $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)

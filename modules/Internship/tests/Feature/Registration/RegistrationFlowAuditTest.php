@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Registration;
 
-
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Modules\Internship\Events\InternshipRegistered;
+use Modules\Internship\Models\Internship;
+use Modules\Internship\Models\InternshipPlacement;
+use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
-use Modules\User\Services\Contracts\UserService;
-
-
+use Modules\User\Models\User;
 
 beforeEach(function () {
-    \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+    Gate::before(function ($user, $ability) {
         return $user->hasRole('super-admin') ? true : null;
     });
 
@@ -22,7 +23,8 @@ beforeEach(function () {
         'name' => 'super-admin',
         'guard_name' => 'web',
     ]);
-    $admin = \Modules\User\Models\User::factory()->create();
+    
+    $admin = User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
 });
@@ -30,7 +32,7 @@ beforeEach(function () {
 test(
     'requirement guard audit: it rejects approval if mandatory requirements are missing',
     function () {
-        $registration = \Modules\Internship\Models\InternshipRegistration::factory()->create();
+        $registration = InternshipRegistration::factory()->create();
 
         // Mock requirement service to return false
         $mock = $this->mock(InternshipRequirementService::class);
@@ -48,23 +50,27 @@ test(
     function () {
         Event::fake();
 
-        $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
-            ->factory()
-            ->create();
-        $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
-            ->factory()
-            ->create(['internship_id' => $program->id]);
-        $student = app(UserService::class)->factory()->create();
-        $teacher = app(UserService::class)->factory()->create();
+        $program = Internship::factory()->create();
+        $placement = InternshipPlacement::factory()->create(['internship_id' => $program->id]);
+        $student = User::factory()->create();
+        $teacher = User::factory()->create();
 
-        $registration = app(RegistrationService::class)->register([
-            'internship_id' => $program->id,
-            'placement_id' => $placement->id,
-            'student_id' => $student->id,
-            'teacher_id' => $teacher->id,
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->addMonths(3)->toDateString(),
-        ]);
+        try {
+            $registration = app(RegistrationService::class)->register([
+                'internship_id' => $program->id,
+                'placement_id' => $placement->id,
+                'student_id' => $student->id,
+                'teacher_id' => $teacher->id,
+                'start_date' => now()->toDateString(),
+                'end_date' => now()->addMonths(3)->toDateString(),
+            ]);
+        } catch (\Exception $e) {
+            dump($e->getMessage());
+            if ($e->getPrevious()) {
+                dump($e->getPrevious()->getMessage());
+            }
+            throw $e;
+        }
 
         Event::assertDispatched(function (InternshipRegistered $event) {
             // Blueprint Mandate: Must ONLY carry the UUID
