@@ -8,9 +8,14 @@ use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\User\Models\User;
 
+beforeEach(function () {
+    \Modules\Permission\Models\Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+});
+
 test('submitEvaluation creates assessment and calculates score', function () {
     // Arrange
     $user = User::factory()->create();
+    $user->assignRole('super-admin');
     $registration = app(RegistrationService::class)
         ->factory()
         ->create([
@@ -24,6 +29,7 @@ test('submitEvaluation creates assessment and calculates score', function () {
     ];
 
     // Act
+    $this->actingAs($user);
     $assessment = $service->submitEvaluation(
         $registration->id,
         $user->id,
@@ -45,6 +51,7 @@ test('submitEvaluation creates assessment and calculates score', function () {
 test('it throws exception for unauthorized evaluator', function () {
     // Arrange
     $user = User::factory()->create();
+    $user->assignRole('super-admin');
     $registration = app(RegistrationService::class)
         ->factory()
         ->create([
@@ -68,7 +75,9 @@ test('getScoreCard returns both assessments', function () {
     // Arrange
     $service = app(AssessmentService::class);
     $teacher = User::factory()->create();
+    $teacher->assignRole('super-admin');
     $mentor = User::factory()->create();
+    $mentor->assignRole('super-admin');
     $registration = app(RegistrationService::class)
         ->factory()
         ->create([
@@ -76,6 +85,7 @@ test('getScoreCard returns both assessments', function () {
             'mentor_id' => $mentor->id,
         ]);
 
+    $this->actingAs($teacher);
     $service->submitEvaluation(
         $registration->id,
         $teacher->id,
@@ -83,6 +93,7 @@ test('getScoreCard returns both assessments', function () {
         ['a' => 100],
         'Teacher note',
     );
+    $this->actingAs($mentor);
     $service->submitEvaluation(
         $registration->id,
         $mentor->id,
