@@ -115,10 +115,18 @@ class RegistrationService extends EloquentQuery implements Contract
             // 5. Inject active academic year
             $data['academic_year'] = setting('active_academic_year', '2025/2026');
 
+            // 6. Explicitly generate ID to ensure integrity across environments
+            if (empty($data['id'])) {
+                $data['id'] = (string) \Illuminate\Support\Str::uuid();
+            }
+
             $registration = $this->create($data);
 
-            // 6. Log initial assignment
+            // 7. Log initial assignment
             $this->logger->logAssignment($registration);
+
+            // 8. Signal registration to the system
+            \Modules\Internship\Events\InternshipRegistered::dispatch($registration->id);
 
             return $registration;
         });

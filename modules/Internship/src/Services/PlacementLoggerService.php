@@ -25,6 +25,7 @@ class PlacementLoggerService extends BaseService implements Contract
         ?string $placementId = null,
     ): PlacementHistory {
         return PlacementHistory::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
             'registration_id' => $registration->id,
             'placement_id' => $placementId ?: $registration->placement_id,
             'action' => $action,

@@ -292,11 +292,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     }
 
     /**
-     * Persist a new record into the database.
+     * Create a new record with the provided data.
      *
      * @param array<string, mixed> $data
      *
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return TModel
@@ -308,10 +308,13 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         }
 
         $this->skipAuthorization = false;
-        $filteredData = $this->filterFillable($data);
 
         try {
-            return $this->model->newQuery()->create($filteredData);
+            $instance = $this->model->newInstance();
+            $instance->forceFill($data);
+            $instance->save();
+
+            return $instance;
         } catch (QueryException $e) {
             $this->handleQueryException($e, 'creation_failed');
         }
@@ -594,11 +597,16 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @return array<string, mixed>
      */
+    /**
+     * Filters the given data to include only fillable attributes.
+     */
     protected function filterFillable(array $data): array
     {
+        $primaryKey = $this->model->getKeyName();
+
         return array_filter(
             $data,
-            fn ($key) => $this->model->isFillable($key),
+            fn ($key) => $this->model->isFillable($key) || $key === $primaryKey,
             ARRAY_FILTER_USE_KEY,
         );
     }

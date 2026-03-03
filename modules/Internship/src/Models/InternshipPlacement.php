@@ -21,6 +21,20 @@ class InternshipPlacement extends Model
     use InteractsWithActivityLog;
 
     /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -81,20 +95,19 @@ class InternshipPlacement extends Model
     protected function remainingSlots(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
-            get: fn () => max(
-                0,
-                $this->capacity_quota -
-                    $this->registrations()
-                        ->whereHas('statuses', function ($query) {
-                            $query->where('name', 'active')->whereIn('id', function ($sub) {
-                                $sub->selectRaw('max(id)')
-                                    ->from('statuses')
-                                    ->whereColumn('model_id', 'internship_registrations.id')
-                                    ->where('model_type', InternshipRegistration::class);
-                            });
-                        })
-                        ->count(),
-            )
+            get: function () {
+                $occupied = 0;
+                // We use eager-loaded registrations or lazy load them.
+                // For placements, the number of registrations is typically small.
+                foreach ($this->registrations as $registration) {
+                    $status = $registration->latestStatus();
+                    if (! $status || $status->name !== 'inactive') {
+                        $occupied++;
+                    }
+                }
+
+                return max(0, $this->capacity_quota - $occupied);
+            }
         );
     }
 

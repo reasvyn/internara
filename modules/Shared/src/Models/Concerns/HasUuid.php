@@ -15,12 +15,28 @@ use Illuminate\Support\Str;
 trait HasUuid
 {
     /**
+     * Determine if the model's primary key is incrementing.
+     */
+    public function getIncrementing(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Get the auto-incrementing key type.
+     */
+    public function getKeyType(): string
+    {
+        return 'string';
+    }
+
+    /**
      * Initialize the trait.
      */
     public function initializeHasUuid(): void
     {
-        $this->setIncrementing(false);
-        $this->setKeyType('string');
+        $this->incrementing = false;
+        $this->keyType = 'string';
     }
 
     /**

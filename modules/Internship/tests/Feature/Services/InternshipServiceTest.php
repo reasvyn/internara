@@ -26,7 +26,7 @@ test('it automatically creates default assignments when an internship is created
     $data = [
         'school_id' => $school->id,
         'title' => 'Program Magang 2026',
-        'year' => 2026,
+        'academic_year' => '2026/2027',
         'semester' => 'Ganjil',
         'date_start' => now()->toDateString(),
         'date_finish' => now()->addMonths(6)->toDateString(),

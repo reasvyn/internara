@@ -36,8 +36,18 @@ Every pull request must pass the following gates:
 
 ---
 
-## 4. Test Environment Orchestration
+## 5. Advanced Verification Orchestration (`app:test`)
 
-- **Environment**: SQLite (memory) for high-speed local testing.
-- **CI Pipeline**: Automated execution on GitHub Actions for every commit.
-- **Artifacts**: Generation of test results and coverage reports for audit purposes.
+To manage the systemic complexity of a Modular Monolith and prevent memory accumulation (Memory Leaks) during large-scale verification, Internara utilizes a custom **Advanced Orchestrator**.
+
+### 5.1 Orchestration Benefits
+- **Process Isolation**: Each module/segment is executed in a separate PHP process, ensuring a clean memory heap for every run.
+- **Resumable Sessions**: Supports persistent testing sessions via `--continue`. Successful segments are skipped in subsequent runs, allowing developers to focus on fixing failures.
+- **Smart Invalidation**: Automatically detects file changes within modules and invalidates previous successful results, ensuring regressions are always caught.
+- **Stability Reporting**: Provides a real-time **Global Pass Rate** and **Stability Index** based on the entire 100% system baseline.
+
+### 5.2 Key Commands
+- `php artisan app:test`: Standard sequential verification.
+- `php artisan app:test --continue`: Resume from the last failure, skipping valid segments.
+- `php artisan app:test --report`: View comprehensive system stability metrics.
+- `php artisan app:test --dirty`: Run tests only for modules with uncommitted changes.
