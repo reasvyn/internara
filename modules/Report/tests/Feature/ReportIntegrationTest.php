@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Report\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Modules\Permission\Models\Role;
 use Modules\Report\Services\Contracts\ReportGenerator;
 use Modules\Shared\Contracts\ExportableDataProvider;
 use Modules\User\Models\User;
-
-uses(RefreshDatabase::class);
 
 test('report service can register and list providers', function () {
     $service = app(ReportGenerator::class);
