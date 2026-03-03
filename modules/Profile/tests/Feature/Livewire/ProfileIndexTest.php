@@ -8,8 +8,16 @@ use Modules\Profile\Livewire\Index;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
+    \Modules\Permission\Models\Role::firstOrCreate([
+        'id' => (string) \Illuminate\Support\Str::uuid(),
+        'name' => 'super-admin',
+        'guard_name' => 'web'
+    ]);
+    \Modules\Permission\Models\Role::firstOrCreate([
+        'id' => (string) \Illuminate\Support\Str::uuid(),
+        'name' => 'student',
+        'guard_name' => 'web'
+    ]);
 });
 
 test('a user can update their basic profile information', function () {
@@ -17,6 +25,7 @@ test('a user can update their basic profile information', function () {
     $user->assignRole('student');
 
     $this->actingAs($user);
+    $this->get(route('profile.index'));
 
     Livewire::test(Index::class)
         ->set('name', 'Updated Name')

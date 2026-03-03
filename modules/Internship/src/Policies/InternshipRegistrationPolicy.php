@@ -23,8 +23,12 @@ class InternshipRegistrationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, InternshipRegistration $registration): bool
+    public function update(User $user, ?InternshipRegistration $registration = null): bool
     {
+        if (! $registration) {
+            return $user->hasAnyRole(['super-admin', 'admin', 'staff']);
+        }
+
         return $user->id === $registration->student_id ||
             $user->hasAnyRole(['super-admin', 'admin', 'staff']);
     }
@@ -32,10 +36,14 @@ class InternshipRegistrationPolicy
     /**
      * Determine whether the user can view the registration.
      */
-    public function view(User $user, InternshipRegistration $registration): bool
+    public function view(User $user, ?InternshipRegistration $registration = null): bool
     {
         if (! $user->can('registration.view')) {
             return false;
+        }
+
+        if (! $registration) {
+            return true;
         }
 
         // Students can view their own registration

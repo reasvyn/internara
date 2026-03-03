@@ -17,7 +17,7 @@ describe('ProfileService S1 Security', function () {
 
         Gate::shouldReceive('authorize')
             ->once()
-            ->with('view', [Profile::class, $uuid]);
+            ->with('view', [$profileModel, $uuid]);
 
         $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
         $profileModel->shouldReceive('newQuery')->andReturn($builder);

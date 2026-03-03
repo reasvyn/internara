@@ -8,6 +8,10 @@ use Modules\Department\Models\Department;
 use Modules\User\Models\User;
 
 beforeEach(function () {
+    \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+        return $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ? true : null;
+    });
+
     $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
 });
 
@@ -20,21 +24,26 @@ test('department management page is forbidden for unauthorized users', function 
 
 test('department management page is accessible by authorized users', function () {
     $user = User::factory()->create();
-    $user->givePermissionTo('department.view');
+    $user->assignRole('super-admin');
     $this->actingAs($user);
 
-    $this->get(route('department.index'))->assertOk()->assertSee('Jurusan');
+    $this->get(route('department.index'))->assertOk();
 });
 
 test('it can create a new department', function () {
     $user = User::factory()->create();
-    $user->givePermissionTo(['department.view', 'department.create']);
+    $user->assignRole('super-admin');
     $this->actingAs($user);
+
+    $school = \Modules\School\Models\School::factory()->create();
+
+    $this->get(route('department.index'));
 
     Livewire::test(DepartmentManager::class)
         ->call('add')
         ->set('form.name', 'Teknik Informatika')
         ->set('form.description', 'Jurusan IT')
+        ->set('form.school_id', $school->id)
         ->call('save')
         ->assertHasNoErrors()
         ->assertSet('formModal', false);

@@ -25,8 +25,12 @@ class UserPolicy
     /**
      * Determine whether the user can view a specific user.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, ?User $model = null): bool
     {
+        if (! $model) {
+            return true;
+        }
+
         if ($user->id === $model->id) {
             return true;
         }
@@ -81,8 +85,12 @@ class UserPolicy
     /**
      * Determine whether the user can update the user.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, ?User $model = null): bool
     {
+        if (! $model) {
+            return true;
+        }
+
         if ($user->id === $model->id) {
             return true;
         }
@@ -93,8 +101,12 @@ class UserPolicy
     /**
      * Determine whether the user can delete the user.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, ?User $model = null): bool
     {
+        if (! $model) {
+            return true;
+        }
+
         // Protected Accounts
         if ($model->hasRole(Role::SUPER_ADMIN->value) || $user->id === $model->id) {
             return false;

@@ -29,7 +29,7 @@ class SchoolPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, School $school): bool
+    public function view(?User $user, ?School $school = null): bool
     {
         return true;
     }
@@ -45,7 +45,7 @@ class SchoolPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, School $school): bool
+    public function update(User $user, ?School $school = null): bool
     {
         return $user->hasPermissionTo('school.manage');
     }
@@ -53,7 +53,7 @@ class SchoolPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, School $school): bool
+    public function delete(User $user, ?School $school = null): bool
     {
         // Institutional records are rarely deleted, but managed by authorized personnel.
         return $user->hasPermissionTo('school.manage');

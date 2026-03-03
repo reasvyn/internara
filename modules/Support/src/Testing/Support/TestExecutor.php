@@ -26,9 +26,24 @@ class TestExecutor
         bool $stopOnFailure = true,
         ?string $filter = null,
         ?string &$output = '',
-        ?string &$errorOutput = ''
+        ?string &$errorOutput = '',
+        bool $coverage = false
     ): bool {
-        $command = [base_path('vendor/bin/pest'), $path];
+        $command = [PHP_BINARY];
+
+        // Automate PCOV enablement and JIT disablement for coverage or if requested.
+        // This resolves the incompatibility between PCOV and JIT.
+        if ($coverage) {
+            $command[] = '-d';
+            $command[] = 'extension=pcov.so';
+            $command[] = '-d';
+            $command[] = 'pcov.enabled=1';
+            $command[] = '-d';
+            $command[] = 'opcache.jit=0';
+        }
+
+        $command[] = base_path('vendor/bin/pest');
+        $command[] = $path;
 
         if ($parallel) {
             $command[] = '--parallel';
@@ -41,6 +56,10 @@ class TestExecutor
         if ($filter) {
             $command[] = '--filter';
             $command[] = $filter;
+        }
+
+        if ($coverage) {
+            $command[] = '--coverage';
         }
 
         $process = new Process($command, base_path(), ['APP_ENV' => 'testing']);

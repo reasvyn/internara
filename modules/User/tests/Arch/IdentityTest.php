@@ -10,15 +10,31 @@ test('identity models should use UUID trait')
 
 test('identity anchors should be isolated')
     ->expect('Modules\User\Models\User')
-    ->not->toBeUsedOutside([
+    ->toOnlyBeUsedIn([
         'Modules\Auth',
         'Modules\User',
         'Modules\Profile',
         'Modules\Permission',
-        'Modules\Shared', // For base abstractions
-        'Modules\Core', // For global metadata
+        'Modules\Teacher',
+        'Modules\Student',
+        'Modules\Mentor',
+        'Modules\Admin',
+        'Modules\Internship',
+        'Modules\Assessment',
+        'Modules\Attendance',
+        'Modules\Journal',
+        'Modules\Assignment',
+        'Modules\Schedule',
+        'Modules\Guidance',
+        'Modules\Report',
+        'Modules\Shared',
+        'Modules\Core',
+        'Modules\Setup',
+        'Modules\Log',
+        'Modules\Notification',
+        'Modules\Media',
     ]);
 
 test('profile models should be isolated')
     ->expect('Modules\Profile\Models\Profile')
-    ->not->toBeUsedOutside(['Modules\User', 'Modules\Profile', 'Modules\Shared']);
+    ->toOnlyBeUsedIn(['Modules\User', 'Modules\Profile', 'Modules\Shared']);

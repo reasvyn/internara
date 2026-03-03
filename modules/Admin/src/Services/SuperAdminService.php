@@ -71,7 +71,7 @@ class SuperAdminService extends EloquentQuery implements Contract
 
         if (! $superAdmin || $superAdmin->id !== $id) {
             throw new RecordNotFoundException(
-                userMessage: 'auth::exceptions.super_admin_not_found',
+                message: 'auth::exceptions.super_admin_not_found',
                 replace: ['id' => $id],
                 module: 'Admin'
             );

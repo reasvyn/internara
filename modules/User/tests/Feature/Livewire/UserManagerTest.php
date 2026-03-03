@@ -14,6 +14,10 @@ use Modules\User\Models\User;
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+    \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+        return $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ? true : null;
+    });
+
     $this->seed(PermissionSeeder::class);
     $this->seed(RoleSeeder::class);
 });

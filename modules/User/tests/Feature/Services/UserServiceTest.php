@@ -14,10 +14,12 @@ use Modules\User\Services\Contracts\UserService;
 
 describe('UserService', function () {
     beforeEach(function () {
-        Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'student', 'guard_name' => 'web']);
-        Permission::create(['name' => 'user.manage', 'guard_name' => 'web']);
+        $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+        $this->userService = app(UserService::class);
+        
+        $admin = User::factory()->create();
+        $admin->assignRole('super-admin');
+        $this->actingAs($admin);
     });
 
     test('it automatically verifies email for admin role [SYRS-NF-501]', function () {

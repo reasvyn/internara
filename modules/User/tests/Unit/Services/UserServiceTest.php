@@ -59,6 +59,7 @@ test('it rolls back user creation if profile creation fails (atomicity check)', 
 
     // We force a failure in ProfileService by mocking it
     $profileService = $this->mock(\Modules\Profile\Services\Contracts\ProfileService::class);
+    $profileService->shouldReceive('withoutAuthorization')->andReturnSelf();
     $profileService->shouldReceive('getByUserId')->andReturn(new \Modules\Profile\Models\Profile);
     $profileService->shouldReceive('update')->andThrow(new \Exception('Profile failure'));
 
@@ -101,7 +102,7 @@ test('it records activity log when a user is created', function () {
         ['phone' => '123'],
     );
 
-    $this->assertDatabaseHas('activities', [
+    $this->assertDatabaseHas('activity_log', [
         'subject_id' => $user->id,
         'description' => 'created',
     ]);

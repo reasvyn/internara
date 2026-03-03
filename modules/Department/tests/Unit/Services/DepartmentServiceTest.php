@@ -27,7 +27,8 @@ test('it can search departments by name', function () {
 
             return $builder;
         });
-    $builder->shouldReceive('orWhere')->atLeast()->once();
+    $builder->shouldReceive('orWhere')->atLeast()->once()->andReturnSelf();
+    $builder->shouldReceive('orWhereRelation')->atLeast()->once()->andReturnSelf();
 
     $service->query(['search' => 'Informatics']);
     expect(true)->toBeTrue();

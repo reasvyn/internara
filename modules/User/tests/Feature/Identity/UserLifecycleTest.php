@@ -12,6 +12,10 @@ use Modules\User\Services\Contracts\UserService;
 
 describe('User Lifecycle Feature Test (BP-ID-01 & BP-ID-02)', function () {
     beforeEach(function () {
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            return $user->hasRole(Role::SUPER_ADMIN->value) ? true : null;
+        });
+
         $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
         setting(['app_installed' => true]);
         $this->userService = app(UserService::class);

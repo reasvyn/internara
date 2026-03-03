@@ -42,7 +42,7 @@ class DepartmentPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Department $department): bool
+    public function view(User $user, ?Department $department = null): bool
     {
         return $this->viewAny($user);
     }
@@ -58,7 +58,7 @@ class DepartmentPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Department $department): bool
+    public function update(User $user, ?Department $department = null): bool
     {
         return $this->canManage($user);
     }
@@ -66,7 +66,7 @@ class DepartmentPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Department $department): bool
+    public function delete(User $user, ?Department $department = null): bool
     {
         return $this->canManage($user);
     }

@@ -35,6 +35,8 @@ describe('Register Component', function () {
                 ]),
             ]);
 
+            $this->get(route('register'));
+
             Livewire::test(Register::class)
                 ->set('name', 'Test Student')
                 ->set('email', 'student@example.com')

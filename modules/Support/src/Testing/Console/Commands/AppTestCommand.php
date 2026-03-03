@@ -26,7 +26,7 @@ class AppTestCommand extends Command
     protected $signature = 'app:test 
                             {modules?* : Optional module name(s) to target specifically}
                             {--p|parallel : Run tests within each module in parallel}
-                            {--c|continue-on-failure : Continue execution even if a test failure occurs}
+                            {--f|stop-on-failure : Stop execution if a test failure occurs}
                             {--dirty : Only run tests for modules with uncommitted changes (Git)}
                             {--no-arch : Skip architectural tests}
                             {--no-unit : Skip unit tests}
@@ -38,6 +38,7 @@ class AppTestCommand extends Command
                             {--feature-only : Run only feature tests}
                             {--browser-only : Run only browser tests}
                             {--filter= : Filter tests by name (Pest filter)}
+                            {--coverage : Generate code coverage report (automates PCOV/JIT flags)}
                             {--session= : Specify a custom session ID for the test run}
                             {--continue : Resume the latest test session, skipping successful segments}
                             {--report : Display the comprehensive report from the current or latest session}
@@ -143,10 +144,11 @@ class AppTestCommand extends Command
                         $success = $executor->execute(
                             $testPath,
                             (bool) $this->option('parallel'),
-                            !$this->option('continue-on-failure'),
+                            $this->option('stop-on-failure'),
                             $this->option('filter'),
                             $segmentOutput,
-                            $segmentError
+                            $segmentError,
+                            (bool) $this->option('coverage')
                         );
                         return $success;
                     });
@@ -160,7 +162,7 @@ class AppTestCommand extends Command
                     if (! $success) {
                         $overallSuccess = false;
                         $failures[] = ['label' => $segmentLabel, 'output' => $segmentOutput, 'error' => $segmentError];
-                        if (! $this->option('continue-on-failure')) {
+                        if ($this->option('stop-on-failure')) {
                             $results[] = $row;
                             break 2;
                         }

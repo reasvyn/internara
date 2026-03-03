@@ -63,14 +63,9 @@ class RegisterSuperAdmin extends Component
 
             $this->form->validate();
 
-            if ($this->form->id) {
-                $registeredUser = $superAdminService->update(
-                    $this->form->id,
-                    $this->form->all(),
-                );
-            } else {
-                $registeredUser = $superAdminService->create($this->form->all());
-            }
+            // Always use create() which handles idempotency (updateOrCreate) 
+            // and setup-specific constraints internally.
+            $registeredUser = $superAdminService->create($this->form->all());
 
             if ($registeredUser) {
                 flash()->success('shared::messages.record_saved');

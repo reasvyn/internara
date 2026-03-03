@@ -46,11 +46,10 @@ describe('SchoolManager Component', function () {
             ->assertHasNoErrors()
             ->assertDispatched('school_saved');
 
-        $this->assertDatabaseHas('schools', [
-            'name' => 'Updated School Name',
-            'email' => 'school@test.com',
-            'institutional_code' => '12345678',
-        ]);
+        $school = School::first();
+        expect($school->name)->toBe('Updated School Name')
+            ->and($school->email)->toBe('school@test.com')
+            ->and($school->institutional_code)->toBe('12345678');
     });
 
     test('it allows setup sessions to bypass permissions', function () {

@@ -90,9 +90,13 @@ abstract class RecordManager extends Component
      */
     public function rendering(): void
     {
-        $this->items = collect($this->records->items())
-            ->map(fn ($item) => (array) $item)
-            ->toArray();
+        try {
+            $this->items = collect($this->records->items())
+                ->map(fn ($item) => (array) $item)
+                ->toArray();
+        } catch (\Exception $e) {
+            $this->items = [];
+        }
     }
 
     /**

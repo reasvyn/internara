@@ -36,6 +36,10 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function getByUserId(string $userId): Profile
     {
+        if (! $this->skipAuthorization) {
+            \Illuminate\Support\Facades\Gate::authorize('view', [$this->model, $userId]);
+        }
+
         /** @var Profile */
         return $this->model->newQuery()->firstOrCreate(['user_id' => $userId]);
     }
@@ -45,6 +49,10 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function syncProfileable(Profile $profile, Model $profileable): Profile
     {
+        if (! $this->skipAuthorization) {
+            \Illuminate\Support\Facades\Gate::authorize('update', $profile);
+        }
+
         if ($profile->profileable_id === $profileable->getKey()) {
             return $profile;
         }
