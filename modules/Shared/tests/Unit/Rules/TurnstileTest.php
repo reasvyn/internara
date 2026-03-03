@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Modules\Shared\Rules\Turnstile;
 
 test('it passes when turnstile is successful', function () {
+    Config::set('services.cloudflare.turnstile.site_key', 'test-site-key');
     Config::set('services.cloudflare.turnstile.secret_key', 'test-secret');
 
     Http::fake([
@@ -24,6 +25,7 @@ test('it passes when turnstile is successful', function () {
 });
 
 test('it fails when turnstile is unsuccessful', function () {
+    Config::set('services.cloudflare.turnstile.site_key', 'test-site-key');
     Config::set('services.cloudflare.turnstile.secret_key', 'test-secret');
 
     Http::fake([
