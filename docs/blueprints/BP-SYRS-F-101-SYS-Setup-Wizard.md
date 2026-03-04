@@ -26,8 +26,22 @@
   tracking wizard progression and verifying institutional record creation.
 - **`Modules\Setup\Services\Contracts\SystemAuditor`**: Diagnostic engine for pre-flight 
   validation (PHP 8.4+, Extensions, Writable Directories, DB Connection).
+- **`Modules\Setup\Console\Commands\AppInstallCommand`** (`php artisan app:install`): The technical CLI entrypoint that bootstraps the initial system state, runs the `InstallerService`, and generates the secure signed URL for the Web Wizard.
 
-### 2.2 Cross-Module Service Contracts
+### 2.2 CLI Bootstrapping Architecture (`app:install`)
+
+Before the Web Wizard can be accessed, the system must be physically initialized via the CLI. The `app:install` command acts as the **Technical Stage 0**:
+
+1. **System Cleanup**: Clear application cache (`optimize:clear`).
+2. **Environment Initialization**: Ensure `.env` exists.
+3. **Environment Validation**: Run `SystemAuditor` to guarantee the server environment is healthy.
+4. **Key Generation**: Generate application encryption key.
+5. **Database Initialization**: Execute schema migrations (`migrate:fresh`).
+6. **Data Seeding**: Execute foundational seeders (Permissions, Roles, Statuses).
+7. **Storage Link**: Symlink the public storage directory.
+8. **Token Generation**: Generate a cryptographic `setup_token` and output a temporary signed URL for the Web Wizard.
+
+### 2.3 Cross-Module Service Contracts
 
 To satisfy **SYRS-NF-601** (Modular Isolation), the `Setup` module interacts with domain modules 
 exclusively via their public interfaces:
@@ -190,9 +204,10 @@ artifacts must be established and maintained.
 
 1.  **Issue #Setup-1**: Implement `SystemAuditor` with PHP 8.4 diagnostic logic.
 2.  **Issue #Setup-2**: Construct `InstallerService` with transaction-safe migration logic.
-3.  **Issue #Setup-3**: Develop the 8-step Livewire wizard with state persistence.
-4.  **Issue #Setup-4**: Implement `ProtectSetupRoute` middleware for permanent lockdown.
-5.  **Issue #Setup-5**: Finalize `SetupService` with the `brand_name` vs `app_name` invariant.
+3.  **Issue #Setup-3**: Create `AppInstallCommand` (`app:install`) as the CLI entrypoint.
+4.  **Issue #Setup-4**: Develop the 8-step Livewire wizard with state persistence.
+5.  **Issue #Setup-5**: Implement `ProtectSetupRoute` middleware for permanent lockdown.
+6.  **Issue #Setup-6**: Finalize `SetupService` with the `brand_name` vs `app_name` invariant.
 
 ---
 
