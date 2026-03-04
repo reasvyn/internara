@@ -118,6 +118,7 @@ a multi-tiered verification suite.
   invalid step requests are rejected.
 
 ### 5.2 Integration & Security Verification
+- **CLI Bootstrapping**: `AppInstallCommandTest` MUST verify that the `app:install` command correctly calls all `InstallerService` methods in sequence, handles errors gracefully, and outputs the temporary signed URL.
 - **State Persistence Audit**: Verify that `setup_step_*` settings are correctly persisted across 
   requests and cleaned up upon finalization.
 - **Transactional Rollback**: Simulate a failure during Step 8 (`finalizeSetupStep`) and verify 
