@@ -52,11 +52,11 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-101** | Installation Wizard | BP-SYS-F101 | `SYS` | 🟢 | SYRS-NF-501, SYRS-NF-701 |
-| **SYRS-F-102** | Setup Protection | BP-SYS-F102 | `SYS` | 🟢 | SYRS-NF-502, SYRS-NF-504 |
-| **SYRS-F-201** | Unified Profile | BP-ID-F201 | `ID` | 🟢 | SYRS-NF-503, SYRS-NF-504 |
-| **SYRS-F-202** | Academic Scoping | BP-ORG-F202 | `ORG` | 🟢 | SYRS-NF-601 |
-| **SYRS-F-203** | Hierarchical Account Creation | BP-ID-F203 | `ID` | 🟢 | SYRS-NF-502 |
+| **SYRS-F-101** | Setup Wizard | BP-SYRS-F-101-SYS | `SYS` | 🟢 | SYRS-NF-501, SYRS-NF-701 |
+| **SYRS-F-102** | Setup Protection | BP-SYRS-F-102-SYS | `SYS` | 🟢 | SYRS-NF-502, SYRS-NF-504 |
+| **SYRS-F-201** | Unified Profile | BP-SYRS-F-201-ID | `ID` | 🟢 | SYRS-NF-503, SYRS-NF-504 |
+| **SYRS-F-202** | Academic Scoping | BP-SYRS-F-202-ORG | `ORG` | 🟢 | SYRS-NF-601 |
+| **SYRS-F-203** | Hierarchical Account Creation | BP-SYRS-F-203-ID | `ID` | 🟢 | SYRS-NF-502 |
 
 ---
 
@@ -64,10 +64,10 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-301** | Pre-Placement Checklist | BP-REG-F301 | `REG` | 🟢 | SYRS-NF-601 |
-| **SYRS-F-302** | Slot Atomic Integrity | BP-PLC-F302 | `PLC` | 🟢 | SYRS-NF-601, SYRS-NF-701 |
-| **SYRS-F-303** | Digital Guidance | BP-OPR-F303 | `OPR` | 🟢 | SYRS-NF-403 |
-| **SYRS-F-304** | Task Management | BP-OPR-F304 | `OPR` | 🟢 | SYRS-NF-702 |
+| **SYRS-F-301** | Pre-Placement Checklist | BP-SYRS-F-301-REG | `REG` | 🟢 | SYRS-NF-601 |
+| **SYRS-F-302** | Slot Atomic Integrity | BP-SYRS-F-302-PLC | `PLC` | 🟢 | SYRS-NF-601, SYRS-NF-701 |
+| **SYRS-F-303** | Digital Guidance | BP-SYRS-F-303-OPR | `OPR` | 🟢 | SYRS-NF-403 |
+| **SYRS-F-304** | Task Management | BP-SYRS-F-304-OPR | `OPR` | 🟢 | SYRS-NF-702 |
 
 **Special Enforcement for SYRS-F-302:** Blueprint must explicitly document:
 
@@ -81,11 +81,11 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-401** | Temporal Presence | BP-OPR-F401 | `OPR` | 🟢 | SYRS-NF-401 |
-| **SYRS-F-402** | Absence Orchestration | BP-OPR-F402 | `OPR` | 🟢 | SYRS-NF-502 |
-| **SYRS-F-403** | Dual-Supervision Journals | BP-OPR-F403 | `OPR` | 🟢 | SYRS-NF-502, SYRS-NF-503 |
-| **SYRS-F-404** | Forensic Evidence | BP-OPR-F404 | `OPR` | 🟢 | SYRS-NF-503 |
-| **SYRS-F-405** | On-site Monitoring | BP-OPR-F405 | `OPR` | 🟢 | SYRS-NF-701 |
+| **SYRS-F-401** | Temporal Presence | BP-SYRS-F-401-OPR | `OPR` | 🟢 | SYRS-NF-401 |
+| **SYRS-F-402** | Absence Orchestration | BP-SYRS-F-402-OPR | `OPR` | 🟢 | SYRS-NF-502 |
+| **SYRS-F-403** | Dual-Supervision Journals | BP-SYRS-F-403-OPR | `OPR` | 🟢 | SYRS-NF-502, SYRS-NF-503 |
+| **SYRS-F-404** | Forensic Evidence | BP-SYRS-F-404-OPR | `OPR` | 🟢 | SYRS-NF-503 |
+| **SYRS-F-405** | On-site Monitoring | BP-SYRS-F-405-OPR | `OPR` | 🟢 | SYRS-NF-701 |
 
 ---
 
@@ -93,11 +93,11 @@ employed:
 
 | Requirement ID | Requirement Name | Design Blueprint | Scope | Status | Mandatory NFR Linkage |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SYRS-F-103** | Authoritative Reporting | BP-DOC-F103 | `DOC` | 🟢 | SYRS-NF-503 |
-| **SYRS-F-501** | Rubric-Based Evaluation | BP-EVAL-F501 | `EVAL` | 🟢 | SYRS-NF-702 |
-| **SYRS-F-502** | Compliance Automation | BP-EVAL-F502 | `EVAL` | 🟢 | SYRS-NF-702 |
-| **SYRS-F-503** | Readiness Auditing | BP-EVAL-F503 | `EVAL` | 🟢 | SYRS-NF-701 |
-| **SYRS-F-504** | Visual Analytics | BP-EVAL-F504 | `EVAL` | 🟢 | SYRS-NF-401 |
+| **SYRS-F-103** | Authoritative Reporting | BP-SYRS-F-103-DOC | `DOC` | 🟢 | SYRS-NF-503 |
+| **SYRS-F-501** | Rubric-Based Evaluation | BP-SYRS-F-501-EVAL | `EVAL` | 🟢 | SYRS-NF-702 |
+| **SYRS-F-502** | Compliance Automation | BP-SYRS-F-502-EVAL | `EVAL` | 🟢 | SYRS-NF-702 |
+| **SYRS-F-503** | Readiness Auditing | BP-SYRS-F-503-EVAL | `EVAL` | 🟢 | SYRS-NF-701 |
+| **SYRS-F-504** | Visual Analytics | BP-SYRS-F-504-EVAL | `EVAL` | 🟢 | SYRS-NF-401 |
 
 ---
 
@@ -119,10 +119,10 @@ all SyRS-NF have their own dedicated architectural blueprint.
 
 | NFR Domain | Requirement ID | Blueprint ID | Verification Artifact |
 | :--- | :--- | :--- | :--- |
-| **UI/UX** | SYRS-NF-401 – 405 | `BP-UX-001` | UI Review + Media Expert Validation |
-| **Security** | SYRS-NF-501 – 504 | `BP-SEC-001` | Security Test Suite |
-| **Architecture** | SYRS-NF-601 – 603 | `BP-ARCH-001` | Architecture Review |
-| **Quality** | SYRS-NF-701 – 703 | `BP-QA-001` | 3S Audit Checklist |
+| **UI/UX** | SYRS-NF-401 – 405 | `BP-SYRS-NF-401-UX` | UI Review + Media Expert Validation |
+| **Security** | SYRS-NF-501 – 504 | `BP-SYRS-NF-501-SEC` | Security Test Suite |
+| **Architecture** | SYRS-NF-601 – 603 | `BP-SYRS-NF-601-ARCH` | Architecture Review |
+| **Quality** | SYRS-NF-701 – 703 | `BP-SYRS-NF-701-QA` | 3S Audit Checklist |
 
 ---
 
@@ -130,9 +130,9 @@ all SyRS-NF have their own dedicated architectural blueprint.
 
 | Requirement ID | Blueprint | Evidence Required |
 | :--- | :--- | :--- |
-| **SYRS-V-001** | BP-VNV-001 | Media Expert Report |
-| **SYRS-V-002** | BP-VNV-002 | Curriculum Compliance Audit |
-| **SYRS-V-003** | BP-VNV-003 | User Acceptance Test Report |
+| **SYRS-V-001** | BP-SYRS-V-001-VNV | Media Expert Report |
+| **SYRS-V-002** | BP-SYRS-V-002-VNV | Curriculum Compliance Audit |
+| **SYRS-V-003** | BP-SYRS-V-003-VNV | User Acceptance Test Report |
 
 ---
 

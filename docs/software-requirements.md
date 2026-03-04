@@ -9,7 +9,7 @@ developmental, architectural, and verification activities.
 > the requirements or structure defined herein requires a formal architectural review.
 >
 > **ID Permanency & Backward Compatibility:** All **Requirement IDs** (e.g., `SYRS-F-101`) and
-> **Blueprint IDs** (e.g., `BP-SYS-F101`) are **Permanent and Immutable**. Once defined and
+> **Blueprint IDs** (e.g., `BP-SYRS-F-101-SYS`) are **Permanent and Immutable**. Once defined and
 > referenced in the baseline, these identifiers must NOT be changed. Modifying an existing ID is
 > strictly classified as a **Backward Incompatibility** violation and is prohibited to preserve
 > end-to-end traceability.
@@ -52,7 +52,7 @@ The system must satisfy the operational needs of the following identified stakeh
 
 ### 3.1 System Initialization & Orchestration (Setup & Admin)
 
-- **[SYRS-F-101]**: **Installation Wizard**: The system shall provide a sequential 8-step wizard to
+- **[SYRS-F-101]**: **Setup Wizard**: The system shall provide a sequential 8-step wizard to
   orchestrate environment auditing, school identity creation, and super-admin initialization.
 - **[SYRS-F-102]**: **Setup Protection**: The system shall enforce a "Single-Install" invariant,
   locking setup routes once the `app_installed` state is achieved.

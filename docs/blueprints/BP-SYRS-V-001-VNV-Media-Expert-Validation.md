@@ -1,6 +1,6 @@
-# Application Blueprint: Media Expert Validation (BP-VNV-001)
+# Application Blueprint: Media Expert Validation (BP-SYRS-V-001-VNV)
 
-**Blueprint ID**: `BP-VNV-001` | **Requirement ID**: `SYRS-V-001` | **Scope**:
+**Blueprint ID**: `BP-SYRS-V-001-VNV` | **Requirement ID**: `SYRS-V-001` | **Scope**:
 `Verification & Validation`
 
 ---

@@ -1,13 +1,13 @@
-# Application Blueprint: Installation Wizard (BP-SYS-F101)
+# Application Blueprint: Setup Wizard (BP-SYRS-F-101-SYS)
 
-**Blueprint ID**: `BP-SYS-F101` | **Requirement ID**: `SYRS-F-101`, `STRS-05` | **Scope**: `System Core`
+**Blueprint ID**: `BP-SYRS-F-101-SYS` | **Requirement ID**: `SYRS-F-101`, `STRS-05` | **Scope**: `System Core`
 
 ---
 
 ## 1. Strategic Context
 
 - **Spec Alignment**: This blueprint authorizes the construction of the sequential 8-step wizard 
-  required to satisfy **[SYRS-F-101]** (Installation Wizard) and **[SYRS-C-004]** (Branding).
+  required to satisfy **[SYRS-F-101]** (Setup Wizard) and **[SYRS-C-004]** (Branding).
 - **Objective**: Establish a secure, deterministic, and auditable bootstrapping mechanism ensuring 
   the system environment is fully validated before any domain operations are permitted.
 - **Rationale**: A Modular Monolith requires a coordinated _Cold Start_ to initialize shared state, 
@@ -70,7 +70,7 @@ using the key pattern `setup_step_{name}`.
 1.  **Welcome** (`SetupWelcome`): Initialize session and verify `app_installed = false`.
 2.  **Environment Audit** (`EnvironmentSetup`): Validate PHP 8.4+ and mandatory extensions.
 3.  **School Identity** (`SchoolSetup`): Define the authoritative institution.
-4.  **Super-Admin Account** (`AccountSetup`): link to `BP-ID-F201` for encrypted profile creation.
+4.  **Super-Admin Account** (`AccountSetup`): link to `BP-SYRS-F-201-ID` for encrypted profile creation.
 5.  **Primary Department** (`DepartmentSetup`): Establish the first academic boundary.
 6.  **Internship Program** (`InternshipSetup`): Set the initial vocational parameters.
 7.  **System Configuration** (`SystemSetup`): Finalize SMTP and technical invariants.

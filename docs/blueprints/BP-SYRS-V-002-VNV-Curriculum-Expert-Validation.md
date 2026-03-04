@@ -1,6 +1,6 @@
-# Application Blueprint: Curriculum Expert Validation (BP-VNV-002)
+# Application Blueprint: Curriculum Expert Validation (BP-SYRS-V-002-VNV)
 
-**Blueprint ID**: `BP-VNV-002` | **Requirement ID**: `SYRS-V-002` | **Scope**:
+**Blueprint ID**: `BP-SYRS-V-002-VNV` | **Requirement ID**: `SYRS-V-002` | **Scope**:
 `Verification & Validation`
 
 ---

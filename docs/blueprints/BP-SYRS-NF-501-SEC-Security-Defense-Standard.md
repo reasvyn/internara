@@ -1,6 +1,6 @@
-# Application Blueprint: Security Defense Standard (BP-SEC-001)
+# Application Blueprint: Security Defense Standard (BP-SYRS-NF-501-SEC)
 
-**Blueprint ID**: `BP-SEC-001` | **Requirement ID**: `SYRS-NF-501` to `SYRS-NF-504` | **Scope**: `Security`
+**Blueprint ID**: `BP-SYRS-NF-501-SEC` | **Requirement ID**: `SYRS-NF-501` to `SYRS-NF-504` | **Scope**: `Security`
 
 ---
 

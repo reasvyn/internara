@@ -1,6 +1,6 @@
-# Application Blueprint: Setup Protection (BP-SYS-F102)
+# Application Blueprint: Setup Protection (BP-SYRS-F-102-SYS)
 
-**Blueprint ID**: `BP-SYS-F102` | **Requirement ID**: `SYRS-F-102`, `STRS-05` | **Scope**: `System Core`
+**Blueprint ID**: `BP-SYRS-F-102-SYS` | **Requirement ID**: `SYRS-F-102`, `STRS-05` | **Scope**: `System Core`
 
 ---
 

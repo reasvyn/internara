@@ -1,6 +1,6 @@
-# Application Blueprint: Visual Analytics (BP-EVAL-F504)
+# Application Blueprint: Visual Analytics (BP-SYRS-F-504-EVAL)
 
-**Blueprint ID**: `BP-EVAL-F504` | **Requirement ID**: `SYRS-F-504`, `STRS-01`, `STRS-02`, `STRS-03`, `STRS-04` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-504-EVAL` | **Requirement ID**: `SYRS-F-504`, `STRS-01`, `STRS-02`, `STRS-03`, `STRS-04` | **Scope**:
 `Assessment & Synthesis`
 
 ---

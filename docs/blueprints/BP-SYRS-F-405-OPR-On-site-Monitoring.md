@@ -1,6 +1,6 @@
-# Application Blueprint: On-site Monitoring (BP-OPR-F405)
+# Application Blueprint: On-site Monitoring (BP-SYRS-F-405-OPR)
 
-**Blueprint ID**: `BP-OPR-F405` | **Requirement ID**: `SYRS-F-405`, `STRS-02` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-405-OPR` | **Requirement ID**: `SYRS-F-405`, `STRS-02` | **Scope**:
 `Operational Monitoring`
 
 ---

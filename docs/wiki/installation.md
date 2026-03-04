@@ -79,7 +79,7 @@ The system will be accessible at `http://localhost:8000`.
 > **Note**: `composer dev` is intended for evaluation and local development. For high-availability
 > production deployment, follow the **[Production Deployment Guide](advanced/deployment.md)**.
 
-## 6. Post-Installation Wizard
+## 6. Post-Setup Wizard
 
 After launching the server, visit the application in your browser. You will be automatically
 redirected to the **Setup Wizard**, which will guide you through:

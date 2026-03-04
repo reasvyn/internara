@@ -1,6 +1,6 @@
-# Application Blueprint: Temporal Presence (BP-OPR-F401)
+# Application Blueprint: Temporal Presence (BP-SYRS-F-401-OPR)
 
-**Blueprint ID**: `BP-OPR-F401` | **Requirement ID**: `SYRS-F-401`, `STRS-01` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-401-OPR` | **Requirement ID**: `SYRS-F-401`, `STRS-01` | **Scope**:
 `Vocational Telemetry`
 
 ---

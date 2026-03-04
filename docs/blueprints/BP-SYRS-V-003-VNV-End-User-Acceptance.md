@@ -1,6 +1,6 @@
-# Application Blueprint: End-User Acceptance (BP-VNV-003)
+# Application Blueprint: End-User Acceptance (BP-SYRS-V-003-VNV)
 
-**Blueprint ID**: `BP-VNV-003` | **Requirement ID**: `SYRS-V-003` | **Scope**:
+**Blueprint ID**: `BP-SYRS-V-003-VNV` | **Requirement ID**: `SYRS-V-003` | **Scope**:
 `Verification & Validation`
 
 ---

@@ -1,6 +1,6 @@
-# Application Blueprint: Academic Scoping (BP-ORG-F202)
+# Application Blueprint: Academic Scoping (BP-SYRS-F-202-ORG)
 
-**Blueprint ID**: `BP-ORG-F202` | **Requirement ID**: `SYRS-F-202`, `STRS-04`, `STRS-05` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-202-ORG` | **Requirement ID**: `SYRS-F-202`, `STRS-04`, `STRS-05` | **Scope**:
 `Institutional Architecture`
 
 ---

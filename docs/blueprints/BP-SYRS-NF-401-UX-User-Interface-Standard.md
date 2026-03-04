@@ -1,6 +1,6 @@
-# Application Blueprint: User Interface Standard (BP-UX-001)
+# Application Blueprint: User Interface Standard (BP-SYRS-NF-401-UX)
 
-**Blueprint ID**: `BP-UX-001` | **Requirement ID**: `SYRS-NF-401` to `SYRS-NF-405` | **Scope**: `UI/UX`
+**Blueprint ID**: `BP-SYRS-NF-401-UX` | **Requirement ID**: `SYRS-NF-401` to `SYRS-NF-405` | **Scope**: `UI/UX`
 
 ---
 
@@ -44,7 +44,7 @@ Guide**.
 
 ## 4. Verification & Quality Gates
 
-- **Media Expert Validation**: Must pass `BP-VNV-001` criteria.
+- **Media Expert Validation**: Must pass `BP-SYRS-V-001-VNV` criteria.
 - **Accessibility Audit**: Automated Lighthouse/Pa11y scans required for all core views.
 - **Standard Audit**: 3S Audit must confirm zero hard-coded strings.
 

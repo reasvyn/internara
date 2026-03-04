@@ -1,6 +1,6 @@
-# Application Blueprint: Authoritative Reporting (BP-DOC-F103)
+# Application Blueprint: Authoritative Reporting (BP-SYRS-F-103-DOC)
 
-**Blueprint ID**: `BP-DOC-F103` | **Requirement ID**: `SYRS-F-103`, `STRS-04`, `STRS-05` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-103-DOC` | **Requirement ID**: `SYRS-F-103`, `STRS-04`, `STRS-05` | **Scope**:
 `Intelligence & Delivery`
 
 ---

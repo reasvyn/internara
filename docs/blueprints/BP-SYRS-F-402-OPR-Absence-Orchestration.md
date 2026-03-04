@@ -1,6 +1,6 @@
-# Application Blueprint: Absence Orchestration (BP-OPR-F402)
+# Application Blueprint: Absence Orchestration (BP-SYRS-F-402-OPR)
 
-**Blueprint ID**: `BP-OPR-F402` | **Requirement ID**: `SYRS-F-402`, `STRS-01`, `STRS-04` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-402-OPR` | **Requirement ID**: `SYRS-F-402`, `STRS-01`, `STRS-04` | **Scope**:
 `Vocational Telemetry`
 
 ---

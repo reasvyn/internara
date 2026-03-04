@@ -1,6 +1,6 @@
-# Application Blueprint: Quality Assurance Standard (BP-QA-001)
+# Application Blueprint: Quality Assurance Standard (BP-SYRS-NF-701-QA)
 
-**Blueprint ID**: `BP-QA-001` | **Requirement ID**: `SYRS-NF-701` to `SYRS-NF-703` | **Scope**: `Quality`
+**Blueprint ID**: `BP-SYRS-NF-701-QA` | **Requirement ID**: `SYRS-NF-701` to `SYRS-NF-703` | **Scope**: `Quality`
 
 ---
 

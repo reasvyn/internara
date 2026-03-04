@@ -1,6 +1,6 @@
-# Application Blueprint: Slot Atomic Integrity (BP-PLC-F302)
+# Application Blueprint: Slot Atomic Integrity (BP-SYRS-F-302-PLC)
 
-**Blueprint ID**: `BP-PLC-F302` | **Requirement ID**: `SYRS-F-302`, `STRS-04` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-302-PLC` | **Requirement ID**: `SYRS-F-302`, `STRS-04` | **Scope**:
 `Internship Lifecycle`
 
 ---

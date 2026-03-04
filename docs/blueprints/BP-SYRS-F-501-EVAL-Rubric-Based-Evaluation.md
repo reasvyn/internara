@@ -1,6 +1,6 @@
-# Application Blueprint: Rubric-Based Evaluation (BP-EVAL-F501)
+# Application Blueprint: Rubric-Based Evaluation (BP-SYRS-F-501-EVAL)
 
-**Blueprint ID**: `BP-EVAL-F501` | **Requirement ID**: `SYRS-F-501`, `STRS-02`, `STRS-03` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-501-EVAL` | **Requirement ID**: `SYRS-F-501`, `STRS-02`, `STRS-03` | **Scope**:
 `Assessment & Synthesis`
 
 ---

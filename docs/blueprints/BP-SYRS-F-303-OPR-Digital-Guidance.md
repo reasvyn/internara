@@ -1,6 +1,6 @@
-# Application Blueprint: Digital Guidance (BP-OPR-F303)
+# Application Blueprint: Digital Guidance (BP-SYRS-F-303-OPR)
 
-**Blueprint ID**: `BP-OPR-F303` | **Requirement ID**: `SYRS-F-303`, `STRS-01` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-303-OPR` | **Requirement ID**: `SYRS-F-303`, `STRS-01` | **Scope**:
 `Internship Lifecycle`
 
 ---

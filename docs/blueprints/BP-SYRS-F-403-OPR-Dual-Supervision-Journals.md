@@ -1,6 +1,6 @@
-# Application Blueprint: Dual-Supervision Journals (BP-OPR-F403)
+# Application Blueprint: Dual-Supervision Journals (BP-SYRS-F-403-OPR)
 
-**Blueprint ID**: `BP-OPR-F403` | **Requirement ID**: `SYRS-F-403`, `STRS-01`, `STRS-02`, `STRS-03` | **Scope**:
+**Blueprint ID**: `BP-SYRS-F-403-OPR` | **Requirement ID**: `SYRS-F-403`, `STRS-01`, `STRS-02`, `STRS-03` | **Scope**:
 `Vocational Telemetry`
 
 ---

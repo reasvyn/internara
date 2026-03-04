@@ -1,6 +1,6 @@
-# Application Blueprint: Unified Profile (BP-ID-F201)
+# Application Blueprint: Unified Profile (BP-SYRS-F-201-ID)
 
-**Blueprint ID**: `BP-ID-F201` | **Requirement ID**: `SYRS-F-201`, `STRS-05` | **Scope**: `Identity & Security`
+**Blueprint ID**: `BP-SYRS-F-201-ID` | **Requirement ID**: `SYRS-F-201`, `STRS-05` | **Scope**: `Identity & Security`
 
 ---
 

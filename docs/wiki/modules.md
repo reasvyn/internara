@@ -28,7 +28,7 @@ These modules provide the technical backbone and shared services used by the ent
 | **Notification** | Messaging            | Provides a unified infrastructure for real-time UI alerts (Native Toasts) and multi-channel system notifications.                            |
 | **Media**        | File Management      | Manages secure file storage, image processing, and media collections via standardized model concerns.                                        |
 | **Log**          | Audit Trail          | Records activity audit trails and forensic system logs with recursive automated PII masking.                                                 |
-| **Setup**        | Installation         | Orchestrates environment initialization, system auditing, Onboarding orchestration, and the Installation Wizard.                             |
+| **Setup**        | Installation         | Orchestrates environment initialization, system auditing, Onboarding orchestration, and the Setup Wizard.                             |
 
 ## 2. Domain Modules (Business Logic)
 

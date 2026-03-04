@@ -1,6 +1,6 @@
-# Application Blueprint: Modular Architecture Standard (BP-ARCH-001)
+# Application Blueprint: Modular Architecture Standard (BP-SYRS-NF-601-ARCH)
 
-**Blueprint ID**: `BP-ARCH-001` | **Requirement ID**: `SYRS-NF-601` to `SYRS-NF-603` | **Scope**: `Architecture`
+**Blueprint ID**: `BP-SYRS-NF-601-ARCH` | **Requirement ID**: `SYRS-NF-601` to `SYRS-NF-603` | **Scope**: `Architecture`
 
 ---
 
