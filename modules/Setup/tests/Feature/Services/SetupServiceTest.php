@@ -28,7 +28,7 @@ describe('SetupService Feature Test', function () {
             $this->superAdminService,
             $this->schoolService,
             $this->departmentService,
-            $this->internshipService
+            $this->internshipService,
         );
     });
 
@@ -41,27 +41,37 @@ describe('SetupService Feature Test', function () {
         ]);
 
         $this->schoolService->shouldReceive('getSchool')->once()->andReturn($schoolMock);
-        
+
         // Mock app_name retrieval
-        $this->settingService->shouldReceive('getValue')
+        $this->settingService
+            ->shouldReceive('getValue')
             ->with(SetupService::SETTING_APP_NAME, 'Internara')
             ->once()
             ->andReturn('Internara');
 
         // Verify branding and app_installed settings
-        $this->settingService->shouldReceive('setValue')
-            ->with(\Mockery::on(function ($settings) use ($schoolMock) {
-                return $settings[SetupService::SETTING_BRAND_NAME] === $schoolMock->name &&
-                       $settings[SetupService::SETTING_APP_INSTALLED] === true &&
-                       $settings[SetupService::SETTING_SETUP_TOKEN] === null &&
-                       str_contains($settings[SetupService::SETTING_SITE_TITLE], 'SMK Internara Test');
-            }))
+        $this->settingService
+            ->shouldReceive('setValue')
+            ->with(
+                \Mockery::on(function ($settings) use ($schoolMock) {
+                    return $settings[SetupService::SETTING_BRAND_NAME] === $schoolMock->name &&
+                        $settings[SetupService::SETTING_APP_INSTALLED] === true &&
+                        $settings[SetupService::SETTING_SETUP_TOKEN] === null &&
+                        str_contains(
+                            $settings[SetupService::SETTING_SITE_TITLE],
+                            'SMK Internara Test',
+                        );
+                }),
+            )
             ->once();
 
         // Verify session cleanup
         session(['setup_authorized' => true, 'setup_step_1' => true]);
 
-        $this->settingService->shouldReceive('getValue')
+        $this->settingService->shouldReceive('setValue')->with('setup_step_complete', true)->once();
+
+        $this->settingService
+            ->shouldReceive('getValue')
             ->with(SetupService::SETTING_APP_INSTALLED, false, true)
             ->once()
             ->andReturn(true);
@@ -69,7 +79,7 @@ describe('SetupService Feature Test', function () {
         $result = $this->setupService->finalizeSetupStep();
 
         expect($result)->toBeTrue();
-        
+
         // Verify Event
         Event::assertDispatched(SetupFinalized::class, function ($event) use ($schoolMock) {
             return $event->schoolName === $schoolMock->name;
