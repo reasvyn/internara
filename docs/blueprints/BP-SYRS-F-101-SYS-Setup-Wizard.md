@@ -200,18 +200,8 @@ artifacts must be established and maintained.
 
 ---
 
-## 9. Actionable Implementation Path
 
-1.  **Issue #Setup-1**: Implement `SystemAuditor` with PHP 8.4 diagnostic logic.
-2.  **Issue #Setup-2**: Construct `InstallerService` with transaction-safe migration logic.
-3.  **Issue #Setup-3**: Create `AppInstallCommand` (`app:install`) as the CLI entrypoint.
-4.  **Issue #Setup-4**: Develop the 8-step Livewire wizard with state persistence.
-5.  **Issue #Setup-5**: Implement `ProtectSetupRoute` middleware for permanent lockdown.
-6.  **Issue #Setup-6**: Finalize `SetupService` with the `brand_name` vs `app_name` invariant.
-
----
-
-## 10. Exit Criteria & Quality Gates
+## 9. Exit Criteria & Quality Gates
 
 - **Acceptance**: Successful 8-step walkthrough results in a fully operational administrative 
   dashboard.
