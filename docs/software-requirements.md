@@ -40,10 +40,10 @@ The system must satisfy the operational needs of the following identified stakeh
 
 | ID            | Stakeholder Role     | Operational Need                                                           |
 | :------------ | :------------------- | :------------------------------------------------------------------------- |
-| **[STRS-01]** | Instructor (Teacher) | Supervision, on-site monitoring, and competency assessment.                |
-| **[STRS-02]** | Practical Work Staff | Schedule management, location documentation, and administrative oversight. |
-| **[STRS-03]** | Student              | Activity logging, progress tracking, and viewing achievements.             |
-| **[STRS-04]** | Industry Supervisor  | Mentoring feedback, performance scoring, and student guidance.             |
+| **[STRS-01]** | Member (Student)     | Activity logging, progress tracking, and viewing achievements.             |
+| **[STRS-02]** | Instructor (Teacher) | Supervision, on-site monitoring, and competency assessment.                |
+| **[STRS-03]** | Industry Supervisor  | Mentoring feedback, performance scoring, and student guidance.             |
+| **[STRS-04]** | Practical Work Staff | Schedule management, location documentation, and administrative oversight. |
 | **[STRS-05]** | System Administrator | Identity management, system-wide configuration, and maintenance.           |
 
 ---

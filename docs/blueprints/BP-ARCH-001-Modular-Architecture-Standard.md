@@ -40,7 +40,7 @@ Architecture Guide**.
 
 ## 4. Verification & Quality Gates
 
-- **Pest Arch Auditing**: Automated architecture verification suites (`tests/Arch`).
+- **Pest Arch Auditing**: Automated architecture verification suites (`tests/Arch` and `modules/*/tests/Arch`).
 - **Dependency Audit**: Reviewer verification of zero-coupling between domain models.
 - **Strict Typing**: 100% `strict_types=1` enforcement.
 

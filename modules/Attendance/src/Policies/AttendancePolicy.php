@@ -39,4 +39,12 @@ class AttendancePolicy
     {
         return $user->can('attendance.view');
     }
+
+    /**
+     * Determine if the user can create attendance records.
+     */
+    public function create(User $user): bool
+    {
+        return $user->can('attendance.create');
+    }
 }

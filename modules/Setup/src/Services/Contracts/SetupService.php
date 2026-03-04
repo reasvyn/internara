@@ -65,7 +65,7 @@ interface SetupService
      * Checks if the application is currently marked as installed in the settings registry.
      *
      * This check is used by the `RequireSetupAccess` middleware to prevent re-running
-     * the installation wizard and to protect system settings from unauthorized overrides.
+     * the setup wizard and to protect system settings from unauthorized overrides.
      *
      * @param bool $skipCache If true, bypasses the cache to ensure an authoritative state check.
      */
@@ -74,7 +74,7 @@ interface SetupService
     /**
      * Checks if a specific setup step has been completed.
      *
-     * Used to enforce the sequential flow of the installation wizard, ensuring that
+     * Used to enforce the sequential flow of the setup wizard, ensuring that
      * prerequisite data (like School info) is established before proceeding to
      * dependent steps (like Account creation).
      *

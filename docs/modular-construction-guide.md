@@ -53,7 +53,7 @@ Internara enforces strict path mapping to maintain brevity and semantic clarity.
 | :--------------- | :----------------- | :-------------------------------------------- |
 | `src/Models/`    | Persistence Logic  | Must use `HasUuid` trait.                     |
 | `src/Services/`  | Business Logic     | Must extend `BaseService` or `EloquentQuery`. |
-| `src/Livewire/`  | UI Orchestration   | Must be "Thin" (No direct Model calls).       |
+| `src/Livewire/`  | UI Orchestration   | Must be "Thin" (No direct CRUD, Model as DTO OK). |
 | `src/Enums/`     | Domain Constants   | Shared cross-module as stable primitives.     |
 | `src/Contracts/` | Service Interfaces | Mandatory for inter-module calls.             |
 
@@ -120,11 +120,11 @@ if (!$this->userService->exists($userId)) {
 
 ## 🧪 Step 5: Verification & Validation
 
-Compliance is enforced by the **Architecture Police** (`tests/Arch.php`). Prior to committing,
+Compliance is enforced by the **Architecture Police** (`tests/Arch/` and `modules/*/tests/Arch/`). Prior to committing,
 ensure your module passes all quality gates.
 
 1.  **Mirroring Invariant**: `tests/Unit/Services/` must mirror `src/Services/`.
-2.  **Arch Audit**: `vendor/bin/pest tests/Arch.php --filter={ModuleName}`.
+2.  **Arch Audit**: `vendor/bin/pest modules/{ModuleName}/tests/Arch/`.
 3.  **Style Gate**: `composer lint`.
 
 ---

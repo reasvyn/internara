@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Modules\Status\Concerns;
 
 use Modules\Status\Enums\Status as StatusEnum;
-use Spatie\ModelStatus\HasStatuses;
+use Spatie\ModelStatus\HasStatuses as SpatieHasStatuses;
 
 /**
- * Trait HasStatus
+ * Trait HasStatuses
  *
  * Provides a standardized way to manage statuses for Eloquent models
  * using the spatie/laravel-model-status package.
  */
-trait HasStatus
+trait HasStatuses
 {
-    use HasStatuses;
+    use SpatieHasStatuses;
 
     /**
      * Override the statuses relationship to use created_at for ordering.
@@ -32,7 +32,7 @@ trait HasStatus
     }
 
     /**
-     * Standard status names (Backward Compatibility).
+     * Standard status names.
      */
     public const STATUS_ACTIVE = StatusEnum::ACTIVE->value;
 
@@ -64,7 +64,7 @@ trait HasStatus
     {
         $status = $this->getStatus();
 
-        if (! $status) {
+        if (!$status) {
             return __('status::status.unknown');
         }
 
@@ -78,7 +78,7 @@ trait HasStatus
     {
         $status = $this->getStatus();
 
-        if (! $status) {
+        if (!$status) {
             return self::DEFAULT_STATUS_COLOR;
         }
 

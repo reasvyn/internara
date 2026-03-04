@@ -126,7 +126,7 @@ class JournalService extends EloquentQuery implements Contract
         $entry = $this->find($id);
 
         // Constraint: Journal cannot be modified after it is approved or verified
-        if (in_array($entry->latestStatus()?->name, ['approved', 'verified'])) {
+        if ($this->isLocked($id)) {
             throw new AppException(
                 userMessage: 'journal::exceptions.cannot_edit_locked_journal',
                 code: 403,
@@ -210,6 +210,37 @@ class JournalService extends EloquentQuery implements Contract
         $entry->setStatus('rejected', $reason);
 
         return $entry;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function verifyField(mixed $id): JournalEntry
+    {
+        $entry = $this->find($id);
+        $entry->setStatus('verified', 'Field verification completed by Industry Mentor.');
+
+        return $entry;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function verifyAcademic(mixed $id): JournalEntry
+    {
+        $entry = $this->find($id);
+        $entry->setStatus('verified', 'Academic verification completed by Teacher.');
+
+        return $entry;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isLocked(mixed $id): bool
+    {
+        $entry = $this->find($id);
+        return in_array($entry->latestStatus()?->name, ['approved', 'verified']);
     }
 
     /**

@@ -22,6 +22,8 @@ return new class extends Migration
             $table->foreignUuid('internship_id')->constrained('internships')->cascadeOnDelete();
             $table->integer('capacity_quota')->default(1);
             $table->uuid('mentor_id')->nullable()->index();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
             $table->timestamps();
         });
     }

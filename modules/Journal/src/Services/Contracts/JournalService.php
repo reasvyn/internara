@@ -41,6 +41,21 @@ interface JournalService extends EloquentQuery
     public function reject(mixed $id, string $reason): JournalEntry;
 
     /**
+     * Confirms the vocational evidence by an Industry Mentor.
+     */
+    public function verifyField(mixed $id): JournalEntry;
+
+    /**
+     * Confirms the academic alignment by a Teacher.
+     */
+    public function verifyAcademic(mixed $id): JournalEntry;
+
+    /**
+     * Checks if a journal entry is locked for editing.
+     */
+    public function isLocked(mixed $id): bool;
+
+    /**
      * Securely attaches digital evidence (Media) to a specific journal entry.
      *
      * Facilitates the persistence of photos or documents that serve as

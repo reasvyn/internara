@@ -33,7 +33,7 @@ Internara identifies risks across several domains:
 - **Controls**: UUID v4 identity, PII encryption at rest, and mandatory RBAC policy enforcement at the Service boundary.
 
 ### 3.2 R04: Modular Coupling Drift
-- **Treatment**: Mitigation through automated **Architecture Tests** (`tests/Arch`).
+- **Treatment**: Mitigation through automated **Architecture Tests** (`tests/Arch` and `modules/*/tests/Arch`).
 - **Controls**: CI pipeline blocking cross-module physical foreign keys and direct model instantiation.
 
 ---

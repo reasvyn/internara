@@ -11,6 +11,7 @@ namespace Modules\Status\Enums;
  */
 enum Status: string
 {
+    case VERIFIED = 'verified';
     case ACTIVE = 'active';
     case PENDING = 'pending';
     case INACTIVE = 'inactive';
@@ -21,6 +22,7 @@ enum Status: string
     public function color(): string
     {
         return match ($this) {
+            self::VERIFIED => 'info',
             self::ACTIVE => 'success',
             self::PENDING => 'warning',
             self::INACTIVE => 'error',
@@ -32,6 +34,6 @@ enum Status: string
      */
     public function label(): string
     {
-        return 'status::status.'.$this->value;
+        return 'status::status.' . $this->value;
     }
 }

@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Status\Concerns\HasStatus;
+use Modules\Status\Concerns\HasStatuses;
 use Spatie\MediaLibrary\HasMedia;
 
 class Submission extends Model implements HasMedia
 {
-    use HasStatus;
+    use HasStatuses;
     use HasUuid;
     use InteractsWithActivityLog;
     use InteractsWithMedia;

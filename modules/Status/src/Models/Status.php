@@ -19,14 +19,11 @@ class Status extends SpatieStatus
     use HasUuid;
     use InteractsWithActivityLog;
 
-
     /**
      * Boot the model.
      */
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::creating(function ($model) {
             if (empty($model->{$model->getKeyName()})) {
                 $model->{$model->getKeyName()} = (string) \Illuminate\Support\Str::uuid();

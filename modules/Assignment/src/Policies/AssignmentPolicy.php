@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Assignment\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Modules\Assignment\Models\Assignment;
+use Illuminate\Database\Eloquent\Model;
 use Modules\User\Models\User;
 
 class AssignmentPolicy
@@ -17,7 +17,7 @@ class AssignmentPolicy
         return $user->hasAnyPermission(['assignment.view', 'assignment.manage']);
     }
 
-    public function view(User $user, Assignment $assignment): bool
+    public function view(User $user, Model $model): bool
     {
         return $user->hasAnyPermission(['assignment.view', 'assignment.manage']);
     }
@@ -27,12 +27,12 @@ class AssignmentPolicy
         return $user->hasPermissionTo('assignment.manage');
     }
 
-    public function update(User $user, Assignment $assignment): bool
+    public function update(User $user, Model $model): bool
     {
         return $user->hasPermissionTo('assignment.manage');
     }
 
-    public function delete(User $user, Assignment $assignment): bool
+    public function delete(User $user, Model $model): bool
     {
         return $user->hasPermissionTo('assignment.manage');
     }

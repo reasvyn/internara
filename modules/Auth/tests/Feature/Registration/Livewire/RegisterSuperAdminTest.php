@@ -27,12 +27,8 @@ describe('RegisterSuperAdmin Component', function () {
     });
 
     test('it can register a super admin successfully', function () {
-        $user = User::factory()->create();
-        $user->assignRole('super-admin');
-        $this->actingAs($user);
-
         Livewire::test(RegisterSuperAdmin::class)
-            ->set('form.name', 'System Admin')
+            ->set('form.name', 'System Admin Test')
             ->set('form.email', 'admin@internara.test')
             ->set('form.password', 'password123')
             ->set('form.password_confirmation', 'password123')
@@ -41,7 +37,9 @@ describe('RegisterSuperAdmin Component', function () {
             ->assertDispatched('super_admin_registered');
 
         $user = User::where('email', 'admin@internara.test')->first();
-        expect($user)->not->toBeNull()->and($user->hasRole('super-admin'))->toBeTrue();
+        expect($user)->not->toBeNull();
+        expect($user->hasRole('super-admin'))->toBeTrue();
+        expect($user->verified())->toBeTrue();
     });
 
     test('it validates password requirements [SYRS-NF-501]', function () {

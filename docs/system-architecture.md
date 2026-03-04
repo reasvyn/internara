@@ -58,8 +58,11 @@ Internara centralizes business logic within a structured **Application Service L
 
 **Presentation Layer**
 
-- Livewire components responsible solely for request orchestration and UI state management.
-- No embedded business rules.
+- Livewire components responsible for request orchestration and UI state management.
+- **DTO Exception**: Components may interact with Model instances for data binding and 
+  presentation (using Model as a DTO), but are strictly forbidden from invoking 
+  persistence methods (`save()`, `update()`, etc.).
+- No embedded business rules. Domain logic remains in Services.
 
 **Application / Domain Services**
 
@@ -95,6 +98,7 @@ Internara enforces **Contract-First Dependency Management**.
 - Modules may depend only on **Interfaces**, never on concrete implementations.
 - Dependency resolution must occur through container binding.
 - Circular dependencies are prohibited.
+- **Third-Party Wrapper Mandate**: Domain modules are strictly prohibited from using third-party packages directly. All external dependencies must be wrapped by an infrastructure module and exposed via explicit interfaces.
 
 Absolute zero dependency is not required. All dependencies must be:
 
@@ -201,7 +205,7 @@ The architectural principle is **Explicit Coupling over Implicit Coupling**.
 
 Internara enforces architectural integrity through:
 
-- Architecture Verification Suite (`tests/Arch`)
+- Architecture Verification Suite (`tests/Arch` and `modules/*/tests/Arch`)
 - Mandatory 3S Audit Compliance
 
 ### S1 — Secure

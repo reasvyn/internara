@@ -36,9 +36,17 @@ Each domain module provides a set of public contracts that define its available 
 
 ## 3. Data Transfer Protocols (DTOs) & Payloads
 
-To ensure type safety and cross-boundary stability, complex data is moved using **DTOs**.
+To ensure type safety and cross-boundary stability, complex data is moved using **DTOs**. But the DTOs is not provides by default. All data will be handled by Service-layer.
 
-### 3.1 Pattern: Immutable DTOs
+### 3.1 Model as DTO (Pragmatic Strategy)
+In the absence of a dedicated DTO layer, **Eloquent Models are explicitly authorized to act as
+DTOs** for the Presentation Layer (Livewire/Controllers).
+
+**Mandatory Constraint**: Boundary components may read from and bind to Model attributes, but
+**MUST NOT** invoke persistence methods (`save()`, `update()`, `delete()`). All mutations must
+be orchestrated by the Service Layer.
+
+### 3.2 Pattern: Immutable DTOs
 All DTOs must be implemented as PHP 8.4+ readonly classes.
 
 ```php

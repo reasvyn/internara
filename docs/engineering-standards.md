@@ -171,7 +171,11 @@ Livewire components function as boundary controllers.
 
 ### Invariants:
 
-- No embedded business rules.
+- **Thin Component**: Components may use Model classes exclusively as Data Transfer Objects
+  (DTOs) for data binding and display.
+- **No Embedded Business Rules**: Complex domain logic and validation must reside in Services.
+- **No Direct Persistence**: Invoking CRUD methods (`save()`, `update()`, `delete()`) directly on
+  Models within a component is prohibited. All mutations must be delegated to the Service Layer.
 - Server-side validation mandatory.
 - Mobile-first default construction.
 - OWASP A01 and A03 mitigations must be enforced at entry boundaries.
@@ -289,6 +293,7 @@ Aligned with ISO/IEC 29119.
 
 - Infrastructure modules may be depended upon.
 - Domain modules must never depend directly on other domain modules.
+- **Third-Party Dependency Wrapping**: Domain modules must not use third-party packages or libraries directly. All external dependencies must be wrapped within a specific infrastructure or shared module and consumed via Service Contracts.
 
 ### 17.2 Data Isolation
 

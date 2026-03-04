@@ -45,10 +45,19 @@ class PermissionSeeder extends Seeder
             'company.view' => ['View industry partners', 'Internship'],
             'company.manage' => ['Manage industry partners', 'Internship'],
 
+            // Assignments
+            'assignment.view' => ['View assignments', 'Assignment'],
+            'assignment.manage' => ['Manage assignments', 'Assignment'],
+
             // Academic Operations
             'attendance.view' => ['View attendance logs', 'Attendance'],
+            'attendance.create' => ['Create attendance records', 'Attendance'],
             'attendance.manage' => ['Manage attendance records', 'Attendance'],
             'journal.view' => ['View student journals', 'Journal'],
+            'journal.create' => ['Create student journals', 'Journal'],
+            'journal.update' => ['Update student journals', 'Journal'],
+            'journal.delete' => ['Delete student journals', 'Journal'],
+            'journal.validate' => ['Verify and validate student journals', 'Journal'],
             'journal.manage' => ['Manage and verify journals', 'Journal'],
             'mentoring.manage' => ['Manage mentoring visits and logs', 'Mentor'],
             'assessment.manage' => ['Manage competency assessments', 'Assessment'],

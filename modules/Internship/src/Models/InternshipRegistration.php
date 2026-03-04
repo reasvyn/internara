@@ -12,7 +12,7 @@ use Modules\Internship\Models\Concerns\HasRequirements;
 use Modules\Log\Concerns\HandlesAuditLog;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Status\Concerns\HasStatus;
+use Modules\Status\Concerns\HasStatuses;
 use Modules\User\Models\Concerns\HasUserRelation;
 
 class InternshipRegistration extends Model
@@ -20,7 +20,7 @@ class InternshipRegistration extends Model
     use HandlesAuditLog;
     use HasFactory;
     use HasRequirements;
-    use HasStatus;
+    use HasStatuses;
     use HasUserRelation; // For student relation
     use HasUuid;
     use InteractsWithActivityLog;

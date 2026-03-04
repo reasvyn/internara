@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Status\Concerns\HasStatus;
+use Modules\Status\Concerns\HasStatuses;
 
 class AttendanceLog extends Model
 {
     use HasAcademicYear;
     use HasFactory;
-    use HasStatus;
+    use HasStatuses;
     use HasUuid;
     use InteractsWithActivityLog;
 

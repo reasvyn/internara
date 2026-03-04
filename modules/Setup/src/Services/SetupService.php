@@ -77,11 +77,11 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function requireSetupAccess(string $prevStep = ''): bool
     {
-        if (! $prevStep) {
-            return ! $this->isAppInstalled();
+        if (!$prevStep) {
+            return !$this->isAppInstalled();
         }
 
-        if (! $this->isStepCompleted($prevStep, true)) {
+        if (!$this->isStepCompleted($prevStep, true)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -102,7 +102,7 @@ class SetupService extends BaseService implements Contracts\SetupService
             return $this->finalizeSetupStep();
         }
 
-        if ($reqRecord && ! $this->isRecordExists($reqRecord)) {
+        if ($reqRecord && !$this->isRecordExists($reqRecord)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_record_exists',
                 code: 403,
@@ -137,7 +137,10 @@ class SetupService extends BaseService implements Contracts\SetupService
                 // [SYRS-C-004] Branding Invariant
                 self::SETTING_BRAND_NAME => $schoolRecord->name,
                 self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
-                self::SETTING_SITE_TITLE => $schoolRecord->name . ' - ' . $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
+                self::SETTING_SITE_TITLE =>
+                    $schoolRecord->name .
+                    ' - ' .
+                    $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
                 self::SETTING_APP_INSTALLED => true,
                 self::SETTING_SETUP_TOKEN => null,
             ];
@@ -145,10 +148,12 @@ class SetupService extends BaseService implements Contracts\SetupService
             $this->settingService->setValue($settings);
 
             // [S3 - Scalable] Dispatch finalization event
-            event(new \Modules\Setup\Events\SetupFinalized(
-                schoolName: $schoolRecord->name,
-                installedAt: now()->toIso8601String(),
-            ));
+            event(
+                new \Modules\Setup\Events\SetupFinalized(
+                    schoolName: $schoolRecord->name,
+                    installedAt: now()->toIso8601String(),
+                ),
+            );
 
             // Targeted session cleanup
             Session::forget(self::SESSION_SETUP_AUTHORIZED);
@@ -157,6 +162,8 @@ class SetupService extends BaseService implements Contracts\SetupService
             }
 
             Session::regenerate();
+
+            $this->storeStep('complete');
 
             return $this->isAppInstalled(true);
         });

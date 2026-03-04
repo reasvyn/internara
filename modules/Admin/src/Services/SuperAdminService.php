@@ -130,7 +130,7 @@ class SuperAdminService extends EloquentQuery implements Contract
                 $user->assignRole(Role::SUPER_ADMIN->value);
             }
 
-            $user->setStatus(User::STATUS_ACTIVE);
+            $user->setStatus(\Modules\Status\Enums\Status::VERIFIED->value);
             $user->markEmailAsVerified();
 
             if (isset($data['avatar_file'])) {

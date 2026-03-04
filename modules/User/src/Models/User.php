@@ -17,7 +17,7 @@ use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Concerns\HasProfileRelation;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Status\Concerns\HasStatus;
+use Modules\Status\Concerns\HasStatuses;
 use Modules\User\Database\Factories\UserFactory;
 use Modules\User\Support\UsernameGenerator;
 use Spatie\MediaLibrary\HasMedia;
@@ -31,7 +31,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     use HasFactory;
     use HasProfileRelation;
     use HasRoles;
-    use HasStatus;
+    use HasStatuses;
     use HasUuid;
     use InteractsWithActivityLog;
     use InteractsWithMedia;
@@ -96,8 +96,19 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn (string $word) => Str::substr($word, 0, 1))
+            ->map(fn(string $word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Check if the user is verified (email verified AND status is verified).
+     */
+    public function verified(): bool
+    {
+        $isEmailVerified = $this->hasVerifiedEmail();
+        $isStatusVerified = $this->getStatus() === \Modules\Status\Enums\Status::VERIFIED;
+
+        return $isEmailVerified && $isStatusVerified;
     }
 
     /**
