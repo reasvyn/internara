@@ -104,7 +104,7 @@ foreach ($modules as $module) {
                 'Modules\\Status',
                 'Modules\\Log',
                 'Modules\\Media',
-                'Modules\\User', // Spatie Permission and Media usage
+                'Modules\\User',
             ]);
     });
 }
