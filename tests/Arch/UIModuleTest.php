@@ -21,14 +21,15 @@ describe('UI: Architecture Invariants', function () {
             ->toExtend('Illuminate\Support\Facades\Facade');
     });
 
-    arch('ui: strict presentation purity')
-        ->expect('Modules\UI')
-        ->classes()
-        ->not->toUse([
-            'Modules\Assignment',
-            'Modules\Attendance',
-            'Modules\Internship',
-            'Modules\Journal',
-            'Modules\Assessment',
-        ]);
+    test('ui: strict presentation purity', function () {
+        expect('Modules\UI')
+            ->classes()
+            ->not->toUse([
+                'Modules\Assignment',
+                'Modules\Attendance',
+                'Modules\Internship',
+                'Modules\Journal',
+                'Modules\Assessment',
+            ]);
+    });
 });

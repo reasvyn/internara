@@ -14,13 +14,13 @@ foreach ($modules as $module) {
     describe("{$module} Module", function () use ($module, $modulesPath) {
         // 3.1 Model Isolation & Identity
         if ($module !== 'Shared' && is_dir("{$modulesPath}/{$module}/src/Models")) {
-            arch("domain: {$module} models are private")
+            test("domain: {$module} models are private")
                 ->expect("Modules\\{$module}\\Models")
                 ->classes()
                 ->not->toBeUsedIn('Modules')
                 ->ignoring("Modules\\{$module}");
 
-            arch("persistence: {$module} models use uuid v4 identity")
+            test("persistence: {$module} models use uuid v4 identity")
                 ->expect("Modules\\{$module}\\Models")
                 ->classes()
                 ->toUseTrait('Modules\\Shared\\Models\\Concerns\\HasUuid')
@@ -37,7 +37,7 @@ foreach ($modules as $module) {
 
         // 3.2 Service Layer Mandate (BaseService or EloquentQuery - CQRS dualism)
         if ($module !== 'Shared' && is_dir("{$modulesPath}/{$module}/src/Services")) {
-            arch("domain: {$module} services extend authoritative base classes")
+            test("domain: {$module} services extend authoritative base classes")
                 ->expect("Modules\\{$module}\\Services")
                 ->classes()
                 ->toExtend('Modules\\Shared\\Services\\BaseService')
@@ -46,7 +46,7 @@ foreach ($modules as $module) {
                     "Modules\\{$module}\\Services\\Concerns",
                 ]);
 
-            arch("domain: {$module} respects modular sovereignty")
+            test("domain: {$module} respects modular sovereignty")
                 ->expect("Modules\\{$module}")
                 ->classes()
                 ->not->toUse('Modules')
@@ -72,7 +72,7 @@ foreach ($modules as $module) {
 
         // 3.3 Thin Component Rule (Model as DTO OK, CRUD Forbidden)
         if (is_dir("{$modulesPath}/{$module}/src/Livewire")) {
-            arch("domain: {$module} livewire components respect isolation")
+            test("domain: {$module} livewire components respect isolation")
                 ->expect("Modules\\{$module}\\Livewire")
                 ->classes()
                 ->not->toUse('Modules')
@@ -88,13 +88,13 @@ foreach ($modules as $module) {
         }
 
         // 3.4 Namespace Omission Rule
-        arch("standards: {$module} omits src from namespace")
+        test("standards: {$module} omits src from namespace")
             ->expect("Modules\\{$module}")
             ->classes()
             ->not->toUse("Modules\\{$module}\\src");
 
         // 3.5 Third-Party Wrapper Mandate
-        arch("Dependency: {$module} has not used third-party directly")
+        test("Dependency: {$module} has not used third-party directly")
             ->expect("Modules\\{$module}")
             ->classes()
             ->not->toUse(['Spatie', 'Livewire\Volt', 'Barryvdh', 'Mhmiton'])
