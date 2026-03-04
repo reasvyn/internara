@@ -1,6 +1,6 @@
 # Application Blueprint: Pre-Placement Checklist (BP-REG-F301)
 
-**Blueprint ID**: `BP-REG-F301` | **Requirement ID**: `SYRS-F-301` | **Scope**:
+**Blueprint ID**: `BP-REG-F301` | **Requirement ID**: `SYRS-F-301`, `STRS-01`, `STRS-04` | **Scope**:
 `Internship Lifecycle`
 
 ---

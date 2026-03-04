@@ -1,6 +1,6 @@
 # Application Blueprint: Hierarchical Account Creation (BP-ID-F203)
 
-**Blueprint ID**: `BP-ID-F203` | **Requirement ID**: `SYRS-F-203` | **Scope**: `Identity & Security`
+**Blueprint ID**: `BP-ID-F203` | **Requirement ID**: `SYRS-F-203`, `STRS-04`, `STRS-05` | **Scope**: `Identity & Security`
 
 ---
 

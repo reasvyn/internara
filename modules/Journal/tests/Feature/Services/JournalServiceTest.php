@@ -12,7 +12,7 @@ beforeEach(function () {
     $this->journalService = app(JournalService::class);
 });
 
-test('it can create a journal entry', function () {
+test('it can create a journal entry [STRS-01] [SYRS-F-403]', function () {
     $student = User::factory()->create();
     $registration = InternshipRegistration::factory()->create(['student_id' => $student->id]);
 
@@ -37,7 +37,7 @@ test('it can create a journal entry', function () {
     ]);
 });
 
-test('it can submit a journal entry', function () {
+test('it can submit a journal entry [STRS-01] [SYRS-F-403]', function () {
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('draft');
 
@@ -50,7 +50,7 @@ test('it can submit a journal entry', function () {
     ]);
 });
 
-test('it can approve a journal entry', function () {
+test('it can approve a journal entry [STRS-02] [SYRS-F-403]', function () {
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('submitted');
 
@@ -64,7 +64,7 @@ test('it can approve a journal entry', function () {
     ]);
 });
 
-test('it cannot update an approved journal entry', function () {
+test('it cannot update an approved journal entry [STRS-01] [SYRS-F-403]', function () {
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('approved');
 

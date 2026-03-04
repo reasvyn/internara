@@ -1,6 +1,6 @@
 # Application Blueprint: Forensic Evidence (BP-OPR-F404)
 
-**Blueprint ID**: `BP-OPR-F404` | **Requirement ID**: `SYRS-F-404` | **Scope**:
+**Blueprint ID**: `BP-OPR-F404` | **Requirement ID**: `SYRS-F-404`, `STRS-01`, `STRS-02`, `STRS-03` | **Scope**:
 `Vocational Telemetry`
 
 ---

@@ -11,7 +11,7 @@ use Modules\User\Services\Contracts\UserService;
 
 
 
-test('edit lock audit: student cannot update an approved journal', function () {
+test('edit lock audit: student cannot update an approved journal [STRS-01] [SYRS-F-403]', function () {
     $student = app(UserService::class)->factory()->create();
     $this->actingAs($student);
 
@@ -26,7 +26,7 @@ test('edit lock audit: student cannot update an approved journal', function () {
     );
 });
 
-test('window enforcement audit: student cannot submit old journals', function () {
+test('window enforcement audit: student cannot submit old journals [STRS-01] [SYRS-F-403]', function () {
     $student = app(UserService::class)->factory()->create();
     $this->actingAs($student);
 
@@ -50,7 +50,7 @@ test('window enforcement audit: student cannot submit old journals', function ()
     );
 });
 
-test('soft-delete invariant: deleting a journal dispatches JournalArchived event', function () {
+test('soft-delete invariant: deleting a journal dispatches JournalArchived event [SYRS-NF-601]', function () {
     \Illuminate\Support\Facades\Event::fake();
 
     $entry = JournalEntry::factory()->create();
@@ -63,7 +63,7 @@ test('soft-delete invariant: deleting a journal dispatches JournalArchived event
     );
 });
 
-test('immutability audit: journal is locked immediately upon first verification', function () {
+test('immutability audit: journal is locked immediately upon first verification [STRS-02] [STRS-03] [SYRS-F-403]', function () {
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('draft');
 

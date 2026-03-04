@@ -13,7 +13,7 @@ beforeEach(function () {
     Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
 });
 
-test('student can clock in', function () {
+test('student can clock in [STRS-01] [SYRS-F-401]', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
@@ -33,7 +33,7 @@ test('student can clock in', function () {
     expect($log->check_in_at)->not->toBeNull();
 });
 
-test('student can clock out', function () {
+test('student can clock out [STRS-01] [SYRS-F-401]', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
@@ -58,7 +58,7 @@ test('student can clock out', function () {
     expect($log->check_out_at)->not->toBeNull();
 });
 
-test('student cannot clock in twice in the same day', function () {
+test('student cannot clock in twice in the same day [STRS-01] [SYRS-F-401]', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 

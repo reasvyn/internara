@@ -1,6 +1,6 @@
 # Application Blueprint: Readiness Auditing (BP-EVAL-F503)
 
-**Blueprint ID**: `BP-EVAL-F503` | **Requirement ID**: `SYRS-F-503` | **Scope**:
+**Blueprint ID**: `BP-EVAL-F503` | **Requirement ID**: `SYRS-F-503`, `STRS-04` | **Scope**:
 `Assessment & Synthesis`
 
 ---

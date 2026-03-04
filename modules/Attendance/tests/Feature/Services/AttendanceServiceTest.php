@@ -17,7 +17,7 @@ beforeEach(function () {
     $this->attendanceService = app(AttendanceService::class);
 });
 
-test('it can check in a student within the active period', function () {
+test('it can check in a student within the active period [STRS-01] [SYRS-F-401]', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
@@ -43,7 +43,7 @@ test('it can check in a student within the active period', function () {
     ]);
 });
 
-test('it throws exception when checking in outside the internship period', function () {
+test('it throws exception when checking in outside the internship period [STRS-01] [SYRS-F-401]', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 

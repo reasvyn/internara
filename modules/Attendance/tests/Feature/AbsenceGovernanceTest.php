@@ -12,7 +12,7 @@ beforeEach(function () {
     $this->attendanceService = app(AttendanceService::class);
 });
 
-test('it prevents check-in if an approved absence request exists for today', function () {
+test('it prevents check-in if an approved absence request exists for today [STRS-01] [SYRS-F-402]', function () {
     $student = User::factory()->create();
     $registration = InternshipRegistration::factory()->create([
         'student_id' => $student->id,

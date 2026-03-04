@@ -1,6 +1,6 @@
 # Application Blueprint: Installation Wizard (BP-SYS-F101)
 
-**Blueprint ID**: `BP-SYS-F101` | **Requirement ID**: `SYRS-F-101` | **Scope**: `System Core`
+**Blueprint ID**: `BP-SYS-F101` | **Requirement ID**: `SYRS-F-101`, `STRS-05` | **Scope**: `System Core`
 
 ---
 

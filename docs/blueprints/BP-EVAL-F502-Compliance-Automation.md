@@ -1,6 +1,6 @@
 # Application Blueprint: Compliance Automation (BP-EVAL-F502)
 
-**Blueprint ID**: `BP-EVAL-F502` | **Requirement ID**: `SYRS-F-502` | **Scope**:
+**Blueprint ID**: `BP-EVAL-F502` | **Requirement ID**: `SYRS-F-502`, `STRS-02`, `STRS-04` | **Scope**:
 `Assessment & Synthesis`
 
 ---

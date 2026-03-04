@@ -12,7 +12,7 @@ beforeEach(function () {
     $this->journalService = app(JournalService::class);
 });
 
-test('it can sync competencies when creating a journal entry', function () {
+test('it can sync competencies when creating a journal entry [STRS-01] [SYRS-F-403]', function () {
     $student = User::factory()->create();
     $registration = InternshipRegistration::factory()->create(['student_id' => $student->id]);
     $competency = Competency::create([
@@ -38,7 +38,7 @@ test('it can sync competencies when creating a journal entry', function () {
     ]);
 });
 
-test('it enforces dynamic submission window', function () {
+test('it enforces dynamic submission window [STRS-01] [SYRS-F-403]', function () {
     setting(['journal_submission_window' => 3]);
 
     $student = User::factory()->create();

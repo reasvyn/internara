@@ -1,6 +1,6 @@
 # Application Blueprint: Task Management (BP-OPR-F304)
 
-**Blueprint ID**: `BP-OPR-F304` | **Requirement ID**: `SYRS-F-304` | **Scope**:
+**Blueprint ID**: `BP-OPR-F304` | **Requirement ID**: `SYRS-F-304`, `STRS-01`, `STRS-02`, `STRS-03` | **Scope**:
 `Internship Lifecycle`
 
 ---
