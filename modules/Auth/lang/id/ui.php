@@ -55,7 +55,7 @@ return [
             'password_confirmation' => 'Konfirmasi Kata Sandi',
             'password_confirmation_placeholder' => 'Ulangi Kata Sandi Anda',
             'submit' => 'Daftar Sekarang',
-            'policy_agreement' => 'Dengan menekan tombol **Daftar Sekarang**, Anda otomatis menyetujui [Kebijakan Privasi kami](:url).',
+            'policy_agreement' => 'Dengan menekan tombol Daftar Sekarang, Anda otomatis menyetujui Kebijakan Privasi kami.',
             'has_account' => 'Sudah memiliki akun?',
             'login_now' => 'Masuk',
         ],
