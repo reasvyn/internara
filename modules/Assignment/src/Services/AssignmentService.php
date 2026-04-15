@@ -43,35 +43,41 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function createDefaults(string $internshipId, ?string $academicYear = null): void
     {
+        $types = app(\Modules\Assignment\Models\AssignmentType::class)->all()->pluck('id', 'slug');
+
         $defaults = [
             [
                 'title' => 'Laporan Kegiatan PKL',
                 'description' => 'Submit your initial internship report.',
-                'type' => 'report',
+                'assignment_type_id' => $types->get('laporan-pkl'),
                 'is_mandatory' => true,
             ],
             [
                 'title' => 'Presentasi Kegiatan PKL',
                 'description' => 'Submit your final presentation slides.',
-                'type' => 'presentation',
+                'assignment_type_id' => $types->get('presentasi-pkl'),
                 'is_mandatory' => true,
             ],
             [
                 'title' => 'Sertifikat Industri',
                 'description' => 'Bukti sertifikasi industri.',
-                'type' => 'certification',
+                'assignment_type_id' => $types->get('sertifikat-industri'),
                 'is_mandatory' => true,
             ],
             [
                 'title' => 'Dokumentasi Teknis',
                 'description' => 'Dokumentasi teknis.',
-                'type' => 'report',
+                'assignment_type_id' => $types->get('dokumentasi-teknis'),
                 'is_mandatory' => true,
             ],
         ];
 
         foreach ($defaults as $data) {
-            $this->create(array_merge($data, [
+            if (!$data['assignment_type_id']) {
+                continue;
+            }
+
+            $this->withoutAuthorization()->create(array_merge($data, [
                 'internship_id' => $internshipId,
                 'academic_year' => $academicYear,
             ]));

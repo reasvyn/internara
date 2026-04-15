@@ -578,6 +578,10 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         // Apply remaining filters
         if (! empty($filters)) {
             foreach ($filters as $key => $value) {
+                if ($value === '' || $value === null || (is_array($value) && empty($value))) {
+                    continue;
+                }
+
                 if (is_string($key) && str_contains($key, '.')) {
                     $segments = explode('.', $key);
                     $column = array_pop($segments);

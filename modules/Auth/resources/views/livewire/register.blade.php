@@ -48,10 +48,6 @@
             @endif
         </div>
 
-        @php
-            $policyRoute = \Illuminate\Support\Facades\Route::has('privacy-policy') ? route('privacy-policy') : '#';
-        @endphp
-
         <div class="mt-4 flex flex-col gap-8" wire:key="reg-actions">
             <div class="w-full space-y-2">
                 <x-ui::button
@@ -63,7 +59,7 @@
                 />
 
                 <p class="text-center text-xs">
-                    {!! str_replace(':url', $policyRoute, __('auth::ui.register.form.policy_agreement')) !!}
+                    {{ __('auth::ui.register.form.policy_agreement') }}
                 </p>
             </div>
 
