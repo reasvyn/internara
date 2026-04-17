@@ -15,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('internship_registrations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('internship_id')->constrained('internships')->cascadeOnDelete();
+            $table->foreignUuid('internship_id')->index()->constrained('internships')->cascadeOnDelete();
             $table
                 ->foreignUuid('placement_id')
                 ->nullable()
+                ->index()
                 ->constrained('internship_placements')
                 ->nullOnDelete();
             $table->uuid('student_id')->index();
@@ -28,6 +29,9 @@ return new class extends Migration
             $table->uuid('teacher_id')->nullable()->index();
             $table->uuid('mentor_id')->nullable()->index();
             $table->timestamps();
+            // Composite indexes for common query patterns
+            $table->index(['student_id', 'academic_year']);
+            $table->index(['internship_id', 'created_at']);
         });
     }
 

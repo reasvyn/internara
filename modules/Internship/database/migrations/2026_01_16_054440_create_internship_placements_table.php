@@ -17,9 +17,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table
                 ->foreignUuid('company_id')
+                ->index()
                 ->constrained('internship_companies')
                 ->cascadeOnDelete();
-            $table->foreignUuid('internship_id')->constrained('internships')->cascadeOnDelete();
+            $table->foreignUuid('internship_id')->index()->constrained('internships')->cascadeOnDelete();
             $table->integer('capacity_quota')->default(1);
             $table->uuid('mentor_id')->nullable()->index();
             $table->decimal('latitude', 10, 8)->nullable();

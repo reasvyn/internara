@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('internship_companies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
+            $table->string('name')->index();
             $table->text('address')->nullable();
             $table->string('business_field')->nullable();
             $table->string('phone')->nullable();

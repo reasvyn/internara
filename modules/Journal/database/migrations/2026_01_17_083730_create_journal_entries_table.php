@@ -26,6 +26,9 @@ return new class extends Migration
             $table->text('reflection')->nullable();
             $table->text('notes')->nullable(); // Keterangan Tambahan
             $table->timestamps();
+            // Composite indexes for timeline and report queries
+            $table->index(['student_id', 'date']);
+            $table->index(['registration_id', 'date']);
         });
     }
 

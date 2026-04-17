@@ -21,6 +21,7 @@ return new class extends Migration
             $table->uuid('model_id');
             $table->timestamp('expires_at')->nullable();
             $table->index(['model_type', 'model_id']);
+            $table->index(['model_type', 'model_id', 'created_at']);
             $table->timestamps();
         });
     }
