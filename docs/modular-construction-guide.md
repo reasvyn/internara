@@ -118,7 +118,108 @@ if (!$this->userService->exists($userId)) {
 
 ---
 
-## 🧪 Step 5: Verification & Validation
+## 🖥️ Step 3.3: Livewire Record Managers (RecordManager)
+
+All data-management Livewire components **must** extend `RecordManager` from the `UI` module — never `Component` directly, and never use the deprecated `ManagesRecords` trait.
+
+### Mandatory Contract
+
+`RecordManager` declares two abstract methods your class must implement:
+
+| Method | Purpose |
+| :--- | :--- |
+| `initialize(): void` | Set UI state: searchable columns, per-page defaults, sortable columns |
+| `getTableHeaders(): array` | Declare the table column headers and sort configuration |
+
+### Minimal Example
+
+```php
+namespace Modules\Example\Livewire;
+
+use Livewire\Attributes\Computed;
+use Modules\Example\Services\Contracts\ExampleService;
+use Modules\UI\Livewire\RecordManager;
+
+class ExampleManager extends RecordManager
+{
+    protected string $viewPermission = 'example.view';
+
+    // Optional: narrow-down which columns the service can sort by
+    protected array $sortable = ['name', 'created_at'];
+
+    // DI via boot() — called before mount(), ideal for service injection
+    public function boot(ExampleService $service): void
+    {
+        $this->service = $service;
+    }
+
+    // Set UI-specific state (runs inside parent::mount())
+    public function initialize(): void
+    {
+        $this->searchable = ['name'];
+    }
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('example::ui.name'), 'sortable' => true],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
+    }
+}
+```
+
+### Custom Records Query
+
+Override `records()` with `#[Computed]` only when you need eager loading or extra filters:
+
+```php
+use Illuminate\Pagination\LengthAwarePaginator;
+use Livewire\Attributes\Computed;
+
+#[Computed]
+public function records(): LengthAwarePaginator
+{
+    return $this->service
+        ->query([
+            'search'   => $this->search,
+            'sort_by'  => $this->sortBy['column'] ?? 'created_at',
+            'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+        ])
+        ->with(['relatedModel:id,name'])
+        ->paginate($this->perPage);
+}
+```
+
+> **`$this->sortBy` is always an array** — access it as `$this->sortBy['column']` and `$this->sortBy['direction']`. The property `$this->sortDir` does not exist.
+
+### Cached Dropdown Properties
+
+Dropdown data that rarely changes should be shared via `Cache::remember()` so all concurrent users hit the cache instead of querying the DB:
+
+```php
+use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Computed;
+
+#[Computed]
+public function categories(): \Illuminate\Support\Collection
+{
+    return Cache::remember('dropdown:categories', 300, fn () =>
+        app(CategoryService::class)->all(['id', 'name'])
+    );
+}
+```
+
+### Method Override Type Safety
+
+`RecordManager::edit()` declares `mixed $id`. Child overrides **must** keep `mixed`:
+
+```php
+public function edit(mixed $id): void  // ✅
+public function edit(string $id): void // ❌ Fatal incompatible declaration
+```
+
+---
 
 Compliance is enforced by the **Architecture Police** (`tests/Arch/` and `modules/*/tests/Arch/`). Prior to committing,
 ensure your module passes all quality gates.

@@ -180,6 +180,73 @@ Livewire components function as boundary controllers.
 - Mobile-first default construction.
 - OWASP A01 and A03 mitigations must be enforced at entry boundaries.
 
+### 7.1 RecordManager: The Standard Livewire Base Class
+
+All data-management Livewire components **must** extend `RecordManager` from `Modules\UI\Livewire`.
+Using `Component` directly or the deprecated `ManagesRecords` trait is prohibited.
+
+```php
+use Modules\UI\Livewire\RecordManager;
+
+class ExampleManager extends RecordManager
+{
+    protected string $viewPermission = 'example.view';
+
+    public function boot(ExampleService $service): void
+    {
+        $this->service = $service;  // inject via boot(), before mount()
+    }
+
+    public function initialize(): void
+    {
+        $this->searchable = ['name', 'code']; // UI state setup
+    }
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name',       'label' => __('example::ui.name'),       'sortable' => true],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'),  'sortable' => true],
+        ];
+    }
+}
+```
+
+**Key invariants:**
+
+- `boot()` → injects services (runs before `mount()`).
+- `initialize()` → sets UI state (called by `parent::mount()`).
+- `$this->sortBy` is **always an array**: access via `$this->sortBy['column']` and `$this->sortBy['direction']`. The scalar `$this->sortDir` does not exist.
+- When overriding `edit()`, `delete()`, or any parent method that declares `mixed $id`, the override **must** also declare `mixed $id` — narrowing to `string` causes a PHP fatal incompatible declaration error.
+
+### 7.2 Computed Properties
+
+Use `#[Computed]` (Livewire 3) for all derived values. Do not use the legacy `getXxxProperty()` pattern.
+
+```php
+use Livewire\Attributes\Computed;
+
+#[Computed]
+public function summary(): array
+{
+    return $this->service->getSummary();
+}
+```
+
+For dropdown data shared across many concurrent users, wrap in `Cache::remember()`:
+
+```php
+use Illuminate\Support\Facades\Cache;
+
+#[Computed]
+public function departments(): \Illuminate\Support\Collection
+{
+    return Cache::remember('dropdown:departments', 300, fn () =>
+        app(DepartmentService::class)->all(['id', 'name'])
+    );
+}
+```
+
 ---
 
 ## 8. Internationalization
