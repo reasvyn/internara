@@ -80,6 +80,18 @@ describe('StudentManager Component', function () {
         expect($student->fresh()->name)->toBe('Updated Student Name');
     });
 
+    test('it can generate a random password', function () {
+        $admin = User::factory()->create();
+        $admin->givePermissionTo('student.manage');
+        $this->actingAs($admin);
+
+        Livewire::test(StudentManager::class)
+            ->call('add')
+            ->assertSet('form.password', '')
+            ->call('generatePassword')
+            ->assertNotSet('form.password', '');
+    });
+
     test('it validates form inputs', function () {
         $admin = User::factory()->create();
         $admin->givePermissionTo('student.manage');

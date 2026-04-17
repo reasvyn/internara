@@ -127,13 +127,42 @@
                 @endif
             </div>
 
-            <x-ui::input 
-                :label="__('user::ui.manager.form.password')" 
-                icon="tabler.key"
-                type="password" 
-                wire:model="form.password" 
-                :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
-            />
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" x-data="{ showPassword: false }">
+                <div class="md:col-span-3">
+                    <x-ui::input 
+                        :label="__('user::ui.manager.form.password')" 
+                        icon="tabler.key"
+                        ::type="showPassword ? 'text' : 'password'" 
+                        wire:model="form.password" 
+                        :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
+                    >
+                        <x-slot:append>
+                            <x-ui::button 
+                                icon="tabler.eye" 
+                                ::icon="showPassword ? 'tabler.eye-off' : 'tabler.eye'" 
+                                variant="tertiary" 
+                                size="btn-xs" 
+                                @click="showPassword = !showPassword" 
+                            />
+                        </x-slot:append>
+                    </x-ui::input>
+                </div>
+                @if(!$form->id)
+                    <div class="md:col-span-1 pb-[2px]">
+                        <x-ui::button 
+                            type="button"
+                            :label="__('ui::common.generate')" 
+                            icon="tabler.refresh" 
+                            variant="secondary" 
+                            class="w-full"
+                            wire:click.prevent="generatePassword" 
+                            wire:loading.attr="disabled"
+                            wire:target="generatePassword"
+                            spinner="generatePassword"
+                        />
+                    </div>
+                @endif
+            </div>
 
             <x-ui::input :label="__('user::ui.manager.form.registration_number')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIP" />
 

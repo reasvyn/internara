@@ -56,4 +56,5 @@ return [
     'delete_selected' => 'Hapus Terpilih',
     'avatar' => 'Avatar',
     'avatar_hint' => 'Disarankan: Gambar persegi, maks 1MB.',
+    'generate' => 'Buat Otomatis',
 ];

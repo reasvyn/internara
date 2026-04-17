@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
 use Modules\Internship\Livewire\Forms\PlacementForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
-use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
 use Modules\User\Services\Contracts\UserService;
 
-class PlacementManager extends Component
+class PlacementManager extends RecordManager
 {
-    use ManagesRecords;
+    protected string $viewPermission = 'placement.view';
 
     public PlacementForm $form;
 
@@ -32,13 +32,44 @@ class PlacementManager extends Component
         $this->service = $placementService;
     }
 
+    public function initialize(): void {}
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'company', 'label' => __('internship::ui.company'), 'sortable' => false],
+            ['key' => 'internship', 'label' => __('internship::ui.program'), 'sortable' => false],
+            ['key' => 'mentor', 'label' => __('internship::ui.mentor'), 'sortable' => false],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
+    }
+
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->authorize('placement.view');
+        parent::mount();
     }
+
+    /**
+     * Get records for the table.
+     */
+    #[Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return $this->service->paginate(
+            [
+                'search' => $this->search,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+            ],
+            $this->perPage,
+        );
+    }
+
+    /** Shared cache TTL (5 minutes) for dropdown lists that rarely change. */
+    private const DROPDOWN_TTL = 300;
 
     /**
      * Get companies for the dropdown.
@@ -46,7 +77,7 @@ class PlacementManager extends Component
     #[Computed]
     public function companies(): \Illuminate\Support\Collection
     {
-        return \Modules\Internship\Models\Company::all(['id', 'name']);
+        return Cache::remember('dropdown:companies', self::DROPDOWN_TTL, fn () => \Modules\Internship\Models\Company::all(['id', 'name']));
     }
 
     /**
@@ -55,7 +86,7 @@ class PlacementManager extends Component
     #[Computed]
     public function internships(): \Illuminate\Support\Collection
     {
-        return app(InternshipService::class)->all(['id', 'title']);
+        return Cache::remember('dropdown:internships', self::DROPDOWN_TTL, fn () => app(InternshipService::class)->all(['id', 'title']));
     }
 
     /**
@@ -64,7 +95,7 @@ class PlacementManager extends Component
     #[Computed]
     public function mentors(): \Illuminate\Support\Collection
     {
-        return app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']);
+        return Cache::remember('dropdown:users:mentor', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']));
     }
 
     /**

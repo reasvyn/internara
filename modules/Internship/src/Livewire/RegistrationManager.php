@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Livewire\Component;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\RegistrationForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
-use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 use Modules\User\Services\Contracts\UserService;
 
-class RegistrationManager extends Component
+class RegistrationManager extends RecordManager
 {
-    use ManagesRecords;
+    protected string $viewPermission = 'registration.view';
+
+    protected array $sortable = ['created_at', 'status'];
 
     public RegistrationForm $form;
 
@@ -30,6 +33,23 @@ class RegistrationManager extends Component
     {
         $this->service = $registrationService;
         $this->eventPrefix = 'registration';
+    }
+
+    public function initialize(): void
+    {
+        // Service and eventPrefix are set in boot(); nothing more needed here.
+    }
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'student_name', 'label' => __('internship::ui.student'), 'sortable' => false],
+            ['key' => 'internship_title', 'label' => __('internship::ui.program'), 'sortable' => false],
+            ['key' => 'placement_company', 'label' => __('internship::ui.placement'), 'sortable' => false],
+            ['key' => 'teacher_name', 'label' => __('internship::ui.teacher'), 'sortable' => false],
+            ['key' => 'status', 'label' => __('internship::ui.status'), 'sortable' => true],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
     }
 
     /**
@@ -82,53 +102,70 @@ class RegistrationManager extends Component
 
     public function mount(): void
     {
-        $this->authorize('registration.view');
+        parent::mount();
     }
+
+    /** Shared cache TTL (5 minutes) for dropdown lists that rarely change. */
+    private const DROPDOWN_TTL = 300;
 
     /**
      * Get internships for the dropdown.
+     * Result is cached across all users to reduce repeated DB reads.
      */
-    public function getInternshipsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function internships(): \Illuminate\Support\Collection
     {
-        return app(InternshipService::class)->all(['id', 'title']);
+        return Cache::remember('dropdown:internships', self::DROPDOWN_TTL, fn () => app(InternshipService::class)->all(['id', 'title']));
     }
 
     /**
-     * Get placements for the dropdown.
+     * Get placements with company names for the dropdown.
+     * Result is cached across all users to reduce repeated DB reads.
      */
-    public function getPlacementsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function placements(): \Illuminate\Support\Collection
     {
-        return app(InternshipPlacementService::class)
-            ->query()
-            ->with('company')
-            ->get()
-            ->map(fn ($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
+        return Cache::remember('dropdown:placements', self::DROPDOWN_TTL, function () {
+            return app(InternshipPlacementService::class)
+                ->query()
+                ->with('company:id,name')
+                ->get(['id', 'company_id'])
+                ->map(fn ($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
+        });
     }
 
     /**
      * Get students for the dropdown.
+     * Result is cached across all users to reduce repeated DB reads.
      */
-    public function getStudentsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function students(): \Illuminate\Support\Collection
     {
-        return app(UserService::class)
-            ->get(['roles.name' => 'student'], ['id', 'name', 'username'])
-            ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name.' ('.$u->username.')']);
+        return Cache::remember('dropdown:users:student', self::DROPDOWN_TTL, function () {
+            return app(UserService::class)
+                ->get(['roles.name' => 'student'], ['id', 'name', 'username'])
+                ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name.' ('.$u->username.')']);
+        });
     }
 
     /**
      * Get teachers for the dropdown.
+     * Result is cached across all users to reduce repeated DB reads.
      */
-    public function getTeachersProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function teachers(): \Illuminate\Support\Collection
     {
-        return app(UserService::class)->get(['roles.name' => 'teacher'], ['id', 'name']);
+        return Cache::remember('dropdown:users:teacher', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'teacher'], ['id', 'name']));
     }
 
     /**
      * Get mentors for the dropdown.
+     * Result is cached across all users to reduce repeated DB reads.
      */
-    public function getMentorsProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function mentors(): \Illuminate\Support\Collection
     {
-        return app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']);
+        return Cache::remember('dropdown:users:mentor', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']));
     }
 
     /**
@@ -181,9 +218,10 @@ class RegistrationManager extends Component
     }
 
     /**
-     * Get history for the current record.
+     * Get placement history for the selected registration.
      */
-    public function getHistoryProperty(): \Illuminate\Support\Collection
+    #[Computed]
+    public function history(): \Illuminate\Support\Collection
     {
         if (! $this->historyId) {
             return collect();
@@ -198,16 +236,20 @@ class RegistrationManager extends Component
     }
 
     /**
-     * Get records property for the table.
+     * Override records to apply eager loading specific to registrations.
      */
-    public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
+    #[Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
+        $sortByColumn = $this->sortBy['column'] ?? 'created_at';
+        $sortDir = $this->sortBy['direction'] ?? 'desc';
+
         return $this->service
             ->query(
                 [
                     'search' => $this->search,
-                    'sort_by' => $this->sortBy,
-                    'sort_dir' => $this->sortDir,
+                    'sort_by' => $sortByColumn,
+                    'sort_dir' => $sortDir,
                 ],
                 ['id', 'student_id', 'internship_id', 'placement_id', 'status', 'created_at'],
             )

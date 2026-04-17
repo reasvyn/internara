@@ -36,6 +36,21 @@ class UserForm extends Form
     public string $status = 'active';
 
     /**
+     * Generate a random 8-character alphanumeric password.
+     */
+    public function generatePassword(): void
+    {
+        // Alphanumeric: mix of uppercase, lowercase, and numbers
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $password = substr(str_shuffle($characters), 0, 8);
+        
+        \Illuminate\Support\Facades\Log::info('Generating password: ' . $password);
+        
+        $this->password = $password;
+        $this->password_confirmation = $password;
+    }
+
+    /**
      * Set form values from user.
      */
     public function setUser(User $user): void

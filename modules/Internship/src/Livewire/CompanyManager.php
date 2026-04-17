@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Modules\Internship\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Component;
-use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Livewire\Attributes\Computed;
+use Modules\UI\Livewire\RecordManager;
 
 /**
  * Class CompanyManager
  *
  * Manages industry partner master data.
  */
-class CompanyManager extends Component
+class CompanyManager extends RecordManager
 {
-    use ManagesRecords;
+    protected string $viewPermission = 'company.view';
 
     /**
      * Component properties.
@@ -40,12 +40,41 @@ class CompanyManager extends Component
         $this->service = $companyService;
     }
 
+    public function initialize(): void {}
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('ui::common.name'), 'sortable' => true],
+            ['key' => 'business_field', 'label' => __('internship::ui.business_field'), 'sortable' => false],
+            ['key' => 'phone', 'label' => __('ui::common.phone'), 'sortable' => false],
+            ['key' => 'email', 'label' => __('ui::common.email'), 'sortable' => false],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
+    }
+
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->authorize('company.view');
+        parent::mount();
+    }
+
+    /**
+     * Get records for the table.
+     */
+    #[Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return $this->service->paginate(
+            [
+                'search' => $this->search,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+            ],
+            $this->perPage,
+        );
     }
 
     /**

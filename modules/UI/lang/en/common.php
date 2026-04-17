@@ -56,4 +56,5 @@ return [
     'delete_selected' => 'Delete Selected',
     'avatar' => 'Avatar',
     'avatar_hint' => 'Recommended: Square image, max 1MB.',
+    'generate' => 'Generate',
 ];

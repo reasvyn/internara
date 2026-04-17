@@ -5,22 +5,24 @@ declare(strict_types=1);
 namespace Modules\Student\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Component;
+use Livewire\Attributes\Computed;
 use Modules\Exception\Concerns\HandlesAppException;
 use Modules\Student\Services\Contracts\StudentService;
-use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
+use Modules\User\Models\User;
 
 /**
  * Class StudentManager
  *
  * Manages student users with specialized logic and role enforcement.
  */
-class StudentManager extends Component
+class StudentManager extends RecordManager
 {
     use HandlesAppException;
-    use ManagesRecords;
     use \Modules\User\Livewire\Concerns\InteractsWithDepartments;
+
+    protected string $viewPermission = 'student.manage';
 
     public UserForm $form;
 
@@ -33,27 +35,47 @@ class StudentManager extends Component
         $this->eventPrefix = 'student';
     }
 
+    public function initialize(): void {}
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('ui::common.name'), 'sortable' => true],
+            ['key' => 'email', 'label' => __('ui::common.email'), 'sortable' => false],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
+    }
+
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->authorize('student.manage');
+        parent::mount();
     }
 
     /**
      * Get records property for the table.
      */
-    public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
+    #[Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
         return $this->service
             ->query([
                 'search' => $this->search,
-                'sort_by' => $this->sortBy,
-                'sort_dir' => $this->sortDir,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
             ])
             ->with(['roles:id,name', 'profile'])
             ->paginate($this->perPage);
+    }
+
+    /**
+     * Generate a random password for the student.
+     */
+    public function generatePassword(): void
+    {
+        $this->form->generatePassword();
     }
 
     /**
@@ -62,13 +84,14 @@ class StudentManager extends Component
     public function add(): void
     {
         $this->form->reset();
+        $this->form->roles = ['student'];
         $this->formModal = true;
     }
 
     /**
      * Open form for editing a student.
      */
-    public function edit(string $id): void
+    public function edit(mixed $id): void
     {
         $user = $this->service->find($id);
 

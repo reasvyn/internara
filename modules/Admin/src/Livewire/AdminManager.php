@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\Admin\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Component;
+use Livewire\Attributes\Computed;
 use Modules\Admin\Livewire\Forms\AdminForm;
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Exception\Concerns\HandlesAppException;
-use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 
 /**
  * Class AdminManager
@@ -17,10 +17,11 @@ use Modules\UI\Livewire\Concerns\ManagesRecords;
  * Manages system administrators with specialized logic and role enforcement.
  * Only SuperAdmins are authorized to manage Admin accounts.
  */
-class AdminManager extends Component
+class AdminManager extends RecordManager
 {
     use HandlesAppException;
-    use ManagesRecords;
+
+    protected string $viewPermission = 'admin.manage';
 
     public AdminForm $form;
 
@@ -33,6 +34,17 @@ class AdminManager extends Component
         $this->eventPrefix = 'admin';
     }
 
+    public function initialize(): void {}
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('ui::common.name'), 'sortable' => true],
+            ['key' => 'email', 'label' => __('ui::common.email'), 'sortable' => false],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
+    }
+
     /**
      * Mount the component.
      */
@@ -43,19 +55,20 @@ class AdminManager extends Component
             abort(403, __('user::exceptions.super_admin_unauthorized'));
         }
 
-        $this->authorize('admin.manage');
+        parent::mount();
     }
 
     /**
      * Get records property for the table.
      */
-    public function getRecordsProperty(): \Illuminate\Pagination\LengthAwarePaginator
+    #[Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
         return $this->service->paginate(
             [
                 'search' => $this->search,
-                'sort_by' => $this->sortBy,
-                'sort_dir' => $this->sortDir,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
             ],
             $this->perPage,
         );
@@ -74,7 +87,7 @@ class AdminManager extends Component
     /**
      * Open form for editing an admin.
      */
-    public function edit(string $id): void
+    public function edit(mixed $id): void
     {
         $admin = $this->service->find($id);
 

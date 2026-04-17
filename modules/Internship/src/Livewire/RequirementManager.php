@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Livewire\Component;
 use Modules\Internship\Livewire\Forms\RequirementForm;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
-use Modules\UI\Livewire\Concerns\ManagesRecords;
+use Modules\UI\Livewire\RecordManager;
 
-class RequirementManager extends Component
+class RequirementManager extends RecordManager
 {
-    use ManagesRecords;
+    protected string $viewPermission = 'internship.view';
 
     public RequirementForm $form;
 
@@ -24,12 +23,39 @@ class RequirementManager extends Component
         $this->eventPrefix = 'internship-requirement';
     }
 
+    public function initialize(): void {}
+
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
+            ['key' => 'title', 'label' => __('ui::common.name'), 'sortable' => true],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+        ];
+    }
+
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->authorize('internship.view');
+        parent::mount();
+    }
+
+    /**
+     * Get records for the table.
+     */
+    #[Computed]
+    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        return $this->service->paginate(
+            [
+                'search' => $this->search,
+                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
+            ],
+            $this->perPage,
+        );
     }
 
     /**
