@@ -5,7 +5,10 @@
         :subtitle="__('internship::ui.company_subtitle')"
     >
         <x-slot:actions wire:key="company-manager-actions">
-            <x-ui::button label="{{ __('internship::ui.add_company') }}" icon="tabler.plus" class="btn-primary" wire:click="add" />
+            <div class="flex items-center gap-3">
+                <x-ui::button :label="__('ui::common.refresh')" icon="tabler.refresh" variant="secondary" wire:click="refreshRecords" spinner="refreshRecords" />
+                <x-ui::button :label="__('internship::ui.add_company')" icon="tabler.plus" class="btn-primary" wire:click="add" />
+            </div>
         </x-slot:actions>
     </x-ui::header>
 

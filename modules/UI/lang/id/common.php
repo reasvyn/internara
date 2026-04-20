@@ -54,6 +54,7 @@ return [
     'not_applicable' => 'N/A',
     'bulk_actions' => 'Aksi Massal',
     'delete_selected' => 'Hapus Terpilih',
+    'refresh' => 'Muat Ulang',
     'avatar' => 'Avatar',
     'avatar_hint' => 'Disarankan: Gambar persegi, maks 1MB.',
     'generate' => 'Buat Otomatis',

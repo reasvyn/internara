@@ -26,6 +26,8 @@
                     <x-ui::menu-item title="ui::common.import" icon="tabler.upload" wire:click="$set('importModal', true)" />
                 </x-ui::dropdown>
 
+                <x-ui::button :label="__('ui::common.refresh')" icon="tabler.refresh" variant="secondary" wire:click="refreshRecords" spinner="refreshRecords" />
+
                 <div x-bind:class="{ 'pointer-events-none opacity-50': selectedIds.length === 0 }">
                     <x-ui::dropdown 
                         :label="__('internship::ui.bulk_actions')" 
@@ -69,7 +71,7 @@
 
             <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh] relative">
                 {{-- Instant Loading Overlay --}}
-                <div wire:loading.flex wire:target="search" class="absolute inset-0 bg-base-100/60 backdrop-blur-[1px] z-20 items-center justify-center">
+                <div wire:loading.flex wire:target="search,refreshRecords" class="absolute inset-0 bg-base-100/60 backdrop-blur-[1px] z-20 items-center justify-center">
                     <span class="loading loading-spinner loading-md text-base-content/20"></span>
                 </div>
 
