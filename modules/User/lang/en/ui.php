@@ -47,6 +47,7 @@ return [
             'select_blood_type' => 'Select Blood Type',
             'national_identifier' => 'National Identifier (NISN)',
             'registration_number' => 'Registration Number (NIS/NIP)',
+            'nis' => 'NIS (Student Registration Number)',
             'roles' => 'Assigned Roles',
             'roles_assign' => 'Assign Roles',
             'roles_hint' => 'Select one or more roles for this user.',

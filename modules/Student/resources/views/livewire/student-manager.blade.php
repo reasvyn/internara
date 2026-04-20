@@ -121,22 +121,38 @@
     {{-- Form Modal --}}
     <x-ui::modal wire:model="formModal" :title="$form->id ? __('user::ui.manager.edit_student') : __('user::ui.manager.add_student')">
         <x-ui::form wire:submit="save">
+            <div
+                x-data="{
+                    password: $wire.entangle('form.password').live,
+                    passwordConfirmation: $wire.entangle('form.password_confirmation').live,
+                    showPassword: false,
+                    generatePassword() {
+                        const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                        const password = Array.from({ length: 12 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
+                        this.password = password;
+                        this.passwordConfirmation = password;
+                        this.showPassword = true;
+                    }
+                }"
+            >
             <x-ui::input :label="__('user::ui.manager.form.full_name')" icon="tabler.signature" wire:model="form.name" required />
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                 <x-ui::input :label="__('user::ui.manager.form.email')" icon="tabler.mail" type="email" wire:model="form.email" required />
+
                 @if($form->id)
                     <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" readonly />
                 @endif
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" x-data="{ showPassword: false }">
-                <div class="md:col-span-3">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <div @class([
+                        'md:col-span-4' => $form->id,
+                        'md:col-span-3' => ! $form->id,
+                    ])>
                     <x-ui::input 
                         :label="__('user::ui.manager.form.password')" 
                         icon="tabler.key"
                         ::type="showPassword ? 'text' : 'password'" 
-                        wire:model="form.password" 
+                        x-model="password"
                         :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
                     >
                         <x-slot:append>
@@ -149,76 +165,74 @@
                             />
                         </x-slot:append>
                     </x-ui::input>
-                </div>
-                @if(!$form->id)
-                    <div class="md:col-span-1 pb-[2px]">
-                        <x-ui::button 
-                            type="button"
-                            :label="__('ui::common.generate')" 
-                            icon="tabler.refresh" 
-                            variant="secondary" 
-                            class="w-full"
-                            wire:click.prevent="generatePassword" 
-                            wire:loading.attr="disabled"
-                            wire:target="generatePassword"
-                            spinner="generatePassword"
-                        />
                     </div>
-                @endif
-            </div>
+                    @if(!$form->id)
+                        <div class="md:col-span-1 pb-[2px]">
+                            <x-ui::button 
+                                type="button"
+                                :label="__('ui::common.generate')" 
+                                icon="tabler.refresh" 
+                                variant="secondary" 
+                                class="w-full"
+                                @click="generatePassword()"
+                            />
+                        </div>
+                    @endif
+                </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <x-ui::input :label="__('user::ui.manager.form.national_identifier')" icon="tabler.id" wire:model="form.profile.national_identifier" placeholder="e.g. NISN" />
-                <x-ui::input :label="__('user::ui.manager.form.registration_number')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIS" />
-            </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-ui::input :label="__('user::ui.manager.form.nisn')" icon="tabler.id" wire:model="form.profile.national_identifier" placeholder="e.g. NISN" />
+                    <x-ui::input :label="__('user::ui.manager.form.nis')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIS" />
+                </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-ui::select 
+                        :label="__('user::ui.manager.form.department')" 
+                        icon="tabler.school"
+                        wire:model="form.profile.department_id" 
+                        :options="$this->departments" 
+                        :placeholder="__('user::ui.manager.form.select_department')"
+                    />
+                    <x-ui::input :label="__('user::ui.manager.form.phone')" icon="tabler.phone" wire:model="form.profile.phone" />
+                </div>
+
+                <x-ui::textarea :label="__('user::ui.manager.form.address')" icon="tabler.map-pin" wire:model="form.profile.address" />
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <x-ui::select 
+                        :label="__('user::ui.manager.form.gender')" 
+                        icon="tabler.gender-intersex"
+                        wire:model="form.profile.gender" 
+                        :options="[
+                            ['id' => 'male', 'name' => __('profile::enums.gender.male')],
+                            ['id' => 'female', 'name' => __('profile::enums.gender.female')],
+                        ]" 
+                        :placeholder="__('user::ui.manager.form.select_gender')"
+                    />
+                    <x-ui::select 
+                        :label="__('user::ui.manager.form.blood_type')" 
+                        icon="tabler.droplet"
+                        wire:model="form.profile.blood_type" 
+                        :options="[
+                            ['id' => 'A', 'name' => 'A'],
+                            ['id' => 'B', 'name' => 'B'],
+                            ['id' => 'AB', 'name' => 'AB'],
+                            ['id' => 'O', 'name' => 'O'],
+                        ]" 
+                        :placeholder="__('user::ui.manager.form.select_blood_type')"
+                    />
+                </div>
+
                 <x-ui::select 
-                    :label="__('user::ui.manager.form.department')" 
-                    icon="tabler.school"
-                    wire:model="form.profile.department_id" 
-                    :options="$this->departments" 
-                    :placeholder="__('user::ui.manager.form.select_department')"
-                />
-                <x-ui::input :label="__('user::ui.manager.form.phone')" icon="tabler.phone" wire:model="form.profile.phone" />
-            </div>
-
-            <x-ui::textarea :label="__('user::ui.manager.form.address')" icon="tabler.map-pin" wire:model="form.profile.address" />
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <x-ui::select 
-                    :label="__('user::ui.manager.form.gender')" 
-                    icon="tabler.gender-intersex"
-                    wire:model="form.profile.gender" 
+                    :label="__('user::ui.manager.form.status')" 
+                    icon="tabler.circle-check"
+                    wire:model="form.status" 
                     :options="[
-                        ['id' => 'male', 'name' => __('profile::enums.gender.male')],
-                        ['id' => 'female', 'name' => __('profile::enums.gender.female')],
+                        ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
+                        ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
                     ]" 
-                    :placeholder="__('user::ui.manager.form.select_gender')"
-                />
-                <x-ui::select 
-                    :label="__('user::ui.manager.form.blood_type')" 
-                    icon="tabler.droplet"
-                    wire:model="form.profile.blood_type" 
-                    :options="[
-                        ['id' => 'A', 'name' => 'A'],
-                        ['id' => 'B', 'name' => 'B'],
-                        ['id' => 'AB', 'name' => 'AB'],
-                        ['id' => 'O', 'name' => 'O'],
-                    ]" 
-                    :placeholder="__('user::ui.manager.form.select_blood_type')"
                 />
             </div>
-
-            <x-ui::select 
-                :label="__('user::ui.manager.form.status')" 
-                icon="tabler.circle-check"
-                wire:model="form.status" 
-                :options="[
-                    ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
-                    ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
-                ]" 
-            />
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />

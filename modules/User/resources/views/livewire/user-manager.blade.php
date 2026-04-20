@@ -51,35 +51,103 @@
 
     {{-- Form Fields --}}
     <x-slot:formFields>
-        <x-ui::input :label="__('user::ui.manager.form.full_name')" icon="tabler.signature" wire:model="form.name" required />
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+            x-data="{
+                roles: $wire.entangle('form.roles').live,
+                password: $wire.entangle('form.password').live,
+                passwordConfirmation: $wire.entangle('form.password_confirmation').live,
+                showPassword: false,
+                hasRole(role) {
+                    return Array.isArray(this.roles) && this.roles.includes(role);
+                },
+                get isStudentContext() {
+                    return this.hasRole('student');
+                },
+                get isTeacherContext() {
+                    return !this.isStudentContext && this.hasRole('teacher');
+                },
+                get showsAcademicFields() {
+                    return this.isStudentContext || this.isTeacherContext;
+                },
+                generatePassword() {
+                    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    const password = Array.from({ length: 12 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
+                    this.password = password;
+                    this.passwordConfirmation = password;
+                    this.showPassword = true;
+                }
+            }"
+        >
+            <x-ui::input :label="__('user::ui.manager.form.full_name')" icon="tabler.signature" wire:model="form.name" required />
+
             <x-ui::input :label="__('user::ui.manager.form.email')" icon="tabler.mail" type="email" wire:model="form.email" required />
+
             @if($form->id)
                 <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" readonly />
             @endif
-        </div>
 
-        <x-ui::input 
-            :label="__('user::ui.manager.form.password')" 
-            icon="tabler.key"
-            type="password" 
-            wire:model="form.password" 
-            :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
-        />
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div @class([
+                    'md:col-span-4' => $form->id,
+                    'md:col-span-3' => ! $form->id,
+                ])>
+                    <x-ui::input 
+                        :label="__('user::ui.manager.form.password')" 
+                        icon="tabler.key"
+                        ::type="showPassword ? 'text' : 'password'"
+                        x-model="password"
+                        :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
+                    >
+                        <x-slot:append>
+                            <x-ui::button 
+                                icon="tabler.eye" 
+                                ::icon="showPassword ? 'tabler.eye-off' : 'tabler.eye'" 
+                                variant="tertiary" 
+                                size="btn-xs" 
+                                @click="showPassword = !showPassword" 
+                            />
+                        </x-slot:append>
+                    </x-ui::input>
+                </div>
 
-        {{-- Role-Specific Profile Fields --}}
-        @if($targetRole === 'student')
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <x-ui::input :label="__('user::ui.manager.form.national_identifier')" icon="tabler.id" wire:model="form.profile.national_identifier" placeholder="e.g. NISN" />
-                <x-ui::input :label="__('user::ui.manager.form.registration_number')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIS" />
+                @if(!$form->id)
+                    <div class="md:col-span-1 pb-[2px]">
+                        <x-ui::button 
+                            type="button"
+                            :label="__('ui::common.generate')" 
+                            icon="tabler.refresh" 
+                            variant="secondary" 
+                            class="w-full"
+                            @click="generatePassword()"
+                        />
+                    </div>
+                @endif
             </div>
-        @elseif($targetRole === 'teacher')
-            <x-ui::input :label="__('user::ui.manager.form.registration_number')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIP" />
-        @endif
 
-        @if(in_array($targetRole, ['student', 'teacher']))
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @if(!$targetRole)
+                <x-ui::choices
+                    :label="__('user::ui.manager.form.roles')"
+                    icon="tabler.shield-check"
+                    wire:model="form.roles"
+                    :options="[
+                        ['id' => 'student', 'name' => __('permission::roles.student')],
+                        ['id' => 'teacher', 'name' => __('permission::roles.teacher')],
+                        ['id' => 'mentor', 'name' => __('permission::roles.mentor')],
+                        ['id' => 'admin', 'name' => __('permission::roles.admin')],
+                    ]"
+                />
+            @endif
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="isStudentContext" x-cloak>
+                <x-ui::input :label="__('user::ui.manager.form.nisn')" icon="tabler.id" wire:model="form.profile.national_identifier" placeholder="e.g. NISN" />
+                <x-ui::input :label="__('user::ui.manager.form.nis')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIS" />
+            </div>
+
+            <div x-show="isTeacherContext" x-cloak>
+                <x-ui::input :label="__('user::ui.manager.form.nip')" icon="tabler.id-badge-2" wire:model="form.profile.registration_number" placeholder="e.g. NIP" />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="showsAcademicFields" x-cloak>
                 <x-ui::select 
                     :label="__('user::ui.manager.form.department')" 
                     icon="tabler.school"
@@ -90,9 +158,11 @@
                 <x-ui::input :label="__('user::ui.manager.form.phone')" icon="tabler.phone" wire:model="form.profile.phone" />
             </div>
 
-            <x-ui::textarea :label="__('user::ui.manager.form.address')" icon="tabler.map-pin" wire:model="form.profile.address" />
+            <div x-show="showsAcademicFields" x-cloak>
+                <x-ui::textarea :label="__('user::ui.manager.form.address')" icon="tabler.map-pin" wire:model="form.profile.address" />
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="showsAcademicFields" x-cloak>
                 <x-ui::select 
                     :label="__('user::ui.manager.form.gender')" 
                     icon="tabler.gender-intersex"
@@ -116,30 +186,16 @@
                     :placeholder="__('user::ui.manager.form.select_blood_type')"
                 />
             </div>
-        @endif
 
-        @if(!$targetRole)
-            <x-ui::choices
-                :label="__('user::ui.manager.form.roles')"
-                icon="tabler.shield-check"
-                wire:model="form.roles"
+            <x-ui::select 
+                :label="__('user::ui.manager.form.status')" 
+                icon="tabler.circle-check"
+                wire:model="form.status" 
                 :options="[
-                    ['id' => 'student', 'name' => __('permission::roles.student')],
-                    ['id' => 'teacher', 'name' => __('permission::roles.teacher')],
-                    ['id' => 'mentor', 'name' => __('permission::roles.mentor')],
-                    ['id' => 'admin', 'name' => __('permission::roles.admin')],
-                ]"
+                    ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
+                    ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
+                ]" 
             />
-        @endif
-
-        <x-ui::select 
-            :label="__('user::ui.manager.form.status')" 
-            icon="tabler.circle-check"
-            wire:model="form.status" 
-            :options="[
-                ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
-                ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
-            ]" 
-        />
+        </div>
     </x-slot:formFields>
 </x-ui::record-manager>

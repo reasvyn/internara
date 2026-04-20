@@ -47,6 +47,7 @@ return [
             'select_blood_type' => 'Pilih Golongan Darah',
             'national_identifier' => 'Identitas Nasional (NISN)',
             'registration_number' => 'Nomor Registrasi (NIS/NIP)',
+            'nis' => 'NIS (Nomor Induk Siswa)',
             'roles' => 'Peran Terpilih',
             'roles_assign' => 'Tetapkan Peran',
             'roles_hint' => 'Pilih satu atau lebih peran untuk pengguna ini.',
