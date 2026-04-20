@@ -24,6 +24,10 @@
         'x-bind:class',
         ':class',
     ]);
+    $triggerAttributes = new \Illuminate\View\ComponentAttributeBag(array_filter([
+        'x-bind:disabled' => $dynamicDisabled,
+        'x-bind:class' => $dynamicClass,
+    ], fn ($value) => filled($value)));
 @endphp
 
 <x-mary-dropdown 
@@ -37,18 +41,13 @@
     @else
         <x-slot:trigger>
             <x-ui::button 
+                {{ $triggerAttributes }}
                 :variant="$variant" 
                 :icon="$icon" 
                 :label="$label" 
                 :spinner="false"
                 :class="$isDisabled ? 'btn-disabled' : ''"
                 aria-label="{{ $ariaLabel }}" 
-                @if($dynamicDisabled)
-                    x-bind:disabled="{{ $dynamicDisabled }}"
-                @endif
-                @if($dynamicClass)
-                    x-bind:class="{{ $dynamicClass }}"
-                @endif
             />
         </x-slot:trigger>
     @endisset
