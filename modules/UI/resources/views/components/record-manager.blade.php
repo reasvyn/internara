@@ -46,7 +46,7 @@
                             :label="__('ui::common.bulk_actions')" 
                             icon="tabler.layers-intersect" 
                             variant="secondary"
-                            :disabled="count($selectedIds) === 0"
+                            :disabled="count($this->selectedIds ?? []) === 0"
                         >
                             {{ $bulkActions ?? '' }}
                             <x-ui::menu-item 

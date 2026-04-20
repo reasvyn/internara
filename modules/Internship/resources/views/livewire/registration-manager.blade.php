@@ -31,7 +31,7 @@
                         :label="__('internship::ui.bulk_actions')" 
                         icon="tabler.layers-intersect" 
                         variant="secondary"
-                        :disabled="count($selectedIds) === 0"
+                        :disabled="count($this->selectedIds ?? []) === 0"
                     >
                         <x-ui::menu-item 
                             title="internship::ui.bulk_placement" 
@@ -207,7 +207,7 @@
     {{-- Bulk Placement Modal --}}
     <x-ui::modal id="registration-bulk-modal" wire:model="bulkPlaceModal" title="{{ __('internship::ui.bulk_placement_title') }}">
         <div class="mb-4">
-            <p class="text-sm opacity-70">{{ __('internship::ui.bulk_placement_description', ['count' => count($selectedIds)]) }}</p>
+            <p class="text-sm opacity-70">{{ __('internship::ui.bulk_placement_description', ['count' => count($this->selectedIds ?? [])]) }}</p>
             <p class="text-xs text-warning mt-1">{{ __('internship::ui.bulk_placement_note') }}</p>
         </div>
 

@@ -30,7 +30,7 @@
                         :label="__('ui::common.bulk_actions')" 
                         icon="tabler.layers-intersect" 
                         variant="secondary"
-                        :disabled="count($selectedIds) === 0"
+                        :disabled="count($this->selectedIds ?? []) === 0"
                     >
                         <x-ui::menu-item 
                             title="ui::common.delete_selected" 
