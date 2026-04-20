@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\User\Livewire;
 
 use Illuminate\View\View;
+use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
 use Modules\User\Models\User;
@@ -18,7 +19,7 @@ use Modules\User\Services\Contracts\UserService;
  */
 class UserManager extends RecordManager
 {
-    use Concerns\InteractsWithDepartments;
+    use HasDepartmentOptions;
 
     public UserForm $form;
 
@@ -93,7 +94,7 @@ class UserManager extends RecordManager
 
         return $this->service
             ->query($appliedFilters)
-            ->with(['roles:id,name', 'profile'])
+            ->with(['roles:id,name', 'profile.department', 'statuses'])
             ->paginate($this->perPage);
     }
 

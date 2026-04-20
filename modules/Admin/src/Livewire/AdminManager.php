@@ -10,6 +10,7 @@ use Modules\Admin\Livewire\Forms\AdminForm;
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Exception\Concerns\HandlesAppException;
 use Modules\UI\Livewire\RecordManager;
+use Modules\User\Models\User;
 
 /**
  * Class AdminManager
@@ -20,8 +21,6 @@ use Modules\UI\Livewire\RecordManager;
 class AdminManager extends RecordManager
 {
     use HandlesAppException;
-
-    protected string $viewPermission = 'admin.manage';
 
     public AdminForm $form;
 
@@ -34,7 +33,18 @@ class AdminManager extends RecordManager
         $this->eventPrefix = 'admin';
     }
 
-    public function initialize(): void {}
+    public function initialize(): void
+    {
+        $this->title = __('admin::ui.menu.administrators');
+        $this->subtitle = __('user::ui.manager.subtitle');
+        $this->addLabel = __('user::ui.manager.add_admin');
+        $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
+        $this->viewPermission = 'admin.manage';
+        $this->createPermission = 'admin.manage';
+        $this->updatePermission = 'admin.manage';
+        $this->deletePermission = 'admin.manage';
+        $this->modelClass = User::class;
+    }
 
     protected function getTableHeaders(): array
     {
@@ -71,6 +81,8 @@ class AdminManager extends RecordManager
                 'sort_dir' => $this->sortBy['direction'] ?? 'desc',
             ],
             $this->perPage,
+            ['*'],
+            ['roles:id,name', 'profile', 'statuses'],
         );
     }
 
@@ -92,7 +104,8 @@ class AdminManager extends RecordManager
         $admin = $this->service->find($id);
 
         if ($admin) {
-            $this->form->fillData($admin);
+            $this->authorize('update', $admin);
+            $this->form->fillFromUser($admin);
             $this->formModal = true;
         }
     }
@@ -123,12 +136,10 @@ class AdminManager extends RecordManager
      */
     public function render(): View
     {
-        $title = __('admin::ui.menu.administrators');
-
         return view('admin::livewire.admin-manager', [
-            'title' => $title,
+            'title' => $this->title,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title.' | '.setting('brand_name', setting('app_name')),
+            'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.administrators',
         ]);
     }

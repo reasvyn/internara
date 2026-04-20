@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Modules\Student\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
-use Modules\Student\Models\Student;
 use Modules\Student\Services\Contracts\StudentService as Contract;
 use Modules\User\Models\User;
-use Modules\User\Services\Contracts\UserService;
+use Modules\User\Notifications\WelcomeUserNotification;
 
 /**
  * Implements the business logic for students (Account + Profile).
@@ -22,7 +25,6 @@ class StudentService extends EloquentQuery implements Contract
      */
     public function __construct(
         User $model,
-        protected UserService $userService,
         protected ProfileService $profileService,
     ) {
         $this->setModel($model);
@@ -35,9 +37,8 @@ class StudentService extends EloquentQuery implements Contract
      */
     public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
     {
-        // Force strict role filtering for all queries
         if (! $this->baseQuery) {
-            $this->setBaseQuery($this->model->role('student'));
+            $this->setBaseQuery($this->model->newQuery()->role(Role::STUDENT->value));
         }
 
         return parent::query($filters, $columns, $with);
@@ -48,19 +49,31 @@ class StudentService extends EloquentQuery implements Contract
      */
     public function create(array $data): User
     {
-        // Force the student role
-        $data['roles'] = ['student'];
-        $profileData = $data['profile'] ?? [];
-        unset($data['profile']);
+        return DB::transaction(function () use ($data): User {
+            $status = $data['status'] ?? User::STATUS_ACTIVE;
+            $plainPassword = $data['password'];
+            $profileData = $data['profile'] ?? [];
+            unset($data['profile'], $data['status']);
 
-        // 1. Create User account via UserService
-        $user = $this->userService->create($data);
+            if (setting('app_installed', false) && ! $this->skipAuthorization) {
+                Gate::authorize('create', [User::class, [Role::STUDENT->value]]);
+            }
 
-        // 2. Link & Update Profile with international identity standards
-        $profile = $this->profileService->getByUserId($user->id);
-        $this->profileService->update($profile->id, $profileData);
+            /** @var User $user */
+            $user = $this->withoutAuthorization()->parentCreate($data);
+            $user->assignRole(Role::STUDENT->value);
+            $user->setStatus($status);
 
-        return $user;
+            $profile = $this->profileService->withoutAuthorization()->getByUserId($user->id);
+            if ($profileData !== []) {
+                $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+            }
+
+            $this->skipAuthorization = false;
+            $user->notify(new WelcomeUserNotification($plainPassword));
+
+            return $user->load(['roles:id,name', 'profile.department', 'statuses']);
+        });
     }
 
     /**
@@ -68,27 +81,37 @@ class StudentService extends EloquentQuery implements Contract
      */
     public function update(mixed $id, array $data): User
     {
-        // Ensure we are only updating a student
-        $user = $this->find($id);
+        /** @var User $student */
+        $student = $this->findOrFail($id);
 
-        if (! $user || ! $user->hasRole('student')) {
-            throw new \Modules\Exception\RecordNotFoundException(
-                replace: ['record' => 'Student', 'id' => $id],
-            );
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $student);
         }
 
+        $status = $data['status'] ?? null;
         $profileData = $data['profile'] ?? [];
-        unset($data['profile']);
+        unset($data['profile'], $data['status']);
 
-        // 1. Update User account
-        $user = $this->userService->update($id, $data);
-
-        // 2. Update Unified Profile data
-        if (! empty($profileData) && $user->profile) {
-            $this->profileService->update($user->profile->id, $profileData);
+        if (array_key_exists('password', $data) && empty($data['password'])) {
+            unset($data['password']);
         }
 
-        return $user;
+        /** @var User $updatedStudent */
+        $updatedStudent = $this->withoutAuthorization()->parentUpdate($id, $data);
+        $updatedStudent->syncRoles([Role::STUDENT->value]);
+
+        if ($status !== null) {
+            $updatedStudent->setStatus($status);
+        }
+
+        $profile = $this->profileService->withoutAuthorization()->getByUserId($updatedStudent->id);
+        if ($profileData !== []) {
+            $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+        }
+
+        $this->skipAuthorization = false;
+
+        return $updatedStudent->load(['roles:id,name', 'profile.department', 'statuses']);
     }
 
     /**
@@ -96,13 +119,45 @@ class StudentService extends EloquentQuery implements Contract
      */
     public function delete(mixed $id, bool $force = false): bool
     {
-        $user = $this->find($id);
+        /** @var User $student */
+        $student = $this->findOrFail($id);
 
-        if (! $user || ! $user->hasRole('student')) {
-            return false;
+        if (! $this->skipAuthorization) {
+            Gate::authorize('delete', $student);
         }
 
-        // 1. Delete User account (Profile is usually handled by Cascade or UserService if needed)
-        return $this->userService->delete($id, $force);
+        $this->skipAuthorization = false;
+
+        return $force ? $student->forceDelete() : $student->delete();
+    }
+
+    public function destroy(mixed $ids, bool $force = false): int
+    {
+        $students = $this->query()->whereKey(Arr::wrap($ids))->get();
+
+        if (! $this->skipAuthorization) {
+            foreach ($students as $student) {
+                Gate::authorize('delete', $student);
+            }
+        }
+
+        $this->skipAuthorization = false;
+
+        return $students->reduce(
+            fn (int $count, User $student): int => $count + (($force ? $student->forceDelete() : $student->delete()) ? 1 : 0),
+            0,
+        );
+    }
+
+    protected function parentCreate(array $data): User
+    {
+        /** @var User */
+        return parent::create($data);
+    }
+
+    protected function parentUpdate(mixed $id, array $data): User
+    {
+        /** @var User */
+        return parent::update($id, $data);
     }
 }
