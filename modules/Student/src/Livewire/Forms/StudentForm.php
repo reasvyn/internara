@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Modules\User\Livewire\Forms;
+namespace Modules\Student\Livewire\Forms;
 
 use Livewire\Form;
+use Modules\Shared\Rules\Password;
 use Modules\User\Models\User;
 
-class UserForm extends Form
+class StudentForm extends Form
 {
     public ?string $id = null;
 
@@ -21,8 +22,11 @@ class UserForm extends Form
 
     public string $password_confirmation = '';
 
-    public array $roles = [];
+    public string $status = User::STATUS_ACTIVE;
 
+    /**
+     * @var array<string, string>
+     */
     public array $profile = [
         'phone' => '',
         'address' => '',
@@ -33,11 +37,6 @@ class UserForm extends Form
         'blood_type' => '',
     ];
 
-    public string $status = 'active';
-
-    /**
-     * Generate a random 8-character alphanumeric password.
-     */
     public function generatePassword(): void
     {
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -47,45 +46,36 @@ class UserForm extends Form
         $this->password_confirmation = $password;
     }
 
-    /**
-     * Set form values from user.
-     */
-    public function setUser(User $user): void
+    public function fillFromUser(User $user): void
     {
         $this->id = $user->id;
         $this->name = $user->name;
         $this->email = $user->email;
         $this->username = $user->username;
-        $this->roles = $user->roles->pluck('name')->toArray();
-        $this->status = $user->latestStatus()?->name ?? 'active';
-
-        if ($user->profile) {
-            $this->profile = [
-                'phone' => $user->profile->phone ?? '',
-                'address' => $user->profile->address ?? '',
-                'department_id' => $user->profile->department_id ?? '',
-                'national_identifier' => $user->profile->national_identifier ?? '',
-                'registration_number' => $user->profile->registration_number ?? '',
-                'gender' => $user->profile->gender ?? '',
-                'blood_type' => $user->profile->blood_type ?? '',
-            ];
-        }
+        $this->status = $user->latestStatus()?->name ?? User::STATUS_ACTIVE;
+        $this->password = '';
+        $this->password_confirmation = '';
+        $this->profile = [
+            'phone' => $user->profile?->phone ?? '',
+            'address' => $user->profile?->address ?? '',
+            'department_id' => $user->profile?->department_id ?? '',
+            'national_identifier' => $user->profile?->national_identifier ?? '',
+            'registration_number' => $user->profile?->registration_number ?? '',
+            'gender' => $user->profile?->gender ?? '',
+            'blood_type' => $user->profile?->blood_type ?? '',
+        ];
     }
 
-    /**
-     * Get validation rules.
-     */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email,'.$this->id],
             'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
-            'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
             'password' => $this->id
-                ? ['nullable', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()]
-                : ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
+                ? ['nullable', 'string', 'confirmed', Password::auto()]
+                : ['required', 'string', 'confirmed', Password::auto()],
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],
             'profile.department_id' => ['nullable', 'uuid', 'exists:departments,id'],

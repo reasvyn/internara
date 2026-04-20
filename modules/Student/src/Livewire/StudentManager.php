@@ -6,10 +6,11 @@ namespace Modules\Student\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
+use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Student\Livewire\Forms\StudentForm;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\UI\Livewire\RecordManager;
-use Modules\User\Livewire\Forms\UserForm;
 use Modules\User\Models\User;
 
 /**
@@ -20,11 +21,9 @@ use Modules\User\Models\User;
 class StudentManager extends RecordManager
 {
     use HandlesAppException;
-    use \Modules\User\Livewire\Concerns\InteractsWithDepartments;
+    use HasDepartmentOptions;
 
-    protected string $viewPermission = 'student.manage';
-
-    public UserForm $form;
+    public StudentForm $form;
 
     /**
      * Initialize the component.
@@ -35,7 +34,18 @@ class StudentManager extends RecordManager
         $this->eventPrefix = 'student';
     }
 
-    public function initialize(): void {}
+    public function initialize(): void
+    {
+        $this->title = __('admin::ui.menu.students');
+        $this->subtitle = __('user::ui.manager.subtitle');
+        $this->addLabel = __('user::ui.manager.add_student');
+        $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
+        $this->viewPermission = 'student.manage';
+        $this->createPermission = 'student.manage';
+        $this->updatePermission = 'student.manage';
+        $this->deletePermission = 'student.manage';
+        $this->modelClass = User::class;
+    }
 
     protected function getTableHeaders(): array
     {
@@ -61,13 +71,11 @@ class StudentManager extends RecordManager
     public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
         return $this->service
-            ->query([
+            ->paginate([
                 'search' => $this->search,
                 'sort_by' => $this->sortBy['column'] ?? 'created_at',
                 'sort_dir' => $this->sortBy['direction'] ?? 'desc',
-            ])
-            ->with(['roles:id,name', 'profile'])
-            ->paginate($this->perPage);
+            ], $this->perPage, ['*'], ['roles:id,name', 'profile.department', 'statuses']);
     }
 
     /**
@@ -84,7 +92,6 @@ class StudentManager extends RecordManager
     public function add(): void
     {
         $this->form->reset();
-        $this->form->roles = ['student'];
         $this->formModal = true;
     }
 
@@ -97,7 +104,7 @@ class StudentManager extends RecordManager
 
         if ($user) {
             $this->authorize('update', $user);
-            $this->form->setUser($user);
+            $this->form->fillFromUser($user);
             $this->formModal = true;
         }
     }
@@ -111,13 +118,8 @@ class StudentManager extends RecordManager
 
         try {
             if ($this->form->id) {
-                $user = $this->service->find($this->form->id);
-                if ($user) {
-                    $this->authorize('update', $user);
-                }
                 $this->service->update($this->form->id, $this->form->all());
             } else {
-                $this->authorize('create', [User::class, ['student']]);
                 $this->service->create($this->form->all());
             }
 
@@ -133,12 +135,10 @@ class StudentManager extends RecordManager
      */
     public function render(): View
     {
-        $title = __('admin::ui.menu.students');
-
         return view('student::livewire.student-manager', [
-            'title' => $title,
+            'title' => $this->title,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => $title.' | '.setting('brand_name', setting('app_name')),
+            'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.students',
         ]);
     }

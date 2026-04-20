@@ -4,73 +4,147 @@ declare(strict_types=1);
 
 namespace Modules\Teacher\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
 use Modules\Teacher\Services\Contracts\TeacherService as Contract;
 use Modules\User\Models\User;
-use Modules\User\Services\Contracts\UserService;
+use Modules\User\Notifications\WelcomeUserNotification;
+use Illuminate\Support\Str;
 
 class TeacherService extends EloquentQuery implements Contract
 {
     public function __construct(
         User $model,
-        protected UserService $userService,
         protected ProfileService $profileService,
     ) {
         $this->setModel($model);
-        $this->setSearchable(['profile.registration_number']);
+        $this->setSearchable(['name', 'email', 'username', 'profile.registration_number']);
+        $this->setSortable(['name', 'email', 'created_at']);
     }
 
-    /**
-     * Create a new teacher account and profile.
-     */
+    public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
+    {
+        if (! $this->baseQuery) {
+            $this->setBaseQuery($this->model->newQuery()->role(Role::TEACHER->value));
+        }
+
+        return parent::query($filters, $columns, $with);
+    }
+
     public function create(array $data): User
     {
-        // Force the teacher role
-        $data['roles'] = ['teacher'];
-        $profileData = $data['profile'] ?? [];
-        unset($data['profile']);
+        return DB::transaction(function () use ($data): User {
+            $status = $data['status'] ?? User::STATUS_ACTIVE;
+            $plainPassword = $data['password'];
+            $profileData = $data['profile'] ?? [];
+            unset($data['profile'], $data['status']);
 
-        // Set default registration number if missing
-        if (empty($profileData['registration_number'])) {
-            $profileData['registration_number'] =
-                'PENDING-'.(string) \Illuminate\Support\Str::uuid();
-        }
+            if (empty($profileData['registration_number'])) {
+                $profileData['registration_number'] = 'PENDING-'.(string) Str::uuid();
+            }
 
-        // 1. Create User account
-        $user = $this->userService->create($data);
+            if (setting('app_installed', false) && ! $this->skipAuthorization) {
+                Gate::authorize('create', [User::class, [Role::TEACHER->value]]);
+            }
 
-        // 2. Link & Update Profile
-        $profile = $this->profileService->getByUserId($user->id);
-        $this->profileService->update($profile->id, $profileData);
+            /** @var User $user */
+            $user = $this->withoutAuthorization()->parentCreate($data);
+            $user->assignRole(Role::TEACHER->value);
+            $user->setStatus($status);
 
-        return $user;
+            $profile = $this->profileService->withoutAuthorization()->getByUserId($user->id);
+            if ($profileData !== []) {
+                $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+            }
+
+            $this->skipAuthorization = false;
+            $user->notify(new WelcomeUserNotification($plainPassword));
+
+            return $user->load(['roles:id,name', 'profile.department', 'statuses']);
+        });
     }
 
-    /**
-     * Update a teacher account and profile.
-     */
     public function update(mixed $id, array $data): User
     {
-        $user = $this->userService->find($id);
+        /** @var User $teacher */
+        $teacher = $this->findOrFail($id);
 
-        if (! $user || ! $user->hasRole('teacher')) {
-            throw new \Modules\Exception\RecordNotFoundException(
-                replace: ['record' => 'Teacher', 'id' => $id],
-            );
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $teacher);
         }
 
+        $status = $data['status'] ?? null;
         $profileData = $data['profile'] ?? [];
-        unset($data['profile']);
+        unset($data['profile'], $data['status']);
 
-        // 1. Update User account
-        $user = $this->userService->update($id, $data);
-
-        // 2. Update Profile data
-        if (! empty($profileData) && $user->profile) {
-            $this->profileService->update($user->profile->id, $profileData);
+        if (array_key_exists('password', $data) && empty($data['password'])) {
+            unset($data['password']);
         }
 
-        return $user;
+        /** @var User $updatedTeacher */
+        $updatedTeacher = $this->withoutAuthorization()->parentUpdate($id, $data);
+        $updatedTeacher->syncRoles([Role::TEACHER->value]);
+
+        if ($status !== null) {
+            $updatedTeacher->setStatus($status);
+        }
+
+        $profile = $this->profileService->withoutAuthorization()->getByUserId($updatedTeacher->id);
+        if ($profileData !== []) {
+            $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+        }
+
+        $this->skipAuthorization = false;
+
+        return $updatedTeacher->load(['roles:id,name', 'profile.department', 'statuses']);
+    }
+
+    public function delete(mixed $id, bool $force = false): bool
+    {
+        /** @var User $teacher */
+        $teacher = $this->findOrFail($id);
+
+        if (! $this->skipAuthorization) {
+            Gate::authorize('delete', $teacher);
+        }
+
+        $this->skipAuthorization = false;
+
+        return $force ? $teacher->forceDelete() : $teacher->delete();
+    }
+
+    public function destroy(mixed $ids, bool $force = false): int
+    {
+        $teachers = $this->query()->whereKey(Arr::wrap($ids))->get();
+
+        if (! $this->skipAuthorization) {
+            foreach ($teachers as $teacher) {
+                Gate::authorize('delete', $teacher);
+            }
+        }
+
+        $this->skipAuthorization = false;
+
+        return $teachers->reduce(
+            fn (int $count, User $teacher): int => $count + (($force ? $teacher->forceDelete() : $teacher->delete()) ? 1 : 0),
+            0,
+        );
+    }
+
+    protected function parentCreate(array $data): User
+    {
+        /** @var User */
+        return parent::create($data);
+    }
+
+    protected function parentUpdate(mixed $id, array $data): User
+    {
+        /** @var User */
+        return parent::update($id, $data);
     }
 }

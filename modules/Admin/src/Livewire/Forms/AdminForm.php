@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Admin\Livewire\Forms;
 
 use Livewire\Form;
+use Modules\Shared\Rules\Password;
+use Modules\User\Models\User;
 
 /**
  * Class AdminForm
@@ -30,27 +32,25 @@ class AdminForm extends Form
     public array $profile = [
         'phone' => '',
         'address' => '',
+        'gender' => '',
     ];
 
     public string $status = 'active';
 
-    /**
-     * Fill the form with data from an array.
-     */
-    public function fillData(array $data): void
+    public function fillFromUser(User $user): void
     {
-        $this->id = $data['id'] ?? null;
-        $this->name = $data['name'] ?? '';
-        $this->email = $data['email'] ?? '';
-        $this->username = $data['username'] ?? '';
-        $this->status = $data['status'] ?? 'active';
-
-        if (isset($data['profile'])) {
-            $this->profile = [
-                'phone' => $data['profile']['phone'] ?? '',
-                'address' => $data['profile']['address'] ?? '',
-            ];
-        }
+        $this->id = $user->id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->username = $user->username;
+        $this->status = $user->latestStatus()?->name ?? User::STATUS_ACTIVE;
+        $this->password = '';
+        $this->password_confirmation = '';
+        $this->profile = [
+            'phone' => $user->profile?->phone ?? '',
+            'address' => $user->profile?->address ?? '',
+            'gender' => $user->profile?->gender ?? '',
+        ];
     }
 
     /**
@@ -60,15 +60,15 @@ class AdminForm extends Form
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email'],
-            'username' => ['nullable', 'string'],
-            'roles' => ['required', 'array', 'min:1'],
+            'email' => ['required', 'email', 'unique:users,email,'.$this->id],
+            'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
             'password' => $this->id
-                ? ['nullable', 'string', 'confirmed']
-                : ['required', 'string', 'confirmed'],
+                ? ['nullable', 'string', 'confirmed', Password::auto()]
+                : ['required', 'string', 'confirmed', Password::auto()],
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],
+            'profile.gender' => ['nullable', 'string', 'in:male,female'],
         ];
     }
 }
