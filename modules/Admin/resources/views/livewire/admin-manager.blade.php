@@ -25,22 +25,22 @@
                     <x-ui::menu-item title="ui::common.export" icon="tabler.download" wire:click="exportCsv" />
                 </x-ui::dropdown>
 
-                <x-ui::dropdown 
-                    :label="__('ui::common.bulk_actions')" 
-                    icon="tabler.layers-intersect" 
-                    variant="secondary"
-                    x-bind:disabled="selectedIds.length === 0"
-                    x-bind:class="{ 'pointer-events-none opacity-50': selectedIds.length === 0 }"
-                    :disabled="count($selectedIds) === 0"
-                >
-                    <x-ui::menu-item 
-                        title="ui::common.delete_selected" 
-                        icon="tabler.trash" 
-                        class="text-error" 
-                        wire:click="removeSelected" 
-                        wire:confirm="{{ __('ui::common.delete_confirm') }}"
-                    />
-                </x-ui::dropdown>
+                <div x-bind:class="{ 'pointer-events-none opacity-50': selectedIds.length === 0 }">
+                    <x-ui::dropdown 
+                        :label="__('ui::common.bulk_actions')" 
+                        icon="tabler.layers-intersect" 
+                        variant="secondary"
+                        :disabled="count($selectedIds) === 0"
+                    >
+                        <x-ui::menu-item 
+                            title="ui::common.delete_selected" 
+                            icon="tabler.trash" 
+                            class="text-error" 
+                            wire:click="removeSelected" 
+                            wire:confirm="{{ __('ui::common.delete_confirm') }}"
+                        />
+                    </x-ui::dropdown>
+                </div>
 
                 <x-ui::button :label="__('user::ui.manager.add_admin')" icon="tabler.plus" variant="primary" wire:click="add" />
             </div>

@@ -41,22 +41,23 @@
 
                 {{-- Bulk Actions --}}
                 @if($this->can('delete'))
-                    <x-ui::dropdown 
-                        :label="__('ui::common.bulk_actions')" 
-                        icon="tabler.layers-intersect" 
-                        variant="secondary" 
-                        x-bind:disabled="selectedIds.length === 0"
-                        x-bind:class="{ 'opacity-50 pointer-events-none': selectedIds.length === 0 }"
-                    >
-                        {{ $bulkActions ?? '' }}
-                        <x-ui::menu-item 
-                            title="ui::common.delete_selected" 
-                            icon="tabler.trash" 
-                            class="text-error" 
-                            wire:click="removeSelected" 
-                            wire:confirm="{{ $this->deleteConfirmMessage }}"
-                        />
-                    </x-ui::dropdown>
+                    <div x-bind:class="{ 'opacity-50 pointer-events-none': selectedIds.length === 0 }">
+                        <x-ui::dropdown 
+                            :label="__('ui::common.bulk_actions')" 
+                            icon="tabler.layers-intersect" 
+                            variant="secondary"
+                            :disabled="count($selectedIds) === 0"
+                        >
+                            {{ $bulkActions ?? '' }}
+                            <x-ui::menu-item 
+                                title="ui::common.delete_selected" 
+                                icon="tabler.trash" 
+                                class="text-error" 
+                                wire:click="removeSelected" 
+                                wire:confirm="{{ $this->deleteConfirmMessage }}"
+                            />
+                        </x-ui::dropdown>
+                    </div>
                 @endif
 
                 {{-- Add Button --}}
