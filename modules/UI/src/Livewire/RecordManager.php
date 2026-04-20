@@ -176,6 +176,11 @@ abstract class RecordManager extends Component
     public function updatedFilters(): void { $this->resetPage(); $this->selectedIds = []; }
     public function updatedSearch(): void { $this->resetPage(); $this->selectedIds = []; }
 
+    public function refreshRecords(): void
+    {
+        $this->selectedIds = [];
+    }
+
     public function can(string $action, mixed $target = null): bool
     {
         $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;

@@ -39,6 +39,14 @@
                     <x-ui::menu-item title="ui::common.import" icon="tabler.upload" x-on:click="$wire.importModal = true" />
                 </x-ui::dropdown>
 
+                <x-ui::button
+                    :label="__('ui::common.refresh')"
+                    icon="tabler.refresh"
+                    variant="secondary"
+                    wire:click="refreshRecords"
+                    spinner="refreshRecords"
+                />
+
                 {{-- Bulk Actions --}}
                 @if($this->can('delete'))
                     <div x-bind:class="{ 'opacity-50 pointer-events-none': selectedIds.length === 0 }">
@@ -86,11 +94,11 @@
 
         {{-- Table Wrapper --}}
         <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh] relative">
-            <div 
-                wire:loading.class="opacity-40 pointer-events-none" 
-                wire:target="search, sortBy, perPage"
-                class="transition-opacity duration-200"
-            >
+                <div 
+                    wire:loading.class="opacity-40 pointer-events-none" 
+                    wire:target="search, sortBy, perPage, refreshRecords"
+                    class="transition-opacity duration-200"
+                >
                 <x-mary-table 
                     class="table-zebra table-md w-full"
                     :headers="$this->headers" 

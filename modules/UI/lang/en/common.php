@@ -54,6 +54,7 @@ return [
     'not_applicable' => 'N/A',
     'bulk_actions' => 'Bulk Actions',
     'delete_selected' => 'Delete Selected',
+    'refresh' => 'Refresh',
     'avatar' => 'Avatar',
     'avatar_hint' => 'Recommended: Square image, max 1MB.',
     'generate' => 'Generate',
