@@ -26,27 +26,27 @@
                     <x-ui::menu-item title="ui::common.import" icon="tabler.upload" wire:click="$set('importModal', true)" />
                 </x-ui::dropdown>
 
-                <x-ui::dropdown 
-                    :label="__('internship::ui.bulk_actions')" 
-                    icon="tabler.layers-intersect" 
-                    variant="secondary"
-                    x-bind:disabled="selectedIds.length === 0"
-                    x-bind:class="{ 'pointer-events-none opacity-50': selectedIds.length === 0 }"
-                    :disabled="count($selectedIds) === 0"
-                >
-                    <x-ui::menu-item 
-                        title="internship::ui.bulk_placement" 
-                        icon="tabler.map-pin-up" 
-                        wire:click="openBulkPlace" 
-                    />
-                    <x-ui::menu-item 
-                        title="internship::ui.delete_selected" 
-                        icon="tabler.trash" 
-                        class="text-error" 
-                        wire:click="removeSelected" 
-                        wire:confirm="{{ __('ui::common.delete_confirm') }}"
-                    />
-                </x-ui::dropdown>
+                <div x-bind:class="{ 'pointer-events-none opacity-50': selectedIds.length === 0 }">
+                    <x-ui::dropdown 
+                        :label="__('internship::ui.bulk_actions')" 
+                        icon="tabler.layers-intersect" 
+                        variant="secondary"
+                        :disabled="count($selectedIds) === 0"
+                    >
+                        <x-ui::menu-item 
+                            title="internship::ui.bulk_placement" 
+                            icon="tabler.map-pin-up" 
+                            wire:click="openBulkPlace" 
+                        />
+                        <x-ui::menu-item 
+                            title="internship::ui.delete_selected" 
+                            icon="tabler.trash" 
+                            class="text-error" 
+                            wire:click="removeSelected" 
+                            wire:confirm="{{ __('ui::common.delete_confirm') }}"
+                        />
+                    </x-ui::dropdown>
+                </div>
 
                 <x-ui::button :label="__('internship::ui.add_registration')" icon="tabler.plus" variant="primary" wire:click="add" />
             </div>
