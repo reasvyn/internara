@@ -51,7 +51,6 @@ class StudentService extends EloquentQuery implements Contract
     {
         return DB::transaction(function () use ($data): User {
             $status = $data['status'] ?? User::STATUS_ACTIVE;
-            $plainPassword = $data['password'];
             $profileData = $data['profile'] ?? [];
             unset($data['profile'], $data['status']);
 
@@ -70,7 +69,7 @@ class StudentService extends EloquentQuery implements Contract
             }
 
             $this->skipAuthorization = false;
-            $user->notify(new WelcomeUserNotification($plainPassword));
+            $user->notify(new WelcomeUserNotification());
 
             return $user->load(['roles:id,name', 'profile.department', 'statuses']);
         });

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\User\Livewire;
 
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Modules\Permission\Enums\Role;
 use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\UI\Livewire\RecordManager;
-use Modules\User\Livewire\Forms\UserForm;
+use Modules\User\Livewire\Forms\UserManagerForm;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
@@ -22,7 +23,7 @@ class UserManager extends RecordManager
 {
     use HasDepartmentOptions;
 
-    public UserForm $form;
+    public UserManagerForm $form;
 
     /**
      * The specific role being managed (optional).
@@ -120,8 +121,9 @@ class UserManager extends RecordManager
         }
 
         try {
-            // Security: Prevent deletion of super-admins via bulk actions
-            $targets = User::whereIn('id', $this->selectedIds)
+            $targets = $this->service
+                ->query()
+                ->whereIn('id', $this->selectedIds)
                 ->get()
                 ->reject(fn ($u) => $u->hasRole('super-admin'))
                 ->pluck('id')
@@ -131,6 +133,54 @@ class UserManager extends RecordManager
             $this->selectedIds = [];
             flash()->success(__('user::ui.manager.deleted_successfully', ['count' => $count]));
         } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    public function sendPasswordResetLink(mixed $id): void
+    {
+        try {
+            $this->service->sendPasswordResetLink($id);
+            flash()->success(__('auth::ui.forgot_password.sent'));
+        } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    public function save(): void
+    {
+        $this->form->validate();
+        $payload = Arr::except($this->form->all(), ['password', 'password_confirmation']);
+        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+
+        try {
+            if ($isSetupAuthorized) {
+                $this->service->withoutAuthorization();
+            }
+
+            if ($this->form->id) {
+                $record = $this->service->find($this->form->id);
+                if (! $isSetupAuthorized && $record && $this->updatePermission) {
+                    \Illuminate\Support\Facades\Gate::authorize($this->updatePermission, $record);
+                }
+                $this->service->update($this->form->id, $payload);
+            } else {
+                if (! $isSetupAuthorized && $this->createPermission) {
+                    $roles = $this->form->roles;
+                    $authModel = $this->modelClass ?: config('auth.providers.users.model');
+                    \Illuminate\Support\Facades\Gate::authorize($this->createPermission, [$authModel, $roles]);
+                }
+                $this->service->create($payload);
+            }
+
+            $this->toggleModal(self::MODAL_FORM, false);
+            flash()->success('shared::messages.record_saved');
+            $this->dispatch($this->getEventPrefix().':saved', exists: true);
+        } catch (\Throwable $e) {
+            if (is_debug_mode()) {
+                throw $e;
+            }
+
             flash()->error($e->getMessage());
         }
     }

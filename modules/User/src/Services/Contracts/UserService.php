@@ -36,4 +36,9 @@ interface UserService extends EloquentQuery
      * Check if a user has a specific role.
      */
     public function hasRole(string $userId, string $role): bool;
+
+    /**
+     * Send a password reset/setup link to a managed user.
+     */
+    public function sendPasswordResetLink(mixed $id): void;
 }
