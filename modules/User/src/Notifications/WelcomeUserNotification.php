@@ -8,15 +8,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Password;
 
 class WelcomeUserNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct(protected string $plainPassword) {}
 
     /**
      * Get the notification's delivery channels.
@@ -35,18 +31,20 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $brandName = setting('brand_name', setting('app_name'));
+        $token = Password::broker()->createToken($notifiable);
+        $setupUrl = route('password.reset', [
+            'token' => $token,
+            'email' => $notifiable->email,
+        ]);
 
         return (new MailMessage())
             ->subject(__('user::notifications.welcome_subject', ['school' => $brandName]))
             ->greeting(__('user::notifications.welcome_greeting', ['name' => $notifiable->name]))
             ->line(__('user::notifications.welcome_line_1', ['school' => $brandName]))
             ->line(__('user::notifications.welcome_credentials_info'))
-            ->line(
-                __('user::notifications.welcome_username', ['username' => $notifiable->username]),
-            )
-            ->line(__('user::notifications.welcome_password', ['password' => $this->plainPassword]))
+            ->line(__('user::notifications.welcome_username', ['username' => $notifiable->username]))
             ->line(__('user::notifications.welcome_line_2'))
-            ->action(__('user::notifications.welcome_action'), route('profile.index'))
+            ->action(__('user::notifications.welcome_action'), $setupUrl)
             ->line(__('user::notifications.welcome_line_3'))
             ->salutation(__('auth::emails.verification_salutation', ['school' => $brandName]));
     }
@@ -62,7 +60,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
             'message' => __('user::notifications.welcome_db_message', [
                 'school' => setting('brand_name', setting('app_name')),
             ]),
-            'action_url' => route('profile.index'),
+            'action_url' => route('forgot-password'),
             'sender_name' => setting('brand_name', setting('app_name')).' Team',
         ];
     }

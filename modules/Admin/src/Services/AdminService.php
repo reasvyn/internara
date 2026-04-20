@@ -44,7 +44,6 @@ class AdminService extends EloquentQuery implements Contract
     {
         return DB::transaction(function () use ($data): User {
             $status = $data['status'] ?? User::STATUS_ACTIVE;
-            $plainPassword = $data['password'];
             $profileData = Arr::only($data['profile'] ?? [], ['phone', 'address', 'gender']);
             unset($data['profile'], $data['status'], $data['roles']);
 
@@ -64,7 +63,7 @@ class AdminService extends EloquentQuery implements Contract
             }
 
             $this->skipAuthorization = false;
-            $user->notify(new WelcomeUserNotification($plainPassword));
+            $user->notify(new WelcomeUserNotification());
 
             return $user->load(['roles:id,name', 'profile', 'statuses']);
         });

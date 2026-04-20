@@ -11,7 +11,6 @@ use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
 use Modules\Shared\Services\EloquentQuery;
 use Modules\User\Models\User;
-use Modules\User\Notifications\WelcomeUserNotification;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

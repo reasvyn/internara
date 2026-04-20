@@ -41,6 +41,13 @@
         @scope('actions', $user)
             <div class="flex justify-end gap-2">
                 @if(!$user->hasRole('super-admin'))
+                    <x-ui::button
+                        icon="tabler.mail-share"
+                        variant="tertiary"
+                        wire:click="sendPasswordResetLink('{{ $user->id }}')"
+                        class="text-warning btn-xs"
+                        tooltip="{{ __('user::ui.manager.form.send_setup_link') }}"
+                    />
                     <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $user->id }}')" class="text-info btn-xs" tooltip="{{ __('user::ui.manager.edit_' . $roleKey) }}" />
                     <x-ui::button 
                         icon="tabler.trash" 
@@ -64,9 +71,6 @@
             x-data="{
                 roles: $wire.entangle('form.roles').live,
                 status: $wire.entangle('form.status').live,
-                password: $wire.entangle('form.password').live,
-                passwordConfirmation: $wire.entangle('form.password_confirmation').live,
-                showPassword: false,
                 hasRole(role) {
                     return Array.isArray(this.roles) && this.roles.includes(role);
                 },
@@ -81,13 +85,6 @@
                 },
                 get isPrivilegedContext() {
                     return this.hasRole('admin') || this.hasRole('super-admin');
-                },
-                generatePassword() {
-                    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                    const password = Array.from({ length: 12 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
-                    this.password = password;
-                    this.passwordConfirmation = password;
-                    this.showPassword = true;
                 }
             }"
             x-init="$watch('roles', (roles) => { if (Array.isArray(roles) && (roles.includes('admin') || roles.includes('super-admin'))) { status = 'verified'; } })"
@@ -100,43 +97,9 @@
                 <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" readonly />
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div @class([
-                    'md:col-span-4' => $form->id,
-                    'md:col-span-3' => ! $form->id,
-                ])>
-                    <x-ui::input 
-                        :label="__('user::ui.manager.form.password')" 
-                        icon="tabler.key"
-                        ::type="showPassword ? 'text' : 'password'"
-                        x-model="password"
-                        :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
-                    >
-                        <x-slot:append>
-                            <x-ui::button 
-                                icon="tabler.eye" 
-                                ::icon="showPassword ? 'tabler.eye-off' : 'tabler.eye'" 
-                                variant="tertiary" 
-                                size="btn-xs" 
-                                @click="showPassword = !showPassword" 
-                            />
-                        </x-slot:append>
-                    </x-ui::input>
-                </div>
-
-                @if(!$form->id)
-                    <div class="md:col-span-1 pb-[2px]">
-                        <x-ui::button 
-                            type="button"
-                            :label="__('ui::common.generate')" 
-                            icon="tabler.refresh" 
-                            variant="secondary" 
-                            class="w-full"
-                            @click="generatePassword()"
-                        />
-                    </div>
-                @endif
-            </div>
+            <x-ui::alert type="info" icon="tabler.lock">
+                {{ $form->id ? __('user::ui.manager.form.password_reset_notice') : __('user::ui.manager.form.password_setup_notice') }}
+            </x-ui::alert>
 
             @if(!$targetRole)
                 <x-ui::choices

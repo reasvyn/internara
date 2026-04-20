@@ -7,6 +7,7 @@ namespace Modules\User\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Password;
 use Modules\Exception\AppException;
 use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
@@ -69,14 +70,14 @@ class UserService extends EloquentQuery implements Contract
                 ? \Modules\Status\Enums\Status::VERIFIED->value
                 : ($userData['status'] ?? User::STATUS_ACTIVE);
 
-            // Security: Prevent unauthorized SuperAdmin creation
-            if (in_array(Role::SUPER_ADMIN->value, $roles) && setting('app_installed', false)) {
-                Gate::authorize('assignRole', [User::class, Role::SUPER_ADMIN->value]);
+            if (in_array(Role::SUPER_ADMIN->value, $roles, true) && setting('app_installed', false)) {
+                throw new AppException(
+                    userMessage: 'user::exceptions.super_admin_readonly',
+                    code: Response::HTTP_FORBIDDEN,
+                );
             }
 
-            // Prepare Password
-            $plainPassword = $userData['password'] ?? \Illuminate\Support\Str::password(16);
-            $userData['password'] = $plainPassword;
+            $userData['password'] = $userData['password'] ?? \Illuminate\Support\Str::password(32);
 
             // Enforce hierarchical authority for user creation, except during initial setup
             if (setting('app_installed', false) && ! $this->skipAuthorization) {
@@ -107,20 +108,14 @@ class UserService extends EloquentQuery implements Contract
             }
 
             // UNIFIED: Initialize & Update Profile for ALL user types
-            $profile = $this->profileService->getByUserId($user->id);
+            $profile = $this->profileService->withoutAuthorization()->getByUserId($user->id);
             if (! empty($profileData)) {
-                // Bypass profile authorization during initial setup or if explicitly skipped
-                if (! setting('app_installed', false) || $this->skipAuthorization) {
-                    $this->profileService->withoutAuthorization();
-                }
-
-                $this->profileService->update($profile->id, $profileData);
+                $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
             }
 
             $this->skipAuthorization = false;
 
-            // Notify the new user
-            $user->notify(new WelcomeUserNotification($plainPassword));
+            $user->notify(new WelcomeUserNotification());
 
             return $user;
         });
@@ -209,6 +204,13 @@ class UserService extends EloquentQuery implements Contract
 
         // Update basic User details
         if ($roles !== null) {
+            if (in_array(Role::SUPER_ADMIN->value, Arr::wrap($roles), true) && ! $user->hasRole(Role::SUPER_ADMIN->value)) {
+                throw new AppException(
+                    userMessage: 'user::exceptions.super_admin_readonly',
+                    code: Response::HTTP_FORBIDDEN,
+                );
+            }
+
             $updatedUser->syncRoles($roles);
         }
 
@@ -225,9 +227,39 @@ class UserService extends EloquentQuery implements Contract
             $updatedUser->markEmailAsVerified();
         }
 
+        $profile = $this->profileService->withoutAuthorization()->getByUserId($updatedUser->id);
+        if ($profileData !== []) {
+            $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+        }
+
         $this->skipAuthorization = false;
 
         return $updatedUser;
+    }
+
+    public function sendPasswordResetLink(mixed $id): void
+    {
+        $user = $this->find($id);
+
+        if (! $user) {
+            throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
+        }
+
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $user);
+        }
+
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
+            $this->skipAuthorization = false;
+
+            throw new AppException(
+                userMessage: 'user::exceptions.super_admin_readonly',
+                code: Response::HTTP_FORBIDDEN,
+            );
+        }
+
+        Password::sendResetLink(['email' => $user->email]);
+        $this->skipAuthorization = false;
     }
 
     /**
