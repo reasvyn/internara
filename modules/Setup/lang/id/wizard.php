@@ -77,6 +77,8 @@ return [
         'headline' => 'Pastikan Jalur Komunikasi Terbuka.',
         'description' => ':app perlu mengirimkan notifikasi penting, laporan, dan konfirmasi akun melalui email. Konfigurasikan server SMTP Anda untuk memastikan setiap pesan sampai ke tujuannya.',
         'description_extra' => 'Anda dapat menggunakan penyedia layanan SMTP gratis atau yang disediakan oleh institusi Anda.',
+        'smtp_configuration' => 'Konfigurasi SMTP',
+        'sender_information' => 'Informasi Pengirim',
         'test_connection' => 'Tes Koneksi',
         'skip' => 'Lewati Dulu',
         'smtp_connection_success' => 'Koneksi SMTP berhasil!',

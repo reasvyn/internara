@@ -1,4 +1,18 @@
-<div>
+<div
+    x-data="{ 
+        search: $wire.entangle('search', true),
+        selectedIds: $wire.entangle('selectedIds'),
+        applyFilter() {
+            let term = this.search.toLowerCase();
+            let rows = this.$el.querySelectorAll('table tbody tr:not(.mary-table-empty)');
+            rows.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        }
+    }"
+    x-init="$watch('search', () => applyFilter())"
+>
     <x-ui::header 
         wire:key="student-manager-header"
         :title="$title" 
@@ -15,7 +29,9 @@
                 <x-ui::dropdown 
                     :label="__('ui::common.bulk_actions')" 
                     icon="tabler.layers-intersect" 
-                    variant="secondary" 
+                    variant="secondary"
+                    x-bind:disabled="selectedIds.length === 0"
+                    x-bind:class="{ 'pointer-events-none opacity-50': selectedIds.length === 0 }"
                     :disabled="count($selectedIds) === 0"
                 >
                     <x-ui::menu-item 
@@ -33,20 +49,7 @@
     </x-ui::header>
 
     <x-ui::card>
-        <div 
-            x-data="{ 
-                search: $wire.entangle('search', true),
-                applyFilter() {
-                    let term = this.search.toLowerCase();
-                    let rows = this.$el.querySelectorAll('table tbody tr:not(.mary-table-empty)');
-                    rows.forEach(row => {
-                        let text = row.innerText.toLowerCase();
-                        row.style.display = text.includes(term) ? '' : 'none';
-                    });
-                }
-            }" 
-            x-init="$watch('search', () => applyFilter())"
-        >
+        <div>
             <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div class="w-full md:w-1/3">
                     <x-ui::input 

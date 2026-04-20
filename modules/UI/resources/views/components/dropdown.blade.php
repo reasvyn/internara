@@ -16,10 +16,18 @@
     
     $ariaLabel = $attributes->get('aria-label') ?? $label ?? __('ui::common.options');
     $isDisabled = filter_var($disabled, FILTER_VALIDATE_BOOLEAN);
+    $dynamicDisabled = $attributes->get('x-bind:disabled') ?? $attributes->get(':disabled');
+    $dynamicClass = $attributes->get('x-bind:class') ?? $attributes->get(':class');
+    $dropdownAttributes = $attributes->except([
+        'x-bind:disabled',
+        ':disabled',
+        'x-bind:class',
+        ':class',
+    ]);
 @endphp
 
 <x-mary-dropdown 
-    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-50', 'pointer-events-none opacity-50' => $isDisabled]) }}
+    {{ $dropdownAttributes->class([$variantClasses, 'min-h-[2.75rem] relative z-50', 'pointer-events-none opacity-50' => $isDisabled]) }}
     :right="$right"
 >
     @isset($trigger)
@@ -35,6 +43,12 @@
                 :spinner="false"
                 :class="$isDisabled ? 'btn-disabled' : ''"
                 aria-label="{{ $ariaLabel }}" 
+                @if($dynamicDisabled)
+                    x-bind:disabled="{{ $dynamicDisabled }}"
+                @endif
+                @if($dynamicClass)
+                    x-bind:class="{{ $dynamicClass }}"
+                @endif
             />
         </x-slot:trigger>
     @endisset
