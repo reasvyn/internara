@@ -18,11 +18,6 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
         'admin.readiness',
     );
 
-    // Comprehensive User Management
-    Route::get('/admin/users', \Modules\User\Livewire\UserManager::class)->name(
-        'admin.users.index',
-    );
-
     // Stakeholder Management
     Route::get('/admin/students', \Modules\Student\Livewire\StudentManager::class)->name(
         'admin.students',
@@ -36,6 +31,9 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
 
     // Admin Management (SuperAdmin Only)
     Route::middleware(['role:super-admin'])->group(function () {
+        Route::get('/admin/users', \Modules\User\Livewire\UserManager::class)->name(
+            'admin.users.index',
+        );
         Route::get('/admin/administrators', \Modules\Admin\Livewire\AdminManager::class)->name(
             'admin.administrators',
         );

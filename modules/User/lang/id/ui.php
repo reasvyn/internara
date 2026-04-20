@@ -55,6 +55,7 @@ return [
             'active' => 'Aktif',
             'pending' => 'Tertunda',
             'inactive' => 'Nonaktif',
+            'verified' => 'Terverifikasi',
             'nip' => 'NIP (Nomor Induk Pegawai)',
             'nip_hint' => 'Wajib untuk peran Guru.',
             'nisn' => 'NISN (Nomor Induk Siswa Nasional)',

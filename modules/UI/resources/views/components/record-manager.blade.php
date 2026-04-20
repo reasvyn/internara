@@ -110,17 +110,20 @@
                 >
                     @isset($tableCells) {{ $tableCells }} @endisset
 
-                    @scope('actions', $record)
-                        <div class="flex items-center justify-end gap-1">
-                            {{ $rowActions ?? '' }}
-                            @if($this->can('update', $record))
-                                <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $record->id }}')" tooltip="{{ __('ui::common.edit') }}" />
-                            @endif
-                            @if($this->can('delete', $record))
-                                <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $record->id }}')" tooltip="{{ __('ui::common.delete') }}" />
-                            @endif
-                        </div>
-                    @endscope
+                    @if(isset($rowActions))
+                        {{ $rowActions }}
+                    @else
+                        @scope('actions', $record)
+                            <div class="flex items-center justify-end gap-1">
+                                @if($this->can('update', $record))
+                                    <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $record->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                                @endif
+                                @if($this->can('delete', $record))
+                                    <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $record->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                                @endif
+                            </div>
+                        @endscope
+                    @endif
                 </x-mary-table>
             </div>
 

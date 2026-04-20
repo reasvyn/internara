@@ -64,7 +64,10 @@ class UserService extends EloquentQuery implements Contract
             $profileData,
         ) {
             $roles = Arr::wrap($userData['roles'] ?? [Role::STUDENT->value]);
-            $status = $userData['status'] ?? User::STATUS_ACTIVE;
+            $isPrivilegedRole = count(array_intersect($roles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
+            $status = $isPrivilegedRole
+                ? \Modules\Status\Enums\Status::VERIFIED->value
+                : ($userData['status'] ?? User::STATUS_ACTIVE);
 
             // Security: Prevent unauthorized SuperAdmin creation
             if (in_array(Role::SUPER_ADMIN->value, $roles) && setting('app_installed', false)) {
@@ -98,7 +101,7 @@ class UserService extends EloquentQuery implements Contract
                 $user->setStatus($status);
 
                 // Automatically verify Admin accounts created by other administrators
-                if (in_array(Role::ADMIN->value, $roles)) {
+                if ($isPrivilegedRole) {
                     $user->markEmailAsVerified();
                 }
             }
@@ -209,8 +212,17 @@ class UserService extends EloquentQuery implements Contract
             $updatedUser->syncRoles($roles);
         }
 
+        $effectiveRoles = Arr::wrap($roles ?? $updatedUser->roles()->pluck('name')->all());
+        $isPrivilegedRole = count(array_intersect($effectiveRoles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
+
         if ($status !== null) {
-            $updatedUser->setStatus($status);
+            $updatedUser->setStatus($isPrivilegedRole ? \Modules\Status\Enums\Status::VERIFIED->value : $status);
+        } elseif ($isPrivilegedRole) {
+            $updatedUser->setStatus(\Modules\Status\Enums\Status::VERIFIED->value);
+        }
+
+        if ($isPrivilegedRole) {
+            $updatedUser->markEmailAsVerified();
         }
 
         $this->skipAuthorization = false;

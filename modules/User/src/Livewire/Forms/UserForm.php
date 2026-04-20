@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\User\Livewire\Forms;
 
 use Livewire\Form;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
 class UserForm extends Form
@@ -57,7 +58,9 @@ class UserForm extends Form
         $this->email = $user->email;
         $this->username = $user->username;
         $this->roles = $user->roles->pluck('name')->toArray();
-        $this->status = $user->latestStatus()?->name ?? 'active';
+        $this->status = $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])
+            ? 'verified'
+            : ($user->latestStatus()?->name ?? User::STATUS_ACTIVE);
 
         if ($user->profile) {
             $this->profile = [
@@ -82,7 +85,7 @@ class UserForm extends Form
             'email' => ['required', 'email', 'unique:users,email,'.$this->id],
             'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
             'roles' => ['required', 'array', 'min:1'],
-            'status' => ['required', 'string', 'in:active,inactive,pending'],
+            'status' => ['required', 'string', 'in:active,inactive,pending,verified'],
             'password' => $this->id
                 ? ['nullable', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()]
                 : ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],

@@ -118,7 +118,7 @@ return [
             'icon' => 'tabler.users-group',
             'link' => '/admin/users',
             'permission' => 'user.view',
-            'role' => 'admin|super-admin',
+            'role' => 'super-admin',
             'order' => 52,
         ],
         'ui::menu-item#students' => [

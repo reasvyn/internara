@@ -8,21 +8,29 @@
             </div>
         @endscope
 
-        @scope('cell_roles', $user)
+        @scope('cell_role_labels', $user)
             <div class="flex flex-wrap gap-1">
                 @foreach($user->roles as $role)
-                    <livewire:permission::role-badge :role="$role" size="xs" wire:key="role-{{ $user->id }}-{{ $role->id }}" />
+                    <div
+                        @class([
+                            'badge badge-xs font-medium uppercase tracking-wider',
+                            'badge-error' => $role->name === 'super-admin',
+                            'badge-primary' => $role->name === 'admin',
+                            'badge-secondary' => $role->name === 'teacher',
+                            'badge-accent' => $role->name === 'student',
+                            'badge-ghost' => ! in_array($role->name, ['super-admin', 'admin', 'teacher', 'student'], true),
+                        ])
+                    >
+                        {{ __('permission::roles.'.$role->name) }}
+                    </div>
                 @endforeach
             </div>
         @endscope
 
-        @scope('cell_account_status', $user)
-            @php
-                $statusName = $user->latestStatus()?->name ?? 'active';
-            @endphp
+        @scope('cell_display_status', $user)
             <x-ui::badge 
-                :value="__('user::ui.manager.form.' . $statusName)" 
-                :variant="$statusName === 'active' ? 'primary' : 'secondary'" 
+                :value="__('user::ui.manager.form.' . $user->display_status)" 
+                :variant="$user->display_status === 'verified' ? 'primary' : 'secondary'" 
                 class="badge-sm" 
             />
         @endscope
@@ -52,8 +60,10 @@
     {{-- Form Fields --}}
     <x-slot:formFields>
         <div
+            class="space-y-4"
             x-data="{
                 roles: $wire.entangle('form.roles').live,
+                status: $wire.entangle('form.status').live,
                 password: $wire.entangle('form.password').live,
                 passwordConfirmation: $wire.entangle('form.password_confirmation').live,
                 showPassword: false,
@@ -69,6 +79,9 @@
                 get showsAcademicFields() {
                     return this.isStudentContext || this.isTeacherContext;
                 },
+                get isPrivilegedContext() {
+                    return this.hasRole('admin') || this.hasRole('super-admin');
+                },
                 generatePassword() {
                     const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                     const password = Array.from({ length: 12 }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
@@ -77,6 +90,7 @@
                     this.showPassword = true;
                 }
             }"
+            x-init="$watch('roles', (roles) => { if (Array.isArray(roles) && (roles.includes('admin') || roles.includes('super-admin'))) { status = 'verified'; } })"
         >
             <x-ui::input :label="__('user::ui.manager.form.full_name')" icon="tabler.signature" wire:model="form.name" required />
 
@@ -191,9 +205,11 @@
                 :label="__('user::ui.manager.form.status')" 
                 icon="tabler.circle-check"
                 wire:model="form.status" 
+                ::disabled="isPrivilegedContext"
                 :options="[
                     ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
                     ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
+                    ['id' => 'verified', 'name' => __('user::ui.manager.form.verified')],
                 ]" 
             />
         </div>

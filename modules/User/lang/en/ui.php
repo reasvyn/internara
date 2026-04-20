@@ -55,6 +55,7 @@ return [
             'active' => 'Active',
             'pending' => 'Pending',
             'inactive' => 'Inactive',
+            'verified' => 'Verified',
             'nip' => 'NIP (Employee ID)',
             'nip_hint' => 'Mandatory for Teacher role.',
             'nisn' => 'NISN (National Student ID)',

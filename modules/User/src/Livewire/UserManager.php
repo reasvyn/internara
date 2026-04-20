@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\User\Livewire;
 
 use Illuminate\View\View;
+use Modules\Permission\Enums\Role;
 use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
@@ -71,8 +72,8 @@ class UserManager extends RecordManager
                 'label' => __('user::ui.manager.table.username'),
                 'sortable' => true,
             ],
-            ['key' => 'roles', 'label' => __('user::ui.manager.table.roles')],
-            ['key' => 'account_status', 'label' => __('user::ui.manager.table.status')],
+            ['key' => 'role_labels', 'label' => __('user::ui.manager.table.roles')],
+            ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
     }
@@ -95,7 +96,18 @@ class UserManager extends RecordManager
         return $this->service
             ->query($appliedFilters)
             ->with(['roles:id,name', 'profile.department', 'statuses'])
-            ->paginate($this->perPage);
+            ->paginate($this->perPage)
+            ->through(function (User $user): User {
+                $roleNames = $user->roles->pluck('name')->values()->all();
+                $displayStatus = $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])
+                    ? 'verified'
+                    : ($user->latestStatus()?->name ?? User::STATUS_ACTIVE);
+
+                $user->setAttribute('role_labels', implode(', ', $roleNames));
+                $user->setAttribute('display_status', $displayStatus);
+
+                return $user;
+            });
     }
 
     /**
