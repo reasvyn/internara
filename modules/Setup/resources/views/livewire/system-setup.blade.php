@@ -42,7 +42,7 @@
         <div class="space-y-6">
             <x-ui::honeypot wire:model="contact_me" />
             <x-ui::turnstile wire:model="turnstile" class="mb-4" />
-            <x-ui::card title="{{ __('SMTP Configuration') }}" separator>
+            <x-ui::card title="{{ __('setup::wizard.system.smtp_configuration') }}" separator>
                 <div class="grid grid-cols-1 gap-6">
                     <x-ui::input
                         :label="__('setup::wizard.system.fields.smtp_host')"
@@ -80,7 +80,7 @@
                 </div>
             </x-ui::card>
 
-            <x-ui::card title="{{ __('Sender Information') }}" separator>
+            <x-ui::card title="{{ __('setup::wizard.system.sender_information') }}" separator>
                 <div class="grid grid-cols-1 gap-6">
                     <x-ui::input
                         :label="__('setup::wizard.system.fields.from_email')"

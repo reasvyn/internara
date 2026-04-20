@@ -45,9 +45,46 @@ class ProtectSetupRoute
                     __('setup::exceptions.unauthorized_setup_access'),
                 );
             }
+
+            if ($this->shouldRedirectToCompletion($request)) {
+                return redirect()->route('setup.complete');
+            }
         }
 
         return $next($request);
+    }
+
+    protected function shouldRedirectToCompletion(Request $request): bool
+    {
+        return ! $request->routeIs('setup.complete')
+            && $this->isFinalizationOnlyStepRemaining();
+    }
+
+    protected function isFinalizationOnlyStepRemaining(): bool
+    {
+        foreach ($this->setupStepsBeforeCompletion() as $step) {
+            if (! $this->setupService->isStepCompleted($step, true)) {
+                return false;
+            }
+        }
+
+        return ! $this->setupService->isStepCompleted(SetupService::STEP_COMPLETE, true);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function setupStepsBeforeCompletion(): array
+    {
+        return [
+            SetupService::STEP_WELCOME,
+            SetupService::STEP_ENVIRONMENT,
+            SetupService::STEP_SCHOOL,
+            SetupService::STEP_ACCOUNT,
+            SetupService::STEP_DEPARTMENT,
+            SetupService::STEP_INTERNSHIP,
+            SetupService::STEP_SYSTEM,
+        ];
     }
 
     protected function superAdminExists(): bool

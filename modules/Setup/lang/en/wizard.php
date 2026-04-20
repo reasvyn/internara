@@ -77,6 +77,8 @@ return [
         'headline' => 'Ensure Communication Lines Are Open.',
         'description' => ':app needs to send important notifications, reports, and account confirmations via email. Configure your SMTP server to ensure every message reaches its destination.',
         'description_extra' => 'You can use a free SMTP service provider or one provided by your institution.',
+        'smtp_configuration' => 'SMTP Configuration',
+        'sender_information' => 'Sender Information',
         'test_connection' => 'Test Connection',
         'skip' => 'Skip for Now',
         'smtp_connection_success' => 'SMTP Connection successful!',

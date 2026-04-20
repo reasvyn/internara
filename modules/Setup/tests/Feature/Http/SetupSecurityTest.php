@@ -49,3 +49,47 @@ test('it prevents setup access if setup_token is purged from database', function
         ->get(route('setup.welcome'))
         ->assertStatus(403);
 });
+
+test('it redirects setup routes to setup complete when only finalization remains', function () {
+    app(SettingService::class)->setValue('app_installed', false);
+    app(SettingService::class)->setValue('setup_token', 'valid-token-123');
+
+    foreach ([
+        SetupService::STEP_WELCOME,
+        SetupService::STEP_ENVIRONMENT,
+        SetupService::STEP_SCHOOL,
+        SetupService::STEP_ACCOUNT,
+        SetupService::STEP_DEPARTMENT,
+        SetupService::STEP_INTERNSHIP,
+        SetupService::STEP_SYSTEM,
+    ] as $step) {
+        app(SettingService::class)->setValue("setup_step_{$step}", true);
+    }
+
+    app(SettingService::class)->setValue('setup_step_complete', false);
+
+    $this->get(route('setup.welcome', ['token' => 'valid-token-123']))
+        ->assertRedirect(route('setup.complete'));
+});
+
+test('it does not redirect setup complete to avoid redirect loops', function () {
+    app(SettingService::class)->setValue('app_installed', false);
+    app(SettingService::class)->setValue('setup_token', 'valid-token-123');
+
+    foreach ([
+        SetupService::STEP_WELCOME,
+        SetupService::STEP_ENVIRONMENT,
+        SetupService::STEP_SCHOOL,
+        SetupService::STEP_ACCOUNT,
+        SetupService::STEP_DEPARTMENT,
+        SetupService::STEP_INTERNSHIP,
+        SetupService::STEP_SYSTEM,
+    ] as $step) {
+        app(SettingService::class)->setValue("setup_step_{$step}", true);
+    }
+
+    app(SettingService::class)->setValue('setup_step_complete', false);
+
+    $this->get(route('setup.complete', ['token' => 'valid-token-123']))
+        ->assertOk();
+});
