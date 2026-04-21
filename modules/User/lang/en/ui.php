@@ -68,6 +68,7 @@ return [
             'registration_number' => 'Registration Number (NIS/NIP)',
             'nis' => 'NIS (Student Registration Number)',
             'roles' => 'Assigned Roles',
+            'roles_placeholder' => 'Select one or more roles',
             'roles_assign' => 'Assign Roles',
             'roles_hint' => 'Select one or more roles for this user.',
             'status' => 'Account Status',
