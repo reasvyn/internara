@@ -29,6 +29,13 @@ interface ProfileService extends EloquentQuery
     public function getByUserId(string $userId): Profile;
 
     /**
+     * Create or update a managed user's profile through an explicit service-side pathway.
+     *
+     * @param array<string, mixed> $data
+     */
+    public function upsertManagedProfile(string $userId, array $data): Profile;
+
+    /**
      * Synchronize the profileable model for a profile.
      */
     public function syncProfileable(Profile $profile, Model $profileable): Profile;

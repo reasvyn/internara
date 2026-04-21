@@ -30,6 +30,15 @@ return [
             'roles' => 'Peran',
             'status' => 'Status',
         ],
+        'import' => [
+            'instructions' => 'Template/import/export CSV hanya untuk pengguna operasional. Peran hanya boleh student, teacher, atau mentor. Kosongkan kolom roles untuk default student, gunakan department_name persis seperti data jurusan tersimpan, dan jangan sertakan kata sandi.',
+            'columns' => [
+                'roles' => 'Peran',
+                'department_name' => 'Nama Jurusan',
+                'national_identifier' => 'Identitas Nasional',
+                'registration_number' => 'Nomor Registrasi',
+            ],
+        ],
         'form' => [
             'full_name' => 'Nama Lengkap',
             'email' => 'Alamat Email',

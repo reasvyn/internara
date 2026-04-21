@@ -30,6 +30,15 @@ return [
             'roles' => 'Roles',
             'status' => 'Status',
         ],
+        'import' => [
+            'instructions' => 'CSV template/import/export is limited to operational users. Roles may only be student, teacher, or mentor. Leave the roles column blank to default to student, use department_name exactly as stored, and do not include passwords.',
+            'columns' => [
+                'roles' => 'Roles',
+                'department_name' => 'Department Name',
+                'national_identifier' => 'National Identifier',
+                'registration_number' => 'Registration Number',
+            ],
+        ],
         'form' => [
             'full_name' => 'Full Name',
             'email' => 'Email Address',

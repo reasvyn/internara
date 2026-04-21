@@ -6,9 +6,12 @@ namespace Modules\Profile\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Gate;
+use Modules\Exception\RecordNotFoundException;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService as Contract;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\User\Models\User;
 
 /**
  * @property Profile $model
@@ -37,11 +40,33 @@ class ProfileService extends EloquentQuery implements Contract
     public function getByUserId(string $userId): Profile
     {
         if (! $this->skipAuthorization) {
-            \Illuminate\Support\Facades\Gate::authorize('view', [$this->model, $userId]);
+            Gate::authorize('view', [$this->model, $userId]);
         }
 
         /** @var Profile */
         return $this->model->newQuery()->firstOrCreate(['user_id' => $userId]);
+    }
+
+    public function upsertManagedProfile(string $userId, array $data): Profile
+    {
+        $user = User::query()->find($userId);
+
+        if (! $user) {
+            throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $userId]);
+        }
+
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $user);
+        }
+
+        /** @var Profile $profile */
+        $profile = $this->model->newQuery()->firstOrCreate(['user_id' => $userId]);
+        $profile->fill($data);
+        $profile->save();
+
+        $this->skipAuthorization = false;
+
+        return $profile;
     }
 
     /**

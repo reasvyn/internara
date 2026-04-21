@@ -57,9 +57,11 @@ class AdminService extends EloquentQuery implements Contract
             $user->setStatus($status);
             $user->markEmailAsVerified();
 
-            $profile = $this->profileService->withoutAuthorization()->getByUserId($user->id);
             if ($profileData !== []) {
-                $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+                $profileService = (! setting('app_installed', false) || $this->skipAuthorization || auth()->guest())
+                    ? $this->profileService->withoutAuthorization()
+                    : $this->profileService;
+                $profileService->upsertManagedProfile($user->id, $profileData);
             }
 
             $this->skipAuthorization = false;
@@ -94,9 +96,9 @@ class AdminService extends EloquentQuery implements Contract
             $updatedAdmin->setStatus($status);
         }
 
-        $profile = $this->profileService->withoutAuthorization()->getByUserId($updatedAdmin->id);
         if ($profileData !== []) {
-            $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+            $profileService = $this->skipAuthorization ? $this->profileService->withoutAuthorization() : $this->profileService;
+            $profileService->upsertManagedProfile($updatedAdmin->id, $profileData);
         }
 
         $this->skipAuthorization = false;

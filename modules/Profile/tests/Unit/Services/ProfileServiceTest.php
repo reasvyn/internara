@@ -53,4 +53,31 @@ describe('ProfileService S1 Security', function () {
 
         $service->syncProfileable($profile, $student);
     });
+
+    test('upsertManagedProfile authorizes against managed user and persists data', function () {
+        $profileModel = mock(Profile::class);
+        $service = new ProfileService($profileModel);
+
+        $uuid = 'user-uuid';
+        $user = mock(\Modules\User\Models\User::class);
+        $userBuilder = mock(\Illuminate\Database\Eloquent\Builder::class);
+
+        mock('alias:Modules\User\Models\User')
+            ->shouldReceive('query')
+            ->once()
+            ->andReturn($userBuilder);
+
+        $userBuilder->shouldReceive('find')->once()->with($uuid)->andReturn($user);
+        Gate::shouldReceive('authorize')->once()->with('update', $user);
+
+        $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+        $profile = mock(Profile::class)->makePartial();
+
+        $profileModel->shouldReceive('newQuery')->once()->andReturn($builder);
+        $builder->shouldReceive('firstOrCreate')->once()->with(['user_id' => $uuid])->andReturn($profile);
+        $profile->shouldReceive('fill')->once()->with(['phone' => '08123'])->andReturnSelf();
+        $profile->shouldReceive('save')->once();
+
+        $service->upsertManagedProfile($uuid, ['phone' => '08123']);
+    });
 });

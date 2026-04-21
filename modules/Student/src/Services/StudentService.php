@@ -63,9 +63,11 @@ class StudentService extends EloquentQuery implements Contract
             $user->assignRole(Role::STUDENT->value);
             $user->setStatus($status);
 
-            $profile = $this->profileService->withoutAuthorization()->getByUserId($user->id);
             if ($profileData !== []) {
-                $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+                $profileService = (! setting('app_installed', false) || $this->skipAuthorization || auth()->guest())
+                    ? $this->profileService->withoutAuthorization()
+                    : $this->profileService;
+                $profileService->upsertManagedProfile($user->id, $profileData);
             }
 
             $this->skipAuthorization = false;
@@ -103,9 +105,9 @@ class StudentService extends EloquentQuery implements Contract
             $updatedStudent->setStatus($status);
         }
 
-        $profile = $this->profileService->withoutAuthorization()->getByUserId($updatedStudent->id);
         if ($profileData !== []) {
-            $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+            $profileService = $this->skipAuthorization ? $this->profileService->withoutAuthorization() : $this->profileService;
+            $profileService->upsertManagedProfile($updatedStudent->id, $profileData);
         }
 
         $this->skipAuthorization = false;
