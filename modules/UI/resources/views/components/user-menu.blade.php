@@ -31,12 +31,18 @@
             
             <div class="divider my-1 opacity-5"></div>
             
-            <x-ui::menu-item 
-                icon="tabler.logout" 
-                title="ui::common.logout" 
-                :link="$logoutRoute"
-                external
-            />
+            <li>
+                <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
+                    @csrf
+                    <button
+                        type="submit"
+                        class="flex w-full items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group hover:bg-base-content/5 text-base-content/70 hover:text-base-content"
+                    >
+                        <x-ui::icon name="tabler.logout" class="size-5 opacity-50 group-hover:opacity-100 transition-transform duration-200 group-hover:scale-110" />
+                        <span class="flex-1 truncate text-left">{{ __('ui::common.logout') }}</span>
+                    </button>
+                </form>
+            </li>
         </x-ui::dropdown>
     @else
         <div class="flex flex-nowrap items-center gap-2">

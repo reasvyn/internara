@@ -20,6 +20,13 @@ Route::prefix('auth')->group(function () {
         ->middleware(['guest', 'throttle:auth'])
         ->name('login');
 
+    Route::post('logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route('login');
+    })->middleware(['auth'])->name('logout');
+
     Route::get('forgot-password', Modules\Auth\Livewire\ForgotPassword::class)
         ->middleware(['guest', 'throttle:auth'])
         ->name('forgot-password');
