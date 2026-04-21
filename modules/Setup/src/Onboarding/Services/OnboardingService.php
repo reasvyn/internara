@@ -10,35 +10,39 @@ use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Setup\Onboarding\Services\Contracts\OnboardingService as Contract;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\Teacher\Services\Contracts\TeacherService;
+use Modules\User\Models\AccountToken;
+use Modules\User\Models\User;
+use Modules\User\Services\Contracts\AccountProvisioningService;
 use Modules\User\Services\Contracts\UserService;
 
 /**
  * Class OnboardingService
  *
  * Provides high-level administrative orchestration for batch onboarding
- * stakeholders through CSV data processing.
+ * stakeholders through CSV data processing. Each successfully created account
+ * receives a one-time activation code (via AccountProvisioningService) that is
+ * returned in the result for credential slip distribution.
  */
 class OnboardingService implements Contract
 {
-    /**
-     * Create a new onboarding service instance.
-     */
     public function __construct(
         protected UserService $userService,
         protected ProfileService $profileService,
         protected StudentService $studentService,
         protected TeacherService $teacherService,
+        protected AccountProvisioningService $provisioningService,
     ) {}
 
     /**
      * {@inheritdoc}
      */
-    public function importFromCsv(string $filePath, string $type): array
+    public function importFromCsv(string $filePath, string $type, int $expiresInDays = 30): array
     {
         $results = [
-            'success' => 0,
-            'failure' => 0,
-            'errors' => [],
+            'success'     => 0,
+            'failure'     => 0,
+            'errors'      => [],
+            'credentials' => [],
         ];
 
         if (! file_exists($filePath) || ! is_readable($filePath)) {
@@ -57,23 +61,19 @@ class OnboardingService implements Contract
             return $results;
         }
 
-        // Normalize header keys for consistent mapping
-        $header = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
-
+        $header   = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
         $rowCount = 1;
+
         while (($row = fgetcsv($handle)) !== false) {
             $rowCount++;
 
-            // Skip empty rows to prevent unnecessary processing
             if (empty(array_filter($row))) {
                 continue;
             }
 
             if (count($header) !== count($row)) {
                 $results['failure']++;
-                $results['errors'][] = __('setup::onboarding.errors.column_mismatch', [
-                    'row' => $rowCount,
-                ]);
+                $results['errors'][] = __('setup::onboarding.errors.column_mismatch', ['row' => $rowCount]);
 
                 continue;
             }
@@ -81,10 +81,12 @@ class OnboardingService implements Contract
             $data = array_combine($header, $row);
 
             try {
-                DB::transaction(function () use ($data, $type) {
-                    $this->processRow($data, $type);
-                });
+                $slip = DB::transaction(
+                    fn () => $this->processRow($data, $type, $expiresInDays),
+                );
+
                 $results['success']++;
+                $results['credentials'][] = $slip;
             } catch (\Throwable $e) {
                 $results['failure']++;
                 $results['errors'][] = "Row {$rowCount}: ".$e->getMessage();
@@ -101,7 +103,8 @@ class OnboardingService implements Contract
      */
     public function getTemplate(string $type): string
     {
-        $columns = ['name', 'email', 'username', 'password', 'phone', 'address', 'department_id'];
+        // email is optional — accounts without email use username-only login
+        $columns = ['name', 'email', 'username', 'phone', 'address', 'department_id'];
 
         if ($type === 'student') {
             $columns[] = 'national_identifier';
@@ -114,60 +117,69 @@ class OnboardingService implements Contract
     }
 
     /**
-     * Orchestrates the creation of a single stakeholder identity and its profile.
+     * Create a single stakeholder account and issue an activation code.
      *
-     * @param array<string, mixed> $data Raw row data from the CSV.
-     * @param string $type The designated stakeholder role.
+     * @param  array<string, mixed>  $data            Raw row data from the CSV.
+     * @param  string                $type             Stakeholder role.
+     * @param  int                   $expiresInDays    Activation code expiry.
+     * @return array{name: string, username: string, code: string}
      *
      * @throws \InvalidArgumentException If mandatory data is missing or invalid.
      */
-    protected function processRow(array $data, string $type): void
+    protected function processRow(array $data, string $type, int $expiresInDays = 30): array
     {
-        // 1. Data Integrity Pre-check
-        $name = $data['name'] ?? null;
-        $email = $data['email'] ?? null;
+        $name  = trim((string) ($data['name'] ?? ''));
+        $email = trim((string) ($data['email'] ?? ''));
 
-        if (empty($name) || empty($email)) {
-            throw new \InvalidArgumentException(__('setup::onboarding.errors.required_fields'));
+        if (empty($name)) {
+            throw new \InvalidArgumentException(__('setup::onboarding.errors.required_name'));
         }
 
-        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // Email is optional — only validate format when it is provided
+        if ($email !== '' && ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException(__('setup::onboarding.errors.invalid_email'));
         }
 
-        // 2. Prepare Unified User Data structure
         $userData = [
-            'name' => $name,
-            'email' => $email,
+            'name'     => $name,
+            'email'    => $email !== '' ? $email : null,
             'username' => $data['username'] ?? null,
-            'password' => $data['password'] ?? Str::random(12),
-            'profile' => [
-                'phone' => $data['phone'] ?? null,
-                'address' => $data['address'] ?? null,
+            // A random password is set; it will be replaced when the user claims their account.
+            'password' => Str::random(24),
+            'profile'  => [
+                'phone'         => $data['phone'] ?? null,
+                'address'       => $data['address'] ?? null,
                 'department_id' => $data['department_id'] ?? null,
             ],
         ];
 
-        // 3. Create User & Profile via Domain Services (Orchestrates User, Auth, and Profile)
+        /** @var User $user */
         if ($type === 'student') {
-            $studentProfile = [
+            $userData['profile'] = array_merge($userData['profile'], [
                 'national_identifier' => $data['national_identifier'] ?? null,
                 'registration_number' => $data['registration_number'] ?? null,
-            ];
-            $userData['profile'] = array_merge($userData['profile'], $studentProfile);
-
-            $this->studentService->create($userData);
+            ]);
+            $user = $this->studentService->create($userData);
         } elseif ($type === 'teacher') {
-            $teacherProfile = [
+            $userData['profile'] = array_merge($userData['profile'], [
                 'national_identifier' => $data['nip'] ?? null,
-            ];
-            $userData['profile'] = array_merge($userData['profile'], $teacherProfile);
-
-            $this->teacherService->create($userData);
+            ]);
+            $user = $this->teacherService->create($userData);
         } else {
-            // Fallback for roles without specialized services
             $userData['roles'] = [$type];
-            $this->userService->create($userData);
+            $user = $this->userService->create($userData);
         }
+
+        $plainCode = $this->provisioningService->provision(
+            $user,
+            AccountToken::TYPE_ACTIVATION,
+            $expiresInDays,
+        );
+
+        return [
+            'name'     => $user->name,
+            'username' => $user->username,
+            'code'     => $plainCode,
+        ];
     }
 }

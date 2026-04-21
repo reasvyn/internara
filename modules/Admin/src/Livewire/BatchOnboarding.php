@@ -7,38 +7,33 @@ namespace Modules\Admin\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Modules\Support\Services\Contracts\OnboardingService;
+use Modules\Setup\Onboarding\Services\Contracts\OnboardingService;
 
 /**
  * Class BatchOnboarding
  *
  * Provides a UI for mass importing stakeholders via CSV.
+ * After import, activation codes are shown once in a credential slips modal.
  */
 class BatchOnboarding extends Component
 {
     use WithFileUploads;
 
-    /**
-     * The CSV file to upload.
-     */
     public $file;
 
-    /**
-     * The type of stakeholders to import.
-     */
     public string $type = 'student';
 
-    /**
-     * The results of the import operation.
-     */
+    public string $batchName = '';
+
     public ?array $results = null;
 
-    /**
-     * Download the CSV template.
-     */
+    public array $credentialSlips = [];
+
+    public bool $credentialSlipsModal = false;
+
     public function downloadTemplate(OnboardingService $service)
     {
-        $content = $service->getTemplate($this->type);
+        $content  = $service->getTemplate($this->type);
         $fileName = "template_{$this->type}.csv";
 
         return response()->streamDownload(function () use ($content) {
@@ -46,21 +41,24 @@ class BatchOnboarding extends Component
         }, $fileName);
     }
 
-    /**
-     * Process the CSV import.
-     */
     public function import(OnboardingService $service): void
     {
         $this->validate([
-            'file' => 'required|file|mimes:csv,txt|max:2048',
-            'type' => 'required|in:student,teacher,mentor',
+            'file'      => 'required|file|mimes:csv,txt|max:2048',
+            'type'      => 'required|in:student,teacher,mentor',
+            'batchName' => 'nullable|string|max:100',
         ]);
 
         try {
-            $path = $this->file->getRealPath();
+            $path          = $this->file->getRealPath();
             $this->results = $service->importFromCsv($path, $this->type);
 
-            $message = __('Import completed with :success success and :failure failure.', [
+            if (! empty($this->results['credentials'])) {
+                $this->credentialSlips      = $this->results['credentials'];
+                $this->credentialSlipsModal = true;
+            }
+
+            $message = __('admin::ui.batch_onboarding.import_completed', [
                 'success' => $this->results['success'],
                 'failure' => $this->results['failure'],
             ]);
@@ -70,9 +68,17 @@ class BatchOnboarding extends Component
             } else {
                 flash()->success($message);
             }
+
+            $this->reset('file');
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
+    }
+
+    public function closeCredentialSlips(): void
+    {
+        $this->credentialSlipsModal = false;
+        $this->credentialSlips      = [];
     }
 
     public function render(): View
@@ -80,3 +86,4 @@ class BatchOnboarding extends Component
         return view('admin::livewire.batch-onboarding');
     }
 }
+

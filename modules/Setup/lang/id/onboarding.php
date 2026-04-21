@@ -7,7 +7,7 @@ return [
         'file_not_readable' => 'File CSV tidak ditemukan atau tidak dapat dibaca.',
         'empty_file' => 'File CSV yang diberikan kosong.',
         'column_mismatch' => 'Jumlah kolom tidak sesuai pada baris :row.',
-        'required_fields' => 'Nama dan Email wajib diisi.',
+        'required_name' => 'Nama wajib diisi.',
         'invalid_email' => 'Alamat email yang diberikan tidak valid.',
     ],
     'messages' => [
