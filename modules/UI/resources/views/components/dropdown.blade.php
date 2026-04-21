@@ -4,6 +4,7 @@
     'right' => false,
     'variant' => 'secondary', // primary, secondary, tertiary
     'disabled' => false,
+    'closeOnContentClick' => true,
 ])
 
 @php
@@ -13,33 +14,47 @@
         'tertiary' => 'btn-ghost text-base-content/70',
         default => 'btn-outline text-base-content/80',
     };
-    
+
     $ariaLabel = $attributes->get('aria-label') ?? $label ?? __('ui::common.options');
     $isDisabled = filter_var($disabled, FILTER_VALIDATE_BOOLEAN);
+    $shouldCloseOnContentClick = filter_var($closeOnContentClick, FILTER_VALIDATE_BOOLEAN);
 @endphp
 
-<x-mary-dropdown 
-    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-[1000]', 'pointer-events-none opacity-50' => $isDisabled]) }}
-    :right="$right"
+<details
+    x-data="{ open: false }"
+    @click.outside="open = false"
+    :open="open"
+    class="dropdown overflow-visible"
 >
     @isset($trigger)
-        <x-slot:trigger>
+        <summary
+            x-ref="button"
+            @click.prevent="if (!{{ $isDisabled ? 'true' : 'false' }}) open = !open"
+            {{ $trigger->attributes->class(['list-none', 'pointer-events-none opacity-50' => $isDisabled]) }}
+        >
             {{ $trigger }}
-        </x-slot:trigger>
+        </summary>
     @else
-        <x-slot:trigger>
-            <x-ui::button 
-                :variant="$variant" 
-                :icon="$icon" 
-                :label="$label" 
-                :spinner="false"
-                :class="$isDisabled ? 'btn-disabled' : ''"
-                aria-label="{{ $ariaLabel }}" 
-            />
-        </x-slot:trigger>
+        <summary
+            x-ref="button"
+            @click.prevent="if (!{{ $isDisabled ? 'true' : 'false' }}) open = !open"
+            {{ $attributes->class([$variantClasses, 'btn min-h-[2.75rem] relative z-[1000] list-none', 'pointer-events-none opacity-50' => $isDisabled]) }}
+            aria-label="{{ $ariaLabel }}"
+        >
+            {{ $label }}
+            @if($icon)
+                <x-mary-icon :name="$icon" />
+            @endif
+        </summary>
     @endisset
 
-    <div class="menu bg-base-100 p-2 shadow-xl border border-base-200 rounded-xl min-w-[12rem]" role="menu">
-        {{ $slot }}
-    </div>
-</x-mary-dropdown>
+    <ul
+        x-anchor.{{ $right ? 'bottom-end' : 'bottom-start' }}="$refs.button"
+        @if($shouldCloseOnContentClick) @click="open = false" @endif
+        class="menu z-[1000] min-w-[12rem] rounded-xl border border-base-200 bg-base-100 p-2 shadow-xl"
+    >
+        <div>
+            {{ $slot }}
+        </div>
+    </ul>
+</details>
