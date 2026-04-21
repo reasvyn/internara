@@ -72,7 +72,7 @@ return [
         'verify_button'  => 'Verify Email',
         'success'        => 'Your email has been successfully verified!',
         'resend_success' => 'A fresh verification link has been sent to your email address.',
-        'logout'         => 'Sign out and use a different account',
+        'skip_button'    => 'Skip for now, go to dashboard',
         'no_email_title' => 'No Email Address',
         'no_email_info'  => 'Your account was created without an email address. Add one in your profile to enable email verification.',
         'tips_title'     => 'Can\'t find the email?',

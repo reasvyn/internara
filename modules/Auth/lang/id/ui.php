@@ -72,7 +72,7 @@ return [
         'verify_button'  => 'Verifikasi Email',
         'success'        => 'Email Anda telah berhasil diverifikasi!',
         'resend_success' => 'Tautan verifikasi baru telah dikirimkan ke alamat email Anda.',
-        'logout'         => 'Keluar dan gunakan akun lain',
+        'skip_button'    => 'Lewati untuk sekarang, ke dasbor',
         'no_email_title' => 'Tanpa Alamat Email',
         'no_email_info'  => 'Akun Anda dibuat tanpa alamat email. Tambahkan di profil Anda untuk mengaktifkan verifikasi email.',
         'tips_title'     => 'Email tidak ditemukan?',
