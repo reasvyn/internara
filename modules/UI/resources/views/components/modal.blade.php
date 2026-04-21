@@ -47,7 +47,7 @@
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                     x-transition:leave-end="opacity-0 scale-95 translate-y-8 sm:translate-y-0 sm:scale-90"
-                    class="relative w-full max-w-2xl transform overflow-hidden rounded-3xl bg-base-100 p-6 text-left align-middle shadow-2xl transition-all border border-base-200 lg:p-10 m-4"
+                    class="relative w-full max-w-2xl transform overflow-visible rounded-3xl bg-base-100 p-6 text-left align-middle shadow-2xl transition-all border border-base-200 lg:p-10 m-4"
                     @click.stop
                 >
                     {{-- Header --}}
@@ -76,7 +76,7 @@
                     @endif
 
                     {{-- Content --}}
-                    <div class="relative">
+                    <div class="relative overflow-visible">
                         {{ $slot }}
                     </div>
                     
