@@ -39,12 +39,14 @@ return [
             'all_departments' => 'All Departments',
         ],
         'bulk' => [
-            'send_setup_links' => 'Send setup links to selected',
+            'reissue_codes' => 'Reissue Activation Codes',
             'activate_selected' => 'Activate selected',
             'archive_selected' => 'Archive selected',
         ],
         'messages' => [
             'links_sent' => ':count teacher setup links sent successfully.',
+            'code_reissued' => 'Activation code reissued.',
+            'codes_reissued' => ':count activation code(s) reissued.',
             'activated' => ':count teacher accounts activated successfully.',
             'archived' => ':count teacher accounts archived successfully.',
         ],

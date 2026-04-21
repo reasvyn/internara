@@ -36,9 +36,9 @@
                         :disabled="count($this->selectedIds ?? []) === 0"
                     >
                         <x-ui::menu-item
-                            :title="__('teacher::ui.manager.bulk.send_setup_links')"
-                            icon="tabler.mail-share"
-                            wire:click="sendSelectedPasswordResetLinks"
+                            :title="__('teacher::ui.manager.bulk.reissue_codes')"
+                            icon="tabler.key"
+                            wire:click="reissueSelectedActivationCodes"
                         />
                         <x-ui::menu-item
                             :title="__('teacher::ui.manager.bulk.activate_selected')"
@@ -176,6 +176,14 @@
                         />
                     @endscope
 
+                    @scope('cell_activation_status', $user)
+                        <x-ui::badge
+                            :value="__('user::ui.manager.form.activation_' . $user->activation_status)"
+                            :variant="$this->activationStatusBadgeVariant($user->activation_status)"
+                            class="badge-sm"
+                        />
+                    @endscope
+
                     @scope('cell_created_at', $user)
                         <span>{{ \Illuminate\Support\Carbon::parse($user->created_at)->translatedFormat('d M Y') }}</span>
                     @endscope
@@ -183,11 +191,11 @@
                     @scope('actions', $user)
                         <div class="flex justify-end gap-2">
                             <x-ui::button
-                                icon="tabler.mail-share"
+                                icon="tabler.key"
                                 variant="tertiary"
-                                wire:click="sendPasswordResetLink('{{ $user->id }}')"
+                                wire:click="reissueActivationCode('{{ $user->id }}')"
                                 class="text-warning btn-xs"
-                                tooltip="{{ __('user::ui.manager.form.send_setup_link') }}"
+                                tooltip="{{ __('user::ui.manager.form.reissue_code') }}"
                             />
                             <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $user->id }}')" class="text-info btn-xs" tooltip="{{ __('user::ui.manager.edit_teacher') }}" />
                             <x-ui::button
@@ -293,6 +301,38 @@
         <x-slot:actions>
             <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
             <x-ui::button :label="__('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
+        </x-slot:actions>
+    </x-ui::modal>
+
+    <x-ui::modal wire:model="credentialSlipsModal" :title="__('user::ui.manager.credential_slips.title')" class="max-w-2xl">
+        <div class="space-y-3">
+            <x-ui::alert type="warning" icon="tabler.alert-triangle">
+                {{ __('user::ui.manager.credential_slips.warning') }}
+            </x-ui::alert>
+
+            <div class="overflow-auto rounded-lg border border-base-300 max-h-72">
+                <table class="table table-sm w-full">
+                    <thead>
+                        <tr>
+                            <th>{{ __('user::ui.manager.table.name') }}</th>
+                            <th>{{ __('user::ui.manager.table.username') }}</th>
+                            <th>{{ __('user::ui.manager.credential_slips.code') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($credentialSlips as $slip)
+                            <tr>
+                                <td>{{ $slip['name'] }}</td>
+                                <td class="font-mono">{{ $slip['username'] }}</td>
+                                <td class="font-mono font-bold tracking-widest">{{ $slip['code'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <x-slot:actions>
+            <x-ui::button :label="__('ui::common.close')" wire:click="closeCredentialSlips" />
         </x-slot:actions>
     </x-ui::modal>
 </div>

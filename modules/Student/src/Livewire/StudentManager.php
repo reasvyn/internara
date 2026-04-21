@@ -14,7 +14,9 @@ use Modules\Permission\Enums\Role;
 use Modules\Student\Livewire\Forms\StudentForm;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\UI\Livewire\RecordManager;
+use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
+use Modules\User\Services\Contracts\AccountProvisioningService;
 
 /**
  * Class StudentManager
@@ -27,6 +29,10 @@ class StudentManager extends RecordManager
     use HasDepartmentOptions;
 
     public StudentForm $form;
+
+    public array $credentialSlips = [];
+
+    public bool $credentialSlipsModal = false;
 
     /**
      * Initialize the component.
@@ -70,6 +76,7 @@ class StudentManager extends RecordManager
             ['key' => 'registration_number', 'label' => __('student::ui.manager.table.registration_number')],
             ['key' => 'department_name', 'label' => __('student::ui.manager.table.department')],
             ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
+            ['key' => 'activation_status', 'label' => __('user::ui.manager.table.activation_status')],
             ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
             ['key' => 'actions', 'label' => ''],
         ];
@@ -97,6 +104,7 @@ class StudentManager extends RecordManager
                 $user->setAttribute('registration_number', $user->profile?->registration_number ?? '');
                 $user->setAttribute('department_name', $user->profile?->department?->name ?? '');
                 $user->setAttribute('display_status', $user->latestStatus()?->name ?? User::STATUS_ACTIVE);
+                $user->setAttribute('activation_status', $user->setup_required ? 'pending_claim' : 'claimed');
 
                 return $user;
             });
@@ -117,17 +125,33 @@ class StudentManager extends RecordManager
         $this->resetPage();
     }
 
-    public function sendPasswordResetLink(mixed $id): void
+    public function reissueActivationCode(mixed $id): void
     {
+        $user = $this->service->find($id);
+
+        if (! $user) {
+            return;
+        }
+
+        $this->authorize('update', $user);
+
         try {
-            $this->service->sendPasswordResetLink($id);
-            flash()->success(__('auth::ui.forgot_password.sent'));
+            $plainCode = app(AccountProvisioningService::class)->reissue(
+                $user,
+                AccountToken::TYPE_ACTIVATION,
+                30,
+                auth()->user(),
+            );
+
+            $this->credentialSlips = [['name' => $user->name, 'username' => $user->username, 'code' => $plainCode]];
+            $this->credentialSlipsModal = true;
+            flash()->success(__('student::ui.manager.messages.code_reissued'));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
     }
 
-    public function sendSelectedPasswordResetLinks(): void
+    public function reissueSelectedActivationCodes(): void
     {
         if ($this->selectedIds === []) {
             return;
@@ -136,15 +160,34 @@ class StudentManager extends RecordManager
         try {
             $students = $this->managedStudentQuery()->whereIn('id', $this->selectedIds)->get();
 
-            foreach ($students as $student) {
-                $this->service->sendPasswordResetLink($student->id);
-            }
+            $slips = app(AccountProvisioningService::class)->provisionBatch(
+                $students,
+                AccountToken::TYPE_ACTIVATION,
+                30,
+                auth()->user(),
+            );
 
-            flash()->success(__('student::ui.manager.messages.links_sent', ['count' => $students->count()]));
+            $this->credentialSlips = array_map(
+                fn (array $item) => [
+                    'name'     => $item['user']->name,
+                    'username' => $item['user']->username,
+                    'code'     => $item['plain_code'],
+                ],
+                $slips,
+            );
+
+            $this->credentialSlipsModal = true;
             $this->selectedIds = [];
+            flash()->success(__('student::ui.manager.messages.codes_reissued', ['count' => count($slips)]));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
+    }
+
+    public function closeCredentialSlips(): void
+    {
+        $this->credentialSlipsModal = false;
+        $this->credentialSlips = [];
     }
 
     public function activateSelected(): void
@@ -209,6 +252,15 @@ class StudentManager extends RecordManager
             User::STATUS_PENDING => 'warning',
             User::STATUS_INACTIVE => 'error',
             default => 'secondary',
+        };
+    }
+
+    public function activationStatusBadgeVariant(string $status): string
+    {
+        return match ($status) {
+            'pending_claim' => 'warning',
+            'claimed'       => 'success',
+            default         => 'secondary',
         };
     }
 

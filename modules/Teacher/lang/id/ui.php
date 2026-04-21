@@ -39,12 +39,14 @@ return [
             'all_departments' => 'Semua Jurusan',
         ],
         'bulk' => [
-            'send_setup_links' => 'Kirim tautan setup terpilih',
+            'reissue_codes' => 'Terbitkan Ulang Kode Aktivasi',
             'activate_selected' => 'Aktifkan terpilih',
             'archive_selected' => 'Arsipkan terpilih',
         ],
         'messages' => [
             'links_sent' => ':count tautan setup guru berhasil dikirim.',
+            'code_reissued' => 'Kode aktivasi berhasil diterbitkan ulang.',
+            'codes_reissued' => ':count kode aktivasi berhasil diterbitkan ulang.',
             'activated' => ':count akun guru berhasil diaktifkan.',
             'archived' => ':count akun guru berhasil diarsipkan.',
         ],
