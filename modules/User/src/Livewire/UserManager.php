@@ -53,6 +53,17 @@ class UserManager extends RecordManager
     }
 
     /**
+     * UserManager is read-only: create and update are never permitted.
+     */
+    public function can(string $action, mixed $target = null): bool
+    {
+        if (in_array($action, ['create', 'update'], true)) {
+            return false;
+        }
+        return parent::can($action, $target);
+    }
+
+    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
