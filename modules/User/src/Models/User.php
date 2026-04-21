@@ -8,6 +8,7 @@ use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
@@ -48,7 +49,15 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      *
      * @var list<string>
      */
-    protected $fillable = ['id', 'name', 'email', 'username', 'password'];
+    protected $fillable = [
+        'id',
+        'name',
+        'email',
+        'username',
+        'password',
+        'setup_required',
+        'onboarding_batch_id',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -83,8 +92,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'   => 'datetime',
+            'password'            => 'hashed',
+            'setup_required' => 'boolean',
         ];
     }
 
@@ -100,6 +110,40 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             ->implode('');
     }
 
+    // ─── Email-optional overrides ────────────────────────────────────────────────
+
+    /**
+     * Users without an email address are considered email-verified.
+     * Email is optional in this system; username is the primary identity.
+     */
+    public function hasVerifiedEmail(): bool
+    {
+        if (is_null($this->email)) {
+            return true;
+        }
+
+        return ! is_null($this->email_verified_at);
+    }
+
+    /**
+     * Only send the email verification notification when an email is present.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        if (! is_null($this->email)) {
+            parent::sendEmailVerificationNotification();
+        }
+    }
+
+    // ─── Relations ───────────────────────────────────────────────────────────────
+
+    public function accountTokens(): HasMany
+    {
+        return $this->hasMany(AccountToken::class);
+    }
+
+    // ─── Status helpers ──────────────────────────────────────────────────────────
+
     /**
      * Check if the user is verified (email verified AND status is verified).
      */
@@ -109,6 +153,28 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $isStatusVerified = $this->getStatus() === \Modules\Status\Enums\Status::VERIFIED;
 
         return $isEmailVerified && $isStatusVerified;
+    }
+
+    /**
+     * Whether this account still has pending setup steps.
+     * True from the moment a provisioning token is issued until the user
+     * successfully claims the account (or admin explicitly clears the flag).
+     */
+    public function requiresSetup(): bool
+    {
+        return (bool) $this->setup_required;
+    }
+
+    /**
+     * Whether this account has ever had its activation code claimed.
+     * An account is "claimed" when at least one activation token has been consumed.
+     */
+    public function hasBeenClaimed(): bool
+    {
+        return $this->accountTokens()
+            ->where('type', AccountToken::TYPE_ACTIVATION)
+            ->whereNotNull('claimed_at')
+            ->exists();
     }
 
     /**
