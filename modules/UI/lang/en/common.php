@@ -70,4 +70,6 @@ return [
         'description' => 'Verify your email address to secure your account and receive important notifications.',
         'action'      => 'Resend Verification Link',
     ],
+
+    'or' => 'or',
 ];

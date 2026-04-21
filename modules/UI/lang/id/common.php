@@ -70,4 +70,6 @@ return [
         'description' => 'Verifikasi alamat email Anda untuk mengamankan akun dan menerima notifikasi penting.',
         'action'      => 'Kirim Ulang Tautan Verifikasi',
     ],
+
+    'or' => 'atau',
 ];

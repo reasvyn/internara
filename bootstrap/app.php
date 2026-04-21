@@ -48,9 +48,12 @@ return Application::configure(basePath: dirname(__DIR__))
             append: [\Modules\Core\Localization\Http\Middleware\SetLocale::class],
         );
         $middleware->alias([
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'role'              => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission'        => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission'=> \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            // Override Laravel's default verified middleware to allow users without an email
+            // address to pass through (they get a soft dashboard banner instead).
+            'verified'          => \Modules\Auth\Http\Middleware\EnsureEmailIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
