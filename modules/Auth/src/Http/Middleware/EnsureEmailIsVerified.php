@@ -38,13 +38,20 @@ class EnsureEmailIsVerified
             return $next($request);
         }
 
-        // User implements MustVerifyEmail and hasn't verified yet → redirect.
-        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
-            return $request->expectsJson()
-                ? abort(403, 'Your email address is not verified.')
-                : redirect()->guest(route($redirectToRoute ?? 'verification.notice'));
+        // User already verified → pass through.
+        if (! ($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail()) {
+            return $next($request);
         }
 
-        return $next($request);
+        // User explicitly chose to skip verification this session → pass through.
+        // The dashboard soft banner will remind them to verify.
+        if (session('email_verification_skipped')) {
+            return $next($request);
+        }
+
+        // Unverified email, no skip — redirect to verification notice.
+        return $request->expectsJson()
+            ? abort(403, 'Your email address is not verified.')
+            : redirect()->guest(route($redirectToRoute ?? 'verification.notice'));
     }
 }

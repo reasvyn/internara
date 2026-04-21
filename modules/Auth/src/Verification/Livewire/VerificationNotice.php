@@ -46,6 +46,10 @@ class VerificationNotice extends Component
 
     public function skip(): mixed
     {
+        // Mark this session as having explicitly skipped verification so the
+        // verified middleware allows the user through for this session.
+        session(['email_verification_skipped' => true]);
+
         return redirect()->to($this->redirectService->getTargetUrlSkipVerification(auth()->user()));
     }
 
