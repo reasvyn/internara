@@ -31,6 +31,7 @@ return [
             'status' => 'Status',
         ],
         'filters' => [
+            'open' => 'Filters',
             'role' => 'Role',
             'status' => 'Status',
             'created_from' => 'Created From',

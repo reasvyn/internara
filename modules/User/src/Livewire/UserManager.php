@@ -167,6 +167,14 @@ class UserManager extends RecordManager
         $this->resetPage();
     }
 
+    public function activeFilterCount(): int
+    {
+        return count(array_filter(
+            $this->filters,
+            fn ($value) => $value !== null && $value !== '' && $value !== [],
+        ));
+    }
+
     public function save(): void
     {
         $this->form->validate();
