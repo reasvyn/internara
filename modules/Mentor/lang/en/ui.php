@@ -22,6 +22,17 @@ return [
         'title' => 'Mentoring Management',
         'record_visit' => 'Record Visit',
         'give_feedback' => 'Give Feedback',
+        'messages' => [
+            'code_reissued' => 'Activation code reissued.',
+            'codes_reissued' => ':count activation code(s) reissued.',
+            'activated' => ':count mentor accounts activated successfully.',
+            'archived' => ':count mentor accounts archived successfully.',
+        ],
+        'bulk' => [
+            'reissue_codes' => 'Reissue Activation Codes',
+            'activate_selected' => 'Activate selected',
+            'archive_selected' => 'Archive selected',
+        ],
         'stats' => [
             'total_visits' => 'Total Visits',
             'total_logs' => 'Total Logs/Feedback',

@@ -29,6 +29,7 @@ return [
             'username' => 'Username',
             'roles' => 'Peran',
             'status' => 'Status',
+            'activation_status' => 'Status Aktivasi',
         ],
         'filters' => [
             'open' => 'Filter',
@@ -77,6 +78,9 @@ return [
             'inactive' => 'Nonaktif',
             'verified' => 'Terverifikasi',
             'send_setup_link' => 'Kirim tautan pengaturan kata sandi',
+            'reissue_code' => 'Terbitkan Ulang Kode Aktivasi',
+            'activation_pending_claim' => 'Menunggu Klaim',
+            'activation_claimed' => 'Diklaim',
             'password_setup_notice' => 'Akun ini akan diamankan melalui tautan setup via email. Administrator tidak dapat melihat kata sandi pengguna.',
             'password_reset_notice' => 'Gunakan aksi kirim tautan reset dari tabel untuk membiarkan pengguna mengatur kata sandi baru secara aman.',
             'nip' => 'NIP (Nomor Induk Pegawai)',
@@ -92,5 +96,10 @@ return [
             'message' => 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
         ],
         'deleted_successfully' => ':count data pengguna berhasil dihapus.',
+        'credential_slips' => [
+            'title' => 'Slip Kredensial',
+            'warning' => 'Salin atau cetak kode ini sekarang. Kode TIDAK akan ditampilkan lagi.',
+            'code' => 'Kode Aktivasi',
+        ],
     ],
 ];

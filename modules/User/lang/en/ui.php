@@ -29,6 +29,7 @@ return [
             'username' => 'Username',
             'roles' => 'Roles',
             'status' => 'Status',
+            'activation_status' => 'Activation Status',
         ],
         'filters' => [
             'open' => 'Filters',
@@ -77,6 +78,9 @@ return [
             'inactive' => 'Inactive',
             'verified' => 'Verified',
             'send_setup_link' => 'Send password setup link',
+            'reissue_code' => 'Reissue Activation Code',
+            'activation_pending_claim' => 'Awaiting Claim',
+            'activation_claimed' => 'Claimed',
             'password_setup_notice' => 'This account will be secured through an email setup link. Administrators cannot view the user password.',
             'password_reset_notice' => 'Use the reset-link action from the table to let the user set a new password securely.',
             'nip' => 'NIP (Employee ID)',
@@ -92,5 +96,10 @@ return [
             'message' => 'Are you sure you want to delete this record? This action cannot be undone.',
         ],
         'deleted_successfully' => ':count user data deleted successfully.',
+        'credential_slips' => [
+            'title' => 'Credential Slips',
+            'warning' => 'Copy or print these codes now. They will NOT be shown again.',
+            'code' => 'Activation Code',
+        ],
     ],
 ];

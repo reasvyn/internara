@@ -22,6 +22,17 @@ return [
         'title' => 'Manajemen Pembimbingan',
         'record_visit' => 'Catat Kunjungan',
         'give_feedback' => 'Berikan Feedback',
+        'messages' => [
+            'code_reissued' => 'Kode aktivasi berhasil diterbitkan ulang.',
+            'codes_reissued' => ':count kode aktivasi berhasil diterbitkan ulang.',
+            'activated' => ':count akun mentor berhasil diaktifkan.',
+            'archived' => ':count akun mentor berhasil diarsipkan.',
+        ],
+        'bulk' => [
+            'reissue_codes' => 'Terbitkan Ulang Kode Aktivasi',
+            'activate_selected' => 'Aktifkan terpilih',
+            'archive_selected' => 'Arsipkan terpilih',
+        ],
         'stats' => [
             'total_visits' => 'Total Kunjungan',
             'total_logs' => 'Total Log/Feedback',
