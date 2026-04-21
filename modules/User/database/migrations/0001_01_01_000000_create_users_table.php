@@ -20,10 +20,23 @@ return new class extends Migration
                 $table->id();
             }
             $table->string('name')->index();
-            $table->string('email')->unique();
+            // Email is optional — username is the primary identity.
+            // Institutions often create accounts before valid email is available.
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('username')->unique();
             $table->string('password');
+
+            // Generic signal that this account has pending setup steps.
+            // True = account was provisioned but the user has not yet completed
+            // the initial claim/activation flow. What "setup" means can evolve
+            // (password change, profile completion, identity verification, etc.)
+            // without requiring a schema change.
+            $table->boolean('setup_required')->default(false);
+
+            // Nullable reference to the onboarding batch that created this account.
+            // No FK constraint — onboarding_batches table created in a separate migration.
+            $table->uuid('onboarding_batch_id')->nullable()->index();
 
             $table->rememberToken();
             $table->timestamps();

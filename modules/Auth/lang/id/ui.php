@@ -38,6 +38,8 @@ return [
             'submit' => 'Masuk Sekarang',
             'no_account' => 'Belum punya akun?',
             'register_now' => 'Daftar Sekarang',
+            'have_activation_code' => 'Punya kode aktivasi?',
+            'claim_account' => 'Klaim akun Anda',
         ],
     ],
     'register' => [

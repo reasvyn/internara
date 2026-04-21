@@ -69,6 +69,19 @@
                             </a>
                         </p>
                     @endif
+
+                    @if (\Illuminate\Support\Facades\Route::has('claim-account'))
+                        <p class="text-center text-sm text-base-content/60">
+                            {{ __('auth::ui.login.form.have_activation_code') }}
+                            <a
+                                class="font-medium underline text-base-content/80 hover:text-base-content transition-colors"
+                                href="{{ route('claim-account') }}"
+                                wire:navigate
+                            >
+                                {{ __('auth::ui.login.form.claim_account') }}
+                            </a>
+                        </p>
+                    @endif
                 </div>
             </x-ui::form>
         </div>

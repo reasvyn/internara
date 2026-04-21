@@ -28,6 +28,11 @@ Route::prefix('auth')->group(function () {
         ->middleware(['guest', 'throttle:auth'])
         ->name('password.reset');
 
+    // Account claim — for provisioned accounts without email (no auth required)
+    Route::get('claim', Modules\Auth\Livewire\ClaimAccount::class)
+        ->middleware(['guest', 'throttle:6,1'])
+        ->name('claim-account');
+
     Route::get('register', Modules\Auth\Registration\Livewire\Register::class)
         ->middleware(['guest', 'throttle:registration'])
         ->name('register');

@@ -38,6 +38,8 @@ return [
             'submit' => 'Sign In Now',
             'no_account' => 'Don\'t have an account?',
             'register_now' => 'Register Now',
+            'have_activation_code' => 'Have an activation code?',
+            'claim_account' => 'Claim your account',
         ],
     ],
     'register' => [
