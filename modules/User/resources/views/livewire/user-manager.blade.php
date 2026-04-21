@@ -65,6 +65,8 @@
         </x-ui::dropdown>
     </x-slot:filters>
 
+    <x-slot:rowActions></x-slot:rowActions>
+
     {{-- Form Fields --}}
     <x-slot:formFields>
         <div
