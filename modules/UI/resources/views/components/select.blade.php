@@ -12,7 +12,7 @@
     $wireModel = $attributes->whereStartsWith('wire:model')->first();
     $errorField = $wireModel;
     $selectClasses = collect([
-        'select w-full select-bordered focus:border-accent focus:ring-accent',
+        'select w-full select-bordered bg-base-100 text-base-content focus:border-accent focus:ring-accent',
         $attributes->get('class'),
         $errorField && $errors->has($errorField) ? '!select-error' : null,
     ])->filter()->implode(' ');
