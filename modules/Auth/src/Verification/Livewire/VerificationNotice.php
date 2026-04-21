@@ -44,6 +44,11 @@ class VerificationNotice extends Component
         }
     }
 
+    public function skip(): mixed
+    {
+        return redirect()->to($this->redirectService->getTargetUrlSkipVerification(auth()->user()));
+    }
+
     public function render()
     {
         return view('auth::livewire.verification-notice')

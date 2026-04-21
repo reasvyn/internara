@@ -27,6 +27,15 @@ final class RedirectService extends BaseService implements Contract
             return route('verification.notice');
         }
 
+        return $this->getTargetUrlSkipVerification($user);
+    }
+
+    /**
+     * Get the target URL bypassing the email verification gate.
+     * Used when the user explicitly skips email verification.
+     */
+    public function getTargetUrlSkipVerification(Authenticatable $user): string
+    {
         if ($user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
             return route('admin.dashboard');
         }

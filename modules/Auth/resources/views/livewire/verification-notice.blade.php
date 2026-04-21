@@ -38,7 +38,7 @@
                 @endif
 
                 {{-- Resend button --}}
-                <div class="w-full">
+                <div class="w-full space-y-2">
                     <x-ui::button
                         variant="primary"
                         class="w-full"
@@ -46,6 +46,14 @@
                         :label="__('auth::ui.verification.resend_button')"
                         wire:click="resend"
                         spinner="resend"
+                    />
+                    <x-ui::button
+                        variant="ghost"
+                        class="w-full text-base-content/50"
+                        icon="tabler.arrow-right"
+                        :label="__('auth::ui.verification.skip_button')"
+                        wire:click="skip"
+                        spinner="skip"
                     />
                 </div>
 
