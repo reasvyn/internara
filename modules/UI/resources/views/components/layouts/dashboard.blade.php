@@ -32,6 +32,29 @@
                             </div>
                         @endif
 
+                        {{-- Account Setup Required Banner --}}
+                        @auth
+                            @if(auth()->user()->requiresSetup())
+                                <div class="mb-6">
+                                    <x-ui::alert type="warning" icon="tabler.shield-exclamation" shadow>
+                                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                            <div>
+                                                <p class="font-semibold">{{ __('ui::common.setup_required.title') }}</p>
+                                                <p class="text-sm opacity-80">{{ __('ui::common.setup_required.description') }}</p>
+                                            </div>
+                                            @if(\Illuminate\Support\Facades\Route::has('profile.index'))
+                                                <a href="{{ route('profile.index') }}" wire:navigate
+                                                   class="btn btn-warning btn-sm shrink-0">
+                                                    <x-ui::icon name="tabler.lock" class="size-4" />
+                                                    {{ __('ui::common.setup_required.action') }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </x-ui::alert>
+                                </div>
+                            @endif
+                        @endauth
+
                         {{-- Optional Record Title --}}
                         @if($recordTitle)
                             <div class="mb-10">
