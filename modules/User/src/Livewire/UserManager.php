@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\User\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -81,16 +82,34 @@ class UserManager extends RecordManager
     protected function getTableHeaders(): array
     {
         return [
-            ['key' => 'name', 'label' => __('user::ui.manager.table.name'), 'sortable' => true],
+            [
+                'key' => 'name',
+                'label' => __('user::ui.manager.table.name'),
+                'sortable' => true,
+                'format' => fn (User $user): HtmlString => $this->renderNameCell($user),
+            ],
             ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
             [
                 'key' => 'username',
                 'label' => __('user::ui.manager.table.username'),
                 'sortable' => true,
             ],
-            ['key' => 'role_labels', 'label' => __('user::ui.manager.table.roles')],
-            ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+            [
+                'key' => 'role_labels',
+                'label' => __('user::ui.manager.table.roles'),
+                'format' => fn (User $user): HtmlString => $this->renderRoleBadgesCell($user),
+            ],
+            [
+                'key' => 'display_status',
+                'label' => __('user::ui.manager.table.status'),
+                'format' => fn (User $user): HtmlString => $this->renderStatusBadgeCell($user),
+            ],
+            [
+                'key' => 'actions',
+                'label' => '',
+                'class' => 'w-1 text-right',
+                'format' => fn (User $user): HtmlString => $this->renderActionsCell($user),
+            ],
         ];
     }
 
@@ -374,6 +393,37 @@ class UserManager extends RecordManager
                     [User::class],
                 );
         });
+    }
+
+    protected function renderNameCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-name-cell', [
+            'user' => $user,
+        ])->render());
+    }
+
+    protected function renderRoleBadgesCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-role-badges', [
+            'user' => $user,
+            'manager' => $this,
+        ])->render());
+    }
+
+    protected function renderStatusBadgeCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-status-badge', [
+            'user' => $user,
+            'manager' => $this,
+        ])->render());
+    }
+
+    protected function renderActionsCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-actions', [
+            'user' => $user,
+            'roleKey' => $this->targetRole ?: 'user',
+        ])->render());
     }
 
     public function roleBadgeVariant(string $role): string

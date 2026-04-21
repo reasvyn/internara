@@ -65,64 +65,6 @@
         </x-ui::dropdown>
     </x-slot:filters>
 
-    {{-- Custom Table Cells --}}
-    <x-slot:tableCells>
-        @scope('cell_name', $user)
-            <div class="flex items-center gap-3">
-                <x-ui::avatar :image="$user->avatar_url" :title="$user->name" size="w-8" />
-                <div class="font-semibold">{{ $user->name }}</div>
-            </div>
-        @endscope
-
-        @scope('cell_role_labels', $user)
-            <div class="flex flex-wrap gap-1">
-                @foreach($user->roles as $role)
-                    <x-ui::badge
-                        :value="__('permission::roles.'.$role->name)"
-                        :variant="$this->roleBadgeVariant($role->name)"
-                        class="badge-sm"
-                    />
-                @endforeach
-            </div>
-        @endscope
-
-        @scope('cell_display_status', $user)
-            <x-ui::badge 
-                :value="__('user::ui.manager.form.' . $user->display_status)" 
-                :variant="$this->statusBadgeVariant($user->display_status)" 
-                class="badge-sm" 
-            />
-        @endscope
-    </x-slot:tableCells>
-
-    {{-- Row Actions Override (for super-admin safety) --}}
-    <x-slot:rowActions>
-        @scope('actions', $user)
-            <div class="flex justify-end gap-2">
-                @if(!$user->hasRole('super-admin'))
-                    <x-ui::button
-                        icon="tabler.mail-share"
-                        variant="tertiary"
-                        wire:click="sendPasswordResetLink('{{ $user->id }}')"
-                        class="text-warning btn-xs"
-                        tooltip="{{ __('user::ui.manager.form.send_setup_link') }}"
-                    />
-                    <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $user->id }}')" class="text-info btn-xs" tooltip="{{ __('user::ui.manager.edit_' . $roleKey) }}" />
-                    <x-ui::button 
-                        icon="tabler.trash" 
-                        variant="tertiary" 
-                        wire:click="discard('{{ $user->id }}')" 
-                        wire:confirm="{{ __('ui::common.delete_confirm') }}"
-                        class="text-error btn-xs" 
-                        tooltip="{{ __('ui::common.delete') }}" 
-                    />
-                @else
-                    <x-ui::badge :value="__('System Protected')" variant="secondary" class="badge-sm opacity-50" />
-                @endif
-            </div>
-        @endscope
-    </x-slot:rowActions>
-
     {{-- Form Fields --}}
     <x-slot:formFields>
         <div
