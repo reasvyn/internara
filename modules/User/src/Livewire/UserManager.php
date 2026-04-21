@@ -160,6 +160,13 @@ class UserManager extends RecordManager
         }
     }
 
+    public function resetFilters(): void
+    {
+        $this->filters = [];
+        $this->selectedIds = [];
+        $this->resetPage();
+    }
+
     public function save(): void
     {
         $this->form->validate();
@@ -306,17 +313,81 @@ class UserManager extends RecordManager
      */
     protected function managedUserQuery(array $filters = []): Builder
     {
+        $selectedRole = $filters['role'] ?? null;
+        $selectedStatus = $filters['status'] ?? null;
+        $createdFrom = $filters['created_from'] ?? null;
+        $createdTo = $filters['created_to'] ?? null;
+
         $roles = $this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)
             ? [$this->targetRole]
             : self::MANAGED_ROLES;
 
-        return $this->service
-            ->query($filters)
+        $query = $this->service
+            ->query(Arr::except($filters, ['role', 'status', 'created_from', 'created_to']))
             ->whereHas('roles', fn (Builder $query): Builder => $query->whereIn('name', $roles))
             ->whereDoesntHave('roles', fn (Builder $query): Builder => $query->whereIn('name', [
                 Role::SUPER_ADMIN->value,
                 Role::ADMIN->value,
             ]));
+
+        if (! $this->targetRole && in_array($selectedRole, self::MANAGED_ROLES, true)) {
+            $query->whereHas('roles', fn (Builder $roleQuery): Builder => $roleQuery->where('name', $selectedRole));
+        }
+
+        if (in_array($selectedStatus, [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING], true)) {
+            $this->applyLatestStatusFilter($query, $selectedStatus);
+        }
+
+        if ($createdFrom) {
+            $query->whereDate((new User)->getTable().'.created_at', '>=', $createdFrom);
+        }
+
+        if ($createdTo) {
+            $query->whereDate((new User)->getTable().'.created_at', '<=', $createdTo);
+        }
+
+        return $query;
+    }
+
+    protected function applyLatestStatusFilter(Builder $query, string $status): void
+    {
+        $statusTable = app(config('model-status.status_model'))->getTable();
+        $userTable = (new User)->getTable();
+
+        $query->whereExists(function ($statusQuery) use ($status, $statusTable, $userTable): void {
+            $statusQuery
+                ->selectRaw('1')
+                ->from($statusTable.' as latest_status')
+                ->whereColumn('latest_status.model_id', $userTable.'.id')
+                ->where('latest_status.model_type', User::class)
+                ->where('latest_status.name', $status)
+                ->whereRaw(
+                    'latest_status.created_at = (select max(status_history.created_at) from '.$statusTable.' as status_history where status_history.model_type = ? and status_history.model_id = '.$userTable.'.id)',
+                    [User::class],
+                );
+        });
+    }
+
+    public function roleBadgeVariant(string $role): string
+    {
+        return match ($role) {
+            Role::STUDENT->value => 'success',
+            Role::TEACHER->value => 'info',
+            Role::MENTOR->value => 'warning',
+            Role::ADMIN->value => 'primary',
+            Role::SUPER_ADMIN->value => 'error',
+            default => 'secondary',
+        };
+    }
+
+    public function statusBadgeVariant(string $status): string
+    {
+        return match ($status) {
+            User::STATUS_ACTIVE, 'verified' => 'success',
+            User::STATUS_PENDING => 'warning',
+            User::STATUS_INACTIVE => 'secondary',
+            default => 'secondary',
+        };
     }
 
     /**

@@ -1,4 +1,58 @@
 <x-ui::record-manager>
+    <x-slot:filters>
+        <div class="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+            @if(!$targetRole)
+                <x-ui::select
+                    :label="__('user::ui.manager.filters.role')"
+                    icon="tabler.shield"
+                    wire:model.live="filters.role"
+                    :options="[
+                        ['id' => 'student', 'name' => __('permission::roles.student')],
+                        ['id' => 'teacher', 'name' => __('permission::roles.teacher')],
+                        ['id' => 'mentor', 'name' => __('permission::roles.mentor')],
+                    ]"
+                    :placeholder="__('user::ui.manager.filters.all_roles')"
+                />
+            @endif
+
+            <x-ui::select
+                :label="__('user::ui.manager.filters.status')"
+                icon="tabler.circle-check"
+                wire:model.live="filters.status"
+                :options="[
+                    ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
+                    ['id' => 'pending', 'name' => __('user::ui.manager.form.pending')],
+                    ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
+                ]"
+                :placeholder="__('user::ui.manager.filters.all_statuses')"
+            />
+
+            <x-ui::input
+                :label="__('user::ui.manager.filters.created_from')"
+                icon="tabler.calendar-down"
+                type="date"
+                wire:model.live="filters.created_from"
+            />
+
+            <x-ui::input
+                :label="__('user::ui.manager.filters.created_to')"
+                icon="tabler.calendar-up"
+                type="date"
+                wire:model.live="filters.created_to"
+            />
+
+            <div class="flex items-end">
+                <x-ui::button
+                    :label="__('user::ui.manager.filters.reset')"
+                    icon="tabler.filter-off"
+                    variant="secondary"
+                    wire:click="resetFilters"
+                    class="w-full"
+                />
+            </div>
+        </div>
+    </x-slot:filters>
+
     {{-- Custom Table Cells --}}
     <x-slot:tableCells>
         @scope('cell_name', $user)
@@ -11,18 +65,11 @@
         @scope('cell_role_labels', $user)
             <div class="flex flex-wrap gap-1">
                 @foreach($user->roles as $role)
-                    <div
-                        @class([
-                            'badge badge-xs font-medium uppercase tracking-wider',
-                            'badge-error' => $role->name === 'super-admin',
-                            'badge-primary' => $role->name === 'admin',
-                            'badge-secondary' => $role->name === 'teacher',
-                            'badge-accent' => $role->name === 'student',
-                            'badge-ghost' => ! in_array($role->name, ['super-admin', 'admin', 'teacher', 'student'], true),
-                        ])
-                    >
-                        {{ __('permission::roles.'.$role->name) }}
-                    </div>
+                    <x-ui::badge
+                        :value="__('permission::roles.'.$role->name)"
+                        :variant="$this->roleBadgeVariant($role->name)"
+                        class="badge-sm"
+                    />
                 @endforeach
             </div>
         @endscope
@@ -30,7 +77,7 @@
         @scope('cell_display_status', $user)
             <x-ui::badge 
                 :value="__('user::ui.manager.form.' . $user->display_status)" 
-                :variant="$user->display_status === 'verified' ? 'primary' : 'secondary'" 
+                :variant="$this->statusBadgeVariant($user->display_status)" 
                 class="badge-sm" 
             />
         @endscope
