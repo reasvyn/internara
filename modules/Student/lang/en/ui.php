@@ -25,4 +25,28 @@ return [
         ],
         'quick_links' => 'Quick Links',
     ],
+    'manager' => [
+        'table' => [
+            'department' => 'Department',
+            'registration_number' => 'Registration Number',
+        ],
+        'filters' => [
+            'all_departments' => 'All Departments',
+        ],
+        'bulk' => [
+            'send_setup_links' => 'Send setup links to selected',
+            'activate_selected' => 'Activate selected',
+            'archive_selected' => 'Archive selected',
+        ],
+        'messages' => [
+            'links_sent' => ':count student setup links sent successfully.',
+            'activated' => ':count student accounts activated successfully.',
+            'archived' => ':count student accounts archived successfully.',
+        ],
+        'form' => [
+            'password_setup_notice' => 'Student accounts should not be managed through administrator-known passwords. Save the record first, then send a secure access setup link.',
+            'password_reset_notice' => 'Use the send-setup-link action from the table to reset student access securely without viewing the password.',
+            'archive_hint' => 'For annual archiving, prefer setting students to Inactive so their history remains preserved.',
+        ],
+    ],
 ];
