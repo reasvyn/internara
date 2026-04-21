@@ -30,4 +30,28 @@ return [
         'submit_evaluation' => 'Simpan Penilaian',
         'placeholder_notes' => 'Tuliskan catatan atau umpan balik untuk siswa...',
     ],
+    'manager' => [
+        'table' => [
+            'department' => 'Jurusan',
+            'registration_number' => 'Nomor Registrasi',
+        ],
+        'filters' => [
+            'all_departments' => 'Semua Jurusan',
+        ],
+        'bulk' => [
+            'send_setup_links' => 'Kirim tautan setup terpilih',
+            'activate_selected' => 'Aktifkan terpilih',
+            'archive_selected' => 'Arsipkan terpilih',
+        ],
+        'messages' => [
+            'links_sent' => ':count tautan setup guru berhasil dikirim.',
+            'activated' => ':count akun guru berhasil diaktifkan.',
+            'archived' => ':count akun guru berhasil diarsipkan.',
+        ],
+        'form' => [
+            'password_setup_notice' => 'Akun guru tidak dikelola dengan kata sandi yang diketahui admin. Simpan data guru lalu kirim tautan setup akses secara aman.',
+            'password_reset_notice' => 'Gunakan aksi kirim tautan setup dari tabel untuk mereset akses guru dengan aman tanpa melihat kata sandinya.',
+            'archive_hint' => 'Untuk pengarsipan tahunan atau pergantian penugasan, gunakan status Nonaktif agar riwayat guru tetap tersimpan.',
+        ],
+    ],
 ];

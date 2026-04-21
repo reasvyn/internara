@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
+use Modules\Permission\Enums\Role;
 use Modules\Teacher\Livewire\TeacherManager;
 use Modules\User\Models\User;
 
@@ -29,6 +30,7 @@ describe('TeacherManager Component', function () {
 
     test('it renders correctly for authorized users', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('teacher.manage');
         $this->actingAs($admin);
 
@@ -37,19 +39,20 @@ describe('TeacherManager Component', function () {
             ->assertSee(__('admin::ui.menu.teachers'));
     });
 
-    test('it opens the add modal and sets default roles', function () {
+    test('it opens the add modal', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('teacher.manage');
         $this->actingAs($admin);
 
         Livewire::test(TeacherManager::class)
             ->call('add')
-            ->assertSet('form.roles', ['teacher'])
             ->assertSet('formModal', true);
     });
 
     test('it opens the edit modal and fills the form with teacher data', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('teacher.manage');
         $this->actingAs($admin);
 
@@ -66,17 +69,14 @@ describe('TeacherManager Component', function () {
 
     test('it saves a new teacher correctly', function () {
         $admin = User::factory()->create();
-        $admin->assignRole('super-admin');
+        $admin->assignRole(Role::SUPER_ADMIN->value);
         $this->actingAs($admin);
 
         Livewire::test(TeacherManager::class)
             ->call('add')
             ->set('form.name', 'New Teacher')
             ->set('form.email', 'teacher@example.com')
-            ->set('form.roles', ['teacher'])
-            ->set('form.status', 'active')
-            ->set('form.password', 'Password123!')
-            ->set('form.password_confirmation', 'Password123!')
+            ->set('form.status', 'pending')
             ->call('save')
             ->assertHasNoErrors()
             ->assertSet('formModal', false);
@@ -87,7 +87,7 @@ describe('TeacherManager Component', function () {
 
     test('it updates an existing teacher correctly', function () {
         $admin = User::factory()->create();
-        $admin->assignRole('super-admin');
+        $admin->assignRole(Role::SUPER_ADMIN->value);
         $this->actingAs($admin);
 
         $teacher = User::factory()->create();
@@ -103,16 +103,25 @@ describe('TeacherManager Component', function () {
         expect(User::find($teacher->id)->name)->toBe('Updated Teacher Name');
     });
 
-    test('it handles exceptions gracefully during save', function () {
+    test('it forbids non-admin roles even if they somehow receive teacher manage permission', function () {
+        $mentor = User::factory()->create();
+        $mentor->assignRole(Role::MENTOR->value);
+        $mentor->givePermissionTo('teacher.manage');
+        $this->actingAs($mentor);
+
+        Livewire::test(TeacherManager::class)
+            ->assertForbidden();
+    });
+
+    test('it validates invalid input during save', function () {
         $admin = User::factory()->create();
-        $admin->assignRole('super-admin');
+        $admin->assignRole(Role::SUPER_ADMIN->value);
         $this->actingAs($admin);
 
-        // Force an exception by providing an invalid role that causes a failure in service
         Livewire::test(TeacherManager::class)
             ->call('add')
             ->set('form.name', 'Exception Teacher')
-            ->set('form.email', 'invalid-email') // will fail validation
+            ->set('form.email', 'invalid-email')
             ->call('save')
             ->assertHasErrors(['form.email']);
     });

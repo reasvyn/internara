@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Password;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
@@ -15,6 +16,7 @@ use Modules\Teacher\Services\Contracts\TeacherService as Contract;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
 use Illuminate\Support\Str;
+use Modules\Exception\RecordNotFoundException;
 
 class TeacherService extends EloquentQuery implements Contract
 {
@@ -23,8 +25,14 @@ class TeacherService extends EloquentQuery implements Contract
         protected ProfileService $profileService,
     ) {
         $this->setModel($model);
-        $this->setSearchable(['name', 'email', 'username', 'profile.registration_number']);
-        $this->setSortable(['name', 'email', 'created_at']);
+        $this->setSearchable([
+            'name',
+            'email',
+            'username',
+            'profile.registration_number',
+            'profile.department.name',
+        ]);
+        $this->setSortable(['name', 'email', 'username', 'created_at']);
     }
 
     public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
@@ -39,9 +47,13 @@ class TeacherService extends EloquentQuery implements Contract
     public function create(array $data): User
     {
         return DB::transaction(function () use ($data): User {
-            $status = $data['status'] ?? User::STATUS_ACTIVE;
+            $status = $data['status'] ?? User::STATUS_PENDING;
             $profileData = $data['profile'] ?? [];
             unset($data['profile'], $data['status']);
+
+            $data['password'] = filled($data['password'] ?? null)
+                ? $data['password']
+                : Str::password(32);
 
             if (empty($profileData['registration_number'])) {
                 $profileData['registration_number'] = 'PENDING-'.(string) Str::uuid();
@@ -135,6 +147,23 @@ class TeacherService extends EloquentQuery implements Contract
             fn (int $count, User $teacher): int => $count + (($force ? $teacher->forceDelete() : $teacher->delete()) ? 1 : 0),
             0,
         );
+    }
+
+    public function sendPasswordResetLink(mixed $id): void
+    {
+        /** @var User|null $teacher */
+        $teacher = $this->find($id);
+
+        if (! $teacher) {
+            throw new RecordNotFoundException(replace: ['record' => 'Teacher', 'id' => $id]);
+        }
+
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $teacher);
+        }
+
+        Password::sendResetLink(['email' => $teacher->email]);
+        $this->skipAuthorization = false;
     }
 
     protected function parentCreate(array $data): User

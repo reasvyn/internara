@@ -11,5 +11,8 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  */
 interface TeacherService extends EloquentQuery
 {
-    //
+    /**
+     * Send a password setup/reset link to a managed teacher.
+     */
+    public function sendPasswordResetLink(mixed $id): void;
 }
