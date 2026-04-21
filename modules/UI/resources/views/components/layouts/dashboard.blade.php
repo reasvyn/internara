@@ -52,6 +52,24 @@
                                         </div>
                                     </x-ui::alert>
                                 </div>
+                            @elseif(auth()->user()->email && !auth()->user()->hasVerifiedEmail())
+                                <div class="mb-6">
+                                    <x-ui::alert type="info" icon="tabler.mail-check" shadow>
+                                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                            <div>
+                                                <p class="font-semibold">{{ __('ui::common.email_unverified.title') }}</p>
+                                                <p class="text-sm opacity-80">{{ __('ui::common.email_unverified.description') }}</p>
+                                            </div>
+                                            @if(\Illuminate\Support\Facades\Route::has('verification.notice'))
+                                                <a href="{{ route('verification.notice') }}" wire:navigate
+                                                   class="btn btn-info btn-sm shrink-0">
+                                                    <x-ui::icon name="tabler.mail-forward" class="size-4" />
+                                                    {{ __('ui::common.email_unverified.action') }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </x-ui::alert>
+                                </div>
                             @endif
                         @endauth
 

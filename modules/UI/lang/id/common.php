@@ -64,4 +64,10 @@ return [
         'description' => 'Akun Anda dibuat oleh administrator. Harap buat kata sandi pribadi untuk mengamankan akun Anda.',
         'action'      => 'Buat Kata Sandi',
     ],
+
+    'email_unverified' => [
+        'title'       => 'Email Belum Diverifikasi',
+        'description' => 'Verifikasi alamat email Anda untuk mengamankan akun dan menerima notifikasi penting.',
+        'action'      => 'Kirim Ulang Tautan Verifikasi',
+    ],
 ];

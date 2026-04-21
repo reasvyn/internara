@@ -23,6 +23,11 @@ class VerifyEmail extends Component
     {
         $this->id = $id;
         $this->hash = $hash;
+
+        // Auto-verify when the signed link is visited — no extra button click needed.
+        if (auth()->check()) {
+            $this->verify();
+        }
     }
 
     public function boot(AuthService $authService, RedirectService $redirectService)
@@ -69,6 +74,9 @@ class VerifyEmail extends Component
 
     public function render()
     {
-        return view('auth::livewire.verify-email');
+        return view('auth::livewire.verify-email')
+            ->layout('auth::components.layouts.auth', [
+                'title' => __('auth::ui.verification.title') . ' | ' . setting('site_title', 'Internara'),
+            ]);
     }
 }

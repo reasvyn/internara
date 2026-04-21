@@ -21,7 +21,9 @@ final class RedirectService extends BaseService implements Contract
      */
     public function getTargetUrl(Authenticatable $user): string
     {
-        if (! $user->hasVerifiedEmail() && setting('require_email_verification', true)) {
+        // Users without an email address skip the verification gate entirely.
+        // They receive a soft dashboard notification instead.
+        if ($user->email && ! $user->hasVerifiedEmail() && setting('require_email_verification', true)) {
             return route('verification.notice');
         }
 
