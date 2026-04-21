@@ -110,7 +110,6 @@
                         ['id' => 'student', 'name' => __('permission::roles.student')],
                         ['id' => 'teacher', 'name' => __('permission::roles.teacher')],
                         ['id' => 'mentor', 'name' => __('permission::roles.mentor')],
-                        ['id' => 'admin', 'name' => __('permission::roles.admin')],
                     ]"
                 />
             @endif
@@ -172,7 +171,7 @@
                 :options="[
                     ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
                     ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
-                    ['id' => 'verified', 'name' => __('user::ui.manager.form.verified')],
+                    ['id' => 'pending', 'name' => __('user::ui.manager.form.pending')],
                 ]" 
             />
         </div>

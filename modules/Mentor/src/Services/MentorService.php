@@ -50,8 +50,7 @@ class MentorService extends EloquentQuery implements Contract
 
         // 2. Create Profile record (Mentors have Profile but no profileable model)
         if (! empty($profileData)) {
-            $profile = $this->profileService->getByUserId($user->id);
-            $this->profileService->update($profile->id, $profileData);
+            $this->profileService->upsertManagedProfile($user->id, $profileData);
         }
 
         return $user;
@@ -78,8 +77,7 @@ class MentorService extends EloquentQuery implements Contract
 
         // 2. Update Profile record if it exists
         if (! empty($profileData)) {
-            $profile = $this->profileService->getByUserId($user->id);
-            $this->profileService->update($profile->id, $profileData);
+            $this->profileService->upsertManagedProfile($user->id, $profileData);
         }
 
         return $user;

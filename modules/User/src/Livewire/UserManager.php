@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\User\Livewire;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Modules\Department\Models\Department;
 use Modules\Permission\Enums\Role;
 use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\UI\Livewire\RecordManager;
@@ -22,6 +25,17 @@ use Modules\User\Services\Contracts\UserService;
 class UserManager extends RecordManager
 {
     use HasDepartmentOptions;
+
+    /**
+     * Operational roles managed by this manager.
+     *
+     * @var list<string>
+     */
+    private const MANAGED_ROLES = [
+        Role::STUDENT->value,
+        Role::TEACHER->value,
+        Role::MENTOR->value,
+    ];
 
     public UserManagerForm $form;
 
@@ -58,6 +72,7 @@ class UserManager extends RecordManager
         $this->createPermission = 'user.manage';
         $this->updatePermission = 'user.manage';
         $this->deletePermission = 'user.manage';
+        $this->importInstructions = __('user::ui.manager.import.instructions');
     }
 
     /**
@@ -94,8 +109,7 @@ class UserManager extends RecordManager
             fn ($value) => $value !== null && $value !== '' && $value !== [],
         );
 
-        return $this->service
-            ->query($appliedFilters)
+        return $this->managedUserQuery($appliedFilters)
             ->with(['roles:id,name', 'profile.department', 'statuses'])
             ->paginate($this->perPage)
             ->through(function (User $user): User {
@@ -121,8 +135,7 @@ class UserManager extends RecordManager
         }
 
         try {
-            $targets = $this->service
-                ->query()
+            $targets = $this->managedUserQuery()
                 ->whereIn('id', $this->selectedIds)
                 ->get()
                 ->reject(fn ($u) => $u->hasRole('super-admin'))
@@ -192,11 +205,155 @@ class UserManager extends RecordManager
     {
         $this->form->reset();
 
-        if ($this->targetRole) {
+        if ($this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)) {
             $this->form->roles = [$this->targetRole];
         }
 
         $this->toggleModal(self::MODAL_FORM, true);
+    }
+
+    protected function getExportHeaders(): array
+    {
+        return [
+            'name' => __('user::ui.manager.table.name'),
+            'email' => __('user::ui.manager.table.email'),
+            'username' => __('user::ui.manager.table.username'),
+            'roles' => __('user::ui.manager.import.columns.roles'),
+            'status' => __('user::ui.manager.table.status'),
+            'department_name' => __('user::ui.manager.import.columns.department_name'),
+            'phone' => __('user::ui.manager.form.phone'),
+            'address' => __('user::ui.manager.form.address'),
+            'gender' => __('user::ui.manager.form.gender'),
+            'national_identifier' => __('user::ui.manager.import.columns.national_identifier'),
+            'registration_number' => __('user::ui.manager.import.columns.registration_number'),
+        ];
+    }
+
+    protected function getTemplateHeaders(): array
+    {
+        return $this->getExportHeaders();
+    }
+
+    protected function getExportQuery(): Builder
+    {
+        return $this->managedUserQuery()->with(['roles:id,name', 'profile.department', 'statuses']);
+    }
+
+    protected function mapRecordForExport($record, array $keys): array
+    {
+        $roles = $record->roles->pluck('name')->intersect(self::MANAGED_ROLES)->values()->implode(', ');
+        $profile = $record->profile;
+
+        return [
+            $record->name,
+            $record->email,
+            $record->username,
+            $roles,
+            $record->latestStatus()?->name ?? User::STATUS_ACTIVE,
+            $profile?->department?->name ?? '',
+            $profile?->phone ?? '',
+            $profile?->address ?? '',
+            $profile?->gender ?? '',
+            $profile?->national_identifier ?? '',
+            $profile?->registration_number ?? '',
+        ];
+    }
+
+    protected function mapImportRow(array $row, array $keys): ?array
+    {
+        $data = [];
+        foreach ($keys as $index => $key) {
+            $value = $row[$index] ?? null;
+            $data[$key] = is_string($value) ? trim($value) : $value;
+        }
+
+        if (blank(implode('', array_filter($data, fn ($value) => $value !== null)))) {
+            return null;
+        }
+
+        $roles = $this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)
+            ? [$this->targetRole]
+            : $this->normalizeRoles($data['roles'] ?? null);
+
+        if ($roles === []) {
+            $roles = [Role::STUDENT->value];
+        }
+
+        $status = Str::lower((string) ($data['status'] ?? 'pending'));
+        if (! in_array($status, ['active', 'inactive', 'pending'], true)) {
+            $status = 'pending';
+        }
+
+        return [
+            'name' => $data['name'] ?? null,
+            'email' => $data['email'] ?? null,
+            'username' => $data['username'] ?? null,
+            'roles' => $roles,
+            'status' => $status,
+            'profile' => array_filter([
+                'department_id' => $this->resolveDepartmentId($data['department_name'] ?? null),
+                'phone' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
+                'gender' => $this->normalizeGender($data['gender'] ?? null),
+                'national_identifier' => $data['national_identifier'] ?? null,
+                'registration_number' => $data['registration_number'] ?? null,
+            ], fn ($value) => $value !== null && $value !== ''),
+        ];
+    }
+
+    /**
+     * Build the operational user query and exclude privileged accounts.
+     */
+    protected function managedUserQuery(array $filters = []): Builder
+    {
+        $roles = $this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)
+            ? [$this->targetRole]
+            : self::MANAGED_ROLES;
+
+        return $this->service
+            ->query($filters)
+            ->whereHas('roles', fn (Builder $query): Builder => $query->whereIn('name', $roles))
+            ->whereDoesntHave('roles', fn (Builder $query): Builder => $query->whereIn('name', [
+                Role::SUPER_ADMIN->value,
+                Role::ADMIN->value,
+            ]));
+    }
+
+    /**
+     * Normalize imported role labels into operational system roles.
+     *
+     * @return list<string>
+     */
+    protected function normalizeRoles(?string $rawRoles): array
+    {
+        return collect(explode(',', (string) $rawRoles))
+            ->map(fn (string $role): string => Str::lower(trim($role)))
+            ->filter()
+            ->intersect(self::MANAGED_ROLES)
+            ->values()
+            ->all();
+    }
+
+    protected function normalizeGender(?string $gender): ?string
+    {
+        $normalized = Str::lower(trim((string) $gender));
+
+        return in_array($normalized, ['male', 'female'], true) ? $normalized : null;
+    }
+
+    protected function resolveDepartmentId(?string $departmentName): ?string
+    {
+        $name = trim((string) $departmentName);
+        if ($name === '') {
+            return null;
+        }
+
+        /** @var Department|null $department */
+        $department = Department::query()
+            ->whereRaw('LOWER(name) = ?', [Str::lower($name)])
+            ->first();
+
+        return $department?->id;
     }
 
     /**

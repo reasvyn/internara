@@ -108,9 +108,12 @@ class UserService extends EloquentQuery implements Contract
             }
 
             // UNIFIED: Initialize & Update Profile for ALL user types
-            $profile = $this->profileService->withoutAuthorization()->getByUserId($user->id);
             if (! empty($profileData)) {
-                $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+                $profileService = (! setting('app_installed', false) || $this->skipAuthorization || auth()->guest())
+                    ? $this->profileService->withoutAuthorization()
+                    : $this->profileService;
+
+                $profileService->upsertManagedProfile($user->id, $profileData);
             }
 
             $this->skipAuthorization = false;
@@ -227,9 +230,9 @@ class UserService extends EloquentQuery implements Contract
             $updatedUser->markEmailAsVerified();
         }
 
-        $profile = $this->profileService->withoutAuthorization()->getByUserId($updatedUser->id);
         if ($profileData !== []) {
-            $this->profileService->withoutAuthorization()->update($profile->id, $profileData);
+            $profileService = $this->skipAuthorization ? $this->profileService->withoutAuthorization() : $this->profileService;
+            $profileService->upsertManagedProfile($updatedUser->id, $profileData);
         }
 
         $this->skipAuthorization = false;

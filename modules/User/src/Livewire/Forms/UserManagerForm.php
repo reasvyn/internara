@@ -17,7 +17,6 @@ class UserManagerForm extends UserForm
             Role::STUDENT->value,
             Role::TEACHER->value,
             Role::MENTOR->value,
-            Role::ADMIN->value,
         ])];
 
         $isPrivilegedContext = in_array(Role::ADMIN->value, $this->roles, true)

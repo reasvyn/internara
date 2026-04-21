@@ -277,7 +277,7 @@ abstract class RecordManager extends Component
     }
 
     public function exportCsv() {
-        $records = $this->service->all();
+        $records = $this->getExportQuery()->get();
         $filename = $this->getEventPrefix().'-'.now()->format('Y-m-d-His').'.csv';
         $headers = $this->getExportHeaders();
         return response()->streamDownload(function () use ($records, $headers) {
@@ -290,7 +290,7 @@ abstract class RecordManager extends Component
 
     public function downloadTemplate() {
         $filename = $this->getEventPrefix().'-template.csv';
-        $headers = $this->getExportHeaders();
+        $headers = $this->getTemplateHeaders();
         return response()->streamDownload(function () use ($headers) {
             $file = fopen('php://output', 'w');
             fputcsv($file, array_values($headers));
@@ -304,7 +304,7 @@ abstract class RecordManager extends Component
         $file = fopen($path, 'r');
         fgetcsv($file);
         $data = [];
-        $keys = array_keys($this->getExportHeaders());
+        $keys = array_keys($this->getTemplateHeaders());
         while (($row = fgetcsv($file)) !== false) if ($mapped = $this->mapImportRow($row, $keys)) $data[] = $mapped;
         fclose($file);
         if (empty($data)) { flash()->error(__('ui::common.error')); return; }
@@ -316,15 +316,17 @@ abstract class RecordManager extends Component
     }
 
     public function printPdf() {
-        $records = $this->service->all();
+        $records = $this->getExportQuery()->get();
         if (! $view = $this->getPdfView()) { flash()->error(__('shared::exceptions.pdf_view_undefined')); return null; }
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($view, $this->getPdfData($records));
         return response()->streamDownload(fn () => print $pdf->output(), $this->getEventPrefix().'-'.now()->format('Y-m-d').'.pdf');
     }
 
     protected function getExportHeaders(): array { return ['id' => 'ID', 'created_at' => 'Created At']; }
+    protected function getTemplateHeaders(): array { return $this->getExportHeaders(); }
     protected function mapRecordForExport($record, array $keys): array { return array_map(fn ($key) => $record->{$key}, $keys); }
     protected function mapImportRow(array $row, array $keys): ?array { $data = []; foreach ($keys as $index => $key) $data[$key] = $row[$index] ?? null; return $data; }
+    protected function getExportQuery(): \Illuminate\Database\Eloquent\Builder { return $this->service->query($this->filters); }
     protected function getPdfView(): ?string { return null; }
     protected function getPdfData($records): array { return ['records' => $records, 'date' => now()->translatedFormat('d F Y')]; }
     protected function toggleModal(string $name, bool $visible, array $params = []): void { $property = $name === self::MODAL_FORM ? 'formModal' : 'confirmModal'; $this->{$property} = $visible; $this->dispatch($this->getEventPrefix().':'.($visible ? 'open-modal' : 'close-modal'), $name, $params); }
