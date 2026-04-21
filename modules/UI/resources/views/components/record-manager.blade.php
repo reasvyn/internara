@@ -141,16 +141,18 @@
         </div>
     </x-ui::card>
 
-    {{-- Modals --}}
-    <x-ui::modal wire:model="formModal" :title="$this->form->id ? __('ui::common.edit') : __('ui::common.add')">
+    {{-- Form Modal (only rendered when the manager has a form property) --}}
+    @if(isset($formFields))
+    <x-ui::modal wire:model="formModal" :title="(property_exists($this, 'form') && $this->form->id) ? __('ui::common.edit') : __('ui::common.add')">
         <x-ui::form wire:submit.prevent="save">
-            {{ $formFields ?? '' }}
+            {{ $formFields }}
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" x-on:click="$wire.formModal = false" />
                 <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>
+    @endif
 
     <x-ui::modal wire:model="confirmModal" :title="__('ui::common.confirm')">
         <p>{{ $this->deleteConfirmMessage }}</p>
