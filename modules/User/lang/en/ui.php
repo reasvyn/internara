@@ -9,6 +9,13 @@ return [
     'mentor_management' => 'Industry Mentor Management',
     'admin_management' => 'Administrator Management',
 
+    'viewer' => [
+        'title'            => 'User Directory',
+        'subtitle'         => 'All registered accounts, filtered by your access level.',
+        'system_protected' => 'System Protected',
+        'no_role'          => 'No Role',
+    ],
+
     'manager' => [
         'title' => 'User Management',
         'subtitle' => 'Manage platform users and roles.',

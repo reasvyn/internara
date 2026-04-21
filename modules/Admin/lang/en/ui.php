@@ -62,6 +62,25 @@ return [
         'view_detail' => 'View Detail',
     ],
 
+    'manager' => [
+        'subtitle'           => 'Manage system administrator accounts. Only SuperAdmins can access this page.',
+        'add'                => 'Add Administrator',
+        'delete_confirm'     => 'Are you sure you want to delete this administrator account?',
+        'invitation_status'  => 'Invitation Status',
+        'invite_action'      => 'Send Invitation',
+        'reinvite_action'    => 'Resend Invitation',
+        'invited'            => 'Administrator account created and invitation sent to :email.',
+        'reinvited'          => 'Invitation resent to :email.',
+        'already_accepted'   => 'This administrator has already accepted their invitation.',
+        'invitation_notice'  => 'An invitation email will be sent to this administrator. They will set their own password by clicking the link in the email.',
+        'invitation_statuses' => [
+            'not_invited' => 'Not Invited',
+            'pending'     => 'Invitation Pending',
+            'accepted'    => 'Active',
+            'expired'     => 'Invitation Expired',
+        ],
+    ],
+
     'batch_onboarding' => [
         'title'                 => 'Batch Onboarding',
         'subtitle'              => 'Mass import students, teachers, or mentors via CSV.',

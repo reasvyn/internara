@@ -9,6 +9,13 @@ return [
     'mentor_management' => 'Manajemen Pembimbing Industri',
     'admin_management' => 'Manajemen Administrator',
 
+    'viewer' => [
+        'title'            => 'Direktori Pengguna',
+        'subtitle'         => 'Semua akun terdaftar, difilter sesuai level akses Anda.',
+        'system_protected' => 'Dilindungi Sistem',
+        'no_role'          => 'Tanpa Peran',
+    ],
+
     'manager' => [
         'title' => 'Manajemen Pengguna',
         'subtitle' => 'Kelola pengguna platform dan peran mereka.',

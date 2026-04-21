@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Livewire;
 
+use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Admin\Livewire\Forms\AdminForm;
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Exception\Concerns\HandlesAppException;
 use Modules\UI\Livewire\RecordManager;
+use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
 
 /**
@@ -17,6 +19,9 @@ use Modules\User\Models\User;
  *
  * Manages system administrators with specialized logic and role enforcement.
  * Only SuperAdmins are authorized to manage Admin accounts.
+ *
+ * Password management: admins are provisioned via email invitation, never by
+ * direct password entry. This ensures admins set their own credentials securely.
  */
 class AdminManager extends RecordManager
 {
@@ -36,9 +41,9 @@ class AdminManager extends RecordManager
     public function initialize(): void
     {
         $this->title = __('admin::ui.menu.administrators');
-        $this->subtitle = __('user::ui.manager.subtitle');
-        $this->addLabel = __('user::ui.manager.add_admin');
-        $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
+        $this->subtitle = __('admin::ui.manager.subtitle');
+        $this->addLabel = __('admin::ui.manager.add');
+        $this->deleteConfirmMessage = __('admin::ui.manager.delete_confirm');
         $this->viewPermission = 'admin.manage';
         $this->createPermission = 'admin.manage';
         $this->updatePermission = 'admin.manage';
@@ -51,6 +56,7 @@ class AdminManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('ui::common.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('ui::common.email'), 'sortable' => false],
+            ['key' => 'invitation_status', 'label' => __('admin::ui.manager.invitation_status'), 'sortable' => false],
             ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
         ];
     }
@@ -74,7 +80,7 @@ class AdminManager extends RecordManager
     #[Computed]
     public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->service->paginate(
+        $paginator = $this->service->paginate(
             [
                 'search' => $this->search,
                 'sort_by' => $this->sortBy['column'] ?? 'created_at',
@@ -82,8 +88,15 @@ class AdminManager extends RecordManager
             ],
             $this->perPage,
             ['*'],
-            ['roles:id,name', 'profile', 'statuses'],
+            ['roles:id,name', 'profile', 'statuses', 'accountTokens'],
         );
+
+        $paginator->getCollection()->transform(function (User $admin): User {
+            $admin->setAttribute('invitation_status', $this->resolveInvitationStatus($admin));
+            return $admin;
+        });
+
+        return $paginator;
     }
 
     /**
@@ -92,7 +105,6 @@ class AdminManager extends RecordManager
     public function add(): void
     {
         $this->form->reset();
-        $this->form->roles = ['admin'];
         $this->formModal = true;
     }
 
@@ -111,21 +123,48 @@ class AdminManager extends RecordManager
     }
 
     /**
-     * Save the admin record.
+     * Save the admin record and send invitation email if creating new.
      */
     public function save(): void
     {
         $this->form->validate();
 
         try {
-            if ($this->form->id) {
-                $this->service->update($this->form->id, $this->form->all());
+            $isNew = ! $this->form->id;
+
+            if ($isNew) {
+                $admin = $this->service->create($this->form->all());
+                // Send invitation email for new accounts
+                $this->service->invite($admin, auth()->user());
+                flash()->success(__('admin::ui.manager.invited', ['email' => $admin->email]));
             } else {
-                $this->service->create($this->form->all());
+                $this->service->update($this->form->id, $this->form->all());
+                flash()->success(__('shared::messages.record_saved'));
             }
 
             $this->formModal = false;
-            flash()->success(__('shared::messages.record_saved'));
+        } catch (\Throwable $e) {
+            $this->handleAppExceptionInLivewire($e);
+        }
+    }
+
+    /**
+     * Resend the invitation email to an unclaimed admin.
+     * Only available while setup_required is true.
+     */
+    public function reinvite(mixed $id): void
+    {
+        try {
+            /** @var User $admin */
+            $admin = $this->service->findOrFail($id);
+
+            if (! $admin->requiresSetup()) {
+                flash()->warning(__('admin::ui.manager.already_accepted'));
+                return;
+            }
+
+            $this->service->invite($admin, auth()->user());
+            flash()->success(__('admin::ui.manager.reinvited', ['email' => $admin->email]));
         } catch (\Throwable $e) {
             $this->handleAppExceptionInLivewire($e);
         }
@@ -142,5 +181,32 @@ class AdminManager extends RecordManager
             'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.administrators',
         ]);
+    }
+
+    // ─── Internal ────────────────────────────────────────────────────────────────
+
+    /**
+     * Derive the invitation status label key for an admin user.
+     */
+    private function resolveInvitationStatus(User $admin): string
+    {
+        // Account already activated
+        if (! $admin->requiresSetup()) {
+            return 'accepted';
+        }
+
+        $tokens = $admin->accountTokens
+            ->where('type', AccountToken::TYPE_INVITATION);
+
+        if ($tokens->isEmpty()) {
+            return 'not_invited';
+        }
+
+        // Has at least one non-expired, non-claimed token
+        $hasActive = $tokens->contains(
+            fn (AccountToken $t): bool => $t->isActive()
+        );
+
+        return $hasActive ? 'pending' : 'expired';
     }
 }

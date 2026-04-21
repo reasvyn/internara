@@ -16,6 +16,34 @@ use Modules\User\Models\User;
 interface AccountProvisioningService
 {
     /**
+     * Generate a long-form invitation token for a privileged account (Admin).
+     *
+     * Unlike short activation codes, invitation tokens are 64-char hex strings
+     * delivered via email link. They are stored as HMAC-SHA256 hashes and
+     * looked up by re-hashing the raw URL token, not by scanning.
+     *
+     * Sends an AdminInvitationNotification email to the user.
+     *
+     * @param  User   $user          The account to invite.
+     * @param  int    $expiresInDays Number of days before link expires.
+     * @param  User|null $issuedBy   Admin who triggered the invitation.
+     * @return string                The PLAINTEXT 64-char hex token (used in URL once).
+     */
+    public function invite(
+        User $user,
+        int $expiresInDays = 7,
+        ?User $issuedBy = null,
+    ): string;
+
+    /**
+     * Find an active invitation token by its plain hex value.
+     *
+     * Hashes the plain token via HMAC-SHA256 and queries directly —
+     * no linear scan over all tokens.
+     */
+    public function findActiveInvitationToken(string $plainToken): ?AccountToken;
+
+    /**
      * Generate a new activation code for the given user.
      *
      * Invalidates any previous active tokens of the same type.

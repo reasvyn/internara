@@ -6,6 +6,7 @@ namespace Modules\User\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Modules\Admin\Notifications\AdminInvitationNotification;
 use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\AccountProvisioningService as Contract;
@@ -109,9 +110,14 @@ class AccountProvisioningService implements Contract
             // Set the user's self-chosen password and clear the setup flag.
             // setup_required was true since provisioning; claim completes the setup.
             $user->update([
-                'password'      => $newPassword, // cast 'hashed' handles bcrypt
+                'password'       => $newPassword, // cast 'hashed' handles bcrypt
                 'setup_required' => false,
             ]);
+
+            // For invitation tokens (email-delivered), acceptance proves inbox ownership.
+            if ($token->type === AccountToken::TYPE_INVITATION && $user->email) {
+                $user->markEmailAsVerified();
+            }
 
             // Mark the token consumed
             $token->markClaimed($ipAddress);
@@ -145,6 +151,54 @@ class AccountProvisioningService implements Contract
         }
 
         return $slips;
+    }
+
+    // ─── Internal ────────────────────────────────────────────────────────────────
+
+    /**
+     * {@inheritdoc}
+     */
+    public function invite(
+        User $user,
+        int $expiresInDays = 7,
+        ?User $issuedBy = null,
+    ): string {
+        // Generate a cryptographically secure 64-char hex token for URL delivery.
+        $plain = bin2hex(random_bytes(32));
+
+        DB::transaction(function () use ($user, $plain, $expiresInDays, $issuedBy) {
+            // Invalidate any prior active invitation tokens for this user
+            $user->accountTokens()
+                ->where('type', AccountToken::TYPE_INVITATION)
+                ->whereNull('claimed_at')
+                ->delete();
+
+            $user->accountTokens()->create([
+                'type'       => AccountToken::TYPE_INVITATION,
+                'token'      => AccountToken::hashCode($plain),
+                'expires_at' => now()->addDays($expiresInDays),
+                'issued_by'  => $issuedBy?->id,
+            ]);
+
+            $user->update(['setup_required' => true]);
+        });
+
+        // Send invitation email (outside transaction — notification failure should not rollback)
+        $user->notify(new AdminInvitationNotification($plain, $expiresInDays));
+
+        return $plain;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findActiveInvitationToken(string $plainToken): ?AccountToken
+    {
+        // Query by HMAC hash directly — no linear scan
+        return AccountToken::where('token', AccountToken::hashCode($plainToken))
+            ->where('type', AccountToken::TYPE_INVITATION)
+            ->active()
+            ->first();
     }
 
     // ─── Internal ────────────────────────────────────────────────────────────────

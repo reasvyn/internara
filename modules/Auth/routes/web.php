@@ -33,6 +33,11 @@ Route::prefix('auth')->group(function () {
         ->middleware(['guest', 'throttle:6,1'])
         ->name('claim-account');
 
+    // Admin account invitation — email link flow for privileged accounts
+    Route::get('invitation/{token}', Modules\Auth\Livewire\AcceptInvitation::class)
+        ->middleware(['guest', 'throttle:10,1'])
+        ->name('invitation.accept');
+
     Route::get('register', Modules\Auth\Registration\Livewire\Register::class)
         ->middleware(['guest', 'throttle:registration'])
         ->name('register');

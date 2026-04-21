@@ -29,11 +29,13 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
         'admin.mentors',
     );
 
+    // User Directory (Admin + SuperAdmin)
+    Route::get('/admin/users', \Modules\User\Livewire\UserManager::class)->name(
+        'admin.users.index',
+    );
+
     // Admin Management (SuperAdmin Only)
     Route::middleware(['role:super-admin'])->group(function () {
-        Route::get('/admin/users', \Modules\User\Livewire\UserManager::class)->name(
-            'admin.users.index',
-        );
         Route::get('/admin/administrators', \Modules\Admin\Livewire\AdminManager::class)->name(
             'admin.administrators',
         );

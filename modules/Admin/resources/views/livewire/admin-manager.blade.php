@@ -44,7 +44,7 @@
                     </x-ui::dropdown>
                 </div>
 
-                <x-ui::button :label="__('user::ui.manager.add_admin')" icon="tabler.plus" variant="primary" wire:click="add" />
+                <x-ui::button :label="__('admin::ui.manager.add')" icon="tabler.plus" variant="primary" wire:click="add" />
             </div>
         </x-slot:actions>
     </x-ui::header>
@@ -75,6 +75,7 @@
                         ['key' => 'name', 'label' => __('user::ui.manager.table.name')],
                         ['key' => 'email', 'label' => __('user::ui.manager.table.email')],
                         ['key' => 'username', 'label' => __('user::ui.manager.table.username')],
+                        ['key' => 'invitation_status', 'label' => __('admin::ui.manager.invitation_status')],
                         ['key' => 'account_status', 'label' => __('user::ui.manager.table.status')],
                         ['key' => 'actions', 'label' => ''],
                     ]" 
@@ -88,6 +89,23 @@
                             <x-ui::avatar :image="$user->avatar_url" :title="$user->name" size="w-8" />
                             <div class="font-semibold">{{ $user->name }}</div>
                         </div>
+                    @endscope
+
+                    @scope('cell_invitation_status', $user)
+                        @php
+                            $invStatus = $user->invitation_status ?? 'not_invited';
+                            $invVariant = match($invStatus) {
+                                'accepted'    => 'success',
+                                'pending'     => 'warning',
+                                'expired'     => 'error',
+                                default       => 'secondary',
+                            };
+                        @endphp
+                        <x-ui::badge 
+                            :value="__('admin::ui.manager.invitation_statuses.' . $invStatus)" 
+                            :variant="$invVariant" 
+                            class="badge-sm" 
+                        />
                     @endscope
 
                     @scope('cell_account_status', $user)
@@ -104,7 +122,23 @@
                     @scope('actions', $user)
                         <div class="flex justify-end gap-2">
                             @if(!$user->hasRole('super-admin'))
-                                <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $user->id }}')" class="text-info btn-xs" tooltip="{{ __('user::ui.manager.edit_admin') }}" />
+                                <x-ui::button
+                                    icon="tabler.edit"
+                                    variant="tertiary"
+                                    wire:click="edit('{{ $user->id }}')"
+                                    class="text-info btn-xs"
+                                    tooltip="{{ __('user::ui.manager.edit_admin') }}"
+                                />
+                                @if($user->setup_required)
+                                    <x-ui::button
+                                        icon="tabler.mail-forward"
+                                        variant="tertiary"
+                                        wire:click="reinvite('{{ $user->id }}')"
+                                        spinner="reinvite('{{ $user->id }}')"
+                                        class="text-warning btn-xs"
+                                        tooltip="{{ __('admin::ui.manager.reinvite_action') }}"
+                                    />
+                                @endif
                                 <x-ui::button 
                                     icon="tabler.trash" 
                                     variant="tertiary" 
@@ -124,7 +158,7 @@
     </x-ui::card>
 
     {{-- Form Modal --}}
-    <x-ui::modal wire:model="formModal" :title="$form->id ? __('user::ui.manager.edit_admin') : __('user::ui.manager.add_admin')">
+    <x-ui::modal wire:model="formModal" :title="$form->id ? __('user::ui.manager.edit_admin') : __('admin::ui.manager.add')">
         <x-ui::form wire:submit="save">
             <x-ui::input :label="__('user::ui.manager.form.full_name')" icon="tabler.signature" wire:model="form.name" required />
             
@@ -135,13 +169,11 @@
                 @endif
             </div>
 
-            <x-ui::input 
-                :label="__('user::ui.manager.form.password')" 
-                icon="tabler.key"
-                type="password" 
-                wire:model="form.password" 
-                :placeholder="$form->id ? __('user::ui.manager.form.password_hint') : ''" 
-            />
+            @if(!$form->id)
+                <x-ui::alert type="info" icon="tabler.mail-bolt" class="text-sm">
+                    {{ __('admin::ui.manager.invitation_notice') }}
+                </x-ui::alert>
+            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-ui::input :label="__('user::ui.manager.form.phone')" icon="tabler.phone" wire:model="form.profile.phone" />
@@ -171,14 +203,20 @@
 
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
-                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
+                <x-ui::button
+                    :label="$form->id ? __('ui::common.save') : __('admin::ui.manager.invite_action')"
+                    icon="tabler.mail-bolt"
+                    type="submit"
+                    variant="primary"
+                    spinner="save"
+                />
             </x-slot:actions>
         </x-ui::form>
     </x-ui::modal>
 
     {{-- Confirm Delete Modal --}}
     <x-ui::modal wire:model="confirmModal" :title="__('user::ui.manager.delete.title')">
-        <p>{{ __('user::ui.manager.delete.message') }}</p>
+        <p>{{ __('admin::ui.manager.delete_confirm') }}</p>
         <x-slot:actions>
             <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
             <x-ui::button :label="__('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />

@@ -62,6 +62,25 @@ return [
         'view_detail' => 'Lihat Detail',
     ],
 
+    'manager' => [
+        'subtitle'           => 'Kelola akun administrator sistem. Hanya SuperAdmin yang dapat mengakses halaman ini.',
+        'add'                => 'Tambah Administrator',
+        'delete_confirm'     => 'Apakah Anda yakin ingin menghapus akun administrator ini?',
+        'invitation_status'  => 'Status Undangan',
+        'invite_action'      => 'Kirim Undangan',
+        'reinvite_action'    => 'Kirim Ulang Undangan',
+        'invited'            => 'Akun administrator dibuat dan undangan telah dikirim ke :email.',
+        'reinvited'          => 'Undangan berhasil dikirim ulang ke :email.',
+        'already_accepted'   => 'Administrator ini sudah menerima undangan mereka.',
+        'invitation_notice'  => 'Email undangan akan dikirim ke administrator ini. Mereka akan membuat kata sandi sendiri melalui tautan di email.',
+        'invitation_statuses' => [
+            'not_invited' => 'Belum Diundang',
+            'pending'     => 'Menunggu Penerimaan',
+            'accepted'    => 'Aktif',
+            'expired'     => 'Undangan Kedaluwarsa',
+        ],
+    ],
+
     'batch_onboarding' => [
         'title'                 => 'Onboarding Massal',
         'subtitle'              => 'Import siswa, guru, atau mentor secara massal via CSV.',

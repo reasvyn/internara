@@ -30,6 +30,13 @@ class AccountToken extends Model
      */
     public const TYPE_CREDENTIAL_RESET = 'credential_reset';
 
+    /**
+     * Token type for email-delivered invitation to privileged accounts (Admin).
+     * Unlike activation codes (short, printed), invitation tokens are long
+     * hex strings delivered via email link and looked up by HMAC hash directly.
+     */
+    public const TYPE_INVITATION = 'invitation';
+
     protected $fillable = [
         'user_id',
         'type',

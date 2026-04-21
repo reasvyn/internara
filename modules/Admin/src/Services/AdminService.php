@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Modules\Admin\Services\Contracts\AdminService as Contract;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
 use Modules\User\Models\User;
-use Modules\User\Notifications\WelcomeUserNotification;
+use Modules\User\Services\Contracts\AccountProvisioningService;
 
 /**
  * Orchestrator for Administrative users.
@@ -25,6 +26,7 @@ class AdminService extends EloquentQuery implements Contract
     public function __construct(
         User $model,
         protected ProfileService $profileService,
+        protected AccountProvisioningService $provisioning,
     ) {
         $this->setModel($model);
         $this->setSearchable(['name', 'email', 'username']);
@@ -47,6 +49,10 @@ class AdminService extends EloquentQuery implements Contract
             $profileData = Arr::only($data['profile'] ?? [], ['phone', 'address', 'gender']);
             unset($data['profile'], $data['status'], $data['roles']);
 
+            // Admin accounts are provisioned via invitation — never let the admin set the password.
+            // Generate a cryptographically strong placeholder that nobody knows.
+            $data['password'] = Str::password(32);
+
             if (setting('app_installed', false) && ! $this->skipAuthorization) {
                 Gate::authorize('create', [User::class, [Role::ADMIN->value]]);
             }
@@ -55,7 +61,7 @@ class AdminService extends EloquentQuery implements Contract
             $user = $this->withoutAuthorization()->parentCreate($data);
             $user->assignRole(Role::ADMIN->value);
             $user->setStatus($status);
-            $user->markEmailAsVerified();
+            // Email verification happens when invitation is accepted (inbox proof)
 
             if ($profileData !== []) {
                 $profileService = (! setting('app_installed', false) || $this->skipAuthorization || auth()->guest())
@@ -65,10 +71,23 @@ class AdminService extends EloquentQuery implements Contract
             }
 
             $this->skipAuthorization = false;
-            $user->notify(new WelcomeUserNotification());
 
             return $user->load(['roles:id,name', 'profile', 'statuses']);
         });
+    }
+
+    /**
+     * Send (or resend) an invitation email to an Admin account.
+     *
+     * Can only be called while the account is unclaimed (setup_required = true).
+     */
+    public function invite(User $admin, ?User $issuedBy = null, int $expiresInDays = 7): void
+    {
+        if (! $admin->requiresSetup()) {
+            throw new \RuntimeException('Cannot reinvite an admin who has already claimed their account.');
+        }
+
+        $this->provisioning->invite($admin, $expiresInDays, $issuedBy);
     }
 
     public function update(mixed $id, array $data): User

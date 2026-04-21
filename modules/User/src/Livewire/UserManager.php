@@ -7,44 +7,27 @@ namespace Modules\User\Livewire;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Modules\Department\Models\Department;
 use Modules\Permission\Enums\Role;
-use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\UI\Livewire\RecordManager;
-use Modules\User\Livewire\Forms\UserManagerForm;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
 /**
  * Class UserManager
  *
- * Provides a unified interface for managing system users, supporting role-based filtering
- * and standard CRUD operations via the RecordManager abstraction.
+ * General-purpose user viewer for SuperAdmins and Admins.
+ *
+ * Access control:
+ * - SuperAdmin: can see all users + limited actions (suspend/delete).
+ * - Admin: read-only view of users with role ≤ Admin plus role-less users
+ *   (so orphaned/unauthorised accounts are visible for detection).
+ *
+ * Creation and full management happen in specialised managers
+ * (StudentManager, TeacherManager, MentorManager, AdminManager).
  */
 class UserManager extends RecordManager
 {
-    use HasDepartmentOptions;
-
-    /**
-     * Operational roles managed by this manager.
-     *
-     * @var list<string>
-     */
-    private const MANAGED_ROLES = [
-        Role::STUDENT->value,
-        Role::TEACHER->value,
-        Role::MENTOR->value,
-    ];
-
-    public UserManagerForm $form;
-
-    /**
-     * The specific role being managed (optional).
-     */
-    public ?string $targetRole = null;
-
     /**
      * Initialize the component metadata and services.
      */
@@ -60,20 +43,13 @@ class UserManager extends RecordManager
      */
     public function initialize(): void
     {
-        $roleKey = $this->targetRole ?: 'user';
-        $this->title = $this->targetRole
-            ? __("user::ui.{$roleKey}_management")
-            : __('user::ui.manager.title');
-        $this->subtitle = __('user::ui.manager.subtitle');
-        $this->context = 'admin::ui.menu.users';
-        $this->addLabel = __('user::ui.manager.add_'.$roleKey);
-        $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
+        $this->title    = __('user::ui.viewer.title');
+        $this->subtitle = __('user::ui.viewer.subtitle');
+        $this->context  = 'admin::ui.menu.users';
 
-        $this->viewPermission = 'user.view';
-        $this->createPermission = 'user.manage';
-        $this->updatePermission = 'user.manage';
+        // SuperAdmin can delete; Admin is read-only
+        $this->viewPermission   = 'user.view';
         $this->deletePermission = 'user.manage';
-        $this->importInstructions = __('user::ui.manager.import.instructions');
     }
 
     /**
@@ -83,56 +59,53 @@ class UserManager extends RecordManager
     {
         return [
             [
-                'key' => 'name',
-                'label' => __('user::ui.manager.table.name'),
+                'key'      => 'name',
+                'label'    => __('user::ui.manager.table.name'),
                 'sortable' => true,
-                'format' => fn (User $user): HtmlString => $this->renderNameCell($user),
+                'format'   => fn (User $user): HtmlString => $this->renderNameCell($user),
             ],
-            ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
+            ['key' => 'email',    'label' => __('user::ui.manager.table.email'),    'sortable' => true],
+            ['key' => 'username', 'label' => __('user::ui.manager.table.username'), 'sortable' => true],
             [
-                'key' => 'username',
-                'label' => __('user::ui.manager.table.username'),
-                'sortable' => true,
-            ],
-            [
-                'key' => 'role_labels',
-                'label' => __('user::ui.manager.table.roles'),
+                'key'    => 'role_labels',
+                'label'  => __('user::ui.manager.table.roles'),
                 'format' => fn (User $user): HtmlString => $this->renderRoleBadgesCell($user),
             ],
             [
-                'key' => 'display_status',
-                'label' => __('user::ui.manager.table.status'),
+                'key'    => 'display_status',
+                'label'  => __('user::ui.manager.table.status'),
                 'format' => fn (User $user): HtmlString => $this->renderStatusBadgeCell($user),
             ],
             [
-                'key' => 'actions',
-                'label' => '',
-                'class' => 'w-1 text-right',
+                'key'    => 'actions',
+                'label'  => '',
+                'class'  => 'w-1 text-right',
                 'format' => fn (User $user): HtmlString => $this->renderActionsCell($user),
             ],
         ];
     }
 
     /**
-     * Customize the query to include roles and profiles.
+     * Paginate visible users, annotated with computed display fields.
      */
     #[\Livewire\Attributes\Computed]
     public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
         $appliedFilters = array_filter(
             array_merge($this->filters, [
-                'search' => $this->search,
-                'sort_by' => $this->sortBy['column'] ?? 'created_at',
+                'search'   => $this->search,
+                'sort_by'  => $this->sortBy['column'] ?? 'created_at',
                 'sort_dir' => $this->sortBy['direction'] ?? 'desc',
             ]),
-            fn ($value) => $value !== null && $value !== '' && $value !== [],
+            fn ($v) => $v !== null && $v !== '' && $v !== [],
         );
 
-        return $this->managedUserQuery($appliedFilters)
-            ->with(['roles:id,name', 'profile.department', 'statuses'])
+        return $this->userQuery($appliedFilters)
+            ->with(['roles:id,name', 'profile', 'statuses'])
             ->paginate($this->perPage)
             ->through(function (User $user): User {
                 $roleNames = $user->roles->pluck('name')->values()->all();
+
                 $displayStatus = $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])
                     ? 'verified'
                     : ($user->latestStatus()?->name ?? User::STATUS_ACTIVE);
@@ -145,16 +118,18 @@ class UserManager extends RecordManager
     }
 
     /**
-     * Remove all selected users with safety checks.
+     * SuperAdmin-only: bulk delete selected users.
      */
     public function removeSelected(): void
     {
+        $this->abortUnlessSuperAdmin();
+
         if (empty($this->selectedIds)) {
             return;
         }
 
         try {
-            $targets = $this->managedUserQuery()
+            $targets = $this->userQuery()
                 ->whereIn('id', $this->selectedIds)
                 ->get()
                 ->reject(fn ($u) => $u->hasRole('super-admin'))
@@ -169,19 +144,9 @@ class UserManager extends RecordManager
         }
     }
 
-    public function sendPasswordResetLink(mixed $id): void
-    {
-        try {
-            $this->service->sendPasswordResetLink($id);
-            flash()->success(__('auth::ui.forgot_password.sent'));
-        } catch (\Throwable $e) {
-            flash()->error($e->getMessage());
-        }
-    }
-
     public function resetFilters(): void
     {
-        $this->filters = [];
+        $this->filters    = [];
         $this->selectedIds = [];
         $this->resetPage();
     }
@@ -190,175 +155,118 @@ class UserManager extends RecordManager
     {
         return count(array_filter(
             $this->filters,
-            fn ($value) => $value !== null && $value !== '' && $value !== [],
+            fn ($v) => $v !== null && $v !== '' && $v !== [],
         ));
     }
 
-    public function save(): void
+    // ─── Rendering helpers ────────────────────────────────────────────────────
+
+    protected function renderNameCell(User $user): HtmlString
     {
-        $this->form->validate();
-        $payload = Arr::except($this->form->all(), ['password', 'password_confirmation']);
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        return new HtmlString(view('user::livewire.partials.user-manager-name-cell', [
+            'user' => $user,
+        ])->render());
+    }
 
-        try {
-            if ($isSetupAuthorized) {
-                $this->service->withoutAuthorization();
-            }
+    protected function renderRoleBadgesCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-role-badges', [
+            'user'    => $user,
+            'manager' => $this,
+        ])->render());
+    }
 
-            if ($this->form->id) {
-                $record = $this->service->find($this->form->id);
-                if (! $isSetupAuthorized && $record && $this->updatePermission) {
-                    \Illuminate\Support\Facades\Gate::authorize($this->updatePermission, $record);
-                }
-                $this->service->update($this->form->id, $payload);
-            } else {
-                if (! $isSetupAuthorized && $this->createPermission) {
-                    $roles = $this->form->roles;
-                    $authModel = $this->modelClass ?: config('auth.providers.users.model');
-                    \Illuminate\Support\Facades\Gate::authorize($this->createPermission, [$authModel, $roles]);
-                }
-                $this->service->create($payload);
-            }
+    protected function renderStatusBadgeCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-status-badge', [
+            'user'    => $user,
+            'manager' => $this,
+        ])->render());
+    }
 
-            $this->toggleModal(self::MODAL_FORM, false);
-            flash()->success('shared::messages.record_saved');
-            $this->dispatch($this->getEventPrefix().':saved', exists: true);
-        } catch (\Throwable $e) {
-            if (is_debug_mode()) {
-                throw $e;
-            }
+    protected function renderActionsCell(User $user): HtmlString
+    {
+        return new HtmlString(view('user::livewire.partials.user-manager-viewer-actions', [
+            'user'         => $user,
+            'isSuperAdmin' => auth()->user()?->hasRole(Role::SUPER_ADMIN->value),
+        ])->render());
+    }
 
-            flash()->error($e->getMessage());
-        }
+    public function roleBadgeVariant(string $role): string
+    {
+        return match ($role) {
+            Role::STUDENT->value    => 'primary',
+            Role::TEACHER->value    => 'info',
+            Role::MENTOR->value     => 'success',
+            Role::ADMIN->value      => 'warning',
+            Role::SUPER_ADMIN->value => 'error',
+            default                 => 'secondary',
+        };
+    }
+
+    public function statusBadgeVariant(string $status): string
+    {
+        return match ($status) {
+            User::STATUS_ACTIVE   => 'success',
+            'verified'            => 'info',
+            User::STATUS_PENDING  => 'warning',
+            User::STATUS_INACTIVE => 'error',
+            default               => 'secondary',
+        };
     }
 
     /**
-     * Prepare form for a new user, pre-assigning target role if applicable.
+     * Render the component view.
      */
-    public function add(): void
+    public function render(): View
     {
-        $this->form->reset();
-
-        if ($this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)) {
-            $this->form->roles = [$this->targetRole];
-        }
-
-        $this->toggleModal(self::MODAL_FORM, true);
+        return view('user::livewire.user-manager')
+            ->layout('ui::components.layouts.dashboard', [
+                'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
+            ]);
     }
 
-    protected function getExportHeaders(): array
+    // ─── Query ───────────────────────────────────────────────────────────────
+
+    protected function userQuery(array $filters = []): Builder
     {
-        return [
-            'name' => __('user::ui.manager.table.name'),
-            'email' => __('user::ui.manager.table.email'),
-            'username' => __('user::ui.manager.table.username'),
-            'roles' => __('user::ui.manager.import.columns.roles'),
-            'status' => __('user::ui.manager.table.status'),
-            'department_name' => __('user::ui.manager.import.columns.department_name'),
-            'phone' => __('user::ui.manager.form.phone'),
-            'address' => __('user::ui.manager.form.address'),
-            'gender' => __('user::ui.manager.form.gender'),
-            'national_identifier' => __('user::ui.manager.import.columns.national_identifier'),
-            'registration_number' => __('user::ui.manager.import.columns.registration_number'),
-        ];
-    }
-
-    protected function getTemplateHeaders(): array
-    {
-        return $this->getExportHeaders();
-    }
-
-    protected function getExportQuery(): Builder
-    {
-        return $this->managedUserQuery()->with(['roles:id,name', 'profile.department', 'statuses']);
-    }
-
-    protected function mapRecordForExport($record, array $keys): array
-    {
-        $roles = $record->roles->pluck('name')->intersect(self::MANAGED_ROLES)->values()->implode(', ');
-        $profile = $record->profile;
-
-        return [
-            $record->name,
-            $record->email,
-            $record->username,
-            $roles,
-            $record->latestStatus()?->name ?? User::STATUS_ACTIVE,
-            $profile?->department?->name ?? '',
-            $profile?->phone ?? '',
-            $profile?->address ?? '',
-            $profile?->gender ?? '',
-            $profile?->national_identifier ?? '',
-            $profile?->registration_number ?? '',
-        ];
-    }
-
-    protected function mapImportRow(array $row, array $keys): ?array
-    {
-        $data = [];
-        foreach ($keys as $index => $key) {
-            $value = $row[$index] ?? null;
-            $data[$key] = is_string($value) ? trim($value) : $value;
-        }
-
-        if (blank(implode('', array_filter($data, fn ($value) => $value !== null)))) {
-            return null;
-        }
-
-        $roles = $this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)
-            ? [$this->targetRole]
-            : $this->normalizeRoles($data['roles'] ?? null);
-
-        if ($roles === []) {
-            $roles = [Role::STUDENT->value];
-        }
-
-        $status = Str::lower((string) ($data['status'] ?? 'pending'));
-        if (! in_array($status, ['active', 'inactive', 'pending'], true)) {
-            $status = 'pending';
-        }
-
-        return [
-            'name' => $data['name'] ?? null,
-            'email' => $data['email'] ?? null,
-            'username' => $data['username'] ?? null,
-            'roles' => $roles,
-            'status' => $status,
-            'profile' => array_filter([
-                'department_id' => $this->resolveDepartmentId($data['department_name'] ?? null),
-                'phone' => $data['phone'] ?? null,
-                'address' => $data['address'] ?? null,
-                'gender' => $this->normalizeGender($data['gender'] ?? null),
-                'national_identifier' => $data['national_identifier'] ?? null,
-                'registration_number' => $data['registration_number'] ?? null,
-            ], fn ($value) => $value !== null && $value !== ''),
-        ];
-    }
-
-    /**
-     * Build the operational user query and exclude privileged accounts.
-     */
-    protected function managedUserQuery(array $filters = []): Builder
-    {
-        $selectedRole = $filters['role'] ?? null;
+        $selectedRole   = $filters['role'] ?? null;
         $selectedStatus = $filters['status'] ?? null;
-        $createdFrom = $filters['created_from'] ?? null;
-        $createdTo = $filters['created_to'] ?? null;
+        $createdFrom    = $filters['created_from'] ?? null;
+        $createdTo      = $filters['created_to'] ?? null;
 
-        $roles = $this->targetRole && in_array($this->targetRole, self::MANAGED_ROLES, true)
-            ? [$this->targetRole]
-            : self::MANAGED_ROLES;
+        $query = $this->service->query(
+            Arr::except($filters, ['role', 'status', 'created_from', 'created_to'])
+        );
 
-        $query = $this->service
-            ->query(Arr::except($filters, ['role', 'status', 'created_from', 'created_to']))
-            ->whereHas('roles', fn (Builder $query): Builder => $query->whereIn('name', $roles))
-            ->whereDoesntHave('roles', fn (Builder $query): Builder => $query->whereIn('name', [
+        $viewer = auth()->user();
+
+        if ($viewer && ! $viewer->hasRole(Role::SUPER_ADMIN->value)) {
+            // Admin: show only users with subordinate roles OR no roles at all.
+            // SuperAdmin and Admin accounts are hidden from Admin viewers.
+            $subordinateRoles = [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value];
+
+            $query->where(function (Builder $q) use ($subordinateRoles): void {
+                $q->whereHas('roles', fn (Builder $r) => $r->whereIn('name', $subordinateRoles))
+                  ->orWhereDoesntHave('roles');
+            })
+            ->whereDoesntHave('roles', fn (Builder $r) => $r->whereIn('name', [
                 Role::SUPER_ADMIN->value,
                 Role::ADMIN->value,
             ]));
+        }
 
-        if (! $this->targetRole && in_array($selectedRole, self::MANAGED_ROLES, true)) {
-            $query->whereHas('roles', fn (Builder $roleQuery): Builder => $roleQuery->where('name', $selectedRole));
+        // Optional role filter (only effective roles visible to the viewer)
+        $filterableRoles = $viewer?->hasRole(Role::SUPER_ADMIN->value)
+            ? array_column(Role::cases(), 'value')
+            : [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value];
+
+        if ($selectedRole && in_array($selectedRole, $filterableRoles, true)) {
+            if ($selectedRole === 'no_role') {
+                $query->whereDoesntHave('roles');
+            } else {
+                $query->whereHas('roles', fn (Builder $r) => $r->where('name', $selectedRole));
+            }
         }
 
         if (in_array($selectedStatus, [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING], true)) {
@@ -379,124 +287,29 @@ class UserManager extends RecordManager
     protected function applyLatestStatusFilter(Builder $query, string $status): void
     {
         $statusTable = app(config('model-status.status_model'))->getTable();
-        $userTable = (new User)->getTable();
+        $userTable   = (new User)->getTable();
 
-        $query->whereExists(function ($statusQuery) use ($status, $statusTable, $userTable): void {
-            $statusQuery
-                ->selectRaw('1')
+        $query->whereExists(function ($sub) use ($status, $statusTable, $userTable): void {
+            $sub->selectRaw('1')
                 ->from($statusTable.' as latest_status')
                 ->whereColumn('latest_status.model_id', $userTable.'.id')
                 ->where('latest_status.model_type', User::class)
                 ->where('latest_status.name', $status)
                 ->whereRaw(
-                    'latest_status.created_at = (select max(status_history.created_at) from '.$statusTable.' as status_history where status_history.model_type = ? and status_history.model_id = '.$userTable.'.id)',
+                    'latest_status.created_at = (select max(s2.created_at) from '.$statusTable.' as s2 where s2.model_type = ? and s2.model_id = '.$userTable.'.id)',
                     [User::class],
                 );
         });
     }
 
-    protected function renderNameCell(User $user): HtmlString
+    // ─── Guards ──────────────────────────────────────────────────────────────
+
+    private function abortUnlessSuperAdmin(): void
     {
-        return new HtmlString(view('user::livewire.partials.user-manager-name-cell', [
-            'user' => $user,
-        ])->render());
-    }
-
-    protected function renderRoleBadgesCell(User $user): HtmlString
-    {
-        return new HtmlString(view('user::livewire.partials.user-manager-role-badges', [
-            'user' => $user,
-            'manager' => $this,
-        ])->render());
-    }
-
-    protected function renderStatusBadgeCell(User $user): HtmlString
-    {
-        return new HtmlString(view('user::livewire.partials.user-manager-status-badge', [
-            'user' => $user,
-            'manager' => $this,
-        ])->render());
-    }
-
-    protected function renderActionsCell(User $user): HtmlString
-    {
-        return new HtmlString(view('user::livewire.partials.user-manager-actions', [
-            'user' => $user,
-            'roleKey' => $this->targetRole ?: 'user',
-        ])->render());
-    }
-
-    public function roleBadgeVariant(string $role): string
-    {
-        return match ($role) {
-            Role::STUDENT->value => 'primary',
-            Role::TEACHER->value => 'info',
-            Role::MENTOR->value => 'success',
-            Role::ADMIN->value => 'warning',
-            Role::SUPER_ADMIN->value => 'error',
-            default => 'secondary',
-        };
-    }
-
-    public function statusBadgeVariant(string $status): string
-    {
-        return match ($status) {
-            User::STATUS_ACTIVE => 'success',
-            'verified' => 'info',
-            User::STATUS_PENDING => 'warning',
-            User::STATUS_INACTIVE => 'error',
-            default => 'secondary',
-        };
-    }
-
-    /**
-     * Normalize imported role labels into operational system roles.
-     *
-     * @return list<string>
-     */
-    protected function normalizeRoles(?string $rawRoles): array
-    {
-        return collect(explode(',', (string) $rawRoles))
-            ->map(fn (string $role): string => Str::lower(trim($role)))
-            ->filter()
-            ->intersect(self::MANAGED_ROLES)
-            ->values()
-            ->all();
-    }
-
-    protected function normalizeGender(?string $gender): ?string
-    {
-        $normalized = Str::lower(trim((string) $gender));
-
-        return in_array($normalized, ['male', 'female'], true) ? $normalized : null;
-    }
-
-    protected function resolveDepartmentId(?string $departmentName): ?string
-    {
-        $name = trim((string) $departmentName);
-        if ($name === '') {
-            return null;
-        }
-
-        /** @var Department|null $department */
-        $department = Department::query()
-            ->whereRaw('LOWER(name) = ?', [Str::lower($name)])
-            ->first();
-
-        return $department?->id;
-    }
-
-    /**
-     * Render the component view.
-     */
-    public function render(): View
-    {
-        $roleKey = $this->targetRole ?: 'user';
-
-        return view('user::livewire.user-manager', [
-            'roleKey' => $roleKey,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
-        ]);
+        abort_unless(
+            auth()->user()?->hasRole(Role::SUPER_ADMIN->value),
+            403,
+            __('user::exceptions.super_admin_unauthorized'),
+        );
     }
 }
