@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
+use Modules\Permission\Enums\Role;
 use Modules\Student\Livewire\StudentManager;
 use Modules\User\Models\User;
 
@@ -21,6 +22,7 @@ beforeEach(function () {
 describe('StudentManager Component', function () {
     test('it renders correctly for authorized users', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('student.manage');
         $this->actingAs($admin);
 
@@ -39,6 +41,7 @@ describe('StudentManager Component', function () {
 
     test('it can create a student user', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('student.manage');
         $this->actingAs($admin);
 
@@ -47,10 +50,7 @@ describe('StudentManager Component', function () {
             ->set('form.name', 'New Student')
             ->set('form.email', 'new.student@internara.test')
             ->set('form.username', 'newstudent123')
-            ->set('form.roles', ['student'])
-            ->set('form.status', 'active')
-            ->set('form.password', 'Password123!')
-            ->set('form.password_confirmation', 'Password123!')
+            ->set('form.status', 'pending')
             ->call('save')
             ->assertHasNoErrors()
             ->assertSet('formModal', false);
@@ -61,6 +61,7 @@ describe('StudentManager Component', function () {
 
     test('it can edit an existing student user', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('student.manage');
         $this->actingAs($admin);
 
@@ -80,20 +81,19 @@ describe('StudentManager Component', function () {
         expect($student->fresh()->name)->toBe('Updated Student Name');
     });
 
-    test('it can generate a random password', function () {
-        $admin = User::factory()->create();
-        $admin->givePermissionTo('student.manage');
-        $this->actingAs($admin);
+    test('it forbids non-admin roles even if they somehow receive student manage permission', function () {
+        $teacher = User::factory()->create();
+        $teacher->assignRole(Role::TEACHER->value);
+        $teacher->givePermissionTo('student.manage');
+        $this->actingAs($teacher);
 
         Livewire::test(StudentManager::class)
-            ->call('add')
-            ->assertSet('form.password', '')
-            ->call('generatePassword')
-            ->assertNotSet('form.password', '');
+            ->assertForbidden();
     });
 
     test('it validates form inputs', function () {
         $admin = User::factory()->create();
+        $admin->assignRole(Role::ADMIN->value);
         $admin->givePermissionTo('student.manage');
         $this->actingAs($admin);
 

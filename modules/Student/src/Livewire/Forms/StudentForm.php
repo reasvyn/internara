@@ -22,7 +22,7 @@ class StudentForm extends Form
 
     public string $password_confirmation = '';
 
-    public string $status = User::STATUS_ACTIVE;
+    public string $status = User::STATUS_PENDING;
 
     /**
      * @var array<string, string>
@@ -37,22 +37,13 @@ class StudentForm extends Form
         'blood_type' => '',
     ];
 
-    public function generatePassword(): void
-    {
-        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $password = substr(str_shuffle($characters), 0, 12);
-
-        $this->password = $password;
-        $this->password_confirmation = $password;
-    }
-
     public function fillFromUser(User $user): void
     {
         $this->id = $user->id;
         $this->name = $user->name;
         $this->email = $user->email;
         $this->username = $user->username;
-        $this->status = $user->latestStatus()?->name ?? User::STATUS_ACTIVE;
+        $this->status = $user->latestStatus()?->name ?? User::STATUS_PENDING;
         $this->password = '';
         $this->password_confirmation = '';
         $this->profile = [
@@ -73,9 +64,7 @@ class StudentForm extends Form
             'email' => ['required', 'email', 'unique:users,email,'.$this->id],
             'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
-            'password' => $this->id
-                ? ['nullable', 'string', 'confirmed', Password::auto()]
-                : ['required', 'string', 'confirmed', Password::auto()],
+            'password' => ['nullable', 'string', 'confirmed', Password::auto()],
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],
             'profile.department_id' => ['nullable', 'uuid', 'exists:departments,id'],

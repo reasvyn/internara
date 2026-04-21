@@ -25,4 +25,28 @@ return [
         ],
         'quick_links' => 'Tautan Cepat',
     ],
+    'manager' => [
+        'table' => [
+            'department' => 'Jurusan',
+            'registration_number' => 'Nomor Registrasi',
+        ],
+        'filters' => [
+            'all_departments' => 'Semua Jurusan',
+        ],
+        'bulk' => [
+            'send_setup_links' => 'Kirim tautan setup terpilih',
+            'activate_selected' => 'Aktifkan terpilih',
+            'archive_selected' => 'Arsipkan terpilih',
+        ],
+        'messages' => [
+            'links_sent' => ':count tautan setup siswa berhasil dikirim.',
+            'activated' => ':count akun siswa berhasil diaktifkan.',
+            'archived' => ':count akun siswa berhasil diarsipkan.',
+        ],
+        'form' => [
+            'password_setup_notice' => 'Akun siswa tidak dikelola dengan kata sandi yang diketahui admin. Simpan data siswa lalu kirim tautan setup akses secara aman.',
+            'password_reset_notice' => 'Gunakan aksi kirim tautan setup dari tabel untuk mereset akses siswa dengan aman tanpa melihat kata sandinya.',
+            'archive_hint' => 'Untuk pengarsipan tahunan, gunakan status Nonaktif agar riwayat siswa tetap tersimpan.',
+        ],
+    ],
 ];

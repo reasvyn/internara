@@ -12,5 +12,8 @@ use Modules\User\Models\User;
  */
 interface StudentService extends EloquentQuery
 {
-    //
+    /**
+     * Send a password setup/reset link to a managed student.
+     */
+    public function sendPasswordResetLink(mixed $id): void;
 }

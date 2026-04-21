@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
@@ -28,8 +31,15 @@ class StudentService extends EloquentQuery implements Contract
         protected ProfileService $profileService,
     ) {
         $this->setModel($model);
-        $this->setSearchable(['name', 'email', 'username', 'profile.national_identifier']);
-        $this->setSortable(['name', 'email', 'created_at']);
+        $this->setSearchable([
+            'name',
+            'email',
+            'username',
+            'profile.national_identifier',
+            'profile.registration_number',
+            'profile.department.name',
+        ]);
+        $this->setSortable(['name', 'email', 'username', 'created_at']);
     }
 
     /**
@@ -50,9 +60,13 @@ class StudentService extends EloquentQuery implements Contract
     public function create(array $data): User
     {
         return DB::transaction(function () use ($data): User {
-            $status = $data['status'] ?? User::STATUS_ACTIVE;
+            $status = $data['status'] ?? User::STATUS_PENDING;
             $profileData = $data['profile'] ?? [];
             unset($data['profile'], $data['status']);
+
+            $data['password'] = filled($data['password'] ?? null)
+                ? $data['password']
+                : Str::password(32);
 
             if (setting('app_installed', false) && ! $this->skipAuthorization) {
                 Gate::authorize('create', [User::class, [Role::STUDENT->value]]);
@@ -148,6 +162,23 @@ class StudentService extends EloquentQuery implements Contract
             fn (int $count, User $student): int => $count + (($force ? $student->forceDelete() : $student->delete()) ? 1 : 0),
             0,
         );
+    }
+
+    public function sendPasswordResetLink(mixed $id): void
+    {
+        /** @var User|null $student */
+        $student = $this->find($id);
+
+        if (! $student) {
+            throw new RecordNotFoundException(replace: ['record' => 'Student', 'id' => $id]);
+        }
+
+        if (! $this->skipAuthorization) {
+            Gate::authorize('update', $student);
+        }
+
+        Password::sendResetLink(['email' => $student->email]);
+        $this->skipAuthorization = false;
     }
 
     protected function parentCreate(array $data): User
