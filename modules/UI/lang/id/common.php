@@ -58,4 +58,10 @@ return [
     'avatar' => 'Avatar',
     'avatar_hint' => 'Disarankan: Gambar persegi, maks 1MB.',
     'generate' => 'Buat Otomatis',
+
+    'setup_required' => [
+        'title'       => 'Tindakan Diperlukan: Lengkapi Pengaturan Akun Anda',
+        'description' => 'Akun Anda dibuat oleh administrator. Harap buat kata sandi pribadi untuk mengamankan akun Anda.',
+        'action'      => 'Buat Kata Sandi',
+    ],
 ];

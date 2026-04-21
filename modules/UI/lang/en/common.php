@@ -58,4 +58,10 @@ return [
     'avatar' => 'Avatar',
     'avatar_hint' => 'Recommended: Square image, max 1MB.',
     'generate' => 'Generate',
+
+    'setup_required' => [
+        'title'       => 'Action Required: Complete Your Account Setup',
+        'description' => 'Your account was provisioned by an administrator. Please set a personal password to secure your account.',
+        'action'      => 'Set Password',
+    ],
 ];
