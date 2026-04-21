@@ -1,56 +1,68 @@
 <x-ui::record-manager>
     <x-slot:filters>
-        <div class="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
-            @if(!$targetRole)
-                <x-ui::select
-                    :label="__('user::ui.manager.filters.role')"
-                    icon="tabler.shield"
-                    wire:model.live="filters.role"
-                    :options="[
-                        ['id' => 'student', 'name' => __('permission::roles.student')],
-                        ['id' => 'teacher', 'name' => __('permission::roles.teacher')],
-                        ['id' => 'mentor', 'name' => __('permission::roles.mentor')],
-                    ]"
-                    :placeholder="__('user::ui.manager.filters.all_roles')"
-                />
-            @endif
+        <x-ui::dropdown :close-on-content-click="false" right>
+            <x-slot:trigger>
+                <x-ui::button icon="tabler.filter" variant="secondary" class="gap-2">
+                    <span>{{ __('user::ui.manager.filters.open') }}</span>
+                    @if($this->activeFilterCount() > 0)
+                        <x-ui::badge :value="$this->activeFilterCount()" variant="info" class="badge-sm" />
+                    @endif
+                </x-ui::button>
+            </x-slot:trigger>
 
-            <x-ui::select
-                :label="__('user::ui.manager.filters.status')"
-                icon="tabler.circle-check"
-                wire:model.live="filters.status"
-                :options="[
-                    ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
-                    ['id' => 'pending', 'name' => __('user::ui.manager.form.pending')],
-                    ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
-                ]"
-                :placeholder="__('user::ui.manager.filters.all_statuses')"
-            />
+            <div class="w-[min(92vw,30rem)] space-y-4 p-2">
+                <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    @if(!$targetRole)
+                        <x-ui::select
+                            :label="__('user::ui.manager.filters.role')"
+                            icon="tabler.shield"
+                            wire:model.live="filters.role"
+                            :options="[
+                                ['id' => 'student', 'name' => __('permission::roles.student')],
+                                ['id' => 'teacher', 'name' => __('permission::roles.teacher')],
+                                ['id' => 'mentor', 'name' => __('permission::roles.mentor')],
+                            ]"
+                            :placeholder="__('user::ui.manager.filters.all_roles')"
+                        />
+                    @endif
 
-            <x-ui::input
-                :label="__('user::ui.manager.filters.created_from')"
-                icon="tabler.calendar-down"
-                type="date"
-                wire:model.live="filters.created_from"
-            />
+                    <x-ui::select
+                        :label="__('user::ui.manager.filters.status')"
+                        icon="tabler.circle-check"
+                        wire:model.live="filters.status"
+                        :options="[
+                            ['id' => 'active', 'name' => __('user::ui.manager.form.active')],
+                            ['id' => 'pending', 'name' => __('user::ui.manager.form.pending')],
+                            ['id' => 'inactive', 'name' => __('user::ui.manager.form.inactive')],
+                        ]"
+                        :placeholder="__('user::ui.manager.filters.all_statuses')"
+                    />
 
-            <x-ui::input
-                :label="__('user::ui.manager.filters.created_to')"
-                icon="tabler.calendar-up"
-                type="date"
-                wire:model.live="filters.created_to"
-            />
+                    <x-ui::input
+                        :label="__('user::ui.manager.filters.created_from')"
+                        icon="tabler.calendar-down"
+                        type="date"
+                        wire:model.live="filters.created_from"
+                    />
 
-            <div class="flex items-end">
-                <x-ui::button
-                    :label="__('user::ui.manager.filters.reset')"
-                    icon="tabler.filter-off"
-                    variant="secondary"
-                    wire:click="resetFilters"
-                    class="w-full"
-                />
+                    <x-ui::input
+                        :label="__('user::ui.manager.filters.created_to')"
+                        icon="tabler.calendar-up"
+                        type="date"
+                        wire:model.live="filters.created_to"
+                    />
+                </div>
+
+                <div class="flex justify-end">
+                    <x-ui::button
+                        :label="__('user::ui.manager.filters.reset')"
+                        icon="tabler.filter-off"
+                        variant="secondary"
+                        wire:click="resetFilters"
+                    />
+                </div>
             </div>
-        </div>
+        </x-ui::dropdown>
     </x-slot:filters>
 
     {{-- Custom Table Cells --}}

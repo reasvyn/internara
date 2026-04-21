@@ -31,6 +31,7 @@ return [
             'status' => 'Status',
         ],
         'filters' => [
+            'open' => 'Filter',
             'role' => 'Peran',
             'status' => 'Status',
             'created_from' => 'Dibuat Dari',
