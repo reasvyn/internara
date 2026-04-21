@@ -167,3 +167,10 @@ html.fl-dark .fl-emerald {
 .drawer {
     z-index: 40 !important;
 }
+
+/* Keep shared dropdowns and choices panels above cards, sticky sections, and table wrappers */
+details.dropdown > ul.menu,
+.dropdown > .dropdown-content,
+[wire\:key^='options-list-'] {
+    z-index: 1000 !important;
+}

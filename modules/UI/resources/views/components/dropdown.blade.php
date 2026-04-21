@@ -19,7 +19,7 @@
 @endphp
 
 <x-mary-dropdown 
-    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-50', 'pointer-events-none opacity-50' => $isDisabled]) }}
+    {{ $attributes->class([$variantClasses, 'min-h-[2.75rem] relative z-[1000]', 'pointer-events-none opacity-50' => $isDisabled]) }}
     :right="$right"
 >
     @isset($trigger)
