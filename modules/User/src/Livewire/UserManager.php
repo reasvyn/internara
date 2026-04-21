@@ -379,10 +379,10 @@ class UserManager extends RecordManager
     public function roleBadgeVariant(string $role): string
     {
         return match ($role) {
-            Role::STUDENT->value => 'success',
+            Role::STUDENT->value => 'primary',
             Role::TEACHER->value => 'info',
-            Role::MENTOR->value => 'warning',
-            Role::ADMIN->value => 'primary',
+            Role::MENTOR->value => 'success',
+            Role::ADMIN->value => 'warning',
             Role::SUPER_ADMIN->value => 'error',
             default => 'secondary',
         };
@@ -391,9 +391,10 @@ class UserManager extends RecordManager
     public function statusBadgeVariant(string $status): string
     {
         return match ($status) {
-            User::STATUS_ACTIVE, 'verified' => 'success',
+            User::STATUS_ACTIVE => 'success',
+            'verified' => 'info',
             User::STATUS_PENDING => 'warning',
-            User::STATUS_INACTIVE => 'secondary',
+            User::STATUS_INACTIVE => 'error',
             default => 'secondary',
         };
     }
