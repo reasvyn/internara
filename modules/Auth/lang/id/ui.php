@@ -78,6 +78,7 @@ return [
         'tips_title'     => 'Email tidak ditemukan?',
         'tips'           => 'Periksa folder spam atau sampah. Email dikirim dari :app.',
         'processing'     => 'Memverifikasi email Anda…',
+        'logout'         => 'Keluar',
     ],
     'forgot_password' => [
         'title' => 'Lupa Kata Sandi',

@@ -55,16 +55,16 @@
                             @elseif(auth()->user()->email && !auth()->user()->hasVerifiedEmail())
                                 <div class="mb-6">
                                     <x-ui::alert type="info" icon="tabler.mail-check" shadow>
-                                        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                            <div>
-                                                <p class="font-semibold">{{ __('ui::common.email_unverified.title') }}</p>
-                                                <p class="text-sm opacity-80">{{ __('ui::common.email_unverified.description') }}</p>
+                                        <div class="flex items-center justify-between gap-4">
+                                            <div class="min-w-0">
+                                                <p class="font-semibold leading-snug">{{ __('ui::common.email_unverified.title') }}</p>
+                                                <p class="mt-0.5 text-sm opacity-75">{{ __('ui::common.email_unverified.description') }}</p>
                                             </div>
                                             @if(\Illuminate\Support\Facades\Route::has('verification.notice'))
                                                 <a href="{{ route('verification.notice') }}" wire:navigate
-                                                   class="btn btn-info btn-sm shrink-0">
+                                                   class="btn btn-info btn-sm shrink-0 self-center">
                                                     <x-ui::icon name="tabler.mail-forward" class="size-4" />
-                                                    {{ __('ui::common.email_unverified.action') }}
+                                                    <span class="hidden sm:inline">{{ __('ui::common.email_unverified.action') }}</span>
                                                 </a>
                                             @endif
                                         </div>

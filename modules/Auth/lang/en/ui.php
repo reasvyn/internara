@@ -78,6 +78,7 @@ return [
         'tips_title'     => 'Can\'t find the email?',
         'tips'           => 'Check your spam or junk folder. The email is sent from :app.',
         'processing'     => 'Verifying your email…',
+        'logout'         => 'Sign out',
     ],
     'forgot_password' => [
         'title' => 'Forgot Password',
