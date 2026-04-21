@@ -6,6 +6,55 @@ import Cropper from 'cropperjs'
 window.Cropper = Cropper
 
 document.addEventListener('alpine:init', () => {
+    const getAlpineData = (element) => {
+        if (!element) {
+            return null
+        }
+
+        if (window.Alpine?.$data) {
+            return window.Alpine.$data(element)
+        }
+
+        return element._x_dataStack?.[0] ?? null
+    }
+
+    if (!window.__internaraChoicesToggleBound) {
+        document.addEventListener(
+            'click',
+            (event) => {
+                const wrapper = event.target.closest('[data-ui-choices]')
+                const trigger = event.target.closest('label.select')
+                const optionsPanel = event.target.closest("[wire\\:key^='options-list-']")
+                const interactiveIcon = event.target.closest('svg, button, a')
+
+                if (!wrapper || !trigger || optionsPanel || interactiveIcon) {
+                    return
+                }
+
+                const alpineRoot = wrapper.querySelector('[x-data]')
+                const state = getAlpineData(alpineRoot)
+
+                if (!state || typeof state.focused === 'undefined' || !state.focused) {
+                    return
+                }
+
+                event.preventDefault()
+                event.stopPropagation()
+
+                if (typeof state.clear === 'function') {
+                    state.clear()
+                } else {
+                    state.focused = false
+                }
+
+                wrapper.querySelector('input')?.blur()
+            },
+            true,
+        )
+
+        window.__internaraChoicesToggleBound = true
+    }
+
     // Single Cohesive File & Cropper Component
     Alpine.data('fileComponent', (config) => ({
         isDropping: false,

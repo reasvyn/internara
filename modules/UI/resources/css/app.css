@@ -174,3 +174,29 @@ details.dropdown > ul.menu,
 [wire\:key^='options-list-'] {
     z-index: 1000 !important;
 }
+
+/* Keep select-like controls visually opaque above nearby content */
+.select,
+.select select,
+.select option,
+.select optgroup,
+[data-ui-choices] label.select,
+[data-ui-choices] [wire\:key^='options-list-'] {
+    background-color: var(--color-base-100) !important;
+    color: var(--color-base-content) !important;
+}
+
+[data-ui-choices] [wire\:key^='options-list-'] {
+    opacity: 1 !important;
+    isolation: isolate;
+    background-image: none !important;
+}
+
+[data-ui-choices] [wire\:key^='options-list-'] > div {
+    background-color: var(--color-base-100);
+}
+
+[data-ui-choices] [wire\:key^='options-list-'] > div:hover,
+[data-ui-choices] [wire\:key^='options-list-'] > div:focus-within {
+    background-color: var(--color-base-200);
+}
