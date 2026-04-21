@@ -211,9 +211,13 @@
                 <x-ui::input :label="__('user::ui.manager.form.full_name')" icon="tabler.signature" wire:model="form.name" required />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-ui::input :label="__('user::ui.manager.form.email')" icon="tabler.mail" type="email" wire:model="form.email" required />
+                    <div class="md:col-span-2">
+                        <x-ui::input :label="__('user::ui.manager.form.email')" icon="tabler.mail" type="email" wire:model="form.email" required />
+                    </div>
                     @if($form->id)
-                        <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" readonly />
+                        <div class="md:col-span-2">
+                            <x-ui::input :label="__('user::ui.manager.form.username')" icon="tabler.at" wire:model="form.username" readonly />
+                        </div>
                     @endif
                 </div>
 
