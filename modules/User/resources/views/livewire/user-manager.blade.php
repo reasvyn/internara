@@ -107,6 +107,7 @@
             @if(!$targetRole)
                 <x-ui::choices
                     :label="__('user::ui.manager.form.roles')"
+                    :placeholder="__('user::ui.manager.form.roles_placeholder')"
                     icon="tabler.shield-check"
                     wire:model="form.roles"
                     :options="[

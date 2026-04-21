@@ -68,6 +68,7 @@ return [
             'registration_number' => 'Nomor Registrasi (NIS/NIP)',
             'nis' => 'NIS (Nomor Induk Siswa)',
             'roles' => 'Peran Terpilih',
+            'roles_placeholder' => 'Pilih satu atau lebih peran',
             'roles_assign' => 'Tetapkan Peran',
             'roles_hint' => 'Pilih satu atau lebih peran untuk pengguna ini.',
             'status' => 'Status Akun',
