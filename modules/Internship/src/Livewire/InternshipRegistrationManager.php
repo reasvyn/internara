@@ -17,6 +17,7 @@ use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\UI\Livewire\RecordManager;
+use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
 /**
