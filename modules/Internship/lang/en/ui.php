@@ -151,4 +151,9 @@ return [
     'no_companies' => 'No companies found.',
     'company_import_format' => 'Format CSV: Name, Business Field, Phone, Email, Address, Leader Name',
 'individual_placement' => 'Individual Registration',    'bulk_placement' => 'Bulk Placement',    'quota_info' => 'Quota Information',    'remaining_quota' => 'Remaining quota: :count slots',    'select_students' => 'Select Students',    'select_all' => 'Select All Students',    'selected_students' => ':count students selected',    'placement_summary' => 'Placement Summary',    'placement_location_not_found' => 'Placement location not found',    'confirm_placement_title' => 'Confirm Bulk Placement',    'registration_form_help' => 'Edit student registration details and placement information.',
+    'student_placement_subtitle' => 'Place students at industry partners with individual or bulk options.',
+    'review_placement' => 'Review Placement',
+    'placement_success' => 'Students placed successfully!',
+    'total_placed' => 'Total Placed',
+    'place_student' => 'Place Student',
 ];

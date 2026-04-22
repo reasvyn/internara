@@ -151,4 +151,9 @@ return [
     'no_companies' => 'Tidak ada perusahaan yang ditemukan.',
     'company_import_format' => 'Format CSV: Nama, Bidang Usaha, Telepon, Email, Alamat, Nama Pemimpin',
 'individual_placement' => 'Pendaftaran Individual',    'bulk_placement' => 'Penempatan Massal',    'quota_info' => 'Informasi Kuota',    'remaining_quota' => 'Kuota tersisa: :count slot',    'select_students' => 'Pilih Siswa',    'select_all' => 'Pilih Semua Siswa',    'selected_students' => ':count siswa dipilih',    'placement_summary' => 'Ringkasan Penempatan',    'placement_location_not_found' => 'Lokasi penempatan tidak ditemukan',    'confirm_placement_title' => 'Konfirmasi Penempatan Massal',    'registration_form_help' => 'Edit detail pendaftaran siswa dan informasi penempatan.',
+    'student_placement_subtitle' => 'Tempatkan siswa ke mitra industri dengan opsi individual atau massal.',
+    'review_placement' => 'Tinjau Penempatan',
+    'placement_success' => 'Siswa ditempatkan dengan sukses!',
+    'total_placed' => 'Total Ditempatkan',
+    'place_student' => 'Tempatkan Siswa',
 ];
