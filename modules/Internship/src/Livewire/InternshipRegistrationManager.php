@@ -154,7 +154,7 @@ class InternshipRegistrationManager extends RecordManager
     }
 
     /**
-     * Get available companies for placement
+     * Get available companies for placement based on selected internship
      */
     #[Computed]
     public function companies()
@@ -163,12 +163,13 @@ class InternshipRegistrationManager extends RecordManager
             return [];
         }
 
-        return Company::query()
-            ->orderBy('name')
+        return InternshipPlacement::query()
+            ->where('internship_id', $this->internshipId)
+            ->with('company')
             ->get()
-            ->map(fn (Company $company) => [
-                'value' => $company->id,
-                'label' => "{$company->name} ({$company->business_field})",
+            ->map(fn (InternshipPlacement $placement) => [
+                'value' => $placement->company_id,
+                'label' => "{$placement->company?->name} ({$placement->company?->business_field})",
             ])
             ->values()
             ->toArray();
@@ -188,6 +189,7 @@ class InternshipRegistrationManager extends RecordManager
             ->where('internship_id', $this->internshipId)
             ->whereNull('placement_id')
             ->with('student')
+            ->orderBy('created_at', 'desc')
             ->get()
             ->map(fn (InternshipRegistration $reg) => [
                 'id' => $reg->id,
@@ -223,7 +225,7 @@ class InternshipRegistrationManager extends RecordManager
             ->where('placement_id', $placement->id)
             ->count();
 
-        return max(0, $placement->quota - $assigned);
+        return max(0, $placement->capacity_quota - $assigned);
     }
 
     /**
