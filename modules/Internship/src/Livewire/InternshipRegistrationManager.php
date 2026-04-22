@@ -140,7 +140,6 @@ class InternshipRegistrationManager extends RecordManager
      * Get available internship programs
      */
     #[Computed]
-    #[Computed]
     public function internships()
     {
         return Internship::query()
