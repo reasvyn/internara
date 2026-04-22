@@ -72,4 +72,9 @@ return [
     ],
 
     'or' => 'atau',
+    'all' => 'Semua',
+    'email' => 'Email',
+    'phone' => 'Telepon',
+    'filters' => 'Filter',
+    'search_email' => 'Cari berdasarkan email...',
 ];

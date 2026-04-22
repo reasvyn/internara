@@ -72,4 +72,9 @@ return [
     ],
 
     'or' => 'or',
+    'all' => 'All',
+    'email' => 'Email',
+    'phone' => 'Phone',
+    'filters' => 'Filters',
+    'search_email' => 'Search by email...',
 ];
