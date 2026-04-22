@@ -6,7 +6,7 @@ Welcome to the Internara documentation! This guide provides comprehensive resour
 
 ## 🚀 Getting Started
 
-- **[Getting Started Guide](./getting_started.md)** — Quick overview of the project, prerequisites, and first steps
+- **[Getting Started Guide](./getting-started.md)** — Quick overview of the project, prerequisites, and first steps
 - **[Installation Guide](./installation.md)** — Detailed step-by-step installation, configuration, and setup wizard
 
 ---
@@ -15,7 +15,7 @@ Welcome to the Internara documentation! This guide provides comprehensive resour
 
 | Document | Purpose | Audience | Read Time |
 | :--- | :--- | :--- | :--- |
-| **[Getting Started Guide](./getting_started.md)** | Quick 5-minute setup and first steps | Everyone | 8 min |
+| **[Getting Started Guide](./getting-started.md)** | Quick 5-minute setup and first steps | Everyone | 8 min |
 | **[Installation Guide](./installation.md)** | Complete setup from git clone to production | DevOps, Setup | 20 min |
 | **[Philosophy](./philosophy.md)** | 3S Doctrine (Secure, Sustain, Scalable) and why | Contributors, Architects | 18 min |
 | **[Architecture Guide](./architecture.md)** | Modular monolith design, auto-binding, data flow | Developers, Architects | 22 min |
