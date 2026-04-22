@@ -138,4 +138,14 @@ return [
     'available_quota' => 'Kuota Tersedia',
     'insufficient_quota' => 'Kuota tidak cukup. Anda memilih :selected siswa tetapi hanya :remaining slot tersedia.',
     'select_internship_company' => 'Silakan pilih program magang dan perusahaan.',
+    
+    // Batch actions dan filters
+    'select_action' => 'Pilih Aksi',
+    'bulk_delete' => 'Hapus Terpilih',
+    'bulk_delete_success' => ':count perusahaan berhasil dihapus.',
+    'export' => 'Ekspor Terpilih',
+    'export_success' => 'Perusahaan berhasil diekspor.',
+    'selected_count' => ':count terpilih',
+    'select_items_for_action' => 'Silakan pilih item untuk aksi ini.',
+    'no_companies' => 'Tidak ada perusahaan yang ditemukan.',
 ];
