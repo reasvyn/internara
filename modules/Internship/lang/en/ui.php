@@ -148,4 +148,5 @@ return [
     'selected_count' => ':count selected',
     'select_items_for_action' => 'Please select items for this action.',
     'no_companies' => 'No companies found.',
+    'company_import_format' => 'Format CSV: Name, Business Field, Phone, Email, Address, Leader Name',
 ];
