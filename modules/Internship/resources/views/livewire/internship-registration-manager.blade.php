@@ -150,7 +150,7 @@
         <div x-show="tab === 'bulk'" role="tabpanel" class="space-y-6">
             <x-ui::header
                 :title="__('internship::ui.bulk_placement_title')"
-                :subtitle="__('internship::ui.bulk_placement_description')"
+                :subtitle="__('internship::ui.bulk_placement_description', ['count' => count($this->selectedStudents)])"
                 class="!bg-transparent !shadow-none !px-0 !py-2"
             />
 
