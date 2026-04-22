@@ -8,7 +8,7 @@ test('it renders app credit with localized labels', function () {
     app()->setLocale('en');
     setting([
         'app_author' => 'Reas Vyn',
-        'app_github' => 'https://github.com/reasnov',
+        'app_github' => 'https://github.com/reasvyn',
     ]);
 
     $html = Blade::render('<x-ui::app-credit />');

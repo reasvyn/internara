@@ -44,5 +44,5 @@ To maintain systemic integrity:
 Every release is promoted as a **Configuration Baseline**, which includes:
 - Source code.
 - Verification tests (Pest).
-- Aligned documentation (docs/).
+- Aligned documentation.
 - Updated metadata (app_info.json).

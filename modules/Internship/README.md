@@ -4,8 +4,8 @@ The `Internship` module manages the lifecycle of student practical work, from pl
 to official registration.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -29,17 +29,17 @@ to official registration.
 
 - **CompanyService**: Manages authoritative industry partner master records.
 - **PlacementService**: Orchestrates batch-specific slot allocation and eligibility.
-    - _API_: `createSlot(companyId, academicYear)`, `getAvailableQuotas()`.
+ - _API_: `createSlot(companyId, academicYear)`, `getAvailableQuotas()`.
 - **RegistrationService**: Orchestrates student enrollment and requirement clearing.
-    - _API_: `enroll(studentId, placementId)`, `verify(registrationId)`, `cancel(registrationId)`.
+ - _API_: `enroll(studentId, placementId)`, `verify(registrationId)`, `cancel(registrationId)`.
 - **RequirementService**: Handles the lifecycle of prerequisite verification.
 
 ### 3. Key Features
 
 - **Advisor Allocation:** Explicitly links every student placement to a Monitoring Teacher
-  (`teacher_id`) to ensure continuous supervision.
+ (`teacher_id`) to ensure continuous supervision.
 - **Temporal Guard:** Enforces strict internship activity windows via `start_date` and `end_date`
-  invariants.
+ invariants.
 - **One-Student-One-Placement:** Enforces official standards while tracking history.
 - **Automated Validation:** Gated registrations ensuring all administrative criteria are met.
 - **i18n:** All requirement descriptions and placement data support localization.

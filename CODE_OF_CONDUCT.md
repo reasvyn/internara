@@ -60,13 +60,12 @@ The following behaviors are considered violations of this Code of Conduct:
 
 ## 4. Enforcement Protocols
 
-Violations will be handled according to the **Community & Communication Protocols** defined in
-`docs/dev/git.md`.
+Violations will be handled according to the project's governance protocols.
 
 ### 4.1 Reporting
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting
-the project team at **[reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)**. All
+the project team at **[reasvyn@gmail.com](mailto:reasvyn@gmail.com)**. All
 complaints will be reviewed and investigated promptly and fairly.
 
 ### 4.2 Triage & Resolution

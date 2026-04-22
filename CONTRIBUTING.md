@@ -8,8 +8,8 @@ shares our commitment to building high-quality, resilient software.
 ## 🚀 Setting Up Your Development Environment
 
 ```bash
-git clone https://github.com/reasnov/internara.git
-cd internara
+git clone https://github.com/reasvyn/Internara.git
+cd Internara
 composer setup   # install deps, generate key, migrate DB, build assets
 composer dev     # start all dev processes
 ```

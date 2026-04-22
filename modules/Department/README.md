@@ -5,8 +5,8 @@ institution. It provides the necessary context for grouping students and instruc
 fields of study.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -23,30 +23,30 @@ As a **Core Domain Module**, the `Department` module provides structural metadat
 ### 2.1 Service Layer
 
 - **`DepartmentService`**: Orchestrates the lifecycle of department records.
-    - _Features_: Standardized CRUD operations and automated school association management.
-    - _Contract_: `Modules\Department\Services\Contracts\DepartmentService`.
-    - _API_: `syncWithSchool(schoolId, departments)`, `getStats(departmentId)`.
+ - _Features_: Standardized CRUD operations and automated school association management.
+ - _Contract_: `Modules\Department\Services\Contracts\DepartmentService`.
+ - _API_: `syncWithSchool(schoolId, departments)`, `getStats(departmentId)`.
 
 ### 2.2 Persistence Layer
 
 - **`Department` Model**: Represents an academic specialization.
-    - _Identities_: Uses **UUID v4** for secure identification.
-    - _Concerns_: Implements `HasSchoolRelation` for institutional scoping.
+ - _Identities_: Uses **UUID v4** for secure identification.
+ - _Concerns_: Implements `HasSchoolRelation` for institutional scoping.
 
 ### 2.3 Presentation Layer
 
 - **`DepartmentManager`**: A Livewire component providing an administrative interface for managing
-  academic departments.
+ academic departments.
 
 ---
 
 ## 3. Engineering Standards
 
 - **Zero-Coupling**: Cross-module relationships (e.g., with `School`) are managed via indexed UUID
-  columns without physical foreign keys.
+ columns without physical foreign keys.
 - **Context-Aware Naming**: Prioritizes semantic clarity within the module namespace.
 - **i18n Compliance**: All department names, descriptions, and UI labels utilize module-specific
-  translation keys.
+ translation keys.
 
 ---
 

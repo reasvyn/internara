@@ -1,6 +1,6 @@
 @php
     $authorName = setting('app_author', 'Reas Vyn');
-    $authorGithub = setting('app_github', 'https://github.com/reasnov');
+    $authorGithub = setting('app_github', 'https://github.com/reasvyn');
     $brandName = setting('brand_name', 'Internara');
     // Using setting() for app_version as requested, falling back to config if not set
     $version = setting('app_version', config('app.version', 'v0.13.0'));

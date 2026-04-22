@@ -6,8 +6,6 @@ administrative utilities.
 
 > **Governance Mandate:** This module implements the infrastructure required to satisfy
 > **[SYRS-C-003]** (Service Layer Logic). All implementation must adhere to the
-> **[Coding Conventions](../../docs/dev/conventions.md)**.
-
 ---
 
 ## 1. Domain Domains
@@ -25,16 +23,16 @@ Provides custom Artisan generators that enforce the **Modular DDD**, **src Omiss
 ### 1.2 Testing Domain
 
 - **`AppTestCommand`**: An orchestrated test runner (`php artisan app:test`) that executes modular
-  test suites sequentially to optimize memory usage.
+ test suites sequentially to optimize memory usage.
 
 ---
 
 ## 2. Engineering Standards
 
 - **Environment Awareness**: This module is allowed to interact with low-level system resources
-  (Filesystem, Shell) to facilitate automation.
+ (Filesystem, Shell) to facilitate automation.
 - **Service Orchestration**: Complex utilities (like Onboarding) must delegate specific attribute
-  updates to the respective domain modules (User, Student, Teacher).
+ updates to the respective domain modules (User, Student, Teacher).
 
 ---
 

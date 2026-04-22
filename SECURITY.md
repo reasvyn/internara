@@ -8,15 +8,13 @@ integrity, and availability of institutional and student data.
 
 ## 🛠 Support Policy
 
-Security updates are provided exclusively for the **latest stable release**. For more details on the
-support status of specific versions, refer to the **[Versions Overview](docs/release-management.md)**.
+Security updates are provided exclusively for the **latest stable release**.
 
 ---
 
 ## 🔐 Foundational Security Protocols
 
-Our engineering process incorporates the following protections as mandated by the authoritative
-**[System Requirements Specification](docs/dev/specs.md)**:
+Our engineering process incorporates the following protections:
 
 ### 1. Identity & Access Management (IAM)
 
@@ -49,7 +47,7 @@ If you discover a potential security vulnerability, please do not disclose it pu
 responsible disclosure to protect the system's stakeholders.
 
 Please report your findings directly to the project maintainer:
-**[reasnov.official@gmail.com](mailto:reasnov.official@gmail.com)**
+**[reasvyn@gmail.com](mailto:reasvyn@gmail.com)**
 
 ---
 

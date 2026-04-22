@@ -5,8 +5,8 @@ dynamic application-wide configurations. It allows administrators to modify syst
 runtime without requiring code or environment file changes.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -23,21 +23,21 @@ application parameters used by all other modules. It works in tandem with the `C
 ### 2.1 Service Layer
 
 - **`SettingService`**: Provides a robust API for retrieving and persisting configuration values.
-    - _Features_: Key-based and group-based retrieval, automated type casting, and proactive
-      caching.
-    - _Contract_: `Modules\Setting\Services\Contracts\SettingService`.
+ - _Features_: Key-based and group-based retrieval, automated type casting, and proactive
+ caching.
+ - _Contract_: `Modules\Setting\Services\Contracts\SettingService`.
 
 ### 2.2 Persistence Layer
 
 - **`Setting` Model**: Manages the underlying `settings` table.
-    - _Fields_: `key` (PK), `value`, `type`, `group`, `description`.
-    - _Casting_: Utilizes `SettingValueCast` to ensure values are returned as correct PHP types
-      (string, boolean, integer, array).
+ - _Fields_: `key` (PK), `value`, `type`, `group`, `description`.
+ - _Casting_: Utilizes `SettingValueCast` to ensure values are returned as correct PHP types
+ (string, boolean, integer, array).
 
 ### 2.3 Fail-safe Mechanisms
 
 - **Bootstrapping Resilience**: Includes logic to allow critical system checks (via direct file
-  reads of `modules_statuses.json`) before the database or full service container is initialized.
+ reads of `modules_statuses.json`) before the database or full service container is initialized.
 
 ---
 
@@ -45,9 +45,9 @@ application parameters used by all other modules. It works in tandem with the `C
 
 - **Zero Magic Values**: Cache prefixes and standard keys are managed via internal constants.
 - **Auditability**: Leverages the `Log` module's auditing concern to track every change to system
-  settings ("who", "when", "old value", "new value").
+ settings ("who", "when", "old value", "new value").
 - **i18n Support**: Descriptions and group names are intended for administrative clarity and support
-  translation.
+ translation.
 
 ---
 

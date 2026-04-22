@@ -25,7 +25,7 @@
                     &copy; {{ date('Y') }} {{ $appInfo['author']['name'] ?? 'Developer' }}
                 </div>
                 <div class="flex gap-2">
-                    <a href="{{ $appInfo['author']['github'] ?? 'https://github.com/reasnov' }}" target="_blank" class="btn btn-ghost btn-xs btn-circle opacity-40 hover:opacity-100">
+                    <a href="{{ $appInfo['author']['github'] ?? 'https://github.com/reasvyn' }}" target="_blank" class="btn btn-ghost btn-xs btn-circle opacity-40 hover:opacity-100">
                         <x-ui::icon name="tabler.brand-github" class="w-3 h-3" />
                     </a>
                 </div>
