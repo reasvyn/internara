@@ -13,14 +13,16 @@ Welcome to the Internara documentation! This guide provides comprehensive resour
 
 ## 📚 Core Documentation
 
-| Document | Purpose |
-| :--- | :--- |
-| **[Installation Guide](./installation.md)** | Complete installation from git clone to production-ready setup |
-| **[Getting Started Guide](./getting_started.md)** | Quick start for developers, feature flags, and debugging |
-| **[Architecture Guide](../README.md#-architecture--implementation)** | Modular monolith design, auto-binding, and patterns |
-| **[Code Conventions](../README.md#-conventions--standards)** | PSR-12, strict types, naming, and code patterns |
-| **[Testing Guide](../README.md#-testing--quality-assurance)** | Test suites, requirements, and quality gates |
-| **[Contributing Guide](../CONTRIBUTING.md)** | Workflow, code patterns, and PR checklist |
+| Document | Purpose | Audience | Read Time |
+| :--- | :--- | :--- | :--- |
+| **[Getting Started Guide](./getting_started.md)** | Quick 5-minute setup and first steps | Everyone | 8 min |
+| **[Installation Guide](./installation.md)** | Complete setup from git clone to production | DevOps, Setup | 20 min |
+| **[Philosophy](./philosophy.md)** | 3S Doctrine (Secure, Sustain, Scalable) and why | Contributors, Architects | 18 min |
+| **[Architecture Guide](./architecture.md)** | Modular monolith design, auto-binding, data flow | Developers, Architects | 22 min |
+| **[Modules Catalog](./modules-catalog.md)** | Directory of all 29+ modules and their purposes | Everyone | 16 min |
+| **[Testing Guide](./testing.md)** | TDD practices, Pest framework, test suites | QA, Developers | 20 min |
+| **[Standards & Conventions](./standards.md)** | Code quality, naming, patterns, PSR-12 | Contributors | 22 min |
+| **[Contributing Guide](../CONTRIBUTING.md)** | Workflow, code patterns, and PR checklist | Contributors | 12 min |
 
 ---
 
@@ -42,7 +44,7 @@ The Internara project is built on the **3S Doctrine**:
 - **📖 Sustain (S2)** — PSR-12, TDD, strict types, English documentation
 - **⚙️ Scalable (S3)** — Modular architecture, loose coupling, evolutionary design
 
-Learn more: [3S Doctrine](../README.md#-philosophy-the-3s-doctrine)
+Learn more in the **[Philosophy Guide](./philosophy.md)**
 
 ---
 
@@ -90,7 +92,7 @@ modules/{ModuleName}/
 └── resources/{css,js,lang}
 ```
 
-Learn more: [Module Architecture](../README.md#module-directory-29-modules)
+Learn more in the **[Modules Catalog](./modules-catalog.md)** and **[Architecture Guide](./architecture.md)**
 
 ---
 
@@ -104,12 +106,14 @@ composer lint        # Must have no violations
 
 **Required in every PR:**
 - ✅ 90%+ test coverage
-- ✅ `declare(strict_types=1);` on all PHP
-- ✅ No hardcoded strings
+- ✅ `declare(strict_types=1);` on all PHP files
+- ✅ No hardcoded strings (use `__('key')`)
 - ✅ New models use `HasUuid` + `timestamps()`
 - ✅ Services implement Contracts
 - ✅ Livewire managers extend `RecordManager`
 - ✅ Documentation updated
+
+Learn more in the **[Testing Guide](./testing.md)** and **[Standards Guide](./standards.md)**
 
 ---
 

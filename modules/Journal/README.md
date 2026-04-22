@@ -3,8 +3,8 @@
 The `Journal` module manages the daily activity tracking (Logbook) for students.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -12,7 +12,7 @@ The `Journal` module manages the daily activity tracking (Logbook) for students.
 
 - **Activity Tracking:** Systematic record of student daily tasks and reflections.
 - **Supervision:** Facilitates the recording of mentoring content by **Instructors** and **Industry
-  Supervisors**.
+ Supervisors**.
 - **Competency Mapping:** Links activities to learning objectives.
 
 ## Key Features
@@ -20,11 +20,11 @@ The `Journal` module manages the daily activity tracking (Logbook) for students.
 ### 1. Daily Logbook
 
 - **Comprehensive Data**: Records day/date, work topics, detailed activity descriptions, basic
-  competencies, character values, and additional field notes.
+ competencies, character values, and additional field notes.
 - **Guidance Gating**: Integration with the `Guidance` module to ensure mandatory briefings are
-  completed before logging activities.
+ completed before logging activities.
 - **Competency Tagging**: Students can tag specific skills/competencies from their department
-  rubric.
+ rubric.
 - **Submission Windows**: Enforces timely logging via dynamic windows managed in system settings.
 - **Attachments**: Secure proof of work (Photos, Documents).
 - **i18n**: All log labels and status indicators are localized.
@@ -33,8 +33,8 @@ The `Journal` module manages the daily activity tracking (Logbook) for students.
 ### 2. Services
 
 - **JournalService**: Orchestrates the capture and validation of daily activities.
-    - _API_: `submit(studentId, data)`, `acknowledge(journalId, supervisorId)`.
-    - _Contract_: `Modules\Journal\Services\Contracts\JournalService`.
+ - _API_: `submit(studentId, data)`, `acknowledge(journalId, supervisorId)`.
+ - _Contract_: `Modules\Journal\Services\Contracts\JournalService`.
 
 ### 3. Mobile-First Experience
 

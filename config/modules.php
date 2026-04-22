@@ -283,10 +283,10 @@ return [
     |
     */
     'composer' => [
-        'vendor' => env('MODULE_VENDOR', 'reasnov'),
+        'vendor' => env('MODULE_VENDOR', 'reasvyn'),
         'author' => [
             'name' => env('MODULE_AUTHOR_NAME', 'Reas Vyn'),
-            'email' => env('MODULE_AUTHOR_EMAIL', 'reasnov.official@gmail.com'),
+            'email' => env('MODULE_AUTHOR_EMAIL', 'reasvyn@gmail.com'),
         ],
         'composer-output' => false,
     ],

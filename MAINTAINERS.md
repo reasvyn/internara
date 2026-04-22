@@ -6,7 +6,7 @@ This file serves as the official record of the maintainers for the Internara sys
 
 ## 🛡 Project Lead Maintainer
 
-- **Lead**: reasnov ([@reasnov](https://github.com/reasnov))
+- **Lead**: reasvyn ([@reasvyn](https://github.com/reasvyn))
 - **Responsibilities**: Strategic direction, final PR approval, 3S Doctrine enforcement, and system-wide architectural governance.
 
 ---
@@ -17,10 +17,10 @@ Maintainers responsible for specific domain modules:
 
 | Module | Maintainer | Primary Responsibility |
 | :--- | :--- | :--- |
-| **Internship** | [@reasnov](https://github.com/reasnov) | Core internship lifecycle and placements. |
-| **Core & User** | [@reasnov](https://github.com/reasnov) | Identity, authentication, and academic scoping. |
-| **Assessment** | [@reasnov](https://github.com/reasnov) | Performance evaluation and compliance scoring. |
-| **Notification** | [@reasnov](https://github.com/reasnov) | Multi-channel communication orchestration. |
+| **Internship** | [@reasvyn](https://github.com/reasvyn) | Core internship lifecycle and placements. |
+| **Core & User** | [@reasvyn](https://github.com/reasvyn) | Identity, authentication, and academic scoping. |
+| **Assessment** | [@reasvyn](https://github.com/reasvyn) | Performance evaluation and compliance scoring. |
+| **Notification** | [@reasvyn](https://github.com/reasvyn) | Multi-channel communication orchestration. |
 
 ---
 

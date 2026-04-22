@@ -1,6 +1,6 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
-    "name": "reasnov/internara",
+    "name": "reasvyn/internara",
     "private": true,
     "version": "0.14.0",
     "type": "module",

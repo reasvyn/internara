@@ -5,8 +5,8 @@ It ensures accountability by tracking user actions and system events while maint
 privacy standards through automated PII masking.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -22,29 +22,29 @@ that allow other modules to record and visualize audit trails without domain cou
 ### 2.1 Service Layer
 
 - **`ActivityService`**: Orchestrates the querying and analysis of user activity logs.
-    - _Features_: Engagement statistics calculation, filtered log retrieval, and subject-based
-      correlation.
-    - _Contract_: `Modules\Log\Services\Contracts\ActivityService`.
+ - _Features_: Engagement statistics calculation, filtered log retrieval, and subject-based
+ correlation.
+ - _Contract_: `Modules\Log\Services\Contracts\ActivityService`.
 
 ### 2.2 Logging Infrastructure
 
 - **`AuditLog` Model**: Provides an immutable trail of critical administrative and system-wide data
-  modifications.
+ modifications.
 - **`Activity` Model**: Extends Spatie Activitylog to support **UUID v4** identities for behavioral
-  tracking.
+ tracking.
 - **`PiiMaskingProcessor`**: A Monolog processor that recursively redacts sensitive fields (emails,
-  passwords, IDs) from log payloads.
+ passwords, IDs) from log payloads.
 
 ### 2.3 Specialized Concerns
 
 - **`HandlesAuditLog`**: A trait for automated recording of system-level audit events.
 - **`InteractsWithActivityLog`**: A trait for standardized user activity tracking across the
-  ecosystem.
+ ecosystem.
 
 ### 2.4 Presentation Layer
 
 - **`ActivityFeed`**: A reusable Livewire component for visualizing activity streams. It adheres to
-  the **Thin Component** mandate by delegating all data retrieval to the `ActivityService`.
+ the **Thin Component** mandate by delegating all data retrieval to the `ActivityService`.
 
 ---
 
@@ -52,9 +52,9 @@ that allow other modules to record and visualize audit trails without domain cou
 
 - **Identity Invariant**: Every log entry is identified by a UUID v4.
 - **Privacy First**: Automated masking of all Personally Identifiable Information (PII) before
-  persistence.
+ persistence.
 - **Zero-Coupling**: UI integration is achieved via **Slot Injection** (e.g.,
-  `admin.dashboard.side`).
+ `admin.dashboard.side`).
 - **i18n Compliance**: All log descriptions and UI labels utilize module-specific translation keys.
 
 ---

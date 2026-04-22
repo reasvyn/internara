@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "reasnov/internara",
+    "name": "reasvyn/internara",
     "version": "0.14.0",
     "type": "project",
     "description": "The official Laravel starter kit for Livewire.",

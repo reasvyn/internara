@@ -5,8 +5,8 @@ transitions of all entities within the Internara ecosystem. It centralizes state
 ensures that lifecycle changes are auditable, localized, and consistent.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -23,24 +23,24 @@ that requires an audit trail of state transitions ("active", "pending", "complet
 ### 2.1 Persistence Layer
 
 - **`Status` Model**: The central entity for state history.
-    - _Identities_: Uses **UUID v4** for its own identity and the related `model_id`.
-    - _Features_: Automatically integrates with the `Log` module to record state transitions.
+ - _Identities_: Uses **UUID v4** for its own identity and the related `model_id`.
+ - _Features_: Automatically integrates with the `Log` module to record state transitions.
 
 ### 2.2 Global Concerns
 
 - **`HasStatus`**: A standardized trait for Eloquent models that provides methods for setting,
-  retrieving, and visualizing entity states.
-    - _Methods_: `setStatus()`, `getStatusLabel()`, `getStatusColor()`.
+ retrieving, and visualizing entity states.
+ - _Methods_: `setStatus()`, `getStatusLabel()`, `getStatusColor()`.
 
 ---
 
 ## 3. Engineering Standards
 
 - **Zero Magic Values**: Utilizes `STATUS_*` constants within the `HasStatus` trait for standard
-  system states.
+ system states.
 - **Identity Invariant**: Full support for UUID-based entity relationships.
 - **i18n Compliance**: All status labels are resolved via module-specific translation keys
-  (`status::status.*`).
+ (`status::status.*`).
 
 ---
 

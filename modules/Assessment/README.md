@@ -4,8 +4,8 @@ The `Assessment` module is the central engine for evaluating student performance
 official credentials. It aggregates data from various sources to produce final grades.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -27,12 +27,12 @@ official credentials. It aggregates data from various sources to produce final g
 ### 2. Services
 
 - **AssessmentService**: Orchestrates competency evaluation and grading.
-    - _API_: `evaluate(studentId, rubricId, marks)`, `getFinalResult(studentId)`.
-    - _Contract_: `Modules\Assessment\Services\Contracts\AssessmentService`.
+ - _API_: `evaluate(studentId, rubricId, marks)`, `getFinalResult(studentId)`.
+ - _Contract_: `Modules\Assessment\Services\Contracts\AssessmentService`.
 - **CompetencyService**: Orchestrates the registry of skills and their mapping to student
-  activities.
+ activities.
 - **ComplianceService:** Orchestrates the calculation of participation-driven scores via
-  **Contracts**.
+ **Contracts**.
 - **CertificateService:** Generates PDF documents with QR-code verification.
 
 ### 3. Key Features

@@ -4,8 +4,8 @@ The `Report` module serves as the reporting engine for the Internara system, res
 exporting administrative and academic data into document formats.
 
 > **Governance Mandate:** This module implements the requirements defined in the authoritative
-> **[System Requirements Specification](../../docs/dev/specs.md)**. All implementation must adhere
-> to the **[Coding Conventions](../../docs/dev/conventions.md)**.
+> All implementation must adhere
+> to the 
 
 ---
 
@@ -20,13 +20,13 @@ exporting administrative and academic data into document formats.
 ### 2.1 Service Layer
 
 - **ReportService**: Orchestrates certified document generation and verification.
-    - _API_: `generatePdf(studentId, type)`, `verify(checksum)`.
-    - _Contract_: `Modules\Report\Services\Contracts\ReportGenerator`.
+ - _API_: `generatePdf(studentId, type)`, `verify(checksum)`.
+ - _Contract_: `Modules\Report\Services\Contracts\ReportGenerator`.
 
 ## 3. Key Features
 
 - **Standardized Templates:** Utilizes consistent layouts for institutional certificates and
-  reports.
+ reports.
 - **Multi-Format Support:** Capability to export data to various portable document standards.
 - **Localization:** Ensures that all generated reports respect the active system locale.
 

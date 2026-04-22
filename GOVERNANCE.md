@@ -10,8 +10,8 @@ Internara follows a **Benevolent Dictatorship** model, where the Lead Maintainer
 
 ### 1.1 Decision-Making Process
 
-- **Architectural Decisions**: Must be documented via Architectural Decision Records (ADR) and align with the `docs/system-architecture.md`.
-- **Feature Approval**: Requires alignment with the `docs/software-requirements.md` (SyRS).
+- **Architectural Decisions**: Must be documented via Architectural Decision Records (ADR).
+- **Feature Approval**: Requires alignment with project requirements.
 - **Security Decisions**: Handled privately via the Lead Maintainer and Security Team as per `SECURITY.md`.
 
 ---
