@@ -416,7 +416,7 @@ composer dev        # All services: server, queue, logs, vite
 
 ## 🚀 Getting Started
 
-> 📖 **For detailed installation and setup instructions**, see the [Installation Guide](docs/installation.md) and [Getting Started Guide](docs/getting_started.md).
+> 📖 **For detailed installation and setup instructions**, see the [Installation Guide](docs/installation.md) and [Getting Started Guide](docs/getting-started.md).
 
 ### Prerequisites
 
@@ -458,7 +458,7 @@ composer format   # Auto-format
 ### Next Steps
 
 1. **[Installation Guide](docs/installation.md)** — Detailed setup, database configuration, production deployment
-2. **[Getting Started Guide](docs/getting_started.md)** — Development workflow, testing, debugging
+2. **[Getting Started Guide](docs/getting-started.md)** — Development workflow, testing, debugging
 3. **[Documentation Index](docs/README.md)** — All documentation resources
 
 ---
@@ -564,7 +564,7 @@ See [LICENSE](LICENSE) for full text.
 
 ### 📖 Documentation
 - **[Documentation Index](docs/README.md)** — Complete guide to all resources
-- **[Getting Started Guide](docs/getting_started.md)** — Quick start & development workflow
+- **[Getting Started Guide](docs/getting-started.md)** — Quick start & development workflow
 - **[Installation Guide](docs/installation.md)** — Detailed setup & production deployment
 - **[Philosophy Guide](docs/philosophy.md)** — 3S Doctrine and architectural principles
 - **[Architecture Guide](docs/architecture.md)** — Modular monolith design & patterns
