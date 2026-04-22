@@ -40,7 +40,7 @@
         </x-ui::card>
 
     {{-- Form Modal --}}
-    <x-ui::modal id="company-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_company') : __('internship::ui.add_company') }}">
+    <x-ui::modal id="company-form-modal" wire:model="formModal" title="{{ $form['id'] ? __('internship::ui.edit_company') : __('internship::ui.add_company') }}">
         <x-ui::form wire:submit="save">
             <x-ui::input label="{{ __('internship::ui.company_name') }}" wire:model="form.name" required />
             

@@ -122,4 +122,20 @@ return [
     'select_placement_location' => 'Select a placement location.',
     'bulk_placement_success' => ':count students placed successfully.',
     'not_eligible_for_placement' => 'Student has not fulfilled mandatory requirements for placement.',
+
+    // Additional bulk placement strings
+    'bulk_placement_context' => 'Internship › Bulk Placement',
+    'bulk_placement_subtitle' => 'Assign multiple students to industry partners at once, with automatic quota checking.',
+    'select_students' => 'Select Students',
+    'remaining_quota' => 'Remaining Quota',
+    'selected_students' => 'Selected Students',
+    'preview_placement' => 'Preview & Confirm',
+    'no_unplaced_students' => 'No unplaced students available for this internship program.',
+    'confirm_placement_message' => 'You are about to place the selected students to the chosen company. This action cannot be undone.',
+    'placement_cannot_undo' => 'This action cannot be undone. Students will be permanently assigned to this placement location.',
+    'confirm_placement' => 'Confirm & Place',
+    'students_to_place' => 'Students to Place',
+    'available_quota' => 'Available Quota',
+    'insufficient_quota' => 'Insufficient quota. You selected :selected students but only :remaining slots available.',
+    'select_internship_company' => 'Please select both internship program and company.',
 ];

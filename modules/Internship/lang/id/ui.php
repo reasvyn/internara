@@ -122,4 +122,20 @@ return [
     'select_placement_location' => 'Pilih lokasi penempatan.',
     'bulk_placement_success' => ':count siswa berhasil ditempatkan.',
     'not_eligible_for_placement' => 'Siswa belum melengkapi persyaratan wajib untuk ditempatkan.',
+
+    // String tambahan penempatan massal
+    'bulk_placement_context' => 'Magang › Penempatan Massal',
+    'bulk_placement_subtitle' => 'Tempatkan banyak siswa ke mitra industri sekaligus, dengan pemeriksaan kuota otomatis.',
+    'select_students' => 'Pilih Siswa',
+    'remaining_quota' => 'Kuota Tersisa',
+    'selected_students' => 'Siswa Terpilih',
+    'preview_placement' => 'Pratinjau & Konfirmasi',
+    'no_unplaced_students' => 'Tidak ada siswa yang belum ditempatkan untuk program magang ini.',
+    'confirm_placement_message' => 'Anda akan menempatkan siswa terpilih ke perusahaan yang dipilih. Tindakan ini tidak dapat dibatalkan.',
+    'placement_cannot_undo' => 'Tindakan ini tidak dapat dibatalkan. Siswa akan secara permanen ditugaskan ke lokasi penempatan ini.',
+    'confirm_placement' => 'Konfirmasi & Tempatkan',
+    'students_to_place' => 'Siswa yang Akan Ditempatkan',
+    'available_quota' => 'Kuota Tersedia',
+    'insufficient_quota' => 'Kuota tidak cukup. Anda memilih :selected siswa tetapi hanya :remaining slot tersedia.',
+    'select_internship_company' => 'Silakan pilih program magang dan perusahaan.',
 ];
