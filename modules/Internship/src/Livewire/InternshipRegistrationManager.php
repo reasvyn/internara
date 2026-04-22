@@ -75,7 +75,7 @@ class InternshipRegistrationManager extends RecordManager
         $this->title = __('internship::ui.student_placement_title');
         $this->subtitle = __('internship::ui.student_placement_subtitle');
         $this->context = 'internship::ui.index.title';
-        $this->addLabel = __('internship::ui.add_registration');
+        $this->addLabel = __('internship::ui.place_student');
         $this->deleteConfirmMessage = __('internship::ui.delete_registration_confirm');
     }
 
@@ -323,6 +323,82 @@ class InternshipRegistrationManager extends RecordManager
     /**
      * Render the component view.
      */
+
+    /**
+     * Get students for form dropdown (not yet placed)
+     */
+    public function getStudents(): array
+    {
+        if (!$this->form->internship_id) {
+            return [];
+        }
+
+        return InternshipRegistration::query()
+            ->where('internship_id', $this->form->internship_id)
+            ->whereNull('placement_id')
+            ->with('student')
+            ->get()
+            ->map(fn ($reg) => [
+                'value' => $reg->student_id,
+                'label' => $reg->student?->name ?? 'Unknown',
+            ])
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Get placements (company locations) for form dropdown
+     */
+    public function getPlacements(): array
+    {
+        if (!$this->form->internship_id) {
+            return [];
+        }
+
+        return InternshipPlacement::query()
+            ->where('internship_id', $this->form->internship_id)
+            ->with('company')
+            ->get()
+            ->map(fn ($placement) => [
+                'value' => $placement->id,
+                'label' => $placement->company?->name ?? 'Unknown',
+            ])
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Get teachers for form dropdown
+     */
+    public function getTeachers(): array
+    {
+        return User::role('teacher')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($teacher) => [
+                'value' => $teacher->id,
+                'label' => $teacher->name,
+            ])
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * Get mentors for form dropdown
+     */
+    public function getMentors(): array
+    {
+        return User::role('mentor')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($mentor) => [
+                'value' => $mentor->id,
+                'label' => $mentor->name,
+            ])
+            ->values()
+            ->toArray();
+    }
+
     public function render(): View
     {
         return view('internship::livewire.internship-registration-manager')

@@ -287,8 +287,77 @@
     {{-- Form Modal (for individual registration editing) --}}
     <x-ui::modal wire:model="formModal" :title="$this->form->id ? __('internship::ui.edit_registration') : __('internship::ui.add_registration')">
         <x-ui::form wire:submit="save">
-            {{-- Form fields will be defined in slot or here --}}
-            <p class="text-sm text-base-content/60">{{ __('internship::ui.registration_form_help') }}</p>
+            <div class="space-y-4">
+                <p class="text-sm text-base-content/60">{{ __('internship::ui.registration_form_help') }}</p>
+
+                <x-ui::select
+                    :label="__('internship::ui.program')"
+                    icon="tabler.book"
+                    wire:model.live="form.internship_id"
+                    :options="$this->internships()"
+                    :placeholder="__('ui::common.select')"
+                    required
+                    error="{{ $errors->first('form.internship_id') }}"
+                />
+
+                <x-ui::select
+                    :label="__('internship::ui.student')"
+                    icon="tabler.user"
+                    wire:model="form.student_id"
+                    :options="$this->getStudents()"
+                    :placeholder="__('ui::common.select')"
+                    required
+                    error="{{ $errors->first('form.student_id') }}"
+                />
+
+                <x-ui::select
+                    :label="__('internship::ui.placement')"
+                    icon="tabler.building"
+                    wire:model="form.placement_id"
+                    :options="$this->getPlacements()"
+                    :placeholder="__('ui::common.select')"
+                    required
+                    error="{{ $errors->first('form.placement_id') }}"
+                />
+
+                <x-ui::select
+                    :label="__('internship::ui.teacher')"
+                    icon="tabler.chalkboard"
+                    wire:model="form.teacher_id"
+                    :options="$this->getTeachers()"
+                    :placeholder="__('ui::common.select')"
+                    required
+                    error="{{ $errors->first('form.teacher_id') }}"
+                />
+
+                <x-ui::select
+                    :label="__('internship::ui.mentor')"
+                    icon="tabler.users-group"
+                    wire:model="form.mentor_id"
+                    :options="$this->getMentors()"
+                    :placeholder="__('ui::common.select')"
+                    error="{{ $errors->first('form.mentor_id') }}"
+                />
+
+                <x-ui::input
+                    type="date"
+                    :label="__('internship::ui.start_date')"
+                    icon="tabler.calendar-event"
+                    wire:model="form.start_date"
+                    required
+                    error="{{ $errors->first('form.start_date') }}"
+                />
+
+                <x-ui::input
+                    type="date"
+                    :label="__('internship::ui.end_date')"
+                    icon="tabler.calendar-event"
+                    wire:model="form.end_date"
+                    required
+                    error="{{ $errors->first('form.end_date') }}"
+                />
+            </div>
+
             <x-slot:actions>
                 <x-ui::button :label="__('ui::common.cancel')" x-on:click="$wire.formModal = false" />
                 <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />

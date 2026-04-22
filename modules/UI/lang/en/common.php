@@ -77,4 +77,7 @@ return [
     'phone' => 'Phone',
     'filters' => 'Filters',
     'search_email' => 'Search by email...',
+    'select' => 'Select',
+    'actions' => 'Actions',
+    'export_as_csv' => 'Export as CSV',
 ];

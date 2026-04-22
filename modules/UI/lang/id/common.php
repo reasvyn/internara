@@ -77,4 +77,7 @@ return [
     'phone' => 'Telepon',
     'filters' => 'Filter',
     'search_email' => 'Cari berdasarkan email...',
+    'select' => 'Pilih',
+    'actions' => 'Aksi',
+    'export_as_csv' => 'Ekspor sebagai CSV',
 ];
