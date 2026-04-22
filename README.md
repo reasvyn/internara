@@ -566,10 +566,11 @@ See [LICENSE](LICENSE) for full text.
 - **[Documentation Index](docs/README.md)** — Complete guide to all resources
 - **[Getting Started Guide](docs/getting-started.md)** — Quick start & development workflow
 - **[Installation Guide](docs/installation.md)** — Detailed setup & production deployment
+- **[Configuration Guide](docs/config.md)** — Database, SMTP, cache, sessions, storage
 - **[Philosophy Guide](docs/philosophy.md)** — 3S Doctrine and architectural principles
 - **[Architecture Guide](docs/architecture.md)** — Modular monolith design & patterns
 - **[Modules Catalog](docs/modules-catalog.md)** — All 29+ modules and their purposes
-- **[Testing Guide](docs/testing.md)** — TDD practices with Pest framework
+- **[Testing Guide](docs/testing.md)** — TDD practices with Pest and AppTest
 - **[Standards & Conventions](docs/standards.md)** — Code quality, naming, PSR-12
 
 ### 🤝 Contributing & Governance
