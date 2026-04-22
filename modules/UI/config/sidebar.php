@@ -12,6 +12,13 @@ return [
     | application's management sidebar. Items are registered into the
     | UI SlotRegistry during the boot phase.
     |
+    | Menu organized by operational workflow:
+    | 1. CORE: Application foundation
+    | 2. OPERATIONS: Daily workflow (Programs → Placements → Requirements)
+    | 3. RESOURCES: Master data management
+    | 4. INTELLIGENCE: Reports & analytics
+    | 5. ADMINISTRATOR: Administrative tools
+    | 6. SYSTEM: Configuration & settings
     */
 
     'menu' => [
@@ -48,11 +55,11 @@ return [
             'role' => 'admin|super-admin|teacher|mentor',
             'order' => 25,
         ],
-        'ui::menu-item#registrations' => [
-            'title' => 'admin::ui.menu.registrations',
-            'icon' => 'tabler.user-plus',
-            'link' => '/internships/registrations',
-            'permission' => 'registration.view',
+        'ui::menu-item#student-placement' => [
+            'title' => 'internship::ui.student_placement_title',
+            'icon' => 'tabler.users-group',
+            'link' => '/internships/student-placement',
+            'permission' => 'internship.manage',
             'role' => 'admin|super-admin',
             'order' => 30,
         ],
