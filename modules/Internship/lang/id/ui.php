@@ -148,4 +148,5 @@ return [
     'selected_count' => ':count terpilih',
     'select_items_for_action' => 'Silakan pilih item untuk aksi ini.',
     'no_companies' => 'Tidak ada perusahaan yang ditemukan.',
+    'company_import_format' => 'Format CSV: Nama, Bidang Usaha, Telepon, Email, Alamat, Nama Pemimpin',
 ];
