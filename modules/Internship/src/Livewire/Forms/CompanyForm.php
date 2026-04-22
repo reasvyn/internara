@@ -32,7 +32,7 @@ class CompanyForm extends Form
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('companies', 'name')->ignore($this->id),
+                Rule::unique('internship_companies', 'name')->ignore($this->id),
             ],
             'address' => ['nullable', 'string'],
             'business_field' => ['nullable', 'string', 'max:255'],
