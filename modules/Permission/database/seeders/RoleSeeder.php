@@ -59,6 +59,7 @@ class RoleSeeder extends Seeder
                 'school.manage',
                 'department.manage',
                 'internship.view',
+                'internship.manage',
                 'registration.view',
                 'placement.view',
                 'company.view',

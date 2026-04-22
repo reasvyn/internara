@@ -36,4 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/internships/requirements', \Modules\Internship\Livewire\RequirementManager::class)
         ->middleware('can:internship.update')
         ->name('internship.requirement.index');
+
+    Route::get('/internships/companies', \Modules\Internship\Livewire\CompanyManager::class)
+        ->middleware('can:internship.manage')
+        ->name('internship.company.index');
 });
