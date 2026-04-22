@@ -104,10 +104,10 @@ class InternshipServiceProvider extends ServiceProvider
                     'permission' => 'internship.manage',
                     'order' => 45,
                 ],
-                'ui::menu-item#bulk-placement' => [
-                    'title' => 'internship::ui.bulk_placement_title',
+                'ui::menu-item#student-placement' => [
+                    'title' => 'internship::ui.student_placement_title',
                     'icon' => 'tabler.users-group',
-                    'link' => '/internships/bulk-placement',
+                    'link' => '/internships/student-placement',
                     'permission' => 'internship.manage',
                     'order' => 46,
                 ],

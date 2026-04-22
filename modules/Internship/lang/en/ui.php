@@ -58,6 +58,7 @@ return [
 
     // Registration
     'registration_title' => 'Student Registrations',
+    'student_placement_title' => 'Student Placement',
     'registration_subtitle' => 'Manage student applications and placements.',
     'add_registration' => 'Add Registration',
     'edit_registration' => 'Edit Registration',
@@ -149,4 +150,5 @@ return [
     'select_items_for_action' => 'Please select items for this action.',
     'no_companies' => 'No companies found.',
     'company_import_format' => 'Format CSV: Name, Business Field, Phone, Email, Address, Leader Name',
+'individual_placement' => 'Individual Registration',    'bulk_placement' => 'Bulk Placement',    'quota_info' => 'Quota Information',    'remaining_quota' => 'Remaining quota: :count slots',    'select_students' => 'Select Students',    'select_all' => 'Select All Students',    'selected_students' => ':count students selected',    'placement_summary' => 'Placement Summary',    'placement_location_not_found' => 'Placement location not found',    'confirm_placement_title' => 'Confirm Bulk Placement',    'registration_form_help' => 'Edit student registration details and placement information.',
 ];
