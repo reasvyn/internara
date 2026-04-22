@@ -9,6 +9,8 @@
 
 **Internara** is an enterprise-grade **Internship Management System** architected as a sophisticated **Modular Monolith**. Built to bridge the gap between educational institutions and industry partners, it delivers a secure, scalable, and highly maintainable digital ecosystem compliant with Indonesian education standards (Dapodik integration-ready).
 
+**📖 [Full Documentation](docs/README.md)** — Installation, Getting Started, and Architecture Guides
+
 ---
 
 ## 🎯 Overview
@@ -414,6 +416,8 @@ composer dev        # All services: server, queue, logs, vite
 
 ## 🚀 Getting Started
 
+> 📖 **For detailed installation and setup instructions**, see the [Installation Guide](docs/installation.md) and [Getting Started Guide](docs/getting_started.md).
+
 ### Prerequisites
 
 - **PHP**: 8.4 or higher (`php -v`)
@@ -421,7 +425,7 @@ composer dev        # All services: server, queue, logs, vite
 - **Composer**: Latest (`composer --version`)
 - **Git**: For cloning and version control
 
-### Installation
+### Quick Start (5 minutes)
 
 ```bash
 # 1. Clone the repository
@@ -431,22 +435,17 @@ cd internara
 # 2. Automated setup (installs deps, generates key, migrates DB, builds assets)
 composer setup
 
-# 3. Complete the Setup Wizard
-# Visit: http://localhost:8000
-# Create admin account, configure institution, set internship parameters
-
-# 4. Start development (all services)
+# 3. Start development (all services)
 composer dev
 ```
+
+**That's it!** Visit **http://localhost:8000** and follow the Setup Wizard.
 
 ### Development Workflow
 
 ```bash
-# Watch assets and serve with queue
-npm run dev
-
-# Or use composer for full orchestration (recommended)
-composer dev      # All services: server, queue, logs, vite
+# All services: Laravel server, queue, logs, Vite
+composer dev
 
 # In another terminal, run tests
 composer test
@@ -456,24 +455,11 @@ composer lint     # Check only
 composer format   # Auto-format
 ```
 
-### Environment Configuration
+### Next Steps
 
-```bash
-# Copy example environment
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-
-# Configure database (default: SQLite)
-# For PostgreSQL: Set DB_CONNECTION=pgsql in .env
-
-# Run migrations
-php artisan migrate
-
-# (Optional) Seed sample data
-php artisan db:seed
-```
+1. **[Installation Guide](docs/installation.md)** — Detailed setup, database configuration, production deployment
+2. **[Getting Started Guide](docs/getting_started.md)** — Development workflow, testing, debugging
+3. **[Documentation Index](docs/README.md)** — All documentation resources
 
 ---
 
@@ -576,12 +562,21 @@ See [LICENSE](LICENSE) for full text.
 
 ## 🎓 Learn More
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — Contribution guidelines & code patterns
-- [GOVERNANCE.md](GOVERNANCE.md) — Project governance and decision-making
-- [SECURITY.md](SECURITY.md) — Security protocols and vulnerability reporting
-- [SUPPORT.md](SUPPORT.md) — Getting help and support channels
-- [versioning-policy.md](versioning-policy.md) — Release strategy and compatibility
-- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — Community standards
+### 📖 Documentation
+- **[Documentation Index](docs/README.md)** — Complete guide to all resources
+- **[Installation Guide](docs/installation.md)** — Detailed setup & production deployment
+- **[Getting Started Guide](docs/getting_started.md)** — Quick start & development workflow
+
+### 🤝 Contributing & Governance
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Contribution guidelines & code patterns
+- **[GOVERNANCE.md](GOVERNANCE.md)** — Project governance and decision-making
+- **[MAINTAINERS.md](MAINTAINERS.md)** — Core maintainers and responsibilities
+
+### 🔐 Policy & Standards
+- **[SECURITY.md](SECURITY.md)** — Security protocols and vulnerability reporting
+- **[SUPPORT.md](SUPPORT.md)** — Getting help and support channels
+- **[versioning-policy.md](versioning-policy.md)** — Release strategy and compatibility
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** — Community standards
 
 ---
 
