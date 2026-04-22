@@ -16,7 +16,7 @@ class CompanyPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('internship.view');
+        return $user->can('internship.manage');
     }
 
     /**
@@ -24,7 +24,7 @@ class CompanyPolicy
      */
     public function view(User $user): bool
     {
-        return $user->can('internship.view');
+        return $user->can('internship.manage');
     }
 
     /**

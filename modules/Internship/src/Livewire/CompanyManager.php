@@ -15,7 +15,7 @@ use Modules\UI\Livewire\RecordManager;
  */
 class CompanyManager extends RecordManager
 {
-    protected string $viewPermission = 'company.view';
+    protected string $viewPermission = 'internship.manage';
 
     /**
      * Component properties.
