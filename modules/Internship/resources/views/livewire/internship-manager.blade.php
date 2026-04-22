@@ -1,27 +1,49 @@
 <x-ui::record-manager>
-    {{-- 1. Custom Filters --}}
+    {{-- 1. Custom Filters (Dropdown Menu) --}}
     <x-slot:filters>
-        <div class="flex items-center gap-3">
-            <x-ui::select 
-                icon="tabler.calendar-stats"
-                wire:model.live="filters.academic_year" 
-                :options="[]" {{-- Future: Populate with real years --}}
-                placeholder="{{ __('internship::ui.filter_year') }}"
-                class="w-48"
-            />
-            <x-ui::select 
-                icon="tabler.timeline"
-                wire:model.live="filters.semester" 
-                :options="[
-                    ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
-                    ['id' => 'Genap', 'name' => __('internship::ui.semester_even')],
-                    ['id' => 'Tahunan', 'name' => __('internship::ui.semester_full')]
-                ]" 
-                placeholder="{{ __('internship::ui.filter_semester') }}"
-                class="w-48"
-            />
-        </div>
-    </x-slot>
+        <x-ui::dropdown :close-on-content-click="false" right>
+            <x-slot:trigger>
+                <x-ui::button icon="tabler.filter" variant="secondary" class="gap-2">
+                    <span>{{ __('internship::ui.filters_open') ?? __('ui::common.filters') }}</span>
+                    @if($this->activeFilterCount() > 0)
+                        <x-ui::badge :value="$this->activeFilterCount()" variant="info" class="badge-sm" />
+                    @endif
+                </x-ui::button>
+            </x-slot:trigger>
+
+            <div class="w-[min(92vw,30rem)] space-y-4 p-2">
+                <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    <x-ui::select 
+                        :label="__('internship::ui.filter_year')"
+                        icon="tabler.calendar-stats"
+                        wire:model.live="filters.academic_year" 
+                        :options="[]" {{-- Future: Populate with real years --}}
+                        :placeholder="__('internship::ui.all_years')"
+                    />
+                    <x-ui::select 
+                        :label="__('internship::ui.filter_semester')"
+                        icon="tabler.timeline"
+                        wire:model.live="filters.semester" 
+                        :options="[
+                            ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
+                            ['id' => 'Genap', 'name' => __('internship::ui.semester_even')],
+                            ['id' => 'Tahunan', 'name' => __('internship::ui.semester_full')]
+                        ]" 
+                        :placeholder="__('internship::ui.all_semesters')"
+                    />
+                </div>
+
+                <div class="flex justify-end">
+                    <x-ui::button
+                        :label="__('internship::ui.filters_reset')"
+                        icon="tabler.filter-off"
+                        variant="secondary"
+                        wire:click="resetFilters"
+                    />
+                </div>
+            </div>
+        </x-ui::dropdown>
+    </x-slot:filters>
 
     {{-- 2. Form Fields --}}
     <x-slot:formFields>

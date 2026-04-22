@@ -180,6 +180,27 @@ class InternshipManager extends RecordManager
     }
 
     /**
+     * Reset all applied filters and pagination.
+     */
+    public function resetFilters(): void
+    {
+        $this->filters = [];
+        $this->selectedIds = [];
+        $this->resetPage();
+    }
+
+    /**
+     * Count the number of active filters.
+     */
+    public function activeFilterCount(): int
+    {
+        return count(array_filter(
+            $this->filters,
+            fn ($v) => $v !== null && $v !== '' && $v !== [],
+        ));
+    }
+
+    /**
      * Render the component.
      */
     public function render(): \Illuminate\View\View
