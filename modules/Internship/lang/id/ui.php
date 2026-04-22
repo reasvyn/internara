@@ -156,4 +156,6 @@ return [
     'placement_success' => 'Siswa ditempatkan dengan sukses!',
     'total_placed' => 'Total Ditempatkan',
     'place_student' => 'Tempatkan Siswa',
+    'start_date' => 'Tanggal Mulai',
+    'end_date' => 'Tanggal Akhir',
 ];

@@ -156,4 +156,6 @@ return [
     'placement_success' => 'Students placed successfully!',
     'total_placed' => 'Total Placed',
     'place_student' => 'Place Student',
+    'start_date' => 'Start Date',
+    'end_date' => 'End Date',
 ];
