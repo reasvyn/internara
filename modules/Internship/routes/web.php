@@ -41,3 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('can:internship.manage')
         ->name('internship.company.index');
 });
+
+    Route::get('/internships/bulk-placement', \Modules\Internship\Livewire\BulkPlacementManager::class)
+        ->middleware('can:internship.manage')
+        ->name('internship.bulk-placement.index');
