@@ -193,6 +193,7 @@ class MentorManager extends RecordManager
     {
         $this->form->reset();
         $this->form->roles = ['mentor'];
+        $this->form->generatePassword();
         $this->toggleModal(self::MODAL_FORM, true);
     }
 
