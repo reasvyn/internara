@@ -50,6 +50,7 @@ class StatusServiceProvider extends ServiceProvider
         return [
             \Modules\Status\Services\AccountAuditLogger::class => \Modules\Status\Services\AccountAuditLogger::class,
             \Modules\Status\Services\StatusTransitionService::class => \Modules\Status\Services\StatusTransitionService::class,
+            \Modules\Status\Services\RoleBasedStatusTransitionService::class => \Modules\Status\Services\RoleBasedStatusTransitionService::class,
             \Modules\Status\Services\AccountLockoutService::class => \Modules\Status\Services\AccountLockoutService::class,
             \Modules\Status\Services\IdleAccountDetectionService::class => \Modules\Status\Services\IdleAccountDetectionService::class,
             \Modules\Status\Services\VerificationService::class => \Modules\Status\Services\VerificationService::class,

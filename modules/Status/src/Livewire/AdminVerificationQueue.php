@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Livewire;
 
 use Modules\User\Models\User;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\Status\Services\StatusTransitionService;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -16,7 +16,8 @@ use Illuminate\Support\Collection;
  * AdminVerificationQueueComponent
  *
  * Dedicated interface for bulk account verification.
- * Shows pending ACTIVATED accounts, allows batch verification with per-account notes.
+ * Shows pending ACTIVATED accounts across all roles, allows batch verification.
+ * Uses Spatie Model Status for account lifecycle management.
  */
 class AdminVerificationQueue extends Component
 {
@@ -26,6 +27,7 @@ class AdminVerificationQueue extends Component
     public string $searchQuery = '';
     public string $sortBy = 'created_at';
     public string $sortDirection = 'desc';
+    public string $roleFilter = ''; // Filter by role (student, teacher, mentor, admin, all)
     public array $selectedUsers = [];
     public array $notes = []; // user_id => note
     public bool $showBulkActionsBar = false;
@@ -46,21 +48,44 @@ class AdminVerificationQueue extends Component
     public function render()
     {
         $pendingUsers = $this->getPendingVerifications();
+        $totalPending = $this->countPendingVerifications();
 
         return view('livewire.admin-verification-queue', [
             'pendingUsers' => $pendingUsers,
-            'totalPending' => User::where('account_status', AccountStatus::ACTIVATED->value)->count(),
+            'totalPending' => $totalPending,
             'selectedCount' => count($this->selectedUsers),
             'showBulkActionsBar' => count($this->selectedUsers) > 0,
+            'roles' => ['student' => 'Pelajar', 'teacher' => 'Pengajar', 'mentor' => 'Pembimbing', 'admin' => 'Admin'],
         ]);
     }
 
     /**
-     * Get pending verifications with search and sorting
+     * Count pending verifications (ACTIVATED status accounts)
+     * Uses spatie status_histories table to find users with ACTIVATED status
+     */
+    private function countPendingVerifications(): int
+    {
+        return User::whereHas('statuses', function ($query) {
+            $query->where('name', Status::ACTIVATED->value);
+        })->count();
+    }
+
+    /**
+     * Get pending verifications with search, filtering, and sorting
+     * Queries using spatie status relationship
      */
     private function getPendingVerifications()
     {
-        $query = User::where('account_status', AccountStatus::ACTIVATED->value);
+        $query = User::whereHas('statuses', function ($q) {
+            $q->where('name', Status::ACTIVATED->value);
+        });
+
+        // Filter by role
+        if ($this->roleFilter && $this->roleFilter !== 'all') {
+            $query->whereHas('roles', function ($q) {
+                $q->where('name', $this->roleFilter);
+            });
+        }
 
         // Search by email, name, phone
         if ($this->searchQuery) {
@@ -126,12 +151,8 @@ class AdminVerificationQueue extends Component
         $note = $this->notes[$userId] ?? null;
 
         try {
-            $this->statusTransitionService->transition(
-                user: $user,
-                targetStatus: AccountStatus::VERIFIED,
-                reason: $note ?? 'Verified by admin',
-                triggeredByUser: auth()->user(),
-            );
+            // Use spatie status() method to set status
+            $user->setStatus(Status::VERIFIED->value, $note ?? 'Verified by admin');
 
             $this->dispatch('notify', type: 'success', message: "✅ {$user->email} verified successfully");
 
@@ -155,15 +176,10 @@ class AdminVerificationQueue extends Component
     {
         $user = User::findOrFail($userId);
         $note = $this->notes[$userId] ?? null;
-        $status = $targetStatus === 'restricted' ? AccountStatus::RESTRICTED : AccountStatus::SUSPENDED;
+        $status = $targetStatus === 'restricted' ? Status::RESTRICTED->value : Status::SUSPENDED->value;
 
         try {
-            $this->statusTransitionService->transition(
-                user: $user,
-                targetStatus: $status,
-                reason: $note ?? "Account rejected during verification",
-                triggeredByUser: auth()->user(),
-            );
+            $user->setStatus($status, $note ?? "Account rejected during verification");
 
             $this->dispatch('notify', type: 'warning', message: "⛔ {$user->email} {$targetStatus}");
 
@@ -194,12 +210,7 @@ class AdminVerificationQueue extends Component
                 $user = User::findOrFail($userId);
                 $note = $this->notes[$userId] ?? null;
 
-                $this->statusTransitionService->transition(
-                    user: $user,
-                    targetStatus: AccountStatus::VERIFIED,
-                    reason: $note ?? 'Verified via bulk action',
-                    triggeredByUser: auth()->user(),
-                );
+                $user->setStatus(Status::VERIFIED->value, $note ?? 'Verified via bulk action');
 
                 $successCount++;
             } catch (\Exception $e) {
@@ -245,7 +256,9 @@ class AdminVerificationQueue extends Component
      */
     public function exportPendingUsers()
     {
-        $users = User::where('account_status', AccountStatus::ACTIVATED->value)
+        $users = User::whereHas('statuses', function ($q) {
+            $q->where('name', Status::ACTIVATED->value);
+        })
             ->orderBy('created_at', 'desc')
             ->get(['id', 'email', 'name', 'phone', 'created_at']);
 
