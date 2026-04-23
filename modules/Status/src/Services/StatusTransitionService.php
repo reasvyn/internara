@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Status\Enums\AccountStatus;
 use Modules\Status\Models\AccountStatusHistory;
+use Modules\Status\Notifications\AccountStatusChanged;
 use Modules\User\Models\User;
 
 class StatusTransitionService
@@ -94,6 +95,22 @@ class StatusTransitionService
                 'new_status' => $newStatus->value,
                 'triggered_by_user_id' => $triggeredBy?->id,
             ]);
+
+            // Send notification to user about status change
+            try {
+                $user->notify(new AccountStatusChanged(
+                    user: $user,
+                    oldStatus: $currentStatus,
+                    newStatus: $newStatus,
+                    reason: $reason,
+                    changedBy: $triggeredBy,
+                ));
+            } catch (\Exception $e) {
+                Log::warning("Failed to send status change notification", [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             Log::info("Account status transitioned", [
                 'user_id' => $user->id,
