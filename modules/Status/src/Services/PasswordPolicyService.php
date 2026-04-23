@@ -261,4 +261,40 @@ class PasswordPolicyService
             ->where('changed_at', '<', now()->subYears(2))
             ->delete();
     }
+
+    /**
+     * Check if password was used recently (in last 5 passwords)
+     *
+     * @param User $user
+     * @param string $password
+     * @return bool True if password was used recently
+     */
+    public function wasPasswordUsedRecently(User $user, string $password): bool
+    {
+        return !$this->validatePasswordHistory($user, $password);
+    }
+
+    /**
+     * Record a password change in history
+     *
+     * @param User $user
+     * @param string $newPassword
+     * @return void
+     */
+    public function recordPasswordChange(User $user, string $newPassword): void
+    {
+        DB::table('password_history')->insert([
+            'user_id' => $user->id,
+            'password_hash' => Hash::make($newPassword),
+            'changed_at' => now(),
+        ]);
+
+        // Keep only last 5 passwords
+        $historyLimit = (int) config('auth.password_policy.history_limit', 5);
+        DB::table('password_history')
+            ->where('user_id', $user->id)
+            ->orderBy('changed_at', 'desc')
+            ->offset($historyLimit)
+            ->delete();
+    }
 }

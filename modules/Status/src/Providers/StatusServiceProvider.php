@@ -58,6 +58,7 @@ class StatusServiceProvider extends ServiceProvider
             \Modules\Status\Services\PasswordPolicyService::class => \Modules\Status\Services\PasswordPolicyService::class,
             \Modules\Status\Services\SuperAdminGuardRails::class => \Modules\Status\Services\SuperAdminGuardRails::class,
             \Modules\Status\Services\GdprComplianceService::class => \Modules\Status\Services\GdprComplianceService::class,
+            \Modules\Status\Services\AccountCloneDetectionService::class => \Modules\Status\Services\AccountCloneDetectionService::class,
             \Modules\Status\Policies\StatusChangePolicy::class => \Modules\Status\Policies\StatusChangePolicy::class,
             \Modules\Status\Policies\RoleBasedAccessPolicy::class => \Modules\Status\Policies\RoleBasedAccessPolicy::class,
         ];

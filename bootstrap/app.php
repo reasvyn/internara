@@ -47,11 +47,13 @@ return Application::configure(basePath: dirname(__DIR__))
             ],
             append: [
                 \Modules\Status\Middleware\CheckSessionExpiration::class,
+                \Modules\Status\Middleware\CheckPasswordExpiration::class,
                 \Modules\Core\Localization\Http\Middleware\SetLocale::class,
             ],
         );
         $middleware->alias([
             'session.expire'    => \Modules\Status\Middleware\CheckSessionExpiration::class,
+            'password.expire'   => \Modules\Status\Middleware\CheckPasswordExpiration::class,
             'role'              => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission'        => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission'=> \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
