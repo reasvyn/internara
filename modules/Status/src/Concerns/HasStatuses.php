@@ -34,11 +34,21 @@ trait HasStatuses
     /**
      * Standard status names.
      */
-    public const STATUS_ACTIVE = StatusEnum::ACTIVE->value;
-
     public const STATUS_PENDING = StatusEnum::PENDING->value;
 
+    public const STATUS_ACTIVATED = StatusEnum::ACTIVATED->value;
+
+    public const STATUS_VERIFIED = StatusEnum::VERIFIED->value;
+
+    public const STATUS_PROTECTED = StatusEnum::PROTECTED->value;
+
+    public const STATUS_RESTRICTED = StatusEnum::RESTRICTED->value;
+
+    public const STATUS_SUSPENDED = StatusEnum::SUSPENDED->value;
+
     public const STATUS_INACTIVE = StatusEnum::INACTIVE->value;
+
+    public const STATUS_ARCHIVED = StatusEnum::ARCHIVED->value;
 
     /**
      * Default fallback color for unknown statuses.
