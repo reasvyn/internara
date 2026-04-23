@@ -16,8 +16,8 @@ class AccountStatusChanged extends Notification
 {
     public function __construct(
         public User $user,
-        public AccountStatus $oldStatus,
-        public AccountStatus $newStatus,
+        public Status $oldStatus,
+        public Status $newStatus,
         public ?string $reason = null,
         public ?User $changedBy = null,
     ) {}
