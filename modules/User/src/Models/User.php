@@ -218,4 +218,100 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         return UserFactory::new();
     }
+
+    // ─── Account Lifecycle Management ────────────────────────────────────────
+
+    public function canTransitionTo(\Modules\Status\Enums\AccountStatus $targetStatus): bool
+    {
+        $currentStatus = $this->getStatus();
+        if (!$currentStatus) return false;
+        return $currentStatus->canTransitionTo($targetStatus);
+    }
+
+    public function transitionTo(
+        \Modules\Status\Enums\AccountStatus $newStatus,
+        ?string $reason = null,
+        ?string $triggeredById = null,
+    ): \Modules\Status\Models\AccountStatusHistory {
+        $currentStatus = $this->getStatus();
+        if ($currentStatus && !$currentStatus->canTransitionTo($newStatus)) {
+            throw new \InvalidArgumentException("Cannot transition from {$currentStatus->value} to {$newStatus->value}");
+        }
+        $history = \Modules\Status\Models\AccountStatusHistory::create([
+            'user_id' => $this->id,
+            'old_status' => $currentStatus?->value,
+            'new_status' => $newStatus->value,
+            'reason' => $reason,
+            'triggered_by_user_id' => $triggeredById,
+            'ip_address' => request()?->ip(),
+        ]);
+        $this->setStatus($newStatus->value);
+        return $history;
+    }
+
+    public function isProtected(): bool
+    {
+        return $this->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ||
+               $this->getStatus() === \Modules\Status\Enums\AccountStatus::PROTECTED;
+    }
+
+    public function isAccountVerified(): bool
+    {
+        $status = $this->getStatus();
+        return in_array($status, [\Modules\Status\Enums\AccountStatus::VERIFIED, \Modules\Status\Enums\AccountStatus::PROTECTED]);
+    }
+
+    public function isAccountRestricted(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::RESTRICTED; }
+
+    public function isAccountSuspended(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::SUSPENDED; }
+
+    public function isAccountArchived(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::ARCHIVED; }
+
+    public function isAccountInactive(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::INACTIVE; }
+
+    public function getActiveRestrictions(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->restrictions()->where('is_active', true)->where(function ($q) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+        })->get();
+    }
+
+    public function isRestricted(string $restrictionKey): bool
+    {
+        return $this->getActiveRestrictions()->where('restriction_key', $restrictionKey)->isNotEmpty();
+    }
+
+    public function getLastStatusChangeAt(): ?\Illuminate\Support\Carbon
+    {
+        return $this->statusHistory()->latest('created_at')->first()?->created_at;
+    }
+
+    public function getLastActivityAt(): ?\Illuminate\Support\Carbon
+    {
+        return $this->activity()->where('event', 'login')->latest('created_at')->first()?->created_at;
+    }
+
+    public function isIdle(int $days = 180): bool
+    {
+        $lastActivity = $this->getLastActivityAt();
+        return $lastActivity ? $lastActivity->addDays($days)->isPast() : $this->created_at->addDays($days)->isPast();
+    }
+
+    public function daysUntilAutoArchive(int $totalDays = 365): int
+    {
+        $lastActivity = $this->getLastActivityAt();
+        $archiveDate = $lastActivity ? $lastActivity->addDays($totalDays) : $this->created_at->addDays($totalDays);
+        return now()->diffInDays($archiveDate, absolute: false);
+    }
+
+    public function statusHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\Modules\Status\Models\AccountStatusHistory::class, 'user_id');
+    }
+
+    public function restrictions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\Modules\Status\Models\AccountRestriction::class, 'user_id');
+    }
+
 }

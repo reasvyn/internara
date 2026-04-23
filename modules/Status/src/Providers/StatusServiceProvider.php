@@ -47,6 +47,13 @@ class StatusServiceProvider extends ServiceProvider
      */
     protected function bindings(): array
     {
-        return [];
+        return [
+            \Modules\Status\Services\AccountAuditLogger::class => \Modules\Status\Services\AccountAuditLogger::class,
+            \Modules\Status\Services\StatusTransitionService::class => \Modules\Status\Services\StatusTransitionService::class,
+            \Modules\Status\Services\AccountLockoutService::class => \Modules\Status\Services\AccountLockoutService::class,
+            \Modules\Status\Services\IdleAccountDetectionService::class => \Modules\Status\Services\IdleAccountDetectionService::class,
+            \Modules\Status\Services\VerificationService::class => \Modules\Status\Services\VerificationService::class,
+            \Modules\Status\Policies\StatusChangePolicy::class => \Modules\Status\Policies\StatusChangePolicy::class,
+        ];
     }
 }
