@@ -145,3 +145,34 @@ class AccountAuditLogger
         );
     }
 }
+
+    /**
+     * Log session expiration events.
+     */
+    public function logSessionExpired(User $user, string $reason, ?string $ipAddress = null): void
+    {
+        Log::channel('audit')->info(
+            "🔓 Session expired: {$user->email}",
+            [
+                'user_id' => $user->id,
+                'reason' => $reason,
+                'ip_address' => $ipAddress,
+                'action' => 'session_expired',
+            ],
+        );
+    }
+
+    /**
+     * Log successful login.
+     */
+    public function logSuccessfulLogin(User $user, ?string $ipAddress = null): void
+    {
+        Log::channel('audit')->info(
+            "✅ Successful login: {$user->email}",
+            [
+                'user_id' => $user->id,
+                'ip_address' => $ipAddress,
+                'action' => 'successful_login',
+            ],
+        );
+    }
