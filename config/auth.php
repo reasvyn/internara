@@ -112,4 +112,71 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+    /**
+     * Password Policy Configuration
+     * Enterprise-grade password requirements for all user roles
+     */
+    'password_policy' => [
+        // Password expiration (days) by role
+        'super_admin_expiry_days' => env('PASSWORD_SUPER_ADMIN_EXPIRY_DAYS', 30),
+        'admin_expiry_days' => env('PASSWORD_ADMIN_EXPIRY_DAYS', 60),
+        'standard_expiry_days' => env('PASSWORD_STANDARD_EXPIRY_DAYS', 90),
+
+        // Warning period before expiration (days)
+        'warning_days' => env('PASSWORD_WARNING_DAYS', 14),
+
+        // Password history - prevent reuse of N recent passwords
+        'history_limit' => env('PASSWORD_HISTORY_LIMIT', 5),
+
+        // Complexity requirements
+        'min_length' => 12,
+        'require_uppercase' => true,
+        'require_lowercase' => true,
+        'require_number' => true,
+        'require_symbol' => true,
+    ],
+
+    /**
+     * Super Admin Protection Settings
+     * Additional safeguards for Super Admin accounts
+     */
+    'super_admin' => [
+        // Require 2 Super Admin approvals for changes
+        'require_dual_approval' => env('SUPER_ADMIN_DUAL_APPROVAL', true),
+
+        // IP whitelist for Super Admin login (comma-separated, supports CIDR)
+        // Example: "192.168.1.0/24,10.0.0.5"
+        'ip_whitelist' => env('SUPER_ADMIN_IP_WHITELIST', ''),
+
+        // Force session isolation (only one active session per Super Admin)
+        'enforce_session_isolation' => env('SUPER_ADMIN_SESSION_ISOLATION', true),
+
+        // Maximum concurrent sessions per Super Admin
+        'max_concurrent_sessions' => env('SUPER_ADMIN_MAX_SESSIONS', 1),
+
+        // Require MFA for Super Admin
+        'require_mfa' => env('SUPER_ADMIN_REQUIRE_MFA', true),
+
+        // Password change frequency (days)
+        'password_change_frequency' => env('SUPER_ADMIN_PASSWORD_CHANGE_DAYS', 30),
+    ],
+
+    /**
+     * Account Lockout Protection
+     * Prevent brute-force attacks
+     */
+    'lockout' => [
+        // Failed attempts before lockout
+        'failed_attempts' => env('LOGIN_FAILED_ATTEMPTS', 5),
+
+        // Lockout duration (minutes)
+        'lockout_duration' => env('LOGIN_LOCKOUT_MINUTES', 30),
+
+        // Time window for counting attempts (minutes)
+        'attempt_window' => env('LOGIN_ATTEMPT_WINDOW_MINUTES', 30),
+
+        // Auto-unlock after duration expires
+        'auto_unlock' => true,
+    ],
 ];
