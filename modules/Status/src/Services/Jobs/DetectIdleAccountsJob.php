@@ -74,41 +74,22 @@ class DetectIdleAccountsJob implements ShouldQueue
     {
         $days = config('status.idle.warning_days', 175); // 5 days before 180d threshold
 
-        $users = User::whereIn('account_status', [
-            Status::ACTIVATED->value,
-            Status::VERIFIED->value,
-            Status::PROTECTED->value,
-        ])
+        // Query using Spatie status relations
+        $users = User::whereHas('statuses', function ($query) {
+            $query->whereIn('name', [
+                Status::ACTIVATED->value,
+                Status::VERIFIED->value,
+                Status::PROTECTED->value,
+            ]);
+        })
         ->where('last_activity_at', '<=', now()->subDays($days))
         ->get();
 
         foreach ($users as $user) {
-            // Check if we already sent warning
-            $recentWarning = $user->statusHistory()
-                ->where('new_status', Status::ACTIVATED->value)
-                ->where('metadata->warning_sent', true)
-                ->where('created_at', '>=', now()->subDays(90))
-                ->exists();
-
-            if (!$recentWarning) {
-                // Send warning notification
-                $daysUntilInactive = 180 - $user->daysUntilAutoInactive();
-
-                $this->auditLogger->log(
-                    user: $user,
-                    event: 'idle_account_warning_sent',
-                    metadata: [
-                        'days_until_inactive' => $daysUntilInactive,
-                        'last_activity' => $user->last_activity_at?->toIso8601String(),
-                    ]
-                );
-
-                // TODO: Send notification to user
-                Log::info('Idle account warning sent', [
-                    'user_id' => $user->id,
-                    'days_until_inactive' => $daysUntilInactive,
-                ]);
-            }
+            // TODO: Check if we already sent warning and send notification
+            Log::info('Idle account warning candidate', [
+                'user_id' => $user->id,
+            ]);
         }
     }
 
@@ -117,31 +98,30 @@ class DetectIdleAccountsJob implements ShouldQueue
      */
     private function processBecomingArchived(): void
     {
-        $users = User::whereIn('account_status', [
-            Status::ACTIVATED->value,
-            Status::VERIFIED->value,
-            Status::INACTIVE->value,
-        ])
+        $users = User::whereHas('statuses', function ($query) {
+            $query->whereIn('name', [
+                Status::ACTIVATED->value,
+                Status::VERIFIED->value,
+                Status::INACTIVE->value,
+            ]);
+        })
         ->where('last_activity_at', '<=', now()->subDays(365))
         ->get();
 
         foreach ($users as $user) {
+            $currentStatus = $user->getStatus();
+            
             // Check if already archived
-            if ($user->account_status === Status::ARCHIVED->value) {
+            if ($currentStatus === Status::ARCHIVED) {
                 continue;
             }
 
             try {
                 $this->transitionService->transition(
                     user: $user,
-                    fromStatus: Status::tryFrom($user->account_status),
-                    toStatus: Status::ARCHIVED,
+                    newStatus: Status::ARCHIVED,
                     reason: 'Automatic archival: No activity for 365+ days',
-                    triggeredByUserId: null, // System-triggered
-                    metadata: [
-                        'last_activity_days_ago' => $user->last_activity_at?->diffInDays(now()),
-                        'archived_by' => 'system_idle_job',
-                    ]
+                    triggeredBy: null, // System-triggered
                 );
 
                 Log::info('Account auto-archived', [
@@ -165,10 +145,9 @@ class DetectIdleAccountsJob implements ShouldQueue
     {
         $years = config('status.gdpr.retention_years', 7);
 
-        $users = User::whereIn('account_status', [
-            Status::ARCHIVED->value,
-            Status::INACTIVE->value,
-        ])
+        $users = User::whereHas('statuses', function ($query) {
+            $query->where('name', Status::ARCHIVED->value);
+        })
         ->where('last_activity_at', '<=', now()->subYears($years))
         ->get();
 
@@ -191,19 +170,11 @@ class DetectIdleAccountsJob implements ShouldQueue
 
     /**
      * Anonymize user data per GDPR requirements
-     *
-     * Removes all personally identifiable information while maintaining
-     * audit trail integrity and compliance records.
-     *
-     * @param User $user
-     * @return void
      */
     private function anonymizeUserData(User $user): void
     {
-        // Generate anonymized identifier (keep for audit purposes)
         $anonymizedId = 'ANON_' . hash('sha256', $user->id . config('app.key'));
 
-        // Update user record with anonymized data
         $user->update([
             'name' => $anonymizedId,
             'email' => $anonymizedId . '@anonymized.local',
@@ -217,7 +188,6 @@ class DetectIdleAccountsJob implements ShouldQueue
             ],
         ]);
 
-        // Log anonymization in audit trail
         $this->auditLogger->log(
             user: $user,
             event: 'gdpr_anonymization',
