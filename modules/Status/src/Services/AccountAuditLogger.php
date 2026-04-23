@@ -144,7 +144,6 @@ class AccountAuditLogger
             ],
         );
     }
-}
 
     /**
      * Log session expiration events.
@@ -176,3 +175,4 @@ class AccountAuditLogger
             ],
         );
     }
+}

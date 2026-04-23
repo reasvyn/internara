@@ -54,6 +54,7 @@ class StatusServiceProvider extends ServiceProvider
             \Modules\Status\Services\IdleAccountDetectionService::class => \Modules\Status\Services\IdleAccountDetectionService::class,
             \Modules\Status\Services\VerificationService::class => \Modules\Status\Services\VerificationService::class,
             \Modules\Status\Services\SessionExpirationService::class => \Modules\Status\Services\SessionExpirationService::class,
+            \Modules\Status\Services\ActivationWorkflow::class => \Modules\Status\Services\ActivationWorkflow::class,
             \Modules\Status\Policies\StatusChangePolicy::class => \Modules\Status\Policies\StatusChangePolicy::class,
         ];
     }
