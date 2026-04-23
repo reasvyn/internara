@@ -52,6 +52,7 @@ return [
     'semester_odd' => 'Semester Ganjil',
     'semester_even' => 'Semester Genap',
     'semester_full' => 'Tahun Pelajaran Penuh',
+    'select_semester' => 'Pilih Semester',
     'date_start' => 'Tanggal Mulai',
     'date_finish' => 'Tanggal Selesai',
     'delete_program_confirm' => 'Apakah Anda yakin ingin menghapus program magang ini? Seluruh data penempatan dan pendaftaran terkait juga akan terhapus.',

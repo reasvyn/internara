@@ -52,6 +52,7 @@ return [
     'semester_odd' => 'Odd Semester',
     'semester_even' => 'Even Semester',
     'semester_full' => 'Full Academic Year',
+    'select_semester' => 'Select Semester',
     'date_start' => 'Start Date',
     'date_finish' => 'Finish Date',
     'delete_program_confirm' => 'Are you sure you want to delete this internship program? All related placements and registrations will also be deleted.',

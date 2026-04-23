@@ -56,6 +56,7 @@
                 :label="__('internship::ui.semester')" 
                 icon="tabler.timeline"
                 wire:model="form.semester" 
+                :placeholder="__('internship::ui.select_semester')"
                 :options="[
                     ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
                     ['id' => 'Genap', 'name' => __('internship::ui.semester_even')],
