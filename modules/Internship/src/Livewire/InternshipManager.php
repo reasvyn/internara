@@ -101,6 +101,7 @@ class InternshipManager extends RecordManager
         // Standard Auto-fills for institutional consistency
         $this->form->academic_year = \Modules\Core\Academic\Support\AcademicYear::current();
 
+        $this->form->semester = 'Ganjil';
         $school = app(SchoolService::class)->getSchool();
         if ($school) {
             $this->form->school_id = $school->id;
