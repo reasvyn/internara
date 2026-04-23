@@ -6,7 +6,7 @@ namespace Modules\Status\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 
 class AccountLockoutService

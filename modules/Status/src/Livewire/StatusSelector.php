@@ -44,7 +44,7 @@ class StatusSelector extends Component
     public function mount(User $user): void
     {
         $this->user = $user;
-        $this->selectedStatus = $user->account_status->value;
+        $this->selectedStatus = $user->getStatus()?->value;
 
         // Check authorization
         abort_unless(auth()->check(), 403);
@@ -56,7 +56,7 @@ class StatusSelector extends Component
      */
     public function getAvailableTransitions(): array
     {
-        $currentStatus = $this->user->account_status;
+        $currentStatus = $this->user->getStatus();
         $availableStatuses = [];
 
         foreach ($currentStatus->validTransitions() as $nextStatus) {
@@ -130,7 +130,7 @@ class StatusSelector extends Component
                 ipAddress: request()->ip(),
                 userAgent: request()->userAgent(),
                 metadata: [
-                    'previous_status' => $this->user->account_status->value,
+                    'previous_status' => $this->user->getStatus()?->value,
                     'admin_notes' => $this->adminNotes,
                 ],
             );
@@ -142,7 +142,7 @@ class StatusSelector extends Component
 
             // Refresh user data
             $this->user->refresh();
-            $this->selectedStatus = $this->user->account_status->value;
+            $this->selectedStatus = $this->user->getStatus()?->value;
         } catch (\Exception $e) {
             flash()->error(__('Gagal mengubah status: ' . $e->getMessage()));
         }
@@ -153,7 +153,7 @@ class StatusSelector extends Component
      */
     public function getCurrentStatusInfo(): array
     {
-        $status = $this->user->account_status;
+        $status = $this->user->getStatus();
 
         return [
             'value' => $status->value,

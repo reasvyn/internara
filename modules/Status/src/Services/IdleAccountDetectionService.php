@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Services;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 
 class IdleAccountDetectionService
@@ -44,7 +44,7 @@ class IdleAccountDetectionService
             try {
                 $this->statusTransition->transition(
                     user: $user,
-                    newStatus: AccountStatus::INACTIVE,
+                    newStatus: Status::INACTIVE,
                     reason: "Automatic transition: Account idle for " . self::IDLE_THRESHOLD_DAYS . " days",
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
@@ -59,15 +59,16 @@ class IdleAccountDetectionService
         // Find accounts that should be ARCHIVED
         $archivedAccounts = $this->findIdleAccounts(self::ARCHIVE_THRESHOLD_DAYS);
         foreach ($archivedAccounts as $user) {
+            $user->refresh();  // Reload to get latest status
             // Only archive if currently INACTIVE
-            if ($user->account_status !== AccountStatus::INACTIVE) {
+            if ($user->getStatus() !== Status::INACTIVE) {
                 continue;
             }
 
             try {
                 $this->statusTransition->transition(
                     user: $user,
-                    newStatus: AccountStatus::ARCHIVED,
+                    newStatus: Status::ARCHIVED,
                     reason: "Automatic transition: Account inactive for " . self::ARCHIVE_THRESHOLD_DAYS . " days",
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
@@ -85,16 +86,18 @@ class IdleAccountDetectionService
     }
 
     /**
-     * Find accounts idle for N days.
+     * Find accounts idle for N days using Spatie status relations.
      * Uses last_activity_at column (updated on every request/action).
      */
     private function findIdleAccounts(int $dayThreshold): \Illuminate\Database\Eloquent\Collection
     {
         $cutoffDate = now()->subDays($dayThreshold);
 
+        // Query using Spatie's status relationships
         return User::query()
-            ->where('account_status', '!=', AccountStatus::PROTECTED->value)
-            ->where('account_status', '!=', AccountStatus::ARCHIVED->value)
+            ->whereDoesntHave('statuses', function ($query) {
+                $query->whereIn('name', [Status::PROTECTED->value, Status::ARCHIVED->value]);
+            })
             ->where(function ($query) use ($cutoffDate) {
                 $query->where('last_activity_at', '<', $cutoffDate)
                     ->orWhereNull('last_activity_at');
@@ -107,7 +110,8 @@ class IdleAccountDetectionService
      */
     public function daysUntilInactive(User $user): int
     {
-        if ($user->account_status === AccountStatus::INACTIVE || $user->account_status === AccountStatus::ARCHIVED) {
+        $currentStatus = $user->getStatus();
+        if ($currentStatus === Status::INACTIVE || $currentStatus === Status::ARCHIVED) {
             return 0;
         }
 
@@ -122,7 +126,8 @@ class IdleAccountDetectionService
      */
     public function daysUntilArchived(User $user): int
     {
-        if ($user->account_status === AccountStatus::ARCHIVED) {
+        $currentStatus = $user->getStatus();
+        if ($currentStatus === Status::ARCHIVED) {
             return 0;
         }
 
@@ -138,34 +143,33 @@ class IdleAccountDetectionService
      */
     public function getGdprDeletionDeadline(User $user): ?\DateTime
     {
-        if ($user->account_status !== AccountStatus::ARCHIVED) {
+        $currentStatus = $user->getStatus();
+        if ($currentStatus !== Status::ARCHIVED) {
             return null;
         }
 
-        // Find when account was archived
-        $archivalHistory = $user->statusHistory()
-            ->where('new_status', AccountStatus::ARCHIVED->value)
+        // Find when account was archived from Spatie's statuses table
+        $archivalStatus = $user->statuses()
+            ->where('name', Status::ARCHIVED->value)
             ->orderByDesc('created_at')
             ->first();
 
-        if (!$archivalHistory) {
+        if (!$archivalStatus) {
             return null;
         }
 
-        return $archivalHistory->created_at->addYears(self::GDPR_RETENTION_YEARS);
+        return $archivalStatus->created_at->addYears(self::GDPR_RETENTION_YEARS);
     }
 
     /**
-     * Get accounts eligible for GDPR deletion.
+     * Get accounts eligible for GDPR deletion using Spatie relations.
      */
     public function findGdprDeletionEligible(): \Illuminate\Database\Eloquent\Collection
     {
-        return User::where('account_status', AccountStatus::ARCHIVED->value)
-            ->whereHas('statusHistory', function ($query) {
-                $cutoffDate = now()->subYears(self::GDPR_RETENTION_YEARS);
-                $query->where('new_status', AccountStatus::ARCHIVED->value)
-                    ->where('created_at', '<', $cutoffDate);
-            })
-            ->get();
+        return User::whereHas('statuses', function ($query) {
+            $cutoffDate = now()->subYears(self::GDPR_RETENTION_YEARS);
+            $query->where('name', Status::ARCHIVED->value)
+                ->where('created_at', '<', $cutoffDate);
+        })->get();
     }
 }

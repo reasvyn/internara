@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Middleware;
 
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\Status\Services\AccountLockoutService;
 use Modules\User\Models\User;
 use Closure;

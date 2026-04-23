@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services\Jobs;
 
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\Status\Services\IdleAccountDetectionService;
 use Modules\Status\Services\StatusTransitionService;
 use Modules\Status\Services\AccountAuditLogger;
@@ -75,9 +75,9 @@ class DetectIdleAccountsJob implements ShouldQueue
         $days = config('status.idle.warning_days', 175); // 5 days before 180d threshold
 
         $users = User::whereIn('account_status', [
-            AccountStatus::ACTIVATED->value,
-            AccountStatus::VERIFIED->value,
-            AccountStatus::PROTECTED->value,
+            Status::ACTIVATED->value,
+            Status::VERIFIED->value,
+            Status::PROTECTED->value,
         ])
         ->where('last_activity_at', '<=', now()->subDays($days))
         ->get();
@@ -85,7 +85,7 @@ class DetectIdleAccountsJob implements ShouldQueue
         foreach ($users as $user) {
             // Check if we already sent warning
             $recentWarning = $user->statusHistory()
-                ->where('new_status', AccountStatus::ACTIVATED->value)
+                ->where('new_status', Status::ACTIVATED->value)
                 ->where('metadata->warning_sent', true)
                 ->where('created_at', '>=', now()->subDays(90))
                 ->exists();
@@ -118,24 +118,24 @@ class DetectIdleAccountsJob implements ShouldQueue
     private function processBecomingArchived(): void
     {
         $users = User::whereIn('account_status', [
-            AccountStatus::ACTIVATED->value,
-            AccountStatus::VERIFIED->value,
-            AccountStatus::INACTIVE->value,
+            Status::ACTIVATED->value,
+            Status::VERIFIED->value,
+            Status::INACTIVE->value,
         ])
         ->where('last_activity_at', '<=', now()->subDays(365))
         ->get();
 
         foreach ($users as $user) {
             // Check if already archived
-            if ($user->account_status === AccountStatus::ARCHIVED->value) {
+            if ($user->account_status === Status::ARCHIVED->value) {
                 continue;
             }
 
             try {
                 $this->transitionService->transition(
                     user: $user,
-                    fromStatus: AccountStatus::tryFrom($user->account_status),
-                    toStatus: AccountStatus::ARCHIVED,
+                    fromStatus: Status::tryFrom($user->account_status),
+                    toStatus: Status::ARCHIVED,
                     reason: 'Automatic archival: No activity for 365+ days',
                     triggeredByUserId: null, // System-triggered
                     metadata: [
@@ -166,8 +166,8 @@ class DetectIdleAccountsJob implements ShouldQueue
         $years = config('status.gdpr.retention_years', 7);
 
         $users = User::whereIn('account_status', [
-            AccountStatus::ARCHIVED->value,
-            AccountStatus::INACTIVE->value,
+            Status::ARCHIVED->value,
+            Status::INACTIVE->value,
         ])
         ->where('last_activity_at', '<=', now()->subYears($years))
         ->get();

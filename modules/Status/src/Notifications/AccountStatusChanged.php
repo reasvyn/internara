@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Notifications;
 
 use Illuminate\Notifications\Notification;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 
 /**
@@ -36,11 +36,11 @@ class AccountStatusChanged extends Notification
     public function toMail(object $notifiable)
     {
         $subject = match ($this->newStatus) {
-            AccountStatus::VERIFIED => '✅ Akun Anda Telah Diverifikasi',
-            AccountStatus::SUSPENDED => '🚫 Akun Anda Disuspensi',
-            AccountStatus::RESTRICTED => '⚠️ Akun Anda Dibatasi',
-            AccountStatus::INACTIVE => '😴 Akun Anda Menjadi Tidak Aktif',
-            AccountStatus::ARCHIVED => '📦 Akun Anda Diarsipkan',
+            Status::VERIFIED => '✅ Akun Anda Telah Diverifikasi',
+            Status::SUSPENDED => '🚫 Akun Anda Disuspensi',
+            Status::RESTRICTED => '⚠️ Akun Anda Dibatasi',
+            Status::INACTIVE => '😴 Akun Anda Menjadi Tidak Aktif',
+            Status::ARCHIVED => '📦 Akun Anda Diarsipkan',
             default => '📝 Status Akun Berubah',
         };
 

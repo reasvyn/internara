@@ -6,8 +6,8 @@ namespace Modules\Status\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Modules\Status\Enums\AccountStatus;
-use Modules\Status\Models\AccountStatusHistory;
+use Modules\Status\Enums\Status;
+use Spatie\ModelStatus\Models\Status as StatusModel;
 use Modules\Status\Notifications\AccountStatusChanged;
 use Modules\User\Models\User;
 
@@ -18,7 +18,7 @@ class StatusTransitionService
     ) {}
 
     /**
-     * Attempt to transition a user's account status.
+     * Attempt to transition a user's account status using Spatie's status system.
      * Validates rules, prevents invalid transitions, logs changes.
      *
      * @throws \InvalidArgumentException if transition not allowed
@@ -26,19 +26,24 @@ class StatusTransitionService
      */
     public function transition(
         User $user,
-        AccountStatus $newStatus,
+        Status $newStatus,
         ?string $reason = null,
         ?User $triggeredBy = null,
         ?string $ipAddress = null,
         ?string $userAgent = null,
         ?array $metadata = null,
-    ): AccountStatusHistory {
+    ): StatusModel {
         // Prevent transitioning protected accounts (Super Admins)
         if ($user->isProtected()) {
             throw new \LogicException("Protected accounts cannot be transitioned. Status is immutable.");
         }
 
-        $currentStatus = $user->account_status;
+        // Get current status from Spatie
+        $currentStatus = $user->getStatus();
+
+        if (!$currentStatus) {
+            throw new \LogicException("User has no current status set");
+        }
 
         // Check if transition is valid
         if (!$currentStatus->canTransitionTo($newStatus)) {
@@ -61,22 +66,11 @@ class StatusTransitionService
             $userAgent,
             $metadata,
         ) {
-            // Update user status
-            $user->account_status = $newStatus;
-            $user->save();
+            // Set new status using Spatie's API (creates status_histories record)
+            $user->setStatus($newStatus->value, $reason);
 
-            // Create audit trail record
-            $history = AccountStatusHistory::create([
-                'user_id' => $user->id,
-                'old_status' => $currentStatus->value,
-                'new_status' => $newStatus->value,
-                'reason' => $reason,
-                'triggered_by_user_id' => $triggeredBy?->id,
-                'triggered_by_role' => $triggeredBy?->role,
-                'ip_address' => $ipAddress,
-                'user_agent' => $userAgent,
-                'metadata' => $metadata,
-            ]);
+            // Reload to get the new status model
+            $statusModel = $user->latestStatus();
 
             // Log to audit system
             $this->auditLogger->logStatusChange(
@@ -119,7 +113,7 @@ class StatusTransitionService
                 'triggered_by' => $triggeredBy?->id ?? 'system',
             ]);
 
-            return $history;
+            return $statusModel;
         });
     }
 
@@ -131,7 +125,7 @@ class StatusTransitionService
      */
     private function validateRoleBasedRules(
         User $user,
-        AccountStatus $newStatus,
+        Status $newStatus,
         ?User $triggeredBy = null,
     ): void {
         // If no one triggered it, assume system action (allowed)
@@ -147,7 +141,7 @@ class StatusTransitionService
                 );
             }
             // Regular users cannot transition themselves to PROTECTED or VERIFIED
-            if (\in_array($newStatus, [AccountStatus::PROTECTED, AccountStatus::VERIFIED], true)) {
+            if (\in_array($newStatus, [Status::PROTECTED, Status::VERIFIED], true)) {
                 throw new \InvalidArgumentException(
                     "Users cannot self-transition to {$newStatus->value} status"
                 );
@@ -155,14 +149,14 @@ class StatusTransitionService
         }
 
         // Only Super Admins can set PROTECTED status
-        if ($newStatus === AccountStatus::PROTECTED && $triggeredBy->role !== 'super_admin') {
+        if ($newStatus === Status::PROTECTED && $triggeredBy->role !== 'super_admin') {
             throw new \InvalidArgumentException(
                 "Only Super Admins can set PROTECTED status"
             );
         }
 
         // Only Super Admin or higher can verify other admins
-        if ($user->role === 'admin' && $newStatus === AccountStatus::VERIFIED) {
+        if ($user->role === 'admin' && $newStatus === Status::VERIFIED) {
             if ($triggeredBy->role !== 'super_admin') {
                 throw new \InvalidArgumentException(
                     "Only Super Admins can verify Admin accounts"
@@ -172,7 +166,7 @@ class StatusTransitionService
     }
 
     /**
-     * Get valid next states for a user.
+     * Get valid next states for a user based on their current status.
      */
     public function getValidNextStates(User $user): array
     {
@@ -180,19 +174,30 @@ class StatusTransitionService
             return [];
         }
 
-        return $user->account_status->validTransitions();
+        $currentStatus = $user->getStatus();
+        if (!$currentStatus) {
+            return [];
+        }
+
+        return $currentStatus->validTransitions();
     }
 
     /**
      * Check if a specific transition is allowed.
      */
-    public function canTransition(User $user, AccountStatus $newStatus): bool
+    public function canTransition(User $user, Status $newStatus): bool
     {
         try {
             if ($user->isProtected()) {
                 return false;
             }
-            return $user->account_status->canTransitionTo($newStatus);
+
+            $currentStatus = $user->getStatus();
+            if (!$currentStatus) {
+                return false;
+            }
+
+            return $currentStatus->canTransitionTo($newStatus);
         } catch (\Exception) {
             return false;
         }

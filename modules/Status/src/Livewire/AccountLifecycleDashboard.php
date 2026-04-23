@@ -6,7 +6,7 @@ namespace Modules\Status\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 
 /**
@@ -48,14 +48,14 @@ class AccountLifecycleDashboard extends Component
 
         // Count users by status
         $this->statusStats = [
-            'provisioned' => User::where('account_status', AccountStatus::PROVISIONED->value)->count(),
-            'activated' => User::where('account_status', AccountStatus::ACTIVATED->value)->count(),
-            'verified' => User::where('account_status', AccountStatus::VERIFIED->value)->count(),
-            'protected' => User::where('account_status', AccountStatus::PROTECTED->value)->count(),
-            'restricted' => User::where('account_status', AccountStatus::RESTRICTED->value)->count(),
-            'suspended' => User::where('account_status', AccountStatus::SUSPENDED->value)->count(),
-            'inactive' => User::where('account_status', AccountStatus::INACTIVE->value)->count(),
-            'archived' => User::where('account_status', AccountStatus::ARCHIVED->value)->count(),
+            'provisioned' => User::where('account_status', Status::PENDING->value)->count(),
+            'activated' => User::where('account_status', Status::ACTIVATED->value)->count(),
+            'verified' => User::where('account_status', Status::VERIFIED->value)->count(),
+            'protected' => User::where('account_status', Status::PROTECTED->value)->count(),
+            'restricted' => User::where('account_status', Status::RESTRICTED->value)->count(),
+            'suspended' => User::where('account_status', Status::SUSPENDED->value)->count(),
+            'inactive' => User::where('account_status', Status::INACTIVE->value)->count(),
+            'archived' => User::where('account_status', Status::ARCHIVED->value)->count(),
         ];
     }
 
@@ -64,7 +64,7 @@ class AccountLifecycleDashboard extends Component
      */
     public function getPendingVerificationQueue(): array
     {
-        return User::where('account_status', AccountStatus::ACTIVATED->value)
+        return User::where('account_status', Status::ACTIVATED->value)
             ->orderBy('created_at', 'asc')
             ->limit(10)
             ->get()
@@ -84,7 +84,7 @@ class AccountLifecycleDashboard extends Component
      */
     public function getSuspendedAccounts(): array
     {
-        return User::where('account_status', AccountStatus::SUSPENDED->value)
+        return User::where('account_status', Status::SUSPENDED->value)
             ->orderBy('updated_at', 'desc')
             ->limit(10)
             ->get()
@@ -140,7 +140,7 @@ class AccountLifecycleDashboard extends Component
     {
         $cutoffDate = now()->subDays(170);
 
-        return User::where('account_status', AccountStatus::VERIFIED->value)
+        return User::where('account_status', Status::VERIFIED->value)
             ->where(function ($q) use ($cutoffDate) {
                 $q->where('last_activity_at', '<', $cutoffDate)
                     ->orWhereNull('last_activity_at');

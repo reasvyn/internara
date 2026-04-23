@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Services;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 
 class VerificationService
@@ -35,11 +35,11 @@ class VerificationService
         ]);
 
         // If user is PROVISIONED, auto-activate
-        if ($user->account_status === AccountStatus::PROVISIONED) {
+        if ($user->getStatus() === Status::PENDING) {
             try {
                 $this->statusTransition->transition(
                     user: $user,
-                    newStatus: AccountStatus::ACTIVATED,
+                    newStatus: Status::ACTIVATED,
                     reason: "Email verified - auto-activated",
                     triggeredBy: null,
                     userAgent: 'System/EmailVerification',
@@ -62,7 +62,7 @@ class VerificationService
         try {
             $this->statusTransition->transition(
                 user: $user,
-                newStatus: AccountStatus::VERIFIED,
+                newStatus: Status::VERIFIED,
                 reason: $reason ?? "Manually verified by administrator",
                 triggeredBy: $verifiedBy,
                 userAgent: 'Admin/ManualVerification',
@@ -180,7 +180,7 @@ class VerificationService
             'ready_for_auto_verification' => $this->isReadyForAutoVerification($user),
             'hours_until_auto_verify' => $this->getHoursUntilAutoVerification($user),
             'mfa_verified' => $this->hasMfaVerified($user),
-            'current_account_status' => $user->account_status->value,
+            'current_account_status' => $user->getStatus()?->value,
         ];
     }
 }

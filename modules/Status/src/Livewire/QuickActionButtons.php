@@ -6,7 +6,7 @@ namespace Modules\Status\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\Status\Services\StatusTransitionService;
 use Modules\Status\Services\AccountLockoutService;
 use Modules\User\Models\User;
@@ -43,7 +43,7 @@ class QuickActionButtons extends Component
             $service = app(StatusTransitionService::class);
             $service->transition(
                 user: $this->user,
-                newStatus: AccountStatus::VERIFIED,
+                newStatus: Status::VERIFIED,
                 reason: "Cepat diverifikasi oleh " . auth()->user()->name,
                 triggeredBy: auth()->user(),
                 ipAddress: request()->ip(),
@@ -66,7 +66,7 @@ class QuickActionButtons extends Component
             $service = app(StatusTransitionService::class);
             $service->transition(
                 user: $this->user,
-                newStatus: AccountStatus::SUSPENDED,
+                newStatus: Status::SUSPENDED,
                 reason: "Disuspensi dengan cepat oleh " . auth()->user()->name,
                 triggeredBy: auth()->user(),
                 ipAddress: request()->ip(),
@@ -105,7 +105,7 @@ class QuickActionButtons extends Component
         $actions = [];
 
         // Verify action - available if ACTIVATED
-        if ($this->user->account_status === AccountStatus::ACTIVATED) {
+        if ($this->user->getStatus() === Status::ACTIVATED) {
             $actions[] = [
                 'id' => 'verify',
                 'label' => 'Verifikasi',
@@ -116,7 +116,7 @@ class QuickActionButtons extends Component
         }
 
         // Suspend action - available if not SUSPENDED/PROTECTED/ARCHIVED
-        if (!in_array($this->user->account_status, [AccountStatus::SUSPENDED, AccountStatus::PROTECTED, AccountStatus::ARCHIVED])) {
+        if (!in_array($this->user->getStatus(), [Status::SUSPENDED, Status::PROTECTED, Status::ARCHIVED])) {
             $actions[] = [
                 'id' => 'suspend',
                 'label' => 'Suspensi',

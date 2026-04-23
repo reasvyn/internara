@@ -8,7 +8,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Status\Models\AccountStatusHistory;
+use Spatie\ModelStatus\Models\Status as StatusModel;
 use Modules\User\Models\User;
 
 /**

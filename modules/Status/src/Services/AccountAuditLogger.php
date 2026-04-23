@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Services;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 
 class AccountAuditLogger
@@ -44,11 +44,11 @@ class AccountAuditLogger
 
         // Log specific status transitions of interest
         match ($newStatus) {
-            AccountStatus::PROTECTED => $this->logProtectedStatusAssignment($user, $triggeredBy),
-            AccountStatus::VERIFIED => $this->logVerification($user, $triggeredBy),
-            AccountStatus::RESTRICTED => $this->logRestriction($user, $triggeredBy),
-            AccountStatus::SUSPENDED => $this->logSuspension($user, $reason, $triggeredBy),
-            AccountStatus::ARCHIVED => $this->logArchival($user, $triggeredBy),
+            Status::PROTECTED => $this->logProtectedStatusAssignment($user, $triggeredBy),
+            Status::VERIFIED => $this->logVerification($user, $triggeredBy),
+            Status::RESTRICTED => $this->logRestriction($user, $triggeredBy),
+            Status::SUSPENDED => $this->logSuspension($user, $reason, $triggeredBy),
+            Status::ARCHIVED => $this->logArchival($user, $triggeredBy),
             default => null,
         };
     }

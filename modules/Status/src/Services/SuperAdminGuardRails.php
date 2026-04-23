@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -58,7 +58,7 @@ class SuperAdminGuardRails
         }
 
         // If user is being PROMOTED to Super Admin, require dual approval
-        if ($proposedStatus === AccountStatus::PROTECTED && !$user->isProtected()) {
+        if ($proposedStatus === Status::PROTECTED && !$user->isProtected()) {
             // This should trigger dual-admin workflow (handled in StatusChangePolicy)
             Log::warning('Super Admin promotion requested - requires dual approval', [
                 'user_id' => $user->id,
@@ -82,7 +82,7 @@ class SuperAdminGuardRails
     {
         // If user is Super Admin, check if others exist
         if ($user->isProtected()) {
-            $otherSuperAdmins = User::where('account_status', AccountStatus::PROTECTED->value)
+            $otherSuperAdmins = User::where('account_status', Status::PROTECTED->value)
                 ->where('id', '!=', $user->id)
                 ->count();
 

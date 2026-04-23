@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
-use Modules\Status\Enums\AccountStatus;
-use Modules\Status\Models\AccountStatusHistory;
+use Modules\Status\Enums\Status;
+use Spatie\ModelStatus\Models\Status as StatusModel;
 use Modules\User\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -128,7 +128,7 @@ class ActivationWorkflow
 
             // Token is valid - activate user
             $user->update([
-                'account_status' => AccountStatus::ACTIVATED->value,
+                'account_status' => Status::ACTIVATED->value,
                 'activated_at' => now(),
                 'claimed_by_user_id' => $user->id,
                 'last_activity_at' => now(), // Initialize activity tracking
@@ -137,8 +137,8 @@ class ActivationWorkflow
             // Perform status transition with audit logging
             $this->transitionService->transition(
                 user: $user,
-                fromStatus: AccountStatus::PROVISIONED,
-                toStatus: AccountStatus::ACTIVATED,
+                fromStatus: Status::PENDING,
+                toStatus: Status::ACTIVATED,
                 reason: 'User claimed account via activation token',
                 triggeredByUserId: $user->id,
                 ipAddress: $ipAddress,
@@ -221,7 +221,7 @@ class ActivationWorkflow
      */
     public function hasPendingActivation(User $user): bool
     {
-        return $user->account_status === AccountStatus::PROVISIONED->value
+        return $user->getStatus() === Status::PENDING
             && DB::table('activation_tokens')
                 ->where('user_id', $user->id)
                 ->where('expires_at', '>=', now())

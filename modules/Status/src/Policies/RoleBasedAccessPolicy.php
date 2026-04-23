@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Policies;
 
 use Modules\User\Models\User;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 
 /**
  * RoleBasedAccessPolicy
@@ -76,7 +76,7 @@ class RoleBasedAccessPolicy
 
         // Super Admin can change any status (except protecting other Super Admins)
         if ($user->isSuper()) {
-            return $newStatus !== AccountStatus::PROTECTED || !$target->isSuper();
+            return $newStatus !== Status::PROTECTED || !$target->isSuper();
         }
 
         // Admin can:
@@ -89,17 +89,17 @@ class RoleBasedAccessPolicy
             }
 
             return in_array($newStatus, [
-                AccountStatus::VERIFIED,
-                AccountStatus::RESTRICTED,
-                AccountStatus::SUSPENDED,
+                Status::VERIFIED,
+                Status::RESTRICTED,
+                Status::SUSPENDED,
             ]);
         }
 
         // Supervisor can restrict/suspend students only
         if ($user->isSupervisor() && $target->hasRole('student')) {
             return in_array($newStatus, [
-                AccountStatus::RESTRICTED,
-                AccountStatus::SUSPENDED,
+                Status::RESTRICTED,
+                Status::SUSPENDED,
             ]);
         }
 
@@ -294,7 +294,7 @@ class RoleBasedAccessPolicy
     {
         return collect([
             // Students can only self-activate
-            AccountStatus::ACTIVATED,
+            Status::ACTIVATED,
         ]);
     }
 

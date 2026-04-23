@@ -252,22 +252,22 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function isProtected(): bool
     {
         return $this->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ||
-               $this->getStatus() === \Modules\Status\Enums\AccountStatus::PROTECTED;
+               $this->getStatus() === \Modules\Status\Enums\Status::PROTECTED;
     }
 
     public function isAccountVerified(): bool
     {
         $status = $this->getStatus();
-        return in_array($status, [\Modules\Status\Enums\AccountStatus::VERIFIED, \Modules\Status\Enums\AccountStatus::PROTECTED]);
+        return in_array($status, [\Modules\Status\Enums\Status::VERIFIED, \Modules\Status\Enums\Status::PROTECTED]);
     }
 
-    public function isAccountRestricted(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::RESTRICTED; }
+    public function isAccountRestricted(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::RESTRICTED; }
 
-    public function isAccountSuspended(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::SUSPENDED; }
+    public function isAccountSuspended(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::SUSPENDED; }
 
-    public function isAccountArchived(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::ARCHIVED; }
+    public function isAccountArchived(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::ARCHIVED; }
 
-    public function isAccountInactive(): bool { return $this->getStatus() === \Modules\Status\Enums\AccountStatus::INACTIVE; }
+    public function isAccountInactive(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::INACTIVE; }
 
     public function getActiveRestrictions(): \Illuminate\Database\Eloquent\Collection
     {
