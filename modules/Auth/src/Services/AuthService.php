@@ -24,7 +24,10 @@ class AuthService extends BaseService implements AuthServiceContract
     /**
      * Create a new AuthService instance.
      */
-    public function __construct(protected UserService $userService) {}
+    public function __construct(
+        protected UserService $userService,
+        protected \Modules\Status\Services\SessionExpirationService $sessionExpiration,
+    ) {}
 
     /**
      * Attempt to log in a user with the given credentials.
@@ -64,7 +67,25 @@ class AuthService extends BaseService implements AuthServiceContract
             );
         }
 
-        return Auth::user();
+        $user = Auth::user();
+        
+        // Initialize session expiration tracking for admin roles
+        if (\in_array($user->role, ['super_admin', 'admin'], true)) {
+            $sessionId = request()->getSession()->getId();
+            $this->sessionExpiration->recordSessionStart(
+                user: $user,
+                sessionId: $sessionId,
+                ipAddress: request()->ip(),
+            );
+            
+            // Log successful login
+            app(\Modules\Status\Services\AccountAuditLogger::class)->logSuccessfulLogin(
+                user: $user,
+                ipAddress: request()->ip(),
+            );
+        }
+        
+        return $user;
     }
 
     /**
@@ -103,7 +124,25 @@ class AuthService extends BaseService implements AuthServiceContract
      */
     public function getAuthenticatedUser(): ?Authenticatable
     {
-        return Auth::user();
+        $user = Auth::user();
+        
+        // Initialize session expiration tracking for admin roles
+        if (\in_array($user->role, ['super_admin', 'admin'], true)) {
+            $sessionId = request()->getSession()->getId();
+            $this->sessionExpiration->recordSessionStart(
+                user: $user,
+                sessionId: $sessionId,
+                ipAddress: request()->ip(),
+            );
+            
+            // Log successful login
+            app(\Modules\Status\Services\AccountAuditLogger::class)->logSuccessfulLogin(
+                user: $user,
+                ipAddress: request()->ip(),
+            );
+        }
+        
+        return $user;
     }
 
     /**

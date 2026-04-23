@@ -45,9 +45,13 @@ return Application::configure(basePath: dirname(__DIR__))
                 \Modules\Setup\Http\Middleware\RequireSetupAccess::class,
                 \Modules\Setup\Http\Middleware\BypassSetupAuthorization::class,
             ],
-            append: [\Modules\Core\Localization\Http\Middleware\SetLocale::class],
+            append: [
+                \Modules\Status\Middleware\CheckSessionExpiration::class,
+                \Modules\Core\Localization\Http\Middleware\SetLocale::class,
+            ],
         );
         $middleware->alias([
+            'session.expire'    => \Modules\Status\Middleware\CheckSessionExpiration::class,
             'role'              => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission'        => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission'=> \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
