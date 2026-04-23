@@ -17,7 +17,7 @@ class AccountAuditLogger
     public function logStatusChange(
         User $user,
         AccountStatus $oldStatus,
-        AccountStatus $newStatus,
+        Status $newStatus,
         ?string $reason = null,
         ?User $triggeredBy = null,
         ?string $ipAddress = null,

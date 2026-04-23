@@ -221,7 +221,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     // ─── Account Lifecycle Management ────────────────────────────────────────
 
-    public function canTransitionTo(\Modules\Status\Enums\AccountStatus $targetStatus): bool
+    public function canTransitionTo(ModulesStatusnumsStatus $targetStatus): bool
     {
         $currentStatus = $this->getStatus();
         if (!$currentStatus) return false;
@@ -229,15 +229,15 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     public function transitionTo(
-        \Modules\Status\Enums\AccountStatus $newStatus,
+        \Modules\Status\Enums\Status $newStatus,
         ?string $reason = null,
         ?string $triggeredById = null,
-    ): \Modules\Status\Models\AccountStatusHistory {
+    ): SpatieModelStatusModelsStatus {
         $currentStatus = $this->getStatus();
         if ($currentStatus && !$currentStatus->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException("Cannot transition from {$currentStatus->value} to {$newStatus->value}");
         }
-        $history = \Modules\Status\Models\AccountStatusHistory::create([
+        $history = SpatieModelStatusModelsStatus::create([
             'user_id' => $this->id,
             'old_status' => $currentStatus?->value,
             'new_status' => $newStatus->value,
@@ -306,7 +306,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function statusHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(\Modules\Status\Models\AccountStatusHistory::class, 'user_id');
+        return $this->hasMany(SpatieModelStatusModelsStatus::class, 'user_id');
     }
 
     public function restrictions(): \Illuminate\Database\Eloquent\Relations\HasMany

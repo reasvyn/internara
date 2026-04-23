@@ -64,10 +64,10 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @param AccountStatus $newStatus Proposed status
+     * @param Status $newStatus Proposed status
      * @return bool
      */
-    public function changeStatus(User $user, User $target, AccountStatus $newStatus): bool
+    public function changeStatus(User $user, User $target, Status $newStatus): bool
     {
         // Cannot change own status (except self-service transitions)
         if ($user->id === $target->id) {

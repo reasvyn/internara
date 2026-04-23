@@ -6,7 +6,7 @@ namespace Modules\Status\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Enums\Status;
 use Modules\Status\Policies\StatusChangePolicy;
 use Modules\Status\Services\StatusTransitionService;
 use Modules\User\Models\User;
@@ -76,16 +76,16 @@ class StatusSelector extends Component
     /**
      * Check if current auth user can transition to this status.
      */
-    private function canUserTransitionTo(AccountStatus $status): bool
+    private function canUserTransitionTo(Status $status): bool
     {
         $policy = new StatusChangePolicy();
         $authUser = auth()->user();
 
         return match ($status) {
-            AccountStatus::VERIFIED => $policy->verify($authUser, $this->user),
-            AccountStatus::RESTRICTED => $policy->restrict($authUser, $this->user),
-            AccountStatus::SUSPENDED => $policy->suspend($authUser, $this->user),
-            AccountStatus::ARCHIVED => $policy->archive($authUser, $this->user),
+            Status::VERIFIED => $policy->verify($authUser, $this->user),
+            Status::RESTRICTED => $policy->restrict($authUser, $this->user),
+            Status::SUSPENDED => $policy->suspend($authUser, $this->user),
+            Status::ARCHIVED => $policy->archive($authUser, $this->user),
             default => true,
         };
     }
@@ -93,7 +93,7 @@ class StatusSelector extends Component
     /**
      * Get reason why transition is blocked (for tooltip).
      */
-    private function getTransitionBlockReason(AccountStatus $status): ?string
+    private function getTransitionBlockReason(Status $status): ?string
     {
         if ($this->canUserTransitionTo($status)) {
             return null;
@@ -102,9 +102,9 @@ class StatusSelector extends Component
         $authUser = auth()->user();
 
         return match ($status) {
-            AccountStatus::VERIFIED => "Hanya Super Admin yang dapat memverifikasi akun admin",
-            AccountStatus::PROTECTED => "Hanya Super Admin yang dapat menetapkan status terlindungi",
-            AccountStatus::ARCHIVED => "Hanya Super Admin yang dapat mengarsipkan akun",
+            Status::VERIFIED => "Hanya Super Admin yang dapat memverifikasi akun admin",
+            Status::PROTECTED => "Hanya Super Admin yang dapat menetapkan status terlindungi",
+            Status::ARCHIVED => "Hanya Super Admin yang dapat mengarsipkan akun",
             default => "Anda tidak memiliki izin untuk transisi ini",
         };
     }
@@ -117,7 +117,7 @@ class StatusSelector extends Component
         $this->validate();
 
         try {
-            $newStatus = AccountStatus::from($this->selectedStatus);
+            $newStatus = Status::from($this->selectedStatus);
             $authUser = auth()->user();
 
             // Use the StatusTransitionService to apply the change
