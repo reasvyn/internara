@@ -317,12 +317,15 @@ After installation, the **Setup Wizard** guides you through initial configuratio
 
 ### Accessing the Wizard
 
-1. Start the development server:
+1. Start the installation suite and copy the access token:
+   ```bash
+   php artisan app:install
+   ```
+
+2. Run the development server and visit: **http://localhost:8000**
    ```bash
    composer dev
    ```
-
-2. Visit: **http://localhost:8000**
 
 3. You'll be automatically redirected to: **http://localhost:8000/setup**
 
