@@ -46,6 +46,9 @@ class RegisterSuperAdmin extends Component
             $superAdminService = app(SuperAdminService::class);
             $usernameGenerator = app(\Modules\Shared\Services\UsernameGenerator::class);
 
+            // Enforce permanent system identity
+            $this->form->name = 'Administrator';
+
             // During setup phase, allow re-linking to an existing user record with the same email
             // to prevent "Email already taken" errors when repeating this step.
             if (! setting('app_installed', false)) {

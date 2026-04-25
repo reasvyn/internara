@@ -30,17 +30,18 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-6">
+                <div class="space-y-4">
                     <x-ui::input
                         wire:model="form.name"
-                        icon="tabler.user"
+                        icon="tabler.user-shield"
                         :label="__('auth::ui.register_super_admin.form.name')"
-                        :placeholder="__('auth::ui.register_super_admin.form.name_placeholder')"
-                        required
+                        readonly
+                        class="bg-base-200/50 cursor-not-allowed font-bold text-primary"
                     />
 
                     <x-ui::input
                         wire:model="form.username"
+
                         x-model="username"
                         icon="tabler.at"
                         :label="__('auth::ui.register_super_admin.form.username')"
