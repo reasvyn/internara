@@ -192,7 +192,7 @@ class SetupService extends BaseService implements Contracts\SetupService
                 $this->storeStep('complete');
 
                 // Force cache refresh for app_installed
-                $this->settingService->forget(self::SETTING_APP_INSTALLED);
+                $this->settingService->setValue(self::SETTING_APP_INSTALLED, true);
                 \Illuminate\Support\Facades\Cache::forget('internara.installed');
 
                 return $this->isAppInstalled(true);

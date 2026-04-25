@@ -1,12 +1,12 @@
-<div x-data="{ 
-    dataVerified: @entangle('data_verified'),
-    securityAware: @entangle('security_aware'),
-    legalAgreed: @entangle('legal_agreed'),
-    get canFinalize() {
-        return this.dataVerified && this.securityAware && this.legalAgreed;
-    }
-}" class="w-full">
-    <x-setup::layouts.setup-wizard>
+<x-setup::layouts.setup-wizard>
+    <div x-data="{ 
+        dataVerified: @entangle('data_verified'),
+        securityAware: @entangle('security_aware'),
+        legalAgreed: @entangle('legal_agreed'),
+        get canFinalize() {
+            return this.dataVerified && this.securityAware && this.legalAgreed;
+        }
+    }" class="w-full">
         <x-slot:header>
             <div class="max-w-4xl">
                 <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" class="mb-12" />
