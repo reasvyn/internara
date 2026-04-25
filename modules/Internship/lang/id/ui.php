@@ -62,6 +62,14 @@ return [
         'open_registration' => 'Pendaftaran Buka',
         'ongoing_programs' => 'Sedang Berjalan',
         'upcoming_programs' => 'Mendatang',
+        'total_partners' => 'Total Mitra',
+        'business_fields' => 'Bidang Usaha',
+        'verified_contact' => 'Kontak Terverifikasi',
+        'new_partners' => 'Mitra Baru (Bulan Ini)',
+        'total_requirements' => 'Total Syarat',
+        'mandatory_requirements' => 'Wajib Dipenuhi',
+        'active_requirements' => 'Status Aktif',
+        'document_requirements' => 'Berupa Dokumen',
     ],
 
     'status' => [

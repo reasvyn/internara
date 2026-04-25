@@ -10,52 +10,70 @@ use Modules\UI\Livewire\RecordManager;
 
 class RequirementManager extends RecordManager
 {
-    protected string $viewPermission = 'internship.view';
-
     public RequirementForm $form;
 
     /**
-     * Initialize the component.
+     * Initialize the component metadata and services.
      */
     public function boot(InternshipRequirementService $requirementService): void
     {
         $this->service = $requirementService;
         $this->eventPrefix = 'internship-requirement';
+        $this->modelClass = \Modules\Internship\Models\InternshipRequirement::class;
     }
 
-    public function initialize(): void {}
+    /**
+     * Configure the component's basic properties.
+     */
+    public function initialize(): void
+    {
+        $this->title = __('internship::ui.requirement_title');
+        $this->subtitle = __('internship::ui.requirement_subtitle');
+        $this->context = 'internship::ui.index.title';
+        $this->addLabel = __('internship::ui.add_requirement');
+        $this->deleteConfirmMessage = __('internship::ui.delete_requirement_confirm');
 
-    protected function getTableHeaders(): array
+        $this->viewPermission = 'internship.view';
+        $this->createPermission = 'internship.manage';
+        $this->updatePermission = 'internship.manage';
+        $this->deletePermission = 'internship.manage';
+    }
+
+    /**
+     * Get summary metrics for internship requirements.
+     */
+    #[Computed]
+    public function stats(): array
     {
         return [
-            ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
-            ['key' => 'title', 'label' => __('ui::common.name'), 'sortable' => true],
-            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+            'total' => $this->service->query()->count(),
+            'mandatory' => $this->service->query(['is_mandatory' => true])->count(),
+            'active' => $this->service->query(['is_active' => true])->count(),
+            'documents' => $this->service->query(['type' => 'document'])->count(),
         ];
     }
 
     /**
-     * Mount the component.
+     * Define the table structure.
      */
-    public function mount(): void
+    protected function getTableHeaders(): array
     {
-        parent::mount();
+        return [
+            ['key' => 'name', 'label' => __('internship::ui.requirement_name'), 'sortable' => true],
+            ['key' => 'type', 'label' => __('internship::ui.requirement_type')],
+            ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory')],
+            ['key' => 'is_active', 'label' => __('internship::ui.active')],
+            ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+        ];
     }
 
     /**
-     * Get records for the table.
+     * Transform raw requirement record for UI display.
      */
-    #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    protected function mapRecord(mixed $record): array
     {
-        return $this->service->paginate(
-            [
-                'search' => $this->search,
-                'sort_by' => $this->sortBy['column'] ?? 'created_at',
-                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
-            ],
-            $this->perPage,
-        );
+        return $record->toArray();
     }
 
     /**
@@ -65,20 +83,21 @@ class RequirementManager extends RecordManager
     {
         $this->form->reset();
 
-        // Default academic year - in a real app this would come from settings
-        $this->form->academic_year = date('Y').'/'.(date('Y') + 1);
+        // Standard Auto-fills
+        $this->form->academic_year = \Modules\Core\Academic\Support\AcademicYear::current();
+        $this->form->is_active = true;
 
-        $this->formModal = true;
+        $this->toggleModal(self::MODAL_FORM, true);
     }
 
-    public function render()
+    /**
+     * Render the component view.
+     */
+    public function render(): \Illuminate\View\View
     {
-        return view('internship::livewire.requirement-manager', [
-            'records' => $this->records,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.requirement_title').
-                ' | '.
-                setting('brand_name', setting('app_name')),
-        ]);
+        return view('internship::livewire.requirement-manager')
+            ->layout('ui::components.layouts.dashboard', [
+                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
+            ]);
     }
 }
