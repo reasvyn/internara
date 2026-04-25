@@ -58,6 +58,18 @@ class EnvironmentSetup extends Component
     }
 
     /**
+     * Re-runs the system audit manually.
+     */
+    public function refreshAudit(): void
+    {
+        // Clearing the computed properties will force a re-audit on the next render
+        unset($this->audit);
+        unset($this->disableNextStep);
+
+        flash()->success(__('setup::wizard.environment.audit_refreshed'));
+    }
+
+    /**
      * Renders the component view.
      */
     public function render(): \Illuminate\Contracts\View\View
