@@ -38,9 +38,10 @@
                 type="password"
                 :label="__('auth::ui.register.form.password')"
                 :placeholder="__('auth::ui.register.form.password_placeholder')"
-                wire:model="form.password"
+                wire:model.live="form.password"
                 required
             />
+            <x-ui::password-strength :password="$form->password" />
         </div>
         <div wire:key="reg-password-conf">
             <x-ui::input
