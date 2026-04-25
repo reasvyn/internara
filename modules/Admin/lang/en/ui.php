@@ -24,6 +24,24 @@ return [
         'quick_links' => 'Quick Links',
         'user_management' => 'User Management',
         'system_config' => 'System Configuration',
+        'system_status' => 'System Status',
+        'security_monitoring' => 'Security Monitoring',
+        'user_stats' => 'User Distribution',
+        'infrastructure' => [
+            'db_size' => 'Database Size',
+            'queue_pending' => 'Pending Jobs',
+            'queue_failed' => 'Failed Jobs',
+            'last_backup' => 'Last Backup',
+        ],
+        'security' => [
+            'failed_logins' => 'Failed Logins (7d)',
+            'throttled_attempts' => 'Throttled Attempts (7d)',
+            'recent_alerts' => 'Recent Alerts',
+        ],
+        'users' => [
+            'active_sessions' => 'Active Sessions',
+            'total_users' => 'Total Registered Users',
+        ],
         'widget' => [
             'series' => 'Series',
             'license' => 'License',

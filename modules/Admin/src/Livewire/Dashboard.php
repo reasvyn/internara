@@ -26,10 +26,22 @@ class Dashboard extends Component
      */
     public function render(AnalyticsAggregator $analytics): View
     {
-        return view('admin::livewire.dashboard', [
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value);
+
+        $data = [
             'summary' => $analytics->getInstitutionalSummary(),
             'atRiskStudents' => $analytics->getAtRiskStudents(),
-        ])->layout('ui::components.layouts.dashboard', [
+            'isSuperAdmin' => $isSuperAdmin,
+        ];
+
+        if ($isSuperAdmin) {
+            $data['securitySummary'] = $analytics->getSecuritySummary();
+            $data['infrastructure'] = $analytics->getInfrastructureStatus();
+            $data['userDistribution'] = $analytics->getUserDistribution();
+        }
+
+        return view('admin::livewire.dashboard', $data)->layout('ui::components.layouts.dashboard', [
             'title' => __('admin::ui.dashboard.title').
                 ' | '.
                 setting('brand_name', setting('app_name')),

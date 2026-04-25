@@ -10,6 +10,15 @@
         <x-ui::stat :title="__('admin::ui.dashboard.stats.placement_rate')" :value="$summary['placement_rate'] . '%'" icon="tabler.chart-pie" variant="accent" />
     </div>
 
+    @if($isSuperAdmin)
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-4 mb-8">
+            <x-ui::stat :title="__('admin::ui.dashboard.users.active_sessions')" :value="$userDistribution['active_sessions']" icon="tabler.broadcast" variant="info" />
+            <x-ui::stat :title="__('admin::ui.dashboard.infrastructure.db_size')" :value="$infrastructure['db_size']" icon="tabler.database" variant="secondary" />
+            <x-ui::stat :title="__('admin::ui.dashboard.infrastructure.queue_pending')" :value="$infrastructure['queue_pending']" icon="tabler.list-details" :variant="$infrastructure['queue_pending'] > 0 ? 'warning' : 'metadata'" />
+            <x-ui::stat :title="__('admin::ui.dashboard.infrastructure.queue_failed')" :value="$infrastructure['queue_failed']" icon="tabler.alert-triangle" :variant="$infrastructure['queue_failed'] > 0 ? 'error' : 'metadata'" />
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
         <div class="lg:col-span-3 flex flex-col gap-8">
             <x-ui::card :title="__('admin::ui.dashboard.recent_assessments')" shadow separator>
@@ -63,6 +72,21 @@
         </div>
 
         <div class="lg:col-span-1 flex flex-col gap-6">
+            @if($isSuperAdmin)
+                <x-ui::card :title="__('admin::ui.dashboard.security_monitoring')" shadow separator>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="opacity-60">{{ __('admin::ui.dashboard.security.failed_logins') }}</span>
+                            <span @class(['font-bold', 'text-error' => $securitySummary['failed_logins'] > 0])>{{ $securitySummary['failed_logins'] }}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="opacity-60">{{ __('admin::ui.dashboard.security.throttled_attempts') }}</span>
+                            <span @class(['font-bold', 'text-warning' => $securitySummary['throttled_attempts'] > 0])>{{ $securitySummary['throttled_attempts'] }}</span>
+                        </div>
+                    </div>
+                </x-ui::card>
+            @endif
+
             <x-ui::card :title="__('admin::ui.dashboard.quick_links')" shadow separator>
                 <div class="flex flex-col gap-1">
                     <x-ui::button :label="__('admin::ui.dashboard.user_management')" icon="tabler.users" variant="tertiary" class="justify-start w-full" link="{{ route('admin.students') }}" />
