@@ -45,7 +45,7 @@ class AppInstallCommand extends Command
     public function handle(): int
     {
         $this->newLine();
-        $this->components->info('Internara System Installation');
+        $this->components->info('Internara System Initialization');
 
         if (! $this->confirmInstallation()) {
             return self::FAILURE;
@@ -56,10 +56,10 @@ class AppInstallCommand extends Command
             $this->performTask('Clearing application cache', fn () => $this->callSilent('optimize:clear') === 0);
 
             // 1. Environment Initialization
-            $this->performTask('Ensuring .env file existence', fn () => $this->installerService->ensureEnvFileExists());
+            $this->performTask('Ensuring environment configuration', fn () => $this->installerService->ensureEnvFileExists());
 
             // 2. Environment Validation
-            $this->performTask('Validating environment requirements', function () {
+            $this->performTask('Validating system requirements', function () {
                 $audit = $this->installerService->validateEnvironment();
                 $failures = [];
 
@@ -72,7 +72,10 @@ class AppInstallCommand extends Command
                 }
 
                 if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
-                    $failures[] = 'database.connection (' . ($audit['database']['message'] ?? 'Unknown error') . ')';
+                    $rawMessage = (string) ($audit['database']['message'] ?? 'Unknown connection error');
+                    // Security: Sanitize sensitive data from potential raw DB errors
+                    $sanitizedMessage = preg_replace('/(password|pwd|user|usr)=[^; ]+/i', '$1=****', $rawMessage);
+                    $failures[] = "database.connection: {$sanitizedMessage}";
                 }
 
                 if (count($failures) > 0) {
@@ -87,22 +90,22 @@ class AppInstallCommand extends Command
             });
 
             // 3. Application Key Generation
-            $this->performTask('Generating application key', fn () => $this->installerService->generateAppKey());
+            $this->performTask('Generating application security key', fn () => $this->installerService->generateAppKey());
 
-            // 4. Database Migrations
+            // 4. Database Schema Initialization
             $this->performTask('Initializing database schema', fn () => $this->installerService->runMigrations());
 
-            // 5. Core & Shared Seeding
-            $this->performTask('Seeding foundational data', fn () => $this->installerService->runSeeders());
+            // 5. Foundational Data Seeding
+            $this->performTask('Seeding foundational datasets', fn () => $this->installerService->runSeeders());
 
-            // 6. Storage Symlinking
-            $this->performTask('Creating storage symbolic link', fn () => $this->installerService->createStorageSymlink());
+            // 6. Storage System Integration
+            $this->performTask('Integrating storage system', fn () => $this->installerService->createStorageSymlink());
 
         } catch (\RuntimeException $e) {
             return self::FAILURE;
         } catch (\Throwable $e) {
             $this->newLine();
-            $this->components->error('Installation Failed: ' . $e->getMessage());
+            $this->components->error('System Initialization Failed: ' . $e->getMessage());
             
             if (config('app.debug')) {
                 $this->line($e->getTraceAsString());
@@ -111,7 +114,7 @@ class AppInstallCommand extends Command
             return self::FAILURE;
         }
 
-        $this->displaySuccessMessage();
+        $this->displayDeploymentSummary();
 
         return self::SUCCESS;
     }
@@ -124,17 +127,17 @@ class AppInstallCommand extends Command
         $result = $this->components->task($title, $task);
 
         if ($result === false) {
-            throw new \RuntimeException("Task failed: {$title}");
+            throw new \RuntimeException("Critical task failure: {$title}");
         }
     }
 
     /**
-     * Display the final success message and instructions.
+     * Display the final deployment summary and next steps.
      */
-    protected function displaySuccessMessage(): void
+    protected function displayDeploymentSummary(): void
     {
         $this->newLine();
-        $this->components->info('Technical installation completed successfully!');
+        $this->components->info('Core system initialization completed successfully.');
 
         $token = $this->settingService->getValue('setup_token');
         $setupUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
@@ -143,12 +146,14 @@ class AppInstallCommand extends Command
             ['token' => $token],
         );
 
-        $this->line(' <bg=blue;options=bold> NEXT STEP </> Please proceed to the Web Setup Wizard:');
-        $this->line(" <fg=cyan;options=bold>{$setupUrl}</>");
+        $this->line(' <fg=blue;options=bold>Authorization Required</>');
+        $this->line(' Please use the following authenticated link to finalize the system configuration:');
+        $this->newLine();
+        $this->line("  <fg=cyan>{$setupUrl}</>");
         $this->newLine();
 
         if (parse_url($setupUrl, PHP_URL_PORT) === null && config('app.url') === 'http://localhost') {
-            $this->components->warn('Note: Ensure the port is included if you are using a non-standard port.');
+            $this->components->warn('Environment Notice: Port mapping may be required for external access.');
         }
 
         $this->newLine();
