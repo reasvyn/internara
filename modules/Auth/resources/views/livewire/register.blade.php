@@ -20,7 +20,7 @@
                 type="text"
                 :label="__('auth::ui.register.form.name')"
                 :placeholder="__('auth::ui.register.form.name_placeholder')"
-                wire:model="name"
+                wire:model="form.name"
                 required
             />
         </div>
@@ -29,7 +29,7 @@
                 type="email"
                 :label="__('auth::ui.register.form.email')"
                 :placeholder="__('auth::ui.register.form.email_placeholder')"
-                wire:model="email"
+                wire:model="form.email"
                 required
             />
         </div>
@@ -38,7 +38,7 @@
                 type="password"
                 :label="__('auth::ui.register.form.password')"
                 :placeholder="__('auth::ui.register.form.password_placeholder')"
-                wire:model="password"
+                wire:model="form.password"
                 required
             />
         </div>
@@ -47,7 +47,7 @@
                 type="password"
                 :label="__('auth::ui.register.form.password_confirmation')"
                 :placeholder="__('auth::ui.register.form.password_confirmation_placeholder')"
-                wire:model="password_confirmation"
+                wire:model="form.password_confirmation"
                 required
             />
         </div>

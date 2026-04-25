@@ -12,72 +12,91 @@ use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Auth\Services\Contracts\RedirectService;
 use Modules\Exception\AppException;
 use Modules\Permission\Enums\Role;
-use Modules\Shared\Rules\Password;
+use Modules\Shared\Services\UsernameGenerator;
+use Modules\User\Livewire\Forms\UserForm;
 
 class Register extends Component
 {
+    /**
+     * Standardized User Form Object.
+     */
+    public UserForm $form;
+
+    /**
+     * Turnstile token for security.
+     */
+    public string $captcha_token = '';
+
     protected AuthService $authService;
 
     protected RedirectService $redirectService;
 
-    public string $name = '';
-
-    public string $email = '';
-
-    public string $password = '';
-
-    public string $password_confirmation = '';
-
-    public string $captcha_token = '';
-
-    public function rules(): array
-    {
-        $rules = [
-            'name' => 'required|string|min:3',
-            'email' => 'required|email|unique:users,email',
-            'password' => ['required', 'string', 'confirmed', Password::auto()],
-        ];
-
-        if (config('services.cloudflare.turnstile.site_key')) {
-            $rules['captcha_token'] = ['required', new \Modules\Shared\Rules\Turnstile];
-        }
-
-        return $rules;
-    }
-
+    /**
+     * Initializes the component.
+     */
     public function boot(AuthService $authService, RedirectService $redirectService): void
     {
         $this->authService = $authService;
         $this->redirectService = $redirectService;
     }
 
-    public function register(): void
+    /**
+     * Mounts the component and sets default student role.
+     */
+    public function mount(): void
     {
-        $validated = $this->validate();
+        $this->form->roles = [Role::STUDENT->value];
+        $this->form->status = 'active';
+    }
 
+    /**
+     * Handles the student registration.
+     */
+    public function register(UsernameGenerator $usernameGenerator): void
+    {
         // [S1 - Secure] Brute Force / Spam Protection (Rate Limiting)
         $throttleKey = $this->throttleKey();
-        if (RateLimiter::tooManyAttempts($throttleKey, 2)) { // 2 attempts per hour per IP
-            $this->addError('email', __('auth::ui.register.form.rate_limited'));
+        if (RateLimiter::tooManyAttempts($throttleKey, 2)) {
+            $this->addError('form.email', __('auth::ui.register.form.rate_limited'));
             
             return;
         }
 
+        // Standard validation from Form Object
+        $this->form->validate();
+
+        // [S1 - Secure] CAPTCHA Validation
+        if (config('services.cloudflare.turnstile.site_key')) {
+            $this->validate(['captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile]]);
+        }
+
         try {
-            // [S1 - Secure] Explicit Role Lockdown to STUDENT
+            // [S2 - Sustain] Autonomous Username Generation (Standardized std_... pattern)
+            if (empty($this->form->username)) {
+                $this->form->username = $usernameGenerator->generate(
+                    $this->form->email, 
+                    Role::STUDENT->value
+                );
+            }
+
+            // [S1 - Secure] Explicit Role Lockdown
+            $this->form->roles = [Role::STUDENT->value];
+
+            // Register user and trigger email verification
             $user = $this->authService->register(
-                $validated, 
-                roles: [Role::STUDENT->value], 
+                $this->form->all(), 
+                roles: $this->form->roles, 
                 sendEmailVerification: true
             );
 
             // [S2 - Sustain] Audit Log
             activity('security')
                 ->event('registration_success')
-                ->withProperties(['ip' => request()->ip(), 'email' => $user->email, 'role' => Role::STUDENT->value])
-                ->log('New student account registered.');
+                ->performedOn($user)
+                ->withProperties(['ip' => request()->ip(), 'role' => Role::STUDENT->value])
+                ->log('New student account registered and identity generated.');
 
-            RateLimiter::hit($throttleKey, 3600); // 1 hour lock
+            RateLimiter::hit($throttleKey, 3600);
 
             flash()->success(
                 __('auth::ui.register.welcome', [
@@ -86,20 +105,20 @@ class Register extends Component
                 ]),
             );
 
+            // Auto-login after registration
             $this->authService->login([
                 'email' => $user->email,
-                'password' => $validated['password'],
+                'password' => $this->form->password,
             ]);
 
             $this->redirect($this->redirectService->getTargetUrl($user), navigate: true);
         } catch (AppException $e) {
-            // [S2 - Sustain] Audit Log for Failure
             activity('security')
                 ->event('registration_failed')
-                ->withProperties(['ip' => request()->ip(), 'email' => $this->email])
+                ->withProperties(['ip' => request()->ip(), 'email' => $this->form->email])
                 ->log('Registration attempt failed: ' . $e->getMessage());
 
-            $this->addError('email', $e->getUserMessage());
+            $this->addError('form.email', $e->getUserMessage());
         }
     }
 
@@ -111,6 +130,9 @@ class Register extends Component
         return Str::transliterate('registration|'.request()->ip());
     }
 
+    /**
+     * Renders the component view.
+     */
     public function render(): View
     {
         return view('auth::livewire.register')->layout('auth::components.layouts.auth', [
