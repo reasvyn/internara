@@ -57,6 +57,23 @@ return [
     'date_finish' => 'Tanggal Selesai',
     'delete_program_confirm' => 'Apakah Anda yakin ingin menghapus program magang ini? Seluruh data penempatan dan pendaftaran terkait juga akan terhapus.',
 
+    'stats' => [
+        'total_programs' => 'Total Program',
+        'open_registration' => 'Pendaftaran Buka',
+        'ongoing_programs' => 'Sedang Berjalan',
+        'upcoming_programs' => 'Mendatang',
+    ],
+
+    'status' => [
+        'unknown' => 'Tidak Diketahui',
+        'publish' => 'Terbitkan Program',
+        'open' => 'Buka Pendaftaran',
+        'ongoing' => 'Mulai Program',
+        'complete' => 'Selesaikan Program',
+        'close' => 'Tutup Pendaftaran',
+        'archive' => 'Arsipkan Data',
+    ],
+
     // Registration
     'registration_title' => 'Pendaftaran Siswa',
     'student_placement_title' => 'Penempatan Siswa',
