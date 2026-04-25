@@ -201,6 +201,24 @@ class InternshipManager extends RecordManager
     }
 
     /**
+     * Get the available semester options for the UI.
+     */
+    public function getSemesterOptions(): array
+    {
+        $semesters = config('internship.validation.semesters', ['Ganjil', 'Genap', 'Tahunan']);
+        
+        return array_map(fn($sem) => [
+            'id' => $sem,
+            'name' => match($sem) {
+                'Ganjil' => __('internship::ui.semester_odd'),
+                'Genap' => __('internship::ui.semester_even'),
+                'Tahunan' => __('internship::ui.semester_full'),
+                default => $sem,
+            }
+        ], $semesters);
+    }
+
+    /**
      * Render the component.
      */
     public function render(): \Illuminate\View\View

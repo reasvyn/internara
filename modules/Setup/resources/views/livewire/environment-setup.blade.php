@@ -1,20 +1,22 @@
 <x-setup::layouts.setup-wizard>
     <x-slot:header>
-        <div>
+        <div class="max-w-4xl">
             <x-ui::badge variant="metadata" class="mb-12">
                 {{ __('setup::wizard.steps', ['current' => 2, 'total' => 8]) }}
             </x-ui::badge>
 
-            <h1 class="text-4xl font-bold tracking-tight text-base-content md:text-5xl">
+            <h1 class="text-4xl font-extrabold tracking-tight text-base-content md:text-5xl lg:text-6xl leading-[1.1]">
                 {{ __('setup::wizard.environment.title') }}
             </h1>
 
-            <p class="mt-6 text-lg text-base-content/60 leading-relaxed max-w-2xl">
-                {{ __('setup::wizard.environment.description') }}
-            </p>
+            <div class="mt-8 space-y-6">
+                <p class="text-lg text-base-content/70 leading-relaxed max-w-2xl">
+                    {{ __('setup::wizard.environment.description') }}
+                </p>
+            </div>
         </div>
 
-        <div class="mt-10 flex flex-wrap items-center gap-4">
+        <div class="mt-12 flex flex-wrap items-center gap-4">
             <x-ui::button
                 variant="secondary"
                 :label="__('setup::wizard.buttons.back')"
@@ -30,6 +32,7 @@
             />
             <x-ui::button
                 variant="primary"
+                class="btn-lg px-12 shadow-lg shadow-primary/20"
                 :label="__('setup::wizard.buttons.next')"
                 wire:click="nextStep"
                 :disabled="$this->disableNextStep"
@@ -39,7 +42,7 @@
     </x-slot>
 
     <x-slot:content>
-        <div class="space-y-8">
+        <div class="space-y-12">
             {{-- Requirements Audit --}}
             <x-ui::card
                 title="{{ __('setup::wizard.environment.requirements') }}"

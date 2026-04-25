@@ -25,18 +25,25 @@ class InternshipForm extends Form
 
     public ?string $school_id = null;
 
+    /**
+     * Define validation rules for the internship program.
+     */
     public function rules(): array
     {
+        $isProduction = app()->isProduction();
+        $config = config('internship.validation');
+
         return [
-            'title' => [
+            'title' => array_filter([
                 'required',
                 'string',
-                'max:255',
+                $isProduction ? 'min:' . $config['title']['min_length'] : null,
+                'max:' . $config['title']['max_length'],
                 Rule::unique('internships', 'title')->ignore($this->id),
-            ],
+            ]),
             'description' => ['nullable', 'string'],
             'academic_year' => ['required', 'string', 'max:20'],
-            'semester' => ['required', 'string', Rule::in(['Ganjil', 'Genap', 'Tahunan'])],
+            'semester' => ['required', 'string', Rule::in($config['semesters'])],
             'date_start' => ['required', 'date'],
             'date_finish' => ['required', 'date', 'after:date_start'],
             'school_id' => ['required', 'uuid'],

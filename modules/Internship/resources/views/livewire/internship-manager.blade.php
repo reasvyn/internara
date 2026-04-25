@@ -24,11 +24,7 @@
                         :label="__('internship::ui.filter_semester')"
                         icon="tabler.timeline"
                         wire:model.live="filters.semester" 
-                        :options="[
-                            ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
-                            ['id' => 'Genap', 'name' => __('internship::ui.semester_even')],
-                            ['id' => 'Tahunan', 'name' => __('internship::ui.semester_full')]
-                        ]" 
+                        :options="$this->getSemesterOptions()" 
                         :placeholder="__('internship::ui.all_semesters')"
                     />
                 </div>
@@ -57,11 +53,7 @@
                 icon="tabler.timeline"
                 wire:model="form.semester" 
                 :placeholder="__('internship::ui.select_semester')"
-                :options="[
-                    ['id' => 'Ganjil', 'name' => __('internship::ui.semester_odd')], 
-                    ['id' => 'Genap', 'name' => __('internship::ui.semester_even')],
-                    ['id' => 'Tahunan', 'name' => __('internship::ui.semester_full')]
-                ]" 
+                :options="$this->getSemesterOptions()" 
                 required 
             />
         </div>
