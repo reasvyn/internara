@@ -80,6 +80,10 @@ return [
         'placed_students' => 'Sudah Ditempatkan',
         'unplaced_students' => 'Belum Ditempatkan',
         'new_registrations' => 'Pendaftaran Baru',
+        'total_locations' => 'Total Lokasi',
+        'total_quota' => 'Total Kuota',
+        'filled_quota' => 'Kuota Terisi',
+        'utilization_rate' => 'Tingkat Utilisasi',
     ],
 
     'status' => [

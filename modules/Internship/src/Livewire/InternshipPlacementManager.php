@@ -16,8 +16,6 @@ use Modules\User\Services\Contracts\UserService;
 
 class InternshipPlacementManager extends RecordManager
 {
-    protected string $viewPermission = 'placement.view';
-
     public PlacementForm $form;
 
     public UserForm $mentorForm;
@@ -25,47 +23,76 @@ class InternshipPlacementManager extends RecordManager
     public bool $mentorModal = false;
 
     /**
-     * Initialize the component.
+     * Initialize the component metadata and services.
      */
     public function boot(InternshipPlacementService $placementService): void
     {
         $this->service = $placementService;
+        $this->eventPrefix = 'placement';
+        $this->modelClass = \Modules\Internship\Models\InternshipPlacement::class;
     }
 
-    public function initialize(): void {}
-
-    protected function getTableHeaders(): array
+    /**
+     * Configure the component's basic properties.
+     */
+    public function initialize(): void
     {
+        $this->title = __('internship::ui.placement_title');
+        $this->subtitle = __('internship::ui.placement_subtitle');
+        $this->context = 'internship::ui.index.title';
+        $this->addLabel = __('internship::ui.add_placement');
+        $this->deleteConfirmMessage = __('internship::ui.delete_placement_confirm');
+
+        $this->viewPermission = 'internship.manage';
+        $this->createPermission = 'internship.manage';
+        $this->updatePermission = 'internship.manage';
+        $this->deletePermission = 'internship.manage';
+    }
+
+    /**
+     * Get summary metrics for internship placements (slots).
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        $allPlacements = $this->service->all();
+        $totalQuota = $allPlacements->sum('capacity_quota');
+        $remainingQuota = $allPlacements->sum(fn($p) => $p->remainingSlots);
+        
         return [
-            ['key' => 'company', 'label' => __('internship::ui.company'), 'sortable' => false],
-            ['key' => 'internship', 'label' => __('internship::ui.program'), 'sortable' => false],
-            ['key' => 'mentor', 'label' => __('internship::ui.mentor'), 'sortable' => false],
-            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+            'total_locations' => $allPlacements->count(),
+            'total_quota' => $totalQuota,
+            'filled_quota' => $totalQuota - $remainingQuota,
+            'utilization' => $totalQuota > 0 ? round((($totalQuota - $remainingQuota) / $totalQuota) * 100) : 0,
         ];
     }
 
     /**
-     * Mount the component.
+     * Define the table structure.
      */
-    public function mount(): void
+    protected function getTableHeaders(): array
     {
-        parent::mount();
+        return [
+            ['key' => 'company_name', 'label' => __('internship::ui.company'), 'sortable' => true],
+            ['key' => 'internship_title', 'label' => __('internship::ui.program'), 'sortable' => true],
+            ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
+            ['key' => 'mentor_name', 'label' => __('internship::ui.mentor')],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+        ];
     }
 
     /**
-     * Get records for the table.
+     * Transform raw placement record for UI display.
      */
-    #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    protected function mapRecord(mixed $record): array
     {
-        return $this->service->paginate(
-            [
-                'search' => $this->search,
-                'sort_by' => $this->sortBy['column'] ?? 'created_at',
-                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
-            ],
-            $this->perPage,
-        );
+        return array_merge($record->toArray(), [
+            'company_name' => $record->company?->name ?? '-',
+            'internship_title' => $record->internship?->title ?? '-',
+            'mentor_name' => $record->mentor?->name ?? '-',
+            'remaining_slots' => $record->remainingSlots,
+            'utilization_percentage' => $record->utilizationPercentage,
+        ]);
     }
 
     /** Shared cache TTL (5 minutes) for dropdown lists that rarely change. */

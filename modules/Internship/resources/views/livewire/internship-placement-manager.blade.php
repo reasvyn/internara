@@ -1,122 +1,120 @@
-<div>
-    <x-ui::header 
-        wire:key="placement-manager-header"
-        :title="__('internship::ui.placement_title')" 
-        :subtitle="__('internship::ui.placement_subtitle')"
-    >
-        <x-slot:actions wire:key="placement-manager-actions">
-            <div class="flex items-center gap-3">
-                <x-ui::button :label="__('ui::common.refresh')" icon="tabler.refresh" variant="secondary" wire:click="refreshRecords" spinner="refreshRecords" />
-                <x-ui::button :label="__('internship::ui.add_placement')" icon="tabler.plus" class="btn-primary" wire:click="add" />
-            </div>
-        </x-slot:actions>
-    </x-ui::header>
+<div class="space-y-8">
+    {{-- Executive Summary: Premium Stats Grid --}}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <x-ui::stat 
+            :title="__('internship::ui.stats.total_locations')" 
+            :value="$this->stats['total_locations']" 
+            icon="tabler.map-pins" 
+            variant="metadata" 
+            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+        />
+        <x-ui::stat 
+            :title="__('internship::ui.stats.total_quota')" 
+            :value="$this->stats['total_quota']" 
+            icon="tabler.users-group" 
+            variant="info" 
+            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+        />
+        <x-ui::stat 
+            :title="__('internship::ui.stats.filled_quota')" 
+            :value="$this->stats['filled_quota']" 
+            icon="tabler.user-check" 
+            variant="success" 
+            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+        />
+        <x-ui::stat 
+            :title="__('internship::ui.stats.utilization_rate')" 
+            :value="$this->stats['utilization'] . '%'" 
+            icon="tabler.chart-pie" 
+            variant="primary" 
+            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+        />
+    </div>
 
-    <x-ui::card>
-            <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div class="w-full md:w-1/3">
-                    <x-ui::input placeholder="{{ __('internship::ui.search_placement') }}" icon="tabler.search" wire:model.live.debounce.300ms="search" clearable />
+    <x-ui::record-manager>
+        {{-- 1. Customized Table Cells --}}
+        <x-slot:tableCells>
+            @scope('cell_company_name', $placement)
+                <div class="flex flex-col min-w-[200px]">
+                    <span class="font-bold text-sm text-base-content/90">{{ $placement['company_name'] }}</span>
+                    <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1">{{ $placement['id'] }}</span>
                 </div>
-            </div>
+            @endscope
 
-            <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
-                <x-mary-table 
-                    class="table-zebra table-md w-full"
-                    :headers="[
-                        ['key' => 'company.name', 'label' => __('internship::ui.company_name')],
-                        ['key' => 'internship.title', 'label' => __('internship::ui.program')],
-                        ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
-                        ['key' => 'company.phone', 'label' => __('internship::ui.contact')],
-                                        ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
-                                    ]" :rows="$records" with-pagination>
-                    @scope('cell_quota', $placement)
-                        <div class="flex flex-col gap-1 min-w-[120px]">
-                            <div class="flex justify-between text-xs">
-                                <span>{{ $placement->capacity_quota - $placement->remaining_slots }} / {{ $placement->capacity_quota }}</span>
-                                <span class="font-bold">{{ $placement->utilization_percentage }}%</span>
-                            </div>
-                            <progress class="progress progress-primary w-full" value="{{ $placement->utilization_percentage }}" max="100"></progress>
-                        </div>
-                    @endscope
+            @scope('cell_quota', $placement)
+                <div class="flex flex-col gap-1 min-w-[140px] py-1">
+                    <div class="flex justify-between text-[9px] font-black uppercase tracking-tighter">
+                        <span class="opacity-50">{{ $placement['capacity_quota'] - $placement['remaining_slots'] }} / {{ $placement['capacity_quota'] }}</span>
+                        <span class="{{ $placement['utilization_percentage'] > 90 ? 'text-error' : 'text-primary' }}">{{ $placement['utilization_percentage'] }}%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-base-content/5 rounded-full overflow-hidden">
+                        <div class="h-full {{ $placement['utilization_percentage'] > 90 ? 'bg-error' : 'bg-primary' }} transition-all duration-500" style="width: {{ $placement['utilization_percentage'] }}%"></div>
+                    </div>
+                </div>
+            @endscope
 
-                    @scope('cell_actions', $placement)
-                        <div class="flex items-center justify-end gap-1">
-                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('ui::common.edit') }}" />
-                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $placement->id }}')" tooltip="{{ __('ui::common.delete') }}" />
-                        </div>
-                    @endscope
-                </x-mary-table>
-            </div>
-        </x-ui::card>
+            @scope('cell_mentor_name', $placement)
+                <div class="flex items-center gap-2">
+                    <div class="size-6 rounded-lg bg-base-200 flex items-center justify-center">
+                        <x-ui::icon name="tabler.user-bolt" class="size-3 opacity-40" />
+                    </div>
+                    <span class="text-sm font-medium">{{ $placement['mentor_name'] }}</span>
+                </div>
+            @endscope
+        </x-slot:tableCells>
 
-    {{-- Form Modal --}}
-    <x-ui::modal id="placement-form-modal" wire:model="formModal" title="{{ $form->id ? __('internship::ui.edit_placement') : __('internship::ui.add_placement') }}">
-        <x-ui::form wire:submit="save">
+        {{-- 2. Form Fields --}}
+        <x-slot:formFields>
             <x-ui::select 
-                label="{{ __('internship::ui.program') }}" 
+                :label="__('internship::ui.program')" 
+                icon="tabler.presentation"
                 wire:model="form.internship_id" 
                 :options="$this->internships" 
                 option-label="title"
-                placeholder="{{ __('internship::ui.select_program') }}"
+                :placeholder="__('internship::ui.select_program')"
                 required 
             />
             
-            <div class="flex items-end gap-2">
-                <div class="flex-1">
-                    <x-ui::select 
-                        label="{{ __('internship::ui.company_name') }}" 
-                        wire:model="form.company_id" 
-                        :options="$this->companies" 
-                        placeholder="{{ __('internship::ui.select_company') }}"
-                        required 
-                    />
-                </div>
-            </div>
+            <x-ui::select 
+                :label="__('internship::ui.company_name')" 
+                icon="tabler.building"
+                wire:model="form.company_id" 
+                :options="$this->companies" 
+                :placeholder="__('internship::ui.select_company')"
+                required 
+            />
 
-            <x-ui::input label="{{ __('internship::ui.capacity_quota') }}" type="number" wire:model="form.capacity_quota" required min="1" />
+            <x-ui::input :label="__('internship::ui.capacity_quota')" icon="tabler.users-group" type="number" wire:model="form.capacity_quota" required min="1" />
 
             <div class="flex items-end gap-2">
                 <div class="flex-1">
                     <x-ui::select 
-                        label="{{ __('internship::ui.mentor') }}" 
+                        :label="__('internship::ui.mentor')" 
+                        icon="tabler.user-check"
                         wire:model="form.mentor_id" 
                         :options="$this->mentors" 
-                        placeholder="{{ __('internship::ui.select_mentor') }}"
+                        :placeholder="__('internship::ui.select_mentor')"
                     />
                 </div>
-                <x-ui::button icon="tabler.user-plus" class="btn-outline" wire:click="addMentor" tooltip="{{ __('Add New Mentor') }}" />
+                <x-ui::button icon="tabler.user-plus" variant="secondary" wire:click="addMentor" tooltip="{{ __('internship::ui.add_new_mentor') }}" />
             </div>
-
-            <x-slot:actions>
-                <x-ui::button label="{{ __('ui::common.cancel') }}" wire:click="$set('formModal', false)" />
-                <x-ui::button label="{{ __('ui::common.save') }}" type="submit" class="btn-primary" spinner="save" />
-            </x-slot:actions>
-        </x-ui::form>
-    </x-ui::modal>
+        </x-slot:formFields>
+    </x-ui::record-manager>
 
     {{-- JIT Mentor Modal --}}
-    <x-ui::modal id="placement-mentor-modal" wire:model="mentorModal" title="{{ __('Add New Industry Mentor') }}">
+    <x-ui::modal wire:model="mentorModal" :title="__('internship::ui.add_new_mentor')">
         <x-ui::form wire:submit="saveMentor">
-            <x-ui::input label="{{ __('Full Name') }}" wire:model="mentorForm.name" required />
+            <x-ui::input :label="__('ui::common.name')" icon="tabler.user" wire:model="mentorForm.name" required />
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <x-ui::input label="{{ __('Email') }}" type="email" wire:model="mentorForm.email" required />
-                <x-ui::input label="{{ __('Username') }}" wire:model="mentorForm.username" required />
+                <x-ui::input :label="__('ui::common.email')" icon="tabler.mail" type="email" wire:model="mentorForm.email" required />
+                <x-ui::input :label="__('ui::common.username')" icon="tabler.id" wire:model="mentorForm.username" required />
             </div>
-            <x-ui::input label="{{ __('Password') }}" type="password" wire:model="mentorForm.password" required />
+            <x-ui::input :label="__('ui::common.password')" icon="tabler.lock" type="password" wire:model="mentorForm.password" required />
 
             <x-slot:actions>
-                <x-ui::button label="{{ __('Cancel') }}" wire:click="$set('mentorModal', false)" />
-                <x-ui::button label="{{ __('Create and Assign') }}" type="submit" class="btn-primary" spinner="saveMentor" />
+                <x-ui::button :label="__('ui::common.cancel')" x-on:click="$wire.mentorModal = false" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="saveMentor" />
             </x-slot:actions>
         </x-ui::form>
-    </x-ui::modal>
-
-    {{-- Confirm Delete Modal --}}
-    <x-ui::modal id="placement-confirm-modal" wire:model="confirmModal" title="{{ __('ui::common.confirm') }}">
-        <p>{{ __('internship::ui.delete_placement_confirm') }}</p>
-        <x-slot:actions>
-            <x-ui::button label="{{ __('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
-            <x-ui::button label="{{ __('ui::common.delete')" class="btn-error" wire:click="remove('{{ $recordId }}')" spinner="remove" />
-        </x-slot:actions>
     </x-ui::modal>
 </div>
