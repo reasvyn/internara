@@ -83,26 +83,6 @@ class UserForm extends Form
         $isProduction = app()->isProduction();
         $config = config('user.security');
 
-        // Build password rules dynamically from config
-        $passwordRules = $this->id ? ['nullable'] : ['required'];
-        $passwordRules[] = 'string';
-        $passwordRules[] = 'confirmed';
-        
-        if ($isProduction) {
-            $passwordRules[] = 'min:' . $config['password']['min_length'];
-            
-            $requirements = \Illuminate\Validation\Rules\Password::min($config['password']['min_length']);
-            
-            if ($config['password']['require_uppercase']) $requirements->letters()->mixedCase();
-            if ($config['password']['require_numeric']) $requirements->numbers();
-            if ($config['password']['require_special']) $requirements->symbols();
-            if ($config['password']['require_uncompromised']) $requirements->uncompromised();
-            
-            $passwordRules[] = $requirements;
-        } else {
-            $passwordRules[] = \Modules\Shared\Rules\Password::auto();
-        }
-
         return [
             'name' => array_filter([
                 'required', 
@@ -125,7 +105,9 @@ class UserForm extends Form
             ]),
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending,verified'],
-            'password' => $passwordRules,
+            'password' => $this->id
+                ? ['nullable', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()]
+                : ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],
             'profile.department_id' => ['nullable', 'uuid', 'exists:departments,id'],
