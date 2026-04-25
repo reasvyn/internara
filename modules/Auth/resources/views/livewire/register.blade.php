@@ -4,6 +4,16 @@
     :title="__('auth::ui.register.title')"
     :subtitle="__('auth::ui.register.subtitle')"
 >
+    <x-slot:header>
+        <div class="mb-4 flex justify-center">
+            <x-ui::badge 
+                variant="primary" 
+                class="px-4 py-1.5 rounded-full font-bold tracking-wide uppercase text-[10px]"
+                :value="__('auth::ui.register.student_only_badge')" 
+            />
+        </div>
+    </x-slot:header>
+
     <x-ui::form class="text-start" wire:submit="register">
         <div wire:key="reg-name">
             <x-ui::input
