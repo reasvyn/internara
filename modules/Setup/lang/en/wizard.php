@@ -28,21 +28,22 @@ return [
         'later_at_settings' => 'You can change these settings later in the settings page.',
     ],
     'welcome' => [
-        'title' => 'Start Installation',
-        'headline' => 'End the Complexity, Welcome a Meaningful Internship Program.',
+        'title' => 'System Initialization',
+        'headline' => 'Empowering Institutions, Transforming Internship Experiences.',
         'problem' => [
-            'title' => 'Understanding Your Complexity',
-            'description' => 'We know managing an internship program feels like putting together thousands of complex puzzle pieces.',
+            'title' => 'Overcoming Complexity',
+            'description' => 'Managing industrial internships shouldn\'t feel like solving an impossible puzzle of logistics and compliance.',
         ],
         'solution' => [
-            'title' => 'Our Smart Solution',
-            'description' => ':app is here as your partner, organizing every detail so you can focus on guiding students\' futures.',
+            'title' => 'Integrated Ecosystem',
+            'description' => ':app serves as your strategic partner, orchestrating every workflow so you can focus on student growth.',
         ],
         'journey' => [
-            'title' => 'The Journey Begins',
-            'description' => 'This setup process is your first step towards a more organized and impactful internship program.',
+            'title' => 'Seamless Journey',
+            'description' => 'This initialization process is your first step towards a highly organized and data-driven internship program.',
+            'description_short' => 'Experience a streamlined deployment designed for modern academic and corporate standards.',
         ],
-        'cta' => 'Start Installation',
+        'cta' => 'Begin Initialization',
     ],
     'environment' => [
         'title' => 'Environment Check',
