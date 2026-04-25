@@ -59,11 +59,9 @@
                                     <x-ui::icon name="tabler.circle-x-filled" class="text-rose-600 size-5" />
                                 @endif
                                 <x-ui::badge 
-                                    variant="custom"
-                                    class="{{ $passed ? 'bg-success/10 text-emerald-700 border-emerald-200/50' : 'bg-error/10 text-rose-700 border-rose-200/50' }} border px-3 font-bold text-[10px] uppercase tracking-widest"
-                                >
-                                    {{ $passed ? __('setup::wizard.status.passed') : __('setup::wizard.status.failed') }}
-                                </x-ui::badge>
+                                    :variant="$passed ? 'success' : 'error'"
+                                    :value="$passed ? __('setup::wizard.status.passed') : __('setup::wizard.status.failed')"
+                                />
                             </div>
                         </div>
                     @endforeach
@@ -89,11 +87,9 @@
                                     <x-ui::icon name="tabler.circle-x-filled" class="text-rose-600 size-5" />
                                 @endif
                                 <x-ui::badge 
-                                    variant="custom"
-                                    class="{{ $writable ? 'bg-success/10 text-emerald-700 border-emerald-200/50' : 'bg-error/10 text-rose-700 border-rose-200/50' }} border px-3 font-bold text-[10px] uppercase tracking-widest"
-                                >
-                                    {{ $writable ? __('setup::wizard.status.writable') : __('setup::wizard.status.not_writable') }}
-                                </x-ui::badge>
+                                    :variant="$writable ? 'success' : 'error'"
+                                    :value="$writable ? __('setup::wizard.status.writable') : __('setup::wizard.status.not_writable')"
+                                />
                             </div>
                         </div>
                     @endforeach
@@ -122,11 +118,9 @@
                             <x-ui::icon name="tabler.circle-x-filled" class="text-rose-600 size-5" />
                         @endif
                         <x-ui::badge 
-                            variant="custom"
-                            class="{{ $this->audit['database']['connection'] ? 'bg-success/10 text-emerald-700 border-emerald-200/50' : 'bg-error/10 text-rose-700 border-rose-200/50' }} border px-3 font-bold text-[10px] uppercase tracking-widest"
-                        >
-                            {{ $this->audit['database']['connection'] ? __('setup::wizard.status.connected') : __('setup::wizard.status.disconnected') }}
-                        </x-ui::badge>
+                            :variant="$this->audit['database']['connection'] ? 'success' : 'error'"
+                            :value="$this->audit['database']['connection'] ? __('setup::wizard.status.connected') : __('setup::wizard.status.disconnected')"
+                        />
                     </div>
                 </div>
             </x-ui::card>
