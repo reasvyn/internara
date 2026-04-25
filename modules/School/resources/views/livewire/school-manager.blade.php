@@ -1,18 +1,14 @@
 <div>
-    <x-ui::header 
-        :title="__('school::ui.title')" 
-        :subtitle="__('school::ui.subtitle')"
-        :context="'school::ui.title'"
-    />
+    <x-ui::form class="flex w-full flex-col gap-8" wire:submit="save">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+            <!-- Left Side: Identity & Branding -->
+            <div class="space-y-8 lg:col-span-5">
+                <div class="space-y-2">
+                    <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('school::ui.identity_branding') }}</h3>
+                    <p class="text-sm text-base-content/60">{{ __('school::ui.identity_branding_desc') }}</p>
+                </div>
 
-    <div class="flex size-full flex-col items-center justify-center">
-        <x-ui::card
-            wire:key="school-manager-card"
-            class="w-full max-w-prose text-center"
-        >
-        <x-ui::form class="flex w-full flex-col gap-8" wire:submit="save">
-            <div class="grid grid-cols-1 gap-4 text-start lg:grid-cols-2">
-                <div class="col-span-full" wire:key="sm-logo">
+                <div class="rounded-2xl bg-base-200/50 p-6 border border-base-content/5">
                     <x-ui::file
                         :label="__('school::ui.logo')"
                         wire:model="form.logo_file"
@@ -24,82 +20,94 @@
                     />
                 </div>
 
-                <div class="col-span-full" wire:key="sm-name">
+                <div class="space-y-4">
                     <x-ui::input
                         type="text"
                         :label="__('school::ui.name')"
-                        :placeholder="__('school::ui.name')"
+                        :placeholder="__('school::ui.name_placeholder')"
                         icon="tabler.school"
                         required
-                        autofocus
                         wire:model="form.name"
                     />
-                </div>
 
-                <div class="col-span-full" wire:key="sm-code">
                     <x-ui::input
                         type="text"
                         :label="__('school::ui.institutional_code')"
-                        :placeholder="__('school::ui.institutional_code')"
+                        :placeholder="__('school::ui.institutional_code_placeholder')"
                         icon="tabler.id"
                         required
                         wire:model="form.institutional_code"
+                        hint="{{ __('school::ui.institutional_code_hint') }}"
                     />
                 </div>
+            </div>
 
-                <div class="col-span-full" wire:key="sm-address">
-                    <x-ui::textarea
-                        :label="__('school::ui.address')"
-                        :placeholder="__('school::ui.address')"
-                        icon="tabler.map-pin"
-                        wire:model="form.address"
-                    />
+            <!-- Right Side: Contact & Leadership -->
+            <div class="space-y-8 lg:col-span-7">
+                <div class="space-y-2">
+                    <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('school::ui.contact_leadership') }}</h3>
+                    <p class="text-sm text-base-content/60">{{ __('school::ui.contact_leadership_desc') }}</p>
                 </div>
 
-                <div class="col-span-full" wire:key="sm-email">
-                    <x-ui::input
-                        type="email"
-                        :label="__('school::ui.email')"
-                        :placeholder="__('school::ui.email')"
-                        icon="tabler.mail"
-                        wire:model="form.email"
-                    />
-                </div>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="col-span-full">
+                        <x-ui::textarea
+                            :label="__('school::ui.address')"
+                            :placeholder="__('school::ui.address_placeholder')"
+                            icon="tabler.map-pin"
+                            wire:model="form.address"
+                            rows="3"
+                        />
+                    </div>
 
-                <div wire:key="sm-phone">
+                    <div class="col-span-full">
+                        <x-ui::input
+                            type="email"
+                            :label="__('school::ui.email')"
+                            :placeholder="__('school::ui.email_placeholder')"
+                            icon="tabler.mail"
+                            wire:model="form.email"
+                        />
+                    </div>
+
                     <x-ui::input
                         type="tel"
                         :label="__('school::ui.phone')"
-                        :placeholder="__('school::ui.phone')"
+                        :placeholder="__('school::ui.phone_placeholder')"
                         icon="tabler.phone"
                         wire:model="form.phone"
                     />
-                </div>
 
-                <div wire:key="sm-fax">
                     <x-ui::input
                         type="tel"
                         :label="__('school::ui.fax')"
-                        :placeholder="__('school::ui.fax')"
+                        :placeholder="__('school::ui.fax_placeholder')"
                         icon="tabler.printer"
                         wire:model="form.fax"
                     />
-                </div>
 
-                <div class="col-span-full" wire:key="sm-principal">
-                    <x-ui::input
-                        type="text"
-                        :label="__('school::ui.principal_name')"
-                        :placeholder="__('school::ui.principal_name')"
-                        icon="tabler.user-star"
-                        wire:model="form.principal_name"
-                    />
+                    <div class="col-span-full">
+                        <x-ui::input
+                            type="text"
+                            :label="__('school::ui.principal_name')"
+                            :placeholder="__('school::ui.principal_name_placeholder')"
+                            icon="tabler.user-star"
+                            wire:model="form.principal_name"
+                        />
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="flex flex-col items-center gap-8" wire:key="sm-actions">
-                <x-ui::button variant="primary" class="w-full" :label="__('ui::common.save')" type="submit" />
-            </div>
-        </x-ui::form>
-    </x-ui::card>
+        <!-- Global Action -->
+        <div class="flex flex-col items-center pt-6 border-t border-base-content/5" wire:key="sm-actions">
+            <x-ui::button 
+                variant="primary" 
+                class="btn-lg px-12 shadow-lg shadow-primary/20" 
+                :label="__('ui::common.save')" 
+                type="submit" 
+                spinner="save"
+            />
+        </div>
+    </x-ui::form>
 </div>
