@@ -160,26 +160,28 @@ document.addEventListener('alpine:init', () => {
                         ratioValue = parseFloat(this.ratio) || 1
                     }
 
-                    this.cropper = new window.Cropper(image, {
-                        aspectRatio: ratioValue,
-                        viewMode: 1,
-                        dragMode: 'move',
-                        autoCropArea: 1,
-                        responsive: true,
-                        restore: false,
-                        center: true,
-                        highlight: true,
-                        background: true,
+                    // Cropper v2 Initialization
+                    this.cropper = new window.Cropper(image)
+                    
+                    // Set initial state after elements are ready
+                    this.cropper.getCropperCanvas().$nextTick(() => {
+                        const selection = this.cropper.getCropperSelection()
+                        if (selection) {
+                            selection.aspectRatio = ratioValue
+                        }
                     })
                 })
             }
             reader.readAsDataURL(file)
         },
 
-        applyCrop() {
+        async applyCrop() {
             if (!this.cropper) return
 
-            const canvas = this.cropper.getCroppedCanvas()
+            const selection = this.cropper.getCropperSelection()
+            if (!selection) return
+
+            const canvas = await selection.$toCanvas()
             canvas.toBlob((blob) => {
                 const croppedFile = new File([blob], this.rawFile.name, { type: this.rawFile.type })
                 this.syncToLivewire(croppedFile)
@@ -199,7 +201,13 @@ document.addEventListener('alpine:init', () => {
         },
 
         rotate(deg) {
-            if (this.cropper) this.cropper.rotate(deg)
+            if (this.cropper) {
+                const cropperImage = this.cropper.getCropperImage()
+                if (cropperImage) {
+                    // Convert degrees to radians for v2
+                    cropperImage.$rotate((deg * Math.PI) / 180)
+                }
+            }
         },
 
         syncToLivewire(file) {
