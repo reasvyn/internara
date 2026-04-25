@@ -85,6 +85,12 @@ class ClaimAccount extends Component
         $key = 'claim-account:' . Str::lower($this->username);
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
+            // [S2 - Sustain] Audit Log for Brute Force Attempt
+            activity('security')
+                ->event('claim_account_throttled')
+                ->withProperties(['ip' => request()->ip(), 'username' => $this->username])
+                ->log('Account claim rate limit exceeded.');
+
             $this->addError('activation_code', __('auth::claim.throttled'));
             return;
         }
@@ -94,6 +100,13 @@ class ClaimAccount extends Component
 
         if (! $token) {
             RateLimiter::hit($key, 300); // 5 min decay
+            
+            // [S2 - Sustain] Audit Log for Failed Attempt
+            activity('security')
+                ->event('claim_account_failed')
+                ->withProperties(['ip' => request()->ip(), 'username' => $this->username])
+                ->log('Failed account claim attempt: Invalid code or username.');
+
             $this->addError('activation_code', __('auth::claim.invalid_code'));
             return;
         }
@@ -124,11 +137,19 @@ class ClaimAccount extends Component
             return;
         }
 
+        $user = $token->user;
+
         $provisioning->claim(
             $token,
             $this->password,
             request()->ip(),
         );
+
+        // [S2 - Sustain] Audit Log for Success
+        activity('security')
+            ->event('claim_account_success')
+            ->withProperties(['ip' => request()->ip(), 'user_id' => $user->id, 'username' => $user->username])
+            ->log('Account successfully claimed and activated.');
 
         flash()->success(__('auth::claim.success'));
 
