@@ -114,9 +114,15 @@ return [
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
     /**
-     * Password Policy Configuration
-     * Enterprise-grade password requirements for all user roles
+     * Super Admin Protection Settings
+     * Additional safeguards for Super Admin accounts
      */
+    'super_admin' => [
+        // Require 2 Super Admin approvals for changes
+        'require_dual_approval' => env('SUPER_ADMIN_DUAL_APPROVAL', true),
+
+        // IP whitelist for Super Admin login (comma-separated, supports CIDR)
+        // Example: "192.168.1.0/24,10.0.0.5"
         'ip_whitelist' => env('SUPER_ADMIN_IP_WHITELIST', ''),
 
         // Force session isolation (only one active session per Super Admin)
