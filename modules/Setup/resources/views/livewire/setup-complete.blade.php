@@ -1,12 +1,12 @@
-<x-setup::layouts.setup-wizard>
-    <div x-data="{ 
-        dataVerified: @entangle('data_verified'),
-        securityAware: @entangle('security_aware'),
-        legalAgreed: @entangle('legal_agreed'),
-        get canFinalize() {
-            return this.dataVerified && this.securityAware && this.legalAgreed;
-        }
-    }" class="w-full">
+<div x-data="{ 
+    dataVerified: @entangle('data_verified'),
+    securityAware: @entangle('security_aware'),
+    legalAgreed: @entangle('legal_agreed'),
+    get canFinalize() {
+        return this.dataVerified && this.securityAware && this.legalAgreed;
+    }
+}" class="w-full">
+    <x-setup::layouts.setup-wizard>
         <x-slot:header>
             <div class="max-w-4xl">
                 <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" class="mb-12" />
@@ -44,14 +44,14 @@
                     spinner
                 />
             </div>
-        </x-slot>
+        </x-slot:header>
 
         <x-slot:content>
             <div class="w-full">
                 <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
                     <div class="mb-10">
-                        <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.complete.checkup_title') ?? 'System Readiness Check-up' }}</h3>
-                        <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.complete.checkup_desc') ?? 'Please review and confirm your compliance with system governance standards.' }}</p>
+                        <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.complete.checkup_title') }}</h3>
+                        <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.complete.checkup_desc') }}</p>
                     </div>
 
                     <div class="space-y-6">
@@ -62,10 +62,10 @@
                             </div>
                             <div>
                                 <span class="block text-sm font-bold text-base-content group-hover:text-primary transition-colors">
-                                    {{ __('setup::wizard.complete.checkup.data_verified_label') ?? 'Data Integrity Confirmation' }}
+                                    {{ __('setup::wizard.complete.checkup.data_verified_label') }}
                                 </span>
                                 <span class="block text-xs text-base-content/60 mt-1 leading-relaxed">
-                                    {{ __('setup::wizard.complete.checkup.data_verified_desc') ?? 'I have reviewed the school, department, and program data. I confirm that all entered information is accurate and reflects the official status of the institution.' }}
+                                    {{ __('setup::wizard.complete.checkup.data_verified_desc') }}
                                 </span>
                             </div>
                         </label>
@@ -77,10 +77,10 @@
                             </div>
                             <div>
                                 <span class="block text-sm font-bold text-base-content group-hover:text-primary transition-colors">
-                                    {{ __('setup::wizard.complete.checkup.security_aware_label') ?? 'Security Sovereignty Acknowledgment' }}
+                                    {{ __('setup::wizard.complete.checkup.security_aware_label') }}
                                 </span>
                                 <span class="block text-xs text-base-content/60 mt-1 leading-relaxed">
-                                    {{ __('setup::wizard.complete.checkup.security_aware_desc') ?? 'I understand that my SuperAdmin account holds absolute authority. I commit to maintaining credential secrecy and following enterprise security protocols to protect institutional data.' }}
+                                    {{ __('setup::wizard.complete.checkup.security_aware_desc') }}
                                 </span>
                             </div>
                         </label>
@@ -92,34 +92,38 @@
                             </div>
                             <div>
                                 <span class="block text-sm font-bold text-base-content group-hover:text-primary transition-colors">
-                                    {{ __('setup::wizard.complete.checkup.legal_agreed_label') ?? 'Legal & Regulatory Compliance' }}
+                                    {{ __('setup::wizard.complete.checkup.legal_agreed_label') }}
                                 </span>
                                 <span class="block text-xs text-base-content/60 mt-1 leading-relaxed">
                                     {!! __('setup::wizard.complete.checkup.legal_agreed_desc', [
                                         'privacy' => '<a href="#" x-on:click.prevent="$wire.set(\'showPrivacy\', true)" class="text-primary hover:underline font-bold">Privacy Policy</a>',
                                         'terms' => '<a href="#" x-on:click.prevent="$wire.set(\'showTerms\', true)" class="text-primary hover:underline font-bold">Terms of Service</a>'
-                                    ]) ?? 'I agree to the <a href="#" class="text-primary hover:underline font-bold">Privacy Policy</a> and <a href="#" class="text-primary hover:underline font-bold">Terms of Service</a>. I commit to operating Internara in compliance with applicable data protection laws.' !!}
+                                    ]) !!}
                                 </span>
                             </div>
                         </label>
                     </div>
                 </div>
             </div>
-        </x-slot>
-    </div>
+        </x-slot:content>
+    </x-setup::layouts.setup-wizard>
 
     <!-- Legal Modals -->
-    <x-ui::modal wire:model="showPrivacy" title="Privacy Policy">
-        @include('shared::legal.privacy-policy')
+    <x-ui::modal wire:model="showPrivacy" :title="__('setup::wizard.complete.checkup.legal_agreed_label')">
+        <div class="p-4">
+            @include('shared::legal.privacy-policy')
+        </div>
         <x-slot:actions>
-            <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.set('showPrivacy', false)" />
+            <x-ui::button :label="__('shared::ui.cancel')" x-on:click="$wire.set('showPrivacy', false)" />
         </x-slot:actions>
     </x-ui::modal>
 
-    <x-ui::modal wire:model="showTerms" title="Terms of Service">
-        @include('shared::legal.terms-of-service')
+    <x-ui::modal wire:model="showTerms" :title="__('setup::wizard.complete.checkup.legal_agreed_label')">
+        <div class="p-4">
+            @include('shared::legal.terms-of-service')
+        </div>
         <x-slot:actions>
-            <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.set('showTerms', false)" />
+            <x-ui::button :label="__('shared::ui.cancel')" x-on:click="$wire.set('showTerms', false)" />
         </x-slot:actions>
     </x-ui::modal>
-</x-setup::layouts.setup-wizard>
+</div>
