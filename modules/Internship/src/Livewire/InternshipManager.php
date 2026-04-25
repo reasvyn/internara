@@ -61,7 +61,7 @@ class InternshipManager extends RecordManager
     public function stats(): array
     {
         return [
-            'total' => $this->service->count(),
+            'total' => $this->service->query()->count(),
             'active' => $this->service->query(['status' => ProgramStatus::OPEN->value])->count(),
             'ongoing' => $this->service->query(['status' => ProgramStatus::ONGOING->value])->count(),
             'upcoming' => $this->service->query(['status' => ProgramStatus::PUBLISHED->value])->count(),
