@@ -61,7 +61,7 @@
                         {{ __('auth::claim.info_step1') }}
                     </x-ui::alert>
 
-                    <div class="mt-2 flex w-full flex-col gap-4" wire:key="claim-step1-actions">
+                    <div class="mt-2 flex w-full flex-col items-center gap-4" wire:key="claim-step1-actions">
                         <x-ui::button
                             variant="primary"
                             class="w-full"
@@ -71,7 +71,7 @@
                         />
 
                         <a href="{{ route('login') }}" wire:navigate
-                           class="text-sm text-base-content/60 hover:text-base-content transition-colors">
+                           class="text-sm text-base-content/60 hover:text-base-content transition-colors text-center">
                             ← {{ __('auth::claim.back_to_login') }}
                         </a>
                     </div>
