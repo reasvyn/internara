@@ -32,6 +32,15 @@ class SetupWelcome extends Component
             currentStep: SetupService::STEP_WELCOME,
             nextStep: SetupService::STEP_ENVIRONMENT,
         );
+
+        // [S1 - Secure] Audit the start of the setup journey
+        if (! session()->has('setup_audit_logged')) {
+            activity('setup')
+                ->event('started')
+                ->log('Administrator reached the setup initialization screen.');
+            
+            session()->put('setup_audit_logged', true);
+        }
     }
 
     /**
