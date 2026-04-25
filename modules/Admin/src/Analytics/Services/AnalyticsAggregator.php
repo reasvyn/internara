@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Analytics\Services;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator as Contract;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
+use Modules\Log\Models\Activity;
+use Modules\Permission\Enums\Role;
+use Modules\User\Models\User;
 
 /**
  * Class AnalyticsAggregator
@@ -114,10 +118,64 @@ class AnalyticsAggregator implements Contract
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getSecuritySummary(): array
+    {
+        return \Illuminate\Support\Facades\Cache::remember('security_summary', now()->addMinutes(5), function () {
+            return [
+                'failed_logins' => Activity::where('log_name', 'security')
+                    ->where('event', 'failed_login_attempt')
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->count(),
+                'throttled_attempts' => Activity::where('log_name', 'security')
+                    ->where('event', 'like', '%throttled%')
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->count(),
+                'suspicious_activities' => Activity::where('log_name', 'security')
+                    ->latest()
+                    ->limit(5)
+                    ->get()
+                    ->toArray(),
+            ];
+        });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getInfrastructureStatus(): array
+    {
+        return [
+            'queue_pending' => DB::table('jobs')->count(),
+            'queue_failed' => DB::table('failed_jobs')->count(),
+            'db_size' => $this->getDatabaseSize(),
+            'last_backup' => setting('last_successful_backup_at'),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserDistribution(): array
+    {
+        return \Illuminate\Support\Facades\Cache::remember('user_distribution', now()->addMinutes(10), function () {
+            $byRole = [];
+            foreach (Role::cases() as $role) {
+                $byRole[$role->value] = User::role($role->value)->count();
+            }
+
+            return [
+                'by_role' => $byRole,
+                'active_sessions' => DB::table('sessions')
+                    ->where('last_activity', '>=', now()->subMinutes(15)->getTimestamp())
+                    ->count(),
+            ];
+        });
+    }
+
+    /**
      * Calculates the institutional placement rate.
-     *
-     * @param int $totalInterns The total number of registered interns.
-     * @param string $academicYear The active academic year.
      */
     protected function calculatePlacementRate(int $totalInterns, string $academicYear): float
     {
@@ -131,5 +189,48 @@ class AnalyticsAggregator implements Contract
             ->count();
 
         return round(($placedInterns / $totalInterns) * 100, 2);
+    }
+
+    /**
+     * Get the current database size in a human-readable format.
+     */
+    protected function getDatabaseSize(): string
+    {
+        $connection = config('database.default');
+        $driver = config("database.connections.{$connection}.driver");
+
+        try {
+            if ($driver === 'sqlite') {
+                $path = config("database.connections.{$connection}.database");
+                if (file_exists($path)) {
+                    $size = filesize($path);
+                    return $this->formatBytes($size);
+                }
+            }
+
+            if ($driver === 'mysql') {
+                $dbName = config("database.connections.{$connection}.database");
+                $res = DB::select("SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
+                return $this->formatBytes((int) ($res[0]->size ?? 0));
+            }
+        } catch (\Exception $e) {
+            return 'Unknown';
+        }
+
+        return 'N/A';
+    }
+
+    /**
+     * Format bytes to human readable format.
+     */
+    protected function formatBytes(int $bytes, int $precision = 2): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= (1 << (10 * $pow));
+
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }

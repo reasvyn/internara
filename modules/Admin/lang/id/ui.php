@@ -24,6 +24,24 @@ return [
         'quick_links' => 'Tautan Cepat',
         'user_management' => 'Manajemen Pengguna',
         'system_config' => 'Konfigurasi Sistem',
+        'system_status' => 'Status Sistem',
+        'security_monitoring' => 'Pemantauan Keamanan',
+        'user_stats' => 'Distribusi Pengguna',
+        'infrastructure' => [
+            'db_size' => 'Ukuran Database',
+            'queue_pending' => 'Antrean Menunggu',
+            'queue_failed' => 'Antrean Gagal',
+            'last_backup' => 'Cadangan Terakhir',
+        ],
+        'security' => [
+            'failed_logins' => 'Gagal Masuk (7h)',
+            'throttled_attempts' => 'Upaya Terbatas (7h)',
+            'recent_alerts' => 'Peringatan Terbaru',
+        ],
+        'users' => [
+            'active_sessions' => 'Sesi Aktif',
+            'total_users' => 'Total Pengguna Terdaftar',
+        ],
         'widget' => [
             'series' => 'Seri',
             'license' => 'Lisensi',
