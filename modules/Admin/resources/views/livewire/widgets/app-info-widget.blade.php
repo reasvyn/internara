@@ -1,32 +1,39 @@
 <div>
-    <x-ui::card class="bg-transparent border-none shadow-none">
-        <div class="flex flex-col gap-3">
+    <x-ui::card class="bg-base-100/30 border-none shadow-none hover:bg-base-100/50 transition-colors duration-300">
+        <div class="flex flex-col gap-4 p-1">
             <div class="flex items-center gap-3">
-                <div class="bg-primary/10 p-2 rounded-lg">
-                    <x-ui::icon name="tabler.info-circle" class="w-5 h-5 text-primary" />
+                <div class="bg-primary/10 p-2.5 rounded-2xl">
+                    <x-ui::icon name="tabler.topology-star-3" class="w-5 h-5 text-primary" />
                 </div>
-                <div>
-                    <h4 class="font-bold text-sm leading-none">{{ $appInfo['name'] ?? 'Internara' }}</h4>
-                    <span class="text-[10px] opacity-50 uppercase tracking-widest font-black">{{ $appInfo['version'] ?? 'v0.0.0' }}</span>
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <div class="flex justify-between text-[11px] opacity-70">
-                    <span>{{ __('admin::ui.dashboard.widget.license') }}</span>
-                    <span>{{ $appInfo['license'] ?? '-' }}</span>
+                <div class="flex flex-col">
+                    <h4 class="font-black text-sm tracking-tight leading-none mb-1 text-base-content/90">{{ $appInfo['name'] ?? 'Internara' }}</h4>
+                    <div class="flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.5 bg-base-300/50 rounded text-[8px] font-black uppercase tracking-widest opacity-60">
+                            {{ $appInfo['version'] ?? 'v0.0.0' }}
+                        </span>
+                        <span class="text-[9px] opacity-40 font-medium">Enterprise Core</span>
+                    </div>
                 </div>
             </div>
 
-            <hr class="opacity-10">
-
-            <div class="flex items-center justify-between">
-                <div class="text-[10px] opacity-40">
-                    &copy; {{ date('Y') }} {{ $appInfo['author']['name'] ?? 'Developer' }}
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-base-200/40 p-2 rounded-xl border border-base-content/5">
+                    <span class="block text-[8px] uppercase opacity-40 font-bold mb-0.5">{{ __('admin::ui.dashboard.widget.license') }}</span>
+                    <span class="block text-[10px] font-bold text-base-content/80">{{ $appInfo['license'] ?? 'Proprietary' }}</span>
                 </div>
-                <div class="flex gap-2">
-                    <a href="{{ $appInfo['author']['github'] ?? 'https://github.com/reasvyn' }}" target="_blank" class="btn btn-ghost btn-xs btn-circle opacity-40 hover:opacity-100">
-                        <x-ui::icon name="tabler.brand-github" class="w-3 h-3" />
+                <div class="bg-base-200/40 p-2 rounded-xl border border-base-content/5">
+                    <span class="block text-[8px] uppercase opacity-40 font-bold mb-0.5">Stability</span>
+                    <span class="block text-[10px] font-bold text-success">Optimal</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-base-content/5">
+                <div class="text-[9px] opacity-30 font-medium italic">
+                    &copy; {{ date('Y') }} {{ $appInfo['author']['name'] ?? 'Reas Vyn' }}
+                </div>
+                <div class="flex gap-1">
+                    <a href="{{ $appInfo['author']['github'] ?? 'https://github.com/reasvyn' }}" target="_blank" class="p-1 hover:bg-primary/10 rounded-lg transition-colors group">
+                        <x-ui::icon name="tabler.brand-github" class="w-3.5 h-3.5 opacity-30 group-hover:opacity-100 transition-opacity" />
                     </a>
                 </div>
             </div>
