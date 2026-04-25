@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,8 +12,3 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('password/change-force', Modules\Status\Livewire\ForcePasswordChange::class)
-        ->name('password.change.force');
-});
