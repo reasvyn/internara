@@ -43,41 +43,49 @@ class SetupResetCommand extends Command
     public function handle(): int
     {
         $this->newLine();
-        $this->components->warn('EMERGENCY: Setup Recovery Mode');
+        $this->components->warn('RECOVERY: System Initialization Reset');
+
+        // [S1 - Secure] Production Safeguard
+        if (app()->environment('production') && ! $this->option('force')) {
+            $this->components->error('System is in PRODUCTION. Resetting setup is highly destructive and requires the --force flag.');
+            
+            return self::FAILURE;
+        }
 
         if (! $this->confirmReset()) {
             return self::FAILURE;
         }
 
-        $this->components->task('Clearing installation flags', function () {
+        $this->components->task('De-authorizing installation status', function () {
             $this->settingService->setValue('app_installed', false);
+            
+            // [S3 - Scalable] Clear relevant caches
             Cache::forget('user.super_admin');
+            Cache::forget('internara.installed');
 
-            // Optional: Clear step progress to allow a clean restart
-            $steps = [
-                'welcome',
-                'environment',
-                'school',
-                'account',
-                'department',
-                'internship',
-                'system',
-            ];
+            // [S2 - Sustain] Recursive step cleanup
+            $steps = ['welcome', 'environment', 'school', 'account', 'department', 'internship', 'system', 'complete'];
             foreach ($steps as $step) {
                 $this->settingService->setValue("setup_step_{$step}", false);
             }
         });
 
-        $token = Str::random(32);
-        $this->components->task('Regenerating setup token', function () use ($token) {
+        $token = Str::random(64); // Increased entropy for enterprise security
+        $this->components->task('Regenerating sovereign setup token', function () use ($token) {
             $this->settingService->setValue('setup_token', $token);
         });
 
+        // [S2 - Sustain] Audit Logging
+        activity('setup')
+            ->event('emergency_reset')
+            ->withProperties(['method' => 'CLI', 'env' => app()->environment()])
+            ->log('System setup state has been reset via emergency CLI command.');
+
         $this->newLine();
-        $this->components->info('Setup state has been reset successfully!');
+        $this->components->info('Success: Setup infrastructure has been unlocked.');
 
         $setupUrl = route('setup.welcome', ['token' => $token]);
-        $this->info('You can now access the Setup Wizard again using the link below:');
+        $this->info('One-time secure access link generated:');
         $this->warn($setupUrl);
         $this->newLine();
 
