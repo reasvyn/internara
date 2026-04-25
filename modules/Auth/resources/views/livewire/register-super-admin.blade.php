@@ -1,8 +1,8 @@
 <div class="w-full">
-    <x-ui::form class="flex w-full flex-col gap-8" wire:submit="register">
-        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
-            <!-- Left Side: Authority Information -->
-            <div class="space-y-8 lg:col-span-5" x-data="{ 
+    <x-ui::form class="flex w-full flex-col gap-12" wire:submit="register">
+        <div class="max-w-2xl mx-auto w-full space-y-12">
+            <!-- Section 1: Authority Identity -->
+            <div class="space-y-8" x-data="{ 
                 email: @entangle('form.email'),
                 username: @entangle('form.username'),
                 init() {
@@ -13,24 +13,24 @@
                     });
                 }
             }">
-                <div class="space-y-2">
-                    <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('auth::ui.register_super_admin.authority_title') }}</h3>
+                <div class="space-y-2 border-b border-base-content/5 pb-4">
+                    <h3 class="text-xl font-bold tracking-tight text-base-content">{{ __('auth::ui.register_super_admin.authority_title') }}</h3>
                     <p class="text-sm text-base-content/60">{{ __('auth::ui.register_super_admin.authority_desc') }}</p>
                 </div>
 
-                <div class="rounded-2xl bg-primary/5 p-8 border border-primary/10 flex flex-col items-center text-center space-y-4">
+                <div class="rounded-3xl bg-primary/5 p-8 border border-primary/10 flex flex-col items-center text-center space-y-4">
                     <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center">
                         <x-ui::icon name="tabler.shield-lock" class="size-8 text-primary" />
                     </div>
                     <div class="space-y-1">
                         <h4 class="font-bold text-primary">{{ __('auth::ui.register_super_admin.sovereign_label') }}</h4>
-                        <p class="text-xs text-base-content/60 leading-relaxed">
+                        <p class="text-xs text-base-content/60 leading-relaxed max-w-sm mx-auto">
                             {{ __('auth::ui.register_super_admin.sovereign_help') }}
                         </p>
                     </div>
                 </div>
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-1 gap-6">
                     <x-ui::input
                         wire:model="form.name"
                         icon="tabler.user"
@@ -52,8 +52,8 @@
                 </div>
             </div>
 
-            <!-- Right Side: Credentials & Security -->
-            <div class="space-y-8 lg:col-span-7" x-data="{ 
+            <!-- Section 2: Credentials & Security -->
+            <div class="space-y-8" x-data="{ 
                 password: '', 
                 get strength() {
                     if (!this.password) return 0;
@@ -65,8 +65,8 @@
                     return s;
                 }
             }">
-                <div class="space-y-2">
-                    <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('auth::ui.register_super_admin.security_title') }}</h3>
+                <div class="space-y-2 border-b border-base-content/5 pb-4">
+                    <h3 class="text-xl font-bold tracking-tight text-base-content">{{ __('auth::ui.register_super_admin.security_title') }}</h3>
                     <p class="text-sm text-base-content/60">{{ __('auth::ui.register_super_admin.security_desc') }}</p>
                 </div>
 
@@ -80,7 +80,7 @@
                         required
                     />
 
-                    <div class="space-y-3">
+                    <div class="space-y-4">
                         <x-ui::input
                             wire:model="form.password"
                             x-model="password"
@@ -134,17 +134,17 @@
         </div>
 
         <!-- Global Action -->
-        <div class="flex flex-col items-center pt-8 border-t border-base-content/5" wire:key="rsa-actions">
-            <div class="w-full max-w-md space-y-4">
+        <div class="flex flex-col items-center pt-10 border-t border-base-content/5" wire:key="rsa-actions">
+            <div class="w-full max-w-md space-y-4 text-center">
                 <x-ui::button
                     variant="primary"
-                    class="btn-lg w-full shadow-lg shadow-primary/20"
+                    class="btn-lg w-full shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95"
                     :label="__('auth::ui.register_super_admin.form.submit')"
                     type="submit"
                     spinner="register"
                 />
 
-                <div class="flex items-start gap-3 p-4 rounded-xl bg-warning/5 border border-warning/10 text-warning-content/80">
+                <div class="flex items-start gap-3 p-4 rounded-xl bg-warning/5 border border-warning/10 text-warning-content/80 text-start">
                     <x-ui::icon name="tabler.alert-triangle" class="size-5 shrink-0 mt-0.5" />
                     <p class="text-xs leading-relaxed">
                         {{ __('auth::ui.register_super_admin.form.footer_warning') }}

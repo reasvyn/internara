@@ -1,14 +1,14 @@
 <div>
-    <x-ui::form class="flex w-full flex-col gap-8" wire:submit="save">
-        <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
-            <!-- Left Side: Identity & Branding -->
-            <div class="space-y-8 lg:col-span-5">
-                <div class="space-y-2">
-                    <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('school::ui.identity_branding') }}</h3>
+    <x-ui::form class="flex w-full flex-col gap-12" wire:submit="save">
+        <div class="max-w-2xl mx-auto w-full space-y-12">
+            <!-- Section 1: Institutional Identity -->
+            <div class="space-y-8">
+                <div class="space-y-2 border-b border-base-content/5 pb-4">
+                    <h3 class="text-xl font-bold tracking-tight text-base-content">{{ __('school::ui.identity_branding') }}</h3>
                     <p class="text-sm text-base-content/60">{{ __('school::ui.identity_branding_desc') }}</p>
                 </div>
 
-                <div class="rounded-2xl bg-base-200/50 p-6 border border-base-content/5">
+                <div class="rounded-3xl bg-base-200/30 p-8 border border-base-content/5 flex flex-col items-center gap-6">
                     <x-ui::file
                         :label="__('school::ui.logo')"
                         wire:model="form.logo_file"
@@ -20,7 +20,7 @@
                     />
                 </div>
 
-                <div class="space-y-4">
+                <div class="grid grid-cols-1 gap-6">
                     <x-ui::input
                         type="text"
                         :label="__('school::ui.name')"
@@ -42,14 +42,14 @@
                 </div>
             </div>
 
-            <!-- Right Side: Contact & Leadership -->
-            <div class="space-y-8 lg:col-span-7">
-                <div class="space-y-2">
-                    <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('school::ui.contact_leadership') }}</h3>
+            <!-- Section 2: Contact & Leadership -->
+            <div class="space-y-8">
+                <div class="space-y-2 border-b border-base-content/5 pb-4">
+                    <h3 class="text-xl font-bold tracking-tight text-base-content">{{ __('school::ui.contact_leadership') }}</h3>
                     <p class="text-sm text-base-content/60">{{ __('school::ui.contact_leadership_desc') }}</p>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div class="col-span-full">
                         <x-ui::textarea
                             :label="__('school::ui.address')"
@@ -100,10 +100,10 @@
         </div>
 
         <!-- Global Action -->
-        <div class="flex flex-col items-center pt-6 border-t border-base-content/5" wire:key="sm-actions">
+        <div class="flex flex-col items-center pt-10 border-t border-base-content/5" wire:key="sm-actions">
             <x-ui::button 
                 variant="primary" 
-                class="btn-lg px-12 shadow-lg shadow-primary/20" 
+                class="btn-lg px-20 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95" 
                 :label="__('ui::common.save')" 
                 type="submit" 
                 spinner="save"
