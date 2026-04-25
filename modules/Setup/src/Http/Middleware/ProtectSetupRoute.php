@@ -113,7 +113,15 @@ class ProtectSetupRoute
     {
         $token = $request->query('token');
         $storedToken = $this->settingService->getValue('setup_token');
+        $expiresAt = $this->settingService->getValue('setup_token_expires_at');
+
+        // [S1 - Secure] Enforce Token TTL
+        if ($expiresAt && now()->parse($expiresAt)->isPast()) {
+            return false;
+        }
 
         return $token && $storedToken && is_string($token) && hash_equals($storedToken, $token);
     }
 }
+
+

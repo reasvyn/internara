@@ -43,11 +43,11 @@ class SetupResetCommand extends Command
     public function handle(): int
     {
         $this->newLine();
-        $this->components->warn('RECOVERY: System Initialization Reset');
+        $this->components->warn(__('setup::console.reset.header'));
 
         // [S1 - Secure] Production Safeguard
         if (app()->environment('production') && ! $this->option('force')) {
-            $this->components->error('System is in PRODUCTION. Resetting setup is highly destructive and requires the --force flag.');
+            $this->components->error(__('setup::console.reset.production_warning'));
             
             return self::FAILURE;
         }
@@ -56,7 +56,7 @@ class SetupResetCommand extends Command
             return self::FAILURE;
         }
 
-        $this->components->task('De-authorizing installation status', function () {
+        $this->components->task(__('setup::console.reset.tasks.deauthorizing'), function () {
             $this->settingService->setValue('app_installed', false);
             
             // [S3 - Scalable] Clear relevant caches
@@ -70,22 +70,28 @@ class SetupResetCommand extends Command
             }
         });
 
-        $token = Str::random(64); // Increased entropy for enterprise security
-        $this->components->task('Regenerating sovereign setup token', function () use ($token) {
-            $this->settingService->setValue('setup_token', $token);
+        $token = Str::random(64);
+        $ttl = 60; // Minutes
+        $expiresAt = now()->addMinutes($ttl);
+
+        $this->components->task(__('setup::console.reset.tasks.regenerating_token'), function () use ($token, $expiresAt) {
+            $this->settingService->setValue([
+                'setup_token' => $token,
+                'setup_token_expires_at' => $expiresAt->toIso8601String(),
+            ]);
         });
 
         // [S2 - Sustain] Audit Logging
         activity('setup')
             ->event('emergency_reset')
             ->withProperties(['method' => 'CLI', 'env' => app()->environment()])
-            ->log('System setup state has been reset via emergency CLI command.');
+            ->log(__('setup::console.reset.audit_log'));
 
         $this->newLine();
-        $this->components->info('Success: Setup infrastructure has been unlocked.');
+        $this->components->info(__('setup::console.reset.success'));
 
         $setupUrl = route('setup.welcome', ['token' => $token]);
-        $this->info('One-time secure access link generated:');
+        $this->info(__('setup::console.reset.link_label', ['minutes' => $ttl]));
         $this->warn($setupUrl);
         $this->newLine();
 
@@ -102,7 +108,7 @@ class SetupResetCommand extends Command
         }
 
         return $this->confirm(
-            'This will unlock the setup routes and allow reconfiguration. Continue?',
+            __('setup::console.reset.confirm_question'),
             false,
         );
     }
