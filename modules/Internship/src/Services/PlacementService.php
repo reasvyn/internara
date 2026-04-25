@@ -58,15 +58,17 @@ class PlacementService extends EloquentQuery implements Contract
      */
     public function bulkMatch(array $pairings): int
     {
-        $count = 0;
+        return DB::transaction(function () use ($pairings) {
+            $count = 0;
 
-        foreach ($pairings as $registrationId => $placementId) {
-            if ($this->assignPlacement($registrationId, $placementId)) {
-                $count++;
+            foreach ($pairings as $registrationId => $placementId) {
+                if ($this->assignPlacement($registrationId, $placementId)) {
+                    $count++;
+                }
             }
-        }
 
-        return $count;
+            return $count;
+        });
     }
 
     /**
@@ -80,15 +82,38 @@ class PlacementService extends EloquentQuery implements Contract
         return DB::transaction(function () use ($registrationId, $placementId, $reason) {
             $registration = $this->find($registrationId);
 
-            if (! $registration || ! $this->isEligibleForPlacement($registrationId)) {
+            if (! $registration) {
                 return false;
             }
 
-            if (! $this->placementService->hasAvailableSlots($placementId)) {
+            // Enforce Eligibility Gate
+            if (! $this->isEligibleForPlacement($registrationId)) {
+                throw new \RuntimeException(
+                    __('internship::ui.student_not_eligible', ['name' => $registration->student?->name])
+                );
+            }
+
+            // Atomic Quota Protection: Lock the placement record
+            $placement = \Modules\Internship\Models\InternshipPlacement::query()
+                ->where('id', $placementId)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $placement) {
                 return false;
+            }
+
+            if ($placement->remainingSlots <= 0) {
+                throw new \RuntimeException(
+                    __('internship::ui.placement_quota_full', ['company' => $placement->company?->name])
+                );
             }
 
             $registration->update(['placement_id' => $placementId]);
+            
+            // Standardize Status
+            $registration->setStatus('approved', 'Student placed in industry partner.');
+            
             $this->logger->logAssignment($registration, $reason);
 
             return true;
@@ -110,8 +135,16 @@ class PlacementService extends EloquentQuery implements Contract
                 return false;
             }
 
-            if (! $this->placementService->hasAvailableSlots($newPlacementId)) {
-                return false;
+            // Atomic Quota Protection: Lock the NEW placement record
+            $newPlacement = \Modules\Internship\Models\InternshipPlacement::query()
+                ->where('id', $newPlacementId)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $newPlacement || $newPlacement->remainingSlots <= 0) {
+                throw new \RuntimeException(
+                    __('internship::ui.placement_quota_full', ['company' => $newPlacement?->company?->name])
+                );
             }
 
             $oldPlacementId = $registration->placement_id;

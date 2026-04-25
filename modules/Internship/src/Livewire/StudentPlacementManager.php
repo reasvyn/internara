@@ -61,13 +61,17 @@ class StudentPlacementManager extends RecordManager
     public int $successCount = 0;
     public int $failureCount = 0;
 
+    protected \Modules\Internship\Services\Contracts\PlacementService $placementService;
+
     public function boot(
         RegistrationService $registrationService,
         InternshipService $internshipService,
         UserService $userService,
-        InternshipPlacementService $placementService,
+        InternshipPlacementService $internshipPlacementService,
+        \Modules\Internship\Services\Contracts\PlacementService $placementService,
     ): void {
         $this->service = $registrationService;
+        $this->placementService = $placementService;
         $this->eventPrefix = 'registration';
     }
 
@@ -78,6 +82,25 @@ class StudentPlacementManager extends RecordManager
         $this->context = 'internship::ui.index.title';
         $this->addLabel = __('internship::ui.place_student');
         $this->deleteConfirmMessage = __('internship::ui.delete_registration_confirm');
+
+        $this->viewPermission = 'internship.view';
+        $this->createPermission = 'internship.manage';
+        $this->updatePermission = 'internship.manage';
+        $this->deletePermission = 'internship.manage';
+    }
+
+    /**
+     * Get summary metrics for student placements.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => $this->service->query()->count(),
+            'unplaced' => $this->service->query()->whereNull('placement_id')->count(),
+            'placed' => $this->service->query()->whereNotNull('placement_id')->count(),
+            'new' => $this->service->query()->where('created_at', '>=', now()->subWeek())->count(),
+        ];
     }
 
     protected function getTableHeaders(): array
@@ -106,11 +129,13 @@ class StudentPlacementManager extends RecordManager
                 return (object) [
                     'id' => $registration->id,
                     'student_name' => $registration->student?->name ?? '-',
+                    'student_avatar' => $registration->student?->avatar_url,
                     'internship_title' => $registration->internship?->title ?? '-',
                     'placement_company' => $registration->placement?->company?->name ?? '-',
                     'proposed_company_name' => $registration->proposed_company_name,
                     'teacher_name' => $registration->teacher?->name ?? '-',
                     'status' => $registration->status,
+                    'readiness' => $registration->getRequirementCompletionPercentage(),
                 ];
             });
     }
@@ -269,42 +294,27 @@ class StudentPlacementManager extends RecordManager
                 throw new \Exception(__('internship::ui.placement_location_not_found'));
             }
 
-            $registrations = InternshipRegistration::query()
-                ->whereIn('id', $this->selectedStudents)
-                ->get();
-
             $this->successCount = 0;
             $this->failureCount = 0;
             $this->placementResult = [];
 
-            foreach ($registrations as $registration) {
+            foreach ($this->selectedStudents as $registrationId) {
                 try {
-                    $registration->update([
-                        'placement_id' => $placement->id,
-                        'status' => 'approved',
-                    ]);
+                    $this->placementService->assignPlacement($registrationId, $placement->id);
                     $this->successCount++;
-                    $this->placementResult[] = [
-                        'name' => $registration->student?->name,
-                        'status' => 'success',
-                    ];
                 } catch (\Exception $e) {
                     $this->failureCount++;
-                    $this->placementResult[] = [
-                        'name' => $registration->student?->name,
-                        'status' => 'error',
-                        'message' => $e->getMessage(),
-                    ];
+                    flash()->error($e->getMessage());
                 }
             }
 
             $this->bulkConfirmModal = false;
             $this->selectedStudents = [];
-            $this->internshipId = '';
-            $this->companyId = '';
-
-            flash()->success(__('internship::ui.bulk_placement_success', ['count' => $this->successCount]));
-            $this->dispatch($this->getEventPrefix().':bulk-placed', count: $this->successCount);
+            
+            if ($this->successCount > 0) {
+                flash()->success(__('internship::ui.bulk_placement_success', ['count' => $this->successCount]));
+                $this->dispatch($this->getEventPrefix().':bulk-placed', count: $this->successCount);
+            }
         } catch (\Exception $e) {
             flash()->error($e->getMessage());
         }
