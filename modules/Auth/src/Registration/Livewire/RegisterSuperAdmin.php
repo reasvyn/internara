@@ -68,6 +68,13 @@ class RegisterSuperAdmin extends Component
             $registeredUser = $superAdminService->create($this->form->all());
 
             if ($registeredUser) {
+                // [Audit] Log explicit SuperAdmin creation during setup
+                activity('setup')
+                    ->performedOn($registeredUser)
+                    ->causedBy($registeredUser)
+                    ->withProperties(['step' => 'account_creation', 'role' => 'super_admin'])
+                    ->log('Initial SuperAdmin account created and verified.');
+
                 flash()->success('shared::messages.record_saved');
                 $this->dispatch('super_admin_registered', userId: $registeredUser->getKey());
             }
