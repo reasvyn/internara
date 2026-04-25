@@ -14,11 +14,11 @@
                     {{ __('setup::wizard.system.description', ['app' => setting('app_name')]) }}
                 </p>
                 
-                <!-- Unified System Info Badge -->
+                <!-- Unified Info Badge (Single Pattern) -->
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
                     <x-ui::icon name="tabler.info-circle" class="size-4 text-primary" />
                     <span class="text-xs font-bold uppercase tracking-widest text-primary">
-                        {{ __('setup::wizard.system.description_extra') }} &bull; {{ __('setup::wizard.common.later_at_settings') }}
+                        {{ __('setup::wizard.common.later_at_settings') }}
                     </span>
                 </div>
             </div>
