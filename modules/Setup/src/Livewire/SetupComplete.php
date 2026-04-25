@@ -52,6 +52,27 @@ class SetupComplete extends Component
     }
 
     /**
+     * Handles the login attempt after validating the governance checklist.
+     */
+    public function nextStep(): void
+    {
+        // [S1 - Secure] Server-side mandate enforcement
+        $this->validate([
+            'data_verified' => 'accepted',
+            'security_aware' => 'accepted',
+            'legal_agreed' => 'accepted',
+        ]);
+
+        $currentStep = $this->setupStepProps['currentStep'] ?? '';
+        
+        $success = $this->setupService->performSetupStep($currentStep);
+
+        if ($success) {
+            $this->redirectToLanding();
+        }
+    }
+
+    /**
      * Renders the component's view.
      */
     public function render(): View
