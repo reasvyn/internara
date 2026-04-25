@@ -140,50 +140,63 @@ class SetupService extends BaseService implements Contracts\SetupService
     {
         Gate::authorize('finalize', self::class);
 
-        return \Illuminate\Support\Facades\DB::transaction(function () {
-            $schoolRecord = $this->schoolService->getSchool();
-            $settings = [
-                // [SYRS-C-004] Branding Invariant
-                self::SETTING_BRAND_NAME => $schoolRecord->name,
-                self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
-                self::SETTING_SITE_TITLE =>
-                    $schoolRecord->name .
-                    ' - ' .
-                    $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
-                self::SETTING_APP_INSTALLED => true,
-                self::SETTING_SETUP_TOKEN => null,
-            ];
+        // [S1 - Secure] Enterprise Concurrency Lock
+        $lock = \Illuminate\Support\Facades\Cache::lock('setup.finalizing', 60);
 
-            $this->settingService->setValue($settings);
+        return $lock->get(function () {
+            return \Illuminate\Support\Facades\DB::transaction(function () {
+                $schoolRecord = $this->schoolService->getSchool();
+                
+                if (! $schoolRecord) {
+                    throw new AppException(
+                        userMessage: 'setup::exceptions.require_record_exists',
+                        code: 403,
+                    );
+                }
 
-            // [S3 - Scalable] Dispatch finalization event
-            event(
-                new \Modules\Setup\Events\SetupFinalized(
-                    schoolName: $schoolRecord->name,
-                    installedAt: now()->toIso8601String(),
-                ),
-            );
+                $settings = [
+                    // [SYRS-C-004] Branding Invariant
+                    self::SETTING_BRAND_NAME => $schoolRecord->name,
+                    self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
+                    self::SETTING_SITE_TITLE =>
+                        $schoolRecord->name .
+                        ' - ' .
+                        $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
+                    self::SETTING_APP_INSTALLED => true,
+                    self::SETTING_SETUP_TOKEN => null,
+                ];
 
-            // [S2 - Sustain] Log finalization
-            activity('setup')
-                ->event('finalized')
-                ->log('Application setup finalized and system locked down.');
+                $this->settingService->setValue($settings);
 
-            // Targeted session cleanup
-            Session::forget(self::SESSION_SETUP_AUTHORIZED);
-            foreach (range(1, 8) as $step) {
-                Session::forget("setup_step_{$step}");
-            }
+                // [S3 - Scalable] Dispatch finalization event
+                event(
+                    new \Modules\Setup\Events\SetupFinalized(
+                        schoolName: $schoolRecord->name,
+                        installedAt: now()->toIso8601String(),
+                    ),
+                );
 
-            Session::regenerate();
+                // [S2 - Sustain] Log finalization
+                activity('setup')
+                    ->event('finalized')
+                    ->log('Application setup finalized and system locked down.');
 
-            $this->storeStep('complete');
+                // Targeted session cleanup
+                Session::forget(self::SESSION_SETUP_AUTHORIZED);
+                foreach (range(1, 8) as $step) {
+                    Session::forget("setup_step_{$step}");
+                }
 
-            // Force cache refresh for app_installed
-            $this->settingService->forget(self::SETTING_APP_INSTALLED);
-            \Illuminate\Support\Facades\Cache::forget('internara.installed');
+                Session::regenerate();
 
-            return $this->isAppInstalled(true);
+                $this->storeStep('complete');
+
+                // Force cache refresh for app_installed
+                $this->settingService->forget(self::SETTING_APP_INSTALLED);
+                \Illuminate\Support\Facades\Cache::forget('internara.installed');
+
+                return $this->isAppInstalled(true);
+            });
         });
     }
 
