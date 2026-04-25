@@ -76,19 +76,56 @@ class UserForm extends Form
     }
 
     /**
-     * Get validation rules.
+     * Get validation rules based on centralized security configuration.
      */
     public function rules(): array
     {
+        $isProduction = app()->isProduction();
+        $config = config('user.security');
+
+        // Build password rules dynamically from config
+        $passwordRules = $this->id ? ['nullable'] : ['required'];
+        $passwordRules[] = 'string';
+        $passwordRules[] = 'confirmed';
+        
+        if ($isProduction) {
+            $passwordRules[] = 'min:' . $config['password']['min_length'];
+            
+            $requirements = \Illuminate\Validation\Rules\Password::min($config['password']['min_length']);
+            
+            if ($config['password']['require_uppercase']) $requirements->letters()->mixedCase();
+            if ($config['password']['require_numeric']) $requirements->numbers();
+            if ($config['password']['require_special']) $requirements->symbols();
+            if ($config['password']['require_uncompromised']) $requirements->uncompromised();
+            
+            $passwordRules[] = $requirements;
+        } else {
+            $passwordRules[] = \Modules\Shared\Rules\Password::auto();
+        }
+
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email,'.$this->id],
-            'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
+            'name' => array_filter([
+                'required', 
+                'string', 
+                $isProduction ? 'min:' . $config['name']['min_length'] : null,
+                'max:' . $config['name']['max_length']
+            ]),
+            'email' => array_filter([
+                'required', 
+                $isProduction ? 'email:rfc,dns' : 'email', 
+                'unique:users,email,'.$this->id
+            ]),
+            'username' => array_filter([
+                'nullable', 
+                'string', 
+                $isProduction ? 'min:' . $config['username']['min_length'] : null,
+                $isProduction ? 'max:' . $config['username']['max_length'] : 'max:50',
+                $isProduction ? 'regex:' . $config['username']['pattern'] : null,
+                'unique:users,username,'.$this->id
+            ]),
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending,verified'],
-            'password' => $this->id
-                ? ['nullable', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()]
-                : ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
+            'password' => $passwordRules,
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],
             'profile.department_id' => ['nullable', 'uuid', 'exists:departments,id'],
