@@ -117,36 +117,6 @@ return [
      * Password Policy Configuration
      * Enterprise-grade password requirements for all user roles
      */
-    'password_policy' => [
-        // Password expiration (days) by role
-        'super_admin_expiry_days' => env('PASSWORD_SUPER_ADMIN_EXPIRY_DAYS', 30),
-        'admin_expiry_days' => env('PASSWORD_ADMIN_EXPIRY_DAYS', 60),
-        'standard_expiry_days' => env('PASSWORD_STANDARD_EXPIRY_DAYS', 90),
-
-        // Warning period before expiration (days)
-        'warning_days' => env('PASSWORD_WARNING_DAYS', 14),
-
-        // Password history - prevent reuse of N recent passwords
-        'history_limit' => env('PASSWORD_HISTORY_LIMIT', 5),
-
-        // Complexity requirements
-        'min_length' => 12,
-        'require_uppercase' => true,
-        'require_lowercase' => true,
-        'require_number' => true,
-        'require_symbol' => true,
-    ],
-
-    /**
-     * Super Admin Protection Settings
-     * Additional safeguards for Super Admin accounts
-     */
-    'super_admin' => [
-        // Require 2 Super Admin approvals for changes
-        'require_dual_approval' => env('SUPER_ADMIN_DUAL_APPROVAL', true),
-
-        // IP whitelist for Super Admin login (comma-separated, supports CIDR)
-        // Example: "192.168.1.0/24,10.0.0.5"
         'ip_whitelist' => env('SUPER_ADMIN_IP_WHITELIST', ''),
 
         // Force session isolation (only one active session per Super Admin)
