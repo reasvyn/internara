@@ -13,11 +13,23 @@
                 <p class="text-lg text-base-content/70 leading-relaxed max-w-2xl">
                     {{ __('setup::wizard.system.description', ['app' => setting('app_name')]) }}
                 </p>
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/5 border border-accent/10">
-                    <x-ui::icon name="tabler.info-circle" class="size-4 text-accent" />
-                    <span class="text-xs font-bold uppercase tracking-widest text-accent">
-                        {{ __('setup::wizard.system.description_extra') }}
-                    </span>
+                
+                <div class="flex flex-wrap gap-4">
+                    <!-- Provider Usage Info -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
+                        <x-ui::icon name="tabler.info-circle" class="size-4 text-primary" />
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary">
+                            {{ __('setup::wizard.system.description_extra') }}
+                        </span>
+                    </div>
+
+                    <!-- Change Later Info -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10">
+                        <x-ui::icon name="tabler.settings" class="size-4 text-primary" />
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary">
+                            {{ __('setup::wizard.common.later_at_settings') }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
