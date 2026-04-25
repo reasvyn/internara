@@ -42,6 +42,9 @@ class AppTestCommand extends Command
                             {--session= : Specify a custom session ID for the test run}
                             {--continue : Resume the latest test session, skipping successful segments}
                             {--report : Display the comprehensive report from the current or latest session}
+                            {--log-junit= : Path to export report in JUnit XML format}
+                            {--log-json= : Path to export report in JSON format}
+                            {--fail-on-stability= : Exit with failure if stability percentage is below threshold}
                             {--clear-sessions : Remove all persistent testing session data}
                             {--l|list : Display the identified test segments without executing them}';
 
@@ -66,16 +69,18 @@ class AppTestCommand extends Command
         $session = new TestSessionManager($this->option('session'));
         $reporter = new TestReporter($this->components);
         
+        // Get all possible targets to establish the 100% baseline for reporting
+        $allPossibleTargets = $discovery->identify([], false);
+        $totalPossibleSegments = $this->calculateTotalSegments($allPossibleTargets);
+
         if ($this->option('report')) {
-            // Get all possible targets to establish the 100% baseline
-            $allTargets = $discovery->identify([], false);
-            $totalPossible = $this->calculateTotalSegments($allTargets);
+            $this->displayBanner();
+            $passRate = $reporter->displaySessionMetrics($session->getSessionId(), $session->getResults(), $totalPossibleSegments);
             
-            $reporter->displaySessionMetrics($session->getSessionId(), $session->getResults(), $totalPossible);
-            
-            return self::SUCCESS;
+            return $this->evaluateStability($passRate);
         }
 
+        $this->displayBanner();
         $startTime = microtime(true);
         $missing = [];
         $requestedModules = array_map('strtolower', $this->argument('modules'));
@@ -102,15 +107,15 @@ class AppTestCommand extends Command
             return self::SUCCESS;
         }
 
-        $this->newLine();
-        $this->components->info(config('app.name', 'Internara').' Advanced Verification Engine');
         $this->components->twoColumnDetail('Session ID', $session->getSessionId());
+        $this->components->twoColumnDetail('Total Targets', (string) count($targets));
 
         $results = [];
         $failures = [];
         $overallSuccess = true;
         $totalSegments = $this->calculateTotalSegments($targets);
         $currentSegment = 0;
+        $allOutput = '';
 
         foreach ($targets as $target) {
             $row = ['module' => $target['label'], 'total' => 0.0];
@@ -154,6 +159,7 @@ class AppTestCommand extends Command
                     });
 
                     $session->record($target['label'], $sub, $success, $segmentOutput, $segmentError);
+                    $allOutput .= $segmentOutput . $segmentError;
 
                     $duration = microtime(true) - $segmentStart;
                     $row[$sub] = $success ? '<fg=green>PASS</> (' . number_format($duration, 2) . 's)' : '<fg=red>FAIL</>';
@@ -175,9 +181,55 @@ class AppTestCommand extends Command
         $totalDuration = microtime(true) - $startTime;
         $reporter->displayMatrix($results);
         $reporter->displayPerformance($totalSegments, $totalSegments - count($failures), $totalDuration);
+        
+        if ($this->option('coverage')) {
+            $reporter->displayCoverageSummary($allOutput);
+        }
+
         $reporter->displayFailures($failures);
 
+        // Handle Exports
+        if ($this->option('log-junit')) {
+            $reporter->exportToJUnit($this->option('log-junit'), $session->getResults(), $session->getSessionId());
+        }
+
+        if ($this->option('log-json')) {
+            $reporter->exportToJSON($this->option('log-json'), $session->getResults(), $session->getSessionId());
+        }
+
+        // Stability check for CI/CD
+        if ($this->option('fail-on-stability')) {
+            $passRate = ($totalSegments - count($failures)) / $totalSegments * 100;
+            return $this->evaluateStability((float) $passRate);
+        }
+
         return $overallSuccess ? self::SUCCESS : self::FAILURE;
+    }
+
+    /**
+     * Display a professional banner.
+     */
+    protected function displayBanner(): void
+    {
+        $this->newLine();
+        $this->line(' <fg=white;bg=magenta;options=bold> INTERNARA </> <fg=magenta;options=bold>MODULAR VERIFICATION ENGINE</>');
+        $this->line(' <fg=gray>Advanced Infrastructure Testing Tool v' . config('app.version', '0.14.0') . '</>');
+        $this->newLine();
+    }
+
+    /**
+     * Evaluates if the current stability meets the required threshold.
+     */
+    protected function evaluateStability(float $passRate): int
+    {
+        $threshold = (float) $this->option('fail-on-stability', 100);
+        
+        if ($passRate < $threshold) {
+            $this->components->error("Stability failure: Global pass rate (" . number_format($passRate, 2) . "%) is below required threshold (" . number_format($threshold, 2) . "%).");
+            return self::FAILURE;
+        }
+
+        return self::SUCCESS;
     }
 
     /**

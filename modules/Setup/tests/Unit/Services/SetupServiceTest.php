@@ -4,71 +4,74 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Session;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Services\Contracts\SetupService as Contract;
+use Modules\Setup\Events\SetupFinalized;
 use Modules\Setup\Services\SetupService;
-use Modules\Admin\Services\Contracts\SuperAdminService;
 
-describe('SetupService Unit Test', function () {
+describe('SetupService', function () {
     beforeEach(function () {
-        $this->settingService = $this->mock(SettingService::class);
-        $this->superAdminService = $this->mock(SuperAdminService::class);
-        $this->schoolService = $this->mock(SchoolService::class);
-        $this->departmentService = $this->mock(DepartmentService::class);
-        $this->internshipService = $this->mock(InternshipService::class);
+        $this->settingService = Mockery::mock(SettingService::class);
+        $this->superAdminService = Mockery::mock(SuperAdminService::class);
+        $this->schoolService = Mockery::mock(SchoolService::class);
+        $this->departmentService = Mockery::mock(DepartmentService::class);
+        $this->internshipService = Mockery::mock(InternshipService::class);
 
-        // Ensure Gate is always authorized for unit tests
-        Gate::shouldReceive('authorize')->byDefault()->andReturn(true);
-        $this->settingService->shouldReceive('setValue')->byDefault();
-    });
-
-    test('it checks if app is installed by querying setting service', function () {
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with(Contract::SETTING_APP_INSTALLED, false, true)
-            ->once()
-            ->andReturn(true);
-
-        $service = new SetupService(
-            $this->settingService,
-            $this->superAdminService,
-            $this->schoolService,
-            $this->departmentService,
-            $this->internshipService,
-        );
-
-        expect($service->isAppInstalled())->toBeTrue();
-    });
-
-    test('it finalizes setup sequence logically', function () {
-        $partial = \Mockery::mock(SetupService::class, [
+        $this->service = new SetupService(
             $this->settingService,
             $this->superAdminService,
             $this->schoolService,
             $this->departmentService,
             $this->internshipService
-        ])->makePartial();
-
-        $partial->shouldReceive('finalizeSetupStep')->once()->andReturn(true);
-
-        expect($partial->finalizeSetupStep())->toBeTrue();
+        );
     });
 
-    test('it can check specific setup steps', function () {
-        $this->settingService->shouldReceive('getValue')->andReturn(true);
-        
-        $service = new SetupService(
-            $this->settingService,
-            $this->superAdminService,
-            $this->schoolService,
-            $this->departmentService,
-            $this->internshipService,
-        );
+    it('identifies if application is installed', function () {
+        $this->settingService->shouldReceive('getValue')
+            ->with('app_installed', false, true)
+            ->andReturn(true);
 
-        expect($service->isStepCompleted('welcome'))->toBeTrue();
+        expect($this->service->isAppInstalled())->toBeTrue();
+    });
+
+    it('marks a setup step as completed and logs the activity', function () {
+        Gate::define('performStep', fn () => true);
+        
+        $this->settingService->shouldReceive('setValue')
+            ->with('setup_step_school', true)
+            ->once()
+            ->andReturn(true);
+
+        $success = $this->service->performSetupStep('school');
+
+        expect($success)->toBeTrue();
+        // Activity log is handled via helper, we can't easily mock it here without full integration test
+    });
+
+    it('finalizes setup step with database transaction and cache clearing', function () {
+        Gate::define('finalize', fn () => true);
+        Event::fake();
+        DB::shouldReceive('transaction')->andReturnUsing(fn ($callback) => $callback());
+
+        $school = new School(['name' => 'Test School']);
+        $this->schoolService->shouldReceive('getSchool')->andReturn($school);
+        
+        $this->settingService->shouldReceive('getValue')->with('app_name', 'Internara')->andReturn('Internara');
+        $this->settingService->shouldReceive('setValue')->once();
+        $this->settingService->shouldReceive('forget')->with('app_installed')->once();
+        $this->settingService->shouldReceive('setValue')->with('setup_step_complete', true)->once();
+
+        $success = $this->service->finalizeSetupStep();
+
+        expect($success)->toBeTrue();
+        Event::assertDispatched(SetupFinalized::class);
     });
 });

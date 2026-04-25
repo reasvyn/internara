@@ -109,7 +109,16 @@ class SetupService extends BaseService implements Contracts\SetupService
             );
         }
 
-        return $this->storeStep($step);
+        $success = $this->storeStep($step);
+
+        if ($success) {
+            activity('setup')
+                ->event('step_completed')
+                ->withProperties(['step' => $step])
+                ->log("Setup step [{$step}] completed successfully.");
+        }
+
+        return $success;
     }
 
     /**
@@ -155,6 +164,11 @@ class SetupService extends BaseService implements Contracts\SetupService
                 ),
             );
 
+            // [S2 - Sustain] Log finalization
+            activity('setup')
+                ->event('finalized')
+                ->log('Application setup finalized and system locked down.');
+
             // Targeted session cleanup
             Session::forget(self::SESSION_SETUP_AUTHORIZED);
             foreach (range(1, 8) as $step) {
@@ -164,6 +178,10 @@ class SetupService extends BaseService implements Contracts\SetupService
             Session::regenerate();
 
             $this->storeStep('complete');
+
+            // Force cache refresh for app_installed
+            $this->settingService->forget(self::SETTING_APP_INSTALLED);
+            \Illuminate\Support\Facades\Cache::forget('internara.installed');
 
             return $this->isAppInstalled(true);
         });

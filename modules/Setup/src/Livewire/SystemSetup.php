@@ -84,13 +84,21 @@ class SystemSetup extends Component
         ]);
 
         try {
-            $socket = @fsockopen($this->mail_host, (int) $this->mail_port, $errno, $errstr, 5);
+            // Enterprise Grade: Real SMTP handshake check
+            $timeout = 5;
+            $socket = @fsockopen($this->mail_host, (int) $this->mail_port, $errno, $errstr, $timeout);
 
             if ($socket) {
+                $response = fgets($socket, 1024);
                 fclose($socket);
-                flash()->success(__('setup::wizard.system.smtp_connection_success'));
+                
+                if (str_starts_with($response, '220')) {
+                    flash()->success(__('setup::wizard.system.smtp_connection_success'));
+                } else {
+                    throw new \Exception("Server responded with: " . trim($response));
+                }
             } else {
-                throw new \Exception($errstr ?: 'Connection timed out.');
+                throw new \Exception($errstr ?: 'Connection timed out after ' . $timeout . ' seconds.');
             }
         } catch (\Exception $e) {
             flash()->error(

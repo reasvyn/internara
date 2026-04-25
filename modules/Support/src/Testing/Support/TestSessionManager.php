@@ -25,10 +25,15 @@ class TestSessionManager
     public function __construct(?string $sessionId = null)
     {
         $this->sessionId = $sessionId ?: $this->getLatestSessionId() ?: Str::uuid()->toString();
-        $this->sessionPath = storage_path("framework/testing/sessions/{$this->sessionId}");
+        $basePath = storage_path('framework/testing/sessions');
+        $this->sessionPath = "{$basePath}/{$this->sessionId}";
         
+        if (!File::isDirectory($basePath)) {
+            File::makeDirectory($basePath, 0700, true);
+        }
+
         if (!File::isDirectory($this->sessionPath)) {
-            File::makeDirectory($this->sessionPath, 0755, true);
+            File::makeDirectory($this->sessionPath, 0700, true);
         }
     }
 

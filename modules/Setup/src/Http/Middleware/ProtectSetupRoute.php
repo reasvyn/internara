@@ -23,13 +23,17 @@ class ProtectSetupRoute
      */
     public function handle(Request $request, Closure $next)
     {
+        $isInstalled = \Illuminate\Support\Facades\Cache::rememberForever('internara.installed', function () {
+            return $this->setupService->isAppInstalled(true);
+        });
+
         // 1. Total lockdown if already installed and SuperAdmin exists
-        if ($this->setupService->isAppInstalled() && $this->superAdminExists()) {
+        if ($isInstalled && $this->superAdminExists()) {
             return abort(404);
         }
 
         // 2. If not installed, enforce Signed URL validation or Authorized Session
-        if (! $this->setupService->isAppInstalled()) {
+        if (! $isInstalled) {
             // Check for valid signature OR valid token
             if ($request->hasValidSignature() || $this->hasValidToken($request)) {
                 $request->session()->put('setup_authorized', true);
