@@ -44,6 +44,7 @@ class RegisterSuperAdmin extends Component
     {
         try {
             $superAdminService = app(SuperAdminService::class);
+            $usernameGenerator = app(\Modules\Shared\Services\UsernameGenerator::class);
 
             // During setup phase, allow re-linking to an existing user record with the same email
             // to prevent "Email already taken" errors when repeating this step.
@@ -57,8 +58,12 @@ class RegisterSuperAdmin extends Component
                 }
             }
 
+            // Generate a permanent, role-based username if not already set
             if (empty($this->form->username) && ! empty($this->form->email)) {
-                $this->form->username = strstr($this->form->email, '@', true) ?: $this->form->email;
+                $this->form->username = $usernameGenerator->generate(
+                    $this->form->email, 
+                    \Modules\Permission\Enums\Role::SUPER_ADMIN->value
+                );
             }
 
             $this->form->validate();
