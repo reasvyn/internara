@@ -28,21 +28,22 @@ return [
         'later_at_settings' => 'Anda dapat mengubah pengaturan ini nanti melalui halaman pengaturan.',
     ],
     'welcome' => [
-        'title' => 'Mulai Instalasi',
-        'headline' => 'Akhiri Kerumitan, Sambut Program Magang yang Bermakna.',
+        'title' => 'Inisialisasi Sistem',
+        'headline' => 'Berdayakan Institusi, Transformasikan Pengalaman Magang.',
         'problem' => [
-            'title' => 'Memahami Kerumitan Anda',
-            'description' => 'Kami tahu mengelola program magang terasa seperti menyatukan ribuan keping puzzle yang rumit.',
+            'title' => 'Melampaui Kerumitan',
+            'description' => 'Mengelola praktik kerja industri tidak seharusnya terasa seperti menyatukan ribuan keping puzzle logistik yang rumit.',
         ],
         'solution' => [
-            'title' => 'Solusi Cerdas Kami',
-            'description' => ':app hadir sebagai partner Anda, menata setiap detail agar Anda bisa fokus membimbing masa depan siswa.',
+            'title' => 'Ekosistem Terintegrasi',
+            'description' => ':app hadir sebagai mitra strategis Anda, menata setiap alur kerja agar Anda bisa fokus pada pertumbuhan siswa.',
         ],
         'journey' => [
-            'title' => 'Perjalanan Dimulai',
-            'description' => 'Proses setup ini adalah langkah pertama Anda menuju program magang yang lebih terorganisir dan berdampak.',
+            'title' => 'Perjalanan Mulus',
+            'description' => 'Proses inisialisasi ini adalah langkah pertama Anda menuju program magang yang terorganisir dan berbasis data.',
+            'description_short' => 'Nikmati proses penggelaran yang ramping, dirancang untuk standar akademik dan korporat modern.',
         ],
-        'cta' => 'Mulai Instalasi',
+        'cta' => 'Mulai Inisialisasi',
     ],
     'environment' => [
         'title' => 'Pengecekan Lingkungan',
