@@ -16,9 +16,9 @@ return [
         'form' => [
             'name' => 'Nama Lengkap',
             'name_placeholder' => 'Masukkan nama resmi Anda',
-            'username' => 'Nama Pengguna Unik',
-            'username_placeholder' => 'Contoh: administrator',
-            'username_hint' => 'Digunakan untuk identifikasi dan masuk ke sistem.',
+            'username' => 'Nama Pengguna Tergenerasi',
+            'username_placeholder' => 'Akan digenerate otomatis dari email',
+            'username_permanence_hint' => 'Ditetapkan secara permanen untuk keamanan sistem dan tidak dapat diubah setelah digenerate.',
             'email' => 'Email Utama',
             'email_placeholder' => 'Masukkan email kontak resmi',
             'password' => 'Kata Sandi Aman',
