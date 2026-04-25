@@ -30,7 +30,7 @@
         @endif
 
         @if($actions)
-            <div class="flex flex-none items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3 md:justify-end">
                 {{ $actions }}
             </div>
         @endif

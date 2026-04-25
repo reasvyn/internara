@@ -31,7 +31,7 @@
         :context="$this->context"
     >
         <x-slot:actions wire:key="{{ $this->getEventPrefix() }}-actions">
-            <div class="flex items-center gap-3 relative z-50">
+            <div class="flex flex-wrap items-center justify-end gap-3 relative z-50">
                 {{-- Standard Actions --}}
                 <x-ui::dropdown icon="tabler.dots" variant="tertiary" right>
                     <x-ui::menu-item title="ui::common.print" icon="tabler.printer" wire:click="printPdf" />
