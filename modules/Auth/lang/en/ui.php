@@ -16,9 +16,9 @@ return [
         'form' => [
             'name' => 'Full Name',
             'name_placeholder' => 'Enter your official name',
-            'username' => 'Unique Username',
-            'username_placeholder' => 'e.g. administrator',
-            'username_hint' => 'Used for identification and login.',
+            'username' => 'System-Generated Username',
+            'username_placeholder' => 'Will be generated from email',
+            'username_permanence_hint' => 'Permanently assigned for system security and cannot be modified after generation.',
             'email' => 'Primary Email',
             'email_placeholder' => 'Enter official contact email',
             'password' => 'Secure Password',

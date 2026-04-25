@@ -2,7 +2,17 @@
     <x-ui::form class="flex w-full flex-col gap-8" wire:submit="register">
         <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
             <!-- Left Side: Authority Information -->
-            <div class="space-y-8 lg:col-span-5">
+            <div class="space-y-8 lg:col-span-5" x-data="{ 
+                email: @entangle('form.email'),
+                username: @entangle('form.username'),
+                init() {
+                    this.$watch('email', value => {
+                        if (value && !this.username) {
+                            this.username = value.split('@')[0].toLowerCase().replace(/[^a-z0-9._-]/g, '');
+                        }
+                    });
+                }
+            }">
                 <div class="space-y-2">
                     <h3 class="text-lg font-bold tracking-tight text-base-content">{{ __('auth::ui.register_super_admin.authority_title') }}</h3>
                     <p class="text-sm text-base-content/60">{{ __('auth::ui.register_super_admin.authority_desc') }}</p>
@@ -31,10 +41,13 @@
 
                     <x-ui::input
                         wire:model="form.username"
+                        x-model="username"
                         icon="tabler.at"
                         :label="__('auth::ui.register_super_admin.form.username')"
                         :placeholder="__('auth::ui.register_super_admin.form.username_placeholder')"
-                        :hint="__('auth::ui.register_super_admin.form.username_hint')"
+                        :hint="__('auth::ui.register_super_admin.form.username_permanence_hint')"
+                        readonly
+                        class="bg-base-200/50 cursor-not-allowed"
                     />
                 </div>
             </div>
