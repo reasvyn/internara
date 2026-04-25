@@ -94,7 +94,14 @@ class UserService extends EloquentQuery implements Contract
                 );
             } else {
                 // Standard User Creation
-                $filteredData = Arr::except($userData, ['roles', 'status']);
+                // [S1 - Secure] Sanitize transient fields that are not part of the database schema
+                $filteredData = Arr::except($userData, [
+                    'roles', 
+                    'status', 
+                    'password_confirmation',
+                    'captcha_token',
+                ]);
+                
                 $user = $this->withoutAuthorization()->parentCreate($filteredData);
 
                 $this->handleUserAvatar($user, $userData['avatar_file'] ?? null);
