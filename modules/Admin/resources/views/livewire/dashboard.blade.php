@@ -38,20 +38,6 @@
                 variant="info" 
                 class="shadow-sm border border-base-content/5 bg-base-100/50" 
             />
-            <x-ui::stat 
-                :title="__('admin::ui.dashboard.infrastructure.db_size')" 
-                :value="$infrastructure['db_size']" 
-                icon="tabler.database" 
-                variant="secondary" 
-                class="shadow-sm border border-base-content/5 bg-base-100/50" 
-            />
-            <x-ui::stat 
-                :title="__('admin::ui.dashboard.infrastructure.queue_pending')" 
-                :value="$infrastructure['queue_pending']" 
-                icon="tabler.list-details" 
-                :variant="$infrastructure['queue_pending'] > 0 ? 'warning' : 'metadata'" 
-                class="shadow-sm border border-base-content/5 bg-base-100/50" 
-            />
         @endif
     </div>
 
