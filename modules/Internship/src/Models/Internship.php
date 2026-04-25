@@ -8,14 +8,47 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Internship\Database\Factories\InternshipFactory;
+use Modules\Internship\Enums\ProgramStatus;
 use Modules\School\Models\Concerns\HasSchoolRelation;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Status\Concerns\HasStatuses;
 
 class Internship extends Model
 {
     use HasFactory;
     use HasSchoolRelation;
+    use HasStatuses;
     use HasUuid;
+
+    /**
+     * Get the current status as a ProgramStatus Enum instance.
+     */
+    public function getStatus(): ?ProgramStatus
+    {
+        $status = $this->latestStatus();
+
+        return $status ? ProgramStatus::tryFrom($status->name) : null;
+    }
+
+    /**
+     * Get the label for the current program status.
+     */
+    public function getStatusLabel(): string
+    {
+        $status = $this->getStatus();
+
+        return $status ? $status->label() : __('internship::ui.status.unknown');
+    }
+
+    /**
+     * Get the color/variant for the current program status.
+     */
+    public function getStatusColor(): string
+    {
+        $status = $this->getStatus();
+
+        return $status ? $status->color() : 'metadata';
+    }
 
     /**
      * Indicates if the IDs are auto-incrementing.

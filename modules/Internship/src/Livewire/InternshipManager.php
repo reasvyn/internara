@@ -53,12 +53,27 @@ class InternshipManager extends RecordManager
     }
 
     /**
+     * Get institutional summary metrics for internship programs.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => $this->service->count(),
+            'active' => $this->service->query(['status' => ProgramStatus::OPEN->value])->count(),
+            'ongoing' => $this->service->query(['status' => ProgramStatus::ONGOING->value])->count(),
+            'upcoming' => $this->service->query(['status' => ProgramStatus::PUBLISHED->value])->count(),
+        ];
+    }
+
+    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
     {
         return [
             ['key' => 'title', 'label' => __('internship::ui.title'), 'sortable' => true],
+            ['key' => 'status', 'label' => __('internship::ui.status')],
             [
                 'key' => 'academic_year',
                 'label' => __('internship::ui.academic_year'),
@@ -85,10 +100,26 @@ class InternshipManager extends RecordManager
     protected function mapRecord(mixed $record): array
     {
         return array_merge($record->toArray(), [
+            'status_label' => $record->getStatusLabel(),
+            'status_color' => $record->getStatusColor(),
             'date_start_formatted' => $record->date_start->translatedFormat('d M Y'),
             'date_finish_formatted' => $record->date_finish->translatedFormat('d M Y'),
             'created_at_formatted' => $record->created_at->format('Y-m-d H:i'),
         ]);
+    }
+
+    /**
+     * Update the status of an internship program.
+     */
+    public function updateStatus(string $id, string $status): void
+    {
+        try {
+            $this->service->updateStatus($id, $status);
+            flash()->success(__('shared::messages.record_saved'));
+            $this->refreshRecords();
+        } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     /**

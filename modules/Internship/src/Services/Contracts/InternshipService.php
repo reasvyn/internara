@@ -14,6 +14,11 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface InternshipService extends EloquentQuery
 {
     /**
+     * Update the program status.
+     */
+    public function updateStatus(string $id, string $status, ?string $reason = null): void;
+
+    /**
      * Bulk import internship programs.
      *
      * @param array<int, array<string, mixed>> $rows
