@@ -54,11 +54,12 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
     public function checkRequirements(): array
     {
         $results = [
-            'php_version' => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
+            'PHP Version (>= ' . self::MIN_PHP_VERSION . ')' => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
         ];
 
         foreach (self::PHP_EXTENSIONS as $extension) {
-            $results["extension_{$extension}"] = extension_loaded($extension);
+            $label = 'PHP Extension: ' . strtoupper($extension);
+            $results[$label] = extension_loaded($extension);
         }
 
         return $results;
@@ -70,11 +71,11 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
     public function checkPermissions(): array
     {
         return [
-            'storage_directory' => is_writable(storage_path()),
-            'storage_logs' => is_writable(storage_path('logs')),
-            'storage_framework' => is_writable(storage_path('framework')),
-            'bootstrap_cache' => is_writable(base_path('bootstrap/cache')),
-            'env_file' => File::exists(base_path('.env'))
+            'Root Storage Directory' => is_writable(storage_path()),
+            'Storage Logs Directory' => is_writable(storage_path('logs')),
+            'Storage Framework Directory' => is_writable(storage_path('framework')),
+            'Bootstrap Cache Directory' => is_writable(base_path('bootstrap/cache')),
+            'Environment File (.env)' => File::exists(base_path('.env'))
                 ? is_writable(base_path('.env'))
                 : is_writable(base_path()),
         ];
@@ -93,9 +94,13 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
                 'message' => 'Database connection established.',
             ];
         } catch (\Exception $e) {
+            $rawMessage = $e->getMessage();
+            // [S1 - Secure] Sanitize sensitive data from DB errors (IPs, Usernames, Passwords)
+            $sanitizedMessage = preg_replace('/(password|pwd|user|usr|host|address)=[^; ]+/i', '$1=****', $rawMessage);
+            
             return [
                 'connection' => false,
-                'message' => $e->getMessage(),
+                'message' => $sanitizedMessage,
             ];
         }
     }
