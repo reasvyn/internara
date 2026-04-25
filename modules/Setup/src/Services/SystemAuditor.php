@@ -54,11 +54,11 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
     public function checkRequirements(): array
     {
         $results = [
-            'PHP Version (>= ' . self::MIN_PHP_VERSION . ')' => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
+            __('setup::wizard.environment.audit.php_version', ['version' => self::MIN_PHP_VERSION]) => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
         ];
 
         foreach (self::PHP_EXTENSIONS as $extension) {
-            $label = 'PHP Extension: ' . strtoupper($extension);
+            $label = __('setup::wizard.environment.audit.php_extension', ['extension' => strtoupper($extension)]);
             $results[$label] = extension_loaded($extension);
         }
 
@@ -71,11 +71,11 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
     public function checkPermissions(): array
     {
         return [
-            'Root Storage Directory' => is_writable(storage_path()),
-            'Storage Logs Directory' => is_writable(storage_path('logs')),
-            'Storage Framework Directory' => is_writable(storage_path('framework')),
-            'Bootstrap Cache Directory' => is_writable(base_path('bootstrap/cache')),
-            'Environment File (.env)' => File::exists(base_path('.env'))
+            __('setup::wizard.environment.audit.storage_root') => is_writable(storage_path()),
+            __('setup::wizard.environment.audit.storage_logs') => is_writable(storage_path('logs')),
+            __('setup::wizard.environment.audit.storage_framework') => is_writable(storage_path('framework')),
+            __('setup::wizard.environment.audit.bootstrap_cache') => is_writable(base_path('bootstrap/cache')),
+            __('setup::wizard.environment.audit.env_file') => File::exists(base_path('.env'))
                 ? is_writable(base_path('.env'))
                 : is_writable(base_path()),
         ];
@@ -91,7 +91,7 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
 
             return [
                 'connection' => true,
-                'message' => 'Database connection established.',
+                'message' => __('setup::wizard.environment.audit.db_connected'),
             ];
         } catch (\Exception $e) {
             $rawMessage = $e->getMessage();
