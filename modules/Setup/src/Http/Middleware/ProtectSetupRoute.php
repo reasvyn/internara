@@ -23,6 +23,15 @@ class ProtectSetupRoute
      */
     public function handle(Request $request, Closure $next)
     {
+        // [S1 - Secure] Apply Rate Limiting for Setup Routes
+        // Limit to 20 attempts per minute to prevent DoS on heavy initialization logic
+        $key = 'setup_throttle:' . $request->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 20)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+            return abort(429, __('ui::messages.too_many_requests', ['seconds' => $seconds]));
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+
         $isInstalled = \Illuminate\Support\Facades\Cache::rememberForever('internara.installed', function () {
             return $this->setupService->isAppInstalled(true);
         });
