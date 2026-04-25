@@ -27,7 +27,6 @@ return new class extends Migration
                 // Indexes for efficient queries
                 $table->index(['user_id', 'created_at']);
                 $table->index(['ip_address', 'created_at']);
-                $table->index('successful');
             });
         }
 
