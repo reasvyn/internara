@@ -36,21 +36,22 @@ class SchoolForm extends Form
     public function rules(): array
     {
         $isProduction = app()->isProduction();
+        $config = config('school.validation');
 
         return [
             'institutional_code' => array_filter([
                 'required',
                 'string',
-                $isProduction ? 'min:3' : null,
-                'max:50',
-                $isProduction ? 'regex:/^[A-Z0-9.\/-]+$/i' : null,
+                $isProduction ? 'min:' . $config['institutional_code']['min_length'] : null,
+                'max:' . $config['institutional_code']['max_length'],
+                $isProduction ? 'regex:' . $config['institutional_code']['pattern'] : null,
                 Rule::unique('schools', 'institutional_code')->ignore($this->id),
             ]),
             'name' => array_filter([
                 'required', 
                 'string', 
-                $isProduction ? 'min:3' : null,
-                'max:255',
+                $isProduction ? 'min:' . $config['name']['min_length'] : null,
+                'max:' . $config['name']['max_length'],
                 Rule::unique('schools', 'name')->ignore($this->id)
             ]),
             'address' => ['nullable', 'string', 'max:1000'],
@@ -63,16 +64,16 @@ class SchoolForm extends Form
             'phone' => array_filter([
                 'nullable', 
                 'string', 
-                $isProduction ? 'min:8' : null, 
-                'max:20',
-                $isProduction ? 'regex:/^\+?[0-9\s\-()]+$/' : null,
+                $isProduction ? 'min:' . $config['phone']['min_length'] : null, 
+                'max:' . $config['phone']['max_length'],
+                $isProduction ? 'regex:' . $config['phone']['pattern'] : null,
             ]),
             'fax' => array_filter([
                 'nullable', 
                 'string', 
-                $isProduction ? 'min:8' : null, 
-                'max:20',
-                $isProduction ? 'regex:/^\+?[0-9\s\-()]+$/' : null,
+                $isProduction ? 'min:' . $config['fax']['min_length'] : null, 
+                'max:' . $config['fax']['max_length'],
+                $isProduction ? 'regex:' . $config['fax']['pattern'] : null,
             ]),
             'principal_name' => ['nullable', 'string', 'max:255'],
             'logo_url' => ['sometimes', 'nullable', 'string'],
