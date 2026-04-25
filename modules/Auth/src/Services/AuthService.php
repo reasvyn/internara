@@ -110,8 +110,13 @@ class AuthService extends BaseService implements AuthServiceContract
         string|array|null $roles = null,
         bool $sendEmailVerification = false,
     ): Authenticatable {
-        // Prevent role escalation by filtering roles from user input
-        $sanitizedData = \Illuminate\Support\Arr::except($data, ['roles', 'role']);
+        // Prevent role escalation and remove transient form fields
+        $sanitizedData = \Illuminate\Support\Arr::except($data, [
+            'roles', 
+            'role', 
+            'password_confirmation',
+            'captcha_token',
+        ]);
 
         $user = $this->userService->create(
             array_merge($sanitizedData, [
