@@ -50,6 +50,7 @@ return [
             'forgot_password' => 'Forgot your password?',
             'remember_me' => 'Remember me',
             'submit' => 'Sign In Now',
+            'rate_limited' => 'Too many login attempts. Please try again in :seconds seconds.',
             'no_account' => 'Don\'t have an account?',
             'register_now' => 'Register Now',
             'have_activation_code' => 'Have an activation code?',

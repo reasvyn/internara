@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Livewire;
 
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
@@ -89,6 +90,21 @@ class Login extends Component
     {
         $this->validate();
 
+        // [S1 - Secure] Brute Force Protection (Rate Limiting)
+        $throttleKey = $this->throttleKey();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            $this->addError('identifier', __('auth::ui.login.form.rate_limited', ['seconds' => $seconds]));
+            
+            // [S2 - Sustain] Audit Log for Brute Force Attempt
+            activity('security')
+                ->event('brute_force_lockout')
+                ->withProperties(['ip' => request()->ip(), 'identifier' => $this->identifier])
+                ->log('Login rate limit exceeded.');
+
+            return;
+        }
+
         try {
             $user = $this->authService->login(
                 [
@@ -98,12 +114,27 @@ class Login extends Component
                 $this->remember,
             );
 
+            // [S1 - Secure] Session Fixation Protection
+            session()->regenerate();
+
+            // Clear the rate limiter on success
+            \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
+
             flash()->success(__('auth::ui.login.welcome_back', ['name' => $user->name]));
 
             $this->redirect($this->redirectService->getTargetUrl($user), navigate: true);
         } catch (AppException $e) {
+            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60); // Lock for 60 seconds after 5 attempts
             $this->addError('identifier', $e->getUserMessage());
         }
+    }
+
+    /**
+     * Get the rate limiting throttle key for the request.
+     */
+    protected function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this->identifier).'|'.request()->ip());
     }
 
     /**

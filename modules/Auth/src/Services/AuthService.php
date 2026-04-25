@@ -60,6 +60,15 @@ class AuthService extends BaseService implements AuthServiceContract
                 ? \Modules\Shared\Support\Masker::email($identifier)
                 : \Modules\Shared\Support\Masker::sensitive($identifier);
 
+            // [S2 - Sustain] Enterprise Audit Log for Failed Authentication
+            activity('security')
+                ->event('login_failed')
+                ->withProperties([
+                    'ip' => request()->ip(), 
+                    'identifier' => $maskedIdentifier
+                ])
+                ->log('Failed login attempt.');
+
             throw new AppException(
                 userMessage: 'auth::exceptions.invalid_credentials',
                 logMessage: 'Authentication attempt failed for: '.$maskedIdentifier,

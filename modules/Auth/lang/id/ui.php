@@ -50,6 +50,7 @@ return [
             'forgot_password' => 'Lupa kata sandi Anda?',
             'remember_me' => 'Ingat saya',
             'submit' => 'Masuk Sekarang',
+            'rate_limited' => 'Terlalu banyak percobaan masuk. Silakan coba lagi dalam :seconds detik.',
             'no_account' => 'Belum punya akun?',
             'register_now' => 'Daftar Sekarang',
             'have_activation_code' => 'Punya kode aktivasi?',
