@@ -44,22 +44,23 @@ class AppInstallCommand extends Command
      */
     public function handle(): int
     {
-        $this->newLine();
-        $this->components->info('Internara System Initialization');
+        $this->displayBanner();
+        $this->displayPreFlightSummary();
 
         if (! $this->confirmInstallation()) {
+            $this->components->warn(__('setup::install.warnings.aborted'));
             return self::FAILURE;
         }
 
         try {
             // 0. System Cleanup
-            $this->performTask('Clearing application cache', fn () => $this->callSilent('optimize:clear') === 0);
+            $this->performTask(__('setup::install.tasks.cleanup'), fn () => $this->callSilent('optimize:clear') === 0);
 
             // 1. Environment Initialization
-            $this->performTask('Ensuring environment configuration', fn () => $this->installerService->ensureEnvFileExists());
+            $this->performTask(__('setup::install.tasks.env'), fn () => $this->installerService->ensureEnvFileExists());
 
             // 2. Environment Validation
-            $this->performTask('Validating system requirements', function () {
+            $this->performTask(__('setup::install.tasks.validation'), function () {
                 $audit = $this->installerService->validateEnvironment();
                 $failures = [];
 
@@ -90,18 +91,19 @@ class AppInstallCommand extends Command
             });
 
             // 3. Application Key Generation
-            $this->performTask('Generating application security key', fn () => $this->installerService->generateAppKey());
+            $this->performTask(__('setup::install.tasks.key'), fn () => $this->installerService->generateAppKey());
 
             // 4. Database Schema Initialization
-            $this->performTask('Initializing database schema', fn () => $this->installerService->runMigrations());
+            $this->performTask(__('setup::install.tasks.schema'), fn () => $this->installerService->runMigrations());
 
             // 5. Foundational Data Seeding
-            $this->performTask('Seeding foundational datasets', fn () => $this->installerService->runSeeders());
+            $this->performTask(__('setup::install.tasks.seeding'), fn () => $this->installerService->runSeeders());
 
             // 6. Storage System Integration
-            $this->performTask('Integrating storage system', fn () => $this->installerService->createStorageSymlink());
+            $this->performTask(__('setup::install.tasks.storage'), fn () => $this->installerService->createStorageSymlink());
 
         } catch (\RuntimeException $e) {
+            $this->components->error($e->getMessage());
             return self::FAILURE;
         } catch (\Throwable $e) {
             $this->newLine();
@@ -120,6 +122,29 @@ class AppInstallCommand extends Command
     }
 
     /**
+     * Display a professional banner.
+     */
+    protected function displayBanner(): void
+    {
+        $this->newLine();
+        $this->line(' <fg=white;bg=blue;options=bold> INTERNARA </> <fg=blue;options=bold>' . __('setup::install.banner.engine') . '</>');
+        $this->line(' <fg=gray>' . __('setup::install.banner.tool', ['version' => config('app.version', '0.14.0')]) . '</>');
+        $this->newLine();
+    }
+
+    /**
+     * Display pre-flight system information.
+     */
+    protected function displayPreFlightSummary(): void
+    {
+        $this->components->twoColumnDetail(__('setup::install.preflight.php'), PHP_VERSION);
+        $this->components->twoColumnDetail(__('setup::install.preflight.env'), config('app.env'));
+        $this->components->twoColumnDetail(__('setup::install.preflight.db'), config('database.default'));
+        $this->components->twoColumnDetail(__('setup::install.preflight.tz'), config('app.timezone'));
+        $this->newLine();
+    }
+
+    /**
      * Helper to perform a task and abort on failure.
      */
     protected function performTask(string $title, \Closure $task): void
@@ -127,7 +152,7 @@ class AppInstallCommand extends Command
         $result = $this->components->task($title, $task);
 
         if ($result === false) {
-            throw new \RuntimeException("Critical task failure: {$title}");
+            throw new \RuntimeException("Critical system task failure: {$title}");
         }
     }
 
@@ -137,7 +162,7 @@ class AppInstallCommand extends Command
     protected function displayDeploymentSummary(): void
     {
         $this->newLine();
-        $this->components->info('Core system initialization completed successfully.');
+        $this->components->info(__('setup::install.success'));
 
         $token = $this->settingService->getValue('setup_token');
         $setupUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
@@ -146,14 +171,14 @@ class AppInstallCommand extends Command
             ['token' => $token],
         );
 
-        $this->line(' <fg=blue;options=bold>Authorization Required</>');
-        $this->line(' Please use the following authenticated link to finalize the system configuration:');
+        $this->line(' <fg=blue;options=bold>' . __('setup::install.auth_required') . '</>');
+        $this->line(' ' . __('setup::install.auth_description'));
         $this->newLine();
-        $this->line("  <fg=cyan>{$setupUrl}</>");
+        $this->line("  <fg=cyan;options=bold>{$setupUrl}</>");
         $this->newLine();
 
         if (parse_url($setupUrl, PHP_URL_PORT) === null && config('app.url') === 'http://localhost') {
-            $this->components->warn('Environment Notice: Port mapping may be required for external access.');
+            $this->components->warn(__('setup::install.warnings.env_notice'));
         }
 
         $this->newLine();
@@ -168,9 +193,20 @@ class AppInstallCommand extends Command
             return true;
         }
 
+        if (config('app.env') === 'production') {
+            $this->newLine();
+            $this->line(' <fg=white;bg=red;options=bold> ' . __('setup::install.warnings.production_title') . ' </>');
+            $this->line(' <fg=red>' . __('setup::install.warnings.production_env') . '</>');
+            $this->line(' <fg=red>' . __('setup::install.warnings.production_loss') . '</>');
+            $this->newLine();
+
+            return $this->confirm(__('setup::install.warnings.production_confirm'), false);
+        }
+
         return $this->confirm(
-            'This will reset your database and initialize the system. Do you want to proceed?',
+            __('setup::install.confirmation'),
             false,
         );
     }
+
 }

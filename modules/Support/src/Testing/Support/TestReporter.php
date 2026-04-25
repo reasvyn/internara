@@ -38,8 +38,10 @@ class TestReporter
 
     /**
      * Display comprehensive session metrics and stability index.
+     *
+     * @return float The global pass rate (0-100)
      */
-    public function displaySessionMetrics(string $sessionId, array $sessionResults, int $totalPossibleSegments): void
+    public function displaySessionMetrics(string $sessionId, array $sessionResults, int $totalPossibleSegments): float
     {
         $this->components->info('Module-Aware Testing Session Report');
         $this->components->twoColumnDetail('Session ID', $sessionId);
@@ -86,9 +88,112 @@ class TestReporter
         $this->components->info('System Stability Metrics');
         $this->components->twoColumnDetail('Total System Segments', (string) $totalPossibleSegments);
         $this->components->twoColumnDetail('Segments Verified', "<fg=green>{$passedSegments}</>");
-        $this->components->twoColumnDetail('Last Execution Date', $latestTimestamp ? Carbon::parse($latestTimestamp)->diffForHumans() : 'Unknown');
+        $this->components->twoColumnDetail('Last Execution Date', $latestTimestamp ? \Carbon\Carbon::parse($latestTimestamp)->diffForHumans() : 'Unknown');
         $this->components->twoColumnDetail('Global Pass Rate', number_format($passRate, 2) . '%');
         $this->components->twoColumnDetail('Stability Index', $stability);
+
+        return (float) $passRate;
+    }
+
+    /**
+     * Export session results to a JUnit XML file.
+     */
+    public function exportToJUnit(string $filePath, array $results, string $sessionId): void
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true;
+
+        $testsuites = $dom->createElement('testsuites');
+        $testsuites->setAttribute('name', 'Internara Modular Verification');
+        $testsuites->setAttribute('id', $sessionId);
+        $dom->appendChild($testsuites);
+
+        $grouped = [];
+        foreach ($results as $result) {
+            $grouped[$result['module']][] = $result;
+        }
+
+        foreach ($grouped as $module => $segments) {
+            $testsuite = $dom->createElement('testsuite');
+            $testsuite->setAttribute('name', $module);
+            
+            $tests = 0;
+            $failures = 0;
+
+            foreach ($segments as $segment) {
+                $tests++;
+                $testcase = $dom->createElement('testcase');
+                $testcase->setAttribute('name', "{$module}: {$segment['type']}");
+                $testcase->setAttribute('classname', "Modules.{$module}.{$segment['type']}");
+
+                if (!($segment['success'] ?? false)) {
+                    $failures++;
+                    $failure = $dom->createElement('failure');
+                    $failure->setAttribute('message', "Test segment {$segment['type']} failed.");
+                    $failure->nodeValue = htmlspecialchars($segment['error'] ?: $segment['output'] ?: 'No output');
+                    $testcase->appendChild($failure);
+                }
+
+                $testsuite->appendChild($testcase);
+            }
+
+            $testsuite->setAttribute('tests', (string) $tests);
+            $testsuite->setAttribute('failures', (string) $failures);
+            $testsuites->appendChild($testsuite);
+        }
+
+        \Illuminate\Support\Facades\File::ensureDirectoryExists(dirname($filePath));
+        \Illuminate\Support\Facades\File::put($filePath, $dom->saveXML());
+        
+        $this->components->info("JUnit XML report exported to: {$filePath}");
+    }
+
+    /**
+     * Export session results to a JSON file.
+     */
+    public function exportToJSON(string $filePath, array $results, string $sessionId): void
+    {
+        $data = [
+            'session_id' => $sessionId,
+            'exported_at' => now()->toIso8601String(),
+            'summary' => [
+                'total_segments' => count($results),
+                'passed' => count(array_filter($results, fn($r) => $r['success'])),
+                'failed' => count(array_filter($results, fn($r) => !$r['success'])),
+            ],
+            'results' => $results,
+        ];
+
+        \Illuminate\Support\Facades\File::ensureDirectoryExists(dirname($filePath));
+        \Illuminate\Support\Facades\File::put($filePath, json_encode($data, JSON_PRETTY_PRINT));
+
+        $this->components->info("JSON report exported to: {$filePath}");
+    }
+
+    /**
+     * Display a summary of code coverage if available.
+     */
+    public function displayCoverageSummary(string $output): void
+    {
+        if (!str_contains($output, 'Lines:')) {
+            return;
+        }
+
+        $this->components->info('Section 4: Code Coverage Insights');
+        
+        // Extract basic coverage stats from Pest output
+        preg_match('/Lines:\s+(\d+\.\d+)%/', $output, $lines);
+        preg_match('/Methods:\s+(\d+\.\d+)%/', $output, $methods);
+
+        if (isset($lines[1])) {
+            $rate = (float) $lines[1];
+            $color = $rate >= 80 ? 'green' : ($rate >= 50 ? 'yellow' : 'red');
+            $this->components->twoColumnDetail('Line Coverage', "<fg={$color}>{$lines[1]}%</>");
+        }
+
+        if (isset($methods[1])) {
+            $this->components->twoColumnDetail('Method Coverage', "{$methods[1]}%");
+        }
     }
 
     /**
