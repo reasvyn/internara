@@ -66,7 +66,7 @@
                     class="w-full"
                     :label="__('auth::ui.register.form.submit')"
                     type="submit"
-                    spinner
+                    spinner="register"
                 />
 
                 <p class="text-center text-xs">
