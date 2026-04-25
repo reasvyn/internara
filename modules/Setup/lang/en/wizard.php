@@ -119,5 +119,15 @@ return [
         'description' => 'This is the final touch—like an artist signing their work. This step will bring together everything we have prepared, activate all modules, and ensure :app is ready to serve you fully.',
         'description_extra' => 'With one final click, you will open the door to a new internship management experience. Ready to start this new chapter?',
         'cta' => 'Finalize & Start Adventure',
+        'checkup_title' => 'System Readiness Check-up',
+        'checkup_desc' => 'Please review and confirm your compliance with system governance standards.',
+        'checkup' => [
+            'data_verified_label' => 'Data Integrity Confirmation',
+            'data_verified_desc' => 'I have reviewed the school, department, and program data. I confirm that all entered information is accurate and reflects the official status of the institution.',
+            'security_aware_label' => 'Security Sovereignty Acknowledgment',
+            'security_aware_desc' => 'I understand that my SuperAdmin account holds absolute authority. I commit to maintaining credential secrecy and following enterprise security protocols to protect institutional data.',
+            'legal_agreed_label' => 'Legal & Regulatory Compliance',
+            'legal_agreed_desc' => 'I agree to the :privacy and :terms. I commit to operating Internara in compliance with applicable data protection laws.',
+        ],
     ],
 ];

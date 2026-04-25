@@ -16,6 +16,19 @@ class SetupComplete extends Component
     use Concerns\HandlesSetupSteps;
 
     /**
+     * Flags for the final user check-up.
+     */
+    public bool $data_verified = false;
+    public bool $security_aware = false;
+    public bool $legal_agreed = false;
+
+    /**
+     * Modal visibility flags.
+     */
+    public bool $showPrivacy = false;
+    public bool $showTerms = false;
+
+    /**
      * Initializes the component.
      */
     public function boot(SetupService $setupService): void

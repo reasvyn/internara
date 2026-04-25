@@ -119,5 +119,15 @@ return [
         'description' => 'Ini adalah sentuhan akhir—seperti seorang seniman yang membubuhkan tanda tangannya. Langkah ini akan menyatukan semua yang telah kita siapkan, mengaktifkan seluruh modul, dan memastikan :app siap melayani Anda sepenuhnya.',
         'description_extra' => 'Dengan satu klik terakhir, Anda akan membuka pintu menuju pengalaman manajemen magang yang baru. Siap untuk memulai babak baru ini?',
         'cta' => 'Selesaikan & Mulai Petualangan',
+        'checkup_title' => 'Pemeriksaan Kesiapan Sistem',
+        'checkup_desc' => 'Silakan tinjau dan konfirmasikan kepatuhan Anda terhadap standar tata kelola sistem.',
+        'checkup' => [
+            'data_verified_label' => 'Konfirmasi Integritas Data',
+            'data_verified_desc' => 'Saya telah meninjau data sekolah, jurusan, dan program. Saya mengonfirmasi bahwa semua informasi yang dimasukkan adalah akurat dan mencerminkan status resmi institusi.',
+            'security_aware_label' => 'Pengakuan Kedaulatan Keamanan',
+            'security_aware_desc' => 'Saya memahami bahwa akun SuperAdmin saya memegang otoritas mutlak. Saya berkomitmen untuk menjaga kerahasiaan kredensial dan mengikuti protokol keamanan enterprise untuk melindungi data institusi.',
+            'legal_agreed_label' => 'Kepatuhan Hukum & Regulasi',
+            'legal_agreed_desc' => 'Saya menyetujui :privacy dan :terms. Saya berkomitmen untuk mengoperasikan Internara sesuai dengan hukum perlindungan data yang berlaku.',
+        ],
     ],
 ];
