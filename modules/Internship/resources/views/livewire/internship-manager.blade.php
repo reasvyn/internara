@@ -6,28 +6,28 @@
             :value="$this->stats['total']" 
             icon="tabler.layers-intersect" 
             variant="metadata" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.open_registration')" 
             :value="$this->stats['active']" 
             icon="tabler.door-open" 
             variant="success" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.ongoing_programs')" 
             :value="$this->stats['ongoing']" 
             icon="tabler.activity" 
             variant="primary" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.upcoming_programs')" 
             :value="$this->stats['upcoming']" 
             icon="tabler.calendar-bolt" 
             variant="info" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
     </div>
 

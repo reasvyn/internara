@@ -6,28 +6,28 @@
             :value="$this->stats['total']" 
             icon="tabler.list-check" 
             variant="metadata" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.mandatory_requirements')" 
             :value="$this->stats['mandatory']" 
             icon="tabler.alert-circle" 
             variant="error" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.active_requirements')" 
             :value="$this->stats['active']" 
             icon="tabler.circle-check" 
             variant="success" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.document_requirements')" 
             :value="$this->stats['documents']" 
             icon="tabler.file-text" 
             variant="info" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
     </div>
 

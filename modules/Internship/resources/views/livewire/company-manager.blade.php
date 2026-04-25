@@ -6,28 +6,28 @@
             :value="$this->stats['total']" 
             icon="tabler.building-community" 
             variant="metadata" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.business_fields')" 
             :value="$this->stats['fields']" 
             icon="tabler.category" 
             variant="info" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.verified_contact')" 
             :value="$this->stats['with_email']" 
             icon="tabler.mail-check" 
             variant="success" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.new_partners')" 
             :value="$this->stats['latest']" 
             icon="tabler.sparkles" 
             variant="primary" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
     </div>
 

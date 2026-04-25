@@ -107,6 +107,33 @@
     --animation-input: 0.3s;
 }
 
+/* Enterprise Design System Unification */
+@layer components {
+    .card-enterprise {
+        @apply bg-base-100 rounded-3xl border-none shadow-xl shadow-base-content/5 overflow-hidden transition-all duration-300;
+    }
+
+    .table-enterprise {
+        @apply w-full overflow-hidden rounded-2xl border border-base-content/5 bg-base-100 shadow-sm;
+    }
+
+    .table-enterprise thead {
+        @apply bg-base-200/60;
+    }
+
+    .table-enterprise thead th {
+        @apply text-[10px] uppercase tracking-widest opacity-50 font-black py-4;
+    }
+
+    .table-enterprise tbody tr {
+        @apply hover:bg-base-200/40 transition-colors duration-200;
+    }
+
+    .stat-enterprise {
+        @apply shadow-sm border border-base-content/5 bg-base-100/50 rounded-2xl p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.01];
+    }
+}
+
 /* Enforce 0.3s hover transition globally for interactive elements */
 @layer base {
     a,

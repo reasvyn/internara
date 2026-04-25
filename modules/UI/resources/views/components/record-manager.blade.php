@@ -76,67 +76,69 @@
         </x-slot:actions>
     </x-ui::header>
 
-    <x-ui::card wire:key="{{ $this->getEventPrefix() }}-card">
-        {{-- Instant Client-side Search Input --}}
-        <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div class="w-full md:w-1/3">
-                <x-ui::input 
-                    :placeholder="__('ui::common.search_placeholder')" 
-                    icon="tabler.search" 
-                    wire:model.live.debounce.500ms="search" 
-                    x-model="search"
-                    x-on:input="applyLocalFilter()"
-                    clearable 
-                />
+    <x-ui::card wire:key="{{ $this->getEventPrefix() }}-card" class="card-enterprise">
+        <div class="p-6 space-y-6">
+            {{-- Instant Client-side Search Input --}}
+            <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div class="w-full md:w-1/3">
+                    <x-ui::input 
+                        :placeholder="__('ui::common.search_placeholder')" 
+                        icon="tabler.search" 
+                        wire:model.live.debounce.500ms="search" 
+                        x-model="search"
+                        x-on:input="applyLocalFilter()"
+                        clearable 
+                    />
+                </div>
+                {{ $filters ?? '' }}
             </div>
-            {{ $filters ?? '' }}
-        </div>
 
-        {{-- Table Wrapper --}}
-        <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh] relative">
+            {{-- Table Wrapper --}}
+            <div class="table-enterprise max-h-[60vh] relative">
+                    <div 
+                        wire:loading.class="opacity-40 pointer-events-none" 
+                        wire:target="search, sortBy, perPage, refreshRecords"
+                        class="transition-opacity duration-200"
+                    >
+                    <x-mary-table 
+                        class="table-md w-full"
+                        :headers="$this->headers" 
+                        :rows="$this->records" 
+                        wire:model="selectedIds"
+                        :sort-by="$this->sortBy"
+                        selectable
+                        with-pagination
+                    >
+                        @isset($tableCells) {{ $tableCells }} @endisset
+
+                        @if(isset($rowActions))
+                            {{ $rowActions }}
+                        @else
+                            @scope('actions', $record)
+                                <div class="flex items-center justify-end gap-1 px-2">
+                                    @if($this->can('update', $record))
+                                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $record->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                                    @endif
+                                    @if($this->can('delete', $record))
+                                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $record->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                                    @endif
+                                </div>
+                            @endscope
+                        @endif
+                    </x-mary-table>
+                </div>
+
+                {{-- Instant Empty State Feedback (Client-side) --}}
                 <div 
-                    wire:loading.class="opacity-40 pointer-events-none" 
-                    wire:target="search, sortBy, perPage, refreshRecords"
-                    class="transition-opacity duration-200"
+                    x-show="filteredCount === 0" 
+                    wire:loading.remove 
+                    wire:target="search"
+                    x-cloak 
+                    class="p-12 text-center"
                 >
-                <x-mary-table 
-                    class="table-zebra table-md w-full"
-                    :headers="$this->headers" 
-                    :rows="$this->records" 
-                    wire:model="selectedIds"
-                    :sort-by="$this->sortBy"
-                    selectable
-                    with-pagination
-                >
-                    @isset($tableCells) {{ $tableCells }} @endisset
-
-                    @if(isset($rowActions))
-                        {{ $rowActions }}
-                    @else
-                        @scope('actions', $record)
-                            <div class="flex items-center justify-end gap-1">
-                                @if($this->can('update', $record))
-                                    <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-xs" wire:click="edit('{{ $record->id }}')" tooltip="{{ __('ui::common.edit') }}" />
-                                @endif
-                                @if($this->can('delete', $record))
-                                    <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error btn-xs" wire:click="discard('{{ $record->id }}')" tooltip="{{ __('ui::common.delete') }}" />
-                                @endif
-                            </div>
-                        @endscope
-                    @endif
-                </x-mary-table>
-            </div>
-
-            {{-- Instant Empty State Feedback (Client-side) --}}
-            <div 
-                x-show="filteredCount === 0" 
-                wire:loading.remove 
-                wire:target="search"
-                x-cloak 
-                class="p-12 text-center"
-            >
-                <x-ui::icon name="tabler.search-off" class="mx-auto size-12 opacity-20" />
-                <p class="mt-4 text-base-content/50">{{ __('ui::common.no_results') }}</p>
+                    <x-ui::icon name="tabler.search-off" class="mx-auto size-12 opacity-20" />
+                    <p class="mt-4 text-[10px] font-black uppercase tracking-widest opacity-40">{{ __('ui::common.no_results') }}</p>
+                </div>
             </div>
         </div>
     </x-ui::card>

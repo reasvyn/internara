@@ -6,28 +6,28 @@
             :value="$this->stats['total_locations']" 
             icon="tabler.map-pins" 
             variant="metadata" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.total_quota')" 
             :value="$this->stats['total_quota']" 
             icon="tabler.users-group" 
             variant="info" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.filled_quota')" 
             :value="$this->stats['filled_quota']" 
             icon="tabler.user-check" 
             variant="success" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.utilization_rate')" 
             :value="$this->stats['utilization'] . '%'" 
             icon="tabler.chart-pie" 
             variant="primary" 
-            class="shadow-sm border border-base-content/5 bg-base-100/50" 
+            class="stat-enterprise" 
         />
     </div>
 
