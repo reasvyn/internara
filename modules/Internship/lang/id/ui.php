@@ -159,4 +159,8 @@ return [
     'place_student' => 'Tempatkan Siswa',
     'start_date' => 'Tanggal Mulai',
     'end_date' => 'Tanggal Akhir',
+    'registration_success' => 'Pendaftaran magang berhasil dikirim dan menunggu persetujuan.',
+    'propose_new_partner' => 'Ajukan Mitra Baru',
+    'proposal_notice' => 'Mitra yang diajukan akan ditinjau oleh administrator sebelum disetujui.',
+    'submit_registration' => 'Kirim Pendaftaran',
 ];

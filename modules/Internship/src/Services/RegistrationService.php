@@ -122,10 +122,14 @@ class RegistrationService extends EloquentQuery implements Contract
 
             $registration = $this->create($data);
 
-            // 7. Log initial assignment
+            // 7. Initialize status using Spatie Model Status
+            $status = isset($data['proposed_company_name']) ? 'proposing_partner' : 'pending';
+            $registration->setStatus($status, 'Initial registration');
+
+            // 8. Log initial assignment
             $this->logger->logAssignment($registration);
 
-            // 8. Signal registration to the system
+            // 9. Signal registration to the system
             \Modules\Internship\Events\InternshipRegistered::dispatch($registration->id);
 
             return $registration;

@@ -28,12 +28,14 @@ class RegistrationForm extends Form
     {
         return [
             'internship_id' => ['required', 'uuid'],
-            'placement_id' => ['required', 'uuid'],
+            'placement_id' => ['nullable', 'uuid', 'required_without:proposed_company_name'],
             'student_id' => ['required', 'uuid'],
             'teacher_id' => ['required', 'uuid'],
             'mentor_id' => ['nullable', 'uuid'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'proposed_company_name' => ['nullable', 'string', 'max:255'],
+            'proposed_company_address' => ['nullable', 'string'],
         ];
     }
 }

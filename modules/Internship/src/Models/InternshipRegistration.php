@@ -53,6 +53,8 @@ class InternshipRegistration extends Model
         'academic_year',
         'start_date',
         'end_date',
+        'proposed_company_name',
+        'proposed_company_address',
     ];
 
     /**

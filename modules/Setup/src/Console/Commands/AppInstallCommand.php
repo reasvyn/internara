@@ -52,149 +52,87 @@ class AppInstallCommand extends Command
         }
 
         try {
-            $success = true;
-
             // 0. System Cleanup
-            $this->components->task('Clearing application cache', function () {
-                $this->callSilent('optimize:clear');
-
-                return true;
-            });
+            $this->performTask('Clearing application cache', fn () => $this->callSilent('optimize:clear') === 0);
 
             // 1. Environment Initialization
-            $this->components->task('Ensuring .env file existence', function () use (&$success) {
-                if (! $this->installerService->ensureEnvFileExists()) {
-                    $success = false;
-
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (! $success) {
-                return self::FAILURE;
-            }
+            $this->performTask('Ensuring .env file existence', fn () => $this->installerService->ensureEnvFileExists());
 
             // 2. Environment Validation
-            $this->components->task('Validating environment requirements', function () use (
-                &$success,
-            ) {
+            $this->performTask('Validating environment requirements', function () {
                 $audit = $this->installerService->validateEnvironment();
-                $failedCount = 0;
+                $failures = [];
 
-                // Check Requirements & Permissions
                 foreach (['requirements', 'permissions'] as $category) {
-                    if (! isset($audit[$category]) || ! is_array($audit[$category])) {
-                        continue;
-                    }
-
-                    foreach ($audit[$category] as $name => $status) {
+                    foreach ($audit[$category] ?? [] as $name => $status) {
                         if ($status === false) {
-                            $this->newLine();
-                            $label = is_string($name)
-                                ? $name
-                                : (is_numeric($name)
-                                    ? (string) $name
-                                    : json_encode($name));
-                            $this->components->error("Audit failed for: {$label}");
-                            $failedCount++;
+                            $failures[] = "{$category}.{$name}";
                         }
                     }
                 }
 
-                // Check Database specifically
                 if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
-                    $this->newLine();
-                    $this->components->error(
-                        'Database error: '.
-                            (is_array($audit['database']['message'])
-                                ? json_encode($audit['database']['message'])
-                                : (string) ($audit['database']['message'] ?? 'Unknown error')),
-                    );
-                    $failedCount++;
+                    $failures[] = 'database.connection (' . ($audit['database']['message'] ?? 'Unknown error') . ')';
                 }
 
-                if ($failedCount > 0) {
-                    $success = false;
-
+                if (count($failures) > 0) {
+                    $this->newLine();
+                    foreach ($failures as $failure) {
+                        $this->components->error("  • {$failure}");
+                    }
                     return false;
                 }
 
                 return true;
             });
-
-            if (! $success) {
-                return self::FAILURE;
-            }
 
             // 3. Application Key Generation
-            $this->components->task('Generating application key', function () use (&$success) {
-                if (! $this->installerService->generateAppKey()) {
-                    $success = false;
-
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (! $success) {
-                return self::FAILURE;
-            }
+            $this->performTask('Generating application key', fn () => $this->installerService->generateAppKey());
 
             // 4. Database Migrations
-            $this->components->task('Initializing database schema', function () use (&$success) {
-                if (! $this->installerService->runMigrations()) {
-                    $success = false;
-
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (! $success) {
-                return self::FAILURE;
-            }
+            $this->performTask('Initializing database schema', fn () => $this->installerService->runMigrations());
 
             // 5. Core & Shared Seeding
-            $this->components->task('Seeding foundational data', function () use (&$success) {
-                if (! $this->installerService->runSeeders()) {
-                    $success = false;
-
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (! $success) {
-                return self::FAILURE;
-            }
+            $this->performTask('Seeding foundational data', fn () => $this->installerService->runSeeders());
 
             // 6. Storage Symlinking
-            $this->components->task('Creating storage symbolic link', function () use (&$success) {
-                if (! $this->installerService->createStorageSymlink()) {
-                    $success = false;
+            $this->performTask('Creating storage symbolic link', fn () => $this->installerService->createStorageSymlink());
 
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (! $success) {
-                return self::FAILURE;
-            }
+        } catch (\RuntimeException $e) {
+            return self::FAILURE;
         } catch (\Throwable $e) {
             $this->newLine();
-            $this->components->error('Installation Failed: '.$e->getMessage());
-            $this->error($e->getTraceAsString());
+            $this->components->error('Installation Failed: ' . $e->getMessage());
+            
+            if (config('app.debug')) {
+                $this->line($e->getTraceAsString());
+            }
 
             return self::FAILURE;
         }
 
+        $this->displaySuccessMessage();
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Helper to perform a task and abort on failure.
+     */
+    protected function performTask(string $title, \Closure $task): void
+    {
+        $result = $this->components->task($title, $task);
+
+        if ($result === false) {
+            throw new \RuntimeException("Task failed: {$title}");
+        }
+    }
+
+    /**
+     * Display the final success message and instructions.
+     */
+    protected function displaySuccessMessage(): void
+    {
         $this->newLine();
         $this->components->info('Technical installation completed successfully!');
 
@@ -205,22 +143,15 @@ class AppInstallCommand extends Command
             ['token' => $token],
         );
 
-        $this->info('Please proceed to the Web Setup Wizard using the authorized link below:');
-        $this->warn($setupUrl);
+        $this->line(' <bg=blue;options=bold> NEXT STEP </> Please proceed to the Web Setup Wizard:');
+        $this->line(" <fg=cyan;options=bold>{$setupUrl}</>");
+        $this->newLine();
 
-        if (
-            parse_url($setupUrl, PHP_URL_PORT) === null &&
-            config('app.url') === 'http://localhost'
-        ) {
-            $this->newLine();
-            $this->info(
-                'Note: If you are using a specific port (e.g., via artisan serve), ensure the port is included in the URL.',
-            );
+        if (parse_url($setupUrl, PHP_URL_PORT) === null && config('app.url') === 'http://localhost') {
+            $this->components->warn('Note: Ensure the port is included if you are using a non-standard port.');
         }
 
         $this->newLine();
-
-        return self::SUCCESS;
     }
 
     /**

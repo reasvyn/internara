@@ -25,6 +25,8 @@ return new class extends Migration
             $table->uuid('student_id')->index();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
+            $table->string('proposed_company_name')->nullable();
+            $table->text('proposed_company_address')->nullable();
             $table->string('academic_year', 10)->nullable()->index();
             $table->uuid('teacher_id')->nullable()->index();
             $table->uuid('mentor_id')->nullable()->index();

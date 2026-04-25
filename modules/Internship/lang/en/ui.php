@@ -159,4 +159,8 @@ return [
     'place_student' => 'Place Student',
     'start_date' => 'Start Date',
     'end_date' => 'End Date',
+    'registration_success' => 'Internship registration successfully submitted and awaiting approval.',
+    'propose_new_partner' => 'Propose New Partner',
+    'proposal_notice' => 'Proposed partners will be reviewed by administrators before approval.',
+    'submit_registration' => 'Submit Registration',
 ];

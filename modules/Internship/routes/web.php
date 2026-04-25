@@ -22,21 +22,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('can:internship.view')
         ->name('internship.index');
 
-    Route::get('/internships/placements', PlacementManager::class)
+    Route::get('/internships/placements', \Modules\Internship\Livewire\InternshipPlacementManager::class)
         ->middleware('can:internship.update')
         ->name('internship.placement.index');
 
     Route::get(
         '/internships/student-placement',
-        \Modules\Internship\Livewire\InternshipRegistrationManager::class,
+        \Modules\Internship\Livewire\StudentPlacementManager::class,
     )
         ->middleware('can:internship.manage')
         ->name('internship.student-placement.index');
 
+    Route::get(
+        '/internships/register',
+        \Modules\Internship\Livewire\InternshipRegistrationManager::class,
+    )
+        ->middleware('role:student')
+        ->name('internship.registration.student');
+
     // Legacy routes for backward compatibility
     Route::get(
         '/internships/registrations',
-        \Modules\Internship\Livewire\InternshipRegistrationManager::class,
+        \Modules\Internship\Livewire\RegistrationManager::class,
     )
         ->middleware('can:internship.manage')
         ->name('internship.registration.index');

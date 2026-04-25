@@ -14,7 +14,7 @@ use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
 use Modules\User\Services\Contracts\UserService;
 
-class PlacementManager extends RecordManager
+class InternshipPlacementManager extends RecordManager
 {
     protected string $viewPermission = 'placement.view';
 
@@ -149,7 +149,7 @@ class PlacementManager extends RecordManager
 
     public function render(): View
     {
-        return view('internship::livewire.placement-manager', [
+        return view('internship::livewire.internship-placement-manager', [
             'records' => $this->records,
         ])->layout('ui::components.layouts.dashboard', [
             'title' => __('internship::ui.placement_title').
