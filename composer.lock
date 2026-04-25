@@ -261,30 +261,30 @@
         },
         {
             "name": "blade-ui-kit/blade-icons",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driesvints/blade-icons.git",
-                "reference": "7b743f27476acb2ed04cb518213d78abe096e814"
+                "reference": "caa92fde675d7a651c38bf73ca582ddada56f318"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driesvints/blade-icons/zipball/7b743f27476acb2ed04cb518213d78abe096e814",
-                "reference": "7b743f27476acb2ed04cb518213d78abe096e814",
+                "url": "https://api.github.com/repos/driesvints/blade-icons/zipball/caa92fde675d7a651c38bf73ca582ddada56f318",
+                "reference": "caa92fde675d7a651c38bf73ca582ddada56f318",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/view": "^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/filesystem": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/view": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
                 "php": "^7.4|^8.0",
-                "symfony/console": "^5.3|^6.0|^7.0",
-                "symfony/finder": "^5.3|^6.0|^7.0"
+                "symfony/console": "^5.3|^6.0|^7.0|^8.0",
+                "symfony/finder": "^5.3|^6.0|^7.0|^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.5.1",
-                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
                 "phpunit/phpunit": "^9.0|^10.5|^11.0"
             },
             "bin": [
@@ -317,7 +317,7 @@
                 }
             ],
             "description": "A package to easily make use of icons in your Laravel Blade views.",
-            "homepage": "https://github.com/blade-ui-kit/blade-icons",
+            "homepage": "https://github.com/driesvints/blade-icons",
             "keywords": [
                 "blade",
                 "icons",
@@ -325,8 +325,8 @@
                 "svg"
             ],
             "support": {
-                "issues": "https://github.com/blade-ui-kit/blade-icons/issues",
-                "source": "https://github.com/blade-ui-kit/blade-icons"
+                "issues": "https://github.com/driesvints/blade-icons/issues",
+                "source": "https://github.com/driesvints/blade-icons"
             },
             "funding": [
                 {
@@ -338,7 +338,7 @@
                     "type": "paypal"
                 }
             ],
-            "time": "2025-02-13T20:35:06+00:00"
+            "time": "2026-02-23T10:42:23+00:00"
         },
         {
             "name": "brick/math",
@@ -5697,16 +5697,16 @@
         },
         {
             "name": "secondnetwork/blade-tabler-icons",
-            "version": "v3.36.1",
+            "version": "v3.38.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/secondnetwork/blade-tabler-icons.git",
-                "reference": "d04786e34b9e74820ad6a32290a17f9a59fefb6c"
+                "reference": "33d8b506fcc2ce4e7a1f71788a16f12ddb37fcca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/secondnetwork/blade-tabler-icons/zipball/d04786e34b9e74820ad6a32290a17f9a59fefb6c",
-                "reference": "d04786e34b9e74820ad6a32290a17f9a59fefb6c",
+                "url": "https://api.github.com/repos/secondnetwork/blade-tabler-icons/zipball/33d8b506fcc2ce4e7a1f71788a16f12ddb37fcca",
+                "reference": "33d8b506fcc2ce4e7a1f71788a16f12ddb37fcca",
                 "shasum": ""
             },
             "require": {
@@ -5749,9 +5749,9 @@
             ],
             "support": {
                 "issues": "https://github.com/secondnetwork/blade-tabler-icons/issues",
-                "source": "https://github.com/secondnetwork/blade-tabler-icons/tree/v3.36.1"
+                "source": "https://github.com/secondnetwork/blade-tabler-icons/tree/v3.38.0"
             },
-            "time": "2026-01-05T15:11:00+00:00"
+            "time": "2026-03-02T15:27:43+00:00"
         },
         {
             "name": "simplesoftwareio/simple-qrcode",
