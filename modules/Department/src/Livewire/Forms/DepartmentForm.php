@@ -15,16 +15,23 @@ class DepartmentForm extends Form
 
     public ?string $description = null;
 
+    /**
+     * Define validation rules for the department form.
+     */
     public function rules(): array
     {
+        $isProduction = app()->isProduction();
+        $config = config('department.validation');
+
         return [
-            'name' => [
+            'name' => array_filter([
                 'required',
                 'string',
-                'max:255',
+                $isProduction ? 'min:' . $config['name']['min_length'] : null,
+                'max:' . $config['name']['max_length'],
                 Rule::unique('departments', 'name')->ignore($this->id),
-            ],
-            'description' => ['nullable', 'string', 'max:1000'],
+            ]),
+            'description' => ['nullable', 'string', 'max:' . $config['description']['max_length']],
         ];
     }
 }
