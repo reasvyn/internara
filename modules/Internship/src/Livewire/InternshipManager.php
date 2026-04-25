@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Livewire\Attributes\Computed;
+use Modules\Internship\Enums\ProgramStatus;
 use Modules\Internship\Livewire\Forms\InternshipForm;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
