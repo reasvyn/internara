@@ -35,43 +35,45 @@ class SchoolForm extends Form
      */
     public function rules(): array
     {
+        $isProduction = app()->isProduction();
+
         return [
-            'institutional_code' => [
+            'institutional_code' => array_filter([
                 'required',
                 'string',
-                'min:3',
+                $isProduction ? 'min:3' : null,
                 'max:50',
-                'regex:/^[A-Z0-9.\/-]+$/i', // Enterprise-standard code format
+                $isProduction ? 'regex:/^[A-Z0-9.\/-]+$/i' : null,
                 Rule::unique('schools', 'institutional_code')->ignore($this->id),
-            ],
-            'name' => [
+            ]),
+            'name' => array_filter([
                 'required', 
                 'string', 
-                'min:3',
+                $isProduction ? 'min:3' : null,
                 'max:255',
                 Rule::unique('schools', 'name')->ignore($this->id)
-            ],
+            ]),
             'address' => ['nullable', 'string', 'max:1000'],
-            'email' => [
+            'email' => array_filter([
                 'nullable',
-                'email:rfc,dns',
+                $isProduction ? 'email:rfc,dns' : 'email',
                 'max:255',
                 Rule::unique('schools', 'email')->ignore($this->id),
-            ],
-            'phone' => [
+            ]),
+            'phone' => array_filter([
                 'nullable', 
                 'string', 
-                'min:8', 
+                $isProduction ? 'min:8' : null, 
                 'max:20',
-                'regex:/^\+?[0-9\s\-()]+$/', // International phone format
-            ],
-            'fax' => [
+                $isProduction ? 'regex:/^\+?[0-9\s\-()]+$/' : null,
+            ]),
+            'fax' => array_filter([
                 'nullable', 
                 'string', 
-                'min:8', 
+                $isProduction ? 'min:8' : null, 
                 'max:20',
-                'regex:/^\+?[0-9\s\-()]+$/',
-            ],
+                $isProduction ? 'regex:/^\+?[0-9\s\-()]+$/' : null,
+            ]),
             'principal_name' => ['nullable', 'string', 'max:255'],
             'logo_url' => ['sometimes', 'nullable', 'string'],
             'logo_file' => ['sometimes', 'nullable', 'image', 'mimes:jpg,png,webp', 'max:2048'],
