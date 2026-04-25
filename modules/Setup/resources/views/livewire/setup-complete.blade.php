@@ -1,12 +1,12 @@
-<x-setup::layouts.setup-wizard>
-    <div x-data="{ 
-        dataVerified: @entangle('data_verified'),
-        securityAware: @entangle('security_aware'),
-        legalAgreed: @entangle('legal_agreed'),
-        get canFinalize() {
-            return this.dataVerified && this.securityAware && this.legalAgreed;
-        }
-    }" class="w-full">
+<div x-data="{ 
+    dataVerified: @entangle('data_verified'),
+    securityAware: @entangle('security_aware'),
+    legalAgreed: @entangle('legal_agreed'),
+    get canFinalize() {
+        return this.dataVerified && this.securityAware && this.legalAgreed;
+    }
+}" class="w-full">
+    <x-setup::layouts.setup-wizard>
         <x-slot:header>
             <div class="max-w-4xl">
                 <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" class="mb-12" />
@@ -114,7 +114,7 @@
             @include('shared::legal.privacy-policy')
         </div>
         <x-slot:actions>
-            <x-ui::button :label="__('shared::ui.cancel')" x-on:click="$wire.set('showPrivacy', false)" />
+            <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.set('showPrivacy', false)" />
         </x-slot:actions>
     </x-ui::modal>
 
@@ -123,7 +123,7 @@
             @include('shared::legal.terms-of-service')
         </div>
         <x-slot:actions>
-            <x-ui::button :label="__('shared::ui.cancel')" x-on:click="$wire.set('showTerms', false)" />
+            <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.set('showTerms', false)" />
         </x-slot:actions>
     </x-ui::modal>
 </div>
