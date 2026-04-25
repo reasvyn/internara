@@ -60,7 +60,7 @@
                                 @endif
                                 <x-ui::badge 
                                     variant="custom"
-                                    class="{{ $passed ? 'badge-success/10 text-success' : 'badge-error/10 text-error' }} px-3 font-bold text-[10px] uppercase tracking-widest"
+                                    class="{{ $passed ? 'bg-success/10 text-success border-success/20' : 'bg-error/10 text-error border-error/20' }} border px-3 font-bold text-[10px] uppercase tracking-widest"
                                 >
                                     {{ $passed ? __('setup::wizard.status.passed') : __('setup::wizard.status.failed') }}
                                 </x-ui::badge>
