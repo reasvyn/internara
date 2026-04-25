@@ -53,6 +53,20 @@ class CompanyManager extends RecordManager
     }
 
     /**
+     * Get summary metrics for industrial partners.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => $this->service->query()->count(),
+            'fields' => $this->service->query()->distinct('business_field')->count('business_field'),
+            'with_email' => $this->service->query()->whereNotNull('email')->count(),
+            'latest' => $this->service->query()->where('created_at', '>=', now()->subMonth())->count(),
+        ];
+    }
+
+    /**
      * Define searchable columns (client-side search).
      */
     protected array $searchable = ['name', 'email', 'phone', 'business_field'];
