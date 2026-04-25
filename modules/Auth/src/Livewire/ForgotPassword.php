@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Livewire;
 
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
@@ -26,41 +28,43 @@ class ForgotPassword extends Component
         ];
     }
 
+    /**
+     * Sends the password reset link.
+     */
     public function sendResetLink(): void
     {
         $this->validate();
 
-        if (is_development()) {
-            $user = \Modules\User\Models\User::where('email', $this->email)->first();
-
-            if ($user) {
-                // Log masked email for flow verification
-                $maskedEmail = \Modules\Shared\Support\Masker::email($this->email);
-                if (is_development()) {
-                    \Illuminate\Support\Facades\Log::info(
-                        "Development: Password reset initiated for {$maskedEmail}. Redirecting to shortcut.",
-                    );
-                }
-
-                $token = \Illuminate\Support\Facades\Password::broker()->createToken($user);
-
-                $this->redirect(
-                    route('password.reset', [
-                        'token' => $token,
-                        'email' => $this->email,
-                    ]),
-                    navigate: true,
-                );
-
-                return;
-            }
+        // [S1 - Secure] Brute Force Protection (Rate Limiting)
+        $throttleKey = $this->throttleKey();
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) { // 3 attempts per hour
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('email', __('auth::ui.forgot_password.form.rate_limited', ['seconds' => $seconds]));
+            
+            return;
         }
 
         $this->authService->sendPasswordResetLink($this->email);
 
+        // [S2 - Sustain] Audit Log
+        activity('security')
+            ->event('password_reset_initiated')
+            ->withProperties(['ip' => request()->ip(), 'email' => $this->email])
+            ->log('Password reset link requested.');
+
+        RateLimiter::hit($throttleKey, 3600); // Lock for 1 hour after 3 attempts
+
         flash()->success(__('auth::ui.forgot_password.sent'));
 
         $this->reset('email');
+    }
+
+    /**
+     * Get the rate limiting throttle key.
+     */
+    protected function throttleKey(): string
+    {
+        return Str::transliterate('forgot-password|'.Str::lower($this->email).'|'.request()->ip());
     }
 
     public function render(): View
