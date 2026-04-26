@@ -1,0 +1,193 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Setup\Application\Services;
+
+use Illuminate\Support\Facades\DB;
+use Modules\Setup\Domain\Models\SetupProcess;
+use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Admin\Services\Contracts\SuperAdminService;
+use Modules\School\Services\Contracts\SchoolService;
+use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Exception\AppException;
+
+/**
+ * Application Service for orchestrating the setup process.
+ * 
+ * [S2 - Sustain] Implements the Application Layer by coordinating Domain Models and Infrastructure Services.
+ */
+class SetupOrchestrator implements SetupService
+{
+    public function __construct(
+        protected SettingService $settingService,
+        protected SuperAdminService $superAdminService,
+        protected SchoolService $schoolService,
+        protected DepartmentService $departmentService,
+        protected InternshipService $internshipService,
+    ) {}
+
+    /**
+     * Reconstitutes the SetupProcess aggregate from infrastructure.
+     */
+    protected function getProcess(): SetupProcess
+    {
+        $isInstalled = (bool) $this->settingService->getValue(self::SETTING_APP_INSTALLED, false);
+        
+        $steps = [
+            self::STEP_WELCOME,
+            self::STEP_ENVIRONMENT,
+            self::STEP_SCHOOL,
+            self::STEP_ACCOUNT,
+            self::STEP_DEPARTMENT,
+            self::STEP_INTERNSHIP,
+            self::STEP_SYSTEM,
+            self::STEP_COMPLETE,
+        ];
+
+        $completedSteps = [];
+        foreach ($steps as $step) {
+            $completedSteps[$step] = (bool) $this->settingService->getValue("setup_step_{$step}", false);
+        }
+
+        return SetupProcess::fromState($isInstalled, $completedSteps);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isAppInstalled(bool $skipCache = true): bool
+    {
+        return $this->getProcess()->isInstalled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isStepCompleted(string $step, bool $skipCache = true): bool
+    {
+        return $this->getProcess()->isStepCompleted($step);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isRecordExists(string $recordName): bool
+    {
+        return match ($recordName) {
+            self::RECORD_SUPER_ADMIN => $this->superAdminService->exists(),
+            self::RECORD_SCHOOL => $this->schoolService->exists(),
+            self::RECORD_DEPARTMENT => $this->departmentService->exists(),
+            self::RECORD_INTERNSHIP => $this->internshipService->exists(),
+            default => throw new \InvalidArgumentException("Unknown record type '{$recordName}'."),
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function requireSetupAccess(string $prevStep = ''): bool
+    {
+        $process = $this->getProcess();
+
+        if ($process->isInstalled()) {
+            return false;
+        }
+
+        if ($prevStep && !$process->isStepCompleted($prevStep)) {
+            throw new AppException(
+                userMessage: 'setup::exceptions.require_step_completed',
+                code: 403,
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function performSetupStep(string $step, ?string $reqRecord = null): bool
+    {
+        $process = $this->getProcess();
+
+        if (!$process->canProceedTo($step)) {
+             throw new AppException(
+                userMessage: 'setup::exceptions.require_step_completed',
+                code: 403,
+            );
+        }
+
+        if ($reqRecord && !$this->isRecordExists($reqRecord)) {
+            throw new AppException(
+                userMessage: 'setup::exceptions.require_record_exists',
+                code: 403,
+            );
+        }
+
+        if ($step === self::STEP_COMPLETE) {
+            return $this->finalizeSetupStep();
+        }
+
+        $this->settingService->setValue("setup_step_{$step}", true);
+
+        activity('setup')
+            ->event('step_completed')
+            ->withProperties(['step' => $step])
+            ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function saveSystemSettings(array $settings): bool
+    {
+        $this->settingService->setValue($settings);
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function finalizeSetupStep(): bool
+    {
+        return DB::transaction(function () {
+            $school = $this->schoolService->getSchool();
+            if (!$school) {
+                throw new AppException(
+                    userMessage: 'setup::exceptions.require_record_exists',
+                    code: 403,
+                );
+            }
+
+            $settings = [
+                self::SETTING_BRAND_NAME => $school->name,
+                self::SETTING_BRAND_LOGO => $school->logo_url ?? null,
+                self::SETTING_APP_INSTALLED => true,
+                self::SETTING_SETUP_TOKEN => null,
+            ];
+
+            $this->settingService->setValue($settings);
+            $this->settingService->setValue("setup_step_complete", true);
+
+            activity('setup')
+                ->event('finalized')
+                ->log(__('setup::wizard.audit_logs.finalized'));
+
+            return true;
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function generateTechnicalReport(): string
+    {
+        // ... Logic will be delegated to a specialized reporter later
+        return "DDD-aligned Technical Report Placeholder";
+    }
+}

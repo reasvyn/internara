@@ -21,7 +21,7 @@ Welcome to the Internara documentation! This guide provides comprehensive resour
 | **[Philosophy](./philosophy.md)** | 3S Doctrine (Secure, Sustain, Scalable) and why | Contributors, Architects | 18 min |
 | **[Architecture Guide](./architecture.md)** | Modular monolith design, auto-binding, data flow | Developers, Architects | 22 min |
 | **[Modules Catalog](./modules-catalog.md)** | Directory of all 29+ modules and their purposes | Everyone | 16 min |
-| **[Testing Guide](./testing.md)** | TDD practices, Pest framework, AppTest, test suites | QA, Developers | 25 min |
+| **[Testing Guide](./testing.md)** | DDD practices, Pest framework, AppTest, test suites | QA, Developers | 25 min |
 | **[Standards & Conventions](./standards.md)** | Code quality, naming, patterns, PSR-12 | Contributors | 22 min |
 | **[Contributing Guide](../CONTRIBUTING.md)** | Workflow, code patterns, and PR checklist | Contributors | 12 min |
 
@@ -42,7 +42,7 @@ Welcome to the Internara documentation! This guide provides comprehensive resour
 The Internara project is built on the **3S Doctrine**:
 
 - **🔐 Secure (S1)** — Field-level encryption, UUIDs, immutable audit logs
-- **📖 Sustain (S2)** — PSR-12, TDD, strict types, English documentation
+- **📖 Sustain (S2)** — PSR-12, DDD Modular, strict types, English documentation
 - **⚙️ Scalable (S3)** — Modular architecture, loose coupling, evolutionary design
 
 Learn more in the **[Philosophy Guide](./philosophy.md)**

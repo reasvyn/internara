@@ -47,7 +47,7 @@ initial security context for every session.
  prevent information leakage during failed login attempts via the `Masker` utility.
 - **Context-Aware Redirection**: Redirection logic is centralized, ensuring that Instructors,
  Students, and Administrators are always funneled into their authorized workspaces.
-- **TDD-First**: All authentication flows are verified against role-based requirements.
+- **DDD-First**: All authentication flows are verified against role-based domain requirements.
 
 ---
 
@@ -55,8 +55,8 @@ initial security context for every session.
 
 Security is verified through **Pest v4**:
 
-- **Unit Tests**: Verifies core service logic and redirect mapping in isolation.
-- **Feature Tests**: Validates registration workflows, role assignments, and email verification
+- **Domain Tests**: Verifies core authentication logic and session security in isolation.
+- **Application Tests**: Validates registration workflows, role assignments, and email verification
  redirects.
 - **Security Audit**: Ensures that unverified users are strictly blocked from protected dashboards.
 - **Command**: `php artisan test modules/Auth`

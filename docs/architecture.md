@@ -651,10 +651,10 @@ Internara's architecture achieves:
 
 ## Further Reading
 
-- [Philosophy Guide](philosophy.md) — 3S Doctrine and principles
+- [Philosophy Guide](philosophy.md) — 3S Doctrine principles
 - [Modules Catalog](modules-catalog.md) — All modules and their purposes
 - [Standards Guide](standards.md) — Code quality and conventions
-- [Testing Guide](testing.md) — TDD practices and test structure
+- [Testing Guide](testing.md) — DDD practices and test structure
 
 ---
 

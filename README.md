@@ -56,9 +56,10 @@ Every line of code in **Internara** adheres to three immutable pillars:
 - Enforces `declare(strict_types=1);` on every PHP file
 - Static analysis via **Pint** (linting) with zero high-severity violations tolerance
 
-**Test-Driven Development (TDD)**
-- **90%+ behavioral coverage** required for all functional changes
-- Comprehensive test suites: Arch, Unit, Feature, Browser
+**Domain-driven Design (DDD) Modular**
+- Logic is organized by domain building blocks (Aggregates, Entities, Value Objects)
+- **90%+ behavioral coverage** required, validating domain integrity
+- Comprehensive test suites: Arch, Domain, Application, Browser
 - Built on **Pest** (modern PHP testing framework)
 - CI/CD gates ensure no regression
 
@@ -570,7 +571,7 @@ See [LICENSE](LICENSE) for full text.
 - **[Philosophy Guide](docs/philosophy.md)** — 3S Doctrine and architectural principles
 - **[Architecture Guide](docs/architecture.md)** — Modular monolith design & patterns
 - **[Modules Catalog](docs/modules-catalog.md)** — All 29+ modules and their purposes
-- **[Testing Guide](docs/testing.md)** — TDD practices with Pest and AppTest
+- **[Testing Guide](docs/testing.md)** — DDD practices with Pest and AppTest
 - **[Standards & Conventions](docs/standards.md)** — Code quality, naming, PSR-12
 
 ### 🤝 Contributing & Governance

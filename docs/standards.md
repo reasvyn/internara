@@ -812,7 +812,87 @@ const x = true;                // ❌
 
 ---
 
+## Domain-Driven Design (DDD) Patterns
+
+Internara follows a **Modular DDD** architecture. Logic is organized by domain building blocks.
+
+### Value Object Pattern
+
+Immutable objects defined by their attributes.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Setup\Domain\ValueObjects;
+
+final readonly class SetupToken
+{
+    private function __construct(public string $value) {}
+
+    public static function fromRaw(string $value): self
+    {
+        return new self($value);
+    }
+
+    public function matches(string $other): bool
+    {
+        return hash_equals($this->value, $other);
+    }
+}
+```
+
+### Entity Pattern
+
+Objects with a persistent identity.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Student\Domain\Models;
+
+class Student
+{
+    public function __construct(
+        public readonly string $id,
+        public string $name,
+    ) {}
+}
+```
+
+### Aggregate Root Pattern
+
+A cluster of domain objects treated as a single unit.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Setup\Domain\Models;
+
+class SetupProcess
+{
+    public function __construct(
+        protected bool $isInstalled,
+        protected array $steps = [],
+    ) {}
+
+    public function completeStep(string $step): void
+    {
+        $this->steps[$step] = true;
+    }
+}
+```
+
+---
+
 ## Testing Standards
+
+Testing in Internara is centered around **Domain-Driven Design (DDD) Modular** principles. Tests are used to validate domain invariants and correct behavior of domain building blocks.
 
 ### Test File Organization
 

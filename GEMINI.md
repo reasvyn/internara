@@ -15,7 +15,7 @@
 - **Global Governance:** Adheres to the [ISO/IEC Standardized Operational Manual](/home/reasnovynt/.gemini/GEMINI.md).
 - **Critical Mandates:**
   - **Attribute Sovereignty:** Always evaluate the compliance and sovereign context of data attributes before granting editing access. Critical system-level attributes (like SuperAdmin identity, system-generated IDs, or audit-critical fields) MUST remain immutable or system-controlled. (S1 Secure / ISO-IEC Compliance).
-- **Development Workflow:** Strictly follows TDD (Red-Green-Refactor) and Clean Code standards (see [docs/standards.md](docs/standards.md)).
+- **Development Workflow:** Strictly follows **Domain-driven Design (DDD) Modular** and Clean Code standards (see [docs/standards.md](docs/standards.md)).
 - **Localization:** Zero tolerance for hardcoded strings; all UI text must use translation keys.
 
 ## Module Index

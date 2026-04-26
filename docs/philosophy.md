@@ -11,7 +11,7 @@ The 3S Doctrine represents three orthogonal but complementary concerns:
 | Pillar | Focus | Benefit |
 | :--- | :--- | :--- |
 | 🔐 **Secure (S1)** | Data integrity, confidentiality, auditability | Trust and compliance |
-| 📖 **Sustain (S2)** | Code quality, TDD, documentation | Long-term maintainability |
+| 📖 **Sustain (S2)** | Code quality, DDD Modular, documentation | Long-term maintainability |
 | ⚙️ **Scalable (S3)** | Modular design, loose coupling | Evolutionary growth |
 
 ---
@@ -289,36 +289,34 @@ function processAge(int $age): string
 
 ---
 
-#### 3. Test-Driven Development (TDD)
+#### 3. Domain-Driven Design (DDD) Modular
 
-**What**: 90%+ behavioral coverage required for all functional changes
+**What**: 90%+ behavioral coverage required for all functional changes, driven by domain modeling.
 
 **Framework**: **Pest** (modern, expressive PHP testing)
 
 **Test Categories**:
-- **Unit Tests**: Component logic in isolation
-- **Feature Tests**: Business workflows and integration
+- **Domain Tests**: Validation of Entities, VOs, and Aggregates
+- **Application Tests**: Use case orchestration and integration
 - **Architecture Tests**: Design compliance (circular dependencies, etc.)
 - **Browser Tests**: Livewire UI interactions via Dusk
 
 **Example Test**:
 ```php
-it('creates internship with valid data', function () {
-    $data = [
-        'name' => 'Summer Internship 2026',
-        'duration' => 3,
-        'start_date' => '2026-06-01',
-    ];
-
-    $internship = Internship::create($data);
-
-    expect($internship)->toHaveAttributes($data);
-    expect($internship->status)->toBe('draft');
+it('ensures setup process can only proceed sequentially', function () {
+    $process = SetupProcess::fromState(isInstalled: false, completedSteps: []);
+    
+    expect($process->canProceedTo(SetupService::STEP_SCHOOL))->toBeFalse();
+    
+    $process->completeStep(SetupService::STEP_WELCOME);
+    $process->completeStep(SetupService::STEP_ENVIRONMENT);
+    
+    expect($process->canProceedTo(SetupService::STEP_SCHOOL))->toBeTrue();
 });
 ```
 
-**Testing Requirements**:
-- ✅ Every new feature must have tests
+**Implementation Requirements**:
+- ✅ Every new domain model must have tests
 - ✅ Bug fixes must include regression tests
 - ✅ 90%+ coverage minimum
 - ✅ All tests must pass before merge
@@ -669,7 +667,7 @@ The 3S Doctrine evolves as best practices mature:
 
 | Version | Focus |
 | :--- | :--- |
-| **v0.x** | Foundation: Encryption, RBAC, TDD, modules |
+| **v0.x** | Foundation: Encryption, RBAC, DDD Modular, modules |
 | **v1.0** | Stability: Performance optimization, advanced patterns |
 | **v2.0** | Expansion: Multi-tenancy, advanced analytics, AI integration |
 
@@ -693,7 +691,7 @@ This is why Internara can grow from serving one school to thousands without beco
 
 - [Architecture Guide](architecture.md) — Modular monolith implementation
 - [Standards Guide](standards.md) — Code quality and conventions
-- [Testing Guide](testing.md) — TDD practices and test structure
+- [Testing Guide](testing.md) — DDD practices and test structure
 - [Contributing Guide](../CONTRIBUTING.md) — How to contribute while respecting 3S
 
 ---

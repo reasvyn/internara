@@ -31,7 +31,7 @@ Internara follows a **Benevolent Dictatorship** model, where the Lead Maintainer
 To maintain the system's integrity, all contributions must pass the following gates:
 
 1.  **3S Audit**: Every PR is audited for Security, Sustainability, and Scalability.
-2.  **TDD Compliance**: Every functional change must have >90% behavioral coverage.
+2.  **DDD Modular Compliance**: Every functional change must have >90% behavioral coverage, driven by domain integrity.
 3.  **Static Analysis**: Zero high-severity violations in PHPStan and Pint.
 4.  **ISO-Alignment**: Documentation must evolve alongside code changes.
 

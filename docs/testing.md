@@ -1,20 +1,20 @@
 # 🧪 Testing Guide
 
-Comprehensive guide to Internara's **Test-Driven Development (TDD)** practices, testing framework (Pest), and quality assurance.
+Comprehensive guide to Internara's **Domain-Driven Design (DDD) Modular** testing practices, framework (Pest), and quality assurance.
 
 ---
 
 ## Overview
 
-Internara requires **90%+ code coverage** and follows a **TDD-first approach**. Tests are not written after code—they drive implementation.
+Internara requires **90%+ code coverage** and follows a **DDD-centric approach**. Tests are used to validate the integrity of the domain model and ensure business invariants are strictly enforced.
 
 ```
-Test-Driven Development (TDD) Cycle
+Domain-Driven Design (DDD) Testing Workflow
 
-1. RED     Write test (fails)
-2. GREEN   Write minimal code (passes)
-3. REFACTOR Improve code quality
-4. REPEAT  Until feature complete
+1. DISCOVER  Identify domain concepts and invariants
+2. MODEL     Define Entities, Value Objects, and Aggregates
+3. VALIDATE  Write tests to enforce domain invariants
+4. IMPLEMENT Realize the domain model in code
 ```
 
 ---
