@@ -34,6 +34,12 @@ class DepartmentServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootModule();
+
+        // [S3 - Scalable] Register Setup Hook
+        if ($this->app->bound(\Modules\Setup\Services\SetupRequirementRegistry::class)) {
+            $this->app->make(\Modules\Setup\Services\SetupRequirementRegistry::class)
+                ->register($this->app->make(\Modules\Department\Setup\DepartmentSetupRequirement::class));
+        }
     }
 
     /**

@@ -10,6 +10,7 @@ use Modules\Setup\Services\SystemAuditor;
 
 describe('SystemAuditor Unit Test', function () {
     beforeEach(function () {
+        app()->setLocale('en');
         $this->service = new SystemAuditor();
     });
 

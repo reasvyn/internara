@@ -13,6 +13,7 @@ use Modules\Setup\Services\Contracts\InstallerService;
 
 describe('AppInstallCommand', function () {
     beforeEach(function () {
+        app()->setLocale('en');
         $this->installerService = Mockery::mock(InstallerService::class);
         $this->settingService = Mockery::mock(SettingService::class);
 
@@ -49,7 +50,7 @@ describe('AppInstallCommand', function () {
         $this->artisan('app:install')
             ->expectsOutputToContain('CRITICAL WARNING')
             ->expectsOutputToContain('You are running this command in a PRODUCTION environment.')
-            ->expectsConfirmation(__('setup::install.warnings.production_confirmation'), 'no')
+            ->expectsConfirmation('Are you absolutely certain you want to proceed with this destructive operation?', 'no')
             ->assertExitCode(1);
     });
 
@@ -67,7 +68,7 @@ describe('AppInstallCommand', function () {
         $this->settingService->shouldReceive('getValue')->with('setup_token')->once()->andReturn('secure-token');
 
         $this->artisan('app:install')
-            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'yes')
+            ->expectsConfirmation('Prosedur ini akan mereset database dan menginisialisasi sistem. Apakah Anda ingin melanjutkan?', 'yes')
             ->expectsOutputToContain('Core system initialization completed successfully.')
             ->expectsOutputToContain('secure-token')
             ->assertExitCode(0);
@@ -77,7 +78,7 @@ describe('AppInstallCommand', function () {
         $this->installerService->shouldReceive('ensureEnvFileExists')->once()->andReturn(false);
 
         $this->artisan('app:install')
-            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'yes')
+            ->expectsConfirmation('Prosedur ini akan mereset database dan menginisialisasi sistem. Apakah Anda ingin melanjutkan?', 'yes')
             ->expectsOutputToContain('Critical system task failure: Infrastructure: Provisioning environment configuration')
             ->assertExitCode(1);
     });
@@ -94,7 +95,7 @@ describe('AppInstallCommand', function () {
         ]);
 
         $this->artisan('app:install')
-            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'yes')
+            ->expectsConfirmation('Prosedur ini akan mereset database dan menginisialisasi sistem. Apakah Anda ingin melanjutkan?', 'yes')
             ->expectsOutputToContain('requirements.extension_bcmath')
             ->expectsOutputToContain('permissions.bootstrap_cache')
             ->expectsOutputToContain('database.connection: Access denied for user=****;password=****')

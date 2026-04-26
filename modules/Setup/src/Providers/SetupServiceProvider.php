@@ -53,9 +53,11 @@ class SetupServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
+        $this->app->singleton(\Modules\Setup\Services\SetupRequirementRegistry::class);
+
         $this->app->singleton(
             \Modules\Setup\Services\Contracts\SetupService::class,
-            \Modules\Setup\Services\SetupService::class,
+            \Modules\Setup\Application\Services\SetupOrchestrator::class,
         );
     }
 
