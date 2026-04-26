@@ -18,6 +18,13 @@ interface InternshipRequirementService extends EloquentQuery
     public function getActiveForYear(string $academicYear);
 
     /**
+     * Get institutional summary metrics for internship requirements.
+     *
+     * @return array{total: int, mandatory: int, active: int, documents: int}
+     */
+    public function getStats(): array;
+
+    /**
      * Submit a requirement for a specific registration.
      */
     public function submit(

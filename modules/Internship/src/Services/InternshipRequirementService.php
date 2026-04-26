@@ -35,6 +35,19 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->query()->count(),
+            'mandatory' => $this->query(['is_mandatory' => true])->count(),
+            'active' => $this->query(['is_active' => true])->count(),
+            'documents' => $this->query(['type' => 'document'])->count(),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function submit(
         string $registrationId,
         string $requirementId,
@@ -50,8 +63,6 @@ class InternshipRequirementService extends EloquentQuery implements Contract
             );
         }
 
-        // Use standard save (updateOrCreate) from EloquentQuery if it was RequirementSubmission service,
-        // but since we manage it here, we use the model directly for now or better, use create/update.
         $submission = \Modules\Internship\Models\RequirementSubmission::updateOrCreate(
             ['registration_id' => $registrationId, 'requirement_id' => $requirementId],
             [

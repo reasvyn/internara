@@ -13,6 +13,7 @@ return [
         ],
         'recent_assessments' => 'Recent Internship Assessments',
         'at_risk_students' => 'Students At-Risk',
+        'recent_activity' => 'System Activity Feed',
         'table' => [
             'student' => 'Student',
             'company' => 'Company',
@@ -24,6 +25,7 @@ return [
         'quick_links' => 'Quick Links',
         'user_management' => 'User Management',
         'system_config' => 'System Configuration',
+        'report_center' => 'Report Center',
         'system_status' => 'System Status',
         'security_monitoring' => 'Security Monitoring',
         'user_stats' => 'User Distribution',

@@ -58,6 +58,12 @@ return [
     'avatar' => 'Avatar',
     'avatar_hint' => 'Disarankan: Gambar persegi, maks 1MB.',
     'generate' => 'Buat Otomatis',
+    'saving' => 'Menyimpan',
+    'import_instructions' => 'Panduan Impor',
+    'reset' => 'Reset',
+    'id' => 'ID',
+    'username' => 'Username',
+    'password' => 'Kata Sandi',
 
     'setup_required' => [
         'title'       => 'Tindakan Diperlukan: Lengkapi Pengaturan Akun Anda',

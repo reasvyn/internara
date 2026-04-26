@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Analytics\Services;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator as Contract;
+use Modules\Admin\Services\Contracts\InfrastructureHealthService;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
@@ -18,8 +19,6 @@ use Modules\User\Models\User;
  * Class AnalyticsAggregator
  *
  * Provides a unified logic layer for aggregating cross-domain analytics.
- * This service orchestrates data from multiple functional modules to generate
- * institutional insights and risk assessments.
  */
 class AnalyticsAggregator implements Contract
 {
@@ -31,22 +30,23 @@ class AnalyticsAggregator implements Contract
         protected InternshipPlacementService $placementService,
         protected JournalService $journalService,
         protected AssessmentService $assessmentService,
+        protected InfrastructureHealthService $infraService,
     ) {}
 
     /**
      * {@inheritdoc}
      */
-    public function getInstitutionalSummary(): array
+    public function getInstitutionalSummary(array $filters = []): array
     {
-        $activeAcademicYear = setting('active_academic_year');
-        $cacheKey = "institutional_summary_{$activeAcademicYear}";
+        $academicYear = $filters['academic_year'] ?? (string) setting('active_academic_year');
+        $cacheKey = "institutional_summary_{$academicYear}";
 
-        return \Illuminate\Support\Facades\Cache::remember(
+        return Cache::remember(
             $cacheKey,
             now()->addMinutes(15),
-            function () use ($activeAcademicYear) {
+            function () use ($academicYear) {
                 $totalInterns = $this->registrationService
-                    ->query(['academic_year' => $activeAcademicYear])
+                    ->query(['academic_year' => $academicYear])
                     ->count();
 
                 $activePartners = $this->placementService->all(['id'])->count();
@@ -54,7 +54,7 @@ class AnalyticsAggregator implements Contract
                 return [
                     'total_interns' => $totalInterns,
                     'active_partners' => $activePartners,
-                    'placement_rate' => $this->calculatePlacementRate($totalInterns, (string) $activeAcademicYear),
+                    'placement_rate' => $this->calculatePlacementRate($totalInterns, $academicYear),
                 ];
             },
         );
@@ -63,12 +63,13 @@ class AnalyticsAggregator implements Contract
     /**
      * {@inheritdoc}
      */
-    public function getAtRiskStudents(int $limit = 5): array
+    public function getAtRiskStudents(int $limit = 5, array $filters = []): array
     {
-        // 1. Retrieve the most recent active registrations
+        $academicYear = $filters['academic_year'] ?? (string) setting('active_academic_year');
+
         $activeRegistrations = $this->registrationService
-            ->query(['latest_status' => 'active'])
-            ->with('user:id,name') // Select only required columns
+            ->query(['latest_status' => 'active', 'academic_year' => $academicYear])
+            ->with('user:id,name')
             ->limit(20)
             ->get();
 
@@ -77,8 +78,6 @@ class AnalyticsAggregator implements Contract
         }
 
         $registrationIds = $activeRegistrations->pluck('id')->toArray();
-
-        // 2. Fetch required stats in bulk (Eliminating N+1)
         $allEngagementStats = $this->journalService->getEngagementStats($registrationIds);
         $allAverageScores = $this->assessmentService->getAverageScore($registrationIds, 'mentor');
 
@@ -86,8 +85,6 @@ class AnalyticsAggregator implements Contract
 
         foreach ($activeRegistrations as $registration) {
             $registrationId = (string) $registration->id;
-
-            // Get stats from pre-fetched maps
             $stats = $allEngagementStats[$registrationId] ?? ['responsiveness' => 0];
             $avgScore = $allAverageScores[$registrationId] ?? 0;
 
@@ -103,6 +100,7 @@ class AnalyticsAggregator implements Contract
 
             if (! empty($riskReasons)) {
                 $atRisk[] = [
+                    'id' => $registrationId,
                     'student_name' => $registration->user->name,
                     'reason' => implode(', ', $riskReasons),
                     'risk_level' => count($riskReasons) > 1 ? 'High' : 'Medium',
@@ -122,7 +120,7 @@ class AnalyticsAggregator implements Contract
      */
     public function getSecuritySummary(): array
     {
-        return \Illuminate\Support\Facades\Cache::remember('security_summary', now()->addMinutes(5), function () {
+        return Cache::remember('security_summary', now()->addMinutes(5), function () {
             return [
                 'failed_logins' => Activity::where('log_name', 'security')
                     ->where('event', 'failed_login_attempt')
@@ -144,13 +142,38 @@ class AnalyticsAggregator implements Contract
     /**
      * {@inheritdoc}
      */
+    public function getRecentActivities(int $limit = 10): array
+    {
+        return Activity::with('causer:id,name,avatar_url')
+            ->where('log_name', '!=', 'security')
+            ->latest()
+            ->limit($limit)
+            ->get()
+            ->map(function ($activity) {
+                return [
+                    'id' => $activity->id,
+                    'description' => $activity->description,
+                    'causer_name' => $activity->causer?->name ?? 'System',
+                    'causer_avatar' => $activity->causer?->avatar_url,
+                    'created_at' => $activity->created_at->diffForHumans(),
+                    'properties' => $activity->properties,
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getInfrastructureStatus(): array
     {
+        $queue = $this->infraService->getQueueStatus();
+
         return [
-            'queue_pending' => DB::table('jobs')->count(),
-            'queue_failed' => DB::table('failed_jobs')->count(),
-            'db_size' => $this->getDatabaseSize(),
-            'last_backup' => setting('last_successful_backup_at'),
+            'queue_pending' => $queue['pending'],
+            'queue_failed' => $queue['failed'],
+            'db_size' => $this->infraService->getDatabaseSize(),
+            'last_backup' => $this->infraService->getLastBackupTimestamp(),
         ];
     }
 
@@ -159,7 +182,7 @@ class AnalyticsAggregator implements Contract
      */
     public function getUserDistribution(): array
     {
-        return \Illuminate\Support\Facades\Cache::remember('user_distribution', now()->addMinutes(10), function () {
+        return Cache::remember('user_distribution', now()->addMinutes(10), function () {
             $byRole = [];
             foreach (Role::cases() as $role) {
                 $byRole[$role->value] = User::role($role->value)->count();
@@ -167,9 +190,7 @@ class AnalyticsAggregator implements Contract
 
             return [
                 'by_role' => $byRole,
-                'active_sessions' => DB::table('sessions')
-                    ->where('last_activity', '>=', now()->subMinutes(15)->getTimestamp())
-                    ->count(),
+                'active_sessions' => $this->infraService->getActiveSessionCount(),
             ];
         });
     }
@@ -189,48 +210,5 @@ class AnalyticsAggregator implements Contract
             ->count();
 
         return round(($placedInterns / $totalInterns) * 100, 2);
-    }
-
-    /**
-     * Get the current database size in a human-readable format.
-     */
-    protected function getDatabaseSize(): string
-    {
-        $connection = config('database.default');
-        $driver = config("database.connections.{$connection}.driver");
-
-        try {
-            if ($driver === 'sqlite') {
-                $path = config("database.connections.{$connection}.database");
-                if (file_exists($path)) {
-                    $size = filesize($path);
-                    return $this->formatBytes($size);
-                }
-            }
-
-            if ($driver === 'mysql') {
-                $dbName = config("database.connections.{$connection}.database");
-                $res = DB::select("SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
-                return $this->formatBytes((int) ($res[0]->size ?? 0));
-            }
-        } catch (\Exception $e) {
-            return 'Unknown';
-        }
-
-        return 'N/A';
-    }
-
-    /**
-     * Format bytes to human readable format.
-     */
-    protected function formatBytes(int $bytes, int $precision = 2): string
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        $bytes /= (1 << (10 * $pow));
-
-        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }

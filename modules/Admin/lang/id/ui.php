@@ -13,6 +13,7 @@ return [
         ],
         'recent_assessments' => 'Penilaian Magang Terbaru',
         'at_risk_students' => 'Siswa Dalam Pantauan (At-Risk)',
+        'recent_activity' => 'Aktivitas Sistem Terbaru',
         'table' => [
             'student' => 'Siswa',
             'company' => 'Perusahaan',
@@ -24,6 +25,7 @@ return [
         'quick_links' => 'Tautan Cepat',
         'user_management' => 'Manajemen Pengguna',
         'system_config' => 'Konfigurasi Sistem',
+        'report_center' => 'Pusat Laporan',
         'system_status' => 'Status Sistem',
         'security_monitoring' => 'Pemantauan Keamanan',
         'user_stats' => 'Distribusi Pengguna',

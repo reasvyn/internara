@@ -14,16 +14,18 @@ interface AnalyticsAggregator
     /**
      * Get institutional summary metrics.
      *
+     * @param array $filters Optional filters (e.g., academic_year)
      * @return array{total_interns: int, active_partners: int, placement_rate: float}
      */
-    public function getInstitutionalSummary(): array;
+    public function getInstitutionalSummary(array $filters = []): array;
 
     /**
      * Identify students who are "At-Risk" based on engagement metrics.
      *
-     * @return array<array{student_name: string, reason: string, risk_level: string}>
+     * @param array $filters Optional filters
+     * @return array<array{id: string, student_name: string, reason: string, risk_level: string}>
      */
-    public function getAtRiskStudents(int $limit = 5): array;
+    public function getAtRiskStudents(int $limit = 5, array $filters = []): array;
 
     /**
      * Get a summary of recent security-related events.
@@ -31,6 +33,11 @@ interface AnalyticsAggregator
      * @return array{failed_logins: int, throttled_attempts: int, suspicious_activities: array}
      */
     public function getSecuritySummary(): array;
+
+    /**
+     * Get recent administrative activities for the audit trail.
+     */
+    public function getRecentActivities(int $limit = 10): array;
 
     /**
      * Get the current status of the application infrastructure.

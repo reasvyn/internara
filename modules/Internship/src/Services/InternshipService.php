@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Internship\Enums\ProgramStatus;
 use Modules\Internship\Models\Internship;
@@ -32,7 +33,7 @@ class InternshipService extends EloquentQuery implements Contracts\InternshipSer
      */
     public function create(array $data): Internship
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             /** @var Internship $internship */
             $internship = parent::create($data);
 
@@ -71,5 +72,30 @@ class InternshipService extends EloquentQuery implements Contracts\InternshipSer
         }
 
         $internship->setStatus($status, $reason);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function bulkUpdateStatus(array $ids, string $status, ?string $reason = null): void
+    {
+        DB::transaction(function () use ($ids, $status, $reason) {
+            foreach ($ids as $id) {
+                $this->updateStatus($id, $status, $reason);
+            }
+        });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->query()->count(),
+            'active' => $this->query(['status' => ProgramStatus::OPEN->value])->count(),
+            'ongoing' => $this->query(['status' => ProgramStatus::ONGOING->value])->count(),
+            'upcoming' => $this->query(['status' => ProgramStatus::PUBLISHED->value])->count(),
+        ];
     }
 }

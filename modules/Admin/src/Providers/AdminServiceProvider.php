@@ -60,6 +60,7 @@ class AdminServiceProvider extends ServiceProvider
             \Modules\Admin\Services\Contracts\AdminService::class => \Modules\Admin\Services\AdminService::class,
             \Modules\Admin\Services\Contracts\SuperAdminService::class => \Modules\Admin\Services\SuperAdminService::class,
             \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class => \Modules\Admin\Analytics\Services\AnalyticsAggregator::class,
+            \Modules\Admin\Services\Contracts\InfrastructureHealthService::class => \Modules\Admin\Services\InfrastructureHealthService::class,
         ];
     }
 }

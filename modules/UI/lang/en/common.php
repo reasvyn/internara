@@ -58,6 +58,12 @@ return [
     'avatar' => 'Avatar',
     'avatar_hint' => 'Recommended: Square image, max 1MB.',
     'generate' => 'Generate',
+    'saving' => 'Saving',
+    'import_instructions' => 'Import Instructions',
+    'reset' => 'Reset',
+    'id' => 'ID',
+    'username' => 'Username',
+    'password' => 'Password',
 
     'setup_required' => [
         'title'       => 'Action Required: Complete Your Account Setup',

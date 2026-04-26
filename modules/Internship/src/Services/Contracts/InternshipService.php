@@ -19,6 +19,20 @@ interface InternshipService extends EloquentQuery
     public function updateStatus(string $id, string $status, ?string $reason = null): void;
 
     /**
+     * Update the status for multiple programs in bulk.
+     *
+     * @param array<string> $ids
+     */
+    public function bulkUpdateStatus(array $ids, string $status, ?string $reason = null): void;
+
+    /**
+     * Get institutional summary metrics for internship programs.
+     *
+     * @return array{total: int, active: int, ongoing: int, upcoming: int}
+     */
+    public function getStats(): array;
+
+    /**
      * Bulk import internship programs.
      *
      * @param array<int, array<string, mixed>> $rows

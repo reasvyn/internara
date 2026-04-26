@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\RequirementForm;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\UI\Livewire\RecordManager;
@@ -37,6 +38,9 @@ class RequirementManager extends RecordManager
         $this->createPermission = 'internship.manage';
         $this->updatePermission = 'internship.manage';
         $this->deletePermission = 'internship.manage';
+
+        $this->searchable = ['name', 'description', 'academic_year'];
+        $this->sortable = ['name', 'type', 'is_mandatory', 'academic_year', 'created_at'];
     }
 
     /**
@@ -45,12 +49,7 @@ class RequirementManager extends RecordManager
     #[Computed]
     public function stats(): array
     {
-        return [
-            'total' => $this->service->query()->count(),
-            'mandatory' => $this->service->query(['is_mandatory' => true])->count(),
-            'active' => $this->service->query(['is_active' => true])->count(),
-            'documents' => $this->service->query(['type' => 'document'])->count(),
-        ];
+        return $this->service->getStats();
     }
 
     /**
@@ -61,7 +60,7 @@ class RequirementManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('internship::ui.requirement_name'), 'sortable' => true],
             ['key' => 'type', 'label' => __('internship::ui.requirement_type')],
-            ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory')],
+            ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory'), 'sortable' => true],
             ['key' => 'is_active', 'label' => __('internship::ui.active')],
             ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
@@ -84,10 +83,31 @@ class RequirementManager extends RecordManager
         $this->form->reset();
 
         // Standard Auto-fills
-        $this->form->academic_year = \Modules\Core\Academic\Support\AcademicYear::current();
+        $this->form->academic_year = (string) setting('active_academic_year', date('Y').'/'.(date('Y') + 1));
         $this->form->is_active = true;
 
         $this->toggleModal(self::MODAL_FORM, true);
+    }
+
+    /**
+     * Reset all applied filters and pagination.
+     */
+    public function resetFilters(): void
+    {
+        $this->filters = [];
+        $this->selectedIds = [];
+        $this->resetPage();
+    }
+
+    /**
+     * Count the number of active filters.
+     */
+    public function activeFilterCount(): int
+    {
+        return count(array_filter(
+            $this->filters,
+            fn ($v) => $v !== null && $v !== '' && $v !== [],
+        ));
     }
 
     /**
@@ -98,6 +118,7 @@ class RequirementManager extends RecordManager
         return view('internship::livewire.requirement-manager')
             ->layout('ui::components.layouts.dashboard', [
                 'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
+                'context' => $this->context,
             ]);
     }
 }

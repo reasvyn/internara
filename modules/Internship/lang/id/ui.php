@@ -230,4 +230,9 @@ return [
     'propose_new_partner' => 'Ajukan Mitra Baru',
     'proposal_notice' => 'Mitra yang diajukan akan ditinjau oleh administrator sebelum disetujui.',
     'submit_registration' => 'Kirim Pendaftaran',
+
+    // Import Instructions
+    'import_csv_format' => 'Format CSV: Judul, Deskripsi, Tahun Ajaran, Semester, Tanggal Mulai, Tanggal Selesai',
+    'import_date_format' => 'Format Tanggal: YYYY-MM-DD',
+    'import_semester_values' => 'Nilai Semester: Ganjil, Genap, Tahunan',
 ];

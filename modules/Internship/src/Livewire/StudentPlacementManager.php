@@ -5,76 +5,61 @@ declare(strict_types=1);
 namespace Modules\Internship\Livewire;
 
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
 use Modules\Internship\Livewire\Forms\RegistrationForm;
-use Modules\Internship\Models\Company;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Services\Contracts\PlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Models\User;
-use Modules\User\Services\Contracts\UserService;
 
-/**
- * Class InternshipRegistrationManager
- *
- * Unified manager for internship registrations with two placement modes:
- * 1. Individual Placement: One-by-one student assignment
- * 2. Bulk Placement: Batch assign multiple students to same location
- *
- * Provides efficient UX for managing large volumes of student placements.
- */
 class StudentPlacementManager extends RecordManager
 {
-    use \Livewire\WithFileUploads;
-
     /**
      * Tab selection (individual|bulk)
      */
     public string $activeTab = 'individual';
 
     /**
-     * Registration tab (RecordManager) state
+     * Registration form for individual placement.
      */
-    protected string $viewPermission = 'registration.view';
-    protected array $sortable = ['created_at', 'status'];
     public RegistrationForm $form;
-    public ?string $targetPlacementId = null;
-    public bool $historyModal = false;
-    public ?string $historyId = null;
 
     /**
-     * Bulk placement tab state
+     * Bulk placement state variables.
      */
     public string $internshipId = '';
     public string $companyId = '';
-    public string $mentorId = '';
     public array $selectedStudents = [];
-    public array $placementResult = [];
     public bool $bulkConfirmModal = false;
-    public string $resultMessage = '';
-    public int $successCount = 0;
-    public int $failureCount = 0;
 
-    protected \Modules\Internship\Services\Contracts\PlacementService $placementService;
+    /**
+     * Services required for placement operations.
+     */
+    protected PlacementService $placementService;
 
+    /**
+     * Initialize the component with necessary services.
+     */
     public function boot(
         RegistrationService $registrationService,
-        InternshipService $internshipService,
-        UserService $userService,
-        InternshipPlacementService $internshipPlacementService,
-        \Modules\Internship\Services\Contracts\PlacementService $placementService,
+        PlacementService $placementService,
     ): void {
         $this->service = $registrationService;
         $this->placementService = $placementService;
         $this->eventPrefix = 'registration';
+        $this->modelClass = InternshipRegistration::class;
     }
 
+    /**
+     * Configure the component's basic properties and permissions.
+     */
     public function initialize(): void
     {
         $this->title = __('internship::ui.student_placement_title');
@@ -87,10 +72,13 @@ class StudentPlacementManager extends RecordManager
         $this->createPermission = 'internship.manage';
         $this->updatePermission = 'internship.manage';
         $this->deletePermission = 'internship.manage';
+
+        $this->searchable = ['student.name', 'internship.title', 'placement.company.name'];
+        $this->sortable = ['created_at', 'status'];
     }
 
     /**
-     * Get summary metrics for student placements.
+     * Get summary metrics for student placements with enterprise-grade precision.
      */
     #[Computed]
     public function stats(): array
@@ -103,6 +91,9 @@ class StudentPlacementManager extends RecordManager
         ];
     }
 
+    /**
+     * Define the table structure for the individual placement tab.
+     */
     protected function getTableHeaders(): array
     {
         return [
@@ -115,156 +106,126 @@ class StudentPlacementManager extends RecordManager
         ];
     }
 
-    // ──────────────────────────────────────────────────────────────────────
-    // Individual Placement Tab (RecordManager)
-    // ──────────────────────────────────────────────────────────────────────
-
+    /**
+     * Fetch and transform records for the table.
+     */
     #[Computed]
     public function records(): LengthAwarePaginator
     {
         return $this->service->query($this->filters)
-            ->with(['student', 'internship', 'placement', 'teacher'])
+            ->with(['student', 'internship', 'placement.company', 'teacher'])
             ->paginate($this->perPage)
-            ->through(function ($registration) {
-                return (object) [
-                    'id' => $registration->id,
-                    'student_name' => $registration->student?->name ?? '-',
-                    'student_avatar' => $registration->student?->avatar_url,
-                    'internship_title' => $registration->internship?->title ?? '-',
-                    'placement_company' => $registration->placement?->company?->name ?? '-',
-                    'proposed_company_name' => $registration->proposed_company_name,
-                    'teacher_name' => $registration->teacher?->name ?? '-',
-                    'status' => $registration->status,
-                    'readiness' => $registration->getRequirementCompletionPercentage(),
-                ];
-            });
-    }
-
-    public function edit(mixed $id): void
-    {
-        $record = $this->service->find($id);
-        if ($record) {
-            if (!$this->can('update', $record)) {
-                $this->authorize('update', $record);
-            }
-            if (property_exists($this, 'form')) {
-                if (method_exists($this->form, 'setRegistration')) {
-                    $this->form->setRegistration($record);
-                } else {
-                    $this->form->fill($record);
-                }
-                $this->toggleModal(self::MODAL_FORM, true, ['id' => $id]);
-            }
-        }
-    }
-
-    // ──────────────────────────────────────────────────────────────────────
-    // Bulk Placement Tab
-    // ──────────────────────────────────────────────────────────────────────
-
-    /**
-     * Get available internship programs
-     */
-    public function internships()
-    {
-        return Internship::query()
-            ->orderBy('title')
-            ->get()
-            ->map(fn (Internship $internship) => [
-                'id' => $internship->id,
-                'name' => "{$internship->title} ({$internship->academic_year})",
-            ])
-            ->values()
-            ->toArray();
+            ->through(fn ($registration) => $this->mapRecord($registration));
     }
 
     /**
-     * Get available companies for placement based on selected internship
+     * Map a single registration record for UI presentation.
      */
+    protected function mapRecord(mixed $record): array
+    {
+        return [
+            'id' => $record->id,
+            'student_name' => $record->student?->name ?? '-',
+            'student_avatar' => $record->student?->avatar_url,
+            'internship_title' => $record->internship?->title ?? '-',
+            'placement_company' => $record->placement?->company?->name ?? '-',
+            'proposed_company_name' => $record->proposed_company_name,
+            'teacher_name' => $record->teacher?->name ?? '-',
+            'status' => $record->status,
+            'readiness' => $record->getRequirementCompletionPercentage(),
+        ];
+    }
+
+    /**
+     * Switch between placement modes (tabs).
+     */
+    public function setTab(string $tab): void
+    {
+        $this->activeTab = $tab;
+        $this->resetPage();
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Dropdown Data Providers (Cached/Optimized)
+    // ──────────────────────────────────────────────────────────────────────
+
     #[Computed]
-    public function companies()
+    public function internships(): Collection
     {
-        if (!$this->internshipId) {
-            return [];
+        return app(InternshipService::class)->all(['id', 'title', 'academic_year'])
+            ->map(fn ($i) => ['id' => $i->id, 'name' => "{$i->title} ({$i->academic_year})"]);
+    }
+
+    #[Computed]
+    public function placements(): Collection
+    {
+        if (!$this->form->internship_id && !$this->internshipId) {
+            return collect();
         }
+
+        $id = $this->activeTab === 'individual' ? $this->form->internship_id : $this->internshipId;
 
         return InternshipPlacement::query()
-            ->where('internship_id', $this->internshipId)
+            ->where('internship_id', $id)
             ->with('company')
             ->get()
-            ->map(fn (InternshipPlacement $placement) => [
-                'id' => $placement->company_id,
-                'name' => "{$placement->company?->name} ({$placement->company?->business_field})",
-            ])
-            ->values()
-            ->toArray();
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->company?->name ?? 'Unknown',
+                'quota' => $p->capacity_quota,
+            ]);
     }
 
-    /**
-     * Get available unplaced students for bulk placement
-     */
     #[Computed]
-    public function availableStudents()
+    public function students(): Collection
     {
-        if (!$this->internshipId) {
-            return [];
-        }
+        $id = $this->activeTab === 'individual' ? $this->form->internship_id : $this->internshipId;
+        if (!$id) return collect();
 
         return InternshipRegistration::query()
-            ->where('internship_id', $this->internshipId)
+            ->where('internship_id', $id)
             ->whereNull('placement_id')
             ->with('student')
-            ->orderBy('created_at', 'desc')
             ->get()
-            ->map(fn (InternshipRegistration $reg) => [
-                'id' => $reg->id,
-                'student_id' => $reg->student_id,
-                'name' => $reg->student?->name ?? 'Unknown',
-                'email' => $reg->student?->email ?? '-',
-            ])
-            ->values()
-            ->toArray();
+            ->map(fn ($r) => [
+                'id' => $r->id,
+                'name' => $r->student?->name ?? 'Unknown',
+                'email' => $r->student?->email ?? '-',
+            ]);
     }
 
-    /**
-     * Get remaining quota for selected company
-     */
     #[Computed]
-    public function remainingQuota()
+    public function teachers(): Collection
     {
-        if (!$this->companyId || !$this->internshipId) {
-            return 0;
-        }
+        return User::role('teacher')->orderBy('name')->get(['id', 'name']);
+    }
 
-        $placement = InternshipPlacement::query()
-            ->where('internship_id', $this->internshipId)
-            ->where('company_id', $this->companyId)
-            ->first();
+    #[Computed]
+    public function mentors(): Collection
+    {
+        return User::role('mentor')->orderBy('name')->get(['id', 'name']);
+    }
 
-        if (!$placement) {
-            return 0;
-        }
+    // ──────────────────────────────────────────────────────────────────────
+    // Bulk placement operations
+    // ──────────────────────────────────────────────────────────────────────
 
-        $assigned = InternshipRegistration::query()
-            ->where('internship_id', $this->internshipId)
-            ->where('placement_id', $placement->id)
-            ->count();
+    #[Computed]
+    public function remainingQuota(): int
+    {
+        if (!$this->companyId || !$this->internshipId) return 0;
 
+        $placement = InternshipPlacement::find($this->companyId);
+        if (!$placement) return 0;
+
+        $assigned = InternshipRegistration::where('placement_id', $placement->id)->count();
         return max(0, $placement->capacity_quota - $assigned);
     }
 
-    /**
-     * Show bulk placement confirmation dialog
-     */
     public function showBulkConfirmation(): void
     {
         if (empty($this->selectedStudents)) {
             flash()->warning(__('internship::ui.select_at_least_one_student'));
-            return;
-        }
-
-        if (!$this->companyId || !$this->internshipId) {
-            flash()->warning(__('internship::ui.select_internship_company'));
             return;
         }
 
@@ -279,137 +240,31 @@ class StudentPlacementManager extends RecordManager
         $this->bulkConfirmModal = true;
     }
 
-    /**
-     * Execute bulk placement
-     */
     public function executeBulkPlacement(): void
     {
         try {
-            $placement = InternshipPlacement::query()
-                ->where('internship_id', $this->internshipId)
-                ->where('company_id', $this->companyId)
-                ->first();
-
-            if (!$placement) {
-                throw new \Exception(__('internship::ui.placement_location_not_found'));
-            }
-
-            $this->successCount = 0;
-            $this->failureCount = 0;
-            $this->placementResult = [];
-
+            $successCount = 0;
             foreach ($this->selectedStudents as $registrationId) {
-                try {
-                    $this->placementService->assignPlacement($registrationId, $placement->id);
-                    $this->successCount++;
-                } catch (\Exception $e) {
-                    $this->failureCount++;
-                    flash()->error($e->getMessage());
+                if ($this->placementService->assignPlacement($registrationId, $this->companyId)) {
+                    $successCount++;
                 }
             }
 
+            $this->resetBulkForm();
             $this->bulkConfirmModal = false;
-            $this->selectedStudents = [];
             
-            if ($this->successCount > 0) {
-                flash()->success(__('internship::ui.bulk_placement_success', ['count' => $this->successCount]));
-                $this->dispatch($this->getEventPrefix().':bulk-placed', count: $this->successCount);
-            }
-        } catch (\Exception $e) {
+            flash()->success(__('internship::ui.bulk_placement_success', ['count' => $successCount]));
+            $this->refreshRecords();
+        } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
     }
 
-    /**
-     * Reset bulk placement form
-     */
     public function resetBulkForm(): void
     {
         $this->internshipId = '';
         $this->companyId = '';
         $this->selectedStudents = [];
-        $this->placementResult = [];
-        $this->successCount = 0;
-        $this->failureCount = 0;
-    }
-
-    /**
-     * Render the component view.
-     */
-
-    /**
-     * Get students for form dropdown (not yet placed)
-     */
-    public function getStudents(): array
-    {
-        if (!$this->form->internship_id) {
-            return [];
-        }
-
-        return InternshipRegistration::query()
-            ->where('internship_id', $this->form->internship_id)
-            ->whereNull('placement_id')
-            ->with('student')
-            ->get()
-            ->map(fn ($reg) => [
-                'id' => $reg->student_id,
-                'name' => $reg->student?->name ?? 'Unknown',
-            ])
-            ->values()
-            ->toArray();
-    }
-
-    /**
-     * Get placements (company locations) for form dropdown
-     */
-    public function getPlacements(): array
-    {
-        if (!$this->form->internship_id) {
-            return [];
-        }
-
-        return InternshipPlacement::query()
-            ->where('internship_id', $this->form->internship_id)
-            ->with('company')
-            ->get()
-            ->map(fn ($placement) => [
-                'id' => $placement->id,
-                'name' => $placement->company?->name ?? 'Unknown',
-            ])
-            ->values()
-            ->toArray();
-    }
-
-    /**
-     * Get teachers for form dropdown
-     */
-    public function getTeachers(): array
-    {
-        return User::role('teacher')
-            ->orderBy('name')
-            ->get()
-            ->map(fn ($teacher) => [
-                'id' => $teacher->id,
-                'name' => $teacher->name,
-            ])
-            ->values()
-            ->toArray();
-    }
-
-    /**
-     * Get mentors for form dropdown
-     */
-    public function getMentors(): array
-    {
-        return User::role('mentor')
-            ->orderBy('name')
-            ->get()
-            ->map(fn ($mentor) => [
-                'id' => $mentor->id,
-                'name' => $mentor->name,
-            ])
-            ->values()
-            ->toArray();
     }
 
     public function render(): View

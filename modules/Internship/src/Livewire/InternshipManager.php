@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Enums\ProgramStatus;
+use Modules\Internship\Enums\Semester;
 use Modules\Internship\Livewire\Forms\InternshipForm;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
@@ -52,6 +54,9 @@ class InternshipManager extends RecordManager
             $this->updatePermission = 'internship.manage';
             $this->deletePermission = 'internship.manage';
         }
+
+        $this->searchable = ['title', 'description', 'academic_year'];
+        $this->sortable = ['title', 'academic_year', 'semester', 'date_start', 'date_finish', 'created_at'];
     }
 
     /**
@@ -60,12 +65,7 @@ class InternshipManager extends RecordManager
     #[Computed]
     public function stats(): array
     {
-        return [
-            'total' => $this->service->query()->count(),
-            'active' => $this->service->query(['status' => ProgramStatus::OPEN->value])->count(),
-            'ongoing' => $this->service->query(['status' => ProgramStatus::ONGOING->value])->count(),
-            'upcoming' => $this->service->query(['status' => ProgramStatus::PUBLISHED->value])->count(),
-        ];
+        return $this->service->getStats();
     }
 
     /**
@@ -115,8 +115,30 @@ class InternshipManager extends RecordManager
      */
     public function updateStatus(string $id, string $status): void
     {
+        $this->authorize('internship.manage');
+
         try {
             $this->service->updateStatus($id, $status);
+            flash()->success(__('shared::messages.record_saved'));
+            $this->refreshRecords();
+        } catch (\Throwable $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    /**
+     * Bulk update the status of selected records.
+     */
+    public function bulkUpdateStatus(string $status): void
+    {
+        $this->authorize('internship.manage');
+
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        try {
+            $this->service->bulkUpdateStatus($this->selectedIds, $status);
             flash()->success(__('shared::messages.record_saved'));
             $this->refreshRecords();
         } catch (\Throwable $e) {
@@ -132,7 +154,7 @@ class InternshipManager extends RecordManager
         $this->form->reset();
 
         // Standard Auto-fills for institutional consistency
-        $this->form->academic_year = \Modules\Core\Academic\Support\AcademicYear::current();
+        $this->form->academic_year = (string) setting('active_academic_year', date('Y').'/'.(date('Y') + 1));
 
         $school = app(SchoolService::class)->getSchool();
         if ($school) {
@@ -140,6 +162,52 @@ class InternshipManager extends RecordManager
         }
 
         $this->toggleModal(self::MODAL_FORM, true);
+    }
+
+    /**
+     * Reset all applied filters and pagination.
+     */
+    public function resetFilters(): void
+    {
+        $this->filters = [];
+        $this->selectedIds = [];
+        $this->resetPage();
+    }
+
+    /**
+     * Count the number of active filters.
+     */
+    public function activeFilterCount(): int
+    {
+        return count(array_filter(
+            $this->filters,
+            fn ($v) => $v !== null && $v !== '' && $v !== [],
+        ));
+    }
+
+    /**
+     * Get available academic years for filtering.
+     */
+    #[Computed]
+    public function academicYears(): array
+    {
+        return DB::table('internships')
+            ->select('academic_year')
+            ->distinct()
+            ->orderBy('academic_year', 'desc')
+            ->pluck('academic_year')
+            ->toArray();
+    }
+
+    /**
+     * Get the available semester options for the UI.
+     */
+    public function getSemesterOptions(): array
+    {
+        return array_map(fn (Semester $semester) => [
+            'id' => $semester->value,
+            'name' => $semester->label(),
+        ], Semester::cases());
     }
 
     /**
@@ -166,9 +234,9 @@ class InternshipManager extends RecordManager
             $record->title,
             $record->description,
             $record->academic_year,
-            $record->semester,
-            $record->date_start,
-            $record->date_finish,
+            $record->semester->value,
+            $record->date_start->toDateString(),
+            $record->date_finish->toDateString(),
         ];
     }
 
@@ -205,50 +273,11 @@ class InternshipManager extends RecordManager
      */
     protected function getPdfData($records): array
     {
-        return array_merge([
+        return [
             'records' => $records,
             'date' => now()->translatedFormat('d F Y'),
             'school' => app(SchoolService::class)->getSchool(),
-        ]);
-    }
-
-    /**
-     * Reset all applied filters and pagination.
-     */
-    public function resetFilters(): void
-    {
-        $this->filters = [];
-        $this->selectedIds = [];
-        $this->resetPage();
-    }
-
-    /**
-     * Count the number of active filters.
-     */
-    public function activeFilterCount(): int
-    {
-        return count(array_filter(
-            $this->filters,
-            fn ($v) => $v !== null && $v !== '' && $v !== [],
-        ));
-    }
-
-    /**
-     * Get the available semester options for the UI.
-     */
-    public function getSemesterOptions(): array
-    {
-        $semesters = config('internship.validation.semesters', ['Ganjil', 'Genap', 'Tahunan']);
-        
-        return array_map(fn($sem) => [
-            'id' => $sem,
-            'name' => match($sem) {
-                'Ganjil' => __('internship::ui.semester_odd'),
-                'Genap' => __('internship::ui.semester_even'),
-                'Tahunan' => __('internship::ui.semester_full'),
-                default => $sem,
-            }
-        ], $semesters);
+        ];
     }
 
     /**

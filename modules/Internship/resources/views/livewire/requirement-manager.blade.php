@@ -1,12 +1,13 @@
 <div class="space-y-8">
     {{-- Executive Summary: Premium Stats Grid --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <x-ui::stat 
             :title="__('internship::ui.stats.total_requirements')" 
             :value="$this->stats['total']" 
             icon="tabler.list-check" 
             variant="metadata" 
             class="stat-enterprise" 
+            wire:loading.class="opacity-50"
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.mandatory_requirements')" 
@@ -14,6 +15,7 @@
             icon="tabler.alert-circle" 
             variant="error" 
             class="stat-enterprise" 
+            wire:loading.class="opacity-50"
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.active_requirements')" 
@@ -21,6 +23,7 @@
             icon="tabler.circle-check" 
             variant="success" 
             class="stat-enterprise" 
+            wire:loading.class="opacity-50"
         />
         <x-ui::stat 
             :title="__('internship::ui.stats.document_requirements')" 
@@ -28,6 +31,7 @@
             icon="tabler.file-text" 
             variant="info" 
             class="stat-enterprise" 
+            wire:loading.class="opacity-50"
         />
     </div>
 
@@ -35,10 +39,10 @@
         {{-- 1. Customized Table Cells --}}
         <x-slot:tableCells>
             @scope('cell_name', $requirement)
-                <div class="flex flex-col min-w-[200px]">
-                    <span class="font-bold text-sm text-base-content/90">{{ $requirement['name'] }}</span>
+                <div class="flex flex-col min-w-[200px] group">
+                    <span class="font-bold text-sm text-base-content/90 group-hover:text-primary transition-colors">{{ $requirement['name'] }}</span>
                     @if($requirement['description'])
-                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1">{{ $requirement['description'] }}</span>
+                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1 italic">{{ $requirement['description'] }}</span>
                     @endif
                 </div>
             @endscope
@@ -47,7 +51,7 @@
                 <x-ui::badge 
                     :value="__('internship::ui.' . $requirement['type'])" 
                     variant="neutral" 
-                    class="badge-sm font-black text-[9px] uppercase tracking-tighter" 
+                    class="badge-sm font-black text-[9px] uppercase tracking-tighter rounded-lg" 
                 />
             @endscope
 
@@ -88,9 +92,13 @@
                 <x-ui::input :label="__('internship::ui.academic_year')" icon="tabler.calendar-event" wire:model="form.academic_year" placeholder="YYYY/YYYY" required />
             </div>
 
-            <div class="flex items-center gap-8 py-2">
+            <div class="flex items-center gap-8 py-4 border-t border-base-content/5 mt-4">
                 <x-ui::checkbox :label="__('internship::ui.mandatory')" wire:model="form.is_mandatory" />
                 <x-ui::checkbox :label="__('internship::ui.active')" wire:model="form.is_active" />
+            </div>
+
+            <div wire:loading wire:target="save" class="text-[10px] font-black uppercase tracking-widest text-primary animate-pulse mt-2">
+                {{ __('ui::common.saving') }}...
             </div>
         </x-slot:formFields>
     </x-ui::record-manager>

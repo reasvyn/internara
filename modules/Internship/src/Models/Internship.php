@@ -84,7 +84,7 @@ class Internship extends Model
      */
     protected $casts = [
         'academic_year' => 'string',
-        'semester' => 'string',
+        'semester' => \Modules\Internship\Enums\Semester::class,
         'date_start' => 'date',
         'date_finish' => 'date',
     ];
