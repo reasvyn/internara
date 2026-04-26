@@ -63,20 +63,45 @@ describe('InstallerService Feature Test', function () {
             expect($this->installer->generateAppKey())->toBeTrue();
         });
 
-        test('it performs fresh migration if database is already initialized', function () {
+        test('it performs standard migration even if database is initialized (unless forced)', function () {
             // Mock Schema check to simulate existing table
             Schema::shouldReceive('hasTable')->once()->with('migrations')->andReturn(true);
 
-            // Mock DB count check
+            // Mock DB exists check
             \Illuminate\Support\Facades\DB::shouldReceive('table')
                 ->once()
                 ->with('migrations')
                 ->andReturn(
                     new class
                     {
-                        public function count()
+                        public function exists()
                         {
-                            return 1;
+                            return true;
+                        }
+                    },
+                );
+
+            // [S1 - Secure] Default should be 'migrate' to prevent accidental data loss
+            Artisan::shouldReceive('call')
+                ->with('migrate', ['--force' => true])
+                ->once()
+                ->andReturn(0);
+
+            expect($this->installer->runMigrations())->toBeTrue();
+        });
+
+        test('it performs fresh migration when explicitly forced', function () {
+            Schema::shouldReceive('hasTable')->once()->with('migrations')->andReturn(true);
+
+            \Illuminate\Support\Facades\DB::shouldReceive('table')
+                ->once()
+                ->with('migrations')
+                ->andReturn(
+                    new class
+                    {
+                        public function exists()
+                        {
+                            return true;
                         }
                     },
                 );
@@ -86,7 +111,7 @@ describe('InstallerService Feature Test', function () {
                 ->once()
                 ->andReturn(0);
 
-            expect($this->installer->runMigrations())->toBeTrue();
+            expect($this->installer->runMigrations(force: true))->toBeTrue();
         });
 
         test('it performs standard migration for fresh installations', function () {
@@ -101,6 +126,10 @@ describe('InstallerService Feature Test', function () {
         });
 
         test('it runs system seeders and generates a secure setup token', function () {
+            \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+                ->once()
+                ->andReturnUsing(fn ($callback) => $callback());
+
             Artisan::shouldReceive('call')
                 ->with('db:seed', ['--force' => true])
                 ->once()
@@ -148,6 +177,9 @@ describe('InstallerService Feature Test', function () {
                     ->andReturn(0);
 
                 // Mock seeders
+                \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+                    ->twice()
+                    ->andReturnUsing(fn ($callback) => $callback());
                 Artisan::shouldReceive('call')
                     ->with('db:seed', ['--force' => true])
                     ->twice()

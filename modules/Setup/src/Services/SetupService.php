@@ -115,7 +115,7 @@ class SetupService extends BaseService implements Contracts\SetupService
             activity('setup')
                 ->event('step_completed')
                 ->withProperties(['step' => $step])
-                ->log("Setup step [{$step}] completed successfully.");
+                ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
         }
 
         return $success;
@@ -179,13 +179,10 @@ class SetupService extends BaseService implements Contracts\SetupService
                 // [S2 - Sustain] Log finalization
                 activity('setup')
                     ->event('finalized')
-                    ->log('Application setup finalized and system locked down.');
+                    ->log(__('setup::wizard.audit_logs.finalized'));
 
-                // Targeted session cleanup
-                Session::forget(self::SESSION_SETUP_AUTHORIZED);
-                foreach (range(1, 8) as $step) {
-                    Session::forget("setup_step_{$step}");
-                }
+                // Enterprise-grade session cleanup
+                $this->cleanupSetupSessions();
 
                 Session::regenerate();
 
@@ -208,5 +205,20 @@ class SetupService extends BaseService implements Contracts\SetupService
         $this->settingService->setValue("setup_step_{$name}", $completed);
 
         return true;
+    }
+
+    /**
+     * Thoroughly cleans up all setup-related session data.
+     */
+    protected function cleanupSetupSessions(): void
+    {
+        Session::forget(self::SESSION_SETUP_AUTHORIZED);
+
+        $keys = Session::all();
+        foreach (array_keys($keys) as $key) {
+            if (str_starts_with($key, 'setup_step_')) {
+                Session::forget($key);
+            }
+        }
     }
 }

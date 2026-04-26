@@ -64,7 +64,7 @@ class AppInstallCommand extends Command
                 $audit = $this->installerService->validateEnvironment();
                 $failures = [];
 
-                foreach (['requirements', 'permissions'] as $category) {
+                foreach (['requirements', 'permissions', 'functions'] as $category) {
                     foreach ($audit[$category] ?? [] as $name => $status) {
                         if ($status === false) {
                             $failures[] = "{$category}.{$name}";
@@ -94,7 +94,7 @@ class AppInstallCommand extends Command
             $this->performTask(__('setup::install.tasks.key'), fn () => $this->installerService->generateAppKey());
 
             // 4. Database Schema Initialization
-            $this->performTask(__('setup::install.tasks.schema'), fn () => $this->installerService->runMigrations());
+            $this->performTask(__('setup::install.tasks.schema'), fn () => $this->installerService->runMigrations($this->option('force')));
 
             // 5. Foundational Data Seeding
             $this->performTask(__('setup::install.tasks.seeding'), fn () => $this->installerService->runSeeders());

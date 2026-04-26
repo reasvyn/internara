@@ -10,8 +10,6 @@ use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Setup\Onboarding\Services\Contracts\OnboardingService as Contract;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\Teacher\Services\Contracts\TeacherService;
-use Modules\User\Models\AccountToken;
-use Modules\User\Models\User;
 use Modules\User\Services\Contracts\AccountProvisioningService;
 use Modules\User\Services\Contracts\UserService;
 
@@ -153,7 +151,6 @@ class OnboardingService implements Contract
             ],
         ];
 
-        /** @var User $user */
         if ($type === 'student') {
             $userData['profile'] = array_merge($userData['profile'], [
                 'national_identifier' => $data['national_identifier'] ?? null,
@@ -172,7 +169,7 @@ class OnboardingService implements Contract
 
         $plainCode = $this->provisioningService->provision(
             $user,
-            AccountToken::TYPE_ACTIVATION,
+            AccountProvisioningService::TYPE_ACTIVATION,
             $expiresInDays,
         );
 

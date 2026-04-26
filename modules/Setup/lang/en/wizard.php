@@ -55,11 +55,14 @@ return [
         'permissions_desc' => 'Ensuring the system has appropriate write access to critical storage layers.',
         'database' => 'Data Persistence',
         'database_desc' => 'Validating connectivity to the configured database engine.',
+        'functions' => 'System Capabilities',
+        'functions_desc' => 'Checking for critical PHP functions required for system orchestration.',
         'db_connection' => 'Handshake Status',
         'refresh' => 'Re-run Audit',
         'audit' => [
             'php_version' => 'PHP Version (>= :version)',
             'php_extension' => 'PHP Extension: :extension',
+            'php_function' => 'PHP Function: :function()',
             'storage_root' => 'Root Storage Directory',
             'storage_logs' => 'Storage Logs Directory',
             'storage_framework' => 'Storage Framework Directory',
@@ -129,5 +132,9 @@ return [
             'legal_agreed_label' => 'Legal & Regulatory Compliance',
             'legal_agreed_desc' => 'I agree to the :privacy and :terms. I commit to operating Internara in compliance with applicable data protection laws.',
         ],
+    ],
+    'audit_logs' => [
+        'step_completed' => 'Setup step [:step] completed successfully.',
+        'finalized' => 'Application setup finalized and system locked down.',
     ],
 ];

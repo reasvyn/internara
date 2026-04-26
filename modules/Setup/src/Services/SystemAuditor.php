@@ -29,6 +29,16 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
         'curl',
         'gd',
         'intl',
+        'zip',
+    ];
+
+    /**
+     * Required PHP functions for system operations.
+     */
+    protected const PHP_FUNCTIONS = [
+        'proc_open',
+        'exec',
+        'shell_exec',
     ];
 
     /**
@@ -45,6 +55,7 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
             'requirements' => $this->checkRequirements(),
             'permissions' => $this->checkPermissions(),
             'database' => $this->checkDatabase(),
+            'functions' => $this->checkFunctions(),
         ];
     }
 
@@ -60,6 +71,21 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
         foreach (self::PHP_EXTENSIONS as $extension) {
             $label = __('setup::wizard.environment.audit.php_extension', ['extension' => strtoupper($extension)]);
             $results[$label] = extension_loaded($extension);
+        }
+
+        return $results;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkFunctions(): array
+    {
+        $results = [];
+
+        foreach (self::PHP_FUNCTIONS as $function) {
+            $label = __('setup::wizard.environment.audit.php_function', ['function' => $function]);
+            $results[$label] = function_exists($function) && ! in_array($function, explode(',', ini_get('disable_functions')));
         }
 
         return $results;
@@ -115,7 +141,8 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
         $requirementsPassed = ! in_array(false, $audit['requirements'], true);
         $permissionsPassed = ! in_array(false, $audit['permissions'], true);
         $databasePassed = (bool) $audit['database']['connection'];
+        $functionsPassed = ! in_array(false, $audit['functions'], true);
 
-        return $requirementsPassed && $permissionsPassed && $databasePassed;
+        return $requirementsPassed && $permissionsPassed && $databasePassed && $functionsPassed;
     }
 }

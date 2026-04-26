@@ -17,6 +17,8 @@ use Modules\Setting\Services\Contracts\SettingService;
 
 describe('SetupService Feature Test', function () {
     beforeEach(function () {
+        config(['activitylog.enabled' => false]);
+
         $this->settingService = $this->mock(SettingService::class);
         $this->superAdminService = $this->mock(SuperAdminService::class);
         $this->schoolService = $this->mock(SchoolService::class);
@@ -54,7 +56,8 @@ describe('SetupService Feature Test', function () {
             ->shouldReceive('setValue')
             ->with(
                 \Mockery::on(function ($settings) use ($schoolMock) {
-                    return $settings[SetupService::SETTING_BRAND_NAME] === $schoolMock->name &&
+                    return is_array($settings) &&
+                        $settings[SetupService::SETTING_BRAND_NAME] === $schoolMock->name &&
                         $settings[SetupService::SETTING_APP_INSTALLED] === true &&
                         $settings[SetupService::SETTING_SETUP_TOKEN] === null &&
                         str_contains(
@@ -69,6 +72,9 @@ describe('SetupService Feature Test', function () {
         session(['setup_authorized' => true, 'setup_step_1' => true]);
 
         $this->settingService->shouldReceive('setValue')->with('setup_step_complete', true)->once();
+
+        // Expect the force cache refresh call
+        $this->settingService->shouldReceive('setValue')->with(SetupService::SETTING_APP_INSTALLED, true)->once();
 
         $this->settingService
             ->shouldReceive('getValue')

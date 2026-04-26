@@ -34,4 +34,9 @@ return [
     'success' => 'Core system initialization completed successfully.',
     'auth_required' => 'Authorization Required',
     'auth_description' => 'Please use the following authenticated link to finalize the system configuration:',
+    'audit_logs' => [
+        'migrations_executed' => 'Technical installation: Database migrations executed using [:command].',
+        'seeding_completed' => 'Technical installation: Database seeding completed and setup token generated.',
+        'env_created' => 'Technical installation: .env file created from .env.example.',
+    ],
 ];

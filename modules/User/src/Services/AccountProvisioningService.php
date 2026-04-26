@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\User\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Modules\Admin\Notifications\AdminInvitationNotification;
 use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
@@ -35,15 +36,16 @@ class AccountProvisioningService implements Contract
      * {@inheritdoc}
      */
     public function provision(
-        User $user,
-        string $type = AccountToken::TYPE_ACTIVATION,
+        Authenticatable&Model $user,
+        string $type = self::TYPE_ACTIVATION,
         int $expiresInDays = 30,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): string {
         $plainCode = $this->generatePlainCode();
 
         DB::transaction(function () use ($user, $type, $plainCode, $expiresInDays, $issuedBy) {
             // Invalidate any existing active tokens of the same type for this user
+            /** @var User $user */
             $user->accountTokens()
                 ->where('type', $type)
                 ->whereNull('claimed_at')
@@ -67,10 +69,10 @@ class AccountProvisioningService implements Contract
      * {@inheritdoc}
      */
     public function reissue(
-        User $user,
-        string $type = AccountToken::TYPE_ACTIVATION,
+        Authenticatable&Model $user,
+        string $type = self::TYPE_ACTIVATION,
         int $expiresInDays = 30,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): string {
         // provision() already invalidates existing active tokens, so this is a direct proxy.
         return $this->provision($user, $type, $expiresInDays, $issuedBy);
@@ -79,7 +81,7 @@ class AccountProvisioningService implements Contract
     /**
      * {@inheritdoc}
      */
-    public function findActiveToken(string $username, string $plainCode): ?AccountToken
+    public function findActiveToken(string $username, string $plainCode): ?Model
     {
         $user = User::where('username', $username)->first();
 
@@ -102,8 +104,9 @@ class AccountProvisioningService implements Contract
     /**
      * {@inheritdoc}
      */
-    public function claim(AccountToken $token, string $newPassword, ?string $ipAddress = null): void
+    public function claim(Model $token, string $newPassword, ?string $ipAddress = null): void
     {
+        /** @var AccountToken $token */
         DB::transaction(function () use ($token, $newPassword, $ipAddress) {
             $user = $token->user;
 
@@ -136,9 +139,9 @@ class AccountProvisioningService implements Contract
      */
     public function provisionBatch(
         iterable $users,
-        string $type = AccountToken::TYPE_ACTIVATION,
+        string $type = self::TYPE_ACTIVATION,
         int $expiresInDays = 30,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): array {
         $slips = [];
 
@@ -159,13 +162,14 @@ class AccountProvisioningService implements Contract
      * {@inheritdoc}
      */
     public function invite(
-        User $user,
+        Authenticatable&Model $user,
         int $expiresInDays = 7,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): string {
         // Generate a cryptographically secure 64-char hex token for URL delivery.
         $plain = bin2hex(random_bytes(32));
 
+        /** @var User $user */
         DB::transaction(function () use ($user, $plain, $expiresInDays, $issuedBy) {
             // Invalidate any prior active invitation tokens for this user
             $user->accountTokens()
@@ -192,7 +196,7 @@ class AccountProvisioningService implements Contract
     /**
      * {@inheritdoc}
      */
-    public function findActiveInvitationToken(string $plainToken): ?AccountToken
+    public function findActiveInvitationToken(string $plainToken): ?Model
     {
         // Query by HMAC hash directly — no linear scan
         return AccountToken::where('token', AccountToken::hashCode($plainToken))

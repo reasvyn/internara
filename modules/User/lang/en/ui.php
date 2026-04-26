@@ -37,6 +37,8 @@ return [
             'roles' => 'Roles',
             'status' => 'Status',
             'activation_status' => 'Activation Status',
+            'total_users' => 'Total Users',
+            'staff' => 'Staff & Mentors',
         ],
         'filters' => [
             'open' => 'Filters',
@@ -47,6 +49,7 @@ return [
             'all_roles' => 'All Roles',
             'all_statuses' => 'All Statuses',
             'reset' => 'Reset Filters',
+            'active_count' => ':count Active Filters',
         ],
         'import' => [
             'instructions' => 'CSV template/import/export is limited to operational users. Roles may only be student, teacher, or mentor. Leave the roles column blank to default to student, use department_name exactly as stored, and do not include passwords.',

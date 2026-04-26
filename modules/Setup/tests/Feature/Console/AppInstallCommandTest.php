@@ -7,7 +7,7 @@ use Modules\Setup\Services\Contracts\InstallerService;
 test('it asks for confirmation before installation', function () {
     $this->artisan('app:install')
         ->expectsConfirmation(
-            'This will reset your database and initialize the system. Do you want to proceed?',
+            __('setup::install.confirmation'),
             'no',
         )
         ->assertFailed();
@@ -25,6 +25,7 @@ test('it executes the installation steps correctly', function () {
             'requirements' => ['php_version' => true],
             'permissions' => ['writable_storage' => true],
             'database' => ['connection' => true, 'message' => 'Connected'],
+            'functions' => ['proc_open' => true],
         ]);
 
     $installerMock->shouldReceive('generateAppKey')->once()->andReturn(true);
@@ -49,11 +50,11 @@ test('it executes the installation steps correctly', function () {
 
     $this->artisan('app:install')
         ->expectsConfirmation(
-            'This will reset your database and initialize the system. Do you want to proceed?',
+            __('setup::install.confirmation'),
             'yes',
         )
-        ->expectsOutputToContain('Internara System Installation')
-        ->expectsOutputToContain('Technical installation completed successfully!')
+        ->expectsOutputToContain(__('setup::install.banner.engine'))
+        ->expectsOutputToContain(__('setup::install.success'))
         ->expectsOutputToContain('token=test-token-123')
         ->assertSuccessful();
 });
@@ -70,13 +71,14 @@ test('it fails if environment validation fails', function () {
             'requirements' => ['php_version' => false],
             'permissions' => ['writable_storage' => true],
             'database' => ['connection' => true, 'message' => 'Connected'],
+            'functions' => ['proc_open' => true],
         ]);
 
     $this->app->instance(InstallerService::class, $installerMock);
 
     $this->artisan('app:install')
         ->expectsConfirmation(
-            'This will reset your database and initialize the system. Do you want to proceed?',
+            __('setup::install.confirmation'),
             'yes',
         )
         ->assertFailed();

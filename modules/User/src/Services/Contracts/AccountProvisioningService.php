@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\User\Services\Contracts;
 
-use Modules\User\Models\AccountToken;
-use Modules\User\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Contract for provisioning and claiming single-use account activation codes.
@@ -16,6 +16,12 @@ use Modules\User\Models\User;
 interface AccountProvisioningService
 {
     /**
+     * Standard token types.
+     */
+    public const TYPE_ACTIVATION = 'activation';
+    public const TYPE_CREDENTIAL_RESET = 'credential_reset';
+
+    /**
      * Generate a long-form invitation token for a privileged account (Admin).
      *
      * Unlike short activation codes, invitation tokens are 64-char hex strings
@@ -24,15 +30,15 @@ interface AccountProvisioningService
      *
      * Sends an AdminInvitationNotification email to the user.
      *
-     * @param  User   $user          The account to invite.
+     * @param  Authenticatable&Model  $user          The account to invite.
      * @param  int    $expiresInDays Number of days before link expires.
-     * @param  User|null $issuedBy   Admin who triggered the invitation.
+     * @param  (Authenticatable&Model)|null $issuedBy   Admin who triggered the invitation.
      * @return string                The PLAINTEXT 64-char hex token (used in URL once).
      */
     public function invite(
-        User $user,
+        Authenticatable&Model $user,
         int $expiresInDays = 7,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): string;
 
     /**
@@ -41,7 +47,7 @@ interface AccountProvisioningService
      * Hashes the plain token via HMAC-SHA256 and queries directly —
      * no linear scan over all tokens.
      */
-    public function findActiveInvitationToken(string $plainToken): ?AccountToken;
+    public function findActiveInvitationToken(string $plainToken): ?Model;
 
     /**
      * Generate a new activation code for the given user.
@@ -50,17 +56,17 @@ interface AccountProvisioningService
      * Returns the PLAINTEXT code — it must be presented to the issuing admin
      * exactly once and then distributed through institution-controlled channels.
      *
-     * @param  User   $user          The account to provision.
-     * @param  string $type          AccountToken::TYPE_ACTIVATION | TYPE_CREDENTIAL_RESET
+     * @param  Authenticatable&Model  $user          The account to provision.
+     * @param  string $type          self::TYPE_ACTIVATION | self::TYPE_CREDENTIAL_RESET
      * @param  int    $expiresInDays Number of days before the code expires (0 = no expiry).
-     * @param  User|null $issuedBy   Admin who triggered the provisioning.
+     * @param  (Authenticatable&Model)|null $issuedBy   Admin who triggered the provisioning.
      * @return string                The plaintext activation code.
      */
     public function provision(
-        User $user,
-        string $type = AccountToken::TYPE_ACTIVATION,
+        Authenticatable&Model $user,
+        string $type = self::TYPE_ACTIVATION,
         int $expiresInDays = 30,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): string;
 
     /**
@@ -68,10 +74,10 @@ interface AccountProvisioningService
      * Convenience wrapper around provision() for the "reissue" UX action.
      */
     public function reissue(
-        User $user,
-        string $type = AccountToken::TYPE_ACTIVATION,
+        Authenticatable&Model $user,
+        string $type = self::TYPE_ACTIVATION,
         int $expiresInDays = 30,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): string;
 
     /**
@@ -81,7 +87,7 @@ interface AccountProvisioningService
      * or null if the lookup or verification fails.
      * Intentionally does not leak whether the username or code was the wrong part.
      */
-    public function findActiveToken(string $username, string $plainCode): ?AccountToken;
+    public function findActiveToken(string $username, string $plainCode): ?Model;
 
     /**
      * Complete the claim: set the user's password, mark the token as consumed,
@@ -91,11 +97,11 @@ interface AccountProvisioningService
      * After a successful claim it is cleared, signalling that all initial
      * setup steps have been completed.
      *
-     * @param  AccountToken $token       A token returned by findActiveToken().
+     * @param  Model        $token       A token returned by findActiveToken().
      * @param  string       $newPassword The user's self-chosen plaintext password.
      * @param  string|null  $ipAddress   Claimant's IP for audit log.
      */
-    public function claim(AccountToken $token, string $newPassword, ?string $ipAddress = null): void;
+    public function claim(Model $token, string $newPassword, ?string $ipAddress = null): void;
 
     /**
      * Generate credential slips data for a set of users.
@@ -104,16 +110,16 @@ interface AccountProvisioningService
      * Each code is freshly provisioned and the plaintext is only available
      * in the returned array — it is never retrievable from the database again.
      *
-     * @param  iterable<User> $users
+     * @param  iterable<Authenticatable&Model> $users
      * @param  string         $type
      * @param  int            $expiresInDays
-     * @param  User|null      $issuedBy
-     * @return array<array{user: User, plain_code: string}>
+     * @param  (Authenticatable&Model)|null      $issuedBy
+     * @return array<array{user: Authenticatable&Model, plain_code: string}>
      */
     public function provisionBatch(
         iterable $users,
-        string $type = AccountToken::TYPE_ACTIVATION,
+        string $type = self::TYPE_ACTIVATION,
         int $expiresInDays = 30,
-        ?User $issuedBy = null,
+        (Authenticatable&Model)|null $issuedBy = null,
     ): array;
 }

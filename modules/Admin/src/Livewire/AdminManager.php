@@ -4,25 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Livewire;
 
-use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Admin\Livewire\Forms\AdminForm;
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Permission\Enums\Role;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
 
-/**
- * Class AdminManager
- *
- * Manages system administrators with specialized logic and role enforcement.
- * Only SuperAdmins are authorized to manage Admin accounts.
- *
- * Password management: admins are provisioned via email invitation, never by
- * direct password entry. This ensures admins set their own credentials securely.
- */
 class AdminManager extends RecordManager
 {
     use HandlesAppException;
@@ -36,129 +27,101 @@ class AdminManager extends RecordManager
     {
         $this->service = $adminService;
         $this->eventPrefix = 'admin';
+        $this->modelClass = User::class;
     }
 
+    /**
+     * Configure the component's basic properties.
+     */
     public function initialize(): void
     {
         $this->title = __('admin::ui.menu.administrators');
         $this->subtitle = __('admin::ui.manager.subtitle');
+        $this->context = 'admin::ui.menu.administrators';
         $this->addLabel = __('admin::ui.manager.add');
         $this->deleteConfirmMessage = __('admin::ui.manager.delete_confirm');
+
         $this->viewPermission = 'admin.manage';
         $this->createPermission = 'admin.manage';
         $this->updatePermission = 'admin.manage';
         $this->deletePermission = 'admin.manage';
-        $this->modelClass = User::class;
-    }
 
-    protected function getTableHeaders(): array
-    {
-        return [
-            ['key' => 'name', 'label' => __('ui::common.name'), 'sortable' => true],
-            ['key' => 'email', 'label' => __('ui::common.email'), 'sortable' => false],
-            ['key' => 'invitation_status', 'label' => __('admin::ui.manager.invitation_status'), 'sortable' => false],
-            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
-        ];
+        $this->searchable = ['name', 'email'];
+        $this->sortable = ['name', 'email', 'created_at'];
     }
 
     /**
-     * Mount the component.
+     * Mount the component with security gate.
      */
     public function mount(): void
     {
-        // Security: Only SuperAdmins can manage 'admin' role
-        if (! auth()->user()->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value)) {
-            abort(403, __('user::exceptions.super_admin_unauthorized'));
-        }
+        abort_unless(
+            auth()->user()->hasRole(Role::SUPER_ADMIN->value),
+            403,
+            __('user::exceptions.super_admin_unauthorized')
+        );
 
         parent::mount();
     }
 
     /**
-     * Get records property for the table.
+     * Get summary metrics for administrator accounts.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => User::role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->count(),
+            'admins' => User::role(Role::ADMIN->value)->count(),
+            'active' => User::role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->where('setup_required', false)->count(),
+            'pending' => User::role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->where('setup_required', true)->count(),
+        ];
+    }
+
+    /**
+     * Define the table structure.
+     */
+    protected function getTableHeaders(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('user::ui.manager.table.name'), 'sortable' => true],
+            ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
+            ['key' => 'invitation_status', 'label' => __('admin::ui.manager.invitation_status')],
+            ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+        ];
+    }
+
+    /**
+     * Transform raw admin record for UI display.
+     */
+    protected function mapRecord(mixed $record): array
+    {
+        return array_merge($record->toArray(), [
+            'avatar_url' => $record->avatar_url,
+            'invitation_status' => $this->resolveInvitationStatus($record),
+            'is_super_admin' => $record->hasRole(Role::SUPER_ADMIN->value),
+        ]);
+    }
+
+    /**
+     * Fetch and transform records for the table.
      */
     #[Computed]
     public function records(): \Illuminate\Pagination\LengthAwarePaginator
     {
-        $paginator = $this->service->paginate(
-            [
-                'search' => $this->search,
-                'sort_by' => $this->sortBy['column'] ?? 'created_at',
-                'sort_dir' => $this->sortBy['direction'] ?? 'desc',
-            ],
-            $this->perPage,
-            ['*'],
-            ['roles:id,name', 'profile', 'statuses', 'accountTokens'],
-        );
-
-        $paginator->getCollection()->transform(function (User $admin): User {
-            $admin->setAttribute('invitation_status', $this->resolveInvitationStatus($admin));
-            return $admin;
-        });
-
-        return $paginator;
+        return $this->service->query($this->filters)
+            ->with(['roles:id,name', 'accountTokens'])
+            ->paginate($this->perPage)
+            ->through(fn ($user) => $this->mapRecord($user));
     }
 
-    /**
-     * Open form for adding a new admin.
-     */
-    public function add(): void
-    {
-        $this->form->reset();
-        $this->formModal = true;
-    }
-
-    /**
-     * Open form for editing an admin.
-     */
-    public function edit(mixed $id): void
-    {
-        $admin = $this->service->find($id);
-
-        if ($admin) {
-            $this->authorize('update', $admin);
-            $this->form->fillFromUser($admin);
-            $this->formModal = true;
-        }
-    }
-
-    /**
-     * Save the admin record and send invitation email if creating new.
-     */
-    public function save(): void
-    {
-        $this->form->validate();
-
-        try {
-            $isNew = ! $this->form->id;
-
-            if ($isNew) {
-                $admin = $this->service->create($this->form->all());
-                // Send invitation email for new accounts
-                $this->service->invite($admin, auth()->user());
-                flash()->success(__('admin::ui.manager.invited', ['email' => $admin->email]));
-            } else {
-                $this->service->update($this->form->id, $this->form->all());
-                flash()->success(__('shared::messages.record_saved'));
-            }
-
-            $this->formModal = false;
-        } catch (\Throwable $e) {
-            $this->handleAppExceptionInLivewire($e);
-        }
-    }
-
-    /**
-     * Resend the invitation email to an unclaimed admin.
-     * Only available while setup_required is true.
-     */
     public function reinvite(mixed $id): void
     {
         try {
-            /** @var User $admin */
             $admin = $this->service->findOrFail($id);
 
-            if (! $admin->requiresSetup()) {
+            if (!$admin->requiresSetup()) {
                 flash()->warning(__('admin::ui.manager.already_accepted'));
                 return;
             }
@@ -170,42 +133,61 @@ class AdminManager extends RecordManager
         }
     }
 
-    /**
-     * Render the admin manager view.
-     */
-    public function render(): View
+    public function save(): void
     {
-        return view('admin::livewire.admin-manager', [
-            'title' => $this->title,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
-            'context' => 'admin::ui.menu.administrators',
-        ]);
+        $this->form->validate();
+
+        try {
+            $isNew = !$this->form->id;
+
+            if ($isNew) {
+                $admin = $this->service->create($this->form->all());
+                $this->service->invite($admin, auth()->user());
+                flash()->success(__('admin::ui.manager.invited', ['email' => $admin->email]));
+            } else {
+                $this->service->update($this->form->id, $this->form->all());
+                flash()->success(__('shared::messages.record_saved'));
+            }
+
+            $this->toggleModal(self::MODAL_FORM, false);
+        } catch (\Throwable $e) {
+            $this->handleAppExceptionInLivewire($e);
+        }
     }
 
-    // ─── Internal ────────────────────────────────────────────────────────────────
+    public function statusBadgeVariant(string $status): string
+    {
+        return match ($status) {
+            'accepted' => 'success',
+            'pending' => 'warning',
+            'expired' => 'error',
+            'not_invited' => 'neutral',
+            default => 'neutral',
+        };
+    }
 
-    /**
-     * Derive the invitation status label key for an admin user.
-     */
+    public function render(): View
+    {
+        return view('admin::livewire.admin-manager')
+            ->layout('ui::components.layouts.dashboard', [
+                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
+                'context' => $this->context,
+            ]);
+    }
+
     private function resolveInvitationStatus(User $admin): string
     {
-        // Account already activated
-        if (! $admin->requiresSetup()) {
+        if (!$admin->requiresSetup()) {
             return 'accepted';
         }
 
-        $tokens = $admin->accountTokens
-            ->where('type', AccountToken::TYPE_INVITATION);
+        $tokens = $admin->accountTokens->where('type', AccountToken::TYPE_INVITATION);
 
         if ($tokens->isEmpty()) {
             return 'not_invited';
         }
 
-        // Has at least one non-expired, non-claimed token
-        $hasActive = $tokens->contains(
-            fn (AccountToken $t): bool => $t->isActive()
-        );
+        $hasActive = $tokens->contains(fn (AccountToken $t) => $t->isActive());
 
         return $hasActive ? 'pending' : 'expired';
     }

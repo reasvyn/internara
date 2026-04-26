@@ -33,7 +33,7 @@ class SetupServiceProvider extends ServiceProvider
     protected function registerSetupGates(): void
     {
         // Define common authorization for all setup actions
-        $setupAuth = function (?Modules\User\Models\User $user) {
+        $setupAuth = function (?\Illuminate\Contracts\Auth\Authenticatable $user) {
             return session()->get('setup_authorized') === true;
         };
 

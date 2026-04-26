@@ -55,11 +55,14 @@ return [
         'permissions_desc' => 'Memastikan sistem memiliki akses tulis yang sesuai pada lapisan penyimpanan kritis.',
         'database' => 'Persistensi Data',
         'database_desc' => 'Memvalidasi konektivitas ke mesin database yang dikonfigurasi.',
+        'functions' => 'Kapabilitas Sistem',
+        'functions_desc' => 'Memeriksa fungsi PHP kritikal yang diperlukan untuk orkestrasi sistem.',
         'db_connection' => 'Status Handshake',
         'refresh' => 'Audit Ulang',
         'audit' => [
             'php_version' => 'Versi PHP (>= :version)',
             'php_extension' => 'Ekstensi PHP: :extension',
+            'php_function' => 'Fungsi PHP: :function()',
             'storage_root' => 'Direktori Penyimpanan Akar (Root)',
             'storage_logs' => 'Direktori Log Penyimpanan',
             'storage_framework' => 'Direktori Framework Penyimpanan',
@@ -129,5 +132,9 @@ return [
             'legal_agreed_label' => 'Kepatuhan Hukum & Regulasi',
             'legal_agreed_desc' => 'Saya menyetujui :privacy dan :terms. Saya berkomitmen untuk mengoperasikan Internara sesuai dengan hukum perlindungan data yang berlaku.',
         ],
+    ],
+    'audit_logs' => [
+        'step_completed' => 'Langkah setup [:step] berhasil diselesaikan.',
+        'finalized' => 'Setup aplikasi difinalisasi dan sistem dikunci.',
     ],
 ];

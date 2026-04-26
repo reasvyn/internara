@@ -34,4 +34,9 @@ return [
     'success' => 'Inisialisasi sistem inti berhasil diselesaikan.',
     'auth_required' => 'Otorisasi Diperlukan',
     'auth_description' => 'Silakan gunakan tautan terautentikasi berikut untuk memfinalisasi konfigurasi sistem:',
+    'audit_logs' => [
+        'migrations_executed' => 'Instalasi teknis: Migrasi database dijalankan menggunakan [:command].',
+        'seeding_completed' => 'Instalasi teknis: Seeding database selesai dan token setup dibuat.',
+        'env_created' => 'Instalasi teknis: File .env dibuat dari .env.example.',
+    ],
 ];

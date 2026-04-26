@@ -66,7 +66,13 @@ class InstallerService extends BaseService implements InstallerServiceContract
         }
 
         if (File::exists(base_path('.env.example'))) {
-            return File::copy(base_path('.env.example'), base_path('.env'));
+            $created = File::copy(base_path('.env.example'), base_path('.env'));
+            
+            if ($created) {
+                \Illuminate\Support\Facades\Log::info(__('setup::install.audit_logs.env_created'));
+            }
+
+            return $created;
         }
 
         return false;
@@ -94,16 +100,33 @@ class InstallerService extends BaseService implements InstallerServiceContract
 
     /**
      * Executes the database migrations.
-     * If the database is already initialized, it performs a fresh migration.
+     * If the database is already initialized, it performs a fresh migration only if forced.
      */
-    public function runMigrations(): bool
+    public function runMigrations(bool $force = false): bool
     {
         try {
-            $isFresh = $this->hasExistingMigrations();
-            $command = $isFresh ? 'migrate:fresh' : 'migrate';
+            $hasMigrations = $this->hasExistingMigrations();
+            
+            // [S1 - Secure] Enterprise-grade idempotency safeguard
+            // Only use migrate:fresh if explicitly forced OR if no migrations exist.
+            // If migrations exist and NOT forced, we use 'migrate' to avoid data loss.
+            $command = ($hasMigrations && $force) ? 'migrate:fresh' : 'migrate';
 
-            return Artisan::call($command, ['--force' => true]) === 0;
+            $result = Artisan::call($command, ['--force' => true]) === 0;
+
+            if ($result) {
+                \Illuminate\Support\Facades\Log::info(__('setup::install.audit_logs.migrations_executed', ['command' => $command]), [
+                    'command' => $command,
+                    'forced' => $force,
+                ]);
+            }
+
+            return $result;
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Migration failure during installation: ' . $e->getMessage(), [
+                'exception' => $e,
+                'force' => $force,
+            ]);
             return false;
         }
     }
@@ -115,7 +138,7 @@ class InstallerService extends BaseService implements InstallerServiceContract
     {
         try {
             return \Illuminate\Support\Facades\Schema::hasTable('migrations') &&
-                \Illuminate\Support\Facades\DB::table('migrations')->count() > 0;
+                \Illuminate\Support\Facades\DB::table('migrations')->exists();
         } catch (\Exception $e) {
             return false;
         }
@@ -133,11 +156,14 @@ class InstallerService extends BaseService implements InstallerServiceContract
                 if ($seeded) {
                     $token = Str::random(32);
                     $this->settingService->setValue('setup_token', $token);
+
+                    \Illuminate\Support\Facades\Log::info(__('setup::install.audit_logs.seeding_completed'));
                 }
 
                 return $seeded;
             });
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Seeding failure during installation: ' . $e->getMessage());
             return false;
         }
     }

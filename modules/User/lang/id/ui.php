@@ -37,6 +37,8 @@ return [
             'roles' => 'Peran',
             'status' => 'Status',
             'activation_status' => 'Status Aktivasi',
+            'total_users' => 'Total Pengguna',
+            'staff' => 'Staf & Pembimbing',
         ],
         'filters' => [
             'open' => 'Filter',
@@ -47,6 +49,7 @@ return [
             'all_roles' => 'Semua Peran',
             'all_statuses' => 'Semua Status',
             'reset' => 'Reset Filter',
+            'active_count' => ':count Filter Aktif',
         ],
         'import' => [
             'instructions' => 'Template/import/export CSV hanya untuk pengguna operasional. Peran hanya boleh student, teacher, atau mentor. Kosongkan kolom roles untuk default student, gunakan department_name persis seperti data jurusan tersimpan, dan jangan sertakan kata sandi.',

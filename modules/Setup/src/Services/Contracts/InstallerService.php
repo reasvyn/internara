@@ -40,9 +40,10 @@ interface InstallerService
     /**
      * Executes the database migrations.
      *
+     * @param bool $force Whether to force fresh migrations (migrate:fresh)
      * @return bool True if migrations were successful, false otherwise.
      */
-    public function runMigrations(): bool;
+    public function runMigrations(bool $force = false): bool;
 
     /**
      * Executes the core and shared database seeders.

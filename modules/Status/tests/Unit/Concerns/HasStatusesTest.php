@@ -9,13 +9,13 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Status\Concerns\HasStatus;
+use Modules\Status\Concerns\HasStatuses;
 
 uses(RefreshDatabase::class);
 
 class StatusTestModel extends Model
 {
-    use HasStatus, HasUuid;
+    use HasStatuses, HasUuid;
 
     protected $table = 'status_test_models';
 
@@ -33,22 +33,22 @@ beforeEach(function () {
 test('has status trait can set and get status', function () {
     $model = StatusTestModel::create(['name' => 'Test']);
 
-    $model->setStatus('active');
+    $model->setStatus('verified');
 
     $model = $model->fresh();
 
     expect($model->statuses)
         ->toHaveCount(1)
         ->and($model->latestStatus()->name)
-        ->toBe('active')
+        ->toBe('verified')
         ->and($model->getStatusColor())
-        ->toBe('success');
+        ->toBe('#10b981');
 });
 
 test('get status label returns translated label', function () {
     app()->setLocale('en');
     $model = StatusTestModel::create(['name' => 'Test']);
-    $model->setStatus('active');
+    $model->setStatus('verified');
 
-    expect($model->getStatusLabel())->toBe('Active');
+    expect($model->getStatusLabel())->toBe('Verified');
 });
