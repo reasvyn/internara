@@ -8,26 +8,11 @@
 }" class="w-full">
     <x-setup::layouts.setup-wizard>
         <x-slot:header>
-            <div class="max-w-4xl">
-                <x-ui::badge variant="metadata" :value="__('setup::wizard.steps', ['current' => 8, 'total' => 8])" class="mb-12" />
-
-                <p class="mb-6 font-bold text-success text-lg animate-bounce">
-                    {{ __('setup::wizard.complete.badge') }}
-                </p>
-
-                <h1 class="text-4xl font-extrabold tracking-tight text-base-content md:text-5xl lg:text-6xl leading-[1.1]">
-                    {{ __('setup::wizard.complete.headline', ['app' => setting('app_name', 'Internara')]) }}
-                </h1>
-
-                <div class="mt-8 space-y-6">
-                    <p class="text-lg text-base-content/70 leading-relaxed max-w-2xl">
-                        {{ __('setup::wizard.complete.description', ['app' => setting('app_name', 'Internara')]) }}
-                    </p>
-                    <p class="text-base-content/60 leading-relaxed max-w-2xl italic">
-                        {{ __('setup::wizard.complete.description_extra') }}
-                    </p>
-                </div>
-            </div>
+            <x-setup::wizard-header 
+                step="8"
+                :title="__('setup::wizard.complete.headline', ['app' => setting('app_name', 'Internara')])"
+                :description="__('setup::wizard.complete.description', ['app' => setting('app_name', 'Internara')])"
+            />
 
             <div class="mt-12 flex flex-wrap items-center gap-4">
                 <x-ui::button
@@ -49,9 +34,19 @@
         <x-slot:content>
             <div class="w-full">
                 <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
-                    <div class="mb-10">
-                        <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.complete.checkup_title') }}</h3>
-                        <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.complete.checkup_desc') }}</p>
+                    <div class="mb-10 flex items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.complete.checkup_title') }}</h3>
+                            <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.complete.checkup_desc') }}</p>
+                        </div>
+                        <x-ui::button
+                            variant="secondary"
+                            size="sm"
+                            class="border-base-content/10 text-base-content/60 hover:text-primary hover:border-primary/30"
+                            :label="__('setup::wizard.complete.download_report')"
+                            icon="tabler.file-download"
+                            wire:click="downloadTechnicalReport"
+                        />
                     </div>
 
                     <div class="space-y-6">

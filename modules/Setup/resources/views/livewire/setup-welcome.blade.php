@@ -9,10 +9,10 @@
 
         <!-- Main Headline -->
         <div class="max-w-3xl space-y-6">
-            <h1 class="text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl md:text-5xl lg:text-6xl leading-[1.1]">
+            <h1 class="text-4xl font-extrabold tracking-tight text-base-content md:text-5xl lg:text-6xl leading-[1.1]">
                 {{ __('setup::wizard.welcome.headline') }}
             </h1>
-            <p class="text-base md:text-lg text-base-content/70 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-lg text-base-content/70 max-w-2xl mx-auto leading-relaxed">
                 {{ __('setup::wizard.welcome.journey.description') }}
             </p>
         </div>

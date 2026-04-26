@@ -9,6 +9,7 @@ use Modules\User\Services\Contracts\UserService;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\Teacher\Services\Contracts\TeacherService;
+use Modules\User\Services\AccountProvisioningService;
 
 describe('OnboardingService Unit Test', function () {
     beforeEach(function () {
@@ -16,12 +17,14 @@ describe('OnboardingService Unit Test', function () {
         $this->profileService = $this->mock(ProfileService::class);
         $this->studentService = $this->mock(StudentService::class);
         $this->teacherService = $this->mock(TeacherService::class);
+        $this->provisioningService = $this->mock(AccountProvisioningService::class);
         
         $this->service = new OnboardingService(
             $this->userService,
             $this->profileService,
             $this->studentService,
-            $this->teacherService
+            $this->teacherService,
+            $this->provisioningService
         );
     });
 

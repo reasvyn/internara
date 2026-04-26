@@ -104,11 +104,6 @@ class ProtectSetupRoute
 
     protected function superAdminExists(): bool
     {
-        // For testing environments, bypass the cache to ensure accurate evaluation
-        if (is_testing()) {
-            return $this->superAdminService->exists();
-        }
-
         return Cache::remember(
             'user.super_admin',
             now()->addDay(),

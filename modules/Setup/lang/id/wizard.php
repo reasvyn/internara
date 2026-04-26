@@ -124,6 +124,7 @@ return [
         'cta' => 'Selesaikan & Mulai Petualangan',
         'checkup_title' => 'Pemeriksaan Kesiapan Sistem',
         'checkup_desc' => 'Silakan tinjau dan konfirmasikan kepatuhan Anda terhadap standar tata kelola sistem.',
+        'download_report' => 'Unduh Laporan Teknis',
         'checkup' => [
             'data_verified_label' => 'Konfirmasi Integritas Data',
             'data_verified_desc' => 'Saya telah meninjau data sekolah, jurusan, dan program. Saya mengonfirmasi bahwa semua informasi yang dimasukkan adalah akurat dan mencerminkan status resmi institusi.',

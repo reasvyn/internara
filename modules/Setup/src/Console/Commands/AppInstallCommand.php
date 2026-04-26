@@ -74,8 +74,12 @@ class AppInstallCommand extends Command
 
                 if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
                     $rawMessage = (string) ($audit['database']['message'] ?? 'Unknown connection error');
-                    // Security: Sanitize sensitive data from potential raw DB errors
-                    $sanitizedMessage = preg_replace('/(password|pwd|user|usr)=[^; ]+/i', '$1=****', $rawMessage);
+                    // [S1 - Secure] Robust sanitization of sensitive data from DB errors
+                    $sanitizedMessage = preg_replace(
+                        '/(password|pwd|user|usr|host|address|dsn|credential|token)=[^; ]+/i',
+                        '$1=****',
+                        $rawMessage,
+                    );
                     $failures[] = "database.connection: {$sanitizedMessage}";
                 }
 
@@ -165,6 +169,12 @@ class AppInstallCommand extends Command
         $this->components->info(__('setup::install.success'));
 
         $token = $this->settingService->getValue('setup_token');
+
+        // [S1 - Secure] Enforce 24-hour Token TTL if not already set
+        if (! $this->settingService->getValue('setup_token_expires_at')) {
+            $this->settingService->setValue('setup_token_expires_at', now()->addHours(24)->toIso8601String());
+        }
+
         $setupUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
             'setup.welcome',
             now()->addHours(24),

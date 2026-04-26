@@ -98,27 +98,38 @@ class SetupService extends BaseService implements Contracts\SetupService
     {
         Gate::authorize('performStep', self::class);
 
-        if ($step === self::STEP_COMPLETE) {
-            return $this->finalizeSetupStep();
-        }
+        // [S1 - Secure] Atomic Step Locking
+        // Prevents race conditions if multiple admins are accessing the setup suite simultaneously.
+        $lock = \Illuminate\Support\Facades\Cache::lock("setup.step.{$step}", 30);
 
-        if ($reqRecord && !$this->isRecordExists($reqRecord)) {
-            throw new AppException(
-                userMessage: 'setup::exceptions.require_record_exists',
-                code: 403,
-            );
-        }
+        return $lock->get(function () use ($step, $reqRecord) {
+            if ($step === self::STEP_COMPLETE) {
+                return $this->finalizeSetupStep();
+            }
 
-        $success = $this->storeStep($step);
+            if ($reqRecord && !$this->isRecordExists($reqRecord)) {
+                throw new AppException(
+                    userMessage: 'setup::exceptions.require_record_exists',
+                    code: 403,
+                );
+            }
 
-        if ($success) {
-            activity('setup')
-                ->event('step_completed')
-                ->withProperties(['step' => $step])
-                ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
-        }
+            $success = $this->storeStep($step);
 
-        return $success;
+            if ($success) {
+                // [S2 - Sustain] Technical Step Logging
+                // Switched from Log to activity() for UI-visible audit trail
+                activity('setup')
+                    ->event('step_completed')
+                    ->withProperties(['step' => $step])
+                    ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
+            }
+
+            return $success;
+        }) ?: throw new AppException(
+            userMessage: 'setup::exceptions.concurrency_lock',
+            code: 423,
+        );
     }
 
     /**
@@ -197,6 +208,62 @@ class SetupService extends BaseService implements Contracts\SetupService
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function generateTechnicalReport(): string
+    {
+        $auditor = app(\Modules\Setup\Services\Contracts\SystemAuditor::class);
+        $audit = $auditor->audit();
+        $appName = $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara');
+        $now = now()->toDayDateTimeString();
+
+        $report = "INTERNARA INSTALLATION REPORT\n";
+        $report .= "============================\n";
+        $report .= "Application: {$appName}\n";
+        $report .= "Generated At: {$now}\n";
+        $report .= "Environment: " . config('app.env') . "\n\n";
+
+        $report .= "1. INFRASTRUCTURE AUDIT\n";
+        $report .= "-----------------------\n";
+        foreach ($audit['requirements'] as $label => $passed) {
+            $report .= sprintf("[%s] %s\n", $passed ? 'PASS' : 'FAIL', $label);
+        }
+
+        $report .= "\n2. PERMISSIONS AUDIT\n";
+        $report .= "--------------------\n";
+        foreach ($audit['permissions'] as $label => $passed) {
+            $report .= sprintf("[%s] %s\n", $passed ? 'PASS' : 'FAIL', $label);
+        }
+
+        $report .= "\n3. DATABASE CONNECTIVITY\n";
+        $report .= "-----------------------\n";
+        $report .= "Status: " . ($audit['database']['connection'] ? 'CONNECTED' : 'DISCONNECTED') . "\n";
+        $report .= "Detail: " . $audit['database']['message'] . "\n\n";
+
+        $report .= "4. SETUP PROGRESSION\n";
+        $report .= "--------------------\n";
+        $steps = [
+            self::STEP_WELCOME,
+            self::STEP_ENVIRONMENT,
+            self::STEP_SCHOOL,
+            self::STEP_ACCOUNT,
+            self::STEP_DEPARTMENT,
+            self::STEP_INTERNSHIP,
+            self::STEP_SYSTEM,
+            'complete',
+        ];
+
+        foreach ($steps as $step) {
+            $completed = $this->isStepCompleted($step);
+            $report .= sprintf("[%s] Step: %s\n", $completed ? 'DONE' : 'PENDING', strtoupper($step));
+        }
+
+        $report .= "\n============================\n";
+        $report .= "END OF REPORT\n";
+
+        return $report;
+    }
     /**
      * Stores the completion status of a setup step in the settings.
      */
