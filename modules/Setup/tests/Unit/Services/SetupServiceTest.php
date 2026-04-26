@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
+use Mockery;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;

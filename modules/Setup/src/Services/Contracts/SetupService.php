@@ -125,4 +125,12 @@ interface SetupService
      * user to move to the next logical stage of the installation.
      */
     public function finalizeSetupStep(): bool;
+
+    /**
+     * Generates a comprehensive technical report of the installation process.
+     *
+     * Includes system environment, audit results, and completion timestamps.
+     * Useful for enterprise compliance and infrastructure documentation.
+     */
+    public function generateTechnicalReport(): string;
 }

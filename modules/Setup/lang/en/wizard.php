@@ -124,6 +124,7 @@ return [
         'cta' => 'Finalize & Start Adventure',
         'checkup_title' => 'System Readiness Check-up',
         'checkup_desc' => 'Please review and confirm your compliance with system governance standards.',
+        'download_report' => 'Download Technical Report',
         'checkup' => [
             'data_verified_label' => 'Data Integrity Confirmation',
             'data_verified_desc' => 'I have reviewed the school, department, and program data. I confirm that all entered information is accurate and reflects the official status of the institution.',

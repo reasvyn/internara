@@ -121,8 +121,13 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
             ];
         } catch (\Exception $e) {
             $rawMessage = $e->getMessage();
-            // [S1 - Secure] Sanitize sensitive data from DB errors (IPs, Usernames, Passwords)
-            $sanitizedMessage = preg_replace('/(password|pwd|user|usr|host|address)=[^; ]+/i', '$1=****', $rawMessage);
+            // [S1 - Secure] Robust sanitization of sensitive data from DB errors
+            // Covers password, user, host, address, dsn, and credentials in various formats.
+            $sanitizedMessage = preg_replace(
+                '/(password|pwd|user|usr|host|address|dsn|credential|token)=[^; ]+/i',
+                '$1=****',
+                $rawMessage,
+            );
             
             return [
                 'connection' => false,
