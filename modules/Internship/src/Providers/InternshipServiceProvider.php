@@ -34,13 +34,18 @@ class InternshipServiceProvider extends ServiceProvider
         \Modules\Internship\Models\InternshipRequirement::class => InternshipPolicy::class,
         \Modules\Internship\Models\RequirementSubmission::class => \Modules\Internship\Policies\InternshipRegistrationPolicy::class,
     ];
-
     /**
      * Boot the application events.
      */
     public function boot(): void
     {
         $this->bootModule();
+
+        // [S3 - Scalable] Register Setup Hook
+        if ($this->app->bound(\Modules\Setup\Services\SetupRequirementRegistry::class)) {
+            $this->app->make(\Modules\Setup\Services\SetupRequirementRegistry::class)
+                ->register($this->app->make(\Modules\Internship\Setup\InternshipSetupRequirement::class));
+        }
 
         // Register Report Providers
         if (class_exists(\Modules\Report\Services\ReportService::class)) {

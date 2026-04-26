@@ -8,25 +8,21 @@ use Illuminate\Support\Facades\DB;
 use Modules\Setup\Domain\Models\SetupProcess;
 use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\School\Services\Contracts\SchoolService;
-use Modules\Department\Services\Contracts\DepartmentService;
-use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Setup\Services\SetupRequirementRegistry;
+use Modules\Setup\Events\SetupFinalized;
 use Modules\Exception\AppException;
 
 /**
  * Application Service for orchestrating the setup process.
  * 
  * [S2 - Sustain] Implements the Application Layer by coordinating Domain Models and Infrastructure Services.
+ * [S3 - Scalable] Uses Registry pattern to decouple module dependencies.
  */
 class SetupOrchestrator implements SetupService
 {
     public function __construct(
         protected SettingService $settingService,
-        protected SuperAdminService $superAdminService,
-        protected SchoolService $schoolService,
-        protected DepartmentService $departmentService,
-        protected InternshipService $internshipService,
+        protected SetupRequirementRegistry $registry,
     ) {}
 
     /**
@@ -76,13 +72,8 @@ class SetupOrchestrator implements SetupService
      */
     public function isRecordExists(string $recordName): bool
     {
-        return match ($recordName) {
-            self::RECORD_SUPER_ADMIN => $this->superAdminService->exists(),
-            self::RECORD_SCHOOL => $this->schoolService->exists(),
-            self::RECORD_DEPARTMENT => $this->departmentService->exists(),
-            self::RECORD_INTERNSHIP => $this->internshipService->exists(),
-            default => throw new \InvalidArgumentException("Unknown record type '{$recordName}'."),
-        };
+        // [S3 - Scalable] Delegation to Decoupled Registry
+        return $this->registry->isRequirementSatisfied($recordName);
     }
 
     /**
@@ -177,23 +168,15 @@ class SetupOrchestrator implements SetupService
     public function finalizeSetupStep(): bool
     {
         return DB::transaction(function () {
-            $school = $this->schoolService->getSchool();
-            if (!$school) {
-                throw new AppException(
-                    userMessage: 'setup::exceptions.require_record_exists',
-                    code: 403,
-                );
-            }
-
-            $settings = [
-                self::SETTING_BRAND_NAME => $school->name,
-                self::SETTING_BRAND_LOGO => $school->logo_url ?? null,
-                self::SETTING_APP_INSTALLED => true,
-                self::SETTING_SETUP_TOKEN => null,
-            ];
-
-            $this->settingService->setValue($settings);
+            // Mark as installed
+            $this->settingService->setValue(self::SETTING_APP_INSTALLED, true);
+            $this->settingService->setValue(self::SETTING_SETUP_TOKEN, null);
             $this->settingService->setValue("setup_step_complete", true);
+
+            // [S3 - Scalable] Event-Driven Finalization
+            // Other modules (like School) should listen to this event to perform their 
+            // specific finalization logic (e.g., setting brand name).
+            event(new SetupFinalized());
 
             activity('setup')
                 ->event('finalized')

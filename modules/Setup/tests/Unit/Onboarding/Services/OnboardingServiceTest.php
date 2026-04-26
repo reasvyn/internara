@@ -53,6 +53,9 @@ describe('OnboardingService Unit Test', function () {
 
         $results = $this->service->importFromCsv($csvPath, 'student');
 
+        if ($results['success'] === 0) {
+            dd($results['errors']);
+        }
         expect($results['success'])->toBe(1);
         unlink($csvPath);
     });
