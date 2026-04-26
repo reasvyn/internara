@@ -32,10 +32,21 @@ class DepartmentSetup extends Component
             currentStep: SetupService::STEP_DEPARTMENT,
             nextStep: SetupService::STEP_INTERNSHIP,
             prevStep: SetupService::STEP_ACCOUNT,
-            extra: ['req_record' => 'department'],
+            extra: ['req_record' => SetupService::RECORD_DEPARTMENT],
         );
 
         $this->requireSetupAccess();
+    }
+
+    /**
+     * Re-evaluates step status after records are modified.
+     */
+    #[\Livewire\Attributes\On('department:saved')]
+    #[\Livewire\Attributes\On('department:deleted')]
+    public function handleRecordsChanged(): void
+    {
+        unset($this->isRecordExists);
+        unset($this->disableNextStep);
     }
 
     /**

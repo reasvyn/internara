@@ -26,6 +26,7 @@ return [
         'save_continue' => 'Simpan & Lanjutkan',
         'finish' => 'Selesai',
         'later_at_settings' => 'Anda dapat mengubah pengaturan ini nanti melalui halaman pengaturan.',
+        'step_success' => '[:step] berhasil diselesaikan.',
     ],
     'welcome' => [
         'title' => 'Inisialisasi Sistem',

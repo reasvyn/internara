@@ -31,6 +31,16 @@ class SetupProcess
     }
 
     /**
+     * Step-to-Record mapping for automated existence checks.
+     */
+    public const STEP_RECORDS = [
+        SetupService::STEP_SCHOOL => SetupService::RECORD_SCHOOL,
+        SetupService::STEP_ACCOUNT => SetupService::RECORD_SUPER_ADMIN,
+        SetupService::STEP_DEPARTMENT => SetupService::RECORD_DEPARTMENT,
+        SetupService::STEP_INTERNSHIP => SetupService::RECORD_INTERNSHIP,
+    ];
+
+    /**
      * Determines if the setup process can proceed to a specific step.
      */
     public function canProceedTo(string $step): bool
@@ -44,7 +54,20 @@ class SetupProcess
             return true;
         }
 
+        // [S1 - Secure] Sequential integrity invariant
         return $this->isStepCompleted($prevStep);
+    }
+
+    /**
+     * Validates if a step can be finalized based on its requirements.
+     */
+    public function validateStepFinalization(string $step, bool $recordExists): void
+    {
+        $requiredRecord = self::STEP_RECORDS[$step] ?? null;
+
+        if ($requiredRecord && !$recordExists) {
+            throw new \DomainException("Cannot finalize step '{$step}': required record '{$requiredRecord}' is missing.");
+        }
     }
 
     /**
@@ -54,6 +77,10 @@ class SetupProcess
     {
         if ($this->isInstalled) {
             throw new \LogicException('Cannot modify setup steps after application is installed.');
+        }
+
+        if (!$this->canProceedTo($step)) {
+            throw new \DomainException("Cannot complete step '{$step}': previous steps not finished.");
         }
 
         $this->completedSteps[$step] = true;

@@ -79,16 +79,31 @@ trait HandlesSetupSteps
         $nextStep = $this->setupStepProps['nextStep'] ?? '';
         $reqRecord = $this->setupStepProps['extra']['req_record'] ?? '';
 
-        $success = $this->setupService->performSetupStep($currentStep, $reqRecord);
+        try {
+            $success = $this->setupService->performSetupStep($currentStep, $reqRecord);
 
-        if ($success && $currentStep === SetupService::STEP_COMPLETE) {
-            $this->redirectToLanding();
+            if ($success) {
+                // [S2 - Sustain] Positive UI Feedback
+                flash()->success(__('setup::wizard.common.step_success', [
+                    'step' => __('setup::wizard.' . $currentStep . '.title')
+                ]));
 
-            return;
-        }
+                if ($currentStep === SetupService::STEP_COMPLETE) {
+                    $this->redirectToLanding();
+                    return;
+                }
 
-        if ($success && $nextStep) {
-            $this->redirectToStep($nextStep);
+                if ($nextStep) {
+                    $this->redirectToStep($nextStep);
+                }
+            }
+        } catch (\Exception $e) {
+            if ($e instanceof \Modules\Exception\AppException) {
+                flash()->error($e->getUserMessage());
+            } else {
+                report($e);
+                flash()->error(__('ui::errors.unexpected_technical_failure'));
+            }
         }
     }
 

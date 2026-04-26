@@ -26,6 +26,7 @@ return [
         'save_continue' => 'Save & Continue',
         'finish' => 'Finish',
         'later_at_settings' => 'You can change these settings later in the settings page.',
+        'step_success' => '[:step] completed successfully.',
     ],
     'welcome' => [
         'title' => 'System Initialization',

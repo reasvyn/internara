@@ -113,32 +113,53 @@ class SetupOrchestrator implements SetupService
     {
         $process = $this->getProcess();
 
-        if (!$process->canProceedTo($step)) {
-             throw new AppException(
-                userMessage: 'setup::exceptions.require_step_completed',
-                code: 403,
-            );
-        }
+        // [S1 - Secure] Atomic Concurrency Control
+        $lock = \Illuminate\Support\Facades\Cache::lock("setup.step.{$step}", 30);
 
-        if ($reqRecord && !$this->isRecordExists($reqRecord)) {
-            throw new AppException(
-                userMessage: 'setup::exceptions.require_record_exists',
-                code: 403,
-            );
-        }
+        return $lock->get(function () use ($step, $reqRecord, $process) {
+            // Validate Domain Invariants via Aggregate
+            if (!$process->canProceedTo($step)) {
+                 throw new AppException(
+                    userMessage: 'setup::exceptions.require_step_completed',
+                    code: 403,
+                );
+            }
 
-        if ($step === self::STEP_COMPLETE) {
-            return $this->finalizeSetupStep();
-        }
+            // [S3 - Scalable] Automated Record Existence Validation
+            $requiredRecord = $reqRecord ?? SetupProcess::STEP_RECORDS[$step] ?? null;
+            if ($requiredRecord) {
+                $exists = $this->isRecordExists($requiredRecord);
+                
+                // Enforce domain validation
+                try {
+                    $process->validateStepFinalization($step, $exists);
+                } catch (\DomainException $e) {
+                    throw new AppException(
+                        userMessage: 'setup::exceptions.require_record_exists',
+                        logMessage: $e->getMessage(),
+                        code: 403,
+                    );
+                }
+            }
 
-        $this->settingService->setValue("setup_step_{$step}", true);
+            if ($step === self::STEP_COMPLETE) {
+                return $this->finalizeSetupStep();
+            }
 
-        activity('setup')
-            ->event('step_completed')
-            ->withProperties(['step' => $step])
-            ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
+            // Persist the state change
+            $this->settingService->setValue("setup_step_{$step}", true);
 
-        return true;
+            // Audit Trail
+            activity('setup')
+                ->event('step_completed')
+                ->withProperties(['step' => $step])
+                ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
+
+            return true;
+        }) ?: throw new AppException(
+            userMessage: 'setup::exceptions.concurrency_lock',
+            code: 423,
+        );
     }
 
     /**

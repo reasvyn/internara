@@ -28,19 +28,28 @@ class SetupWelcome extends Component
      */
     public function mount(): void
     {
+        if ($this->setupService->isAppInstalled()) {
+             $this->redirectRoute('login', navigate: true);
+             return;
+        }
+
         $this->initSetupStepProps(
             currentStep: SetupService::STEP_WELCOME,
             nextStep: SetupService::STEP_ENVIRONMENT,
         );
 
-        // [S1 - Secure] Audit the start of the setup journey
-        if (! session()->has('setup_audit_logged')) {
-            activity('setup')
-                ->event('started')
-                ->log('Administrator reached the setup initialization screen.');
-            
-            session()->put('setup_audit_logged', true);
-        }
+        // [S1 - Secure] Atomic Initialization Audit
+        $lock = \Illuminate\Support\Facades\Cache::lock('setup.init', 10);
+        
+        $lock->get(function () {
+            if (! session()->has('setup_audit_logged')) {
+                activity('setup')
+                    ->event('started')
+                    ->log('Administrator reached the setup initialization screen.');
+                
+                session()->put('setup_audit_logged', true);
+            }
+        });
     }
 
     /**

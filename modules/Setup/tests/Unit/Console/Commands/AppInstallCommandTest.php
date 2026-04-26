@@ -29,7 +29,7 @@ describe('AppInstallCommand', function () {
         });
 
         $this->artisan('app:install')
-            ->expectsConfirmation('This procedure will reset the database and initialize the system. Do you want to proceed?', 'no')
+            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'no')
             ->expectsOutputToContain('Installation aborted by user.')
             ->assertExitCode(1);
     });
@@ -49,7 +49,7 @@ describe('AppInstallCommand', function () {
         $this->artisan('app:install')
             ->expectsOutputToContain('CRITICAL WARNING')
             ->expectsOutputToContain('You are running this command in a PRODUCTION environment.')
-            ->expectsConfirmation('Are you absolutely certain you want to proceed with this destructive operation?', 'no')
+            ->expectsConfirmation(__('setup::install.warnings.production_confirmation'), 'no')
             ->assertExitCode(1);
     });
 
@@ -67,7 +67,7 @@ describe('AppInstallCommand', function () {
         $this->settingService->shouldReceive('getValue')->with('setup_token')->once()->andReturn('secure-token');
 
         $this->artisan('app:install')
-            ->expectsConfirmation('This procedure will reset the database and initialize the system. Do you want to proceed?', 'yes')
+            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'yes')
             ->expectsOutputToContain('Core system initialization completed successfully.')
             ->expectsOutputToContain('secure-token')
             ->assertExitCode(0);
@@ -77,7 +77,7 @@ describe('AppInstallCommand', function () {
         $this->installerService->shouldReceive('ensureEnvFileExists')->once()->andReturn(false);
 
         $this->artisan('app:install')
-            ->expectsConfirmation('This procedure will reset the database and initialize the system. Do you want to proceed?', 'yes')
+            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'yes')
             ->expectsOutputToContain('Critical system task failure: Infrastructure: Provisioning environment configuration')
             ->assertExitCode(1);
     });
@@ -94,7 +94,7 @@ describe('AppInstallCommand', function () {
         ]);
 
         $this->artisan('app:install')
-            ->expectsConfirmation('This procedure will reset the database and initialize the system. Do you want to proceed?', 'yes')
+            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'yes')
             ->expectsOutputToContain('requirements.extension_bcmath')
             ->expectsOutputToContain('permissions.bootstrap_cache')
             ->expectsOutputToContain('database.connection: Access denied for user=****;password=****')

@@ -43,7 +43,7 @@ class SchoolSetup extends Component
             currentStep: SetupService::STEP_SCHOOL,
             nextStep: SetupService::STEP_ACCOUNT,
             prevStep: SetupService::STEP_ENVIRONMENT,
-            extra: ['req_record' => 'school'],
+            extra: ['req_record' => SetupService::RECORD_SCHOOL],
         );
 
         $this->requireSetupAccess();
@@ -55,12 +55,17 @@ class SchoolSetup extends Component
     #[On('school_saved')]
     public function handleSchoolSaved(): void
     {
-        $this->validate([
-            'turnstile' => [new \Modules\Shared\Rules\Turnstile],
-            'contact_me' => [new \Modules\Shared\Rules\Honeypot],
-        ]);
+        try {
+            $this->validate([
+                'turnstile' => [new \Modules\Shared\Rules\Turnstile],
+                'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+            ]);
 
-        $this->nextStep();
+            $this->nextStep();
+        } catch (\Exception $e) {
+             report($e);
+             flash()->error($e instanceof \Modules\Exception\AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
+        }
     }
 
     /**

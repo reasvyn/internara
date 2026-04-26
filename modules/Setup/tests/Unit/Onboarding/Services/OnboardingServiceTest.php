@@ -31,7 +31,7 @@ describe('OnboardingService Unit Test', function () {
     test('it generates correct template for students', function () {
         $template = $this->service->getTemplate('student');
 
-        expect($template)->toContain('name,email,username,password,phone,address,department_id,national_identifier,registration_number');
+        expect($template)->toContain('name,email,username,phone,address,department_id,national_identifier,registration_number');
     });
 
     test('it returns error if file not found', function () {
@@ -42,12 +42,13 @@ describe('OnboardingService Unit Test', function () {
     });
 
     test('it processes valid csv row', function () {
+        $this->provisioningService->shouldReceive('createWithRoles')->once()->andReturn((object)['id' => 'user-uuid']);
         $this->studentService->shouldReceive('create')->once();
 
         // Create temporary CSV with correct headers matching service logic
         $csvPath = tempnam(sys_get_temp_dir(), 'test_') . '.csv';
-        $headers = 'name,email,username,password,phone,address,department_id,national_identifier,registration_number';
-        $row = 'John Doe,john@example.com,jdoe,secret,0812,Jl. Merdeka,dept-1,12345,67890';
+        $headers = 'name,email,username,phone,address,department_id,national_identifier,registration_number';
+        $row = 'John Doe,john@example.com,jdoe,0812,Jl. Merdeka,dept-1,12345,67890';
         file_put_contents($csvPath, $headers . "\n" . $row);
 
         $results = $this->service->importFromCsv($csvPath, 'student');

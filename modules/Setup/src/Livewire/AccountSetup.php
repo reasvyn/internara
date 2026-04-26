@@ -43,10 +43,10 @@ class AccountSetup extends Component
     public function mount(): void
     {
         $this->initSetupStepProps(
-            currentStep: 'account',
-            nextStep: 'department',
-            prevStep: 'school',
-            extra: ['req_record' => 'super-admin'],
+            currentStep: SetupService::STEP_ACCOUNT,
+            nextStep: SetupService::STEP_DEPARTMENT,
+            prevStep: SetupService::STEP_SCHOOL,
+            extra: ['req_record' => SetupService::RECORD_SUPER_ADMIN],
         );
 
         $this->requireSetupAccess();
@@ -58,12 +58,17 @@ class AccountSetup extends Component
     #[On('super_admin_registered')]
     public function handleSuperAdminRegistered(): void
     {
-        $this->validate([
-            'turnstile' => [new \Modules\Shared\Rules\Turnstile],
-            'contact_me' => [new \Modules\Shared\Rules\Honeypot],
-        ]);
+        try {
+            $this->validate([
+                'turnstile' => [new \Modules\Shared\Rules\Turnstile],
+                'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+            ]);
 
-        $this->nextStep();
+            $this->nextStep();
+        } catch (\Exception $e) {
+             report($e);
+             flash()->error($e instanceof \Modules\Exception\AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
+        }
     }
 
     /**
