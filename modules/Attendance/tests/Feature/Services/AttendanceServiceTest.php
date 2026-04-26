@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Attendance\Tests\Feature\Services;
 
+use Illuminate\Support\Carbon;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 use Modules\Exception\AppException;
-use Modules\Internship\Models\InternshipPlacement;
-use Modules\Internship\Models\InternshipRegistration;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
@@ -21,15 +21,18 @@ test('it can check in a student within the active period [STRS-01] [SYRS-F-401]'
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $placement = InternshipPlacement::factory()->create();
-
-    $registration = InternshipRegistration::factory()->create([
+    // Mock RegistrationService to avoid direct dependency on Internship models
+    $registration = (object) [
+        'id' => 'reg-uuid',
         'student_id' => $student->id,
-        'placement_id' => $placement->id,
-        'start_date' => now()->subDay()->format('Y-m-d'),
-        'end_date' => now()->addMonth()->format('Y-m-d'),
-    ]);
-    $registration->setStatus('active');
+        'start_date' => now()->subDay(),
+        'end_date' => now()->addMonth(),
+        'academic_year' => '2025/2026',
+    ];
+
+    $registrationService = mock(RegistrationService::class);
+    $registrationService->shouldReceive('first')->andReturn($registration);
+    $this->app->instance(RegistrationService::class, $registrationService);
 
     // Success: Check-in
     $log = $this->attendanceService->checkIn($student->id);
@@ -47,12 +50,17 @@ test('it throws exception when checking in outside the internship period [STRS-0
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    $registration = InternshipRegistration::factory()->create([
+    $registration = (object) [
+        'id' => 'reg-uuid',
         'student_id' => $student->id,
-        'start_date' => now()->addDay()->format('Y-m-d'),
-        'end_date' => now()->addMonth()->format('Y-m-d'),
-    ]);
-    $registration->setStatus('active');
+        'start_date' => now()->addDay(),
+        'end_date' => now()->addMonth(),
+        'academic_year' => '2025/2026',
+    ];
+
+    $registrationService = mock(RegistrationService::class);
+    $registrationService->shouldReceive('first')->andReturn($registration);
+    $this->app->instance(RegistrationService::class, $registrationService);
 
     expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
         AppException::class,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
@@ -49,7 +50,7 @@ class RegistrationService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function register(array $data): InternshipRegistration
+    public function register(array $data): Model
     {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
             // 0. Enforce Phase Invariant: Registration restricted by system phase
@@ -120,6 +121,7 @@ class RegistrationService extends EloquentQuery implements Contract
                 $data['id'] = (string) \Illuminate\Support\Str::uuid();
             }
 
+            /** @var InternshipRegistration $registration */
             $registration = $this->create($data);
 
             // 7. Initialize status using Spatie Model Status
@@ -139,7 +141,7 @@ class RegistrationService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function approve(string $registrationId): InternshipRegistration
+    public function approve(string $registrationId): Model
     {
         $registration = $this->find($registrationId);
 
@@ -158,6 +160,7 @@ class RegistrationService extends EloquentQuery implements Contract
             );
         }
 
+        /** @var InternshipRegistration $registration */
         $registration->setStatus('active', 'Approved by administrator');
 
         return $registration;
@@ -166,7 +169,7 @@ class RegistrationService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function reject(string $registrationId, ?string $reason = null): InternshipRegistration
+    public function reject(string $registrationId, ?string $reason = null): Model
     {
         $registration = $this->find($registrationId);
 
@@ -177,6 +180,7 @@ class RegistrationService extends EloquentQuery implements Contract
             );
         }
 
+        /** @var InternshipRegistration $registration */
         $registration->setStatus('inactive', $reason ?: 'Rejected by administrator');
 
         return $registration;
@@ -189,7 +193,7 @@ class RegistrationService extends EloquentQuery implements Contract
         string $registrationId,
         string $newPlacementId,
         ?string $reason = null,
-    ): InternshipRegistration {
+    ): Model {
         return \Illuminate\Support\Facades\DB::transaction(function () use (
             $registrationId,
             $newPlacementId,
@@ -214,6 +218,7 @@ class RegistrationService extends EloquentQuery implements Contract
                 );
             }
 
+            /** @var InternshipRegistration $registration */
             // 2. Log the change
             $this->logger->logChange(
                 $registration,
@@ -232,7 +237,7 @@ class RegistrationService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function complete(string $registrationId): InternshipRegistration
+    public function complete(string $registrationId): Model
     {
         $registration = $this->find($registrationId);
 
@@ -251,6 +256,7 @@ class RegistrationService extends EloquentQuery implements Contract
             );
         }
 
+        /** @var InternshipRegistration $registration */
         $registration->setStatus('completed', 'Internship program completed successfully.');
 
         return $registration;

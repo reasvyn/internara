@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
- * @template TModel of \Modules\Internship\Models\InternshipRegistration
- *
- * @extends EloquentQuery<TModel>
+ * @extends EloquentQuery<Model>
  */
 interface RegistrationService extends EloquentQuery
 {
@@ -24,9 +23,9 @@ interface RegistrationService extends EloquentQuery
      *
      * @throws \Modules\Exception\AppException If slot exhaustion or duplicate registration occurs.
      *
-     * @return \Modules\Internship\Models\InternshipRegistration The registered entity.
+     * @return Model The registered entity.
      */
-    public function register(array $data): \Modules\Internship\Models\InternshipRegistration;
+    public function register(array $data): Model;
 
     /**
      * Transitions a pending registration to an authorized state.
@@ -37,7 +36,7 @@ interface RegistrationService extends EloquentQuery
      */
     public function approve(
         string $registrationId,
-    ): \Modules\Internship\Models\InternshipRegistration;
+    ): Model;
 
     /**
      * Terminates a pending registration with provided justification.
@@ -48,7 +47,7 @@ interface RegistrationService extends EloquentQuery
     public function reject(
         string $registrationId,
         ?string $reason = null,
-    ): \Modules\Internship\Models\InternshipRegistration;
+    ): Model;
 
     /**
      * Moves an active student to a different industrial placement.
@@ -61,7 +60,7 @@ interface RegistrationService extends EloquentQuery
         string $registrationId,
         string $newPlacementId,
         ?string $reason = null,
-    ): \Modules\Internship\Models\InternshipRegistration;
+    ): Model;
 
     /**
      * Formally closes the internship lifecycle for a student.
@@ -71,5 +70,5 @@ interface RegistrationService extends EloquentQuery
      */
     public function complete(
         string $registrationId,
-    ): \Modules\Internship\Models\InternshipRegistration;
+    ): Model;
 }
