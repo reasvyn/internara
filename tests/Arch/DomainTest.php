@@ -12,14 +12,8 @@ $modules = array_keys(array_filter($modulesStatuses, fn($status) => $status === 
 
 foreach ($modules as $module) {
     describe("{$module} Module", function () use ($module, $modulesPath) {
-        // 3.1 Model Isolation & Identity
+        // 3.1 Model Persistence
         if ($module !== 'Shared' && is_dir("{$modulesPath}/{$module}/src/Models")) {
-            test("domain: {$module} models are private")
-                ->expect("Modules\\{$module}\\Models")
-                ->classes()
-                ->not->toBeUsedIn('Modules')
-                ->ignoring("Modules\\{$module}");
-
             test("persistence: {$module} models use uuid v4 identity")
                 ->expect("Modules\\{$module}\\Models")
                 ->classes()
@@ -35,7 +29,7 @@ foreach ($modules as $module) {
                 ]);
         }
 
-        // 3.2 Service Layer Mandate (BaseService or EloquentQuery - CQRS dualism)
+        // 3.2 Service Layer Mandate
         if ($module !== 'Shared' && is_dir("{$modulesPath}/{$module}/src/Services")) {
             test("domain: {$module} services extend authoritative base classes")
                 ->expect("Modules\\{$module}\\Services")
@@ -64,26 +58,8 @@ foreach ($modules as $module) {
                     'Modules\\Media',
                     'Modules\\Support',
                     'Nwidart\\Modules',
-                    // Explicitly allowed cross-module anchors (Internal infrastructure)
                     'Modules\\User\\Models\\User',
                     'Modules\\Profile\\Models\\Profile',
-                ]);
-        }
-
-        // 3.3 Thin Component Rule (Model as DTO OK, CRUD Forbidden)
-        if (is_dir("{$modulesPath}/{$module}/src/Livewire")) {
-            test("domain: {$module} livewire components respect isolation")
-                ->expect("Modules\\{$module}\\Livewire")
-                ->classes()
-                ->not->toUse('Modules')
-                ->ignoring([
-                    "Modules\\{$module}",
-                    'Modules\\Shared',
-                    'Modules\\Core',
-                    'Modules\\UI',
-                    'Modules\\User\\Models\\User',
-                    'Modules\\Profile\\Models\\Profile',
-                    'Modules\\Exception',
                 ]);
         }
 

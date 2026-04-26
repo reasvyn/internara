@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -42,9 +44,12 @@ class AdminService extends EloquentQuery implements Contract
         return parent::query($filters, $columns, $with);
     }
 
-    public function create(array $data): User
+    /**
+     * @return Authenticatable&Model
+     */
+    public function create(array $data): Model
     {
-        return DB::transaction(function () use ($data): User {
+        return DB::transaction(function () use ($data): Model {
             $status = $data['status'] ?? User::STATUS_ACTIVE;
             $profileData = Arr::only($data['profile'] ?? [], ['phone', 'address', 'gender']);
             unset($data['profile'], $data['status'], $data['roles']);
@@ -77,12 +82,14 @@ class AdminService extends EloquentQuery implements Contract
     }
 
     /**
-     * Send (or resend) an invitation email to an Admin account.
-     *
-     * Can only be called while the account is unclaimed (setup_required = true).
+     * {@inheritdoc}
      */
-    public function invite(User $admin, ?User $issuedBy = null, int $expiresInDays = 7): void
-    {
+    public function invite(
+        Authenticatable&Model $admin,
+        (Authenticatable&Model)|null $issuedBy = null,
+        int $expiresInDays = 7
+    ): void {
+        /** @var User $admin */
         if (! $admin->requiresSetup()) {
             throw new \RuntimeException('Cannot reinvite an admin who has already claimed their account.');
         }
@@ -90,7 +97,10 @@ class AdminService extends EloquentQuery implements Contract
         $this->provisioning->invite($admin, $expiresInDays, $issuedBy);
     }
 
-    public function update(mixed $id, array $data): User
+    /**
+     * @return Authenticatable&Model
+     */
+    public function update(mixed $id, array $data): Model
     {
         /** @var User $admin */
         $admin = $this->findOrFail($id);

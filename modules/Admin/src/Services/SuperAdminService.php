@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Modules\Admin\Services\Contracts\SuperAdminService as Contract;
 use Modules\Exception\AppException;
@@ -31,7 +33,7 @@ class SuperAdminService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function getSuperAdmin(): ?User
+    public function getSuperAdmin(): (Authenticatable&Model)|null
     {
         /** @var User|null $user */
         $user = $this->model->newQuery()->role(Role::SUPER_ADMIN->value)->first();
@@ -46,7 +48,7 @@ class SuperAdminService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function create(array $data): User
+    public function create(array $data): Authenticatable&Model
     {
         // STRICT: SuperAdmin registration is ONLY allowed during initial setup.
         if (setting('app_installed', false)) {
@@ -64,8 +66,9 @@ class SuperAdminService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function update(mixed $id, array $data): User
+    public function update(mixed $id, array $data): Authenticatable&Model
     {
+        /** @var User|null $superAdmin */
         $superAdmin = $this->getSuperAdmin();
 
         if (! $superAdmin || $superAdmin->id !== $id) {
@@ -107,7 +110,7 @@ class SuperAdminService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function save(array $attributes, array $values = []): User
+    public function save(array $attributes, array $values = []): Authenticatable&Model
     {
         // STRICT: Save (updateOrCreate) is ONLY allowed during initial setup phase.
         if (setting('app_installed', false)) {

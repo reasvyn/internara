@@ -6,6 +6,7 @@ namespace Modules\Setup\Tests\Feature\Middleware;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\RateLimiter;
+use Mockery;
 use Modules\Setup\Services\Contracts\SetupService;
 use Tests\TestCase;
 
@@ -13,6 +14,8 @@ describe('ProtectSetupRoute Middleware', function () {
     it('enforces rate limiting on setup routes', function () {
         $setupService = Mockery::mock(SetupService::class);
         $setupService->shouldReceive('isAppInstalled')->andReturn(false);
+        $setupService->shouldReceive('isStepCompleted')->andReturn(false);
+        $setupService->shouldReceive('requireSetupAccess')->andReturn(true);
         $this->app->instance(SetupService::class, $setupService);
         
         Config::set('app.env', 'production');

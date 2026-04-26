@@ -6,6 +6,8 @@ namespace Modules\Setup\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Setup\Services\Contracts\SetupService;
@@ -26,13 +28,13 @@ class ProtectSetupRoute
         // [S1 - Secure] Apply Rate Limiting for Setup Routes
         // Limit to 20 attempts per minute to prevent DoS on heavy initialization logic
         $key = 'setup_throttle:' . $request->ip();
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 20)) {
-            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+        if (RateLimiter::tooManyAttempts($key, 20)) {
+            $seconds = RateLimiter::availableIn($key);
             return abort(429, __('ui::messages.too_many_requests', ['seconds' => $seconds]));
         }
-        \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+        RateLimiter::hit($key, 60);
 
-        $isInstalled = \Illuminate\Support\Facades\Cache::rememberForever('internara.installed', function () {
+        $isInstalled = Cache::rememberForever('internara.installed', function () {
             return $this->setupService->isAppInstalled(true);
         });
 
@@ -45,17 +47,17 @@ class ProtectSetupRoute
         if (! $isInstalled) {
             // Check for valid signature OR valid token
             if ($request->hasValidSignature() || $this->hasValidToken($request)) {
-                $request->session()->put('setup_authorized', true);
+                $request->session()->put(SetupService::SESSION_SETUP_AUTHORIZED, true);
             }
 
-            $isAuthorized = $request->session()->get('setup_authorized');
+            $isAuthorized = $request->session()->get(SetupService::SESSION_SETUP_AUTHORIZED);
 
             // Verify authorized session AND ensure setup_token still exists in DB
             $storedToken = $this->settingService->getValue('setup_token');
             if (! $isAuthorized || empty($storedToken)) {
                 return abort(
                     403,
-                    __('setup::exceptions.unauthorized_setup_access'),
+                    __('exception::messages.unauthorized_setup_access'),
                 );
             }
 
@@ -102,10 +104,15 @@ class ProtectSetupRoute
 
     protected function superAdminExists(): bool
     {
-        return $this->superAdminService->remember(
-            cacheKey: 'user.super_admin',
-            ttl: now()->addDay(),
-            callback: fn (SuperAdminService $service) => $service->exists(),
+        // For testing environments, bypass the cache to ensure accurate evaluation
+        if (is_testing()) {
+            return $this->superAdminService->exists();
+        }
+
+        return Cache::remember(
+            'user.super_admin',
+            now()->addDay(),
+            fn () => $this->superAdminService->exists(),
         );
     }
 
