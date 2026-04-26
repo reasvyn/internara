@@ -33,6 +33,14 @@ describe('SetupService', function () {
             $this->departmentService,
             $this->internshipService
         );
+
+        \Illuminate\Support\Facades\Gate::shouldReceive('authorize')->with('performStep', SetupService::class)->andReturn(true);
+
+        $lockMock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+        $lockMock->shouldReceive('get')->andReturnUsing(function ($callback) {
+            return $callback();
+        });
+        \Illuminate\Support\Facades\Cache::shouldReceive('lock')->andReturn($lockMock);
     });
 
     it('identifies if application is installed', function () {

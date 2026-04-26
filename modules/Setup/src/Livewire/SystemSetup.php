@@ -77,6 +77,14 @@ class SystemSetup extends Component
      */
     public function testConnection(): void
     {
+        // [S1 - Secure] Rate limit connection tests to prevent SMTP amplification attacks
+        $key = 'setup_smtp_test:' . request()->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
+            flash()->error(__('ui::messages.too_many_requests', ['seconds' => \Illuminate\Support\Facades\RateLimiter::availableIn($key)]));
+            return;
+        }
+        \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+
         $this->validate([
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',
@@ -92,10 +100,10 @@ class SystemSetup extends Component
                 $response = fgets($socket, 1024);
                 fclose($socket);
                 
-                if (str_starts_with($response, '220')) {
+                if (str_starts_with((string) $response, '220')) {
                     flash()->success(__('setup::wizard.system.smtp_connection_success'));
                 } else {
-                    throw new \Exception("Server responded with: " . trim($response));
+                    throw new \Exception("Server responded with: " . trim((string) $response));
                 }
             } else {
                 throw new \Exception($errstr ?: 'Connection timed out after ' . $timeout . ' seconds.');
@@ -120,7 +128,8 @@ class SystemSetup extends Component
      */
     public function save(): void
     {
-        $validated = $this->validate([
+        // [S1 - Secure] Bot & Amplification Protection
+        $this->validate([
             'turnstile' => [new Turnstile],
             'contact_me' => [new \Modules\Shared\Rules\Honeypot],
             'mail_host' => 'required|string',
@@ -132,9 +141,22 @@ class SystemSetup extends Component
             'mail_from_name' => 'required|string',
         ]);
 
-        $this->setupService->saveSystemSettings($validated);
+        try {
+            $this->setupService->saveSystemSettings([
+                'mail_host' => $this->mail_host,
+                'mail_port' => $this->mail_port,
+                'mail_username' => $this->mail_username,
+                'mail_password' => $this->mail_password,
+                'mail_encryption' => $this->mail_encryption,
+                'mail_from_address' => $this->mail_from_address,
+                'mail_from_name' => $this->mail_from_name,
+            ]);
 
-        $this->nextStep();
+            $this->nextStep();
+        } catch (\Exception $e) {
+            report($e);
+            flash()->error(__('ui::errors.unexpected_technical_failure'));
+        }
     }
 
     /**
