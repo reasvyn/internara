@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Livewire;
 
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class RegistrationIndex extends RecordIndex
     /**
      * Get summary metrics for internship registrations.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

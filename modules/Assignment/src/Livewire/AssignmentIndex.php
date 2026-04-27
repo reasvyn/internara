@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Assignment\Livewire;
 
 use Modules\Assignment\Services\Contracts\AssignmentService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class AssignmentIndex extends RecordIndex
     /**
      * Get summary metrics for assignments.
      */
+    #[Computed]
     public function stats(): array
     {
         return [

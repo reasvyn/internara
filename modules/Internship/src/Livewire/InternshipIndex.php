@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Livewire\Attributes\Computed;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\UI\Livewire\RecordIndex;
 
@@ -38,6 +39,7 @@ class InternshipIndex extends RecordIndex
      * Get institutional summary metrics for internship programs.
      * Maps raw service stats into the standardized UI format.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

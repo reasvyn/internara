@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Livewire;
 
 use Modules\Internship\Services\Contracts\CompanyService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class CompanyIndex extends RecordIndex
     /**
      * Get summary metrics for industry partners.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

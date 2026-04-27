@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mentor\Livewire;
 
 use Modules\Mentor\Services\Contracts\MentorService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class MentorIndex extends RecordIndex
     /**
      * Get summary metrics for mentor distribution.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

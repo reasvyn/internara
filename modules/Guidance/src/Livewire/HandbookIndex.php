@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Guidance\Livewire;
 
 use Modules\Guidance\Services\Contracts\HandbookService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class HandbookIndex extends RecordIndex
     /**
      * Get summary metrics for handbooks.
      */
+    #[Computed]
     public function stats(): array
     {
         $total = $this->service->count();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Student\Livewire;
 
 use Modules\Student\Services\Contracts\StudentService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class StudentIndex extends RecordIndex
     /**
      * Get summary metrics for student distribution.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

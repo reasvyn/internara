@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Department\Livewire;
 
 use Modules\Department\Services\Contracts\DepartmentService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class DepartmentIndex extends RecordIndex
     /**
      * Get summary metrics for departments.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

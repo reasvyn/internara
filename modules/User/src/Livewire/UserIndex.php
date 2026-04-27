@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\User\Livewire;
 
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 use Modules\User\Services\Contracts\UserService;
 
@@ -36,6 +37,7 @@ class UserIndex extends RecordIndex
     /**
      * Get summary metrics for user distribution.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

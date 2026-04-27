@@ -6,6 +6,7 @@ namespace Modules\Admin\Livewire;
 
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Permission\Enums\Role;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -51,6 +52,7 @@ class AdminIndex extends RecordIndex
     /**
      * Get summary metrics for administrator distribution.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();

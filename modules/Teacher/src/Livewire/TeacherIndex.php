@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Teacher\Livewire;
 
 use Modules\Teacher\Services\Contracts\TeacherService;
+use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -36,6 +37,7 @@ class TeacherIndex extends RecordIndex
     /**
      * Get summary metrics for teacher distribution.
      */
+    #[Computed]
     public function stats(): array
     {
         $raw = $this->service->getStats();
