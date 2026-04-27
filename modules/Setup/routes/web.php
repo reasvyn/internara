@@ -9,6 +9,7 @@ use Modules\Setup\Livewire\DepartmentSetup;
 use Modules\Setup\Livewire\InternshipSetup;
 use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
+use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Livewire\SystemSetup;
 
 /*
@@ -24,7 +25,7 @@ use Modules\Setup\Livewire\SystemSetup;
 
 Route::prefix('setup')
     ->middleware(ProtectSetupRoute::class)
-    .group(function () {
+    ->group(function () {
         Route::get('/', fn() => redirect()->route('setup.welcome', ['token' => request('token')]))->name('setup');
         Route::get('/welcome', SetupWelcome::class)->name('setup.welcome');
         Route::get('/school', SchoolSetup::class)->name('setup.school');
