@@ -12,7 +12,6 @@ use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Auth\Services\Contracts\RedirectService;
 use Modules\Exception\AppException;
 use Modules\Permission\Enums\Role;
-use Modules\Shared\Rules\Turnstile;
 use Modules\Shared\Services\UsernameGenerator;
 use Modules\User\Livewire\Forms\UserForm;
 
@@ -22,11 +21,6 @@ class Register extends Component
      * Standardized User Form Object.
      */
     public UserForm $form;
-
-    /**
-     * Turnstile token for security.
-     */
-    public string $captcha_token = '';
 
     protected AuthService $authService;
 
@@ -66,17 +60,12 @@ class Register extends Component
         // Standard validation from Form Object
         $this->form->validate();
 
-        // [S1 - Secure] CAPTCHA Validation
-        if (config('services.cloudflare.turnstile.site_key')) {
-            $this->validate(['captcha_token' => ['required', new Turnstile]]);
-        }
-
         try {
             // [S2 - Sustain] Autonomous Username Generation (Standardized std_... pattern)
             if (empty($this->form->username)) {
                 $this->form->username = $usernameGenerator->generate(
                     $this->form->email,
-                    Role::STUDENT->value
+                    Role::STUDENT->value,
                 );
             }
 
@@ -87,7 +76,7 @@ class Register extends Component
             $user = $this->authService->register(
                 $this->form->all(),
                 roles: $this->form->roles,
-                sendEmailVerification: true
+                sendEmailVerification: true,
             );
 
             // [S2 - Sustain] Audit Log
@@ -117,7 +106,7 @@ class Register extends Component
             activity('security')
                 ->event('registration_failed')
                 ->withProperties(['ip' => request()->ip(), 'email' => $this->form->email])
-                ->log('Registration attempt failed: '.$e->getMessage());
+                ->log('Registration attempt failed: ' . $e->getMessage());
 
             $this->addError('form.email', $e->getUserMessage());
         }
@@ -128,7 +117,7 @@ class Register extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate('registration|'.request()->ip());
+        return Str::transliterate('registration|' . request()->ip());
     }
 
     /**

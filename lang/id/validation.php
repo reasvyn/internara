@@ -38,9 +38,12 @@ return [
     'digits_between' => ':Attribute harus terdiri dari :min sampai :max angka.',
     'dimensions' => ':Attribute tidak memiliki dimensi gambar yang valid.',
     'distinct' => ':Attribute memiliki nilai yang duplikat.',
-    'doesnt_contain' => 'Bidang :attribute tidak boleh berisi salah satu dari yang berikut: :values.',
-    'doesnt_end_with' => ':Attribute tidak boleh diakhiri dengan salah satu dari berikut ini: :values.',
-    'doesnt_start_with' => ':Attribute tidak boleh dimulai dengan salah satu dari berikut ini: :values.',
+    'doesnt_contain' =>
+        'Bidang :attribute tidak boleh berisi salah satu dari yang berikut: :values.',
+    'doesnt_end_with' =>
+        ':Attribute tidak boleh diakhiri dengan salah satu dari berikut ini: :values.',
+    'doesnt_start_with' =>
+        ':Attribute tidak boleh dimulai dengan salah satu dari berikut ini: :values.',
     'email' => ':Attribute harus berupa alamat surel yang valid.',
     'ends_with' => ':Attribute harus diakhiri dengan salah satu dari berikut: :values',
     'enum' => ':Attribute yang dipilih tidak valid.',
@@ -64,7 +67,8 @@ return [
     'image' => ':Attribute harus berupa gambar.',
     'in' => ':Attribute yang dipilih tidak valid.',
     'in_array' => ':Attribute tidak ada di dalam :other.',
-    'in_array_keys' => ':attribute bidang harus berisi setidaknya satu dari tombol berikut: :values.',
+    'in_array_keys' =>
+        ':attribute bidang harus berisi setidaknya satu dari tombol berikut: :values.',
     'integer' => ':Attribute harus berupa bilangan bulat.',
     'ip' => ':Attribute harus berupa alamat IP yang valid.',
     'ipv4' => ':Attribute harus berupa alamat IPv4 yang valid.',
@@ -112,10 +116,12 @@ return [
     'numeric' => ':Attribute harus berupa angka.',
     'password' => [
         'letters' => ':Attribute ini harus memiliki setidaknya satu huruf.',
-        'mixed' => ':Attribute ini harus memiliki setidaknya satu huruf kapital dan satu huruf kecil.',
+        'mixed' =>
+            ':Attribute ini harus memiliki setidaknya satu huruf kapital dan satu huruf kecil.',
         'numbers' => ':Attribute ini harus memiliki setidaknya satu angka.',
         'symbols' => ':Attribute ini harus memiliki setidaknya satu simbol.',
-        'uncompromised' => ':Attribute ini telah muncul di kebocoran data. Silakan memilih :attribute yang berbeda.',
+        'uncompromised' =>
+            ':Attribute ini telah muncul di kebocoran data. Silakan memilih :attribute yang berbeda.',
     ],
     'present' => ':Attribute wajib ada.',
     'present_if' => 'Bidang :attribute harus ada ketika :other adalah :value.',

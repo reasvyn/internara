@@ -61,7 +61,12 @@ class AdminVerificationQueue extends Component
             'totalPending' => $totalPending,
             'selectedCount' => count($this->selectedUsers),
             'showBulkActionsBar' => count($this->selectedUsers) > 0,
-            'roles' => ['student' => 'Pelajar', 'teacher' => 'Pengajar', 'mentor' => 'Pembimbing', 'admin' => 'Admin'],
+            'roles' => [
+                'student' => 'Pelajar',
+                'teacher' => 'Pengajar',
+                'mentor' => 'Pembimbing',
+                'admin' => 'Admin',
+            ],
         ]);
     }
 
@@ -114,10 +119,7 @@ class AdminVerificationQueue extends Component
     public function toggleUserSelection(int $userId): void
     {
         if (in_array($userId, $this->selectedUsers)) {
-            $this->selectedUsers = array_filter(
-                $this->selectedUsers,
-                fn ($id) => $id !== $userId
-            );
+            $this->selectedUsers = array_filter($this->selectedUsers, fn($id) => $id !== $userId);
         } else {
             $this->selectedUsers[] = $userId;
         }
@@ -130,9 +132,7 @@ class AdminVerificationQueue extends Component
      */
     public function selectAll(): void
     {
-        $userIds = $this->getPendingVerifications()
-            ->pluck('id')
-            ->toArray();
+        $userIds = $this->getPendingVerifications()->pluck('id')->toArray();
 
         $this->selectedUsers = array_unique(array_merge($this->selectedUsers, $userIds));
         $this->showBulkActionsBar = true;
@@ -160,7 +160,11 @@ class AdminVerificationQueue extends Component
             // Use spatie status() method to set status
             $user->setStatus(Status::VERIFIED->value, $note ?? 'Verified by admin');
 
-            $this->dispatch('notify', type: 'success', message: "✅ {$user->email} verified successfully");
+            $this->dispatch(
+                'notify',
+                type: 'success',
+                message: "✅ {$user->email} verified successfully",
+            );
 
             // Clear note for this user
             unset($this->notes[$userId]);
@@ -171,7 +175,11 @@ class AdminVerificationQueue extends Component
             // Refresh pagination
             $this->resetPage();
         } catch (\Exception $e) {
-            $this->dispatch('notify', type: 'error', message: "❌ Error verifying {$user->email}: {$e->getMessage()}");
+            $this->dispatch(
+                'notify',
+                type: 'error',
+                message: "❌ Error verifying {$user->email}: {$e->getMessage()}",
+            );
         }
     }
 
@@ -182,18 +190,27 @@ class AdminVerificationQueue extends Component
     {
         $user = User::findOrFail($userId);
         $note = $this->notes[$userId] ?? null;
-        $status = $targetStatus === 'restricted' ? Status::RESTRICTED->value : Status::SUSPENDED->value;
+        $status =
+            $targetStatus === 'restricted' ? Status::RESTRICTED->value : Status::SUSPENDED->value;
 
         try {
             $user->setStatus($status, $note ?? 'Account rejected during verification');
 
-            $this->dispatch('notify', type: 'warning', message: "⛔ {$user->email} {$targetStatus}");
+            $this->dispatch(
+                'notify',
+                type: 'warning',
+                message: "⛔ {$user->email} {$targetStatus}",
+            );
 
             unset($this->notes[$userId]);
             $this->toggleUserSelection($userId);
             $this->resetPage();
         } catch (\Exception $e) {
-            $this->dispatch('notify', type: 'error', message: "❌ Error rejecting {$user->email}: {$e->getMessage()}");
+            $this->dispatch(
+                'notify',
+                type: 'error',
+                message: "❌ Error rejecting {$user->email}: {$e->getMessage()}",
+            );
         }
     }
 
@@ -231,7 +248,11 @@ class AdminVerificationQueue extends Component
             $message .= ", ❌ {$failureCount} failed";
         }
 
-        $this->dispatch('notify', type: $failureCount > 0 ? 'warning' : 'success', message: $message);
+        $this->dispatch(
+            'notify',
+            type: $failureCount > 0 ? 'warning' : 'success',
+            message: $message,
+        );
 
         $this->clearSelections();
         $this->resetPage();
@@ -274,11 +295,8 @@ class AdminVerificationQueue extends Component
             $csv .= "\"{$user->email}\",\"{$user->name}\",\"{$user->phone}\",{$user->created_at->toDateString()}\n";
         }
 
-        return response()->streamDownload(
-            function () use ($csv) {
-                echo $csv;
-            },
-            'pending-verifications-'.now()->format('Y-m-d').'.csv'
-        );
+        return response()->streamDownload(function () use ($csv) {
+            echo $csv;
+        }, 'pending-verifications-' . now()->format('Y-m-d') . '.csv');
     }
 }

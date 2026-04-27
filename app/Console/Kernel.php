@@ -27,7 +27,8 @@ class Kernel extends ConsoleKernel
          * - 365+ days → auto-archive (ARCHIVED)
          * - 7+ years → GDPR anonymization & purge
          */
-        $schedule->job(new DetectIdleAccountsJob)
+        $schedule
+            ->job(new DetectIdleAccountsJob())
             ->daily()
             ->onSuccess(function () {
                 Log::info('Idle account detection completed successfully');
@@ -40,11 +41,12 @@ class Kernel extends ConsoleKernel
          * Cleanup expired activation tokens
          * Remove tokens older than 24 hours + expired
          */
-        $schedule->call(function () {
-            DB::table('activation_tokens')
-                ->where('expires_at', '<', now())
-                ->delete();
-        })->daily()->name('cleanup-expired-tokens');
+        $schedule
+            ->call(function () {
+                DB::table('activation_tokens')->where('expires_at', '<', now())->delete();
+            })
+            ->daily()
+            ->name('cleanup-expired-tokens');
     }
 
     /**
@@ -54,7 +56,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

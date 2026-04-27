@@ -18,7 +18,7 @@ final readonly class AuthCredentials
     private function __construct(
         public string $identifier,
         public string $password,
-        public string $loginField
+        public string $loginField,
     ) {
         if (empty($identifier)) {
             throw new InvalidArgumentException('Authentication identifier cannot be empty.');
@@ -39,11 +39,7 @@ final readonly class AuthCredentials
 
         $loginField = Str::contains($identifier, '@') ? 'email' : 'username';
 
-        return new self(
-            identifier: $identifier,
-            password: $password,
-            loginField: $loginField
-        );
+        return new self(identifier: $identifier, password: $password, loginField: $loginField);
     }
 
     /**

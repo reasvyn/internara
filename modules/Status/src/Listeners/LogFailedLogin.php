@@ -15,19 +15,14 @@ use Modules\User\Models\User;
  */
 class LogFailedLogin
 {
-    public function __construct(
-        protected AccountAuditLogger $auditLogger,
-    ) {}
+    public function __construct(protected AccountAuditLogger $auditLogger) {}
 
     public function handle(Failed $event): void
     {
         $user = $event->user;
 
         if ($user instanceof User) {
-            $this->auditLogger->logFailedLogin(
-                user: $user,
-                ipAddress: request()->ip(),
-            );
+            $this->auditLogger->logFailedLogin(user: $user, ipAddress: request()->ip());
         }
     }
 }

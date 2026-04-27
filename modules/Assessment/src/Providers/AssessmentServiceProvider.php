@@ -66,11 +66,16 @@ class AssessmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Assessment\Services\Contracts\AssessmentService::class => AssessmentService::class,
-            \Modules\Assessment\Services\Contracts\AnalyticsService::class => AnalyticsService::class,
-            \Modules\Assessment\Services\Contracts\CertificateService::class => CertificateService::class,
-            \Modules\Assessment\Services\Contracts\ComplianceService::class => ComplianceService::class,
-            \Modules\Assessment\Services\Contracts\CompetencyService::class => CompetencyService::class,
+            \Modules\Assessment\Services\Contracts\AssessmentService::class =>
+                AssessmentService::class,
+            \Modules\Assessment\Services\Contracts\AnalyticsService::class =>
+                AnalyticsService::class,
+            \Modules\Assessment\Services\Contracts\CertificateService::class =>
+                CertificateService::class,
+            \Modules\Assessment\Services\Contracts\ComplianceService::class =>
+                ComplianceService::class,
+            \Modules\Assessment\Services\Contracts\CompetencyService::class =>
+                CompetencyService::class,
         ];
     }
 

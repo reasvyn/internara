@@ -32,7 +32,8 @@ class AdminServiceProvider extends ServiceProvider
 
         // [S3 - Scalable] Register Setup Hook
         if ($this->app->bound(SetupRequirementRegistry::class)) {
-            $this->app->make(SetupRequirementRegistry::class)
+            $this->app
+                ->make(SetupRequirementRegistry::class)
                 ->register($this->app->make(AdminSetupRequirement::class));
         }
     }
@@ -71,8 +72,10 @@ class AdminServiceProvider extends ServiceProvider
         return [
             \Modules\Admin\Services\Contracts\AdminService::class => AdminService::class,
             \Modules\Admin\Services\Contracts\SuperAdminService::class => SuperAdminService::class,
-            \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class => AnalyticsAggregator::class,
-            \Modules\Admin\Services\Contracts\InfrastructureHealthService::class => InfrastructureHealthService::class,
+            \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class =>
+                AnalyticsAggregator::class,
+            \Modules\Admin\Services\Contracts\InfrastructureHealthService::class =>
+                InfrastructureHealthService::class,
         ];
     }
 }

@@ -30,7 +30,7 @@ class SuperAdminGuardRails
 
     public function __construct(
         AccountAuditLogger $auditLogger,
-        SessionExpirationService $sessionService
+        SessionExpirationService $sessionService,
     ) {
         $this->auditLogger = $auditLogger;
         $this->sessionService = $sessionService;
@@ -51,14 +51,14 @@ class SuperAdminGuardRails
         // If user IS Super Admin, they can never change their status
         if ($user->isProtected()) {
             throw new \Exception(
-                'Cannot change Super Admin account status. '
-                .'Super Admin accounts are immutable and cannot be modified, suspended, or archived. '
-                .'Contact Governance Board for Super Admin removal.'
+                'Cannot change Super Admin account status. ' .
+                    'Super Admin accounts are immutable and cannot be modified, suspended, or archived. ' .
+                    'Contact Governance Board for Super Admin removal.',
             );
         }
 
         // If user is being PROMOTED to Super Admin, require dual approval
-        if ($proposedStatus === Status::PROTECTED && ! $user->isProtected()) {
+        if ($proposedStatus === Status::PROTECTED && !$user->isProtected()) {
             // This should trigger dual-admin workflow (handled in StatusChangePolicy)
             Log::warning('Super Admin promotion requested - requires dual approval', [
                 'user_id' => $user->id,
@@ -90,8 +90,8 @@ class SuperAdminGuardRails
 
             if ($otherSuperAdmins === 0) {
                 throw new \Exception(
-                    'Cannot deactivate the last Super Admin account. '
-                    .'At least one Super Admin must remain active at all times.'
+                    'Cannot deactivate the last Super Admin account. ' .
+                        'At least one Super Admin must remain active at all times.',
                 );
             }
         }
@@ -111,16 +111,19 @@ class SuperAdminGuardRails
      *
      * @return bool True if change can proceed without approval
      */
-    public function requiresDualApproval(User $targetUser, string $changeType, array $changeData = []): bool
-    {
+    public function requiresDualApproval(
+        User $targetUser,
+        string $changeType,
+        array $changeData = [],
+    ): bool {
         // Only apply to Super Admin targets
-        if (! $targetUser->isProtected()) {
+        if (!$targetUser->isProtected()) {
             return false;
         }
 
         // Only Super Admins making the change
         $actor = auth()->user();
-        if (! $actor || ! $actor->isProtected()) {
+        if (!$actor || !$actor->isProtected()) {
             // Non-Super-Admin cannot modify Super Admin
             throw new \Exception('Only Super Admins can modify other Super Admin accounts.');
         }
@@ -144,7 +147,7 @@ class SuperAdminGuardRails
                 'change_type' => $changeType,
                 'requested_by' => $actor->id,
                 'requires_approval' => true,
-            ]
+            ],
         );
 
         return true; // Dual approval required
@@ -161,28 +164,28 @@ class SuperAdminGuardRails
      */
     public function approveChange(int $approvalId, User $approver): bool
     {
-        if (! $approver->isProtected()) {
+        if (!$approver->isProtected()) {
             throw new \Exception('Only Super Admins can approve Super Admin changes.');
         }
 
         $approval = DB::table('super_admin_approvals')->find($approvalId);
-        if (! $approval) {
+        if (!$approval) {
             throw new \Exception('Approval request not found.');
         }
 
         if ($approval->status !== 'pending') {
-            throw new \Exception('Approval already '.$approval->status);
+            throw new \Exception('Approval already ' . $approval->status);
         }
 
         // Check if same Super Admin requested and approved (prevent self-approval)
         if ($approval->requested_by_user_id === $approver->id) {
-            throw new \Exception('Cannot approve your own changes. Requires approval from another Super Admin.');
+            throw new \Exception(
+                'Cannot approve your own changes. Requires approval from another Super Admin.',
+            );
         }
 
         // Record approval
-        DB::table('super_admin_approvals')
-            ->where('id', $approvalId)
-            ->increment('approvals_count');
+        DB::table('super_admin_approvals')->where('id', $approvalId)->increment('approvals_count');
 
         $approval = DB::table('super_admin_approvals')->find($approvalId);
 
@@ -199,7 +202,7 @@ class SuperAdminGuardRails
                     'change_type' => $approval->change_type,
                     'approved_by' => $approver->id,
                     'final_approval' => true,
-                ]
+                ],
             );
 
             return true; // Both approvals received!
@@ -220,7 +223,7 @@ class SuperAdminGuardRails
      */
     public function enforceSessionIsolation(User $superAdmin): bool
     {
-        if (! $superAdmin->isProtected()) {
+        if (!$superAdmin->isProtected()) {
             return true; // Only applies to Super Admins
         }
 
@@ -247,7 +250,7 @@ class SuperAdminGuardRails
                 metadata: [
                     'invalidated_sessions' => count($activeSessions),
                     'new_session_ip' => request()->ip(),
-                ]
+                ],
             );
         }
 
@@ -265,7 +268,7 @@ class SuperAdminGuardRails
      */
     public function trackActivity(User $superAdmin, string $action, array $metadata = []): void
     {
-        if (! $superAdmin->isProtected()) {
+        if (!$superAdmin->isProtected()) {
             return;
         }
 
@@ -276,7 +279,7 @@ class SuperAdminGuardRails
                 'tracked_for_compliance' => true,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
-            ])
+            ]),
         );
 
         // Also log to compliance channel with highest priority
@@ -286,7 +289,7 @@ class SuperAdminGuardRails
                 'super_admin_id' => $superAdmin->id,
                 'action' => $action,
                 'metadata' => $metadata,
-            ]
+            ],
         );
     }
 
@@ -299,7 +302,7 @@ class SuperAdminGuardRails
      */
     public function isIpAllowed(User $superAdmin): bool
     {
-        if (! $superAdmin->isProtected()) {
+        if (!$superAdmin->isProtected()) {
             return true; // Only applies to Super Admins
         }
 
@@ -339,7 +342,7 @@ class SuperAdminGuardRails
         [$subnet, $bits] = explode('/', $range);
         $ip = ip2long($ip);
         $subnet = ip2long($subnet);
-        $mask = -1 << (32 - $bits);
+        $mask = -1 << 32 - $bits;
         $subnet = $subnet & $mask;
 
         return ($ip & $mask) === $subnet;

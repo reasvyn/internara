@@ -74,12 +74,9 @@ class AccountToken extends Model
      */
     public function scopeActive($query)
     {
-        return $query
-            ->whereNull('claimed_at')
-            ->where(function ($q) {
-                $q->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
-            });
+        return $query->whereNull('claimed_at')->where(function ($q) {
+            $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+        });
     }
 
     // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -106,8 +103,8 @@ class AccountToken extends Model
      */
     public function isActive(): bool
     {
-        return is_null($this->claimed_at)
-            && (is_null($this->expires_at) || $this->expires_at->isFuture());
+        return is_null($this->claimed_at) &&
+            (is_null($this->expires_at) || $this->expires_at->isFuture());
     }
 
     /**

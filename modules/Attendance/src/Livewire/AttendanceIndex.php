@@ -131,7 +131,7 @@ class AttendanceIndex extends Component
             // Filter by student name if search is provided
             if ($this->search) {
                 $query->whereHas('student', function ($q) {
-                    $q->where('name', 'like', '%'.$this->search.'%');
+                    $q->where('name', 'like', '%' . $this->search . '%');
                 });
             }
 
@@ -146,8 +146,9 @@ class AttendanceIndex extends Component
         return view('attendance::livewire.attendance-index')->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' => __('attendance::ui.index.title').
-                    ' | '.
+                'title' =>
+                    __('attendance::ui.index.title') .
+                    ' | ' .
                     setting('brand_name', setting('app_name')),
             ],
         );

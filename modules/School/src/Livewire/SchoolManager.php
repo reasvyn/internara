@@ -64,11 +64,9 @@ class SchoolManager extends Component
     public function save(): void
     {
         // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
-        $isSetupAuthorized =
-            session(AppSetupService::SESSION_SETUP_AUTHORIZED) ===
-            true;
+        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
 
-        if (! $isSetupAuthorized) {
+        if (!$isSetupAuthorized) {
             $this->authorize('school.manage');
         }
 
@@ -96,7 +94,8 @@ class SchoolManager extends Component
     public function render(): View
     {
         return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
-            'title' => __('school::ui.settings').' | '.setting('brand_name', setting('app_name')),
+            'title' =>
+                __('school::ui.settings') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

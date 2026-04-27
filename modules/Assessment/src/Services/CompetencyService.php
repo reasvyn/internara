@@ -66,13 +66,11 @@ class CompetencyService extends EloquentQuery implements Contract
      */
     public function syncJournalCompetencies(string $journalEntryId, array $competencyIds): void
     {
-        DB::table('journal_competency')
-            ->where('journal_entry_id', $journalEntryId)
-            ->delete();
+        DB::table('journal_competency')->where('journal_entry_id', $journalEntryId)->delete();
 
         $data = collect($competencyIds)
             ->map(
-                fn ($id) => [
+                fn($id) => [
                     'id' => Str::uuid()->toString(),
                     'journal_entry_id' => $journalEntryId,
                     'competency_id' => $id,

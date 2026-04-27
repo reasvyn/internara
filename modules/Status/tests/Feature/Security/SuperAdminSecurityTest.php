@@ -52,8 +52,9 @@ class SuperAdminSecurityTest extends TestCase
         $lastSuperAdmin->update(['account_status' => AccountStatus::PROTECTED->value]);
 
         // Ensure no other Super Admins exist
-        User::where('id', '!=', $lastSuperAdmin->id)
-            ->update(['account_status' => AccountStatus::VERIFIED->value]);
+        User::where('id', '!=', $lastSuperAdmin->id)->update([
+            'account_status' => AccountStatus::VERIFIED->value,
+        ]);
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('at least one Super Admin');
@@ -145,11 +146,9 @@ class SuperAdminSecurityTest extends TestCase
         $this->actingAs($superAdmin);
 
         // Create approval request
-        $this->guards->requiresDualApproval(
-            $superAdmin,
-            'password',
-            ['password' => 'NewPassword123!']
-        );
+        $this->guards->requiresDualApproval($superAdmin, 'password', [
+            'password' => 'NewPassword123!',
+        ]);
 
         $approval = DB::table('super_admin_approvals')->first();
 
@@ -174,11 +173,9 @@ class SuperAdminSecurityTest extends TestCase
         $this->actingAs($superAdmin1);
 
         // Request change
-        $this->guards->requiresDualApproval(
-            $superAdmin1,
-            'password',
-            ['password' => 'NewPassword123!']
-        );
+        $this->guards->requiresDualApproval($superAdmin1, 'password', [
+            'password' => 'NewPassword123!',
+        ]);
 
         $approval = DB::table('super_admin_approvals')->first();
 

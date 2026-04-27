@@ -17,36 +17,20 @@ use Modules\User\Livewire\UserIndex;
 Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(function () {
     Route::get('/admin', Dashboard::class)->name('admin.dashboard');
     Route::get('/admin/jobs', JobMonitor::class)->name('admin.jobs');
-    Route::get('/admin/onboarding', BatchOnboarding::class)->name(
-        'admin.onboarding',
-    );
-    Route::get('/admin/reports', ReportIndex::class)->name(
-        'admin.reports',
-    );
-    Route::get('/admin/readiness', GraduationReadiness::class)->name(
-        'admin.readiness',
-    );
+    Route::get('/admin/onboarding', BatchOnboarding::class)->name('admin.onboarding');
+    Route::get('/admin/reports', ReportIndex::class)->name('admin.reports');
+    Route::get('/admin/readiness', GraduationReadiness::class)->name('admin.readiness');
 
     // Stakeholder Management
-    Route::get('/admin/students', StudentIndex::class)->name(
-        'admin.students',
-    );
-    Route::get('/admin/teachers', TeacherIndex::class)->name(
-        'admin.teachers',
-    );
-    Route::get('/admin/mentors', MentorIndex::class)->name(
-        'admin.mentors',
-    );
+    Route::get('/admin/students', StudentIndex::class)->name('admin.students');
+    Route::get('/admin/teachers', TeacherIndex::class)->name('admin.teachers');
+    Route::get('/admin/mentors', MentorIndex::class)->name('admin.mentors');
 
     // User Directory (Admin + SuperAdmin)
-    Route::get('/admin/users', UserIndex::class)->name(
-        'admin.users.index',
-    );
+    Route::get('/admin/users', UserIndex::class)->name('admin.users.index');
 
     // Admin Management (SuperAdmin Only)
     Route::middleware(['role:super-admin'])->group(function () {
-        Route::get('/admin/administrators', AdminIndex::class)->name(
-            'admin.administrators',
-        );
+        Route::get('/admin/administrators', AdminIndex::class)->name('admin.administrators');
     });
 });

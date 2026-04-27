@@ -45,9 +45,7 @@ test('placement management page is accessible by authorized users', function () 
 });
 
 test('it can create a new placement', function () {
-    $internship = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $internship = app(InternshipService::class)->factory()->create();
     $company = Company::factory()->create(['name' => 'Google']);
 
     Livewire::test(PlacementManager::class)

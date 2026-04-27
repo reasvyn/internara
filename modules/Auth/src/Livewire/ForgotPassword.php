@@ -37,9 +37,13 @@ class ForgotPassword extends Component
 
         // [S1 - Secure] Brute Force Protection (Rate Limiting)
         $throttleKey = $this->throttleKey();
-        if (RateLimiter::tooManyAttempts($throttleKey, 3)) { // 3 attempts per hour
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            // 3 attempts per hour
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('email', __('auth::ui.forgot_password.form.rate_limited', ['seconds' => $seconds]));
+            $this->addError(
+                'email',
+                __('auth::ui.forgot_password.form.rate_limited', ['seconds' => $seconds]),
+            );
 
             return;
         }
@@ -64,13 +68,16 @@ class ForgotPassword extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate('forgot-password|'.Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(
+            'forgot-password|' . Str::lower($this->email) . '|' . request()->ip(),
+        );
     }
 
     public function render(): View
     {
         return view('auth::livewire.forgot-password')->layout('auth::components.layouts.auth', [
-            'title' => __('auth::ui.forgot_password.title').' | '.setting('site_title', 'Internara'),
+            'title' =>
+                __('auth::ui.forgot_password.title') . ' | ' . setting('site_title', 'Internara'),
         ]);
     }
 }

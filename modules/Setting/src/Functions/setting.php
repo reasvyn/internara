@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Arr;
 use Modules\Setting\Facades\Setting;
 
-if (! function_exists('setting')) {
+if (!function_exists('setting')) {
     /**
      * Get or set application settings.
      *

@@ -30,7 +30,7 @@ class AssessmentPolicy
      */
     public function view(User $user, Assessment $assessment): bool
     {
-        if (! $user->can('assessment.view')) {
+        if (!$user->can('assessment.view')) {
             return false;
         }
 
@@ -61,13 +61,13 @@ class AssessmentPolicy
      */
     public function update(User $user, Assessment $assessment): bool
     {
-        if (! $user->can('assessment.manage')) {
+        if (!$user->can('assessment.manage')) {
             return false;
         }
 
         // Only the evaluator can update their own assessment before it's finalized
         // Note: submitEvaluation currently automatically finalizes it.
-        return $user->id === $assessment->evaluator_id && ! $assessment->isFinalized();
+        return $user->id === $assessment->evaluator_id && !$assessment->isFinalized();
     }
 
     /**

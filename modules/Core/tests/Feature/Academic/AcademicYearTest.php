@@ -23,7 +23,7 @@ class AcademicTestModel extends Model
 
 beforeEach(function () {
     static $created = false;
-    if (! $created) {
+    if (!$created) {
         Schema::create('academic_test_models', function (Blueprint $table) {
             $table->id();
             $table->string('name');

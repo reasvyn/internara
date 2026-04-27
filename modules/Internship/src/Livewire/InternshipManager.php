@@ -47,10 +47,9 @@ class InternshipManager extends RecordManager
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
         $isSetupAuthorized =
-            session(AppSetupService::SESSION_SETUP_AUTHORIZED) ===
-                true || is_testing();
+            session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true || is_testing();
 
-        if (! $isSetupAuthorized) {
+        if (!$isSetupAuthorized) {
             $this->viewPermission = 'internship.view';
             $this->createPermission = 'internship.manage';
             $this->updatePermission = 'internship.manage';
@@ -58,7 +57,14 @@ class InternshipManager extends RecordManager
         }
 
         $this->searchable = ['title', 'description', 'academic_year'];
-        $this->sortable = ['title', 'academic_year', 'semester', 'date_start', 'date_finish', 'created_at'];
+        $this->sortable = [
+            'title',
+            'academic_year',
+            'semester',
+            'date_start',
+            'date_finish',
+            'created_at',
+        ];
     }
 
     /**
@@ -147,7 +153,10 @@ class InternshipManager extends RecordManager
         $this->form->reset();
 
         // Standard Auto-fills for institutional consistency
-        $this->form->academic_year = (string) setting('active_academic_year', date('Y').'/'.(date('Y') + 1));
+        $this->form->academic_year = (string) setting(
+            'active_academic_year',
+            date('Y') . '/' . (date('Y') + 1),
+        );
 
         $school = app(SchoolService::class)->getSchool();
         if ($school) {
@@ -172,10 +181,7 @@ class InternshipManager extends RecordManager
      */
     public function activeFilterCount(): int
     {
-        return count(array_filter(
-            $this->filters,
-            fn ($v) => $v !== null && $v !== '' && $v !== [],
-        ));
+        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     /**
@@ -197,10 +203,13 @@ class InternshipManager extends RecordManager
      */
     public function getSemesterOptions(): array
     {
-        return array_map(fn (Semester $semester) => [
-            'id' => $semester->value,
-            'name' => $semester->label(),
-        ], Semester::cases());
+        return array_map(
+            fn(Semester $semester) => [
+                'id' => $semester->value,
+                'name' => $semester->label(),
+            ],
+            Semester::cases(),
+        );
     }
 
     /**
@@ -247,8 +256,8 @@ class InternshipManager extends RecordManager
             'description' => $row[1] ?? '',
             'academic_year' => $row[2],
             'semester' => $row[3],
-            'date_start' => ! empty($row[4]) ? $row[4] : null,
-            'date_finish' => ! empty($row[5]) ? $row[5] : null,
+            'date_start' => !empty($row[4]) ? $row[4] : null,
+            'date_finish' => !empty($row[5]) ? $row[5] : null,
             'school_id' => app(SchoolService::class)->getSchool()?->id,
         ];
     }

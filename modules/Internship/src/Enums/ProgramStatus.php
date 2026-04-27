@@ -11,13 +11,13 @@ namespace Modules\Internship\Enums;
  */
 enum ProgramStatus: string
 {
-    case DRAFT = 'draft';           // Initial creation, not visible to students
-    case PUBLISHED = 'published';   // Visible, but registration not yet open
-    case OPEN = 'open';             // Registration active
-    case ONGOING = 'ongoing';       // Program in progress, registration closed
-    case COMPLETED = 'completed';   // Program finished
-    case CLOSED = 'closed';         // Manually closed/cancelled
-    case ARCHIVED = 'archived';     // Historical data
+    case DRAFT = 'draft'; // Initial creation, not visible to students
+    case PUBLISHED = 'published'; // Visible, but registration not yet open
+    case OPEN = 'open'; // Registration active
+    case ONGOING = 'ongoing'; // Program in progress, registration closed
+    case COMPLETED = 'completed'; // Program finished
+    case CLOSED = 'closed'; // Manually closed/cancelled
+    case ARCHIVED = 'archived'; // Historical data
 
     /**
      * Get the visual color/variant for the status.
@@ -40,6 +40,6 @@ enum ProgramStatus: string
      */
     public function label(): string
     {
-        return __('internship::status.program.'.$this->value);
+        return __('internship::status.program.' . $this->value);
     }
 }

@@ -13,9 +13,9 @@ declare(strict_types=1);
 */
 (function () {
     $authorIdentity = 'Reas Vyn';
-    $path = dirname(__DIR__).'/app_info.json';
+    $path = dirname(__DIR__) . '/app_info.json';
 
-    if (! file_exists($path)) {
+    if (!file_exists($path)) {
         header('HTTP/1.1 403 Forbidden');
         exit('Critical Error: Core system metadata (app_info.json) is missing.');
     }
@@ -45,20 +45,14 @@ use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
-            prepend: [
-                RequireSetupAccess::class,
-                BypassSetupAuthorization::class,
-            ],
-            append: [
-                CheckSessionExpiration::class,
-                SetLocale::class,
-            ],
+            prepend: [RequireSetupAccess::class, BypassSetupAuthorization::class],
+            append: [CheckSessionExpiration::class, SetLocale::class],
         );
         $middleware->alias([
             'session.expire' => CheckSessionExpiration::class,
@@ -73,9 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->map(
             ModelNotFoundException::class,
-            fn (
-                ModelNotFoundException $e,
-            ) => Handler::map($e),
+            fn(ModelNotFoundException $e) => Handler::map($e),
         );
     })
     ->create();

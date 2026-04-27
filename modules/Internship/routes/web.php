@@ -31,25 +31,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('can:internship.update')
         ->name('internship.placement.index');
 
-    Route::get(
-        '/internships/student-placement',
-        StudentPlacementIndex::class,
-    )
+    Route::get('/internships/student-placement', StudentPlacementIndex::class)
         ->middleware('can:internship.manage')
         ->name('internship.student-placement.index');
 
-    Route::get(
-        '/internships/register',
-        InternshipRegistrationManager::class,
-    )
+    Route::get('/internships/register', InternshipRegistrationManager::class)
         ->middleware('role:student')
         ->name('internship.registration.student');
 
     // Legacy routes for backward compatibility
-    Route::get(
-        '/internships/registrations',
-        RegistrationIndex::class,
-    )
+    Route::get('/internships/registrations', RegistrationIndex::class)
         ->middleware('can:internship.manage')
         ->name('internship.registration.index');
 

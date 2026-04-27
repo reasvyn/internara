@@ -3,9 +3,8 @@
 The `Teacher` module provides the workspace for academic supervisors to manage and evaluate their
 assigned students.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 

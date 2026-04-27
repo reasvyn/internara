@@ -61,7 +61,7 @@ class UserForm extends Form
         $this->roles = $user->roles->pluck('name')->toArray();
         $this->status = $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])
             ? 'verified'
-            : ($user->latestStatus()?->name ?? User::STATUS_ACTIVE);
+            : $user->latestStatus()?->name ?? User::STATUS_ACTIVE;
 
         if ($user->profile) {
             $this->profile = [
@@ -88,21 +88,21 @@ class UserForm extends Form
             'name' => array_filter([
                 'required',
                 'string',
-                $isProduction ? 'min:'.$config['name']['min_length'] : null,
-                'max:'.$config['name']['max_length'],
+                $isProduction ? 'min:' . $config['name']['min_length'] : null,
+                'max:' . $config['name']['max_length'],
             ]),
             'email' => array_filter([
                 'required',
                 $isProduction ? 'email:rfc,dns' : 'email',
-                'unique:users,email,'.$this->id,
+                'unique:users,email,' . $this->id,
             ]),
             'username' => array_filter([
                 'nullable',
                 'string',
-                $isProduction ? 'min:'.$config['username']['min_length'] : null,
-                $isProduction ? 'max:'.$config['username']['max_length'] : 'max:50',
-                $isProduction ? 'regex:'.$config['username']['pattern'] : null,
-                'unique:users,username,'.$this->id,
+                $isProduction ? 'min:' . $config['username']['min_length'] : null,
+                $isProduction ? 'max:' . $config['username']['max_length'] : 'max:50',
+                $isProduction ? 'regex:' . $config['username']['pattern'] : null,
+                'unique:users,username,' . $this->id,
             ]),
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending,verified'],

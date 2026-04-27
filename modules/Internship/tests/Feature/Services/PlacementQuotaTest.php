@@ -32,9 +32,7 @@ describe('Partner Quota Management Deep Audit (BP-PLC-01)', function () {
     });
 
     test('it uses database transactions for registration', function () {
-        DB::shouldReceive('transaction')
-            ->once()
-            ->andReturn(new InternshipRegistration);
+        DB::shouldReceive('transaction')->once()->andReturn(new InternshipRegistration());
 
         $data = [
             'internship_id' => $this->program->id,

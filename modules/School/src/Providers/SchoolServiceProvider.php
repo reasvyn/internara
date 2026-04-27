@@ -40,7 +40,8 @@ class SchoolServiceProvider extends ServiceProvider
 
         // [S3 - Scalable] Register Setup Hook
         if ($this->app->bound(SetupRequirementRegistry::class)) {
-            $this->app->make(SetupRequirementRegistry::class)
+            $this->app
+                ->make(SetupRequirementRegistry::class)
                 ->register($this->app->make(SchoolSetupRequirement::class));
         }
     }

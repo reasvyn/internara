@@ -20,32 +20,29 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EnsureEmailIsVerified
 {
-    public function handle(Request $request, Closure $next, ?string $redirectToRoute = null): Response
-    {
+    public function handle(
+        Request $request,
+        Closure $next,
+        ?string $redirectToRoute = null,
+    ): Response {
         $user = $request->user();
 
-        if (! $user) {
+        if (!$user) {
             return $next($request);
         }
 
         // Gate disabled system-wide → pass through.
-        if (! setting('require_email_verification', true)) {
+        if (!setting('require_email_verification', true)) {
             return $next($request);
         }
 
         // User has no email address → cannot verify; pass through.
-        if (! $user->email) {
+        if (!$user->email) {
             return $next($request);
         }
 
         // User already verified → pass through.
-        if (! ($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail()) {
-            return $next($request);
-        }
-
-        // User explicitly chose to skip verification this session → pass through.
-        // The dashboard soft banner will remind them to verify.
-        if (session('email_verification_skipped')) {
+        if (!($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail()) {
             return $next($request);
         }
 

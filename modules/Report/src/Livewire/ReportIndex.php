@@ -46,7 +46,7 @@ class ReportIndex extends Component
         return $service
             ->getProviders()
             ->map(
-                fn (ExportableDataProvider $p) => [
+                fn(ExportableDataProvider $p) => [
                     'id' => $p->getIdentifier(),
                     'label' => $p->getLabel(),
                 ],
@@ -62,7 +62,7 @@ class ReportIndex extends Component
     {
         return app(InternshipService::class)
             ->all(['id', 'title'])
-            ->map(fn ($i) => ['id' => $i->id, 'name' => $i->title])
+            ->map(fn($i) => ['id' => $i->id, 'name' => $i->title])
             ->toArray();
     }
 
@@ -71,11 +71,7 @@ class ReportIndex extends Component
      */
     public function getHistoryProperty()
     {
-        return app(GeneratedReportService::class)
-            ->query()
-            ->latest()
-            ->limit(10)
-            ->get();
+        return app(GeneratedReportService::class)->query()->latest()->limit(10)->get();
     }
 
     /**
@@ -83,7 +79,7 @@ class ReportIndex extends Component
      */
     public function generate(): void
     {
-        if (! $this->selectedProvider) {
+        if (!$this->selectedProvider) {
             return;
         }
 
@@ -105,7 +101,7 @@ class ReportIndex extends Component
     public function render()
     {
         return view('report::livewire.report-index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('report::ui.title').' | '.setting('brand_name', setting('app_name')),
+            'title' => __('report::ui.title') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

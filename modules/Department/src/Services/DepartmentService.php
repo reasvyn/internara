@@ -28,11 +28,8 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     /**
      * {@inheritdoc}
      */
-    public function query(
-        array $filters = [],
-        array $columns = ['*'],
-        array $with = [],
-    ): Builder {
+    public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
+    {
         // Enforce N+1 protection for school relationship
         if (empty($with)) {
             $with = ['school'];
@@ -116,11 +113,11 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
      */
     protected function validateSchool(string $schoolId): void
     {
-        if (! $this->schoolService->exists(['id' => $schoolId])) {
+        if (!$this->schoolService->exists(['id' => $schoolId])) {
             throw new RecordNotFoundException(
                 uuid: $schoolId,
                 module: 'School',
-                message: 'school::exceptions.not_found'
+                message: 'school::exceptions.not_found',
             );
         }
     }

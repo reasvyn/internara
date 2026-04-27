@@ -12,22 +12,23 @@ use Modules\User\Models\User;
 
 describe('Redirect Service', function () {
     beforeEach(function () {
-        $this->service = new RedirectService;
+        $this->service = new RedirectService();
 
         // Mock Setting Facade
         Setting::shouldReceive('getValue')->andReturn(true);
 
         // Mock standard routes to avoid RouteNotFoundException during testing
-        Route::get('/login', fn () => 'login')->name('login');
-        Route::get('/verify-email', fn () => 'verify')->name('verification.notice');
-        Route::get('/admin/dashboard', fn () => 'admin')->name('admin.dashboard');
-        Route::get('/teacher/dashboard', fn () => 'teacher')->name('teacher.dashboard');
-        Route::get('/mentor/dashboard', fn () => 'mentor')->name('mentor.dashboard');
-        Route::get('/student/dashboard', fn () => 'student')->name('student.dashboard');
+        Route::get('/login', fn() => 'login')->name('login');
+        Route::get('/verify-email', fn() => 'verify')->name('verification.notice');
+        Route::get('/admin/dashboard', fn() => 'admin')->name('admin.dashboard');
+        Route::get('/teacher/dashboard', fn() => 'teacher')->name('teacher.dashboard');
+        Route::get('/mentor/dashboard', fn() => 'mentor')->name('mentor.dashboard');
+        Route::get('/student/dashboard', fn() => 'student')->name('student.dashboard');
     });
 
     test('it redirects unverified users to verification notice [SYRS-NF-505]', function () {
         $user = mock(User::class)->makePartial();
+        $user->email = 'test@example.com';
         $user->shouldReceive('hasVerifiedEmail')->andReturn(false);
 
         // We bypass the setting() call impact by focusing on the logic

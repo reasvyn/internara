@@ -13,7 +13,7 @@ test('it delegates notification to flasher', function () {
 
     $flasher->shouldReceive('addSuccess')->once()->with('Success Message', [], null);
 
-    $service = new Notifier;
+    $service = new Notifier();
     $service->success('Success Message');
 });
 
@@ -23,6 +23,6 @@ test('it handles info notification by default', function () {
 
     $flasher->shouldReceive('addInfo')->once()->with('Default Message', [], null);
 
-    $service = new Notifier;
+    $service = new Notifier();
     $service->notify('Default Message');
 });

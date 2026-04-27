@@ -88,9 +88,7 @@ class StatusHistoryTimeline extends Component
             $query->where('triggered_by_user_id', $this->filterBy);
         }
 
-        return $query
-            ->orderBy($this->sortBy, $this->sortDir)
-            ->paginate(15);
+        return $query->orderBy($this->sortBy, $this->sortDir)->paginate(15);
     }
 
     /**
@@ -98,13 +96,16 @@ class StatusHistoryTimeline extends Component
      */
     public function getStatusOptions(): array
     {
-        return $this->user->statusHistory()
+        return $this->user
+            ->statusHistory()
             ->distinct('new_status')
             ->pluck('new_status')
-            ->map(fn ($status) => [
-                'value' => $status,
-                'label' => $status,
-            ])
+            ->map(
+                fn($status) => [
+                    'value' => $status,
+                    'label' => $status,
+                ],
+            )
             ->toArray();
     }
 
@@ -113,15 +114,18 @@ class StatusHistoryTimeline extends Component
      */
     public function getAdminOptions(): array
     {
-        return $this->user->statusHistory()
+        return $this->user
+            ->statusHistory()
             ->whereNotNull('triggered_by_user_id')
             ->distinct('triggered_by_user_id')
             ->with('triggeredBy')
             ->get()
-            ->map(fn ($history) => [
-                'value' => $history->triggered_by_user_id,
-                'label' => $history->triggeredBy?->name ?? 'Unknown Admin',
-            ])
+            ->map(
+                fn($history) => [
+                    'value' => $history->triggered_by_user_id,
+                    'label' => $history->triggeredBy?->name ?? 'Unknown Admin',
+                ],
+            )
             ->toArray();
     }
 
@@ -130,9 +134,10 @@ class StatusHistoryTimeline extends Component
      */
     public function exportCsv()
     {
-        $records = $this->user->statusHistory()
-            ->when($this->filterStatus, fn ($q) => $q->where('new_status', $this->filterStatus))
-            ->when($this->filterBy, fn ($q) => $q->where('triggered_by_user_id', $this->filterBy))
+        $records = $this->user
+            ->statusHistory()
+            ->when($this->filterStatus, fn($q) => $q->where('new_status', $this->filterStatus))
+            ->when($this->filterBy, fn($q) => $q->where('triggered_by_user_id', $this->filterBy))
             ->orderBy($this->sortBy, $this->sortDir)
             ->get();
 
@@ -140,7 +145,7 @@ class StatusHistoryTimeline extends Component
 
         foreach ($records as $history) {
             $csv .= sprintf(
-                '"%s","%s","%s","%s","%s","%s","%s","%s"'."\n",
+                '"%s","%s","%s","%s","%s","%s","%s","%s"' . "\n",
                 $history->created_at->format('Y-m-d H:i:s'),
                 $history->old_status ?? 'N/A',
                 $history->new_status,
@@ -153,8 +158,8 @@ class StatusHistoryTimeline extends Component
         }
 
         return response()->streamDownload(
-            fn () => print $csv,
-            'status-history-'.$this->user->id.'-'.now()->format('Y-m-d').'.csv',
+            fn() => print $csv,
+            'status-history-' . $this->user->id . '-' . now()->format('Y-m-d') . '.csv',
             ['Content-Type' => 'text/csv'],
         );
     }

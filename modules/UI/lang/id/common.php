@@ -67,13 +67,15 @@ return [
 
     'setup_required' => [
         'title' => 'Tindakan Diperlukan: Lengkapi Pengaturan Akun Anda',
-        'description' => 'Akun Anda dibuat oleh administrator. Harap buat kata sandi pribadi untuk mengamankan akun Anda.',
+        'description' =>
+            'Akun Anda dibuat oleh administrator. Harap buat kata sandi pribadi untuk mengamankan akun Anda.',
         'action' => 'Buat Kata Sandi',
     ],
 
     'email_unverified' => [
         'title' => 'Email Belum Diverifikasi',
-        'description' => 'Verifikasi alamat email Anda untuk mengamankan akun dan menerima notifikasi penting.',
+        'description' =>
+            'Verifikasi alamat email Anda untuk mengamankan akun dan menerima notifikasi penting.',
         'action' => 'Kirim Ulang Tautan Verifikasi',
     ],
 

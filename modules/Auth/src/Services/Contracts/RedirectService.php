@@ -17,8 +17,7 @@ interface RedirectService
     public function getTargetUrl(Authenticatable $user): string;
 
     /**
-     * Get the target URL bypassing the email verification gate.
-     * Used when the user explicitly skips email verification.
+     * Get the target dashboard URL for the authenticated user based on role.
      */
-    public function getTargetUrlSkipVerification(Authenticatable $user): string;
+    public function getDashboardUrl(Authenticatable $user): string;
 }

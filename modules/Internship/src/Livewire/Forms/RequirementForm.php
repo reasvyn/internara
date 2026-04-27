@@ -29,12 +29,7 @@ class RequirementForm extends Form
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'type' => [
-                'required',
-                Enum::class => new Enum(
-                    RequirementType::class,
-                ),
-            ],
+            'type' => ['required', Enum::class => new Enum(RequirementType::class)],
             'is_mandatory' => ['required', 'boolean'],
             'is_active' => ['required', 'boolean'],
             'academic_year' => ['required', 'string', 'regex:/^\d{4}\/\d{4}$/'],

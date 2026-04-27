@@ -34,7 +34,9 @@ Route::prefix('auth')->group(function () {
         request()->session()->regenerateToken();
 
         return redirect()->route('login');
-    })->middleware(['auth'])->name('logout');
+    })
+        ->middleware(['auth'])
+        ->name('logout');
 
     Route::get('forgot-password', ForgotPassword::class)
         ->middleware(['guest', 'throttle:auth'])

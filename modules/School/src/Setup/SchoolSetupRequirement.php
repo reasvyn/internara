@@ -15,9 +15,7 @@ use Modules\Setup\Services\Contracts\SetupRequirementProvider;
  */
 class SchoolSetupRequirement implements SetupRequirementProvider
 {
-    public function __construct(
-        protected SchoolService $schoolService
-    ) {}
+    public function __construct(protected SchoolService $schoolService) {}
 
     public function getRequirementIdentifier(): string
     {

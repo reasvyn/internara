@@ -12,9 +12,7 @@ class VerificationService
 {
     private const EMAIL_VERIFICATION_EXPIRES_HOURS = 24;
 
-    public function __construct(
-        private StatusTransitionService $statusTransition,
-    ) {}
+    public function __construct(private StatusTransitionService $statusTransition) {}
 
     /**
      * Verify email address and auto-transition account if ready.
@@ -57,8 +55,11 @@ class VerificationService
      * Manually verify account (admin action).
      * Transitions from ACTIVATED → VERIFIED.
      */
-    public function verifyAccountManually(User $user, User $verifiedBy, ?string $reason = null): void
-    {
+    public function verifyAccountManually(
+        User $user,
+        User $verifiedBy,
+        ?string $reason = null,
+    ): void {
         try {
             $this->statusTransition->transition(
                 user: $user,
@@ -95,7 +96,7 @@ class VerificationService
      */
     public function isReadyForAutoVerification(User $user): bool
     {
-        if (! $this->isEmailVerified($user)) {
+        if (!$this->isEmailVerified($user)) {
             return false;
         }
 
@@ -103,7 +104,9 @@ class VerificationService
         $verifiedAt = $user->email_verified_at;
         $now = now();
 
-        return $verifiedAt->addHours(self::EMAIL_VERIFICATION_EXPIRES_HOURS)->lessThanOrEqualTo($now);
+        return $verifiedAt
+            ->addHours(self::EMAIL_VERIFICATION_EXPIRES_HOURS)
+            ->lessThanOrEqualTo($now);
     }
 
     /**
@@ -111,7 +114,7 @@ class VerificationService
      */
     public function getHoursUntilAutoVerification(User $user): int
     {
-        if (! $this->isEmailVerified($user)) {
+        if (!$this->isEmailVerified($user)) {
             return -1; // Not verified yet
         }
 
@@ -156,7 +159,7 @@ class VerificationService
     {
         $mfaMethods = $user->verification_metadata['mfa_methods'] ?? [];
 
-        if (! isset($mfaMethods[$method])) {
+        if (!isset($mfaMethods[$method])) {
             return false;
         }
 

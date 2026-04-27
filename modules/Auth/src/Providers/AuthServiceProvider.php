@@ -49,15 +49,11 @@ class AuthServiceProvider extends BaseAuthServiceProvider
      */
     protected function configureRateLimiting(): void
     {
-        RateLimiter::for('auth', function (
-            Request $request,
-        ) {
+        RateLimiter::for('auth', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip());
         });
 
-        RateLimiter::for('registration', function (
-            Request $request,
-        ) {
+        RateLimiter::for('registration', function (Request $request) {
             return Limit::perMinute(3)->by($request->ip());
         });
     }
@@ -68,22 +64,13 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function registerLivewireComponents(): void
     {
         Livewire::component('auth::login', Login::class);
-        Livewire::component(
-            'auth::register',
-            Register::class,
-        );
-        Livewire::component(
-            'auth::register-super-admin',
-            RegisterSuperAdmin::class,
-        );
+        Livewire::component('auth::register', Register::class);
+        Livewire::component('auth::register-super-admin', RegisterSuperAdmin::class);
         Livewire::component(
             'auth::verify-email',
             \Modules\Auth\Verification\Livewire\VerifyEmail::class,
         );
-        Livewire::component(
-            'auth::verification-notice',
-            VerificationNotice::class,
-        );
+        Livewire::component('auth::verification-notice', VerificationNotice::class);
     }
 
     /**
@@ -92,7 +79,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function customizeVerificationEmail(): void
     {
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return (new MailMessage)
+            return new MailMessage()
                 ->subject(__('auth::emails.verification_subject'))
                 ->greeting(__('auth::emails.verification_greeting', ['name' => $notifiable->name]))
                 ->line(__('auth::emails.verification_line_1'))

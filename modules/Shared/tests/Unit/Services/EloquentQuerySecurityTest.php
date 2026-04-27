@@ -32,7 +32,7 @@ class SecurityServiceStub extends EloquentQuery implements EloquentQueryContract
 
     public function __construct()
     {
-        $this->setModel(new SecurityModelStub);
+        $this->setModel(new SecurityModelStub());
     }
 }
 
@@ -43,7 +43,7 @@ describe('EloquentQuery S1 & S2 Compliance', function () {
             $table->string('name');
             $table->timestamps();
         });
-        $this->service = new SecurityServiceStub;
+        $this->service = new SecurityServiceStub();
     });
 
     afterEach(function () {

@@ -16,7 +16,7 @@ final class Masker
      */
     public static function email(?string $email): string
     {
-        if (empty($email) || ! str_contains($email, '@')) {
+        if (empty($email) || !str_contains($email, '@')) {
             return '';
         }
 
@@ -24,18 +24,18 @@ final class Masker
         $length = strlen($user);
 
         if ($length <= 1) {
-            return '*@'.$domain;
+            return '*@' . $domain;
         }
 
         if ($length === 2) {
-            return substr($user, 0, 1).'*@'.$domain;
+            return substr($user, 0, 1) . '*@' . $domain;
         }
 
         $first = substr($user, 0, 1);
         $last = substr($user, -1);
         $mask = str_repeat('*', $length - 2);
 
-        return $first.$mask.$last.'@'.$domain;
+        return $first . $mask . $last . '@' . $domain;
     }
 
     /**
@@ -54,7 +54,7 @@ final class Masker
         $end = substr($value, -$keepEnd);
         $mask = str_repeat('*', $length - $keepStart - $keepEnd);
 
-        return $start.$mask.$end;
+        return $start . $mask . $end;
     }
 
     /**

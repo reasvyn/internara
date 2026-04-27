@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -26,10 +25,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
 
             $table->uuid('user_id')->index();
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             // 'activation'        — first-time account claim (username not yet set by user)
             // 'credential_reset'  — admin-initiated re-entry for existing users without email
@@ -43,10 +39,7 @@ return new class extends Migration
 
             // Admin / system actor who generated this token
             $table->uuid('issued_by')->nullable();
-            $table->foreign('issued_by')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');
+            $table->foreign('issued_by')->references('id')->on('users')->onDelete('set null');
 
             // IP address recorded at claim time for audit trail
             $table->string('ip_address', 45)->nullable();

@@ -51,8 +51,8 @@ class AdminForm extends Form
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email,'.$this->id],
-            'username' => ['nullable', 'string', 'unique:users,username,'.$this->id],
+            'email' => ['required', 'email', 'unique:users,email,' . $this->id],
+            'username' => ['nullable', 'string', 'unique:users,username,' . $this->id],
             'status' => ['required', 'string', 'in:active,inactive,pending'],
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],

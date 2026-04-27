@@ -44,7 +44,11 @@ class Dashboard extends Component
     {
         $registrations = app(RegistrationService::class)
             ->query(['academic_year' => $this->filters['academic_year']])
-            ->with(['student:id,name,username,avatar_url', 'placement:id,company_id', 'placement.company:id,name'])
+            ->with([
+                'student:id,name,username,avatar_url',
+                'placement:id,company_id',
+                'placement.company:id,name',
+            ])
             ->latest()
             ->limit(10)
             ->get();
@@ -54,21 +58,22 @@ class Dashboard extends Component
         }
 
         $registrationIds = $registrations->pluck('id')->toArray();
-        $averageScores = app(AssessmentService::class)
-            ->getAverageScore($registrationIds);
+        $averageScores = app(AssessmentService::class)->getAverageScore($registrationIds);
 
-        return $registrations->map(function ($reg) use ($averageScores) {
-            return [
-                'id' => (string) $reg->id,
-                'student' => [
-                    'name' => $reg->student?->name ?? 'Unknown',
-                    'username' => $reg->student?->username ?? '-',
-                    'avatar_url' => $reg->student?->avatar_url,
-                ],
-                'company_name' => $reg->placement?->company?->name ?? '-',
-                'final_grade' => $averageScores[(string) $reg->id] ?? null,
-            ];
-        })->toArray();
+        return $registrations
+            ->map(function ($reg) use ($averageScores) {
+                return [
+                    'id' => (string) $reg->id,
+                    'student' => [
+                        'name' => $reg->student?->name ?? 'Unknown',
+                        'username' => $reg->student?->username ?? '-',
+                        'avatar_url' => $reg->student?->avatar_url,
+                    ],
+                    'company_name' => $reg->placement?->company?->name ?? '-',
+                    'final_grade' => $averageScores[(string) $reg->id] ?? null,
+                ];
+            })
+            ->toArray();
     }
 
     /**
@@ -106,11 +111,15 @@ class Dashboard extends Component
             $data['userDistribution'] = $analytics->getUserDistribution();
         }
 
-        return view('admin::livewire.dashboard', $data)->layout('ui::components.layouts.dashboard', [
-            'title' => __('admin::ui.dashboard.title').
-                ' | '.
-                setting('brand_name', setting('app_name')),
-            'context' => 'admin::ui.menu.dashboard',
-        ]);
+        return view('admin::livewire.dashboard', $data)->layout(
+            'ui::components.layouts.dashboard',
+            [
+                'title' =>
+                    __('admin::ui.dashboard.title') .
+                    ' | ' .
+                    setting('brand_name', setting('app_name')),
+                'context' => 'admin::ui.menu.dashboard',
+            ],
+        );
     }
 }

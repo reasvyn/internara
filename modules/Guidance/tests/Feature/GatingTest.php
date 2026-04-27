@@ -21,9 +21,7 @@ beforeEach(function () {
     $this->seed(PermissionDatabaseSeeder::class);
 
     // Mock Settings to control feature state
-    Setting::shouldReceive('getValue')
-        ->with('feature_guidance_enabled', true)
-        ->andReturn(true);
+    Setting::shouldReceive('getValue')->with('feature_guidance_enabled', true)->andReturn(true);
 
     Setting::shouldReceive('getValue')
         ->with('active_academic_year', \Mockery::any(), \Mockery::any())

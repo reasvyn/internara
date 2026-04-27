@@ -59,7 +59,11 @@ class AssignmentManager extends RecordManager
         return [
             ['key' => 'title', 'label' => __('assignment::ui.title'), 'sortable' => true],
             ['key' => 'type_name', 'label' => __('assignment::ui.type')],
-            ['key' => 'is_mandatory', 'label' => __('assignment::ui.is_mandatory'), 'sortable' => true],
+            [
+                'key' => 'is_mandatory',
+                'label' => __('assignment::ui.is_mandatory'),
+                'sortable' => true,
+            ],
             ['key' => 'due_date', 'label' => __('assignment::ui.due_date'), 'sortable' => true],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
@@ -81,10 +85,11 @@ class AssignmentManager extends RecordManager
     #[Computed]
     public function records(): LengthAwarePaginator
     {
-        return $this->service->query($this->filters)
+        return $this->service
+            ->query($this->filters)
             ->with(['type'])
             ->paginate($this->perPage)
-            ->through(fn ($assignment) => $this->mapRecord($assignment));
+            ->through(fn($assignment) => $this->mapRecord($assignment));
     }
 
     /**

@@ -175,11 +175,11 @@ class DetectIdleAccountsJob implements ShouldQueue
      */
     private function anonymizeUserData(User $user): void
     {
-        $anonymizedId = 'ANON_'.hash('sha256', $user->id.config('app.key'));
+        $anonymizedId = 'ANON_' . hash('sha256', $user->id . config('app.key'));
 
         $user->update([
             'name' => $anonymizedId,
-            'email' => $anonymizedId.'@anonymized.local',
+            'email' => $anonymizedId . '@anonymized.local',
             'phone' => null,
             'address' => null,
             'profile_picture' => null,
@@ -196,7 +196,7 @@ class DetectIdleAccountsJob implements ShouldQueue
             metadata: [
                 'anonymized_id' => $anonymizedId,
                 'retention_completed' => true,
-            ]
+            ],
         );
     }
 }

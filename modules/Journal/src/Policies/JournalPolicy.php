@@ -17,7 +17,7 @@ class JournalPolicy
      */
     public function view(User $user, JournalEntry $entry): bool
     {
-        if (! $user->can('journal.view')) {
+        if (!$user->can('journal.view')) {
             return false;
         }
 
@@ -45,7 +45,7 @@ class JournalPolicy
      */
     public function update(User $user, JournalEntry $entry): bool
     {
-        if (! $user->can('journal.update')) {
+        if (!$user->can('journal.update')) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class JournalPolicy
      */
     public function validate(User $user, JournalEntry $entry): bool
     {
-        if (! $user->can('journal.validate')) {
+        if (!$user->can('journal.validate')) {
             return false;
         }
 
@@ -73,7 +73,7 @@ class JournalPolicy
      */
     public function delete(User $user, JournalEntry $entry): bool
     {
-        if (! $user->can('journal.delete')) {
+        if (!$user->can('journal.delete')) {
             return false;
         }
 

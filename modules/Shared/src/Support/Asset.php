@@ -16,6 +16,6 @@ final class Asset
      */
     public static function sharedUrl(string $path): string
     {
-        return asset('modules/shared/'.ltrim($path, '/'));
+        return asset('modules/shared/' . ltrim($path, '/'));
     }
 }

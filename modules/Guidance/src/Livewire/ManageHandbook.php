@@ -71,7 +71,9 @@ class ManageHandbook extends RecordManager
         $this->form->validate([
             'form.title' => 'required|string|max:255',
             'form.version' => 'required|string|max:20',
-            'form.file' => $this->form->id ? 'nullable|mimes:pdf|max:10240' : 'required|mimes:pdf|max:10240',
+            'form.file' => $this->form->id
+                ? 'nullable|mimes:pdf|max:10240'
+                : 'required|mimes:pdf|max:10240',
         ]);
 
         try {

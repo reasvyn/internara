@@ -24,15 +24,12 @@ test(
         // We expect 403 Forbidden from JournalService
         // Note: This requires Journal module to be present and following the contract
         expect(
-            fn () => app(JournalService::class)->create([
+            fn() => app(JournalService::class)->create([
                 'registration_id' => \Str::uuid()->toString(), // Dummy UUID for isolation test
                 'work_topic' => 'Test',
                 'activity_description' => 'Test',
             ]),
-        )->toThrow(
-            AppException::class,
-            'guidance::messages.must_complete_guidance',
-        );
+        )->toThrow(AppException::class, 'guidance::messages.must_complete_guidance');
     },
 );
 
@@ -50,9 +47,7 @@ test('bypass audit: gating is ignored if feature is disabled', function () {
 
     // Now it should pass the guidance check (but might fail on other journal rules)
     // We mock the competency sync to isolate this test
-    $competencyService = $this->mock(
-        CompetencyService::class,
-    );
+    $competencyService = $this->mock(CompetencyService::class);
     $competencyService->shouldIgnoreMissing();
 
     $result = app(JournalService::class)->create([

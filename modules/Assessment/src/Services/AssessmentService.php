@@ -37,7 +37,7 @@ class AssessmentService extends EloquentQuery implements Contract
         // Authorization: Verify evaluator is assigned to this registration
         $registration = $this->registrationService->find($registrationId);
 
-        if (! $registration) {
+        if (!$registration) {
             throw new AppException('assessment::messages.invalid_registration', code: 404);
         }
 
@@ -47,12 +47,12 @@ class AssessmentService extends EloquentQuery implements Contract
             default => false,
         };
 
-        if (! $isAuthorized) {
+        if (!$isAuthorized) {
             throw new AppException('assessment::messages.unauthorized', code: 403);
         }
 
         // Calculate average score
-        $scores = array_filter($data, fn ($value) => is_numeric($value));
+        $scores = array_filter($data, fn($value) => is_numeric($value));
         $finalScore = count($scores) > 0 ? array_sum($scores) / count($scores) : 0;
 
         return $this->save(
@@ -98,7 +98,7 @@ class AssessmentService extends EloquentQuery implements Contract
         $mentor = $assessments->get('mentor');
         $teacher = $assessments->get('teacher');
 
-        if (! $mentor || ! $teacher) {
+        if (!$mentor || !$teacher) {
             return null;
         }
 
@@ -124,7 +124,7 @@ class AssessmentService extends EloquentQuery implements Contract
             ->groupBy('registration_id')
             ->get()
             ->pluck('avg_score', 'registration_id')
-            ->map(fn ($score) => (float) $score)
+            ->map(fn($score) => (float) $score)
             ->toArray();
     }
 
@@ -136,12 +136,12 @@ class AssessmentService extends EloquentQuery implements Contract
         $registration = $this->registrationService->find($registrationId);
         $missing = [];
 
-        if (! $registration) {
+        if (!$registration) {
             return ['is_ready' => false, 'missing' => ['Invalid registration']];
         }
 
         // 1. Check Period
-        if (! $registration->end_date || $registration->end_date->isFuture()) {
+        if (!$registration->end_date || $registration->end_date->isFuture()) {
             $missing[] = __('assessment::messages.period_not_ended');
         }
 
@@ -152,16 +152,16 @@ class AssessmentService extends EloquentQuery implements Contract
             ->where('registration_id', $registrationId)
             ->get();
 
-        if (! $assessments->where('type', 'teacher')->first()) {
+        if (!$assessments->where('type', 'teacher')->first()) {
             $missing[] = __('assessment::messages.missing_teacher_eval');
         }
-        if (! $assessments->where('type', 'mentor')->first()) {
+        if (!$assessments->where('type', 'mentor')->first()) {
             $missing[] = __('assessment::messages.missing_mentor_eval');
         }
 
         // 3. Check Mandatory Assignments
         $assignmentService = app(AssignmentService::class);
-        if (! $assignmentService->isFulfillmentComplete($registrationId)) {
+        if (!$assignmentService->isFulfillmentComplete($registrationId)) {
             $missing[] = __('assessment::messages.missing_assignments');
         }
 

@@ -37,7 +37,11 @@ class SafeEncrypted implements CastsAttributes
             return Crypt::decryptString((string) $value);
         } catch (DecryptException $e) {
             // [S1 - Secure] Log the failure but don't expose sensitive raw data
-            Log::error("SafeEncrypted: Decryption failed for attribute [{$key}] on model [".get_class($model).']. The APP_KEY might have changed or data is tampered.');
+            Log::error(
+                "SafeEncrypted: Decryption failed for attribute [{$key}] on model [" .
+                    get_class($model) .
+                    ']. The APP_KEY might have changed or data is tampered.',
+            );
 
             // Return raw value or null to prevent crash.
             // In a well-behaved system, this allows the UI to still function.

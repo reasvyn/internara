@@ -1,6 +1,7 @@
 # 📦 Installation & Configuration Guide
 
-Complete step-by-step guide for installing and configuring Internara from scratch to production-ready deployment.
+Complete step-by-step guide for installing and configuring Internara from scratch to
+production-ready deployment.
 
 ---
 
@@ -21,7 +22,9 @@ Complete step-by-step guide for installing and configuring Internara from scratc
 ## 🖥️ System Requirements
 
 ### Minimum Requirements
-- **PHP**: 8.4 or higher (with extensions: bcmath, ctype, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml)
+
+- **PHP**: 8.4 or higher (with extensions: bcmath, ctype, fileinfo, json, mbstring, openssl, pdo,
+  tokenizer, xml)
 - **Node.js**: 20.x or higher
 - **Composer**: Latest version
 - **Git**: For cloning the repository
@@ -30,6 +33,7 @@ Complete step-by-step guide for installing and configuring Internara from scratc
 - **Disk**: 500MB free space
 
 ### Recommended Requirements (Production)
+
 - **Server OS**: Linux (Ubuntu 22.04 LTS, Debian 12, or similar)
 - **Web Server**: Nginx or Apache with PHP-FPM
 - **PHP**: 8.4 with OPcache enabled
@@ -40,7 +44,9 @@ Complete step-by-step guide for installing and configuring Internara from scratc
 - **Disk**: 10GB+ SSD
 
 ### PHP Extensions
+
 Verify all required extensions are installed:
+
 ```bash
 php -m | grep -E "bcmath|ctype|fileinfo|json|mbstring|openssl|pdo|tokenizer|xml"
 ```
@@ -50,6 +56,7 @@ php -m | grep -E "bcmath|ctype|fileinfo|json|mbstring|openssl|pdo|tokenizer|xml"
 ## 📥 Installation Steps
 
 ### Step 1: Clone the Repository
+
 ```bash
 # Clone from GitHub
 git clone https://github.com/reasvyn/internara.git
@@ -61,6 +68,7 @@ cd internara
 ```
 
 ### Step 2: Run Automated Setup
+
 The `composer setup` script automates all initialization steps:
 
 ```bash
@@ -68,6 +76,7 @@ composer setup
 ```
 
 **What this script does:**
+
 1. Installs all PHP dependencies via Composer
 2. Creates `.env` file from `.env.example` (if not exists)
 3. Generates `APP_KEY` for encryption
@@ -77,6 +86,7 @@ composer setup
 7. Builds frontend assets (CSS/JS)
 
 **Expected output:**
+
 ```
 Composer update succeeded
 .env file created
@@ -87,6 +97,7 @@ Assets compiled successfully
 ```
 
 ### Step 3: Verify Installation
+
 ```bash
 # Check application status
 php artisan about
@@ -101,9 +112,11 @@ php artisan route:list | head -20
 
 ### Environment File (`.env`)
 
-The `.env` file stores configuration for your environment. Created automatically by `composer setup`.
+The `.env` file stores configuration for your environment. Created automatically by
+`composer setup`.
 
 #### Application Settings
+
 ```bash
 APP_NAME=Internara
 APP_ENV=local              # local|staging|production
@@ -116,6 +129,7 @@ APP_FALLBACK_LOCALE=en
 ```
 
 #### Database Configuration
+
 ```bash
 # SQLite (Development - Recommended)
 DB_CONNECTION=sqlite
@@ -139,6 +153,7 @@ DB_PASSWORD=your_password
 ```
 
 #### Queue Configuration
+
 ```bash
 # For background jobs
 QUEUE_CONNECTION=database   # database|redis|sync
@@ -148,6 +163,7 @@ QUEUE_CONNECTION=database   # database|redis|sync
 ```
 
 #### Cache Configuration
+
 ```bash
 # For caching data
 CACHE_STORE=database        # database|redis|file
@@ -157,6 +173,7 @@ CACHE_STORE=database        # database|redis|file
 ```
 
 #### Mail Configuration (Optional)
+
 ```bash
 MAIL_MAILER=log            # log|smtp|mailgun|postmark|etc
 MAIL_HOST=smtp.mailtrap.io
@@ -166,6 +183,7 @@ MAIL_PASSWORD=xxx
 ```
 
 #### Session Configuration
+
 ```bash
 SESSION_DRIVER=database     # database|file|cookie
 SESSION_LIFETIME=120        # Minutes
@@ -173,17 +191,18 @@ SESSION_ENCRYPT=false
 ```
 
 ### Configuration Files
+
 Core configuration files in `config/` directory:
 
-| File | Purpose |
-| :--- | :--- |
-| `config/app.php` | Application settings, timezone, locale |
-| `config/database.php` | Database connections |
-| `config/cache.php` | Cache stores |
-| `config/queue.php` | Queue configuration |
-| `config/mail.php` | Mail configuration |
-| `config/auth.php` | Authentication guards and providers |
-| `config/bindings.php` | Service auto-binding (critical!) |
+| File                  | Purpose                                |
+| :-------------------- | :------------------------------------- |
+| `config/app.php`      | Application settings, timezone, locale |
+| `config/database.php` | Database connections                   |
+| `config/cache.php`    | Cache stores                           |
+| `config/queue.php`    | Queue configuration                    |
+| `config/mail.php`     | Mail configuration                     |
+| `config/auth.php`     | Authentication guards and providers    |
+| `config/bindings.php` | Service auto-binding (critical!)       |
 
 For detailed configuration options, see individual files.
 
@@ -215,6 +234,7 @@ sqlite3 database/database.sqlite < backup.sql
 **Advantages**: Enterprise-grade, scalable, excellent performance
 
 #### 1. Install PostgreSQL
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install postgresql postgresql-contrib
@@ -225,6 +245,7 @@ sudo systemctl enable postgresql
 ```
 
 #### 2. Create Database and User
+
 ```bash
 # Login as postgres
 sudo -u postgres psql
@@ -244,6 +265,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO internara;
 ```
 
 #### 3. Update `.env`
+
 ```bash
 DB_CONNECTION=pgsql
 DB_HOST=localhost
@@ -254,6 +276,7 @@ DB_PASSWORD=your_password
 ```
 
 #### 4. Run Migrations
+
 ```bash
 php artisan migrate
 ```
@@ -263,6 +286,7 @@ php artisan migrate
 **Advantages**: Simple setup, widely supported
 
 #### 1. Create Database and User
+
 ```bash
 mysql -u root -p
 
@@ -274,6 +298,7 @@ EXIT;
 ```
 
 #### 2. Update `.env`
+
 ```bash
 DB_CONNECTION=mysql
 DB_HOST=localhost
@@ -284,6 +309,7 @@ DB_PASSWORD=your_password
 ```
 
 #### 4. Run Migrations
+
 ```bash
 php artisan migrate
 ```
@@ -313,29 +339,35 @@ php artisan db:seed
 
 ## 🚀 Web Setup Wizard
 
-After technical installation via CLI, the **Setup Wizard** guides you through business-level configuration via a secure web interface.
+After technical installation via CLI, the **Setup Wizard** guides you through business-level
+configuration via a secure web interface.
 
 ### Accessing the Wizard
 
 1. Start the technical installation and initialization suite:
-   ```bash
-   php artisan app:install
-   ```
-   *This command prepares the database, environment, performs audits, and generates a secure, timed access token.*
+
+    ```bash
+    php artisan app:install
+    ```
+
+    _This command prepares the database, environment, performs audits, and generates a secure, timed
+    access token._
 
 2. Copy the generated URL from the console output. It will look like:
    `http://localhost:8000/setup?token=...&expires=...`
 
 3. Run the development server:
-   ```bash
-   composer dev
-   ```
+
+    ```bash
+    composer dev
+    ```
 
 4. Visit the URL in your browser to begin the onboarding process.
 
 ### Wizard Steps (Setup Module)
 
 #### 1️⃣ School/Institution Setup
+
 - **School Name**: Full name of educational institution
 - **School Type**: Type of institution (SMA, SMK, University, etc.)
 - **Contact Email**: Institution contact email
@@ -345,39 +377,46 @@ After technical installation via CLI, the **Setup Wizard** guides you through bu
 - **Actions**: Fill form, upload logo, click "Next"
 
 #### 2️⃣ Administrator Account
+
 - **Email**: SuperAdmin account email
 - **Password**: Strong password (min 8 chars, mixed case, numbers)
 - **Confirm Password**: Verify password
 - **Actions**: Fill form, click "Create Administrator"
 
 #### 3️⃣ Department Setup
+
 - **Create Departments**: Add organizational units (e.g., "Accounting", "Information Technology").
 - **Actions**: Add departments, click "Next"
 
 #### 4️⃣ Internship Configuration
+
 - **Program Name**: Primary internship program name.
 - **Duration**: Default internship length.
 - **Grading Scale**: Assessment scale configuration.
 - **Actions**: Configure program, click "Next"
 
 #### 5️⃣ System & SMTP Configuration
+
 - **SMTP Settings**: Configure outgoing mail server (Host, Port, User, Pass).
 - **Encryption**: TLS/SSL selection.
 - **Test Connection**: Perform real-time SMTP handshake verification.
 - **Actions**: Configure mail, test connection, click "Next"
 
 #### 6️⃣ Completion
+
 - **Summary**: Final review of configuration state.
 - **Actions**: Click "Finish" to trigger system lockdown.
 
 ### After Setup Wizard
 
 ✅ **System Lockdown Active**
+
 - Business `/setup` routes are permanently disabled.
 - Token and session authorization are invalidated.
 - Application redirects to the login portal.
 
 **To reset setup state** (emergency recovery only):
+
 ```bash
 php artisan setup:reset
 ```
@@ -395,6 +434,7 @@ composer dev
 ```
 
 This runs concurrently:
+
 - 🔵 **Laravel Server** — PHP application server (port 8000)
 - 🟣 **Queue Worker** — Background job processor
 - 🔴 **Log Viewer** — Live log display
@@ -463,6 +503,7 @@ php artisan db:seed --class=UserSeeder
 ### Deployment Steps
 
 #### 1. Server Setup
+
 ```bash
 # Create application directory
 mkdir -p /var/www/internara
@@ -473,6 +514,7 @@ git clone https://github.com/reasvyn/internara.git .
 ```
 
 #### 2. Environment Configuration
+
 ```bash
 # Copy and configure .env
 cp .env.example .env
@@ -487,6 +529,7 @@ nano .env
 ```
 
 #### 3. Install Dependencies
+
 ```bash
 # Install PHP dependencies
 composer install --no-dev --optimize-autoloader
@@ -499,6 +542,7 @@ npm run build
 ```
 
 #### 4. Database Setup
+
 ```bash
 # Generate encryption key
 php artisan key:generate
@@ -511,6 +555,7 @@ php artisan db:seed --force
 ```
 
 #### 5. Permissions
+
 ```bash
 # Set proper permissions
 chmod -R 775 storage bootstrap/cache
@@ -520,6 +565,7 @@ chown -R www-data:www-data /var/www/internara
 #### 6. Web Server Configuration
 
 **Nginx example:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -549,6 +595,7 @@ server {
 ```
 
 #### 7. Queue Worker (Background Jobs)
+
 ```bash
 # Install supervisor
 sudo apt-get install supervisor
@@ -576,6 +623,7 @@ sudo supervisorctl start internara-queue:*
 ```
 
 #### 8. Caching
+
 ```bash
 # Cache configuration for performance
 php artisan config:cache
@@ -586,6 +634,7 @@ php artisan view:cache
 ```
 
 #### 9. SSL Certificate (Let's Encrypt)
+
 ```bash
 # Install certbot
 sudo apt-get install certbot python3-certbot-nginx
@@ -670,6 +719,7 @@ composer lint
 ### Installation Issues
 
 #### "Composer install failed"
+
 ```bash
 # Clear composer cache
 composer clear-cache
@@ -682,6 +732,7 @@ composer install
 ```
 
 #### "npm install failed"
+
 ```bash
 # Clear npm cache
 npm cache clean --force
@@ -694,6 +745,7 @@ npm install
 ```
 
 #### "APP_KEY not generated"
+
 ```bash
 # Generate manually
 php artisan key:generate
@@ -705,6 +757,7 @@ cat .env | grep APP_KEY
 ### Database Issues
 
 #### "database.sqlite not found"
+
 ```bash
 # Create manually
 touch database/database.sqlite
@@ -714,6 +767,7 @@ php artisan migrate
 ```
 
 #### "SQLSTATE[HY000]: General error: 1 database disk image is malformed"
+
 ```bash
 # Backup and recreate
 mv database/database.sqlite database/database.sqlite.backup
@@ -722,6 +776,7 @@ php artisan migrate
 ```
 
 #### Migration errors
+
 ```bash
 # Rollback and retry
 php artisan migrate:reset
@@ -734,6 +789,7 @@ php artisan migrate --verbose
 ### Server Issues
 
 #### "Port 8000 already in use"
+
 ```bash
 # Use different port
 php artisan serve --port=8001
@@ -744,6 +800,7 @@ kill -9 <PID>
 ```
 
 #### "Class not found" errors
+
 ```bash
 # Refresh autoloader
 composer dump-autoload
@@ -753,6 +810,7 @@ php artisan optimize:clear
 ```
 
 #### "Permission denied" errors
+
 ```bash
 # Fix storage permissions
 chmod -R 775 storage bootstrap/cache
@@ -762,6 +820,7 @@ chown -R $(whoami):www-data storage bootstrap/cache
 ### Setup Wizard Issues
 
 #### "Setup wizard loop"
+
 ```bash
 # Check APP_INSTALLED setting
 php artisan tinker
@@ -773,6 +832,7 @@ php artisan setup:reset
 ```
 
 #### "Setup page not loading"
+
 ```bash
 # Clear caches
 php artisan cache:clear

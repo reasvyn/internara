@@ -78,7 +78,7 @@ class StatusSelector extends Component
      */
     private function canUserTransitionTo(Status $status): bool
     {
-        $policy = new StatusChangePolicy;
+        $policy = new StatusChangePolicy();
         $authUser = auth()->user();
 
         return match ($status) {
@@ -144,7 +144,7 @@ class StatusSelector extends Component
             $this->user->refresh();
             $this->selectedStatus = $this->user->getStatus()?->value;
         } catch (\Exception $e) {
-            flash()->error(__('Gagal mengubah status: '.$e->getMessage()));
+            flash()->error(__('Gagal mengubah status: ' . $e->getMessage()));
         }
     }
 

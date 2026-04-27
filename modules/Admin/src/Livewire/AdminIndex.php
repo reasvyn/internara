@@ -44,7 +44,7 @@ class AdminIndex extends RecordIndex
         abort_unless(
             auth()->user()->hasRole(Role::SUPER_ADMIN->value),
             403,
-            __('user::exceptions.super_admin_unauthorized')
+            __('user::exceptions.super_admin_unauthorized'),
         );
 
         parent::mount();

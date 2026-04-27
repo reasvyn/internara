@@ -5,10 +5,10 @@ declare(strict_types=1);
 /**
  * Domain Sovereignty and Structural Invariants Verification.
  */
-$modulesPath = __DIR__.'/../../modules';
+$modulesPath = __DIR__ . '/../../modules';
 $modulesStatuses =
-    json_decode(file_get_contents(__DIR__.'/../../modules_statuses.json'), true) ?? [];
-$modules = array_keys(array_filter($modulesStatuses, fn ($status) => $status === true));
+    json_decode(file_get_contents(__DIR__ . '/../../modules_statuses.json'), true) ?? [];
+$modules = array_keys(array_filter($modulesStatuses, fn($status) => $status === true));
 
 foreach ($modules as $module) {
     describe("{$module} Module", function () use ($module, $modulesPath) {

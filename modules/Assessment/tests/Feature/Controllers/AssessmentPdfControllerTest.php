@@ -51,7 +51,7 @@ test('authorized student can download certificate', function () {
     $response->assertHeader('Content-Type', 'application/pdf');
     $response->assertHeader(
         'Content-Disposition',
-        'attachment; filename="certificate-'.$student->username.'.pdf"',
+        'attachment; filename="certificate-' . $student->username . '.pdf"',
     );
 });
 

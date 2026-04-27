@@ -66,9 +66,16 @@ class MentorManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('user::ui.manager.table.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
-            ['key' => 'username', 'label' => __('user::ui.manager.table.username'), 'sortable' => true],
+            [
+                'key' => 'username',
+                'label' => __('user::ui.manager.table.username'),
+                'sortable' => true,
+            ],
             ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
-            ['key' => 'activation_status', 'label' => __('user::ui.manager.table.activation_status')],
+            [
+                'key' => 'activation_status',
+                'label' => __('user::ui.manager.table.activation_status'),
+            ],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
@@ -94,21 +101,28 @@ class MentorManager extends RecordManager
         return $this->managedMentorQuery($this->filters)
             ->with(['statuses'])
             ->paginate($this->perPage)
-            ->through(fn ($user) => $this->mapRecord($user));
+            ->through(fn($user) => $this->mapRecord($user));
     }
 
     public function reissueActivationCode(mixed $id): void
     {
         $user = $this->service->find($id);
-        if (! $user) {
+        if (!$user) {
             return;
         }
 
         $this->authorize('update', $user);
 
         try {
-            $plainCode = app(AccountProvisioningService::class)->reissue($user, AccountToken::TYPE_ACTIVATION, 30, auth()->user());
-            $this->credentialSlips = [['name' => $user->name, 'username' => $user->username, 'code' => $plainCode]];
+            $plainCode = app(AccountProvisioningService::class)->reissue(
+                $user,
+                AccountToken::TYPE_ACTIVATION,
+                30,
+                auth()->user(),
+            );
+            $this->credentialSlips = [
+                ['name' => $user->name, 'username' => $user->username, 'code' => $plainCode],
+            ];
             $this->credentialSlipsModal = true;
             flash()->success(__('user::ui.manager.credential_slips.code_reissued'));
         } catch (\Throwable $e) {
@@ -131,7 +145,7 @@ class MentorManager extends RecordManager
 
     public function activeFilterCount(): int
     {
-        return count(array_filter($this->filters, fn ($v) => $v !== null && $v !== '' && $v !== []));
+        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     public function statusBadgeVariant(string $status): string
@@ -201,9 +215,17 @@ class MentorManager extends RecordManager
         $createdFrom = $filters['created_from'] ?? null;
         $createdTo = $filters['created_to'] ?? null;
 
-        $query = $this->service->query(Arr::except($filters, ['status', 'created_from', 'created_to']));
+        $query = $this->service->query(
+            Arr::except($filters, ['status', 'created_from', 'created_to']),
+        );
 
-        if (in_array($selectedStatus, [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING], true)) {
+        if (
+            in_array(
+                $selectedStatus,
+                [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING],
+                true,
+            )
+        ) {
             $this->applyLatestStatusFilter($query, $selectedStatus);
         }
 
@@ -220,15 +242,22 @@ class MentorManager extends RecordManager
     protected function applyLatestStatusFilter(Builder $query, string $status): void
     {
         $statusTable = app(config('model-status.status_model'))->getTable();
-        $userTable = (new User)->getTable();
+        $userTable = new User()->getTable();
 
         $query->whereExists(function ($q) use ($status, $statusTable, $userTable): void {
             $q->selectRaw('1')
-                ->from($statusTable.' as latest_status')
-                ->whereColumn('latest_status.model_id', $userTable.'.id')
+                ->from($statusTable . ' as latest_status')
+                ->whereColumn('latest_status.model_id', $userTable . '.id')
                 ->where('latest_status.model_type', User::class)
                 ->where('latest_status.name', $status)
-                ->whereRaw('latest_status.created_at = (select max(s2.created_at) from '.$statusTable.' as s2 where s2.model_type = ? and s2.model_id = '.$userTable.'.id)', [User::class]);
+                ->whereRaw(
+                    'latest_status.created_at = (select max(s2.created_at) from ' .
+                        $statusTable .
+                        ' as s2 where s2.model_type = ? and s2.model_id = ' .
+                        $userTable .
+                        '.id)',
+                    [User::class],
+                );
         });
     }
 }

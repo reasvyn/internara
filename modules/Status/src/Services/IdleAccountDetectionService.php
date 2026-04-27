@@ -12,11 +12,11 @@ use Modules\User\Models\User;
 class IdleAccountDetectionService
 {
     // NIST SP 800-63B defaults (configurable via config)
-    private const IDLE_THRESHOLD_DAYS = 180;        // Transition to INACTIVE
+    private const IDLE_THRESHOLD_DAYS = 180; // Transition to INACTIVE
 
-    private const ARCHIVE_THRESHOLD_DAYS = 365;     // Transition to ARCHIVED
+    private const ARCHIVE_THRESHOLD_DAYS = 365; // Transition to ARCHIVED
 
-    private const GDPR_RETENTION_YEARS = 7;         // Data purge date
+    private const GDPR_RETENTION_YEARS = 7; // Data purge date
 
     public function __construct(
         private StatusTransitionService $statusTransition,
@@ -48,7 +48,9 @@ class IdleAccountDetectionService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::INACTIVE,
-                    reason: 'Automatic transition: Account idle for '.self::IDLE_THRESHOLD_DAYS.' days',
+                    reason: 'Automatic transition: Account idle for ' .
+                        self::IDLE_THRESHOLD_DAYS .
+                        ' days',
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
                 );
@@ -62,7 +64,7 @@ class IdleAccountDetectionService
         // Find accounts that should be ARCHIVED
         $archivedAccounts = $this->findIdleAccounts(self::ARCHIVE_THRESHOLD_DAYS);
         foreach ($archivedAccounts as $user) {
-            $user->refresh();  // Reload to get latest status
+            $user->refresh(); // Reload to get latest status
             // Only archive if currently INACTIVE
             if ($user->getStatus() !== Status::INACTIVE) {
                 continue;
@@ -72,7 +74,9 @@ class IdleAccountDetectionService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::ARCHIVED,
-                    reason: 'Automatic transition: Account inactive for '.self::ARCHIVE_THRESHOLD_DAYS.' days',
+                    reason: 'Automatic transition: Account inactive for ' .
+                        self::ARCHIVE_THRESHOLD_DAYS .
+                        ' days',
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
                 );
@@ -102,7 +106,8 @@ class IdleAccountDetectionService
                 $query->whereIn('name', [Status::PROTECTED->value, Status::ARCHIVED->value]);
             })
             ->where(function ($query) use ($cutoffDate) {
-                $query->where('last_activity_at', '<', $cutoffDate)
+                $query
+                    ->where('last_activity_at', '<', $cutoffDate)
                     ->orWhereNull('last_activity_at');
             })
             ->get();
@@ -152,12 +157,13 @@ class IdleAccountDetectionService
         }
 
         // Find when account was archived from Spatie's statuses table
-        $archivalStatus = $user->statuses()
+        $archivalStatus = $user
+            ->statuses()
             ->where('name', Status::ARCHIVED->value)
             ->orderByDesc('created_at')
             ->first();
 
-        if (! $archivalStatus) {
+        if (!$archivalStatus) {
             return null;
         }
 
@@ -171,8 +177,7 @@ class IdleAccountDetectionService
     {
         return User::whereHas('statuses', function ($query) {
             $cutoffDate = now()->subYears(self::GDPR_RETENTION_YEARS);
-            $query->where('name', Status::ARCHIVED->value)
-                ->where('created_at', '<', $cutoffDate);
+            $query->where('name', Status::ARCHIVED->value)->where('created_at', '<', $cutoffDate);
         })->get();
     }
 }

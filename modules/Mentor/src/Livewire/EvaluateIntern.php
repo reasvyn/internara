@@ -41,14 +41,12 @@ class EvaluateIntern extends Component
 
         // Authorization check for viewing
         $registration = app(RegistrationService::class)->find($registrationId);
-        if (! $registration || $registration->mentor_id !== auth()->id()) {
+        if (!$registration || $registration->mentor_id !== auth()->id()) {
             abort(403, 'You are not authorized to evaluate this intern.');
         }
 
         // Load compliance metrics
-        $this->complianceMetrics = app(
-            ComplianceService::class,
-        )->calculateScore($registrationId);
+        $this->complianceMetrics = app(ComplianceService::class)->calculateScore($registrationId);
 
         $assessment = $this->assessmentService->first([
             'registration_id' => $registrationId,
@@ -83,15 +81,15 @@ class EvaluateIntern extends Component
     public function render()
     {
         $registration = app(RegistrationService::class)->find($this->registrationId);
-        $claimedCompetencies = app(
-            CompetencyService::class,
-        )->getClaimedCompetencies($this->registrationId);
+        $claimedCompetencies = app(CompetencyService::class)->getClaimedCompetencies(
+            $this->registrationId,
+        );
 
         return view('mentor::livewire.evaluate-intern', [
             'registration' => $registration,
             'claimedCompetencies' => $claimedCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('Evaluate Intern').' | '.setting('brand_name', setting('app_name')),
+            'title' => __('Evaluate Intern') . ' | ' . setting('brand_name', setting('app_name')),
         ]);
     }
 }

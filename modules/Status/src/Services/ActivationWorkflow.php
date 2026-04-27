@@ -34,7 +34,7 @@ class ActivationWorkflow
 
     public function __construct(
         AccountAuditLogger $auditLogger,
-        StatusTransitionService $transitionService
+        StatusTransitionService $transitionService,
     ) {
         $this->auditLogger = $auditLogger;
         $this->transitionService = $transitionService;
@@ -88,7 +88,7 @@ class ActivationWorkflow
             metadata: [
                 'token_type' => $type,
                 'expires_at' => $expiresAt->toIso8601String(),
-            ]
+            ],
         );
 
         return [
@@ -117,7 +117,7 @@ class ActivationWorkflow
                 ->where('expires_at', '>=', now())
                 ->first();
 
-            if (! $tokenRecord) {
+            if (!$tokenRecord) {
                 // Increment failed attempts even if token not found
                 $this->recordFailedAttempt($user, $ipAddress);
                 throw new \Exception('Invalid or expired activation token.');
@@ -125,7 +125,9 @@ class ActivationWorkflow
 
             // Check rate limit: max 5 failed attempts per hour
             if ($tokenRecord->attempts >= 5 && $tokenRecord->last_attempt_at > now()->subHour()) {
-                throw new \Exception('Too many failed attempts. Please request a new activation token.');
+                throw new \Exception(
+                    'Too many failed attempts. Please request a new activation token.',
+                );
             }
 
             // Token is valid - activate user
@@ -147,7 +149,7 @@ class ActivationWorkflow
                 metadata: [
                     'activation_method' => $tokenRecord->token_type,
                     'token_attempts' => $tokenRecord->attempts,
-                ]
+                ],
             );
 
             // Delete token record
@@ -163,7 +165,7 @@ class ActivationWorkflow
                 metadata: [
                     'method' => $tokenRecord->token_type,
                     'ip_address' => $ipAddress,
-                ]
+                ],
             );
 
             return true;
@@ -190,7 +192,7 @@ class ActivationWorkflow
             event: 'activation_token_failed_attempt',
             metadata: [
                 'ip_address' => $ipAddress,
-            ]
+            ],
         );
     }
 
@@ -215,8 +217,8 @@ class ActivationWorkflow
      */
     public function hasPendingActivation(User $user): bool
     {
-        return $user->getStatus() === Status::PENDING
-            && DB::table('activation_tokens')
+        return $user->getStatus() === Status::PENDING &&
+            DB::table('activation_tokens')
                 ->where('user_id', $user->id)
                 ->where('expires_at', '>=', now())
                 ->exists();
@@ -232,7 +234,7 @@ class ActivationWorkflow
             ->where('expires_at', '>=', now())
             ->first();
 
-        if (! $token) {
+        if (!$token) {
             return null;
         }
 

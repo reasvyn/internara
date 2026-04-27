@@ -58,7 +58,7 @@ class StatusChangePolicy
         }
 
         // Regular admins can verify non-admin users
-        if ($user->role === 'admin' && ! $this->isAdmin($target)) {
+        if ($user->role === 'admin' && !$this->isAdmin($target)) {
             return true;
         }
 
@@ -76,7 +76,7 @@ class StatusChangePolicy
         }
 
         // Admins can restrict non-admin users
-        if ($user->role === 'admin' && ! $this->isAdmin($target)) {
+        if ($user->role === 'admin' && !$this->isAdmin($target)) {
             return true;
         }
 
@@ -94,7 +94,7 @@ class StatusChangePolicy
         }
 
         // Admins can suspend non-admin users
-        if ($user->role === 'admin' && ! $this->isAdmin($target)) {
+        if ($user->role === 'admin' && !$this->isAdmin($target)) {
             return true;
         }
 
@@ -153,7 +153,7 @@ class StatusChangePolicy
         }
 
         // Admins can manage non-admin users' restrictions
-        if ($user->role === 'admin' && ! $this->isAdmin($target)) {
+        if ($user->role === 'admin' && !$this->isAdmin($target)) {
             return true;
         }
 
@@ -171,7 +171,7 @@ class StatusChangePolicy
         }
 
         // Admins can unlock non-admin users
-        if ($user->role === 'admin' && ! $this->isAdmin($target)) {
+        if ($user->role === 'admin' && !$this->isAdmin($target)) {
             return true;
         }
 
@@ -195,16 +195,15 @@ class StatusChangePolicy
         if ($user->role === 'teacher') {
             // Check if user teaches any class that target is in
             // (Implementation depends on your class/enrollment structure)
-            return $user->classes()
-                ->whereHas('students', fn ($q) => $q->where('student_id', $target->id))
+            return $user
+                ->classes()
+                ->whereHas('students', fn($q) => $q->where('student_id', $target->id))
                 ->exists();
         }
 
         // Supervisors can view their internship students
         if ($user->role === 'supervisor') {
-            return $user->internships()
-                ->where('student_id', $target->id)
-                ->exists();
+            return $user->internships()->where('student_id', $target->id)->exists();
         }
 
         return false;

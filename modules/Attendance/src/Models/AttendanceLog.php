@@ -58,9 +58,7 @@ class AttendanceLog extends Model
      */
     public function registration(): BelongsTo
     {
-        return app(
-            RegistrationService::class,
-        )->defineBelongsTo($this, 'registration_id');
+        return app(RegistrationService::class)->defineBelongsTo($this, 'registration_id');
     }
 
     /**
@@ -68,10 +66,6 @@ class AttendanceLog extends Model
      */
     public function student(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'student_id',
-            relation: 'student',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'student_id', relation: 'student');
     }
 }

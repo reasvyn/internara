@@ -85,8 +85,16 @@ class StudentPlacementManager extends RecordManager
     {
         return [
             ['key' => 'student_name', 'label' => __('internship::ui.student'), 'sortable' => false],
-            ['key' => 'internship_title', 'label' => __('internship::ui.program'), 'sortable' => false],
-            ['key' => 'placement_company', 'label' => __('internship::ui.placement'), 'sortable' => false],
+            [
+                'key' => 'internship_title',
+                'label' => __('internship::ui.program'),
+                'sortable' => false,
+            ],
+            [
+                'key' => 'placement_company',
+                'label' => __('internship::ui.placement'),
+                'sortable' => false,
+            ],
             ['key' => 'teacher_name', 'label' => __('internship::ui.teacher'), 'sortable' => false],
             ['key' => 'status', 'label' => __('internship::ui.status'), 'sortable' => true],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
@@ -99,10 +107,11 @@ class StudentPlacementManager extends RecordManager
     #[Computed]
     public function records(): LengthAwarePaginator
     {
-        return $this->service->query($this->filters)
+        return $this->service
+            ->query($this->filters)
             ->with(['student', 'internship', 'placement.company', 'teacher'])
             ->paginate($this->perPage)
-            ->through(fn ($registration) => $this->mapRecord($registration));
+            ->through(fn($registration) => $this->mapRecord($registration));
     }
 
     /**
@@ -139,14 +148,15 @@ class StudentPlacementManager extends RecordManager
     #[Computed]
     public function internships(): Collection
     {
-        return app(InternshipService::class)->all(['id', 'title', 'academic_year'])
-            ->map(fn ($i) => ['id' => $i->id, 'name' => "{$i->title} ({$i->academic_year})"]);
+        return app(InternshipService::class)
+            ->all(['id', 'title', 'academic_year'])
+            ->map(fn($i) => ['id' => $i->id, 'name' => "{$i->title} ({$i->academic_year})"]);
     }
 
     #[Computed]
     public function placements(): Collection
     {
-        if (! $this->form->internship_id && ! $this->internshipId) {
+        if (!$this->form->internship_id && !$this->internshipId) {
             return collect();
         }
 
@@ -156,18 +166,20 @@ class StudentPlacementManager extends RecordManager
             ->where('internship_id', $id)
             ->with('company')
             ->get()
-            ->map(fn ($p) => [
-                'id' => $p->id,
-                'name' => $p->company?->name ?? 'Unknown',
-                'quota' => $p->capacity_quota,
-            ]);
+            ->map(
+                fn($p) => [
+                    'id' => $p->id,
+                    'name' => $p->company?->name ?? 'Unknown',
+                    'quota' => $p->capacity_quota,
+                ],
+            );
     }
 
     #[Computed]
     public function students(): Collection
     {
         $id = $this->activeTab === 'individual' ? $this->form->internship_id : $this->internshipId;
-        if (! $id) {
+        if (!$id) {
             return collect();
         }
 
@@ -176,23 +188,29 @@ class StudentPlacementManager extends RecordManager
             ->whereNull('placement_id')
             ->with('student')
             ->get()
-            ->map(fn ($r) => [
-                'id' => $r->id,
-                'name' => $r->student?->name ?? 'Unknown',
-                'email' => $r->student?->email ?? '-',
-            ]);
+            ->map(
+                fn($r) => [
+                    'id' => $r->id,
+                    'name' => $r->student?->name ?? 'Unknown',
+                    'email' => $r->student?->email ?? '-',
+                ],
+            );
     }
 
     #[Computed]
     public function teachers(): Collection
     {
-        return User::role('teacher')->orderBy('name')->get(['id', 'name']);
+        return User::role('teacher')
+            ->orderBy('name')
+            ->get(['id', 'name']);
     }
 
     #[Computed]
     public function mentors(): Collection
     {
-        return User::role('mentor')->orderBy('name')->get(['id', 'name']);
+        return User::role('mentor')
+            ->orderBy('name')
+            ->get(['id', 'name']);
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -202,12 +220,12 @@ class StudentPlacementManager extends RecordManager
     #[Computed]
     public function remainingQuota(): int
     {
-        if (! $this->companyId || ! $this->internshipId) {
+        if (!$this->companyId || !$this->internshipId) {
             return 0;
         }
 
         $placement = InternshipPlacement::find($this->companyId);
-        if (! $placement) {
+        if (!$placement) {
             return 0;
         }
 
@@ -225,10 +243,12 @@ class StudentPlacementManager extends RecordManager
         }
 
         if (count($this->selectedStudents) > $this->remainingQuota()) {
-            flash()->error(__('internship::ui.insufficient_quota', [
-                'selected' => count($this->selectedStudents),
-                'remaining' => $this->remainingQuota(),
-            ]));
+            flash()->error(
+                __('internship::ui.insufficient_quota', [
+                    'selected' => count($this->selectedStudents),
+                    'remaining' => $this->remainingQuota(),
+                ]),
+            );
 
             return;
         }
@@ -249,7 +269,9 @@ class StudentPlacementManager extends RecordManager
             $this->resetBulkForm();
             $this->bulkConfirmModal = false;
 
-            flash()->success(__('internship::ui.bulk_placement_success', ['count' => $successCount]));
+            flash()->success(
+                __('internship::ui.bulk_placement_success', ['count' => $successCount]),
+            );
             $this->refreshRecords();
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());

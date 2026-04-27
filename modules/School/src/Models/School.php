@@ -49,17 +49,22 @@ class School extends Model implements HasMedia
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['institutional_code', 'name', 'address', 'email', 'phone', 'fax', 'principal_name'];
+    protected $fillable = [
+        'institutional_code',
+        'name',
+        'address',
+        'email',
+        'phone',
+        'fax',
+        'principal_name',
+    ];
 
     /**
      * Configure activity logging for this model.
      */
     public function getActivitylogOptions(): LogOptions
     {
-        return LogOptions::defaults()
-            ->logFillable()
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
+        return LogOptions::defaults()->logFillable()->logOnlyDirty()->dontSubmitEmptyLogs();
     }
 
     /**

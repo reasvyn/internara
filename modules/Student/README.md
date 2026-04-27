@@ -3,9 +3,8 @@
 The `Student` module serves as the dedicated workspace for students within Internara. It focuses on
 providing a personalized interface for managing their internship lifecycle.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
@@ -25,5 +24,5 @@ providing a personalized interface for managing their internship lifecycle.
 
 - **Universal Identifiers:** Support for National Identifier and Internal Registration Number.
 - **Official Documentation:** Integration for 3x4 Passport Photo with automated top-center cropping
- for systemic avatar fallbacks.
+  for systemic avatar fallbacks.
 - **Academic Scoping:** Integrated management of Class/Group assignments.

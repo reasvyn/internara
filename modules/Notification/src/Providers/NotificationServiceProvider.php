@@ -46,7 +46,8 @@ class NotificationServiceProvider extends ServiceProvider
     {
         return [
             \Modules\Notification\Services\Contracts\Notifier::class => Notifier::class,
-            \Modules\Notification\Services\Contracts\NotificationService::class => NotificationService::class,
+            \Modules\Notification\Services\Contracts\NotificationService::class =>
+                NotificationService::class,
         ];
     }
 }

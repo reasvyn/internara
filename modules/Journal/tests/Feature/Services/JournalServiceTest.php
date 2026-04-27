@@ -69,7 +69,7 @@ test('it cannot update an approved journal entry [STRS-01] [SYRS-F-403]', functi
     $entry->setStatus('approved');
 
     expect(
-        fn () => $this->journalService->update($entry->id, ['work_topic' => 'New Topic']),
+        fn() => $this->journalService->update($entry->id, ['work_topic' => 'New Topic']),
     )->toThrow(AppException::class);
 });
 
@@ -92,7 +92,7 @@ test(
             'basic_competence' => 'Test Competence',
         ];
 
-        expect(fn () => $this->journalService->create($data))->toThrow(
+        expect(fn() => $this->journalService->create($data))->toThrow(
             AppException::class,
             'journal::exceptions.outside_internship_period',
         );
@@ -118,7 +118,7 @@ test(
             'basic_competence' => 'Test Competence',
         ];
 
-        expect(fn () => $this->journalService->create($data))->toThrow(
+        expect(fn() => $this->journalService->create($data))->toThrow(
             AppException::class,
             'journal::exceptions.outside_internship_period',
         );

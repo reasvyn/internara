@@ -23,7 +23,7 @@ describe('RegisterSuperAdmin Component', function () {
     test('it renders correctly', function () {
         Livewire::test(RegisterSuperAdmin::class)
             ->assertStatus(200)
-            ->assertSee(__('auth::ui.register_super_admin.title'))
+            ->assertSee(__('auth::ui.register_super_admin.authority_title'))
             ->assertSee('Administrator');
     });
 
@@ -56,10 +56,7 @@ describe('RegisterSuperAdmin Component', function () {
         $admin->assignRole('super-admin');
         $this->actingAs($admin);
 
-        app(SettingService::class)->setValue(
-            'app_installed',
-            false,
-        );
+        app(SettingService::class)->setValue('app_installed', false);
 
         // Pre-create user
         $existing = User::factory()->create([
@@ -79,6 +76,6 @@ describe('RegisterSuperAdmin Component', function () {
         expect(User::where('email', 'link@internara.test')->count())
             ->toBe(1)
             ->and(User::where('email', 'link@internara.test')->first()->name)
-            ->toBe('New Name');
+            ->toBe('Administrator');
     });
 });

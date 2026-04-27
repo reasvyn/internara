@@ -30,8 +30,7 @@ describe('BulkPlacementManager Authorization', function () {
         $admin->assignRole('admin');
         $this->actingAs($admin);
 
-        Livewire::test(BulkPlacementManager::class)
-            ->assertStatus(200);
+        Livewire::test(BulkPlacementManager::class)->assertStatus(200);
     });
 
     test('super-admin can access bulk placement manager', function () {
@@ -39,8 +38,7 @@ describe('BulkPlacementManager Authorization', function () {
         $superAdmin->assignRole('super-admin');
         $this->actingAs($superAdmin);
 
-        Livewire::test(BulkPlacementManager::class)
-            ->assertStatus(200);
+        Livewire::test(BulkPlacementManager::class)->assertStatus(200);
     });
 
     test('teacher cannot access bulk placement manager', function () {
@@ -66,8 +64,7 @@ describe('BulkPlacementManager Internship Selection', function () {
             'academic_year' => $currentYear,
         ]);
 
-        Livewire::test(BulkPlacementManager::class)
-            ->assertCount('internships', 1);
+        Livewire::test(BulkPlacementManager::class)->assertCount('internships', 1);
     });
 
     test('it clears companies when internship changes', function () {
@@ -167,10 +164,12 @@ describe('BulkPlacementManager Quota Management', function () {
         ]);
 
         // Create 3 unplaced registrations
-        $registrations = InternshipRegistration::factory()->count(3)->create([
-            'internship_id' => $internship->id,
-            'placement_id' => null,
-        ]);
+        $registrations = InternshipRegistration::factory()
+            ->count(3)
+            ->create([
+                'internship_id' => $internship->id,
+                'placement_id' => null,
+            ]);
 
         Livewire::test(BulkPlacementManager::class)
             ->set('internshipId', $internship->id)
@@ -194,10 +193,12 @@ describe('BulkPlacementManager Student Selection', function () {
         $internship = Internship::factory()->create();
 
         // Create 3 unplaced registrations
-        InternshipRegistration::factory()->count(3)->create([
-            'internship_id' => $internship->id,
-            'placement_id' => null,
-        ]);
+        InternshipRegistration::factory()
+            ->count(3)
+            ->create([
+                'internship_id' => $internship->id,
+                'placement_id' => null,
+            ]);
 
         Livewire::test(BulkPlacementManager::class)
             ->set('internshipId', $internship->id)
@@ -251,10 +252,12 @@ describe('BulkPlacementManager Execution', function () {
         ]);
 
         // Create 3 unplaced registrations
-        $registrations = InternshipRegistration::factory()->count(3)->create([
-            'internship_id' => $internship->id,
-            'placement_id' => null,
-        ]);
+        $registrations = InternshipRegistration::factory()
+            ->count(3)
+            ->create([
+                'internship_id' => $internship->id,
+                'placement_id' => null,
+            ]);
 
         Livewire::test(BulkPlacementManager::class)
             ->set('internshipId', $internship->id)

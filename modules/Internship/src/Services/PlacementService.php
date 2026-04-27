@@ -34,7 +34,7 @@ class PlacementService extends EloquentQuery implements Contract
     {
         $registration = $this->find($registrationId);
 
-        if (! $registration) {
+        if (!$registration) {
             return false;
         }
 
@@ -51,7 +51,7 @@ class PlacementService extends EloquentQuery implements Contract
             ->where('academic_year', $academicYear)
             ->whereNull('placement_id')
             ->get()
-            ->filter(fn (InternshipRegistration $reg) => $reg->hasClearedAllMandatoryRequirements());
+            ->filter(fn(InternshipRegistration $reg) => $reg->hasClearedAllMandatoryRequirements());
     }
 
     /**
@@ -83,14 +83,16 @@ class PlacementService extends EloquentQuery implements Contract
         return DB::transaction(function () use ($registrationId, $placementId, $reason) {
             $registration = $this->find($registrationId);
 
-            if (! $registration) {
+            if (!$registration) {
                 return false;
             }
 
             // Enforce Eligibility Gate
-            if (! $this->isEligibleForPlacement($registrationId)) {
+            if (!$this->isEligibleForPlacement($registrationId)) {
                 throw new \RuntimeException(
-                    __('internship::ui.student_not_eligible', ['name' => $registration->student?->name])
+                    __('internship::ui.student_not_eligible', [
+                        'name' => $registration->student?->name,
+                    ]),
                 );
             }
 
@@ -100,13 +102,15 @@ class PlacementService extends EloquentQuery implements Contract
                 ->lockForUpdate()
                 ->first();
 
-            if (! $placement) {
+            if (!$placement) {
                 return false;
             }
 
             if ($placement->remainingSlots <= 0) {
                 throw new \RuntimeException(
-                    __('internship::ui.placement_quota_full', ['company' => $placement->company?->name])
+                    __('internship::ui.placement_quota_full', [
+                        'company' => $placement->company?->name,
+                    ]),
                 );
             }
 
@@ -132,7 +136,7 @@ class PlacementService extends EloquentQuery implements Contract
         return DB::transaction(function () use ($registrationId, $newPlacementId, $reason) {
             $registration = $this->find($registrationId);
 
-            if (! $registration || ! $registration->placement_id) {
+            if (!$registration || !$registration->placement_id) {
                 return false;
             }
 
@@ -142,9 +146,11 @@ class PlacementService extends EloquentQuery implements Contract
                 ->lockForUpdate()
                 ->first();
 
-            if (! $newPlacement || $newPlacement->remainingSlots <= 0) {
+            if (!$newPlacement || $newPlacement->remainingSlots <= 0) {
                 throw new \RuntimeException(
-                    __('internship::ui.placement_quota_full', ['company' => $newPlacement?->company?->name])
+                    __('internship::ui.placement_quota_full', [
+                        'company' => $newPlacement?->company?->name,
+                    ]),
                 );
             }
 

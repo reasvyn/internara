@@ -61,7 +61,10 @@ class RegistrationService extends EloquentQuery implements Contract
             'total' => $this->count(),
             'placed' => $this->model->newQuery()->currentStatus('active')->count(),
             'unplaced' => $this->model->newQuery()->currentStatus('pending')->count(),
-            'new' => $this->model->newQuery()->where('created_at', '>=', now()->startOfMonth())->count(),
+            'new' => $this->model
+                ->newQuery()
+                ->where('created_at', '>=', now()->startOfMonth())
+                ->count(),
         ];
     }
 
@@ -83,9 +86,7 @@ class RegistrationService extends EloquentQuery implements Contract
             $studentId = $data['student_id'];
 
             // 1. Enforce Atomic Lock on Placement to prevent race conditions (BP-PLC-F302)
-            InternshipPlacement::where('id', $placementId)
-                ->lockForUpdate()
-                ->first();
+            InternshipPlacement::where('id', $placementId)->lockForUpdate()->first();
 
             // 2. Check if student is already registered for THIS internship program
             if (
@@ -101,7 +102,7 @@ class RegistrationService extends EloquentQuery implements Contract
             }
 
             // 2. Check slot availability
-            if (! $this->placementService->hasAvailableSlots($placementId)) {
+            if (!$this->placementService->hasAvailableSlots($placementId)) {
                 throw new AppException(
                     userMessage: 'internship::exceptions.no_slots_available',
                     code: 422,
@@ -163,16 +164,13 @@ class RegistrationService extends EloquentQuery implements Contract
     {
         $registration = $this->find($registrationId);
 
-        if (! $registration) {
-            $e = new ModelNotFoundException;
-            throw $e->setModel(
-                InternshipRegistration::class,
-                [$registrationId],
-            );
+        if (!$registration) {
+            $e = new ModelNotFoundException();
+            throw $e->setModel(InternshipRegistration::class, [$registrationId]);
         }
 
         // Check if mandatory requirements are cleared via service
-        if (! $this->requirementService->hasClearedMandatory($registrationId)) {
+        if (!$this->requirementService->hasClearedMandatory($registrationId)) {
             throw new AppException(
                 userMessage: 'internship::exceptions.mandatory_requirements_not_met',
                 code: 422,
@@ -192,12 +190,9 @@ class RegistrationService extends EloquentQuery implements Contract
     {
         $registration = $this->find($registrationId);
 
-        if (! $registration) {
-            $e = new ModelNotFoundException;
-            throw $e->setModel(
-                InternshipRegistration::class,
-                [$registrationId],
-            );
+        if (!$registration) {
+            $e = new ModelNotFoundException();
+            throw $e->setModel(InternshipRegistration::class, [$registrationId]);
         }
 
         /** @var InternshipRegistration $registration */
@@ -214,25 +209,18 @@ class RegistrationService extends EloquentQuery implements Contract
         string $newPlacementId,
         ?string $reason = null,
     ): Model {
-        return DB::transaction(function () use (
-            $registrationId,
-            $newPlacementId,
-            $reason,
-        ) {
+        return DB::transaction(function () use ($registrationId, $newPlacementId, $reason) {
             $registration = $this->find($registrationId);
 
-            if (! $registration) {
-                $e = new ModelNotFoundException;
-                throw $e->setModel(
-                    InternshipRegistration::class,
-                    [$registrationId],
-                );
+            if (!$registration) {
+                $e = new ModelNotFoundException();
+                throw $e->setModel(InternshipRegistration::class, [$registrationId]);
             }
 
             $oldPlacementId = $registration->placement_id;
 
             // 1. Check slot availability for new placement
-            if (! $this->placementService->hasAvailableSlots($newPlacementId)) {
+            if (!$this->placementService->hasAvailableSlots($newPlacementId)) {
                 throw new AppException(
                     userMessage: 'internship::exceptions.no_slots_available',
                     code: 422,
@@ -262,16 +250,13 @@ class RegistrationService extends EloquentQuery implements Contract
     {
         $registration = $this->find($registrationId);
 
-        if (! $registration) {
-            $e = new ModelNotFoundException;
-            throw $e->setModel(
-                InternshipRegistration::class,
-                [$registrationId],
-            );
+        if (!$registration) {
+            $e = new ModelNotFoundException();
+            throw $e->setModel(InternshipRegistration::class, [$registrationId]);
         }
 
         // Assignment Fulfillment Invariant: Completion requires all mandatory assignments verified
-        if (! $this->assignmentService->isFulfillmentComplete($registrationId)) {
+        if (!$this->assignmentService->isFulfillmentComplete($registrationId)) {
             throw new AppException(
                 userMessage: 'internship::exceptions.mandatory_assignments_not_verified',
                 code: 422,

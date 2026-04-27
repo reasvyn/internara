@@ -4,9 +4,8 @@ The `Notification` module provides a unified infrastructure for dispatching aler
 real-time UI feedback within the Internara ecosystem. It centralizes multi-channel communication to
 ensure Instructors, Students, and Supervisors remain informed about critical system events.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
@@ -23,16 +22,16 @@ coupling.
 ### 2.1 Service Layer
 
 - **`Notifier`**: The primary service for dispatching UI-level notifications. It leverages
- Livewire's event bus to power real-time feedback (e.g., `mary-toast`).
- - _Features_: Support for Success, Error, Warning, and Info alerts.
- - _Contract_: `Modules\Notification\Services\Contracts\Notifier`.
+  Livewire's event bus to power real-time feedback (e.g., `mary-toast`).
+- _Features_: Support for Success, Error, Warning, and Info alerts.
+- _Contract_: `Modules\Notification\Services\Contracts\Notifier`.
 
 ### 2.2 Global Protocols
 
 - **Livewire Integration**: Automatically detects active Livewire sessions to dispatch browser-level
- events.
+  events.
 - **i18n Compliance**: All notification messages must be resolved via translation keys before being
- passed to the Notifier.
+  passed to the Notifier.
 
 ---
 
@@ -40,9 +39,9 @@ coupling.
 
 - **Zero Magic Values**: Utilizes `TYPE_*` constants for all notification categories.
 - **Brevity & Context**: Services and contracts follow the refined naming rules (e.g., `Notifier`
- instead of `NotificationService`).
+  instead of `NotificationService`).
 - **Decoupled Orchestration**: Provides the bridge between business logic side-effects and frontend
- visualization.
+  visualization.
 
 ---
 

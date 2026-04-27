@@ -56,7 +56,7 @@ test('it enforces dynamic submission window [STRS-01] [SYRS-F-403]', function ()
         'activity_description' => 'Old work',
     ];
 
-    expect(fn () => $this->journalService->create($data))->toThrow(
+    expect(fn() => $this->journalService->create($data))->toThrow(
         AppException::class,
         'journal::exceptions.submission_window_expired',
     );

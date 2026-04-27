@@ -43,8 +43,11 @@ class AccountCloneDetectionService
      *
      * @return array{is_suspicious: bool, reason: string, actions: string[]}
      */
-    public function checkLoginSuspicion(User $user, string $currentIp, string $currentUserAgent): array
-    {
+    public function checkLoginSuspicion(
+        User $user,
+        string $currentIp,
+        string $currentUserAgent,
+    ): array {
         $suspicions = [];
         $actions = [];
 
@@ -79,7 +82,13 @@ class AccountCloneDetectionService
         $isSuspicious = count($suspicions) > 0;
 
         if ($isSuspicious) {
-            $this->recordSuspiciousActivity($user, $currentIp, $currentUserAgent, $suspicions, $actions);
+            $this->recordSuspiciousActivity(
+                $user,
+                $currentIp,
+                $currentUserAgent,
+                $suspicions,
+                $actions,
+            );
         }
 
         return [
@@ -121,13 +130,13 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->first(['created_at', 'ip_address', 'latitude', 'longitude']);
 
-        if (! $lastLogin) {
+        if (!$lastLogin) {
             return false;
         }
 
         // Get current IP geolocation
         $currentLocation = $this->getIpGeolocation($currentIp);
-        if (! $currentLocation) {
+        if (!$currentLocation) {
             return false; // Cannot determine location, assume safe
         }
 
@@ -137,15 +146,17 @@ class AccountCloneDetectionService
                 $lastLogin->latitude,
                 $lastLogin->longitude,
                 $currentLocation['latitude'],
-                $currentLocation['longitude']
+                $currentLocation['longitude'],
             );
 
             // Calculate time difference in minutes
             $timeDiff = now()->diffInMinutes($lastLogin->created_at);
 
             // If distance > 1000km in < 30 minutes, it's impossible travel
-            if ($distance > self::IMPOSSIBLE_TRAVEL_MIN_DISTANCE_KM &&
-                $timeDiff < self::IMPOSSIBLE_TRAVEL_THRESHOLD_MINUTES) {
+            if (
+                $distance > self::IMPOSSIBLE_TRAVEL_MIN_DISTANCE_KM &&
+                $timeDiff < self::IMPOSSIBLE_TRAVEL_THRESHOLD_MINUTES
+            ) {
                 return true;
             }
         }
@@ -165,7 +176,7 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->first(['created_at', 'ip_address']);
 
-        if (! $lastLogin) {
+        if (!$lastLogin) {
             return false; // First login
         }
 
@@ -195,7 +206,7 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->value('user_agent');
 
-        if (! $lastUserAgent) {
+        if (!$lastUserAgent) {
             return false; // First login
         }
 
@@ -207,7 +218,7 @@ class AccountCloneDetectionService
         $lastOs = $this->extractOs($lastUserAgent);
 
         // If browser OR OS changed, it's potentially suspicious
-        return ($currentBrowser !== $lastBrowser) || ($currentOs !== $lastOs);
+        return $currentBrowser !== $lastBrowser || $currentOs !== $lastOs;
     }
 
     /**
@@ -218,19 +229,16 @@ class AccountCloneDetectionService
         string $ip,
         string $userAgent,
         array $suspicions,
-        array $actions
+        array $actions,
     ): void {
         // Log to security audit channel
-        Log::channel('audit')->alert(
-            "🚨 Suspicious Account Activity: {$user->email}",
-            [
-                'user_id' => $user->id,
-                'suspicions' => $suspicions,
-                'ip_address' => $ip,
-                'user_agent' => $userAgent,
-                'actions' => $actions,
-            ]
-        );
+        Log::channel('audit')->alert("🚨 Suspicious Account Activity: {$user->email}", [
+            'user_id' => $user->id,
+            'suspicions' => $suspicions,
+            'ip_address' => $ip,
+            'user_agent' => $userAgent,
+            'actions' => $actions,
+        ]);
 
         // Record in database
         DB::table('suspicious_login_attempts')->insert([
@@ -250,7 +258,7 @@ class AccountCloneDetectionService
                 'suspicions' => $suspicions,
                 'ip_address' => $ip,
                 'actions' => $actions,
-            ]
+            ],
         );
 
         // TODO: Send notification to user
@@ -291,9 +299,9 @@ class AccountCloneDetectionService
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
 
-        $a = sin($dLat / 2) * sin($dLat / 2) +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon / 2) * sin($dLon / 2);
+        $a =
+            sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
@@ -358,7 +366,7 @@ class AccountCloneDetectionService
                 ->where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->limit($limit)
-                ->get(['created_at', 'ip_address', 'user_agent', 'successful'])
+                ->get(['created_at', 'ip_address', 'user_agent', 'successful']),
         );
     }
 
@@ -372,7 +380,7 @@ class AccountCloneDetectionService
                 ->where('user_id', $user->id)
                 ->orderBy('detected_at', 'desc')
                 ->limit(20)
-                ->get()
+                ->get(),
         );
     }
 }

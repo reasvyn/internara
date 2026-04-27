@@ -24,10 +24,7 @@ test('it can record student competency progress', function () {
         'notes' => 'Mastered basic CRUD.',
     ]);
 
-    expect($log)
-        ->toBeInstanceOf(StudentCompetencyLog::class)
-        ->and($log->score)
-        ->toBe(85);
+    expect($log)->toBeInstanceOf(StudentCompetencyLog::class)->and($log->score)->toBe(85);
 
     $this->assertDatabaseHas('student_competency_logs', [
         'registration_id' => $registration->id,

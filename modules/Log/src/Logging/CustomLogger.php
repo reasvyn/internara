@@ -19,7 +19,7 @@ class CustomLogger
         $monolog = $logger instanceof \Illuminate\Log\Logger ? $logger->getLogger() : $logger;
 
         if ($monolog instanceof Logger) {
-            $monolog->pushProcessor(new PiiMaskingProcessor);
+            $monolog->pushProcessor(new PiiMaskingProcessor());
         }
     }
 }

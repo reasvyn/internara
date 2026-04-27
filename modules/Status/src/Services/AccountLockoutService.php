@@ -17,9 +17,7 @@ class AccountLockoutService
 
     private const ATTEMPT_WINDOW_MINUTES = 15;
 
-    public function __construct(
-        private AccountAuditLogger $auditLogger,
-    ) {}
+    public function __construct(private AccountAuditLogger $auditLogger) {}
 
     /**
      * Record a failed login attempt and potentially lock the account.
@@ -98,7 +96,8 @@ class AccountLockoutService
         Cache::forget($this->getAttemptKey($user));
 
         // Also remove any active login lockout restrictions
-        $user->restrictions()
+        $user
+            ->restrictions()
             ->where('restriction_type', 'login_lockout')
             ->where('is_active', true)
             ->update(['is_active' => false]);
@@ -112,12 +111,12 @@ class AccountLockoutService
     public function isLockedOut(User $user): bool
     {
         // Check for active login lockout restriction
-        return $user->restrictions()
+        return $user
+            ->restrictions()
             ->where('restriction_type', 'login_lockout')
             ->where('is_active', true)
             ->where(function ($query) {
-                $query->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
             })
             ->exists();
     }
@@ -127,16 +126,16 @@ class AccountLockoutService
      */
     public function getRemainingLockoutMinutes(User $user): int
     {
-        $restriction = $user->restrictions()
+        $restriction = $user
+            ->restrictions()
             ->where('restriction_type', 'login_lockout')
             ->where('is_active', true)
             ->where(function ($query) {
-                $query->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
             })
             ->first();
 
-        if (! $restriction || ! $restriction->expires_at) {
+        if (!$restriction || !$restriction->expires_at) {
             return 0;
         }
 
@@ -148,7 +147,8 @@ class AccountLockoutService
      */
     public function unlockAccount(User $user, User $unlockedBy, ?string $reason = null): void
     {
-        $user->restrictions()
+        $user
+            ->restrictions()
             ->where('restriction_type', 'login_lockout')
             ->where('is_active', true)
             ->update([

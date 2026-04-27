@@ -28,10 +28,8 @@ class InternshipPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(
-        ?User $user,
-        Internship|string|null $internship = null,
-    ): bool {
+    public function view(?User $user, Internship|string|null $internship = null): bool
+    {
         if ($this->isSetupAuthorized()) {
             return true;
         }
@@ -42,10 +40,8 @@ class InternshipPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(
-        ?User $user,
-        Internship|string|null $internship = null,
-    ): bool {
+    public function create(?User $user, Internship|string|null $internship = null): bool
+    {
         if ($this->isSetupAuthorized()) {
             return true;
         }
@@ -56,10 +52,8 @@ class InternshipPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(
-        ?User $user,
-        Internship|string|null $internship = null,
-    ): bool {
+    public function update(?User $user, Internship|string|null $internship = null): bool
+    {
         if ($this->isSetupAuthorized()) {
             return true;
         }
@@ -70,10 +64,8 @@ class InternshipPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(
-        ?User $user,
-        Internship|string|null $internship = null,
-    ): bool {
+    public function delete(?User $user, Internship|string|null $internship = null): bool
+    {
         if ($this->isSetupAuthorized()) {
             return true;
         }
@@ -86,7 +78,6 @@ class InternshipPolicy
      */
     protected function isSetupAuthorized(): bool
     {
-        return session(AppSetupService::SESSION_SETUP_AUTHORIZED) ===
-            true;
+        return session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
     }
 }

@@ -59,7 +59,11 @@ class InternshipPlacementManager extends RecordManager
     {
         return [
             ['key' => 'company_name', 'label' => __('internship::ui.company'), 'sortable' => true],
-            ['key' => 'internship_title', 'label' => __('internship::ui.program'), 'sortable' => true],
+            [
+                'key' => 'internship_title',
+                'label' => __('internship::ui.program'),
+                'sortable' => true,
+            ],
             ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
             ['key' => 'mentor_name', 'label' => __('internship::ui.mentor')],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
@@ -89,7 +93,11 @@ class InternshipPlacementManager extends RecordManager
     #[Computed]
     public function companies(): Collection
     {
-        return Cache::remember('dropdown:companies', self::DROPDOWN_TTL, fn () => Company::all(['id', 'name']));
+        return Cache::remember(
+            'dropdown:companies',
+            self::DROPDOWN_TTL,
+            fn() => Company::all(['id', 'name']),
+        );
     }
 
     /**
@@ -98,7 +106,11 @@ class InternshipPlacementManager extends RecordManager
     #[Computed]
     public function internships(): Collection
     {
-        return Cache::remember('dropdown:internships', self::DROPDOWN_TTL, fn () => app(InternshipService::class)->all(['id', 'title']));
+        return Cache::remember(
+            'dropdown:internships',
+            self::DROPDOWN_TTL,
+            fn() => app(InternshipService::class)->all(['id', 'title']),
+        );
     }
 
     /**
@@ -107,7 +119,11 @@ class InternshipPlacementManager extends RecordManager
     #[Computed]
     public function mentors(): Collection
     {
-        return Cache::remember('dropdown:users:mentor', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']));
+        return Cache::remember(
+            'dropdown:users:mentor',
+            self::DROPDOWN_TTL,
+            fn() => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']),
+        );
     }
 
     /**

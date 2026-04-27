@@ -10,5 +10,6 @@ return [
     'missing_teacher_eval' => 'Missing Academic (Teacher) evaluation.',
     'missing_mentor_eval' => 'Missing Industry (Mentor) evaluation.',
     'missing_assignments' => 'Mandatory assignments are not complete.',
-    'not_ready_for_credentials' => 'This student is not yet ready to receive a certificate or transcript. Please ensure all evaluations and assignments are complete.',
+    'not_ready_for_credentials' =>
+        'This student is not yet ready to receive a certificate or transcript. Please ensure all evaluations and assignments are complete.',
 ];

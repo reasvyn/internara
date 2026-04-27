@@ -27,7 +27,7 @@ class UserPolicy
      */
     public function view(User $user, ?User $model = null): bool
     {
-        if (! $model) {
+        if (!$model) {
             return true;
         }
 
@@ -54,7 +54,7 @@ class UserPolicy
             }
 
             // Allow any role during initial setup (Super Admin creation)
-            if (! setting('app_installed', false)) {
+            if (!setting('app_installed', false)) {
                 return true;
             }
 
@@ -63,7 +63,7 @@ class UserPolicy
 
         // 2. Handle Authenticated User Authority
         // Basic requirement: must be an admin of some sort to create users via Manager
-        if (! $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
+        if (!$user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class UserPolicy
             foreach ($roles as $role) {
                 // Only Super Admin can create administrative accounts
                 if (in_array($role, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
-                    if (! $user->hasRole(Role::SUPER_ADMIN->value)) {
+                    if (!$user->hasRole(Role::SUPER_ADMIN->value)) {
                         return false;
                     }
                 }
@@ -87,7 +87,7 @@ class UserPolicy
      */
     public function update(User $user, ?User $model = null): bool
     {
-        if (! $model) {
+        if (!$model) {
             return true;
         }
 
@@ -103,7 +103,7 @@ class UserPolicy
      */
     public function delete(User $user, ?User $model = null): bool
     {
-        if (! $model) {
+        if (!$model) {
             return true;
         }
 
@@ -122,7 +122,7 @@ class UserPolicy
     {
         // Super Admin is authoritative over everyone EXCEPT other Super Admins
         if ($subject->hasRole(Role::SUPER_ADMIN->value)) {
-            return ! $target->hasRole(Role::SUPER_ADMIN->value);
+            return !$target->hasRole(Role::SUPER_ADMIN->value);
         }
 
         // Admin is authoritative over operational roles only

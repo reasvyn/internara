@@ -21,10 +21,7 @@ interface ScheduleService extends EloquentQuery
      * @param string $studentId The UUID of the student.
      * @param int $perPage Number of items per page.
      */
-    public function getStudentTimeline(
-        string $studentId,
-        int $perPage = 15,
-    ): LengthAwarePaginator;
+    public function getStudentTimeline(string $studentId, int $perPage = 15): LengthAwarePaginator;
 
     /**
      * Get events filtered by academic year.

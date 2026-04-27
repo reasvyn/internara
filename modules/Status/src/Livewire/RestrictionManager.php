@@ -71,11 +71,27 @@ class RestrictionManager extends Component
     public function getRestrictionTypeOptions(): array
     {
         return [
-            ['value' => 'module', 'label' => 'Modul', 'description' => 'Blokir akses ke modul tertentu'],
+            [
+                'value' => 'module',
+                'label' => 'Modul',
+                'description' => 'Blokir akses ke modul tertentu',
+            ],
             ['value' => 'feature', 'label' => 'Fitur', 'description' => 'Blokir fitur spesifik'],
-            ['value' => 'rate_limit', 'label' => 'Batasan Laju', 'description' => 'Batasi jumlah permintaan'],
-            ['value' => 'schedule', 'label' => 'Jadwal', 'description' => 'Izinkan hanya pada waktu tertentu'],
-            ['value' => 'geolocation', 'label' => 'Lokasi', 'description' => 'Batasi berdasarkan lokasi geografis'],
+            [
+                'value' => 'rate_limit',
+                'label' => 'Batasan Laju',
+                'description' => 'Batasi jumlah permintaan',
+            ],
+            [
+                'value' => 'schedule',
+                'label' => 'Jadwal',
+                'description' => 'Izinkan hanya pada waktu tertentu',
+            ],
+            [
+                'value' => 'geolocation',
+                'label' => 'Lokasi',
+                'description' => 'Batasi berdasarkan lokasi geografis',
+            ],
         ];
     }
 
@@ -106,7 +122,7 @@ class RestrictionManager extends Component
                 'restriction_type' => $this->restrictionType,
                 'restriction_key' => $this->restrictionKey,
                 'restriction_value' => $this->restrictionValue,
-                'reason' => $this->reason ?: 'Pembatasan diterapkan oleh '.auth()->user()->name,
+                'reason' => $this->reason ?: 'Pembatasan diterapkan oleh ' . auth()->user()->name,
                 'applied_by_user_id' => auth()->id(),
                 'applied_at' => now(),
                 'expires_at' => $this->expiresAt ? Carbon::parse($this->expiresAt) : null,
@@ -122,7 +138,7 @@ class RestrictionManager extends Component
             $this->resetForm();
             $this->dispatch('restrictionAdded', userId: $this->user->id);
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menambah pembatasan: '.$e->getMessage()));
+            flash()->error(__('Gagal menambah pembatasan: ' . $e->getMessage()));
         }
     }
 
@@ -138,16 +154,16 @@ class RestrictionManager extends Component
 
             $restriction->update([
                 'is_active' => false,
-                'metadata' => array_merge(
-                    $restriction->metadata ?? [],
-                    ['removed_by' => auth()->id(), 'removed_at' => now()->toIso8601String()],
-                ),
+                'metadata' => array_merge($restriction->metadata ?? [], [
+                    'removed_by' => auth()->id(),
+                    'removed_at' => now()->toIso8601String(),
+                ]),
             ]);
 
             flash()->success(__('Pembatasan berhasil dihapus'));
             $this->dispatch('restrictionRemoved', userId: $this->user->id);
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menghapus pembatasan: '.$e->getMessage()));
+            flash()->error(__('Gagal menghapus pembatasan: ' . $e->getMessage()));
         }
     }
 
@@ -156,11 +172,11 @@ class RestrictionManager extends Component
      */
     public function getActiveRestrictions()
     {
-        return $this->user->restrictions()
+        return $this->user
+            ->restrictions()
             ->where('is_active', true)
             ->where(function ($query) {
-                $query->whereNull('expires_at')
-                    ->orWhere('expires_at', '>', now());
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
             })
             ->paginate(10);
     }
@@ -170,10 +186,10 @@ class RestrictionManager extends Component
      */
     public function getInactiveRestrictions()
     {
-        return $this->user->restrictions()
+        return $this->user
+            ->restrictions()
             ->where(function ($query) {
-                $query->where('is_active', false)
-                    ->orWhere('expires_at', '<=', now());
+                $query->where('is_active', false)->orWhere('expires_at', '<=', now());
             })
             ->paginate(5);
     }

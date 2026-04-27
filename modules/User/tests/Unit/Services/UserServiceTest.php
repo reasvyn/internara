@@ -61,14 +61,14 @@ test('it rolls back user creation if profile creation fails (atomicity check)', 
     // We force a failure in ProfileService by mocking it
     $profileService = $this->mock(ProfileService::class);
     $profileService->shouldReceive('withoutAuthorization')->andReturnSelf();
-    $profileService->shouldReceive('getByUserId')->andReturn(new Profile);
+    $profileService->shouldReceive('getByUserId')->andReturn(new Profile());
     $profileService->shouldReceive('update')->andThrow(new \Exception('Profile failure'));
 
     // Resolve service AFTER mocking dependencies
     $service = app(UserService::class);
 
     // Act & Assert
-    expect(fn () => $service->createWithProfile($userData, ['phone' => '123']))->toThrow(
+    expect(fn() => $service->createWithProfile($userData, ['phone' => '123']))->toThrow(
         \Exception::class,
         'Profile failure',
     );
@@ -86,9 +86,7 @@ test('it enforces authorization on account creation', function () {
     $service = app(UserService::class);
 
     // 2. Act & Assert
-    expect(fn () => $service->createWithProfile([], []))->toThrow(
-        AuthorizationException::class,
-    );
+    expect(fn() => $service->createWithProfile([], []))->toThrow(AuthorizationException::class);
 });
 
 test('it records activity log when a user is created', function () {

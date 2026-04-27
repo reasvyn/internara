@@ -27,7 +27,6 @@ describe('Login Component', function () {
         Livewire::test(Login::class)
             ->set('identifier', 'test@example.com')
             ->set('password', 'password')
-            ->set('captcha_token', 'dummy-token')
             ->call('login')
             ->assertHasNoErrors()
             ->assertRedirect();

@@ -27,10 +27,10 @@ describe('Fundamental Coding Standards Verification', function () {
             ->not->toUse(['Laravel\SerializableClosure']);
     });
 
-    $modulesPath = __DIR__.'/../../modules';
+    $modulesPath = __DIR__ . '/../../modules';
     $modulesStatuses =
-        json_decode(file_get_contents(__DIR__.'/../../modules_statuses.json'), true) ?? [];
-    $modules = array_keys(array_filter($modulesStatuses, fn ($status) => $status === true));
+        json_decode(file_get_contents(__DIR__ . '/../../modules_statuses.json'), true) ?? [];
+    $modules = array_keys(array_filter($modulesStatuses, fn($status) => $status === true));
 
     $supportNamespaces = [];
     foreach ($modules as $module) {
@@ -39,7 +39,7 @@ describe('Fundamental Coding Standards Verification', function () {
         }
     }
 
-    if (! empty($supportNamespaces)) {
+    if (!empty($supportNamespaces)) {
         test('global: support utilities should be final', function () use ($supportNamespaces) {
             expect($supportNamespaces)->classes()->toBeFinal();
         });
