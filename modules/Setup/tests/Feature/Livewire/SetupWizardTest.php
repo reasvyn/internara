@@ -17,7 +17,6 @@ use Modules\School\Models\School;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\AccountSetup;
 use Modules\Setup\Livewire\DepartmentSetup;
-use Modules\Setup\Livewire\EnvironmentSetup;
 use Modules\Setup\Livewire\InternshipSetup;
 use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
@@ -56,30 +55,16 @@ describe('Setup Wizard Transitions', function () {
 
         Livewire::test(SetupWelcome::class)
             ->call('nextStep')
-            ->assertRedirect(route('setup.environment'));
+            ->assertRedirect(route('setup.school'));
 
         expect(
             app(SettingService::class)->getValue('setup_step_welcome', skipCache: true),
         )->toBeTrue();
     });
 
-    test('it completes setup_step_environment successfully', function () {
-        $settings = app(SettingService::class);
-
-        // 2. Environment -> School
-        $settings->setValue('setup_step_welcome', true);
-        $this->get(route('setup.environment', ['token' => 'test-token']));
-
-        Livewire::test(EnvironmentSetup::class)
-            ->call('nextStep')
-            ->assertRedirect(route('setup.school'));
-
-        expect($settings->getValue('setup_step_environment', skipCache: true))->toBeTrue();
-    });
-
     test('it completes setup_step_school successfully', function () {
         $settings = app(SettingService::class);
-        $settings->setValue('setup_step_environment', true);
+        $settings->setValue('setup_step_welcome', true);
 
         // 3. School -> Account
         School::factory()->create();
