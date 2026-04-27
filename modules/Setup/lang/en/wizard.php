@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 return [
     'steps' => 'Step :current of :total',
+    'step_labels' => [
+        'welcome' => 'Welcome',
+        'school' => 'School',
+        'account' => 'Administrator',
+        'department' => 'Department',
+        'internship' => 'Internship',
+        'system' => 'Email',
+        'complete' => 'Complete',
+    ],
     'status' => [
         'passed' => 'Passed',
         'failed' => 'Failed',
@@ -27,6 +36,7 @@ return [
         'finish' => 'Finish',
         'later_at_settings' => 'You can change these settings later in the settings page.',
         'step_success' => '[:step] completed successfully.',
+        'admin_account' => 'Admin',
     ],
     'welcome' => [
         'title' => 'System Initialization',

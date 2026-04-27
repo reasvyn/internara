@@ -5,99 +5,80 @@
     get canFinalize() {
         return this.dataVerified && this.securityAware && this.legalAgreed;
     }
-}" class="w-full">
-    <x-setup::layouts.setup-wizard>
+}">
+    <x-setup::layouts.setup-wizard :step="7" :totalSteps="7">
         <x-slot:header>
             <x-setup::wizard-header 
-                step="8"
-                :title="__('setup::wizard.complete.headline', ['app' => setting('app_name', 'Internara')])"
+                step="7"
+                :title="__('setup::wizard.complete.title')"
                 :description="__('setup::wizard.complete.description', ['app' => setting('app_name', 'Internara')])"
+                badgeText="Final"
             />
-
-            <div class="mt-12 flex flex-wrap items-center gap-4">
-                <x-ui::button
-                    variant="secondary"
-                    :label="__('setup::wizard.common.back')"
-                    wire:click="backToPrev"
-                />
-                <x-ui::button
-                    variant="primary"
-                    class="btn-lg px-12 shadow-lg shadow-primary/20"
-                    :label="__('setup::wizard.complete.cta')"
-                    wire:click="nextStep"
-                    x-bind:disabled="!canFinalize"
-                    spinner
-                />
-            </div>
         </x-slot:header>
 
         <x-slot:content>
-            <div class="w-full">
-                <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
-                    <div class="mb-10 flex items-center justify-between gap-4">
-                        <div>
-                            <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.complete.checkup_title') }}</h3>
-                            <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.complete.checkup_desc') }}</p>
+            <div class="p-5 sm:p-6">
+                <h3 class="text-base font-semibold text-base-content/80 dark:text-base-content/70 mb-4">
+                    {{ __('setup::wizard.complete.checkup_title') }}
+                </h3>
+
+                <div class="space-y-3">
+                    <!-- Data Verification -->
+                    <label class="flex items-start gap-3 p-4 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors cursor-pointer">
+                        <input type="checkbox" x-model="dataVerified" class="checkbox checkbox-sm mt-0.5" />
+                        <div class="flex-1">
+                            <span class="block text-sm font-medium text-base-content dark:text-base-content/90">
+                                {{ __('setup::wizard.complete.checkup.data_verified_label') }}
+                            </span>
+                            <span class="block text-xs text-base-content/50 dark:text-base-content/40 mt-1">
+                                {{ __('setup::wizard.complete.checkup.data_verified_desc') }}
+                            </span>
                         </div>
-                    </div>
+                    </label>
 
-                    <div class="space-y-6">
-                        <!-- Data Verification -->
-                        <label class="flex items-start gap-4 p-6 rounded-2xl bg-base-200/30 border border-transparent transition-all hover:bg-base-200/50 cursor-pointer group">
-                            <div class="pt-1">
-                                <input type="checkbox" x-model="dataVerified" class="checkbox checkbox-primary" />
-                            </div>
-                            <div>
-                                <span class="block text-sm font-bold text-base-content group-hover:text-primary transition-colors">
-                                    {{ __('setup::wizard.complete.checkup.data_verified_label') }}
-                                </span>
-                                <span class="block text-xs text-base-content/60 mt-1 leading-relaxed">
-                                    {{ __('setup::wizard.complete.checkup.data_verified_desc') }}
-                                </span>
-                            </div>
-                        </label>
+                    <!-- Security Awareness -->
+                    <label class="flex items-start gap-3 p-4 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors cursor-pointer">
+                        <input type="checkbox" x-model="securityAware" class="checkbox checkbox-sm mt-0.5" />
+                        <div class="flex-1">
+                            <span class="block text-sm font-medium text-base-content dark:text-base-content/90">
+                                {{ __('setup::wizard.complete.checkup.security_aware_label') }}
+                            </span>
+                            <span class="block text-xs text-base-content/50 dark:text-base-content/40 mt-1">
+                                {{ __('setup::wizard.complete.checkup.security_aware_desc') }}
+                            </span>
+                        </div>
+                    </label>
 
-                        <!-- Security Awareness -->
-                        <label class="flex items-start gap-4 p-6 rounded-2xl bg-base-200/30 border border-transparent transition-all hover:bg-base-200/50 cursor-pointer group">
-                            <div class="pt-1">
-                                <input type="checkbox" x-model="securityAware" class="checkbox checkbox-primary" />
-                            </div>
-                            <div>
-                                <span class="block text-sm font-bold text-base-content group-hover:text-primary transition-colors">
-                                    {{ __('setup::wizard.complete.checkup.security_aware_label') }}
-                                </span>
-                                <span class="block text-xs text-base-content/60 mt-1 leading-relaxed">
-                                    {{ __('setup::wizard.complete.checkup.security_aware_desc') }}
-                                </span>
-                            </div>
-                        </label>
-
-                        <!-- Legal & Policy Agreement -->
-                        <label class="flex items-start gap-4 p-6 rounded-2xl bg-base-200/30 border border-transparent transition-all hover:bg-base-200/50 cursor-pointer group">
-                            <div class="pt-1">
-                                <input type="checkbox" x-model="legalAgreed" class="checkbox checkbox-primary" />
-                            </div>
-                            <div>
-                                <span class="block text-sm font-bold text-base-content group-hover:text-primary transition-colors">
-                                    {{ __('setup::wizard.complete.checkup.legal_agreed_label') }}
-                                </span>
-                                <span class="block text-xs text-base-content/60 mt-1 leading-relaxed">
-                                    {!! __('setup::wizard.complete.checkup.legal_agreed_desc', [
-                                        'privacy' => '<a href="#" x-on:click.prevent="$wire.set(\'showPrivacy\', true)" class="text-primary hover:underline font-bold">Privacy Policy</a>',
-                                        'terms' => '<a href="#" x-on:click.prevent="$wire.set(\'showTerms\', true)" class="text-primary hover:underline font-bold">Terms of Service</a>'
-                                    ]) !!}
-                                </span>
-                            </div>
-                        </label>
-                    </div>
+                    <!-- Legal Agreement -->
+                    <label class="flex items-start gap-3 p-4 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors cursor-pointer">
+                        <input type="checkbox" x-model="legalAgreed" class="checkbox checkbox-sm mt-0.5" />
+                        <div class="flex-1">
+                            <span class="block text-sm font-medium text-base-content dark:text-base-content/90">
+                                {{ __('setup::wizard.complete.checkup.legal_agreed_label') }}
+                            </span>
+                            <span class="block text-xs text-base-content/50 dark:text-base-content/40 mt-1">
+                                {!! __('setup::wizard.complete.checkup.legal_agreed_desc', [
+                                    'privacy' => '<a href=# x-on:click.prevent=$wire.set(\'showPrivacy\', true) class=underline font-medium>Privacy Policy</a>',
+                                    'terms' => '<a href=# x-on:click.prevent=$wire.set(\'showTerms\', true) class=underline font-medium>Terms of Service</a>'
+                                ]) !!}
+                            </span>
+                        </div>
+                    </label>
                 </div>
             </div>
         </x-slot:content>
+
+        <x-slot:footer>
+        <x-setup::action-footer 
+            :canContinue="$canFinalize"
+            :continueLabel="__('setup::wizard.complete.cta')"
+        />
+    </x-slot:footer>
     </x-setup::layouts.setup-wizard>
 
     <!-- Legal Modals -->
-    <x-ui::modal wire:model="showPrivacy" :title="__('setup::wizard.complete.checkup.legal_agreed_label')">
-        <div class="p-4">
+    <x-ui::modal wire:model="showPrivacy" :title="__('Privacy Policy')">
+        <div class="p-4 max-h-96 overflow-y-auto">
             @include('shared::legal.privacy-policy')
         </div>
         <x-slot:actions>
@@ -105,8 +86,8 @@
         </x-slot:actions>
     </x-ui::modal>
 
-    <x-ui::modal wire:model="showTerms" :title="__('setup::wizard.complete.checkup.legal_agreed_label')">
-        <div class="p-4">
+    <x-ui::modal wire:model="showTerms" :title="__('Terms of Service')">
+        <div class="p-4 max-h-96 overflow-y-auto">
             @include('shared::legal.terms-of-service')
         </div>
         <x-slot:actions>

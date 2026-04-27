@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 return [
     'steps' => 'Langkah :current dari :total',
+    'step_labels' => [
+        'welcome' => 'Selamat Datang',
+        'school' => 'Sekolah',
+        'account' => 'Administrator',
+        'department' => 'Jurusan',
+        'internship' => 'Magang',
+        'system' => 'Email',
+        'complete' => 'Selesai',
+    ],
     'status' => [
         'passed' => 'Lulus',
         'failed' => 'Gagal',
@@ -28,6 +37,7 @@ return [
         'later_at_settings' =>
             'Anda dapat mengubah pengaturan ini nanti melalui halaman pengaturan.',
         'step_success' => '[:step] berhasil diselesaikan.',
+        'admin_account' => 'Admin',
     ],
     'welcome' => [
         'title' => 'Inisialisasi Sistem',
