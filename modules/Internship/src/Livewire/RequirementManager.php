@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\RequirementForm;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
@@ -109,10 +110,12 @@ class RequirementManager extends RecordManager
             fn ($v) => $v !== null && $v !== '' && $v !== [],
         ));
     }
-/**
- * Render the component view.
- */
-public function render(): View
-{
-    return view('internship::livewire.requirement-manager');
+
+    /**
+     * Render the component view.
+     */
+    public function render(): View
+    {
+        return view('internship::livewire.requirement-manager');
+    }
 }
