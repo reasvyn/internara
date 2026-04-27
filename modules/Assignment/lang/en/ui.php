@@ -38,4 +38,11 @@ return [
     'type_created' => 'Assignment type created successfully.',
     'type_updated' => 'Assignment type updated successfully.',
     'type_deleted' => 'Assignment type deleted successfully.',
+
+    'stats' => [
+        'total_assignments' => 'Total Assignments',
+        'mandatory' => 'Mandatory Tasks',
+        'upcoming' => 'Upcoming Deadlines',
+        'total_types' => 'Total Categories',
+    ],
 ];

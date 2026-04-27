@@ -57,7 +57,9 @@ abstract class RecordIndex extends Component
      */
     public function render(): View
     {
-        return view($this->getView())->layout(
+        return view($this->getView(), [
+            'managerComponent' => $this->managerComponent,
+        ])->layout(
             'ui::components.layouts.dashboard',
             [
                 'title' => ($this->titleKey ? __($this->titleKey) : '') . ' | ' . setting('brand_name', setting('app_name')),

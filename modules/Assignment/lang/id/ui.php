@@ -38,4 +38,11 @@ return [
     'type_created' => 'Jenis tugas berhasil dibuat.',
     'type_updated' => 'Jenis tugas berhasil diperbarui.',
     'type_deleted' => 'Jenis tugas berhasil dihapus.',
+
+    'stats' => [
+        'total_assignments' => 'Total Tugas',
+        'mandatory' => 'Tugas Wajib',
+        'upcoming' => 'Tenggat Mendatang',
+        'total_types' => 'Total Kategori',
+    ],
 ];

@@ -38,4 +38,12 @@ return [
     'status' => 'Briefing Status',
     'complete' => 'COMPLETE',
     'incomplete' => 'INCOMPLETE',
+    'inactive' => 'INACTIVE',
+    'acknowledgement_status' => 'Acknowledgement Status',
+
+    'stats' => [
+        'total_handbooks' => 'Total Handbooks',
+        'mandatory' => 'Mandatory Gating',
+        'active' => 'Active Documents',
+    ],
 ];

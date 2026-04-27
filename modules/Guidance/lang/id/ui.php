@@ -38,4 +38,12 @@ return [
     'status' => 'Status Pembekalan',
     'complete' => 'SELESAI',
     'incomplete' => 'BELUM LENGKAP',
+    'inactive' => 'TIDAK AKTIF',
+    'acknowledgement_status' => 'Status Persetujuan Siswa',
+
+    'stats' => [
+        'total_handbooks' => 'Total Panduan',
+        'mandatory' => 'Wajib Baca',
+        'active' => 'Dokumen Aktif',
+    ],
 ];

@@ -18,7 +18,7 @@ use Modules\Guidance\Livewire\ManageHandbook;
 */
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/guidance/manage', ManageHandbook::class)
+    Route::get('/guidance/manage', \Modules\Guidance\Livewire\HandbookIndex::class)
         ->middleware('can:guidance.view')
         ->name('guidance.index');
 
