@@ -8,6 +8,10 @@ return [
     'subtitle' => 'Kelola daftar jurusan yang tersedia di sekolah.',
     'add' => 'Tambah Jurusan',
     'edit' => 'Edit Jurusan',
+    'stats' => [
+        'total' => 'Total Jurusan',
+        'with_internships' => 'Memiliki Magang',
+    ],
     'search_placeholder' => 'Cari jurusan...',
     'name' => 'Nama Jurusan',
     'description' => 'Deskripsi',

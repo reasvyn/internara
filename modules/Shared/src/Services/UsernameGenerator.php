@@ -20,7 +20,7 @@ class UsernameGenerator
      * Role-based prefixes for structured identity management.
      */
     protected const PREFIXES = [
-        'super_admin' => 'sys',
+        'super-admin' => 'u',
         'admin' => 'adm',
         'student' => 'std',
         'mentor' => 'mnt',
@@ -36,6 +36,11 @@ class UsernameGenerator
      */
     public function generate(string $source, ?string $role = null): string
     {
+        // [S1 - Secure] Specialized Generation for SuperAdmin to prevent pattern prediction
+        if ($role === 'super-admin') {
+            return $this->generateRandomized('u', 9);
+        }
+
         // 1. Extract base name from email or clean up full name
         $base = Str::before($source, '@');
         $base = Str::slug($base, '');
@@ -53,6 +58,34 @@ class UsernameGenerator
 
         // 4. Ensure uniqueness in database
         return $this->makeUnique($username);
+    }
+
+    /**
+     * Generate a truly random and unique username following a specific pattern.
+     *
+     * @param string $prefix The starting character(s).
+     * @param int $totalLength The minimum total length.
+     * @return string
+     */
+    protected function generateRandomized(string $prefix, int $totalLength): string
+    {
+        $attempts = 0;
+        $maxAttempts = 100;
+
+        do {
+            $randomLen = max($totalLength - strlen($prefix), 8);
+            // Use alphanumeric characters (X) as requested
+            $random = Str::lower(Str::random($randomLen));
+            $username = $prefix . $random;
+            $attempts++;
+
+            if ($attempts >= $maxAttempts) {
+                // Fallback to appending timestamp if collision is highly unlikely but theoretically possible
+                $username .= time();
+            }
+        } while (User::where('username', $username)->exists());
+
+        return $username;
     }
 
     /**

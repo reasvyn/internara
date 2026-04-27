@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'management_title' => 'Mentor Management',
+    'stats' => [
+        'total' => 'Total Mentors',
+        'active' => 'Active Accounts',
+        'pending' => 'Pending/New',
+    ],
     'dashboard' => [
         'title' => 'Industry Mentor Dashboard',
         'subtitle' => 'Monitor the activity and attendance of interns at your company.',

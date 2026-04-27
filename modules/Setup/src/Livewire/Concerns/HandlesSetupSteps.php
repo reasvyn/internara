@@ -52,10 +52,19 @@ trait HandlesSetupSteps
     }
 
     /**
-     * Ensures the previous step was completed, redirecting if it was not.
+     * Ensures the previous step was completed, and the user is authorized for setup,
+     * redirecting if they are not.
      */
     protected function requireSetupAccess(): void
     {
+        // [S1 - Secure] Enforce session-based authorization for all setup components.
+        // This ensures that even if middleware is bypassed (e.g., Livewire requests),
+        // the component itself remains protected.
+        if (! session()->get(SetupService::SESSION_SETUP_AUTHORIZED)) {
+            $this->redirectRoute('setup.welcome', navigate: true);
+            return;
+        }
+
         $prevStep = $this->setupStepProps['prevStep'] ?? null;
 
         try {

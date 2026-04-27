@@ -16,6 +16,13 @@ return [
         'no_role'          => 'No Role',
     ],
 
+    'stats' => [
+        'total' => 'Total Users',
+        'students' => 'Active Students',
+        'staff' => 'Staff & Mentors',
+        'active' => 'Online/Active',
+    ],
+
     'manager' => [
         'title' => 'User Management',
         'subtitle' => 'Manage platform users and roles.',

@@ -37,6 +37,22 @@ class UserService extends EloquentQuery implements Contract
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->count(),
+            'students' => $this->model->newQuery()->role(Role::STUDENT->value)->count(),
+            'staff' => $this->model->newQuery()->role([Role::TEACHER->value, Role::MENTOR->value])->count(),
+            'active' => $this->model->newQuery()->whereHas('statuses', function ($q) {
+                $q->where('name', User::STATUS_ACTIVE)
+                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+            })->count(),
+        ];
+    }
+
+    /**
      * Create a new user with specific business rules (Backward compatibility).
      */
     public function create(array $data): User

@@ -164,15 +164,10 @@ class CompanyManager extends RecordManager
             'created_at' => __('ui::common.created_at'),
         ];
     }
-
-    /**
-     * Render the component view.
-     */
-    public function render(): View
-    {
-        return view('internship::livewire.company-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-            ]);
-    }
+/**
+ * Render the component view.
+ */
+public function render(): View
+{
+    return view('internship::livewire.company-manager');
 }

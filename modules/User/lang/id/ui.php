@@ -16,6 +16,13 @@ return [
         'no_role'          => 'Tanpa Peran',
     ],
 
+    'stats' => [
+        'total' => 'Total Pengguna',
+        'students' => 'Siswa Aktif',
+        'staff' => 'Staf & Pembimbing',
+        'active' => 'Online/Aktif',
+    ],
+
     'manager' => [
         'title' => 'Manajemen Pengguna',
         'subtitle' => 'Kelola pengguna platform dan peran mereka.',

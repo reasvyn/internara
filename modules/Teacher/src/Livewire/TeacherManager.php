@@ -54,24 +54,8 @@ class TeacherManager extends RecordManager
         $this->updatePermission = 'teacher.manage';
         $this->deletePermission = 'teacher.manage';
 
-        $this->searchable = ['name', 'email', 'username', 'profile.registration_number', 'profile.national_identifier'];
+        $this->searchable = ['name', 'email', 'username', 'profile.registration_number', 'profile.department.name'];
         $this->sortable = ['name', 'email', 'username', 'created_at'];
-    }
-
-    /**
-     * Get summary metrics for teacher accounts.
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        $query = User::role(Role::TEACHER->value);
-        
-        return [
-            'total' => (clone $query)->count(),
-            'active' => (clone $query)->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_ACTIVE)->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)'))->count(),
-            'pending_claim' => (clone $query)->where('setup_required', true)->count(),
-            'new_this_week' => (clone $query)->where('created_at', '>=', now()->subWeek())->count(),
-        ];
     }
 
     /**
@@ -172,11 +156,7 @@ class TeacherManager extends RecordManager
 
     public function render(): View
     {
-        return view('teacher::livewire.teacher-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-                'context' => $this->context,
-            ]);
+        return view('teacher::livewire.teacher-manager');
     }
 
     protected function managedTeacherQuery(array $filters = []): Builder

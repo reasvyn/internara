@@ -13,5 +13,10 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  */
 interface DepartmentService extends EloquentQuery
 {
-    //
+    /**
+     * Get summary metrics for departments.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
 }

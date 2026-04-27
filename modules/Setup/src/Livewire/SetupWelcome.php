@@ -38,6 +38,8 @@ class SetupWelcome extends Component
             nextStep: SetupService::STEP_ENVIRONMENT,
         );
 
+        $this->requireSetupAccess();
+
         // [S1 - Secure] Atomic Initialization Audit
         $lock = \Illuminate\Support\Facades\Cache::lock('setup.init', 10);
         

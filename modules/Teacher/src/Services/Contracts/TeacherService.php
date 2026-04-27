@@ -12,6 +12,13 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface TeacherService extends EloquentQuery
 {
     /**
+     * Get summary metrics for teacher distribution and status.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+
+    /**
      * Send a password setup/reset link to a managed teacher.
      */
     public function sendPasswordResetLink(mixed $id): void;

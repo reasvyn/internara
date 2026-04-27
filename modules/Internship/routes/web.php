@@ -18,17 +18,17 @@ use Modules\Internship\Livewire\PlacementManager;
 */
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/internships', InternshipManager::class)
+    Route::get('/internships', \Modules\Internship\Livewire\InternshipIndex::class)
         ->middleware('can:internship.view')
         ->name('internship.index');
 
-    Route::get('/internships/placements', \Modules\Internship\Livewire\InternshipPlacementManager::class)
+    Route::get('/internships/placements', \Modules\Internship\Livewire\InternshipPlacementIndex::class)
         ->middleware('can:internship.update')
         ->name('internship.placement.index');
 
     Route::get(
         '/internships/student-placement',
-        \Modules\Internship\Livewire\StudentPlacementManager::class,
+        \Modules\Internship\Livewire\StudentPlacementIndex::class,
     )
         ->middleware('can:internship.manage')
         ->name('internship.student-placement.index');
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Legacy routes for backward compatibility
     Route::get(
         '/internships/registrations',
-        \Modules\Internship\Livewire\RegistrationManager::class,
+        \Modules\Internship\Livewire\RegistrationIndex::class,
     )
         ->middleware('can:internship.manage')
         ->name('internship.registration.index');
@@ -52,11 +52,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('can:internship.manage')
         ->name('internship.bulk-placement.index');
 
-    Route::get('/internships/requirements', \Modules\Internship\Livewire\RequirementManager::class)
+    Route::get('/internships/requirements', \Modules\Internship\Livewire\RequirementIndex::class)
         ->middleware('can:internship.update')
         ->name('internship.requirement.index');
 
-    Route::get('/internships/companies', \Modules\Internship\Livewire\CompanyManager::class)
+    Route::get('/internships/companies', \Modules\Internship\Livewire\CompanyIndex::class)
         ->middleware('can:internship.manage')
         ->name('internship.company.index');
 });

@@ -49,6 +49,12 @@ return [
             'license' => 'License',
         ],
     ],
+    'stats' => [
+        'total' => 'Total Administrators',
+        'admins' => 'Standard Admins',
+        'active' => 'Active Accounts',
+        'pending' => 'Pending Activation',
+    ],
     'menu' => [
         'dashboard' => 'Main Dashboard',
         'students' => 'Students',

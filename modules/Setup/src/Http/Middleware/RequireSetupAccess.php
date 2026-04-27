@@ -49,7 +49,7 @@ class RequireSetupAccess
      */
     private function isSetupRoute(Request $request): bool
     {
-        return $request->routeIs('setup.*');
+        return $request->routeIs('setup') || $request->routeIs('setup.*');
     }
 
     private function isLivewireRequest(Request $request): bool

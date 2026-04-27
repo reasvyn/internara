@@ -60,15 +60,6 @@ class InternshipManager extends RecordManager
     }
 
     /**
-     * Get institutional summary metrics for internship programs.
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        return $this->service->getStats();
-    }
-
-    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
@@ -285,12 +276,6 @@ class InternshipManager extends RecordManager
      */
     public function render(): \Illuminate\View\View
     {
-        return view('internship::livewire.internship-manager')->layout(
-            'ui::components.layouts.dashboard',
-            [
-                'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
-                'context' => $this->context,
-            ],
-        );
+        return view('internship::livewire.internship-manager');
     }
 }

@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'management_title' => 'Manajemen Mentor',
+    'stats' => [
+        'total' => 'Total Mentor',
+        'active' => 'Akun Aktif',
+        'pending' => 'Tertunda/Baru',
+    ],
     'dashboard' => [
         'title' => 'Dasbor Mentor Industri',
         'subtitle' => 'Pantau aktivitas dan kehadiran siswa magang di perusahaan Anda.',

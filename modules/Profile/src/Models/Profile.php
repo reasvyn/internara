@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Department\Models\Concerns\HasDepartmentRelation;
 use Modules\Profile\Database\Factories\ProfileFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Shared\Support\Casts\SafeEncrypted;
 use Modules\User\Models\Concerns\HasUserRelation;
 
 /**
@@ -52,13 +53,7 @@ class Profile extends Model
     protected function casts(): array
     {
         return [
-            'phone' => 'encrypted',
-            'address' => 'encrypted',
-            'emergency_contact_phone' => 'encrypted',
-            'emergency_contact_address' => 'encrypted',
-            'bio' => 'encrypted',
-            'national_identifier' => 'encrypted',
-            'registration_number' => 'encrypted',
+            'national_identifier' => SafeEncrypted::class,
         ];
     }
 

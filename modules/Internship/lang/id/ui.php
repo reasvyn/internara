@@ -8,6 +8,14 @@ return [
     ],
     'placement_title' => 'Penempatan Magang',
     'placement_subtitle' => 'Kelola daftar mitra industri dan kuota penempatan magang.',
+    'company' => [
+        'title' => 'Mitra Industri',
+        'stats' => [
+            'total' => 'Total Mitra',
+            'active' => 'Mitra Aktif',
+            'with_mentors' => 'Ada Pembimbing',
+        ],
+    ],
     'add_placement' => 'Tambah Penempatan',
     'edit_placement' => 'Edit Penempatan',
     'company_title' => 'Mitra Industri',

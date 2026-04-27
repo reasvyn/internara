@@ -8,6 +8,14 @@ return [
     ],
     'placement_title' => 'Internship Placements',
     'placement_subtitle' => 'Manage the list of industry partners and placement quotas.',
+    'company' => [
+        'title' => 'Industry Partners',
+        'stats' => [
+            'total' => 'Total Partners',
+            'active' => 'Active Partners',
+            'with_mentors' => 'With Mentors',
+        ],
+    ],
     'add_placement' => 'Add Placement',
     'edit_placement' => 'Edit Placement',
     'company_title' => 'Industry Partners',

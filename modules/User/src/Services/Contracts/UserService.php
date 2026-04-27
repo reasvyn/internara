@@ -13,6 +13,13 @@ use Modules\User\Models\User;
 interface UserService extends EloquentQuery
 {
     /**
+     * Get summary metrics for user distribution and status.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+
+    /**
      * Find a user by their email address.
      */
     public function findByEmail(string $email): ?User;

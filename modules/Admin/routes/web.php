@@ -19,24 +19,24 @@ Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(functio
     );
 
     // Stakeholder Management
-    Route::get('/admin/students', \Modules\Student\Livewire\StudentManager::class)->name(
+    Route::get('/admin/students', \Modules\Student\Livewire\StudentIndex::class)->name(
         'admin.students',
     );
-    Route::get('/admin/teachers', \Modules\Teacher\Livewire\TeacherManager::class)->name(
+    Route::get('/admin/teachers', \Modules\Teacher\Livewire\TeacherIndex::class)->name(
         'admin.teachers',
     );
-    Route::get('/admin/mentors', \Modules\Mentor\Livewire\MentorManager::class)->name(
+    Route::get('/admin/mentors', \Modules\Mentor\Livewire\MentorIndex::class)->name(
         'admin.mentors',
     );
 
     // User Directory (Admin + SuperAdmin)
-    Route::get('/admin/users', \Modules\User\Livewire\UserManager::class)->name(
+    Route::get('/admin/users', \Modules\User\Livewire\UserIndex::class)->name(
         'admin.users.index',
     );
 
     // Admin Management (SuperAdmin Only)
     Route::middleware(['role:super-admin'])->group(function () {
-        Route::get('/admin/administrators', \Modules\Admin\Livewire\AdminManager::class)->name(
+        Route::get('/admin/administrators', \Modules\Admin\Livewire\AdminIndex::class)->name(
             'admin.administrators',
         );
     });

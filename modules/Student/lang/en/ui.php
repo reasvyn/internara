@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 return [
+    'management_title' => 'Student Management',
+    'stats' => [
+        'total' => 'Total Students',
+        'verified' => 'Email Verified',
+        'active' => 'Active Accounts',
+        'pending' => 'Pending/New',
+    ],
     'dashboard' => [
         'title' => 'Student Dashboard',
         'welcome' => 'Welcome back, :name!',

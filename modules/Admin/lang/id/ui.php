@@ -49,6 +49,12 @@ return [
             'license' => 'Lisensi',
         ],
     ],
+    'stats' => [
+        'total' => 'Total Administrator',
+        'admins' => 'Admin Standar',
+        'active' => 'Akun Aktif',
+        'pending' => 'Menunggu Aktivasi',
+    ],
     'menu' => [
         'dashboard' => 'Dasbor Utama',
         'students' => 'Data Siswa',

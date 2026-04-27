@@ -65,20 +65,6 @@ class AdminManager extends RecordManager
     }
 
     /**
-     * Get summary metrics for administrator accounts.
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        return [
-            'total' => User::role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->count(),
-            'admins' => User::role(Role::ADMIN->value)->count(),
-            'active' => User::role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->where('setup_required', false)->count(),
-            'pending' => User::role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->where('setup_required', true)->count(),
-        ];
-    }
-
-    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
@@ -168,11 +154,7 @@ class AdminManager extends RecordManager
 
     public function render(): View
     {
-        return view('admin::livewire.admin-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-                'context' => $this->context,
-            ]);
+        return view('admin::livewire.admin-manager');
     }
 
     private function resolveInvitationStatus(User $admin): string

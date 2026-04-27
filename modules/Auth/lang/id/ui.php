@@ -17,6 +17,7 @@ return [
             'name' => 'Nama Lengkap',
             'name_placeholder' => 'Masukkan nama resmi Anda',
             'username' => 'Nama Pengguna Tergenerasi',
+            'username_auto_generated' => 'Nama pengguna akan digenerate secara otomatis oleh sistem dengan pola uXXXXXXXX untuk keamanan.',
             'username_placeholder' => 'Akan digenerate otomatis dari email',
             'username_permanence_hint' => 'Ditetapkan secara permanen untuk keamanan sistem dan tidak dapat diubah setelah digenerate.',
             'email' => 'Email Utama',

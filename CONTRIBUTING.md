@@ -118,8 +118,6 @@ class ExampleManager extends RecordManager
 }
 ```
 
-> **Never** use the deprecated `ManagesRecords` trait. Extend `RecordManager` instead.
-
 ### Computed Properties
 
 Use `#[Computed]` (Livewire 3) for all computed values. Wrap shared dropdown data in `Cache::remember()`:

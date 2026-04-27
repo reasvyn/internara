@@ -11,4 +11,12 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
  *
  * @extends EloquentQuery<\Modules\Internship\Models\Company>
  */
-interface CompanyService extends EloquentQuery {}
+interface CompanyService extends EloquentQuery
+{
+    /**
+     * Get summary metrics for industry partners.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+}

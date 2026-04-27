@@ -50,6 +50,19 @@ class RegistrationService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->count(),
+            'placed' => $this->model->newQuery()->currentStatus('active')->count(),
+            'unplaced' => $this->model->newQuery()->currentStatus('pending')->count(),
+            'new' => $this->model->newQuery()->where('created_at', '>=', now()->startOfMonth())->count(),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function register(array $data): Model
     {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {

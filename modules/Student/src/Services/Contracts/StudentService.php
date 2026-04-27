@@ -13,6 +13,13 @@ use Modules\User\Models\User;
 interface StudentService extends EloquentQuery
 {
     /**
+     * Get summary metrics for student distribution and status.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+
+    /**
      * Send a password setup/reset link to a managed student.
      */
     public function sendPasswordResetLink(mixed $id): void;

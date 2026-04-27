@@ -32,11 +32,10 @@ minimizing third-party library dependency.
 ### 2.2 Component Library
 
 - **Livewire Components**: Shared interactive elements like the `LanguageSwitcher`.
-- **`ManagesRecords` Concern**: A standardized trait for CRUD-heavy Livewire components, providing
- automated pagination, searching, and sorting logic aligned with the `EloquentQuery` pattern.
+- **`RecordIndex` Pattern**: A standardized architectural pattern for top-level management pages, combining summary statistics with embedded record managers.
+- **`RecordManager` Base**: A robust base class for CRUD-heavy Livewire components, providing automated pagination, searching, and sorting logic aligned with the `EloquentQuery` pattern.
 
 ### 2.3 Cross-Module View Orchestration (Slot Injection)
-
 The UI module provides the infrastructure for zero-coupling UI integration:
 
 - **`SlotRegistry`**: A central registry where modules can register their own UI fragments (e.g.,

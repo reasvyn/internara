@@ -28,6 +28,18 @@ class CompanyService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->count(),
+            'active_partners' => $this->model->newQuery()->where('is_active', true)->count(),
+            'with_mentors' => $this->model->newQuery()->has('mentors')->count(),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create(array $data): Company
     {
         \Illuminate\Support\Facades\Gate::authorize('create', Company::class);

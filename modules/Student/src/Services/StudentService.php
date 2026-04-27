@@ -55,6 +55,22 @@ class StudentService extends EloquentQuery implements Contract
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->count(),
+            'verified' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', \Modules\Status\Enums\Status::VERIFIED->value))->count(),
+            'pending' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))->count(),
+            'active' => $this->query()->whereHas('statuses', function ($q) {
+                $q->where('name', User::STATUS_ACTIVE)
+                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+            })->count(),
+        ];
+    }
+
+    /**
      * Create a new student account and profile.
      */
     public function create(array $data): User

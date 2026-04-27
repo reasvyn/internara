@@ -109,16 +109,10 @@ class RequirementManager extends RecordManager
             fn ($v) => $v !== null && $v !== '' && $v !== [],
         ));
     }
-
-    /**
-     * Render the component view.
-     */
-    public function render(): \Illuminate\View\View
-    {
-        return view('internship::livewire.requirement-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-                'context' => $this->context,
-            ]);
-    }
+/**
+ * Render the component view.
+ */
+public function render(): View
+{
+    return view('internship::livewire.requirement-manager');
 }

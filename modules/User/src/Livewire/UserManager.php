@@ -54,20 +54,6 @@ class UserManager extends RecordManager
     }
 
     /**
-     * Get summary metrics for user distribution.
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        return [
-            'total' => User::count(),
-            'students' => User::role(Role::STUDENT->value)->count(),
-            'staff' => User::role([Role::TEACHER->value, Role::MENTOR->value])->count(),
-            'active' => User::whereHas('statuses', fn($q) => $q->where('name', User::STATUS_ACTIVE)->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)'))->count(),
-        ];
-    }
-
-    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
@@ -161,10 +147,7 @@ class UserManager extends RecordManager
      */
     public function render(): View
     {
-        return view('user::livewire.user-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-            ]);
+        return view('user::livewire.user-manager');
     }
 
     // ─── Query Logic ────────────────────────────────────────────────────────

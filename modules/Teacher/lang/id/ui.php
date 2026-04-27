@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'management_title' => 'Manajemen Guru',
+    'stats' => [
+        'total' => 'Total Guru',
+        'active' => 'Akun Aktif',
+        'pending' => 'Tertunda/Baru',
+    ],
     'dashboard' => [
         'title' => 'Dasbor Guru',
         'subtitle' => 'Pantau aktivitas dan kehadiran siswa bimbingan Anda.',

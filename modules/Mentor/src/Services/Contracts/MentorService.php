@@ -12,5 +12,10 @@ use Modules\User\Models\User;
  */
 interface MentorService extends EloquentQuery
 {
-    //
+    /**
+     * Get summary metrics for mentor distribution and status.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
 }

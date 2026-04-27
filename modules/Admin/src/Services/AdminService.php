@@ -45,6 +45,19 @@ class AdminService extends EloquentQuery implements Contract
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->model->newQuery()->role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->count(),
+            'admins' => $this->count(),
+            'active' => $this->model->newQuery()->role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->where('setup_required', false)->count(),
+            'pending' => $this->model->newQuery()->role([Role::ADMIN->value, Role::SUPER_ADMIN->value])->where('setup_required', true)->count(),
+        ];
+    }
+
+    /**
      * @return Authenticatable&Model
      */
     public function create(array $data): Model

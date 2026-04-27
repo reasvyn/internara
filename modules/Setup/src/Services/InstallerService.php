@@ -83,6 +83,13 @@ class InstallerService extends BaseService implements InstallerServiceContract
      */
     public function generateAppKey(): bool
     {
+        // [S1 - Secure] Only generate key if it doesn't already exist to prevent
+        // breaking existing encrypted data in the database.
+        if (! empty(config('app.key'))) {
+            \Illuminate\Support\Facades\Log::info(__('setup::install.audit_logs.key_exists_skipping'));
+            return true;
+        }
+
         try {
             return Artisan::call('key:generate', ['--force' => true]) === 0;
         } catch (\Exception $e) {
@@ -100,24 +107,24 @@ class InstallerService extends BaseService implements InstallerServiceContract
 
     /**
      * Executes the database migrations.
-     * If the database is already initialized, it performs a fresh migration only if forced.
+     * Performs a fresh migration if existing migrations are detected to ensure a clean state.
      */
     public function runMigrations(bool $force = false): bool
     {
         try {
             $hasMigrations = $this->hasExistingMigrations();
             
-            // [S1 - Secure] Enterprise-grade idempotency safeguard
-            // Only use migrate:fresh if explicitly forced OR if no migrations exist.
-            // If migrations exist and NOT forced, we use 'migrate' to avoid data loss.
-            $command = ($hasMigrations && $force) ? 'migrate:fresh' : 'migrate';
+            // [S1 - Secure] Consistent Clean State Mandate
+            // The installation process implies a full system reset. 
+            // We use migrate:fresh if any migrations exist to wipe old data.
+            $command = $hasMigrations ? 'migrate:fresh' : 'migrate';
 
             $result = Artisan::call($command, ['--force' => true]) === 0;
 
             if ($result) {
                 \Illuminate\Support\Facades\Log::info(__('setup::install.audit_logs.migrations_executed', ['command' => $command]), [
                     'command' => $command,
-                    'forced' => $force,
+                    'is_fresh' => $hasMigrations,
                 ]);
             }
 
@@ -125,7 +132,6 @@ class InstallerService extends BaseService implements InstallerServiceContract
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Migration failure during installation: ' . $e->getMessage(), [
                 'exception' => $e,
-                'force' => $force,
             ]);
             return false;
         }

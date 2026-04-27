@@ -57,22 +57,6 @@ class MentorManager extends RecordManager
     }
 
     /**
-     * Get summary metrics for mentor accounts.
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        $query = User::role(Role::MENTOR->value);
-        
-        return [
-            'total' => (clone $query)->count(),
-            'active' => (clone $query)->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_ACTIVE)->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)'))->count(),
-            'pending_claim' => (clone $query)->where('setup_required', true)->count(),
-            'new_this_week' => (clone $query)->where('created_at', '>=', now()->subWeek())->count(),
-        ];
-    }
-
-    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
@@ -204,11 +188,7 @@ class MentorManager extends RecordManager
 
     public function render(): View
     {
-        return view('mentor::livewire.mentor-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-                'context' => $this->context,
-            ]);
+        return view('mentor::livewire.mentor-manager');
     }
 
     protected function managedMentorQuery(array $filters = []): Builder

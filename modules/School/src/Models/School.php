@@ -12,6 +12,7 @@ use Modules\Internship\Models\Concerns\HasInternshipsRelation;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\School\Database\Factories\SchoolFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\Shared\Support\Casts\SafeEncrypted;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
@@ -68,10 +69,6 @@ class School extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'email' => 'encrypted',
-            'phone' => 'encrypted',
-            'fax' => 'encrypted',
-            'principal_name' => 'encrypted',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

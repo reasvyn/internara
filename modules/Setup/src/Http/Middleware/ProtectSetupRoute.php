@@ -26,7 +26,6 @@ class ProtectSetupRoute
     public function handle(Request $request, Closure $next)
     {
         // [S1 - Secure] Apply Rate Limiting for Setup Routes
-        // Limit to 20 attempts per minute to prevent DoS on heavy initialization logic
         $key = 'setup_throttle:' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 20)) {
             $seconds = RateLimiter::availableIn($key);
@@ -34,36 +33,34 @@ class ProtectSetupRoute
         }
         RateLimiter::hit($key, 60);
 
-        $isInstalled = Cache::rememberForever('internara.installed', function () {
-            return $this->setupService->isAppInstalled(true);
-        });
+        // [S1 - Secure] Check installation status directly
+        $isInstalled = $this->setupService->isAppInstalled(true);
 
-        // 1. Total lockdown if already installed and SuperAdmin exists
-        if ($isInstalled && $this->superAdminExists()) {
+        // 1. Total lockdown if application is already installed
+        if ($isInstalled) {
             return abort(404);
         }
 
-        // 2. If not installed, enforce Signed URL validation or Authorized Session
-        if (! $isInstalled) {
-            // Check for valid signature OR valid token
-            if ($request->hasValidSignature() || $this->hasValidToken($request)) {
-                $request->session()->put(SetupService::SESSION_SETUP_AUTHORIZED, true);
-            }
+        // 2. Enforce Signed URL validation or Authorized Session
+        $isAuthorized = $request->session()->get(SetupService::SESSION_SETUP_AUTHORIZED);
 
-            $isAuthorized = $request->session()->get(SetupService::SESSION_SETUP_AUTHORIZED);
+        // [S1 - Secure] Only grant new session authorization if valid signature OR valid token is present
+        if (! $isAuthorized && ($request->hasValidSignature() || $this->hasValidToken($request))) {
+            $request->session()->put(SetupService::SESSION_SETUP_AUTHORIZED, true);
+            $isAuthorized = true;
+        }
 
-            // Verify authorized session AND ensure setup_token still exists in DB
-            $storedToken = $this->settingService->getValue('setup_token');
-            if (! $isAuthorized || empty($storedToken)) {
-                return abort(
-                    403,
-                    __('exception::messages.unauthorized_setup_access'),
-                );
-            }
+        // Verify authorized session AND ensure setup_token still exists in DB
+        $storedToken = $this->settingService->getValue('setup_token');
+        if (! $isAuthorized || empty($storedToken)) {
+            return abort(
+                403,
+                __('exception::messages.unauthorized_setup_access'),
+            );
+        }
 
-            if ($this->shouldRedirectToCompletion($request)) {
-                return redirect()->route('setup.complete');
-            }
+        if ($this->shouldRedirectToCompletion($request)) {
+            return redirect()->route('setup.complete');
         }
 
         return $next($request);

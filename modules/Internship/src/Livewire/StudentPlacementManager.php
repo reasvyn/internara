@@ -78,20 +78,6 @@ class StudentPlacementManager extends RecordManager
     }
 
     /**
-     * Get summary metrics for student placements with enterprise-grade precision.
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        return [
-            'total' => $this->service->query()->count(),
-            'unplaced' => $this->service->query()->whereNull('placement_id')->count(),
-            'placed' => $this->service->query()->whereNotNull('placement_id')->count(),
-            'new' => $this->service->query()->where('created_at', '>=', now()->subWeek())->count(),
-        ];
-    }
-
-    /**
      * Define the table structure for the individual placement tab.
      */
     protected function getTableHeaders(): array
@@ -269,9 +255,6 @@ class StudentPlacementManager extends RecordManager
 
     public function render(): View
     {
-        return view('internship::livewire.student-placement-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => $this->title . ' | ' . setting('brand_name', setting('app_name')),
-            ]);
+        return view('internship::livewire.student-placement-manager');
     }
 }

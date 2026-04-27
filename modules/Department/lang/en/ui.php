@@ -8,6 +8,10 @@ return [
     'subtitle' => 'Manage the list of departments available in the school.',
     'add' => 'Add Department',
     'edit' => 'Edit Department',
+    'stats' => [
+        'total' => 'Total Departments',
+        'with_internships' => 'With Internships',
+    ],
     'search_placeholder' => 'Search department...',
     'name' => 'Department Name',
     'description' => 'Description',

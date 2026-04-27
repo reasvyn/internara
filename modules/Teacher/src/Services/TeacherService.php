@@ -44,6 +44,21 @@ class TeacherService extends EloquentQuery implements Contract
         return parent::query($filters, $columns, $with);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->count(),
+            'active' => $this->query()->whereHas('statuses', function ($q) {
+                $q->where('name', User::STATUS_ACTIVE)
+                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+            })->count(),
+            'pending' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))->count(),
+        ];
+    }
+
     public function create(array $data): User
     {
         return DB::transaction(function () use ($data): User {

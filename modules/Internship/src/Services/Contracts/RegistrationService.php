@@ -13,6 +13,13 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface RegistrationService extends EloquentQuery
 {
     /**
+     * Get summary metrics for internship registrations and placements.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+
+    /**
      * Initiates the official internship registration process for a student.
      *
      * This method orchestrates the creation of the foundational registration

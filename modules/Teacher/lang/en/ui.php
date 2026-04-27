@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'management_title' => 'Teacher Management',
+    'stats' => [
+        'total' => 'Total Teachers',
+        'active' => 'Active Accounts',
+        'pending' => 'Pending/New',
+    ],
     'dashboard' => [
         'title' => 'Teacher Dashboard',
         'subtitle' => 'Monitor activity and attendance of your assigned students.',

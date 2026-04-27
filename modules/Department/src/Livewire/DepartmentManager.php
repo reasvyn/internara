@@ -91,12 +91,6 @@ class DepartmentManager extends RecordManager
      */
     public function render(): View
     {
-        return view('department::livewire.department-manager')->layout(
-            'ui::components.layouts.dashboard',
-            [
-                'title' => $this->title.' | '.setting('brand_name', setting('app_name')),
-                'context' => $this->context,
-            ],
-        );
+        return view('department::livewire.department-manager');
     }
 }

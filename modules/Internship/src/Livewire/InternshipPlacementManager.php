@@ -50,24 +50,6 @@ class InternshipPlacementManager extends RecordManager
     }
 
     /**
-     * Get summary metrics for internship placements (slots).
-     */
-    #[Computed]
-    public function stats(): array
-    {
-        $allPlacements = $this->service->all();
-        $totalQuota = $allPlacements->sum('capacity_quota');
-        $remainingQuota = $allPlacements->sum(fn($p) => $p->remainingSlots);
-        
-        return [
-            'total_locations' => $allPlacements->count(),
-            'total_quota' => $totalQuota,
-            'filled_quota' => $totalQuota - $remainingQuota,
-            'utilization' => $totalQuota > 0 ? round((($totalQuota - $remainingQuota) / $totalQuota) * 100) : 0,
-        ];
-    }
-
-    /**
      * Define the table structure.
      */
     protected function getTableHeaders(): array
@@ -178,10 +160,6 @@ class InternshipPlacementManager extends RecordManager
     {
         return view('internship::livewire.internship-placement-manager', [
             'records' => $this->records,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.placement_title').
-                ' | '.
-                setting('brand_name', setting('app_name')),
         ]);
     }
 }

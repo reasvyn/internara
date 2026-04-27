@@ -13,7 +13,7 @@ use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Services\Contracts\UserService;
 
-class RegistrationManager extends RecordManager
+class InternshipRegistration extends RecordManager
 {
     protected string $viewPermission = 'registration.view';
 
@@ -264,13 +264,8 @@ class RegistrationManager extends RecordManager
 
     public function render()
     {
-        return view('internship::livewire.registration-manager', [
+        return view('internship::livewire.internship-registration', [
             'records' => $this->records,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('internship::ui.registration_title').
-                ' | '.
-                setting('brand_name', setting('app_name')),
-            'context' => 'internship::ui.index.title',
         ]);
     }
 

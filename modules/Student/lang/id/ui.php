@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 return [
+    'management_title' => 'Manajemen Siswa',
+    'stats' => [
+        'total' => 'Total Siswa',
+        'verified' => 'Email Terverifikasi',
+        'active' => 'Akun Aktif',
+        'pending' => 'Tertunda/Baru',
+    ],
     'dashboard' => [
         'title' => 'Dasbor Siswa',
         'welcome' => 'Selamat datang kembali, :name!',

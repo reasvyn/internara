@@ -1,40 +1,4 @@
 <div class="space-y-8">
-    {{-- Executive Summary: Premium Stats Grid --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <x-ui::stat 
-            :title="__('internship::ui.stats.total_programs')" 
-            :value="$this->stats['total']" 
-            icon="tabler.layers-intersect" 
-            variant="metadata" 
-            class="stat-enterprise" 
-            wire:loading.class="opacity-50"
-        />
-        <x-ui::stat 
-            :title="__('internship::ui.stats.open_registration')" 
-            :value="$this->stats['active']" 
-            icon="tabler.door-open" 
-            variant="success" 
-            class="stat-enterprise" 
-            wire:loading.class="opacity-50"
-        />
-        <x-ui::stat 
-            :title="__('internship::ui.stats.ongoing_programs')" 
-            :value="$this->stats['ongoing']" 
-            icon="tabler.activity" 
-            variant="primary" 
-            class="stat-enterprise" 
-            wire:loading.class="opacity-50"
-        />
-        <x-ui::stat 
-            :title="__('internship::ui.stats.upcoming_programs')" 
-            :value="$this->stats['upcoming']" 
-            icon="tabler.calendar-bolt" 
-            variant="info" 
-            class="stat-enterprise" 
-            wire:loading.class="opacity-50"
-        />
-    </div>
-
     <x-ui::record-manager>
         {{-- 1. Custom Filters (Dropdown Menu) --}}
         <x-slot:filters>

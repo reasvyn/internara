@@ -84,6 +84,17 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getStats(): array
+    {
+        return [
+            'total' => $this->count(),
+            'with_internships' => $this->query()->whereHas('internships')->count(),
+        ];
+    }
+
+    /**
      * Ensures a valid school ID is provided, or falls back to the default school.
      */
     protected function ensureSchoolId(?string $schoolId): ?string

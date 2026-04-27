@@ -14,6 +14,13 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface InternshipPlacementService extends EloquentQuery
 {
     /**
+     * Get summary metrics for internship placements.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+
+    /**
      * Get the number of available slots for a placement.
      */
     public function getAvailableSlots(string $placementId): int;

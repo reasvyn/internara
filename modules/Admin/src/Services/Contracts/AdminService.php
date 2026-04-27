@@ -14,6 +14,13 @@ use Modules\Shared\Services\Contracts\EloquentQuery;
 interface AdminService extends EloquentQuery
 {
     /**
+     * Get summary metrics for admin distribution and status.
+     *
+     * @return array<string, int>
+     */
+    public function getStats(): array;
+
+    /**
      * Send (or resend) an invitation email to an Admin account.
      * Only callable while the account is unclaimed (setup_required = true).
      */

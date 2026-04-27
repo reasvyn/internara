@@ -17,5 +17,5 @@ use Modules\Department\Livewire\DepartmentManager;
 */
 
 Route::middleware(['auth', 'verified', 'can:department.view'])->group(function () {
-    Route::get('/departments', DepartmentManager::class)->name('department.index');
+    Route::get('/departments', \Modules\Department\Livewire\DepartmentIndex::class)->name('department.index');
 });
