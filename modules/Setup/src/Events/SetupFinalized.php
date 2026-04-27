@@ -19,7 +19,7 @@ class SetupFinalized
      * Create a new event instance.
      */
     public function __construct(
-        public readonly string $schoolName,
-        public readonly string $installedAt,
+        public readonly ?string $schoolName = null,
+        public readonly ?string $installedAt = null,
     ) {}
 }
