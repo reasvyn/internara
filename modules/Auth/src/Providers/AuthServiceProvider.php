@@ -5,8 +5,18 @@ declare(strict_types=1);
 namespace Modules\Auth\Providers;
 
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as BaseAuthServiceProvider;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\RateLimiter;
+use Livewire\Livewire;
+use Modules\Auth\Livewire\Login;
+use Modules\Auth\Registration\Livewire\Register;
+use Modules\Auth\Registration\Livewire\RegisterSuperAdmin;
+use Modules\Auth\Services\AuthService;
+use Modules\Auth\Services\RedirectService;
+use Modules\Auth\Verification\Livewire\VerificationNotice;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -39,16 +49,16 @@ class AuthServiceProvider extends BaseAuthServiceProvider
      */
     protected function configureRateLimiting(): void
     {
-        \Illuminate\Support\Facades\RateLimiter::for('auth', function (
-            \Illuminate\Http\Request $request,
+        RateLimiter::for('auth', function (
+            Request $request,
         ) {
-            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
+            return Limit::perMinute(5)->by($request->ip());
         });
 
-        \Illuminate\Support\Facades\RateLimiter::for('registration', function (
-            \Illuminate\Http\Request $request,
+        RateLimiter::for('registration', function (
+            Request $request,
         ) {
-            return \Illuminate\Cache\RateLimiting\Limit::perMinute(3)->by($request->ip());
+            return Limit::perMinute(3)->by($request->ip());
         });
     }
 
@@ -57,22 +67,22 @@ class AuthServiceProvider extends BaseAuthServiceProvider
      */
     protected function registerLivewireComponents(): void
     {
-        \Livewire\Livewire::component('auth::login', \Modules\Auth\Livewire\Login::class);
-        \Livewire\Livewire::component(
+        Livewire::component('auth::login', Login::class);
+        Livewire::component(
             'auth::register',
-            \Modules\Auth\Registration\Livewire\Register::class,
+            Register::class,
         );
-        \Livewire\Livewire::component(
+        Livewire::component(
             'auth::register-super-admin',
-            \Modules\Auth\Registration\Livewire\RegisterSuperAdmin::class,
+            RegisterSuperAdmin::class,
         );
-        \Livewire\Livewire::component(
+        Livewire::component(
             'auth::verify-email',
             \Modules\Auth\Verification\Livewire\VerifyEmail::class,
         );
-        \Livewire\Livewire::component(
+        Livewire::component(
             'auth::verification-notice',
-            \Modules\Auth\Verification\Livewire\VerificationNotice::class,
+            VerificationNotice::class,
         );
     }
 
@@ -82,7 +92,7 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function customizeVerificationEmail(): void
     {
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return (new MailMessage())
+            return (new MailMessage)
                 ->subject(__('auth::emails.verification_subject'))
                 ->greeting(__('auth::emails.verification_greeting', ['name' => $notifiable->name]))
                 ->line(__('auth::emails.verification_line_1'))
@@ -117,8 +127,8 @@ class AuthServiceProvider extends BaseAuthServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Auth\Services\Contracts\AuthService::class => \Modules\Auth\Services\AuthService::class,
-            \Modules\Auth\Services\Contracts\RedirectService::class => \Modules\Auth\Services\RedirectService::class,
+            \Modules\Auth\Services\Contracts\AuthService::class => AuthService::class,
+            \Modules\Auth\Services\Contracts\RedirectService::class => RedirectService::class,
         ];
     }
 

@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Modules\Shared\Support\Masker;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -132,7 +133,7 @@ class AppException extends Exception
     {
         Log::error($this->getLogMessage(), [
             'user_message' => $this->getUserMessage(),
-            'context' => \Modules\Shared\Support\Masker::maskArray($this->getContext()),
+            'context' => Masker::maskArray($this->getContext()),
             'exception_trace' => $this->getSubTrace(),
         ]);
 

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Modules\Report\Livewire;
 
 use Livewire\Component;
+use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Report\Services\Contracts\GeneratedReportService;
 use Modules\Report\Services\Contracts\ReportGenerator;
+use Modules\Report\Services\ReportService;
 use Modules\Shared\Contracts\ExportableDataProvider;
 
 class ReportIndex extends Component
@@ -37,7 +40,7 @@ class ReportIndex extends Component
      */
     public function getProvidersProperty(): array
     {
-        /** @var \Modules\Report\Services\ReportService $service */
+        /** @var ReportService $service */
         $service = app(ReportGenerator::class);
 
         return $service
@@ -57,7 +60,7 @@ class ReportIndex extends Component
      */
     public function getInternshipsProperty()
     {
-        return app(\Modules\Internship\Services\Contracts\InternshipService::class)
+        return app(InternshipService::class)
             ->all(['id', 'title'])
             ->map(fn ($i) => ['id' => $i->id, 'name' => $i->title])
             ->toArray();
@@ -68,7 +71,7 @@ class ReportIndex extends Component
      */
     public function getHistoryProperty()
     {
-        return app(\Modules\Report\Services\Contracts\GeneratedReportService::class)
+        return app(GeneratedReportService::class)
             ->query()
             ->latest()
             ->limit(10)

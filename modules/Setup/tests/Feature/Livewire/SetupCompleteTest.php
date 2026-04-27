@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
+use Modules\School\Models\School;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\SetupComplete;
 
@@ -15,7 +16,7 @@ uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     App::setLocale('en');
-    
+
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
@@ -36,9 +37,9 @@ describe('SetupComplete Component', function () {
 
     test('it finalizes setup and redirects to landing', function () {
         app(SettingService::class)->setValue('setup_step_system', true);
-        
+
         // Mock required data for finalization
-        \Modules\School\Models\School::factory()->create(['name' => 'Test School']);
+        School::factory()->create(['name' => 'Test School']);
 
         $this->get(route('setup.complete', ['token' => 'test-token']));
 
@@ -53,7 +54,7 @@ describe('SetupComplete Component', function () {
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'system' not completed
         app(SettingService::class)->setValue('setup_step_system', false);
-        
+
         $this->get(route('setup.complete', ['token' => 'test-token']));
 
         Livewire::test(SetupComplete::class)

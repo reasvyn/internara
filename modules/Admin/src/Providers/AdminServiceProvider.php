@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace Modules\Admin\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Admin\Analytics\Services\AnalyticsAggregator;
+use Modules\Admin\Services\AdminService;
+use Modules\Admin\Services\InfrastructureHealthService;
+use Modules\Admin\Services\SuperAdminService;
+use Modules\Admin\Setup\AdminSetupRequirement;
+use Modules\Setup\Services\SetupRequirementRegistry;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -25,9 +31,9 @@ class AdminServiceProvider extends ServiceProvider
         $this->bootModule();
 
         // [S3 - Scalable] Register Setup Hook
-        if ($this->app->bound(\Modules\Setup\Services\SetupRequirementRegistry::class)) {
-            $this->app->make(\Modules\Setup\Services\SetupRequirementRegistry::class)
-                ->register($this->app->make(\Modules\Admin\Setup\AdminSetupRequirement::class));
+        if ($this->app->bound(SetupRequirementRegistry::class)) {
+            $this->app->make(SetupRequirementRegistry::class)
+                ->register($this->app->make(AdminSetupRequirement::class));
         }
     }
 
@@ -63,10 +69,10 @@ class AdminServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Admin\Services\Contracts\AdminService::class => \Modules\Admin\Services\AdminService::class,
-            \Modules\Admin\Services\Contracts\SuperAdminService::class => \Modules\Admin\Services\SuperAdminService::class,
-            \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class => \Modules\Admin\Analytics\Services\AnalyticsAggregator::class,
-            \Modules\Admin\Services\Contracts\InfrastructureHealthService::class => \Modules\Admin\Services\InfrastructureHealthService::class,
+            \Modules\Admin\Services\Contracts\AdminService::class => AdminService::class,
+            \Modules\Admin\Services\Contracts\SuperAdminService::class => SuperAdminService::class,
+            \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class => AnalyticsAggregator::class,
+            \Modules\Admin\Services\Contracts\InfrastructureHealthService::class => InfrastructureHealthService::class,
         ];
     }
 }

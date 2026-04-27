@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Livewire\Attributes\Computed;
+use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class RequirementIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'internship::requirement-manager';
+
     protected string $titleKey = 'internship::ui.requirement_title';
 
     /**

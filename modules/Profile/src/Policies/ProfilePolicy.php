@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Profile\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Profile;
 use Modules\User\Models\User;
 
@@ -17,7 +18,7 @@ class ProfilePolicy
      */
     public function view(User $user, Profile|string|null $profile = null): bool
     {
-        if ($user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value)) {
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             return true;
         }
 
@@ -38,7 +39,7 @@ class ProfilePolicy
      */
     public function update(User $user, Profile $profile): bool
     {
-        if ($user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value)) {
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             return true;
         }
 

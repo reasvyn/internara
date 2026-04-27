@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Support;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -33,7 +34,7 @@ final class Formatter
      */
     public static function date(mixed $date, string $format = 'd F Y'): string
     {
-        return \Illuminate\Support\Carbon::parse($date)->translatedFormat($format);
+        return Carbon::parse($date)->translatedFormat($format);
     }
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Assignment\Database\Factories\AssignmentFactory;
 use Modules\Log\Concerns\HandlesAuditLog;
 use Modules\Shared\Models\Concerns\HasUuid;
 
@@ -62,8 +63,8 @@ class Assignment extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Modules\Assignment\Database\Factories\AssignmentFactory
+    protected static function newFactory(): AssignmentFactory
     {
-        return \Modules\Assignment\Database\Factories\AssignmentFactory::new();
+        return AssignmentFactory::new();
     }
 }

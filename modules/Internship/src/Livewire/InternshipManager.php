@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Modules\Internship\Livewire;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Modules\Internship\Enums\ProgramStatus;
 use Modules\Internship\Enums\Semester;
 use Modules\Internship\Livewire\Forms\InternshipForm;
+use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -30,7 +32,7 @@ class InternshipManager extends RecordManager
     {
         $this->service = $internshipService;
         $this->eventPrefix = 'internship';
-        $this->modelClass = \Modules\Internship\Models\Internship::class;
+        $this->modelClass = Internship::class;
     }
 
     /**
@@ -45,7 +47,7 @@ class InternshipManager extends RecordManager
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
         $isSetupAuthorized =
-            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            session(SetupService::SESSION_SETUP_AUTHORIZED) ===
                 true || is_testing();
 
         if (! $isSetupAuthorized) {
@@ -274,7 +276,7 @@ class InternshipManager extends RecordManager
     /**
      * Render the component.
      */
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('internship::livewire.internship-manager');
     }

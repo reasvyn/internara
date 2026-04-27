@@ -7,9 +7,11 @@ namespace Modules\Attendance\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Internship\Models\InternshipRegistration;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
+use Modules\Student\Models\Student;
 
 class AbsenceRequest extends Model
 {
@@ -25,7 +27,7 @@ class AbsenceRequest extends Model
      */
     public function registration(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Internship\Models\InternshipRegistration::class, 'registration_id');
+        return $this->belongsTo(InternshipRegistration::class, 'registration_id');
     }
 
     /**
@@ -33,6 +35,6 @@ class AbsenceRequest extends Model
      */
     public function student(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Student\Models\Student::class, 'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
 }

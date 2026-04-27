@@ -6,12 +6,14 @@ namespace Modules\Internship\Tests\Feature\Registration;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Modules\Exception\AppException;
 use Modules\Internship\Events\InternshipRegistered;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
 beforeEach(function () {
@@ -19,11 +21,11 @@ beforeEach(function () {
         return $user->hasRole('super-admin') ? true : null;
     });
 
-    \Modules\Permission\Models\Role::firstOrCreate([
+    Role::firstOrCreate([
         'name' => 'super-admin',
         'guard_name' => 'web',
     ]);
-    
+
     $admin = User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
@@ -39,7 +41,7 @@ test(
         $mock->shouldReceive('hasClearedMandatory')->once()->andReturn(false);
 
         expect(fn () => app(RegistrationService::class)->approve($registration->id))->toThrow(
-            \Modules\Exception\AppException::class,
+            AppException::class,
             'internship::exceptions.mandatory_requirements_not_met',
         );
     },

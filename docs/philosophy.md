@@ -10,574 +10,73 @@ The 3S Doctrine represents three orthogonal but complementary concerns:
 
 | Pillar | Focus | Benefit |
 | :--- | :--- | :--- |
-| 🔐 **Secure (S1)** | Data integrity, confidentiality, auditability | Trust and compliance |
-| 📖 **Sustain (S2)** | Code quality, DDD Modular, documentation | Long-term maintainability |
-| ⚙️ **Scalable (S3)** | Modular design, loose coupling | Evolutionary growth |
+| 🔐 **Secure (S1)** | Code, System, and Data Integrity | Trust, safety, and ISO/IEC compliance |
+| 📖 **Sustain (S2)** | Business Longevity & Environmental Efficiency | Long-term viability and reduced ecological footprint |
+| ⚙️ **Scalable (S3)** | Evolutionary Reliability & Strategic Vision | Capability to evolve and handle massive scale |
 
 ---
 
-## 🔐 Secure (S1) — Absolute Data Integrity
+## 🔐 Secure (S1) — Multi-Layered Integrity
 
 ### Why Security First?
 
-Internara manages sensitive educational and personal data for institutions and students. Security is not an afterthought—it's embedded in every layer of the architecture.
+Internara manages sensitive educational and personal data for institutions and students. Security is not an afterthought—it's a foundational mandate that ensures the system remains a "trusted vault" for its stakeholders.
 
-**Core Principle**: *Data confidentiality, integrity, and auditability must be guaranteed by design, not configuration.*
+**Core Principle**: *Absolute integrity must be maintained across all dimensions—logic, system, and persistence—ensuring that every state change is authorized, every identity is protected, and every byte is sovereign.*
 
-### S1 Implementation
+### S1 Conceptual Mandates
 
-#### 1. Field-Level Encryption
+#### 1. Logic Integrity (Code-Level)
+**Concept**: *Defensive Programming and Explicit Authorization.*
+The system must ensure that business logic is resilient to manipulation. This is achieved by enforcing strict data types to prevent unpredictable behaviors and requiring explicit authorization for every action. The goal is to eliminate "implicit trust" within the code execution flow.
 
-**What**: PII (Personally Identifiable Information) encrypted at the database layer
+#### 2. Systemic Hardening (Architectural-Level)
+**Concept**: *Principle of Least Privilege and Logical Isolation.*
+Components must be isolated so that a breach in one domain cannot cascade to others. Architecture must be "hardened" by defining strict logical boundaries and ensuring that administrative or setup interfaces are only accessible under highly specific, audited conditions.
 
-**How**:
-- AES-256 encryption for sensitive fields
-- Implemented in `Profile` module
-- Transparent encryption/decryption via Eloquent mutators
-- Keys stored securely in `.env`
-
-**Examples of Encrypted Fields**:
-- National ID (NIK)
-- Home address
-- Contact information
-- Bank account numbers
-
-**Code Pattern**:
-```php
-class Profile extends Model
-{
-    protected $encrypted = ['nik', 'address', 'phone'];
-    
-    // Encryption/decryption happens automatically
-    $profile->nik = '3201234567890123'; // Encrypted on save
-    echo $profile->nik;                 // Decrypted on read
-}
-```
-
-**Why This Matters**: Even if the database is compromised, PII remains protected.
+#### 3. Informational Sovereignty (Data-Level)
+**Concept**: *Defense-in-Depth and Non-Enumerability.*
+Data must be protected not just by access rules, but by its own nature at rest. This involves rendering sensitive information unreadable to unauthorized actors (e.g., via encryption) and ensuring that data structures do not leak metadata or provide predictable patterns that could be exploited for automated harvesting.
 
 ---
 
-#### 2. Enumeration Protection
+## 📖 Sustain (S2) — Longevity & Efficiency
 
-**What**: All public-facing entities use UUIDs instead of sequential integers
+### Why Sustainability Matters?
 
-**Why**: Prevents ID enumeration attacks and unauthorized data discovery
+Software is a living asset that requires continuous energy—both human (to maintain) and physical (to run). A system that is too complex to understand or too heavy to run is fundamentally unsustainable.
 
-**How**:
-```php
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+**Core Principle**: *Sustainability is the art of minimizing entropy. We write code that preserves its meaning over time (Business Longevity) and minimizes its footprint on physical resources (Environmental Efficiency).*
 
-class Internship extends Model
-{
-    use HasUuids;  // Automatic UUID generation
-}
+### S2 Conceptual Mandates
 
-// Generated: 550e8400-e29b-41d4-a716-446655440000
-// Instead of: 1, 2, 3, 4...
-```
+#### 1. Business Sustainability (Economic Viability)
+**Concept**: *Knowledge Preservation and Semantic Durability.*
+The longevity of the business depends on the readability of its rules. Code must be self-documenting so that the "intent" survives the departure of its original authors. Furthermore, the system must be culturally and linguistically elastic to adapt to changing institutional requirements without requiring a rewrite of its core logic.
 
-**Security Impact**:
-- Attackers cannot guess valid IDs
-- No sequential pattern to exploit
-- API endpoints become harder to enumerate
-- Data discovery becomes significantly more difficult
-
-**Applied to**:
-- All user-facing models
-- All API endpoints
-- All public routes
+#### 2. Environmental Sustainability (Computational Leaness)
+**Concept**: *Resource Frugality and Minimized Externalities.*
+Every instruction executed has an energy cost. We mandate high efficiency in data processing and a "lean" state management approach to reduce the cumulative hardware cycles required. By minimizing our computational footprint, we ensure the system remains viable even in resource-constrained or high-cost energy environments.
 
 ---
 
-#### 3. Auditability & Compliance
+## ⚙️ Scalable (S3) — Evolutionary Reliability
 
-**What**: Every critical state change is automatically logged
+### Why Scalability is More Than Just Traffic?
 
-**How**: `spatie/laravel-activitylog` package
-```php
-use Spatie\Activitylog\Traits\LogsActivity;
+True scalability is the ability of an architecture to absorb new visions, higher complexity, and larger data volumes without structural decay.
 
-class Internship extends Model
-{
-    use LogsActivity;
-    
-    protected static $logAttributes = ['status', 'mentor_id', 'start_date'];
-    protected static $logOnlyDirty = true;
-}
+**Core Principle**: *The architecture must be "fluid," allowing the system to expand its boundaries and refine its internal structures while maintaining a reliable and predictable core.*
 
-// Automatically logs:
-// - Who changed it
-// - What changed
-// - When it changed
-// - Old vs. new values
-```
+### S3 Conceptual Mandates
 
-**Audit Trail Benefits**:
-- Complete history of all changes
-- Tamper-evident records (timestamps)
-- Regulatory compliance (for Dapodik, Ministry of Education)
-- Forensic analysis capability
-- PII masking in logs (automatic)
+#### 1. Evolutionary Reliability (Change Tolerance)
+**Concept**: *Modular Autonomy and Interface Stability.*
+The system must be built as a collection of autonomous units that interact through stable contracts. This allows individual components to evolve, be refactored, or be completely replaced without causing systemic failure. Scaling "evolutionary" means the system can get smarter without getting more fragile.
 
-**Example Log Entry**:
-```json
-{
-  "model": "Internship",
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "action": "updated",
-  "causer": "admin@school.com",
-  "changed": {
-    "status": ["placed", "active"],
-    "mentor_id": [null, "550e8400-e29b-41d4-a716-446655440001"]
-  },
-  "created_at": "2026-04-22T17:29:26Z"
-}
-```
-
----
-
-#### 4. Access Control (RBAC)
-
-**What**: Strict Role-Based Access Control via `spatie/laravel-permission`
-
-**How**:
-- Every resource protected by a Policy
-- Every action requires explicit permission
-- Roles organized hierarchically
-
-**Example Policy**:
-```php
-class InternshipPolicy
-{
-    public function view(User $user, Internship $internship): bool
-    {
-        return $user->can('internship.view') &&
-               $user->institution_id === $internship->institution_id;
-    }
-
-    public function update(User $user, Internship $internship): bool
-    {
-        return $user->can('internship.update') &&
-               $user->id === $internship->created_by;
-    }
-}
-
-// In controller/Livewire:
-$this->authorize('update', $internship);  // Automatic check
-```
-
-**Built-in Roles**:
-- **Super Admin**: Full system access
-- **Admin**: Institution-level admin
-- **Teacher**: Academic oversight
-- **Mentor**: Industry-side mentoring
-- **Student**: Internee access
-
----
-
-#### 5. Setup Access Security
-
-**What**: Installation wizard protected by one-time token
-
-**How**:
-```php
-// After setup completion:
-$app_installed = true;  // Locked state
-
-// Subsequent access attempts:
-// RequireSetupAccess middleware blocks all setup routes (404)
-if ($setupService->isAppInstalled() && $this->isSetupRoute($request)) {
-    return abort(404);  // Setup routes disappear
-}
-```
-
-**Emergency Reset** (for security testing only):
-```bash
-php artisan app:setup-reset
-```
-
----
-
-### S1 Design Patterns
-
-✅ **Fail-Secure** — Default to deny, whitelist what's allowed
-✅ **Defense-in-Depth** — Multiple layers (encryption, RBAC, audit)
-✅ **Least Privilege** — Users get minimum permissions needed
-✅ **Auditability** — Everything is logged and traceable
-✅ **Data Isolation** — Strict module boundaries prevent leakage
-
----
-
-## 📖 Sustain (S2) — Code as Documentation
-
-### Why Code Quality Matters?
-
-Code written today must be understood and modified by developers years later. The system must evolve without degradation.
-
-**Core Principle**: *Code is the primary communication medium. Writing testable, well-typed, properly documented code is not optional—it's essential.*
-
-### S2 Implementation
-
-#### 1. Technical Excellence (PSR-12)
-
-**What**: Strict adherence to **PSR-12 (PHP Standard Recommendation)**
-
-**Enforced via `Pint`** (Laravel's code formatter):
-```bash
-composer lint    # Check PSR-12 compliance
-composer format  # Auto-fix violations
-```
-
-**Key Rules**:
-- 4-space indentation
-- No trailing whitespace
-- Unix line endings (LF)
-- One statement per line
-- Proper spacing around operators
-
-**Pint Configuration** (pint.json):
-```json
-{
-    "preset": "laravel",
-    "rules": {
-        "declare_strict_types": true,
-        "single_quote": true,
-        "strict_comparison": true,
-        "trailing_comma_in_multiline": true
-    }
-}
-```
-
----
-
-#### 2. Strict Types
-
-**What**: `declare(strict_types=1);` on every PHP file
-
-**Required First Line**:
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Services;
-
-// ... rest of file
-```
-
-**Why**:
-```php
-// With strict_types=1
-function processAge(int $age): string
-{
-    // "25 years" → TypeError (not accepted)
-    // 25 → OK
-    return "$age years";
-}
-
-// Without strict_types=1
-// Both "25 years" and 25 accepted (loose comparison)
-```
-
-**Benefits**:
-- Type coercion prevented
-- Bugs caught at development time
-- Better IDE support and autocomplete
-- Self-documenting code
-
----
-
-#### 3. Domain-Driven Design (DDD) Modular
-
-**What**: 90%+ behavioral coverage required for all functional changes, driven by domain modeling.
-
-**Framework**: **Pest** (modern, expressive PHP testing)
-
-**Test Categories**:
-- **Domain Tests**: Validation of Entities, VOs, and Aggregates
-- **Application Tests**: Use case orchestration and integration
-- **Architecture Tests**: Design compliance (circular dependencies, etc.)
-- **Browser Tests**: Livewire UI interactions via Dusk
-
-**Example Test**:
-```php
-it('ensures setup process can only proceed sequentially', function () {
-    $process = SetupProcess::fromState(isInstalled: false, completedSteps: []);
-    
-    expect($process->canProceedTo(SetupService::STEP_SCHOOL))->toBeFalse();
-    
-    $process->completeStep(SetupService::STEP_WELCOME);
-    $process->completeStep(SetupService::STEP_ENVIRONMENT);
-    
-    expect($process->canProceedTo(SetupService::STEP_SCHOOL))->toBeTrue();
-});
-```
-
-**Implementation Requirements**:
-- ✅ Every new domain model must have tests
-- ✅ Bug fixes must include regression tests
-- ✅ 90%+ coverage minimum
-- ✅ All tests must pass before merge
-
----
-
-#### 4. Documentation Parity
-
-**What**: Code and documentation stay synchronized
-
-**Guidelines**:
-- Code comments explain **WHY**, not **WHAT**
-- Self-documenting code (good naming, clear structure)
-- All user-facing strings use localization: `__('module::key')`
-- No hardcoded strings in code
-
-**Example**:
-```php
-// ❌ BAD - Obvious comment
-public function save()
-{
-    // Save to database
-    $this->model->save();
-}
-
-// ✅ GOOD - Explains why
-public function save()
-{
-    // We refresh timestamps before saving to ensure audit trail accuracy
-    // See: requirements/REQ-SEC-001 (Auditability)
-    $this->model->touch();
-    $this->model->save();
-}
-```
-
-**Localization Example**:
-```php
-// ❌ BAD - Hardcoded string
-echo "Hello, " . $user->name;
-
-// ✅ GOOD - Localized
-echo __('common.greeting', ['name' => $user->name]);
-
-// In resources/lang/en/common.php
-'greeting' => 'Hello, {name}'
-
-// In resources/lang/id/common.php
-'greeting' => 'Halo, {name}'
-```
-
----
-
-### S2 Design Patterns
-
-✅ **Type Safety** — Declare strict types, use explicit type hints
-✅ **Automated Testing** — Tests verify behavior, catch regressions
-✅ **Self-Documentation** — Code naming and structure convey intent
-✅ **Localization** — User-facing content is internationalized
-✅ **Documentation Alignment** — Docs and code stay in sync
-
----
-
-## ⚙️ Scalable (S3) — Evolutionary Architecture
-
-### Why Modularity Matters?
-
-Large monoliths become unmaintainable as they grow. Internara is designed to evolve without the "Big Ball of Mud" anti-pattern.
-
-**Core Principle**: *Modules are independent, composable units. Changes in one module should not impact others.*
-
-### S3 Implementation
-
-#### 1. Domain Isolation (nwidart/laravel-modules)
-
-**What**: 29+ independent modules, each with its own:
-- Models
-- Services
-- Controllers
-- Views
-- Tests
-- Migrations
-- Configuration
-
-**Module Structure**:
-```
-modules/Internship/
-├── src/
-│   ├── Models/
-│   ├── Services/Contracts/      ← Public API (interfaces)
-│   ├── Services/                 ← Implementation (auto-bound)
-│   ├── Livewire/
-│   ├── Http/Controllers/
-│   └── Providers/
-├── tests/
-├── database/migrations/
-├── resources/lang/
-└── Module.php
-```
-
-**Why This Works**:
-- Each module is independently testable
-- No circular dependencies possible (enforced by tests)
-- Clear module boundaries prevent "Big Ball of Mud"
-- Modules can be deployed or refactored independently
-
----
-
-#### 2. Loose Coupling via Contracts
-
-**What**: Modules interact through abstracted interfaces, not implementations
-
-**Contract Pattern**:
-```php
-// modules/Internship/src/Services/Contracts/InternshipService.php
-namespace Modules\Internship\Services\Contracts;
-
-interface InternshipService
-{
-    public function create(array $data): Internship;
-    public function update(Internship $internship, array $data): void;
-}
-
-// modules/Internship/src/Services/InternshipService.php
-class InternshipService implements InternshipService
-{
-    // Implementation
-}
-
-// Usage in another module (e.g., Student module)
-class StudentService
-{
-    public function __construct(
-        private InternshipService $internshipService  // Interface, not concrete
-    ) {}
-
-    public function enroll(Student $student): void
-    {
-        // Works regardless of InternshipService implementation
-        $this->internshipService->create([...]);
-    }
-}
-```
-
-**Benefits**:
-- Dependency Inversion Principle (depend on abstractions, not concretions)
-- Easy to swap implementations (testing, feature flags)
-- No module imports across boundaries
-- Clear public API per module
-
----
-
-#### 3. Auto-Binding Engine (BindServiceProvider)
-
-**What**: Automatically discovers and binds interfaces to implementations
-
-**How**:
-```php
-// Scans modules/*/src/Services/Contracts for interfaces
-// Derives implementations via naming patterns
-// Registers in Laravel Service Container
-
-// Example:
-// Interface: Modules\Internship\Services\Contracts\InternshipService
-// Implementation: Modules\Internship\Services\InternshipService
-// Auto-bound: Container->bind(InternshipService::class, InternshipService::class)
-```
-
-**Naming Patterns** (config/bindings.php):
-1. `{{root}}\Services\{{short}}Service`
-2. `{{root}}\Services\{{short}}`
-3. `{{root}}\Repositories\Eloquent{{short}}Repository`
-4. Fallback patterns (actions, repositories)
-
-**Result**: Zero manual service provider configuration needed
-
----
-
-#### 4. No Cross-Module Foreign Keys
-
-**What**: Modules reference each other via UUIDs, not database foreign keys
-
-**Why**:
-- Prevents tight coupling at the database layer
-- Allows modules to be deployed independently
-- Simplifies database migrations (no coordination needed)
-- Natural isolation boundary
-
-**Example**:
-```php
-// ❌ BAD - Physical foreign key across modules
-// modules/Internship/database/migrations/create_internships_table.php
-Schema::create('internships', function (Blueprint $table) {
-    $table->uuid('mentor_id');
-    $table->foreign('mentor_id')  // ❌ Cross-module FK
-        ->references('id')
-        ->on('users');  // users table in Mentor module
-});
-
-// ✅ GOOD - UUID reference without FK
-// modules/Internship/database/migrations/create_internships_table.php
-Schema::create('internships', function (Blueprint $table) {
-    $table->uuid('mentor_id');  // ✅ Just a column
-    // No foreign key constraint
-});
-
-// When needed, retrieve via service:
-class InternshipService
-{
-    public function __construct(
-        private MentorService $mentorService  // Service dependency
-    ) {}
-
-    public function assignMentor(Internship $internship, string $mentorId): void
-    {
-        // Validate via service, not database constraint
-        $mentor = $this->mentorService->findById($mentorId);
-        $internship->mentor_id = $mentor->id;
-        $internship->save();
-    }
-}
-```
-
----
-
-#### 5. Progressive Enhancement
-
-**What**: New features and modules can be added without breaking existing contracts
-
-**Pattern**:
-```php
-// v1.0 - Original contract
-interface InternshipService
-{
-    public function create(array $data): Internship;
-}
-
-// v1.1 - New method added (backward compatible)
-interface InternshipService
-{
-    public function create(array $data): Internship;
-    public function createWithValidation(array $data): Internship;  // ← New
-}
-
-// v2.0 - Breaking change (major version bump)
-interface InternshipService
-{
-    public function createWithValidation(array $data): Internship;
-    // create() removed ← Breaking change
-}
-```
-
----
-
-### S3 Design Patterns
-
-✅ **Domain Isolation** — Clear module boundaries, no "Big Ball of Mud"
-✅ **Contract-Based** — Interfaces define public APIs
-✅ **No Cross-Module FKs** — Database isolation from module isolation
-✅ **Auto-Discovery** — Bindings discovered, not configured
-✅ **Backward Compatibility** — New features don't break old code
-
+#### 2. Strategic Vision (Structural Elasticity)
+**Concept**: *Decoupled Growth and Vision Elasticity.*
+The foundation must be elastic enough to support a "Modular Monolith" today and a "Distributed Ecosystem" tomorrow. By ensuring that modules are decoupled at both the logic and persistence layers, we preserve the strategic option to scale specific domains independently to meet the needs of massive institutional or national-level deployments.
 ---
 
 ## Integration: How 3S Works Together

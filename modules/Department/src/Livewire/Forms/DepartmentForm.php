@@ -27,11 +27,11 @@ class DepartmentForm extends Form
             'name' => array_filter([
                 'required',
                 'string',
-                $isProduction ? 'min:' . $config['name']['min_length'] : null,
-                'max:' . $config['name']['max_length'],
+                $isProduction ? 'min:'.$config['name']['min_length'] : null,
+                'max:'.$config['name']['max_length'],
                 Rule::unique('departments', 'name')->ignore($this->id),
             ]),
-            'description' => ['nullable', 'string', 'max:' . $config['description']['max_length']],
+            'description' => ['nullable', 'string', 'max:'.$config['description']['max_length']],
         ];
     }
 }

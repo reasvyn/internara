@@ -7,17 +7,17 @@ namespace Modules\Setup\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Livewire\Livewire;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequireSetupAccess
 {
-    public function __construct(protected SetupService $setupService) {}
+    public function __construct(protected AppSetupService $setupService) {}
 
     /**
      * Handle an incoming request.
      *
-     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
+     * @param Closure(Request): (Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {

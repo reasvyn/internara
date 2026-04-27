@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services\Jobs;
 
-use Modules\Status\Enums\Status;
-use Modules\Status\Services\IdleAccountDetectionService;
-use Modules\Status\Services\StatusTransitionService;
-use Modules\Status\Services\AccountAuditLogger;
-use Modules\User\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Modules\Status\Enums\Status;
+use Modules\Status\Services\AccountAuditLogger;
+use Modules\Status\Services\IdleAccountDetectionService;
+use Modules\Status\Services\StatusTransitionService;
+use Modules\User\Models\User;
 
 /**
  * DetectIdleAccountsJob
@@ -32,7 +32,9 @@ class DetectIdleAccountsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private IdleAccountDetectionService $idleDetectionService;
+
     private StatusTransitionService $transitionService;
+
     private AccountAuditLogger $auditLogger;
 
     public function __construct()
@@ -82,8 +84,8 @@ class DetectIdleAccountsJob implements ShouldQueue
                 Status::PROTECTED->value,
             ]);
         })
-        ->where('last_activity_at', '<=', now()->subDays($days))
-        ->get();
+            ->where('last_activity_at', '<=', now()->subDays($days))
+            ->get();
 
         foreach ($users as $user) {
             // TODO: Check if we already sent warning and send notification
@@ -105,12 +107,12 @@ class DetectIdleAccountsJob implements ShouldQueue
                 Status::INACTIVE->value,
             ]);
         })
-        ->where('last_activity_at', '<=', now()->subDays(365))
-        ->get();
+            ->where('last_activity_at', '<=', now()->subDays(365))
+            ->get();
 
         foreach ($users as $user) {
             $currentStatus = $user->getStatus();
-            
+
             // Check if already archived
             if ($currentStatus === Status::ARCHIVED) {
                 continue;
@@ -148,8 +150,8 @@ class DetectIdleAccountsJob implements ShouldQueue
         $users = User::whereHas('statuses', function ($query) {
             $query->where('name', Status::ARCHIVED->value);
         })
-        ->where('last_activity_at', '<=', now()->subYears($years))
-        ->get();
+            ->where('last_activity_at', '<=', now()->subYears($years))
+            ->get();
 
         foreach ($users as $user) {
             try {
@@ -173,11 +175,11 @@ class DetectIdleAccountsJob implements ShouldQueue
      */
     private function anonymizeUserData(User $user): void
     {
-        $anonymizedId = 'ANON_' . hash('sha256', $user->id . config('app.key'));
+        $anonymizedId = 'ANON_'.hash('sha256', $user->id.config('app.key'));
 
         $user->update([
             'name' => $anonymizedId,
-            'email' => $anonymizedId . '@anonymized.local',
+            'email' => $anonymizedId.'@anonymized.local',
             'phone' => null,
             'address' => null,
             'profile_picture' => null,

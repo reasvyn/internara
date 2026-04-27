@@ -2,31 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Modules\Setup\Services\Contracts;
+namespace Modules\Support\Services\Contracts;
 
 /**
- * Defines the contract for the service that handles the technical installation process.
+ * Contract for the System Installer service.
+ *
+ * This service handles technical initialization of the application environment.
  */
-interface InstallerService
+interface SystemInstaller
 {
     /**
      * Orchestrates the complete installation process.
-     *
-     * @return bool True if the installation was successful, false otherwise.
      */
     public function install(): bool;
 
     /**
      * Ensures the .env file exists, creating it from .env.example if necessary.
-     *
-     * @return bool True if the file exists or was created, false otherwise.
      */
     public function ensureEnvFileExists(): bool;
 
     /**
-     * Generates the application key.
-     *
-     * @return bool True if the key was generated successfully, false otherwise.
+     * Generates the application key if not set.
      */
     public function generateAppKey(): bool;
 
@@ -39,23 +35,16 @@ interface InstallerService
 
     /**
      * Executes the database migrations.
-     *
-     * @param bool $force Whether to force fresh migrations (migrate:fresh)
-     * @return bool True if migrations were successful, false otherwise.
      */
     public function runMigrations(bool $force = false): bool;
 
     /**
-     * Executes the core and shared database seeders.
-     *
-     * @return bool True if seeding was successful, false otherwise.
+     * Executes the foundational database seeders.
      */
     public function runSeeders(): bool;
 
     /**
      * Creates the storage symbolic link.
-     *
-     * @return bool True if the symlink was created successfully, false otherwise.
      */
     public function createStorageSymlink(): bool;
 }

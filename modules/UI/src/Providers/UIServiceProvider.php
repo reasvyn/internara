@@ -9,8 +9,11 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Modules\UI\Core\Contracts\SlotManager as SlotManagerContract;
 use Modules\UI\Core\Contracts\SlotRegistry as SlotRegistryContract;
+use Modules\UI\Core\Navigation\SidebarRegistry;
 use Modules\UI\Core\SlotManager;
 use Modules\UI\Core\SlotRegistry;
+use Modules\UI\Services\LocalizationService;
+use Modules\UI\View\Components\UserMenu;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class UIServiceProvider extends ServiceProvider
@@ -30,13 +33,13 @@ class UIServiceProvider extends ServiceProvider
         $this->bootModule();
 
         // Register Centralized Sidebar Menu
-        \Modules\UI\Core\Navigation\SidebarRegistry::register();
+        SidebarRegistry::register();
 
         // Register anonymous components
         Blade::anonymousComponentPath(module_path('UI', 'resources/views/components'), 'ui');
 
         // Register class-based components
-        Blade::component('ui::user-menu', \Modules\UI\View\Components\UserMenu::class);
+        Blade::component('ui::user-menu', UserMenu::class);
 
         // Register the custom Blade directive
         Blade::directive('slotRender', function ($expression) {
@@ -64,7 +67,7 @@ class UIServiceProvider extends ServiceProvider
         return [
             SlotManagerContract::class => SlotManager::class,
             SlotRegistryContract::class => SlotRegistry::class,
-            \Modules\UI\Services\Contracts\LocalizationService::class => \Modules\UI\Services\LocalizationService::class,
+            \Modules\UI\Services\Contracts\LocalizationService::class => LocalizationService::class,
         ];
     }
 

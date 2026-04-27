@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Concerns;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Modules\Status\Enums\Status as StatusEnum;
 use Spatie\ModelStatus\HasStatuses as SpatieHasStatuses;
 
@@ -21,7 +22,7 @@ trait HasStatuses
      * Override the statuses relationship to use created_at for ordering.
      * The base package uses latest('id') which is incompatible with UUIDs.
      */
-    public function statuses(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function statuses(): MorphMany
     {
         return $this->morphMany(
             config('model-status.status_model'),
@@ -74,7 +75,7 @@ trait HasStatuses
     {
         $status = $this->getStatus();
 
-        if (!$status) {
+        if (! $status) {
             return __('status::status.unknown');
         }
 
@@ -88,7 +89,7 @@ trait HasStatuses
     {
         $status = $this->getStatus();
 
-        if (!$status) {
+        if (! $status) {
             return self::DEFAULT_STATUS_COLOR;
         }
 

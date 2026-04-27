@@ -75,7 +75,7 @@ class ProfileService extends EloquentQuery implements Contract
     public function syncProfileable(Profile $profile, Model $profileable): Profile
     {
         if (! $this->skipAuthorization) {
-            \Illuminate\Support\Facades\Gate::authorize('update', $profile);
+            Gate::authorize('update', $profile);
         }
 
         if ($profile->profileable_id === $profileable->getKey()) {

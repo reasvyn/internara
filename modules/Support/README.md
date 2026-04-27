@@ -1,45 +1,48 @@
 # Support Module
 
-The `Support` module provides the **Operational Bridge** between Internara's architectural standards
-and environmental reality. It centralizes development tooling, automated scaffolding, and complex
-administrative utilities.
+The `Support` module provides the **Infrastructure & Operational Bridge** for Internara. It centralizes technical system installation, environment auditing, help documentation, and developer automation.
 
-> **Governance Mandate:** This module implements the infrastructure required to satisfy
-> **[SYRS-C-003]** (Service Layer Logic). All implementation must adhere to the
 ---
 
 ## 1. Domain Domains
 
-### 1.1 Scaffolding Domain
+### 1.1 Technical Installation Domain
 
-Provides custom Artisan generators that enforce the **Modular DDD**, **src Omission**, and
-**Finality** conventions during development.
+Handles the technical initialization of the Internara system.
+
+- **`SystemInstaller`**: Handles low-level technical installation tasks (env creation, app key generation, migration execution, and storage symlinking).
+- **`InstallationAuditor`**: Performs pre-flight environment checks (PHP extensions, directory permissions, and database connectivity).
+- **`SystemInstallCommand`**: Automated technical initialization via CLI (`php artisan system:install`).
+
+### 1.2 Help & Documentation Domain
+
+Provides the knowledge base and support infrastructure for application users.
+
+- **Help Articles**: Managed FAQ and documentation.
+- **Support Center**: UI for user guidance.
+
+### 1.3 Developer Scaffolding Domain
+
+Provides custom Artisan generators that enforce Internara's architectural standards.
 
 - `module:make-class`: Generates a final PHP class with direct namespacing.
 - `module:make-interface`: Generates a contract in the appropriate domain folder.
 - `module:make-trait`: Generates a reusable concern.
-- `module:make-dusk`: Generates browser testing boilerplate.
-
-### 1.2 Testing Domain
-
-- **`AppTestCommand`**: An orchestrated test runner (`php artisan app:test`) that executes modular
- test suites sequentially to optimize memory usage.
 
 ---
 
 ## 2. Engineering Standards
 
-- **Environment Awareness**: This module is allowed to interact with low-level system resources
- (Filesystem, Shell) to facilitate automation.
-- **Service Orchestration**: Complex utilities (like Onboarding) must delegate specific attribute
- updates to the respective domain modules (User, Student, Teacher).
+- **Infrastructure Sovereignty**: The `Support` module is authorized to interact with low-level system resources (Filesystem, Shell, PHP Configuration) to facilitate installation and auditing.
+- **Domain Separation**: Technical installation concerns are strictly separated from the business configuration (handled by the `Setup` module).
+- **Wizard Concerns**: Utilizes the shared `HandlesWizardSteps` trait for unified UI logic in the installation welcome and requirement check screens.
 
 ---
 
 ## 3. Verification & Validation (V&V)
 
-- **Feature Tests**: Validating mass CSV import workflows and generator output consistency.
-- **Command Tests**: Verifying the orchestrated sequential execution of test segments.
+- **Unit Tests**: Validates the audit logic and installation engine.
+- **Feature Tests**: Verifies the `system:install` command execution and requirement check components.
 - **Command**: `php artisan test modules/Support`
 
 ---

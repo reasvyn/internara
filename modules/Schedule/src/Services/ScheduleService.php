@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Schedule\Services;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Schedule\Models\Schedule;
 use Modules\Schedule\Services\Contracts\ScheduleService as ScheduleServiceContract;
 use Modules\Shared\Services\EloquentQuery;
@@ -30,9 +32,9 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
     public function getStudentTimeline(
         string $studentId,
         int $perPage = 15,
-    ): \Illuminate\Pagination\LengthAwarePaginator {
+    ): LengthAwarePaginator {
         $registrationService = app(
-            \Modules\Internship\Services\Contracts\RegistrationService::class,
+            RegistrationService::class,
         );
         $registration = $registrationService->first(['student_id' => $studentId]);
 

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
-use Modules\User\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Modules\User\Models\User;
 
 /**
  * AccountCloneDetectionService
@@ -29,6 +30,7 @@ class AccountCloneDetectionService
     private AccountAuditLogger $auditLogger;
 
     private const IMPOSSIBLE_TRAVEL_THRESHOLD_MINUTES = 30;
+
     private const IMPOSSIBLE_TRAVEL_MIN_DISTANCE_KM = 1000; // 1000 km in 30 min = suspicious
 
     public function __construct(AccountAuditLogger $auditLogger)
@@ -39,9 +41,6 @@ class AccountCloneDetectionService
     /**
      * Check for account cloning/compromise on login
      *
-     * @param User $user
-     * @param string $currentIp
-     * @param string $currentUserAgent
      * @return array{is_suspicious: bool, reason: string, actions: string[]}
      */
     public function checkLoginSuspicion(User $user, string $currentIp, string $currentUserAgent): array
@@ -92,10 +91,6 @@ class AccountCloneDetectionService
 
     /**
      * Check if user has simultaneous logins from different IPs
-     *
-     * @param User $user
-     * @param string $currentIp
-     * @return bool
      */
     private function hasSimultaneousLoginFromDifferentIp(User $user, string $currentIp): bool
     {
@@ -113,9 +108,7 @@ class AccountCloneDetectionService
     /**
      * Check for impossible travel (covered distance in too short time)
      *
-     * @param User $user
      * @param string $currentIp Current login IP
-     * @return bool
      */
     private function isImpossibleTravel(User $user, string $currentIp): bool
     {
@@ -128,13 +121,13 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->first(['created_at', 'ip_address', 'latitude', 'longitude']);
 
-        if (!$lastLogin) {
+        if (! $lastLogin) {
             return false;
         }
 
         // Get current IP geolocation
         $currentLocation = $this->getIpGeolocation($currentIp);
-        if (!$currentLocation) {
+        if (! $currentLocation) {
             return false; // Cannot determine location, assume safe
         }
 
@@ -162,10 +155,6 @@ class AccountCloneDetectionService
 
     /**
      * Check if login is from new location after idle period
-     *
-     * @param User $user
-     * @param string $currentIp
-     * @return bool
      */
     private function isNewLocationAfterIdle(User $user, string $currentIp): bool
     {
@@ -176,7 +165,7 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->first(['created_at', 'ip_address']);
 
-        if (!$lastLogin) {
+        if (! $lastLogin) {
             return false; // First login
         }
 
@@ -196,10 +185,6 @@ class AccountCloneDetectionService
 
     /**
      * Check if device fingerprint changed significantly
-     *
-     * @param User $user
-     * @param string $currentUserAgent
-     * @return bool
      */
     private function deviceFingerprintChanged(User $user, string $currentUserAgent): bool
     {
@@ -210,7 +195,7 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->value('user_agent');
 
-        if (!$lastUserAgent) {
+        if (! $lastUserAgent) {
             return false; // First login
         }
 
@@ -227,13 +212,6 @@ class AccountCloneDetectionService
 
     /**
      * Record suspicious activity for audit trail
-     *
-     * @param User $user
-     * @param string $ip
-     * @param string $userAgent
-     * @param array $suspicions
-     * @param array $actions
-     * @return void
      */
     private function recordSuspiciousActivity(
         User $user,
@@ -284,7 +262,6 @@ class AccountCloneDetectionService
      *
      * Integration point: Use MaxMind GeoIP2, IP2Location, or similar service
      *
-     * @param string $ip
      * @return array|null {latitude, longitude, country, city} or null
      */
     private function getIpGeolocation(string $ip): ?array
@@ -305,10 +282,6 @@ class AccountCloneDetectionService
     /**
      * Calculate distance between two coordinates (Haversine formula)
      *
-     * @param float $lat1
-     * @param float $lon1
-     * @param float $lat2
-     * @param float $lon2
      * @return float Distance in kilometers
      */
     private function calculateDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
@@ -329,44 +302,56 @@ class AccountCloneDetectionService
 
     /**
      * Extract browser name from user agent
-     *
-     * @param string $userAgent
-     * @return string|null
      */
     private function extractBrowser(string $userAgent): ?string
     {
-        if (preg_match('/Chrome/', $userAgent)) return 'Chrome';
-        if (preg_match('/Safari/', $userAgent)) return 'Safari';
-        if (preg_match('/Firefox/', $userAgent)) return 'Firefox';
-        if (preg_match('/Edge/', $userAgent)) return 'Edge';
-        if (preg_match('/Opera/', $userAgent)) return 'Opera';
+        if (preg_match('/Chrome/', $userAgent)) {
+            return 'Chrome';
+        }
+        if (preg_match('/Safari/', $userAgent)) {
+            return 'Safari';
+        }
+        if (preg_match('/Firefox/', $userAgent)) {
+            return 'Firefox';
+        }
+        if (preg_match('/Edge/', $userAgent)) {
+            return 'Edge';
+        }
+        if (preg_match('/Opera/', $userAgent)) {
+            return 'Opera';
+        }
+
         return 'Unknown';
     }
 
     /**
      * Extract OS from user agent
-     *
-     * @param string $userAgent
-     * @return string|null
      */
     private function extractOs(string $userAgent): ?string
     {
-        if (preg_match('/Windows/', $userAgent)) return 'Windows';
-        if (preg_match('/Macintosh/', $userAgent)) return 'macOS';
-        if (preg_match('/Linux/', $userAgent)) return 'Linux';
-        if (preg_match('/iPhone|iPad/', $userAgent)) return 'iOS';
-        if (preg_match('/Android/', $userAgent)) return 'Android';
+        if (preg_match('/Windows/', $userAgent)) {
+            return 'Windows';
+        }
+        if (preg_match('/Macintosh/', $userAgent)) {
+            return 'macOS';
+        }
+        if (preg_match('/Linux/', $userAgent)) {
+            return 'Linux';
+        }
+        if (preg_match('/iPhone|iPad/', $userAgent)) {
+            return 'iOS';
+        }
+        if (preg_match('/Android/', $userAgent)) {
+            return 'Android';
+        }
+
         return 'Unknown';
     }
 
     /**
      * Get recent login history for user
-     *
-     * @param User $user
-     * @param int $limit
-     * @return \Illuminate\Support\Collection
      */
-    public function getRecentLogins(User $user, int $limit = 10): \Illuminate\Support\Collection
+    public function getRecentLogins(User $user, int $limit = 10): Collection
     {
         return collect(
             DB::table('login_history')
@@ -379,11 +364,8 @@ class AccountCloneDetectionService
 
     /**
      * Get suspicious activity history for user
-     *
-     * @param User $user
-     * @return \Illuminate\Support\Collection
      */
-    public function getSuspiciousActivity(User $user): \Illuminate\Support\Collection
+    public function getSuspiciousActivity(User $user): Collection
     {
         return collect(
             DB::table('suspicious_login_attempts')

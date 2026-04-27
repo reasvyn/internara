@@ -283,7 +283,7 @@ DB_USERNAME=internara
 DB_PASSWORD=your_password
 ```
 
-#### 3. Run Migrations
+#### 4. Run Migrations
 ```bash
 php artisan migrate
 ```
@@ -313,35 +313,29 @@ php artisan db:seed
 
 ## 🚀 Web Setup Wizard
 
-After installation, the **Setup Wizard** guides you through initial configuration via web interface.
+After technical installation via CLI, the **Setup Wizard** guides you through business-level configuration via a secure web interface.
 
 ### Accessing the Wizard
 
-1. Start the installation suite and copy the access token:
+1. Start the technical installation and initialization suite:
    ```bash
-   php artisan app:install
+   php artisan system:install
    ```
+   *This command prepares the database, environment, performs audits, and generates a secure, timed access token.*
 
-2. Run the development server and visit: **http://localhost:8000**
+2. Copy the generated URL from the console output. It will look like:
+   `http://localhost:8000/setup?token=...&expires=...`
+
+3. Run the development server:
    ```bash
    composer dev
    ```
 
-3. You'll be automatically redirected to: **http://localhost:8000/setup**
+4. Visit the URL in your browser to begin the onboarding process.
 
-### Wizard Steps
+### Wizard Steps (Setup Module)
 
-#### 1️⃣ Welcome Screen
-- **Purpose**: Introduction and prerequisites verification
-- **Actions**: Review information, click "Continue"
-
-#### 2️⃣ Environment Configuration
-- **Application Name**: How the system identifies itself (e.g., "SMKN 1 Jakarta")
-- **Timezone**: Select your timezone (Asia/Jakarta recommended for Indonesia)
-- **Locale**: Language (English, Indonesian, etc.)
-- **Actions**: Fill form, click "Next"
-
-#### 3️⃣ School/Institution Setup
+#### 1️⃣ School/Institution Setup
 - **School Name**: Full name of educational institution
 - **School Type**: Type of institution (SMA, SMK, University, etc.)
 - **Contact Email**: Institution contact email
@@ -350,48 +344,42 @@ After installation, the **Setup Wizard** guides you through initial configuratio
 - **Logo**: Upload school logo (optional)
 - **Actions**: Fill form, upload logo, click "Next"
 
-#### 4️⃣ Administrator Account
-- **Email**: Admin account email
+#### 2️⃣ Administrator Account
+- **Email**: SuperAdmin account email
 - **Password**: Strong password (min 8 chars, mixed case, numbers)
 - **Confirm Password**: Verify password
 - **Actions**: Fill form, click "Create Administrator"
 
-#### 5️⃣ System Configuration
-- **Queue Driver**: Select background job queue (database recommended for dev)
-- **Cache Store**: Select caching backend (database/redis)
-- **Logging Level**: Log verbosity (debug/info/warning/error)
-- **Actions**: Configure settings, click "Next"
-
-#### 6️⃣ Department Setup
-- **Create Departments**: Add organizational departments
-  - Department Name: (e.g., "Accounting", "Hospitality")
-  - Department Code: Unique identifier
-  - Head Email: Department head contact
+#### 3️⃣ Department Setup
+- **Create Departments**: Add organizational units (e.g., "Accounting", "Information Technology").
 - **Actions**: Add departments, click "Next"
 
-#### 7️⃣ Internship Configuration
-- **Program Name**: Name of internship program
-- **Duration**: Internship length (months)
-- **Start Date**: Program start date
-- **Grading Scale**: Assessment scale (1-5, A-F, etc.)
-- **Requirements**: Minimum requirements for participation
+#### 4️⃣ Internship Configuration
+- **Program Name**: Primary internship program name.
+- **Duration**: Default internship length.
+- **Grading Scale**: Assessment scale configuration.
 - **Actions**: Configure program, click "Next"
 
-#### 8️⃣ Completion
-- **Summary**: Review all configuration
-- **Download Configuration**: Option to export settings
-- **Actions**: Verify all settings, click "Finish"
+#### 5️⃣ System & SMTP Configuration
+- **SMTP Settings**: Configure outgoing mail server (Host, Port, User, Pass).
+- **Encryption**: TLS/SSL selection.
+- **Test Connection**: Perform real-time SMTP handshake verification.
+- **Actions**: Configure mail, test connection, click "Next"
+
+#### 6️⃣ Completion
+- **Summary**: Final review of configuration state.
+- **Actions**: Click "Finish" to trigger system lockdown.
 
 ### After Setup Wizard
 
-✅ **Setup is now locked** (security measure)
-- Setup routes become inaccessible (404 errors)
-- Application redirects to login page
-- Users must authenticate with admin credentials created in step 4
+✅ **System Lockdown Active**
+- Business `/setup` routes are permanently disabled.
+- Token and session authorization are invalidated.
+- Application redirects to the login portal.
 
-**To reset setup** (emergency only):
+**To reset setup state** (emergency recovery only):
 ```bash
-php artisan app:setup-reset
+php artisan setup:reset
 ```
 
 ---
@@ -781,7 +769,7 @@ php artisan tinker
 >>> exit
 
 # Force setup completion
-php artisan app:setup-reset
+php artisan setup:reset
 ```
 
 #### "Setup page not loading"

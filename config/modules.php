@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Modules\Support\Scaffolding\Console\Commands\MakeClassCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand;
 use Nwidart\Modules\Activators\FileActivator;
 use Nwidart\Modules\Providers\ConsoleServiceProvider;
 
@@ -253,10 +257,10 @@ return [
     */
     'commands' => ConsoleServiceProvider::defaultCommands()
         ->merge([
-            \Modules\Support\Scaffolding\Console\Commands\MakeClassCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand::class,
+            MakeClassCommand::class,
+            MakeInterfaceCommand::class,
+            MakeTraitCommand::class,
+            MakeDuskCommand::class,
         ])
         ->toArray(),
 

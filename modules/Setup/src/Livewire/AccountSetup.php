@@ -7,7 +7,11 @@ namespace Modules\Setup\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Exception\AppException;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
+use Modules\Shared\Rules\Honeypot;
+use Modules\Shared\Rules\Turnstile;
 
 /**
  * Represents the 'Account Creation' step in the application setup process.
@@ -15,7 +19,7 @@ use Modules\Setup\Services\Contracts\SetupService;
  */
 class AccountSetup extends Component
 {
-    use Concerns\HandlesSetupSteps;
+    use HandlesWizardSteps;
 
     /**
      * Turnstile token for S1 security compliance.
@@ -28,11 +32,11 @@ class AccountSetup extends Component
     public ?string $contact_me = null;
 
     /**
-     * Boots the component and injects the SetupService.
+     * Boots the component and injects the AppSetupService.
      *
-     * @param SetupService $setupService The service for handling setup logic.
+     * @param AppSetupService $setupService The service for handling setup logic.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -42,14 +46,14 @@ class AccountSetup extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(
-            currentStep: SetupService::STEP_ACCOUNT,
-            nextStep: SetupService::STEP_DEPARTMENT,
-            prevStep: SetupService::STEP_SCHOOL,
-            extra: ['req_record' => SetupService::RECORD_SUPER_ADMIN],
+        $this->initWizardStepProps(
+            currentStep: AppSetupService::STEP_ACCOUNT,
+            nextStep: AppSetupService::STEP_DEPARTMENT,
+            prevStep: AppSetupService::STEP_SCHOOL,
+            extra: ['req_record' => AppSetupService::RECORD_SUPER_ADMIN],
         );
 
-        $this->requireSetupAccess();
+        $this->requireWizardAccess();
     }
 
     /**
@@ -60,21 +64,21 @@ class AccountSetup extends Component
     {
         try {
             $this->validate([
-                'turnstile' => [new \Modules\Shared\Rules\Turnstile],
-                'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+                'turnstile' => [new Turnstile],
+                'contact_me' => [new Honeypot],
             ]);
 
             $this->nextStep();
         } catch (\Exception $e) {
-             report($e);
-             flash()->error($e instanceof \Modules\Exception\AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
+            report($e);
+            flash()->error($e instanceof AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
         }
     }
 
     /**
      * Renders the component's view.
      *
-     * @return \Illuminate\View\View The view for the account setup step.
+     * @return View The view for the account setup step.
      */
     public function render(): View
     {

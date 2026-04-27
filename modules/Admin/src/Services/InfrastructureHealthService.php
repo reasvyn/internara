@@ -48,7 +48,8 @@ class InfrastructureHealthService implements Contract
 
                 if ($driver === 'mysql') {
                     $dbName = config("database.connections.{$connection}.database");
-                    $res = DB::select("SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?", [$dbName]);
+                    $res = DB::select('SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = ?', [$dbName]);
+
                     return $this->formatBytes((int) ($res[0]->size ?? 0));
                 }
             } catch (\Exception $e) {
@@ -90,6 +91,6 @@ class InfrastructureHealthService implements Contract
         $pow = min($pow, count($units) - 1);
         $bytes /= (1 << (10 * $pow));
 
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }

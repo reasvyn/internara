@@ -6,6 +6,7 @@ namespace Modules\Guidance\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Guidance\Database\Factories\HandbookFactory;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
@@ -34,8 +35,8 @@ class Handbook extends Model implements HasMedia
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Modules\Guidance\Database\Factories\HandbookFactory
+    protected static function newFactory(): HandbookFactory
     {
-        return \Modules\Guidance\Database\Factories\HandbookFactory::new();
+        return HandbookFactory::new();
     }
 }

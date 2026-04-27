@@ -9,14 +9,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
 use Modules\Teacher\Services\Contracts\TeacherService as Contract;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
-use Illuminate\Support\Str;
-use Modules\Exception\RecordNotFoundException;
 
 class TeacherService extends EloquentQuery implements Contract
 {
@@ -53,9 +53,9 @@ class TeacherService extends EloquentQuery implements Contract
             'total' => $this->count(),
             'active' => $this->query()->whereHas('statuses', function ($q) {
                 $q->where('name', User::STATUS_ACTIVE)
-                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
             })->count(),
-            'pending' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))->count(),
+            'pending' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', User::STATUS_PENDING))->count(),
         ];
     }
 
@@ -91,7 +91,7 @@ class TeacherService extends EloquentQuery implements Contract
             }
 
             $this->skipAuthorization = false;
-            $user->notify(new WelcomeUserNotification());
+            $user->notify(new WelcomeUserNotification);
 
             return $user->load(['roles:id,name', 'profile.department', 'statuses']);
         });

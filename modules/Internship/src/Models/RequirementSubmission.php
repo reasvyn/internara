@@ -7,6 +7,7 @@ namespace Modules\Internship\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Internship\Enums\SubmissionStatus;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -54,7 +55,7 @@ class RequirementSubmission extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            'status' => \Modules\Internship\Enums\SubmissionStatus::class,
+            'status' => SubmissionStatus::class,
             'verified_at' => 'datetime',
         ];
     }

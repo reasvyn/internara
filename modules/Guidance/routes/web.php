@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Guidance\Http\Controllers\HandbookDownloadController;
-use Modules\Guidance\Livewire\ManageHandbook;
+use Modules\Guidance\Livewire\HandbookIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ use Modules\Guidance\Livewire\ManageHandbook;
 */
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/guidance/manage', \Modules\Guidance\Livewire\HandbookIndex::class)
+    Route::get('/guidance/manage', HandbookIndex::class)
         ->middleware('can:guidance.view')
         ->name('guidance.index');
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 /**
  * SuperAdminGuardRails
@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 class SuperAdminGuardRails
 {
     private AccountAuditLogger $auditLogger;
+
     private SessionExpirationService $sessionService;
 
     public function __construct(
@@ -41,10 +42,9 @@ class SuperAdminGuardRails
      * Super Admin is immutable - once assigned, can only be revoked by
      * removing the user entirely (full deactivation)
      *
-     * @param User $user
-     * @param AccountStatus $proposedStatus
-     * @return bool True if status change allowed
      * @throws \Exception
+     *
+     * @return bool True if status change allowed
      */
     public function canChangeStatus(User $user, AccountStatus $proposedStatus): bool
     {
@@ -52,13 +52,13 @@ class SuperAdminGuardRails
         if ($user->isProtected()) {
             throw new \Exception(
                 'Cannot change Super Admin account status. '
-                . 'Super Admin accounts are immutable and cannot be modified, suspended, or archived. '
-                . 'Contact Governance Board for Super Admin removal.'
+                .'Super Admin accounts are immutable and cannot be modified, suspended, or archived. '
+                .'Contact Governance Board for Super Admin removal.'
             );
         }
 
         // If user is being PROMOTED to Super Admin, require dual approval
-        if ($proposedStatus === Status::PROTECTED && !$user->isProtected()) {
+        if ($proposedStatus === Status::PROTECTED && ! $user->isProtected()) {
             // This should trigger dual-admin workflow (handled in StatusChangePolicy)
             Log::warning('Super Admin promotion requested - requires dual approval', [
                 'user_id' => $user->id,
@@ -75,8 +75,10 @@ class SuperAdminGuardRails
      * Prevent deactivating the last Super Admin - at least one must exist
      *
      * @param User $user User being deactivated/archived
-     * @return bool True if deactivation allowed
+     *
      * @throws \Exception
+     *
+     * @return bool True if deactivation allowed
      */
     public function canDeactivate(User $user): bool
     {
@@ -89,7 +91,7 @@ class SuperAdminGuardRails
             if ($otherSuperAdmins === 0) {
                 throw new \Exception(
                     'Cannot deactivate the last Super Admin account. '
-                    . 'At least one Super Admin must remain active at all times.'
+                    .'At least one Super Admin must remain active at all times.'
                 );
             }
         }
@@ -106,18 +108,19 @@ class SuperAdminGuardRails
      * @param User $targetUser User being modified
      * @param string $changeType password|email|settings|deactivate
      * @param array $changeData Details of proposed change
+     *
      * @return bool True if change can proceed without approval
      */
     public function requiresDualApproval(User $targetUser, string $changeType, array $changeData = []): bool
     {
         // Only apply to Super Admin targets
-        if (!$targetUser->isProtected()) {
+        if (! $targetUser->isProtected()) {
             return false;
         }
 
         // Only Super Admins making the change
         $actor = auth()->user();
-        if (!$actor || !$actor->isProtected()) {
+        if (! $actor || ! $actor->isProtected()) {
             // Non-Super-Admin cannot modify Super Admin
             throw new \Exception('Only Super Admins can modify other Super Admin accounts.');
         }
@@ -150,24 +153,25 @@ class SuperAdminGuardRails
     /**
      * Approve Super Admin change (one of 2 required)
      *
-     * @param int $approvalId
      * @param User $approver Super Admin giving approval
-     * @return bool True if approval successful (and 2 approvals now received)
+     *
      * @throws \Exception
+     *
+     * @return bool True if approval successful (and 2 approvals now received)
      */
     public function approveChange(int $approvalId, User $approver): bool
     {
-        if (!$approver->isProtected()) {
+        if (! $approver->isProtected()) {
             throw new \Exception('Only Super Admins can approve Super Admin changes.');
         }
 
         $approval = DB::table('super_admin_approvals')->find($approvalId);
-        if (!$approval) {
+        if (! $approval) {
             throw new \Exception('Approval request not found.');
         }
 
         if ($approval->status !== 'pending') {
-            throw new \Exception('Approval already ' . $approval->status);
+            throw new \Exception('Approval already '.$approval->status);
         }
 
         // Check if same Super Admin requested and approved (prevent self-approval)
@@ -210,13 +214,13 @@ class SuperAdminGuardRails
      * Only one active session per Super Admin account at a time
      * Prevents account sharing/compromise
      *
-     * @param User $superAdmin
-     * @return bool True if new session allowed
      * @throws \Exception
+     *
+     * @return bool True if new session allowed
      */
     public function enforceSessionIsolation(User $superAdmin): bool
     {
-        if (!$superAdmin->isProtected()) {
+        if (! $superAdmin->isProtected()) {
             return true; // Only applies to Super Admins
         }
 
@@ -258,15 +262,10 @@ class SuperAdminGuardRails
      * Track Super Admin activity for compliance
      *
      * Super Admin access is logged more extensively for audit purposes
-     *
-     * @param User $superAdmin
-     * @param string $action
-     * @param array $metadata
-     * @return void
      */
     public function trackActivity(User $superAdmin, string $action, array $metadata = []): void
     {
-        if (!$superAdmin->isProtected()) {
+        if (! $superAdmin->isProtected()) {
             return;
         }
 
@@ -296,12 +295,11 @@ class SuperAdminGuardRails
      *
      * Optionally restrict Super Admin login to specific IP ranges
      *
-     * @param User $superAdmin
      * @return bool True if IP allowed
      */
     public function isIpAllowed(User $superAdmin): bool
     {
-        if (!$superAdmin->isProtected()) {
+        if (! $superAdmin->isProtected()) {
             return true; // Only applies to Super Admins
         }
 
@@ -330,9 +328,7 @@ class SuperAdminGuardRails
     /**
      * Check if IP is in CIDR range
      *
-     * @param string $ip
      * @param string $range CIDR notation (e.g., 192.168.1.0/24)
-     * @return bool
      */
     private function ipInRange(string $ip, string $range): bool
     {
@@ -345,6 +341,7 @@ class SuperAdminGuardRails
         $subnet = ip2long($subnet);
         $mask = -1 << (32 - $bits);
         $subnet = $subnet & $mask;
+
         return ($ip & $mask) === $subnet;
     }
 }

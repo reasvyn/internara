@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Mentor\Tests\Feature\Livewire;
 
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use Modules\Mentor\Livewire\MentorManager;
 use Modules\Mentor\Services\Contracts\MentorService;

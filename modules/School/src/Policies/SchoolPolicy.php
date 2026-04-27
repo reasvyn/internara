@@ -10,7 +10,7 @@ use Modules\User\Models\User;
 
 /**
  * Class SchoolPolicy
- * 
+ *
  * Controls access to institutional metadata.
  */
 class SchoolPolicy

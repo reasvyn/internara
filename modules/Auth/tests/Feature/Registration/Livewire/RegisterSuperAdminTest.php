@@ -9,6 +9,7 @@ use Livewire\Livewire;
 use Modules\Auth\Registration\Livewire\RegisterSuperAdmin;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\User\Models\User;
 
 uses(LazilyRefreshDatabase::class);
@@ -55,7 +56,7 @@ describe('RegisterSuperAdmin Component', function () {
         $admin->assignRole('super-admin');
         $this->actingAs($admin);
 
-        app(\Modules\Setting\Services\Contracts\SettingService::class)->setValue(
+        app(SettingService::class)->setValue(
             'app_installed',
             false,
         );

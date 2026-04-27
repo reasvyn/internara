@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace Modules\Setup\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
 
 /**
  * Represents the 'Department Setup' step in the application setup process.
  */
 class DepartmentSetup extends Component
 {
-    use Concerns\HandlesSetupSteps;
+    use HandlesWizardSteps;
 
     /**
      * Initializes the component.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -28,21 +30,21 @@ class DepartmentSetup extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(
-            currentStep: SetupService::STEP_DEPARTMENT,
-            nextStep: SetupService::STEP_INTERNSHIP,
-            prevStep: SetupService::STEP_ACCOUNT,
-            extra: ['req_record' => SetupService::RECORD_DEPARTMENT],
+        $this->initWizardStepProps(
+            currentStep: AppSetupService::STEP_DEPARTMENT,
+            nextStep: AppSetupService::STEP_INTERNSHIP,
+            prevStep: AppSetupService::STEP_ACCOUNT,
+            extra: ['req_record' => AppSetupService::RECORD_DEPARTMENT],
         );
 
-        $this->requireSetupAccess();
+        $this->requireWizardAccess();
     }
 
     /**
      * Re-evaluates step status after records are modified.
      */
-    #[\Livewire\Attributes\On('department:saved')]
-    #[\Livewire\Attributes\On('department:deleted')]
+    #[On('department:saved')]
+    #[On('department:deleted')]
     public function handleRecordsChanged(): void
     {
         unset($this->isRecordExists);

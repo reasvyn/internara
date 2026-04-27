@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\Console;
 
-use Modules\Status\Services\Jobs\DetectIdleAccountsJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Modules\Status\Services\Jobs\DetectIdleAccountsJob;
 
 class Kernel extends ConsoleKernel
 {
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -29,10 +30,10 @@ class Kernel extends ConsoleKernel
         $schedule->job(new DetectIdleAccountsJob)
             ->daily()
             ->onSuccess(function () {
-                \Illuminate\Support\Facades\Log::info('Idle account detection completed successfully');
+                Log::info('Idle account detection completed successfully');
             })
             ->onFailure(function () {
-                \Illuminate\Support\Facades\Log::error('Idle account detection job failed - check logs');
+                Log::error('Idle account detection job failed - check logs');
             });
 
         /**
@@ -40,7 +41,7 @@ class Kernel extends ConsoleKernel
          * Remove tokens older than 24 hours + expired
          */
         $schedule->call(function () {
-            \Illuminate\Support\Facades\DB::table('activation_tokens')
+            DB::table('activation_tokens')
                 ->where('expires_at', '<', now())
                 ->delete();
         })->daily()->name('cleanup-expired-tokens');

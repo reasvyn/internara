@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Modules\Schedule\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Schedule\Models\Schedule;
+use Modules\Schedule\Policies\SchedulePolicy;
+use Modules\Schedule\Services\ScheduleService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -23,7 +26,7 @@ class ScheduleServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Schedule\Models\Schedule::class => \Modules\Schedule\Policies\SchedulePolicy::class,
+        Schedule::class => SchedulePolicy::class,
     ];
 
     /**
@@ -74,7 +77,7 @@ class ScheduleServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Schedule\Services\Contracts\ScheduleService::class => \Modules\Schedule\Services\ScheduleService::class,
+            \Modules\Schedule\Services\Contracts\ScheduleService::class => ScheduleService::class,
         ];
     }
 }

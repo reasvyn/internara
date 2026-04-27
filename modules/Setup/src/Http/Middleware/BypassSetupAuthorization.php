@@ -7,7 +7,7 @@ namespace Modules\Setup\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Symfony\Component\HttpFoundation\Response;
 
 class BypassSetupAuthorization
@@ -19,10 +19,10 @@ class BypassSetupAuthorization
     {
         // Grant full access during installation phase if authorized via session
         Gate::before(function ($user = null, $ability = null) {
-            $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
             $isAppInstalled = setting('app_installed', false);
 
-            if (!$isAppInstalled && $isSetupAuthorized) {
+            if (! $isAppInstalled && $isSetupAuthorized) {
                 return true;
             }
         });

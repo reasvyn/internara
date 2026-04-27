@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setting\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Setting\Models\Setting;
 
 class SettingFactory extends Factory
 {
@@ -13,7 +14,7 @@ class SettingFactory extends Factory
      *
      * @var string
      */
-    protected $model = \Modules\Setting\Models\Setting::class;
+    protected $model = Setting::class;
 
     /**
      * Define the model's default state.

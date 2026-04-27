@@ -15,6 +15,7 @@ interface AnalyticsAggregator
      * Get institutional summary metrics.
      *
      * @param array $filters Optional filters (e.g., academic_year)
+     *
      * @return array{total_interns: int, active_partners: int, placement_rate: float}
      */
     public function getInstitutionalSummary(array $filters = []): array;
@@ -23,6 +24,7 @@ interface AnalyticsAggregator
      * Identify students who are "At-Risk" based on engagement metrics.
      *
      * @param array $filters Optional filters
+     *
      * @return array<array{id: string, student_name: string, reason: string, risk_level: string}>
      */
     public function getAtRiskStudents(int $limit = 5, array $filters = []): array;

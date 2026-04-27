@@ -12,7 +12,6 @@ use Modules\Internship\Models\Concerns\HasInternshipsRelation;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\School\Database\Factories\SchoolFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
-use Modules\Shared\Support\Casts\SafeEncrypted;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
@@ -98,7 +97,7 @@ class School extends Model implements HasMedia
     /**
      * Set the school's logo.
      *
-     * @param string|\Illuminate\Http\UploadedFile $file The logo file or path.
+     * @param string|UploadedFile $file The logo file or path.
      * @param string $collectionName The media collection name.
      *
      * @return bool True if successful.

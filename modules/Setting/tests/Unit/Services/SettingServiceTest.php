@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Setting\Tests\Unit\Services;
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;

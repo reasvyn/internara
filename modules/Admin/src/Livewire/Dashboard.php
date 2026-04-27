@@ -10,7 +10,9 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator;
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Enums\Role;
 
 class Dashboard extends Component
 {
@@ -52,7 +54,7 @@ class Dashboard extends Component
         }
 
         $registrationIds = $registrations->pluck('id')->toArray();
-        $averageScores = app(\Modules\Assessment\Services\Contracts\AssessmentService::class)
+        $averageScores = app(AssessmentService::class)
             ->getAverageScore($registrationIds);
 
         return $registrations->map(function ($reg) use ($averageScores) {
@@ -89,7 +91,7 @@ class Dashboard extends Component
     public function render(AnalyticsAggregator $analytics): View
     {
         $user = auth()->user();
-        $isSuperAdmin = $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value);
+        $isSuperAdmin = $user->hasRole(Role::SUPER_ADMIN->value);
 
         $data = [
             'summary' => $analytics->getInstitutionalSummary($this->filters),

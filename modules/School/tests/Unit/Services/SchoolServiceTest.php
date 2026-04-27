@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\School\Tests\Unit\Services;
 
-
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Modules\Exception\AppException;
@@ -27,11 +27,11 @@ describe('School Service', function () {
         Gate::shouldReceive('authorize')
             ->once()
             ->with('create', School::class)
-            ->andThrow(\Illuminate\Auth\Access\AuthorizationException::class);
+            ->andThrow(AuthorizationException::class);
 
         $service = app(SchoolService::class);
         $service->create(['name' => 'Unauthorized School']);
-    })->throws(\Illuminate\Auth\Access\AuthorizationException::class);
+    })->throws(AuthorizationException::class);
 
     test('it validates Institutional Code format (must be at least 3 characters) [SYRS-F-101]', function () {
         Gate::shouldReceive('authorize')->andReturn(true);

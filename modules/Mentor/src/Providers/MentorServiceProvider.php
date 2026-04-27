@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Mentor\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Mentor\Services\MentoringService;
+use Modules\Mentor\Services\MentorService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -61,8 +63,8 @@ class MentorServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Mentor\Services\Contracts\MentoringService::class => \Modules\Mentor\Services\MentoringService::class,
-            \Modules\Mentor\Services\Contracts\MentorService::class => \Modules\Mentor\Services\MentorService::class,
+            \Modules\Mentor\Services\Contracts\MentoringService::class => MentoringService::class,
+            \Modules\Mentor\Services\Contracts\MentorService::class => MentorService::class,
         ];
     }
 }

@@ -6,6 +6,7 @@ namespace Modules\Internship\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Assignment\Services\Contracts\AssignmentService;
+use Modules\Exception\AppException;
 use Modules\Internship\Enums\ProgramStatus;
 use Modules\Internship\Models\Internship;
 use Modules\Shared\Services\EloquentQuery;
@@ -67,7 +68,7 @@ class InternshipService extends EloquentQuery implements Contracts\InternshipSer
         // and must have a valid future end date. (Enterprise Guard)
         if ($newStatus === ProgramStatus::OPEN) {
             if ($internship->date_finish->isPast()) {
-                throw new \Modules\Exception\AppException('internship::exceptions.program_ended_cannot_open', 422);
+                throw new AppException('internship::exceptions.program_ended_cannot_open', 422);
             }
         }
 

@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Modules\Internship\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Exception\AppException;
+use Modules\Internship\Events\InternshipRegistered;
+use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
@@ -65,7 +70,7 @@ class RegistrationService extends EloquentQuery implements Contract
      */
     public function register(array $data): Model
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             // 0. Enforce Phase Invariant: Registration restricted by system phase
             if (setting('system_phase', 'registration') !== 'registration') {
                 throw new AppException(
@@ -78,7 +83,7 @@ class RegistrationService extends EloquentQuery implements Contract
             $studentId = $data['student_id'];
 
             // 1. Enforce Atomic Lock on Placement to prevent race conditions (BP-PLC-F302)
-            \Modules\Internship\Models\InternshipPlacement::where('id', $placementId)
+            InternshipPlacement::where('id', $placementId)
                 ->lockForUpdate()
                 ->first();
 
@@ -131,7 +136,7 @@ class RegistrationService extends EloquentQuery implements Contract
 
             // 6. Explicitly generate ID to ensure integrity across environments
             if (empty($data['id'])) {
-                $data['id'] = (string) \Illuminate\Support\Str::uuid();
+                $data['id'] = (string) Str::uuid();
             }
 
             /** @var InternshipRegistration $registration */
@@ -145,7 +150,7 @@ class RegistrationService extends EloquentQuery implements Contract
             $this->logger->logAssignment($registration);
 
             // 9. Signal registration to the system
-            \Modules\Internship\Events\InternshipRegistered::dispatch($registration->id);
+            InternshipRegistered::dispatch($registration->id);
 
             return $registration;
         });
@@ -159,7 +164,8 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
+            $e = new ModelNotFoundException;
+            throw $e->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -187,7 +193,8 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
+            $e = new ModelNotFoundException;
+            throw $e->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );
@@ -207,7 +214,7 @@ class RegistrationService extends EloquentQuery implements Contract
         string $newPlacementId,
         ?string $reason = null,
     ): Model {
-        return \Illuminate\Support\Facades\DB::transaction(function () use (
+        return DB::transaction(function () use (
             $registrationId,
             $newPlacementId,
             $reason,
@@ -215,7 +222,8 @@ class RegistrationService extends EloquentQuery implements Contract
             $registration = $this->find($registrationId);
 
             if (! $registration) {
-                $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
+                $e = new ModelNotFoundException;
+                throw $e->setModel(
                     InternshipRegistration::class,
                     [$registrationId],
                 );
@@ -255,7 +263,8 @@ class RegistrationService extends EloquentQuery implements Contract
         $registration = $this->find($registrationId);
 
         if (! $registration) {
-            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
+            $e = new ModelNotFoundException;
+            throw $e->setModel(
                 InternshipRegistration::class,
                 [$registrationId],
             );

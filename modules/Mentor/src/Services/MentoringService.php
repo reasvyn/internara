@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Mentor\Services;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Modules\Mentor\Models\MentoringLog;
 use Modules\Mentor\Models\MentoringVisit;
@@ -54,7 +55,7 @@ class MentoringService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function getUnifiedTimeline(string $registrationId): \Illuminate\Support\Collection
+    public function getUnifiedTimeline(string $registrationId): Collection
     {
         $visits = MentoringVisit::with('teacher')
             ->where('registration_id', $registrationId)

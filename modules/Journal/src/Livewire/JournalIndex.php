@@ -9,6 +9,8 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Guidance\Services\Contracts\HandbookService;
+use Modules\Setting\Services\Contracts\SettingService;
 
 class JournalIndex extends Component
 {
@@ -35,8 +37,8 @@ class JournalIndex extends Component
 
         // Gating System: Check if student has completed mandatory guidance
         if (auth()->check() && auth()->user()->hasRole('student')) {
-            $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
-            $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+            $guidanceService = app(HandbookService::class);
+            $settingService = app(SettingService::class);
 
             if (
                 $settingService->getValue('feature_guidance_enabled', true) &&

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Internship\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Internship\Models\Internship;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\User\Models\User;
 
 class InternshipPolicy
@@ -28,7 +30,7 @@ class InternshipPolicy
      */
     public function view(
         ?User $user,
-        \Modules\Internship\Models\Internship|string|null $internship = null,
+        Internship|string|null $internship = null,
     ): bool {
         if ($this->isSetupAuthorized()) {
             return true;
@@ -42,7 +44,7 @@ class InternshipPolicy
      */
     public function create(
         ?User $user,
-        \Modules\Internship\Models\Internship|string|null $internship = null,
+        Internship|string|null $internship = null,
     ): bool {
         if ($this->isSetupAuthorized()) {
             return true;
@@ -56,7 +58,7 @@ class InternshipPolicy
      */
     public function update(
         ?User $user,
-        \Modules\Internship\Models\Internship|string|null $internship = null,
+        Internship|string|null $internship = null,
     ): bool {
         if ($this->isSetupAuthorized()) {
             return true;
@@ -70,7 +72,7 @@ class InternshipPolicy
      */
     public function delete(
         ?User $user,
-        \Modules\Internship\Models\Internship|string|null $internship = null,
+        Internship|string|null $internship = null,
     ): bool {
         if ($this->isSetupAuthorized()) {
             return true;
@@ -84,7 +86,7 @@ class InternshipPolicy
      */
     protected function isSetupAuthorized(): bool
     {
-        return session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+        return session(SetupService::SESSION_SETUP_AUTHORIZED) ===
             true;
     }
 }

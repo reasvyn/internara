@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Livewire\Livewire;
+use Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator;
 use Modules\Admin\Livewire\Dashboard;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
@@ -15,7 +16,7 @@ test('admin dashboard renders correctly', function () {
     $admin = User::factory()->create()->assignRole('admin');
 
     // Mock analytics aggregator
-    $analytics = mock(\Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class);
+    $analytics = mock(AnalyticsAggregator::class);
     $analytics->shouldReceive('getInstitutionalSummary')->andReturn([
         'total_interns' => 10,
         'active_partners' => 5,
@@ -23,7 +24,7 @@ test('admin dashboard renders correctly', function () {
     ]);
     $analytics->shouldReceive('getAtRiskStudents')->andReturn([]);
     app()->instance(
-        \Modules\Admin\Analytics\Services\Contracts\AnalyticsAggregator::class,
+        AnalyticsAggregator::class,
         $analytics,
     );
 

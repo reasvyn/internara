@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Registration\Livewire;
 
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Auth\Services\Contracts\AuthService;
+use Modules\Exception\AppException;
+use Modules\Permission\Enums\Role;
+use Modules\Shared\Services\UsernameGenerator;
 use Modules\User\Livewire\Forms\UserForm;
+use Modules\User\Services\Contracts\UserService;
 
 class RegisterSuperAdmin extends Component
 {
@@ -33,7 +39,7 @@ class RegisterSuperAdmin extends Component
     public function mount()
     {
         $this->form->name = 'Administrator';
-        $this->form->roles = [\Modules\Permission\Enums\Role::SUPER_ADMIN->value];
+        $this->form->roles = [Role::SUPER_ADMIN->value];
         $this->form->status = 'active';
     }
 
@@ -44,7 +50,7 @@ class RegisterSuperAdmin extends Component
     {
         try {
             $superAdminService = app(SuperAdminService::class);
-            $usernameGenerator = app(\Modules\Shared\Services\UsernameGenerator::class);
+            $usernameGenerator = app(UsernameGenerator::class);
 
             // Enforce permanent system identity
             $this->form->name = 'Administrator';
@@ -52,7 +58,7 @@ class RegisterSuperAdmin extends Component
             // During setup phase, allow re-linking to an existing user record with the same email
             // to prevent "Email already taken" errors when repeating this step.
             if (! setting('app_installed', false)) {
-                $existing = app(\Modules\User\Services\Contracts\UserService::class)->findByEmail(
+                $existing = app(UserService::class)->findByEmail(
                     $this->form->email,
                 );
 
@@ -64,14 +70,14 @@ class RegisterSuperAdmin extends Component
             // Generate a permanent, role-based username if not already set
             if (empty($this->form->username) && ! empty($this->form->email)) {
                 $this->form->username = $usernameGenerator->generate(
-                    $this->form->email, 
-                    \Modules\Permission\Enums\Role::SUPER_ADMIN->value
+                    $this->form->email,
+                    Role::SUPER_ADMIN->value
                 );
             }
 
             $this->form->validate();
 
-            // Always use create() which handles idempotency (updateOrCreate) 
+            // Always use create() which handles idempotency (updateOrCreate)
             // and setup-specific constraints internally.
             $registeredUser = $superAdminService->create($this->form->all());
 
@@ -86,14 +92,14 @@ class RegisterSuperAdmin extends Component
                 flash()->success('shared::messages.record_saved');
                 $this->dispatch('super_admin_registered', userId: $registeredUser->getKey());
             }
-            } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             throw $e;
-            } catch (\Modules\Exception\AppException $e) {
+        } catch (AppException $e) {
             flash()->error($e->getUserMessage());
-            } catch (\Exception $e) {
+        } catch (\Exception $e) {
             flash()->error('auth::exceptions.registration_failed');
-            \Illuminate\Support\Facades\Log::error('SuperAdmin Registration Failed.', [
-                'correlation_id' => \Illuminate\Support\Str::uuid()->toString(),
+            Log::error('SuperAdmin Registration Failed.', [
+                'correlation_id' => Str::uuid()->toString(),
                 'error_type' => get_class($e),
             ]);
         }

@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Internship\Enums\RequirementType;
+use Modules\Internship\Enums\SubmissionStatus;
 use Modules\Internship\Models\InternshipRequirement;
+use Modules\Internship\Models\RequirementSubmission;
 use Modules\Internship\Services\Contracts\InternshipRequirementService as Contract;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Shared\Services\EloquentQuery;
 
 class InternshipRequirementService extends EloquentQuery implements Contract
@@ -53,27 +58,28 @@ class InternshipRequirementService extends EloquentQuery implements Contract
         string $requirementId,
         mixed $value = null,
         mixed $file = null,
-    ): \Modules\Internship\Models\RequirementSubmission {
+    ): RequirementSubmission {
         $requirement = $this->find($requirementId);
 
         if (! $requirement) {
-            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
+            $e = new ModelNotFoundException;
+            throw $e->setModel(
                 InternshipRequirement::class,
                 [$requirementId],
             );
         }
 
-        $submission = \Modules\Internship\Models\RequirementSubmission::updateOrCreate(
+        $submission = RequirementSubmission::updateOrCreate(
             ['registration_id' => $registrationId, 'requirement_id' => $requirementId],
             [
                 'value' => $value,
-                'status' => \Modules\Internship\Enums\SubmissionStatus::PENDING,
+                'status' => SubmissionStatus::PENDING,
                 'verified_at' => null,
                 'verified_by' => null,
             ],
         );
 
-        if ($file && $requirement->type === \Modules\Internship\Enums\RequirementType::DOCUMENT) {
+        if ($file && $requirement->type === RequirementType::DOCUMENT) {
             $submission->addMedia($file)->toMediaCollection('document');
         }
 
@@ -86,11 +92,11 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     public function verify(
         string $submissionId,
         string $adminId,
-    ): \Modules\Internship\Models\RequirementSubmission {
-        $submission = \Modules\Internship\Models\RequirementSubmission::findOrFail($submissionId);
+    ): RequirementSubmission {
+        $submission = RequirementSubmission::findOrFail($submissionId);
 
         $submission->update([
-            'status' => \Modules\Internship\Enums\SubmissionStatus::VERIFIED,
+            'status' => SubmissionStatus::VERIFIED,
             'verified_at' => now(),
             'verified_by' => $adminId,
         ]);
@@ -105,11 +111,11 @@ class InternshipRequirementService extends EloquentQuery implements Contract
         string $submissionId,
         string $adminId,
         string $notes,
-    ): \Modules\Internship\Models\RequirementSubmission {
-        $submission = \Modules\Internship\Models\RequirementSubmission::findOrFail($submissionId);
+    ): RequirementSubmission {
+        $submission = RequirementSubmission::findOrFail($submissionId);
 
         $submission->update([
-            'status' => \Modules\Internship\Enums\SubmissionStatus::REJECTED,
+            'status' => SubmissionStatus::REJECTED,
             'notes' => $notes,
             'verified_at' => null,
             'verified_by' => $adminId,
@@ -124,7 +130,7 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     public function hasClearedMandatory(string $registrationId): bool
     {
         $registration = app(
-            \Modules\Internship\Services\Contracts\RegistrationService::class,
+            RegistrationService::class,
         )->find($registrationId);
 
         if (! $registration) {
@@ -140,10 +146,10 @@ class InternshipRequirementService extends EloquentQuery implements Contract
             return true;
         }
 
-        $verifiedCount = \Modules\Internship\Models\RequirementSubmission::query()
+        $verifiedCount = RequirementSubmission::query()
             ->where('registration_id', $registrationId)
             ->whereIn('requirement_id', $mandatoryRequirements->pluck('id'))
-            ->where('status', \Modules\Internship\Enums\SubmissionStatus::VERIFIED)
+            ->where('status', SubmissionStatus::VERIFIED)
             ->count();
 
         return $verifiedCount === $mandatoryRequirements->count();

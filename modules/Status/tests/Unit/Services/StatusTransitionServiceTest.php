@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Status\Tests\Unit\Services;
 
-use Modules\Status\Enums\AccountStatus;
-use Modules\Status\Services\StatusTransitionService;
-use Modules\Status\Services\AccountAuditLogger;
-use Modules\User\Models\User;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Services\AccountAuditLogger;
+use Modules\Status\Services\StatusTransitionService;
+use Modules\User\Models\User;
+use Tests\TestCase;
 
 /**
  * StatusTransitionServiceTest
@@ -27,6 +27,7 @@ class StatusTransitionServiceTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     private StatusTransitionService $service;
+
     private AccountAuditLogger $auditLogger;
 
     protected function setUp(): void

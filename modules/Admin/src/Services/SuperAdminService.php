@@ -7,19 +7,22 @@ namespace Modules\Admin\Services;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Modules\Admin\Services\Contracts\SuperAdminService as Contract;
 use Modules\Exception\AppException;
 use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Service to manage the authoritative SuperAdmin account.
- * 
- * This service operates independently of UserService to ensure that 
- * the highest level of administrative access is handled with specific 
+ *
+ * This service operates independently of UserService to ensure that
+ * the highest level of administrative access is handled with specific
  * business rules and tighter security constraints.
  */
 class SuperAdminService extends EloquentQuery implements Contract
@@ -81,12 +84,12 @@ class SuperAdminService extends EloquentQuery implements Contract
 
         // Security: Enforce standard policy if the app is already installed
         if (setting('app_installed', false) && ! $this->skipAuthorization) {
-            \Illuminate\Support\Facades\Gate::authorize('update', $superAdmin);
+            Gate::authorize('update', $superAdmin);
         }
 
         $this->skipAuthorization = false;
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($superAdmin, $data) {
+        return DB::transaction(function () use ($superAdmin, $data) {
             // Protect role and status from unauthorized changes
             unset($data['roles'], $data['status']);
 
@@ -120,7 +123,7 @@ class SuperAdminService extends EloquentQuery implements Contract
             );
         }
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($attributes, $values) {
+        return DB::transaction(function () use ($attributes, $values) {
             // Filter only fillable attributes
             $data = array_merge($attributes, $values);
             $fillableData = Arr::only($data, $this->model->getFillable());
@@ -132,7 +135,7 @@ class SuperAdminService extends EloquentQuery implements Contract
                 $user->assignRole(Role::SUPER_ADMIN->value);
             }
 
-            $user->setStatus(\Modules\Status\Enums\Status::VERIFIED->value);
+            $user->setStatus(Status::VERIFIED->value);
             $user->markEmailAsVerified();
 
             if (isset($data['avatar_file'])) {

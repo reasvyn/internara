@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Status\Tests\Unit\Policies;
 
-use Modules\Status\Policies\RoleBasedAccessPolicy;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Policies\RoleBasedAccessPolicy;
 use Modules\User\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * RoleBasedAccessPolicyTest

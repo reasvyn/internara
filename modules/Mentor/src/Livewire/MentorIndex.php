@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Mentor\Livewire;
 
-use Modules\Mentor\Services\Contracts\MentorService;
 use Livewire\Attributes\Computed;
+use Modules\Mentor\Services\Contracts\MentorService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class MentorIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'mentor::mentor-manager';
+
     protected string $titleKey = 'mentor::ui.management_title';
 
     /**

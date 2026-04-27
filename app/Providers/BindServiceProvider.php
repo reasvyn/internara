@@ -217,7 +217,7 @@ class BindServiceProvider extends ServiceProvider
             }
 
             return [$abstract, $name];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return null;
         }
     }

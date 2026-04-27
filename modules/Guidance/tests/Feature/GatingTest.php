@@ -4,32 +4,36 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Tests\Feature;
 
+use Illuminate\Support\Str;
 use Modules\Attendance\Services\Contracts\AttendanceService;
+use Modules\Exception\AppException;
 use Modules\Guidance\Models\Handbook;
 use Modules\Guidance\Services\Contracts\HandbookService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
+use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
+use Modules\Setting\Facades\Setting;
 use Modules\User\Services\Contracts\UserService;
 
 beforeEach(function () {
     // Seed roles and permissions via modular seeder
-    $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+    $this->seed(PermissionDatabaseSeeder::class);
 
     // Mock Settings to control feature state
-    \Modules\Setting\Facades\Setting::shouldReceive('getValue')
+    Setting::shouldReceive('getValue')
         ->with('feature_guidance_enabled', true)
         ->andReturn(true);
 
-    \Modules\Setting\Facades\Setting::shouldReceive('getValue')
+    Setting::shouldReceive('getValue')
         ->with('active_academic_year', \Mockery::any(), \Mockery::any())
         ->andReturn('2025/2026');
 
-    \Modules\Setting\Facades\Setting::shouldReceive('getValue')
+    Setting::shouldReceive('getValue')
         ->with('attendance_late_threshold', \Mockery::any(), \Mockery::any())
         ->andReturn('08:00');
 
-    \Modules\Setting\Facades\Setting::shouldReceive('getValue')
+    Setting::shouldReceive('getValue')
         ->with('journal_submission_window', \Mockery::any(), \Mockery::any())
         ->andReturn(7);
 });
@@ -59,7 +63,7 @@ test(
 
         $journalService = app(JournalService::class);
 
-        $this->expectException(\Modules\Exception\AppException::class);
+        $this->expectException(AppException::class);
 
         $journalService->create([
             'registration_id' => $registration->id,
@@ -73,7 +77,7 @@ test(
 
 test('it returns localized gating error messages [SYRS-NF-403]', function () {
     $handbookService = app(HandbookService::class);
-    $studentId = (string) \Illuminate\Support\Str::uuid();
+    $studentId = (string) Str::uuid();
 
     // Create mandatory handbook
     Handbook::factory()->create(['is_mandatory' => true, 'is_active' => true]);
@@ -82,7 +86,7 @@ test('it returns localized gating error messages [SYRS-NF-403]', function () {
     app()->setLocale('id');
     try {
         app(AttendanceService::class)->checkIn($studentId);
-    } catch (\Modules\Exception\AppException $e) {
+    } catch (AppException $e) {
         expect($e->getUserMessage())->toBe(
             'Anda wajib menyelesaikan pembekalan (membaca seluruh panduan wajib) sebelum dapat mengakses fitur ini.',
         );
@@ -92,7 +96,7 @@ test('it returns localized gating error messages [SYRS-NF-403]', function () {
     app()->setLocale('en');
     try {
         app(AttendanceService::class)->checkIn($studentId);
-    } catch (\Modules\Exception\AppException $e) {
+    } catch (AppException $e) {
         expect($e->getUserMessage())->toBe(
             'You must complete the briefing (read all mandatory handbooks) before you can access this feature.',
         );

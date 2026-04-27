@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Modules\Report\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Report\Models\GeneratedReport;
+use Modules\Report\Policies\ReportPolicy;
+use Modules\Report\Services\Contracts\ReportGenerator;
+use Modules\Report\Services\GeneratedReportService;
+use Modules\Report\Services\ReportService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -23,7 +28,7 @@ class ReportServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Report\Models\GeneratedReport::class => \Modules\Report\Policies\ReportPolicy::class,
+        GeneratedReport::class => ReportPolicy::class,
     ];
 
     /**
@@ -42,8 +47,8 @@ class ReportServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Report\Services\Contracts\ReportGenerator::class => \Modules\Report\Services\ReportService::class,
-            \Modules\Report\Services\Contracts\GeneratedReportService::class => \Modules\Report\Services\GeneratedReportService::class,
+            ReportGenerator::class => ReportService::class,
+            \Modules\Report\Services\Contracts\GeneratedReportService::class => GeneratedReportService::class,
         ];
     }
 

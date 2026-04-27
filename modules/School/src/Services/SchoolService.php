@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Modules\School\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Modules\Exception\AppException;
+use Modules\School\Events\SchoolDeleted;
 use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService as SchoolServiceContract;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Shared\Services\EloquentQuery;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,7 +36,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
         array $filters = [],
         array $columns = ['*'],
         array $with = [],
-    ): \Illuminate\Support\Collection {
+    ): Collection {
         return parent::get($filters, $columns, $with);
     }
 
@@ -90,7 +94,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
         $deleted = parent::delete($id, $force);
 
         if ($deleted) {
-            \Modules\School\Events\SchoolDeleted::dispatch((string) $id);
+            SchoolDeleted::dispatch((string) $id);
         }
 
         return $deleted;
@@ -101,10 +105,10 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
      */
     public function save(array $attributes, array $values = []): School
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($attributes, $values) {
+        return DB::transaction(function () use ($attributes, $values) {
             $isSetupAuthorized =
                 session(
-                    \Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED,
+                    SetupService::SESSION_SETUP_AUTHORIZED,
                 ) === true;
             $data = array_merge($attributes, $values);
             $schoolId = $data['id'] ?? $this->model->newQuery()->first(['id'])?->id;

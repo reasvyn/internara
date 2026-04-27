@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\User\Tests\Unit\Services;
 
-
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Permission\Models\Role;
+use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
@@ -58,9 +59,9 @@ test('it rolls back user creation if profile creation fails (atomicity check)', 
     ];
 
     // We force a failure in ProfileService by mocking it
-    $profileService = $this->mock(\Modules\Profile\Services\Contracts\ProfileService::class);
+    $profileService = $this->mock(ProfileService::class);
     $profileService->shouldReceive('withoutAuthorization')->andReturnSelf();
-    $profileService->shouldReceive('getByUserId')->andReturn(new \Modules\Profile\Models\Profile);
+    $profileService->shouldReceive('getByUserId')->andReturn(new Profile);
     $profileService->shouldReceive('update')->andThrow(new \Exception('Profile failure'));
 
     // Resolve service AFTER mocking dependencies
@@ -86,7 +87,7 @@ test('it enforces authorization on account creation', function () {
 
     // 2. Act & Assert
     expect(fn () => $service->createWithProfile([], []))->toThrow(
-        \Illuminate\Auth\Access\AuthorizationException::class,
+        AuthorizationException::class,
     );
 });
 

@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Attendance\Services;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Modules\Attendance\Enums\AttendanceStatus;
+use Modules\Attendance\Models\AbsenceRequest;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService as Contract;
 use Modules\Exception\AppException;
+use Modules\Guidance\Services\Contracts\HandbookService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Shared\Services\EloquentQuery;
 
 /**
@@ -74,10 +79,10 @@ class AttendanceService extends EloquentQuery implements Contract
      */
     public function recordAttendance(string $studentId, array $data): AttendanceLog
     {
-        \Illuminate\Support\Facades\Gate::authorize('create', AttendanceLog::class);
+        Gate::authorize('create', AttendanceLog::class);
 
-        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
-        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+        $settingService = app(SettingService::class);
+        $guidanceService = app(HandbookService::class);
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
@@ -108,7 +113,7 @@ class AttendanceService extends EloquentQuery implements Contract
         }
 
         // Check for approved absence requests for this date
-        $hasApprovedAbsence = \Modules\Attendance\Models\AbsenceRequest::query()
+        $hasApprovedAbsence = AbsenceRequest::query()
             ->where('student_id', $studentId)
             ->whereDate('date', $date)
             ->currentStatus('approved')
@@ -149,13 +154,13 @@ class AttendanceService extends EloquentQuery implements Contract
         if ($status === AttendanceStatus::PRESENT->value && ! empty($data['check_in_at'])) {
             $lateThreshold = setting('attendance_late_threshold', '08:00');
             [$hour, $minute] = explode(':', $lateThreshold);
-            $startTime = \Illuminate\Support\Carbon::parse($date)->setTime(
+            $startTime = Carbon::parse($date)->setTime(
                 (int) $hour,
                 (int) $minute,
                 0,
             );
 
-            if (\Illuminate\Support\Carbon::parse($data['check_in_at'])->greaterThan($startTime)) {
+            if (Carbon::parse($data['check_in_at'])->greaterThan($startTime)) {
                 $reason .= ' (Late)';
             }
         }
@@ -215,10 +220,10 @@ class AttendanceService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function createAbsenceRequest(array $data): \Modules\Attendance\Models\AbsenceRequest
+    public function createAbsenceRequest(array $data): AbsenceRequest
     {
-        /** @var \Modules\Attendance\Models\AbsenceRequest $request */
-        $request = \Modules\Attendance\Models\AbsenceRequest::create($data);
+        /** @var AbsenceRequest $request */
+        $request = AbsenceRequest::create($data);
         $request->setStatus('pending', 'Absence request submitted by student.');
 
         return $request;

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Modules\Assessment\Services;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Assessment\Services\Contracts\ComplianceService as Contract;
 use Modules\Attendance\Services\Contracts\AttendanceService;
+use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\Shared\Services\BaseService;
@@ -24,12 +26,13 @@ class ComplianceService extends BaseService implements Contract
      */
     public function calculateScore(string $registrationId): array
     {
-        /** @var \Modules\Internship\Models\InternshipRegistration|null $registration */
+        /** @var InternshipRegistration|null $registration */
         $registration = $this->registrationService->find($registrationId);
 
         if (! $registration) {
-            $e = new \Illuminate\Database\Eloquent\ModelNotFoundException(); throw $e->setModel(
-                \Modules\Internship\Models\InternshipRegistration::class,
+            $e = new ModelNotFoundException;
+            throw $e->setModel(
+                InternshipRegistration::class,
                 [$registrationId],
             );
         }

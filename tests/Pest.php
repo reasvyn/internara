@@ -1,15 +1,19 @@
 <?php
 
 declare(strict_types=1);
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Tests\DuskTestCase;
+use Tests\TestCase;
 
 pest()
-    ->extend(Tests\DuskTestCase::class)
-    ->use(Illuminate\Foundation\Testing\DatabaseMigrations::class)
+    ->extend(DuskTestCase::class)
+    ->use(DatabaseMigrations::class)
     ->in(__DIR__.'/Browser', __DIR__.'/../modules/*/tests/Browser');
 
 pest()
-    ->extend(\Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\LazilyRefreshDatabase::class)
+    ->extend(TestCase::class)
+    ->use(LazilyRefreshDatabase::class)
     ->in(
         __DIR__.'/Feature',
         __DIR__.'/../modules/*/tests/Feature',
@@ -17,7 +21,7 @@ pest()
     );
 
 pest()
-    ->extend(\Tests\TestCase::class)
+    ->extend(TestCase::class)
     ->in(
         __DIR__.'/Unit',
         __DIR__.'/../modules/*/tests/Unit',

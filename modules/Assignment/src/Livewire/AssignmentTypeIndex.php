@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Livewire;
 
-use Modules\Assignment\Services\Contracts\AssignmentTypeService;
 use Livewire\Attributes\Computed;
+use Modules\Assignment\Services\Contracts\AssignmentTypeService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class AssignmentTypeIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'assignment::assignment-type-manager';
+
     protected string $titleKey = 'assignment::ui.menu.assignment_types';
 
     /**

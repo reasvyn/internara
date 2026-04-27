@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Report\Services\Contracts;
 
+use Illuminate\Support\Collection;
+use Modules\Shared\Contracts\ExportableDataProvider;
+
 /**
  * Defines the contract for orchestrating official document generation.
  *
@@ -42,7 +45,7 @@ interface ReportGenerator
     /**
      * Retrieves the registry of authorized institutional data providers.
      *
-     * @return \Illuminate\Support\Collection<string, \Modules\Shared\Contracts\ExportableDataProvider>
+     * @return Collection<string, ExportableDataProvider>
      */
-    public function getProviders(): \Illuminate\Support\Collection;
+    public function getProviders(): Collection;
 }

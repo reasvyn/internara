@@ -16,7 +16,9 @@ class AuditLogTestModel extends Model
     use HasUuid, InteractsWithActivityLog;
 
     protected $table = 'audit_log_test_models';
+
     protected $fillable = ['name', 'value'];
+
     protected string $activityLogName = 'test';
 }
 
@@ -34,7 +36,7 @@ test('it records audit log when a model is updated', function () {
     $this->actingAs($user);
 
     $model = AuditLogTestModel::create(['name' => 'Original', 'value' => 'Old']);
-    
+
     $model->update(['value' => 'New']);
 
     $this->assertDatabaseHas('audit_logs', [

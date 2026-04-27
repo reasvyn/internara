@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Modules\Internship\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Modules\Internship\Models\Company;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\Internship\Models\Company>
+ * @extends Factory<Company>
  */
 class CompanyFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
-     * @var class-string<\Modules\Internship\Models\Company>
+     * @var class-string<Company>
      */
     protected $model = Company::class;
 
@@ -27,7 +28,7 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'name' => fake()->company(),
             'address' => fake()->address(),
             'business_field' => fake()->jobTitle(),

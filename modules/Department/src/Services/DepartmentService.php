@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Department\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Modules\Department\Models\Department;
 use Modules\Exception\RecordNotFoundException;
 use Modules\School\Services\Contracts\SchoolService;
@@ -31,7 +32,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
         array $filters = [],
         array $columns = ['*'],
         array $with = [],
-    ): \Illuminate\Database\Eloquent\Builder {
+    ): Builder {
         // Enforce N+1 protection for school relationship
         if (empty($with)) {
             $with = ['school'];
@@ -42,8 +43,8 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
 
     /**
      * {@inheritdoc}
-     * 
-     * Optimization Audit: 
+     *
+     * Optimization Audit:
      * Removed manual Gate::authorize to prevent double check and premature skipAuthorization reset.
      * Delegated all persistence and authorization orchestration to EloquentQuery parent.
      */

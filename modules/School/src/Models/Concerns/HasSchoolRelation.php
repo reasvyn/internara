@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\School\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\School\Services\Contracts\SchoolService as SchoolServiceContract;
 
 /**
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait HasSchoolRelation
 {

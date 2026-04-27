@@ -6,6 +6,8 @@ namespace Modules\Mentor\Livewire;
 
 use Livewire\Component;
 use Modules\Assessment\Services\Contracts\AssessmentService;
+use Modules\Assessment\Services\Contracts\CompetencyService;
+use Modules\Assessment\Services\Contracts\ComplianceService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
 class EvaluateIntern extends Component
@@ -45,7 +47,7 @@ class EvaluateIntern extends Component
 
         // Load compliance metrics
         $this->complianceMetrics = app(
-            \Modules\Assessment\Services\Contracts\ComplianceService::class,
+            ComplianceService::class,
         )->calculateScore($registrationId);
 
         $assessment = $this->assessmentService->first([
@@ -82,7 +84,7 @@ class EvaluateIntern extends Component
     {
         $registration = app(RegistrationService::class)->find($this->registrationId);
         $claimedCompetencies = app(
-            \Modules\Assessment\Services\Contracts\CompetencyService::class,
+            CompetencyService::class,
         )->getClaimedCompetencies($this->registrationId);
 
         return view('mentor::livewire.evaluate-intern', [

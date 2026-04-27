@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire\Forms;
 
+use Illuminate\Validation\Rules\Enum;
 use Livewire\Form;
+use Modules\Internship\Enums\RequirementType;
 
 class RequirementForm extends Form
 {
@@ -29,8 +31,8 @@ class RequirementForm extends Form
             'description' => ['nullable', 'string'],
             'type' => [
                 'required',
-                \Illuminate\Validation\Rules\Enum::class => new \Illuminate\Validation\Rules\Enum(
-                    \Modules\Internship\Enums\RequirementType::class,
+                Enum::class => new Enum(
+                    RequirementType::class,
                 ),
             ],
             'is_mandatory' => ['required', 'boolean'],

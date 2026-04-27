@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\UI\Livewire;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 use Throwable;
 
@@ -27,25 +30,35 @@ abstract class RecordManager extends Component
     use WithPagination;
 
     protected const MODAL_FORM = 'form-modal';
+
     protected const MODAL_CONFIRM = 'confirm-modal';
+
     protected const MODAL_IMPORT = 'import-modal';
+
     protected const DEFAULT_SORT_BY = 'created_at';
+
     protected const DEFAULT_SORT_DIR = 'desc';
 
     protected EloquentQuery $service;
+
     protected string $modelClass = '';
-    
+
     /**
      * Client-side Logic: Define which columns are searchable and sortable in the UI.
      * These are independent of the Service Layer configuration.
      */
     protected array $searchable = [];
+
     protected array $sortable = [];
 
     public string $eventPrefix = '';
+
     protected string $viewPermission = '';
+
     protected string $createPermission = '';
+
     protected string $updatePermission = '';
+
     protected string $deletePermission = '';
 
     #[Url(except: '')]
@@ -58,10 +71,15 @@ abstract class RecordManager extends Component
     public int $perPage = 10;
 
     public bool $formModal = false;
+
     public bool $confirmModal = false;
+
     public bool $importModal = false;
+
     public ?string $recordId = null;
+
     public array $selectedIds = [];
+
     public $csvFile;
 
     /**
@@ -71,10 +89,15 @@ abstract class RecordManager extends Component
     public array $filters = [];
 
     public string $title = '';
+
     public string $subtitle = '';
+
     public string $context = '';
+
     public string $addLabel = '';
+
     public string $deleteConfirmMessage = '';
+
     public string $importInstructions = '';
 
     /**
@@ -83,6 +106,7 @@ abstract class RecordManager extends Component
     public array $items = [];
 
     abstract public function initialize(): void;
+
     abstract protected function getTableHeaders(): array;
 
     /**
@@ -107,6 +131,7 @@ abstract class RecordManager extends Component
     {
         return array_map(function ($header) {
             $header['sortable'] = ($header['sortable'] ?? false) === true;
+
             return $header;
         }, $this->getTableHeaders());
     }
@@ -126,7 +151,7 @@ abstract class RecordManager extends Component
     #[Computed]
     public function records(): LengthAwarePaginator
     {
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
 
         if ($isSetupAuthorized) {
             $this->service->withoutAuthorization();
@@ -168,13 +193,24 @@ abstract class RecordManager extends Component
     public function mount(): void
     {
         $this->initialize();
-        if ($this->viewPermission) $this->authorize($this->viewPermission);
+        if ($this->viewPermission) {
+            $this->authorize($this->viewPermission);
+        }
         $this->addLabel = $this->addLabel ?: __('ui::common.add');
         $this->deleteConfirmMessage = $this->deleteConfirmMessage ?: __('ui::common.delete_confirm');
     }
 
-    public function updatedFilters(): void { $this->resetPage(); $this->selectedIds = []; }
-    public function updatedSearch(): void { $this->resetPage(); $this->selectedIds = []; }
+    public function updatedFilters(): void
+    {
+        $this->resetPage();
+        $this->selectedIds = [];
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+        $this->selectedIds = [];
+    }
 
     public function refreshRecords(): void
     {
@@ -183,11 +219,16 @@ abstract class RecordManager extends Component
 
     public function can(string $action, mixed $target = null): bool
     {
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
-        if ($isSetupAuthorized) return true;
+        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        if ($isSetupAuthorized) {
+            return true;
+        }
         $user = auth()->user();
-        if (! $user) return false;
+        if (! $user) {
+            return false;
+        }
         $target = $target ?: ($this->modelClass ?: null);
+
         return match ($action) {
             'view' => $this->viewPermission ? $user->can($this->viewPermission) : true,
             'create' => $this->createPermission ? $user->can($this->createPermission) : true,
@@ -197,39 +238,59 @@ abstract class RecordManager extends Component
         };
     }
 
-    public function add(): void { if (property_exists($this, 'form')) $this->form->reset(); $this->toggleModal(self::MODAL_FORM, true); }
+    public function add(): void
+    {
+        if (property_exists($this, 'form')) {
+            $this->form->reset();
+        } $this->toggleModal(self::MODAL_FORM, true);
+    }
 
     public function edit(mixed $id): void
     {
         $record = $this->service->find($id);
         if ($record) {
-            if (! $this->can('update', $record)) $this->authorize('update', $record);
+            if (! $this->can('update', $record)) {
+                $this->authorize('update', $record);
+            }
             if (property_exists($this, 'form')) {
-                if (method_exists($this->form, 'setUser')) $this->form->setUser($record);
-                else $this->form->fill($record);
+                if (method_exists($this->form, 'setUser')) {
+                    $this->form->setUser($record);
+                } else {
+                    $this->form->fill($record);
+                }
                 $this->toggleModal(self::MODAL_FORM, true, ['id' => $id]);
             }
         }
     }
 
-    public function discard(mixed $id): void { $this->recordId = (string) $id; $this->toggleModal(self::MODAL_CONFIRM, true, ['id' => $id]); }
+    public function discard(mixed $id): void
+    {
+        $this->recordId = (string) $id;
+        $this->toggleModal(self::MODAL_CONFIRM, true, ['id' => $id]);
+    }
 
     public function save(): void
     {
-        if (! property_exists($this, 'form')) return;
+        if (! property_exists($this, 'form')) {
+            return;
+        }
         $this->form->validate();
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
         try {
-            if ($isSetupAuthorized) $this->service->withoutAuthorization();
+            if ($isSetupAuthorized) {
+                $this->service->withoutAuthorization();
+            }
             if ($this->form->id) {
                 $record = $this->service->find($this->form->id);
-                if (! $isSetupAuthorized && $record && $this->updatePermission) \Illuminate\Support\Facades\Gate::authorize($this->updatePermission, $record);
+                if (! $isSetupAuthorized && $record && $this->updatePermission) {
+                    Gate::authorize($this->updatePermission, $record);
+                }
                 $this->service->update($this->form->id, $this->form->all());
             } else {
                 if (! $isSetupAuthorized && $this->createPermission) {
                     $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
                     $authModel = $this->modelClass ?: config('auth.providers.users.model');
-                    \Illuminate\Support\Facades\Gate::authorize($this->createPermission, [$authModel, $roles]);
+                    Gate::authorize($this->createPermission, [$authModel, $roles]);
                 }
                 $this->service->create($this->form->all());
             }
@@ -237,7 +298,9 @@ abstract class RecordManager extends Component
             flash()->success('shared::messages.record_saved');
             $this->dispatch($this->getEventPrefix().':saved', exists: true);
         } catch (Throwable $e) {
-            if (is_debug_mode()) throw $e;
+            if (is_debug_mode()) {
+                throw $e;
+            }
             flash()->error('shared::messages.error_occurred');
         }
     }
@@ -247,9 +310,12 @@ abstract class RecordManager extends Component
         $id = $id ?: $this->recordId;
         $record = $this->service->find($id);
         if ($record) {
-            $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
-            if ($isSetupAuthorized) $this->service->withoutAuthorization();
-            else $this->authorize('delete', $record);
+            $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+            if ($isSetupAuthorized) {
+                $this->service->withoutAuthorization();
+            } else {
+                $this->authorize('delete', $record);
+            }
             if ($this->service->delete($id)) {
                 $this->toggleModal(self::MODAL_CONFIRM, false);
                 $this->recordId = null;
@@ -261,36 +327,51 @@ abstract class RecordManager extends Component
 
     public function removeSelected(): void
     {
-        if (empty($this->selectedIds)) return;
-        $isSetupAuthorized = session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        if (empty($this->selectedIds)) {
+            return;
+        }
+        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
         try {
-            if ($isSetupAuthorized) $this->service->withoutAuthorization();
-            else {
+            if ($isSetupAuthorized) {
+                $this->service->withoutAuthorization();
+            } else {
                 $records = $this->service->query()->whereIn('id', $this->selectedIds)->get();
-                foreach ($records as $record) if ($record) $this->authorize('delete', $record);
+                foreach ($records as $record) {
+                    if ($record) {
+                        $this->authorize('delete', $record);
+                    }
+                }
             }
             $count = $this->service->destroy($this->selectedIds);
             $this->selectedIds = [];
             flash()->success(__('shared::messages.records_deleted', ['count' => $count]));
             $this->dispatch($this->getEventPrefix().':bulk-deleted', count: $count);
-        } catch (Throwable $e) { flash()->error($e->getMessage()); }
+        } catch (Throwable $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
-    public function exportCsv() {
+    public function exportCsv()
+    {
         $records = $this->getExportQuery()->get();
         $filename = $this->getEventPrefix().'-'.now()->format('Y-m-d-His').'.csv';
         $headers = $this->getExportHeaders();
+
         return response()->streamDownload(function () use ($records, $headers) {
             $file = fopen('php://output', 'w');
             fputcsv($file, array_values($headers));
-            foreach ($records as $record) fputcsv($file, $this->mapRecordForExport($record, array_keys($headers)));
+            foreach ($records as $record) {
+                fputcsv($file, $this->mapRecordForExport($record, array_keys($headers)));
+            }
             fclose($file);
         }, $filename, ['Content-Type' => 'text/csv']);
     }
 
-    public function downloadTemplate() {
+    public function downloadTemplate()
+    {
         $filename = $this->getEventPrefix().'-template.csv';
         $headers = $this->getTemplateHeaders();
+
         return response()->streamDownload(function () use ($headers) {
             $file = fopen('php://output', 'w');
             fputcsv($file, array_values($headers));
@@ -298,16 +379,25 @@ abstract class RecordManager extends Component
         }, $filename, ['Content-Type' => 'text/csv']);
     }
 
-    public function importCsv(): void {
+    public function importCsv(): void
+    {
         $this->validate(['csvFile' => 'required|mimes:csv,txt|max:2048']);
         $path = $this->csvFile->getRealPath();
         $file = fopen($path, 'r');
         fgetcsv($file);
         $data = [];
         $keys = array_keys($this->getTemplateHeaders());
-        while (($row = fgetcsv($file)) !== false) if ($mapped = $this->mapImportRow($row, $keys)) $data[] = $mapped;
+        while (($row = fgetcsv($file)) !== false) {
+            if ($mapped = $this->mapImportRow($row, $keys)) {
+                $data[] = $mapped;
+            }
+        }
         fclose($file);
-        if (empty($data)) { flash()->error(__('ui::common.error')); return; }
+        if (empty($data)) {
+            flash()->error(__('ui::common.error'));
+
+            return;
+        }
         $count = $this->service->import($data);
         $this->importModal = false;
         $this->csvFile = null;
@@ -315,21 +405,73 @@ abstract class RecordManager extends Component
         flash()->success(__('ui::common.imported_successfully', ['count' => $count]));
     }
 
-    public function printPdf() {
+    public function printPdf()
+    {
         $records = $this->getExportQuery()->get();
-        if (! $view = $this->getPdfView()) { flash()->error(__('shared::exceptions.pdf_view_undefined')); return null; }
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($view, $this->getPdfData($records));
+        if (! $view = $this->getPdfView()) {
+            flash()->error(__('shared::exceptions.pdf_view_undefined'));
+
+            return null;
+        }
+        $pdf = Pdf::loadView($view, $this->getPdfData($records));
+
         return response()->streamDownload(fn () => print $pdf->output(), $this->getEventPrefix().'-'.now()->format('Y-m-d').'.pdf');
     }
 
-    protected function getExportHeaders(): array { return ['id' => 'ID', 'created_at' => 'Created At']; }
-    protected function getTemplateHeaders(): array { return $this->getExportHeaders(); }
-    protected function mapRecordForExport($record, array $keys): array { return array_map(fn ($key) => $record->{$key}, $keys); }
-    protected function mapImportRow(array $row, array $keys): ?array { $data = []; foreach ($keys as $index => $key) $data[$key] = $row[$index] ?? null; return $data; }
-    protected function getExportQuery(): \Illuminate\Database\Eloquent\Builder { return $this->service->query($this->filters); }
-    protected function getPdfView(): ?string { return null; }
-    protected function getPdfData($records): array { return ['records' => $records, 'date' => now()->translatedFormat('d F Y')]; }
-    protected function toggleModal(string $name, bool $visible, array $params = []): void { $property = $name === self::MODAL_FORM ? 'formModal' : 'confirmModal'; $this->{$property} = $visible; $this->dispatch($this->getEventPrefix().':'.($visible ? 'open-modal' : 'close-modal'), $name, $params); }
-    protected function getEventPrefix(): string { return $this->eventPrefix ?: strtolower(class_basename($this)); }
-    protected function getListeners(): array { return [$this->getEventPrefix().':destroy-record' => 'remove']; }
+    protected function getExportHeaders(): array
+    {
+        return ['id' => 'ID', 'created_at' => 'Created At'];
+    }
+
+    protected function getTemplateHeaders(): array
+    {
+        return $this->getExportHeaders();
+    }
+
+    protected function mapRecordForExport($record, array $keys): array
+    {
+        return array_map(fn ($key) => $record->{$key}, $keys);
+    }
+
+    protected function mapImportRow(array $row, array $keys): ?array
+    {
+        $data = [];
+        foreach ($keys as $index => $key) {
+            $data[$key] = $row[$index] ?? null;
+        }
+
+return $data;
+    }
+
+    protected function getExportQuery(): Builder
+    {
+        return $this->service->query($this->filters);
+    }
+
+    protected function getPdfView(): ?string
+    {
+        return null;
+    }
+
+    protected function getPdfData($records): array
+    {
+        return ['records' => $records, 'date' => now()->translatedFormat('d F Y')];
+    }
+
+    protected function toggleModal(string $name, bool $visible, array $params = []): void
+    {
+        $property = $name === self::MODAL_FORM ? 'formModal' : 'confirmModal';
+        $this->{$property} = $visible;
+        $this->dispatch($this->getEventPrefix().':'.($visible ? 'open-modal' : 'close-modal'), $name, $params);
+    }
+
+    protected function getEventPrefix(): string
+    {
+        return $this->eventPrefix ?: strtolower(class_basename($this));
+    }
+
+    protected function getListeners(): array
+    {
+        return [$this->getEventPrefix().':destroy-record' => 'remove'];
+    }
 }

@@ -12,6 +12,7 @@ use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Auth\Services\Contracts\RedirectService;
 use Modules\Exception\AppException;
 use Modules\Permission\Enums\Role;
+use Modules\Shared\Rules\Turnstile;
 use Modules\Shared\Services\UsernameGenerator;
 use Modules\User\Livewire\Forms\UserForm;
 
@@ -58,7 +59,7 @@ class Register extends Component
         $throttleKey = $this->throttleKey();
         if (RateLimiter::tooManyAttempts($throttleKey, 2)) {
             $this->addError('form.email', __('auth::ui.register.form.rate_limited'));
-            
+
             return;
         }
 
@@ -67,14 +68,14 @@ class Register extends Component
 
         // [S1 - Secure] CAPTCHA Validation
         if (config('services.cloudflare.turnstile.site_key')) {
-            $this->validate(['captcha_token' => ['required', new \Modules\Shared\Rules\Turnstile]]);
+            $this->validate(['captcha_token' => ['required', new Turnstile]]);
         }
 
         try {
             // [S2 - Sustain] Autonomous Username Generation (Standardized std_... pattern)
             if (empty($this->form->username)) {
                 $this->form->username = $usernameGenerator->generate(
-                    $this->form->email, 
+                    $this->form->email,
                     Role::STUDENT->value
                 );
             }
@@ -84,8 +85,8 @@ class Register extends Component
 
             // Register user and trigger email verification
             $user = $this->authService->register(
-                $this->form->all(), 
-                roles: $this->form->roles, 
+                $this->form->all(),
+                roles: $this->form->roles,
                 sendEmailVerification: true
             );
 
@@ -116,7 +117,7 @@ class Register extends Component
             activity('security')
                 ->event('registration_failed')
                 ->withProperties(['ip' => request()->ip(), 'email' => $this->form->email])
-                ->log('Registration attempt failed: ' . $e->getMessage());
+                ->log('Registration attempt failed: '.$e->getMessage());
 
             $this->addError('form.email', $e->getUserMessage());
         }

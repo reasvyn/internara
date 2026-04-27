@@ -8,7 +8,9 @@ use Livewire\Livewire;
 use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Assignment\Livewire\AssignmentSubmission;
 use Modules\Assignment\Models\Assignment;
+use Modules\Assignment\Models\AssignmentType;
 use Modules\Assignment\Models\Submission;
+use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Models\Role;
@@ -30,7 +32,7 @@ beforeEach(function () {
     $this->registration->setStatus('active');
 
     // Create assignments for this internship
-    app(\Modules\Assignment\Services\Contracts\AssignmentService::class)->createDefaults(
+    app(AssignmentService::class)->createDefaults(
         $this->internship->id,
     );
 
@@ -64,7 +66,7 @@ test('student can submit a file for a report assignment', function () {
 });
 
 test('student can submit text for a custom assignment', function () {
-    $customType = \Modules\Assignment\Models\AssignmentType::create([
+    $customType = AssignmentType::create([
         'name' => 'Refleksi Mingguan',
         'slug' => 'refleksi-mingguan',
     ]);

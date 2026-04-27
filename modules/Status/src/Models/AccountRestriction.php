@@ -23,7 +23,9 @@ class AccountRestriction extends Model
     use SoftDeletes;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $table = 'account_restrictions';
 
     protected $fillable = [
@@ -70,7 +72,7 @@ class AccountRestriction extends Model
         return $query->where('is_active', true)
             ->where(function ($q) {
                 $q->whereNull('expires_at')
-                  ->orWhere('expires_at', '>', now());
+                    ->orWhere('expires_at', '>', now());
             });
     }
 
@@ -87,7 +89,7 @@ class AccountRestriction extends Model
      */
     public function autoLiftIfExpired(): bool
     {
-        if (!$this->hasExpired()) {
+        if (! $this->hasExpired()) {
             return false;
         }
 

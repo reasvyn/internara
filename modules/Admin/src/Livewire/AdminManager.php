@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Livewire;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Admin\Livewire\Forms\AdminForm;
@@ -94,7 +95,7 @@ class AdminManager extends RecordManager
      * Fetch and transform records for the table.
      */
     #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    public function records(): LengthAwarePaginator
     {
         return $this->service->query($this->filters)
             ->with(['roles:id,name', 'accountTokens'])
@@ -107,8 +108,9 @@ class AdminManager extends RecordManager
         try {
             $admin = $this->service->findOrFail($id);
 
-            if (!$admin->requiresSetup()) {
+            if (! $admin->requiresSetup()) {
                 flash()->warning(__('admin::ui.manager.already_accepted'));
+
                 return;
             }
 
@@ -124,7 +126,7 @@ class AdminManager extends RecordManager
         $this->form->validate();
 
         try {
-            $isNew = !$this->form->id;
+            $isNew = ! $this->form->id;
 
             if ($isNew) {
                 $admin = $this->service->create($this->form->all());
@@ -159,7 +161,7 @@ class AdminManager extends RecordManager
 
     private function resolveInvitationStatus(User $admin): string
     {
-        if (!$admin->requiresSetup()) {
+        if (! $admin->requiresSetup()) {
             return 'accepted';
         }
 

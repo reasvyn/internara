@@ -33,7 +33,7 @@ class RubricForm extends Component
         $registration = $registrationService->find($registrationId);
         if ($registration && $registration->internship && $registration->internship->department_id) {
             $this->competencies = $competencyService->getForDepartment($registration->internship->department_id)->toArray();
-            
+
             // Initialize scores
             foreach ($this->competencies as $competency) {
                 $this->scores[$competency['id']] = 0;
@@ -58,7 +58,7 @@ class RubricForm extends Component
             );
 
             flash()->success(__('assessment::messages.submitted'));
-            
+
             $this->dispatch('evaluation-submitted');
         } catch (\Exception $e) {
             flash()->error($e->getMessage());

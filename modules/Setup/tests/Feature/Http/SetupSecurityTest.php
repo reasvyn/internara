@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Http;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
-use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Setup\Services\Contracts\SetupService;
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);
@@ -29,7 +30,7 @@ test('it allows setup access if valid token and signature are provided', functio
     $token = Str::random(32);
     app(SettingService::class)->setValue('setup_token', $token);
 
-    $url = \Illuminate\Support\Facades\URL::signedRoute('setup.welcome', ['token' => $token]);
+    $url = URL::signedRoute('setup.welcome', ['token' => $token]);
 
     $this->get($url)->assertOk()->assertSessionHas('setup_authorized', true);
 });

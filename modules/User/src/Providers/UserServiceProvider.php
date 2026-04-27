@@ -8,6 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Modules\User\Models\User;
 use Modules\User\Policies\UserPolicy;
+use Modules\User\Services\AccountProvisioningService;
+use Modules\User\Services\UserService;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class UserServiceProvider extends ServiceProvider
@@ -55,8 +57,8 @@ class UserServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\User\Services\Contracts\UserService::class => \Modules\User\Services\UserService::class,
-            \Modules\User\Services\Contracts\AccountProvisioningService::class => \Modules\User\Services\AccountProvisioningService::class,
+            \Modules\User\Services\Contracts\UserService::class => UserService::class,
+            \Modules\User\Services\Contracts\AccountProvisioningService::class => AccountProvisioningService::class,
         ];
     }
 }

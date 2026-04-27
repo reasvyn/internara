@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Unit\Services;
 
 use Illuminate\Support\Facades\Gate;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\SetupService;
-use Modules\Admin\Services\Contracts\SuperAdminService;
 
 describe('SetupService S1 Security', function () {
     beforeEach(function () {
@@ -19,13 +19,13 @@ describe('SetupService S1 Security', function () {
         $this->schoolService = $this->mock(SchoolService::class);
         $this->departmentService = $this->mock(DepartmentService::class);
         $this->internshipService = $this->mock(InternshipService::class);
-        
+
         $this->settingService->shouldReceive('setValue')->byDefault();
     });
 
     test('performSetupStep enforces authorization', function () {
         Gate::shouldReceive('authorize')->once()->with('performStep', SetupService::class);
-        
+
         // We call the actual method but ignore its internal logic impact
         $service = new SetupService(
             $this->settingService,

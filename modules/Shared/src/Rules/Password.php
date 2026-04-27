@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Shared\Rules;
 
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Translation\PotentiallyTranslatedString;
 use Illuminate\Validation\Rules\Password as BasePassword;
 
 /**
@@ -66,7 +67,7 @@ class Password implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString $fail
+     * @param \Closure(string): PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, \Closure $fail): void
     {

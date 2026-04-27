@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -45,16 +46,16 @@ if (! function_exists('setting')) {
                 $authorIdentity = 'Reas Vyn';
 
                 if (! file_exists($path)) {
-                    throw new \RuntimeException(
+                    throw new RuntimeException(
                         'Integrity Violation: Critical metadata (app_info.json) is missing.',
                     );
                 }
 
                 $info = json_decode(file_get_contents($path), true);
-                $author = \Illuminate\Support\Arr::get($info, 'author.name');
+                $author = Arr::get($info, 'author.name');
 
                 if ($author !== $authorIdentity) {
-                    throw new \RuntimeException(
+                    throw new RuntimeException(
                         "Integrity Violation: Unauthorized author detected [{$author}]. This system requires attribution to [{$authorIdentity}].",
                     );
                 }
@@ -68,7 +69,7 @@ if (! function_exists('setting')) {
                         'The setting() helper was called, but the Setting module is disabled or missing. A fallback was used.',
                     );
                     $hasLogged = true;
-                } catch (\Throwable) {
+                } catch (Throwable) {
                     // Log might not be available yet
                 }
             }
@@ -98,7 +99,7 @@ if (! function_exists('setting')) {
                 $path = base_path('app_info.json');
                 if (file_exists($path)) {
                     $info = json_decode(file_get_contents($path), true);
-                    if ($val = \Illuminate\Support\Arr::get($info, $appInfoMap[$key])) {
+                    if ($val = Arr::get($info, $appInfoMap[$key])) {
                         return $val;
                     }
                 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\School\Livewire;
 
+use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\School\Livewire\Forms\SchoolForm;
 use Modules\School\Services\Contracts\SchoolService;
+use Modules\Setup\Services\Contracts\SetupService;
 
 /**
  * Class SchoolManager
@@ -63,7 +65,7 @@ class SchoolManager extends Component
     {
         // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
         $isSetupAuthorized =
-            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            session(SetupService::SESSION_SETUP_AUTHORIZED) ===
             true;
 
         if (! $isSetupAuthorized) {
@@ -91,7 +93,7 @@ class SchoolManager extends Component
     /**
      * Renders the administrative interface.
      */
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
             'title' => __('school::ui.settings').' | '.setting('brand_name', setting('app_name')),

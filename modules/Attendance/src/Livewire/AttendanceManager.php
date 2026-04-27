@@ -8,6 +8,9 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService;
+use Modules\Exception\AppException;
+use Modules\Guidance\Services\Contracts\HandbookService;
+use Modules\Setting\Services\Contracts\SettingService;
 
 class AttendanceManager extends Component
 {
@@ -24,8 +27,8 @@ class AttendanceManager extends Component
 
         // Gating System: Check if student has completed mandatory guidance
         if (auth()->check() && auth()->user()->hasRole('student')) {
-            $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
-            $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+            $guidanceService = app(HandbookService::class);
+            $settingService = app(SettingService::class);
 
             if (
                 $settingService->getValue('feature_guidance_enabled', true) &&
@@ -60,8 +63,8 @@ class AttendanceManager extends Component
     public function clockIn(): void
     {
         // Gating Check
-        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
-        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
+        $guidanceService = app(HandbookService::class);
+        $settingService = app(SettingService::class);
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
@@ -78,7 +81,7 @@ class AttendanceManager extends Component
             flash()->success(__('attendance::messages.check_in_success'));
         } catch (\Throwable $e) {
             $message =
-                $e instanceof \Modules\Exception\AppException
+                $e instanceof AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
@@ -97,7 +100,7 @@ class AttendanceManager extends Component
             flash()->success(__('attendance::messages.check_out_success'));
         } catch (\Throwable $e) {
             $message =
-                $e instanceof \Modules\Exception\AppException
+                $e instanceof AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 

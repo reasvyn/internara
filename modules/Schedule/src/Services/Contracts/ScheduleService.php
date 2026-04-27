@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Schedule\Services\Contracts;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
@@ -23,7 +24,7 @@ interface ScheduleService extends EloquentQuery
     public function getStudentTimeline(
         string $studentId,
         int $perPage = 15,
-    ): \Illuminate\Pagination\LengthAwarePaginator;
+    ): LengthAwarePaginator;
 
     /**
      * Get events filtered by academic year.

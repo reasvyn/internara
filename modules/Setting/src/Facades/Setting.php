@@ -16,7 +16,7 @@ use Modules\Setting\Services\Contracts\SettingService;
  * as a simplified entry point for managing application-wide configurations, abstracting away the
  * underlying service implementation.
  *
- * @see \Modules\Setting\Services\Contracts\SettingService
+ * @see SettingService
  * @see \Modules\Setting\Services\SettingService
  *
  * @method static mixed getValue(string|array $key, mixed $default = null, bool $skipCached = false)

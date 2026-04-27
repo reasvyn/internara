@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Tests\Unit\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -61,7 +62,7 @@ describe('EloquentQuery S1 & S2 Compliance', function () {
         });
 
         $this->service->create(['name' => 'Should Fail']);
-    })->throws(\Illuminate\Auth\Access\AuthorizationException::class);
+    })->throws(AuthorizationException::class);
 
     test('it enforces Gate::authorize on update operations', function () {
         $record = SecurityModelStub::create(['name' => 'Original']);
@@ -71,5 +72,5 @@ describe('EloquentQuery S1 & S2 Compliance', function () {
         });
 
         $this->service->update($record->id, ['name' => 'Hacked']);
-    })->throws(\Illuminate\Auth\Access\AuthorizationException::class);
+    })->throws(AuthorizationException::class);
 });

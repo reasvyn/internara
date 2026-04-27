@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
+use Modules\Permission\Models\Role;
 use Modules\Setup\Onboarding\Services\Contracts\OnboardingService;
 use Modules\User\Models\User;
 
 beforeEach(function () {
     // Setup roles
-    \Modules\Permission\Models\Role::create(['name' => 'student', 'guard_name' => 'web']);
-    \Modules\Permission\Models\Role::create(['name' => 'teacher', 'guard_name' => 'web']);
-    \Modules\Permission\Models\Role::create(['name' => 'mentor', 'guard_name' => 'web']);
-    \Modules\Permission\Models\Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
+    Role::create(['name' => 'student', 'guard_name' => 'web']);
+    Role::create(['name' => 'teacher', 'guard_name' => 'web']);
+    Role::create(['name' => 'mentor', 'guard_name' => 'web']);
+    Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
 
     $admin = User::factory()->create();
     $admin->assignRole('super-admin');

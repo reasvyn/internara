@@ -6,10 +6,11 @@ namespace Modules\Auth\Domain\ValueObjects;
 
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Modules\Shared\Support\Masker;
 
 /**
  * Value Object representing authentication credentials.
- * 
+ *
  * [S1 - Secure] Encapsulates credential sanitization and masking.
  */
 final readonly class AuthCredentials
@@ -35,7 +36,7 @@ final readonly class AuthCredentials
     {
         // Trim whitespace from identifier but NOT password
         $identifier = trim($identifier);
-        
+
         $loginField = Str::contains($identifier, '@') ? 'email' : 'username';
 
         return new self(
@@ -58,15 +59,15 @@ final readonly class AuthCredentials
 
     /**
      * Returns a safely masked version of the identifier for logging.
-     * 
+     *
      * [S1 - Secure] Protects PII from being exposed in audit trails.
      */
     public function getMaskedIdentifier(): string
     {
         if ($this->loginField === 'email') {
-            return \Modules\Shared\Support\Masker::email($this->identifier);
+            return Masker::email($this->identifier);
         }
 
-        return \Modules\Shared\Support\Masker::sensitive($this->identifier);
+        return Masker::sensitive($this->identifier);
     }
 }

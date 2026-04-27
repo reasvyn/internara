@@ -7,6 +7,7 @@ namespace Modules\Assignment\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Assignment\Livewire\Forms\AssignmentTypeForm;
+use Modules\Assignment\Models\AssignmentType;
 use Modules\Assignment\Services\Contracts\AssignmentTypeService;
 use Modules\UI\Livewire\RecordManager;
 
@@ -26,7 +27,7 @@ class AssignmentTypeManager extends RecordManager
     {
         $this->service = $assignmentTypeService;
         $this->eventPrefix = 'assignment-type';
-        $this->modelClass = \Modules\Assignment\Models\AssignmentType::class;
+        $this->modelClass = AssignmentType::class;
     }
 
     /**

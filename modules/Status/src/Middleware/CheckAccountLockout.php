@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Status\Middleware;
 
-use Modules\Status\Enums\Status;
-use Modules\Status\Services\AccountLockoutService;
-use Modules\User\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Modules\Status\Enums\Status;
+use Modules\Status\Services\AccountLockoutService;
+use Modules\User\Models\User;
 
 /**
  * CheckAccountLockout Middleware
@@ -36,7 +36,7 @@ class CheckAccountLockout
     public function handle(Request $request, Closure $next)
     {
         // Only apply to login/password reset attempts
-        if (!in_array($request->route()?->getName(), ['login', 'password.request', 'password.reset'])) {
+        if (! in_array($request->route()?->getName(), ['login', 'password.request', 'password.reset'])) {
             return $next($request);
         }
 

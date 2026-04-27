@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\CompanyForm;
 use Modules\Internship\Models\Company;
+use Modules\Internship\Services\Contracts\CompanyService;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -27,7 +28,7 @@ class CompanyManager extends RecordManager
      * Initialize the component metadata and services.
      */
     public function boot(
-        \Modules\Internship\Services\Contracts\CompanyService $companyService,
+        CompanyService $companyService,
     ): void {
         $this->service = $companyService;
         $this->eventPrefix = 'company';

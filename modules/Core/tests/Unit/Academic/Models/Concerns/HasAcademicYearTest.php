@@ -9,6 +9,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
+use Modules\Setting\Facades\Setting;
 
 uses(RefreshDatabase::class);
 
@@ -31,7 +32,7 @@ describe('HasAcademicYear Trait', function () {
         });
 
         // Mock setting helper/facade
-        \Modules\Setting\Facades\Setting::shouldReceive('getValue')->andReturn('2025/2026');
+        Setting::shouldReceive('getValue')->andReturn('2025/2026');
     });
 
     test(

@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Modules\Schedule\Tests\Feature;
 
+use Illuminate\Support\Str;
+use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Schedule\Enums\ScheduleType;
 use Modules\Schedule\Models\Schedule;
 use Modules\Schedule\Services\Contracts\ScheduleService;
+use Modules\Setting\Facades\Setting;
 
 beforeEach(function () {
-    \Modules\Setting\Facades\Setting::shouldReceive('getValue')
+    Setting::shouldReceive('getValue')
         ->with('active_academic_year', \Mockery::any(), \Mockery::any())
         ->andReturn('2025/2026');
 });
@@ -37,12 +41,12 @@ test('it can create a schedule event via service', function () {
 
 test('it can retrieve student timeline filtered by registration', function () {
     $service = app(ScheduleService::class);
-    $studentId = (string) \Illuminate\Support\Str::uuid();
+    $studentId = (string) Str::uuid();
 
-    $internship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $internship = app(InternshipService::class)
         ->factory()
         ->create();
-    $registration = app(\Modules\Internship\Services\Contracts\RegistrationService::class)
+    $registration = app(RegistrationService::class)
         ->factory()
         ->create([
             'student_id' => $studentId,
@@ -61,7 +65,7 @@ test('it can retrieve student timeline filtered by registration', function () {
         'academic_year' => '2025/2026',
     ]);
 
-    $otherInternship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $otherInternship = app(InternshipService::class)
         ->factory()
         ->create();
     Schedule::factory()->create([

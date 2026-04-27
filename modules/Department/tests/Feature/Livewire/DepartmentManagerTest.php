@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use Modules\Department\Livewire\DepartmentManager;
 use Modules\Department\Models\Department;
+use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
+use Modules\Permission\Enums\Role;
+use Modules\School\Models\School;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
-        return $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ? true : null;
+    Gate::before(function ($user, $ability) {
+        return $user->hasRole(Role::SUPER_ADMIN->value) ? true : null;
     });
 
-    $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+    $this->seed(PermissionDatabaseSeeder::class);
 });
 
 test('department management page is forbidden for unauthorized users', function () {
@@ -35,7 +39,7 @@ test('it can create a new department', function () {
     $user->assignRole('super-admin');
     $this->actingAs($user);
 
-    $school = \Modules\School\Models\School::factory()->create();
+    $school = School::factory()->create();
 
     $this->get(route('department.index'));
 

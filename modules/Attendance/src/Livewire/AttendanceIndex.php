@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 
 class AttendanceIndex extends Component
@@ -104,7 +105,7 @@ class AttendanceIndex extends Component
     #[Computed]
     public function logs()
     {
-        $this->authorize('viewAny', \Modules\Attendance\Models\AttendanceLog::class);
+        $this->authorize('viewAny', AttendanceLog::class);
 
         $user = auth()->user();
         $filters = [

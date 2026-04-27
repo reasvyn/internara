@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Status\Tests\Feature\Livewire;
 
-use Modules\Status\Enums\AccountStatus;
-use Modules\Status\Livewire\StatusSelector;
-use Modules\Status\Livewire\QuickActionButtons;
-use Modules\User\Models\User;
-use Livewire\Livewire;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Livewire\QuickActionButtons;
+use Modules\Status\Livewire\StatusSelector;
+use Modules\User\Models\User;
+use Tests\TestCase;
 
 /**
  * StatusSelectorComponentTest

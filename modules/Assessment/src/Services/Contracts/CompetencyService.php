@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Assessment\Services\Contracts;
 
+use Illuminate\Support\Collection;
+use Modules\Assessment\Models\StudentCompetencyLog;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 interface CompetencyService extends EloquentQuery
@@ -16,7 +18,7 @@ interface CompetencyService extends EloquentQuery
     /**
      * Record student competency progress.
      */
-    public function recordProgress(array $data): \Modules\Assessment\Models\StudentCompetencyLog;
+    public function recordProgress(array $data): StudentCompetencyLog;
 
     /**
      * Get competency progress for a registration (Radar Chart Data).
@@ -33,5 +35,5 @@ interface CompetencyService extends EloquentQuery
     /**
      * Get all competencies claimed in journals for a specific registration.
      */
-    public function getClaimedCompetencies(string $registrationId): \Illuminate\Support\Collection;
+    public function getClaimedCompetencies(string $registrationId): Collection;
 }

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Tests\Feature\Gating;
 
-
+use Modules\Assessment\Services\Contracts\CompetencyService;
+use Modules\Exception\AppException;
+use Modules\Internship\Models\InternshipRegistration;
+use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService;
 use Modules\User\Services\Contracts\UserService;
-
-
 
 test(
     'blocked access audit: student cannot create journal without acknowledging handbooks',
@@ -29,7 +30,7 @@ test(
                 'activity_description' => 'Test',
             ]),
         )->toThrow(
-            \Modules\Exception\AppException::class,
+            AppException::class,
             'guidance::messages.must_complete_guidance',
         );
     },
@@ -43,14 +44,14 @@ test('bypass audit: gating is ignored if feature is disabled', function () {
     setting(['feature_guidance_enabled' => false]);
 
     // Create a dummy registration first to satisfy SLRI
-    $reg = \Modules\Internship\Models\InternshipRegistration::factory()->create([
+    $reg = InternshipRegistration::factory()->create([
         'student_id' => $student->id,
     ]);
 
     // Now it should pass the guidance check (but might fail on other journal rules)
     // We mock the competency sync to isolate this test
     $competencyService = $this->mock(
-        \Modules\Assessment\Services\Contracts\CompetencyService::class,
+        CompetencyService::class,
     );
     $competencyService->shouldIgnoreMissing();
 
@@ -61,5 +62,5 @@ test('bypass audit: gating is ignored if feature is disabled', function () {
         'date' => now()->toDateString(),
     ]);
 
-    expect($result)->toBeInstanceOf(\Modules\Journal\Models\JournalEntry::class);
+    expect($result)->toBeInstanceOf(JournalEntry::class);
 });

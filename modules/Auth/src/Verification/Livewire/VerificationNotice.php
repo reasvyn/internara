@@ -57,7 +57,7 @@ class VerificationNotice extends Component
     {
         return view('auth::livewire.verification-notice')
             ->layout('auth::components.layouts.auth', [
-                'title' => __('auth::ui.verification.title') . ' | ' . setting('site_title', 'Internara'),
+                'title' => __('auth::ui.verification.title').' | '.setting('site_title', 'Internara'),
             ]);
     }
 }

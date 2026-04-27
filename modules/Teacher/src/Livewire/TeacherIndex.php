@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Teacher\Livewire;
 
-use Modules\Teacher\Services\Contracts\TeacherService;
 use Livewire\Attributes\Computed;
+use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class TeacherIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'teacher::teacher-manager';
+
     protected string $titleKey = 'teacher::ui.management_title';
 
     /**

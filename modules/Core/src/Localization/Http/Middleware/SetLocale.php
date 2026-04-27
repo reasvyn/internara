@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Modules\UI\Services\Contracts\LocalizationService;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -22,11 +23,11 @@ class SetLocale
     /**
      * Handle an incoming request.
      *
-     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
+     * @param Closure(Request): (Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $service = app(\Modules\UI\Services\Contracts\LocalizationService::class);
+        $service = app(LocalizationService::class);
         $supportedLocales = array_keys($service->getSupportedLocales());
         $locale = Session::get('locale');
 

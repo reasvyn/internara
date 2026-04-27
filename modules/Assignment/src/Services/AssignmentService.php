@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Services;
 
+use Illuminate\Support\Collection;
 use Modules\Assignment\Models\Assignment;
+use Modules\Assignment\Models\AssignmentType;
 use Modules\Assignment\Models\Submission;
 use Modules\Assignment\Services\Contracts\AssignmentService as Contract;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Shared\Services\EloquentQuery;
 
 class AssignmentService extends EloquentQuery implements Contract
@@ -22,9 +25,9 @@ class AssignmentService extends EloquentQuery implements Contract
     /**
      * Get all available assignment types.
      */
-    public function getTypes(): \Illuminate\Support\Collection
+    public function getTypes(): Collection
     {
-        return app(\Modules\Assignment\Models\AssignmentType::class)->all();
+        return app(AssignmentType::class)->all();
     }
 
     /**
@@ -43,7 +46,7 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function createDefaults(string $internshipId, ?string $academicYear = null): void
     {
-        $types = app(\Modules\Assignment\Models\AssignmentType::class)->all()->pluck('id', 'slug');
+        $types = app(AssignmentType::class)->all()->pluck('id', 'slug');
 
         $defaults = [
             [
@@ -73,7 +76,7 @@ class AssignmentService extends EloquentQuery implements Contract
         ];
 
         foreach ($defaults as $data) {
-            if (!$data['assignment_type_id']) {
+            if (! $data['assignment_type_id']) {
                 continue;
             }
 
@@ -89,9 +92,9 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function isFulfillmentComplete(string $registrationId, ?string $group = null): bool
     {
-        $reg = app(\Modules\Internship\Services\Contracts\RegistrationService::class)->find($registrationId);
+        $reg = app(RegistrationService::class)->find($registrationId);
 
-        if (!$reg) {
+        if (! $reg) {
             return false;
         }
 

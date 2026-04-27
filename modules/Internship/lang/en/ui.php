@@ -210,7 +210,7 @@ return [
     'available_quota' => 'Available Quota',
     'insufficient_quota' => 'Insufficient quota. You selected :selected students but only :remaining slots available.',
     'select_internship_company' => 'Please select both internship program and company.',
-    
+
     // Batch actions and filters
     'select_action' => 'Select Action',
     'bulk_delete' => 'Delete Selected',

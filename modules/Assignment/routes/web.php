@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Assignment\Livewire\AssignmentIndex;
 use Modules\Assignment\Livewire\AssignmentSubmission;
+use Modules\Assignment\Livewire\AssignmentTypeIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +23,11 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(function () {
-    Route::get('/admin/assignments', \Modules\Assignment\Livewire\AssignmentIndex::class)->name(
+    Route::get('/admin/assignments', AssignmentIndex::class)->name(
         'admin.assignments.index',
     );
     Route::get(
         '/admin/assignments/types',
-        \Modules\Assignment\Livewire\AssignmentTypeIndex::class,
+        AssignmentTypeIndex::class,
     )->name('admin.assignments.types');
 });

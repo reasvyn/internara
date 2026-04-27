@@ -73,7 +73,7 @@ enum Status: string
      */
     public function label(): string
     {
-        return 'status::status.' . $this->value;
+        return 'status::status.'.$this->value;
     }
 
     /**
@@ -182,4 +182,3 @@ enum Status: string
         return $this === self::PROTECTED;
     }
 }
-

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Permission\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
@@ -43,7 +44,7 @@ class RoleSeeder extends Seeder
     {
         if ($role->name === 'super-admin') {
             // SuperAdmin has Gate::before bypass, but we seed all permissions anyway for UI clarity
-            $role->syncPermissions(\Modules\Permission\Models\Permission::all());
+            $role->syncPermissions(Permission::all());
 
             return;
         }

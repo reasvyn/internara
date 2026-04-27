@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Assessment\Tests\Unit\Scoring;
 
-use Modules\Assessment\Services\ComplianceService;
 use Mockery;
+use Modules\Assessment\Services\ComplianceService;
+use Modules\Attendance\Services\Contracts\AttendanceService;
+use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Journal\Services\Contracts\JournalService;
 
 test('mathematical weighted verification: composite score matches program config', function () {
     // Weighted config: 50% Attendance, 50% Journal (as per actual ComplianceService defaults)
@@ -14,9 +17,9 @@ test('mathematical weighted verification: composite score matches program config
     $journalScore = 80.0; // 80% journal submission
 
     // Mocking the dependencies of ComplianceService
-    $registrationService = Mockery::mock(\Modules\Internship\Services\Contracts\RegistrationService::class);
-    $attendanceService = Mockery::mock(\Modules\Attendance\Services\Contracts\AttendanceService::class);
-    $journalService = Mockery::mock(\Modules\Journal\Services\Contracts\JournalService::class);
+    $registrationService = Mockery::mock(RegistrationService::class);
+    $attendanceService = Mockery::mock(AttendanceService::class);
+    $journalService = Mockery::mock(JournalService::class);
 
     // Calculation: (100 * 0.5) + (80 * 0.5) = 50 + 40 = 90
     $finalScore = 100 * 0.5 + 80 * 0.5;

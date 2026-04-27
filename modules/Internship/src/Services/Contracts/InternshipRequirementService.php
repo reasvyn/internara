@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Services\Contracts;
 
 use Modules\Internship\Models\InternshipRequirement;
+use Modules\Internship\Models\RequirementSubmission;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
@@ -32,7 +33,7 @@ interface InternshipRequirementService extends EloquentQuery
         string $requirementId,
         mixed $value = null,
         mixed $file = null,
-    ): \Modules\Internship\Models\RequirementSubmission;
+    ): RequirementSubmission;
 
     /**
      * Verify a requirement submission.
@@ -40,7 +41,7 @@ interface InternshipRequirementService extends EloquentQuery
     public function verify(
         string $submissionId,
         string $adminId,
-    ): \Modules\Internship\Models\RequirementSubmission;
+    ): RequirementSubmission;
 
     /**
      * Reject a requirement submission.
@@ -49,7 +50,7 @@ interface InternshipRequirementService extends EloquentQuery
         string $submissionId,
         string $adminId,
         string $notes,
-    ): \Modules\Internship\Models\RequirementSubmission;
+    ): RequirementSubmission;
 
     /**
      * Determine if a registration has cleared all mandatory requirements for its academic year.

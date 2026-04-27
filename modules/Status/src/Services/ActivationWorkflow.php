@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
-use Modules\Status\Enums\Status;
-use Spatie\ModelStatus\Models\Status as StatusModel;
-use Modules\User\Models\User;
-use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Modules\Status\Enums\Status;
+use Modules\User\Models\User;
 
 /**
  * ActivationWorkflow
@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 class ActivationWorkflow
 {
     private AccountAuditLogger $auditLogger;
+
     private StatusTransitionService $transitionService;
 
     public function __construct(
@@ -45,9 +46,9 @@ class ActivationWorkflow
      * Creates a claim token that must be validated before the user
      * can transition from PROVISIONED to ACTIVATED status.
      *
-     * @param User $user
      * @param string $type 'email'|'sms' - delivery method
-     * @return array{token: string, expires_at: \Carbon\Carbon}
+     *
+     * @return array{token: string, expires_at: Carbon}
      */
     public function generateActivationToken(User $user, string $type = 'email'): array
     {
@@ -99,11 +100,12 @@ class ActivationWorkflow
     /**
      * Validate activation token and activate account
      *
-     * @param User $user
      * @param string $token Plain text token from user
      * @param string $ipAddress IP address for audit trail
-     * @return bool True if activation successful
+     *
      * @throws \Exception If token invalid, expired, or rate limited
+     *
+     * @return bool True if activation successful
      */
     public function validateAndActivate(User $user, string $token, string $ipAddress = ''): bool
     {
@@ -115,7 +117,7 @@ class ActivationWorkflow
                 ->where('expires_at', '>=', now())
                 ->first();
 
-            if (!$tokenRecord) {
+            if (! $tokenRecord) {
                 // Increment failed attempts even if token not found
                 $this->recordFailedAttempt($user, $ipAddress);
                 throw new \Exception('Invalid or expired activation token.');
@@ -170,10 +172,6 @@ class ActivationWorkflow
 
     /**
      * Record failed activation attempt
-     *
-     * @param User $user
-     * @param string $ipAddress
-     * @return void
      */
     private function recordFailedAttempt(User $user, string $ipAddress = ''): void
     {
@@ -199,8 +197,7 @@ class ActivationWorkflow
     /**
      * Resend activation token (enforces rate limit)
      *
-     * @param User $user
-     * @return array{token: string, expires_at: \Carbon\Carbon}
+     * @return array{token: string, expires_at: Carbon}
      */
     public function resendActivationToken(User $user): array
     {
@@ -215,9 +212,6 @@ class ActivationWorkflow
 
     /**
      * Check if user has pending activation
-     *
-     * @param User $user
-     * @return bool
      */
     public function hasPendingActivation(User $user): bool
     {
@@ -230,9 +224,6 @@ class ActivationWorkflow
 
     /**
      * Get activation token status for user
-     *
-     * @param User $user
-     * @return array|null
      */
     public function getActivationStatus(User $user): ?array
     {
@@ -241,7 +232,7 @@ class ActivationWorkflow
             ->where('expires_at', '>=', now())
             ->first();
 
-        if (!$token) {
+        if (! $token) {
             return null;
         }
 

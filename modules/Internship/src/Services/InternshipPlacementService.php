@@ -31,7 +31,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
     {
         $totalQuota = (int) $this->model->newQuery()->sum('capacity_quota');
         $filledQuota = (int) $this->model->newQuery()->withCount('registrations')->get()->sum('registrations_count');
-        
+
         return [
             'total_locations' => $this->count(),
             'total_quota' => $totalQuota,

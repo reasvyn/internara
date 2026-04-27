@@ -10,7 +10,7 @@ use Modules\Setup\Services\Contracts\SetupService;
 
 /**
  * Provides setup requirement validation for the School module.
- * 
+ *
  * [S3 - Scalable] Implementation of the decoupled requirement provider.
  */
 class SchoolSetupRequirement implements SetupRequirementProvider

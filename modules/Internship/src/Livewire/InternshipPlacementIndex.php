@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Livewire\Attributes\Computed;
+use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class InternshipPlacementIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'internship::internship-placement-manager';
+
     protected string $titleKey = 'internship::ui.placement_title';
 
     /**
@@ -63,7 +64,7 @@ class InternshipPlacementIndex extends RecordIndex
             ],
             [
                 'title' => __('internship::ui.stats.utilization_rate'),
-                'value' => $raw['utilization_rate'] . '%',
+                'value' => $raw['utilization_rate'].'%',
                 'icon' => 'tabler.chart-pie',
                 'variant' => 'primary',
             ],

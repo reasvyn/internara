@@ -16,7 +16,7 @@ uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     App::setLocale('en');
-    
+
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
@@ -50,7 +50,7 @@ describe('SchoolSetup Component', function () {
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'environment' not completed
         app(SettingService::class)->setValue('setup_step_environment', false);
-        
+
         $this->get(route('setup.school', ['token' => 'test-token']));
 
         Livewire::test(SchoolSetup::class)

@@ -239,7 +239,7 @@ enum AccountStatus: string
      */
     public function label(): string
     {
-        return 'account_status.status.' . $this->value;
+        return 'account_status.status.'.$this->value;
     }
 
     /**
@@ -247,7 +247,7 @@ enum AccountStatus: string
      */
     public function description(): string
     {
-        return 'account_status.description.' . $this->value;
+        return 'account_status.description.'.$this->value;
     }
 
     /**

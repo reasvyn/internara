@@ -3,6 +3,14 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Auth\Livewire\AcceptInvitation;
+use Modules\Auth\Livewire\ClaimAccount;
+use Modules\Auth\Livewire\ForgotPassword;
+use Modules\Auth\Livewire\Login;
+use Modules\Auth\Livewire\ResetPassword;
+use Modules\Auth\Registration\Livewire\Register;
+use Modules\Auth\Verification\Livewire\VerificationNotice;
+use Modules\Auth\Verification\Livewire\VerifyEmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('auth')->group(function () {
-    Route::get('login', Modules\Auth\Livewire\Login::class)
+    Route::get('login', Login::class)
         ->middleware(['guest', 'throttle:auth'])
         ->name('login');
 
@@ -24,36 +32,37 @@ Route::prefix('auth')->group(function () {
         auth()->logout();
         request()->session()->invalidate();
         request()->session()->regenerateToken();
+
         return redirect()->route('login');
     })->middleware(['auth'])->name('logout');
 
-    Route::get('forgot-password', Modules\Auth\Livewire\ForgotPassword::class)
+    Route::get('forgot-password', ForgotPassword::class)
         ->middleware(['guest', 'throttle:auth'])
         ->name('forgot-password');
 
-    Route::get('reset-password/{token}', Modules\Auth\Livewire\ResetPassword::class)
+    Route::get('reset-password/{token}', ResetPassword::class)
         ->middleware(['guest', 'throttle:auth'])
         ->name('password.reset');
 
     // Account claim — for provisioned accounts without email (no auth required)
-    Route::get('claim', Modules\Auth\Livewire\ClaimAccount::class)
+    Route::get('claim', ClaimAccount::class)
         ->middleware(['guest', 'throttle:6,1'])
         ->name('claim-account');
 
     // Admin account invitation — email link flow for privileged accounts
-    Route::get('invitation/{token}', Modules\Auth\Livewire\AcceptInvitation::class)
+    Route::get('invitation/{token}', AcceptInvitation::class)
         ->middleware(['guest', 'throttle:10,1'])
         ->name('invitation.accept');
 
-    Route::get('register', Modules\Auth\Registration\Livewire\Register::class)
+    Route::get('register', Register::class)
         ->middleware(['guest', 'throttle:registration'])
         ->name('register');
 
-    Route::get('email/verify/{id}/{hash}', Modules\Auth\Verification\Livewire\VerifyEmail::class)
+    Route::get('email/verify/{id}/{hash}', VerifyEmail::class)
         ->middleware(['auth', 'signed', 'throttle:auth'])
         ->name('verification.verify');
 
-    Route::get('email/verify', Modules\Auth\Verification\Livewire\VerificationNotice::class)
+    Route::get('email/verify', VerificationNotice::class)
         ->middleware(['auth', 'throttle:auth'])
         ->name('verification.notice');
 });

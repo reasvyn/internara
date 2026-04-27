@@ -16,7 +16,6 @@ class TargetDiscovery
      * Identifies all testable targets based on input and environment state.
      *
      * @param array<string> $requestedModules
-     * @param bool $onlyDirty
      * @param array<string> $missing Reference parameter for missing modules.
      */
     public function identify(array $requestedModules, bool $onlyDirty, array &$missing = []): array

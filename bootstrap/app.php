@@ -29,9 +29,19 @@ declare(strict_types=1);
     }
 })();
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Modules\Auth\Http\Middleware\EnsureEmailIsVerified;
+use Modules\Core\Localization\Http\Middleware\SetLocale;
+use Modules\Exception\Handler;
+use Modules\Setup\Http\Middleware\BypassSetupAuthorization;
+use Modules\Setup\Http\Middleware\RequireSetupAccess;
+use Modules\Status\Middleware\CheckSessionExpiration;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -42,30 +52,30 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
             prepend: [
-                \Modules\Setup\Http\Middleware\RequireSetupAccess::class,
-                \Modules\Setup\Http\Middleware\BypassSetupAuthorization::class,
+                RequireSetupAccess::class,
+                BypassSetupAuthorization::class,
             ],
             append: [
-                \Modules\Status\Middleware\CheckSessionExpiration::class,
-                \Modules\Core\Localization\Http\Middleware\SetLocale::class,
+                CheckSessionExpiration::class,
+                SetLocale::class,
             ],
         );
         $middleware->alias([
-            'session.expire'    => \Modules\Status\Middleware\CheckSessionExpiration::class,
-            'role'              => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission'        => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission'=> \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'session.expire' => CheckSessionExpiration::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
             // Override Laravel's default verified middleware to allow users without an email
             // address to pass through (they get a soft dashboard banner instead).
-            'verified'          => \Modules\Auth\Http\Middleware\EnsureEmailIsVerified::class,
+            'verified' => EnsureEmailIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->map(
-            \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+            ModelNotFoundException::class,
             fn (
-                \Illuminate\Database\Eloquent\ModelNotFoundException $e,
-            ) => \Modules\Exception\Handler::map($e),
+                ModelNotFoundException $e,
+            ) => Handler::map($e),
         );
     })
     ->create();

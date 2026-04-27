@@ -5,15 +5,18 @@ declare(strict_types=1);
 use Modules\Assignment\Database\Seeders\AssignmentSeeder;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Permission\Models\Role;
+use Modules\School\Services\Contracts\SchoolService;
+use Modules\User\Models\User;
 
 beforeEach(function () {
     $this->seed(AssignmentSeeder::class);
 
-    \Modules\Permission\Models\Role::firstOrCreate([
+    Role::firstOrCreate([
         'name' => 'super-admin',
         'guard_name' => 'web',
     ]);
-    $admin = \Modules\User\Models\User::factory()->create();
+    $admin = User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
 
@@ -21,7 +24,7 @@ beforeEach(function () {
 });
 
 test('it automatically creates default assignments when an internship is created', function () {
-    $school = app(\Modules\School\Services\Contracts\SchoolService::class)->factory()->create();
+    $school = app(SchoolService::class)->factory()->create();
 
     $data = [
         'school_id' => $school->id,

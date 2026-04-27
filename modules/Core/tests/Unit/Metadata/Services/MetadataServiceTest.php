@@ -6,24 +6,25 @@ namespace Modules\Core\Tests\Unit\Metadata\Services;
 
 use Illuminate\Support\Facades\File;
 use Modules\Core\Metadata\Services\MetadataService;
+use Modules\Shared\Support\AppInfo;
 
 describe('Metadata Service', function () {
     beforeEach(function () {
         $this->path = base_path('app_info.json');
-        $this->original = \Illuminate\Support\Facades\File::exists($this->path)
-            ? \Illuminate\Support\Facades\File::get($this->path)
+        $this->original = File::exists($this->path)
+            ? File::get($this->path)
             : null;
         $this->service = new MetadataService;
-        \Modules\Shared\Support\AppInfo::clearCache();
+        AppInfo::clearCache();
     });
 
     afterEach(function () {
         if ($this->original) {
-            \Illuminate\Support\Facades\File::put($this->path, $this->original);
+            File::put($this->path, $this->original);
         } else {
-            \Illuminate\Support\Facades\File::delete($this->path);
+            File::delete($this->path);
         }
-        \Modules\Shared\Support\AppInfo::clearCache();
+        AppInfo::clearCache();
     });
 
     test('test retrieves product identity accurately', function () {

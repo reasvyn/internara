@@ -24,6 +24,7 @@ class UserIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'user::user-manager';
+
     protected string $titleKey = 'user::ui.viewer.title';
 
     /**

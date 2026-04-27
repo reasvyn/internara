@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Setup\Http\Middleware\ProtectSetupRoute;
+use Modules\Setup\Livewire\AccountSetup;
+use Modules\Setup\Livewire\DepartmentSetup;
+use Modules\Setup\Livewire\InternshipSetup;
+use Modules\Setup\Livewire\SchoolSetup;
+use Modules\Setup\Livewire\SetupComplete;
+use Modules\Setup\Livewire\SystemSetup;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,23 +23,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('setup')
-    ->middleware(Modules\Setup\Http\Middleware\ProtectSetupRoute::class)
+    ->middleware(ProtectSetupRoute::class)
     ->group(function () {
-        Route::get('/', fn () => redirect()->route('setup.welcome'))->name('setup');
-        Route::get('/welcome', Modules\Setup\Livewire\SetupWelcome::class)->name('setup.welcome');
-        Route::get('/environment', Modules\Setup\Livewire\EnvironmentSetup::class)->name(
-            'setup.environment',
-        );
-        Route::get('/school', Modules\Setup\Livewire\SchoolSetup::class)->name('setup.school');
-        Route::get('/account', Modules\Setup\Livewire\AccountSetup::class)->name('setup.account');
-        Route::get('/system', Modules\Setup\Livewire\SystemSetup::class)->name('setup.system');
-        Route::get('/department', Modules\Setup\Livewire\DepartmentSetup::class)->name(
+        Route::get('/', fn () => redirect()->route('setup.school'))->name('setup');
+        Route::get('/school', SchoolSetup::class)->name('setup.school');
+        Route::get('/account', AccountSetup::class)->name('setup.account');
+        Route::get('/system', SystemSetup::class)->name('setup.system');
+        Route::get('/department', DepartmentSetup::class)->name(
             'setup.department',
         );
-        Route::get('/internship', Modules\Setup\Livewire\InternshipSetup::class)->name(
+        Route::get('/internship', InternshipSetup::class)->name(
             'setup.internship',
         );
-        Route::get('/complete', Modules\Setup\Livewire\SetupComplete::class)->name(
+        Route::get('/complete', SetupComplete::class)->name(
             'setup.complete',
         );
     });

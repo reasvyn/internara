@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Permission\Tests\Unit\Services;
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 use Modules\Permission\Services\RoleService;
 
@@ -27,7 +27,7 @@ test('it can list roles with filtering', function () {
 
 test('it can sync permissions', function () {
     $role = Role::create(['name' => 'test-role']);
-    $permission = \Modules\Permission\Models\Permission::create(['name' => 'test-permission']);
+    $permission = Permission::create(['name' => 'test-permission']);
 
     $service = new RoleService(new Role);
     $service->syncPermissions($role->id, ['test-permission']);

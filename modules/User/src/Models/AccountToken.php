@@ -50,8 +50,8 @@ class AccountToken extends Model
     protected function casts(): array
     {
         return [
-            'expires_at'  => 'datetime',
-            'claimed_at'  => 'datetime',
+            'expires_at' => 'datetime',
+            'claimed_at' => 'datetime',
         ];
     }
 
@@ -78,7 +78,7 @@ class AccountToken extends Model
             ->whereNull('claimed_at')
             ->where(function ($q) {
                 $q->whereNull('expires_at')
-                  ->orWhere('expires_at', '>', now());
+                    ->orWhere('expires_at', '>', now());
             });
     }
 

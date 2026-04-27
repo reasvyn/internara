@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Setting\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Log\Concerns\HandlesAuditLog;
+use Modules\Setting\Casts\SettingValueCast;
 use Modules\Setting\Database\Factories\SettingFactory;
 
 class Setting extends Model
@@ -47,7 +49,7 @@ class Setting extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'value' => \Modules\Setting\Casts\SettingValueCast::class,
+        'value' => SettingValueCast::class,
     ];
 
     /**
@@ -61,7 +63,7 @@ class Setting extends Model
     /**
      * Scope a query to only include settings belonging to a given group.
      */
-    public function scopeGroup(\Illuminate\Database\Eloquent\Builder $query, string $name): void
+    public function scopeGroup(Builder $query, string $name): void
     {
         $query->where('group', $name);
     }

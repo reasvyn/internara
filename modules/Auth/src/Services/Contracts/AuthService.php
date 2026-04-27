@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Auth\Services\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Modules\Exception\AppException;
 
 interface AuthService
 {
@@ -18,7 +19,7 @@ interface AuthService
      * @param array $credentials Contains 'email' (identifier) and 'password'.
      * @param bool $remember Whether to persist the session via long-lived cookies.
      *
-     * @throws \Modules\Exception\AppException If authentication fails or account is locked.
+     * @throws AppException If authentication fails or account is locked.
      *
      * @return Authenticatable|User The verified stakeholder entity.
      */
@@ -43,7 +44,7 @@ interface AuthService
      * @param string|array|null $roles Standard roles defined in the SSoT.
      * @param bool $sendEmailVerification Flag to initiate the email trust loop.
      *
-     * @throws \Modules\Exception\AppException If identity constraints are violated.
+     * @throws AppException If identity constraints are violated.
      *
      * @return Authenticatable The newly provisioned identity.
      */
@@ -67,11 +68,11 @@ interface AuthService
      * Enforces security by requiring the current secret before allowing a
      * transition to a new one, mitigating unauthorized account takeover.
      *
-     * @param \Illuminate\Contracts\Auth\Authenticatable $user The identity being updated.
+     * @param Authenticatable $user The identity being updated.
      * @param string $currentPassword Verification of existing ownership.
      * @param string $newPassword The new credential to be hashed.
      *
-     * @throws \Modules\Exception\AppException If verification or complexity rules fail.
+     * @throws AppException If verification or complexity rules fail.
      */
     public function changePassword(
         Authenticatable $user,
@@ -103,7 +104,7 @@ interface AuthService
     /**
      * Resends the verification challenge to the user's registered email.
      *
-     * @throws \Modules\Exception\AppException If the trust loop is already complete.
+     * @throws AppException If the trust loop is already complete.
      */
     public function resendVerificationEmail(Authenticatable $user): void;
 

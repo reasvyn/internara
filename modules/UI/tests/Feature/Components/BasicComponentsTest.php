@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ViewErrorBag;
 
 beforeEach(function () {
-    view()->share('errors', new \Illuminate\Support\ViewErrorBag);
+    view()->share('errors', new ViewErrorBag);
 });
 
 test('it renders badge with correct priority class', function () {

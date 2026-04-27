@@ -7,6 +7,9 @@ namespace Modules\Department\Providers;
 use Illuminate\Support\ServiceProvider;
 use Modules\Department\Models\Department;
 use Modules\Department\Policies\DepartmentPolicy;
+use Modules\Department\Services\DepartmentService;
+use Modules\Department\Setup\DepartmentSetupRequirement;
+use Modules\Setup\Services\SetupRequirementRegistry;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -36,9 +39,9 @@ class DepartmentServiceProvider extends ServiceProvider
         $this->bootModule();
 
         // [S3 - Scalable] Register Setup Hook
-        if ($this->app->bound(\Modules\Setup\Services\SetupRequirementRegistry::class)) {
-            $this->app->make(\Modules\Setup\Services\SetupRequirementRegistry::class)
-                ->register($this->app->make(\Modules\Department\Setup\DepartmentSetupRequirement::class));
+        if ($this->app->bound(SetupRequirementRegistry::class)) {
+            $this->app->make(SetupRequirementRegistry::class)
+                ->register($this->app->make(DepartmentSetupRequirement::class));
         }
     }
 
@@ -60,7 +63,7 @@ class DepartmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Department\Services\Contracts\DepartmentService::class => \Modules\Department\Services\DepartmentService::class,
+            \Modules\Department\Services\Contracts\DepartmentService::class => DepartmentService::class,
         ];
     }
 

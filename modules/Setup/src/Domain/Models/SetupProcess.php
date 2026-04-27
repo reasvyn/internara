@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Modules\Setup\Domain\Models;
 
 use InvalidArgumentException;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 /**
  * Aggregate Root representing the application setup process.
- * 
+ *
  * [S2 - Sustain] Manages the lifecycle and state invariants of the setup wizard.
  */
 class SetupProcess
@@ -34,10 +34,10 @@ class SetupProcess
      * Step-to-Record mapping for automated existence checks.
      */
     public const STEP_RECORDS = [
-        SetupService::STEP_SCHOOL => SetupService::RECORD_SCHOOL,
-        SetupService::STEP_ACCOUNT => SetupService::RECORD_SUPER_ADMIN,
-        SetupService::STEP_DEPARTMENT => SetupService::RECORD_DEPARTMENT,
-        SetupService::STEP_INTERNSHIP => SetupService::RECORD_INTERNSHIP,
+        AppSetupService::STEP_SCHOOL => AppSetupService::RECORD_SCHOOL,
+        AppSetupService::STEP_ACCOUNT => AppSetupService::RECORD_SUPER_ADMIN,
+        AppSetupService::STEP_DEPARTMENT => AppSetupService::RECORD_DEPARTMENT,
+        AppSetupService::STEP_INTERNSHIP => AppSetupService::RECORD_INTERNSHIP,
     ];
 
     /**
@@ -65,7 +65,7 @@ class SetupProcess
     {
         $requiredRecord = self::STEP_RECORDS[$step] ?? null;
 
-        if ($requiredRecord && !$recordExists) {
+        if ($requiredRecord && ! $recordExists) {
             throw new \DomainException("Cannot finalize step '{$step}': required record '{$requiredRecord}' is missing.");
         }
     }
@@ -79,7 +79,7 @@ class SetupProcess
             throw new \LogicException('Cannot modify setup steps after application is installed.');
         }
 
-        if (!$this->canProceedTo($step)) {
+        if (! $this->canProceedTo($step)) {
             throw new \DomainException("Cannot complete step '{$step}': previous steps not finished.");
         }
 
@@ -108,14 +108,12 @@ class SetupProcess
     protected function getPreviousStepFor(string $step): ?string
     {
         return match ($step) {
-            SetupService::STEP_WELCOME => null,
-            SetupService::STEP_ENVIRONMENT => SetupService::STEP_WELCOME,
-            SetupService::STEP_SCHOOL => SetupService::STEP_ENVIRONMENT,
-            SetupService::STEP_ACCOUNT => SetupService::STEP_SCHOOL,
-            SetupService::STEP_DEPARTMENT => SetupService::STEP_ACCOUNT,
-            SetupService::STEP_INTERNSHIP => SetupService::STEP_DEPARTMENT,
-            SetupService::STEP_SYSTEM => SetupService::STEP_INTERNSHIP,
-            SetupService::STEP_COMPLETE => SetupService::STEP_SYSTEM,
+            AppSetupService::STEP_SCHOOL => null,
+            AppSetupService::STEP_ACCOUNT => AppSetupService::STEP_SCHOOL,
+            AppSetupService::STEP_DEPARTMENT => AppSetupService::STEP_ACCOUNT,
+            AppSetupService::STEP_INTERNSHIP => AppSetupService::STEP_DEPARTMENT,
+            AppSetupService::STEP_SYSTEM => AppSetupService::STEP_INTERNSHIP,
+            AppSetupService::STEP_COMPLETE => AppSetupService::STEP_SYSTEM,
             default => throw new InvalidArgumentException("Unknown setup step: {$step}"),
         };
     }

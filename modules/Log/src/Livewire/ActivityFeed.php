@@ -7,6 +7,7 @@ namespace Modules\Log\Livewire;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Log\Services\Contracts\ActivityService;
 
 class ActivityFeed extends Component
 {
@@ -33,7 +34,7 @@ class ActivityFeed extends Component
             'causer_id' => $this->causerId,
         ]);
 
-        $activities = app(\Modules\Log\Services\Contracts\ActivityService::class)
+        $activities = app(ActivityService::class)
             ->query($filters)
             ->with(['causer', 'subject'])
             ->latest()

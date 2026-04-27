@@ -7,10 +7,11 @@ namespace Modules\Status\Listeners;
 use Illuminate\Auth\Events\Login;
 use Modules\Status\Services\AccountAuditLogger;
 use Modules\Status\Services\SessionExpirationService;
+use Modules\User\Models\User;
 
 /**
  * Handles the Illuminate\Auth\Events\Login event.
- * 
+ *
  * [S3 - Scalable] Decoupled from Auth module to handle Status/Audit specific logic.
  */
 class LogSuccessfulLogin
@@ -24,7 +25,7 @@ class LogSuccessfulLogin
     {
         $user = $event->user;
 
-        if ($user instanceof \Modules\User\Models\User) {
+        if ($user instanceof User) {
             $ipAddress = request()->ip();
 
             $this->auditLogger->logSuccessfulLogin(

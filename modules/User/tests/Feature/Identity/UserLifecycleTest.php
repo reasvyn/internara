@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\User\Tests\Feature\Identity;
 
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Notification;
+use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
 use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
@@ -12,11 +15,11 @@ use Modules\User\Services\Contracts\UserService;
 
 describe('User Lifecycle Feature Test (BP-ID-01 & BP-ID-02)', function () {
     beforeEach(function () {
-        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+        Gate::before(function ($user, $ability) {
             return $user->hasRole(Role::SUPER_ADMIN->value) ? true : null;
         });
 
-        $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+        $this->seed(PermissionDatabaseSeeder::class);
         setting(['app_installed' => true]);
         $this->userService = app(UserService::class);
         Notification::fake();
@@ -75,7 +78,7 @@ describe('User Lifecycle Feature Test (BP-ID-01 & BP-ID-02)', function () {
             ];
 
             expect(fn () => $this->userService->create($userData))->not->toThrow(
-                \Illuminate\Auth\Access\AuthorizationException::class,
+                AuthorizationException::class,
             );
         });
 
@@ -91,7 +94,7 @@ describe('User Lifecycle Feature Test (BP-ID-01 & BP-ID-02)', function () {
             ];
 
             // Gate should throw AuthorizationException
-            $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+            $this->expectException(AuthorizationException::class);
             $this->userService->create($userData);
         });
     });

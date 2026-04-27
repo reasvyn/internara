@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Reports;
 
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Models\InternshipPlacement;
+use Modules\Journal\Services\Contracts\JournalService;
 use Modules\Shared\Contracts\ExportableDataProvider;
 
 /**
@@ -47,8 +49,8 @@ class PartnerEngagementReportProvider implements ExportableDataProvider
         $allRegistrationIds = $placements->flatMap->registrations->pluck('id')->toArray();
 
         // 2. Fetch required stats in single bulk calls
-        $journalService = app(\Modules\Journal\Services\Contracts\JournalService::class);
-        $assessmentService = app(\Modules\Assessment\Services\Contracts\AssessmentService::class);
+        $journalService = app(JournalService::class);
+        $assessmentService = app(AssessmentService::class);
 
         $allJournalStats = $journalService->getEngagementStats($allRegistrationIds);
         $allAvgScores = $assessmentService->getAverageScore($allRegistrationIds, 'mentor');

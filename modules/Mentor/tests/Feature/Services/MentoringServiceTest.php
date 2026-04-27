@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Modules\Internship\Models\InternshipRegistration;
+use Modules\Mentor\Models\MentoringLog;
+use Modules\Mentor\Models\MentoringVisit;
 use Modules\Mentor\Services\Contracts\MentoringService;
 use Modules\User\Models\User;
 
@@ -20,7 +22,7 @@ test('it can record a mentoring visit', function () {
     ]);
 
     expect($visit)
-        ->toBeInstanceOf(\Modules\Mentor\Models\MentoringVisit::class)
+        ->toBeInstanceOf(MentoringVisit::class)
         ->and($visit->registration_id)
         ->toBe($registration->id);
 
@@ -44,7 +46,7 @@ test('it can record a mentoring log', function () {
         'content' => 'Good progress so far.',
     ]);
 
-    expect($log)->toBeInstanceOf(\Modules\Mentor\Models\MentoringLog::class);
+    expect($log)->toBeInstanceOf(MentoringLog::class);
 
     $this->assertDatabaseHas('mentoring_logs', [
         'id' => $log->id,

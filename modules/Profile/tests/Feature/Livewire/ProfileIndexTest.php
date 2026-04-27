@@ -2,21 +2,22 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Modules\Permission\Models\Role;
 use Modules\Profile\Livewire\Index;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    \Modules\Permission\Models\Role::firstOrCreate([
-        'id' => (string) \Illuminate\Support\Str::uuid(),
+    Role::firstOrCreate([
+        'id' => (string) Str::uuid(),
         'name' => 'super-admin',
-        'guard_name' => 'web'
+        'guard_name' => 'web',
     ]);
-    \Modules\Permission\Models\Role::firstOrCreate([
-        'id' => (string) \Illuminate\Support\Str::uuid(),
+    Role::firstOrCreate([
+        'id' => (string) Str::uuid(),
         'name' => 'student',
-        'guard_name' => 'web'
+        'guard_name' => 'web',
     ]);
 });
 

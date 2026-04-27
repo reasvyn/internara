@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Modules\Setting\Services\Contracts;
 
 use Illuminate\Support\Collection;
+use Modules\Setting\Models\Setting;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
  * Interface SettingService
  *
- * @extends EloquentQuery<\Modules\Setting\Models\Setting>
+ * @extends EloquentQuery<Setting>
  */
 interface SettingService extends EloquentQuery
 {
@@ -50,7 +51,7 @@ interface SettingService extends EloquentQuery
      * @param string $name The name of the group to retrieve settings from.
      * @param bool $skipCache Whether to bypass the cache.
      *
-     * @return Collection<\Modules\Setting\Models\Setting> A collection of Setting models.
+     * @return Collection<Setting> A collection of Setting models.
      */
     public function group(string $name, bool $skipCache = false): Collection;
 

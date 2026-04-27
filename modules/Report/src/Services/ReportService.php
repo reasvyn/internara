@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Report\Services;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Modules\Report\Jobs\GenerateReportJob;
+use Modules\Report\Models\GeneratedReport;
 use Modules\Report\Services\Contracts\ReportGenerator;
 use Modules\Shared\Contracts\ExportableDataProvider;
 use Modules\Shared\Services\BaseService;
@@ -62,18 +65,18 @@ class ReportService extends BaseService implements ReportGenerator
         $fileName = "reports/{$providerIdentifier}_".now()->format('YmdHis').'.pdf';
         $template = $provider->getTemplate();
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($template, [
+        $pdf = Pdf::loadView($template, [
             'title' => $provider->getLabel(),
             'data' => $data,
             'filters' => $filters,
         ]);
 
-        \Illuminate\Support\Facades\Storage::disk('private')->put($fileName, $pdf->output());
+        Storage::disk('private')->put($fileName, $pdf->output());
 
         $userId = $userId ?: auth()->id();
 
         // Persist metadata using local model
-        \Modules\Report\Models\GeneratedReport::create([
+        GeneratedReport::create([
             'user_id' => $userId,
             'provider_identifier' => $providerIdentifier,
             'file_path' => $fileName,

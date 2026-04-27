@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Services\Contracts;
 
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
@@ -61,7 +62,7 @@ interface JournalService extends EloquentQuery
      * Facilitates the persistence of photos or documents that serve as
      * technical proof of activity execution.
      *
-     * @param array<\Livewire\Features\SupportFileUploads\TemporaryUploadedFile> $files
+     * @param array<TemporaryUploadedFile> $files
      */
     public function attachMedia(mixed $id, array $files): void;
 

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Status\Tests\Unit\Services;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Modules\Status\Services\SessionExpirationService;
 use Modules\User\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * SessionExpirationServiceTest

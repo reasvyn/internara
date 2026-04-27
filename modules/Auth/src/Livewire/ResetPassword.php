@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
+use Modules\Shared\Rules\Password;
 
 class ResetPassword extends Component
 {
@@ -43,7 +44,7 @@ class ResetPassword extends Component
                 'required',
                 'string',
                 'confirmed',
-                \Modules\Shared\Rules\Password::auto(),
+                Password::auto(),
             ],
         ];
     }
@@ -60,7 +61,7 @@ class ResetPassword extends Component
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('password', __('auth::ui.reset_password.form.rate_limited', ['seconds' => $seconds]));
-            
+
             return;
         }
 
@@ -85,7 +86,7 @@ class ResetPassword extends Component
             $this->redirect(route('login'), navigate: true);
         } else {
             RateLimiter::hit($throttleKey, 300); // 5 minute lock
-            
+
             // [S2 - Sustain] Audit Log
             activity('security')
                 ->event('password_reset_failed')

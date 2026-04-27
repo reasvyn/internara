@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ use Modules\Internship\Database\Factories\InternshipPlacementFactory;
 use Modules\Log\Concerns\HandlesAuditLog;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\User\Services\Contracts\UserService;
 
 class InternshipPlacement extends Model
 {
@@ -75,7 +77,7 @@ class InternshipPlacement extends Model
      */
     public function mentor(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'mentor_id',
         );
@@ -92,9 +94,9 @@ class InternshipPlacement extends Model
     /**
      * The remaining available slots.
      */
-    protected function remainingSlots(): \Illuminate\Database\Eloquent\Casts\Attribute
+    protected function remainingSlots(): Attribute
     {
-        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+        return Attribute::make(
             get: function () {
                 $occupied = 0;
                 // We use eager-loaded registrations or lazy load them.
@@ -114,9 +116,9 @@ class InternshipPlacement extends Model
     /**
      * The utilization percentage.
      */
-    protected function utilizationPercentage(): \Illuminate\Database\Eloquent\Casts\Attribute
+    protected function utilizationPercentage(): Attribute
     {
-        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+        return Attribute::make(
             get: function () {
                 if ($this->capacity_quota === 0) {
                     return 0;

@@ -8,6 +8,7 @@ use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Models\InternshipRequirement;
 use Modules\Internship\Models\RequirementSubmission;
 use Modules\Internship\Services\Contracts\PlacementService;
+use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
 beforeEach(function () {
@@ -15,7 +16,7 @@ beforeEach(function () {
     $this->academicYear = '2025/2026';
 
     // Create required roles for isolation
-    \Modules\Permission\Models\Role::create(['name' => 'student', 'guard_name' => 'web']);
+    Role::create(['name' => 'student', 'guard_name' => 'web']);
 
     // Setup base data
     $this->student = User::factory()->create()->assignRole('student');

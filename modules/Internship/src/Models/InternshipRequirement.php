@@ -7,6 +7,7 @@ namespace Modules\Internship\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Internship\Enums\RequirementType;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class InternshipRequirement extends Model
@@ -50,7 +51,7 @@ class InternshipRequirement extends Model
     protected function casts(): array
     {
         return [
-            'type' => \Modules\Internship\Enums\RequirementType::class,
+            'type' => RequirementType::class,
             'is_mandatory' => 'boolean',
             'is_active' => 'boolean',
         ];

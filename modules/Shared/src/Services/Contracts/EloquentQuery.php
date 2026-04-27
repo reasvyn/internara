@@ -7,8 +7,13 @@ namespace Modules\Shared\Services\Contracts;
 use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Modules\Exception\RecordNotFoundException;
 
 /**
  * Defines the standard contract for domain-specific query and persistence logic.
@@ -94,7 +99,7 @@ interface EloquentQuery
      * @param list<string> $columns
      * @param list<string> $with Relationships to eager load.
      *
-     * @throws \Modules\Exception\RecordNotFoundException
+     * @throws RecordNotFoundException
      *
      * @return TModel
      */
@@ -120,7 +125,7 @@ interface EloquentQuery
     /**
      * Find a record by its identity or throw a localized exception.
      *
-     * @throws \Modules\Exception\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function findOrFail(mixed $id, array $columns = ['*'], array $with = []): Model;
 
@@ -151,7 +156,7 @@ interface EloquentQuery
      *
      * @param array<string, mixed> $data The updated attribute set.
      *
-     * @throws \Modules\Exception\RecordNotFoundException
+     * @throws RecordNotFoundException
      *
      * @return TModel The updated entity state.
      */
@@ -303,7 +308,7 @@ interface EloquentQuery
      *
      * @throws \RuntimeException If the entity does not support automated generation.
      */
-    public function factory(): \Illuminate\Database\Eloquent\Factories\Factory;
+    public function factory(): Factory;
 
     /**
      * Defines a semantic 'Belongs To' relationship bridge.
@@ -313,7 +318,7 @@ interface EloquentQuery
         ?string $foreignKey = null,
         ?string $ownerKey = null,
         ?string $relation = null,
-    ): \Illuminate\Database\Eloquent\Relations\BelongsTo;
+    ): BelongsTo;
 
     /**
      * Defines a semantic 'Has Many' relationship bridge.
@@ -322,7 +327,7 @@ interface EloquentQuery
         Model $related,
         ?string $foreignKey = null,
         ?string $localKey = null,
-    ): \Illuminate\Database\Eloquent\Relations\HasMany;
+    ): HasMany;
 
     /**
      * Defines a semantic 'Has One' relationship bridge.
@@ -331,7 +336,7 @@ interface EloquentQuery
         Model $related,
         ?string $foreignKey = null,
         ?string $localKey = null,
-    ): \Illuminate\Database\Eloquent\Relations\HasOne;
+    ): HasOne;
 
     /**
      * Executes a high-performance bulk data ingestion.

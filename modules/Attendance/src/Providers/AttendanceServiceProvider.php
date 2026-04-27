@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Modules\Attendance\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Attendance\Models\AbsenceRequest;
+use Modules\Attendance\Models\AttendanceLog;
+use Modules\Attendance\Policies\AttendancePolicy;
+use Modules\Attendance\Services\AttendanceService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -23,8 +27,8 @@ class AttendanceServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Attendance\Models\AttendanceLog::class => \Modules\Attendance\Policies\AttendancePolicy::class,
-        \Modules\Attendance\Models\AbsenceRequest::class => \Modules\Attendance\Policies\AttendancePolicy::class,
+        AttendanceLog::class => AttendancePolicy::class,
+        AbsenceRequest::class => AttendancePolicy::class,
     ];
 
     /**
@@ -69,7 +73,7 @@ class AttendanceServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Attendance\Services\Contracts\AttendanceService::class => \Modules\Attendance\Services\AttendanceService::class,
+            \Modules\Attendance\Services\Contracts\AttendanceService::class => AttendanceService::class,
         ];
     }
 }

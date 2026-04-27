@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Support\Tests\Unit\Testing\Console\Commands;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Mockery;
@@ -22,14 +21,14 @@ describe('AppTestCommand', function () {
 
         Config::set('app.env', 'testing');
         Config::set('app.version', '0.14.0');
-        
+
         // Clean up session data
         TestSessionManager::clearAll();
     });
 
     it('displays the modular verification banner', function () {
         $this->discovery->shouldReceive('identify')->andReturn([]);
-        
+
         $this->artisan('app:test')
             ->expectsOutputToContain('INTERNARA')
             ->expectsOutputToContain('MODULAR VERIFICATION ENGINE')
@@ -44,8 +43,8 @@ describe('AppTestCommand', function () {
             [
                 'label' => 'Core',
                 'path' => base_path('modules/Core/tests'),
-                'segments' => ['Unit']
-            ]
+                'segments' => ['Unit'],
+            ],
         ]);
 
         // Mock directory check
@@ -55,14 +54,14 @@ describe('AppTestCommand', function () {
             ->once()
             ->andReturn(true);
 
-        $this->artisan('app:test --log-junit=' . $junitPath . ' --log-json=' . $jsonPath)
+        $this->artisan('app:test --log-junit='.$junitPath.' --log-json='.$jsonPath)
             ->expectsOutputToContain('JUnit XML report exported to')
             ->expectsOutputToContain('JSON report exported to')
             ->assertExitCode(0);
 
         expect(File::exists($junitPath))->toBeTrue();
         expect(File::exists($jsonPath))->toBeTrue();
-        
+
         File::delete([$junitPath, $jsonPath]);
     });
 
@@ -71,8 +70,8 @@ describe('AppTestCommand', function () {
             [
                 'label' => 'Core',
                 'path' => base_path('modules/Core/tests'),
-                'segments' => ['Unit', 'Feature']
-            ]
+                'segments' => ['Unit', 'Feature'],
+            ],
         ]);
 
         File::shouldReceive('isDirectory')->andReturn(true);
@@ -99,8 +98,8 @@ describe('AppTestCommand', function () {
             [
                 'label' => 'Core',
                 'path' => base_path('modules/Core/tests'),
-                'segments' => ['Unit', 'Feature']
-            ]
+                'segments' => ['Unit', 'Feature'],
+            ],
         ]);
 
         File::shouldReceive('isDirectory')->andReturn(true);
@@ -108,7 +107,7 @@ describe('AppTestCommand', function () {
         // Should only execute 'Feature' since 'Unit' is already passed in session
         $this->executor->shouldReceive('execute')
             ->once()
-            ->with(Mockery::on(fn($path) => str_contains($path, 'Feature')), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any())
+            ->with(Mockery::on(fn ($path) => str_contains($path, 'Feature')), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any())
             ->andReturn(true);
 
         $this->artisan('app:test --session=test-session --continue')

@@ -20,7 +20,7 @@ beforeEach(function () {
     App::setLocale('en');
     $this->seed(PermissionSeeder::class);
     $this->seed(RoleSeeder::class);
-    
+
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
@@ -60,7 +60,7 @@ describe('AccountSetup Component', function () {
     test('it enforces setup sequence access control by redirecting', function () {
         // Prev step 'school' is NOT completed, should redirect to it
         app(SettingService::class)->setValue('setup_step_school', false);
-        
+
         $this->get(route('setup.account', ['token' => 'test-token']));
 
         Livewire::test(AccountSetup::class)

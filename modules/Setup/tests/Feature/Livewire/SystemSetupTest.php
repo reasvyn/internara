@@ -15,7 +15,7 @@ uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     App::setLocale('en');
-    
+
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
@@ -46,7 +46,7 @@ describe('SystemSetup Component', function () {
             ->set('mail_from_address', 'test@example.com')
             ->call('save')
             ->assertRedirect(route('setup.complete'));
-            
+
         expect(setting('mail_from_name'))->toBe('Internara New');
     });
 
@@ -63,7 +63,7 @@ describe('SystemSetup Component', function () {
     test('it enforces setup sequence access control by redirecting', function () {
         // Step 'internship' not completed
         app(SettingService::class)->setValue('setup_step_internship', false);
-        
+
         $this->get(route('setup.system', ['token' => 'test-token']));
 
         Livewire::test(SystemSetup::class)

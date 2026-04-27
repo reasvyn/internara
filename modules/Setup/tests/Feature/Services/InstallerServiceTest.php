@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setup\Tests\Feature\Services;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Modules\Setting\Services\Contracts\SettingService;
@@ -68,7 +69,7 @@ describe('InstallerService Feature Test', function () {
             Schema::shouldReceive('hasTable')->once()->with('migrations')->andReturn(true);
 
             // Mock DB exists check
-            \Illuminate\Support\Facades\DB::shouldReceive('table')
+            DB::shouldReceive('table')
                 ->once()
                 ->with('migrations')
                 ->andReturn(
@@ -93,7 +94,7 @@ describe('InstallerService Feature Test', function () {
         test('it performs fresh migration when explicitly forced', function () {
             Schema::shouldReceive('hasTable')->once()->with('migrations')->andReturn(true);
 
-            \Illuminate\Support\Facades\DB::shouldReceive('table')
+            DB::shouldReceive('table')
                 ->once()
                 ->with('migrations')
                 ->andReturn(
@@ -126,7 +127,7 @@ describe('InstallerService Feature Test', function () {
         });
 
         test('it runs system seeders and generates a secure setup token', function () {
-            \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            DB::shouldReceive('transaction')
                 ->once()
                 ->andReturnUsing(fn ($callback) => $callback());
 
@@ -177,7 +178,7 @@ describe('InstallerService Feature Test', function () {
                     ->andReturn(0);
 
                 // Mock seeders
-                \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+                DB::shouldReceive('transaction')
                     ->twice()
                     ->andReturnUsing(fn ($callback) => $callback());
                 Artisan::shouldReceive('call')

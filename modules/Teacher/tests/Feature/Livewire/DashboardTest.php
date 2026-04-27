@@ -3,11 +3,12 @@
 declare(strict_types=1);
 
 use Livewire\Livewire;
+use Modules\Permission\Models\Role;
 use Modules\Teacher\Livewire\Dashboard;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    \Modules\Permission\Models\Role::create(['name' => 'teacher', 'guard_name' => 'web']);
+    Role::create(['name' => 'teacher', 'guard_name' => 'web']);
 });
 
 test('teacher dashboard renders correctly', function () {

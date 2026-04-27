@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Department\Livewire;
 
-use Modules\Department\Services\Contracts\DepartmentService;
 use Livewire\Attributes\Computed;
+use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class DepartmentIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'department::department-manager';
+
     protected string $titleKey = 'department::ui.title';
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Services\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Exception\AppException;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
 /**
@@ -28,7 +29,7 @@ interface RegistrationService extends EloquentQuery
      *
      * @param array<string, mixed> $data Validated registration attributes.
      *
-     * @throws \Modules\Exception\AppException If slot exhaustion or duplicate registration occurs.
+     * @throws AppException If slot exhaustion or duplicate registration occurs.
      *
      * @return Model The registered entity.
      */

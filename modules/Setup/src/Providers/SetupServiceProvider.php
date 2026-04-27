@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Providers;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Setup\Console\Commands\SetupResetCommand;
+use Modules\Setup\Onboarding\Services\OnboardingService;
+use Modules\Setup\Services\AppSetupService;
+use Modules\Setup\Services\SetupRequirementRegistry;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -33,11 +38,10 @@ class SetupServiceProvider extends ServiceProvider
     protected function registerSetupGates(): void
     {
         // Define common authorization for all setup actions
-        $setupAuth = function (?\Illuminate\Contracts\Auth\Authenticatable $user) {
-            return session()->get('setup_authorized') === true;
+        $setupAuth = function (?Authenticatable $user) {
+            return session()->get(\Modules\Setup\Services\Contracts\AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
         };
 
-        Gate::define('install', $setupAuth);
         Gate::define('performStep', $setupAuth);
         Gate::define('saveSettings', $setupAuth);
         Gate::define('finalize', $setupAuth);
@@ -53,11 +57,11 @@ class SetupServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
-        $this->app->singleton(\Modules\Setup\Services\SetupRequirementRegistry::class);
+        $this->app->singleton(SetupRequirementRegistry::class);
 
         $this->app->singleton(
-            \Modules\Setup\Services\Contracts\SetupService::class,
-            \Modules\Setup\Services\SetupService::class,
+            \Modules\Setup\Services\Contracts\AppSetupService::class,
+            AppSetupService::class,
         );
     }
 
@@ -69,9 +73,7 @@ class SetupServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Setup\Services\Contracts\InstallerService::class => \Modules\Setup\Services\InstallerService::class,
-            \Modules\Setup\Services\Contracts\SystemAuditor::class => \Modules\Setup\Services\SystemAuditor::class,
-            \Modules\Setup\Onboarding\Services\Contracts\OnboardingService::class => \Modules\Setup\Onboarding\Services\OnboardingService::class,
+            \Modules\Setup\Onboarding\Services\Contracts\OnboardingService::class => OnboardingService::class,
         ];
     }
 
@@ -81,8 +83,7 @@ class SetupServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
-            \Modules\Setup\Console\Commands\AppInstallCommand::class,
-            \Modules\Setup\Console\Commands\SetupResetCommand::class,
+            SetupResetCommand::class,
         ]);
     }
 

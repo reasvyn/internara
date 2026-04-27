@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services;
 
+use Illuminate\Support\Facades\Gate;
 use Modules\Internship\Models\Company;
 use Modules\Internship\Services\Contracts\CompanyService as Contract;
 use Modules\Shared\Services\EloquentQuery;
@@ -42,7 +43,7 @@ class CompanyService extends EloquentQuery implements Contract
      */
     public function create(array $data): Company
     {
-        \Illuminate\Support\Facades\Gate::authorize('create', Company::class);
+        Gate::authorize('create', Company::class);
 
         return parent::create($data);
     }

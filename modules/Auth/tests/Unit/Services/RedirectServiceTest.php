@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Tests\Unit\Services;
 
-
 use Illuminate\Support\Facades\Route;
 use Modules\Auth\Services\RedirectService;
 use Modules\Permission\Enums\Role;
 use Modules\Setting\Facades\Setting;
 use Modules\User\Models\User;
-
-
 
 describe('Redirect Service', function () {
     beforeEach(function () {

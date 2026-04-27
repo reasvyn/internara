@@ -69,7 +69,7 @@ class MetadataService implements Contract
     public function verifyIntegrity(): void
     {
         // Ensure we are checking the fresh state of metadata
-        \Modules\Shared\Support\AppInfo::clearCache();
+        AppInfo::clearCache();
 
         $author = (string) $this->get('author.name');
 

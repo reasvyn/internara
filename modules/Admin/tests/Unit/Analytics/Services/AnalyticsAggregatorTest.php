@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Tests\Unit\Analytics\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Modules\Admin\Analytics\Services\AnalyticsAggregator;
 use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
@@ -22,11 +24,11 @@ test('it calculates institutional summary', function () {
         ->andReturn('2025/2026');
 
     // Bypass actual caching to avoid missing table issues in test environment
-    \Illuminate\Support\Facades\Cache::shouldReceive('remember')
+    Cache::shouldReceive('remember')
         ->once()
         ->andReturnUsing(fn ($key, $ttl, $callback) => $callback());
 
-    $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+    $builder = mock(Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
     $builder->shouldReceive('with')->andReturnSelf();
     $builder->shouldReceive('whereNotNull')->with('placement_id')->andReturnSelf();
@@ -58,7 +60,7 @@ test('it identifies at risk students', function () {
 
     $student = (object) ['id' => 'uuid-1', 'user' => (object) ['name' => 'Test Student']];
 
-    $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+    $builder = mock(Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
     $builder->shouldReceive('with')->andReturnSelf();
     $builder->shouldReceive('limit')->andReturnSelf();

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Status\Policies;
 
-use Modules\User\Models\User;
+use Illuminate\Support\Collection;
 use Modules\Status\Enums\Status;
+use Modules\User\Models\User;
 
 /**
  * RoleBasedAccessPolicy
@@ -27,7 +28,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function view(User $user, User $target): bool
     {
@@ -42,7 +42,7 @@ class RoleBasedAccessPolicy
         }
 
         // Admin can view non-admins
-        if ($user->isAdmin() && !$target->isAdmin() && !$target->isSuper()) {
+        if ($user->isAdmin() && ! $target->isAdmin() && ! $target->isSuper()) {
             return true;
         }
 
@@ -65,7 +65,6 @@ class RoleBasedAccessPolicy
      * @param User $user Authenticated user
      * @param User $target Target user
      * @param Status $newStatus Proposed status
-     * @return bool
      */
     public function changeStatus(User $user, User $target, Status $newStatus): bool
     {
@@ -76,7 +75,7 @@ class RoleBasedAccessPolicy
 
         // Super Admin can change any status (except protecting other Super Admins)
         if ($user->isSuper()) {
-            return $newStatus !== Status::PROTECTED || !$target->isSuper();
+            return $newStatus !== Status::PROTECTED || ! $target->isSuper();
         }
 
         // Admin can:
@@ -117,18 +116,17 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function verify(User $user, User $target): bool
     {
         // Super Admin can verify anyone except other Super Admins
         if ($user->isSuper()) {
-            return !$target->isSuper();
+            return ! $target->isSuper();
         }
 
         // Admin can verify non-admin users
         if ($user->isAdmin()) {
-            return !$target->isAdmin() && !$target->isSuper();
+            return ! $target->isAdmin() && ! $target->isSuper();
         }
 
         // Supervisor can verify students
@@ -144,7 +142,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function restrict(User $user, User $target): bool
     {
@@ -155,12 +152,12 @@ class RoleBasedAccessPolicy
 
         // Super Admin can restrict anyone except other Super Admins
         if ($user->isSuper()) {
-            return !$target->isSuper();
+            return ! $target->isSuper();
         }
 
         // Admin can restrict non-admin users only
         if ($user->isAdmin()) {
-            return !$target->isAdmin() && !$target->isSuper();
+            return ! $target->isAdmin() && ! $target->isSuper();
         }
 
         // Supervisor can restrict students
@@ -176,7 +173,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function suspend(User $user, User $target): bool
     {
@@ -187,12 +183,12 @@ class RoleBasedAccessPolicy
 
         // Super Admin can suspend anyone except other Super Admins
         if ($user->isSuper()) {
-            return !$target->isSuper();
+            return ! $target->isSuper();
         }
 
         // Admin can suspend non-admin users only
         if ($user->isAdmin()) {
-            return !$target->isAdmin() && !$target->isSuper();
+            return ! $target->isAdmin() && ! $target->isSuper();
         }
 
         // Supervisor can suspend students only
@@ -208,7 +204,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function unlock(User $user, User $target): bool
     {
@@ -221,7 +216,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function archive(User $user, User $target): bool
     {
@@ -239,7 +233,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function exportData(User $user, User $target): bool
     {
@@ -266,7 +259,6 @@ class RoleBasedAccessPolicy
      *
      * @param User $user Authenticated user
      * @param User $target Target user
-     * @return bool
      */
     public function delete(User $user, User $target): bool
     {
@@ -286,11 +278,8 @@ class RoleBasedAccessPolicy
 
     /**
      * Get allowed self-service transitions for user
-     *
-     * @param User $user
-     * @return \Illuminate\Support\Collection
      */
-    private function allowedSelfTransitions(User $user): \Illuminate\Support\Collection
+    private function allowedSelfTransitions(User $user): Collection
     {
         return collect([
             // Students can only self-activate
@@ -300,10 +289,6 @@ class RoleBasedAccessPolicy
 
     /**
      * Check if teacher has assigned student
-     *
-     * @param User $teacher
-     * @param User $student
-     * @return bool
      */
     private function isTeacherOf(User $teacher, User $student): bool
     {

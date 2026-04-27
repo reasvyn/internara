@@ -78,7 +78,7 @@ class StatusSelector extends Component
      */
     private function canUserTransitionTo(Status $status): bool
     {
-        $policy = new StatusChangePolicy();
+        $policy = new StatusChangePolicy;
         $authUser = auth()->user();
 
         return match ($status) {
@@ -102,10 +102,10 @@ class StatusSelector extends Component
         $authUser = auth()->user();
 
         return match ($status) {
-            Status::VERIFIED => "Hanya Super Admin yang dapat memverifikasi akun admin",
-            Status::PROTECTED => "Hanya Super Admin yang dapat menetapkan status terlindungi",
-            Status::ARCHIVED => "Hanya Super Admin yang dapat mengarsipkan akun",
-            default => "Anda tidak memiliki izin untuk transisi ini",
+            Status::VERIFIED => 'Hanya Super Admin yang dapat memverifikasi akun admin',
+            Status::PROTECTED => 'Hanya Super Admin yang dapat menetapkan status terlindungi',
+            Status::ARCHIVED => 'Hanya Super Admin yang dapat mengarsipkan akun',
+            default => 'Anda tidak memiliki izin untuk transisi ini',
         };
     }
 
@@ -144,7 +144,7 @@ class StatusSelector extends Component
             $this->user->refresh();
             $this->selectedStatus = $this->user->getStatus()?->value;
         } catch (\Exception $e) {
-            flash()->error(__('Gagal mengubah status: ' . $e->getMessage()));
+            flash()->error(__('Gagal mengubah status: '.$e->getMessage()));
         }
     }
 
@@ -178,6 +178,7 @@ class StatusSelector extends Component
     {
         $lastActivity = $this->user->last_activity_at ?? $this->user->created_at;
         $daysIdle = $lastActivity->diffInDays(now());
+
         return max(0, 180 - $daysIdle);
     }
 

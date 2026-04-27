@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Department\Tests\Unit\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Modules\Department\Models\Department;
 use Modules\Department\Services\DepartmentService;
 use Modules\School\Services\Contracts\SchoolService;
@@ -13,7 +14,7 @@ test('it can search departments by name', function () {
     $schoolService = mock(SchoolService::class);
     $service = new DepartmentService($department, $schoolService);
 
-    $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+    $builder = mock(Builder::class);
     $department->shouldReceive('newQuery')->andReturn($builder);
     $builder->shouldReceive('select')->andReturnSelf();
     $builder->shouldReceive('with')->andReturnSelf();

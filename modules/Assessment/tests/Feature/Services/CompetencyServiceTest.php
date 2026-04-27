@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Modules\Assessment\Models\Competency;
+use Modules\Assessment\Models\StudentCompetencyLog;
 use Modules\Assessment\Services\Contracts\CompetencyService;
 use Modules\Internship\Models\InternshipRegistration;
 
@@ -24,7 +25,7 @@ test('it can record student competency progress', function () {
     ]);
 
     expect($log)
-        ->toBeInstanceOf(\Modules\Assessment\Models\StudentCompetencyLog::class)
+        ->toBeInstanceOf(StudentCompetencyLog::class)
         ->and($log->score)
         ->toBe(85);
 

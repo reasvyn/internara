@@ -8,14 +8,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
-use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 class ProtectSetupRoute
 {
     public function __construct(
-        protected SetupService $setupService,
+        protected AppSetupService $setupService,
         protected SuperAdminService $superAdminService,
         protected SettingService $settingService,
     ) {}
@@ -26,9 +26,10 @@ class ProtectSetupRoute
     public function handle(Request $request, Closure $next)
     {
         // [S1 - Secure] Apply Rate Limiting for Setup Routes
-        $key = 'setup_throttle:' . $request->ip();
+        $key = 'setup_throttle:'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 20)) {
             $seconds = RateLimiter::availableIn($key);
+
             return abort(429, __('ui::messages.too_many_requests', ['seconds' => $seconds]));
         }
         RateLimiter::hit($key, 60);
@@ -42,11 +43,11 @@ class ProtectSetupRoute
         }
 
         // 2. Enforce Signed URL validation or Authorized Session
-        $isAuthorized = $request->session()->get(SetupService::SESSION_SETUP_AUTHORIZED);
+        $isAuthorized = $request->session()->get(AppSetupService::SESSION_SETUP_AUTHORIZED);
 
         // [S1 - Secure] Only grant new session authorization if valid signature OR valid token is present
         if (! $isAuthorized && ($request->hasValidSignature() || $this->hasValidToken($request))) {
-            $request->session()->put(SetupService::SESSION_SETUP_AUTHORIZED, true);
+            $request->session()->put(AppSetupService::SESSION_SETUP_AUTHORIZED, true);
             $isAuthorized = true;
         }
 
@@ -80,7 +81,7 @@ class ProtectSetupRoute
             }
         }
 
-        return ! $this->setupService->isStepCompleted(SetupService::STEP_COMPLETE, true);
+        return ! $this->setupService->isStepCompleted(AppSetupService::STEP_COMPLETE, true);
     }
 
     /**
@@ -89,13 +90,13 @@ class ProtectSetupRoute
     protected function setupStepsBeforeCompletion(): array
     {
         return [
-            SetupService::STEP_WELCOME,
-            SetupService::STEP_ENVIRONMENT,
-            SetupService::STEP_SCHOOL,
-            SetupService::STEP_ACCOUNT,
-            SetupService::STEP_DEPARTMENT,
-            SetupService::STEP_INTERNSHIP,
-            SetupService::STEP_SYSTEM,
+            AppSetupService::STEP_WELCOME,
+            AppSetupService::STEP_ENVIRONMENT,
+            AppSetupService::STEP_SCHOOL,
+            AppSetupService::STEP_ACCOUNT,
+            AppSetupService::STEP_DEPARTMENT,
+            AppSetupService::STEP_INTERNSHIP,
+            AppSetupService::STEP_SYSTEM,
         ];
     }
 
@@ -122,5 +123,3 @@ class ProtectSetupRoute
         return $token && $storedToken && is_string($token) && hash_equals($storedToken, $token);
     }
 }
-
-

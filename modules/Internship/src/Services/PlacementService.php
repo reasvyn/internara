@@ -6,6 +6,7 @@ namespace Modules\Internship\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\PlacementLogger;
@@ -94,7 +95,7 @@ class PlacementService extends EloquentQuery implements Contract
             }
 
             // Atomic Quota Protection: Lock the placement record
-            $placement = \Modules\Internship\Models\InternshipPlacement::query()
+            $placement = InternshipPlacement::query()
                 ->where('id', $placementId)
                 ->lockForUpdate()
                 ->first();
@@ -110,10 +111,10 @@ class PlacementService extends EloquentQuery implements Contract
             }
 
             $registration->update(['placement_id' => $placementId]);
-            
+
             // Standardize Status
             $registration->setStatus('approved', 'Student placed in industry partner.');
-            
+
             $this->logger->logAssignment($registration, $reason);
 
             return true;
@@ -136,7 +137,7 @@ class PlacementService extends EloquentQuery implements Contract
             }
 
             // Atomic Quota Protection: Lock the NEW placement record
-            $newPlacement = \Modules\Internship\Models\InternshipPlacement::query()
+            $newPlacement = InternshipPlacement::query()
                 ->where('id', $newPlacementId)
                 ->lockForUpdate()
                 ->first();

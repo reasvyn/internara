@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
-use Modules\User\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Modules\User\Models\User;
 use ZipArchive;
 
 /**
@@ -42,14 +41,13 @@ class GdprComplianceService
      * - Restrictions
      * - Related records
      *
-     * @param User $user
      * @return string Path to exported ZIP file
      */
     public function exportUserData(User $user): string
     {
         return DB::transaction(function () use ($user) {
             // Create temporary directory for export
-            $tempDir = storage_path('app/temp/' . $user->id . '_' . uniqid());
+            $tempDir = storage_path('app/temp/'.$user->id.'_'.uniqid());
             mkdir($tempDir, 0755, true);
 
             try {
@@ -108,15 +106,13 @@ class GdprComplianceService
      * Removes all personally identifiable information while maintaining
      * audit trail integrity. Data is irreversibly changed.
      *
-     * @param User $user
      * @param string $reason Reason for anonymization
-     * @return bool
      */
     public function anonymizeUser(User $user, string $reason = 'gdpr_request'): bool
     {
         return DB::transaction(function () use ($user, $reason) {
             // Generate anonymization token
-            $anonymizedId = 'ANON_' . hash('sha256', $user->id . config('app.key'));
+            $anonymizedId = 'ANON_'.hash('sha256', $user->id.config('app.key'));
 
             // Store anonymization details
             $anonymizationData = [
@@ -130,7 +126,7 @@ class GdprComplianceService
             // Update user with anonymized data
             $user->update([
                 'name' => $anonymizedId,
-                'email' => $anonymizedId . '@anonymized.local',
+                'email' => $anonymizedId.'@anonymized.local',
                 'phone' => null,
                 'address' => null,
                 'profile_picture' => null,
@@ -160,9 +156,7 @@ class GdprComplianceService
      * IMPORTANT: This is irreversible. Consider anonymizeUser instead.
      * Only use for accounts confirmed for permanent deletion.
      *
-     * @param User $user
      * @param string $reason Reason for deletion
-     * @return bool
      */
     public function deleteUserPermanently(User $user, string $reason = 'gdpr_request'): bool
     {
@@ -190,9 +184,6 @@ class GdprComplianceService
 
     /**
      * Export user profile
-     *
-     * @param User $user
-     * @param string $tempDir
      */
     private function exportUserProfile(User $user, string $tempDir): void
     {
@@ -217,9 +208,6 @@ class GdprComplianceService
 
     /**
      * Export audit trail
-     *
-     * @param User $user
-     * @param string $tempDir
      */
     private function exportAuditTrail(User $user, string $tempDir): void
     {
@@ -236,9 +224,6 @@ class GdprComplianceService
 
     /**
      * Export account status history
-     *
-     * @param User $user
-     * @param string $tempDir
      */
     private function exportStatusHistory(User $user, string $tempDir): void
     {
@@ -254,9 +239,6 @@ class GdprComplianceService
 
     /**
      * Export account restrictions
-     *
-     * @param User $user
-     * @param string $tempDir
      */
     private function exportRestrictions(User $user, string $tempDir): void
     {
@@ -272,9 +254,6 @@ class GdprComplianceService
 
     /**
      * Export login history
-     *
-     * @param User $user
-     * @param string $tempDir
      */
     private function exportLoginHistory(User $user, string $tempDir): void
     {
@@ -292,9 +271,6 @@ class GdprComplianceService
 
     /**
      * Create metadata file
-     *
-     * @param User $user
-     * @param string $tempDir
      */
     private function createExportMetadata(User $user, string $tempDir): void
     {
@@ -322,19 +298,17 @@ class GdprComplianceService
     /**
      * Create ZIP archive of all export files
      *
-     * @param User $user
-     * @param string $tempDir
      * @return string Path to ZIP file
      */
     private function createZipArchive(User $user, string $tempDir): string
     {
-        $zipFileName = "user_{$user->id}_data_export_" . now()->format('Y_m_d_H_i_s') . '.zip';
+        $zipFileName = "user_{$user->id}_data_export_".now()->format('Y_m_d_H_i_s').'.zip';
         $zipPath = storage_path("app/gdpr-exports/$zipFileName");
 
         // Ensure export directory exists
         mkdir(dirname($zipPath), 0755, true);
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // Add all files from temp directory
@@ -355,9 +329,6 @@ class GdprComplianceService
 
     /**
      * Anonymize related data (cascade anonymization)
-     *
-     * @param User $user
-     * @param string $anonymizedId
      */
     private function anonymizeRelatedData(User $user, string $anonymizedId): void
     {
@@ -374,8 +345,6 @@ class GdprComplianceService
 
     /**
      * Remove directory recursively
-     *
-     * @param string $dir
      */
     private function removeDirectory(string $dir): void
     {

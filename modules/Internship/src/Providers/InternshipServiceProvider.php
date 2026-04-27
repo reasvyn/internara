@@ -5,10 +5,30 @@ declare(strict_types=1);
 namespace Modules\Internship\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Internship\Models\Company;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
+use Modules\Internship\Models\InternshipRequirement;
+use Modules\Internship\Models\RequirementSubmission;
+use Modules\Internship\Policies\CompanyPolicy;
 use Modules\Internship\Policies\InternshipPolicy;
+use Modules\Internship\Policies\InternshipRegistrationPolicy;
+use Modules\Internship\Reports\CompetencyAchievementReportProvider;
+use Modules\Internship\Reports\InternshipClassReportProvider;
+use Modules\Internship\Reports\PartnerEngagementReportProvider;
+use Modules\Internship\Services\CompanyService;
+use Modules\Internship\Services\Contracts\PlacementLogger;
+use Modules\Internship\Services\InternshipPlacementService;
+use Modules\Internship\Services\InternshipRequirementService;
+use Modules\Internship\Services\InternshipService;
+use Modules\Internship\Services\PlacementLoggerService;
+use Modules\Internship\Services\PlacementService;
+use Modules\Internship\Services\RegistrationService;
+use Modules\Internship\Services\SupervisorService;
+use Modules\Internship\Setup\InternshipSetupRequirement;
+use Modules\Report\Services\ReportService;
+use Modules\Setup\Services\SetupRequirementRegistry;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -29,11 +49,12 @@ class InternshipServiceProvider extends ServiceProvider
     protected array $policies = [
         Internship::class => InternshipPolicy::class,
         InternshipPlacement::class => InternshipPolicy::class,
-        \Modules\Internship\Models\Company::class => \Modules\Internship\Policies\CompanyPolicy::class,
-        InternshipRegistration::class => \Modules\Internship\Policies\InternshipRegistrationPolicy::class,
-        \Modules\Internship\Models\InternshipRequirement::class => InternshipPolicy::class,
-        \Modules\Internship\Models\RequirementSubmission::class => \Modules\Internship\Policies\InternshipRegistrationPolicy::class,
+        Company::class => CompanyPolicy::class,
+        InternshipRegistration::class => InternshipRegistrationPolicy::class,
+        InternshipRequirement::class => InternshipPolicy::class,
+        RequirementSubmission::class => InternshipRegistrationPolicy::class,
     ];
+
     /**
      * Boot the application events.
      */
@@ -42,22 +63,22 @@ class InternshipServiceProvider extends ServiceProvider
         $this->bootModule();
 
         // [S3 - Scalable] Register Setup Hook
-        if ($this->app->bound(\Modules\Setup\Services\SetupRequirementRegistry::class)) {
-            $this->app->make(\Modules\Setup\Services\SetupRequirementRegistry::class)
-                ->register($this->app->make(\Modules\Internship\Setup\InternshipSetupRequirement::class));
+        if ($this->app->bound(SetupRequirementRegistry::class)) {
+            $this->app->make(SetupRequirementRegistry::class)
+                ->register($this->app->make(InternshipSetupRequirement::class));
         }
 
         // Register Report Providers
-        if (class_exists(\Modules\Report\Services\ReportService::class)) {
-            $reportService = app(\Modules\Report\Services\ReportService::class);
+        if (class_exists(ReportService::class)) {
+            $reportService = app(ReportService::class);
             $reportService->registerProvider(
-                new \Modules\Internship\Reports\InternshipClassReportProvider,
+                new InternshipClassReportProvider,
             );
             $reportService->registerProvider(
-                new \Modules\Internship\Reports\PartnerEngagementReportProvider,
+                new PartnerEngagementReportProvider,
             );
             $reportService->registerProvider(
-                new \Modules\Internship\Reports\CompetencyAchievementReportProvider,
+                new CompetencyAchievementReportProvider,
             );
         }
     }
@@ -80,14 +101,14 @@ class InternshipServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Internship\Services\Contracts\InternshipService::class => \Modules\Internship\Services\InternshipService::class,
-            \Modules\Internship\Services\Contracts\CompanyService::class => \Modules\Internship\Services\CompanyService::class,
-            \Modules\Internship\Services\Contracts\InternshipPlacementService::class => \Modules\Internship\Services\InternshipPlacementService::class,
-            \Modules\Internship\Services\Contracts\RegistrationService::class => \Modules\Internship\Services\RegistrationService::class,
-            \Modules\Internship\Services\Contracts\SupervisorService::class => \Modules\Internship\Services\SupervisorService::class,
-            \Modules\Internship\Services\Contracts\PlacementService::class => \Modules\Internship\Services\PlacementService::class,
-            \Modules\Internship\Services\Contracts\InternshipRequirementService::class => \Modules\Internship\Services\InternshipRequirementService::class,
-            \Modules\Internship\Services\Contracts\PlacementLogger::class => \Modules\Internship\Services\PlacementLoggerService::class,
+            \Modules\Internship\Services\Contracts\InternshipService::class => InternshipService::class,
+            \Modules\Internship\Services\Contracts\CompanyService::class => CompanyService::class,
+            \Modules\Internship\Services\Contracts\InternshipPlacementService::class => InternshipPlacementService::class,
+            \Modules\Internship\Services\Contracts\RegistrationService::class => RegistrationService::class,
+            \Modules\Internship\Services\Contracts\SupervisorService::class => SupervisorService::class,
+            \Modules\Internship\Services\Contracts\PlacementService::class => PlacementService::class,
+            \Modules\Internship\Services\Contracts\InternshipRequirementService::class => InternshipRequirementService::class,
+            PlacementLogger::class => PlacementLoggerService::class,
         ];
     }
 

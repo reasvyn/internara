@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Modules\Department\Tests\Feature\Listeners;
 
 use Illuminate\Support\Facades\Event;
+use Modules\Department\Listeners\DeleteDepartmentsBySchool;
 use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Permission\Models\Role;
 use Modules\School\Events\SchoolDeleted;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\User\Models\User;
 
 test('it deletes all departments when a school is deleted', function () {
     // Arrange
-    \Modules\Permission\Models\Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
+    Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
     $admin = User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
@@ -40,6 +42,6 @@ test('it is registered in the EventServiceProvider', function () {
     Event::fake();
     Event::assertListening(
         SchoolDeleted::class,
-        \Modules\Department\Listeners\DeleteDepartmentsBySchool::class,
+        DeleteDepartmentsBySchool::class,
     );
 });

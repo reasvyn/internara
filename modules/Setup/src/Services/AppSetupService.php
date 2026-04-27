@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
@@ -11,18 +12,19 @@ use Modules\Exception\AppException;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Domain\Models\SetupProcess;
 use Modules\Setup\Events\SetupFinalized;
+use Modules\Setup\Services\Contracts\AppSetupService as Contract;
 use Modules\Shared\Services\BaseService;
 
 /**
  * Service implementation for handling the application setup process.
- * 
+ *
  * [S2 - Sustain] Aligned with project-wide Service Layer pattern.
  * [S3 - Scalable] Uses Registry pattern to decouple module dependencies.
  */
-class SetupService extends BaseService implements Contracts\SetupService
+class AppSetupService extends BaseService implements Contract
 {
     /**
-     * Create a new SetupService instance.
+     * Create a new AppSetupService instance.
      */
     public function __construct(
         protected SettingService $settingService,
@@ -35,10 +37,8 @@ class SetupService extends BaseService implements Contracts\SetupService
     protected function getProcess(): SetupProcess
     {
         $isInstalled = (bool) $this->settingService->getValue(self::SETTING_APP_INSTALLED, false);
-        
+
         $steps = [
-            self::STEP_WELCOME,
-            self::STEP_ENVIRONMENT,
             self::STEP_SCHOOL,
             self::STEP_ACCOUNT,
             self::STEP_DEPARTMENT,
@@ -56,7 +56,7 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isAppInstalled(bool $skipCache = true): bool
     {
@@ -64,7 +64,7 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isStepCompleted(string $step, bool $skipCache = true): bool
     {
@@ -72,16 +72,15 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isRecordExists(string $recordName): bool
     {
-        // [S3 - Scalable] Delegation to Decoupled Registry
         return $this->registry->isRequirementSatisfied($recordName);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function requireSetupAccess(string $prevStep = ''): bool
     {
@@ -91,7 +90,7 @@ class SetupService extends BaseService implements Contracts\SetupService
             return false;
         }
 
-        if ($prevStep && !$process->isStepCompleted($prevStep)) {
+        if ($prevStep && ! $process->isStepCompleted($prevStep)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -102,7 +101,7 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function performSetupStep(string $step, ?string $reqRecord = null): bool
     {
@@ -110,12 +109,11 @@ class SetupService extends BaseService implements Contracts\SetupService
 
         $process = $this->getProcess();
 
-        // [S1 - Secure] Atomic Concurrency Control
-        $lock = \Illuminate\Support\Facades\Cache::lock("setup.step.{$step}", 30);
+        $lock = Cache::lock("setup.step.{$step}", 30);
 
         return $lock->get(function () use ($step, $reqRecord, $process) {
-            if (!$process->canProceedTo($step)) {
-                 throw new AppException(
+            if (! $process->canProceedTo($step)) {
+                throw new AppException(
                     userMessage: 'setup::exceptions.require_step_completed',
                     code: 403,
                 );
@@ -124,7 +122,7 @@ class SetupService extends BaseService implements Contracts\SetupService
             $requiredRecord = $reqRecord ?? SetupProcess::STEP_RECORDS[$step] ?? null;
             if ($requiredRecord) {
                 $exists = $this->isRecordExists($requiredRecord);
-                
+
                 try {
                     $process->validateStepFinalization($step, $exists);
                 } catch (\DomainException $e) {
@@ -155,7 +153,7 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function saveSystemSettings(array $settings): bool
     {
@@ -167,7 +165,7 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function finalizeSetupStep(): bool
     {
@@ -176,10 +174,9 @@ class SetupService extends BaseService implements Contracts\SetupService
         return DB::transaction(function () {
             $this->settingService->setValue(self::SETTING_APP_INSTALLED, true);
             $this->settingService->setValue(self::SETTING_SETUP_TOKEN, null);
-            $this->settingService->setValue("setup_step_complete", true);
+            $this->settingService->setValue('setup_step_complete', true);
 
-            // [S3 - Scalable] Event-Driven Finalization
-            event(new SetupFinalized());
+            event(new SetupFinalized);
 
             activity('setup')
                 ->event('finalized')
@@ -188,7 +185,7 @@ class SetupService extends BaseService implements Contracts\SetupService
             Session::forget(self::SESSION_SETUP_AUTHORIZED);
             Session::regenerate();
 
-            \Illuminate\Support\Facades\Cache::forget('internara.installed');
+            Cache::forget('internara.installed');
 
             return true;
         });

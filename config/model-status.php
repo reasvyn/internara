@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Modules\Status\Models\Status;
 
 return [
     /*
@@ -8,7 +9,7 @@ return [
      *
      * The model must be or extend `Spatie\ModelStatus\Status`.
      */
-    'status_model' => \Modules\Status\Models\Status::class,
+    'status_model' => Status::class,
 
     /*
      * The name of the attribute to access the latest status.

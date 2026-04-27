@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Modules\Admin\Notifications\AdminInvitationNotification;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\AccountProvisioningService as Contract;
@@ -52,10 +53,10 @@ class AccountProvisioningService implements Contract
                 ->delete();
 
             $user->accountTokens()->create([
-                'type'       => $type,
-                'token'      => AccountToken::hashCode($plainCode),
+                'type' => $type,
+                'token' => AccountToken::hashCode($plainCode),
                 'expires_at' => $expiresInDays > 0 ? now()->addDays($expiresInDays) : null,
-                'issued_by'  => $issuedBy?->id,
+                'issued_by' => $issuedBy?->id,
             ]);
 
             // Flag the account as needing setup steps (cleared upon successful claim).
@@ -113,7 +114,7 @@ class AccountProvisioningService implements Contract
             // Set the user's self-chosen password and clear the setup flag.
             // setup_required was true since provisioning; claim completes the setup.
             $user->update([
-                'password'       => $newPassword, // cast 'hashed' handles bcrypt
+                'password' => $newPassword, // cast 'hashed' handles bcrypt
                 'setup_required' => false,
             ]);
 
@@ -126,10 +127,10 @@ class AccountProvisioningService implements Contract
             $token->markClaimed($ipAddress);
 
             // Activate the account if it was still pending
-            if ($user->getStatus()?->value === \Modules\Status\Enums\Status::PENDING->value
+            if ($user->getStatus()?->value === Status::PENDING->value
                 || $user->latestStatus() === null
             ) {
-                $user->setStatus(\Modules\Status\Enums\Status::ACTIVE->value);
+                $user->setStatus(Status::ACTIVE->value);
             }
         });
     }
@@ -148,7 +149,7 @@ class AccountProvisioningService implements Contract
         foreach ($users as $user) {
             $plainCode = $this->provision($user, $type, $expiresInDays, $issuedBy);
             $slips[] = [
-                'user'       => $user,
+                'user' => $user,
                 'plain_code' => $plainCode,
             ];
         }
@@ -178,10 +179,10 @@ class AccountProvisioningService implements Contract
                 ->delete();
 
             $user->accountTokens()->create([
-                'type'       => AccountToken::TYPE_INVITATION,
-                'token'      => AccountToken::hashCode($plain),
+                'type' => AccountToken::TYPE_INVITATION,
+                'token' => AccountToken::hashCode($plain),
                 'expires_at' => now()->addDays($expiresInDays),
-                'issued_by'  => $issuedBy?->id,
+                'issued_by' => $issuedBy?->id,
             ]);
 
             $user->update(['setup_required' => true]);
@@ -216,8 +217,8 @@ class AccountProvisioningService implements Contract
     private function generatePlainCode(): string
     {
         $charset = self::CHARSET;
-        $len     = strlen($charset);
-        $groups  = [];
+        $len = strlen($charset);
+        $groups = [];
 
         for ($g = 0; $g < 3; $g++) {
             $part = '';

@@ -14,11 +14,11 @@ describe('InstallerService Unit Test', function () {
     beforeEach(function () {
         $this->settingService = $this->mock(SettingService::class);
         $this->auditor = $this->mock(SystemAuditor::class);
-        
+
         // Ensure Gate is always authorized for unit tests
         Gate::shouldReceive('authorize')->byDefault()->andReturn(true);
         $this->auditor->shouldReceive('passes')->byDefault()->andReturn(true);
-        
+
         // Bind the mocks to the container so partials can find them
         app()->instance(SettingService::class, $this->settingService);
         app()->instance(SystemAuditor::class, $this->auditor);
@@ -39,7 +39,7 @@ describe('InstallerService Unit Test', function () {
     test('it triggers migration commands', function () {
         $partial = \Mockery::mock(InstallerService::class, [$this->settingService, $this->auditor])->makePartial();
         $partial->shouldAllowMockingProtectedMethods();
-        
+
         // We verify that the method is called, but we don't mock internals that trigger Artisan
         $partial->shouldReceive('runMigrations')->once()->andReturn(true);
 
@@ -56,7 +56,7 @@ describe('InstallerService Unit Test', function () {
 
     test('it orchestrates the complete installation sequence', function () {
         $partial = \Mockery::mock(InstallerService::class, [$this->settingService, $this->auditor])->makePartial();
-        
+
         $partial->shouldReceive('ensureEnvFileExists')->andReturn(true);
         $partial->shouldReceive('validateEnvironment')->andReturn(['passed' => true]);
         $partial->shouldReceive('generateAppKey')->andReturn(true);

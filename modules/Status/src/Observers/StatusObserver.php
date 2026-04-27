@@ -11,9 +11,6 @@ class StatusObserver
 {
     /**
      * Handle the Status "creating" event.
-     *
-     * @param  \Modules\Status\Models\Status  $status
-     * @return void
      */
     public function creating(Status $status): void
     {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Student\Tests\Unit\Services;
 
+use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Student\Services\StudentService;
 use Modules\User\Models\User;
@@ -13,7 +14,7 @@ test('it can create student account and profile', function () {
     $user = mock(User::class);
     $userService = mock(UserService::class);
     $profileService = mock(ProfileService::class);
-    $profile = new class extends \Modules\Profile\Models\Profile
+    $profile = new class extends Profile
     {
         protected $keyType = 'string';
     };

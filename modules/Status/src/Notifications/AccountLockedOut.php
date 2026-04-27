@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Notifications;
 
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\User\Models\User;
 
@@ -31,11 +32,11 @@ class AccountLockedOut extends Notification
      */
     public function toMail(object $notifiable)
     {
-        return (new \Illuminate\Notifications\Messages\MailMessage())
+        return (new MailMessage)
             ->subject('⛔ Akun Anda Dikunci untuk Keamanan')
-            ->greeting('Halo ' . $notifiable->name . ',')
-            ->line('Akun Anda telah dikunci setelah ' . $this->failedAttempts . ' percobaan login yang gagal.')
-            ->line('Akun akan otomatis dibuka dalam ' . $this->lockoutMinutes . ' menit.')
+            ->greeting('Halo '.$notifiable->name.',')
+            ->line('Akun Anda telah dikunci setelah '.$this->failedAttempts.' percobaan login yang gagal.')
+            ->line('Akun akan otomatis dibuka dalam '.$this->lockoutMinutes.' menit.')
             ->line('Jika ini bukan Anda, segera ubah kata sandi Anda dan hubungi tim dukungan.')
             ->action('Hubungi Dukungan', url('/support'))
             ->line('Kami hanya melakukan ini untuk melindungi akun Anda.');

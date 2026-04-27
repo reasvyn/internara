@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Modules\Department\Livewire\DepartmentManager;
+use Modules\Department\Livewire\DepartmentIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,5 +17,5 @@ use Modules\Department\Livewire\DepartmentManager;
 */
 
 Route::middleware(['auth', 'verified', 'can:department.view'])->group(function () {
-    Route::get('/departments', \Modules\Department\Livewire\DepartmentIndex::class)->name('department.index');
+    Route::get('/departments', DepartmentIndex::class)->name('department.index');
 });

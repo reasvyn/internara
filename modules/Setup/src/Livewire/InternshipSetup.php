@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace Modules\Setup\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
 
 /**
  * Represents the 'Internship Setup' step in the application setup process.
  */
 class InternshipSetup extends Component
 {
-    use Concerns\HandlesSetupSteps;
+    use HandlesWizardSteps;
 
     /**
      * Initializes the component.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -28,21 +30,21 @@ class InternshipSetup extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(
-            currentStep: SetupService::STEP_INTERNSHIP,
-            nextStep: SetupService::STEP_SYSTEM,
-            prevStep: SetupService::STEP_DEPARTMENT,
-            extra: ['req_record' => SetupService::RECORD_INTERNSHIP],
+        $this->initWizardStepProps(
+            currentStep: AppSetupService::STEP_INTERNSHIP,
+            nextStep: AppSetupService::STEP_SYSTEM,
+            prevStep: AppSetupService::STEP_DEPARTMENT,
+            extra: ['req_record' => AppSetupService::RECORD_INTERNSHIP],
         );
 
-        $this->requireSetupAccess();
+        $this->requireWizardAccess();
     }
 
     /**
      * Re-evaluates step status after records are modified.
      */
-    #[\Livewire\Attributes\On('internship:saved')]
-    #[\Livewire\Attributes\On('internship:deleted')]
+    #[On('internship:saved')]
+    #[On('internship:deleted')]
     public function handleRecordsChanged(): void
     {
         unset($this->isRecordExists);

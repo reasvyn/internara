@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace Modules\Guidance\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Guidance\Models\Handbook;
+use Modules\Guidance\Policies\HandbookPolicy;
+use Modules\Guidance\Services\HandbookService;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -23,7 +27,7 @@ class GuidanceServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Guidance\Models\Handbook::class => \Modules\Guidance\Policies\HandbookPolicy::class,
+        Handbook::class => HandbookPolicy::class,
     ];
 
     /**
@@ -41,7 +45,7 @@ class GuidanceServiceProvider extends ServiceProvider
     {
         try {
             $settingService = $this->app->make(
-                \Modules\Setting\Services\Contracts\SettingService::class,
+                SettingService::class,
             );
 
             if (! $settingService->getValue('feature_guidance_enabled', true)) {
@@ -92,7 +96,7 @@ class GuidanceServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Guidance\Services\Contracts\HandbookService::class => \Modules\Guidance\Services\HandbookService::class,
+            \Modules\Guidance\Services\Contracts\HandbookService::class => HandbookService::class,
         ];
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use Modules\Status\Models\Status;
 
 return [
     'name' => 'Status',
@@ -8,5 +9,5 @@ return [
     /**
      * Model used for tracking status history.
      */
-    'status_model' => \Modules\Status\Models\Status::class,
+    'status_model' => Status::class,
 ];

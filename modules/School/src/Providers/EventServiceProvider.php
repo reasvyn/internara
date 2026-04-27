@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\School\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\School\Listeners\ConfigureInstitutionalBranding;
+use Modules\Setup\Events\SetupFinalized;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,8 +16,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        \Modules\Setup\Events\SetupFinalized::class => [
-            \Modules\School\Listeners\ConfigureInstitutionalBranding::class,
+        SetupFinalized::class => [
+            ConfigureInstitutionalBranding::class,
         ],
     ];
 

@@ -6,11 +6,12 @@ use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\SupervisorService;
+use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
 use Modules\User\Models\User;
 
 beforeEach(function () {
     // Seed permissions and roles
-    $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+    $this->seed(PermissionDatabaseSeeder::class);
 
     $this->service = app(SupervisorService::class);
 

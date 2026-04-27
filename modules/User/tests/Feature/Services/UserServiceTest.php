@@ -6,17 +6,16 @@ namespace Modules\User\Tests\Feature\Services;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Notification;
-use Modules\Permission\Models\Permission;
-use Modules\Permission\Models\Role;
+use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
 use Modules\User\Services\Contracts\UserService;
 
 describe('UserService', function () {
     beforeEach(function () {
-        $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+        $this->seed(PermissionDatabaseSeeder::class);
         $this->userService = app(UserService::class);
-        
+
         $admin = User::factory()->create();
         $admin->assignRole('super-admin');
         $this->actingAs($admin);

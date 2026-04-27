@@ -6,6 +6,7 @@ namespace Modules\Support\Scaffolding\Console\Concerns;
 
 use Illuminate\Support\Str;
 use Modules\Shared\Support\Formatter;
+use Nwidart\Modules\Commands\Make\GeneratorCommand;
 use Nwidart\Modules\Facades\Module;
 use Nwidart\Modules\Module as ModuleInstance;
 use Nwidart\Modules\Support\Config\GenerateConfigReader;
@@ -17,7 +18,7 @@ use Nwidart\Modules\Support\Config\GeneratorPath;
  * Provides shared logic for module-specific Artisan generators, ensuring
  * consistent path resolution and namespace management.
  *
- * @mixin \Nwidart\Modules\Commands\Make\GeneratorCommand
+ * @mixin GeneratorCommand
  */
 trait HandlesModuleMakeGenerator
 {

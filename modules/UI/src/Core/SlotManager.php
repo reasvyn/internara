@@ -7,7 +7,10 @@ namespace Modules\UI\Core;
 use Closure;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\View\ComponentAttributeBag;
 use Livewire\LivewireManager;
 use Modules\UI\Core\Contracts\SlotManager as SlotManagerContract;
 use Modules\UI\Core\Contracts\SlotRegistry as SlotRegistryContract;
@@ -89,7 +92,7 @@ class SlotManager implements SlotManagerContract
 
                 // Ensure $attributes is always defined for anonymous components rendered as views.
                 $data = array_merge(
-                    ['attributes' => new \Illuminate\View\ComponentAttributeBag([])],
+                    ['attributes' => new ComponentAttributeBag([])],
                     $data,
                 );
 
@@ -112,17 +115,17 @@ class SlotManager implements SlotManagerContract
                     if (is_string($view)) {
                         $componentName = Str::before($view, '#');
 
-                        return \Illuminate\Support\Facades\Blade::render(
+                        return Blade::render(
                             '<x-dynamic-component :component="$component" {{ $attributes }} />',
                             [
                                 'component' => $componentName,
-                                'attributes' => new \Illuminate\View\ComponentAttributeBag($data),
+                                'attributes' => new ComponentAttributeBag($data),
                             ],
                         );
                     }
                 } catch (\Throwable $e) {
                     if (is_debug_mode()) {
-                        \Illuminate\Support\Facades\Log::error(
+                        Log::error(
                             'Slot Injection Error: Failed to render component ['.
                                 (is_string($view) ? $view : 'Closure').
                                 "] in slot [{$slot}]. Error: {$e->getMessage()}",

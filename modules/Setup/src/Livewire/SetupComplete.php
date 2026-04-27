@@ -6,32 +6,36 @@ namespace Modules\Setup\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
 
 /**
  * Represents the final 'Complete' screen of the application setup process.
  */
 class SetupComplete extends Component
 {
-    use Concerns\HandlesSetupSteps;
+    use HandlesWizardSteps;
 
     /**
      * Flags for the final user check-up.
      */
     public bool $data_verified = false;
+
     public bool $security_aware = false;
+
     public bool $legal_agreed = false;
 
     /**
      * Modal visibility flags.
      */
     public bool $showPrivacy = false;
+
     public bool $showTerms = false;
 
     /**
      * Initializes the component.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -41,14 +45,14 @@ class SetupComplete extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(
-            currentStep: SetupService::STEP_COMPLETE,
+        $this->initWizardStepProps(
+            currentStep: AppSetupService::STEP_COMPLETE,
             nextStep: '',
-            prevStep: SetupService::STEP_SYSTEM,
+            prevStep: AppSetupService::STEP_SYSTEM,
             extra: ['landing_route' => 'login'],
         );
 
-        $this->requireSetupAccess();
+        $this->requireWizardAccess();
     }
 
     /**
@@ -63,8 +67,8 @@ class SetupComplete extends Component
             'legal_agreed' => 'accepted',
         ]);
 
-        $currentStep = $this->setupStepProps['currentStep'] ?? '';
-        
+        $currentStep = $this->wizardStepProps['currentStep'] ?? '';
+
         $success = $this->setupService->performSetupStep($currentStep);
 
         if ($success) {

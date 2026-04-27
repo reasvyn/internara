@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Auth\Tests\Unit\Session\Services;
 
-
 use Modules\Auth\Services\RedirectService;
 use Modules\Permission\Enums\Role;
 use Modules\Setting\Facades\Setting;

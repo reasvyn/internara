@@ -7,6 +7,9 @@ namespace Modules\School\Providers;
 use Illuminate\Support\ServiceProvider;
 use Modules\School\Models\School;
 use Modules\School\Policies\SchoolPolicy;
+use Modules\School\Services\SchoolService;
+use Modules\School\Setup\SchoolSetupRequirement;
+use Modules\Setup\Services\SetupRequirementRegistry;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -36,9 +39,9 @@ class SchoolServiceProvider extends ServiceProvider
         $this->bootModule();
 
         // [S3 - Scalable] Register Setup Hook
-        if ($this->app->bound(\Modules\Setup\Services\SetupRequirementRegistry::class)) {
-            $this->app->make(\Modules\Setup\Services\SetupRequirementRegistry::class)
-                ->register($this->app->make(\Modules\School\Setup\SchoolSetupRequirement::class));
+        if ($this->app->bound(SetupRequirementRegistry::class)) {
+            $this->app->make(SetupRequirementRegistry::class)
+                ->register($this->app->make(SchoolSetupRequirement::class));
         }
     }
 
@@ -60,7 +63,7 @@ class SchoolServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\School\Services\Contracts\SchoolService::class => \Modules\School\Services\SchoolService::class,
+            \Modules\School\Services\Contracts\SchoolService::class => SchoolService::class,
         ];
     }
 

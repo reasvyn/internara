@@ -7,6 +7,8 @@ namespace Modules\Schedule\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
+use Modules\Schedule\Database\Factories\ScheduleFactory;
+use Modules\Schedule\Enums\ScheduleType;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class Schedule extends Model
@@ -29,14 +31,14 @@ class Schedule extends Model
     protected $casts = [
         'start_at' => 'datetime',
         'end_at' => 'datetime',
-        'type' => \Modules\Schedule\Enums\ScheduleType::class,
+        'type' => ScheduleType::class,
     ];
 
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Modules\Schedule\Database\Factories\ScheduleFactory
+    protected static function newFactory(): ScheduleFactory
     {
-        return \Modules\Schedule\Database\Factories\ScheduleFactory::new();
+        return ScheduleFactory::new();
     }
 }

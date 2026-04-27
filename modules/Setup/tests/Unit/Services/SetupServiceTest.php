@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
+use Illuminate\Contracts\Cache\Lock;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -36,14 +38,15 @@ describe('SetupService', function () {
             $this->internshipService
         );
 
-        \Illuminate\Support\Facades\Gate::shouldReceive('authorize')->with('performStep', SetupService::class)->andReturn(true);
+        Gate::shouldReceive('authorize')->with('performStep', SetupService::class)->andReturn(true);
 
-        \Illuminate\Support\Facades\Cache::spy();
-        \Illuminate\Support\Facades\Cache::shouldReceive('lock')->andReturnUsing(function ($name, $seconds) {
-            $lockMock = Mockery::mock(\Illuminate\Contracts\Cache\Lock::class);
+        Cache::spy();
+        Cache::shouldReceive('lock')->andReturnUsing(function ($name, $seconds) {
+            $lockMock = Mockery::mock(Lock::class);
             $lockMock->shouldReceive('get')->andReturnUsing(function ($callback) {
                 return $callback();
             });
+
             return $lockMock;
         });
     });
@@ -69,25 +72,25 @@ describe('SetupService', function () {
     });
 
     it('finalizes setup step with database transaction and cache clearing', function () {
-        \Illuminate\Support\Facades\Gate::shouldReceive('authorize')->with('finalize', \Modules\Setup\Services\SetupService::class)->andReturn(true);
-        \Illuminate\Support\Facades\Event::fake();
-        \Illuminate\Support\Facades\DB::shouldReceive('transaction')->andReturnUsing(function ($callback) {
+        Gate::shouldReceive('authorize')->with('finalize', SetupService::class)->andReturn(true);
+        Event::fake();
+        DB::shouldReceive('transaction')->andReturnUsing(function ($callback) {
             return $callback();
         });
 
-        $school = new \Modules\School\Models\School(['name' => 'Test School']);
+        $school = new School(['name' => 'Test School']);
         $this->schoolService->shouldReceive('getSchool')->andReturn($school);
-        
+
         $this->settingService->shouldReceive('getValue')->with('app_name', 'Internara')->andReturn('Internara');
         $this->settingService->shouldReceive('setValue')->once();
-        
-        \Illuminate\Support\Facades\Session::spy();
-        
+
+        Session::spy();
+
         $this->settingService->shouldReceive('setValue')->with('setup_step_complete', true)->once();
 
         $success = $this->service->finalizeSetupStep();
 
         expect($success)->toBeTrue();
-        \Illuminate\Support\Facades\Event::assertDispatched(\Modules\Setup\Events\SetupFinalized::class);
+        Event::assertDispatched(SetupFinalized::class);
     });
 });

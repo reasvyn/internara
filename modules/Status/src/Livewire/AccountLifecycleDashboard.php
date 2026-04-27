@@ -7,6 +7,7 @@ namespace Modules\Status\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Status\Enums\Status;
+use Modules\Status\Models\AccountStatusHistory;
 use Modules\User\Models\User;
 
 /**
@@ -164,7 +165,7 @@ class AccountLifecycleDashboard extends Component
      */
     public function getRecentChanges(): array
     {
-        return \Modules\Status\Models\AccountStatusHistory::orderByDesc('created_at')
+        return AccountStatusHistory::orderByDesc('created_at')
             ->limit(10)
             ->with('user', 'triggeredBy')
             ->get()

@@ -7,14 +7,18 @@ namespace Modules\Setup\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Exception\AppException;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
+use Modules\Shared\Rules\Honeypot;
+use Modules\Shared\Rules\Turnstile;
 
 /**
  * Represents the 'School Identity' setup step in the application setup process.
  */
 class SchoolSetup extends Component
 {
-    use Concerns\HandlesSetupSteps;
+    use HandlesWizardSteps;
 
     /**
      * Turnstile token for S1 security compliance.
@@ -29,7 +33,7 @@ class SchoolSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -39,14 +43,14 @@ class SchoolSetup extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(
-            currentStep: SetupService::STEP_SCHOOL,
-            nextStep: SetupService::STEP_ACCOUNT,
-            prevStep: SetupService::STEP_ENVIRONMENT,
-            extra: ['req_record' => SetupService::RECORD_SCHOOL],
+        $this->initWizardStepProps(
+            currentStep: AppSetupService::STEP_SCHOOL,
+            nextStep: AppSetupService::STEP_ACCOUNT,
+            prevStep: '',
+            extra: ['req_record' => AppSetupService::RECORD_SCHOOL],
         );
 
-        $this->requireSetupAccess();
+        $this->requireWizardAccess();
     }
 
     /**
@@ -57,14 +61,14 @@ class SchoolSetup extends Component
     {
         try {
             $this->validate([
-                'turnstile' => [new \Modules\Shared\Rules\Turnstile],
-                'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+                'turnstile' => [new Turnstile],
+                'contact_me' => [new Honeypot],
             ]);
 
             $this->nextStep();
         } catch (\Exception $e) {
-             report($e);
-             flash()->error($e instanceof \Modules\Exception\AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
+            report($e);
+            flash()->error($e instanceof AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
         }
     }
 

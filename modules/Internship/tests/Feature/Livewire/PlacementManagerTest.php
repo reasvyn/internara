@@ -8,19 +8,22 @@ use Livewire\Livewire;
 use Modules\Internship\Livewire\PlacementManager;
 use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;
+use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Permission\Models\Permission;
+use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    $role = \Modules\Permission\Models\Role::create(['name' => 'staff', 'guard_name' => 'web']);
-    \Modules\Permission\Models\Permission::create([
+    $role = Role::create(['name' => 'staff', 'guard_name' => 'web']);
+    Permission::create([
         'name' => 'placement.view',
         'guard_name' => 'web',
     ]);
-    \Modules\Permission\Models\Permission::create([
+    Permission::create([
         'name' => 'placement.manage',
         'guard_name' => 'web',
     ]);
-    \Modules\Permission\Models\Permission::create([
+    Permission::create([
         'name' => 'internship.manage',
         'guard_name' => 'web',
     ]);
@@ -42,7 +45,7 @@ test('placement management page is accessible by authorized users', function () 
 });
 
 test('it can create a new placement', function () {
-    $internship = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $internship = app(InternshipService::class)
         ->factory()
         ->create();
     $company = Company::factory()->create(['name' => 'Google']);

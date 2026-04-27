@@ -6,6 +6,21 @@ namespace Modules\Status\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
+use Modules\Status\Models\Status;
+use Modules\Status\Observers\StatusObserver;
+use Modules\Status\Policies\RoleBasedAccessPolicy;
+use Modules\Status\Policies\StatusChangePolicy;
+use Modules\Status\Services\AccountAuditLogger;
+use Modules\Status\Services\AccountCloneDetectionService;
+use Modules\Status\Services\AccountLockoutService;
+use Modules\Status\Services\ActivationWorkflow;
+use Modules\Status\Services\GdprComplianceService;
+use Modules\Status\Services\IdleAccountDetectionService;
+use Modules\Status\Services\RoleBasedStatusTransitionService;
+use Modules\Status\Services\SessionExpirationService;
+use Modules\Status\Services\StatusTransitionService;
+use Modules\Status\Services\SuperAdminGuardRails;
+use Modules\Status\Services\VerificationService;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class StatusServiceProvider extends ServiceProvider
@@ -27,7 +42,7 @@ class StatusServiceProvider extends ServiceProvider
         // Override Spatie Model Status configuration at runtime
         config(['model-status.status_model' => config('status.status_model')]);
 
-        \Modules\Status\Models\Status::observe(\Modules\Status\Observers\StatusObserver::class);
+        Status::observe(StatusObserver::class);
     }
 
     /**
@@ -48,19 +63,19 @@ class StatusServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Status\Services\AccountAuditLogger::class => \Modules\Status\Services\AccountAuditLogger::class,
-            \Modules\Status\Services\StatusTransitionService::class => \Modules\Status\Services\StatusTransitionService::class,
-            \Modules\Status\Services\RoleBasedStatusTransitionService::class => \Modules\Status\Services\RoleBasedStatusTransitionService::class,
-            \Modules\Status\Services\AccountLockoutService::class => \Modules\Status\Services\AccountLockoutService::class,
-            \Modules\Status\Services\IdleAccountDetectionService::class => \Modules\Status\Services\IdleAccountDetectionService::class,
-            \Modules\Status\Services\VerificationService::class => \Modules\Status\Services\VerificationService::class,
-            \Modules\Status\Services\SessionExpirationService::class => \Modules\Status\Services\SessionExpirationService::class,
-            \Modules\Status\Services\ActivationWorkflow::class => \Modules\Status\Services\ActivationWorkflow::class,
-            \Modules\Status\Services\SuperAdminGuardRails::class => \Modules\Status\Services\SuperAdminGuardRails::class,
-            \Modules\Status\Services\GdprComplianceService::class => \Modules\Status\Services\GdprComplianceService::class,
-            \Modules\Status\Services\AccountCloneDetectionService::class => \Modules\Status\Services\AccountCloneDetectionService::class,
-            \Modules\Status\Policies\StatusChangePolicy::class => \Modules\Status\Policies\StatusChangePolicy::class,
-            \Modules\Status\Policies\RoleBasedAccessPolicy::class => \Modules\Status\Policies\RoleBasedAccessPolicy::class,
+            AccountAuditLogger::class => AccountAuditLogger::class,
+            StatusTransitionService::class => StatusTransitionService::class,
+            RoleBasedStatusTransitionService::class => RoleBasedStatusTransitionService::class,
+            AccountLockoutService::class => AccountLockoutService::class,
+            IdleAccountDetectionService::class => IdleAccountDetectionService::class,
+            VerificationService::class => VerificationService::class,
+            SessionExpirationService::class => SessionExpirationService::class,
+            ActivationWorkflow::class => ActivationWorkflow::class,
+            SuperAdminGuardRails::class => SuperAdminGuardRails::class,
+            GdprComplianceService::class => GdprComplianceService::class,
+            AccountCloneDetectionService::class => AccountCloneDetectionService::class,
+            StatusChangePolicy::class => StatusChangePolicy::class,
+            RoleBasedAccessPolicy::class => RoleBasedAccessPolicy::class,
         ];
     }
 }

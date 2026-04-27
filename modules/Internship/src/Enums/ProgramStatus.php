@@ -40,6 +40,6 @@ enum ProgramStatus: string
      */
     public function label(): string
     {
-        return __('internship::status.program.' . $this->value);
+        return __('internship::status.program.'.$this->value);
     }
 }

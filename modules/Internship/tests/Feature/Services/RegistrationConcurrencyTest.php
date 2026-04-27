@@ -4,23 +4,26 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Services;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
+use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Models\Role;
+use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
 beforeEach(function () {
-    \Modules\Permission\Models\Role::firstOrCreate([
+    Role::firstOrCreate([
         'name' => 'super-admin',
         'guard_name' => 'web',
     ]);
-    $admin = \Modules\User\Models\User::factory()->create();
+    $admin = User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
 });
 
 test('concurrent enrollment audit: only one student can take the last slot', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
     $placement = app(InternshipPlacementService::class)
@@ -54,7 +57,7 @@ test('concurrent enrollment audit: only one student can take the last slot', fun
 
     // Second one should fail
     expect(fn () => $service->register($data2))->toThrow(
-        \Modules\Exception\AppException::class,
+        AppException::class,
         'internship::exceptions.no_slots_available',
     );
 });

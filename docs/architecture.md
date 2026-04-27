@@ -153,6 +153,24 @@ Internara contains 29+ modules organized by domain:
 
 ---
 
+## Technical Installation vs. Business Setup
+
+Internara distinguishes between technical system initialization and business-level configuration to ensure a secure and resilient deployment lifecycle.
+
+### 1. Technical Installation (Support Module)
+Handled by the `Support` module, this phase focuses on infrastructure readiness and initial environment hygiene via the Command Line Interface (CLI).
+- **SystemInstaller**: Automates `.env` creation, app key generation, and storage linking.
+- **InstallationAuditor**: Performs deep-system audits of PHP extensions, file permissions, and database connectivity.
+- **Command**: `php artisan system:install`
+
+### 2. Business Configuration (Setup Module)
+Handled by the `Setup` module, this phase focuses on the application-level data required for operations via the Web interface.
+- **AppSetupService**: Manages the state and invariants of the multi-step configuration wizard.
+- **Wizard**: Guided setup for School identity, Admin accounts, Departments, and Internship programs.
+- **Lockdown**: Automatic route protection and token invalidation upon completion.
+
+---
+
 ## The Auto-Binding Engine
 
 ### How Dependency Injection Works

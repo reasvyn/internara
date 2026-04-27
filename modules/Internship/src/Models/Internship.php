@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Internship\Database\Factories\InternshipFactory;
 use Modules\Internship\Enums\ProgramStatus;
+use Modules\Internship\Enums\Semester;
 use Modules\School\Models\Concerns\HasSchoolRelation;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
@@ -84,7 +85,7 @@ class Internship extends Model
      */
     protected $casts = [
         'academic_year' => 'string',
-        'semester' => \Modules\Internship\Enums\Semester::class,
+        'semester' => Semester::class,
         'date_start' => 'date',
         'date_finish' => 'date',
     ];

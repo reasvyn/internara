@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Services\Contracts;
 
+use Illuminate\Support\Collection;
 use Modules\Assignment\Models\Assignment;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 
@@ -25,5 +26,5 @@ interface AssignmentService extends EloquentQuery
     /**
      * Get all available assignment types.
      */
-    public function getTypes(): \Illuminate\Support\Collection;
+    public function getTypes(): Collection;
 }

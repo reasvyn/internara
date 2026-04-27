@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Livewire;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Assignment\Livewire\Forms\AssignmentForm;
+use Modules\Assignment\Models\Assignment;
 use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\UI\Livewire\RecordManager;
 
@@ -28,7 +28,7 @@ class AssignmentManager extends RecordManager
     {
         $this->service = $assignmentService;
         $this->eventPrefix = 'assignment';
-        $this->modelClass = \Modules\Assignment\Models\Assignment::class;
+        $this->modelClass = Assignment::class;
     }
 
     /**

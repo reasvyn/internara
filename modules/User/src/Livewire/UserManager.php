@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\User\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -37,7 +38,7 @@ class UserManager extends RecordManager
         // SuperAdmin can delete; Admin is read-only
         $this->viewPermission = 'user.view';
         $this->deletePermission = 'user.manage';
-        
+
         $this->searchable = ['name', 'email', 'username'];
         $this->sortable = ['name', 'email', 'username', 'created_at'];
     }
@@ -50,6 +51,7 @@ class UserManager extends RecordManager
         if (in_array($action, ['create', 'update'], true)) {
             return false;
         }
+
         return parent::can($action, $target);
     }
 
@@ -90,7 +92,7 @@ class UserManager extends RecordManager
      * Fetch and transform records for the table.
      */
     #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    public function records(): LengthAwarePaginator
     {
         return $this->userQuery($this->filters)
             ->with(['roles:id,name', 'profile', 'statuses'])
@@ -165,18 +167,18 @@ class UserManager extends RecordManager
 
         $viewer = auth()->user();
 
-        if ($viewer && !$viewer->hasRole(Role::SUPER_ADMIN->value)) {
+        if ($viewer && ! $viewer->hasRole(Role::SUPER_ADMIN->value)) {
             // Admin: show only students, teachers, and mentors
             $subordinateRoles = [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value];
 
             $query->where(function (Builder $q) use ($subordinateRoles): void {
                 $q->whereHas('roles', fn (Builder $r) => $r->whereIn('name', $subordinateRoles))
-                  ->orWhereDoesntHave('roles');
+                    ->orWhereDoesntHave('roles');
             })
-            ->whereDoesntHave('roles', fn (Builder $r) => $r->whereIn('name', [
-                Role::SUPER_ADMIN->value,
-                Role::ADMIN->value,
-            ]));
+                ->whereDoesntHave('roles', fn (Builder $r) => $r->whereIn('name', [
+                    Role::SUPER_ADMIN->value,
+                    Role::ADMIN->value,
+                ]));
         }
 
         // Apply filters

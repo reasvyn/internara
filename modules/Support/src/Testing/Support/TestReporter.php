@@ -6,6 +6,9 @@ namespace Modules\Support\Testing\Support;
 
 use Carbon\Carbon;
 use Illuminate\Console\View\Components\Factory;
+use Illuminate\Support\Facades\File;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Handles formatting and displaying test results and metrics in the console.
@@ -20,7 +23,7 @@ class TestReporter
     public function displayMatrix(array $results): void
     {
         $this->components->info('Section 1: Modular Verification Matrix');
-        
+
         $rows = [];
         foreach ($results as $row) {
             $rows[] = [
@@ -29,7 +32,7 @@ class TestReporter
                 $row['Unit'] ?? '-',
                 $row['Feature'] ?? '-',
                 $row['Browser'] ?? '-',
-                number_format($row['total'] ?? 0, 2) . 's'
+                number_format($row['total'] ?? 0, 2).'s',
             ];
         }
 
@@ -52,18 +55,18 @@ class TestReporter
 
         foreach ($sessionResults as $result) {
             $module = $result['module'];
-            if (!isset($grouped[$module])) {
+            if (! isset($grouped[$module])) {
                 $grouped[$module] = ['Arch' => '-', 'Unit' => '-', 'Feature' => '-', 'Browser' => '-'];
             }
-            
+
             $status = $result['success'] ? '<fg=green>PASS</>' : '<fg=red>FAIL</>';
             $grouped[$module][$result['type']] = $status;
-            
+
             if ($result['success']) {
                 $passedSegments++;
             }
 
-            if (!$latestTimestamp || $result['timestamp'] > $latestTimestamp) {
+            if (! $latestTimestamp || $result['timestamp'] > $latestTimestamp) {
                 $latestTimestamp = $result['timestamp'];
             }
         }
@@ -77,8 +80,8 @@ class TestReporter
 
         // Actual Global Pass Rate Calculation: compared to 100% system baseline
         $passRate = $totalPossibleSegments > 0 ? ($passedSegments / $totalPossibleSegments) * 100 : 0;
-        
-        $stability = match(true) {
+
+        $stability = match (true) {
             $passRate === 100.0 => '<fg=green;options=bold>STABLE</>',
             $passRate >= 80.0 => '<fg=blue>Refining</>',
             $passRate >= 50.0 => '<fg=yellow>UNSTABLE</>',
@@ -88,8 +91,8 @@ class TestReporter
         $this->components->info('System Stability Metrics');
         $this->components->twoColumnDetail('Total System Segments', (string) $totalPossibleSegments);
         $this->components->twoColumnDetail('Segments Verified', "<fg=green>{$passedSegments}</>");
-        $this->components->twoColumnDetail('Last Execution Date', $latestTimestamp ? \Carbon\Carbon::parse($latestTimestamp)->diffForHumans() : 'Unknown');
-        $this->components->twoColumnDetail('Global Pass Rate', number_format($passRate, 2) . '%');
+        $this->components->twoColumnDetail('Last Execution Date', $latestTimestamp ? Carbon::parse($latestTimestamp)->diffForHumans() : 'Unknown');
+        $this->components->twoColumnDetail('Global Pass Rate', number_format($passRate, 2).'%');
         $this->components->twoColumnDetail('Stability Index', $stability);
 
         return (float) $passRate;
@@ -116,7 +119,7 @@ class TestReporter
         foreach ($grouped as $module => $segments) {
             $testsuite = $dom->createElement('testsuite');
             $testsuite->setAttribute('name', $module);
-            
+
             $tests = 0;
             $failures = 0;
 
@@ -126,7 +129,7 @@ class TestReporter
                 $testcase->setAttribute('name', "{$module}: {$segment['type']}");
                 $testcase->setAttribute('classname', "Modules.{$module}.{$segment['type']}");
 
-                if (!($segment['success'] ?? false)) {
+                if (! ($segment['success'] ?? false)) {
                     $failures++;
                     $failure = $dom->createElement('failure');
                     $failure->setAttribute('message', "Test segment {$segment['type']} failed.");
@@ -142,9 +145,9 @@ class TestReporter
             $testsuites->appendChild($testsuite);
         }
 
-        \Illuminate\Support\Facades\File::ensureDirectoryExists(dirname($filePath));
-        \Illuminate\Support\Facades\File::put($filePath, $dom->saveXML());
-        
+        File::ensureDirectoryExists(dirname($filePath));
+        File::put($filePath, $dom->saveXML());
+
         $this->components->info("JUnit XML report exported to: {$filePath}");
     }
 
@@ -158,14 +161,14 @@ class TestReporter
             'exported_at' => now()->toIso8601String(),
             'summary' => [
                 'total_segments' => count($results),
-                'passed' => count(array_filter($results, fn($r) => $r['success'])),
-                'failed' => count(array_filter($results, fn($r) => !$r['success'])),
+                'passed' => count(array_filter($results, fn ($r) => $r['success'])),
+                'failed' => count(array_filter($results, fn ($r) => ! $r['success'])),
             ],
             'results' => $results,
         ];
 
-        \Illuminate\Support\Facades\File::ensureDirectoryExists(dirname($filePath));
-        \Illuminate\Support\Facades\File::put($filePath, json_encode($data, JSON_PRETTY_PRINT));
+        File::ensureDirectoryExists(dirname($filePath));
+        File::put($filePath, json_encode($data, JSON_PRETTY_PRINT));
 
         $this->components->info("JSON report exported to: {$filePath}");
     }
@@ -175,12 +178,12 @@ class TestReporter
      */
     public function displayCoverageSummary(string $output): void
     {
-        if (!str_contains($output, 'Lines:')) {
+        if (! str_contains($output, 'Lines:')) {
             return;
         }
 
         $this->components->info('Section 4: Code Coverage Insights');
-        
+
         // Extract basic coverage stats from Pest output
         preg_match('/Lines:\s+(\d+\.\d+)%/', $output, $lines);
         preg_match('/Methods:\s+(\d+\.\d+)%/', $output, $methods);
@@ -244,7 +247,7 @@ class TestReporter
     protected function table(array $headers, array $rows): void
     {
         // Use standard table rendering instead of missing component
-        $table = new \Symfony\Component\Console\Helper\Table(new \Symfony\Component\Console\Output\ConsoleOutput());
+        $table = new Table(new ConsoleOutput);
         $table->setHeaders($headers)->setRows($rows)->render();
     }
 
@@ -262,6 +265,6 @@ class TestReporter
     protected function line(string $message): void
     {
         // Use standard output for gray text
-        echo $message . PHP_EOL;
+        echo $message.PHP_EOL;
     }
 }

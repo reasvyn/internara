@@ -6,11 +6,12 @@ namespace Modules\Department\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Department\Models\Department;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
 /**
  * Class DepartmentPolicy
- * 
+ *
  * Controls access to Department resources.
  */
 class DepartmentPolicy
@@ -23,7 +24,7 @@ class DepartmentPolicy
     protected function canManage(User $user): bool
     {
         // 1. SuperAdmin bypass
-        if ($user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value)) {
+        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
             return true;
         }
 

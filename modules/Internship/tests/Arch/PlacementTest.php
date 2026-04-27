@@ -15,6 +15,6 @@ test('company service should extend EloquentQuery')
     ->toExtend(EloquentQuery::class);
 
 /**
- * Note: Model isolation for InternshipPlacement is verified via 
+ * Note: Model isolation for InternshipPlacement is verified via
  * System > Arch (DomainTest) in a more holistic manner.
  */

@@ -7,11 +7,13 @@ namespace Modules\User\Models;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
@@ -19,6 +21,8 @@ use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Concerns\HasProfileRelation;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
+use Modules\Status\Enums\Status;
+use Modules\Status\Models\AccountRestriction;
 use Modules\User\Database\Factories\UserFactory;
 use Modules\User\Support\UsernameGenerator;
 use Spatie\MediaLibrary\HasMedia;
@@ -92,8 +96,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at'   => 'datetime',
-            'password'            => 'hashed',
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
             'setup_required' => 'boolean',
         ];
     }
@@ -106,7 +110,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn(string $word) => Str::substr($word, 0, 1))
+            ->map(fn (string $word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 
@@ -150,7 +154,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function verified(): bool
     {
         $isEmailVerified = $this->hasVerifiedEmail();
-        $isStatusVerified = $this->getStatus() === \Modules\Status\Enums\Status::VERIFIED;
+        $isStatusVerified = $this->getStatus() === Status::VERIFIED;
 
         return $isEmailVerified && $isStatusVerified;
     }
@@ -221,20 +225,23 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     // ─── Account Lifecycle Management ────────────────────────────────────────
 
-    public function canTransitionTo(\Modules\Status\Enums\Status $targetStatus): bool
+    public function canTransitionTo(Status $targetStatus): bool
     {
         $currentStatus = $this->getStatus();
-        if (!$currentStatus) return false;
+        if (! $currentStatus) {
+            return false;
+        }
+
         return $currentStatus->canTransitionTo($targetStatus);
     }
 
     public function transitionTo(
-        \Modules\Status\Enums\Status $newStatus,
+        Status $newStatus,
         ?string $reason = null,
         ?string $triggeredById = null,
     ): \Spatie\ModelStatus\Models\Status {
         $currentStatus = $this->getStatus();
-        if ($currentStatus && !$currentStatus->canTransitionTo($newStatus)) {
+        if ($currentStatus && ! $currentStatus->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException("Cannot transition from {$currentStatus->value} to {$newStatus->value}");
         }
         $history = \Spatie\ModelStatus\Models\Status::create([
@@ -246,30 +253,44 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             'ip_address' => request()?->ip(),
         ]);
         $this->setStatus($newStatus->value);
+
         return $history;
     }
 
     public function isProtected(): bool
     {
-        return $this->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ||
-               $this->getStatus() === \Modules\Status\Enums\Status::PROTECTED;
+        return $this->hasRole(Role::SUPER_ADMIN->value) ||
+               $this->getStatus() === Status::PROTECTED;
     }
 
     public function isAccountVerified(): bool
     {
         $status = $this->getStatus();
-        return in_array($status, [\Modules\Status\Enums\Status::VERIFIED, \Modules\Status\Enums\Status::PROTECTED]);
+
+        return in_array($status, [Status::VERIFIED, Status::PROTECTED]);
     }
 
-    public function isAccountRestricted(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::RESTRICTED; }
+    public function isAccountRestricted(): bool
+    {
+        return $this->getStatus() === Status::RESTRICTED;
+    }
 
-    public function isAccountSuspended(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::SUSPENDED; }
+    public function isAccountSuspended(): bool
+    {
+        return $this->getStatus() === Status::SUSPENDED;
+    }
 
-    public function isAccountArchived(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::ARCHIVED; }
+    public function isAccountArchived(): bool
+    {
+        return $this->getStatus() === Status::ARCHIVED;
+    }
 
-    public function isAccountInactive(): bool { return $this->getStatus() === \Modules\Status\Enums\Status::INACTIVE; }
+    public function isAccountInactive(): bool
+    {
+        return $this->getStatus() === Status::INACTIVE;
+    }
 
-    public function getActiveRestrictions(): \Illuminate\Database\Eloquent\Collection
+    public function getActiveRestrictions(): Collection
     {
         return $this->restrictions()->where('is_active', true)->where(function ($q) {
             $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
@@ -281,12 +302,12 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->getActiveRestrictions()->where('restriction_key', $restrictionKey)->isNotEmpty();
     }
 
-    public function getLastStatusChangeAt(): ?\Illuminate\Support\Carbon
+    public function getLastStatusChangeAt(): ?Carbon
     {
         return $this->statusHistory()->latest('created_at')->first()?->created_at;
     }
 
-    public function getLastActivityAt(): ?\Illuminate\Support\Carbon
+    public function getLastActivityAt(): ?Carbon
     {
         return $this->activity()->where('event', 'login')->latest('created_at')->first()?->created_at;
     }
@@ -294,6 +315,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function isIdle(int $days = 180): bool
     {
         $lastActivity = $this->getLastActivityAt();
+
         return $lastActivity ? $lastActivity->addDays($days)->isPast() : $this->created_at->addDays($days)->isPast();
     }
 
@@ -301,17 +323,17 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     {
         $lastActivity = $this->getLastActivityAt();
         $archiveDate = $lastActivity ? $lastActivity->addDays($totalDays) : $this->created_at->addDays($totalDays);
+
         return now()->diffInDays($archiveDate, absolute: false);
     }
 
-    public function statusHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function statusHistory(): HasMany
     {
         return $this->hasMany(\Spatie\ModelStatus\Models\Status::class, 'user_id');
     }
 
-    public function restrictions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function restrictions(): HasMany
     {
-        return $this->hasMany(\Modules\Status\Models\AccountRestriction::class, 'user_id');
+        return $this->hasMany(AccountRestriction::class, 'user_id');
     }
-
 }

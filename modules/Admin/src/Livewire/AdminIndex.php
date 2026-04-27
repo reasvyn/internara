@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Admin\Livewire;
 
+use Livewire\Attributes\Computed;
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Permission\Enums\Role;
-use Livewire\Attributes\Computed;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -25,6 +25,7 @@ class AdminIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'admin::admin-manager';
+
     protected string $titleKey = 'admin::ui.menu.administrators';
 
     /**

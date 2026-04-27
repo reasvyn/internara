@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-use Modules\Setup\Services\Contracts\InstallerService;
+use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Support\Services\Contracts\SystemInstaller;
 
 test('it asks for confirmation before installation', function () {
-    $this->artisan('app:install')
+    $this->artisan('system:install')
         ->expectsConfirmation(
             __('setup::install.confirmation'),
             'no',
@@ -14,7 +15,7 @@ test('it asks for confirmation before installation', function () {
 });
 
 test('it executes the installation steps correctly', function () {
-    $installerMock = Mockery::mock(InstallerService::class);
+    $installerMock = Mockery::mock(SystemInstaller::class);
 
     $installerMock->shouldReceive('ensureEnvFileExists')->once()->andReturn(true);
 
@@ -36,19 +37,28 @@ test('it executes the installation steps correctly', function () {
 
     $installerMock->shouldReceive('createStorageSymlink')->once()->andReturn(true);
 
-    $this->app->instance(InstallerService::class, $installerMock);
+    $this->app->instance(SystemInstaller::class, $installerMock);
 
-    $settingServiceMock = Mockery::mock(\Modules\Setting\Services\Contracts\SettingService::class);
+    $settingServiceMock = Mockery::mock(SettingService::class);
     $settingServiceMock
         ->shouldReceive('getValue')
         ->with('setup_token')
         ->andReturn('test-token-123');
+    $settingServiceMock
+        ->shouldReceive('getValue')
+        ->with('setup_token_expires_at')
+        ->andReturn(null);
+    $settingServiceMock
+        ->shouldReceive('setValue')
+        ->with('setup_token_expires_at', Mockery::any())
+        ->andReturn(true);
+
     $this->app->instance(
-        \Modules\Setting\Services\Contracts\SettingService::class,
+        SettingService::class,
         $settingServiceMock,
     );
 
-    $this->artisan('app:install')
+    $this->artisan('system:install')
         ->expectsConfirmation(
             __('setup::install.confirmation'),
             'yes',
@@ -60,7 +70,7 @@ test('it executes the installation steps correctly', function () {
 });
 
 test('it fails if environment validation fails', function () {
-    $installerMock = Mockery::mock(InstallerService::class);
+    $installerMock = Mockery::mock(SystemInstaller::class);
 
     $installerMock->shouldReceive('ensureEnvFileExists')->once()->andReturn(true);
 
@@ -74,9 +84,9 @@ test('it fails if environment validation fails', function () {
             'functions' => ['proc_open' => true],
         ]);
 
-    $this->app->instance(InstallerService::class, $installerMock);
+    $this->app->instance(SystemInstaller::class, $installerMock);
 
-    $this->artisan('app:install')
+    $this->artisan('system:install')
         ->expectsConfirmation(
             __('setup::install.confirmation'),
             'yes',
@@ -85,7 +95,7 @@ test('it fails if environment validation fails', function () {
 });
 
 test('it forces installation if flag is provided', function () {
-    $installerMock = Mockery::mock(InstallerService::class);
+    $installerMock = Mockery::mock(SystemInstaller::class);
     $installerMock->shouldReceive('ensureEnvFileExists')->andReturn(true);
     $installerMock->shouldReceive('validateEnvironment')->andReturn([
         'requirements' => ['php_version' => true],
@@ -97,18 +107,23 @@ test('it forces installation if flag is provided', function () {
     $installerMock->shouldReceive('runSeeders')->andReturn(true);
     $installerMock->shouldReceive('createStorageSymlink')->andReturn(true);
 
-    $this->app->instance(InstallerService::class, $installerMock);
+    $this->app->instance(SystemInstaller::class, $installerMock);
 
-    $settingServiceMock = Mockery::mock(\Modules\Setting\Services\Contracts\SettingService::class);
+    $settingServiceMock = Mockery::mock(SettingService::class);
     $settingServiceMock
         ->shouldReceive('getValue')
         ->with('setup_token')
         ->andReturn('test-token-123');
+    $settingServiceMock
+        ->shouldReceive('getValue')
+        ->with('setup_token_expires_at')
+        ->andReturn(now()->toIso8601String());
+
     $this->app->instance(
-        \Modules\Setting\Services\Contracts\SettingService::class,
+        SettingService::class,
         $settingServiceMock,
     );
 
     // No expectsConfirmation needed because of --force
-    $this->artisan('app:install', ['--force' => true])->assertSuccessful();
+    $this->artisan('system:install', ['--force' => true])->assertSuccessful();
 });

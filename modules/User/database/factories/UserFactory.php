@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Modules\User\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Modules\User\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Department\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Department\Listeners\DeleteDepartmentsBySchool;
+use Modules\School\Events\SchoolDeleted;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,8 +16,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        \Modules\School\Events\SchoolDeleted::class => [
-            \Modules\Department\Listeners\DeleteDepartmentsBySchool::class,
+        SchoolDeleted::class => [
+            DeleteDepartmentsBySchool::class,
         ],
     ];
 

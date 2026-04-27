@@ -7,6 +7,7 @@ namespace Modules\Mentor\Tests\Feature\Livewire;
 use Livewire\Livewire;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Mentor\Livewire\EvaluateIntern;
+use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
@@ -35,7 +36,7 @@ test('mentor can view evaluation page', function () {
 });
 
 test('mentor can submit evaluation', function () {
-    \Modules\Permission\Models\Permission::firstOrCreate([
+    Permission::firstOrCreate([
         'name' => 'assessment.manage',
         'guard_name' => 'web',
     ]);

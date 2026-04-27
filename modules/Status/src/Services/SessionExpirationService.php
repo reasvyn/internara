@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Modules\User\Models\User;
@@ -59,7 +60,7 @@ class SessionExpirationService
             minutes: $timeout + 5
         );
 
-        Log::info("Session started", [
+        Log::info('Session started', [
             'user_id' => $user->id,
             'session_id' => $sessionId,
             'role' => $user->role,
@@ -91,7 +92,7 @@ class SessionExpirationService
     public function isExpired(string $sessionId): bool
     {
         $startedAt = Cache::get("session:{$sessionId}:started_at");
-        if (!$startedAt) {
+        if (! $startedAt) {
             return true;  // No session data = expired
         }
 
@@ -100,7 +101,8 @@ class SessionExpirationService
             return true;
         }
 
-        $expiresAt = \Carbon\Carbon::parse($startedAt)->addMinutes($timeout);
+        $expiresAt = Carbon::parse($startedAt)->addMinutes($timeout);
+
         return now()->greaterThan($expiresAt);
     }
 
@@ -110,7 +112,7 @@ class SessionExpirationService
     public function getRemainingMinutes(string $sessionId): int
     {
         $startedAt = Cache::get("session:{$sessionId}:started_at");
-        if (!$startedAt) {
+        if (! $startedAt) {
             return 0;
         }
 
@@ -119,7 +121,8 @@ class SessionExpirationService
             return 0;
         }
 
-        $expiresAt = \Carbon\Carbon::parse($startedAt)->addMinutes($timeout);
+        $expiresAt = Carbon::parse($startedAt)->addMinutes($timeout);
+
         return max(0, now()->diffInMinutes($expiresAt, absolute: false));
     }
 
@@ -129,6 +132,7 @@ class SessionExpirationService
     public function isApproachingExpiration(string $sessionId): bool
     {
         $remaining = $this->getRemainingMinutes($sessionId);
+
         return $remaining > 0 && $remaining <= self::INACTIVITY_WARNING_MINUTES;
     }
 
@@ -146,9 +150,9 @@ class SessionExpirationService
         Cache::forget("session:{$sessionId}:ip_address");
 
         // Log session termination
-        $this->auditLogger->logSessionExpired($user, $reason ?? "Manual logout", $ipAddress);
+        $this->auditLogger->logSessionExpired($user, $reason ?? 'Manual logout', $ipAddress);
 
-        Log::info("Session invalidated", [
+        Log::info('Session invalidated', [
             'user_id' => $user->id,
             'session_id' => $sessionId,
             'reason' => $reason,
@@ -162,12 +166,12 @@ class SessionExpirationService
     private function getSessionTimeout(string $sessionId): ?int
     {
         $userId = Cache::get("session:{$sessionId}:user_id");
-        if (!$userId) {
+        if (! $userId) {
             return null;
         }
 
         $user = User::find($userId);
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 

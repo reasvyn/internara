@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Livewire;
 
-use Modules\Guidance\Services\Contracts\HandbookService;
 use Livewire\Attributes\Computed;
+use Modules\Guidance\Services\Contracts\HandbookService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class HandbookIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'guidance::manage-handbook';
+
     protected string $titleKey = 'guidance::ui.manage_title';
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Services;
 
+use Illuminate\Support\Str;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Models\PlacementHistory;
 use Modules\Internship\Services\Contracts\PlacementLogger as Contract;
@@ -25,7 +26,7 @@ class PlacementLoggerService extends BaseService implements Contract
         ?string $placementId = null,
     ): PlacementHistory {
         return PlacementHistory::create([
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'registration_id' => $registration->id,
             'placement_id' => $placementId ?: $registration->placement_id,
             'action' => $action,

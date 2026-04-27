@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Tests\Unit\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
 use Modules\Assessment\Services\Contracts\CompetencyService;
 use Modules\Internship\Services\Contracts\RegistrationService;
@@ -26,8 +27,8 @@ describe('Journal Service', function () {
         Gate::shouldReceive('authorize')
             ->once()
             ->with('create', JournalEntry::class)
-            ->andThrow(\Illuminate\Auth\Access\AuthorizationException::class);
+            ->andThrow(AuthorizationException::class);
 
         $this->service->create(['registration_id' => 'some-uuid']);
-    })->throws(\Illuminate\Auth\Access\AuthorizationException::class);
+    })->throws(AuthorizationException::class);
 });

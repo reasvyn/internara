@@ -163,40 +163,37 @@ Modules managing the internship lifecycle from enrollment to completion.
 
 ### Setup Module
 **Path**: `modules/Setup/`
-**Responsibility**: **One-time installation wizard**
+**Responsibility**: **Application business configuration and onboarding wizard**
 **Key Features**:
-- 8-step guided setup process
-- Institution configuration
-- Admin account creation
-- System preferences
-- Department setup
-- Internship program initialization
-- Security lockdown after completion
+- Multi-step guided configuration process
+- Institution identity setup
+- SuperAdmin account initialization
+- System preference management
+- Departmental structure setup
+- Internship program bootstrapping
+- Automatic security lockdown after completion
 
 **Setup Wizard Steps**:
-1. Welcome
-2. Environment (name, timezone, locale)
-3. Institution (school info, logo)
-4. Admin Account (email, password)
-5. System Config (queue, cache, logging)
-6. Departments (organizational structure)
-7. Internship Program (duration, dates, grading)
-8. Complete (summary, lock)
+1. School/Institution (identity, logo)
+2. Administrator Account (superadmin credentials)
+3. Department Configuration (organizational units)
+4. Internship Program (dates, requirements)
+5. System & SMTP (mail configuration)
+6. Complete (summary and lockdown)
 
 **Key Files**:
-- `src/Services/SetupService.php` — Setup coordination
-- `src/Livewire/SetupWelcome.php` — Step 1
-- `src/Livewire/EnvironmentSetup.php` — Step 2
-- `src/Http/Middleware/RequireSetupAccess.php` — Security
-- `src/Http/Middleware/ProtectSetupRoute.php` — Lockdown
+- `src/Services/AppSetupService.php` — Setup lifecycle coordination
+- `src/Domain/Models/SetupProcess.php` — State invariant management
+- `src/Http/Middleware/RequireSetupAccess.php` — Security enforcement
+- `src/Http/Middleware/ProtectSetupRoute.php` — Completion lockdown
 
 **Security**:
-- One-time setup token
-- Automatic route lockdown (404 after completion)
-- Emergency reset: `php artisan app:setup-reset`
+- **Atomic Invariants**: Steps must be completed sequentially
+- **Route Lockdown**: All setup routes throw 404 after `app_installed` flag is true
+- **Emergency Reset**: `php artisan setup:reset`
 
 **Relations**:
-- Uses: Internship, School, User, Permission modules
+- Uses: Internship, School, User, Setting modules
 - Used by: Middleware (system-wide)
 
 **Testing**: `tests/Feature/SetupWizardTest.php`
@@ -798,21 +795,22 @@ Core infrastructure and shared services.
 
 ### Support Module
 **Path**: `modules/Support/`
-**Responsibility**: Help and support documentation
+**Responsibility**: **Infrastructure support, technical installation, and help documentation**
 **Key Features**:
-- Help articles
-- FAQ management
-- Ticket tracking
-- Contact support
-- Knowledge base
+- **System Installation**: Automated technical initialization via CLI
+- **Environment Auditing**: Pre-flight checks for requirements and permissions
+- Help article and FAQ management
+- Knowledge base for students and mentors
+- Support ticket integration
 
 **Key Files**:
-- `src/Models/HelpArticle.php`
-- `src/Livewire/SupportCenter.php`
+- `src/Services/SystemInstaller.php` — Technical installation engine
+- `src/Services/InstallationAuditor.php` — Environment requirement auditor
+- `src/Console/Commands/SystemInstallCommand.php` — `system:install` command
 
 **Relations**:
-- Uses: Media module
-- Used by: All users
+- Uses: Media, Setting modules
+- Used by: All users, System Administrators
 
 ---
 

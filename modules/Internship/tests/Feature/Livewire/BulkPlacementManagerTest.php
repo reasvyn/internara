@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Livewire;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Modules\Core\Academic\Support\AcademicYear;
@@ -14,8 +15,6 @@ use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
-use Modules\School\Models\School;
-use Modules\Student\Models\Student;
 use Modules\User\Models\User;
 
 uses(LazilyRefreshDatabase::class);
@@ -49,7 +48,7 @@ describe('BulkPlacementManager Authorization', function () {
         $teacher->assignRole('teacher');
         $this->actingAs($teacher);
 
-        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $this->expectException(AuthorizationException::class);
 
         Livewire::test(BulkPlacementManager::class);
     });

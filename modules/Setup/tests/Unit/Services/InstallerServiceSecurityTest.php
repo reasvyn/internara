@@ -13,7 +13,7 @@ describe('InstallerService S1 Security', function () {
     test('it enforces authorization before installation', function () {
         $settingService = $this->mock(SettingService::class);
         $auditor = $this->mock(SystemAuditor::class);
-        
+
         Gate::shouldReceive('authorize')->once()->with('install', InstallerService::class);
 
         // Standardized mock avoiding redeclaration

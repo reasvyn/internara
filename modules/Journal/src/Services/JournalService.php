@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Services;
 
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Modules\Assessment\Services\Contracts\CompetencyService;
 use Modules\Exception\AppException;
+use Modules\Guidance\Services\Contracts\HandbookService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService as Contract;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Shared\Services\EloquentQuery;
 
 /**
@@ -54,7 +58,7 @@ class JournalService extends EloquentQuery implements Contract
      */
     public function create(array $data): JournalEntry
     {
-        \Illuminate\Support\Facades\Gate::authorize('create', JournalEntry::class);
+        Gate::authorize('create', JournalEntry::class);
 
         // Gating Invariant: Briefing/Guidance must be completed if enabled
         $registrationId = $data['registration_id'];
@@ -67,8 +71,8 @@ class JournalService extends EloquentQuery implements Contract
             );
         }
 
-        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
-        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+        $settingService = app(SettingService::class);
+        $guidanceService = app(HandbookService::class);
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
@@ -95,7 +99,7 @@ class JournalService extends EloquentQuery implements Contract
 
         // Submission Window Invariant: journals must be submitted within the defined window
         $window = (int) setting('journal_submission_window', 7);
-        $diff = now()->diffInDays(\Illuminate\Support\Carbon::parse($journalDate), false);
+        $diff = now()->diffInDays(Carbon::parse($journalDate), false);
 
         if (abs($diff) > $window && $diff < 0) {
             throw new AppException(
@@ -240,6 +244,7 @@ class JournalService extends EloquentQuery implements Contract
     public function isLocked(mixed $id): bool
     {
         $entry = $this->find($id);
+
         return in_array($entry->latestStatus()?->name, ['approved', 'verified']);
     }
 

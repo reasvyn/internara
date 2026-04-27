@@ -6,8 +6,10 @@ namespace Modules\Mentor\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Internship\Models\InternshipRegistration;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\User\Services\Contracts\UserService;
 
 class MentoringLog extends Model
 {
@@ -31,14 +33,14 @@ class MentoringLog extends Model
     public function registration(): BelongsTo
     {
         return $this->belongsTo(
-            \Modules\Internship\Models\InternshipRegistration::class,
+            InternshipRegistration::class,
             'registration_id',
         );
     }
 
     public function causer(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'causer_id',
         );

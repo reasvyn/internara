@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Modules\Exception\AppException;
+use Modules\Exception\RecordNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -105,7 +106,7 @@ trait HandlesAppException
             $message = $exception->getUserMessage();
         }
 
-        if ($exception instanceof \Modules\Exception\RecordNotFoundException) {
+        if ($exception instanceof RecordNotFoundException) {
             $message = $exception->getMessage();
             flash()->warning($message);
 

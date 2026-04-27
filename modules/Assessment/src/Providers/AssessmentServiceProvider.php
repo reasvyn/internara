@@ -5,6 +5,17 @@ declare(strict_types=1);
 namespace Modules\Assessment\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Assessment\Models\Assessment;
+use Modules\Assessment\Models\Competency;
+use Modules\Assessment\Models\DepartmentCompetency;
+use Modules\Assessment\Models\StudentCompetencyLog;
+use Modules\Assessment\Policies\AssessmentPolicy;
+use Modules\Assessment\Policies\CompetencyPolicy;
+use Modules\Assessment\Services\AnalyticsService;
+use Modules\Assessment\Services\AssessmentService;
+use Modules\Assessment\Services\CertificateService;
+use Modules\Assessment\Services\CompetencyService;
+use Modules\Assessment\Services\ComplianceService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -23,10 +34,10 @@ class AssessmentServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Assessment\Models\Assessment::class => \Modules\Assessment\Policies\AssessmentPolicy::class,
-        \Modules\Assessment\Models\Competency::class => \Modules\Assessment\Policies\CompetencyPolicy::class,
-        \Modules\Assessment\Models\DepartmentCompetency::class => \Modules\Assessment\Policies\CompetencyPolicy::class,
-        \Modules\Assessment\Models\StudentCompetencyLog::class => \Modules\Assessment\Policies\AssessmentPolicy::class,
+        Assessment::class => AssessmentPolicy::class,
+        Competency::class => CompetencyPolicy::class,
+        DepartmentCompetency::class => CompetencyPolicy::class,
+        StudentCompetencyLog::class => AssessmentPolicy::class,
     ];
 
     /**
@@ -55,11 +66,11 @@ class AssessmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Assessment\Services\Contracts\AssessmentService::class => \Modules\Assessment\Services\AssessmentService::class,
-            \Modules\Assessment\Services\Contracts\AnalyticsService::class => \Modules\Assessment\Services\AnalyticsService::class,
-            \Modules\Assessment\Services\Contracts\CertificateService::class => \Modules\Assessment\Services\CertificateService::class,
-            \Modules\Assessment\Services\Contracts\ComplianceService::class => \Modules\Assessment\Services\ComplianceService::class,
-            \Modules\Assessment\Services\Contracts\CompetencyService::class => \Modules\Assessment\Services\CompetencyService::class,
+            \Modules\Assessment\Services\Contracts\AssessmentService::class => AssessmentService::class,
+            \Modules\Assessment\Services\Contracts\AnalyticsService::class => AnalyticsService::class,
+            \Modules\Assessment\Services\Contracts\CertificateService::class => CertificateService::class,
+            \Modules\Assessment\Services\Contracts\ComplianceService::class => ComplianceService::class,
+            \Modules\Assessment\Services\Contracts\CompetencyService::class => CompetencyService::class,
         ];
     }
 

@@ -29,7 +29,7 @@ class VerificationService
         $user->email_verified_at = now();
         $user->save();
 
-        Log::info("Email verified for user", [
+        Log::info('Email verified for user', [
             'user_id' => $user->id,
             'verified_by' => $verifiedBy?->id ?? 'user_action',
         ]);
@@ -40,12 +40,12 @@ class VerificationService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::ACTIVATED,
-                    reason: "Email verified - auto-activated",
+                    reason: 'Email verified - auto-activated',
                     triggeredBy: null,
                     userAgent: 'System/EmailVerification',
                 );
             } catch (\Exception $e) {
-                Log::warning("Failed to auto-activate on email verification", [
+                Log::warning('Failed to auto-activate on email verification', [
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),
                 ]);
@@ -63,18 +63,18 @@ class VerificationService
             $this->statusTransition->transition(
                 user: $user,
                 newStatus: Status::VERIFIED,
-                reason: $reason ?? "Manually verified by administrator",
+                reason: $reason ?? 'Manually verified by administrator',
                 triggeredBy: $verifiedBy,
                 userAgent: 'Admin/ManualVerification',
             );
 
-            Log::info("Account manually verified", [
+            Log::info('Account manually verified', [
                 'user_id' => $user->id,
                 'verified_by' => $verifiedBy->id,
                 'reason' => $reason,
             ]);
         } catch (\Exception $e) {
-            Log::error("Failed to manually verify account", [
+            Log::error('Failed to manually verify account', [
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
             ]);
@@ -95,7 +95,7 @@ class VerificationService
      */
     public function isReadyForAutoVerification(User $user): bool
     {
-        if (!$this->isEmailVerified($user)) {
+        if (! $this->isEmailVerified($user)) {
             return false;
         }
 
@@ -111,7 +111,7 @@ class VerificationService
      */
     public function getHoursUntilAutoVerification(User $user): int
     {
-        if (!$this->isEmailVerified($user)) {
+        if (! $this->isEmailVerified($user)) {
             return -1; // Not verified yet
         }
 
@@ -143,7 +143,7 @@ class VerificationService
         $user->verification_metadata = $metadata;
         $user->save();
 
-        Log::info("MFA verification completed", [
+        Log::info('MFA verification completed', [
             'user_id' => $user->id,
             'method' => $method,
         ]);
@@ -156,7 +156,7 @@ class VerificationService
     {
         $mfaMethods = $user->verification_metadata['mfa_methods'] ?? [];
 
-        if (!isset($mfaMethods[$method])) {
+        if (! isset($mfaMethods[$method])) {
             return false;
         }
 

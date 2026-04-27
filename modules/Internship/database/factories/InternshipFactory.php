@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Internship\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use Modules\Internship\Models\Internship;
 use Modules\School\Services\Contracts\SchoolService;
 
 class InternshipFactory extends Factory
@@ -12,7 +14,7 @@ class InternshipFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = \Modules\Internship\Models\Internship::class;
+    protected $model = Internship::class;
 
     /**
      * Define the model's default state.
@@ -20,7 +22,7 @@ class InternshipFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'title' => $this->faker->unique()->sentence(3),
             'description' => $this->faker->paragraph,
             'academic_year' => date('Y').'/'.(date('Y') + 1),

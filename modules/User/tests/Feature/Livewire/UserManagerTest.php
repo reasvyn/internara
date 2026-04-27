@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace Modules\User\Tests\Feature\Livewire;
 
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
+use Modules\Permission\Enums\Role;
 use Modules\User\Livewire\UserManager;
 use Modules\User\Models\User;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
-        return $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value) ? true : null;
+    Gate::before(function ($user, $ability) {
+        return $user->hasRole(Role::SUPER_ADMIN->value) ? true : null;
     });
 
     $this->seed(PermissionSeeder::class);

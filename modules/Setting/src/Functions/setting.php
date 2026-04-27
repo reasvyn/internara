@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Arr;
 use Modules\Setting\Facades\Setting;
 
 if (! function_exists('setting')) {
@@ -21,7 +22,7 @@ if (! function_exists('setting')) {
             return Setting::getFacadeRoot();
         }
 
-        if (is_array($key) && \Illuminate\Support\Arr::isAssoc($key)) {
+        if (is_array($key) && Arr::isAssoc($key)) {
             return Setting::setValue($key);
         }
 

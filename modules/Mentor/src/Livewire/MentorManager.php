@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mentor\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -24,6 +25,7 @@ class MentorManager extends RecordManager
     public UserForm $form;
 
     public array $credentialSlips = [];
+
     public bool $credentialSlipsModal = false;
 
     /**
@@ -87,7 +89,7 @@ class MentorManager extends RecordManager
      * Fetch and transform records for the table.
      */
     #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    public function records(): LengthAwarePaginator
     {
         return $this->managedMentorQuery($this->filters)
             ->with(['statuses'])
@@ -98,7 +100,9 @@ class MentorManager extends RecordManager
     public function reissueActivationCode(mixed $id): void
     {
         $user = $this->service->find($id);
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
 
         $this->authorize('update', $user);
 
@@ -203,8 +207,12 @@ class MentorManager extends RecordManager
             $this->applyLatestStatusFilter($query, $selectedStatus);
         }
 
-        if ($createdFrom) $query->whereDate('created_at', '>=', $createdFrom);
-        if ($createdTo) $query->whereDate('created_at', '<=', $createdTo);
+        if ($createdFrom) {
+            $query->whereDate('created_at', '>=', $createdFrom);
+        }
+        if ($createdTo) {
+            $query->whereDate('created_at', '<=', $createdTo);
+        }
 
         return $query;
     }

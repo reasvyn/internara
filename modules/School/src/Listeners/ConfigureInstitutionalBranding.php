@@ -11,7 +11,7 @@ use Modules\Setup\Services\Contracts\SetupService;
 
 /**
  * Handles the SetupFinalized event to configure institutional branding.
- * 
+ *
  * [S3 - Scalable] School-specific finalization logic decoupled from Setup module.
  */
 class ConfigureInstitutionalBranding
@@ -24,7 +24,7 @@ class ConfigureInstitutionalBranding
     public function handle(SetupFinalized $event): void
     {
         $school = $this->schoolService->getSchool();
-        
+
         if ($school) {
             $this->settingService->setValue([
                 SetupService::SETTING_BRAND_NAME => $school->name,

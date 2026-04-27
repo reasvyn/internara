@@ -6,6 +6,7 @@ namespace Modules\Report\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Shared\Models\Concerns\HasUuid;
+use Modules\User\Services\Contracts\UserService;
 
 class GeneratedReport extends Model
 {
@@ -32,7 +33,7 @@ class GeneratedReport extends Model
      */
     public function user()
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'user_id',
         );

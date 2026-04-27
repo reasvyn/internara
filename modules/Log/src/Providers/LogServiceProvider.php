@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Log\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Log\Services\ActivityService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -43,7 +44,7 @@ class LogServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Log\Services\Contracts\ActivityService::class => \Modules\Log\Services\ActivityService::class,
+            \Modules\Log\Services\Contracts\ActivityService::class => ActivityService::class,
         ];
     }
 

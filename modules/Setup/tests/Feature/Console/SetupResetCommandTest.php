@@ -15,7 +15,7 @@ test('it resets setup state correctly', function () {
     $settingService->setValue('setup_token', 'old-token');
     Cache::put('user.super_admin', true);
 
-    $this->artisan('app:setup-reset')
+    $this->artisan('setup:reset')
         ->expectsConfirmation(
             'This will unlock the setup routes and allow reconfiguration. Continue?',
             'yes',
@@ -34,7 +34,7 @@ test('it resets setup state correctly', function () {
 });
 
 test('it fails if reset not confirmed', function () {
-    $this->artisan('app:setup-reset')
+    $this->artisan('setup:reset')
         ->expectsConfirmation(
             'This will unlock the setup routes and allow reconfiguration. Continue?',
             'no',
@@ -46,7 +46,7 @@ test('it forces reset if flag provided', function () {
     $settingService = app(SettingService::class);
     $settingService->setValue('app_installed', true);
 
-    $this->artisan('app:setup-reset', ['--force' => true])->assertSuccessful();
+    $this->artisan('setup:reset', ['--force' => true])->assertSuccessful();
 
     expect($settingService->getValue('app_installed'))->toBeFalse();
 });

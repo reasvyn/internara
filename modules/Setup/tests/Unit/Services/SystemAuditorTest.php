@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Modules\Setup\Services\SystemAuditor;
@@ -11,11 +12,11 @@ use Modules\Setup\Services\SystemAuditor;
 describe('SystemAuditor Unit Test', function () {
     beforeEach(function () {
         app()->setLocale('en');
-        $this->service = new SystemAuditor();
+        $this->service = new SystemAuditor;
     });
 
     test('it can perform a full system audit', function () {
-        $dbConnection = \Mockery::mock(\Illuminate\Database\ConnectionInterface::class);
+        $dbConnection = \Mockery::mock(ConnectionInterface::class);
         $dbConnection->shouldReceive('getPdo')->andReturn(true);
         DB::shouldReceive('connection')->andReturn($dbConnection);
         File::shouldReceive('exists')->andReturn(true);
@@ -29,7 +30,7 @@ describe('SystemAuditor Unit Test', function () {
         $requirements = $this->service->checkRequirements();
 
         expect($requirements)->toBeArray();
-        
+
         $versionKey = __('setup::wizard.environment.audit.php_version', ['version' => '8.2.0']);
         expect($requirements)->toHaveKey($versionKey);
     });
@@ -45,12 +46,12 @@ describe('SystemAuditor Unit Test', function () {
                 __('setup::wizard.environment.audit.storage_logs'),
                 __('setup::wizard.environment.audit.storage_framework'),
                 __('setup::wizard.environment.audit.bootstrap_cache'),
-                __('setup::wizard.environment.audit.env_file')
+                __('setup::wizard.environment.audit.env_file'),
             ]);
     });
 
     test('it audits database connectivity', function () {
-        $dbConnection = \Mockery::mock(\Illuminate\Database\ConnectionInterface::class);
+        $dbConnection = \Mockery::mock(ConnectionInterface::class);
         $dbConnection->shouldReceive('getPdo')->andReturn(true);
         DB::shouldReceive('connection')->andReturn($dbConnection);
 
@@ -60,7 +61,7 @@ describe('SystemAuditor Unit Test', function () {
     });
 
     test('it passes when all environment criteria are met', function () {
-        $dbConnection = \Mockery::mock(\Illuminate\Database\ConnectionInterface::class);
+        $dbConnection = \Mockery::mock(ConnectionInterface::class);
         $dbConnection->shouldReceive('getPdo')->andReturn(true);
         DB::shouldReceive('connection')->andReturn($dbConnection);
         File::shouldReceive('exists')->andReturn(true);
@@ -72,7 +73,7 @@ describe('SystemAuditor Unit Test', function () {
 
     describe('Failure Scenarios', function () {
         test('it fails audit when a permission is missing', function () {
-            $dbConnection = \Mockery::mock(\Illuminate\Database\ConnectionInterface::class);
+            $dbConnection = \Mockery::mock(ConnectionInterface::class);
             $dbConnection->shouldReceive('getPdo')->andReturn(true);
             DB::shouldReceive('connection')->andReturn($dbConnection);
 

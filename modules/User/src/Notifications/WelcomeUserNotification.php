@@ -37,7 +37,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
             'email' => $notifiable->email,
         ]);
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject(__('user::notifications.welcome_subject', ['school' => $brandName]))
             ->greeting(__('user::notifications.welcome_greeting', ['name' => $notifiable->name]))
             ->line(__('user::notifications.welcome_line_1', ['school' => $brandName]))

@@ -6,15 +6,19 @@ namespace Modules\User\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Exception\AppException;
 use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
+use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
-use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\User\Services\Contracts\UserService as Contract;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,7 +33,7 @@ class UserService extends EloquentQuery implements Contract
     public function __construct(
         User $model,
         protected SuperAdminService $superAdminService,
-        protected \Modules\Profile\Services\Contracts\ProfileService $profileService,
+        protected ProfileService $profileService,
     ) {
         $this->setModel($model);
         $this->setSearchable(['name', 'email', 'username']);
@@ -47,7 +51,7 @@ class UserService extends EloquentQuery implements Contract
             'staff' => $this->model->newQuery()->role([Role::TEACHER->value, Role::MENTOR->value])->count(),
             'active' => $this->model->newQuery()->whereHas('statuses', function ($q) {
                 $q->where('name', User::STATUS_ACTIVE)
-                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
             })->count(),
         ];
     }
@@ -76,14 +80,14 @@ class UserService extends EloquentQuery implements Contract
      */
     public function createWithProfile(array $userData, array $profileData = []): User
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use (
+        return DB::transaction(function () use (
             $userData,
             $profileData,
         ) {
             $roles = Arr::wrap($userData['roles'] ?? [Role::STUDENT->value]);
             $isPrivilegedRole = count(array_intersect($roles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
             $status = $isPrivilegedRole
-                ? \Modules\Status\Enums\Status::VERIFIED->value
+                ? Status::VERIFIED->value
                 : ($userData['status'] ?? User::STATUS_ACTIVE);
 
             if (in_array(Role::SUPER_ADMIN->value, $roles, true) && setting('app_installed', false)) {
@@ -93,7 +97,7 @@ class UserService extends EloquentQuery implements Contract
                 );
             }
 
-            $userData['password'] = $userData['password'] ?? \Illuminate\Support\Str::password(32);
+            $userData['password'] = $userData['password'] ?? Str::password(32);
 
             // Enforce hierarchical authority for user creation, except during initial setup
             if (setting('app_installed', false) && ! $this->skipAuthorization) {
@@ -112,12 +116,12 @@ class UserService extends EloquentQuery implements Contract
                 // Standard User Creation
                 // [S1 - Secure] Sanitize transient fields that are not part of the database schema
                 $filteredData = Arr::except($userData, [
-                    'roles', 
-                    'status', 
+                    'roles',
+                    'status',
                     'password_confirmation',
                     'captcha_token',
                 ]);
-                
+
                 $user = $this->withoutAuthorization()->parentCreate($filteredData);
 
                 $this->handleUserAvatar($user, $userData['avatar_file'] ?? null);
@@ -141,7 +145,7 @@ class UserService extends EloquentQuery implements Contract
 
             $this->skipAuthorization = false;
 
-            $user->notify(new WelcomeUserNotification());
+            $user->notify(new WelcomeUserNotification);
 
             return $user;
         });
@@ -244,9 +248,9 @@ class UserService extends EloquentQuery implements Contract
         $isPrivilegedRole = count(array_intersect($effectiveRoles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
 
         if ($status !== null) {
-            $updatedUser->setStatus($isPrivilegedRole ? \Modules\Status\Enums\Status::VERIFIED->value : $status);
+            $updatedUser->setStatus($isPrivilegedRole ? Status::VERIFIED->value : $status);
         } elseif ($isPrivilegedRole) {
-            $updatedUser->setStatus(\Modules\Status\Enums\Status::VERIFIED->value);
+            $updatedUser->setStatus(Status::VERIFIED->value);
         }
 
         if ($isPrivilegedRole) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Setting\Livewire;
 
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\Setting\Services\Contracts\SettingService;
@@ -166,14 +167,14 @@ class SystemSetting extends Component
         if ($this->brand_logo) {
             $settings['brand_logo'] = $this->brand_logo->store('brand', 'public');
             // Convert to URL if using public disk
-            $settings['brand_logo'] = \Illuminate\Support\Facades\Storage::url(
+            $settings['brand_logo'] = Storage::url(
                 $settings['brand_logo'],
             );
         }
 
         if ($this->site_favicon) {
             $settings['site_favicon'] = $this->site_favicon->store('brand', 'public');
-            $settings['site_favicon'] = \Illuminate\Support\Facades\Storage::url(
+            $settings['site_favicon'] = Storage::url(
                 $settings['site_favicon'],
             );
         }

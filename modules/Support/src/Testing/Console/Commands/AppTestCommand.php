@@ -63,12 +63,13 @@ class AppTestCommand extends Command
         if ($this->option('clear-sessions')) {
             TestSessionManager::clearAll();
             $this->components->info('Persistent testing sessions cleared.');
+
             return self::SUCCESS;
         }
 
         $session = new TestSessionManager($this->option('session'));
         $reporter = new TestReporter($this->components);
-        
+
         // Get all possible targets to establish the 100% baseline for reporting
         $allPossibleTargets = $discovery->identify([], false);
         $totalPossibleSegments = $this->calculateTotalSegments($allPossibleTargets);
@@ -76,7 +77,7 @@ class AppTestCommand extends Command
         if ($this->option('report')) {
             $this->displayBanner();
             $passRate = $reporter->displaySessionMetrics($session->getSessionId(), $session->getResults(), $totalPossibleSegments);
-            
+
             return $this->evaluateStability($passRate);
         }
 
@@ -91,11 +92,13 @@ class AppTestCommand extends Command
             foreach ($missing as $module) {
                 $this->components->error("Target module [{$module}] was not found or is currently disabled.");
             }
+
             return self::FAILURE;
         }
 
         if (empty($targets)) {
             $this->components->warn('No testable targets identified for the current configuration.');
+
             return self::SUCCESS;
         }
 
@@ -104,6 +107,7 @@ class AppTestCommand extends Command
             foreach ($targets as $target) {
                 $this->line(" - {$target['label']} (<fg=gray>{$target['path']}</>)");
             }
+
             return self::SUCCESS;
         }
 
@@ -127,12 +131,14 @@ class AppTestCommand extends Command
                 if (File::isDirectory($testPath)) {
                     if ($this->shouldSkipSegment($sub)) {
                         $row[$sub] = '<fg=yellow>SKIP</>';
+
                         continue;
                     }
 
                     if ($this->option('continue') && $session->isPassed($target['label'], $sub)) {
                         $row[$sub] = '<fg=green>PASS</> (Saved)';
                         $currentSegment++;
+
                         continue;
                     }
 
@@ -155,14 +161,15 @@ class AppTestCommand extends Command
                             $segmentError,
                             (bool) $this->option('coverage')
                         );
+
                         return $success;
                     });
 
                     $session->record($target['label'], $sub, $success, $segmentOutput, $segmentError);
-                    $allOutput .= $segmentOutput . $segmentError;
+                    $allOutput .= $segmentOutput.$segmentError;
 
                     $duration = microtime(true) - $segmentStart;
-                    $row[$sub] = $success ? '<fg=green>PASS</> (' . number_format($duration, 2) . 's)' : '<fg=red>FAIL</>';
+                    $row[$sub] = $success ? '<fg=green>PASS</> ('.number_format($duration, 2).'s)' : '<fg=red>FAIL</>';
                     $row['total'] += $duration;
 
                     if (! $success) {
@@ -181,7 +188,7 @@ class AppTestCommand extends Command
         $totalDuration = microtime(true) - $startTime;
         $reporter->displayMatrix($results);
         $reporter->displayPerformance($totalSegments, $totalSegments - count($failures), $totalDuration);
-        
+
         if ($this->option('coverage')) {
             $reporter->displayCoverageSummary($allOutput);
         }
@@ -200,6 +207,7 @@ class AppTestCommand extends Command
         // Stability check for CI/CD
         if ($this->option('fail-on-stability')) {
             $passRate = ($totalSegments - count($failures)) / $totalSegments * 100;
+
             return $this->evaluateStability((float) $passRate);
         }
 
@@ -213,7 +221,7 @@ class AppTestCommand extends Command
     {
         $this->newLine();
         $this->line(' <fg=white;bg=magenta;options=bold> INTERNARA </> <fg=magenta;options=bold>MODULAR VERIFICATION ENGINE</>');
-        $this->line(' <fg=gray>Advanced Infrastructure Testing Tool v' . config('app.version', '0.14.0') . '</>');
+        $this->line(' <fg=gray>Advanced Infrastructure Testing Tool v'.config('app.version', '0.14.0').'</>');
         $this->newLine();
     }
 
@@ -223,9 +231,10 @@ class AppTestCommand extends Command
     protected function evaluateStability(float $passRate): int
     {
         $threshold = (float) $this->option('fail-on-stability', 100);
-        
+
         if ($passRate < $threshold) {
-            $this->components->error("Stability failure: Global pass rate (" . number_format($passRate, 2) . "%) is below required threshold (" . number_format($threshold, 2) . "%).");
+            $this->components->error('Stability failure: Global pass rate ('.number_format($passRate, 2).'%) is below required threshold ('.number_format($threshold, 2).'%).');
+
             return self::FAILURE;
         }
 
@@ -240,9 +249,15 @@ class AppTestCommand extends Command
         $subLower = strtolower($sub);
         $onlyFlags = $this->option('arch-only') || $this->option('unit-only') || $this->option('feature-only') || $this->option('browser-only');
 
-        if ($this->option("no-{$subLower}")) return true;
-        if ($sub === 'Browser' && !$this->option('with-browser') && !$this->option('browser-only')) return true;
-        if ($onlyFlags && !$this->option("{$subLower}-only")) return true;
+        if ($this->option("no-{$subLower}")) {
+            return true;
+        }
+        if ($sub === 'Browser' && ! $this->option('with-browser') && ! $this->option('browser-only')) {
+            return true;
+        }
+        if ($onlyFlags && ! $this->option("{$subLower}-only")) {
+            return true;
+        }
 
         return false;
     }
@@ -260,6 +275,7 @@ class AppTestCommand extends Command
                 }
             }
         }
+
         return $count;
     }
 }

@@ -7,10 +7,12 @@ namespace Modules\Shared\Tests\Unit\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Shared\Services\Contracts\EloquentQuery as EloquentQueryContract;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\User\Models\User;
 
 uses(RefreshDatabase::class);
 
@@ -41,13 +43,13 @@ describe('EloquentQuery Base Service', function () {
         $this->service = new QueryServiceStub;
 
         // S1 Security Alignment: Mock user with super-admin role to bypass all permission checks
-        $user = \Mockery::mock(\Modules\User\Models\User::class)->makePartial();
+        $user = \Mockery::mock(User::class)->makePartial();
         $user->shouldReceive('hasRole')->andReturn(true);
         $this->actingAs($user);
 
-        \Illuminate\Support\Facades\Gate::define('create', fn () => true);
-        \Illuminate\Support\Facades\Gate::define('update', fn () => true);
-        \Illuminate\Support\Facades\Gate::define('delete', fn () => true);
+        Gate::define('create', fn () => true);
+        Gate::define('update', fn () => true);
+        Gate::define('delete', fn () => true);
     });
 
     afterEach(function () {

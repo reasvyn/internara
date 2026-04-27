@@ -10,10 +10,10 @@ return [
     'admin_management' => 'Manajemen Administrator',
 
     'viewer' => [
-        'title'            => 'Direktori Pengguna',
-        'subtitle'         => 'Semua akun terdaftar, difilter sesuai level akses Anda.',
+        'title' => 'Direktori Pengguna',
+        'subtitle' => 'Semua akun terdaftar, difilter sesuai level akses Anda.',
         'system_protected' => 'Dilindungi Sistem',
-        'no_role'          => 'Tanpa Peran',
+        'no_role' => 'Tanpa Peran',
     ],
 
     'stats' => [

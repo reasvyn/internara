@@ -7,13 +7,15 @@ namespace Modules\Internship\Tests\Feature\Services;
 use Illuminate\Support\Facades\DB;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
+use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Database\Seeders\PermissionDatabaseSeeder;
 use Modules\User\Models\User;
 
 describe('Partner Quota Management Deep Audit (BP-PLC-01)', function () {
     beforeEach(function () {
-        $this->seed(\Modules\Permission\Database\Seeders\PermissionDatabaseSeeder::class);
+        $this->seed(PermissionDatabaseSeeder::class);
         $this->registrationService = app(RegistrationService::class);
         $this->placementService = app(InternshipPlacementService::class);
 
@@ -32,7 +34,7 @@ describe('Partner Quota Management Deep Audit (BP-PLC-01)', function () {
     test('it uses database transactions for registration', function () {
         DB::shouldReceive('transaction')
             ->once()
-            ->andReturn(new \Modules\Internship\Models\InternshipRegistration);
+            ->andReturn(new InternshipRegistration);
 
         $data = [
             'internship_id' => $this->program->id,

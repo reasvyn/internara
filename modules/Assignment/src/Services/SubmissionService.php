@@ -7,6 +7,9 @@ namespace Modules\Assignment\Services;
 use Illuminate\Http\UploadedFile;
 use Modules\Assignment\Models\Submission;
 use Modules\Assignment\Services\Contracts\SubmissionService as Contract;
+use Modules\Exception\AppException;
+use Modules\Guidance\Services\Contracts\HandbookService;
+use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Shared\Services\EloquentQuery;
 
 class SubmissionService extends EloquentQuery implements Contract
@@ -22,14 +25,14 @@ class SubmissionService extends EloquentQuery implements Contract
     public function submit(string $registrationId, string $assignmentId, mixed $content): Submission
     {
         // Gating Invariant: Briefing/Guidance must be completed if enabled
-        $settingService = app(\Modules\Setting\Services\Contracts\SettingService::class);
-        $guidanceService = app(\Modules\Guidance\Services\Contracts\HandbookService::class);
+        $settingService = app(SettingService::class);
+        $guidanceService = app(HandbookService::class);
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
             ! $guidanceService->hasCompletedMandatory((string) auth()->id())
         ) {
-            throw new \Modules\Exception\AppException(
+            throw new AppException(
                 userMessage: 'guidance::messages.must_complete_guidance',
                 code: 403,
             );

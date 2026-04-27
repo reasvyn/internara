@@ -32,13 +32,13 @@ class AdminInvitationNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        $brand      = setting('brand_name', setting('app_name'));
-        $inviteUrl  = route('invitation.accept', ['token' => $this->plainToken]);
+        $brand = setting('brand_name', setting('app_name'));
+        $inviteUrl = route('invitation.accept', ['token' => $this->plainToken]);
         $expireText = trans_choice('admin::notifications.invitation_expires_days', $this->expiresInDays, [
             'days' => $this->expiresInDays,
         ]);
 
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject(__('admin::notifications.invitation_subject', ['school' => $brand]))
             ->greeting(__('admin::notifications.invitation_greeting', ['name' => $notifiable->name]))
             ->line(__('admin::notifications.invitation_line_1', ['school' => $brand]))
@@ -53,8 +53,8 @@ class AdminInvitationNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'message'     => __('admin::notifications.invitation_db_message'),
-            'action_url'  => route('invitation.accept', ['token' => $this->plainToken]),
+            'message' => __('admin::notifications.invitation_db_message'),
+            'action_url' => route('invitation.accept', ['token' => $this->plainToken]),
             'sender_name' => setting('brand_name', setting('app_name')).' Team',
         ];
     }

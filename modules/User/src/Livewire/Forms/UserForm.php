@@ -6,6 +6,7 @@ namespace Modules\User\Livewire\Forms;
 
 use Livewire\Form;
 use Modules\Permission\Enums\Role;
+use Modules\Shared\Rules\Password;
 use Modules\User\Models\User;
 
 class UserForm extends Form
@@ -85,29 +86,29 @@ class UserForm extends Form
 
         return [
             'name' => array_filter([
-                'required', 
-                'string', 
-                $isProduction ? 'min:' . $config['name']['min_length'] : null,
-                'max:' . $config['name']['max_length']
+                'required',
+                'string',
+                $isProduction ? 'min:'.$config['name']['min_length'] : null,
+                'max:'.$config['name']['max_length'],
             ]),
             'email' => array_filter([
-                'required', 
-                $isProduction ? 'email:rfc,dns' : 'email', 
-                'unique:users,email,'.$this->id
+                'required',
+                $isProduction ? 'email:rfc,dns' : 'email',
+                'unique:users,email,'.$this->id,
             ]),
             'username' => array_filter([
-                'nullable', 
-                'string', 
-                $isProduction ? 'min:' . $config['username']['min_length'] : null,
-                $isProduction ? 'max:' . $config['username']['max_length'] : 'max:50',
-                $isProduction ? 'regex:' . $config['username']['pattern'] : null,
-                'unique:users,username,'.$this->id
+                'nullable',
+                'string',
+                $isProduction ? 'min:'.$config['username']['min_length'] : null,
+                $isProduction ? 'max:'.$config['username']['max_length'] : 'max:50',
+                $isProduction ? 'regex:'.$config['username']['pattern'] : null,
+                'unique:users,username,'.$this->id,
             ]),
             'roles' => ['required', 'array', 'min:1'],
             'status' => ['required', 'string', 'in:active,inactive,pending,verified'],
             'password' => $this->id
-                ? ['nullable', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()]
-                : ['required', 'string', 'confirmed', \Modules\Shared\Rules\Password::auto()],
+                ? ['nullable', 'string', 'confirmed', Password::auto()]
+                : ['required', 'string', 'confirmed', Password::auto()],
             'profile.phone' => ['nullable', 'string', 'max:20'],
             'profile.address' => ['nullable', 'string', 'max:500'],
             'profile.department_id' => ['nullable', 'uuid', 'exists:departments,id'],

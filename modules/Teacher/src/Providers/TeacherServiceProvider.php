@@ -6,6 +6,7 @@ namespace Modules\Teacher\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
+use Modules\Teacher\Services\TeacherService;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class TeacherServiceProvider extends ServiceProvider
@@ -68,7 +69,7 @@ class TeacherServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Teacher\Services\Contracts\TeacherService::class => \Modules\Teacher\Services\TeacherService::class,
+            \Modules\Teacher\Services\Contracts\TeacherService::class => TeacherService::class,
         ];
     }
 }

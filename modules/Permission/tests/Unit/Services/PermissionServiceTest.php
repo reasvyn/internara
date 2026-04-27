@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Permission\Tests\Unit\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Services\PermissionService;
 
@@ -11,7 +12,7 @@ test('it can search permissions by name', function () {
     $permission = mock(Permission::class);
     $service = new PermissionService($permission);
 
-    $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+    $builder = mock(Builder::class);
     $permission->shouldReceive('newQuery')->andReturn($builder);
     $builder->shouldReceive('select')->andReturnSelf();
     $builder->shouldReceive('with')->andReturnSelf();

@@ -40,7 +40,7 @@ class ForgotPassword extends Component
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) { // 3 attempts per hour
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('email', __('auth::ui.forgot_password.form.rate_limited', ['seconds' => $seconds]));
-            
+
             return;
         }
 

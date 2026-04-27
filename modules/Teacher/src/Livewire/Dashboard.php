@@ -7,6 +7,7 @@ namespace Modules\Teacher\Livewire;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
+use Modules\Assessment\Services\Contracts\AssessmentService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
 class Dashboard extends Component
@@ -28,7 +29,7 @@ class Dashboard extends Component
     public function getReadiness(string $id): array
     {
         return app(
-            \Modules\Assessment\Services\Contracts\AssessmentService::class,
+            AssessmentService::class,
         )->getReadinessStatus($id);
     }
 

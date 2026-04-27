@@ -5,6 +5,14 @@ declare(strict_types=1);
 namespace Modules\Assignment\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Assignment\Models\Assignment;
+use Modules\Assignment\Models\AssignmentType;
+use Modules\Assignment\Models\Submission;
+use Modules\Assignment\Policies\AssignmentPolicy;
+use Modules\Assignment\Policies\SubmissionPolicy;
+use Modules\Assignment\Services\AssignmentService;
+use Modules\Assignment\Services\AssignmentTypeService;
+use Modules\Assignment\Services\SubmissionService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -23,9 +31,9 @@ class AssignmentServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected array $policies = [
-        \Modules\Assignment\Models\Assignment::class => \Modules\Assignment\Policies\AssignmentPolicy::class,
-        \Modules\Assignment\Models\AssignmentType::class => \Modules\Assignment\Policies\AssignmentPolicy::class,
-        \Modules\Assignment\Models\Submission::class => \Modules\Assignment\Policies\SubmissionPolicy::class,
+        Assignment::class => AssignmentPolicy::class,
+        AssignmentType::class => AssignmentPolicy::class,
+        Submission::class => SubmissionPolicy::class,
     ];
 
     /**
@@ -54,9 +62,9 @@ class AssignmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Assignment\Services\Contracts\AssignmentService::class => \Modules\Assignment\Services\AssignmentService::class,
-            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class => \Modules\Assignment\Services\AssignmentTypeService::class,
-            \Modules\Assignment\Services\Contracts\SubmissionService::class => \Modules\Assignment\Services\SubmissionService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentService::class => AssignmentService::class,
+            \Modules\Assignment\Services\Contracts\AssignmentTypeService::class => AssignmentTypeService::class,
+            \Modules\Assignment\Services\Contracts\SubmissionService::class => SubmissionService::class,
         ];
     }
 

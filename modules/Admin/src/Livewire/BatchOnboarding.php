@@ -33,7 +33,7 @@ class BatchOnboarding extends Component
 
     public function downloadTemplate(OnboardingService $service)
     {
-        $content  = $service->getTemplate($this->type);
+        $content = $service->getTemplate($this->type);
         $fileName = "template_{$this->type}.csv";
 
         return response()->streamDownload(function () use ($content) {
@@ -44,17 +44,17 @@ class BatchOnboarding extends Component
     public function import(OnboardingService $service): void
     {
         $this->validate([
-            'file'      => 'required|file|mimes:csv,txt|max:2048',
-            'type'      => 'required|in:student,teacher,mentor',
+            'file' => 'required|file|mimes:csv,txt|max:2048',
+            'type' => 'required|in:student,teacher,mentor',
             'batchName' => 'nullable|string|max:100',
         ]);
 
         try {
-            $path          = $this->file->getRealPath();
+            $path = $this->file->getRealPath();
             $this->results = $service->importFromCsv($path, $this->type);
 
             if (! empty($this->results['credentials'])) {
-                $this->credentialSlips      = $this->results['credentials'];
+                $this->credentialSlips = $this->results['credentials'];
                 $this->credentialSlipsModal = true;
             }
 
@@ -78,7 +78,7 @@ class BatchOnboarding extends Component
     public function closeCredentialSlips(): void
     {
         $this->credentialSlipsModal = false;
-        $this->credentialSlips      = [];
+        $this->credentialSlips = [];
     }
 
     public function render(): View
@@ -86,4 +86,3 @@ class BatchOnboarding extends Component
         return view('admin::livewire.batch-onboarding');
     }
 }
-

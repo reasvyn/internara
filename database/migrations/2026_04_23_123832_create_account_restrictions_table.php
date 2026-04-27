@@ -29,7 +29,7 @@ return new class extends Migration
 
             // Composite index for active restrictions
             $table->index(['user_id', 'is_active', 'expires_at']);
-            
+
             // Foreign key
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

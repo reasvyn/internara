@@ -9,6 +9,7 @@ use Livewire\WithFileUploads;
 use Modules\Internship\Enums\RequirementType;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 class RequirementSubmissionManager extends Component
 {
@@ -27,7 +28,7 @@ class RequirementSubmissionManager extends Component
     {
         if (! $registrationId) {
             $registration = app(
-                \Modules\Internship\Services\Contracts\RegistrationService::class,
+                RegistrationService::class,
             )->first([
                 'student_id' => auth()->id(),
             ]);

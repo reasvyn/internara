@@ -7,6 +7,7 @@ namespace Modules\Assessment\Services;
 use Modules\Assessment\Models\Assessment;
 use Modules\Assessment\Services\Contracts\AssessmentService as Contract;
 use Modules\Assessment\Services\Contracts\ComplianceService;
+use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Shared\Services\EloquentQuery;
@@ -159,7 +160,7 @@ class AssessmentService extends EloquentQuery implements Contract
         }
 
         // 3. Check Mandatory Assignments
-        $assignmentService = app(\Modules\Assignment\Services\Contracts\AssignmentService::class);
+        $assignmentService = app(AssignmentService::class);
         if (! $assignmentService->isFulfillmentComplete($registrationId)) {
             $missing[] = __('assessment::messages.missing_assignments');
         }

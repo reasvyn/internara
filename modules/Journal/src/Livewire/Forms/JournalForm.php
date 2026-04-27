@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Livewire\Forms;
 
+use Illuminate\Support\Facades\DB;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Form;
 use Modules\Journal\Models\JournalEntry;
 
@@ -33,7 +35,7 @@ class JournalForm extends Form
 
     public array $competency_ids = [];
 
-    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile[] */
+    /** @var TemporaryUploadedFile[] */
     public $attachments = [];
 
     /**
@@ -54,7 +56,7 @@ class JournalForm extends Form
         $this->notes = $entry->notes ?? '';
 
         // Load competencies from pivot table (using DB directly to avoid cross-module model dep)
-        $this->competency_ids = \Illuminate\Support\Facades\DB::table('journal_competency')
+        $this->competency_ids = DB::table('journal_competency')
             ->where('journal_entry_id', $entry->id)
             ->pluck('competency_id')
             ->toArray();

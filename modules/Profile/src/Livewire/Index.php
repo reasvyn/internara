@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Livewire;
 
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Permission\Enums\Role;
+use Modules\Profile\Enums\BloodType;
+use Modules\Profile\Enums\Gender;
 use Modules\Profile\Services\Contracts\ProfileService;
+use Modules\Student\Models\Student;
+use Modules\Teacher\Models\Teacher;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
@@ -121,11 +127,11 @@ class Index extends Component
         $this->emergency_contact_phone = $profile->emergency_contact_phone;
         $this->emergency_contact_address = $profile->emergency_contact_address;
 
-        if ($profile->profileable_type === \Modules\Teacher\Models\Teacher::class) {
+        if ($profile->profileable_type === Teacher::class) {
             $this->nip = $profile->profileable->nip;
         }
 
-        if ($profile->profileable_type === \Modules\Student\Models\Student::class) {
+        if ($profile->profileable_type === Student::class) {
             $this->national_identifier = $profile->profileable->national_identifier;
             $this->registration_number = $profile->profileable->registration_number;
             $this->class_name = $profile->profileable->class_name;
@@ -145,12 +151,12 @@ class Index extends Component
             'gender' => [
                 'nullable',
                 'string',
-                \Illuminate\Validation\Rule::enum(\Modules\Profile\Enums\Gender::class),
+                Rule::enum(Gender::class),
             ],
             'blood_type' => [
                 'nullable',
                 'string',
-                \Illuminate\Validation\Rule::enum(\Modules\Profile\Enums\BloodType::class),
+                Rule::enum(BloodType::class),
             ],
             'emergency_contact_name' => 'nullable|string|max:255',
             'emergency_contact_phone' => 'nullable|string|max:20',
@@ -202,14 +208,14 @@ class Index extends Component
         }
 
         try {
-            if ($user->hasRole(\Modules\Permission\Enums\Role::TEACHER->value)) {
+            if ($user->hasRole(Role::TEACHER->value)) {
                 $this->validate([
                     'nip' => 'required|string|unique:teachers,nip,'.$profileable->id,
                 ]);
                 $profileable->update(['nip' => $this->nip]);
             }
 
-            if ($user->hasRole(\Modules\Permission\Enums\Role::STUDENT->value)) {
+            if ($user->hasRole(Role::STUDENT->value)) {
                 $this->validate([
                     'national_identifier' => 'required|string|unique:students,national_identifier,'.$profileable->id,
                     'registration_number' => 'nullable|string|unique:students,registration_number,'.$profileable->id,
@@ -226,7 +232,7 @@ class Index extends Component
                 if ($this->passport_photo) {
                     $profileable->setMedia(
                         $this->passport_photo,
-                        \Modules\Student\Models\Student::COLLECTION_PASSPORT_PHOTO,
+                        Student::COLLECTION_PASSPORT_PHOTO,
                     );
                     $this->passport_photo = null;
                 }

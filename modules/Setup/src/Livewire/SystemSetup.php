@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Livewire;
 
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
+use Modules\Shared\Rules\Honeypot;
 use Modules\Shared\Rules\Turnstile;
 
 /**
@@ -15,7 +18,7 @@ use Modules\Shared\Rules\Turnstile;
  */
 class SystemSetup extends Component
 {
-    use Concerns\HandlesSetupSteps;
+    use HandlesWizardSteps;
 
     public string $mail_host = '';
 
@@ -42,9 +45,9 @@ class SystemSetup extends Component
     public ?string $contact_me = null;
 
     /**
-     * Boots the component and injects the SetupService.
+     * Boots the component and injects the AppSetupService.
      */
-    public function boot(SetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -54,13 +57,13 @@ class SystemSetup extends Component
      */
     public function mount(): void
     {
-        $this->initSetupStepProps(
-            currentStep: SetupService::STEP_SYSTEM,
-            nextStep: SetupService::STEP_COMPLETE,
-            prevStep: SetupService::STEP_INTERNSHIP,
+        $this->initWizardStepProps(
+            currentStep: AppSetupService::STEP_SYSTEM,
+            nextStep: AppSetupService::STEP_COMPLETE,
+            prevStep: AppSetupService::STEP_INTERNSHIP,
         );
 
-        $this->requireSetupAccess();
+        $this->requireWizardAccess();
 
         $this->mail_host = (string) setting('mail_host', '');
         $this->mail_port = (string) setting('mail_port', '587');
@@ -78,12 +81,13 @@ class SystemSetup extends Component
     public function testConnection(): void
     {
         // [S1 - Secure] Rate limit connection tests to prevent SMTP amplification attacks
-        $key = 'setup_smtp_test:' . request()->ip();
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
-            flash()->error(__('ui::messages.too_many_requests', ['seconds' => \Illuminate\Support\Facades\RateLimiter::availableIn($key)]));
+        $key = 'setup_smtp_test:'.request()->ip();
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            flash()->error(__('ui::messages.too_many_requests', ['seconds' => RateLimiter::availableIn($key)]));
+
             return;
         }
-        \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
+        RateLimiter::hit($key, 60);
 
         $this->validate([
             'mail_host' => 'required|string',
@@ -99,14 +103,14 @@ class SystemSetup extends Component
             if ($socket) {
                 $response = fgets($socket, 1024);
                 fclose($socket);
-                
+
                 if (str_starts_with((string) $response, '220')) {
                     flash()->success(__('setup::wizard.system.smtp_connection_success'));
                 } else {
-                    throw new \Exception("Server responded with: " . trim((string) $response));
+                    throw new \Exception('Server responded with: '.trim((string) $response));
                 }
             } else {
-                throw new \Exception($errstr ?: 'Connection timed out after ' . $timeout . ' seconds.');
+                throw new \Exception($errstr ?: 'Connection timed out after '.$timeout.' seconds.');
             }
         } catch (\Exception $e) {
             flash()->error(
@@ -131,7 +135,7 @@ class SystemSetup extends Component
         // [S1 - Secure] Bot & Amplification Protection
         $this->validate([
             'turnstile' => [new Turnstile],
-            'contact_me' => [new \Modules\Shared\Rules\Honeypot],
+            'contact_me' => [new Honeypot],
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',
             'mail_username' => 'nullable|string',

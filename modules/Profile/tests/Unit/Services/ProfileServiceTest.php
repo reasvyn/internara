@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Tests\Unit\Services;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Gate;
 use Modules\Profile\Models\Profile;
 use Modules\Profile\Services\ProfileService;
+use Modules\User\Models\User;
 
 describe('ProfileService S1 Security', function () {
     test('getByUserId enforces authorization', function () {
@@ -19,7 +23,7 @@ describe('ProfileService S1 Security', function () {
             ->once()
             ->with('view', [$profileModel, $uuid]);
 
-        $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+        $builder = mock(Builder::class);
         $profileModel->shouldReceive('newQuery')->andReturn($builder);
         $builder
             ->shouldReceive('firstOrCreate')
@@ -34,7 +38,7 @@ describe('ProfileService S1 Security', function () {
         $service = new ProfileService($profileModel);
 
         $profile = mock(Profile::class)->makePartial();
-        $student = new class extends \Illuminate\Database\Eloquent\Model
+        $student = new class extends Model
         {
             protected $keyType = 'string';
 
@@ -46,7 +50,7 @@ describe('ProfileService S1 Security', function () {
 
         Gate::shouldReceive('authorize')->once()->with('update', $profile);
 
-        $relation = mock(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
+        $relation = mock(MorphTo::class);
         $profile->shouldReceive('profileable')->andReturn($relation);
         $relation->shouldReceive('associate')->with($student)->once();
         $profile->shouldReceive('save')->once();
@@ -59,8 +63,8 @@ describe('ProfileService S1 Security', function () {
         $service = new ProfileService($profileModel);
 
         $uuid = 'user-uuid';
-        $user = mock(\Modules\User\Models\User::class);
-        $userBuilder = mock(\Illuminate\Database\Eloquent\Builder::class);
+        $user = mock(User::class);
+        $userBuilder = mock(Builder::class);
 
         mock('alias:Modules\User\Models\User')
             ->shouldReceive('query')
@@ -70,7 +74,7 @@ describe('ProfileService S1 Security', function () {
         $userBuilder->shouldReceive('find')->once()->with($uuid)->andReturn($user);
         Gate::shouldReceive('authorize')->once()->with('update', $user);
 
-        $builder = mock(\Illuminate\Database\Eloquent\Builder::class);
+        $builder = mock(Builder::class);
         $profile = mock(Profile::class)->makePartial();
 
         $profileModel->shouldReceive('newQuery')->once()->andReturn($builder);

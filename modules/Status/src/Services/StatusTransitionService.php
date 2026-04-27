@@ -7,9 +7,9 @@ namespace Modules\Status\Services;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Status\Enums\Status;
-use Spatie\ModelStatus\Models\Status as StatusModel;
 use Modules\Status\Notifications\AccountStatusChanged;
 use Modules\User\Models\User;
+use Spatie\ModelStatus\Models\Status as StatusModel;
 
 class StatusTransitionService
 {
@@ -35,18 +35,18 @@ class StatusTransitionService
     ): StatusModel {
         // Prevent transitioning protected accounts (Super Admins)
         if ($user->isProtected()) {
-            throw new \LogicException("Protected accounts cannot be transitioned. Status is immutable.");
+            throw new \LogicException('Protected accounts cannot be transitioned. Status is immutable.');
         }
 
         // Get current status from Spatie
         $currentStatus = $user->getStatus();
 
-        if (!$currentStatus) {
-            throw new \LogicException("User has no current status set");
+        if (! $currentStatus) {
+            throw new \LogicException('User has no current status set');
         }
 
         // Check if transition is valid
-        if (!$currentStatus->canTransitionTo($newStatus)) {
+        if (! $currentStatus->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException(
                 "Invalid transition: {$currentStatus->value} → {$newStatus->value}"
             );
@@ -63,8 +63,6 @@ class StatusTransitionService
             $reason,
             $triggeredBy,
             $ipAddress,
-            $userAgent,
-            $metadata,
         ) {
             // Set new status using Spatie's API (creates status_histories record)
             $user->setStatus($newStatus->value, $reason);
@@ -100,13 +98,13 @@ class StatusTransitionService
                     changedBy: $triggeredBy,
                 ));
             } catch (\Exception $e) {
-                Log::warning("Failed to send status change notification", [
+                Log::warning('Failed to send status change notification', [
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),
                 ]);
             }
 
-            Log::info("Account status transitioned", [
+            Log::info('Account status transitioned', [
                 'user_id' => $user->id,
                 'old_status' => $currentStatus->value,
                 'new_status' => $newStatus->value,
@@ -129,7 +127,7 @@ class StatusTransitionService
         ?User $triggeredBy = null,
     ): void {
         // If no one triggered it, assume system action (allowed)
-        if (!$triggeredBy) {
+        if (! $triggeredBy) {
             return;
         }
 
@@ -137,7 +135,7 @@ class StatusTransitionService
         if ($triggeredBy->role !== 'super_admin' && $triggeredBy->role !== 'admin') {
             if ($triggeredBy->id !== $user->id) {
                 throw new \InvalidArgumentException(
-                    "Users can only change their own account status"
+                    'Users can only change their own account status'
                 );
             }
             // Regular users cannot transition themselves to PROTECTED or VERIFIED
@@ -151,7 +149,7 @@ class StatusTransitionService
         // Only Super Admins can set PROTECTED status
         if ($newStatus === Status::PROTECTED && $triggeredBy->role !== 'super_admin') {
             throw new \InvalidArgumentException(
-                "Only Super Admins can set PROTECTED status"
+                'Only Super Admins can set PROTECTED status'
             );
         }
 
@@ -159,7 +157,7 @@ class StatusTransitionService
         if ($user->role === 'admin' && $newStatus === Status::VERIFIED) {
             if ($triggeredBy->role !== 'super_admin') {
                 throw new \InvalidArgumentException(
-                    "Only Super Admins can verify Admin accounts"
+                    'Only Super Admins can verify Admin accounts'
                 );
             }
         }
@@ -175,7 +173,7 @@ class StatusTransitionService
         }
 
         $currentStatus = $user->getStatus();
-        if (!$currentStatus) {
+        if (! $currentStatus) {
             return [];
         }
 
@@ -193,7 +191,7 @@ class StatusTransitionService
             }
 
             $currentStatus = $user->getStatus();
-            if (!$currentStatus) {
+            if (! $currentStatus) {
                 return false;
             }
 

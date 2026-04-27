@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Modules\Setup\Services\Contracts;
+namespace Modules\Support\Services\Contracts;
 
 /**
- * Contract for the System Auditor service.
+ * Contract for the System Requirement Auditor service.
  *
  * This service is responsible for performing pre-flight checks on the server environment
- * to ensure all requirements (permissions, extensions, database) are met before installation.
+ * to ensure all technical requirements (permissions, extensions, database) are met.
+ *
+ * [S1 - Secure] Critical for identifying potential deployment vulnerabilities.
  */
-interface SystemAuditor
+interface InstallationAuditor
 {
     /**
      * Performs a full system audit.

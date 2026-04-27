@@ -9,10 +9,8 @@ use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\RegistrationForm;
-use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
-use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\PlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
@@ -35,8 +33,11 @@ class StudentPlacementManager extends RecordManager
      * Bulk placement state variables.
      */
     public string $internshipId = '';
+
     public string $companyId = '';
+
     public array $selectedStudents = [];
+
     public bool $bulkConfirmModal = false;
 
     /**
@@ -145,7 +146,7 @@ class StudentPlacementManager extends RecordManager
     #[Computed]
     public function placements(): Collection
     {
-        if (!$this->form->internship_id && !$this->internshipId) {
+        if (! $this->form->internship_id && ! $this->internshipId) {
             return collect();
         }
 
@@ -166,7 +167,9 @@ class StudentPlacementManager extends RecordManager
     public function students(): Collection
     {
         $id = $this->activeTab === 'individual' ? $this->form->internship_id : $this->internshipId;
-        if (!$id) return collect();
+        if (! $id) {
+            return collect();
+        }
 
         return InternshipRegistration::query()
             ->where('internship_id', $id)
@@ -199,12 +202,17 @@ class StudentPlacementManager extends RecordManager
     #[Computed]
     public function remainingQuota(): int
     {
-        if (!$this->companyId || !$this->internshipId) return 0;
+        if (! $this->companyId || ! $this->internshipId) {
+            return 0;
+        }
 
         $placement = InternshipPlacement::find($this->companyId);
-        if (!$placement) return 0;
+        if (! $placement) {
+            return 0;
+        }
 
         $assigned = InternshipRegistration::where('placement_id', $placement->id)->count();
+
         return max(0, $placement->capacity_quota - $assigned);
     }
 
@@ -212,6 +220,7 @@ class StudentPlacementManager extends RecordManager
     {
         if (empty($this->selectedStudents)) {
             flash()->warning(__('internship::ui.select_at_least_one_student'));
+
             return;
         }
 
@@ -220,6 +229,7 @@ class StudentPlacementManager extends RecordManager
                 'selected' => count($this->selectedStudents),
                 'remaining' => $this->remainingQuota(),
             ]));
+
             return;
         }
 
@@ -238,7 +248,7 @@ class StudentPlacementManager extends RecordManager
 
             $this->resetBulkForm();
             $this->bulkConfirmModal = false;
-            
+
             flash()->success(__('internship::ui.bulk_placement_success', ['count' => $successCount]));
             $this->refreshRecords();
         } catch (\Throwable $e) {

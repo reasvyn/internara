@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
@@ -12,7 +13,9 @@ class IdleAccountDetectionService
 {
     // NIST SP 800-63B defaults (configurable via config)
     private const IDLE_THRESHOLD_DAYS = 180;        // Transition to INACTIVE
+
     private const ARCHIVE_THRESHOLD_DAYS = 365;     // Transition to ARCHIVED
+
     private const GDPR_RETENTION_YEARS = 7;         // Data purge date
 
     public function __construct(
@@ -45,7 +48,7 @@ class IdleAccountDetectionService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::INACTIVE,
-                    reason: "Automatic transition: Account idle for " . self::IDLE_THRESHOLD_DAYS . " days",
+                    reason: 'Automatic transition: Account idle for '.self::IDLE_THRESHOLD_DAYS.' days',
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
                 );
@@ -69,7 +72,7 @@ class IdleAccountDetectionService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::ARCHIVED,
-                    reason: "Automatic transition: Account inactive for " . self::ARCHIVE_THRESHOLD_DAYS . " days",
+                    reason: 'Automatic transition: Account inactive for '.self::ARCHIVE_THRESHOLD_DAYS.' days',
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
                 );
@@ -80,7 +83,7 @@ class IdleAccountDetectionService
             $results['checked']++;
         }
 
-        Log::info("Idle account detection completed", $results);
+        Log::info('Idle account detection completed', $results);
 
         return $results;
     }
@@ -89,7 +92,7 @@ class IdleAccountDetectionService
      * Find accounts idle for N days using Spatie status relations.
      * Uses last_activity_at column (updated on every request/action).
      */
-    private function findIdleAccounts(int $dayThreshold): \Illuminate\Database\Eloquent\Collection
+    private function findIdleAccounts(int $dayThreshold): Collection
     {
         $cutoffDate = now()->subDays($dayThreshold);
 
@@ -154,7 +157,7 @@ class IdleAccountDetectionService
             ->orderByDesc('created_at')
             ->first();
 
-        if (!$archivalStatus) {
+        if (! $archivalStatus) {
             return null;
         }
 
@@ -164,7 +167,7 @@ class IdleAccountDetectionService
     /**
      * Get accounts eligible for GDPR deletion using Spatie relations.
      */
-    public function findGdprDeletionEligible(): \Illuminate\Database\Eloquent\Collection
+    public function findGdprDeletionEligible(): Collection
     {
         return User::whereHas('statuses', function ($query) {
             $cutoffDate = now()->subYears(self::GDPR_RETENTION_YEARS);

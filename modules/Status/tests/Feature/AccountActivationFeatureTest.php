@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Status\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Status\Enums\AccountStatus;
 use Modules\Status\Services\ActivationWorkflow;
 use Modules\User\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * AccountActivationFeatureTest

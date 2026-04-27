@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setting\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Setting\Services\SettingService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -77,7 +78,7 @@ class SettingServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             \Modules\Setting\Services\Contracts\SettingService::class,
-            \Modules\Setting\Services\SettingService::class,
+            SettingService::class,
         );
     }
 

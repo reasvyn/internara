@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Student\Livewire;
 
-use Modules\Student\Services\Contracts\StudentService;
 use Livewire\Attributes\Computed;
+use Modules\Student\Services\Contracts\StudentService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class StudentIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'student::student-manager';
+
     protected string $titleKey = 'student::ui.management_title';
 
     /**

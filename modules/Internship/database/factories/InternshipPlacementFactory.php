@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Internship\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Services\Contracts\InternshipService;
 
@@ -21,9 +23,9 @@ class InternshipPlacementFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'internship_id' => app(InternshipService::class)->factory(),
-            'company_id' => \Modules\Internship\Models\Company::factory(),
+            'company_id' => Company::factory(),
             'capacity_quota' => fake()->numberBetween(1, 10),
         ];
     }

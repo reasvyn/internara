@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Notifications;
 
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Modules\Status\Enums\Status;
 use Modules\User\Models\User;
@@ -44,14 +45,14 @@ class AccountStatusChanged extends Notification
             default => '📝 Status Akun Berubah',
         };
 
-        return (new \Illuminate\Notifications\Messages\MailMessage())
+        return (new MailMessage)
             ->subject($subject)
-            ->greeting('Halo ' . $notifiable->name . ',')
+            ->greeting('Halo '.$notifiable->name.',')
             ->line('Status akun Anda telah berubah:')
-            ->line('**Status Lama:** ' . $this->oldStatus->label())
-            ->line('**Status Baru:** ' . $this->newStatus->label())
-            ->when($this->reason, fn ($mail) => $mail->line('**Alasan:** ' . $this->reason))
-            ->when($this->changedBy, fn ($mail) => $mail->line('**Diubah oleh:** ' . $this->changedBy->name))
+            ->line('**Status Lama:** '.$this->oldStatus->label())
+            ->line('**Status Baru:** '.$this->newStatus->label())
+            ->when($this->reason, fn ($mail) => $mail->line('**Alasan:** '.$this->reason))
+            ->when($this->changedBy, fn ($mail) => $mail->line('**Diubah oleh:** '.$this->changedBy->name))
             ->action('Lihat Detail Akun', url('/account/status'))
             ->line('Jika Anda memiliki pertanyaan, hubungi tim dukungan kami.');
     }

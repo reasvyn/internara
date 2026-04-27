@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 
 /**
  * Event dispatched when a student is successfully registered for an internship program.
- * 
+ *
  * Mandate: Must only carry the UUID to ensure lightweight cross-module signaling.
  */
 class InternshipRegistered

@@ -6,6 +6,8 @@ namespace Modules\Teacher\Livewire;
 
 use Livewire\Component;
 use Modules\Assessment\Services\Contracts\AssessmentService;
+use Modules\Assessment\Services\Contracts\CompetencyService;
+use Modules\Assessment\Services\Contracts\ComplianceService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
 class AssessInternship extends Component
@@ -45,7 +47,7 @@ class AssessInternship extends Component
 
         // Load compliance metrics
         $this->complianceMetrics = app(
-            \Modules\Assessment\Services\Contracts\ComplianceService::class,
+            ComplianceService::class,
         )->calculateScore($registrationId);
 
         // Load existing assessment if any
@@ -83,7 +85,7 @@ class AssessInternship extends Component
     {
         $registration = app(RegistrationService::class)->find($this->registrationId);
         $claimedCompetencies = app(
-            \Modules\Assessment\Services\Contracts\CompetencyService::class,
+            CompetencyService::class,
         )->getClaimedCompetencies($this->registrationId);
 
         return view('teacher::livewire.assess-internship', [

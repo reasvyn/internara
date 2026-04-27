@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 /**
  * Value Object representing a secure setup token.
- * 
+ *
  * [S1 - Secure] Implements immutable token logic with TTL and hash validation.
  */
 final readonly class SetupToken
@@ -30,7 +30,7 @@ final readonly class SetupToken
     {
         return new self(
             value: Str::random(64),
-            expiresAt: (new \DateTimeImmutable())->modify("+{$ttlHours} hours")
+            expiresAt: (new \DateTimeImmutable)->modify("+{$ttlHours} hours")
         );
     }
 
@@ -62,7 +62,7 @@ final readonly class SetupToken
             return false;
         }
 
-        return new \DateTimeImmutable() > $this->expiresAt;
+        return new \DateTimeImmutable > $this->expiresAt;
     }
 
     /**

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Tests\Unit\Models;
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Profile\Models\Profile;
 

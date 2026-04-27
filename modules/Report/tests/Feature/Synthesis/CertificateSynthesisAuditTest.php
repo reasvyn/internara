@@ -4,37 +4,38 @@ declare(strict_types=1);
 
 namespace Modules\Report\Tests\Feature\Synthesis;
 
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
-
-
+use Illuminate\Support\Str;
+use Modules\Report\Models\GeneratedReport;
+use Modules\User\Models\User;
 
 test('qr signature tampering audit: modified signatures are rejected', function () {
-    $registrationId = \Illuminate\Support\Str::uuid()->toString();
+    $registrationId = Str::uuid()->toString();
 
     // Generate valid signed URL
-    $validUrl = \Illuminate\Support\Facades\URL::signedRoute('assessment.verify', ['registration' => $registrationId]);
+    $validUrl = URL::signedRoute('assessment.verify', ['registration' => $registrationId]);
 
     // Tamper with the URL (change one char in signature)
     $tamperedUrl = $validUrl.'extra';
 
     // Check if the signature is valid according to Laravel
     // We create requests to test the signatures
-    $validRequest = \Illuminate\Http\Request::create($validUrl);
-    $tamperedRequest = \Illuminate\Http\Request::create($tamperedUrl);
+    $validRequest = Request::create($validUrl);
+    $tamperedRequest = Request::create($tamperedUrl);
 
-    expect(\Illuminate\Support\Facades\URL::hasValidSignature($validRequest))
+    expect(URL::hasValidSignature($validRequest))
         ->toBeTrue()
-        ->and(\Illuminate\Support\Facades\URL::hasValidSignature($tamperedRequest))
+        ->and(URL::hasValidSignature($tamperedRequest))
         ->toBeFalse();
 });
 
 test('signed download audit: private files require signature', function () {
-    $user = \Modules\User\Models\User::factory()->create();
-    
+    $user = User::factory()->create();
+
     // Create a dummy report record to avoid 404/500 during route model binding
-    $report = \Modules\Report\Models\GeneratedReport::create([
-        'id' => \Illuminate\Support\Str::uuid()->toString(),
+    $report = GeneratedReport::create([
+        'id' => Str::uuid()->toString(),
         'user_id' => $user->id,
         'file_path' => 'reports/test.pdf',
         'provider_identifier' => 'test',

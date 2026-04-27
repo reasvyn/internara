@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Status\Providers;
 
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Status\Listeners\LogFailedLogin;
+use Modules\Status\Listeners\LogSuccessfulLogin;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -14,11 +18,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        \Illuminate\Auth\Events\Login::class => [
-            \Modules\Status\Listeners\LogSuccessfulLogin::class,
+        Login::class => [
+            LogSuccessfulLogin::class,
         ],
-        \Illuminate\Auth\Events\Failed::class => [
-            \Modules\Status\Listeners\LogFailedLogin::class,
+        Failed::class => [
+            LogFailedLogin::class,
         ],
     ];
 

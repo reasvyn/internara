@@ -34,7 +34,7 @@ abstract class RecordIndex extends Component
     /**
      * Get summary metrics for the record type.
      * Override this method to provide actual statistics.
-     * 
+     *
      * @return array<int, array{title: string, value: mixed, icon: string, variant: string}>
      */
     #[Computed]
@@ -62,7 +62,7 @@ abstract class RecordIndex extends Component
         ])->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' => ($this->titleKey ? __($this->titleKey) : '') . ' | ' . setting('brand_name', setting('app_name')),
+                'title' => ($this->titleKey ? __($this->titleKey) : '').' | '.setting('brand_name', setting('app_name')),
                 'context' => $this->titleKey,
             ],
         );

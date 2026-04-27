@@ -37,9 +37,9 @@ class OnboardingService implements Contract
     public function importFromCsv(string $filePath, string $type, int $expiresInDays = 30): array
     {
         $results = [
-            'success'     => 0,
-            'failure'     => 0,
-            'errors'      => [],
+            'success' => 0,
+            'failure' => 0,
+            'errors' => [],
             'credentials' => [],
         ];
 
@@ -59,7 +59,7 @@ class OnboardingService implements Contract
             return $results;
         }
 
-        $header   = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
+        $header = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
         $rowCount = 1;
 
         while (($row = fgetcsv($handle)) !== false) {
@@ -117,16 +117,17 @@ class OnboardingService implements Contract
     /**
      * Create a single stakeholder account and issue an activation code.
      *
-     * @param  array<string, mixed>  $data            Raw row data from the CSV.
-     * @param  string                $type             Stakeholder role.
-     * @param  int                   $expiresInDays    Activation code expiry.
-     * @return array{name: string, username: string, code: string}
+     * @param array<string, mixed> $data Raw row data from the CSV.
+     * @param string $type Stakeholder role.
+     * @param int $expiresInDays Activation code expiry.
      *
      * @throws \InvalidArgumentException If mandatory data is missing or invalid.
+     *
+     * @return array{name: string, username: string, code: string}
      */
     protected function processRow(array $data, string $type, int $expiresInDays = 30): array
     {
-        $name  = trim((string) ($data['name'] ?? ''));
+        $name = trim((string) ($data['name'] ?? ''));
         $email = trim((string) ($data['email'] ?? ''));
 
         if (empty($name)) {
@@ -139,14 +140,14 @@ class OnboardingService implements Contract
         }
 
         $userData = [
-            'name'     => $name,
-            'email'    => $email !== '' ? $email : null,
+            'name' => $name,
+            'email' => $email !== '' ? $email : null,
             'username' => $data['username'] ?? null,
             // A random password is set; it will be replaced when the user claims their account.
             'password' => Str::random(24),
-            'profile'  => [
-                'phone'         => $data['phone'] ?? null,
-                'address'       => $data['address'] ?? null,
+            'profile' => [
+                'phone' => $data['phone'] ?? null,
+                'address' => $data['address'] ?? null,
                 'department_id' => $data['department_id'] ?? null,
             ],
         ];
@@ -174,9 +175,9 @@ class OnboardingService implements Contract
         );
 
         return [
-            'name'     => $user->name,
+            'name' => $user->name,
             'username' => $user->username,
-            'code'     => $plainCode,
+            'code' => $plainCode,
         ];
     }
 }

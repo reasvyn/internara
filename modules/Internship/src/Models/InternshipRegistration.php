@@ -7,6 +7,7 @@ namespace Modules\Internship\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Internship\Database\Factories\InternshipRegistrationFactory;
 use Modules\Internship\Models\Concerns\HasRequirements;
 use Modules\Log\Concerns\HandlesAuditLog;
@@ -14,6 +15,7 @@ use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
 use Modules\User\Models\Concerns\HasUserRelation;
+use Modules\User\Services\Contracts\UserService;
 
 class InternshipRegistration extends Model
 {
@@ -85,7 +87,7 @@ class InternshipRegistration extends Model
      */
     public function user(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'student_id',
             relation: 'user',
@@ -97,7 +99,7 @@ class InternshipRegistration extends Model
      */
     public function teacher(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'teacher_id',
             relation: 'teacher',
@@ -109,7 +111,7 @@ class InternshipRegistration extends Model
      */
     public function mentor(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'mentor_id',
             relation: 'mentor',
@@ -137,7 +139,7 @@ class InternshipRegistration extends Model
      */
     public function student(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)
+        return app(UserService::class)
             ->defineBelongsTo($this, 'student_id', relation: 'student')
             ->whereRelation('roles', 'name', 'student');
     }
@@ -145,7 +147,7 @@ class InternshipRegistration extends Model
     /**
      * Get the placement history for this registration.
      */
-    public function placementHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function placementHistory(): HasMany
     {
         return $this->hasMany(PlacementHistory::class, 'registration_id');
     }

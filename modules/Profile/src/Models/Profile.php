@@ -54,6 +54,11 @@ class Profile extends Model
     {
         return [
             'national_identifier' => SafeEncrypted::class,
+            'phone' => SafeEncrypted::class,
+            'address' => SafeEncrypted::class,
+            'emergency_contact_phone' => SafeEncrypted::class,
+            'emergency_contact_address' => SafeEncrypted::class,
+            'registration_number' => SafeEncrypted::class,
         ];
     }
 

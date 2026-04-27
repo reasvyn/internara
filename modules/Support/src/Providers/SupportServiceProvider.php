@@ -6,6 +6,14 @@ namespace Modules\Support\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
+use Modules\Support\Console\Commands\SystemInstallCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeClassCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand;
+use Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand;
+use Modules\Support\Services\InstallationAuditor;
+use Modules\Support\Services\SystemInstaller;
+use Modules\Support\Testing\Console\Commands\AppTestCommand;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class SupportServiceProvider extends ServiceProvider
@@ -23,11 +31,12 @@ class SupportServiceProvider extends ServiceProvider
     protected function registerCommands(): void
     {
         $this->commands([
-            \Modules\Support\Testing\Console\Commands\AppTestCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeClassCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand::class,
-            \Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand::class,
+            SystemInstallCommand::class,
+            AppTestCommand::class,
+            MakeClassCommand::class,
+            MakeInterfaceCommand::class,
+            MakeTraitCommand::class,
+            MakeDuskCommand::class,
         ]);
     }
 
@@ -61,6 +70,9 @@ class SupportServiceProvider extends ServiceProvider
      */
     protected function bindings(): array
     {
-        return [];
+        return [
+            \Modules\Support\Services\Contracts\SystemInstaller::class => SystemInstaller::class,
+            \Modules\Support\Services\Contracts\InstallationAuditor::class => InstallationAuditor::class,
+        ];
     }
 }

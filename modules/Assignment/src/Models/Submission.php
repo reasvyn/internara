@@ -10,6 +10,7 @@ use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
+use Modules\User\Services\Contracts\UserService;
 use Spatie\MediaLibrary\HasMedia;
 
 class Submission extends Model implements HasMedia
@@ -61,7 +62,7 @@ class Submission extends Model implements HasMedia
      */
     public function student(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'student_id',
             relation: 'student',

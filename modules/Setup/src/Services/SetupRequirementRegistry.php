@@ -8,7 +8,7 @@ use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 
 /**
  * Registry for setup requirement providers.
- * 
+ *
  * [S3 - Scalable] Centralizes the management of external setup hooks.
  */
 class SetupRequirementRegistry

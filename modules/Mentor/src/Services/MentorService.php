@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Mentor\Services;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Exception\RecordNotFoundException;
 use Modules\Mentor\Services\Contracts\MentorService as Contract;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
@@ -45,9 +46,9 @@ class MentorService extends EloquentQuery implements Contract
             'total' => $this->count(),
             'active' => $this->query()->whereHas('statuses', function ($q) {
                 $q->where('name', User::STATUS_ACTIVE)
-                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
             })->count(),
-            'pending' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))->count(),
+            'pending' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', User::STATUS_PENDING))->count(),
         ];
     }
 
@@ -79,7 +80,7 @@ class MentorService extends EloquentQuery implements Contract
         $user = $this->find($id);
 
         if (! $user || ! $user->hasRole('mentor')) {
-            throw new \Modules\Exception\RecordNotFoundException(
+            throw new RecordNotFoundException(
                 replace: ['record' => 'Mentor', 'id' => $id],
             );
         }

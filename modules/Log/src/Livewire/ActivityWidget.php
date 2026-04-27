@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Log\Livewire;
 
 use Livewire\Component;
+use Modules\Log\Services\Contracts\ActivityService;
 
 /**
  * Class ActivityWidget
@@ -18,7 +19,7 @@ class ActivityWidget extends Component
      */
     public function render()
     {
-        $activities = app(\Modules\Log\Services\Contracts\ActivityService::class)
+        $activities = app(ActivityService::class)
             ->query()
             ->with(['causer'])
             ->latest()

@@ -6,6 +6,7 @@ namespace Modules\Assessment\Livewire;
 
 use Livewire\Component;
 use Modules\Assessment\Services\Contracts\CompetencyService;
+use Modules\Internship\Services\Contracts\RegistrationService;
 
 class SkillProgress extends Component
 {
@@ -17,7 +18,7 @@ class SkillProgress extends Component
     {
         if (! $registrationId) {
             $registration = app(
-                \Modules\Internship\Services\Contracts\RegistrationService::class,
+                RegistrationService::class,
             )->first([
                 'student_id' => auth()->id(),
                 'latest_status' => 'active',

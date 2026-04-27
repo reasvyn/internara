@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Status\Livewire;
 
-use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\ModelStatus\Models\Status as StatusModel;
 use Modules\User\Models\User;
 
 /**
@@ -142,7 +140,7 @@ class StatusHistoryTimeline extends Component
 
         foreach ($records as $history) {
             $csv .= sprintf(
-                '"%s","%s","%s","%s","%s","%s","%s","%s"' . "\n",
+                '"%s","%s","%s","%s","%s","%s","%s","%s"'."\n",
                 $history->created_at->format('Y-m-d H:i:s'),
                 $history->old_status ?? 'N/A',
                 $history->new_status,
@@ -156,7 +154,7 @@ class StatusHistoryTimeline extends Component
 
         return response()->streamDownload(
             fn () => print $csv,
-            'status-history-' . $this->user->id . '-' . now()->format('Y-m-d') . '.csv',
+            'status-history-'.$this->user->id.'-'.now()->format('Y-m-d').'.csv',
             ['Content-Type' => 'text/csv'],
         );
     }

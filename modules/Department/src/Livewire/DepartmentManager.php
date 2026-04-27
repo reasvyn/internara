@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use Modules\Department\Livewire\Forms\DepartmentForm;
 use Modules\Department\Models\Department;
 use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -47,7 +48,7 @@ class DepartmentManager extends RecordManager
         ]);
 
         $isSetupPhase =
-            session(\Modules\Setup\Services\Contracts\SetupService::SESSION_SETUP_AUTHORIZED) ===
+            session(SetupService::SESSION_SETUP_AUTHORIZED) ===
                 true || is_testing();
 
         if (! $isSetupPhase) {

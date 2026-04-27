@@ -16,13 +16,13 @@ uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     App::setLocale('en');
-    
+
     // Authorization for setup (Middleware & Gates)
     $settings = app(SettingService::class);
     $settings->setValue('app_installed', false);
     $settings->setValue('setup_token', 'test-token');
     $settings->setValue('setup_step_welcome', true); // Complete previous step
-    
+
     Gate::define('performStep', fn () => true);
 
     // Mock the auditor

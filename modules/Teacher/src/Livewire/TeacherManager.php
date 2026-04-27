@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Modules\Teacher\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\Exception\Concerns\HandlesAppException;
-use Modules\Permission\Enums\Role;
 use Modules\Teacher\Livewire\Forms\TeacherForm;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\UI\Livewire\RecordManager;
@@ -26,6 +26,7 @@ class TeacherManager extends RecordManager
     public TeacherForm $form;
 
     public array $credentialSlips = [];
+
     public bool $credentialSlipsModal = false;
 
     /**
@@ -92,7 +93,7 @@ class TeacherManager extends RecordManager
      * Fetch and transform records for the table.
      */
     #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    public function records(): LengthAwarePaginator
     {
         return $this->managedTeacherQuery($this->filters)
             ->with(['profile.department', 'statuses'])
@@ -103,7 +104,9 @@ class TeacherManager extends RecordManager
     public function reissueActivationCode(mixed $id): void
     {
         $user = $this->service->find($id);
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
 
         $this->authorize('update', $user);
 
@@ -169,15 +172,19 @@ class TeacherManager extends RecordManager
         $query = $this->service->query(Arr::except($filters, ['status', 'department_id', 'created_from', 'created_to']));
 
         if ($departmentId) {
-            $query->whereHas('profile', fn($q) => $q->where('department_id', $departmentId));
+            $query->whereHas('profile', fn ($q) => $q->where('department_id', $departmentId));
         }
 
         if (in_array($selectedStatus, [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING], true)) {
             $this->applyLatestStatusFilter($query, $selectedStatus);
         }
 
-        if ($createdFrom) $query->whereDate('created_at', '>=', $createdFrom);
-        if ($createdTo) $query->whereDate('created_at', '<=', $createdTo);
+        if ($createdFrom) {
+            $query->whereDate('created_at', '>=', $createdFrom);
+        }
+        if ($createdTo) {
+            $query->whereDate('created_at', '<=', $createdTo);
+        }
 
         return $query;
     }

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Modules\Assessment\Tests\Feature\Services;
 
 use Modules\Assessment\Services\Contracts\AssessmentService;
+use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Models\Role;
 use Modules\User\Models\User;
 
 beforeEach(function () {
-    \Modules\Permission\Models\Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+    Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
 });
 
 test('submitEvaluation creates assessment and calculates score', function () {
@@ -68,7 +70,7 @@ test('it throws exception for unauthorized evaluator', function () {
             ['a' => 100],
             '',
         ),
-    )->toThrow(\Modules\Exception\AppException::class);
+    )->toThrow(AppException::class);
 });
 
 test('getScoreCard returns both assessments', function () {

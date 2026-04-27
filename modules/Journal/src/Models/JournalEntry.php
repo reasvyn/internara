@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Core\Academic\Models\Concerns\HasAcademicYear;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Database\Factories\JournalEntryFactory;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Media\Concerns\InteractsWithMedia;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
+use Modules\User\Services\Contracts\UserService;
 use Spatie\MediaLibrary\HasMedia;
 
 class JournalEntry extends Model implements HasMedia
@@ -62,7 +64,7 @@ class JournalEntry extends Model implements HasMedia
     public function registration(): BelongsTo
     {
         return app(
-            \Modules\Internship\Services\Contracts\RegistrationService::class,
+            RegistrationService::class,
         )->defineBelongsTo($this, 'registration_id');
     }
 
@@ -71,7 +73,7 @@ class JournalEntry extends Model implements HasMedia
      */
     public function student(): BelongsTo
     {
-        return app(\Modules\User\Services\Contracts\UserService::class)->defineBelongsTo(
+        return app(UserService::class)->defineBelongsTo(
             $this,
             'student_id',
             relation: 'student',

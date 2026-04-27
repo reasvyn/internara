@@ -6,6 +6,8 @@ namespace Modules\Auth\Services;
 
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -13,6 +15,9 @@ use Illuminate\Support\Str;
 use Modules\Auth\Services\Contracts\AuthService as AuthServiceContract;
 use Modules\Exception\AppException;
 use Modules\Shared\Services\BaseService;
+use Modules\Shared\Support\Masker;
+use Modules\Status\Services\AccountAuditLogger;
+use Modules\Status\Services\SessionExpirationService;
 use Modules\User\Services\Contracts\UserService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,7 +31,7 @@ class AuthService extends BaseService implements AuthServiceContract
      */
     public function __construct(
         protected UserService $userService,
-        protected \Modules\Status\Services\SessionExpirationService $sessionExpiration,
+        protected SessionExpirationService $sessionExpiration,
     ) {}
 
     /**
@@ -57,15 +62,15 @@ class AuthService extends BaseService implements AuthServiceContract
         if (! Auth::attempt($authCredentials, $remember)) {
             // Mask identifier for logging
             $maskedIdentifier = Str::contains($identifier, '@')
-                ? \Modules\Shared\Support\Masker::email($identifier)
-                : \Modules\Shared\Support\Masker::sensitive($identifier);
+                ? Masker::email($identifier)
+                : Masker::sensitive($identifier);
 
             // [S2 - Sustain] Enterprise Audit Log for Failed Authentication
             activity('security')
                 ->event('login_failed')
                 ->withProperties([
-                    'ip' => request()->ip(), 
-                    'identifier' => $maskedIdentifier
+                    'ip' => request()->ip(),
+                    'identifier' => $maskedIdentifier,
                 ])
                 ->log('Failed login attempt.');
 
@@ -77,7 +82,7 @@ class AuthService extends BaseService implements AuthServiceContract
         }
 
         $user = Auth::user();
-        
+
         // Initialize session expiration tracking for admin roles
         if (\in_array($user->role, ['super_admin', 'admin'], true)) {
             $sessionId = request()->getSession()->getId();
@@ -86,14 +91,14 @@ class AuthService extends BaseService implements AuthServiceContract
                 sessionId: $sessionId,
                 ipAddress: request()->ip(),
             );
-            
+
             // Log successful login
-            app(\Modules\Status\Services\AccountAuditLogger::class)->logSuccessfulLogin(
+            app(AccountAuditLogger::class)->logSuccessfulLogin(
                 user: $user,
                 ipAddress: request()->ip(),
             );
         }
-        
+
         return $user;
     }
 
@@ -111,9 +116,9 @@ class AuthService extends BaseService implements AuthServiceContract
         bool $sendEmailVerification = false,
     ): Authenticatable {
         // Prevent role escalation and remove transient form fields
-        $sanitizedData = \Illuminate\Support\Arr::except($data, [
-            'roles', 
-            'role', 
+        $sanitizedData = Arr::except($data, [
+            'roles',
+            'role',
             'password_confirmation',
             'captcha_token',
         ]);
@@ -124,7 +129,7 @@ class AuthService extends BaseService implements AuthServiceContract
             ]),
         );
 
-        if ($sendEmailVerification && $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail) {
+        if ($sendEmailVerification && $user instanceof MustVerifyEmail) {
             $user->sendEmailVerificationNotification();
         }
 
@@ -139,7 +144,7 @@ class AuthService extends BaseService implements AuthServiceContract
     public function getAuthenticatedUser(): ?Authenticatable
     {
         $user = Auth::user();
-        
+
         // Initialize session expiration tracking for admin roles
         if (\in_array($user->role, ['super_admin', 'admin'], true)) {
             $sessionId = request()->getSession()->getId();
@@ -148,14 +153,14 @@ class AuthService extends BaseService implements AuthServiceContract
                 sessionId: $sessionId,
                 ipAddress: request()->ip(),
             );
-            
+
             // Log successful login
-            app(\Modules\Status\Services\AccountAuditLogger::class)->logSuccessfulLogin(
+            app(AccountAuditLogger::class)->logSuccessfulLogin(
                 user: $user,
                 ipAddress: request()->ip(),
             );
         }
-        
+
         return $user;
     }
 
@@ -232,7 +237,7 @@ class AuthService extends BaseService implements AuthServiceContract
     {
         $user = $this->userService->find($id);
 
-        if (! $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail) {
+        if (! $user instanceof MustVerifyEmail) {
             return false;
         }
 
@@ -262,7 +267,7 @@ class AuthService extends BaseService implements AuthServiceContract
      */
     public function resendVerificationEmail(Authenticatable $user): void
     {
-        if (! $user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail) {
+        if (! $user instanceof MustVerifyEmail) {
             return;
         }
 

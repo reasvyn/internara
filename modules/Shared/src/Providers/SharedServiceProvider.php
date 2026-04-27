@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Shared\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -37,16 +40,16 @@ class SharedServiceProvider extends ServiceProvider
      */
     protected function registerRateLimiters(): void
     {
-        \Illuminate\Support\Facades\RateLimiter::for('auth', function (
-            \Illuminate\Http\Request $request,
+        RateLimiter::for('auth', function (
+            Request $request,
         ) {
-            return \Illuminate\Cache\RateLimiting\Limit::perMinute(5)->by($request->ip());
+            return Limit::perMinute(5)->by($request->ip());
         });
 
-        \Illuminate\Support\Facades\RateLimiter::for('setup', function (
-            \Illuminate\Http\Request $request,
+        RateLimiter::for('setup', function (
+            Request $request,
         ) {
-            return \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($request->ip());
+            return Limit::perMinute(10)->by($request->ip());
         });
     }
 

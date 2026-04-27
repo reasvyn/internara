@@ -1,10 +1,14 @@
 <?php
 
 declare(strict_types=1);
+use App\Providers\AppServiceProvider;
+use App\Providers\BindServiceProvider;
+use Barryvdh\DomPDF\ServiceProvider;
+use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\BindServiceProvider::class,
-    Barryvdh\DomPDF\ServiceProvider::class,
-    SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+    AppServiceProvider::class,
+    BindServiceProvider::class,
+    ServiceProvider::class,
+    QrCodeServiceProvider::class,
 ];

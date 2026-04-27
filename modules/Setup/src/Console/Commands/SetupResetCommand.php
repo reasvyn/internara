@@ -20,7 +20,7 @@ class SetupResetCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:setup-reset {--force : Skip confirmation}';
+    protected $signature = 'setup:reset {--force : Skip confirmation}';
 
     /**
      * The console command description.
@@ -48,7 +48,7 @@ class SetupResetCommand extends Command
         // [S1 - Secure] Production Safeguard
         if (app()->environment('production') && ! $this->option('force')) {
             $this->components->error(__('setup::console.reset.production_warning'));
-            
+
             return self::FAILURE;
         }
 
@@ -58,7 +58,7 @@ class SetupResetCommand extends Command
 
         $this->components->task(__('setup::console.reset.tasks.deauthorizing'), function () {
             $this->settingService->setValue('app_installed', false);
-            
+
             // [S3 - Scalable] Clear relevant caches
             Cache::forget('user.super_admin');
             Cache::forget('internara.installed');
@@ -90,7 +90,7 @@ class SetupResetCommand extends Command
         $this->newLine();
         $this->components->info(__('setup::console.reset.success'));
 
-        $setupUrl = route('setup.welcome', ['token' => $token]);
+        $setupUrl = route('setup', ['token' => $token]);
         $this->info(__('setup::console.reset.link_label', ['minutes' => $ttl]));
         $this->warn($setupUrl);
         $this->newLine();

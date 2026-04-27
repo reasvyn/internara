@@ -19,6 +19,7 @@ interface AccountProvisioningService
      * Standard token types.
      */
     public const TYPE_ACTIVATION = 'activation';
+
     public const TYPE_CREDENTIAL_RESET = 'credential_reset';
 
     /**
@@ -30,10 +31,11 @@ interface AccountProvisioningService
      *
      * Sends an AdminInvitationNotification email to the user.
      *
-     * @param  Authenticatable&Model  $user          The account to invite.
-     * @param  int    $expiresInDays Number of days before link expires.
-     * @param  (Authenticatable&Model)|null $issuedBy   Admin who triggered the invitation.
-     * @return string                The PLAINTEXT 64-char hex token (used in URL once).
+     * @param Authenticatable&Model $user The account to invite.
+     * @param int $expiresInDays Number of days before link expires.
+     * @param (Authenticatable&Model)|null $issuedBy Admin who triggered the invitation.
+     *
+     * @return string The PLAINTEXT 64-char hex token (used in URL once).
      */
     public function invite(
         Authenticatable&Model $user,
@@ -56,11 +58,12 @@ interface AccountProvisioningService
      * Returns the PLAINTEXT code — it must be presented to the issuing admin
      * exactly once and then distributed through institution-controlled channels.
      *
-     * @param  Authenticatable&Model  $user          The account to provision.
-     * @param  string $type          self::TYPE_ACTIVATION | self::TYPE_CREDENTIAL_RESET
-     * @param  int    $expiresInDays Number of days before the code expires (0 = no expiry).
-     * @param  (Authenticatable&Model)|null $issuedBy   Admin who triggered the provisioning.
-     * @return string                The plaintext activation code.
+     * @param Authenticatable&Model $user The account to provision.
+     * @param string $type self::TYPE_ACTIVATION | self::TYPE_CREDENTIAL_RESET
+     * @param int $expiresInDays Number of days before the code expires (0 = no expiry).
+     * @param (Authenticatable&Model)|null $issuedBy Admin who triggered the provisioning.
+     *
+     * @return string The plaintext activation code.
      */
     public function provision(
         Authenticatable&Model $user,
@@ -97,9 +100,9 @@ interface AccountProvisioningService
      * After a successful claim it is cleared, signalling that all initial
      * setup steps have been completed.
      *
-     * @param  Model        $token       A token returned by findActiveToken().
-     * @param  string       $newPassword The user's self-chosen plaintext password.
-     * @param  string|null  $ipAddress   Claimant's IP for audit log.
+     * @param Model $token A token returned by findActiveToken().
+     * @param string $newPassword The user's self-chosen plaintext password.
+     * @param string|null $ipAddress Claimant's IP for audit log.
      */
     public function claim(Model $token, string $newPassword, ?string $ipAddress = null): void;
 
@@ -110,10 +113,9 @@ interface AccountProvisioningService
      * Each code is freshly provisioned and the plaintext is only available
      * in the returned array — it is never retrievable from the database again.
      *
-     * @param  iterable<Authenticatable&Model> $users
-     * @param  string         $type
-     * @param  int            $expiresInDays
-     * @param  (Authenticatable&Model)|null      $issuedBy
+     * @param iterable<Authenticatable&Model> $users
+     * @param (Authenticatable&Model)|null $issuedBy
+     *
      * @return array<array{user: Authenticatable&Model, plain_code: string}>
      */
     public function provisionBatch(

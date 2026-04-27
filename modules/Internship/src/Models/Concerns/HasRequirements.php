@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Internship\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Internship\Enums\SubmissionStatus;
 use Modules\Internship\Models\InternshipRequirement;
 use Modules\Internship\Models\RequirementSubmission;
 
@@ -46,7 +47,7 @@ trait HasRequirements
 
         $verifiedSubmissionsCount = $this->requirementSubmissions()
             ->whereIn('requirement_id', $mandatoryRequirements->pluck('id'))
-            ->where('status', \Modules\Internship\Enums\SubmissionStatus::VERIFIED)
+            ->where('status', SubmissionStatus::VERIFIED)
             ->count();
 
         return $verifiedSubmissionsCount === $mandatoryRequirements->count();
@@ -69,7 +70,7 @@ trait HasRequirements
         }
 
         $verified = $this->requirementSubmissions()
-            ->where('status', \Modules\Internship\Enums\SubmissionStatus::VERIFIED)
+            ->where('status', SubmissionStatus::VERIFIED)
             ->count();
 
         return round(($verified / $totalActive) * 100, 2);

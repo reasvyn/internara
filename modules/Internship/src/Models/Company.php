@@ -7,6 +7,7 @@ namespace Modules\Internship\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Internship\Database\Factories\CompanyFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 /**
@@ -66,8 +67,8 @@ class Company extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Modules\Internship\Database\Factories\CompanyFactory
+    protected static function newFactory(): CompanyFactory
     {
-        return \Modules\Internship\Database\Factories\CompanyFactory::new();
+        return CompanyFactory::new();
     }
 }

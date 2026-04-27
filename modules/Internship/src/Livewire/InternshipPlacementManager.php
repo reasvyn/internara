@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\PlacementForm;
+use Modules\Internship\Models\Company;
+use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\UI\Livewire\RecordManager;
@@ -29,7 +32,7 @@ class InternshipPlacementManager extends RecordManager
     {
         $this->service = $placementService;
         $this->eventPrefix = 'placement';
-        $this->modelClass = \Modules\Internship\Models\InternshipPlacement::class;
+        $this->modelClass = InternshipPlacement::class;
     }
 
     /**
@@ -84,16 +87,16 @@ class InternshipPlacementManager extends RecordManager
      * Get companies for the dropdown.
      */
     #[Computed]
-    public function companies(): \Illuminate\Support\Collection
+    public function companies(): Collection
     {
-        return Cache::remember('dropdown:companies', self::DROPDOWN_TTL, fn () => \Modules\Internship\Models\Company::all(['id', 'name']));
+        return Cache::remember('dropdown:companies', self::DROPDOWN_TTL, fn () => Company::all(['id', 'name']));
     }
 
     /**
      * Get internships for the dropdown.
      */
     #[Computed]
-    public function internships(): \Illuminate\Support\Collection
+    public function internships(): Collection
     {
         return Cache::remember('dropdown:internships', self::DROPDOWN_TTL, fn () => app(InternshipService::class)->all(['id', 'title']));
     }
@@ -102,7 +105,7 @@ class InternshipPlacementManager extends RecordManager
      * Get mentors for the dropdown.
      */
     #[Computed]
-    public function mentors(): \Illuminate\Support\Collection
+    public function mentors(): Collection
     {
         return Cache::remember('dropdown:users:mentor', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']));
     }

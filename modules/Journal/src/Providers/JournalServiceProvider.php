@@ -7,6 +7,7 @@ namespace Modules\Journal\Providers;
 use Illuminate\Support\ServiceProvider;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Policies\JournalPolicy;
+use Modules\Journal\Services\JournalService;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -54,7 +55,7 @@ class JournalServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Journal\Services\Contracts\JournalService::class => \Modules\Journal\Services\JournalService::class,
+            \Modules\Journal\Services\Contracts\JournalService::class => JournalService::class,
         ];
     }
 

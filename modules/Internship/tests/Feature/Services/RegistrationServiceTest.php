@@ -2,26 +2,33 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Events\TransactionBeginning;
+use Illuminate\Support\Facades\Event;
 use Modules\Exception\AppException;
 use Modules\Internship\Models\InternshipRegistration;
+use Modules\Internship\Models\PlacementHistory;
+use Modules\Internship\Services\Contracts\InternshipPlacementService;
+use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Models\Role;
+use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
 beforeEach(function () {
-    \Modules\Permission\Models\Role::firstOrCreate([
+    Role::firstOrCreate([
         'name' => 'super-admin',
         'guard_name' => 'web',
     ]);
-    $admin = \Modules\User\Models\User::factory()->create();
+    $admin = User::factory()->create();
     $admin->assignRole('super-admin');
     $this->actingAs($admin);
 });
 
 test('it can register a student for a placement if capacity is available', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
@@ -48,13 +55,13 @@ test('it can register a student for a placement if capacity is available', funct
 });
 
 test('it throws exception if student already registered for the same program', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement1 = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement1 = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
-    $placement2 = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement2 = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
     $student = app(UserService::class)->factory()->create();
@@ -81,10 +88,10 @@ test('it throws exception if student already registered for the same program', f
 });
 
 test('it throws exception if no capacity available', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
@@ -117,10 +124,10 @@ test('it throws exception if no capacity available', function () {
 });
 
 test('it logs the placement assignment when registering', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
@@ -146,16 +153,16 @@ test('it logs the placement assignment when registering', function () {
 });
 
 test('it can reassign a placement and logs the change', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement1 = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement1 = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
             'capacity_quota' => 1,
         ]);
-    $placement2 = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement2 = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
@@ -189,7 +196,7 @@ test('it can reassign a placement and logs the change', function () {
     ]);
 
     // Check metadata
-    $history = \Modules\Internship\Models\PlacementHistory::where(
+    $history = PlacementHistory::where(
         'registration_id',
         $registration->id,
     )
@@ -203,10 +210,10 @@ test('it can reassign a placement and logs the change', function () {
 });
 
 test('it enforces advisor invariant', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
     $student = app(UserService::class)->factory()->create();
@@ -224,10 +231,10 @@ test('it enforces advisor invariant', function () {
 });
 
 test('it enforces temporal integrity', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
     $student = app(UserService::class)->factory()->create();
@@ -257,10 +264,10 @@ test('it enforces temporal integrity', function () {
 });
 
 test('it restricts registration based on system phase', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
     $student = app(UserService::class)->factory()->create();
@@ -285,10 +292,10 @@ test('it restricts registration based on system phase', function () {
 });
 
 test('atomic rollback audit: it rolls back slot allocation if registration fails', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
@@ -300,8 +307,8 @@ test('atomic rollback audit: it rolls back slot allocation if registration fails
 
     // We mock the database to throw exception during creation
     // To ensure transaction rolls back
-    \Illuminate\Support\Facades\Event::listen(
-        \Illuminate\Database\Events\TransactionBeginning::class,
+    Event::listen(
+        TransactionBeginning::class,
         function () {
             // This is a bit tricky to mock perfectly without touching DB engine
         },
@@ -314,10 +321,10 @@ test('atomic rollback audit: it rolls back slot allocation if registration fails
 });
 
 test('quota release audit: cancelling a registration releases the slot', function () {
-    $program = app(\Modules\Internship\Services\Contracts\InternshipService::class)
+    $program = app(InternshipService::class)
         ->factory()
         ->create();
-    $placement = app(\Modules\Internship\Services\Contracts\InternshipPlacementService::class)
+    $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
             'internship_id' => $program->id,
@@ -342,7 +349,7 @@ test('quota release audit: cancelling a registration releases the slot', functio
     // Quota should be full now
     expect(
         app(
-            \Modules\Internship\Services\Contracts\InternshipPlacementService::class,
+            InternshipPlacementService::class,
         )->hasAvailableSlots($placement->id),
     )->toBeFalse();
 
@@ -352,7 +359,7 @@ test('quota release audit: cancelling a registration releases the slot', functio
     // Quota should be available again
     expect(
         app(
-            \Modules\Internship\Services\Contracts\InternshipPlacementService::class,
+            InternshipPlacementService::class,
         )->hasAvailableSlots($placement->id),
     )->toBeTrue();
 });

@@ -20,8 +20,11 @@ class AccountStatusHistory extends Model
     use HasUuid;
 
     public $incrementing = false;
+
     protected $keyType = 'string';
+
     protected $table = 'account_status_history';
+
     protected $timestamps = false;
 
     protected $fillable = [

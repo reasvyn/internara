@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Guidance\Tests\Feature;
 
+use Illuminate\Support\Str;
 use Modules\Guidance\Models\Handbook;
 use Modules\Guidance\Services\Contracts\HandbookService;
 
 test('it can record student acknowledgement', function () {
     $service = app(HandbookService::class);
     $handbook = Handbook::factory()->create();
-    $studentId = (string) \Illuminate\Support\Str::uuid();
+    $studentId = (string) Str::uuid();
 
     $result = $service->acknowledge($studentId, $handbook->id);
 
@@ -20,7 +21,7 @@ test('it can record student acknowledgement', function () {
 
 test('it can check mandatory completion', function () {
     $service = app(HandbookService::class);
-    $studentId = (string) \Illuminate\Support\Str::uuid();
+    $studentId = (string) Str::uuid();
 
     // Create 1 mandatory and 1 optional
     $mandatory = Handbook::factory()->create(['is_mandatory' => true]);

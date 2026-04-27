@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Tests\Feature\Fulfillment;
 
-
 use Modules\Assignment\Services\Contracts\AssignmentService;
+use Modules\Exception\AppException;
+use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\RegistrationService;
-
-
 
 test('completion guard audit: registration cannot be completed if tasks are pending', function () {
     // 1. Setup registration
-    $reg = \Modules\Internship\Models\InternshipRegistration::factory()->create();
+    $reg = InternshipRegistration::factory()->create();
 
     // 2. Mock AssignmentService to return false for fulfillment
     $mock = $this->mock(AssignmentService::class);
@@ -20,7 +19,7 @@ test('completion guard audit: registration cannot be completed if tasks are pend
 
     // 3. Act & Assert via Internship module
     expect(fn () => app(RegistrationService::class)->complete($reg->id))->toThrow(
-        \Modules\Exception\AppException::class,
+        AppException::class,
         'internship::exceptions.mandatory_assignments_not_verified',
     );
 });
@@ -28,7 +27,7 @@ test('completion guard audit: registration cannot be completed if tasks are pend
 test(
     'negative rejection audit: rejecting a verified task blocks registration completion',
     function () {
-        $reg = \Modules\Internship\Models\InternshipRegistration::factory()->create();
+        $reg = InternshipRegistration::factory()->create();
 
         // Initial state: complete
         $mock = $this->mock(AssignmentService::class);

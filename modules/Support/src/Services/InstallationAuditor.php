@@ -2,17 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Modules\Setup\Services;
+namespace Modules\Support\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Modules\Setup\Services\Contracts\SystemAuditor as SystemAuditorContract;
 use Modules\Shared\Services\BaseService;
+use Modules\Support\Services\Contracts\InstallationAuditor as Contract;
 
 /**
- * Service implementation for performing pre-flight system audits.
+ * Service implementation for performing technical pre-flight system audits.
+ *
+ * [S1 - Secure] Sanitizes sensitive database connection information in error logs.
  */
-class SystemAuditor extends BaseService implements SystemAuditorContract
+class InstallationAuditor extends BaseService implements Contract
 {
     /**
      * Required PHP extensions.
@@ -122,13 +124,12 @@ class SystemAuditor extends BaseService implements SystemAuditorContract
         } catch (\Exception $e) {
             $rawMessage = $e->getMessage();
             // [S1 - Secure] Robust sanitization of sensitive data from DB errors
-            // Covers password, user, host, address, dsn, and credentials in various formats.
             $sanitizedMessage = preg_replace(
                 '/(password|pwd|user|usr|host|address|dsn|credential|token)=[^; ]+/i',
                 '$1=****',
                 $rawMessage,
             );
-            
+
             return [
                 'connection' => false,
                 'message' => $sanitizedMessage,

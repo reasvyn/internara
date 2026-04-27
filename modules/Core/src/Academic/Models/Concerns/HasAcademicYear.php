@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Academic\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Core\Academic\Support\AcademicYear;
 
 /**
  * Trait HasAcademicYear
@@ -40,7 +41,7 @@ trait HasAcademicYear
      */
     public static function getDynamicAcademicYear(): string
     {
-        return \Modules\Core\Academic\Support\AcademicYear::current();
+        return AcademicYear::current();
     }
 
     /**

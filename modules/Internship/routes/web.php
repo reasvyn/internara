@@ -3,8 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Modules\Internship\Livewire\InternshipManager;
-use Modules\Internship\Livewire\PlacementManager;
+use Modules\Internship\Livewire\CompanyIndex;
+use Modules\Internship\Livewire\InternshipIndex;
+use Modules\Internship\Livewire\InternshipPlacementIndex;
+use Modules\Internship\Livewire\InternshipRegistrationManager;
+use Modules\Internship\Livewire\RegistrationIndex;
+use Modules\Internship\Livewire\RequirementIndex;
+use Modules\Internship\Livewire\StudentPlacementIndex;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,24 +23,24 @@ use Modules\Internship\Livewire\PlacementManager;
 */
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/internships', \Modules\Internship\Livewire\InternshipIndex::class)
+    Route::get('/internships', InternshipIndex::class)
         ->middleware('can:internship.view')
         ->name('internship.index');
 
-    Route::get('/internships/placements', \Modules\Internship\Livewire\InternshipPlacementIndex::class)
+    Route::get('/internships/placements', InternshipPlacementIndex::class)
         ->middleware('can:internship.update')
         ->name('internship.placement.index');
 
     Route::get(
         '/internships/student-placement',
-        \Modules\Internship\Livewire\StudentPlacementIndex::class,
+        StudentPlacementIndex::class,
     )
         ->middleware('can:internship.manage')
         ->name('internship.student-placement.index');
 
     Route::get(
         '/internships/register',
-        \Modules\Internship\Livewire\InternshipRegistrationManager::class,
+        InternshipRegistrationManager::class,
     )
         ->middleware('role:student')
         ->name('internship.registration.student');
@@ -43,20 +48,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Legacy routes for backward compatibility
     Route::get(
         '/internships/registrations',
-        \Modules\Internship\Livewire\RegistrationIndex::class,
+        RegistrationIndex::class,
     )
         ->middleware('can:internship.manage')
         ->name('internship.registration.index');
 
-    Route::get('/internships/bulk-placement', \Modules\Internship\Livewire\InternshipRegistrationManager::class)
+    Route::get('/internships/bulk-placement', InternshipRegistrationManager::class)
         ->middleware('can:internship.manage')
         ->name('internship.bulk-placement.index');
 
-    Route::get('/internships/requirements', \Modules\Internship\Livewire\RequirementIndex::class)
+    Route::get('/internships/requirements', RequirementIndex::class)
         ->middleware('can:internship.update')
         ->name('internship.requirement.index');
 
-    Route::get('/internships/companies', \Modules\Internship\Livewire\CompanyIndex::class)
+    Route::get('/internships/companies', CompanyIndex::class)
         ->middleware('can:internship.manage')
         ->name('internship.company.index');
 });

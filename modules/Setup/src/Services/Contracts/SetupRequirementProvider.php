@@ -6,7 +6,7 @@ namespace Modules\Setup\Services\Contracts;
 
 /**
  * Interface SetupRequirementProvider
- * 
+ *
  * [S3 - Scalable] Allows external modules to provide validation logic for setup requirements.
  */
 interface SetupRequirementProvider

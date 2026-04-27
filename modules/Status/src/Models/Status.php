@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Status\Models;
 
+use Illuminate\Support\Str;
 use Modules\Log\Concerns\InteractsWithActivityLog;
 use Modules\Shared\Models\Concerns\HasUuid;
 use Spatie\ModelStatus\Status as SpatieStatus;
@@ -26,7 +27,7 @@ class Status extends SpatieStatus
     {
         static::creating(function ($model) {
             if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) \Illuminate\Support\Str::uuid();
+                $model->{$model->getKeyName()} = (string) Str::uuid();
             }
         });
     }

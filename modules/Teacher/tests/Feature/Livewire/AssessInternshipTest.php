@@ -6,6 +6,7 @@ namespace Modules\Teacher\Tests\Feature\Livewire;
 
 use Livewire\Livewire;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
 use Modules\Teacher\Livewire\AssessInternship;
 use Modules\User\Models\User;
@@ -35,7 +36,7 @@ test('teacher can view assessment page', function () {
 });
 
 test('teacher can submit assessment', function () {
-    \Modules\Permission\Models\Permission::firstOrCreate([
+    Permission::firstOrCreate([
         'name' => 'assessment.manage',
         'guard_name' => 'web',
     ]);

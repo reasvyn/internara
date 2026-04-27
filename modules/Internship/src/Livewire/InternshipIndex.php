@@ -11,7 +11,7 @@ use Modules\UI\Livewire\RecordIndex;
 /**
  * Class InternshipIndex
  *
- * The main entry point for internship program management, displaying 
+ * The main entry point for internship program management, displaying
  * executive statistics and the record management interface.
  */
 class InternshipIndex extends RecordIndex
@@ -25,6 +25,7 @@ class InternshipIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'internship::internship-manager';
+
     protected string $titleKey = 'internship::ui.program_title';
 
     /**

@@ -18,7 +18,12 @@
 - **Development Workflow:** Strictly follows **Domain-driven Design (DDD) Modular** and Clean Code standards (see [docs/standards.md](docs/standards.md)).
 - **Localization:** Zero tolerance for hardcoded strings; all UI text must use translation keys.
 
-## Module Index
-- **Identity & Access:** Auth, User, Profile, Permission, Admin.
-- **Academic:** Student, Teacher, Mentor, School, Department, Assessment, Assignment, Journal, Attendance, Schedule, Guidance.
-- **Operations & Infra:** Internship, Setup, Shared, Core, UI, Status, Exception, Report, Notification, Log, Setting, Media, Support.
+- **Module Index**:
+  - **Identity & Access**: Auth, User, Profile, Permission, Admin.
+  - **Academic**: Student, Teacher, Mentor, School, Department, Assessment, Assignment, Journal, Attendance, Schedule, Guidance.
+  - **Operations & Infra**: Internship, Setup, Shared, Core, UI, Status, Exception, Report, Notification, Log, Setting, Media, Support.
+
+- **Infrastructure Services**:
+  - **Support**: `SystemInstaller`, `InstallationAuditor`.
+  - **Setup**: `AppSetupService`.
+  - **Shared**: `HandlesWizardSteps` (Wizard UI concern).

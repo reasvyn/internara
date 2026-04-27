@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Livewire;
 
-use Modules\Assignment\Services\Contracts\AssignmentService;
 use Livewire\Attributes\Computed;
+use Modules\Assignment\Services\Contracts\AssignmentService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class AssignmentIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'assignment::assignment-manager';
+
     protected string $titleKey = 'assignment::ui.manage_assignments';
 
     /**

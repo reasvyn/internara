@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Status\Livewire;
 
-use Modules\User\Models\User;
+use Livewire\Attributes\On;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Modules\Status\Enums\Status;
 use Modules\Status\Services\StatusTransitionService;
-use Livewire\Component;
-use Livewire\Attributes\On;
-use Livewire\WithPagination;
-use Illuminate\Support\Collection;
+use Modules\User\Models\User;
 
 /**
  * AdminVerificationQueueComponent
@@ -24,12 +23,19 @@ class AdminVerificationQueue extends Component
     use WithPagination;
 
     public int $perPage = 15;
+
     public string $searchQuery = '';
+
     public string $sortBy = 'created_at';
+
     public string $sortDirection = 'desc';
+
     public string $roleFilter = ''; // Filter by role (student, teacher, mentor, admin, all)
+
     public array $selectedUsers = [];
+
     public array $notes = []; // user_id => note
+
     public bool $showBulkActionsBar = false;
 
     private StatusTransitionService $statusTransitionService;
@@ -91,8 +97,8 @@ class AdminVerificationQueue extends Component
         if ($this->searchQuery) {
             $query->where(function ($q) {
                 $q->where('email', 'like', "%{$this->searchQuery}%")
-                  ->orWhere('name', 'like', "%{$this->searchQuery}%")
-                  ->orWhere('phone', 'like', "%{$this->searchQuery}%");
+                    ->orWhere('name', 'like', "%{$this->searchQuery}%")
+                    ->orWhere('phone', 'like', "%{$this->searchQuery}%");
             });
         }
 
@@ -110,7 +116,7 @@ class AdminVerificationQueue extends Component
         if (in_array($userId, $this->selectedUsers)) {
             $this->selectedUsers = array_filter(
                 $this->selectedUsers,
-                fn($id) => $id !== $userId
+                fn ($id) => $id !== $userId
             );
         } else {
             $this->selectedUsers[] = $userId;
@@ -179,7 +185,7 @@ class AdminVerificationQueue extends Component
         $status = $targetStatus === 'restricted' ? Status::RESTRICTED->value : Status::SUSPENDED->value;
 
         try {
-            $user->setStatus($status, $note ?? "Account rejected during verification");
+            $user->setStatus($status, $note ?? 'Account rejected during verification');
 
             $this->dispatch('notify', type: 'warning', message: "⛔ {$user->email} {$targetStatus}");
 
@@ -198,6 +204,7 @@ class AdminVerificationQueue extends Component
     {
         if (empty($this->selectedUsers)) {
             $this->dispatch('notify', type: 'warning', message: 'No users selected');
+
             return;
         }
 

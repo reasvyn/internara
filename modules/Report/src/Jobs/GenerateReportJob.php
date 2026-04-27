@@ -9,7 +9,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Modules\Notification\Services\Contracts\NotificationService;
+use Modules\Report\Notifications\ReportGeneratedNotification;
 use Modules\Report\Services\Contracts\ReportGenerator;
+use Modules\User\Models\User;
 
 class GenerateReportJob implements ShouldQueue
 {
@@ -27,14 +30,14 @@ class GenerateReportJob implements ShouldQueue
         $filePath = $generator->generate($this->providerIdentifier, $this->filters, $this->userId);
 
         if ($this->userId) {
-            $user = \Modules\User\Models\User::find($this->userId);
+            $user = User::find($this->userId);
             if ($user) {
                 $provider = $generator->getProviders()->get($this->providerIdentifier);
                 $title = $provider ? $provider->getLabel() : 'Report';
 
-                app(\Modules\Notification\Services\Contracts\NotificationService::class)->send(
+                app(NotificationService::class)->send(
                     $user,
-                    new \Modules\Report\Notifications\ReportGeneratedNotification(
+                    new ReportGeneratedNotification(
                         $title,
                         $filePath,
                     ),

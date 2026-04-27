@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Notification\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Notification\Services\NotificationService;
+use Modules\Notification\Services\Notifier;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -43,8 +45,8 @@ class NotificationServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Notification\Services\Contracts\Notifier::class => \Modules\Notification\Services\Notifier::class,
-            \Modules\Notification\Services\Contracts\NotificationService::class => \Modules\Notification\Services\NotificationService::class,
+            \Modules\Notification\Services\Contracts\Notifier::class => Notifier::class,
+            \Modules\Notification\Services\Contracts\NotificationService::class => NotificationService::class,
         ];
     }
 }

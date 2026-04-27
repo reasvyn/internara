@@ -76,7 +76,7 @@ class VerifyEmail extends Component
     {
         return view('auth::livewire.verify-email')
             ->layout('auth::components.layouts.auth', [
-                'title' => __('auth::ui.verification.title') . ' | ' . setting('site_title', 'Internara'),
+                'title' => __('auth::ui.verification.title').' | '.setting('site_title', 'Internara'),
             ]);
     }
 }

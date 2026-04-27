@@ -24,13 +24,17 @@ class OnboardingBatch extends Model
 {
     use HasUuids;
 
-    public const STATUS_DRAFT    = 'draft';
-    public const STATUS_ISSUED   = 'issued';
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_ISSUED = 'issued';
+
     public const STATUS_ARCHIVED = 'archived';
 
     public const TYPE_STUDENT = 'student';
+
     public const TYPE_TEACHER = 'teacher';
-    public const TYPE_MENTOR  = 'mentor';
+
+    public const TYPE_MENTOR = 'mentor';
 
     protected $fillable = [
         'name',
@@ -86,7 +90,7 @@ class OnboardingBatch extends Model
     public function markIssued(): void
     {
         $this->update([
-            'status'    => self::STATUS_ISSUED,
+            'status' => self::STATUS_ISSUED,
             'issued_at' => now(),
         ]);
     }

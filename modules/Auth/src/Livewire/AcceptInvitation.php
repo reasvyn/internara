@@ -30,7 +30,8 @@ class AcceptInvitation extends Component
 {
     // ─── State ───────────────────────────────────────────────────────────────────
 
-    public string $password              = '';
+    public string $password = '';
+
     public string $password_confirmation = '';
 
     /** Displayed to the user once the token is validated in mount(). */
@@ -50,10 +51,11 @@ class AcceptInvitation extends Component
     public function mount(string $token, AccountProvisioningService $provisioning): void
     {
         // Rate-limit by IP to slow down any token enumeration attempts
-        $ipKey = 'invitation-mount:' . (request()->ip() ?? 'unknown');
+        $ipKey = 'invitation-mount:'.(request()->ip() ?? 'unknown');
 
         if (RateLimiter::tooManyAttempts($ipKey, 20)) {
             $this->invalidToken = true;
+
             return;
         }
 
@@ -63,10 +65,11 @@ class AcceptInvitation extends Component
 
         if (! $record) {
             $this->invalidToken = true;
+
             return;
         }
 
-        $this->tokenId  = $record->id;
+        $this->tokenId = $record->id;
         $this->userName = $record->user->name;
     }
 
@@ -92,6 +95,7 @@ class AcceptInvitation extends Component
             // Token was consumed or expired between mount and submit
             $this->invalidToken = true;
             $this->addError('password', __('auth::invitation.token_expired'));
+
             return;
         }
 
@@ -108,7 +112,7 @@ class AcceptInvitation extends Component
     {
         return view('auth::livewire.accept-invitation')
             ->layout('auth::components.layouts.auth', [
-                'title' => __('auth::invitation.page_title') . ' | ' . setting('site_title', 'Internara'),
+                'title' => __('auth::invitation.page_title').' | '.setting('site_title', 'Internara'),
             ]);
     }
 }

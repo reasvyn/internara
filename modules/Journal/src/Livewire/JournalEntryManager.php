@@ -7,9 +7,13 @@ namespace Modules\Journal\Livewire;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Modules\Assessment\Services\Contracts\CompetencyService;
+use Modules\Exception\AppException;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\Journal\Livewire\Forms\JournalForm;
+use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService;
+use Modules\Profile\Services\Contracts\ProfileService;
 
 class JournalEntryManager extends Component
 {
@@ -36,7 +40,7 @@ class JournalEntryManager extends Component
             $this->authorize('update', $entry);
             $this->form->setEntry($entry);
         } else {
-            $this->authorize('create', \Modules\Journal\Models\JournalEntry::class);
+            $this->authorize('create', JournalEntry::class);
             $this->form->date = request()->query('date', now()->format('Y-m-d'));
         }
     }
@@ -59,7 +63,7 @@ class JournalEntryManager extends Component
                 ]);
 
                 if (! $registration) {
-                    throw new \Modules\Exception\AppException(
+                    throw new AppException(
                         userMessage: 'internship::messages.no_active_registration',
                         code: 404,
                     );
@@ -88,7 +92,7 @@ class JournalEntryManager extends Component
             $this->redirect(route('journal.index'), navigate: true);
         } catch (\Throwable $e) {
             $message =
-                $e instanceof \Modules\Exception\AppException
+                $e instanceof AppException
                     ? $e->getUserMessage()
                     : $e->getMessage();
 
@@ -105,13 +109,13 @@ class JournalEntryManager extends Component
 
         $availableCompetencies = [];
         if ($registration) {
-            $profile = app(\Modules\Profile\Services\Contracts\ProfileService::class)->getByUserId(
+            $profile = app(ProfileService::class)->getByUserId(
                 auth()->id(),
             );
 
             if ($profile && $profile->department_id) {
                 $availableCompetencies = app(
-                    \Modules\Assessment\Services\Contracts\CompetencyService::class,
+                    CompetencyService::class,
                 )->getForDepartment($profile->department_id);
             }
         }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Modules\Internship\Services\Contracts\RegistrationService;
 use Livewire\Attributes\Computed;
+use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\UI\Livewire\RecordIndex;
 
 /**
@@ -24,6 +24,7 @@ class StudentPlacementIndex extends RecordIndex
      * Configuration for the base RecordIndex.
      */
     protected string $managerComponent = 'internship::student-placement-manager';
+
     protected string $titleKey = 'internship::ui.student_placement_title';
 
     /**

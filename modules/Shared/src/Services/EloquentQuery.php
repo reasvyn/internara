@@ -6,8 +6,13 @@ namespace Modules\Shared\Services;
 
 use Closure;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -296,8 +301,8 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param array<string, mixed> $data
      *
-     * @throws \RuntimeException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws RuntimeException
+     * @throws AuthorizationException
      *
      * @return TModel
      */
@@ -326,8 +331,8 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      * @param array<string, mixed> $data
      *
      * @throws RecordNotFoundException
-     * @throws \RuntimeException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws RuntimeException
+     * @throws AuthorizationException
      *
      * @return TModel
      */
@@ -358,7 +363,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      * @param array<string, mixed> $values
      *
      * @throws RuntimeException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      *
      * @return TModel
      */
@@ -408,7 +413,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      * Remove a record from the database by its identity.
      *
      * @throws RecordNotFoundException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function delete(mixed $id, bool $force = false): bool
     {
@@ -450,7 +455,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      *
      * @param list<mixed>|mixed $ids
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function destroy(mixed $ids, bool $force = false): int
     {
@@ -618,7 +623,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     /**
      * {@inheritdoc}
      */
-    public function factory(): \Illuminate\Database\Eloquent\Factories\Factory
+    public function factory(): Factory
     {
         $modelClass = get_class($this->model);
 
@@ -626,7 +631,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
             return $modelClass::factory();
         }
 
-        throw new \RuntimeException(
+        throw new RuntimeException(
             "Model [{$modelClass}] does not support factories (Missing HasFactory trait).",
         );
     }
@@ -639,7 +644,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         ?string $foreignKey = null,
         ?string $ownerKey = null,
         ?string $relation = null,
-    ): \Illuminate\Database\Eloquent\Relations\BelongsTo {
+    ): BelongsTo {
         return $related->belongsTo(get_class($this->model), $foreignKey, $ownerKey, $relation);
     }
 
@@ -650,7 +655,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         Model $related,
         ?string $foreignKey = null,
         ?string $localKey = null,
-    ): \Illuminate\Database\Eloquent\Relations\HasMany {
+    ): HasMany {
         return $related->hasMany(get_class($this->model), $foreignKey, $localKey);
     }
 
@@ -661,7 +666,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         Model $related,
         ?string $foreignKey = null,
         ?string $localKey = null,
-    ): \Illuminate\Database\Eloquent\Relations\HasOne {
+    ): HasOne {
         return $related->hasOne(get_class($this->model), $foreignKey, $localKey);
     }
 

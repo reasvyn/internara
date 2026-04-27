@@ -12,7 +12,7 @@ use Modules\Shared\Models\Concerns\HasUuid;
 
 /**
  * Class Department
- * 
+ *
  * Represents an academic department within a school.
  */
 class Department extends Model

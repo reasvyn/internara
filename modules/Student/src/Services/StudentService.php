@@ -14,6 +14,7 @@ use Modules\Exception\RecordNotFoundException;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Services\Contracts\ProfileService;
 use Modules\Shared\Services\EloquentQuery;
+use Modules\Status\Enums\Status;
 use Modules\Student\Services\Contracts\StudentService as Contract;
 use Modules\User\Models\User;
 use Modules\User\Notifications\WelcomeUserNotification;
@@ -61,11 +62,11 @@ class StudentService extends EloquentQuery implements Contract
     {
         return [
             'total' => $this->count(),
-            'verified' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', \Modules\Status\Enums\Status::VERIFIED->value))->count(),
-            'pending' => $this->query()->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))->count(),
+            'verified' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', Status::VERIFIED->value))->count(),
+            'pending' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', User::STATUS_PENDING))->count(),
             'active' => $this->query()->whereHas('statuses', function ($q) {
                 $q->where('name', User::STATUS_ACTIVE)
-                  ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
+                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
             })->count(),
         ];
     }
@@ -101,7 +102,7 @@ class StudentService extends EloquentQuery implements Contract
             }
 
             $this->skipAuthorization = false;
-            $user->notify(new WelcomeUserNotification());
+            $user->notify(new WelcomeUserNotification);
 
             return $user->load(['roles:id,name', 'profile.department', 'statuses']);
         });

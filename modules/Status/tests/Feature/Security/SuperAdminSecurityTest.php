@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Status\Tests\Feature\Security;
 
-use Modules\Status\Services\SuperAdminGuardRails;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Status\Enums\AccountStatus;
+use Modules\Status\Services\SuperAdminGuardRails;
 use Modules\User\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * SuperAdminSecurityTest

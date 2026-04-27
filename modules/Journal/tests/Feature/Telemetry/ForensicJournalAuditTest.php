@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Tests\Feature\Telemetry;
 
-
+use Illuminate\Support\Facades\Event;
+use Modules\Exception\AppException;
+use Modules\Internship\Models\InternshipRegistration;
+use Modules\Journal\Events\JournalArchived;
 use Modules\Journal\Models\JournalEntry;
 use Modules\Journal\Services\Contracts\JournalService;
+use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
-
-
 
 test('edit lock audit: student cannot update an approved journal [STRS-01] [SYRS-F-403]', function () {
     $student = app(UserService::class)->factory()->create();
@@ -21,7 +23,7 @@ test('edit lock audit: student cannot update an approved journal [STRS-01] [SYRS
     expect(
         fn () => app(JournalService::class)->update($entry->id, ['work_topic' => 'Hacked']),
     )->toThrow(
-        \Modules\Exception\AppException::class,
+        AppException::class,
         'journal::exceptions.cannot_edit_locked_journal',
     );
 });
@@ -32,7 +34,7 @@ test('window enforcement audit: student cannot submit old journals [STRS-01] [SY
 
     setting(['journal_submission_window' => 7]);
 
-    $reg = \Modules\Internship\Models\InternshipRegistration::factory()->create([
+    $reg = InternshipRegistration::factory()->create([
         'student_id' => $student->id,
     ]);
 
@@ -45,21 +47,21 @@ test('window enforcement audit: student cannot submit old journals [STRS-01] [SY
             'activity_description' => 'Late description',
         ]),
     )->toThrow(
-        \Modules\Exception\AppException::class,
+        AppException::class,
         'journal::exceptions.submission_window_expired',
     );
 });
 
 test('soft-delete invariant: deleting a journal dispatches JournalArchived event [SYRS-NF-601]', function () {
-    \Illuminate\Support\Facades\Event::fake();
+    Event::fake();
 
     $entry = JournalEntry::factory()->create();
     $entry->setStatus('draft'); // Only drafts can be deleted
 
     app(JournalService::class)->delete($entry->id);
 
-    \Illuminate\Support\Facades\Event::assertDispatched(
-        \Modules\Journal\Events\JournalArchived::class,
+    Event::assertDispatched(
+        JournalArchived::class,
     );
 });
 
@@ -71,13 +73,13 @@ test('immutability audit: journal is locked immediately upon first verification 
     app(JournalService::class)->verifyField($entry->id);
 
     // 2. Attempt to Update by Student
-    $student = \Modules\User\Models\User::factory()->create();
+    $student = User::factory()->create();
     $this->actingAs($student);
 
     expect(
         fn () => app(JournalService::class)->update($entry->id, ['work_topic' => 'Tampered']),
     )->toThrow(
-        \Modules\Exception\AppException::class,
+        AppException::class,
         'journal::exceptions.cannot_edit_locked_journal',
     );
 });

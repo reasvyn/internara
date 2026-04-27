@@ -12,7 +12,9 @@ use Modules\User\Models\User;
 class AccountLockoutService
 {
     private const MAX_ATTEMPTS = 5;
+
     private const LOCKOUT_DURATION_MINUTES = 30;
+
     private const ATTEMPT_WINDOW_MINUTES = 15;
 
     public function __construct(
@@ -43,10 +45,11 @@ class AccountLockoutService
         // Check if lockout threshold exceeded
         if ($newAttempts >= self::MAX_ATTEMPTS) {
             $this->lockoutAccount($user, $newAttempts, $ipAddress);
+
             return true;
         }
 
-        Log::info("Failed login attempt recorded", [
+        Log::info('Failed login attempt recorded', [
             'user_id' => $user->id,
             'attempts' => $newAttempts,
             'max_attempts' => self::MAX_ATTEMPTS,
@@ -79,7 +82,7 @@ class AccountLockoutService
         // Log lockout event
         $this->auditLogger->logAccountLockout($user, $attemptCount, $ipAddress);
 
-        Log::warning("Account locked out due to failed attempts", [
+        Log::warning('Account locked out due to failed attempts', [
             'user_id' => $user->id,
             'attempts' => $attemptCount,
             'lockout_duration_minutes' => self::LOCKOUT_DURATION_MINUTES,
@@ -100,7 +103,7 @@ class AccountLockoutService
             ->where('is_active', true)
             ->update(['is_active' => false]);
 
-        Log::info("Failed login attempts cleared", ['user_id' => $user->id]);
+        Log::info('Failed login attempts cleared', ['user_id' => $user->id]);
     }
 
     /**
@@ -133,7 +136,7 @@ class AccountLockoutService
             })
             ->first();
 
-        if (!$restriction || !$restriction->expires_at) {
+        if (! $restriction || ! $restriction->expires_at) {
             return 0;
         }
 
@@ -153,7 +156,7 @@ class AccountLockoutService
                 'reason' => $reason ?? 'Manually unlocked by admin',
             ]);
 
-        Log::info("Account unlocked by admin", [
+        Log::info('Account unlocked by admin', [
             'user_id' => $user->id,
             'unlocked_by' => $unlockedBy->id,
             'reason' => $reason,

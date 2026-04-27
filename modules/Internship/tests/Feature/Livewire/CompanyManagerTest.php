@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Feature\Livewire;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Modules\Internship\Livewire\CompanyManager;
@@ -49,7 +50,7 @@ describe('CompanyManager Component Authorization', function () {
         $teacher->assignRole('teacher');
         $this->actingAs($teacher);
 
-        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $this->expectException(AuthorizationException::class);
 
         Livewire::test(CompanyManager::class);
     });
@@ -59,7 +60,7 @@ describe('CompanyManager Component Authorization', function () {
         $student->assignRole('student');
         $this->actingAs($student);
 
-        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+        $this->expectException(AuthorizationException::class);
 
         Livewire::test(CompanyManager::class);
     });

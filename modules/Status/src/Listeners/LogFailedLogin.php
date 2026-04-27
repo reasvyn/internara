@@ -6,10 +6,11 @@ namespace Modules\Status\Listeners;
 
 use Illuminate\Auth\Events\Failed;
 use Modules\Status\Services\AccountAuditLogger;
+use Modules\User\Models\User;
 
 /**
  * Handles the Illuminate\Auth\Events\Failed event.
- * 
+ *
  * [S3 - Scalable] Decoupled from Auth module to handle Status/Audit specific logic.
  */
 class LogFailedLogin
@@ -22,7 +23,7 @@ class LogFailedLogin
     {
         $user = $event->user;
 
-        if ($user instanceof \Modules\User\Models\User) {
+        if ($user instanceof User) {
             $this->auditLogger->logFailedLogin(
                 user: $user,
                 ipAddress: request()->ip(),

@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
+use Modules\Exception\AppException;
 use Modules\Internship\Livewire\Forms\RegistrationForm;
 use Modules\Internship\Services\Contracts\InternshipPlacementService;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Services\Contracts\PlacementService;
 use Modules\Internship\Services\Contracts\RegistrationService;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Services\Contracts\UserService;
@@ -114,7 +118,7 @@ class InternshipRegistration extends RecordManager
      * Result is cached across all users to reduce repeated DB reads.
      */
     #[Computed]
-    public function internships(): \Illuminate\Support\Collection
+    public function internships(): Collection
     {
         return Cache::remember('dropdown:internships', self::DROPDOWN_TTL, fn () => app(InternshipService::class)->all(['id', 'title']));
     }
@@ -124,7 +128,7 @@ class InternshipRegistration extends RecordManager
      * Result is cached across all users to reduce repeated DB reads.
      */
     #[Computed]
-    public function placements(): \Illuminate\Support\Collection
+    public function placements(): Collection
     {
         return Cache::remember('dropdown:placements', self::DROPDOWN_TTL, function () {
             return app(InternshipPlacementService::class)
@@ -140,7 +144,7 @@ class InternshipRegistration extends RecordManager
      * Result is cached across all users to reduce repeated DB reads.
      */
     #[Computed]
-    public function students(): \Illuminate\Support\Collection
+    public function students(): Collection
     {
         return Cache::remember('dropdown:users:student', self::DROPDOWN_TTL, function () {
             return app(UserService::class)
@@ -154,7 +158,7 @@ class InternshipRegistration extends RecordManager
      * Result is cached across all users to reduce repeated DB reads.
      */
     #[Computed]
-    public function teachers(): \Illuminate\Support\Collection
+    public function teachers(): Collection
     {
         return Cache::remember('dropdown:users:teacher', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'teacher'], ['id', 'name']));
     }
@@ -164,7 +168,7 @@ class InternshipRegistration extends RecordManager
      * Result is cached across all users to reduce repeated DB reads.
      */
     #[Computed]
-    public function mentors(): \Illuminate\Support\Collection
+    public function mentors(): Collection
     {
         return Cache::remember('dropdown:users:mentor', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']));
     }
@@ -183,12 +187,12 @@ class InternshipRegistration extends RecordManager
             // Keystone Verification: Ensure student has cleared requirements before placement
             if ($this->form->placement_id) {
                 $isEligible = app(
-                    \Modules\Internship\Services\Contracts\PlacementService::class,
+                    PlacementService::class,
                 )->isEligibleForPlacement($this->form->id ?? 'new'); // 'new' is dummy, eligibility check usually needs student_id context for new records
 
                 // For existing records, we can check the ID
                 if ($this->form->id && ! $isEligible) {
-                    throw new \Modules\Exception\AppException(
+                    throw new AppException(
                         'internship::ui.not_eligible_for_placement',
                         code: 422,
                     );
@@ -222,7 +226,7 @@ class InternshipRegistration extends RecordManager
      * Get placement history for the selected registration.
      */
     #[Computed]
-    public function history(): \Illuminate\Support\Collection
+    public function history(): Collection
     {
         if (! $this->historyId) {
             return collect();
@@ -240,7 +244,7 @@ class InternshipRegistration extends RecordManager
      * Override records to apply eager loading specific to registrations.
      */
     #[Computed]
-    public function records(): \Illuminate\Pagination\LengthAwarePaginator
+    public function records(): LengthAwarePaginator
     {
         $sortByColumn = $this->sortBy['column'] ?? 'created_at';
         $sortDir = $this->sortBy['direction'] ?? 'desc';
@@ -297,7 +301,7 @@ class InternshipRegistration extends RecordManager
 
         try {
             $pairings = array_fill_keys($this->selectedIds, $this->targetPlacementId);
-            $count = app(\Modules\Internship\Services\Contracts\PlacementService::class)->bulkMatch(
+            $count = app(PlacementService::class)->bulkMatch(
                 $pairings,
             );
 

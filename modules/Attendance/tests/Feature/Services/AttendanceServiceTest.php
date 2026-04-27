@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Attendance\Tests\Feature\Services;
 
-use Illuminate\Support\Carbon;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 use Modules\Exception\AppException;

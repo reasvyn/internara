@@ -72,7 +72,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function companies()
     {
-        if (!$this->internshipId) {
+        if (! $this->internshipId) {
             return [];
         }
 
@@ -96,7 +96,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function availableStudents()
     {
-        if (!$this->internshipId) {
+        if (! $this->internshipId) {
             return [];
         }
 
@@ -127,7 +127,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function remainingQuota()
     {
-        if (!$this->companyId || !$this->internshipId) {
+        if (! $this->companyId || ! $this->internshipId) {
             return 0;
         }
 
@@ -136,7 +136,7 @@ class BulkPlacementManager extends Component
             ->where('internship_id', $this->internshipId)
             ->first();
 
-        if (!$placement) {
+        if (! $placement) {
             return 0;
         }
 
@@ -156,7 +156,7 @@ class BulkPlacementManager extends Component
             return;
         }
 
-        if (!$this->internshipId || !$this->companyId) {
+        if (! $this->internshipId || ! $this->companyId) {
             $this->dispatch('notify', type: 'warning', message: __('internship::ui.select_internship_company'));
 
             return;
@@ -243,7 +243,7 @@ class BulkPlacementManager extends Component
     {
         return view('internship::livewire.bulk-placement-manager')
             ->layout('ui::components.layouts.dashboard', [
-                'title' => __('internship::ui.bulk_placement_title') . ' | ' . setting('brand_name', setting('app_name')),
+                'title' => __('internship::ui.bulk_placement_title').' | '.setting('brand_name', setting('app_name')),
                 'context' => 'internship::ui.bulk_placement_context',
             ]);
     }

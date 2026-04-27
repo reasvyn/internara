@@ -6,6 +6,7 @@ namespace Modules\Assignment\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Assignment\Database\Factories\AssignmentTypeFactory;
 use Modules\Shared\Models\Concerns\HasUuid;
 
 class AssignmentType extends Model
@@ -22,8 +23,8 @@ class AssignmentType extends Model
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): \Modules\Assignment\Database\Factories\AssignmentTypeFactory
+    protected static function newFactory(): AssignmentTypeFactory
     {
-        return \Modules\Assignment\Database\Factories\AssignmentTypeFactory::new();
+        return AssignmentTypeFactory::new();
     }
 }

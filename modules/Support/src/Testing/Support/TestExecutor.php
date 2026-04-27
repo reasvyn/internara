@@ -48,11 +48,11 @@ class TestExecutor
         if ($parallel) {
             $command[] = '--parallel';
         }
-        
+
         if ($stopOnFailure) {
             $command[] = '--stop-on-failure';
         }
-        
+
         if ($filter) {
             $command[] = '--filter';
             $command[] = $filter;
@@ -69,10 +69,11 @@ class TestExecutor
             $process->run();
             $output = $process->getOutput();
             $errorOutput = $process->getErrorOutput();
-            
+
             return $process->isSuccessful();
         } catch (ProcessSignaledException $e) {
             $errorOutput = "Process terminated by signal: {$e->getSignal()}";
+
             return false;
         }
     }

@@ -7,6 +7,7 @@ namespace Modules\Internship\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\RequirementForm;
+use Modules\Internship\Models\InternshipRequirement;
 use Modules\Internship\Services\Contracts\InternshipRequirementService;
 use Modules\UI\Livewire\RecordManager;
 
@@ -21,7 +22,7 @@ class RequirementManager extends RecordManager
     {
         $this->service = $requirementService;
         $this->eventPrefix = 'internship-requirement';
-        $this->modelClass = \Modules\Internship\Models\InternshipRequirement::class;
+        $this->modelClass = InternshipRequirement::class;
     }
 
     /**

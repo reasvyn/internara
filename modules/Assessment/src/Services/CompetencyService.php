@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Assessment\Services;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Modules\Assessment\Models\Competency;
 use Modules\Assessment\Models\DepartmentCompetency;
 use Modules\Assessment\Models\StudentCompetencyLog;
@@ -63,14 +66,14 @@ class CompetencyService extends EloquentQuery implements Contract
      */
     public function syncJournalCompetencies(string $journalEntryId, array $competencyIds): void
     {
-        \Illuminate\Support\Facades\DB::table('journal_competency')
+        DB::table('journal_competency')
             ->where('journal_entry_id', $journalEntryId)
             ->delete();
 
         $data = collect($competencyIds)
             ->map(
                 fn ($id) => [
-                    'id' => \Illuminate\Support\Str::uuid()->toString(),
+                    'id' => Str::uuid()->toString(),
                     'journal_entry_id' => $journalEntryId,
                     'competency_id' => $id,
                     'created_at' => now(),
@@ -79,15 +82,15 @@ class CompetencyService extends EloquentQuery implements Contract
             )
             ->toArray();
 
-        \Illuminate\Support\Facades\DB::table('journal_competency')->insert($data);
+        DB::table('journal_competency')->insert($data);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getClaimedCompetencies(string $registrationId): \Illuminate\Support\Collection
+    public function getClaimedCompetencies(string $registrationId): Collection
     {
-        return \Illuminate\Support\Facades\DB::table('journal_competency')
+        return DB::table('journal_competency')
             ->join(
                 'journal_entries',
                 'journal_competency.journal_entry_id',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Permission\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Modules\Permission\Models\Permission;
 
 class PermissionFactory extends Factory
@@ -14,7 +15,7 @@ class PermissionFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'id' => (string) Str::uuid(),
             'name' => fake()->unique()->word,
             'guard_name' => 'web',
             'module' => fake()->word(),

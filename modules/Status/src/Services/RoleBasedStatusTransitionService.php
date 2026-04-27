@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Status\Services;
 
-use Modules\User\Models\User;
-use Modules\Status\Enums\Status;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Modules\Status\Enums\Status;
+use Modules\User\Models\User;
 
 /**
  * RoleBasedStatusTransitionService
@@ -54,7 +55,7 @@ class RoleBasedStatusTransitionService
     public function getValidTransitionsForRole(User $user): array
     {
         $currentStatus = $user->latestStatus()?->name;
-        if (!$currentStatus) {
+        if (! $currentStatus) {
             $currentStatus = Status::PENDING->value;
         }
 
@@ -80,17 +81,17 @@ class RoleBasedStatusTransitionService
         $triggeredBy = $triggeredBy ?? auth()->user();
 
         // 1. Check valid transition exists in state machine
-        if (!$fromStatus->canTransitionTo($toStatus)) {
+        if (! $fromStatus->canTransitionTo($toStatus)) {
             return false;
         }
 
         // 2. Check role-based rules
-        if (!$this->isTransitionAllowedForRole($user, $fromStatus, $toStatus)) {
+        if (! $this->isTransitionAllowedForRole($user, $fromStatus, $toStatus)) {
             return false;
         }
 
         // 3. Check permission to perform transition
-        if (!$this->hasPermissionToTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
+        if (! $this->hasPermissionToTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
             return false;
         }
 
@@ -110,7 +111,7 @@ class RoleBasedStatusTransitionService
         $fromStatus = Status::from($user->latestStatus()?->name ?? Status::PENDING->value);
 
         // Validate transition
-        if (!$this->canTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
+        if (! $this->canTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
             throw new \Exception("Transisi tidak diizinkan: {$fromStatus->value} → {$toStatus->value} untuk role {$user->getHighestRole()}");
         }
 
@@ -216,12 +217,14 @@ class RoleBasedStatusTransitionService
             if ($userRole === 'super_admin' && $user->id !== $triggeredBy->id) {
                 return false;
             }
+
             return true;
         }
 
         // Admin can transition users below them
         if ($triggeredByRole === 'admin') {
             $canManage = in_array($userRole, ['student', 'teacher', 'mentor']);
+
             return $canManage && $toStatus !== Status::PROTECTED;
         }
 
@@ -253,10 +256,10 @@ class RoleBasedStatusTransitionService
         return match (true) {
             $from === Status::PENDING && $to === Status::ACTIVATED => 'Akun diaktifkan',
             $from === Status::ACTIVATED && $to === Status::VERIFIED => "Akun diverifikasi oleh {$role}",
-            $from === Status::VERIFIED && $to === Status::RESTRICTED => "Akun dibatasi (investigasi)",
-            $from === Status::VERIFIED && $to === Status::SUSPENDED => "Akun ditangguhkan (pelanggaran)",
+            $from === Status::VERIFIED && $to === Status::RESTRICTED => 'Akun dibatasi (investigasi)',
+            $from === Status::VERIFIED && $to === Status::SUSPENDED => 'Akun ditangguhkan (pelanggaran)',
             in_array($to, [Status::RESTRICTED, Status::SUSPENDED]) => "Akun {$to->label()}",
-            $from === Status::INACTIVE && $to === Status::ARCHIVED => "Akun diarsipkan (GDPR pending)",
+            $from === Status::INACTIVE && $to === Status::ARCHIVED => 'Akun diarsipkan (GDPR pending)',
             default => "Status diubah: {$from->label()} → {$to->label()}",
         };
     }
@@ -264,7 +267,7 @@ class RoleBasedStatusTransitionService
     /**
      * Get all users waiting for specific approval by role
      */
-    public function getPendingApprovals(User $approvingUser): \Illuminate\Pagination\LengthAwarePaginator
+    public function getPendingApprovals(User $approvingUser): LengthAwarePaginator
     {
         $role = $approvingUser->getHighestRole();
 
@@ -274,11 +277,11 @@ class RoleBasedStatusTransitionService
 
         // Filter by who can approve what
         if ($role === 'super_admin') {
-            $query->whereHas('roles', fn($q) => $q->whereIn('name', ['admin']));
+            $query->whereHas('roles', fn ($q) => $q->whereIn('name', ['admin']));
         } elseif ($role === 'admin') {
-            $query->whereHas('roles', fn($q) => $q->whereIn('name', ['student', 'teacher', 'mentor']));
+            $query->whereHas('roles', fn ($q) => $q->whereIn('name', ['student', 'teacher', 'mentor']));
         } elseif ($role === 'teacher') {
-            $query->whereHas('roles', fn($q) => $q->where('name', 'student'));
+            $query->whereHas('roles', fn ($q) => $q->where('name', 'student'));
         } else {
             $query->whereRaw('1 = 0'); // Empty for other roles
         }

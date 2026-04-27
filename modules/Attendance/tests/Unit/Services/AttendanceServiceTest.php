@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Attendance\Tests\Unit\Services;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
 use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\AttendanceService;
@@ -20,8 +21,8 @@ describe('Attendance Service', function () {
         Gate::shouldReceive('authorize')
             ->once()
             ->with('create', AttendanceLog::class)
-            ->andThrow(\Illuminate\Auth\Access\AuthorizationException::class);
+            ->andThrow(AuthorizationException::class);
 
         $this->service->recordAttendance('student-uuid', ['status' => 'present']);
-    })->throws(\Illuminate\Auth\Access\AuthorizationException::class);
+    })->throws(AuthorizationException::class);
 });

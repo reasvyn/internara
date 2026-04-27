@@ -10,7 +10,6 @@ use Livewire\Component;
 use Modules\Internship\Livewire\Forms\RegistrationForm;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
-use Modules\Internship\Models\InternshipRegistration;
 use Modules\Internship\Services\Contracts\RegistrationService;
 
 /**
@@ -24,7 +23,9 @@ class InternshipRegistrationManager extends Component
     public RegistrationForm $form;
 
     public bool $proposeNewPartner = false;
+
     public string $proposedCompanyName = '';
+
     public string $proposedCompanyAddress = '';
 
     public function mount(): void
@@ -55,7 +56,7 @@ class InternshipRegistrationManager extends Component
     #[Computed]
     public function availablePlacements()
     {
-        if (!$this->form->internship_id) {
+        if (! $this->form->internship_id) {
             return [];
         }
 
@@ -100,7 +101,7 @@ class InternshipRegistrationManager extends Component
     {
         return view('internship::livewire.internship-registration-manager')
             ->layout('ui::components.layouts.dashboard', [
-                'title' => __('internship::ui.registration_title') . ' | ' . setting('brand_name'),
+                'title' => __('internship::ui.registration_title').' | '.setting('brand_name'),
             ]);
     }
 }

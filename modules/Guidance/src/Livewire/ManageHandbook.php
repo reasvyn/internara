@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Guidance\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Attributes\Computed;
 use Modules\Guidance\Livewire\Forms\HandbookForm;
+use Modules\Guidance\Models\Handbook;
 use Modules\Guidance\Services\Contracts\HandbookService;
 use Modules\UI\Livewire\RecordManager;
 
@@ -26,7 +26,7 @@ class ManageHandbook extends RecordManager
     {
         $this->service = $handbookService;
         $this->eventPrefix = 'handbook';
-        $this->modelClass = \Modules\Guidance\Models\Handbook::class;
+        $this->modelClass = Handbook::class;
     }
 
     /**

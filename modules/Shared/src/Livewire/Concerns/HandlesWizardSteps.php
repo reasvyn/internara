@@ -2,48 +2,50 @@
 
 declare(strict_types=1);
 
-namespace Modules\Setup\Livewire\Concerns;
+namespace Modules\Shared\Livewire\Concerns;
 
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Exception\AppException;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 /**
- * Handles the core logic for multi-step application setup wizards.
- * This trait manages step progression, completion state, and redirection,
- * intended for use within Livewire components that represent a setup step.
+ * Handles the core logic for multi-step application wizards (Installation/Setup).
+ * This trait manages step progression, completion state, and redirection.
+ *
+ * [S2 - Sustain] Moved to Shared module to support both Installation and Setup modules.
  *
  * @mixin Component
  */
-trait HandlesSetupSteps
+trait HandlesWizardSteps
 {
     /**
-     * The service responsible for handling setup business logic.
+     * The service responsible for handling setup/config business logic.
      */
-    protected SetupService $setupService;
+    protected AppSetupService $setupService;
 
     /**
-     * Holds the properties of the current setup step.
+     * Holds the properties of the current wizard step.
      */
     #[Locked]
-    public array $setupStepProps = [];
+    public array $wizardStepProps = [];
 
     /**
-     * Initializes the properties for the current setup step.
+     * Initializes the properties for the current wizard step.
      *
      * @param string $currentStep The identifier for the current step.
      * @param string $nextStep The identifier for the next step.
      * @param string $prevStep The identifier for the previous step.
      * @param array<string, mixed> $extra Additional data for the step.
      */
-    protected function initSetupStepProps(
+    protected function initWizardStepProps(
         string $currentStep,
         string $nextStep = '',
         string $prevStep = '',
         array $extra = [],
     ): void {
-        $this->setupStepProps = [
+        $this->wizardStepProps = [
             'currentStep' => $currentStep,
             'nextStep' => $nextStep,
             'prevStep' => $prevStep,
@@ -52,53 +54,49 @@ trait HandlesSetupSteps
     }
 
     /**
-     * Ensures the previous step was completed, and the user is authorized for setup,
+     * Ensures the previous step was completed, and the user is authorized,
      * redirecting if they are not.
      */
-    protected function requireSetupAccess(): void
+    protected function requireWizardAccess(): void
     {
-        // [S1 - Secure] Enforce session-based authorization for all setup components.
-        // This ensures that even if middleware is bypassed (e.g., Livewire requests),
-        // the component itself remains protected.
-        if (! session()->get(SetupService::SESSION_SETUP_AUTHORIZED)) {
-            $this->redirectRoute('setup.welcome', navigate: true);
+        if (! session()->get(AppSetupService::SESSION_SETUP_AUTHORIZED)) {
+            $this->redirectRoute('setup', navigate: true);
+
             return;
         }
 
-        $prevStep = $this->setupStepProps['prevStep'] ?? null;
+        $prevStep = $this->wizardStepProps['prevStep'] ?? null;
 
         try {
             if (! $this->setupService->requireSetupAccess($prevStep)) {
-                $this->redirectToStep($prevStep ?: SetupService::STEP_WELCOME);
+                $this->redirectToStep($prevStep ?: 'setup');
             }
-        } catch (\Modules\Exception\AppException $e) {
-            // Log for developers but redirect for users
+        } catch (AppException $e) {
             report($e);
-            $this->redirectToStep($prevStep ?: SetupService::STEP_WELCOME);
+            $this->redirectToStep($prevStep ?: 'setup');
         }
     }
 
     /**
      * Marks the current step as complete and proceeds to the next step.
-     * Orchestrates the step progression, handling finalization if it's the 'complete' step.
      */
     public function nextStep(): void
     {
-        $currentStep = $this->setupStepProps['currentStep'] ?? '';
-        $nextStep = $this->setupStepProps['nextStep'] ?? '';
-        $reqRecord = $this->setupStepProps['extra']['req_record'] ?? '';
+        $currentStep = $this->wizardStepProps['currentStep'] ?? '';
+        $nextStep = $this->wizardStepProps['nextStep'] ?? '';
+        $reqRecord = $this->wizardStepProps['extra']['req_record'] ?? '';
 
         try {
             $success = $this->setupService->performSetupStep($currentStep, $reqRecord);
 
             if ($success) {
-                // [S2 - Sustain] Positive UI Feedback
                 flash()->success(__('setup::wizard.common.step_success', [
-                    'step' => __('setup::wizard.' . $currentStep . '.title')
+                    'step' => __('setup::wizard.'.$currentStep.'.title'),
                 ]));
 
-                if ($currentStep === SetupService::STEP_COMPLETE) {
+                if ($currentStep === AppSetupService::STEP_COMPLETE) {
                     $this->redirectToLanding();
+
                     return;
                 }
 
@@ -107,7 +105,7 @@ trait HandlesSetupSteps
                 }
             }
         } catch (\Exception $e) {
-            if ($e instanceof \Modules\Exception\AppException) {
+            if ($e instanceof AppException) {
                 flash()->error($e->getUserMessage());
             } else {
                 report($e);
@@ -117,11 +115,11 @@ trait HandlesSetupSteps
     }
 
     /**
-     * Redirects the user to the previous step in the setup process.
+     * Redirects the user to the previous step.
      */
     public function backToPrev(): void
     {
-        $this->redirectToStep($this->setupStepProps['prevStep'] ?? SetupService::STEP_WELCOME);
+        $this->redirectToStep($this->wizardStepProps['prevStep'] ?? 'setup');
     }
 
     /**
@@ -130,26 +128,24 @@ trait HandlesSetupSteps
     #[Computed]
     public function isRecordExists(): bool
     {
-        $record = $this->setupStepProps['extra']['req_record'] ?? null;
+        $record = $this->wizardStepProps['extra']['req_record'] ?? null;
 
         return $record ? $this->setupService->isRecordExists($record) : true;
     }
 
     /**
      * Determines if the 'next step' button should be disabled.
-     * The button is disabled if a required record for the current step does not exist.
      */
     #[Computed]
     public function disableNextStep(): bool
     {
-        $record = $this->setupStepProps['extra']['req_record'] ?? null;
+        $record = $this->wizardStepProps['extra']['req_record'] ?? null;
 
         return $record ? ! $this->setupService->isRecordExists($record) : false;
     }
 
     /**
      * Re-evaluates the step completion status.
-     * Use this method as an event listener to invalidate the cached computed properties.
      */
     public function updateStepStatus(): void
     {
@@ -157,9 +153,7 @@ trait HandlesSetupSteps
     }
 
     /**
-     * Redirects to a named setup step route.
-     *
-     * @param string $name The name of the step to redirect to.
+     * Redirects to a named step route.
      */
     protected function redirectToStep(string $name): void
     {
@@ -167,7 +161,7 @@ trait HandlesSetupSteps
             return;
         }
 
-        $routeName = "setup.{$name}";
+        $routeName = str_contains($name, '.') ? $name : "setup.{$name}";
         $this->redirectRoute($routeName, navigate: true);
     }
 
@@ -176,7 +170,7 @@ trait HandlesSetupSteps
      */
     protected function redirectToLanding(): void
     {
-        $landingRoute = $this->setupStepProps['extra']['landing_route'] ?? 'login';
+        $landingRoute = $this->wizardStepProps['extra']['landing_route'] ?? 'login';
         $this->redirectRoute($landingRoute, navigate: true);
     }
 }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Status\Livewire;
 
+use Carbon\Carbon;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Modules\Status\Models\AccountRestriction;
 use Modules\User\Models\User;
 
 /**
@@ -106,10 +106,10 @@ class RestrictionManager extends Component
                 'restriction_type' => $this->restrictionType,
                 'restriction_key' => $this->restrictionKey,
                 'restriction_value' => $this->restrictionValue,
-                'reason' => $this->reason ?: "Pembatasan diterapkan oleh " . auth()->user()->name,
+                'reason' => $this->reason ?: 'Pembatasan diterapkan oleh '.auth()->user()->name,
                 'applied_by_user_id' => auth()->id(),
                 'applied_at' => now(),
-                'expires_at' => $this->expiresAt ? \Carbon\Carbon::parse($this->expiresAt) : null,
+                'expires_at' => $this->expiresAt ? Carbon::parse($this->expiresAt) : null,
                 'is_active' => true,
                 'metadata' => [
                     'auto_lift' => $this->autoLift,
@@ -122,7 +122,7 @@ class RestrictionManager extends Component
             $this->resetForm();
             $this->dispatch('restrictionAdded', userId: $this->user->id);
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menambah pembatasan: ' . $e->getMessage()));
+            flash()->error(__('Gagal menambah pembatasan: '.$e->getMessage()));
         }
     }
 
@@ -147,7 +147,7 @@ class RestrictionManager extends Component
             flash()->success(__('Pembatasan berhasil dihapus'));
             $this->dispatch('restrictionRemoved', userId: $this->user->id);
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menghapus pembatasan: ' . $e->getMessage()));
+            flash()->error(__('Gagal menghapus pembatasan: '.$e->getMessage()));
         }
     }
 

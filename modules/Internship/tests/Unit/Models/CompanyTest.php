@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Tests\Unit\Models;
 
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Internship\Models\Company;
 use Modules\Internship\Models\InternshipPlacement;

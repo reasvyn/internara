@@ -48,66 +48,46 @@ The `composer setup` command automates everything:
 
 ## 🔧 What is the Setup Wizard?
 
-After `composer setup`, when you visit **http://localhost:8000**, you'll be redirected to the **Setup Wizard** at `/setup`.
+After technical installation via `php artisan system:install`, when you visit the generated URL, you'll be guided through the **onboarding process**.
 
-The Setup Wizard is a **guided configuration interface** that walks you through:
+The onboarding consists of the following business configuration steps:
 
-### Step 1: Welcome
-- Overview of the application
-- Prerequisites confirmation
-
-### Step 2: Environment Configuration
-- Application name
-- Timezone settings
-- Locale selection
-
-### Step 3: School/Institution Setup
-- School name
-- School type
+#### Step 1: School/Institution Setup
+- School identity and branding
 - Contact information
-- Logo upload
 
-### Step 4: Administrator Account
-- Admin email
-- Admin password
-- Confirm password
+#### Step 2: Administrator Account
+- Initialize the SuperAdmin account
 
-### Step 5: System Configuration
-- Queue settings
-- Cache preferences
-- Logging configuration
+#### Step 3: Department Setup
+- Define organizational units
 
-### Step 6: Department Setup
-- Create initial departments
-- Assign department codes
+#### Step 4: Internship Configuration
+- Initialize the first internship program
 
-### Step 7: Internship Configuration
-- Internship program setup
-- Duration and scheduling
-- Assessment criteria
+#### Step 5: System & SMTP
+- Configure mail servers with real-time handshake testing
 
-### Step 8: Complete
-- Summary of configuration
-- Ready to start using the application
+#### Step 6: Complete
+- Summary and final system lockdown
 
 ---
 
 ## 🔒 Setup Security
 
-The Setup Wizard is protected by multiple layers:
+The onboarding process is protected by multiple layers:
 
 **Automatic Lockdown**
-- After completing setup, all setup routes return **404** (Not Found)
-- Setup routes are only accessible if `APP_INSTALLED` is not set
-- One-time setup token prevents unauthorized re-entry
+- After completing setup, all `/setup` routes return **404** (Not Found).
+- Access tokens are invalidated.
+- Routes are only accessible if `APP_INSTALLED` is false.
 
 **Access Control**
-- Setup pages cannot be accessed after installation
-- To reset setup (emergency only): `php artisan app:setup-reset`
+- To reset setup (emergency recovery): `php artisan setup:reset`
 
 **Middleware Protection**
-- `RequireSetupAccess`: Redirects non-installed apps to setup, hides setup for installed apps
-- `ProtectSetupRoute`: Validates setup access and installation state
+- `RequireSetupAccess`: Redirects non-installed apps to setup, hides setup for installed apps.
+- `ProtectSetupRoute`: Validates token-based access and installation state.
 
 ---
 
@@ -316,7 +296,7 @@ php artisan module:list      # List modules
 php artisan module:make Name # Create new module
 
 # Setup (Emergency Only)
-php artisan app:setup-reset  # Reset setup wizard
+php artisan setup:reset  # Reset setup wizard
 ```
 
 ---
@@ -393,7 +373,7 @@ composer dump-autoload
 ### "Setup wizard not appearing"
 ```bash
 # Reset setup state
-php artisan app:setup-reset
+php artisan setup:reset
 ```
 
 ### Tests failing with "SQLSTATE" errors
