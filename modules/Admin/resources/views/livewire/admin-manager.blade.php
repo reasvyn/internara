@@ -36,11 +36,11 @@
         <x-slot:tableCells>
             @scope('cell_name', $user)
                 <div class="flex items-center gap-3 group">
-                    <x-ui::avatar :src="$user['avatar_url']" :title="$user['name']" class="rounded-xl size-10 shadow-sm transition-transform group-hover:scale-110" />
+                    <x-ui::avatar :src="$user->avatar_url" :title="$user->name" class="rounded-xl size-10 shadow-sm transition-transform group-hover:scale-110" />
                     <div class="flex flex-col">
-                        <span class="font-bold text-sm text-base-content/90 tracking-tight group-hover:text-primary transition-colors">{{ $user['name'] }}</span>
+                        <span class="font-bold text-sm text-base-content/90 tracking-tight group-hover:text-primary transition-colors">{{ $user->name }}</span>
                         <div class="flex items-center gap-1.5 mt-0.5">
-                            @if($user['is_super_admin'])
+                            @if($user->is_super_admin)
                                 <x-ui::badge value="SUPER" variant="error" class="badge-xs font-black text-[7px] tracking-widest px-1" />
                             @else
                                 <x-ui::badge value="ADMIN" variant="neutral" class="badge-xs font-black text-[7px] tracking-widest px-1 opacity-40" />
@@ -52,19 +52,19 @@
 
             @scope('cell_invitation_status', $user, $manager)
                 <x-ui::badge 
-                    :value="__('admin::ui.manager.invitation_statuses.' . $user['invitation_status'])" 
-                    :variant="$manager->statusBadgeVariant($user['invitation_status'])"
+                    :value="__('admin::ui.manager.invitation_statuses.' . $user->invitation_status)" 
+                    :variant="$manager->statusBadgeVariant($user->invitation_status)"
                     class="badge-sm font-black text-[9px] uppercase tracking-widest rounded-lg shadow-sm"
                 />
             @endscope
 
-            @scope('cell_actions', $user)
+            @scope('actions', $user)
                 <div class="flex justify-end gap-2">
-                    @if($user['invitation_status'] !== 'accepted')
+                    @if($user->invitation_status !== 'accepted')
                         <x-ui::button
                             icon="tabler.mail-forward"
                             variant="tertiary"
-                            wire:click="reinvite('{{ $user['id'] }}')"
+                            wire:click="reinvite('{{ $user->id }}')"
                             class="btn-xs hover:bg-warning/10 border-none shadow-none text-warning"
                             tooltip="{{ __('admin::ui.manager.reinvite_action') }}"
                         />
@@ -72,15 +72,15 @@
                     <x-ui::button
                         icon="tabler.edit"
                         variant="tertiary"
-                        wire:click="edit('{{ $user['id'] }}')"
+                        wire:click="edit('{{ $user->id }}')"
                         class="btn-xs hover:bg-primary/10 border-none shadow-none text-primary"
                         tooltip="{{ __('ui::common.edit') }}"
                     />
-                    @if(!$user['is_super_admin'])
+                    @if(!$user->is_super_admin)
                         <x-ui::button
                             icon="tabler.trash"
                             variant="tertiary"
-                            wire:click="discard('{{ $user['id'] }}')"
+                            wire:click="discard('{{ $user->id }}')"
                             wire:confirm="{{ __('ui::common.delete_confirm') }}"
                             class="text-error btn-xs hover:bg-error/10 border-none shadow-none"
                             tooltip="{{ __('ui::common.delete') }}"

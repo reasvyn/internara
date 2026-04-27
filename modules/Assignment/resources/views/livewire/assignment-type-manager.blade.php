@@ -9,15 +9,15 @@
             >
                 @scope('actions', $type)
                     <div class="flex justify-end gap-2">
-                        @if($this->can('update', $type['id']))
-                            <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $type['id'] }}')" class="text-info" tooltip="{{ __('assignment::ui.edit_type') }}" />
+                        @if($this->can('update', $type->id))
+                            <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $type->id }}')" class="text-info" tooltip="{{ __('assignment::ui.edit_type') }}" />
                         @endif
                         
-                        @if($this->can('delete', $type['id']))
+                        @if($this->can('delete', $type->id))
                             <x-ui::button 
                                 icon="tabler.trash" 
                                 variant="tertiary" 
-                                wire:click="discard('{{ $type['id'] }}')"
+                                wire:click="discard('{{ $type->id }}')"
                                 class="text-error" 
                                 tooltip="{{ __('ui::common.delete') }}" 
                             />

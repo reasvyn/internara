@@ -40,16 +40,16 @@
         <x-slot:tableCells>
             @scope('cell_name', $requirement)
                 <div class="flex flex-col min-w-[200px] group">
-                    <span class="font-bold text-sm text-base-content/90 group-hover:text-primary transition-colors">{{ $requirement['name'] }}</span>
-                    @if($requirement['description'])
-                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1 italic">{{ $requirement['description'] }}</span>
+                    <span class="font-bold text-sm text-base-content/90 group-hover:text-primary transition-colors">{{ $requirement->name }}</span>
+                    @if($requirement->description)
+                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1 italic">{{ $requirement->description }}</span>
                     @endif
                 </div>
             @endscope
 
             @scope('cell_type', $requirement)
                 <x-ui::badge 
-                    :value="__('internship::ui.' . $requirement['type'])" 
+                    :value="__('internship::ui.' . $requirement->type)" 
                     variant="neutral" 
                     class="badge-sm font-black text-[9px] uppercase tracking-tighter rounded-lg" 
                 />
@@ -57,7 +57,7 @@
 
             @scope('cell_is_mandatory', $requirement)
                 <div class="flex justify-center">
-                    @if($requirement['is_mandatory'])
+                    @if($requirement->is_mandatory)
                         <x-ui::badge value="{{ __('internship::ui.mandatory') }}" variant="error" class="badge-xs font-black text-[8px] uppercase" />
                     @else
                         <x-ui::badge value="{{ __('internship::ui.optional') }}" variant="ghost" class="badge-xs font-black text-[8px] uppercase opacity-40" />
@@ -67,25 +67,24 @@
 
             @scope('cell_is_active', $requirement)
                 <div class="flex justify-center">
-                    <div class="size-2 rounded-full {{ $requirement['is_active'] ? 'bg-success shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-base-content/20' }}"></div>
+                    <div class="size-2 rounded-full {{ $requirement->is_active ? 'bg-success shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-base-content/20' }}"></div>
                 </div>
-            </div>
-            </x-slot:tableCells>
+            @endscope
+        </x-slot:tableCells>
 
             {{-- Row Actions --}}
             <x-slot:rowActions>
-            @scope('actions', $requirement)
-                <div class="flex items-center justify-end gap-1 px-2">
-                    @if($this->can('update', $requirement['id']))
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $requirement['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
-                    @endif
-                    @if($this->can('delete', $requirement['id']))
-                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $requirement['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
-                    @endif
-                </div>
-            @endscope
+                @scope('actions', $requirement)
+                    <div class="flex items-center justify-end gap-1 px-2">
+                        @if($this->can('update', $requirement))
+                            <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $requirement->id }}')" tooltip="{{ __('ui::common.edit') }}" />
+                        @endif
+                        @if($this->can('delete', $requirement))
+                            <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $requirement->id }}')" tooltip="{{ __('ui::common.delete') }}" />
+                        @endif
+                    </div>
+                @endscope
             </x-slot:rowActions>
-
             {{-- 2. Form Fields --}}
         <x-slot:formFields>
             <x-ui::input :label="__('internship::ui.requirement_name')" icon="tabler.list-details" wire:model="form.name" required />

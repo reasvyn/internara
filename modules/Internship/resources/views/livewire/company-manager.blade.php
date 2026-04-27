@@ -79,16 +79,16 @@
         <x-slot:tableCells>
             @scope('cell_name', $company)
                 <div class="flex flex-col min-w-[200px]">
-                    <span class="font-bold text-sm text-base-content/90">{{ $company['name'] }}</span>
-                    @if($company['address'])
-                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1">{{ $company['address'] }}</span>
+                    <span class="font-bold text-sm text-base-content/90">{{ $company->name }}</span>
+                    @if($company->address)
+                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1">{{ $company->address }}</span>
                     @endif
                 </div>
             @endscope
 
             @scope('cell_business_field', $company)
                 <x-ui::badge 
-                    :value="$company['business_field'] ?? '-'" 
+                    :value="$company->business_field ?? '-'" 
                     variant="neutral" 
                     class="badge-sm font-black text-[9px] uppercase tracking-tighter" 
                 />
@@ -99,11 +99,11 @@
         <x-slot:rowActions>
             @scope('actions', $company)
                 <div class="flex items-center justify-end gap-1 px-2">
-                    @if($this->can('update', $company['id']))
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $company['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
+                    @if($this->can('update', $company))
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $company->id }}')" tooltip="{{ __('ui::common.edit') }}" />
                     @endif
-                    @if($this->can('delete', $company['id']))
-                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $company['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
+                    @if($this->can('delete', $company))
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $company->id }}')" tooltip="{{ __('ui::common.delete') }}" />
                     @endif
                 </div>
             @endscope

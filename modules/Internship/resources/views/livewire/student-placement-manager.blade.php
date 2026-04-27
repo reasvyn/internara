@@ -72,30 +72,30 @@
                 <x-slot:tableCells>
                     @scope('cell_student_name', $registration)
                         <div class="flex items-center gap-3">
-                            <x-ui::avatar :src="$registration['student_avatar']" :title="$registration['student_name']" class="rounded-xl size-10 shadow-sm" />
+                            <x-ui::avatar :src="$registration->student_avatar" :title="$registration->student_name" class="rounded-xl size-10 shadow-sm" />
                             <div class="flex flex-col">
-                                <span class="font-bold text-sm text-base-content/90 tracking-tight">{{ $registration['student_name'] }}</span>
-                                <span class="text-[9px] opacity-40 uppercase tracking-widest font-black">{{ __('internship::ui.teacher') }}: {{ $registration['teacher_name'] }}</span>
+                                <span class="font-bold text-sm text-base-content/90 tracking-tight">{{ $registration->student_name }}</span>
+                                <span class="text-[9px] opacity-40 uppercase tracking-widest font-black">{{ __('internship::ui.teacher') }}: {{ $registration->teacher_name }}</span>
                             </div>
                         </div>
                     @endscope
 
                     @scope('cell_internship_title', $registration)
                         <div class="flex flex-col">
-                            <span class="text-sm font-medium opacity-80">{{ $registration['internship_title'] }}</span>
+                            <span class="text-sm font-medium opacity-80">{{ $registration->internship_title }}</span>
                         </div>
                     @endscope
 
                     @scope('cell_placement_company', $registration)
-                        @if($registration['placement_company'] !== '-')
+                        @if($registration->placement_company !== '-')
                             <div class="flex items-center gap-2 py-1 px-3 bg-primary/5 rounded-lg border border-primary/10 w-fit">
                                 <x-ui::icon name="tabler.building" class="size-3.5 text-primary" />
-                                <span class="text-xs font-bold text-primary tracking-tight">{{ $registration['placement_company'] }}</span>
+                                <span class="text-xs font-bold text-primary tracking-tight">{{ $registration->placement_company }}</span>
                             </div>
-                        @elseif($registration['proposed_company_name'])
+                        @elseif($registration->proposed_company_name)
                             <div class="flex flex-col gap-1.5">
                                 <x-ui::badge value="{{ __('internship::ui.propose_new_partner') }}" variant="warning" class="badge-xs font-black text-[8px] uppercase tracking-widest" />
-                                <span class="text-[11px] italic font-medium opacity-50 line-clamp-1 border-l-2 border-warning/30 pl-2 ml-1">{{ $registration['proposed_company_name'] }}</span>
+                                <span class="text-[11px] italic font-medium opacity-50 line-clamp-1 border-l-2 border-warning/30 pl-2 ml-1">{{ $registration->proposed_company_name }}</span>
                             </div>
                         @else
                             <div class="flex items-center gap-2 opacity-30 italic">
@@ -107,8 +107,8 @@
 
                     @scope('cell_status', $registration)
                         <x-ui::badge 
-                            :value="$registration['status']" 
-                            :variant="match($registration['status']) {
+                            :value="$registration->status" 
+                            :variant="match($registration->status) {
                                 'approved' => 'success',
                                 'pending' => 'warning',
                                 'rejected' => 'error',
@@ -123,11 +123,11 @@
                 <x-slot:rowActions>
                     @scope('actions', $registration)
                         <div class="flex items-center justify-end gap-1 px-2">
-                            @if($this->can('update', $registration['id']))
-                                <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $registration['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
+                            @if($this->can('update', $registration))
+                                <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $registration->id }}')" tooltip="{{ __('ui::common.edit') }}" />
                             @endif
-                            @if($this->can('delete', $registration['id']))
-                                <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $registration['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
+                            @if($this->can('delete', $registration))
+                                <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $registration->id }}')" tooltip="{{ __('ui::common.delete') }}" />
                             @endif
                         </div>
                     @endscope

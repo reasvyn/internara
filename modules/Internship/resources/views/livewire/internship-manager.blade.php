@@ -60,15 +60,15 @@
         <x-slot:tableCells>
             @scope('cell_title', $internship)
                 <div class="flex flex-col min-w-[200px] group">
-                    <span class="font-bold text-sm text-base-content/90 group-hover:text-primary transition-colors">{{ $internship['title'] }}</span>
-                    <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1 italic">{{ $internship['description'] ?: '-' }}</span>
+                    <span class="font-bold text-sm text-base-content/90 group-hover:text-primary transition-colors">{{ $internship->title }}</span>
+                    <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1 italic">{{ $internship->description ?: '-' }}</span>
                 </div>
             @endscope
 
             @scope('cell_status', $internship)
                 <x-ui::badge 
-                    :value="$internship['status_label']" 
-                    :variant="$internship['status_color']" 
+                    :value="$internship->status_label" 
+                    :variant="$internship->status_color" 
                     class="badge-sm font-black text-[9px] uppercase tracking-tighter rounded-lg" 
                 />
             @endscope
@@ -80,22 +80,22 @@
                 <div class="flex items-center justify-end gap-1">
                     {{-- Status Transition Menu --}}
                     <x-ui::dropdown icon="tabler.settings-automation" variant="tertiary" class="btn-xs text-primary/40 hover:text-primary" right>
-                        <x-ui::menu-item title="internship::ui.status.publish" icon="tabler.broadcast" wire:click="updateStatus('{{ $internship['id'] }}', 'published')" />
-                        <x-ui::menu-item title="internship::ui.status.open" icon="tabler.door-open" wire:click="updateStatus('{{ $internship['id'] }}', 'open')" />
-                        <x-ui::menu-item title="internship::ui.status.ongoing" icon="tabler.activity" wire:click="updateStatus('{{ $internship['id'] }}', 'ongoing')" />
-                        <x-ui::menu-item title="internship::ui.status.complete" icon="tabler.circle-check" wire:click="updateStatus('{{ $internship['id'] }}', 'completed')" />
+                        <x-ui::menu-item title="internship::ui.status.publish" icon="tabler.broadcast" wire:click="updateStatus('{{ $internship->id }}', 'published')" />
+                        <x-ui::menu-item title="internship::ui.status.open" icon="tabler.door-open" wire:click="updateStatus('{{ $internship->id }}', 'open')" />
+                        <x-ui::menu-item title="internship::ui.status.ongoing" icon="tabler.activity" wire:click="updateStatus('{{ $internship->id }}', 'ongoing')" />
+                        <x-ui::menu-item title="internship::ui.status.complete" icon="tabler.circle-check" wire:click="updateStatus('{{ $internship->id }}', 'completed')" />
                         <x-ui::menu-separator />
-                        <x-ui::menu-item title="internship::ui.status.close" icon="tabler.door-off" class="text-warning" wire:click="updateStatus('{{ $internship['id'] }}', 'closed')" />
-                        <x-ui::menu-item title="internship::ui.status.archive" icon="tabler.archive" class="text-error" wire:click="updateStatus('{{ $internship['id'] }}', 'archived')" />
+                        <x-ui::menu-item title="internship::ui.status.close" icon="tabler.door-off" class="text-warning" wire:click="updateStatus('{{ $internship->id }}', 'closed')" />
+                        <x-ui::menu-item title="internship::ui.status.archive" icon="tabler.archive" class="text-error" wire:click="updateStatus('{{ $internship->id }}', 'archived')" />
                     </x-ui::dropdown>
 
                     <div class="divider divider-horizontal mx-0 opacity-5"></div>
 
-                    @if($this->can('update'))
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $internship['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
+                    @if($this->can('update', $internship))
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $internship->id }}')" tooltip="{{ __('ui::common.edit') }}" />
                     @endif
-                    @if($this->can('delete'))
-                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $internship['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
+                    @if($this->can('delete', $internship))
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $internship->id }}')" tooltip="{{ __('ui::common.delete') }}" />
                     @endif
                 </div>
             @endscope
