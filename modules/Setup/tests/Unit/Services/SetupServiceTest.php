@@ -38,7 +38,9 @@ describe('SetupService', function () {
             $this->internshipService,
         );
 
-        Gate::shouldReceive('authorize')->with('performStep', AppSetupService::class)->andReturn(true);
+        Gate::shouldReceive('authorize')
+            ->with('performStep', AppSetupService::class)
+            ->andReturn(true);
 
         Cache::spy();
         Cache::shouldReceive('lock')->andReturnUsing(function ($name, $seconds) {

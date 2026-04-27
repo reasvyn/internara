@@ -43,13 +43,6 @@ interface InstallationAuditor
     public function checkDatabase(): array;
 
     /**
-     * Checks if the required PHP functions are enabled.
-     *
-     * @return array<string, bool>
-     */
-    public function checkFunctions(): array;
-
-    /**
      * Determines if the system passes all critical audits.
      */
     public function passes(): bool;

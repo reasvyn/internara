@@ -99,9 +99,7 @@ describe('AppInstallCommand', function () {
                     'connection' => false,
                     'message' => 'Access denied for user=admin;password=secret123',
                 ],
-                'functions' => [],
             ]);
-
         $this->artisan('app:install')
             ->expectsConfirmation(__('setup::install.confirmation'), 'yes')
             ->expectsOutputToContain('requirements.extension_bcmath')

@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Services\Contracts\SystemAuditor;
+use Modules\Setup\Services\Contracts\InstallationAuditor;
 use Modules\Setup\Services\InstallerService;
 
 describe('InstallerService Feature Test', function () {
     beforeEach(function () {
         $this->settingService = $this->mock(SettingService::class);
-        $this->auditor = $this->mock(SystemAuditor::class);
+        $this->auditor = $this->mock(InstallationAuditor::class);
 
         $this->installer = new InstallerService($this->settingService, $this->auditor);
 

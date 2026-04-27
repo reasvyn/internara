@@ -28,11 +28,11 @@ class TestSessionManager
         $basePath = storage_path('framework/testing/sessions');
         $this->sessionPath = "{$basePath}/{$this->sessionId}";
 
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             File::makeDirectory($basePath, 0700, true);
         }
 
-        if (!File::isDirectory($this->sessionPath)) {
+        if (! File::isDirectory($this->sessionPath)) {
             File::makeDirectory($this->sessionPath, 0700, true);
         }
     }
@@ -70,13 +70,13 @@ class TestSessionManager
     {
         $file = $this->getSegmentFile($module, $type);
 
-        if (!File::exists($file)) {
+        if (! File::exists($file)) {
             return false;
         }
 
         $data = json_decode(File::get($file), true);
 
-        if (!($data['success'] ?? false)) {
+        if (! ($data['success'] ?? false)) {
             return false;
         }
 
@@ -97,7 +97,7 @@ class TestSessionManager
      */
     protected function calculateIntegrityHash(string $path): string
     {
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             return File::exists($path) ? (string) File::lastModified($path) : '';
         }
 
@@ -163,7 +163,7 @@ class TestSessionManager
     protected function getLatestSessionId(): ?string
     {
         $basePath = storage_path('framework/testing/sessions');
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             return null;
         }
 
@@ -172,7 +172,7 @@ class TestSessionManager
             return null;
         }
 
-        usort($directories, fn($a, $b) => File::lastModified($b) <=> File::lastModified($a));
+        usort($directories, fn ($a, $b) => File::lastModified($b) <=> File::lastModified($a));
 
         return basename($directories[0]);
     }

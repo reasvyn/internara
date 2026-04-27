@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\EnvironmentSetup;
-use Modules\Setup\Services\Contracts\SystemAuditor;
+use Modules\Setup\Services\Contracts\InstallationAuditor;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -26,7 +26,7 @@ beforeEach(function () {
     Gate::define('performStep', fn() => true);
 
     // Mock the auditor
-    $mock = $this->mock(SystemAuditor::class);
+    $mock = $this->mock(InstallationAuditor::class);
     $mock->shouldReceive('passes')->andReturn(true);
     $mock->shouldReceive('audit')->andReturn([
         'requirements' => ['php_version' => true],

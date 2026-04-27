@@ -23,7 +23,7 @@ use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Livewire\SystemSetup;
-use Modules\Setup\Services\Contracts\SystemAuditor;
+use Modules\Setup\Services\Contracts\InstallationAuditor;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -40,7 +40,7 @@ beforeEach(function () {
     Gate::define('finalize', fn() => true);
 
     // Mock environment auditor to always be ready
-    $mock = $this->mock(SystemAuditor::class);
+    $mock = $this->mock(InstallationAuditor::class);
     $mock->shouldReceive('passes')->andReturn(true);
     $mock->shouldReceive('audit')->andReturn([
         'requirements' => ['php_version' => true],

@@ -86,7 +86,6 @@ test('it forces installation if flag is provided', function () {
         'requirements' => ['php_version' => true],
         'permissions' => ['writable_storage' => true],
         'database' => ['connection' => true, 'message' => 'Connected'],
-        'functions' => ['proc_open' => true],
     ]);
     $installerMock->shouldReceive('generateAppKey')->andReturn(true);
     $installerMock->shouldReceive('runMigrations')->andReturn(true);

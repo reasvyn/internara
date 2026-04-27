@@ -43,7 +43,7 @@ class SetupServiceProvider extends ServiceProvider
         // Define common authorization for all setup actions
         $setupAuth = function (?Authenticatable $user) {
             return session()->get(
-                \Modules\Setup\Services\Contracts\AppAppSetupService::SESSION_SETUP_AUTHORIZED,
+                \Modules\Setup\Services\Contracts\AppSetupService::SESSION_SETUP_AUTHORIZED,
             ) === true;
         };
 
@@ -54,7 +54,7 @@ class SetupServiceProvider extends ServiceProvider
             // Allow installation only if the app is not yet installed,
             // or from the console (where user is null).
             $isInstalled = resolve(
-                \Modules\Setup\Services\Contracts\AppAppSetupService::class,
+                \Modules\Setup\Services\Contracts\AppSetupService::class,
             )->isAppInstalled();
 
             return !$isInstalled || is_null($user);
@@ -74,8 +74,8 @@ class SetupServiceProvider extends ServiceProvider
         $this->app->singleton(SetupRequirementRegistry::class);
 
         $this->app->singleton(
-            \Modules\Setup\Services\Contracts\AppAppSetupService::class,
-            AppAppSetupService::class,
+            \Modules\Setup\Services\Contracts\AppSetupService::class,
+            AppSetupService::class,
         );
     }
 

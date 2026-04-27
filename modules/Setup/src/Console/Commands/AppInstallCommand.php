@@ -68,7 +68,7 @@ class AppInstallCommand extends Command
                 $audit = $this->installerService->validateEnvironment();
                 $failures = [];
 
-                foreach (['requirements', 'permissions', 'functions'] as $category) {
+                foreach (['requirements', 'permissions'] as $category) {
                     foreach ($audit[$category] ?? [] as $name => $status) {
                         if ($status === false) {
                             $failures[] = "{$category}.{$name}";

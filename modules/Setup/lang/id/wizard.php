@@ -64,9 +64,6 @@ return [
             'Memastikan sistem memiliki akses tulis yang sesuai pada lapisan penyimpanan kritis.',
         'database' => 'Persistensi Data',
         'database_desc' => 'Memvalidasi konektivitas ke mesin database yang dikonfigurasi.',
-        'functions' => 'Kapabilitas Sistem',
-        'functions_desc' =>
-            'Memeriksa fungsi PHP kritikal yang diperlukan untuk orkestrasi sistem.',
         'db_connection' => 'Status Handshake',
         'refresh' => 'Audit Ulang',
         'audit' => [

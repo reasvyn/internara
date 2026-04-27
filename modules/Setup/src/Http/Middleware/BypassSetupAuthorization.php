@@ -19,7 +19,7 @@ class BypassSetupAuthorization
     {
         // Grant full access during installation phase if authorized via session
         Gate::before(function ($user = null, $ability = null) {
-            $isSetupAuthorized = session(AppAppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
             $isAppInstalled = setting('app_installed', false);
 
             if (!$isAppInstalled && $isSetupAuthorized) {

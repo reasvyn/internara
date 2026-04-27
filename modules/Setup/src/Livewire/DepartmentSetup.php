@@ -20,7 +20,7 @@ class DepartmentSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppAppSetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -31,10 +31,10 @@ class DepartmentSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppAppSetupService::STEP_DEPARTMENT,
-            nextStep: AppAppSetupService::STEP_INTERNSHIP,
-            prevStep: AppAppSetupService::STEP_ACCOUNT,
-            extra: ['req_record' => AppAppSetupService::RECORD_DEPARTMENT],
+            currentStep: AppSetupService::STEP_DEPARTMENT,
+            nextStep: AppSetupService::STEP_INTERNSHIP,
+            prevStep: AppSetupService::STEP_ACCOUNT,
+            extra: ['req_record' => AppSetupService::RECORD_DEPARTMENT],
         );
 
         $this->requireWizardAccess();

@@ -35,11 +35,6 @@ class InstallationAuditor extends BaseService implements Contract
     ];
 
     /**
-     * Required PHP functions for system operations.
-     */
-    protected const PHP_FUNCTIONS = ['proc_open', 'exec', 'shell_exec'];
-
-    /**
      * Minimum PHP version.
      */
     protected const MIN_PHP_VERSION = '8.4.0';
@@ -53,7 +48,6 @@ class InstallationAuditor extends BaseService implements Contract
             'requirements' => $this->checkRequirements(),
             'permissions' => $this->checkPermissions(),
             'database' => $this->checkDatabase(),
-            'functions' => $this->checkFunctions(),
         ];
     }
 
@@ -73,23 +67,6 @@ class InstallationAuditor extends BaseService implements Contract
                 'extension' => strtoupper($extension),
             ]);
             $results[$label] = extension_loaded($extension);
-        }
-
-        return $results;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkFunctions(): array
-    {
-        $results = [];
-
-        foreach (self::PHP_FUNCTIONS as $function) {
-            $label = __('setup::wizard.environment.audit.php_function', ['function' => $function]);
-            $results[$label] =
-                function_exists($function) &&
-                !in_array($function, explode(',', ini_get('disable_functions')));
         }
 
         return $results;
@@ -153,8 +130,7 @@ class InstallationAuditor extends BaseService implements Contract
         $requirementsPassed = !in_array(false, $audit['requirements'], true);
         $permissionsPassed = !in_array(false, $audit['permissions'], true);
         $databasePassed = (bool) $audit['database']['connection'];
-        $functionsPassed = !in_array(false, $audit['functions'], true);
 
-        return $requirementsPassed && $permissionsPassed && $databasePassed && $functionsPassed;
+        return $requirementsPassed && $permissionsPassed && $databasePassed;
     }
 }

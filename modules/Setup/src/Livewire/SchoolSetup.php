@@ -10,8 +10,6 @@ use Livewire\Component;
 use Modules\Exception\AppException;
 use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
-use Modules\Shared\Rules\Honeypot;
-use Modules\Shared\Rules\Turnstile;
 
 /**
  * Represents the 'School Identity' setup step in the application setup process.
@@ -21,19 +19,9 @@ class SchoolSetup extends Component
     use HandlesWizardSteps;
 
     /**
-     * Turnstile token for S1 security compliance.
-     */
-    public ?string $turnstile = null;
-
-    /**
-     * Honeypot field for bot protection.
-     */
-    public ?string $contact_me = null;
-
-    /**
      * Initializes the component.
      */
-    public function boot(AppAppSetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -44,10 +32,10 @@ class SchoolSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppAppSetupService::STEP_SCHOOL,
-            nextStep: AppAppSetupService::STEP_ACCOUNT,
+            currentStep: AppSetupService::STEP_SCHOOL,
+            nextStep: AppSetupService::STEP_ACCOUNT,
             prevStep: '',
-            extra: ['req_record' => AppAppSetupService::RECORD_SCHOOL],
+            extra: ['req_record' => AppSetupService::RECORD_SCHOOL],
         );
 
         $this->requireWizardAccess();
@@ -60,10 +48,7 @@ class SchoolSetup extends Component
     public function handleSchoolSaved(): void
     {
         try {
-            $this->validate([
-                'turnstile' => [new Turnstile()],
-                'contact_me' => [new Honeypot()],
-            ]);
+            $this->validate([]);
 
             $this->nextStep();
         } catch (\Exception $e) {

@@ -20,7 +20,7 @@ class InternshipSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppAppSetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -31,10 +31,10 @@ class InternshipSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppAppSetupService::STEP_INTERNSHIP,
-            nextStep: AppAppSetupService::STEP_SYSTEM,
-            prevStep: AppAppSetupService::STEP_DEPARTMENT,
-            extra: ['req_record' => AppAppSetupService::RECORD_INTERNSHIP],
+            currentStep: AppSetupService::STEP_INTERNSHIP,
+            nextStep: AppSetupService::STEP_SYSTEM,
+            prevStep: AppSetupService::STEP_DEPARTMENT,
+            extra: ['req_record' => AppSetupService::RECORD_INTERNSHIP],
         );
 
         $this->requireWizardAccess();

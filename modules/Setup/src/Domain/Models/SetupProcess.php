@@ -34,10 +34,10 @@ class SetupProcess
      * Step-to-Record mapping for automated existence checks.
      */
     public const STEP_RECORDS = [
-        AppAppSetupService::STEP_SCHOOL => AppAppSetupService::RECORD_SCHOOL,
-        AppAppSetupService::STEP_ACCOUNT => AppAppSetupService::RECORD_SUPER_ADMIN,
-        AppAppSetupService::STEP_DEPARTMENT => AppAppSetupService::RECORD_DEPARTMENT,
-        AppAppSetupService::STEP_INTERNSHIP => AppAppSetupService::RECORD_INTERNSHIP,
+        AppSetupService::STEP_SCHOOL => AppSetupService::RECORD_SCHOOL,
+        AppSetupService::STEP_ACCOUNT => AppSetupService::RECORD_SUPER_ADMIN,
+        AppSetupService::STEP_DEPARTMENT => AppSetupService::RECORD_DEPARTMENT,
+        AppSetupService::STEP_INTERNSHIP => AppSetupService::RECORD_INTERNSHIP,
     ];
 
     /**
@@ -112,12 +112,12 @@ class SetupProcess
     protected function getPreviousStepFor(string $step): ?string
     {
         return match ($step) {
-            AppAppSetupService::STEP_SCHOOL => null,
-            AppAppSetupService::STEP_ACCOUNT => AppAppSetupService::STEP_SCHOOL,
-            AppAppSetupService::STEP_DEPARTMENT => AppAppSetupService::STEP_ACCOUNT,
-            AppAppSetupService::STEP_INTERNSHIP => AppAppSetupService::STEP_DEPARTMENT,
-            AppAppSetupService::STEP_SYSTEM => AppAppSetupService::STEP_INTERNSHIP,
-            AppAppSetupService::STEP_COMPLETE => AppAppSetupService::STEP_SYSTEM,
+            AppSetupService::STEP_SCHOOL => null,
+            AppSetupService::STEP_ACCOUNT => AppSetupService::STEP_SCHOOL,
+            AppSetupService::STEP_DEPARTMENT => AppSetupService::STEP_ACCOUNT,
+            AppSetupService::STEP_INTERNSHIP => AppSetupService::STEP_DEPARTMENT,
+            AppSetupService::STEP_SYSTEM => AppSetupService::STEP_INTERNSHIP,
+            AppSetupService::STEP_COMPLETE => AppSetupService::STEP_SYSTEM,
             default => throw new InvalidArgumentException("Unknown setup step: {$step}"),
         };
     }

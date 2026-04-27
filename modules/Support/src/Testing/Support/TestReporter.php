@@ -32,7 +32,7 @@ class TestReporter
                 $row['Unit'] ?? '-',
                 $row['Feature'] ?? '-',
                 $row['Browser'] ?? '-',
-                number_format($row['total'] ?? 0, 2) . 's',
+                number_format($row['total'] ?? 0, 2).'s',
             ];
         }
 
@@ -58,7 +58,7 @@ class TestReporter
 
         foreach ($sessionResults as $result) {
             $module = $result['module'];
-            if (!isset($grouped[$module])) {
+            if (! isset($grouped[$module])) {
                 $grouped[$module] = [
                     'Arch' => '-',
                     'Unit' => '-',
@@ -74,7 +74,7 @@ class TestReporter
                 $passedSegments++;
             }
 
-            if (!$latestTimestamp || $result['timestamp'] > $latestTimestamp) {
+            if (! $latestTimestamp || $result['timestamp'] > $latestTimestamp) {
                 $latestTimestamp = $result['timestamp'];
             }
         }
@@ -113,7 +113,7 @@ class TestReporter
             'Last Execution Date',
             $latestTimestamp ? Carbon::parse($latestTimestamp)->diffForHumans() : 'Unknown',
         );
-        $this->components->twoColumnDetail('Global Pass Rate', number_format($passRate, 2) . '%');
+        $this->components->twoColumnDetail('Global Pass Rate', number_format($passRate, 2).'%');
         $this->components->twoColumnDetail('Stability Index', $stability);
 
         return (float) $passRate;
@@ -150,7 +150,7 @@ class TestReporter
                 $testcase->setAttribute('name', "{$module}: {$segment['type']}");
                 $testcase->setAttribute('classname', "Modules.{$module}.{$segment['type']}");
 
-                if (!($segment['success'] ?? false)) {
+                if (! ($segment['success'] ?? false)) {
                     $failures++;
                     $failure = $dom->createElement('failure');
                     $failure->setAttribute('message', "Test segment {$segment['type']} failed.");
@@ -184,8 +184,8 @@ class TestReporter
             'exported_at' => now()->toIso8601String(),
             'summary' => [
                 'total_segments' => count($results),
-                'passed' => count(array_filter($results, fn($r) => $r['success'])),
-                'failed' => count(array_filter($results, fn($r) => !$r['success'])),
+                'passed' => count(array_filter($results, fn ($r) => $r['success'])),
+                'failed' => count(array_filter($results, fn ($r) => ! $r['success'])),
             ],
             'results' => $results,
         ];
@@ -201,7 +201,7 @@ class TestReporter
      */
     public function displayCoverageSummary(string $output): void
     {
-        if (!str_contains($output, 'Lines:')) {
+        if (! str_contains($output, 'Lines:')) {
             return;
         }
 
@@ -228,7 +228,7 @@ class TestReporter
     public function displayPerformance(int $total, int $passed, float $duration): void
     {
         $failed = $total - $passed;
-        $peakMemory = number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) . ' MB';
+        $peakMemory = number_format(memory_get_peak_usage(true) / 1024 / 1024, 2).' MB';
 
         $this->components->info('Section 2: High-Fidelity Performance Metrics');
         $this->table(
@@ -237,7 +237,7 @@ class TestReporter
                 ['Total Segments Processed', $total],
                 ['Successful (Green)', "<fg=green>{$passed}</>"],
                 ['Failed (Red)', $failed > 0 ? "<fg=red>{$failed}</>" : '<fg=green>0</>'],
-                ['Total Execution Time', number_format($duration, 2) . ' s'],
+                ['Total Execution Time', number_format($duration, 2).' s'],
                 ['Orchestrator Peak Memory', $peakMemory],
             ],
         );
@@ -255,10 +255,10 @@ class TestReporter
         $this->components->warn('Section 3: Failure Traceability (Forensic View)');
         foreach ($failures as $failure) {
             $this->components->twoColumnDetail("<fg=red>FAIL</> {$failure['label']}");
-            if (!empty($failure['error'])) {
+            if (! empty($failure['error'])) {
                 $this->error($failure['error']);
             }
-            if (!empty($failure['output'])) {
+            if (! empty($failure['output'])) {
                 $this->line("<fg=gray>{$failure['output']}</>");
             }
         }
@@ -270,7 +270,7 @@ class TestReporter
     protected function table(array $headers, array $rows): void
     {
         // Use standard table rendering instead of missing component
-        $table = new Table(new ConsoleOutput());
+        $table = new Table(new ConsoleOutput);
         $table->setHeaders($headers)->setRows($rows)->render();
     }
 
@@ -288,6 +288,6 @@ class TestReporter
     protected function line(string $message): void
     {
         // Use standard output for gray text
-        echo $message . PHP_EOL;
+        echo $message.PHP_EOL;
     }
 }

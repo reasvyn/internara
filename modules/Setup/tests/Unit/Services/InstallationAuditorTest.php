@@ -7,12 +7,12 @@ namespace Modules\Setup\Tests\Unit\Services;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Modules\Setup\Services\SystemAuditor;
+use Modules\Setup\Services\InstallationAuditor;
 
-describe('SystemAuditor Unit Test', function () {
+describe('InstallationAuditor Unit Test', function () {
     beforeEach(function () {
         app()->setLocale('en');
-        $this->service = new SystemAuditor();
+        $this->service = new InstallationAuditor();
     });
 
     test('it can perform a full system audit', function () {
@@ -23,7 +23,7 @@ describe('SystemAuditor Unit Test', function () {
 
         $results = $this->service->audit();
 
-        expect($results)->toHaveKeys(['requirements', 'permissions', 'database', 'functions']);
+        expect($results)->toHaveKeys(['requirements', 'permissions', 'database']);
     });
 
     test('it validates mandatory php requirements', function () {
@@ -31,7 +31,7 @@ describe('SystemAuditor Unit Test', function () {
 
         expect($requirements)->toBeArray();
 
-        $versionKey = __('setup::wizard.environment.audit.php_version', ['version' => '8.2.0']);
+        $versionKey = __('setup::wizard.environment.audit.php_version', ['version' => '8.4.0']);
         expect($requirements)->toHaveKey($versionKey);
     });
 
@@ -79,14 +79,13 @@ describe('SystemAuditor Unit Test', function () {
             DB::shouldReceive('connection')->andReturn($dbConnection);
 
             // Create a mock auditor to fake checkPermissions
-            $mockAuditor = \Mockery::mock(SystemAuditor::class)->makePartial();
+            $mockAuditor = \Mockery::mock(InstallationAuditor::class)->makePartial();
             $mockAuditor->shouldReceive('checkPermissions')->andReturn([
                 'storage' => false, // Failing permission
             ]);
 
             $mockAuditor->shouldReceive('checkRequirements')->andReturn(['php' => true]);
             $mockAuditor->shouldReceive('checkDatabase')->andReturn(['connection' => true]);
-            $mockAuditor->shouldReceive('checkFunctions')->andReturn(['func' => true]);
 
             expect($mockAuditor->passes())->toBeFalse();
         });
@@ -94,10 +93,9 @@ describe('SystemAuditor Unit Test', function () {
         test('it fails audit when database is disconnected', function () {
             DB::shouldReceive('connection')->andThrow(new \PDOException('Connection refused'));
 
-            $mockAuditor = \Mockery::mock(SystemAuditor::class)->makePartial();
+            $mockAuditor = \Mockery::mock(InstallationAuditor::class)->makePartial();
             $mockAuditor->shouldReceive('checkPermissions')->andReturn(['storage' => true]);
             $mockAuditor->shouldReceive('checkRequirements')->andReturn(['php' => true]);
-            $mockAuditor->shouldReceive('checkFunctions')->andReturn(['func' => true]);
 
             expect($mockAuditor->passes())->toBeFalse();
         });
