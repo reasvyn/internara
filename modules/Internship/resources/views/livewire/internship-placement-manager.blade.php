@@ -36,19 +36,19 @@
         <x-slot:tableCells>
             @scope('cell_company_name', $placement)
                 <div class="flex flex-col min-w-[200px]">
-                    <span class="font-bold text-sm text-base-content/90">{{ $placement['company_name'] }}</span>
-                    <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1">{{ $placement['id'] }}</span>
+                    <span class="font-bold text-sm text-base-content/90">{{ $placement->company_name }}</span>
+                    <span class="text-[10px] opacity-40 uppercase tracking-widest font-black line-clamp-1">{{ $placement->id }}</span>
                 </div>
             @endscope
 
             @scope('cell_quota', $placement)
                 <div class="flex flex-col gap-1 min-w-[140px] py-1">
                     <div class="flex justify-between text-[9px] font-black uppercase tracking-tighter">
-                        <span class="opacity-50">{{ $placement['capacity_quota'] - $placement['remaining_slots'] }} / {{ $placement['capacity_quota'] }}</span>
-                        <span class="{{ $placement['utilization_percentage'] > 90 ? 'text-error' : 'text-primary' }}">{{ $placement['utilization_percentage'] }}%</span>
+                        <span class="opacity-50">{{ $placement->capacity_quota - $placement->remaining_slots }} / {{ $placement->capacity_quota }}</span>
+                        <span class="{{ $placement->utilization_percentage > 90 ? 'text-error' : 'text-primary' }}">{{ $placement->utilization_percentage }}%</span>
                     </div>
                     <div class="h-1.5 w-full bg-base-content/5 rounded-full overflow-hidden">
-                        <div class="h-full {{ $placement['utilization_percentage'] > 90 ? 'bg-error' : 'bg-primary' }} transition-all duration-500" style="width: {{ $placement['utilization_percentage'] }}%"></div>
+                        <div class="h-full {{ $placement->utilization_percentage > 90 ? 'bg-error' : 'bg-primary' }} transition-all duration-500" style="width: {{ $placement->utilization_percentage }}%"></div>
                     </div>
                 </div>
             @endscope
@@ -58,7 +58,7 @@
                     <div class="size-6 rounded-lg bg-base-200 flex items-center justify-center">
                         <x-ui::icon name="tabler.user-bolt" class="size-3 opacity-40" />
                     </div>
-                    <span class="text-sm font-medium">{{ $placement['mentor_name'] }}</span>
+                    <span class="text-sm font-medium">{{ $placement->mentor_name }}</span>
                 </div>
             @endscope
         </x-slot:tableCells>
@@ -67,11 +67,11 @@
         <x-slot:rowActions>
             @scope('actions', $placement)
                 <div class="flex items-center justify-end gap-1 px-2">
-                    @if($this->can('update', $placement['id']))
-                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $placement['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
+                    @if($this->can('update', $placement))
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('ui::common.edit') }}" />
                     @endif
-                    @if($this->can('delete', $placement['id']))
-                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $placement['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
+                    @if($this->can('delete', $placement))
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $placement->id }}')" tooltip="{{ __('ui::common.delete') }}" />
                     @endif
                 </div>
             @endscope

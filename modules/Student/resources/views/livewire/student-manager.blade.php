@@ -36,63 +36,63 @@
         <x-slot:tableCells>
             @scope('cell_name', $user)
                 <div class="flex items-center gap-3 group">
-                    <x-ui::avatar :src="$user['avatar_url']" :title="$user['name']" class="rounded-xl size-10 shadow-sm transition-transform group-hover:scale-110" />
+                    <x-ui::avatar :src="$user->avatar_url" :title="$user->name" class="rounded-xl size-10 shadow-sm transition-transform group-hover:scale-110" />
                     <div class="flex flex-col">
-                        <span class="font-bold text-sm text-base-content/90 tracking-tight group-hover:text-primary transition-colors">{{ $user['name'] }}</span>
-                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black">{{ $user['username'] }}</span>
+                        <span class="font-bold text-sm text-base-content/90 tracking-tight group-hover:text-primary transition-colors">{{ $user->name }}</span>
+                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black">{{ $user->username }}</span>
                     </div>
                 </div>
             @endscope
 
             @scope('cell_registration_number', $user)
                 <div class="flex flex-col">
-                    <span class="text-sm font-bold text-base-content/80">{{ $user['registration_number'] }}</span>
+                    <span class="text-sm font-bold text-base-content/80">{{ $user->registration_number }}</span>
                 </div>
             @endscope
 
             @scope('cell_department_name', $user)
                 <div class="flex items-center gap-2 py-1 px-3 bg-base-content/5 rounded-lg border border-base-content/5 w-fit">
                     <x-ui::icon name="tabler.topology-star-ring" class="size-3.5 opacity-40" />
-                    <span class="text-xs font-bold opacity-70 tracking-tight">{{ $user['department_name'] }}</span>
+                    <span class="text-xs font-bold opacity-70 tracking-tight">{{ $user->department_name }}</span>
                 </div>
             @endscope
 
             @scope('cell_display_status', $user, $manager)
                 <x-ui::badge 
-                    :value="__('user::ui.manager.form.' . $user['display_status'])" 
-                    :variant="$manager->statusBadgeVariant($user['display_status'])"
+                    :value="__('user::ui.manager.form.' . $user->display_status)" 
+                    :variant="$manager->statusBadgeVariant($user->display_status)"
                     class="badge-sm font-black text-[9px] uppercase tracking-widest rounded-lg shadow-sm"
                 />
             @endscope
 
             @scope('cell_activation_status', $user, $manager)
                 <x-ui::badge 
-                    :value="__('user::ui.manager.form.activation_' . $user['activation_status'])" 
-                    :variant="$manager->activationStatusBadgeVariant($user['activation_status'])"
+                    :value="__('user::ui.manager.form.activation_' . $user->activation_status)" 
+                    :variant="$manager->activationStatusBadgeVariant($user->activation_status)"
                     class="badge-sm font-black text-[9px] uppercase tracking-widest rounded-lg shadow-sm"
                 />
             @endscope
 
-            @scope('cell_actions', $user)
+            @scope('actions', $user)
                 <div class="flex justify-end gap-2">
                     <x-ui::button
                         icon="tabler.key"
                         variant="tertiary"
-                        wire:click="reissueActivationCode('{{ $user['id'] }}')"
+                        wire:click="reissueActivationCode('{{ $user->id }}')"
                         class="btn-xs hover:bg-warning/10 border-none shadow-none text-warning"
                         tooltip="{{ __('user::ui.manager.form.reissue_code') }}"
                     />
                     <x-ui::button
                         icon="tabler.edit"
                         variant="tertiary"
-                        wire:click="edit('{{ $user['id'] }}')"
+                        wire:click="edit('{{ $user->id }}')"
                         class="btn-xs hover:bg-primary/10 border-none shadow-none text-primary"
                         tooltip="{{ __('ui::common.edit') }}"
                     />
                     <x-ui::button
                         icon="tabler.trash"
                         variant="tertiary"
-                        wire:click="discard('{{ $user['id'] }}')"
+                        wire:click="discard('{{ $user->id }}')"
                         wire:confirm="{{ __('ui::common.delete_confirm') }}"
                         class="text-error btn-xs hover:bg-error/10 border-none shadow-none"
                         tooltip="{{ __('ui::common.delete') }}"

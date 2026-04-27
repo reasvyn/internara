@@ -28,15 +28,15 @@
 
                 @scope('actions', $assignment)
                     <div class="flex justify-end gap-2">
-                        @if($this->can('update', $assignment['id']))
-                            <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $assignment['id'] }}')" class="text-info" tooltip="{{ __('assignment::ui.edit_assignment') }}" />
+                        @if($this->can('update', $assignment->id))
+                            <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $assignment->id }}')" class="text-info" tooltip="{{ __('assignment::ui.edit_assignment') }}" />
                         @endif
                         
-                        @if($this->can('delete', $assignment['id']))
+                        @if($this->can('delete', $assignment->id))
                             <x-ui::button 
                                 icon="tabler.trash" 
                                 variant="tertiary" 
-                                wire:click="discard('{{ $assignment['id'] }}')"
+                                wire:click="discard('{{ $assignment->id }}')"
                                 class="text-error" 
                                 tooltip="{{ __('ui::common.delete') }}" 
                             />

@@ -36,17 +36,17 @@
         <x-slot:tableCells>
             @scope('cell_name', $user)
                 <div class="flex items-center gap-3 group">
-                    <x-ui::avatar :src="$user['avatar_url']" :title="$user['name']" class="rounded-xl size-10 shadow-sm transition-transform group-hover:scale-110" />
+                    <x-ui::avatar :src="$user->avatar_url" :title="$user->name" class="rounded-xl size-10 shadow-sm transition-transform group-hover:scale-110" />
                     <div class="flex flex-col">
-                        <span class="font-bold text-sm text-base-content/90 tracking-tight group-hover:text-primary transition-colors">{{ $user['name'] }}</span>
-                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black">{{ $user['username'] }}</span>
+                        <span class="font-bold text-sm text-base-content/90 tracking-tight group-hover:text-primary transition-colors">{{ $user->name }}</span>
+                        <span class="text-[10px] opacity-40 uppercase tracking-widest font-black">{{ $user->username }}</span>
                     </div>
                 </div>
             @endscope
 
             @scope('cell_role_labels', $user, $manager)
                 <div class="flex flex-wrap gap-1.5">
-                    @foreach($user['role_labels'] as $role)
+                    @foreach($user->role_labels as $role)
                         <x-ui::badge 
                             :value="__('permission::roles.' . $role)" 
                             :variant="$manager->roleBadgeVariant($role)"
@@ -58,24 +58,31 @@
 
             @scope('cell_display_status', $user, $manager)
                 <x-ui::badge 
-                    :value="__('user::ui.manager.form.' . $user['display_status'])" 
-                    :variant="$manager->statusBadgeVariant($user['display_status'])"
+                    :value="__('user::ui.manager.form.' . $user->display_status)" 
+                    :variant="$manager->statusBadgeVariant($user->display_status)"
                     class="badge-sm font-black text-[9px] uppercase tracking-widest rounded-lg shadow-sm"
                 />
             @endscope
 
-            @scope('cell_actions', $user)
+            @scope('actions', $user)
                 <div class="flex justify-end gap-2">
-                    @if(auth()->user()?->hasRole('super-admin') && !in_array('super-admin', $user['role_labels']))
+                    <x-ui::button
+                        icon="tabler.edit"
+                        variant="tertiary"
+                        wire:click="edit('{{ $user->id }}')"
+                        class="btn-xs hover:bg-primary/10 border-none shadow-none text-primary"
+                        tooltip="{{ __('ui::common.edit') }}"
+                    />
+                    @if(auth()->user()?->hasRole('super-admin') && !in_array('super-admin', $user->role_labels))
                         <x-ui::button
                             icon="tabler.trash"
                             variant="tertiary"
-                            wire:click="discard('{{ $user['id'] }}')"
+                            wire:click="discard('{{ $user->id }}')"
                             wire:confirm="{{ __('ui::common.delete_confirm') }}"
                             class="text-error btn-xs hover:bg-error/10 border-none shadow-none"
                             tooltip="{{ __('ui::common.delete') }}"
                         />
-                    @elseif(in_array('super-admin', $user['role_labels']))
+                    @elseif(in_array('super-admin', $user->role_labels))
                         <x-ui::badge :value="__('user::ui.viewer.system_protected')" variant="neutral" class="badge-xs font-black text-[8px] uppercase tracking-widest opacity-30" />
                     @endif
                 </div>
