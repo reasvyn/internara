@@ -53,10 +53,10 @@ class MakeTraitCommand extends GeneratorCommand
      */
     protected function getTemplateContents(): string
     {
-        return (new Stub($this->getStub(), [
+        return new Stub($this->getStub(), [
             'NAMESPACE' => $this->getTargetNamespace(),
             'CLASS' => $this->getTargetName(),
-        ]))->render();
+        ])->render();
     }
 
     /**

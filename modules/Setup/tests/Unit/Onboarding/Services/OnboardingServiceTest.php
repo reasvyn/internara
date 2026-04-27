@@ -25,21 +25,22 @@ describe('OnboardingService Unit Test', function () {
             $this->profileService,
             $this->studentService,
             $this->teacherService,
-            $this->provisioningService
+            $this->provisioningService,
         );
     });
 
     test('it generates correct template for students', function () {
         $template = $this->service->getTemplate('student');
 
-        expect($template)->toContain('name,email,username,phone,address,department_id,national_identifier,registration_number');
+        expect($template)->toContain(
+            'name,email,username,phone,address,department_id,national_identifier,registration_number',
+        );
     });
 
     test('it returns error if file not found', function () {
         $results = $this->service->importFromCsv('non_existent.csv', 'student');
 
-        expect($results['success'])->toBe(0)
-            ->and($results['errors'])->not->toBeEmpty();
+        expect($results['success'])->toBe(0)->and($results['errors'])->not->toBeEmpty();
     });
 
     test('it processes valid csv row', function () {
@@ -50,10 +51,11 @@ describe('OnboardingService Unit Test', function () {
         $this->studentService->shouldReceive('create')->once();
 
         // Create temporary CSV with correct headers matching service logic
-        $csvPath = tempnam(sys_get_temp_dir(), 'test_').'.csv';
-        $headers = 'name,email,username,phone,address,department_id,national_identifier,registration_number';
+        $csvPath = tempnam(sys_get_temp_dir(), 'test_') . '.csv';
+        $headers =
+            'name,email,username,phone,address,department_id,national_identifier,registration_number';
         $row = 'John Doe,john@example.com,jdoe,0812,Jl. Merdeka,dept-1,12345,67890';
-        file_put_contents($csvPath, $headers."\n".$row);
+        file_put_contents($csvPath, $headers . "\n" . $row);
 
         $results = $this->service->importFromCsv($csvPath, 'student');
 

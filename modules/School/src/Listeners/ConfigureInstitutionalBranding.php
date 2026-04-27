@@ -7,7 +7,7 @@ namespace Modules\School\Listeners;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Events\SetupFinalized;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 /**
  * Handles the SetupFinalized event to configure institutional branding.
@@ -27,8 +27,8 @@ class ConfigureInstitutionalBranding
 
         if ($school) {
             $this->settingService->setValue([
-                SetupService::SETTING_BRAND_NAME => $school->name,
-                SetupService::SETTING_BRAND_LOGO => $school->logo_url ?? null,
+                AppSetupService::SETTING_BRAND_NAME => $school->name,
+                AppSetupService::SETTING_BRAND_LOGO => $school->logo_url ?? null,
             ]);
         }
     }

@@ -20,7 +20,7 @@ class InternshipSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppSetupService $setupService): void
+    public function boot(AppAppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -31,10 +31,10 @@ class InternshipSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_INTERNSHIP,
-            nextStep: AppSetupService::STEP_SYSTEM,
-            prevStep: AppSetupService::STEP_DEPARTMENT,
-            extra: ['req_record' => AppSetupService::RECORD_INTERNSHIP],
+            currentStep: AppAppSetupService::STEP_INTERNSHIP,
+            nextStep: AppAppSetupService::STEP_SYSTEM,
+            prevStep: AppAppSetupService::STEP_DEPARTMENT,
+            extra: ['req_record' => AppAppSetupService::RECORD_INTERNSHIP],
         );
 
         $this->requireWizardAccess();
@@ -57,8 +57,9 @@ class InternshipSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.internship-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.internship.title').
-                ' | '.
+            'title' =>
+                __('setup::wizard.internship.title') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

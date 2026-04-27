@@ -3,14 +3,11 @@
 declare(strict_types=1);
 
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Support\Services\Contracts\SystemInstaller;
+use Modules\Setup\Services\Contracts\SystemInstaller;
 
 test('it asks for confirmation before installation', function () {
-    $this->artisan('system:install')
-        ->expectsConfirmation(
-            __('setup::install.confirmation'),
-            'no',
-        )
+    $this->artisan('app:install')
+        ->expectsConfirmation(__('setup::install.confirmation'), 'no')
         ->assertFailed();
 });
 
@@ -44,25 +41,16 @@ test('it executes the installation steps correctly', function () {
         ->shouldReceive('getValue')
         ->with('setup_token')
         ->andReturn('test-token-123');
-    $settingServiceMock
-        ->shouldReceive('getValue')
-        ->with('setup_token_expires_at')
-        ->andReturn(null);
+    $settingServiceMock->shouldReceive('getValue')->with('setup_token_expires_at')->andReturn(null);
     $settingServiceMock
         ->shouldReceive('setValue')
         ->with('setup_token_expires_at', Mockery::any())
         ->andReturn(true);
 
-    $this->app->instance(
-        SettingService::class,
-        $settingServiceMock,
-    );
+    $this->app->instance(SettingService::class, $settingServiceMock);
 
-    $this->artisan('system:install')
-        ->expectsConfirmation(
-            __('setup::install.confirmation'),
-            'yes',
-        )
+    $this->artisan('app:install')
+        ->expectsConfirmation(__('setup::install.confirmation'), 'yes')
         ->expectsOutputToContain(__('setup::install.banner.engine'))
         ->expectsOutputToContain(__('setup::install.success'))
         ->expectsOutputToContain('token=test-token-123')
@@ -86,11 +74,8 @@ test('it fails if environment validation fails', function () {
 
     $this->app->instance(SystemInstaller::class, $installerMock);
 
-    $this->artisan('system:install')
-        ->expectsConfirmation(
-            __('setup::install.confirmation'),
-            'yes',
-        )
+    $this->artisan('app:install')
+        ->expectsConfirmation(__('setup::install.confirmation'), 'yes')
         ->assertFailed();
 });
 
@@ -101,6 +86,7 @@ test('it forces installation if flag is provided', function () {
         'requirements' => ['php_version' => true],
         'permissions' => ['writable_storage' => true],
         'database' => ['connection' => true, 'message' => 'Connected'],
+        'functions' => ['proc_open' => true],
     ]);
     $installerMock->shouldReceive('generateAppKey')->andReturn(true);
     $installerMock->shouldReceive('runMigrations')->andReturn(true);
@@ -119,11 +105,8 @@ test('it forces installation if flag is provided', function () {
         ->with('setup_token_expires_at')
         ->andReturn(now()->toIso8601String());
 
-    $this->app->instance(
-        SettingService::class,
-        $settingServiceMock,
-    );
+    $this->app->instance(SettingService::class, $settingServiceMock);
 
     // No expectsConfirmation needed because of --force
-    $this->artisan('system:install', ['--force' => true])->assertSuccessful();
+    $this->artisan('app:install', ['--force' => true])->assertSuccessful();
 });

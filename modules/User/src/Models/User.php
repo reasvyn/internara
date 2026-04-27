@@ -23,6 +23,7 @@ use Modules\Shared\Models\Concerns\HasUuid;
 use Modules\Status\Concerns\HasStatuses;
 use Modules\Status\Enums\Status;
 use Modules\Status\Models\AccountRestriction;
+use Modules\Status\Models\AccountStatusHistory;
 use Modules\User\Database\Factories\UserFactory;
 use Modules\User\Support\UsernameGenerator;
 use Spatie\MediaLibrary\HasMedia;
@@ -225,113 +226,115 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     // ─── Account Lifecycle Management ────────────────────────────────────────
 
-    public function canTransitionTo(Status $targetStatus): bool
-    {
-        $currentStatus = $this->getStatus();
-        if (! $currentStatus) {
-            return false;
-        }
-
-        return $currentStatus->canTransitionTo($targetStatus);
-    }
-
+    /**
+     * Transition the user to a new status with a detailed audit trail.
+     *
+     * @param Status $newStatus The target status.
+     * @param string|null $reason The reason for the transition.
+     * @param string|null $triggeredById The ID of the user (admin) who triggered the change.
+     *
+     * @throws \InvalidArgumentException If the transition is invalid.
+     */
     public function transitionTo(
         Status $newStatus,
         ?string $reason = null,
         ?string $triggeredById = null,
-    ): \Spatie\ModelStatus\Models\Status {
+    ): AccountStatusHistory {
         $currentStatus = $this->getStatus();
+
         if ($currentStatus && ! $currentStatus->canTransitionTo($newStatus)) {
-            throw new \InvalidArgumentException("Cannot transition from {$currentStatus->value} to {$newStatus->value}");
+            throw new \InvalidArgumentException(
+                "Cannot transition from {$currentStatus->value} to {$newStatus->value}",
+            );
         }
-        $history = \Spatie\ModelStatus\Models\Status::create([
+
+        // 1. Create a detailed audit log entry in the specialized history table (S1 - Secure)
+        $history = AccountStatusHistory::create([
             'user_id' => $this->id,
             'old_status' => $currentStatus?->value,
             'new_status' => $newStatus->value,
             'reason' => $reason,
             'triggered_by_user_id' => $triggeredById,
+            'triggered_by_role' => $triggeredById ? self::find($triggeredById)?->role : null,
             'ip_address' => request()?->ip(),
+            'user_agent' => request()?->userAgent(),
+            'created_at' => now(),
         ]);
-        $this->setStatus($newStatus->value);
+
+        // 2. Update the actual model status via the underlying package
+        $this->setStatus($newStatus->value, $reason);
 
         return $history;
     }
 
-    public function isProtected(): bool
-    {
-        return $this->hasRole(Role::SUPER_ADMIN->value) ||
-               $this->getStatus() === Status::PROTECTED;
-    }
-
-    public function isAccountVerified(): bool
-    {
-        $status = $this->getStatus();
-
-        return in_array($status, [Status::VERIFIED, Status::PROTECTED]);
-    }
-
-    public function isAccountRestricted(): bool
-    {
-        return $this->getStatus() === Status::RESTRICTED;
-    }
-
-    public function isAccountSuspended(): bool
-    {
-        return $this->getStatus() === Status::SUSPENDED;
-    }
-
-    public function isAccountArchived(): bool
-    {
-        return $this->getStatus() === Status::ARCHIVED;
-    }
-
-    public function isAccountInactive(): bool
-    {
-        return $this->getStatus() === Status::INACTIVE;
-    }
-
+    /**
+     * Determine if any active account-level restrictions exist for this user.
+     */
     public function getActiveRestrictions(): Collection
     {
-        return $this->restrictions()->where('is_active', true)->where(function ($q) {
-            $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
-        })->get();
+        return $this->restrictions()
+            ->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            })
+            ->get();
     }
 
-    public function isRestricted(string $restrictionKey): bool
+    /**
+     * Check if a specific restriction key is currently active for this user.
+     */
+    public function hasRestriction(string $restrictionKey): bool
     {
-        return $this->getActiveRestrictions()->where('restriction_key', $restrictionKey)->isNotEmpty();
+        return $this->getActiveRestrictions()
+            ->where('restriction_key', $restrictionKey)
+            ->isNotEmpty();
     }
 
-    public function getLastStatusChangeAt(): ?Carbon
-    {
-        return $this->statusHistory()->latest('created_at')->first()?->created_at;
-    }
-
+    /**
+     * Get the timestamp of the last login activity.
+     */
     public function getLastActivityAt(): ?Carbon
     {
-        return $this->activity()->where('event', 'login')->latest('created_at')->first()?->created_at;
+        return $this->activity()->where('event', 'login')->latest('created_at')->first()
+            ?->created_at;
     }
 
+    /**
+     * Check if the user has been idle for the specified number of days.
+     */
     public function isIdle(int $days = 180): bool
     {
         $lastActivity = $this->getLastActivityAt();
 
-        return $lastActivity ? $lastActivity->addDays($days)->isPast() : $this->created_at->addDays($days)->isPast();
+        return $lastActivity
+            ? $lastActivity->addDays($days)->isPast()
+            : $this->created_at->addDays($days)->isPast();
     }
 
+    /**
+     * Calculate the number of days remaining until the account is automatically archived.
+     */
     public function daysUntilAutoArchive(int $totalDays = 365): int
     {
         $lastActivity = $this->getLastActivityAt();
-        $archiveDate = $lastActivity ? $lastActivity->addDays($totalDays) : $this->created_at->addDays($totalDays);
+        $archiveDate = $lastActivity
+            ? $lastActivity->addDays($totalDays)
+            : $this->created_at->addDays($totalDays);
 
-        return now()->diffInDays($archiveDate, absolute: false);
+        return (int) now()->diffInDays($archiveDate, absolute: false);
     }
 
+    /**
+     * Get the full status history for the user.
+     */
     public function statusHistory(): HasMany
     {
-        return $this->hasMany(\Spatie\ModelStatus\Models\Status::class, 'user_id');
+        return $this->hasMany(AccountStatusHistory::class, 'user_id');
     }
 
+    /**
+     * Get the active restrictions for the user.
+     */
     public function restrictions(): HasMany
     {
         return $this->hasMany(AccountRestriction::class, 'user_id');

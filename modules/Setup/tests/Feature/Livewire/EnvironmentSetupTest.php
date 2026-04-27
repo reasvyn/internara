@@ -23,7 +23,7 @@ beforeEach(function () {
     $settings->setValue('setup_token', 'test-token');
     $settings->setValue('setup_step_welcome', true); // Complete previous step
 
-    Gate::define('performStep', fn () => true);
+    Gate::define('performStep', fn() => true);
 
     // Mock the auditor
     $mock = $this->mock(SystemAuditor::class);
@@ -47,8 +47,10 @@ describe('EnvironmentSetup Component', function () {
     test('it disables navigation if system requirements are not met', function () {
         $this->get(route('setup.environment', ['token' => 'test-token']));
 
-        Livewire::test(EnvironmentSetup::class)
-            ->assertSet('setupStepProps.currentStep', 'environment');
+        Livewire::test(EnvironmentSetup::class)->assertSet(
+            'setupStepProps.currentStep',
+            'environment',
+        );
     });
 
     test('it proceeds to the school setup step on next action', function () {
@@ -62,7 +64,6 @@ describe('EnvironmentSetup Component', function () {
     test('it fulfills [SYRS-NF-401] with mobile-first diagnostic view', function () {
         $this->get(route('setup.environment', ['token' => 'test-token']));
 
-        Livewire::test(EnvironmentSetup::class)
-            ->assertSeeHtml('flex-col');
+        Livewire::test(EnvironmentSetup::class)->assertSeeHtml('flex-col');
     });
 });

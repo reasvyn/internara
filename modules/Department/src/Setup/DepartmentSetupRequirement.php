@@ -6,7 +6,7 @@ namespace Modules\Department\Setup;
 
 use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Setup\Services\Contracts\SetupRequirementProvider;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 class DepartmentSetupRequirement implements SetupRequirementProvider
 {
@@ -14,7 +14,7 @@ class DepartmentSetupRequirement implements SetupRequirementProvider
 
     public function getRequirementIdentifier(): string
     {
-        return SetupService::RECORD_DEPARTMENT;
+        return AppSetupService::RECORD_DEPARTMENT;
     }
 
     public function isSatisfied(): bool

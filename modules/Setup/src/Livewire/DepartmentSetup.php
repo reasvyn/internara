@@ -20,7 +20,7 @@ class DepartmentSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppSetupService $setupService): void
+    public function boot(AppAppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -31,10 +31,10 @@ class DepartmentSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_DEPARTMENT,
-            nextStep: AppSetupService::STEP_INTERNSHIP,
-            prevStep: AppSetupService::STEP_ACCOUNT,
-            extra: ['req_record' => AppSetupService::RECORD_DEPARTMENT],
+            currentStep: AppAppSetupService::STEP_DEPARTMENT,
+            nextStep: AppAppSetupService::STEP_INTERNSHIP,
+            prevStep: AppAppSetupService::STEP_ACCOUNT,
+            extra: ['req_record' => AppAppSetupService::RECORD_DEPARTMENT],
         );
 
         $this->requireWizardAccess();
@@ -57,8 +57,9 @@ class DepartmentSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.department-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.department.title').
-                ' | '.
+            'title' =>
+                __('setup::wizard.department.title') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

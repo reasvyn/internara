@@ -37,7 +37,10 @@ describe('InstallerService Unit Test', function () {
     });
 
     test('it triggers migration commands', function () {
-        $partial = \Mockery::mock(InstallerService::class, [$this->settingService, $this->auditor])->makePartial();
+        $partial = \Mockery::mock(InstallerService::class, [
+            $this->settingService,
+            $this->auditor,
+        ])->makePartial();
         $partial->shouldAllowMockingProtectedMethods();
 
         // We verify that the method is called, but we don't mock internals that trigger Artisan
@@ -47,7 +50,10 @@ describe('InstallerService Unit Test', function () {
     });
 
     test('it generates setup token after seeding', function () {
-        $partial = \Mockery::mock(InstallerService::class, [$this->settingService, $this->auditor])->makePartial();
+        $partial = \Mockery::mock(InstallerService::class, [
+            $this->settingService,
+            $this->auditor,
+        ])->makePartial();
         $partial->shouldAllowMockingProtectedMethods();
         $partial->shouldReceive('runSeeders')->once()->andReturn(true);
 
@@ -55,7 +61,10 @@ describe('InstallerService Unit Test', function () {
     });
 
     test('it orchestrates the complete installation sequence', function () {
-        $partial = \Mockery::mock(InstallerService::class, [$this->settingService, $this->auditor])->makePartial();
+        $partial = \Mockery::mock(InstallerService::class, [
+            $this->settingService,
+            $this->auditor,
+        ])->makePartial();
 
         $partial->shouldReceive('ensureEnvFileExists')->andReturn(true);
         $partial->shouldReceive('validateEnvironment')->andReturn(['passed' => true]);

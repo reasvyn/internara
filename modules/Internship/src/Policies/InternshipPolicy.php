@@ -6,7 +6,7 @@ namespace Modules\Internship\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Internship\Models\Internship;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\User\Models\User;
 
 class InternshipPolicy
@@ -86,7 +86,7 @@ class InternshipPolicy
      */
     protected function isSetupAuthorized(): bool
     {
-        return session(SetupService::SESSION_SETUP_AUTHORIZED) ===
+        return session(AppSetupService::SESSION_SETUP_AUTHORIZED) ===
             true;
     }
 }

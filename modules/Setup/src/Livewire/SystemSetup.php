@@ -47,7 +47,7 @@ class SystemSetup extends Component
     /**
      * Boots the component and injects the AppSetupService.
      */
-    public function boot(AppSetupService $setupService): void
+    public function boot(AppAppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -58,9 +58,9 @@ class SystemSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_SYSTEM,
-            nextStep: AppSetupService::STEP_COMPLETE,
-            prevStep: AppSetupService::STEP_INTERNSHIP,
+            currentStep: AppAppSetupService::STEP_SYSTEM,
+            nextStep: AppAppSetupService::STEP_COMPLETE,
+            prevStep: AppAppSetupService::STEP_INTERNSHIP,
         );
 
         $this->requireWizardAccess();
@@ -81,9 +81,11 @@ class SystemSetup extends Component
     public function testConnection(): void
     {
         // [S1 - Secure] Rate limit connection tests to prevent SMTP amplification attacks
-        $key = 'setup_smtp_test:'.request()->ip();
+        $key = 'setup_smtp_test:' . request()->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
-            flash()->error(__('ui::messages.too_many_requests', ['seconds' => RateLimiter::availableIn($key)]));
+            flash()->error(
+                __('ui::messages.too_many_requests', ['seconds' => RateLimiter::availableIn($key)]),
+            );
 
             return;
         }
@@ -98,7 +100,13 @@ class SystemSetup extends Component
         try {
             // Enterprise Grade: Real SMTP handshake check
             $timeout = 5;
-            $socket = @fsockopen($this->mail_host, (int) $this->mail_port, $errno, $errstr, $timeout);
+            $socket = @fsockopen(
+                $this->mail_host,
+                (int) $this->mail_port,
+                $errno,
+                $errstr,
+                $timeout,
+            );
 
             if ($socket) {
                 $response = fgets($socket, 1024);
@@ -107,10 +115,12 @@ class SystemSetup extends Component
                 if (str_starts_with((string) $response, '220')) {
                     flash()->success(__('setup::wizard.system.smtp_connection_success'));
                 } else {
-                    throw new \Exception('Server responded with: '.trim((string) $response));
+                    throw new \Exception('Server responded with: ' . trim((string) $response));
                 }
             } else {
-                throw new \Exception($errstr ?: 'Connection timed out after '.$timeout.' seconds.');
+                throw new \Exception(
+                    $errstr ?: 'Connection timed out after ' . $timeout . ' seconds.',
+                );
             }
         } catch (\Exception $e) {
             flash()->error(
@@ -134,8 +144,8 @@ class SystemSetup extends Component
     {
         // [S1 - Secure] Bot & Amplification Protection
         $this->validate([
-            'turnstile' => [new Turnstile],
-            'contact_me' => [new Honeypot],
+            'turnstile' => [new Turnstile()],
+            'contact_me' => [new Honeypot()],
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',
             'mail_username' => 'nullable|string',
@@ -169,8 +179,9 @@ class SystemSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.system-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.system.headline').
-                ' | '.
+            'title' =>
+                __('setup::wizard.system.headline') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

@@ -15,7 +15,7 @@ use Modules\Setup\Services\Contracts\AppSetupService;
 class ProtectSetupRoute
 {
     public function __construct(
-        protected AppSetupService $setupService,
+        protected AppAppSetupService $setupService,
         protected SuperAdminService $superAdminService,
         protected SettingService $settingService,
     ) {}
@@ -26,7 +26,7 @@ class ProtectSetupRoute
     public function handle(Request $request, Closure $next)
     {
         // [S1 - Secure] Apply Rate Limiting for Setup Routes
-        $key = 'setup_throttle:'.$request->ip();
+        $key = 'setup_throttle:' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 20)) {
             $seconds = RateLimiter::availableIn($key);
 
@@ -43,21 +43,18 @@ class ProtectSetupRoute
         }
 
         // 2. Enforce Signed URL validation or Authorized Session
-        $isAuthorized = $request->session()->get(AppSetupService::SESSION_SETUP_AUTHORIZED);
+        $isAuthorized = $request->session()->get(AppAppSetupService::SESSION_SETUP_AUTHORIZED);
 
         // [S1 - Secure] Only grant new session authorization if valid signature OR valid token is present
-        if (! $isAuthorized && ($request->hasValidSignature() || $this->hasValidToken($request))) {
-            $request->session()->put(AppSetupService::SESSION_SETUP_AUTHORIZED, true);
+        if (!$isAuthorized && ($request->hasValidSignature() || $this->hasValidToken($request))) {
+            $request->session()->put(AppAppSetupService::SESSION_SETUP_AUTHORIZED, true);
             $isAuthorized = true;
         }
 
         // Verify authorized session AND ensure setup_token still exists in DB
         $storedToken = $this->settingService->getValue('setup_token');
-        if (! $isAuthorized || empty($storedToken)) {
-            return abort(
-                403,
-                __('exception::messages.unauthorized_setup_access'),
-            );
+        if (!$isAuthorized || empty($storedToken)) {
+            return abort(403, __('exception::messages.unauthorized_setup_access'));
         }
 
         if ($this->shouldRedirectToCompletion($request)) {
@@ -69,19 +66,18 @@ class ProtectSetupRoute
 
     protected function shouldRedirectToCompletion(Request $request): bool
     {
-        return ! $request->routeIs('setup.complete')
-            && $this->isFinalizationOnlyStepRemaining();
+        return !$request->routeIs('setup.complete') && $this->isFinalizationOnlyStepRemaining();
     }
 
     protected function isFinalizationOnlyStepRemaining(): bool
     {
         foreach ($this->setupStepsBeforeCompletion() as $step) {
-            if (! $this->setupService->isStepCompleted($step, true)) {
+            if (!$this->setupService->isStepCompleted($step, true)) {
                 return false;
             }
         }
 
-        return ! $this->setupService->isStepCompleted(AppSetupService::STEP_COMPLETE, true);
+        return !$this->setupService->isStepCompleted(AppAppSetupService::STEP_COMPLETE, true);
     }
 
     /**
@@ -90,13 +86,13 @@ class ProtectSetupRoute
     protected function setupStepsBeforeCompletion(): array
     {
         return [
-            AppSetupService::STEP_WELCOME,
-            AppSetupService::STEP_ENVIRONMENT,
-            AppSetupService::STEP_SCHOOL,
-            AppSetupService::STEP_ACCOUNT,
-            AppSetupService::STEP_DEPARTMENT,
-            AppSetupService::STEP_INTERNSHIP,
-            AppSetupService::STEP_SYSTEM,
+            AppAppSetupService::STEP_WELCOME,
+            AppAppSetupService::STEP_ENVIRONMENT,
+            AppAppSetupService::STEP_SCHOOL,
+            AppAppSetupService::STEP_ACCOUNT,
+            AppAppSetupService::STEP_DEPARTMENT,
+            AppAppSetupService::STEP_INTERNSHIP,
+            AppAppSetupService::STEP_SYSTEM,
         ];
     }
 
@@ -105,7 +101,7 @@ class ProtectSetupRoute
         return Cache::remember(
             'user.super_admin',
             now()->addDay(),
-            fn () => $this->superAdminService->exists(),
+            fn() => $this->superAdminService->exists(),
         );
     }
 

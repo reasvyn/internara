@@ -26,17 +26,24 @@ return [
         'aborted' => 'Installation aborted by user.',
         'production_title' => 'CRITICAL WARNING',
         'production_env' => 'You are running this command in a PRODUCTION environment.',
-        'production_loss' => 'This action will result in IRREVERSIBLE DATA LOSS by resetting your database.',
-        'production_confirm' => 'Are you absolutely certain you want to proceed with this destructive operation?',
-        'env_notice' => 'Environment Notice: System URL is configured to localhost. Port mapping may be required for external access.',
+        'production_loss' =>
+            'This action will result in IRREVERSIBLE DATA LOSS by resetting your database.',
+        'production_confirm' =>
+            'Are you absolutely certain you want to proceed with this destructive operation?',
+        'env_notice' =>
+            'Environment Notice: System URL is configured to localhost. Port mapping may be required for external access.',
     ],
-    'confirmation' => 'This procedure will reset the database and initialize the system. Do you want to proceed?',
+    'confirmation' =>
+        'This procedure will reset the database and initialize the system. Do you want to proceed?',
     'success' => 'Core system initialization completed successfully.',
     'auth_required' => 'Authorization Required',
-    'auth_description' => 'Please use the following authenticated link to finalize the system configuration:',
+    'auth_description' =>
+        'Please use the following authenticated link to finalize the system configuration:',
     'audit_logs' => [
-        'migrations_executed' => 'Technical installation: Database migrations executed using [:command].',
-        'seeding_completed' => 'Technical installation: Database seeding completed and setup token generated.',
+        'migrations_executed' =>
+            'Technical installation: Database migrations executed using [:command].',
+        'seeding_completed' =>
+            'Technical installation: Database seeding completed and setup token generated.',
         'env_created' => 'Technical installation: .env file created from .env.example.',
     ],
 ];

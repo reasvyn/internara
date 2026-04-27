@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequireSetupAccess
 {
-    public function __construct(protected AppSetupService $setupService) {}
+    public function __construct(protected AppAppSetupService $setupService) {}
 
     /**
      * Handle an incoming request.
@@ -27,7 +27,7 @@ class RequireSetupAccess
         }
 
         // 2. If NOT installed, and NOT trying to access setup route, redirect to setup
-        if (! $this->setupService->isAppInstalled() && ! $this->isSetupRoute($request)) {
+        if (!$this->setupService->isAppInstalled() && !$this->isSetupRoute($request)) {
             // Bypass specific requests
             if ($this->bypassSpecificRequests($request)) {
                 return $next($request);

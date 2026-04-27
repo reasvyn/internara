@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Services\Contracts;
+namespace Modules\Setup\Services\Contracts;
 
 /**
  * Contract for the System Requirement Auditor service.

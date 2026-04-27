@@ -19,8 +19,8 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn () => true);
-    Gate::define('saveSettings', fn () => true);
+    Gate::define('performStep', fn() => true);
+    Gate::define('saveSettings', fn() => true);
 });
 
 describe('SystemSetup Component', function () {
@@ -55,9 +55,7 @@ describe('SystemSetup Component', function () {
 
         $this->get(route('setup.system', ['token' => 'test-token']));
 
-        Livewire::test(SystemSetup::class)
-            ->call('skip')
-            ->assertRedirect(route('setup.complete'));
+        Livewire::test(SystemSetup::class)->call('skip')->assertRedirect(route('setup.complete'));
     });
 
     test('it enforces setup sequence access control by redirecting', function () {
@@ -66,7 +64,6 @@ describe('SystemSetup Component', function () {
 
         $this->get(route('setup.system', ['token' => 'test-token']));
 
-        Livewire::test(SystemSetup::class)
-            ->assertRedirect(route('setup.internship'));
+        Livewire::test(SystemSetup::class)->assertRedirect(route('setup.internship'));
     });
 });

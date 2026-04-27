@@ -806,7 +806,7 @@ Core infrastructure and shared services.
 **Key Files**:
 - `src/Services/SystemInstaller.php` — Technical installation engine
 - `src/Services/InstallationAuditor.php` — Environment requirement auditor
-- `src/Console/Commands/SystemInstallCommand.php` — `system:install` command
+
 
 **Relations**:
 - Uses: Media, Setting modules

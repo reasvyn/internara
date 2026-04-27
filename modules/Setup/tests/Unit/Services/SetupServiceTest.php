@@ -18,7 +18,7 @@ use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Events\SetupFinalized;
-use Modules\Setup\Services\SetupService;
+use Modules\Setup\Services\AppSetupService;
 
 describe('SetupService', function () {
     beforeEach(function () {
@@ -30,15 +30,15 @@ describe('SetupService', function () {
         $this->departmentService = Mockery::mock(DepartmentService::class);
         $this->internshipService = Mockery::mock(InternshipService::class);
 
-        $this->service = new SetupService(
+        $this->service = new AppSetupService(
             $this->settingService,
             $this->superAdminService,
             $this->schoolService,
             $this->departmentService,
-            $this->internshipService
+            $this->internshipService,
         );
 
-        Gate::shouldReceive('authorize')->with('performStep', SetupService::class)->andReturn(true);
+        Gate::shouldReceive('authorize')->with('performStep', AppSetupService::class)->andReturn(true);
 
         Cache::spy();
         Cache::shouldReceive('lock')->andReturnUsing(function ($name, $seconds) {
@@ -52,7 +52,8 @@ describe('SetupService', function () {
     });
 
     it('identifies if application is installed', function () {
-        $this->settingService->shouldReceive('getValue')
+        $this->settingService
+            ->shouldReceive('getValue')
             ->with('app_installed', false, true)
             ->andReturn(true);
 
@@ -60,7 +61,8 @@ describe('SetupService', function () {
     });
 
     it('marks a setup step as completed and logs the activity', function () {
-        $this->settingService->shouldReceive('setValue')
+        $this->settingService
+            ->shouldReceive('setValue')
             ->with('setup_step_school', true)
             ->once()
             ->andReturn(true);
@@ -72,7 +74,7 @@ describe('SetupService', function () {
     });
 
     it('finalizes setup step with database transaction and cache clearing', function () {
-        Gate::shouldReceive('authorize')->with('finalize', SetupService::class)->andReturn(true);
+        Gate::shouldReceive('authorize')->with('finalize', AppSetupService::class)->andReturn(true);
         Event::fake();
         DB::shouldReceive('transaction')->andReturnUsing(function ($callback) {
             return $callback();
@@ -81,7 +83,10 @@ describe('SetupService', function () {
         $school = new School(['name' => 'Test School']);
         $this->schoolService->shouldReceive('getSchool')->andReturn($school);
 
-        $this->settingService->shouldReceive('getValue')->with('app_name', 'Internara')->andReturn('Internara');
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('app_name', 'Internara')
+            ->andReturn('Internara');
         $this->settingService->shouldReceive('setValue')->once();
 
         Session::spy();

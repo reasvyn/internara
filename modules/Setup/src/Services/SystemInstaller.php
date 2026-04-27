@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Services;
+namespace Modules\Setup\Services;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Setup\Services\Contracts\InstallationAuditor;
+use Modules\Setup\Services\Contracts\SystemInstaller as Contract;
 use Modules\Shared\Services\BaseService;
-use Modules\Support\Services\Contracts\InstallationAuditor;
-use Modules\Support\Services\Contracts\SystemInstaller as Contract;
 
 /**
  * Service implementation for handling technical system installation.
@@ -36,23 +36,23 @@ class SystemInstaller extends BaseService implements Contract
     {
         Gate::authorize('install', self::class);
 
-        if (! $this->ensureEnvFileExists()) {
+        if (!$this->ensureEnvFileExists()) {
             return false;
         }
 
-        if (! $this->auditor->passes()) {
+        if (!$this->auditor->passes()) {
             return false;
         }
 
-        if (! $this->generateAppKey()) {
+        if (!$this->generateAppKey()) {
             return false;
         }
 
-        if (! $this->runMigrations()) {
+        if (!$this->runMigrations()) {
             return false;
         }
 
-        if (! $this->runSeeders()) {
+        if (!$this->runSeeders()) {
             return false;
         }
 
@@ -86,7 +86,7 @@ class SystemInstaller extends BaseService implements Contract
      */
     public function generateAppKey(): bool
     {
-        if (! empty(config('app.key'))) {
+        if (!empty(config('app.key'))) {
             Log::info(__('setup::install.audit_logs.key_exists_skipping'));
 
             return true;
@@ -119,15 +119,18 @@ class SystemInstaller extends BaseService implements Contract
             $result = Artisan::call($command, ['--force' => true]) === 0;
 
             if ($result) {
-                Log::info(__('setup::install.audit_logs.migrations_executed', ['command' => $command]), [
-                    'command' => $command,
-                    'is_fresh' => $hasMigrations,
-                ]);
+                Log::info(
+                    __('setup::install.audit_logs.migrations_executed', ['command' => $command]),
+                    [
+                        'command' => $command,
+                        'is_fresh' => $hasMigrations,
+                    ],
+                );
             }
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Migration failure during installation: '.$e->getMessage());
+            Log::error('Migration failure during installation: ' . $e->getMessage());
 
             return false;
         }
@@ -136,8 +139,7 @@ class SystemInstaller extends BaseService implements Contract
     protected function hasExistingMigrations(): bool
     {
         try {
-            return Schema::hasTable('migrations') &&
-                DB::table('migrations')->exists();
+            return Schema::hasTable('migrations') && DB::table('migrations')->exists();
         } catch (\Exception $e) {
             return false;
         }
@@ -162,7 +164,7 @@ class SystemInstaller extends BaseService implements Contract
                 return $seeded;
             });
         } catch (\Exception $e) {
-            Log::error('Seeding failure during installation: '.$e->getMessage());
+            Log::error('Seeding failure during installation: ' . $e->getMessage());
 
             return false;
         }

@@ -56,10 +56,8 @@ class AppTestCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(
-        TargetDiscovery $discovery,
-        TestExecutor $executor,
-    ): int {
+    public function handle(TargetDiscovery $discovery, TestExecutor $executor): int
+    {
         if ($this->option('clear-sessions')) {
             TestSessionManager::clearAll();
             $this->components->info('Persistent testing sessions cleared.');
@@ -76,7 +74,11 @@ class AppTestCommand extends Command
 
         if ($this->option('report')) {
             $this->displayBanner();
-            $passRate = $reporter->displaySessionMetrics($session->getSessionId(), $session->getResults(), $totalPossibleSegments);
+            $passRate = $reporter->displaySessionMetrics(
+                $session->getSessionId(),
+                $session->getResults(),
+                $totalPossibleSegments,
+            );
 
             return $this->evaluateStability($passRate);
         }
@@ -87,17 +89,21 @@ class AppTestCommand extends Command
         $requestedModules = array_map('strtolower', $this->argument('modules'));
         $targets = $discovery->identify($requestedModules, (bool) $this->option('dirty'), $missing);
 
-        if (! empty($missing)) {
+        if (!empty($missing)) {
             $this->newLine();
             foreach ($missing as $module) {
-                $this->components->error("Target module [{$module}] was not found or is currently disabled.");
+                $this->components->error(
+                    "Target module [{$module}] was not found or is currently disabled.",
+                );
             }
 
             return self::FAILURE;
         }
 
         if (empty($targets)) {
-            $this->components->warn('No testable targets identified for the current configuration.');
+            $this->components->warn(
+                'No testable targets identified for the current configuration.',
+            );
 
             return self::SUCCESS;
         }
@@ -126,7 +132,7 @@ class AppTestCommand extends Command
             $subsegments = $target['segments'] ?? ['Arch', 'Unit', 'Feature', 'Browser'];
 
             foreach ($subsegments as $sub) {
-                $testPath = $target['path'].DIRECTORY_SEPARATOR.$sub;
+                $testPath = $target['path'] . DIRECTORY_SEPARATOR . $sub;
 
                 if (File::isDirectory($testPath)) {
                     if ($this->shouldSkipSegment($sub)) {
@@ -149,32 +155,51 @@ class AppTestCommand extends Command
                     $segmentError = '';
 
                     $success = false;
-                    $this->components->task("Segment ({$currentSegment}/{$totalSegments}): {$segmentLabel}", function () use (
-                        $executor, $testPath, &$segmentOutput, &$segmentError, &$success
-                    ) {
-                        $success = $executor->execute(
+                    $this->components->task(
+                        "Segment ({$currentSegment}/{$totalSegments}): {$segmentLabel}",
+                        function () use (
+                            $executor,
                             $testPath,
-                            (bool) $this->option('parallel'),
-                            $this->option('stop-on-failure'),
-                            $this->option('filter'),
-                            $segmentOutput,
-                            $segmentError,
-                            (bool) $this->option('coverage')
-                        );
+                            &$segmentOutput,
+                            &$segmentError,
+                            &$success,
+                        ) {
+                            $success = $executor->execute(
+                                $testPath,
+                                (bool) $this->option('parallel'),
+                                $this->option('stop-on-failure'),
+                                $this->option('filter'),
+                                $segmentOutput,
+                                $segmentError,
+                                (bool) $this->option('coverage'),
+                            );
 
-                        return $success;
-                    });
+                            return $success;
+                        },
+                    );
 
-                    $session->record($target['label'], $sub, $success, $segmentOutput, $segmentError);
-                    $allOutput .= $segmentOutput.$segmentError;
+                    $session->record(
+                        $target['label'],
+                        $sub,
+                        $success,
+                        $segmentOutput,
+                        $segmentError,
+                    );
+                    $allOutput .= $segmentOutput . $segmentError;
 
                     $duration = microtime(true) - $segmentStart;
-                    $row[$sub] = $success ? '<fg=green>PASS</> ('.number_format($duration, 2).'s)' : '<fg=red>FAIL</>';
+                    $row[$sub] = $success
+                        ? '<fg=green>PASS</> (' . number_format($duration, 2) . 's)'
+                        : '<fg=red>FAIL</>';
                     $row['total'] += $duration;
 
-                    if (! $success) {
+                    if (!$success) {
                         $overallSuccess = false;
-                        $failures[] = ['label' => $segmentLabel, 'output' => $segmentOutput, 'error' => $segmentError];
+                        $failures[] = [
+                            'label' => $segmentLabel,
+                            'output' => $segmentOutput,
+                            'error' => $segmentError,
+                        ];
                         if ($this->option('stop-on-failure')) {
                             $results[] = $row;
                             break 2;
@@ -187,7 +212,11 @@ class AppTestCommand extends Command
 
         $totalDuration = microtime(true) - $startTime;
         $reporter->displayMatrix($results);
-        $reporter->displayPerformance($totalSegments, $totalSegments - count($failures), $totalDuration);
+        $reporter->displayPerformance(
+            $totalSegments,
+            $totalSegments - count($failures),
+            $totalDuration,
+        );
 
         if ($this->option('coverage')) {
             $reporter->displayCoverageSummary($allOutput);
@@ -197,16 +226,24 @@ class AppTestCommand extends Command
 
         // Handle Exports
         if ($this->option('log-junit')) {
-            $reporter->exportToJUnit($this->option('log-junit'), $session->getResults(), $session->getSessionId());
+            $reporter->exportToJUnit(
+                $this->option('log-junit'),
+                $session->getResults(),
+                $session->getSessionId(),
+            );
         }
 
         if ($this->option('log-json')) {
-            $reporter->exportToJSON($this->option('log-json'), $session->getResults(), $session->getSessionId());
+            $reporter->exportToJSON(
+                $this->option('log-json'),
+                $session->getResults(),
+                $session->getSessionId(),
+            );
         }
 
         // Stability check for CI/CD
         if ($this->option('fail-on-stability')) {
-            $passRate = ($totalSegments - count($failures)) / $totalSegments * 100;
+            $passRate = (($totalSegments - count($failures)) / $totalSegments) * 100;
 
             return $this->evaluateStability((float) $passRate);
         }
@@ -220,8 +257,14 @@ class AppTestCommand extends Command
     protected function displayBanner(): void
     {
         $this->newLine();
-        $this->line(' <fg=white;bg=magenta;options=bold> INTERNARA </> <fg=magenta;options=bold>MODULAR VERIFICATION ENGINE</>');
-        $this->line(' <fg=gray>Advanced Infrastructure Testing Tool v'.config('app.version', '0.14.0').'</>');
+        $this->line(
+            ' <fg=white;bg=magenta;options=bold> INTERNARA </> <fg=magenta;options=bold>MODULAR VERIFICATION ENGINE</>',
+        );
+        $this->line(
+            ' <fg=gray>Advanced Infrastructure Testing Tool v' .
+                config('app.version', '0.14.0') .
+                '</>',
+        );
         $this->newLine();
     }
 
@@ -233,7 +276,13 @@ class AppTestCommand extends Command
         $threshold = (float) $this->option('fail-on-stability', 100);
 
         if ($passRate < $threshold) {
-            $this->components->error('Stability failure: Global pass rate ('.number_format($passRate, 2).'%) is below required threshold ('.number_format($threshold, 2).'%).');
+            $this->components->error(
+                'Stability failure: Global pass rate (' .
+                    number_format($passRate, 2) .
+                    '%) is below required threshold (' .
+                    number_format($threshold, 2) .
+                    '%).',
+            );
 
             return self::FAILURE;
         }
@@ -247,15 +296,23 @@ class AppTestCommand extends Command
     protected function shouldSkipSegment(string $sub): bool
     {
         $subLower = strtolower($sub);
-        $onlyFlags = $this->option('arch-only') || $this->option('unit-only') || $this->option('feature-only') || $this->option('browser-only');
+        $onlyFlags =
+            $this->option('arch-only') ||
+            $this->option('unit-only') ||
+            $this->option('feature-only') ||
+            $this->option('browser-only');
 
         if ($this->option("no-{$subLower}")) {
             return true;
         }
-        if ($sub === 'Browser' && ! $this->option('with-browser') && ! $this->option('browser-only')) {
+        if (
+            $sub === 'Browser' &&
+            !$this->option('with-browser') &&
+            !$this->option('browser-only')
+        ) {
             return true;
         }
-        if ($onlyFlags && ! $this->option("{$subLower}-only")) {
+        if ($onlyFlags && !$this->option("{$subLower}-only")) {
             return true;
         }
 
@@ -270,7 +327,10 @@ class AppTestCommand extends Command
         $count = 0;
         foreach ($targets as $target) {
             foreach ($target['segments'] ?? ['Arch', 'Unit', 'Feature', 'Browser'] as $sub) {
-                if (File::isDirectory($target['path'].DIRECTORY_SEPARATOR.$sub) && ! $this->shouldSkipSegment($sub)) {
+                if (
+                    File::isDirectory($target['path'] . DIRECTORY_SEPARATOR . $sub) &&
+                    !$this->shouldSkipSegment($sub)
+                ) {
                     $count++;
                 }
             }

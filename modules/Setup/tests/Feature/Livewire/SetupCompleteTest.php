@@ -20,8 +20,8 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn () => true);
-    Gate::define('finalize', fn () => true);
+    Gate::define('performStep', fn() => true);
+    Gate::define('finalize', fn() => true);
 });
 
 describe('SetupComplete Component', function () {
@@ -32,7 +32,9 @@ describe('SetupComplete Component', function () {
 
         Livewire::test(SetupComplete::class)
             ->assertStatus(200)
-            ->assertSee(__('setup::wizard.complete.headline', ['app' => setting('app_name', 'Internara')]));
+            ->assertSee(
+                __('setup::wizard.complete.headline', ['app' => setting('app_name', 'Internara')]),
+            );
     });
 
     test('it finalizes setup and redirects to landing', function () {
@@ -57,7 +59,6 @@ describe('SetupComplete Component', function () {
 
         $this->get(route('setup.complete', ['token' => 'test-token']));
 
-        Livewire::test(SetupComplete::class)
-            ->assertRedirect(route('setup.system'));
+        Livewire::test(SetupComplete::class)->assertRedirect(route('setup.system'));
     });
 });

@@ -35,9 +35,9 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn () => true);
-    Gate::define('saveSettings', fn () => true);
-    Gate::define('finalize', fn () => true);
+    Gate::define('performStep', fn() => true);
+    Gate::define('saveSettings', fn() => true);
+    Gate::define('finalize', fn() => true);
 
     // Mock environment auditor to always be ready
     $mock = $this->mock(SystemAuditor::class);
@@ -160,7 +160,7 @@ describe('Setup Wizard Transitions', function () {
         $settings->setValue('setup_step_system', true);
 
         // 8. Complete -> Dashboard (Login)
-        if (! School::exists()) {
+        if (!School::exists()) {
             School::factory()->create();
         }
         $this->get(route('setup.complete', ['token' => 'test-token']));

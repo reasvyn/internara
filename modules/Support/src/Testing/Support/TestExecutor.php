@@ -27,7 +27,7 @@ class TestExecutor
         ?string $filter = null,
         ?string &$output = '',
         ?string &$errorOutput = '',
-        bool $coverage = false
+        bool $coverage = false,
     ): bool {
         $command = [PHP_BINARY];
 

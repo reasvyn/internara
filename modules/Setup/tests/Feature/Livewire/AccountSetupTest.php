@@ -24,7 +24,7 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn () => true);
+    Gate::define('performStep', fn() => true);
 });
 
 describe('AccountSetup Component', function () {
@@ -63,8 +63,7 @@ describe('AccountSetup Component', function () {
 
         $this->get(route('setup.account', ['token' => 'test-token']));
 
-        Livewire::test(AccountSetup::class)
-            ->assertRedirect(route('setup.school'));
+        Livewire::test(AccountSetup::class)->assertRedirect(route('setup.school'));
     });
 
     test('it adheres to [SYRS-NF-401] with responsive layout', function () {
@@ -72,7 +71,6 @@ describe('AccountSetup Component', function () {
 
         $this->get(route('setup.account', ['token' => 'test-token']));
 
-        Livewire::test(AccountSetup::class)
-            ->assertSeeHtml('text-4xl');
+        Livewire::test(AccountSetup::class)->assertSeeHtml('text-4xl');
     });
 });

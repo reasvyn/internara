@@ -14,10 +14,8 @@ use InvalidArgumentException;
  */
 final readonly class SetupToken
 {
-    private function __construct(
-        public string $value,
-        public ?\DateTimeImmutable $expiresAt = null,
-    ) {
+    private function __construct(public string $value, public ?\DateTimeImmutable $expiresAt = null)
+    {
         if (empty($value)) {
             throw new InvalidArgumentException('Setup token value cannot be empty.');
         }
@@ -30,7 +28,7 @@ final readonly class SetupToken
     {
         return new self(
             value: Str::random(64),
-            expiresAt: (new \DateTimeImmutable)->modify("+{$ttlHours} hours")
+            expiresAt: new \DateTimeImmutable()->modify("+{$ttlHours} hours"),
         );
     }
 
@@ -41,7 +39,7 @@ final readonly class SetupToken
     {
         return new self(
             value: $value,
-            expiresAt: $expiresAt ? new \DateTimeImmutable($expiresAt) : null
+            expiresAt: $expiresAt ? new \DateTimeImmutable($expiresAt) : null,
         );
     }
 
@@ -62,7 +60,7 @@ final readonly class SetupToken
             return false;
         }
 
-        return new \DateTimeImmutable > $this->expiresAt;
+        return new \DateTimeImmutable() > $this->expiresAt;
     }
 
     /**

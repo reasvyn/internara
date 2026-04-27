@@ -11,7 +11,7 @@ use Modules\Exception\AppException;
 use Modules\School\Events\SchoolDeleted;
 use Modules\School\Models\School;
 use Modules\School\Services\Contracts\SchoolService as SchoolServiceContract;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Services\EloquentQuery;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -108,7 +108,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
         return DB::transaction(function () use ($attributes, $values) {
             $isSetupAuthorized =
                 session(
-                    SetupService::SESSION_SETUP_AUTHORIZED,
+                    AppSetupService::SESSION_SETUP_AUTHORIZED,
                 ) === true;
             $data = array_merge($attributes, $values);
             $schoolId = $data['id'] ?? $this->model->newQuery()->first(['id'])?->id;

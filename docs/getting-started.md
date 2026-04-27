@@ -48,7 +48,7 @@ The `composer setup` command automates everything:
 
 ## 🔧 What is the Setup Wizard?
 
-After technical installation via `php artisan system:install`, when you visit the generated URL, you'll be guided through the **onboarding process**.
+After technical installation via `php artisan app:install`, when you visit the generated URL, you'll be guided through the **onboarding process**.
 
 The onboarding consists of the following business configuration steps:
 

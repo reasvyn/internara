@@ -6,7 +6,7 @@ namespace Modules\School\Setup;
 
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setup\Services\Contracts\SetupRequirementProvider;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 /**
  * Provides setup requirement validation for the School module.
@@ -21,7 +21,7 @@ class SchoolSetupRequirement implements SetupRequirementProvider
 
     public function getRequirementIdentifier(): string
     {
-        return SetupService::RECORD_SCHOOL;
+        return AppSetupService::RECORD_SCHOOL;
     }
 
     public function isSatisfied(): bool

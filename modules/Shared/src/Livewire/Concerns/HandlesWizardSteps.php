@@ -23,7 +23,7 @@ trait HandlesWizardSteps
     /**
      * The service responsible for handling setup/config business logic.
      */
-    protected AppSetupService $setupService;
+    protected AppAppSetupService $setupService;
 
     /**
      * Holds the properties of the current wizard step.
@@ -59,7 +59,7 @@ trait HandlesWizardSteps
      */
     protected function requireWizardAccess(): void
     {
-        if (! session()->get(AppSetupService::SESSION_SETUP_AUTHORIZED)) {
+        if (! session()->get(AppAppSetupService::SESSION_SETUP_AUTHORIZED)) {
             $this->redirectRoute('setup', navigate: true);
 
             return;
@@ -94,7 +94,7 @@ trait HandlesWizardSteps
                     'step' => __('setup::wizard.'.$currentStep.'.title'),
                 ]));
 
-                if ($currentStep === AppSetupService::STEP_COMPLETE) {
+                if ($currentStep === AppAppSetupService::STEP_COMPLETE) {
                     $this->redirectToLanding();
 
                     return;
