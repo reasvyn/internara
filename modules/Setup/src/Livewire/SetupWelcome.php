@@ -42,14 +42,6 @@ class SetupWelcome extends Component
     }
 
     /**
-     * Proceeds to the Environment Setup step.
-     */
-    public function nextStep(): void
-    {
-        $this->nextStep();
-    }
-
-    /**
      * Renders the component view.
      */
     public function render(): View
