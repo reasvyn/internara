@@ -35,7 +35,10 @@ class AccountLifecycleDashboard extends Component
     {
         // Check authorization
         abort_unless(auth()->check(), 403);
-        abort_unless(auth()->user()->role === 'super_admin' || auth()->user()->role === 'admin', 403);
+        abort_unless(
+            auth()->user()->role === 'super_admin' || auth()->user()->role === 'admin',
+            403,
+        );
 
         $this->loadStats();
     }
@@ -69,14 +72,16 @@ class AccountLifecycleDashboard extends Component
             ->orderBy('created_at', 'asc')
             ->limit(10)
             ->get()
-            ->map(fn ($user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'createdAt' => $user->created_at->diffForHumans(),
-                'daysWaiting' => $user->created_at->diffInDays(now()),
-            ])
+            ->map(
+                fn($user) => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'createdAt' => $user->created_at->diffForHumans(),
+                    'daysWaiting' => $user->created_at->diffInDays(now()),
+                ],
+            )
             ->toArray();
     }
 
@@ -89,14 +94,16 @@ class AccountLifecycleDashboard extends Component
             ->orderBy('updated_at', 'desc')
             ->limit(10)
             ->get()
-            ->map(fn ($user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'suspendedAt' => $user->updated_at->format('Y-m-d H:i'),
-                'daysSuspended' => $user->updated_at->diffInDays(now()),
-            ])
+            ->map(
+                fn($user) => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'suspendedAt' => $user->updated_at->format('Y-m-d H:i'),
+                    'daysSuspended' => $user->updated_at->diffInDays(now()),
+                ],
+            )
             ->toArray();
     }
 
@@ -109,28 +116,31 @@ class AccountLifecycleDashboard extends Component
             $q->where('restriction_type', 'login_lockout')
                 ->where('is_active', true)
                 ->where(function ($q2) {
-                    $q2->whereNull('expires_at')
-                        ->orWhere('expires_at', '>', now());
+                    $q2->whereNull('expires_at')->orWhere('expires_at', '>', now());
                 });
         })
             ->limit(10)
             ->get()
-            ->map(fn ($user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'lockedOutAt' => $user->restrictions()
-                    ->where('restriction_type', 'login_lockout')
-                    ->where('is_active', true)
-                    ->first()
-                    ?->applied_at?->format('Y-m-d H:i'),
-                'expiresAt' => $user->restrictions()
-                    ->where('restriction_type', 'login_lockout')
-                    ->where('is_active', true)
-                    ->first()
-                    ?->expires_at?->format('Y-m-d H:i'),
-            ])
+            ->map(
+                fn($user) => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'lockedOutAt' => $user
+                        ->restrictions()
+                        ->where('restriction_type', 'login_lockout')
+                        ->where('is_active', true)
+                        ->first()
+                        ?->applied_at?->format('Y-m-d H:i'),
+                    'expiresAt' => $user
+                        ->restrictions()
+                        ->where('restriction_type', 'login_lockout')
+                        ->where('is_active', true)
+                        ->first()
+                        ?->expires_at?->format('Y-m-d H:i'),
+                ],
+            )
             ->toArray();
     }
 
@@ -143,20 +153,24 @@ class AccountLifecycleDashboard extends Component
 
         return User::where('account_status', Status::VERIFIED->value)
             ->where(function ($q) use ($cutoffDate) {
-                $q->where('last_activity_at', '<', $cutoffDate)
-                    ->orWhereNull('last_activity_at');
+                $q->where('last_activity_at', '<', $cutoffDate)->orWhereNull('last_activity_at');
             })
             ->orderBy('last_activity_at', 'asc')
             ->limit(10)
             ->get()
-            ->map(fn ($user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'lastActivityAt' => $user->last_activity_at?->format('Y-m-d H:i') ?? 'Never',
-                'daysUntilInactive' => max(0, 180 - ($user->last_activity_at ?? $user->created_at)->diffInDays(now())),
-            ])
+            ->map(
+                fn($user) => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'lastActivityAt' => $user->last_activity_at?->format('Y-m-d H:i') ?? 'Never',
+                    'daysUntilInactive' => max(
+                        0,
+                        180 - ($user->last_activity_at ?? $user->created_at)->diffInDays(now()),
+                    ),
+                ],
+            )
             ->toArray();
     }
 
@@ -169,17 +183,19 @@ class AccountLifecycleDashboard extends Component
             ->limit(10)
             ->with('user', 'triggeredBy')
             ->get()
-            ->map(fn ($history) => [
-                'id' => $history->id,
-                'userId' => $history->user_id,
-                'userName' => $history->user->name,
-                'oldStatus' => $history->old_status,
-                'newStatus' => $history->new_status,
-                'reason' => $history->reason,
-                'triggeredBy' => $history->triggeredBy?->name ?? 'System',
-                'changedAt' => $history->created_at->diffForHumans(),
-                'timestamp' => $history->created_at->format('Y-m-d H:i:s'),
-            ])
+            ->map(
+                fn($history) => [
+                    'id' => $history->id,
+                    'userId' => $history->user_id,
+                    'userName' => $history->user->name,
+                    'oldStatus' => $history->old_status,
+                    'newStatus' => $history->new_status,
+                    'reason' => $history->reason,
+                    'triggeredBy' => $history->triggeredBy?->name ?? 'System',
+                    'changedAt' => $history->created_at->diffForHumans(),
+                    'timestamp' => $history->created_at->format('Y-m-d H:i:s'),
+                ],
+            )
             ->toArray();
     }
 

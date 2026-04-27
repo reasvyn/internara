@@ -24,17 +24,11 @@ class MentoringVisit extends Model
 
     public function registration(): BelongsTo
     {
-        return $this->belongsTo(
-            InternshipRegistration::class,
-            'registration_id',
-        );
+        return $this->belongsTo(InternshipRegistration::class, 'registration_id');
     }
 
     public function teacher(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'teacher_id',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'teacher_id');
     }
 }

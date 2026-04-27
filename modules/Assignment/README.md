@@ -3,9 +3,8 @@
 The `Assignment` module manages the lifecycle of student tasks and submissions, decoupled from the
 core internship program to provide flexible institutional governance.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
@@ -22,13 +21,13 @@ for defining task categories, task instances, and student submissions. It is uti
 ### 2.1 Service Layer
 
 - **`AssignmentTypeService`**: Manages dynamic assignment categories (e.g., "Final Report",
- "Industry Certificate").
- - _Contract_: `Modules\Assignment\Services\Contracts\AssignmentTypeService`.
+  "Industry Certificate").
+- _Contract_: `Modules\Assignment\Services\Contracts\AssignmentTypeService`.
 - **`AssignmentService`**: Orchestrates the creation and fulfillment verification of specific tasks.
- - _Features_: Automated default task generation, fulfillment status calculation.
- - _Contract_: `Modules\Assignment\Services\Contracts\AssignmentService`.
+- _Features_: Automated default task generation, fulfillment status calculation.
+- _Contract_: `Modules\Assignment\Services\Contracts\AssignmentService`.
 - **`SubmissionService`**: Handles student file uploads and supervisor verification.
- - _Contract_: `Modules\Assignment\Services\Contracts\SubmissionService`.
+- _Contract_: `Modules\Assignment\Services\Contracts\SubmissionService`.
 
 ### 2.2 Domain Models
 
@@ -48,11 +47,11 @@ for defining task categories, task instances, and student submissions. It is uti
 
 - **Isolation Invariant**: Interacts with the `Internship` module exclusively via Service Contracts.
 - **Guidance Gating**: Student submissions are gated by the completion of mandatory guidelines
- defined in the `Guidance` module.
+  defined in the `Guidance` module.
 - **Fulfillment Invariant**: Student program completion is gated by the completion of all mandatory
- assignments defined in this module.
+  assignments defined in this module.
 - **Status Lifecycle**: Submissions track their state (Draft, Submitted, Verified, Rejected) using
- the `HasStatus` concern.
+  the `HasStatus` concern.
 
 ---
 
@@ -62,7 +61,7 @@ Quality is enforced through **Pest v4**:
 
 - **Feature Tests**: Validates the submission lifecycle and fulfillment logic.
 - **Integration Tests**: Ensures correct interaction with the `Internship` module during program
- completion.
+  completion.
 - **Command**: `php artisan test modules/Assignment`
 
 ---

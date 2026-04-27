@@ -55,7 +55,7 @@ describe('UserService', function () {
 
         $userService = app(UserService::class);
 
-        expect(fn () => $userService->delete($superAdmin->id))->toThrow(
+        expect(fn() => $userService->delete($superAdmin->id))->toThrow(
             AuthorizationException::class,
         );
     });
@@ -66,7 +66,7 @@ describe('UserService', function () {
 
         $userService = app(UserService::class);
 
-        expect(fn () => $userService->toggleStatus($superAdmin->id))->toThrow(
+        expect(fn() => $userService->toggleStatus($superAdmin->id))->toThrow(
             AuthorizationException::class,
         );
     });

@@ -18,7 +18,7 @@ class ConfigureInstitutionalBranding
 {
     public function __construct(
         protected SchoolService $schoolService,
-        protected SettingService $settingService
+        protected SettingService $settingService,
     ) {}
 
     public function handle(SetupFinalized $event): void

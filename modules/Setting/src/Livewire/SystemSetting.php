@@ -100,7 +100,7 @@ class SystemSetting extends Component
         // Operational
         $this->active_academic_year = $service->getValue(
             'active_academic_year',
-            date('Y').'/'.(date('Y') + 1),
+            date('Y') . '/' . (date('Y') + 1),
         );
         $this->attendance_check_in_start = $service->getValue('attendance_check_in_start', '07:00');
         $this->attendance_late_threshold = $service->getValue('attendance_late_threshold', '08:00');
@@ -167,16 +167,12 @@ class SystemSetting extends Component
         if ($this->brand_logo) {
             $settings['brand_logo'] = $this->brand_logo->store('brand', 'public');
             // Convert to URL if using public disk
-            $settings['brand_logo'] = Storage::url(
-                $settings['brand_logo'],
-            );
+            $settings['brand_logo'] = Storage::url($settings['brand_logo']);
         }
 
         if ($this->site_favicon) {
             $settings['site_favicon'] = $this->site_favicon->store('brand', 'public');
-            $settings['site_favicon'] = Storage::url(
-                $settings['site_favicon'],
-            );
+            $settings['site_favicon'] = Storage::url($settings['site_favicon']);
         }
 
         $service->setValue($settings);
@@ -195,7 +191,8 @@ class SystemSetting extends Component
         return view('setting::livewire.system-setting')->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' => __('setting::ui.title').' | '.setting('brand_name', setting('app_name')),
+                'title' =>
+                    __('setting::ui.title') . ' | ' . setting('brand_name', setting('app_name')),
             ],
         );
     }

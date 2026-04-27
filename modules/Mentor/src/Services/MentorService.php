@@ -30,7 +30,7 @@ class MentorService extends EloquentQuery implements Contract
      */
     public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
     {
-        if (! $this->baseQuery) {
+        if (!$this->baseQuery) {
             $this->setBaseQuery($this->model->role('mentor'));
         }
 
@@ -44,11 +44,16 @@ class MentorService extends EloquentQuery implements Contract
     {
         return [
             'total' => $this->count(),
-            'active' => $this->query()->whereHas('statuses', function ($q) {
-                $q->where('name', User::STATUS_ACTIVE)
-                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
-            })->count(),
-            'pending' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', User::STATUS_PENDING))->count(),
+            'active' => $this->query()
+                ->whereHas('statuses', function ($q) {
+                    $q->where('name', User::STATUS_ACTIVE)->whereRaw(
+                        'created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)',
+                    );
+                })
+                ->count(),
+            'pending' => $this->query()
+                ->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))
+                ->count(),
         ];
     }
 
@@ -65,7 +70,7 @@ class MentorService extends EloquentQuery implements Contract
         $user = $this->userService->create($data);
 
         // 2. Create Profile record (Mentors have Profile but no profileable model)
-        if (! empty($profileData)) {
+        if (!empty($profileData)) {
             $this->profileService->upsertManagedProfile($user->id, $profileData);
         }
 
@@ -79,10 +84,8 @@ class MentorService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user || ! $user->hasRole('mentor')) {
-            throw new RecordNotFoundException(
-                replace: ['record' => 'Mentor', 'id' => $id],
-            );
+        if (!$user || !$user->hasRole('mentor')) {
+            throw new RecordNotFoundException(replace: ['record' => 'Mentor', 'id' => $id]);
         }
 
         $profileData = $data['profile'] ?? [];
@@ -92,7 +95,7 @@ class MentorService extends EloquentQuery implements Contract
         $user = $this->userService->update($id, $data);
 
         // 2. Update Profile record if it exists
-        if (! empty($profileData)) {
+        if (!empty($profileData)) {
             $this->profileService->upsertManagedProfile($user->id, $profileData);
         }
 
@@ -106,7 +109,7 @@ class MentorService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user || ! $user->hasRole('mentor')) {
+        if (!$user || !$user->hasRole('mentor')) {
             return false;
         }
 

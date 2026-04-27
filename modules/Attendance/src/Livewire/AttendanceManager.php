@@ -32,7 +32,7 @@ class AttendanceManager extends Component
 
             if (
                 $settingService->getValue('feature_guidance_enabled', true) &&
-                ! $guidanceService->hasCompletedMandatory((string) auth()->id())
+                !$guidanceService->hasCompletedMandatory((string) auth()->id())
             ) {
                 // For manager component which might be embedded, we might just disable actions
                 // but for consistency with Journal, let's redirect if it's a main page.
@@ -68,7 +68,7 @@ class AttendanceManager extends Component
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
-            ! $guidanceService->hasCompletedMandatory((string) auth()->id())
+            !$guidanceService->hasCompletedMandatory((string) auth()->id())
         ) {
             flash()->warning(__('guidance::messages.must_complete_guidance'));
 
@@ -80,10 +80,7 @@ class AttendanceManager extends Component
             $this->loadTodayLog();
             flash()->success(__('attendance::messages.check_in_success'));
         } catch (\Throwable $e) {
-            $message =
-                $e instanceof AppException
-                    ? $e->getUserMessage()
-                    : $e->getMessage();
+            $message = $e instanceof AppException ? $e->getUserMessage() : $e->getMessage();
 
             flash()->error($message);
         }
@@ -99,10 +96,7 @@ class AttendanceManager extends Component
             $this->loadTodayLog();
             flash()->success(__('attendance::messages.check_out_success'));
         } catch (\Throwable $e) {
-            $message =
-                $e instanceof AppException
-                    ? $e->getUserMessage()
-                    : $e->getMessage();
+            $message = $e instanceof AppException ? $e->getUserMessage() : $e->getMessage();
 
             flash()->error($message);
         }

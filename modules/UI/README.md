@@ -4,9 +4,8 @@ The `UI` module serves as the authoritative, "headless" source of truth for Inte
 language and shared frontend components. it encapsulates the design system, interactive elements,
 and presentation layouts without containing business logic or data persistence.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
@@ -27,23 +26,26 @@ minimizing third-party library dependency.
 - **Typography**: Enforces the use of **Instrument Sans** as the primary font (**[SYRS-NF-402]**).
 - **Theming**: Native support for Light/Dark modes and responsive layouts.
 - **Evolutionary UI**: Adherence to the **UI library minimization** strategy to ensure absolute
- design control.
+  design control.
 
 ### 2.2 Component Library
 
 - **Livewire Components**: Shared interactive elements like the `LanguageSwitcher`.
-- **`RecordIndex` Pattern**: A standardized architectural pattern for top-level management pages, combining summary statistics with embedded record managers.
-- **`RecordManager` Base**: A robust base class for CRUD-heavy Livewire components, providing automated pagination, searching, and sorting logic aligned with the `EloquentQuery` pattern.
+- **`RecordIndex` Pattern**: A standardized architectural pattern for top-level management pages,
+  combining summary statistics with embedded record managers.
+- **`RecordManager` Base**: A robust base class for CRUD-heavy Livewire components, providing
+  automated pagination, searching, and sorting logic aligned with the `EloquentQuery` pattern.
 
 ### 2.3 Cross-Module View Orchestration (Slot Injection)
+
 The UI module provides the infrastructure for zero-coupling UI integration:
 
 - **`SlotRegistry`**: A central registry where modules can register their own UI fragments (e.g.,
- sidebar links, dashboard widgets).
+  sidebar links, dashboard widgets).
 - **`SlotManager`**: Handles the secure rendering of registered components into named slots within
- the layout.
+  the layout.
 - **`SlotRender`**: A Blade component (`<x-ui::slot-render name="..." />`) used to mark injection
- points in global layouts.
+  points in global layouts.
 
 ---
 
@@ -51,11 +53,11 @@ The UI module provides the infrastructure for zero-coupling UI integration:
 
 - **Zero Coupling**: Strictly presentation-focused. D Domain logic is prohibited.
 - **Mobile-First**: All layouts and components must default to mobile-responsive design
- (**[SYRS-NF-401]**).
+  (**[SYRS-NF-401]**).
 - **i18n Infrastructure**: Facilitates the **Language Switcher** and ensures all presentation text
- is localized.
+  is localized.
 - **Zero Magic Values**: UI configurations (like supported locales and icons) are managed via
- `config/ui.php`.
+  `config/ui.php`.
 
 ---
 

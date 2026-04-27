@@ -45,24 +45,27 @@ test('it can check in a student within the active period [STRS-01] [SYRS-F-401]'
     ]);
 });
 
-test('it throws exception when checking in outside the internship period [STRS-01] [SYRS-F-401]', function () {
-    $student = User::factory()->create();
-    $student->assignRole('student');
+test(
+    'it throws exception when checking in outside the internship period [STRS-01] [SYRS-F-401]',
+    function () {
+        $student = User::factory()->create();
+        $student->assignRole('student');
 
-    $registration = (object) [
-        'id' => 'reg-uuid',
-        'student_id' => $student->id,
-        'start_date' => now()->addDay(),
-        'end_date' => now()->addMonth(),
-        'academic_year' => '2025/2026',
-    ];
+        $registration = (object) [
+            'id' => 'reg-uuid',
+            'student_id' => $student->id,
+            'start_date' => now()->addDay(),
+            'end_date' => now()->addMonth(),
+            'academic_year' => '2025/2026',
+        ];
 
-    $registrationService = mock(RegistrationService::class);
-    $registrationService->shouldReceive('first')->andReturn($registration);
-    $this->app->instance(RegistrationService::class, $registrationService);
+        $registrationService = mock(RegistrationService::class);
+        $registrationService->shouldReceive('first')->andReturn($registration);
+        $this->app->instance(RegistrationService::class, $registrationService);
 
-    expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
-        AppException::class,
-        'attendance::messages.outside_internship_period',
-    );
-});
+        expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
+            AppException::class,
+            'attendance::messages.outside_internship_period',
+        );
+    },
+);

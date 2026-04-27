@@ -23,11 +23,8 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(function () {
-    Route::get('/admin/assignments', AssignmentIndex::class)->name(
-        'admin.assignments.index',
+    Route::get('/admin/assignments', AssignmentIndex::class)->name('admin.assignments.index');
+    Route::get('/admin/assignments/types', AssignmentTypeIndex::class)->name(
+        'admin.assignments.types',
     );
-    Route::get(
-        '/admin/assignments/types',
-        AssignmentTypeIndex::class,
-    )->name('admin.assignments.types');
 });

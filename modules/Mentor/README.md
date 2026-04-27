@@ -3,16 +3,15 @@
 The `Mentor` module is the dedicated workspace for industry mentors. It is designed to be simple and
 mobile-friendly to facilitate quick feedback from busy professionals.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
 ## Purpose
 
 - **Industry Supervision:** Allows mentors to track the attendance and performance of interns in
- their company.
+  their company.
 - **Evaluation:** Streamlined interface for submitting student assessments.
 
 ## Key Features

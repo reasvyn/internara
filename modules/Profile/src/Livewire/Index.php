@@ -145,19 +145,11 @@ class Index extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.auth()->id(),
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'gender' => [
-                'nullable',
-                'string',
-                Rule::enum(Gender::class),
-            ],
-            'blood_type' => [
-                'nullable',
-                'string',
-                Rule::enum(BloodType::class),
-            ],
+            'gender' => ['nullable', 'string', Rule::enum(Gender::class)],
+            'blood_type' => ['nullable', 'string', Rule::enum(BloodType::class)],
             'emergency_contact_name' => 'nullable|string|max:255',
             'emergency_contact_phone' => 'nullable|string|max:20',
             'emergency_contact_address' => 'nullable|string',
@@ -170,7 +162,7 @@ class Index extends Component
             ];
 
             // Only update name if not SuperAdmin (since UI is display-only for them)
-            if (! auth()->user()->hasRole('super-admin')) {
+            if (!auth()->user()->hasRole('super-admin')) {
                 $userData['name'] = $this->name;
             }
 
@@ -203,22 +195,24 @@ class Index extends Component
         $user = auth()->user();
         $profileable = $user->profile->profileable;
 
-        if (! $profileable) {
+        if (!$profileable) {
             return;
         }
 
         try {
             if ($user->hasRole(Role::TEACHER->value)) {
                 $this->validate([
-                    'nip' => 'required|string|unique:teachers,nip,'.$profileable->id,
+                    'nip' => 'required|string|unique:teachers,nip,' . $profileable->id,
                 ]);
                 $profileable->update(['nip' => $this->nip]);
             }
 
             if ($user->hasRole(Role::STUDENT->value)) {
                 $this->validate([
-                    'national_identifier' => 'required|string|unique:students,national_identifier,'.$profileable->id,
-                    'registration_number' => 'nullable|string|unique:students,registration_number,'.$profileable->id,
+                    'national_identifier' =>
+                        'required|string|unique:students,national_identifier,' . $profileable->id,
+                    'registration_number' =>
+                        'nullable|string|unique:students,registration_number,' . $profileable->id,
                     'class_name' => 'nullable|string|max:50',
                     'passport_photo' => 'nullable|image|max:1024',
                 ]);
@@ -293,8 +287,9 @@ class Index extends Component
     public function render()
     {
         return view('profile::livewire.index')->layout('ui::components.layouts.dashboard', [
-            'title' => __('profile::ui.profile_settings').
-                ' | '.
+            'title' =>
+                __('profile::ui.profile_settings') .
+                ' | ' .
                 setting('brand_name', setting('app_name')),
         ]);
     }

@@ -1,28 +1,33 @@
 # Project Governance: Internara Open Source
 
-This document formalizes the **Project Governance Framework** for Internara, ensuring transparency, accountability, and professional oversight in alignment with **ISO/IEC 38500** (Corporate governance of information technology).
+This document formalizes the **Project Governance Framework** for Internara, ensuring transparency,
+accountability, and professional oversight in alignment with **ISO/IEC 38500** (Corporate governance
+of information technology).
 
 ---
 
 ## 1. Governance Model: Strategic Oversight
 
-Internara follows a **Benevolent Dictatorship** model, where the Lead Maintainer has the final authority on architectural and strategic decisions to preserve the system's high-fidelity engineering standards (3S Doctrine).
+Internara follows a **Benevolent Dictatorship** model, where the Lead Maintainer has the final
+authority on architectural and strategic decisions to preserve the system's high-fidelity
+engineering standards (3S Doctrine).
 
 ### 1.1 Decision-Making Process
 
 - **Architectural Decisions**: Must be documented via Architectural Decision Records (ADR).
 - **Feature Approval**: Requires alignment with project requirements.
-- **Security Decisions**: Handled privately via the Lead Maintainer and Security Team as per `SECURITY.md`.
+- **Security Decisions**: Handled privately via the Lead Maintainer and Security Team as per
+  `SECURITY.md`.
 
 ---
 
 ## 2. Roles & Responsibilities
 
-| Role | Responsibility | Authority |
-| :--- | :--- | :--- |
-| **Lead Maintainer** | Strategic direction, final PR approval, and 3S Doctrine enforcement. | Final decision. |
-| **Maintainers** | Code review, module ownership, and issue triage. | Reviewer & merger. |
-| **Contributors** | Feature development, bug fixes, and documentation improvements. | Proposal & implementation. |
+| Role                | Responsibility                                                       | Authority                  |
+| :------------------ | :------------------------------------------------------------------- | :------------------------- |
+| **Lead Maintainer** | Strategic direction, final PR approval, and 3S Doctrine enforcement. | Final decision.            |
+| **Maintainers**     | Code review, module ownership, and issue triage.                     | Reviewer & merger.         |
+| **Contributors**    | Feature development, bug fixes, and documentation improvements.      | Proposal & implementation. |
 
 ---
 
@@ -31,7 +36,8 @@ Internara follows a **Benevolent Dictatorship** model, where the Lead Maintainer
 To maintain the system's integrity, all contributions must pass the following gates:
 
 1.  **3S Audit**: Every PR is audited for Security, Sustainability, and Scalability.
-2.  **DDD Modular Compliance**: Every functional change must have >90% behavioral coverage, driven by domain integrity.
+2.  **DDD Modular Compliance**: Every functional change must have >90% behavioral coverage, driven
+    by domain integrity.
 3.  **Static Analysis**: Zero high-severity violations in PHPStan and Pint.
 4.  **ISO-Alignment**: Documentation must evolve alongside code changes.
 
@@ -40,6 +46,7 @@ To maintain the system's integrity, all contributions must pass the following ga
 ## 4. Communication Channels
 
 Governance discussions occur in public via:
+
 - GitHub Issues (Technical decisions)
 - GitHub Discussions (Strategic planning)
 - Official Support Channels (Operational feedback)
@@ -48,4 +55,5 @@ Governance discussions occur in public via:
 
 ## 5. Conflict Resolution
 
-Conflicts are resolved through technical consensus. If consensus is not reached, the Lead Maintainer provides the final authoritative decision based on the **3S Doctrine**.
+Conflicts are resolved through technical consensus. If consensus is not reached, the Lead Maintainer
+provides the final authoritative decision based on the **3S Doctrine**.

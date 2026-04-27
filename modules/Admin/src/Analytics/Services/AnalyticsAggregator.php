@@ -41,23 +41,19 @@ class AnalyticsAggregator implements Contract
         $academicYear = $filters['academic_year'] ?? (string) setting('active_academic_year');
         $cacheKey = "institutional_summary_{$academicYear}";
 
-        return Cache::remember(
-            $cacheKey,
-            now()->addMinutes(15),
-            function () use ($academicYear) {
-                $totalInterns = $this->registrationService
-                    ->query(['academic_year' => $academicYear])
-                    ->count();
+        return Cache::remember($cacheKey, now()->addMinutes(15), function () use ($academicYear) {
+            $totalInterns = $this->registrationService
+                ->query(['academic_year' => $academicYear])
+                ->count();
 
-                $activePartners = $this->placementService->all(['id'])->count();
+            $activePartners = $this->placementService->all(['id'])->count();
 
-                return [
-                    'total_interns' => $totalInterns,
-                    'active_partners' => $activePartners,
-                    'placement_rate' => $this->calculatePlacementRate($totalInterns, $academicYear),
-                ];
-            },
-        );
+            return [
+                'total_interns' => $totalInterns,
+                'active_partners' => $activePartners,
+                'placement_rate' => $this->calculatePlacementRate($totalInterns, $academicYear),
+            ];
+        });
     }
 
     /**
@@ -98,7 +94,7 @@ class AnalyticsAggregator implements Contract
                 $riskReasons[] = __('core::analytics.risks.low_score');
             }
 
-            if (! empty($riskReasons)) {
+            if (!empty($riskReasons)) {
                 $atRisk[] = [
                     'id' => $registrationId,
                     'student_name' => $registration->user->name,

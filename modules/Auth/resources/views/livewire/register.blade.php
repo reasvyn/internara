@@ -53,12 +53,6 @@
             />
         </div>
 
-        <div wire:key="reg-captcha">
-            @if(config('services.cloudflare.turnstile.site_key'))
-                <x-ui::turnstile fieldName="captcha_token" />
-            @endif
-        </div>
-
         <div class="mt-4 flex flex-col gap-8" wire:key="reg-actions">
             <div class="w-full space-y-2">
                 <x-ui::button

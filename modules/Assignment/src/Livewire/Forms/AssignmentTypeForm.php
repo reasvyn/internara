@@ -26,7 +26,7 @@ class AssignmentTypeForm extends Form
 
     public function updatedName(string $value): void
     {
-        if (! $this->id) {
+        if (!$this->id) {
             $this->slug = Str::slug($value);
         }
     }

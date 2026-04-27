@@ -18,12 +18,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        Login::class => [
-            LogSuccessfulLogin::class,
-        ],
-        Failed::class => [
-            LogFailedLogin::class,
-        ],
+        Login::class => [LogSuccessfulLogin::class],
+        Failed::class => [LogFailedLogin::class],
     ];
 
     /**

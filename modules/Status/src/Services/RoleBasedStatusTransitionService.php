@@ -55,7 +55,7 @@ class RoleBasedStatusTransitionService
     public function getValidTransitionsForRole(User $user): array
     {
         $currentStatus = $user->latestStatus()?->name;
-        if (! $currentStatus) {
+        if (!$currentStatus) {
             $currentStatus = Status::PENDING->value;
         }
 
@@ -76,22 +76,26 @@ class RoleBasedStatusTransitionService
     /**
      * Check if a specific role can perform a transition
      */
-    public function canTransition(User $user, Status $fromStatus, Status $toStatus, ?User $triggeredBy = null): bool
-    {
+    public function canTransition(
+        User $user,
+        Status $fromStatus,
+        Status $toStatus,
+        ?User $triggeredBy = null,
+    ): bool {
         $triggeredBy = $triggeredBy ?? auth()->user();
 
         // 1. Check valid transition exists in state machine
-        if (! $fromStatus->canTransitionTo($toStatus)) {
+        if (!$fromStatus->canTransitionTo($toStatus)) {
             return false;
         }
 
         // 2. Check role-based rules
-        if (! $this->isTransitionAllowedForRole($user, $fromStatus, $toStatus)) {
+        if (!$this->isTransitionAllowedForRole($user, $fromStatus, $toStatus)) {
             return false;
         }
 
         // 3. Check permission to perform transition
-        if (! $this->hasPermissionToTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
+        if (!$this->hasPermissionToTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
             return false;
         }
 
@@ -111,8 +115,10 @@ class RoleBasedStatusTransitionService
         $fromStatus = Status::from($user->latestStatus()?->name ?? Status::PENDING->value);
 
         // Validate transition
-        if (! $this->canTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
-            throw new \Exception("Transisi tidak diizinkan: {$fromStatus->value} → {$toStatus->value} untuk role {$user->getHighestRole()}");
+        if (!$this->canTransition($user, $fromStatus, $toStatus, $triggeredBy)) {
+            throw new \Exception(
+                "Transisi tidak diizinkan: {$fromStatus->value} → {$toStatus->value} untuk role {$user->getHighestRole()}",
+            );
         }
 
         // Perform transition using spatie
@@ -129,10 +135,12 @@ class RoleBasedStatusTransitionService
                     'reason' => $reason,
                     'triggered_by' => $triggeredBy->email,
                     'user_role' => $user->getHighestRole(),
-                ]
+                ],
             );
 
-            Log::info("Status transition: {$user->email} ({$user->getHighestRole()}) {$fromStatus->value} → {$toStatus->value}");
+            Log::info(
+                "Status transition: {$user->email} ({$user->getHighestRole()}) {$fromStatus->value} → {$toStatus->value}",
+            );
 
             return true;
         } catch (\Exception $e) {
@@ -191,8 +199,11 @@ class RoleBasedStatusTransitionService
     /**
      * Check if role-specific transition is allowed
      */
-    private function isTransitionAllowedForRole(User $user, Status $fromStatus, Status $toStatus): bool
-    {
+    private function isTransitionAllowedForRole(
+        User $user,
+        Status $fromStatus,
+        Status $toStatus,
+    ): bool {
         $roleRules = $this->getRoleBasedTransitionRules($user);
         $allowedTransitions = $roleRules[$fromStatus->value] ?? [];
 
@@ -235,7 +246,8 @@ class RoleBasedStatusTransitionService
 
         // Mentor can restrict/suspend students only
         if ($triggeredByRole === 'mentor') {
-            return $userRole === 'student' && in_array($toStatus, [Status::RESTRICTED, Status::SUSPENDED]);
+            return $userRole === 'student' &&
+                in_array($toStatus, [Status::RESTRICTED, Status::SUSPENDED]);
         }
 
         // Users can activate/verify themselves
@@ -255,11 +267,15 @@ class RoleBasedStatusTransitionService
 
         return match (true) {
             $from === Status::PENDING && $to === Status::ACTIVATED => 'Akun diaktifkan',
-            $from === Status::ACTIVATED && $to === Status::VERIFIED => "Akun diverifikasi oleh {$role}",
-            $from === Status::VERIFIED && $to === Status::RESTRICTED => 'Akun dibatasi (investigasi)',
-            $from === Status::VERIFIED && $to === Status::SUSPENDED => 'Akun ditangguhkan (pelanggaran)',
+            $from === Status::ACTIVATED && $to === Status::VERIFIED
+                => "Akun diverifikasi oleh {$role}",
+            $from === Status::VERIFIED && $to === Status::RESTRICTED
+                => 'Akun dibatasi (investigasi)',
+            $from === Status::VERIFIED && $to === Status::SUSPENDED
+                => 'Akun ditangguhkan (pelanggaran)',
             in_array($to, [Status::RESTRICTED, Status::SUSPENDED]) => "Akun {$to->label()}",
-            $from === Status::INACTIVE && $to === Status::ARCHIVED => 'Akun diarsipkan (GDPR pending)',
+            $from === Status::INACTIVE && $to === Status::ARCHIVED
+                => 'Akun diarsipkan (GDPR pending)',
             default => "Status diubah: {$from->label()} → {$to->label()}",
         };
     }
@@ -277,11 +293,14 @@ class RoleBasedStatusTransitionService
 
         // Filter by who can approve what
         if ($role === 'super_admin') {
-            $query->whereHas('roles', fn ($q) => $q->whereIn('name', ['admin']));
+            $query->whereHas('roles', fn($q) => $q->whereIn('name', ['admin']));
         } elseif ($role === 'admin') {
-            $query->whereHas('roles', fn ($q) => $q->whereIn('name', ['student', 'teacher', 'mentor']));
+            $query->whereHas(
+                'roles',
+                fn($q) => $q->whereIn('name', ['student', 'teacher', 'mentor']),
+            );
         } elseif ($role === 'teacher') {
-            $query->whereHas('roles', fn ($q) => $q->where('name', 'student'));
+            $query->whereHas('roles', fn($q) => $q->where('name', 'student'));
         } else {
             $query->whereRaw('1 = 0'); // Empty for other roles
         }

@@ -30,7 +30,7 @@ class ReportPolicy
      */
     public function view(User $user, GeneratedReport $report): bool
     {
-        if (! $user->can('report.view')) {
+        if (!$user->can('report.view')) {
             return false;
         }
 

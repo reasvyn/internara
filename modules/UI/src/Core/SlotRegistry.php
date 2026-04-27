@@ -62,8 +62,8 @@ class SlotRegistry implements SlotRegistryContract
         if (
             is_string($view) &&
             str_contains($view, ':') &&
-            ! str_contains($view, '::') &&
-            ! str_starts_with($view, 'livewire:')
+            !str_contains($view, '::') &&
+            !str_starts_with($view, 'livewire:')
         ) {
             if (is_debug_mode()) {
                 Log::warning(
@@ -100,6 +100,6 @@ class SlotRegistry implements SlotRegistryContract
      */
     public function hasSlot(string $slot): bool
     {
-        return ! empty($this->slots[$slot]);
+        return !empty($this->slots[$slot]);
     }
 }

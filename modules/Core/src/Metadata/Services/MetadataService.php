@@ -75,9 +75,9 @@ class MetadataService implements Contract
 
         if ($author !== self::AUTHOR_IDENTITY) {
             throw new RuntimeException(
-                "Integrity Violation: Unauthorized author detected [{$author}]. ".
-                    'This system requires attribution to ['.
-                    self::AUTHOR_IDENTITY.
+                "Integrity Violation: Unauthorized author detected [{$author}]. " .
+                    'This system requires attribution to [' .
+                    self::AUTHOR_IDENTITY .
                     '].',
             );
         }

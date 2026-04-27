@@ -63,7 +63,7 @@ class SessionExpirationServiceTest extends TestCase
                 'started_at' => now()->subHours(13)->timestamp,
                 'last_activity' => now()->subHours(13)->timestamp,
             ],
-            minutes: 60
+            minutes: 60,
         );
 
         // Now expired
@@ -86,7 +86,7 @@ class SessionExpirationServiceTest extends TestCase
                 'started_at' => now()->subHours(23)->timestamp,
                 'last_activity' => now()->subHours(23)->timestamp,
             ],
-            minutes: 60
+            minutes: 60,
         );
 
         // Not expired yet
@@ -100,7 +100,7 @@ class SessionExpirationServiceTest extends TestCase
                 'started_at' => now()->subHours(25)->timestamp,
                 'last_activity' => now()->subHours(25)->timestamp,
             ],
-            minutes: 60
+            minutes: 60,
         );
 
         // Now expired
@@ -123,7 +123,7 @@ class SessionExpirationServiceTest extends TestCase
                 'started_at' => now()->subHours(12)->timestamp,
                 'last_activity' => now()->subMinutes(5)->timestamp,
             ],
-            minutes: 60
+            minutes: 60,
         );
 
         $remaining = $this->service->getRemainingMinutes($user);

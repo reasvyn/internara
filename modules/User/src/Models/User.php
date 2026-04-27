@@ -111,7 +111,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn (string $word) => Str::substr($word, 0, 1))
+            ->map(fn(string $word) => Str::substr($word, 0, 1))
             ->implode('');
     }
 
@@ -127,7 +127,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
             return true;
         }
 
-        return ! is_null($this->email_verified_at);
+        return !is_null($this->email_verified_at);
     }
 
     /**
@@ -135,7 +135,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
      */
     public function sendEmailVerificationNotification(): void
     {
-        if (! is_null($this->email)) {
+        if (!is_null($this->email)) {
             parent::sendEmailVerificationNotification();
         }
     }
@@ -242,7 +242,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     ): AccountStatusHistory {
         $currentStatus = $this->getStatus();
 
-        if ($currentStatus && ! $currentStatus->canTransitionTo($newStatus)) {
+        if ($currentStatus && !$currentStatus->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException(
                 "Cannot transition from {$currentStatus->value} to {$newStatus->value}",
             );

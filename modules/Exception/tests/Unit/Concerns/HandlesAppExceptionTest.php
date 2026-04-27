@@ -29,7 +29,7 @@ class TestExceptionClass
 }
 
 test('it identifies AppException', function () {
-    $class = new TestExceptionClass;
+    $class = new TestExceptionClass();
     $e = new AppException('test');
 
     expect($class->callIsAppException($e))
@@ -39,14 +39,14 @@ test('it identifies AppException', function () {
 });
 
 test('it creates new AppException', function () {
-    $class = new TestExceptionClass;
+    $class = new TestExceptionClass();
     $e = $class->callNewAppException('test::msg');
 
     expect($e)->toBeInstanceOf(AppException::class);
 });
 
 test('it handles AppException in JSON request', function () {
-    $class = new TestExceptionClass;
+    $class = new TestExceptionClass();
     $e = new AppException('User message', code: 403);
 
     $request = mock(Request::class);
@@ -63,7 +63,7 @@ test('it handles AppException in JSON request', function () {
 
 test('it handles generic exception in JSON request', function () {
     config(['app.debug' => false]);
-    $class = new TestExceptionClass;
+    $class = new TestExceptionClass();
     $e = new \Exception('Internal error');
 
     $request = mock(Request::class);

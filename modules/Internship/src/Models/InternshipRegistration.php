@@ -87,11 +87,7 @@ class InternshipRegistration extends Model
      */
     public function user(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'student_id',
-            relation: 'user',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'student_id', relation: 'user');
     }
 
     /**
@@ -99,11 +95,7 @@ class InternshipRegistration extends Model
      */
     public function teacher(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'teacher_id',
-            relation: 'teacher',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'teacher_id', relation: 'teacher');
     }
 
     /**
@@ -111,11 +103,7 @@ class InternshipRegistration extends Model
      */
     public function mentor(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'mentor_id',
-            relation: 'mentor',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'mentor_id', relation: 'mentor');
     }
 
     /**

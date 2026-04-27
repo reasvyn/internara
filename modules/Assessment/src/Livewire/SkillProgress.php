@@ -16,10 +16,8 @@ class SkillProgress extends Component
 
     public function mount(CompetencyService $service, ?string $registrationId = null)
     {
-        if (! $registrationId) {
-            $registration = app(
-                RegistrationService::class,
-            )->first([
+        if (!$registrationId) {
+            $registration = app(RegistrationService::class)->first([
                 'student_id' => auth()->id(),
                 'latest_status' => 'active',
             ]);

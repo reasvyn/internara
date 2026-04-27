@@ -48,7 +48,8 @@ class ReportServiceProvider extends ServiceProvider
     {
         return [
             ReportGenerator::class => ReportService::class,
-            \Modules\Report\Services\Contracts\GeneratedReportService::class => GeneratedReportService::class,
+            \Modules\Report\Services\Contracts\GeneratedReportService::class =>
+                GeneratedReportService::class,
         ];
     }
 

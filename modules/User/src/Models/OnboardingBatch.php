@@ -36,14 +36,7 @@ class OnboardingBatch extends Model
 
     public const TYPE_MENTOR = 'mentor';
 
-    protected $fillable = [
-        'name',
-        'type',
-        'status',
-        'notes',
-        'issued_at',
-        'created_by',
-    ];
+    protected $fillable = ['name', 'type', 'status', 'notes', 'issued_at', 'created_by'];
 
     protected function casts(): array
     {
@@ -72,7 +65,7 @@ class OnboardingBatch extends Model
     public function claimedCount(): int
     {
         return $this->users()
-            ->whereHas('accountTokens', fn ($q) => $q->whereNotNull('claimed_at'))
+            ->whereHas('accountTokens', fn($q) => $q->whereNotNull('claimed_at'))
             ->count();
     }
 

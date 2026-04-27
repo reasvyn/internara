@@ -6,6 +6,7 @@ namespace Modules\User\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Password;
@@ -48,20 +49,30 @@ class UserService extends EloquentQuery implements Contract
         return Cache::remember('user.stats', now()->addMinutes(10), function () {
             $roleCounts = DB::table('model_has_roles')
                 ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                ->whereIn('roles.name', [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value])
+                ->whereIn('roles.name', [
+                    Role::STUDENT->value,
+                    Role::TEACHER->value,
+                    Role::MENTOR->value,
+                ])
                 ->select('roles.name', DB::raw('count(*) as total'))
                 ->groupBy('roles.name')
                 ->pluck('total', 'name');
 
-            $activeCount = $this->model->newQuery()->whereHas('statuses', function ($q) {
-                $q->where('name', User::STATUS_ACTIVE)
-                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
-            })->count();
+            $activeCount = $this->model
+                ->newQuery()
+                ->whereHas('statuses', function ($q) {
+                    $q->where('name', User::STATUS_ACTIVE)->whereRaw(
+                        'created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)',
+                    );
+                })
+                ->count();
 
             return [
                 'total' => $this->count(),
                 'students' => $roleCounts[Role::STUDENT->value] ?? 0,
-                'staff' => ($roleCounts[Role::TEACHER->value] ?? 0) + ($roleCounts[Role::MENTOR->value] ?? 0),
+                'staff' =>
+                    ($roleCounts[Role::TEACHER->value] ?? 0) +
+                    ($roleCounts[Role::MENTOR->value] ?? 0),
                 'active' => $activeCount,
             ];
         });
@@ -94,17 +105,18 @@ class UserService extends EloquentQuery implements Contract
      */
     public function createWithProfile(array $userData, array $profileData = []): User
     {
-        return DB::transaction(function () use (
-            $userData,
-            $profileData,
-        ) {
+        return DB::transaction(function () use ($userData, $profileData) {
             $roles = Arr::wrap($userData['roles'] ?? [Role::STUDENT->value]);
-            $isPrivilegedRole = count(array_intersect($roles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
+            $isPrivilegedRole =
+                count(array_intersect($roles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
             $status = $isPrivilegedRole
                 ? Status::VERIFIED->value
-                : ($userData['status'] ?? User::STATUS_ACTIVE);
+                : $userData['status'] ?? User::STATUS_ACTIVE;
 
-            if (in_array(Role::SUPER_ADMIN->value, $roles, true) && setting('app_installed', false)) {
+            if (
+                in_array(Role::SUPER_ADMIN->value, $roles, true) &&
+                setting('app_installed', false)
+            ) {
                 throw new AppException(
                     userMessage: 'user::exceptions.super_admin_readonly',
                     code: Response::HTTP_FORBIDDEN,
@@ -114,7 +126,7 @@ class UserService extends EloquentQuery implements Contract
             $userData['password'] = $userData['password'] ?? Str::password(32);
 
             // Enforce hierarchical authority for user creation, except during initial setup
-            if (setting('app_installed', false) && ! $this->skipAuthorization) {
+            if (setting('app_installed', false) && !$this->skipAuthorization) {
                 Gate::authorize('create', [User::class, $roles]);
             }
 
@@ -149,17 +161,18 @@ class UserService extends EloquentQuery implements Contract
             }
 
             // UNIFIED: Initialize & Update Profile for ALL user types
-            if (! empty($profileData)) {
-                $profileService = (! setting('app_installed', false) || $this->skipAuthorization || auth()->guest())
-                    ? $this->profileService->withoutAuthorization()
-                    : $this->profileService;
+            if (!empty($profileData)) {
+                $profileService =
+                    !setting('app_installed', false) || $this->skipAuthorization || auth()->guest()
+                        ? $this->profileService->withoutAuthorization()
+                        : $this->profileService;
 
                 $profileService->upsertManagedProfile($user->id, $profileData);
             }
 
             $this->skipAuthorization = false;
 
-            $user->notify(new WelcomeUserNotification);
+            $user->notify(new WelcomeUserNotification());
 
             Cache::forget('user.stats');
 
@@ -190,15 +203,15 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
-                module: 'User'
+                module: 'User',
             );
         }
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -228,15 +241,15 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
-                module: 'User'
+                module: 'User',
             );
         }
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -260,7 +273,10 @@ class UserService extends EloquentQuery implements Contract
 
         // Update basic User details
         if ($roles !== null) {
-            if (in_array(Role::SUPER_ADMIN->value, Arr::wrap($roles), true) && ! $user->hasRole(Role::SUPER_ADMIN->value)) {
+            if (
+                in_array(Role::SUPER_ADMIN->value, Arr::wrap($roles), true) &&
+                !$user->hasRole(Role::SUPER_ADMIN->value)
+            ) {
                 throw new AppException(
                     userMessage: 'user::exceptions.super_admin_readonly',
                     code: Response::HTTP_FORBIDDEN,
@@ -272,7 +288,10 @@ class UserService extends EloquentQuery implements Contract
         }
 
         $effectiveRoles = Arr::wrap($roles ?? $updatedUser->roles()->pluck('name')->all());
-        $isPrivilegedRole = count(array_intersect($effectiveRoles, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) > 0;
+        $isPrivilegedRole =
+            count(
+                array_intersect($effectiveRoles, [Role::SUPER_ADMIN->value, Role::ADMIN->value]),
+            ) > 0;
 
         if ($status !== null) {
             $updatedUser->setStatus($isPrivilegedRole ? Status::VERIFIED->value : $status);
@@ -287,7 +306,9 @@ class UserService extends EloquentQuery implements Contract
         }
 
         if ($profileData !== []) {
-            $profileService = $this->skipAuthorization ? $this->profileService->withoutAuthorization() : $this->profileService;
+            $profileService = $this->skipAuthorization
+                ? $this->profileService->withoutAuthorization()
+                : $this->profileService;
             $profileService->upsertManagedProfile($updatedUser->id, $profileData);
         }
 
@@ -300,15 +321,15 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
-                module: 'User'
+                module: 'User',
             );
         }
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -348,15 +369,15 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (! $user) {
+        if (!$user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
-                module: 'User'
+                module: 'User',
             );
         }
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('delete', $user);
         }
 
@@ -389,7 +410,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($userId);
 
-        if (! $user) {
+        if (!$user) {
             return false;
         }
 

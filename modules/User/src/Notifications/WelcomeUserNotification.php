@@ -37,12 +37,14 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
             'email' => $notifiable->email,
         ]);
 
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('user::notifications.welcome_subject', ['school' => $brandName]))
             ->greeting(__('user::notifications.welcome_greeting', ['name' => $notifiable->name]))
             ->line(__('user::notifications.welcome_line_1', ['school' => $brandName]))
             ->line(__('user::notifications.welcome_credentials_info'))
-            ->line(__('user::notifications.welcome_username', ['username' => $notifiable->username]))
+            ->line(
+                __('user::notifications.welcome_username', ['username' => $notifiable->username]),
+            )
             ->line(__('user::notifications.welcome_line_2'))
             ->action(__('user::notifications.welcome_action'), $setupUrl)
             ->line(__('user::notifications.welcome_line_3'))
@@ -61,7 +63,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
                 'school' => setting('brand_name', setting('app_name')),
             ]),
             'action_url' => route('forgot-password'),
-            'sender_name' => setting('brand_name', setting('app_name')).' Team',
+            'sender_name' => setting('brand_name', setting('app_name')) . ' Team',
         ];
     }
 }

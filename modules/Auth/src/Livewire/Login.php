@@ -11,7 +11,6 @@ use Livewire\Component;
 use Modules\Auth\Services\Contracts\AuthService;
 use Modules\Auth\Services\Contracts\RedirectService;
 use Modules\Exception\AppException;
-use Modules\Shared\Rules\Turnstile;
 
 /**
  * Livewire component for handling user login.
@@ -33,11 +32,6 @@ class Login extends Component
     public string $password = '';
 
     /**
-     * The captcha response token.
-     */
-    public string $captcha_token = '';
-
-    /**
      * Indicates whether the user should be remembered.
      */
     public bool $remember = false;
@@ -57,10 +51,6 @@ class Login extends Component
             ],
             'password' => 'required|string',
         ];
-
-        if (config('services.cloudflare.turnstile.site_key')) {
-            $rules['captcha_token'] = ['required', new Turnstile];
-        }
 
         return $rules;
     }
@@ -96,7 +86,10 @@ class Login extends Component
         $throttleKey = $this->throttleKey();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('identifier', __('auth::ui.login.form.rate_limited', ['seconds' => $seconds]));
+            $this->addError(
+                'identifier',
+                __('auth::ui.login.form.rate_limited', ['seconds' => $seconds]),
+            );
 
             // [S2 - Sustain] Audit Log for Brute Force Attempt
             activity('security')
@@ -136,7 +129,7 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->identifier).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->identifier) . '|' . request()->ip());
     }
 
     /**

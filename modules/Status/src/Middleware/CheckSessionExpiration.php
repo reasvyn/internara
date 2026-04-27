@@ -12,9 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckSessionExpiration
 {
-    public function __construct(
-        private SessionExpirationService $sessionExpiration,
-    ) {}
+    public function __construct(private SessionExpirationService $sessionExpiration) {}
 
     /**
      * Handle an incoming request.
@@ -23,14 +21,14 @@ class CheckSessionExpiration
     public function handle(Request $request, Closure $next): Response
     {
         // Only check for authenticated admin/super_admin users
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             return $next($request);
         }
 
         $user = Auth::user();
 
         // Only apply to admin roles (security-focused)
-        if (! \in_array($user->role, ['super_admin', 'admin'], true)) {
+        if (!\in_array($user->role, ['super_admin', 'admin'], true)) {
             return $next($request);
         }
 
@@ -42,8 +40,10 @@ class CheckSessionExpiration
             $request->getSession()->invalidate();
             $request->getSession()->regenerateToken();
 
-            return redirect('/login')
-                ->with('error', 'Sesi Anda telah berakhir. Silakan login kembali untuk melanjutkan.');
+            return redirect('/login')->with(
+                'error',
+                'Sesi Anda telah berakhir. Silakan login kembali untuk melanjutkan.',
+            );
         }
 
         // Update last activity
@@ -51,7 +51,13 @@ class CheckSessionExpiration
 
         // Add session expiration info to response headers for JS to show warning
         return $next($request)
-            ->header('X-Session-Expires-In', (string) $this->sessionExpiration->getRemainingMinutes($sessionId))
-            ->header('X-Session-Approaching-Expiration', $this->sessionExpiration->isApproachingExpiration($sessionId) ? 'true' : 'false');
+            ->header(
+                'X-Session-Expires-In',
+                (string) $this->sessionExpiration->getRemainingMinutes($sessionId),
+            )
+            ->header(
+                'X-Session-Approaching-Expiration',
+                $this->sessionExpiration->isApproachingExpiration($sessionId) ? 'true' : 'false',
+            );
     }
 }

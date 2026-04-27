@@ -62,9 +62,17 @@ class RequirementManager extends RecordManager
         return [
             ['key' => 'name', 'label' => __('internship::ui.requirement_name'), 'sortable' => true],
             ['key' => 'type', 'label' => __('internship::ui.requirement_type')],
-            ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory'), 'sortable' => true],
+            [
+                'key' => 'is_mandatory',
+                'label' => __('internship::ui.mandatory'),
+                'sortable' => true,
+            ],
             ['key' => 'is_active', 'label' => __('internship::ui.active')],
-            ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
+            [
+                'key' => 'academic_year',
+                'label' => __('internship::ui.academic_year'),
+                'sortable' => true,
+            ],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
@@ -85,7 +93,10 @@ class RequirementManager extends RecordManager
         $this->form->reset();
 
         // Standard Auto-fills
-        $this->form->academic_year = (string) setting('active_academic_year', date('Y').'/'.(date('Y') + 1));
+        $this->form->academic_year = (string) setting(
+            'active_academic_year',
+            date('Y') . '/' . (date('Y') + 1),
+        );
         $this->form->is_active = true;
 
         $this->toggleModal(self::MODAL_FORM, true);
@@ -106,10 +117,7 @@ class RequirementManager extends RecordManager
      */
     public function activeFilterCount(): int
     {
-        return count(array_filter(
-            $this->filters,
-            fn ($v) => $v !== null && $v !== '' && $v !== [],
-        ));
+        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     /**

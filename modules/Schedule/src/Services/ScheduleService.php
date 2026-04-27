@@ -29,13 +29,9 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
     /**
      * {@inheritdoc}
      */
-    public function getStudentTimeline(
-        string $studentId,
-        int $perPage = 15,
-    ): LengthAwarePaginator {
-        $registrationService = app(
-            RegistrationService::class,
-        );
+    public function getStudentTimeline(string $studentId, int $perPage = 15): LengthAwarePaginator
+    {
+        $registrationService = app(RegistrationService::class);
         $registration = $registrationService->first(['student_id' => $studentId]);
 
         $query = $this->query()->orderBy('start_at', 'asc');

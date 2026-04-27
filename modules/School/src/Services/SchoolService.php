@@ -32,11 +32,8 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     /**
      * Retrieve schools based on conditions.
      */
-    public function get(
-        array $filters = [],
-        array $columns = ['*'],
-        array $with = [],
-    ): Collection {
+    public function get(array $filters = [], array $columns = ['*'], array $with = []): Collection
+    {
         return parent::get($filters, $columns, $with);
     }
 
@@ -53,7 +50,10 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
      */
     public function create(array $data): School
     {
-        if (isset($data['institutional_code']) && strlen((string) $data['institutional_code']) < 3) {
+        if (
+            isset($data['institutional_code']) &&
+            strlen((string) $data['institutional_code']) < 3
+        ) {
             throw new AppException(
                 userMessage: 'school::exceptions.invalid_institutional_code',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -106,10 +106,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
     public function save(array $attributes, array $values = []): School
     {
         return DB::transaction(function () use ($attributes, $values) {
-            $isSetupAuthorized =
-                session(
-                    AppSetupService::SESSION_SETUP_AUTHORIZED,
-                ) === true;
+            $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
             $data = array_merge($attributes, $values);
             $schoolId = $data['id'] ?? $this->model->newQuery()->first(['id'])?->id;
             unset($data['id']);

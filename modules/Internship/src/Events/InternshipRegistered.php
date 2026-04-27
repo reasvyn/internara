@@ -19,7 +19,5 @@ class InternshipRegistered
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        public string $registrationId,
-    ) {}
+    public function __construct(public string $registrationId) {}
 }

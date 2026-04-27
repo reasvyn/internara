@@ -1,12 +1,14 @@
 # 🧪 Testing Guide
 
-Comprehensive guide to Internara's **Domain-Driven Design (DDD) Modular** testing practices, framework (Pest), and quality assurance.
+Comprehensive guide to Internara's **Domain-Driven Design (DDD) Modular** testing practices,
+framework (Pest), and quality assurance.
 
 ---
 
 ## Overview
 
-Internara requires **90%+ code coverage** and follows a **DDD-centric approach**. Tests are used to validate the integrity of the domain model and ensure business invariants are strictly enforced.
+Internara requires **90%+ code coverage** and follows a **DDD-centric approach**. Tests are used to
+validate the integrity of the domain model and ensure business invariants are strictly enforced.
 
 ```
 Domain-Driven Design (DDD) Testing Workflow
@@ -21,7 +23,8 @@ Domain-Driven Design (DDD) Testing Workflow
 
 ## Testing Framework: Pest
 
-**Pest** is a modern testing framework for PHP, built on top of PHPUnit. It's more readable and enjoyable than traditional PHPUnit.
+**Pest** is a modern testing framework for PHP, built on top of PHPUnit. It's more readable and
+enjoyable than traditional PHPUnit.
 
 ### Why Pest?
 
@@ -59,7 +62,8 @@ it('finds a student by email', function () {
 
 ## Test Pyramid
 
-Internara follows the **test pyramid** principle: many unit tests, fewer feature tests, minimal UI tests.
+Internara follows the **test pyramid** principle: many unit tests, fewer feature tests, minimal UI
+tests.
 
 ```
        /\
@@ -76,18 +80,21 @@ Internara follows the **test pyramid** principle: many unit tests, fewer feature
 ### Test Pyramid Explained
 
 **Unit Tests (Bottom) — Fast, many**
+
 - Test individual functions/methods
 - No database, no external calls
 - 1-5ms per test
 - Example: `StudentServiceTest`
 
 **Feature Tests (Middle) — Moderate**
+
 - Test business workflows
 - Use in-memory SQLite database
 - Include HTTP requests and job queues
 - Example: `StudentRegistrationTest`
 
 **Browser Tests (Top) — Slow, few**
+
 - Test user interactions
 - Use headless Chrome (Dusk)
 - Slow (0.5-2 seconds per test)
@@ -111,13 +118,13 @@ Internara has four test suites defined in `phpunit.xml`:
 **Purpose**: Test business logic in isolation
 
 **Example**:
+
 ```php
 // tests/Unit/Services/StudentServiceTest.php
 it('validates required fields', function () {
     $service = app(StudentService::class);
-    
-    expect(fn () => $service->create([]))
-        ->toThrow(ValidationException::class);
+
+    expect(fn() => $service->create([]))->toThrow(ValidationException::class);
 });
 
 it('generates UUID on creation', function () {
@@ -126,7 +133,7 @@ it('generates UUID on creation', function () {
         'name' => 'John Doe',
         'email' => 'john@example.com',
     ]);
-    
+
     expect($student->id)->toBeUuid();
 });
 ```
@@ -143,31 +150,32 @@ it('generates UUID on creation', function () {
 **Purpose**: Test complete workflows, including database and APIs
 
 **Example**:
+
 ```php
 // tests/Feature/StudentRegistrationTest.php
 it('allows students to register for internship', function () {
     $school = School::factory()->create();
     $internship = Internship::factory()->for($school)->create();
-    
+
     $response = $this->post(route('internship.register'), [
         'internship_id' => $internship->id,
         'email' => 'student@example.com',
         'name' => 'John Doe',
     ]);
-    
+
     expect($response)->toRedirect();
     expect(Registration::where('internship_id', $internship->id)->count())->toBe(1);
 });
 
 it('prevents duplicate registrations', function () {
     $registration = Registration::factory()->create();
-    
+
     $response = $this->post(route('internship.register'), [
         'internship_id' => $registration->internship_id,
         'email' => $registration->user->email,
         'name' => $registration->user->profile->name,
     ]);
-    
+
     expect($response)->toHaveValidationErrors('email');
 });
 ```
@@ -184,6 +192,7 @@ it('prevents duplicate registrations', function () {
 **Purpose**: Enforce architectural rules (no circular dependencies, no model imports, etc.)
 
 **Example**:
+
 ```php
 // tests/Arch/DependencyTest.php
 it('has no circular dependencies', function () {
@@ -223,18 +232,20 @@ it('no hardcoded strings in views', function () {
 **Purpose**: Test UI interactions with actual browser (Dusk)
 
 **Example**:
+
 ```php
 // tests/Browser/StudentDashboardTest.php
 it('allows student to view dashboard', function () {
     $user = User::factory()->student()->create();
-    
+
     $this->browse(function (Browser $browser) use ($user) {
-        $browser->loginAs($user)
-                ->visit('/dashboard')
-                ->assertSee('Welcome')
-                ->assertSee('My Internship')
-                ->click('@start-journal')
-                ->assertPathIs('/journal/create');
+        $browser
+            ->loginAs($user)
+            ->visit('/dashboard')
+            ->assertSee('Welcome')
+            ->assertSee('My Internship')
+            ->click('@start-journal')
+            ->assertPathIs('/journal/create');
     });
 });
 ```
@@ -300,7 +311,6 @@ Then open `coverage/index.html` in browser.
 ```php
 // tests/Unit/Services/StudentServiceTest.php
 <?php
-
 declare(strict_types=1);
 
 use Modules\Student\Models\Student;
@@ -311,16 +321,16 @@ describe('StudentService', function () {
     describe('findByEmail', function () {
         it('returns student when found', function () {
             $student = Student::factory()->create(['email' => 'john@example.com']);
-            
+
             $found = app(StudentService::class)->findByEmail('john@example.com');
-            
+
             expect($found)->not->toBeNull();
             expect($found->id)->toBe($student->id);
         });
 
         it('returns null when not found', function () {
             $found = app(StudentService::class)->findByEmail('nonexistent@example.com');
-            
+
             expect($found)->toBeNull();
         });
     });
@@ -328,13 +338,13 @@ describe('StudentService', function () {
     describe('create', function () {
         it('creates student with valid data', function () {
             $service = app(StudentService::class);
-            
+
             $student = $service->create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'nis' => '123456789',
             ]);
-            
+
             expect($student)->toBeInstanceOf(Student::class);
             expect($student->id)->toBeUuid();
             expect(Student::find($student->id))->not->toBeNull();
@@ -342,14 +352,17 @@ describe('StudentService', function () {
 
         it('fails with invalid email', function () {
             $service = app(StudentService::class);
-            
-            expect(fn () => $service->create([
-                'name' => 'John Doe',
-                'email' => 'invalid-email',
-            ]))->toThrow(ValidationException::class);
+
+            expect(
+                fn() => $service->create([
+                    'name' => 'John Doe',
+                    'email' => 'invalid-email',
+                ]),
+            )->toThrow(ValidationException::class);
         });
     });
 });
+
 ```
 
 ### Best Practices
@@ -367,9 +380,9 @@ it('calls database query', function () {
 // ✅ GOOD - Testing behavior
 it('returns student by email', function () {
     $student = Student::factory()->create(['email' => 'john@example.com']);
-    
+
     $found = app(StudentService::class)->findByEmail('john@example.com');
-    
+
     expect($found->id)->toBe($student->id);
 });
 ```
@@ -420,9 +433,9 @@ class StudentFactory extends Factory
 // Use in tests
 it('lists students', function () {
     $students = Student::factory(10)->create();
-    
+
     $response = $this->get(route('student.index'));
-    
+
     expect($response->viewData('students')->count())->toBe(10);
 });
 ```
@@ -431,22 +444,22 @@ it('lists students', function () {
 
 ```php
 it('handles empty input', function () {
-    expect(fn () => app(StudentService::class)->create([]))
-        ->toThrow(ValidationException::class);
+    expect(fn() => app(StudentService::class)->create([]))->toThrow(ValidationException::class);
 });
 
 it('handles null input', function () {
-    expect(fn () => app(StudentService::class)->findByEmail(null))
-        ->toThrow(TypeError::class);
+    expect(fn() => app(StudentService::class)->findByEmail(null))->toThrow(TypeError::class);
 });
 
 it('handles very long strings', function () {
     $longName = str_repeat('a', 1000);
-    
-    expect(fn () => app(StudentService::class)->create([
-        'name' => $longName,
-        'email' => 'test@example.com',
-    ]))->toThrow(ValidationException::class);
+
+    expect(
+        fn() => app(StudentService::class)->create([
+            'name' => $longName,
+            'email' => 'test@example.com',
+        ]),
+    )->toThrow(ValidationException::class);
 });
 ```
 
@@ -455,10 +468,10 @@ it('handles very long strings', function () {
 ```php
 it('sends welcome email on registration', function () {
     Mail::fake();
-    
+
     $student = Student::factory()->create();
     event(new StudentCreated($student));
-    
+
     Mail::assertSent(WelcomeEmail::class, function (WelcomeEmail $mail) use ($student) {
         return $mail->student->id === $student->id;
     });
@@ -533,7 +546,7 @@ use Modules\Student\Livewire\StudentManager;
 
 it('displays students in table', function () {
     $students = Student::factory(5)->create();
-    
+
     Livewire::test(StudentManager::class)
         ->assertSee($students[0]->name)
         ->assertSee($students[4]->name);
@@ -542,7 +555,7 @@ it('displays students in table', function () {
 it('searches students', function () {
     Student::factory(5)->create();
     $john = Student::factory()->create(['name' => 'John Doe']);
-    
+
     Livewire::test(StudentManager::class)
         ->set('search', 'John')
         ->assertSee('John Doe')
@@ -553,7 +566,7 @@ it('sorts by column', function () {
     Student::factory()->create(['name' => 'Zoe']);
     Student::factory()->create(['name' => 'Alice']);
     Student::factory()->create(['name' => 'Bob']);
-    
+
     Livewire::test(StudentManager::class)
         ->set('sortBy', 'name')
         ->set('sortDirection', 'asc')
@@ -570,7 +583,7 @@ it('creates student from form', function () {
         ])
         ->call('saveRecord')
         ->assertDispatchedBrowserEvent('record-saved');
-    
+
     expect(Student::where('email', 'john@example.com')->exists())->toBeTrue();
 });
 ```
@@ -586,7 +599,7 @@ it('creates student from form', function () {
 it('student can view own profile', function () {
     $student = Student::factory()->create();
     $policy = new StudentPolicy();
-    
+
     expect($policy->view($student, $student))->toBeTrue();
 });
 
@@ -594,7 +607,7 @@ it('student cannot view other profiles', function () {
     $student = Student::factory()->create();
     $other = Student::factory()->create();
     $policy = new StudentPolicy();
-    
+
     expect($policy->view($student, $other))->toBeFalse();
 });
 
@@ -602,7 +615,7 @@ it('admin can view all profiles', function () {
     $admin = User::factory()->admin()->create();
     $student = Student::factory()->create();
     $policy = new StudentPolicy();
-    
+
     expect($policy->view($admin, $student))->toBeTrue();
 });
 ```
@@ -617,25 +630,25 @@ it('admin can view all profiles', function () {
 // tests/Feature/StudentApiTest.php
 it('returns student list', function () {
     $students = Student::factory(3)->create();
-    
+
     $response = $this->get(route('api.students.index'));
-    
+
     expect($response->status())->toBe(200);
     expect($response->json('data'))->toHaveCount(3);
 });
 
 it('requires authentication', function () {
     $response = $this->post(route('student.create'));
-    
+
     expect($response->status())->toBe(401);
 });
 
 it('validates email format', function () {
     $response = $this->post(route('student.create'), [
         'name' => 'John',
-        'email' => 'invalid-email',  // Invalid format
+        'email' => 'invalid-email', // Invalid format
     ]);
-    
+
     expect($response)->toHaveValidationErrors('email');
 });
 ```
@@ -684,7 +697,7 @@ Tests run automatically on GitHub Actions:
 # .github/workflows/tests.yml
 - name: Run tests
   run: composer test
-  
+
 - name: Upload coverage
   run: codecov
 ```
@@ -702,12 +715,13 @@ it('creates student', function () {
     ray('Creating student...');
     $student = Student::factory()->create();
     ray($student->toArray());
-    
+
     expect($student->id)->toBeUuid();
 });
 ```
 
 Run with output:
+
 ```bash
 composer test -- --display-deprecations
 ```
@@ -746,6 +760,7 @@ Traditional Test Runner (PHPUnit/Pest)
 ```
 
 This causes:
+
 - Memory exhaustion (fatal errors)
 - Slow test execution (garbage collection thrashing)
 - CI/CD failures on resource-constrained environments
@@ -753,22 +768,23 @@ This causes:
 
 ### The Solution: AppTest (Isolated Process Testing)
 
-**AppTest** (`php artisan app:test`) is an advanced test orchestrator that runs test segments in **isolated processes**, preventing memory accumulation.
+**AppTest** (`php artisan app:test`) is an advanced test orchestrator that runs test segments in
+**isolated processes**, preventing memory accumulation.
 
 ```
 AppTest with Isolated Processes
 ┌──────────────────────────────────────────┐
-│ Segment 1 (Module 1: Arch)               │ 
+│ Segment 1 (Module 1: Arch)               │
 │ ├─ Start fresh process: 50 MB            │
 │ ├─ Run tests                             │
 │ └─ Exit process (memory freed) ✓        │
 └──────────────────────────────────────────┘
-│ Segment 2 (Module 1: Unit)               │ 
+│ Segment 2 (Module 1: Unit)               │
 │ ├─ Start fresh process: 50 MB            │
 │ ├─ Run tests                             │
 │ └─ Exit process (memory freed) ✓        │
 └──────────────────────────────────────────┘
-│ Segment 3 (Module 2: Arch)               │ 
+│ Segment 3 (Module 2: Arch)               │
 │ ├─ Start fresh process: 50 MB            │
 │ ├─ Run tests                             │
 │ └─ Exit process (memory freed) ✓        │
@@ -848,12 +864,14 @@ php artisan app:test --clear-sessions
 ### Performance Example
 
 **Before AppTest** (Traditional approach):
+
 ```
 Running all tests: 6 minutes 45 seconds
 Memory usage: Peak 1.2 GB (failures due to exhaustion)
 ```
 
 **After AppTest** (Isolated processes):
+
 ```
 Running all tests: 4 minutes 12 seconds
 Memory usage: Constant 70-80 MB (no accumulation)
@@ -864,11 +882,13 @@ Memory usage: Constant 70-80 MB (no accumulation)
 ### Key Features
 
 **1. Memory Isolation**
+
 - Each test segment runs in its own process
 - Memory freed when process exits
 - No memory leaks or accumulation
 
 **2. Intelligent Segmentation**
+
 ```
 Modules: 29+
 Test Suites per Module: 4 (Arch, Unit, Feature, Browser)
@@ -877,6 +897,7 @@ Parallel Capable: Yes
 ```
 
 **3. Resumable Sessions**
+
 ```bash
 # Session interrupted at segment 47/116?
 php artisan app:test --continue
@@ -886,6 +907,7 @@ php artisan app:test --continue
 ```
 
 **4. Automatic PCOV/JIT Management**
+
 ```bash
 php artisan app:test --coverage
 
@@ -897,6 +919,7 @@ php artisan app:test --coverage
 ```
 
 **5. Progress Tracking**
+
 ```
 Segment (47/116): Student > Unit
   ✓ PASS (12.34s)
@@ -911,6 +934,7 @@ Segment (49/116): Internship > Arch
 ### Real-World Examples
 
 **Development Workflow** — Run tests for modules you changed:
+
 ```bash
 # Test only modules with uncommitted changes
 php artisan app:test --dirty
@@ -920,6 +944,7 @@ php artisan app:test Student Internship Journal
 ```
 
 **CI/CD Pipeline** — Full suite with coverage:
+
 ```bash
 # Run all tests, generate coverage, stop on failure
 php artisan app:test --coverage --stop-on-failure
@@ -929,6 +954,7 @@ php artisan app:test --continue
 ```
 
 **Performance Benchmarking** — Profile module performance:
+
 ```bash
 # List all test segments (see timing)
 php artisan app:test --list
@@ -938,6 +964,7 @@ php artisan app:test --report
 ```
 
 **Debugging** — Run tests for one module with filters:
+
 ```bash
 # Test only StudentService
 php artisan app:test Student --filter="StudentService"
@@ -955,12 +982,12 @@ php artisan app:test Student --stop-on-failure
 $process = new Process([
     PHP_BINARY,
     'vendor/bin/pest',
-    $testPath,      // e.g., modules/Student/tests/Unit
-    '--parallel',   // Optional
+    $testPath, // e.g., modules/Student/tests/Unit
+    '--parallel', // Optional
 ]);
 
-$process->setTimeout(1200);  // 20 minute timeout
-$process->run();             // Execute in isolated process
+$process->setTimeout(1200); // 20 minute timeout
+$process->run(); // Execute in isolated process
 
 // When process exits:
 // - All loaded classes unloaded
@@ -972,15 +999,15 @@ $process->run();             // Execute in isolated process
 
 ### When to Use AppTest vs. Standard Composer Test
 
-| Scenario | Tool | Reason |
-| :--- | :--- | :--- |
-| Development (1-2 modules) | `composer test` | Fast feedback, simple |
-| Full suite testing | `php artisan app:test` | Memory safe, scalable |
-| CI/CD pipelines | `php artisan app:test` | Reliable, no memory spikes |
-| Debugging one test | `composer test -- --filter=X` | Direct output, easy |
-| Checking specific module | `php artisan app:test Module` | Isolated, memory-safe |
-| Resumable test runs | `php artisan app:test --continue` | Session persistence |
-| Coverage generation | `php artisan app:test --coverage` | Automatic PCOV setup |
+| Scenario                  | Tool                              | Reason                     |
+| :------------------------ | :-------------------------------- | :------------------------- |
+| Development (1-2 modules) | `composer test`                   | Fast feedback, simple      |
+| Full suite testing        | `php artisan app:test`            | Memory safe, scalable      |
+| CI/CD pipelines           | `php artisan app:test`            | Reliable, no memory spikes |
+| Debugging one test        | `composer test -- --filter=X`     | Direct output, easy        |
+| Checking specific module  | `php artisan app:test Module`     | Isolated, memory-safe      |
+| Resumable test runs       | `php artisan app:test --continue` | Session persistence        |
+| Coverage generation       | `php artisan app:test --coverage` | Automatic PCOV setup       |
 
 ### Troubleshooting AppTest
 
@@ -1018,21 +1045,21 @@ lsof -p $(pgrep php) | wc -l
 
 ## Quick Reference
 
-| Task | Command |
-| :--- | :--- |
-| Run all tests (memory-safe) | `php artisan app:test` |
-| Run all tests (traditional) | `composer test` |
-| Run specific modules | `php artisan app:test Student Internship` |
-| List test segments | `php artisan app:test --list` |
-| Run with coverage | `php artisan app:test --coverage` |
-| Resume interrupted session | `php artisan app:test --continue` |
-| View session report | `php artisan app:test --report` |
-| Clean up sessions | `php artisan app:test --clear-sessions` |
-| Run only unit tests | `php artisan app:test --unit-only` |
-| Stop on first failure | `php artisan app:test --stop-on-failure` |
-| Run in parallel | `php artisan app:test --parallel` |
-| Filter by name | `php artisan app:test --filter="StudentService"` |
-| Git-aware testing | `php artisan app:test --dirty` |
+| Task                        | Command                                          |
+| :-------------------------- | :----------------------------------------------- |
+| Run all tests (memory-safe) | `php artisan app:test`                           |
+| Run all tests (traditional) | `composer test`                                  |
+| Run specific modules        | `php artisan app:test Student Internship`        |
+| List test segments          | `php artisan app:test --list`                    |
+| Run with coverage           | `php artisan app:test --coverage`                |
+| Resume interrupted session  | `php artisan app:test --continue`                |
+| View session report         | `php artisan app:test --report`                  |
+| Clean up sessions           | `php artisan app:test --clear-sessions`          |
+| Run only unit tests         | `php artisan app:test --unit-only`               |
+| Stop on first failure       | `php artisan app:test --stop-on-failure`         |
+| Run in parallel             | `php artisan app:test --parallel`                |
+| Filter by name              | `php artisan app:test --filter="StudentService"` |
+| Git-aware testing           | `php artisan app:test --dirty`                   |
 
 ---
 
@@ -1045,4 +1072,4 @@ lsof -p $(pgrep php) | wc -l
 
 ---
 
-*Testing is how we build confidence.* 🧪
+_Testing is how we build confidence._ 🧪

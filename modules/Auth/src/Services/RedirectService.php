@@ -23,18 +23,21 @@ final class RedirectService extends BaseService implements Contract
     {
         // Users without an email address skip the verification gate entirely.
         // They receive a soft dashboard notification instead.
-        if ($user->email && ! $user->hasVerifiedEmail() && setting('require_email_verification', true)) {
+        if (
+            $user->email &&
+            !$user->hasVerifiedEmail() &&
+            setting('require_email_verification', true)
+        ) {
             return route('verification.notice');
         }
 
-        return $this->getTargetUrlSkipVerification($user);
+        return $this->getDashboardUrl($user);
     }
 
     /**
-     * Get the target URL bypassing the email verification gate.
-     * Used when the user explicitly skips email verification.
+     * Get the target dashboard URL for the authenticated user based on role.
      */
-    public function getTargetUrlSkipVerification(Authenticatable $user): string
+    public function getDashboardUrl(Authenticatable $user): string
     {
         if ($user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
             return route('admin.dashboard');

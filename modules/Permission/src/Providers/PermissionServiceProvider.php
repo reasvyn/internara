@@ -52,10 +52,7 @@ class PermissionServiceProvider extends ServiceProvider
     protected function overrideSpatieConfig(): void
     {
         $this->app['config']->set('permission.models.role', Role::class);
-        $this->app['config']->set(
-            'permission.models.permission',
-            Permission::class,
-        );
+        $this->app['config']->set('permission.models.permission', Permission::class);
     }
 
     /**

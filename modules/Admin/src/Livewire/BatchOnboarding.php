@@ -53,7 +53,7 @@ class BatchOnboarding extends Component
             $path = $this->file->getRealPath();
             $this->results = $service->importFromCsv($path, $this->type);
 
-            if (! empty($this->results['credentials'])) {
+            if (!empty($this->results['credentials'])) {
                 $this->credentialSlips = $this->results['credentials'];
                 $this->credentialSlipsModal = true;
             }

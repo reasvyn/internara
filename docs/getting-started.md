@@ -1,12 +1,14 @@
 # 🚀 Getting Started with Internara
 
-Welcome to **Internara**, an enterprise-grade Internship Management System! This guide will help you get up and running quickly.
+Welcome to **Internara**, an enterprise-grade Internship Management System! This guide will help you
+get up and running quickly.
 
 ---
 
 ## ⚡ Quick Start (5 minutes)
 
 ### Prerequisites Check
+
 ```bash
 php -v                # PHP 8.4+
 node -v               # Node.js 20.x+
@@ -15,6 +17,7 @@ git --version         # For cloning
 ```
 
 ### One-Command Setup
+
 ```bash
 git clone https://github.com/reasvyn/internara.git
 cd internara
@@ -22,6 +25,7 @@ composer setup
 ```
 
 That's it! Now you can start development:
+
 ```bash
 composer dev
 ```
@@ -48,27 +52,34 @@ The `composer setup` command automates everything:
 
 ## 🔧 What is the Setup Wizard?
 
-After technical installation via `php artisan app:install`, when you visit the generated URL, you'll be guided through the **onboarding process**.
+After technical installation via `php artisan app:install`, when you visit the generated URL, you'll
+be guided through the **onboarding process**.
 
 The onboarding consists of the following business configuration steps:
 
 #### Step 1: School/Institution Setup
+
 - School identity and branding
 - Contact information
 
 #### Step 2: Administrator Account
+
 - Initialize the SuperAdmin account
 
 #### Step 3: Department Setup
+
 - Define organizational units
 
 #### Step 4: Internship Configuration
+
 - Initialize the first internship program
 
 #### Step 5: System & SMTP
+
 - Configure mail servers with real-time handshake testing
 
 #### Step 6: Complete
+
 - Summary and final system lockdown
 
 ---
@@ -78,14 +89,17 @@ The onboarding consists of the following business configuration steps:
 The onboarding process is protected by multiple layers:
 
 **Automatic Lockdown**
+
 - After completing setup, all `/setup` routes return **404** (Not Found).
 - Access tokens are invalidated.
 - Routes are only accessible if `APP_INSTALLED` is false.
 
 **Access Control**
+
 - To reset setup (emergency recovery): `php artisan setup:reset`
 
 **Middleware Protection**
+
 - `RequireSetupAccess`: Redirects non-installed apps to setup, hides setup for installed apps.
 - `ProtectSetupRoute`: Validates token-based access and installation state.
 
@@ -123,6 +137,7 @@ internara/
 ## 🚀 Development Workflow
 
 ### Starting Development
+
 ```bash
 # Terminal 1: Run all services
 composer dev
@@ -132,12 +147,14 @@ npm run dev
 ```
 
 `composer dev` starts:
+
 - 🔵 **Laravel Server** (http://localhost:8000)
 - 🟣 **Queue Worker** (background jobs)
 - 🔴 **Logs** (live log viewer)
 - 🟡 **Vite** (asset bundler with HMR)
 
 ### Running Tests
+
 ```bash
 # All test suites
 composer test
@@ -150,6 +167,7 @@ vendor/bin/pest --watch
 ```
 
 ### Code Quality
+
 ```bash
 # Check style
 composer lint
@@ -198,15 +216,18 @@ SESSION_DRIVER=database     # or file, cookie, etc.
 
 ## 🗄️ Database
 
-Internara uses **SQLite** for development (zero setup) and supports **PostgreSQL** or **MySQL** for production.
+Internara uses **SQLite** for development (zero setup) and supports **PostgreSQL** or **MySQL** for
+production.
 
 ### SQLite (Default - Development)
+
 ```bash
 # Already configured after composer setup
 # Database file: database/database.sqlite
 ```
 
 ### PostgreSQL (Production)
+
 ```bash
 # 1. Update .env
 DB_CONNECTION=pgsql
@@ -221,6 +242,7 @@ php artisan migrate
 ```
 
 ### MySQL (Production)
+
 ```bash
 # 1. Update .env
 DB_CONNECTION=mysql
@@ -241,6 +263,7 @@ php artisan migrate
 Internara uses **Pest** (modern PHP testing framework) with **PHPUnit**.
 
 ### Running Tests
+
 ```bash
 # All suites
 composer test
@@ -259,6 +282,7 @@ vendor/bin/pest --watch
 ```
 
 ### Test Structure
+
 ```
 tests/
 ├── Unit/           # Component logic
@@ -304,12 +328,14 @@ php artisan setup:reset  # Reset setup wizard
 ## 🐛 Debugging
 
 ### Enable Debug Mode
+
 ```bash
 # In .env
 APP_DEBUG=true
 ```
 
 ### View Logs
+
 ```bash
 # Live log viewer (in composer dev)
 # Or manually
@@ -317,6 +343,7 @@ tail -f storage/logs/laravel.log
 ```
 
 ### Tinker REPL
+
 ```bash
 php artisan tinker
 
@@ -327,10 +354,11 @@ User::find(1)->delete()
 ```
 
 ### Livewire Debugging
+
 ```php
 // In Livewire component
-dd($this->property);  // Dump and die
-ray()->show($data);   // Ray debugging
+dd($this->property); // Dump and die
+ray()->show($data); // Ray debugging
 ```
 
 ---
@@ -339,25 +367,27 @@ ray()->show($data);   // Ray debugging
 
 After `composer setup` and `composer dev`:
 
-| Page | URL | Purpose |
-| :--- | :--- | :--- |
-| **Setup Wizard** | http://localhost:8000/setup | Initial configuration |
-| **Dashboard** | http://localhost:8000/dashboard | Home (redirects based on role) |
-| **Login** | http://localhost:8000/auth/login | User authentication |
-| **Admin** | http://localhost:8000/admin | Admin panel |
-| **Livewire Logs** | http://localhost:8000/mary/spotlight | Live logs (Mary UI) |
+| Page              | URL                                  | Purpose                        |
+| :---------------- | :----------------------------------- | :----------------------------- |
+| **Setup Wizard**  | http://localhost:8000/setup          | Initial configuration          |
+| **Dashboard**     | http://localhost:8000/dashboard      | Home (redirects based on role) |
+| **Login**         | http://localhost:8000/auth/login     | User authentication            |
+| **Admin**         | http://localhost:8000/admin          | Admin panel                    |
+| **Livewire Logs** | http://localhost:8000/mary/spotlight | Live logs (Mary UI)            |
 
 ---
 
 ## 🚨 Troubleshooting
 
 ### "Port 8000 already in use"
+
 ```bash
 # Use different port
 php artisan serve --port=8001
 ```
 
 ### "SQLSTATE[HY000]: General error: 1 database disk image is malformed"
+
 ```bash
 # Recreate database
 rm database/database.sqlite
@@ -365,18 +395,21 @@ php artisan migrate
 ```
 
 ### "Module not found" errors
+
 ```bash
 # Refresh module autoloader
 composer dump-autoload
 ```
 
 ### "Setup wizard not appearing"
+
 ```bash
 # Reset setup state
 php artisan setup:reset
 ```
 
 ### Tests failing with "SQLSTATE" errors
+
 ```bash
 # Reset test database
 php artisan migrate --env=testing

@@ -16,48 +16,49 @@ class SessionExpirationService
      * Following best practices: Admin roles get shorter timeouts for security.
      */
     private const SESSION_TIMEOUTS = [
-        'super_admin' => 12 * 60,  // 12 hours
-        'admin' => 12 * 60,         // 12 hours
-        'teacher' => 24 * 60,       // 24 hours
-        'supervisor' => 24 * 60,    // 24 hours
-        'student' => 24 * 60,       // 24 hours
+        'super_admin' => 12 * 60, // 12 hours
+        'admin' => 12 * 60, // 12 hours
+        'teacher' => 24 * 60, // 24 hours
+        'supervisor' => 24 * 60, // 24 hours
+        'student' => 24 * 60, // 24 hours
     ];
 
-    private const INACTIVITY_WARNING_MINUTES = 2;  // Warn 2 min before expiry
+    private const INACTIVITY_WARNING_MINUTES = 2; // Warn 2 min before expiry
 
-    public function __construct(
-        private AccountAuditLogger $auditLogger,
-    ) {}
+    public function __construct(private AccountAuditLogger $auditLogger) {}
 
     /**
      * Record session start for a user.
      */
-    public function recordSessionStart(User $user, string $sessionId, ?string $ipAddress = null): void
-    {
+    public function recordSessionStart(
+        User $user,
+        string $sessionId,
+        ?string $ipAddress = null,
+    ): void {
         $timeout = self::SESSION_TIMEOUTS[$user->role] ?? 24 * 60;
 
         Cache::put(
             key: "session:{$sessionId}:user_id",
             value: $user->id,
-            minutes: $timeout + 5  // Extend cache 5 min past actual timeout
+            minutes: $timeout + 5, // Extend cache 5 min past actual timeout
         );
 
         Cache::put(
             key: "session:{$sessionId}:started_at",
             value: now()->toIso8601String(),
-            minutes: $timeout + 5
+            minutes: $timeout + 5,
         );
 
         Cache::put(
             key: "session:{$sessionId}:last_activity",
             value: now()->toIso8601String(),
-            minutes: $timeout + 5
+            minutes: $timeout + 5,
         );
 
         Cache::put(
             key: "session:{$sessionId}:ip_address",
             value: $ipAddress,
-            minutes: $timeout + 5
+            minutes: $timeout + 5,
         );
 
         Log::info('Session started', [
@@ -76,13 +77,13 @@ class SessionExpirationService
     {
         $timeout = $this->getSessionTimeout($sessionId);
         if ($timeout === null) {
-            return;  // Session already expired
+            return; // Session already expired
         }
 
         Cache::put(
             key: "session:{$sessionId}:last_activity",
             value: now()->toIso8601String(),
-            minutes: $timeout + 5
+            minutes: $timeout + 5,
         );
     }
 
@@ -92,8 +93,8 @@ class SessionExpirationService
     public function isExpired(string $sessionId): bool
     {
         $startedAt = Cache::get("session:{$sessionId}:started_at");
-        if (! $startedAt) {
-            return true;  // No session data = expired
+        if (!$startedAt) {
+            return true; // No session data = expired
         }
 
         $timeout = $this->getSessionTimeout($sessionId);
@@ -112,7 +113,7 @@ class SessionExpirationService
     public function getRemainingMinutes(string $sessionId): int
     {
         $startedAt = Cache::get("session:{$sessionId}:started_at");
-        if (! $startedAt) {
+        if (!$startedAt) {
             return 0;
         }
 
@@ -166,12 +167,12 @@ class SessionExpirationService
     private function getSessionTimeout(string $sessionId): ?int
     {
         $userId = Cache::get("session:{$sessionId}:user_id");
-        if (! $userId) {
+        if (!$userId) {
             return null;
         }
 
         $user = User::find($userId);
-        if (! $user) {
+        if (!$user) {
             return null;
         }
 

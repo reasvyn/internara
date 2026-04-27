@@ -32,17 +32,11 @@ class MentoringLog extends Model
 
     public function registration(): BelongsTo
     {
-        return $this->belongsTo(
-            InternshipRegistration::class,
-            'registration_id',
-        );
+        return $this->belongsTo(InternshipRegistration::class, 'registration_id');
     }
 
     public function causer(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'causer_id',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'causer_id');
     }
 }

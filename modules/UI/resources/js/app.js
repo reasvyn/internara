@@ -162,7 +162,7 @@ document.addEventListener('alpine:init', () => {
 
                     // Cropper v2 Initialization
                     this.cropper = new window.Cropper(image)
-                    
+
                     // Set initial state after elements are ready
                     this.cropper.getCropperCanvas().$nextTick(() => {
                         const selection = this.cropper.getCropperSelection()

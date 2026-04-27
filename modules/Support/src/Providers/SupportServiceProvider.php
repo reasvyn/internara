@@ -67,7 +67,7 @@ class SupportServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 }

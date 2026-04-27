@@ -32,7 +32,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerModule();
 
         // Include the global fallback helper function if it doesn't exist
-        if (! function_exists('setting')) {
+        if (!function_exists('setting')) {
             require_once module_path($this->name, 'src/Functions/setting.php');
         }
 
@@ -57,7 +57,7 @@ class CoreServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            // \Modules\Core\Metadata\Services\Contracts\MetadataService::class => \Modules\Core\Metadata\Services\MetadataService::class,
-        ];
+                // \Modules\Core\Metadata\Services\Contracts\MetadataService::class => \Modules\Core\Metadata\Services\MetadataService::class,
+            ];
     }
 }

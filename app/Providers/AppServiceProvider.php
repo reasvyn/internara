@@ -26,11 +26,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app
                 ->make('translator')
                 ->handleMissingKeysUsing(
-                    fn (
-                        string $key,
-                        array $replace,
-                        ?string $locale,
-                    ) => Log::warning(
+                    fn(string $key, array $replace, ?string $locale) => Log::warning(
                         "Translation key missing: '{$key}' (Locale: {$locale})",
                     ),
                 );

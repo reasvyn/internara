@@ -57,12 +57,12 @@ class ReportService extends BaseService implements ReportGenerator
     ): string {
         $provider = $this->providers->get($providerIdentifier);
 
-        if (! $provider) {
+        if (!$provider) {
             throw new \RuntimeException("Report Provider [{$providerIdentifier}] not registered.");
         }
 
         $data = $provider->getReportData($filters);
-        $fileName = "reports/{$providerIdentifier}_".now()->format('YmdHis').'.pdf';
+        $fileName = "reports/{$providerIdentifier}_" . now()->format('YmdHis') . '.pdf';
         $template = $provider->getTemplate();
 
         $pdf = Pdf::loadView($template, [

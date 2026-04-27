@@ -63,7 +63,7 @@ test('it throws exception for unauthorized evaluator', function () {
 
     // Act & Assert
     expect(
-        fn () => $service->submitEvaluation(
+        fn() => $service->submitEvaluation(
             $registration->id,
             $user->id,
             'teacher',

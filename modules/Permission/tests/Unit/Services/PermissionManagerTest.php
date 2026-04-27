@@ -13,6 +13,6 @@ test('it can create a permission via manager', function () {
     // but we can verify the service logic if we use a real DB or a very complex mock.
     // Given the instructions to prioritize code preparation, we'll keep it simple.
 
-    $manager = new PermissionManager;
+    $manager = new PermissionManager();
     expect($manager)->toBeInstanceOf(PermissionManager::class);
 });

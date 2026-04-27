@@ -40,7 +40,8 @@ class DepartmentServiceProvider extends ServiceProvider
 
         // [S3 - Scalable] Register Setup Hook
         if ($this->app->bound(SetupRequirementRegistry::class)) {
-            $this->app->make(SetupRequirementRegistry::class)
+            $this->app
+                ->make(SetupRequirementRegistry::class)
                 ->register($this->app->make(DepartmentSetupRequirement::class));
         }
     }
@@ -63,7 +64,8 @@ class DepartmentServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Department\Services\Contracts\DepartmentService::class => DepartmentService::class,
+            \Modules\Department\Services\Contracts\DepartmentService::class =>
+                DepartmentService::class,
         ];
     }
 

@@ -86,7 +86,7 @@ class AttendanceService extends EloquentQuery implements Contract
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
-            ! $guidanceService->hasCompletedMandatory($studentId)
+            !$guidanceService->hasCompletedMandatory($studentId)
         ) {
             throw new AppException(
                 userMessage: 'guidance::messages.must_complete_guidance',
@@ -105,7 +105,7 @@ class AttendanceService extends EloquentQuery implements Contract
             'latest_status' => 'active',
         ]);
 
-        if (! $registration) {
+        if (!$registration) {
             throw new AppException(
                 userMessage: 'internship::messages.no_active_registration',
                 code: 404,
@@ -151,14 +151,10 @@ class AttendanceService extends EloquentQuery implements Contract
 
         // 5. Apply Status
         $reason = $data['reason'] ?? 'Attendance recorded via flexible entry.';
-        if ($status === AttendanceStatus::PRESENT->value && ! empty($data['check_in_at'])) {
+        if ($status === AttendanceStatus::PRESENT->value && !empty($data['check_in_at'])) {
             $lateThreshold = setting('attendance_late_threshold', '08:00');
             [$hour, $minute] = explode(':', $lateThreshold);
-            $startTime = Carbon::parse($date)->setTime(
-                (int) $hour,
-                (int) $minute,
-                0,
-            );
+            $startTime = Carbon::parse($date)->setTime((int) $hour, (int) $minute, 0);
 
             if (Carbon::parse($data['check_in_at'])->greaterThan($startTime)) {
                 $reason .= ' (Late)';
@@ -177,7 +173,7 @@ class AttendanceService extends EloquentQuery implements Contract
     {
         $log = $this->getTodayLog($studentId);
 
-        if (! $log) {
+        if (!$log) {
             throw new AppException(
                 userMessage: 'attendance::messages.no_check_in_record',
                 code: 404,

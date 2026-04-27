@@ -13,7 +13,7 @@ Internara enforces consistent code quality through:
 - **Architecture tests** — No circular dependencies
 - **Strict types** — Type safety throughout
 - **Localization** — No hardcoded strings
-- **Documentation** — Comments explain *why*, not *what*
+- **Documentation** — Comments explain _why_, not _what_
 
 ---
 
@@ -76,7 +76,7 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     // Properties first
-    // Methods second (in logical order: public, protected, private)
+// Methods second (in logical order: public, protected, private)
 }
 ```
 
@@ -142,9 +142,9 @@ $message = 'Hello, ' . $name . '!';
 
 // Nowdoc/Heredoc for long strings
 $sql = <<<SQL
-    SELECT * FROM students
-    WHERE active = true
-    SQL;
+SELECT * FROM students
+WHERE active = true
+SQL;
 ```
 
 **7. Array Formatting**
@@ -212,24 +212,24 @@ public function getAuthUser(): User { }
 
 ```php
 // PascalCase
-class Student { }
-class StudentService { }
-class StudentServiceTest { }
+class Student {}
+class StudentService {}
+class StudentServiceTest {}
 
 // Abstract classes (abstract prefix, optional)
-abstract class BaseService { }
+abstract class BaseService {}
 
 // Interface (Service suffix or Contract)
-interface StudentService { }
-interface StudentContract { }
+interface StudentService {}
+interface StudentContract {}
 
 // Enum
-enum StudentStatus { }
-enum InternshipPhase { }
+enum StudentStatus {}
+enum InternshipPhase {}
 
 // Trait (Able suffix or Has prefix)
-trait HasUuid { }
-trait IsEncryptable { }
+trait HasUuid {}
+trait IsEncryptable {}
 ```
 
 ### Directories and Files
@@ -278,11 +278,7 @@ class Student extends Model
 {
     use HasUuid;
 
-    protected $fillable = [
-        'name',
-        'email',
-        'nis',
-    ];
+    protected $fillable = ['name', 'email', 'nis'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -326,9 +322,7 @@ use Modules\Student\Services\Contracts\StudentService;
 class StudentService implements StudentService
 {
     // Constructor injection (Contracts, not classes)
-    public function __construct(
-        private StudentRepository $repository,
-    ) {}
+    public function __construct(private StudentRepository $repository) {}
 
     // Public methods (implement interface)
     public function findById(string $id): ?Student
@@ -515,16 +509,16 @@ public function process($value): any { }
 
 ```php
 // ❌ BAD - Explains what code does (obvious)
-$count = 0;  // Initialize count to 0
+$count = 0; // Initialize count to 0
 foreach ($students as $student) {
     if ($student->isActive()) {
-        $count++;  // Increment count
+        $count++; // Increment count
     }
 }
 
 // ✅ GOOD - Explains why
 // We only count active students because inactive ones don't contribute to reporting
-$activeCount = $students->filter(fn ($s) => $s->isActive())->count();
+$activeCount = $students->filter(fn($s) => $s->isActive())->count();
 ```
 
 ### Doc Blocks (For Complex Logic)
@@ -608,7 +602,6 @@ resources/lang/
 ```php
 // resources/lang/en/student.php
 <?php
-
 declare(strict_types=1);
 
 return [
@@ -629,6 +622,7 @@ return [
         'nis_invalid' => 'Student ID format is invalid.',
     ],
 ];
+
 ```
 
 ### Using Translations
@@ -656,13 +650,13 @@ $greeting = __('common.welcome_name', ['name' => $student->name]);
 ```php
 // snake_case
 Schema::create('students', function (Blueprint $table) {
-    $table->uuid('id');              // ✅ Primary key
-    $table->string('first_name');    // ✅ snake_case
+    $table->uuid('id'); // ✅ Primary key
+    $table->string('first_name'); // ✅ snake_case
     $table->string('email')->unique();
     $table->string('national_id')->nullable();
-    $table->uuid('department_id');   // ✅ Foreign key (no constraint)
-    $table->timestamps();            // created_at, updated_at
-    $table->softDeletes();           // deleted_at (optional)
+    $table->uuid('department_id'); // ✅ Foreign key (no constraint)
+    $table->timestamps(); // created_at, updated_at
+    $table->softDeletes(); // deleted_at (optional)
 });
 ```
 
@@ -761,21 +755,21 @@ npx prettier --write resources/
 
 ```javascript
 // ✅ Use const/let (not var)
-const apiUrl = '/api/students';
-let count = 0;
+const apiUrl = '/api/students'
+let count = 0
 
 // ✅ Camel case for variables
-const studentEmail = 'john@example.com';
+const studentEmail = 'john@example.com'
 
 // ✅ Arrow functions
-const getStudent = (id) => fetch(`/api/students/${id}`);
+const getStudent = (id) => fetch(`/api/students/${id}`)
 
 // ✅ Template literals
-const message = `Welcome, ${name}!`;
+const message = `Welcome, ${name}!`
 
 // ✅ Meaningful variable names
-const isStudentActive = true;  // ✅
-const x = true;                // ❌
+const isStudentActive = true // ✅
+const x = true // ❌
 ```
 
 ### CSS Standards
@@ -801,7 +795,7 @@ const x = true;                // ❌
 
 /* ❌ Avoid !important */
 .hide {
-    display: none !important;  /* ❌ Anti-pattern */
+    display: none !important; /* ❌ Anti-pattern */
 }
 
 /* ✅ Use Tailwind or CSS variables */
@@ -856,10 +850,7 @@ namespace Modules\Student\Domain\Models;
 
 class Student
 {
-    public function __construct(
-        public readonly string $id,
-        public string $name,
-    ) {}
+    public function __construct(public readonly string $id, public string $name) {}
 }
 ```
 
@@ -876,10 +867,7 @@ namespace Modules\Setup\Domain\Models;
 
 class SetupProcess
 {
-    public function __construct(
-        protected bool $isInstalled,
-        protected array $steps = [],
-    ) {}
+    public function __construct(protected bool $isInstalled, protected array $steps = []) {}
 
     public function completeStep(string $step): void
     {
@@ -892,7 +880,8 @@ class SetupProcess
 
 ## Testing Standards
 
-Testing in Internara is centered around **Domain-Driven Design (DDD) Modular** principles. Tests are used to validate domain invariants and correct behavior of domain building blocks.
+Testing in Internara is centered around **Domain-Driven Design (DDD) Modular** principles. Tests are
+used to validate domain invariants and correct behavior of domain building blocks.
 
 ### Test File Organization
 
@@ -900,13 +889,13 @@ Testing in Internara is centered around **Domain-Driven Design (DDD) Modular** p
 // ✅ Organized by concern
 describe('StudentService', function () {
     describe('findByEmail', function () {
-        it('returns student when found', function () { });
-        it('returns null when not found', function () { });
+        it('returns student when found', function () {});
+        it('returns null when not found', function () {});
     });
 
     describe('create', function () {
-        it('creates student with valid data', function () { });
-        it('fails with invalid email', function () { });
+        it('creates student with valid data', function () {});
+        it('fails with invalid email', function () {});
     });
 });
 ```
@@ -932,11 +921,11 @@ it('calls service method', function () { })
 ```php
 // ❌ N+1 query problem
 foreach ($students as $student) {
-    echo $student->department->name;  // 1 + N queries
+    echo $student->department->name; // 1 + N queries
 }
 
 // ✅ Eager loading
-$students = Student::with('department')->get();  // 2 queries
+$students = Student::with('department')->get(); // 2 queries
 foreach ($students as $student) {
     echo $student->department->name;
 }
@@ -946,8 +935,10 @@ foreach ($students as $student) {
 
 ```php
 // ✅ Cache expensive operations
-$departments = Cache::remember('dropdowns:departments', 300, fn () =>
-    Department::all(['id', 'name'])
+$departments = Cache::remember(
+    'dropdowns:departments',
+    300,
+    fn() => Department::all(['id', 'name']),
 );
 
 // ✅ Clear cache on updates
@@ -1013,4 +1004,4 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 
 ---
 
-*Consistency builds quality.* 📋
+_Consistency builds quality._ 📋

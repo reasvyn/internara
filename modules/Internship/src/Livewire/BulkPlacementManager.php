@@ -57,13 +57,12 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function internships()
     {
-        return Internship::query()
-            ->orderBy('title')
-            ->get()
-            ->map(fn (Internship $internship) => [
+        return Internship::query()->orderBy('title')->get()->map(
+            fn(Internship $internship) => [
                 'value' => $internship->id,
                 'label' => "{$internship->title} ({$internship->academic_year})",
-            ]);
+            ],
+        );
     }
 
     /**
@@ -72,22 +71,25 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function companies()
     {
-        if (! $this->internshipId) {
+        if (!$this->internshipId) {
             return [];
         }
 
         return Company::query()
             ->whereNotIn('id', function ($query) {
-                $query->selectRaw('distinct company_id')
+                $query
+                    ->selectRaw('distinct company_id')
                     ->from('internship_placements')
                     ->where('internship_id', $this->internshipId);
             })
             ->orderBy('name')
             ->get()
-            ->map(fn (Company $company) => [
-                'value' => $company->id,
-                'label' => "{$company->name} ({$company->business_field})",
-            ]);
+            ->map(
+                fn(Company $company) => [
+                    'value' => $company->id,
+                    'label' => "{$company->name} ({$company->business_field})",
+                ],
+            );
     }
 
     /**
@@ -96,7 +98,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function availableStudents()
     {
-        if (! $this->internshipId) {
+        if (!$this->internshipId) {
             return [];
         }
 
@@ -127,7 +129,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function remainingQuota()
     {
-        if (! $this->companyId || ! $this->internshipId) {
+        if (!$this->companyId || !$this->internshipId) {
             return 0;
         }
 
@@ -136,7 +138,7 @@ class BulkPlacementManager extends Component
             ->where('internship_id', $this->internshipId)
             ->first();
 
-        if (! $placement) {
+        if (!$placement) {
             return 0;
         }
 
@@ -151,13 +153,21 @@ class BulkPlacementManager extends Component
     public function showConfirmation(): void
     {
         if (empty($this->selectedStudents)) {
-            $this->dispatch('notify', type: 'warning', message: __('internship::ui.select_students'));
+            $this->dispatch(
+                'notify',
+                type: 'warning',
+                message: __('internship::ui.select_students'),
+            );
 
             return;
         }
 
-        if (! $this->internshipId || ! $this->companyId) {
-            $this->dispatch('notify', type: 'warning', message: __('internship::ui.select_internship_company'));
+        if (!$this->internshipId || !$this->companyId) {
+            $this->dispatch(
+                'notify',
+                type: 'warning',
+                message: __('internship::ui.select_internship_company'),
+            );
 
             return;
         }
@@ -241,10 +251,15 @@ class BulkPlacementManager extends Component
      */
     public function render(): View
     {
-        return view('internship::livewire.bulk-placement-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => __('internship::ui.bulk_placement_title').' | '.setting('brand_name', setting('app_name')),
+        return view('internship::livewire.bulk-placement-manager')->layout(
+            'ui::components.layouts.dashboard',
+            [
+                'title' =>
+                    __('internship::ui.bulk_placement_title') .
+                    ' | ' .
+                    setting('brand_name', setting('app_name')),
                 'context' => 'internship::ui.bulk_placement_context',
-            ]);
+            ],
+        );
     }
 }

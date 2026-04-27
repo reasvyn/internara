@@ -27,9 +27,8 @@ class CompanyManager extends RecordManager
     /**
      * Initialize the component metadata and services.
      */
-    public function boot(
-        CompanyService $companyService,
-    ): void {
+    public function boot(CompanyService $companyService): void
+    {
         $this->service = $companyService;
         $this->eventPrefix = 'company';
         $this->modelClass = Company::class;
@@ -61,9 +60,15 @@ class CompanyManager extends RecordManager
     {
         return [
             'total' => $this->service->query()->count(),
-            'fields' => $this->service->query()->distinct('business_field')->count('business_field'),
+            'fields' => $this->service
+                ->query()
+                ->distinct('business_field')
+                ->count('business_field'),
             'with_email' => $this->service->query()->whereNotNull('email')->count(),
-            'latest' => $this->service->query()->where('created_at', '>=', now()->subMonth())->count(),
+            'latest' => $this->service
+                ->query()
+                ->where('created_at', '>=', now()->subMonth())
+                ->count(),
         ];
     }
 
@@ -129,10 +134,7 @@ class CompanyManager extends RecordManager
     #[Computed]
     public function activeFilterCount(): int
     {
-        return count(array_filter(
-            $this->filters,
-            fn ($v) => $v !== null && $v !== '' && $v !== [],
-        ));
+        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     /**
@@ -141,11 +143,12 @@ class CompanyManager extends RecordManager
     #[Computed]
     public function businessFieldOptions(): array
     {
-        return $this->service->query()
+        return $this->service
+            ->query()
             ->whereNotNull('business_field')
             ->distinct('business_field')
             ->pluck('business_field')
-            ->map(fn ($field) => ['id' => $field, 'name' => $field])
+            ->map(fn($field) => ['id' => $field, 'name' => $field])
             ->values()
             ->toArray();
     }

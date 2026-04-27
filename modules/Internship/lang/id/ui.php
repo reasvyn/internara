@@ -23,7 +23,8 @@ return [
     'add_company' => 'Tambah Mitra',
     'edit_company' => 'Edit Mitra',
     'search_company' => 'Cari mitra...',
-    'delete_company_confirm' => 'Apakah Anda yakin ingin menghapus data instansi ini? Seluruh data penempatan terkait juga akan terhapus.',
+    'delete_company_confirm' =>
+        'Apakah Anda yakin ingin menghapus data instansi ini? Seluruh data penempatan terkait juga akan terhapus.',
     'search_placement' => 'Cari mitra industri...',
     'company_name' => 'Nama Instansi/Perusahaan',
     'company_address' => 'Alamat Perusahaan',
@@ -40,7 +41,8 @@ return [
     'contact_number' => 'No. Telepon',
     'quota' => 'Kuota (Siswa)',
     'select_program' => 'Pilih Program Magang',
-    'delete_placement_confirm' => 'Apakah Anda yakin ingin menghapus penempatan magang ini? Pendaftaran siswa pada mitra ini juga akan terhapus.',
+    'delete_placement_confirm' =>
+        'Apakah Anda yakin ingin menghapus penempatan magang ini? Pendaftaran siswa pada mitra ini juga akan terhapus.',
 
     // Internship Program
     'program_title' => 'Program Magang',
@@ -63,8 +65,10 @@ return [
     'select_semester' => 'Pilih Semester',
     'date_start' => 'Tanggal Mulai',
     'date_finish' => 'Tanggal Selesai',
-    'delete_program_confirm' => 'Apakah Anda yakin ingin menghapus program magang ini? Seluruh data penempatan dan pendaftaran terkait juga akan terhapus.',
-    'student_not_eligible' => 'Siswa :name belum memenuhi seluruh prasyarat wajib untuk penempatan.',
+    'delete_program_confirm' =>
+        'Apakah Anda yakin ingin menghapus program magang ini? Seluruh data penempatan dan pendaftaran terkait juga akan terhapus.',
+    'student_not_eligible' =>
+        'Siswa :name belum memenuhi seluruh prasyarat wajib untuk penempatan.',
     'placement_quota_full' => 'Kuota penempatan di :company sudah penuh.',
     'placement_location_not_found' => 'Lokasi penempatan tidak ditemukan.',
     'select_at_least_one_student' => 'Pilih minimal satu siswa untuk penempatan.',
@@ -126,7 +130,8 @@ return [
     'select_program_first' => 'Pilih program terlebih dahulu untuk melihat daftar siswa',
     'students_to_place' => 'Siswa akan ditempatkan',
     'confirm_placement_title' => 'Konfirmasi Penempatan Massal',
-    'confirm_placement_message' => 'Tindakan ini akan menempatkan seluruh siswa yang dipilih ke lokasi tujuan secara permanen.',
+    'confirm_placement_message' =>
+        'Tindakan ini akan menempatkan seluruh siswa yang dipilih ke lokasi tujuan secara permanen.',
     'placement_summary' => 'Ringkasan Penempatan',
     'completion_status' => 'Status Kelengkapan',
     'upload_document' => 'Unggah Dokumen',
@@ -167,18 +172,21 @@ return [
     'document' => 'Dokumen',
     'skill' => 'Kemampuan',
     'condition' => 'Syarat/Kondisi',
-    'delete_requirement_confirm' => 'Apakah Anda yakin ingin menghapus prasyarat ini? Seluruh unggahan siswa terkait juga akan terhapus.',
+    'delete_requirement_confirm' =>
+        'Apakah Anda yakin ingin menghapus prasyarat ini? Seluruh unggahan siswa terkait juga akan terhapus.',
 
     // Submissions
     'requirements' => 'Prasyarat & Berkas',
-    'requirements_subtitle' => 'Lengkapi seluruh persyaratan wajib untuk melanjutkan proses magang Anda.',
+    'requirements_subtitle' =>
+        'Lengkapi seluruh persyaratan wajib untuk melanjutkan proses magang Anda.',
     'upload_document' => 'Unggah Dokumen',
     'self_rating' => 'Skor Penilaian Diri',
     'i_agree_confirm' => 'Saya mengerti dan menyetujui persyaratan ini.',
     'submit_requirement' => 'Kirim',
     'requirement_submitted' => 'Persyaratan berhasil dikirim.',
     'view_current_document' => 'Lihat Dokumen Terkirim',
-    'all_mandatory_requirements_cleared' => 'Seluruh persyaratan wajib telah diverifikasi. Anda siap untuk penempatan!',
+    'all_mandatory_requirements_cleared' =>
+        'Seluruh persyaratan wajib telah diverifikasi. Anda siap untuk penempatan!',
 
     // Bulk Actions & History
     'bulk_actions' => 'Aksi Massal',
@@ -188,7 +196,8 @@ return [
     'complete_program' => 'Selesaikan Program',
     'bulk_placement_title' => 'Penempatan Massal Siswa',
     'bulk_placement_description' => ':count siswa terpilih akan ditempatkan di lokasi yang sama.',
-    'bulk_placement_note' => 'Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.',
+    'bulk_placement_note' =>
+        'Catatan: Hanya siswa yang sudah melengkapi persyaratan wajib yang akan diproses.',
     'placement_location' => 'Lokasi Penempatan',
     'select_industry_partner' => 'Pilih Industri Partner',
     'process_placement' => 'Proses Penempatan',
@@ -202,18 +211,22 @@ return [
 
     // String tambahan penempatan massal
     'bulk_placement_context' => 'Magang › Penempatan Massal',
-    'bulk_placement_subtitle' => 'Tempatkan banyak siswa ke mitra industri sekaligus, dengan pemeriksaan kuota otomatis.',
+    'bulk_placement_subtitle' =>
+        'Tempatkan banyak siswa ke mitra industri sekaligus, dengan pemeriksaan kuota otomatis.',
     'select_students' => 'Pilih Siswa',
     'remaining_quota' => 'Kuota Tersisa',
     'selected_students' => 'Siswa Terpilih',
     'preview_placement' => 'Pratinjau & Konfirmasi',
     'no_unplaced_students' => 'Tidak ada siswa yang belum ditempatkan untuk program magang ini.',
-    'confirm_placement_message' => 'Anda akan menempatkan siswa terpilih ke perusahaan yang dipilih. Tindakan ini tidak dapat dibatalkan.',
-    'placement_cannot_undo' => 'Tindakan ini tidak dapat dibatalkan. Siswa akan secara permanen ditugaskan ke lokasi penempatan ini.',
+    'confirm_placement_message' =>
+        'Anda akan menempatkan siswa terpilih ke perusahaan yang dipilih. Tindakan ini tidak dapat dibatalkan.',
+    'placement_cannot_undo' =>
+        'Tindakan ini tidak dapat dibatalkan. Siswa akan secara permanen ditugaskan ke lokasi penempatan ini.',
     'confirm_placement' => 'Konfirmasi & Tempatkan',
     'students_to_place' => 'Siswa yang Akan Ditempatkan',
     'available_quota' => 'Kuota Tersedia',
-    'insufficient_quota' => 'Kuota tidak cukup. Anda memilih :selected siswa tetapi hanya :remaining slot tersedia.',
+    'insufficient_quota' =>
+        'Kuota tidak cukup. Anda memilih :selected siswa tetapi hanya :remaining slot tersedia.',
     'select_internship_company' => 'Silakan pilih program magang dan perusahaan.',
 
     // Batch actions dan filters
@@ -225,9 +238,21 @@ return [
     'selected_count' => ':count terpilih',
     'select_items_for_action' => 'Silakan pilih item untuk aksi ini.',
     'no_companies' => 'Tidak ada perusahaan yang ditemukan.',
-    'company_import_format' => 'Format CSV: Nama, Bidang Usaha, Telepon, Email, Alamat, Nama Pemimpin',
-    'individual_placement' => 'Pendaftaran Individual',    'bulk_placement' => 'Penempatan Massal',    'quota_info' => 'Informasi Kuota',    'remaining_quota' => 'Kuota tersisa: :count slot',    'select_students' => 'Pilih Siswa',    'select_all' => 'Pilih Semua Siswa',    'selected_students' => ':count siswa dipilih',    'placement_summary' => 'Ringkasan Penempatan',    'placement_location_not_found' => 'Lokasi penempatan tidak ditemukan',    'confirm_placement_title' => 'Konfirmasi Penempatan Massal',    'registration_form_help' => 'Edit detail pendaftaran siswa dan informasi penempatan.',
-    'student_placement_subtitle' => 'Tempatkan siswa ke mitra industri dengan opsi individual atau massal.',
+    'company_import_format' =>
+        'Format CSV: Nama, Bidang Usaha, Telepon, Email, Alamat, Nama Pemimpin',
+    'individual_placement' => 'Pendaftaran Individual',
+    'bulk_placement' => 'Penempatan Massal',
+    'quota_info' => 'Informasi Kuota',
+    'remaining_quota' => 'Kuota tersisa: :count slot',
+    'select_students' => 'Pilih Siswa',
+    'select_all' => 'Pilih Semua Siswa',
+    'selected_students' => ':count siswa dipilih',
+    'placement_summary' => 'Ringkasan Penempatan',
+    'placement_location_not_found' => 'Lokasi penempatan tidak ditemukan',
+    'confirm_placement_title' => 'Konfirmasi Penempatan Massal',
+    'registration_form_help' => 'Edit detail pendaftaran siswa dan informasi penempatan.',
+    'student_placement_subtitle' =>
+        'Tempatkan siswa ke mitra industri dengan opsi individual atau massal.',
     'review_placement' => 'Tinjau Penempatan',
     'placement_success' => 'Siswa ditempatkan dengan sukses!',
     'total_placed' => 'Total Ditempatkan',
@@ -240,7 +265,8 @@ return [
     'submit_registration' => 'Kirim Pendaftaran',
 
     // Import Instructions
-    'import_csv_format' => 'Format CSV: Judul, Deskripsi, Tahun Ajaran, Semester, Tanggal Mulai, Tanggal Selesai',
+    'import_csv_format' =>
+        'Format CSV: Judul, Deskripsi, Tahun Ajaran, Semester, Tanggal Mulai, Tanggal Selesai',
     'import_date_format' => 'Format Tanggal: YYYY-MM-DD',
     'import_semester_values' => 'Nilai Semester: Ganjil, Genap, Tahunan',
 ];

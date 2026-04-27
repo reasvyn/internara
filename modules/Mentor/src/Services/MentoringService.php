@@ -42,13 +42,16 @@ class MentoringService extends EloquentQuery implements Contract
         return Cache::remember(
             "mentoring_stats:{$registrationId}",
             now()->addDays(7),
-            fn () => [
-                'visits_count' => MentoringVisit::where('registration_id', $registrationId)->count(),
+            fn() => [
+                'visits_count' => MentoringVisit::where(
+                    'registration_id',
+                    $registrationId,
+                )->count(),
                 'logs_count' => MentoringLog::where('registration_id', $registrationId)->count(),
                 'last_visit' => MentoringVisit::where('registration_id', $registrationId)
                     ->latest('visit_date')
                     ->first(),
-            ]
+            ],
         );
     }
 

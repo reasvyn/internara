@@ -1,29 +1,32 @@
 # 📖 Internara Documentation Index
 
-Welcome to the Internara documentation! This guide provides comprehensive resources for developers, contributors, and operators.
+Welcome to the Internara documentation! This guide provides comprehensive resources for developers,
+contributors, and operators.
 
 ---
 
 ## 🚀 Getting Started
 
-- **[Getting Started Guide](./getting-started.md)** — Quick overview of the project, prerequisites, and first steps
-- **[Installation Guide](./installation.md)** — Detailed step-by-step installation, configuration, and setup wizard
+- **[Getting Started Guide](./getting-started.md)** — Quick overview of the project, prerequisites,
+  and first steps
+- **[Installation Guide](./installation.md)** — Detailed step-by-step installation, configuration,
+  and setup wizard
 
 ---
 
 ## 📚 Core Documentation
 
-| Document | Purpose | Audience | Read Time |
-| :--- | :--- | :--- | :--- |
-| **[Getting Started Guide](./getting-started.md)** | Quick 5-minute setup and first steps | Everyone | 8 min |
-| **[Installation Guide](./installation.md)** | Complete setup from git clone to production | DevOps, Setup | 20 min |
-| **[Configuration Guide](./config.md)** | Database, SMTP, cache, queue, sessions, storage | DevOps, Setup | 18 min |
-| **[Philosophy](./philosophy.md)** | 3S Doctrine (Secure, Sustain, Scalable) and why | Contributors, Architects | 18 min |
-| **[Architecture Guide](./architecture.md)** | Modular monolith design, auto-binding, data flow | Developers, Architects | 22 min |
-| **[Modules Catalog](./modules-catalog.md)** | Directory of all 29+ modules and their purposes | Everyone | 16 min |
-| **[Testing Guide](./testing.md)** | DDD practices, Pest framework, AppTest, test suites | QA, Developers | 25 min |
-| **[Standards & Conventions](./standards.md)** | Code quality, naming, patterns, PSR-12 | Contributors | 22 min |
-| **[Contributing Guide](../CONTRIBUTING.md)** | Workflow, code patterns, and PR checklist | Contributors | 12 min |
+| Document                                          | Purpose                                             | Audience                 | Read Time |
+| :------------------------------------------------ | :-------------------------------------------------- | :----------------------- | :-------- |
+| **[Getting Started Guide](./getting-started.md)** | Quick 5-minute setup and first steps                | Everyone                 | 8 min     |
+| **[Installation Guide](./installation.md)**       | Complete setup from git clone to production         | DevOps, Setup            | 20 min    |
+| **[Configuration Guide](./config.md)**            | Database, SMTP, cache, queue, sessions, storage     | DevOps, Setup            | 18 min    |
+| **[Philosophy](./philosophy.md)**                 | 3S Doctrine (Secure, Sustain, Scalable) and why     | Contributors, Architects | 18 min    |
+| **[Architecture Guide](./architecture.md)**       | Modular monolith design, auto-binding, data flow    | Developers, Architects   | 22 min    |
+| **[Modules Catalog](./modules-catalog.md)**       | Directory of all 29+ modules and their purposes     | Everyone                 | 16 min    |
+| **[Testing Guide](./testing.md)**                 | DDD practices, Pest framework, AppTest, test suites | QA, Developers           | 25 min    |
+| **[Standards & Conventions](./standards.md)**     | Code quality, naming, patterns, PSR-12              | Contributors             | 22 min    |
+| **[Contributing Guide](../CONTRIBUTING.md)**      | Workflow, code patterns, and PR checklist           | Contributors             | 12 min    |
 
 ---
 
@@ -52,12 +55,14 @@ Learn more in the **[Philosophy Guide](./philosophy.md)**
 ## 🛠️ Development Workflow
 
 ### Quick Setup
+
 ```bash
 composer setup       # Install + configure + migrate
 composer dev         # Start all services
 ```
 
 ### Development Commands
+
 ```bash
 composer test        # Run all test suites
 composer lint        # Check code style
@@ -66,6 +71,7 @@ npm run dev          # Watch assets
 ```
 
 ### Testing
+
 - **Arch Tests**: Architecture compliance
 - **Unit Tests**: Individual component logic
 - **Feature Tests**: Business workflows
@@ -85,6 +91,7 @@ Internara contains **29+ independent modules** organized by domain:
 - **Infrastructure**: Core, Shared, UI, Status, Exception, Admin, Support
 
 Each module follows a strict structure:
+
 ```
 modules/{ModuleName}/
 ├── src/{Models,Services,Services/Contracts,Livewire}
@@ -93,19 +100,22 @@ modules/{ModuleName}/
 └── resources/{css,js,lang}
 ```
 
-Learn more in the **[Modules Catalog](./modules-catalog.md)** and **[Architecture Guide](./architecture.md)**
+Learn more in the **[Modules Catalog](./modules-catalog.md)** and
+**[Architecture Guide](./architecture.md)**
 
 ---
 
 ## 🧪 Quality Assurance
 
 **Before submitting a PR:**
+
 ```bash
 composer test        # Must pass all suites
 composer lint        # Must have no violations
 ```
 
 **Required in every PR:**
+
 - ✅ 90%+ test coverage
 - ✅ `declare(strict_types=1);` on all PHP files
 - ✅ No hardcoded strings (use `__('key')`)
@@ -135,4 +145,4 @@ Internara is licensed under the **MIT License**. See [LICENSE](../LICENSE) for d
 
 **Last Updated**: 2026-04-22
 
-*For more information, visit the main [README.md](../README.md)*
+_For more information, visit the main [README.md](../README.md)_

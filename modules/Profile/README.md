@@ -5,9 +5,8 @@ ecosystem. It provides the necessary storage for information that distinguishes 
 core authentication credentials, such as institutional IDs, contact details, and department
 affiliations.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
@@ -24,32 +23,32 @@ decoupled integration with the `Department`, `Student`, and `Teacher` modules.
 ### 2.1 Service Layer
 
 - **`ProfileService`**: Manages the initialization and synchronization of user profiles.
- - _Features_: Automated profile creation upon user registration and role-based "profileable"
- model association (Student/Teacher).
- - _Contract_: `Modules\Profile\Services\Contracts\ProfileService`.
+- _Features_: Automated profile creation upon user registration and role-based "profileable" model
+  association (Student/Teacher).
+- _Contract_: `Modules\Profile\Services\Contracts\ProfileService`.
 
 ### 2.2 Persistence Layer
 
 - **`Profile` Model**: The central entity for extended personal data.
- - _Identifiers_: Utilizes **national_identifier** (SSoT for NIP/NISN or national IDs) and
- **registration_number** (SSoT for institutional/school IDs like NIS) to consolidate all
- stakeholder identities into a single record.
- - _Relationships_: Linked to `User` (Identity), `Department` (Academic Scoping), and a
- polymorphic `profileable` (Domain Specifics).
- - _Security_: Uses **UUID v4** for secure identification.
+- _Identifiers_: Utilizes **national_identifier** (SSoT for NIP/NISN or national IDs) and
+  **registration_number** (SSoT for institutional/school IDs like NIS) to consolidate all
+  stakeholder identities into a single record.
+- _Relationships_: Linked to `User` (Identity), `Department` (Academic Scoping), and a polymorphic
+  `profileable` (Domain Specifics).
+- _Security_: Uses **UUID v4** for secure identification.
 
 ---
 
 ## 3. Engineering Standards
 
 - **Zero-Coupling**: Cross-module relationships are managed via indexed UUID columns without
- physical foreign keys.
+  physical foreign keys.
 - **Model Isolation**: Utilizes the `Role` Enum from the `Permission` module to perform role-based
- logic, avoiding direct dependency on the `User` model for constants.
+  logic, avoiding direct dependency on the `User` model for constants.
 - **Privacy First**: Sensitive fields (phone, address, emergency contacts) are subject to automated
- encryption at rest and masking in system logs via the `Log` module.
+  encryption at rest and masking in system logs via the `Log` module.
 - **Enhanced Demographics**: Supports collection of Gender, Blood Type, and Emergency Contact
- metadata to satisfy institutional safety requirements.
+  metadata to satisfy institutional safety requirements.
 
 ---
 

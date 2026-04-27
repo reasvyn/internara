@@ -30,7 +30,7 @@ class VerificationNotice extends Component
 
     public function resend()
     {
-        if (! auth()->check()) {
+        if (!auth()->check()) {
             flash()->error(__('exception::messages.unauthorized'));
 
             return;
@@ -44,20 +44,11 @@ class VerificationNotice extends Component
         }
     }
 
-    public function skip(): mixed
-    {
-        // Mark this session as having explicitly skipped verification so the
-        // verified middleware allows the user through for this session.
-        session(['email_verification_skipped' => true]);
-
-        return redirect()->to($this->redirectService->getTargetUrlSkipVerification(auth()->user()));
-    }
-
     public function render()
     {
-        return view('auth::livewire.verification-notice')
-            ->layout('auth::components.layouts.auth', [
-                'title' => __('auth::ui.verification.title').' | '.setting('site_title', 'Internara'),
-            ]);
+        return view('auth::livewire.verification-notice')->layout('auth::components.layouts.auth', [
+            'title' =>
+                __('auth::ui.verification.title') . ' | ' . setting('site_title', 'Internara'),
+        ]);
     }
 }

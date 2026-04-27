@@ -89,7 +89,7 @@ class RoleBasedAccessPolicyTest extends TestCase
         $target->assignRole('student');
 
         $this->assertTrue(
-            $this->policy->changeStatus($superAdmin, $target, AccountStatus::SUSPENDED)
+            $this->policy->changeStatus($superAdmin, $target, AccountStatus::SUSPENDED),
         );
     }
 
@@ -103,7 +103,7 @@ class RoleBasedAccessPolicyTest extends TestCase
         $superAdmin2->assignRole('super_admin');
 
         $this->assertFalse(
-            $this->policy->changeStatus($superAdmin1, $superAdmin2, AccountStatus::VERIFIED)
+            $this->policy->changeStatus($superAdmin1, $superAdmin2, AccountStatus::VERIFIED),
         );
     }
 

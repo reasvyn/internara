@@ -16,9 +16,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        SchoolDeleted::class => [
-            DeleteDepartmentsBySchool::class,
-        ],
+        SchoolDeleted::class => [DeleteDepartmentsBySchool::class],
     ];
 
     /**

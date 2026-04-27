@@ -40,12 +40,7 @@ class ResetPassword extends Component
         return [
             'token' => 'required',
             'email' => 'required|email',
-            'password' => [
-                'required',
-                'string',
-                'confirmed',
-                Password::auto(),
-            ],
+            'password' => ['required', 'string', 'confirmed', Password::auto()],
         ];
     }
 
@@ -60,7 +55,10 @@ class ResetPassword extends Component
         $throttleKey = $this->throttleKey();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('password', __('auth::ui.reset_password.form.rate_limited', ['seconds' => $seconds]));
+            $this->addError(
+                'password',
+                __('auth::ui.reset_password.form.rate_limited', ['seconds' => $seconds]),
+            );
 
             return;
         }
@@ -102,13 +100,16 @@ class ResetPassword extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate('reset-password|'.Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(
+            'reset-password|' . Str::lower($this->email) . '|' . request()->ip(),
+        );
     }
 
     public function render(): View
     {
         return view('auth::livewire.reset-password')->layout('auth::components.layouts.auth', [
-            'title' => __('auth::ui.reset_password.title').' | '.setting('site_title', 'Internara'),
+            'title' =>
+                __('auth::ui.reset_password.title') . ' | ' . setting('site_title', 'Internara'),
         ]);
     }
 }

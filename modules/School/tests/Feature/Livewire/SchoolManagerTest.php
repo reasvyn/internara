@@ -23,7 +23,10 @@ beforeEach(function () {
 
 describe('SchoolManager Component', function () {
     test('it renders school data correctly', function () {
-        $school = School::factory()->create(['name' => 'SMK Negeri 1 Test', 'institutional_code' => '12345678']);
+        $school = School::factory()->create([
+            'name' => 'SMK Negeri 1 Test',
+            'institutional_code' => '12345678',
+        ]);
         $user = User::factory()->create();
         $user->givePermissionTo('school.manage');
         $this->actingAs($user);
@@ -47,9 +50,12 @@ describe('SchoolManager Component', function () {
             ->assertDispatched('school_saved');
 
         $school = School::first();
-        expect($school->name)->toBe('Updated School Name')
-            ->and($school->email)->toBe('school@test.com')
-            ->and($school->institutional_code)->toBe('12345678');
+        expect($school->name)
+            ->toBe('Updated School Name')
+            ->and($school->email)
+            ->toBe('school@test.com')
+            ->and($school->institutional_code)
+            ->toBe('12345678');
     });
 
     test('it allows setup sessions to bypass permissions', function () {

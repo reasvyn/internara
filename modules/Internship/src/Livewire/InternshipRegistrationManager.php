@@ -43,10 +43,12 @@ class InternshipRegistrationManager extends Component
         return Internship::query()
             ->orderBy('date_start', 'desc')
             ->get()
-            ->map(fn (Internship $internship) => [
-                'id' => $internship->id,
-                'name' => "{$internship->title} ({$internship->academic_year})",
-            ])
+            ->map(
+                fn(Internship $internship) => [
+                    'id' => $internship->id,
+                    'name' => "{$internship->title} ({$internship->academic_year})",
+                ],
+            )
             ->toArray();
     }
 
@@ -56,7 +58,7 @@ class InternshipRegistrationManager extends Component
     #[Computed]
     public function availablePlacements()
     {
-        if (! $this->form->internship_id) {
+        if (!$this->form->internship_id) {
             return [];
         }
 
@@ -64,10 +66,12 @@ class InternshipRegistrationManager extends Component
             ->where('internship_id', $this->form->internship_id)
             ->with('company')
             ->get()
-            ->map(fn (InternshipPlacement $placement) => [
-                'id' => $placement->id,
-                'name' => $placement->company?->name ?? 'Unknown',
-            ])
+            ->map(
+                fn(InternshipPlacement $placement) => [
+                    'id' => $placement->id,
+                    'name' => $placement->company?->name ?? 'Unknown',
+                ],
+            )
             ->toArray();
     }
 
@@ -99,9 +103,11 @@ class InternshipRegistrationManager extends Component
 
     public function render(): View
     {
-        return view('internship::livewire.internship-registration-manager')
-            ->layout('ui::components.layouts.dashboard', [
-                'title' => __('internship::ui.registration_title').' | '.setting('brand_name'),
-            ]);
+        return view('internship::livewire.internship-registration-manager')->layout(
+            'ui::components.layouts.dashboard',
+            [
+                'title' => __('internship::ui.registration_title') . ' | ' . setting('brand_name'),
+            ],
+        );
     }
 }

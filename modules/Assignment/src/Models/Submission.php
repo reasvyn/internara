@@ -62,11 +62,7 @@ class Submission extends Model implements HasMedia
      */
     public function student(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'student_id',
-            relation: 'student',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'student_id', relation: 'student');
     }
 
     /**

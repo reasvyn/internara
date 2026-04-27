@@ -24,8 +24,7 @@ describe('TeacherManager Component', function () {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        Livewire::test(TeacherManager::class)
-            ->assertForbidden();
+        Livewire::test(TeacherManager::class)->assertForbidden();
     });
 
     test('it renders correctly for authorized users', function () {
@@ -45,9 +44,7 @@ describe('TeacherManager Component', function () {
         $admin->givePermissionTo('teacher.manage');
         $this->actingAs($admin);
 
-        Livewire::test(TeacherManager::class)
-            ->call('add')
-            ->assertSet('formModal', true);
+        Livewire::test(TeacherManager::class)->call('add')->assertSet('formModal', true);
     });
 
     test('it opens the edit modal and fills the form with teacher data', function () {
@@ -103,15 +100,17 @@ describe('TeacherManager Component', function () {
         expect(User::find($teacher->id)->name)->toBe('Updated Teacher Name');
     });
 
-    test('it forbids non-admin roles even if they somehow receive teacher manage permission', function () {
-        $mentor = User::factory()->create();
-        $mentor->assignRole(Role::MENTOR->value);
-        $mentor->givePermissionTo('teacher.manage');
-        $this->actingAs($mentor);
+    test(
+        'it forbids non-admin roles even if they somehow receive teacher manage permission',
+        function () {
+            $mentor = User::factory()->create();
+            $mentor->assignRole(Role::MENTOR->value);
+            $mentor->givePermissionTo('teacher.manage');
+            $this->actingAs($mentor);
 
-        Livewire::test(TeacherManager::class)
-            ->assertForbidden();
-    });
+            Livewire::test(TeacherManager::class)->assertForbidden();
+        },
+    );
 
     test('it validates invalid input during save', function () {
         $admin = User::factory()->create();

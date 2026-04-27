@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Session;
 use Modules\UI\Services\LocalizationService;
 
 test('it returns supported locales', function () {
-    $service = new LocalizationService;
+    $service = new LocalizationService();
     $locales = $service->getSupportedLocales();
 
     expect($locales)->toBeArray()->and($locales)->toHaveKey('en')->and($locales)->toHaveKey('id');
 });
 
 test('it can set locale', function () {
-    $service = new LocalizationService;
+    $service = new LocalizationService();
 
     $result = $service->setLocale('id');
 
@@ -29,7 +29,7 @@ test('it can set locale', function () {
 });
 
 test('it fails to set unsupported locale', function () {
-    $service = new LocalizationService;
+    $service = new LocalizationService();
 
     $result = $service->setLocale('fr');
 
@@ -37,7 +37,7 @@ test('it fails to set unsupported locale', function () {
 });
 
 test('it returns current locale', function () {
-    $service = new LocalizationService;
+    $service = new LocalizationService();
     App::setLocale('en');
 
     expect($service->getCurrentLocale())->toBe('en');

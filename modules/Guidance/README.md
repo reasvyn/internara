@@ -3,20 +3,19 @@
 The `Guidance` module formalizes the onboarding and briefing process for students, managing official
 institutional handbooks and tracking student readiness.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
 ## Purpose
 
 - **Instructional Centralization:** A single source of truth for official school manuals and
- internship guidelines.
+  internship guidelines.
 - **Readiness Verification:** Ensuring students have read and understood institutional policies
- before beginning active duties.
+  before beginning active duties.
 - **Administrative Flexibility:** Global toggles to enable or disable briefing requirements based on
- school readiness.
+  school readiness.
 
 ## Key Features
 
@@ -25,7 +24,7 @@ institutional handbooks and tracking student readiness.
 - **Document Hub:** Staf can upload PDF guidelines integrated with the `Media` module.
 - **Version Control:** Tracking of multiple versions of instructional materials.
 - **Mandatory Gating:** Ability to mark specific handbooks as "Mandatory," which impacts system
- gating logic.
+  gating logic.
 
 ### 2. Guidance Hub (Student)
 
@@ -36,8 +35,8 @@ institutional handbooks and tracking student readiness.
 ### 2. Services
 
 - **GuidanceService**: Orchestrates mentoring relationships and site-visit logs.
- - _API_: `recordVisit(teacherId, studentId, report)`, `getGuidanceHistory(studentId)`.
- - _Contract_: `Modules\Guidance\Services\Contracts\GuidanceService`.
+- _API_: `recordVisit(teacherId, studentId, report)`, `getGuidanceHistory(studentId)`.
+- _Contract_: `Modules\Guidance\Services\Contracts\GuidanceService`.
 
 ---
 

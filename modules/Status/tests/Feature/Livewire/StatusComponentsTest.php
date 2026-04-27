@@ -37,8 +37,7 @@ class StatusSelectorComponentTest extends TestCase
 
         $this->actingAs($admin);
 
-        Livewire::test(StatusSelector::class, ['userId' => $user->id])
-            ->assertStatus(200);
+        Livewire::test(StatusSelector::class, ['userId' => $user->id])->assertStatus(200);
     }
 
     /** @test */
@@ -75,9 +74,7 @@ class StatusSelectorComponentTest extends TestCase
             ->call('transitionStatus', AccountStatus::VERIFIED->value, 'Admin verification')
             ->assertDispatched('statusChanged');
 
-        $this->assertTrue(
-            $user->refresh()->account_status === AccountStatus::VERIFIED->value
-        );
+        $this->assertTrue($user->refresh()->account_status === AccountStatus::VERIFIED->value);
     }
 
     /** @test */
@@ -144,9 +141,7 @@ class QuickActionButtonsComponentTest extends TestCase
             ->call('verify')
             ->assertDispatched('accountVerified');
 
-        $this->assertTrue(
-            $user->refresh()->account_status === AccountStatus::VERIFIED->value
-        );
+        $this->assertTrue($user->refresh()->account_status === AccountStatus::VERIFIED->value);
     }
 
     /** @test */
@@ -165,9 +160,7 @@ class QuickActionButtonsComponentTest extends TestCase
             ->call('suspend')
             ->assertDispatched('accountSuspended');
 
-        $this->assertTrue(
-            $user->refresh()->account_status === AccountStatus::SUSPENDED->value
-        );
+        $this->assertTrue($user->refresh()->account_status === AccountStatus::SUSPENDED->value);
     }
 
     /** @test */

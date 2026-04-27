@@ -77,7 +77,7 @@ describe('User Lifecycle Feature Test (BP-ID-01 & BP-ID-02)', function () {
                 'roles' => [Role::TEACHER->value],
             ];
 
-            expect(fn () => $this->userService->create($userData))->not->toThrow(
+            expect(fn() => $this->userService->create($userData))->not->toThrow(
                 AuthorizationException::class,
             );
         });

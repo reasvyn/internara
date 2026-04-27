@@ -17,7 +17,7 @@ test('qr signature tampering audit: modified signatures are rejected', function 
     $validUrl = URL::signedRoute('assessment.verify', ['registration' => $registrationId]);
 
     // Tamper with the URL (change one char in signature)
-    $tamperedUrl = $validUrl.'extra';
+    $tamperedUrl = $validUrl . 'extra';
 
     // Check if the signature is valid according to Laravel
     // We create requests to test the signatures

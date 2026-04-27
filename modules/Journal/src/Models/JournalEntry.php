@@ -63,9 +63,7 @@ class JournalEntry extends Model implements HasMedia
      */
     public function registration(): BelongsTo
     {
-        return app(
-            RegistrationService::class,
-        )->defineBelongsTo($this, 'registration_id');
+        return app(RegistrationService::class)->defineBelongsTo($this, 'registration_id');
     }
 
     /**
@@ -73,11 +71,7 @@ class JournalEntry extends Model implements HasMedia
      */
     public function student(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'student_id',
-            relation: 'student',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'student_id', relation: 'student');
     }
 
     /**

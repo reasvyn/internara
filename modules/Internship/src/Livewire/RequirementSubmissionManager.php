@@ -26,10 +26,8 @@ class RequirementSubmissionManager extends Component
      */
     public function mount(?string $registrationId = null): void
     {
-        if (! $registrationId) {
-            $registration = app(
-                RegistrationService::class,
-            )->first([
+        if (!$registrationId) {
+            $registration = app(RegistrationService::class)->first([
                 'student_id' => auth()->id(),
             ]);
             $registrationId = $registration?->id;
@@ -52,7 +50,7 @@ class RequirementSubmissionManager extends Component
         // For now, using basic check, in production use Policies
         if (
             auth()->id() !== $registration->student_id &&
-            ! auth()->user()->can('internship.update')
+            !auth()->user()->can('internship.update')
         ) {
             abort(403);
         }

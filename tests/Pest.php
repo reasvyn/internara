@@ -9,23 +9,23 @@ use Tests\TestCase;
 pest()
     ->extend(DuskTestCase::class)
     ->use(DatabaseMigrations::class)
-    ->in(__DIR__.'/Browser', __DIR__.'/../modules/*/tests/Browser');
+    ->in(__DIR__ . '/Browser', __DIR__ . '/../modules/*/tests/Browser');
 
 pest()
     ->extend(TestCase::class)
     ->use(LazilyRefreshDatabase::class)
     ->in(
-        __DIR__.'/Feature',
-        __DIR__.'/../modules/*/tests/Feature',
-        __DIR__.'/../modules/*/Tests/Feature',
+        __DIR__ . '/Feature',
+        __DIR__ . '/../modules/*/tests/Feature',
+        __DIR__ . '/../modules/*/Tests/Feature',
     );
 
 pest()
     ->extend(TestCase::class)
     ->in(
-        __DIR__.'/Unit',
-        __DIR__.'/../modules/*/tests/Unit',
-        __DIR__.'/../modules/*/Tests/Unit',
+        __DIR__ . '/Unit',
+        __DIR__ . '/../modules/*/tests/Unit',
+        __DIR__ . '/../modules/*/Tests/Unit',
     );
 
 /*

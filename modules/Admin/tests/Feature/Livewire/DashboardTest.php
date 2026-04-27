@@ -23,10 +23,7 @@ test('admin dashboard renders correctly', function () {
         'placement_rate' => 100,
     ]);
     $analytics->shouldReceive('getAtRiskStudents')->andReturn([]);
-    app()->instance(
-        AnalyticsAggregator::class,
-        $analytics,
-    );
+    app()->instance(AnalyticsAggregator::class, $analytics);
 
     Livewire::actingAs($admin)
         ->test(Dashboard::class)

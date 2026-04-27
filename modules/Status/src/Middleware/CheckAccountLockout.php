@@ -36,7 +36,13 @@ class CheckAccountLockout
     public function handle(Request $request, Closure $next)
     {
         // Only apply to login/password reset attempts
-        if (! in_array($request->route()?->getName(), ['login', 'password.request', 'password.reset'])) {
+        if (
+            !in_array($request->route()?->getName(), [
+                'login',
+                'password.request',
+                'password.reset',
+            ])
+        ) {
             return $next($request);
         }
 
@@ -51,10 +57,14 @@ class CheckAccountLockout
                     'ip' => $request->ip(),
                 ]);
 
-                return response()->view('auth.locked-out', [
-                    'user' => $user,
-                    'unlock_time' => $this->lockoutService->getUnlockTime($user),
-                ], 423); // 423 Locked status code
+                return response()->view(
+                    'auth.locked-out',
+                    [
+                        'user' => $user,
+                        'unlock_time' => $this->lockoutService->getUnlockTime($user),
+                    ],
+                    423,
+                ); // 423 Locked status code
             }
         }
 

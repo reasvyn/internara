@@ -37,7 +37,7 @@ class AssessmentPdfController extends Controller
 
         // Completion Invariant: Must be ready
         $readiness = $this->assessmentService->getReadinessStatus($registrationId);
-        if (! $readiness['is_ready']) {
+        if (!$readiness['is_ready']) {
             abort(403, __('assessment::messages.not_ready_for_credentials'));
         }
 
@@ -47,7 +47,7 @@ class AssessmentPdfController extends Controller
             ->header('Content-Type', 'application/pdf')
             ->header(
                 'Content-Disposition',
-                'attachment; filename="certificate-'.$registration->student->username.'.pdf"',
+                'attachment; filename="certificate-' . $registration->student->username . '.pdf"',
             );
     }
 
@@ -65,7 +65,7 @@ class AssessmentPdfController extends Controller
 
         // Completion Invariant: Must be ready
         $readiness = $this->assessmentService->getReadinessStatus($registrationId);
-        if (! $readiness['is_ready']) {
+        if (!$readiness['is_ready']) {
             abort(403, __('assessment::messages.not_ready_for_credentials'));
         }
 
@@ -75,7 +75,7 @@ class AssessmentPdfController extends Controller
             ->header('Content-Type', 'application/pdf')
             ->header(
                 'Content-Disposition',
-                'attachment; filename="transcript-'.$registration->student->username.'.pdf"',
+                'attachment; filename="transcript-' . $registration->student->username . '.pdf"',
             );
     }
 
@@ -87,7 +87,7 @@ class AssessmentPdfController extends Controller
         // This is a public page linked from QR Code
         $registration = $this->registrationService->find($registrationId);
 
-        if (! $registration) {
+        if (!$registration) {
             abort(404);
         }
 
@@ -99,7 +99,7 @@ class AssessmentPdfController extends Controller
             ->header('Content-Type', 'application/pdf')
             ->header(
                 'Content-Disposition',
-                'inline; filename="verify-'.$registrationId.'.pdf"',
+                'inline; filename="verify-' . $registrationId . '.pdf"',
             );
     }
 }

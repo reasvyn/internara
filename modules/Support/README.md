@@ -1,6 +1,8 @@
 # Support Module
 
-The `Support` module provides the **Infrastructure & Operational Bridge** for Internara. It centralizes technical system installation, environment auditing, help documentation, and developer automation.
+The `Support` module provides the **Infrastructure & Operational Bridge** for Internara. It
+centralizes technical system installation, environment auditing, help documentation, and developer
+automation.
 
 ---
 
@@ -10,9 +12,12 @@ The `Support` module provides the **Infrastructure & Operational Bridge** for In
 
 Handles the technical initialization of the Internara system.
 
-- **`SystemInstaller`**: Handles low-level technical installation tasks (env creation, app key generation, migration execution, and storage symlinking).
-- **`InstallationAuditor`**: Performs pre-flight environment checks (PHP extensions, directory permissions, and database connectivity).
-- **`SystemInstallCommand`**: Automated technical initialization via CLI (`php artisan system:install`).
+- **`SystemInstaller`**: Handles low-level technical installation tasks (env creation, app key
+  generation, migration execution, and storage symlinking).
+- **`InstallationAuditor`**: Performs pre-flight environment checks (PHP extensions, directory
+  permissions, and database connectivity).
+- **`SystemInstallCommand`**: Automated technical initialization via CLI
+  (`php artisan system:install`).
 
 ### 1.2 Help & Documentation Domain
 
@@ -33,9 +38,12 @@ Provides custom Artisan generators that enforce Internara's architectural standa
 
 ## 2. Engineering Standards
 
-- **Infrastructure Sovereignty**: The `Support` module is authorized to interact with low-level system resources (Filesystem, Shell, PHP Configuration) to facilitate installation and auditing.
-- **Domain Separation**: Technical installation concerns are strictly separated from the business configuration (handled by the `Setup` module).
-- **Wizard Concerns**: Utilizes the shared `HandlesWizardSteps` trait for unified UI logic in the installation welcome and requirement check screens.
+- **Infrastructure Sovereignty**: The `Support` module is authorized to interact with low-level
+  system resources (Filesystem, Shell, PHP Configuration) to facilitate installation and auditing.
+- **Domain Separation**: Technical installation concerns are strictly separated from the business
+  configuration (handled by the `Setup` module).
+- **Wizard Concerns**: Utilizes the shared `HandlesWizardSteps` trait for unified UI logic in the
+  installation welcome and requirement check screens.
 
 ---
 

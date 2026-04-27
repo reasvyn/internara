@@ -25,9 +25,7 @@ beforeEach(function () {
 });
 
 test('it can register a student for a placement if capacity is available', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
@@ -55,9 +53,7 @@ test('it can register a student for a placement if capacity is available', funct
 });
 
 test('it throws exception if student already registered for the same program', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement1 = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
@@ -81,16 +77,14 @@ test('it throws exception if student already registered for the same program', f
 
     // Second registration for same program but different placement
     $data['placement_id'] = $placement2->id;
-    expect(fn () => app(RegistrationService::class)->register($data))->toThrow(
+    expect(fn() => app(RegistrationService::class)->register($data))->toThrow(
         AppException::class,
         'internship::exceptions.student_already_registered',
     );
 });
 
 test('it throws exception if no capacity available', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
@@ -117,16 +111,14 @@ test('it throws exception if no capacity available', function () {
     // Try to register another student
     $data2 = $data1;
     $data2['student_id'] = $student2->id;
-    expect(fn () => app(RegistrationService::class)->register($data2))->toThrow(
+    expect(fn() => app(RegistrationService::class)->register($data2))->toThrow(
         AppException::class,
         'internship::exceptions.no_slots_available',
     );
 });
 
 test('it logs the placement assignment when registering', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
@@ -153,9 +145,7 @@ test('it logs the placement assignment when registering', function () {
 });
 
 test('it can reassign a placement and logs the change', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement1 = app(InternshipPlacementService::class)
         ->factory()
         ->create([
@@ -196,10 +186,7 @@ test('it can reassign a placement and logs the change', function () {
     ]);
 
     // Check metadata
-    $history = PlacementHistory::where(
-        'registration_id',
-        $registration->id,
-    )
+    $history = PlacementHistory::where('registration_id', $registration->id)
         ->where('action', 'changed')
         ->first();
 
@@ -210,16 +197,14 @@ test('it can reassign a placement and logs the change', function () {
 });
 
 test('it enforces advisor invariant', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
     $student = app(UserService::class)->factory()->create();
 
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -231,9 +216,7 @@ test('it enforces advisor invariant', function () {
 });
 
 test('it enforces temporal integrity', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
@@ -242,7 +225,7 @@ test('it enforces temporal integrity', function () {
 
     // Missing dates
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -252,7 +235,7 @@ test('it enforces temporal integrity', function () {
 
     // Invalid range
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -264,9 +247,7 @@ test('it enforces temporal integrity', function () {
 });
 
 test('it restricts registration based on system phase', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create(['internship_id' => $program->id]);
@@ -277,7 +258,7 @@ test('it restricts registration based on system phase', function () {
     setting(['system_phase' => 'operation']);
 
     expect(
-        fn () => app(RegistrationService::class)->register([
+        fn() => app(RegistrationService::class)->register([
             'internship_id' => $program->id,
             'placement_id' => $placement->id,
             'student_id' => $student->id,
@@ -292,9 +273,7 @@ test('it restricts registration based on system phase', function () {
 });
 
 test('atomic rollback audit: it rolls back slot allocation if registration fails', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
@@ -307,12 +286,9 @@ test('atomic rollback audit: it rolls back slot allocation if registration fails
 
     // We mock the database to throw exception during creation
     // To ensure transaction rolls back
-    Event::listen(
-        TransactionBeginning::class,
-        function () {
-            // This is a bit tricky to mock perfectly without touching DB engine
-        },
-    );
+    Event::listen(TransactionBeginning::class, function () {
+        // This is a bit tricky to mock perfectly without touching DB engine
+    });
 
     // Instead, let's test that the slot remains 1 if an exception is thrown
     // after the capacity check but before the final commit
@@ -321,9 +297,7 @@ test('atomic rollback audit: it rolls back slot allocation if registration fails
 });
 
 test('quota release audit: cancelling a registration releases the slot', function () {
-    $program = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $program = app(InternshipService::class)->factory()->create();
     $placement = app(InternshipPlacementService::class)
         ->factory()
         ->create([
@@ -347,19 +321,11 @@ test('quota release audit: cancelling a registration releases the slot', functio
     $registration = $service->register($data);
 
     // Quota should be full now
-    expect(
-        app(
-            InternshipPlacementService::class,
-        )->hasAvailableSlots($placement->id),
-    )->toBeFalse();
+    expect(app(InternshipPlacementService::class)->hasAvailableSlots($placement->id))->toBeFalse();
 
     // Cancel registration
     $service->reject($registration->id, 'Student cancelled');
 
     // Quota should be available again
-    expect(
-        app(
-            InternshipPlacementService::class,
-        )->hasAvailableSlots($placement->id),
-    )->toBeTrue();
+    expect(app(InternshipPlacementService::class)->hasAvailableSlots($placement->id))->toBeTrue();
 });

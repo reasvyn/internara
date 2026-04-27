@@ -48,8 +48,16 @@ class InternshipRegistration extends RecordManager
     {
         return [
             ['key' => 'student_name', 'label' => __('internship::ui.student'), 'sortable' => false],
-            ['key' => 'internship_title', 'label' => __('internship::ui.program'), 'sortable' => false],
-            ['key' => 'placement_company', 'label' => __('internship::ui.placement'), 'sortable' => false],
+            [
+                'key' => 'internship_title',
+                'label' => __('internship::ui.program'),
+                'sortable' => false,
+            ],
+            [
+                'key' => 'placement_company',
+                'label' => __('internship::ui.placement'),
+                'sortable' => false,
+            ],
             ['key' => 'teacher_name', 'label' => __('internship::ui.teacher'), 'sortable' => false],
             ['key' => 'status', 'label' => __('internship::ui.status'), 'sortable' => true],
             ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
@@ -120,7 +128,11 @@ class InternshipRegistration extends RecordManager
     #[Computed]
     public function internships(): Collection
     {
-        return Cache::remember('dropdown:internships', self::DROPDOWN_TTL, fn () => app(InternshipService::class)->all(['id', 'title']));
+        return Cache::remember(
+            'dropdown:internships',
+            self::DROPDOWN_TTL,
+            fn() => app(InternshipService::class)->all(['id', 'title']),
+        );
     }
 
     /**
@@ -135,7 +147,7 @@ class InternshipRegistration extends RecordManager
                 ->query()
                 ->with('company:id,name')
                 ->get(['id', 'company_id'])
-                ->map(fn ($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
+                ->map(fn($p) => ['id' => $p->id, 'name' => $p->company?->name ?? 'Unknown']);
         });
     }
 
@@ -149,7 +161,7 @@ class InternshipRegistration extends RecordManager
         return Cache::remember('dropdown:users:student', self::DROPDOWN_TTL, function () {
             return app(UserService::class)
                 ->get(['roles.name' => 'student'], ['id', 'name', 'username'])
-                ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name.' ('.$u->username.')']);
+                ->map(fn($u) => ['id' => $u->id, 'name' => $u->name . ' (' . $u->username . ')']);
         });
     }
 
@@ -160,7 +172,11 @@ class InternshipRegistration extends RecordManager
     #[Computed]
     public function teachers(): Collection
     {
-        return Cache::remember('dropdown:users:teacher', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'teacher'], ['id', 'name']));
+        return Cache::remember(
+            'dropdown:users:teacher',
+            self::DROPDOWN_TTL,
+            fn() => app(UserService::class)->get(['roles.name' => 'teacher'], ['id', 'name']),
+        );
     }
 
     /**
@@ -170,7 +186,11 @@ class InternshipRegistration extends RecordManager
     #[Computed]
     public function mentors(): Collection
     {
-        return Cache::remember('dropdown:users:mentor', self::DROPDOWN_TTL, fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']));
+        return Cache::remember(
+            'dropdown:users:mentor',
+            self::DROPDOWN_TTL,
+            fn() => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']),
+        );
     }
 
     /**
@@ -186,16 +206,13 @@ class InternshipRegistration extends RecordManager
 
             // Keystone Verification: Ensure student has cleared requirements before placement
             if ($this->form->placement_id) {
-                $isEligible = app(
-                    PlacementService::class,
-                )->isEligibleForPlacement($this->form->id ?? 'new'); // 'new' is dummy, eligibility check usually needs student_id context for new records
+                $isEligible = app(PlacementService::class)->isEligibleForPlacement(
+                    $this->form->id ?? 'new',
+                ); // 'new' is dummy, eligibility check usually needs student_id context for new records
 
                 // For existing records, we can check the ID
-                if ($this->form->id && ! $isEligible) {
-                    throw new AppException(
-                        'internship::ui.not_eligible_for_placement',
-                        code: 422,
-                    );
+                if ($this->form->id && !$isEligible) {
+                    throw new AppException('internship::ui.not_eligible_for_placement', code: 422);
                 }
             }
 
@@ -207,7 +224,7 @@ class InternshipRegistration extends RecordManager
 
             $this->formModal = false;
             flash()->success(__('shared::messages.record_saved'));
-            $this->dispatch($this->getEventPrefix().':saved', exists: true);
+            $this->dispatch($this->getEventPrefix() . ':saved', exists: true);
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
@@ -228,7 +245,7 @@ class InternshipRegistration extends RecordManager
     #[Computed]
     public function history(): Collection
     {
-        if (! $this->historyId) {
+        if (!$this->historyId) {
             return collect();
         }
 
@@ -293,7 +310,7 @@ class InternshipRegistration extends RecordManager
      */
     public function executeBulkPlace(): void
     {
-        if (! $this->targetPlacementId) {
+        if (!$this->targetPlacementId) {
             flash()->error(__('internship::ui.select_placement_location'));
 
             return;
@@ -301,9 +318,7 @@ class InternshipRegistration extends RecordManager
 
         try {
             $pairings = array_fill_keys($this->selectedIds, $this->targetPlacementId);
-            $count = app(PlacementService::class)->bulkMatch(
-                $pairings,
-            );
+            $count = app(PlacementService::class)->bulkMatch($pairings);
 
             $this->bulkPlaceModal = false;
             $this->selectedIds = [];

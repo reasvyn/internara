@@ -32,9 +32,7 @@ beforeEach(function () {
     $this->registration->setStatus('active');
 
     // Create assignments for this internship
-    app(AssignmentService::class)->createDefaults(
-        $this->internship->id,
-    );
+    app(AssignmentService::class)->createDefaults($this->internship->id);
 
     $this->actingAs($this->student);
 });

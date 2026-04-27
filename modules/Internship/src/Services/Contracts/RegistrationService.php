@@ -42,9 +42,7 @@ interface RegistrationService extends EloquentQuery
      * criteria, unlocking the "Active" status and allowing for subsequent
      * logging activities (Journal/Attendance).
      */
-    public function approve(
-        string $registrationId,
-    ): Model;
+    public function approve(string $registrationId): Model;
 
     /**
      * Terminates a pending registration with provided justification.
@@ -52,10 +50,7 @@ interface RegistrationService extends EloquentQuery
      * Prevents unauthorized or invalid applications from progressing,
      * while capturing the rejection rationale for student feedback.
      */
-    public function reject(
-        string $registrationId,
-        ?string $reason = null,
-    ): Model;
+    public function reject(string $registrationId, ?string $reason = null): Model;
 
     /**
      * Moves an active student to a different industrial placement.
@@ -76,7 +71,5 @@ interface RegistrationService extends EloquentQuery
      * Verification: Implementation MUST ensure that all mandatory
      * assignments and evaluations are cleared before allowing this transition.
      */
-    public function complete(
-        string $registrationId,
-    ): Model;
+    public function complete(string $registrationId): Model;
 }

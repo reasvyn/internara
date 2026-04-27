@@ -47,7 +47,7 @@ class GdprComplianceService
     {
         return DB::transaction(function () use ($user) {
             // Create temporary directory for export
-            $tempDir = storage_path('app/temp/'.$user->id.'_'.uniqid());
+            $tempDir = storage_path('app/temp/' . $user->id . '_' . uniqid());
             mkdir($tempDir, 0755, true);
 
             try {
@@ -81,7 +81,7 @@ class GdprComplianceService
                         'file_path' => $zipPath,
                         'exported_at' => now()->toIso8601String(),
                         'exported_by' => auth()->id(),
-                    ]
+                    ],
                 );
 
                 // Clean up temp directory
@@ -112,7 +112,7 @@ class GdprComplianceService
     {
         return DB::transaction(function () use ($user, $reason) {
             // Generate anonymization token
-            $anonymizedId = 'ANON_'.hash('sha256', $user->id.config('app.key'));
+            $anonymizedId = 'ANON_' . hash('sha256', $user->id . config('app.key'));
 
             // Store anonymization details
             $anonymizationData = [
@@ -126,7 +126,7 @@ class GdprComplianceService
             // Update user with anonymized data
             $user->update([
                 'name' => $anonymizedId,
-                'email' => $anonymizedId.'@anonymized.local',
+                'email' => $anonymizedId . '@anonymized.local',
                 'phone' => null,
                 'address' => null,
                 'profile_picture' => null,
@@ -141,7 +141,7 @@ class GdprComplianceService
             $this->auditLogger->log(
                 user: $user,
                 event: 'gdpr_anonymization',
-                metadata: $anonymizationData
+                metadata: $anonymizationData,
             );
 
             Log::alert("GDPR Anonymization: User {$user->id} anonymized. Reason: {$reason}");
@@ -176,7 +176,9 @@ class GdprComplianceService
             // Delete related records (cascade will handle this)
             $user->delete();
 
-            Log::alert("GDPR Deletion: User permanently deleted. Email: {$user->email}. Reason: {$reason}");
+            Log::alert(
+                "GDPR Deletion: User permanently deleted. Email: {$user->email}. Reason: {$reason}",
+            );
 
             return true;
         });
@@ -202,7 +204,7 @@ class GdprComplianceService
 
         file_put_contents(
             "$tempDir/profile.json",
-            json_encode($profile, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode($profile, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         );
     }
 
@@ -218,7 +220,7 @@ class GdprComplianceService
 
         file_put_contents(
             "$tempDir/audit_trail.json",
-            json_encode($auditLog, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode($auditLog, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         );
     }
 
@@ -227,13 +229,11 @@ class GdprComplianceService
      */
     private function exportStatusHistory(User $user, string $tempDir): void
     {
-        $history = DB::table('account_status_history')
-            ->where('user_id', $user->id)
-            ->get();
+        $history = DB::table('account_status_history')->where('user_id', $user->id)->get();
 
         file_put_contents(
             "$tempDir/status_history.json",
-            json_encode($history, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode($history, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         );
     }
 
@@ -242,13 +242,11 @@ class GdprComplianceService
      */
     private function exportRestrictions(User $user, string $tempDir): void
     {
-        $restrictions = DB::table('account_restrictions')
-            ->where('user_id', $user->id)
-            ->get();
+        $restrictions = DB::table('account_restrictions')->where('user_id', $user->id)->get();
 
         file_put_contents(
             "$tempDir/restrictions.json",
-            json_encode($restrictions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode($restrictions, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         );
     }
 
@@ -265,7 +263,7 @@ class GdprComplianceService
 
         file_put_contents(
             "$tempDir/login_history.json",
-            json_encode($loginHistory, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode($loginHistory, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         );
     }
 
@@ -291,7 +289,7 @@ class GdprComplianceService
 
         file_put_contents(
             "$tempDir/README.json",
-            json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
         );
     }
 
@@ -302,23 +300,20 @@ class GdprComplianceService
      */
     private function createZipArchive(User $user, string $tempDir): string
     {
-        $zipFileName = "user_{$user->id}_data_export_".now()->format('Y_m_d_H_i_s').'.zip';
+        $zipFileName = "user_{$user->id}_data_export_" . now()->format('Y_m_d_H_i_s') . '.zip';
         $zipPath = storage_path("app/gdpr-exports/$zipFileName");
 
         // Ensure export directory exists
         mkdir(dirname($zipPath), 0755, true);
 
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // Add all files from temp directory
         $files = scandir($tempDir);
         foreach ($files as $file) {
             if ($file !== '.' && $file !== '..') {
-                $zip->addFile(
-                    "$tempDir/$file",
-                    $file
-                );
+                $zip->addFile("$tempDir/$file", $file);
             }
         }
 

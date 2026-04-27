@@ -29,7 +29,7 @@ class QueryServiceStub extends EloquentQuery implements EloquentQueryContract
 {
     public function __construct()
     {
-        $this->setModel(new QueryModelStub);
+        $this->setModel(new QueryModelStub());
     }
 }
 
@@ -40,16 +40,16 @@ describe('EloquentQuery Base Service', function () {
             $table->string('name');
             $table->timestamps();
         });
-        $this->service = new QueryServiceStub;
+        $this->service = new QueryServiceStub();
 
         // S1 Security Alignment: Mock user with super-admin role to bypass all permission checks
         $user = \Mockery::mock(User::class)->makePartial();
         $user->shouldReceive('hasRole')->andReturn(true);
         $this->actingAs($user);
 
-        Gate::define('create', fn () => true);
-        Gate::define('update', fn () => true);
-        Gate::define('delete', fn () => true);
+        Gate::define('create', fn() => true);
+        Gate::define('update', fn() => true);
+        Gate::define('delete', fn() => true);
     });
 
     afterEach(function () {

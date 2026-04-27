@@ -42,12 +42,6 @@
                     <x-ui::checkbox class="checkbox-sm" label-class="text-sm" :label="__('auth::ui.login.form.remember_me')" wire:model="remember" />
                 </div>
 
-                @if(config('services.cloudflare.turnstile.site_key'))
-                    <div wire:key="login-captcha">
-                        <x-ui::turnstile fieldName="captcha_token" />
-                    </div>
-                @endif
-
                 <div class="mt-4 flex w-full flex-col gap-8" wire:key="login-actions">
                     <x-ui::button
                         variant="primary"

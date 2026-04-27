@@ -14,7 +14,7 @@ class SubmissionPolicy
 
     public function view(User $user, Submission $submission): bool
     {
-        if (! $user->can('assignment.view')) {
+        if (!$user->can('assignment.view')) {
             return false;
         }
 
@@ -36,7 +36,7 @@ class SubmissionPolicy
 
     public function update(User $user, Submission $submission): bool
     {
-        return $user->id === $submission->student_id && ! $submission->isVerified();
+        return $user->id === $submission->student_id && !$submission->isVerified();
     }
 
     public function validate(User $user, Submission $submission): bool

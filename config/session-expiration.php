@@ -22,12 +22,12 @@ return [
     |
     */
     'timeouts' => [
-        'super_admin' => env('SESSION_TIMEOUT_SUPER_ADMIN', 12 * 60),  // 12 hours
-        'admin' => env('SESSION_TIMEOUT_ADMIN', 12 * 60),              // 12 hours
-        'teacher' => env('SESSION_TIMEOUT_TEACHER', 24 * 60),          // 24 hours
-        'supervisor' => env('SESSION_TIMEOUT_SUPERVISOR', 24 * 60),    // 24 hours
-        'student' => env('SESSION_TIMEOUT_STUDENT', 24 * 60),          // 24 hours
-        'default' => env('SESSION_TIMEOUT_DEFAULT', 24 * 60),          // 24 hours
+        'super_admin' => env('SESSION_TIMEOUT_SUPER_ADMIN', 12 * 60), // 12 hours
+        'admin' => env('SESSION_TIMEOUT_ADMIN', 12 * 60), // 12 hours
+        'teacher' => env('SESSION_TIMEOUT_TEACHER', 24 * 60), // 24 hours
+        'supervisor' => env('SESSION_TIMEOUT_SUPERVISOR', 24 * 60), // 24 hours
+        'student' => env('SESSION_TIMEOUT_STUDENT', 24 * 60), // 24 hours
+        'default' => env('SESSION_TIMEOUT_DEFAULT', 24 * 60), // 24 hours
     ],
 
     /*

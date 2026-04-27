@@ -33,9 +33,7 @@ test('it calculates readiness correctly including mandatory assignments', functi
 
     // Mock AssignmentService to return incomplete fulfillment
     $assignmentMock = \Mockery::mock(AssignmentService::class);
-    $assignmentMock
-        ->shouldReceive('isFulfillmentComplete')
-        ->andReturn(false);
+    $assignmentMock->shouldReceive('isFulfillmentComplete')->andReturn(false);
     app()->instance(AssignmentService::class, $assignmentMock);
 
     $status = $service->getReadinessStatus($registration->id);
@@ -59,9 +57,7 @@ test('it calculates readiness correctly including mandatory assignments', functi
 
     // Update Mock
     $assignmentMock2 = \Mockery::mock(AssignmentService::class);
-    $assignmentMock2
-        ->shouldReceive('isFulfillmentComplete')
-        ->andReturn(true);
+    $assignmentMock2->shouldReceive('isFulfillmentComplete')->andReturn(true);
     app()->instance(AssignmentService::class, $assignmentMock2);
 
     $status = $service->getReadinessStatus($registration->id);

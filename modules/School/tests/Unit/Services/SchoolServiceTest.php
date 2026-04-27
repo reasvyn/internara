@@ -33,10 +33,13 @@ describe('School Service', function () {
         $service->create(['name' => 'Unauthorized School']);
     })->throws(AuthorizationException::class);
 
-    test('it validates Institutional Code format (must be at least 3 characters) [SYRS-F-101]', function () {
-        Gate::shouldReceive('authorize')->andReturn(true);
-        $service = app(SchoolService::class);
+    test(
+        'it validates Institutional Code format (must be at least 3 characters) [SYRS-F-101]',
+        function () {
+            Gate::shouldReceive('authorize')->andReturn(true);
+            $service = app(SchoolService::class);
 
-        $service->create(['name' => 'Test School', 'institutional_code' => '12']);
-    })->throws(AppException::class);
+            $service->create(['name' => 'Test School', 'institutional_code' => '12']);
+        },
+    )->throws(AppException::class);
 });

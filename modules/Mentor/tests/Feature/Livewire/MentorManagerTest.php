@@ -21,9 +21,7 @@ beforeEach(function () {
 test('unauthorized user cannot access mentor manager', function () {
     $user = User::factory()->create();
 
-    Livewire::actingAs($user)
-        ->test(MentorManager::class)
-        ->assertForbidden();
+    Livewire::actingAs($user)->test(MentorManager::class)->assertForbidden();
 });
 
 test('authorized user can mount mentor manager and view records', function () {
@@ -33,19 +31,16 @@ test('authorized user can mount mentor manager and view records', function () {
     $mockService = \Mockery::mock(MentorService::class);
     $mockQuery = \Mockery::mock();
 
-    $mockService->shouldReceive('query')
-        ->once()
-        ->andReturn($mockQuery);
+    $mockService->shouldReceive('query')->once()->andReturn($mockQuery);
 
-    $mockQuery->shouldReceive('with')
+    $mockQuery
+        ->shouldReceive('with')
         ->with(['roles:id,name', 'profile'])
         ->once()
         ->andReturnSelf();
 
     $paginator = new LengthAwarePaginator([], 0, 10);
-    $mockQuery->shouldReceive('paginate')
-        ->once()
-        ->andReturn($paginator);
+    $mockQuery->shouldReceive('paginate')->once()->andReturn($paginator);
 
     app()->instance(MentorService::class, $mockService);
 
@@ -93,10 +88,7 @@ test('edit method fills form and opens modal', function () {
     $mockQuery->shouldReceive('with')->andReturnSelf();
     $mockQuery->shouldReceive('paginate')->andReturn(new LengthAwarePaginator([], 0, 10));
 
-    $mockService->shouldReceive('find')
-        ->with((string) $mentor->id)
-        ->once()
-        ->andReturn($mentor);
+    $mockService->shouldReceive('find')->with((string) $mentor->id)->once()->andReturn($mentor);
 
     app()->instance(MentorService::class, $mockService);
 
@@ -118,11 +110,14 @@ test('save method creates new mentor', function () {
     $mockQuery->shouldReceive('with')->andReturnSelf();
     $mockQuery->shouldReceive('paginate')->andReturn(new LengthAwarePaginator([], 0, 10));
 
-    $mockService->shouldReceive('create')
+    $mockService
+        ->shouldReceive('create')
         ->once()
-        ->with(\Mockery::on(function ($data) {
-            return $data['name'] === 'New Mentor' && $data['email'] === 'new@mentor.com';
-        }))
+        ->with(
+            \Mockery::on(function ($data) {
+                return $data['name'] === 'New Mentor' && $data['email'] === 'new@mentor.com';
+            }),
+        )
         ->andReturn(User::factory()->make());
 
     app()->instance(MentorService::class, $mockService);
@@ -151,16 +146,17 @@ test('save method updates existing mentor', function () {
     $mockQuery->shouldReceive('with')->andReturnSelf();
     $mockQuery->shouldReceive('paginate')->andReturn(new LengthAwarePaginator([], 0, 10));
 
-    $mockService->shouldReceive('find')
-        ->with((string) $mentor->id)
-        ->once()
-        ->andReturn($mentor);
+    $mockService->shouldReceive('find')->with((string) $mentor->id)->once()->andReturn($mentor);
 
-    $mockService->shouldReceive('update')
+    $mockService
+        ->shouldReceive('update')
         ->once()
-        ->with((string) $mentor->id, \Mockery::on(function ($data) {
-            return $data['name'] === 'Updated Mentor';
-        }))
+        ->with(
+            (string) $mentor->id,
+            \Mockery::on(function ($data) {
+                return $data['name'] === 'Updated Mentor';
+            }),
+        )
         ->andReturn(true);
 
     app()->instance(MentorService::class, $mockService);
@@ -186,9 +182,7 @@ test('save handles exception and flashes error', function () {
     $mockQuery->shouldReceive('with')->andReturnSelf();
     $mockQuery->shouldReceive('paginate')->andReturn(new LengthAwarePaginator([], 0, 10));
 
-    $mockService->shouldReceive('create')
-        ->once()
-        ->andThrow(new \Exception('Database error'));
+    $mockService->shouldReceive('create')->once()->andThrow(new \Exception('Database error'));
 
     app()->instance(MentorService::class, $mockService);
 

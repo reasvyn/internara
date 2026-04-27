@@ -2,9 +2,8 @@
 
 The `Attendance` module manages student presence tracking during the internship period.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative
-> All implementation must adhere
-> to the 
+> **Governance Mandate:** This module implements the requirements defined in the authoritative All
+> implementation must adhere to the
 
 ---
 
@@ -12,7 +11,7 @@ The `Attendance` module manages student presence tracking during the internship 
 
 - **Presence Tracking:** Verifies student attendance at internship locations.
 - **Monitoring:** Provides **Instructors** and **Industry Supervisors** with data to verify student
- professionalism.
+  professionalism.
 - **Grading Data:** Source for participation-driven scoring in the `Assessment` module.
 
 ## Key Features
@@ -20,18 +19,18 @@ The `Attendance` module manages student presence tracking during the internship 
 ### 1. Flexible Attendance Recording
 
 - **Adaptive Input:** Support for real-time check-in and retrospective manual entry to accommodate
- field realities (e.g., informal permits).
+  field realities (e.g., informal permits).
 - **Comprehensive States:** Supports Present (Hadir), Sick (Sakit), Permitted (Izin), and
- Unexplained (Tanpa Keterangan) states.
+  Unexplained (Tanpa Keterangan) states.
 - **Informal Justification:** Students can provide context/notes for their attendance status.
 - **Guidance Gating:** Integrity check to ensure students have acknowledged mandatory guidelines
- prior to first presence.
+  prior to first presence.
 
 ### 2. Services
 
 - **AttendanceService**: Orchestrates secure temporal and spatial verification.
- - _API_: `mark(studentId, type, location)`, `getSummary(studentId, month)`.
- - _Contract_: `Modules\Attendance\Services\Contracts\AttendanceService`.
+- _API_: `mark(studentId, type, location)`, `getSummary(studentId, month)`.
+- _Contract_: `Modules\Attendance\Services\Contracts\AttendanceService`.
 
 ### 3. Supervisor Monitoring
 

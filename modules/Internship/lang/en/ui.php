@@ -23,7 +23,8 @@ return [
     'add_company' => 'Add Partner',
     'edit_company' => 'Edit Partner',
     'search_company' => 'Search partner...',
-    'delete_company_confirm' => 'Are you sure you want to delete this company? All related placements will also be deleted.',
+    'delete_company_confirm' =>
+        'Are you sure you want to delete this company? All related placements will also be deleted.',
     'search_placement' => 'Search industry partner...',
     'company_name' => 'Agency/Company Name',
     'company_address' => 'Company Address',
@@ -40,7 +41,8 @@ return [
     'contact_number' => 'Phone Number',
     'quota' => 'Quota (Students)',
     'select_program' => 'Select Internship Program',
-    'delete_placement_confirm' => 'Are you sure you want to delete this internship placement? Student registrations for this partner will also be deleted.',
+    'delete_placement_confirm' =>
+        'Are you sure you want to delete this internship placement? Student registrations for this partner will also be deleted.',
 
     // Internship Program
     'program_title' => 'Internship Programs',
@@ -63,8 +65,10 @@ return [
     'select_semester' => 'Select Semester',
     'date_start' => 'Start Date',
     'date_finish' => 'Finish Date',
-    'delete_program_confirm' => 'Are you sure you want to delete this internship program? All related placements and registrations will also be deleted.',
-    'student_not_eligible' => 'Student :name has not fulfilled all mandatory requirements for placement.',
+    'delete_program_confirm' =>
+        'Are you sure you want to delete this internship program? All related placements and registrations will also be deleted.',
+    'student_not_eligible' =>
+        'Student :name has not fulfilled all mandatory requirements for placement.',
     'placement_quota_full' => 'Placement quota for :company is full.',
     'placement_location_not_found' => 'Placement location not found.',
     'select_at_least_one_student' => 'Please select at least one student for placement.',
@@ -126,7 +130,8 @@ return [
     'select_program_first' => 'Select a program first to see the student list',
     'students_to_place' => 'Students to place',
     'confirm_placement_title' => 'Confirm Bulk Placement',
-    'confirm_placement_message' => 'This action will permanently assign all selected students to the chosen location.',
+    'confirm_placement_message' =>
+        'This action will permanently assign all selected students to the chosen location.',
     'placement_summary' => 'Placement Summary',
     'completion_status' => 'Completion Status',
     'upload_document' => 'Upload Document',
@@ -164,7 +169,8 @@ return [
     'document' => 'Document',
     'skill' => 'Skill',
     'condition' => 'Condition',
-    'delete_requirement_confirm' => 'Are you sure you want to delete this requirement? All related student submissions will also be deleted.',
+    'delete_requirement_confirm' =>
+        'Are you sure you want to delete this requirement? All related student submissions will also be deleted.',
     'optional' => 'Optional',
 
     // Submissions
@@ -174,7 +180,8 @@ return [
     'submit_requirement' => 'Submit',
     'requirement_submitted' => 'Requirement successfully submitted.',
     'view_current_document' => 'View Submitted Document',
-    'all_mandatory_requirements_cleared' => 'All mandatory requirements have been verified. You are ready for placement!',
+    'all_mandatory_requirements_cleared' =>
+        'All mandatory requirements have been verified. You are ready for placement!',
 
     // Bulk Actions & History
     'bulk_actions' => 'Bulk Actions',
@@ -183,7 +190,8 @@ return [
     'complete_program' => 'Complete Program',
     'bulk_placement_title' => 'Bulk Student Placement',
     'bulk_placement_description' => ':count selected students will be placed in the same location.',
-    'bulk_placement_note' => 'Note: Only students who have cleared all mandatory requirements will be processed.',
+    'bulk_placement_note' =>
+        'Note: Only students who have cleared all mandatory requirements will be processed.',
     'placement_location' => 'Placement Location',
     'select_industry_partner' => 'Select Industry Partner',
     'process_placement' => 'Process Placement',
@@ -193,22 +201,27 @@ return [
     'select_at_least_one_student' => 'Select at least one student.',
     'select_placement_location' => 'Select a placement location.',
     'bulk_placement_success' => ':count students placed successfully.',
-    'not_eligible_for_placement' => 'Student has not fulfilled mandatory requirements for placement.',
+    'not_eligible_for_placement' =>
+        'Student has not fulfilled mandatory requirements for placement.',
 
     // Additional bulk placement strings
     'bulk_placement_context' => 'Internship › Bulk Placement',
-    'bulk_placement_subtitle' => 'Assign multiple students to industry partners at once, with automatic quota checking.',
+    'bulk_placement_subtitle' =>
+        'Assign multiple students to industry partners at once, with automatic quota checking.',
     'select_students' => 'Select Students',
     'remaining_quota' => 'Remaining Quota',
     'selected_students' => 'Selected Students',
     'preview_placement' => 'Preview & Confirm',
     'no_unplaced_students' => 'No unplaced students available for this internship program.',
-    'confirm_placement_message' => 'You are about to place the selected students to the chosen company. This action cannot be undone.',
-    'placement_cannot_undo' => 'This action cannot be undone. Students will be permanently assigned to this placement location.',
+    'confirm_placement_message' =>
+        'You are about to place the selected students to the chosen company. This action cannot be undone.',
+    'placement_cannot_undo' =>
+        'This action cannot be undone. Students will be permanently assigned to this placement location.',
     'confirm_placement' => 'Confirm & Place',
     'students_to_place' => 'Students to Place',
     'available_quota' => 'Available Quota',
-    'insufficient_quota' => 'Insufficient quota. You selected :selected students but only :remaining slots available.',
+    'insufficient_quota' =>
+        'Insufficient quota. You selected :selected students but only :remaining slots available.',
     'select_internship_company' => 'Please select both internship program and company.',
 
     // Batch actions and filters
@@ -220,7 +233,8 @@ return [
     'selected_count' => ':count selected',
     'select_items_for_action' => 'Please select items for this action.',
     'no_companies' => 'No companies found.',
-    'company_import_format' => 'Format CSV: Name, Business Field, Phone, Email, Address, Leader Name',
+    'company_import_format' =>
+        'Format CSV: Name, Business Field, Phone, Email, Address, Leader Name',
     'individual_placement' => 'Individual Registration',
     'quota_info' => 'Quota Information',
     'remaining_quota' => 'Remaining quota: :count slots',
@@ -229,20 +243,23 @@ return [
     'placement_location_not_found' => 'Placement location not found',
     'confirm_placement_title' => 'Confirm Bulk Placement',
     'registration_form_help' => 'Edit student registration details and placement information.',
-    'student_placement_subtitle' => 'Place students at industry partners with individual or bulk options.',
+    'student_placement_subtitle' =>
+        'Place students at industry partners with individual or bulk options.',
     'review_placement' => 'Review Placement',
     'placement_success' => 'Students placed successfully!',
     'total_placed' => 'Total Placed',
     'place_student' => 'Place Student',
     'start_date' => 'Start Date',
     'end_date' => 'End Date',
-    'registration_success' => 'Internship registration successfully submitted and awaiting approval.',
+    'registration_success' =>
+        'Internship registration successfully submitted and awaiting approval.',
     'propose_new_partner' => 'Propose New Partner',
     'proposal_notice' => 'Proposed partners will be reviewed by administrators before approval.',
     'submit_registration' => 'Submit Registration',
 
     // Import Instructions
-    'import_csv_format' => 'Format CSV: Title, Description, Academic Year, Semester, Start Date, Finish Date',
+    'import_csv_format' =>
+        'Format CSV: Title, Description, Academic Year, Semester, Start Date, Finish Date',
     'import_date_format' => 'Date Format: YYYY-MM-DD',
     'import_semester_values' => 'Semester values: Odd, Even, Full',
     'add_new_mentor' => 'Add New Mentor',

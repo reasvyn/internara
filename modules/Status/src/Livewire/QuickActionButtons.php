@@ -44,7 +44,7 @@ class QuickActionButtons extends Component
             $service->transition(
                 user: $this->user,
                 newStatus: Status::VERIFIED,
-                reason: 'Cepat diverifikasi oleh '.auth()->user()->name,
+                reason: 'Cepat diverifikasi oleh ' . auth()->user()->name,
                 triggeredBy: auth()->user(),
                 ipAddress: request()->ip(),
             );
@@ -53,7 +53,7 @@ class QuickActionButtons extends Component
             $this->dispatch('accountUpdated', userId: $this->user->id);
             $this->user->refresh();
         } catch (\Exception $e) {
-            flash()->error(__('Gagal memverifikasi: '.$e->getMessage()));
+            flash()->error(__('Gagal memverifikasi: ' . $e->getMessage()));
         }
     }
 
@@ -67,7 +67,7 @@ class QuickActionButtons extends Component
             $service->transition(
                 user: $this->user,
                 newStatus: Status::SUSPENDED,
-                reason: 'Disuspensi dengan cepat oleh '.auth()->user()->name,
+                reason: 'Disuspensi dengan cepat oleh ' . auth()->user()->name,
                 triggeredBy: auth()->user(),
                 ipAddress: request()->ip(),
             );
@@ -76,7 +76,7 @@ class QuickActionButtons extends Component
             $this->dispatch('accountUpdated', userId: $this->user->id);
             $this->user->refresh();
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menyuspensi: '.$e->getMessage()));
+            flash()->error(__('Gagal menyuspensi: ' . $e->getMessage()));
         }
     }
 
@@ -93,7 +93,7 @@ class QuickActionButtons extends Component
             $this->dispatch('accountUpdated', userId: $this->user->id);
             $this->user->refresh();
         } catch (\Exception $e) {
-            flash()->error(__('Gagal membuka akun: '.$e->getMessage()));
+            flash()->error(__('Gagal membuka akun: ' . $e->getMessage()));
         }
     }
 
@@ -116,7 +116,13 @@ class QuickActionButtons extends Component
         }
 
         // Suspend action - available if not SUSPENDED/PROTECTED/ARCHIVED
-        if (! in_array($this->user->getStatus(), [Status::SUSPENDED, Status::PROTECTED, Status::ARCHIVED])) {
+        if (
+            !in_array($this->user->getStatus(), [
+                Status::SUSPENDED,
+                Status::PROTECTED,
+                Status::ARCHIVED,
+            ])
+        ) {
             $actions[] = [
                 'id' => 'suspend',
                 'label' => 'Suspensi',

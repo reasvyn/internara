@@ -10,5 +10,6 @@ return [
     'missing_teacher_eval' => 'Evaluasi Akademik (Guru) belum diisi.',
     'missing_mentor_eval' => 'Evaluasi Industri (Mentor) belum diisi.',
     'missing_assignments' => 'Tugas wajib belum lengkap.',
-    'not_ready_for_credentials' => 'Siswa ini belum siap untuk menerima sertifikat atau transkrip. Pastikan seluruh evaluasi dan tugas telah diselesaikan.',
+    'not_ready_for_credentials' =>
+        'Siswa ini belum siap untuk menerima sertifikat atau transkrip. Pastikan seluruh evaluasi dan tugas telah diselesaikan.',
 ];

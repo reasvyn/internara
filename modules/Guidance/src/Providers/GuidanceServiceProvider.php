@@ -44,11 +44,9 @@ class GuidanceServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         try {
-            $settingService = $this->app->make(
-                SettingService::class,
-            );
+            $settingService = $this->app->make(SettingService::class);
 
-            if (! $settingService->getValue('feature_guidance_enabled', true)) {
+            if (!$settingService->getValue('feature_guidance_enabled', true)) {
                 return [];
             }
         } catch (\Throwable $e) {

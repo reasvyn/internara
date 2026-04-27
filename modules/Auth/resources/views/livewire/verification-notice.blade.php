@@ -47,20 +47,6 @@
                         wire:click="resend"
                         spinner="resend"
                     />
-                    <div class="relative flex items-center gap-3 py-1">
-                        <div class="h-px flex-1 bg-base-content/10"></div>
-                        <span class="text-xs text-base-content/30 uppercase tracking-wider">{{ __('ui::common.or') }}</span>
-                        <div class="h-px flex-1 bg-base-content/10"></div>
-                    </div>
-                    <button
-                        wire:click="skip"
-                        wire:loading.attr="disabled"
-                        class="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm text-base-content/50 transition-colors hover:text-base-content hover:bg-base-content/5"
-                    >
-                        <span wire:loading.remove wire:target="skip">{{ __('auth::ui.verification.skip_button') }}</span>
-                        <span wire:loading wire:target="skip">{{ __('auth::ui.verification.processing') }}</span>
-                        <x-ui::icon name="tabler.arrow-right" class="size-4" wire:loading.remove wire:target="skip" />
-                    </button>
                 </div>
 
                 {{-- Tips --}}

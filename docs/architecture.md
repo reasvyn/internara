@@ -1,12 +1,14 @@
 # 🏗️ Architecture Guide
 
-Deep dive into Internara's sophisticated modular monolith architecture, how components interact, and the design patterns that enable scalability without complexity.
+Deep dive into Internara's sophisticated modular monolith architecture, how components interact, and
+the design patterns that enable scalability without complexity.
 
 ---
 
 ## Overview
 
-**Internara** is a **Modular Monolith** — a single application deployed as one unit, but internally organized as independent, loosely-coupled modules.
+**Internara** is a **Modular Monolith** — a single application deployed as one unit, but internally
+organized as independent, loosely-coupled modules.
 
 ```
 Traditional Monolith        Modular Monolith            Microservices
@@ -22,6 +24,7 @@ Traditional Monolith        Modular Monolith            Microservices
 ```
 
 **Why Modular Monolith?**
+
 - Easier to develop than microservices (no distributed system complexity)
 - Better organized than traditional monoliths (clear boundaries)
 - Simpler deployment (single unit, single database)
@@ -144,29 +147,36 @@ modules/{ModuleName}/
 
 Internara contains 29+ modules organized by domain:
 
-**Identity & Access**: Auth, User, Profile, Permission
-**Lifecycle**: Internship, Setup, Student, Mentor, Teacher
-**Monitoring**: Journal, Attendance, Schedule
-**Academic**: Assessment, Assignment, School, Department, Guidance
-**Operations**: Report, Notification, Log, Setting, Media
+**Identity & Access**: Auth, User, Profile, Permission **Lifecycle**: Internship, Setup, Student,
+Mentor, Teacher **Monitoring**: Journal, Attendance, Schedule **Academic**: Assessment, Assignment,
+School, Department, Guidance **Operations**: Report, Notification, Log, Setting, Media
 **Infrastructure**: Core, Shared, UI, Status, Exception, Admin, Support
 
 ---
 
 ## Technical Installation vs. Business Setup
 
-Internara distinguishes between technical system initialization and business-level configuration to ensure a secure and resilient deployment lifecycle.
+Internara distinguishes between technical system initialization and business-level configuration to
+ensure a secure and resilient deployment lifecycle.
 
 ### 1. Technical Installation (Support Module)
-Handled by the `Support` module, this phase focuses on infrastructure readiness and initial environment hygiene via the Command Line Interface (CLI).
+
+Handled by the `Support` module, this phase focuses on infrastructure readiness and initial
+environment hygiene via the Command Line Interface (CLI).
+
 - **SystemInstaller**: Automates `.env` creation, app key generation, and storage linking.
-- **InstallationAuditor**: Performs deep-system audits of PHP extensions, file permissions, and database connectivity.
+- **InstallationAuditor**: Performs deep-system audits of PHP extensions, file permissions, and
+  database connectivity.
 - **Command**: `php artisan app:install`
 
 ### 2. Business Configuration (Setup Module)
-Handled by the `Setup` module, this phase focuses on the application-level data required for operations via the Web interface.
+
+Handled by the `Setup` module, this phase focuses on the application-level data required for
+operations via the Web interface.
+
 - **AppSetupService**: Manages the state and invariants of the multi-step configuration wizard.
-- **Wizard**: Guided setup for School identity, Admin accounts, Departments, and Internship programs.
+- **Wizard**: Guided setup for School identity, Admin accounts, Departments, and Internship
+  programs.
 - **Lockdown**: Automatic route protection and token invalidation upon completion.
 
 ---
@@ -192,7 +202,7 @@ interface StudentService
 // modules/Student/src/Services/StudentService.php
 namespace Modules\Student\Services;
 
-class StudentService implements StudentService  // ← Implements
+class StudentService implements StudentService // ← Implements
 {
     public function findByEmail(string $email): ?Student
     {
@@ -215,9 +225,10 @@ class StudentService implements StudentService  // ← Implements
 // modules/Student/Livewire/StudentManager.php
 class StudentManager extends RecordManager
 {
-    public function boot(StudentService $service): void  // ← Auto-injected
+    public function boot(StudentService $service): void
     {
-        $this->service = $service;  // Works! No manual registration
+        // ← Auto-injected
+        $this->service = $service; // Works! No manual registration
     }
 }
 ```
@@ -377,19 +388,20 @@ public function export(): void
 
 ### Pattern: Service Dependencies
 
-Modules communicate **only through service contracts**, never by importing models or database tables.
+Modules communicate **only through service contracts**, never by importing models or database
+tables.
 
 ```php
 // ❌ WRONG - Direct model import (tight coupling)
 // modules/Journal/src/Services/JournalService.php
 namespace Modules\Journal\Services;
-use Modules\Student\Models\Student;  // ❌ Cross-module import
+use Modules\Student\Models\Student; // ❌ Cross-module import
 
 class JournalService
 {
     public function createForStudent(string $studentId): Journal
     {
-        $student = Student::findOrFail($studentId);  // ❌ Direct query
+        $student = Student::findOrFail($studentId); // ❌ Direct query
         // ...
     }
 }
@@ -397,17 +409,18 @@ class JournalService
 // ✅ CORRECT - Service dependency (loose coupling)
 // modules/Journal/src/Services/JournalService.php
 namespace Modules\Journal\Services;
-use Modules\Student\Services\Contracts\StudentService;  // ✅ Service contract
+use Modules\Student\Services\Contracts\StudentService; // ✅ Service contract
 
 class JournalService
 {
-    public function __construct(
-        private StudentService $studentService  // ✅ Injected service
-    ) {}
+    public function __construct(private StudentService $studentService)
+    {
+        // ✅ Injected service
+    }
 
     public function createForStudent(string $studentId): Journal
     {
-        $student = $this->studentService->findById($studentId);  // ✅ Via service
+        $student = $this->studentService->findById($studentId); // ✅ Via service
         // ...
     }
 }
@@ -481,7 +494,7 @@ import moduleLoader from './vite-module-loader.js'
 export default defineConfig({
     plugins: [
         laravel({
-            input: moduleLoader.discoverAssets(),  // Auto-discovers
+            input: moduleLoader.discoverAssets(), // Auto-discovers
         }),
     ],
 })
@@ -521,18 +534,17 @@ Modules reference each other via **UUIDs without constraints**:
 // ❌ WRONG - Foreign key constraint
 Schema::create('journals', function (Blueprint $table) {
     $table->uuid('student_id');
-    $table->foreign('student_id')
-        ->references('id')
-        ->on('students');  // ❌ Couples migrations
+    $table->foreign('student_id')->references('id')->on('students'); // ❌ Couples migrations
 });
 
 // ✅ CORRECT - UUID reference only
 Schema::create('journals', function (Blueprint $table) {
-    $table->uuid('student_id');  // ✅ Column only, no constraint
+    $table->uuid('student_id'); // ✅ Column only, no constraint
 });
 ```
 
 **Why**:
+
 - Decouples migrations (modules can migrate independently)
 - Avoids circular dependencies
 - Allows modules to reference deleted rows (soft deletes)
@@ -634,6 +646,7 @@ Production Server
 ### Scaling Strategies
 
 **Horizontal Scaling**:
+
 ```
 Load Balancer
 ├─ Server 1 (Laravel + all modules)
@@ -644,6 +657,7 @@ Load Balancer
 ```
 
 **Queue Separation** (optional):
+
 ```
 Web Servers (Laravel)
 └─ Handle HTTP requests
@@ -658,12 +672,10 @@ Queue Workers (Separate)
 
 Internara's architecture achieves:
 
-✅ **Modularity** — 29+ independent modules
-✅ **Simplicity** — Single deployment, single database
-✅ **Testability** — Clear boundaries enable testing
-✅ **Scalability** — Can grow without architectural changes
-✅ **Maintainability** — Service contracts prevent coupling
-✅ **Evolution** — New modules/features don't break existing
+✅ **Modularity** — 29+ independent modules ✅ **Simplicity** — Single deployment, single database
+✅ **Testability** — Clear boundaries enable testing ✅ **Scalability** — Can grow without
+architectural changes ✅ **Maintainability** — Service contracts prevent coupling ✅ **Evolution** —
+New modules/features don't break existing
 
 ---
 
@@ -676,4 +688,4 @@ Internara's architecture achieves:
 
 ---
 
-*Engineering the future of modular academic ecosystems.* 🏗️
+_Engineering the future of modular academic ecosystems._ 🏗️

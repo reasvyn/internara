@@ -27,10 +27,8 @@ class StudentService extends EloquentQuery implements Contract
     /**
      * Create a new service instance.
      */
-    public function __construct(
-        User $model,
-        protected ProfileService $profileService,
-    ) {
+    public function __construct(User $model, protected ProfileService $profileService)
+    {
         $this->setModel($model);
         $this->setSearchable([
             'name',
@@ -48,7 +46,7 @@ class StudentService extends EloquentQuery implements Contract
      */
     public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
     {
-        if (! $this->baseQuery) {
+        if (!$this->baseQuery) {
             $this->setBaseQuery($this->model->newQuery()->role(Role::STUDENT->value));
         }
 
@@ -62,12 +60,19 @@ class StudentService extends EloquentQuery implements Contract
     {
         return [
             'total' => $this->count(),
-            'verified' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', Status::VERIFIED->value))->count(),
-            'pending' => $this->query()->whereHas('statuses', fn ($q) => $q->where('name', User::STATUS_PENDING))->count(),
-            'active' => $this->query()->whereHas('statuses', function ($q) {
-                $q->where('name', User::STATUS_ACTIVE)
-                    ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
-            })->count(),
+            'verified' => $this->query()
+                ->whereHas('statuses', fn($q) => $q->where('name', Status::VERIFIED->value))
+                ->count(),
+            'pending' => $this->query()
+                ->whereHas('statuses', fn($q) => $q->where('name', User::STATUS_PENDING))
+                ->count(),
+            'active' => $this->query()
+                ->whereHas('statuses', function ($q) {
+                    $q->where('name', User::STATUS_ACTIVE)->whereRaw(
+                        'created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)',
+                    );
+                })
+                ->count(),
         ];
     }
 
@@ -85,7 +90,7 @@ class StudentService extends EloquentQuery implements Contract
                 ? $data['password']
                 : Str::password(32);
 
-            if (setting('app_installed', false) && ! $this->skipAuthorization) {
+            if (setting('app_installed', false) && !$this->skipAuthorization) {
                 Gate::authorize('create', [User::class, [Role::STUDENT->value]]);
             }
 
@@ -95,14 +100,15 @@ class StudentService extends EloquentQuery implements Contract
             $user->setStatus($status);
 
             if ($profileData !== []) {
-                $profileService = (! setting('app_installed', false) || $this->skipAuthorization || auth()->guest())
-                    ? $this->profileService->withoutAuthorization()
-                    : $this->profileService;
+                $profileService =
+                    !setting('app_installed', false) || $this->skipAuthorization || auth()->guest()
+                        ? $this->profileService->withoutAuthorization()
+                        : $this->profileService;
                 $profileService->upsertManagedProfile($user->id, $profileData);
             }
 
             $this->skipAuthorization = false;
-            $user->notify(new WelcomeUserNotification);
+            $user->notify(new WelcomeUserNotification());
 
             return $user->load(['roles:id,name', 'profile.department', 'statuses']);
         });
@@ -116,7 +122,7 @@ class StudentService extends EloquentQuery implements Contract
         /** @var User $student */
         $student = $this->findOrFail($id);
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('update', $student);
         }
 
@@ -137,7 +143,9 @@ class StudentService extends EloquentQuery implements Contract
         }
 
         if ($profileData !== []) {
-            $profileService = $this->skipAuthorization ? $this->profileService->withoutAuthorization() : $this->profileService;
+            $profileService = $this->skipAuthorization
+                ? $this->profileService->withoutAuthorization()
+                : $this->profileService;
             $profileService->upsertManagedProfile($updatedStudent->id, $profileData);
         }
 
@@ -154,7 +162,7 @@ class StudentService extends EloquentQuery implements Contract
         /** @var User $student */
         $student = $this->findOrFail($id);
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('delete', $student);
         }
 
@@ -167,7 +175,7 @@ class StudentService extends EloquentQuery implements Contract
     {
         $students = $this->query()->whereKey(Arr::wrap($ids))->get();
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             foreach ($students as $student) {
                 Gate::authorize('delete', $student);
             }
@@ -176,7 +184,8 @@ class StudentService extends EloquentQuery implements Contract
         $this->skipAuthorization = false;
 
         return $students->reduce(
-            fn (int $count, User $student): int => $count + (($force ? $student->forceDelete() : $student->delete()) ? 1 : 0),
+            fn(int $count, User $student): int => $count +
+                (($force ? $student->forceDelete() : $student->delete()) ? 1 : 0),
             0,
         );
     }
@@ -186,11 +195,11 @@ class StudentService extends EloquentQuery implements Contract
         /** @var User|null $student */
         $student = $this->find($id);
 
-        if (! $student) {
+        if (!$student) {
             throw new RecordNotFoundException(replace: ['record' => 'Student', 'id' => $id]);
         }
 
-        if (! $this->skipAuthorization) {
+        if (!$this->skipAuthorization) {
             Gate::authorize('update', $student);
         }
 

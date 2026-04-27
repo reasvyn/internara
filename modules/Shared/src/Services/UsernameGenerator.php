@@ -47,7 +47,7 @@ class UsernameGenerator
 
         // 2. Apply role-based prefix if defined
         $prefix = $this->getPrefixForRole($role);
-        $username = $prefix ? $prefix.'_'.$base : $base;
+        $username = $prefix ? $prefix . '_' . $base : $base;
 
         // 3. Limit length according to enterprise standards
         $maxLen = (int) config('user.security.username.max_length', 30);
@@ -74,7 +74,7 @@ class UsernameGenerator
             $randomLen = max($totalLength - strlen($prefix), 8);
             // Use alphanumeric characters (X) as requested
             $random = Str::lower(Str::random($randomLen));
-            $username = $prefix.$random;
+            $username = $prefix . $random;
             $attempts++;
 
             if ($attempts >= $maxAttempts) {
@@ -91,7 +91,7 @@ class UsernameGenerator
      */
     protected function getPrefixForRole(?string $role): ?string
     {
-        if (! $role) {
+        if (!$role) {
             return null;
         }
 
@@ -112,7 +112,7 @@ class UsernameGenerator
 
             // Adjust base to fit the suffix within max length
             $baseLimit = $maxLen - strlen($suffix) - 1;
-            $username = substr($original, 0, $baseLimit).$suffix;
+            $username = substr($original, 0, $baseLimit) . $suffix;
 
             $counter++;
         }

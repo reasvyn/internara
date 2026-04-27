@@ -30,13 +30,18 @@ class InternshipPlacementService extends EloquentQuery implements Contract
     public function getStats(): array
     {
         $totalQuota = (int) $this->model->newQuery()->sum('capacity_quota');
-        $filledQuota = (int) $this->model->newQuery()->withCount('registrations')->get()->sum('registrations_count');
+        $filledQuota = (int) $this->model
+            ->newQuery()
+            ->withCount('registrations')
+            ->get()
+            ->sum('registrations_count');
 
         return [
             'total_locations' => $this->count(),
             'total_quota' => $totalQuota,
             'filled_quota' => $filledQuota,
-            'utilization_rate' => $totalQuota > 0 ? (int) round(($filledQuota / $totalQuota) * 100) : 0,
+            'utilization_rate' =>
+                $totalQuota > 0 ? (int) round(($filledQuota / $totalQuota) * 100) : 0,
         ];
     }
 
@@ -47,7 +52,7 @@ class InternshipPlacementService extends EloquentQuery implements Contract
     {
         $placement = $this->find($placementId);
 
-        if (! $placement) {
+        if (!$placement) {
             return 0;
         }
 

@@ -1,19 +1,20 @@
 # 📚 Modules Catalog
 
-Complete directory of all **29+ modules** in Internara, organized by domain. Each module is an independent, testable unit.
+Complete directory of all **29+ modules** in Internara, organized by domain. Each module is an
+independent, testable unit.
 
 ---
 
 ## Quick Navigation
 
-| Domain | Modules |
-| :--- | :--- |
-| **[Identity & Access](#-identity--access)** | Auth, User, Profile, Permission |
-| **[Lifecycle Management](#-lifecycle-management)** | Internship, Setup, Student, Mentor, Teacher |
-| **[Activity Monitoring](#-activity-monitoring)** | Journal, Attendance, Schedule |
+| Domain                                              | Modules                                              |
+| :-------------------------------------------------- | :--------------------------------------------------- |
+| **[Identity & Access](#-identity--access)**         | Auth, User, Profile, Permission                      |
+| **[Lifecycle Management](#-lifecycle-management)**  | Internship, Setup, Student, Mentor, Teacher          |
+| **[Activity Monitoring](#-activity-monitoring)**    | Journal, Attendance, Schedule                        |
 | **[Academic & Assessment](#-academic--assessment)** | Assessment, Assignment, School, Department, Guidance |
-| **[Operations & Support](#-operations--support)** | Report, Notification, Log, Setting, Media |
-| **[Infrastructure](#-infrastructure)** | Core, Shared, UI, Status, Exception, Admin, Support |
+| **[Operations & Support](#-operations--support)**   | Report, Notification, Log, Setting, Media            |
+| **[Infrastructure](#-infrastructure)**              | Core, Shared, UI, Status, Exception, Admin, Support  |
 
 ---
 
@@ -22,9 +23,9 @@ Complete directory of all **29+ modules** in Internara, organized by domain. Eac
 Core identity, authentication, and access control modules.
 
 ### Auth Module
-**Path**: `modules/Auth/`
-**Responsibility**: Multi-guard authentication system
-**Key Features**:
+
+**Path**: `modules/Auth/` **Responsibility**: Multi-guard authentication system **Key Features**:
+
 - Login/logout for Students, Mentors, Admins
 - Password reset and recovery
 - Email verification
@@ -32,12 +33,14 @@ Core identity, authentication, and access control modules.
 - Session management
 
 **Key Files**:
+
 - `src/Services/Contracts/AuthService.php` — Authentication interface
 - `src/Services/AuthService.php` — Implementation
 - `src/Livewire/Login.php` — Login component
 - `database/migrations/create_auth_tables.php`
 
 **Relations**:
+
 - Uses: User, Profile modules
 - Used by: All authenticated routes
 
@@ -46,9 +49,10 @@ Core identity, authentication, and access control modules.
 ---
 
 ### User Module
-**Path**: `modules/User/`
-**Responsibility**: User account lifecycle and management
-**Key Features**:
+
+**Path**: `modules/User/` **Responsibility**: User account lifecycle and management **Key
+Features**:
+
 - User CRUD operations
 - Account activation/deactivation
 - Role assignment
@@ -56,12 +60,14 @@ Core identity, authentication, and access control modules.
 - User listing and filtering
 
 **Key Files**:
+
 - `src/Models/User.php` — User model
 - `src/Services/Contracts/UserService.php` — User service contract
 - `src/Livewire/UserManager.php` — Admin user management UI
 - `database/migrations/create_users_table.php`
 
 **Relations**:
+
 - Uses: Permission, Profile modules
 - Used by: Auth, all authenticated modules
 
@@ -70,9 +76,10 @@ Core identity, authentication, and access control modules.
 ---
 
 ### Profile Module
-**Path**: `modules/Profile/`
-**Responsibility**: Personal information and PII encryption
-**Key Features**:
+
+**Path**: `modules/Profile/` **Responsibility**: Personal information and PII encryption **Key
+Features**:
+
 - Store personal data (name, address, phone, etc.)
 - **AES-256 encryption** for sensitive fields
 - Profile completion tracking
@@ -81,18 +88,21 @@ Core identity, authentication, and access control modules.
 - Educational background
 
 **Key Files**:
+
 - `src/Models/Profile.php` — Profile model with encryption
 - `src/Services/Contracts/ProfileService.php`
 - `src/Livewire/ProfileEditor.php` — Profile edit component
 - `database/migrations/create_profiles_table.php`
 
 **Encrypted Fields**:
+
 - National ID (NIK)
 - Home address
 - Phone number
 - Bank account (if applicable)
 
 **Relations**:
+
 - Uses: User, Media modules
 - Used by: All modules needing user details
 
@@ -101,9 +111,10 @@ Core identity, authentication, and access control modules.
 ---
 
 ### Permission Module
-**Path**: `modules/Permission/`
-**Responsibility**: RBAC (Role-Based Access Control)
-**Key Features**:
+
+**Path**: `modules/Permission/` **Responsibility**: RBAC (Role-Based Access Control) **Key
+Features**:
+
 - Role and permission management (via spatie/laravel-permission)
 - Policy-based authorization
 - Permission inheritance
@@ -111,12 +122,14 @@ Core identity, authentication, and access control modules.
 - Audit of permission changes
 
 **Key Files**:
+
 - `src/Models/Role.php` — Role model
 - `src/Models/Permission.php` — Permission model
 - `src/Policies/*.php` — Authorization policies
 - `src/Livewire/RoleManager.php` — Role management UI
 
 **Built-in Roles**:
+
 - Super Admin (all permissions)
 - Admin (institution-level)
 - Teacher (academic oversight)
@@ -124,6 +137,7 @@ Core identity, authentication, and access control modules.
 - Student (basic access)
 
 **Relations**:
+
 - Uses: User module
 - Used by: All protected routes
 
@@ -136,9 +150,10 @@ Core identity, authentication, and access control modules.
 Modules managing the internship lifecycle from enrollment to completion.
 
 ### Internship Module
-**Path**: `modules/Internship/`
-**Responsibility**: Internship program setup and management
-**Key Features**:
+
+**Path**: `modules/Internship/` **Responsibility**: Internship program setup and management **Key
+Features**:
+
 - Create and manage internship programs
 - Define internship requirements
 - Placement slot management
@@ -147,6 +162,7 @@ Modules managing the internship lifecycle from enrollment to completion.
 - Duration and timeline management
 
 **Key Files**:
+
 - `src/Models/Internship.php` — Internship program
 - `src/Models/Registration.php` — Student registration
 - `src/Models/Placement.php` — Industry placement slot
@@ -154,6 +170,7 @@ Modules managing the internship lifecycle from enrollment to completion.
 - `src/Livewire/InternshipManager.php`
 
 **Relations**:
+
 - Uses: School, Assessment, Notification modules
 - Used by: All modules (central to system)
 
@@ -162,9 +179,10 @@ Modules managing the internship lifecycle from enrollment to completion.
 ---
 
 ### Setup Module
-**Path**: `modules/Setup/`
-**Responsibility**: **Application business configuration and onboarding wizard**
-**Key Features**:
+
+**Path**: `modules/Setup/` **Responsibility**: **Application business configuration and onboarding
+wizard** **Key Features**:
+
 - Multi-step guided configuration process
 - Institution identity setup
 - SuperAdmin account initialization
@@ -174,6 +192,7 @@ Modules managing the internship lifecycle from enrollment to completion.
 - Automatic security lockdown after completion
 
 **Setup Wizard Steps**:
+
 1. School/Institution (identity, logo)
 2. Administrator Account (superadmin credentials)
 3. Department Configuration (organizational units)
@@ -182,17 +201,20 @@ Modules managing the internship lifecycle from enrollment to completion.
 6. Complete (summary and lockdown)
 
 **Key Files**:
+
 - `src/Services/AppSetupService.php` — Setup lifecycle coordination
 - `src/Domain/Models/SetupProcess.php` — State invariant management
 - `src/Http/Middleware/RequireSetupAccess.php` — Security enforcement
 - `src/Http/Middleware/ProtectSetupRoute.php` — Completion lockdown
 
 **Security**:
+
 - **Atomic Invariants**: Steps must be completed sequentially
 - **Route Lockdown**: All setup routes throw 404 after `app_installed` flag is true
 - **Emergency Reset**: `php artisan setup:reset`
 
 **Relations**:
+
 - Uses: Internship, School, User, Setting modules
 - Used by: Middleware (system-wide)
 
@@ -201,9 +223,10 @@ Modules managing the internship lifecycle from enrollment to completion.
 ---
 
 ### Student Module
-**Path**: `modules/Student/`
-**Responsibility**: Student account and internship tracking
-**Key Features**:
+
+**Path**: `modules/Student/` **Responsibility**: Student account and internship tracking **Key
+Features**:
+
 - Student profile information
 - Enrollment and registration
 - Progress tracking
@@ -212,12 +235,14 @@ Modules managing the internship lifecycle from enrollment to completion.
 - Dashboard and reporting
 
 **Key Files**:
+
 - `src/Models/Student.php` — Student model
 - `src/Services/Contracts/StudentService.php`
 - `src/Livewire/Dashboard.php` — Student dashboard
 - `src/Livewire/StudentManager.php` — Admin student management
 
 **Relations**:
+
 - Uses: User, Profile, Internship, Journal, Assessment
 - Used by: Teacher, Mentor modules
 
@@ -226,9 +251,10 @@ Modules managing the internship lifecycle from enrollment to completion.
 ---
 
 ### Mentor Module
-**Path**: `modules/Mentor/`
-**Responsibility**: Industry mentor account and mentoring
-**Key Features**:
+
+**Path**: `modules/Mentor/` **Responsibility**: Industry mentor account and mentoring **Key
+Features**:
+
 - Mentor profile and organization
 - Mentee assignment and tracking
 - Evaluation and feedback
@@ -237,12 +263,14 @@ Modules managing the internship lifecycle from enrollment to completion.
 - Mentee progress monitoring
 
 **Key Files**:
+
 - `src/Models/Mentor.php`
 - `src/Services/Contracts/MentorService.php`
 - `src/Livewire/Dashboard.php` — Mentor dashboard
 - `src/Livewire/MenteeManager.php` — Mentee tracking
 
 **Relations**:
+
 - Uses: User, Profile, Internship, Attendance
 - Used by: Internship, Assessment modules
 
@@ -251,9 +279,10 @@ Modules managing the internship lifecycle from enrollment to completion.
 ---
 
 ### Teacher Module
-**Path**: `modules/Teacher/`
-**Responsibility**: Educational institution teacher/coordinator
-**Key Features**:
+
+**Path**: `modules/Teacher/` **Responsibility**: Educational institution teacher/coordinator **Key
+Features**:
+
 - Teacher profile and subject assignment
 - Class and curriculum management
 - Assessment creation and grading
@@ -262,12 +291,14 @@ Modules managing the internship lifecycle from enrollment to completion.
 - Internship monitoring
 
 **Key Files**:
+
 - `src/Models/Teacher.php`
 - `src/Services/Contracts/TeacherService.php`
 - `src/Livewire/Dashboard.php` — Teacher dashboard
 - `src/Livewire/StudentGrading.php` — Assessment component
 
 **Relations**:
+
 - Uses: User, Profile, School, Assessment, Report
 - Used by: Assessment, Internship modules
 
@@ -280,9 +311,10 @@ Modules managing the internship lifecycle from enrollment to completion.
 Real-time tracking and logging of internship activities.
 
 ### Journal Module
-**Path**: `modules/Journal/`
-**Responsibility**: Daily activity logging and supervision
-**Key Features**:
+
+**Path**: `modules/Journal/` **Responsibility**: Daily activity logging and supervision **Key
+Features**:
+
 - Daily journal entries (student writes activities)
 - Supervisor validation (mentor reviews)
 - Activity categories and tagging
@@ -291,6 +323,7 @@ Real-time tracking and logging of internship activities.
 - History and revision tracking
 
 **Key Files**:
+
 - `src/Models/Journal.php` — Journal entry
 - `src/Models/JournalValidator.php` — Validation status
 - `src/Services/Contracts/JournalService.php`
@@ -298,12 +331,14 @@ Real-time tracking and logging of internship activities.
 - `src/Livewire/JournalValidator.php` — Review component
 
 **Statuses**:
+
 - Draft (student writing)
 - Submitted (waiting mentor review)
 - Approved (mentor validated)
 - Rejected (mentor needs changes)
 
 **Relations**:
+
 - Uses: Student, Mentor, Media modules
 - Used by: Assessment, Report modules
 
@@ -312,9 +347,10 @@ Real-time tracking and logging of internship activities.
 ---
 
 ### Attendance Module
-**Path**: `modules/Attendance/`
-**Responsibility**: Check-in tracking and absence management
-**Key Features**:
+
+**Path**: `modules/Attendance/` **Responsibility**: Check-in tracking and absence management **Key
+Features**:
+
 - Daily check-in/check-out
 - GPS location tracking (optional)
 - Absence requests and approvals
@@ -323,12 +359,14 @@ Real-time tracking and logging of internship activities.
 - Compliance reporting
 
 **Key Files**:
+
 - `src/Models/Attendance.php` — Daily record
 - `src/Models/AbsenceRequest.php` — Leave request
 - `src/Services/Contracts/AttendanceService.php`
 - `src/Livewire/CheckinComponent.php` — Mobile check-in
 
 **Relations**:
+
 - Uses: Student, Mentor, Notification modules
 - Used by: Assessment, Report modules
 
@@ -337,9 +375,10 @@ Real-time tracking and logging of internship activities.
 ---
 
 ### Schedule Module
-**Path**: `modules/Schedule/`
-**Responsibility**: Internship timeline and event management
-**Key Features**:
+
+**Path**: `modules/Schedule/` **Responsibility**: Internship timeline and event management **Key
+Features**:
+
 - Internship start/end dates
 - Important dates (holidays, breaks)
 - Event scheduling
@@ -348,11 +387,13 @@ Real-time tracking and logging of internship activities.
 - Timeline visualization
 
 **Key Files**:
+
 - `src/Models/InternshipSchedule.php`
 - `src/Services/Contracts/ScheduleService.php`
 - `src/Livewire/ScheduleCalendar.php`
 
 **Relations**:
+
 - Uses: Internship, Notification modules
 - Used by: All modules (reference dates)
 
@@ -365,9 +406,10 @@ Real-time tracking and logging of internship activities.
 Grading, evaluation, and academic management.
 
 ### Assessment Module
-**Path**: `modules/Assessment/`
-**Responsibility**: Multi-stakeholder evaluation and grading
-**Key Features**:
+
+**Path**: `modules/Assessment/` **Responsibility**: Multi-stakeholder evaluation and grading **Key
+Features**:
+
 - Rubric-based assessment
 - Multi-evaluator scoring (teacher, mentor)
 - Grade calculation and weighting
@@ -377,6 +419,7 @@ Grading, evaluation, and academic management.
 - Compliance auditing
 
 **Key Files**:
+
 - `src/Models/Assessment.php` — Assessment definition
 - `src/Models/AssessmentScore.php` — Score record
 - `src/Models/Rubric.php` — Rubric definition
@@ -384,6 +427,7 @@ Grading, evaluation, and academic management.
 - `src/Livewire/GradingComponent.php`
 
 **Assessment Types**:
+
 - Daily performance
 - Technical skills
 - Soft skills
@@ -391,6 +435,7 @@ Grading, evaluation, and academic management.
 - Competency-based
 
 **Relations**:
+
 - Uses: Student, Teacher, Mentor, Journal modules
 - Used by: Report, Notification modules
 
@@ -399,9 +444,9 @@ Grading, evaluation, and academic management.
 ---
 
 ### Assignment Module
-**Path**: `modules/Assignment/`
-**Responsibility**: Task and submission management
-**Key Features**:
+
+**Path**: `modules/Assignment/` **Responsibility**: Task and submission management **Key Features**:
+
 - Assignment creation by teachers
 - Submission tracking
 - Deadline management
@@ -410,12 +455,14 @@ Grading, evaluation, and academic management.
 - File attachment handling
 
 **Key Files**:
+
 - `src/Models/Assignment.php`
 - `src/Models/Submission.php`
 - `src/Services/Contracts/AssignmentService.php`
 - `src/Livewire/AssignmentViewer.php`
 
 **Relations**:
+
 - Uses: Student, Teacher, Media modules
 - Used by: Assessment module
 
@@ -424,9 +471,10 @@ Grading, evaluation, and academic management.
 ---
 
 ### School Module
-**Path**: `modules/School/`
-**Responsibility**: Institution and educational scoping
-**Key Features**:
+
+**Path**: `modules/School/` **Responsibility**: Institution and educational scoping **Key
+Features**:
+
 - School profile (name, type, contact)
 - Department management
 - Curriculum configuration
@@ -435,12 +483,14 @@ Grading, evaluation, and academic management.
 - Document storage
 
 **Key Files**:
+
 - `src/Models/School.php`
 - `src/Models/Department.php`
 - `src/Services/Contracts/SchoolService.php`
 - `src/Livewire/SchoolSettings.php`
 
 **Relations**:
+
 - Uses: User, Permission modules
 - Used by: Setup, Internship modules
 
@@ -449,9 +499,9 @@ Grading, evaluation, and academic management.
 ---
 
 ### Department Module
-**Path**: `modules/Department/`
-**Responsibility**: Organizational structure
-**Key Features**:
+
+**Path**: `modules/Department/` **Responsibility**: Organizational structure **Key Features**:
+
 - Create and manage departments
 - Department head assignment
 - Subject/program assignment
@@ -459,11 +509,13 @@ Grading, evaluation, and academic management.
 - Staff management
 
 **Key Files**:
+
 - `src/Models/Department.php`
 - `src/Services/Contracts/DepartmentService.php`
 - `src/Livewire/DepartmentManager.php`
 
 **Relations**:
+
 - Uses: School, User modules
 - Used by: Teacher, Internship modules
 
@@ -472,9 +524,10 @@ Grading, evaluation, and academic management.
 ---
 
 ### Guidance Module
-**Path**: `modules/Guidance/`
-**Responsibility**: Handbook and guidance material distribution
-**Key Features**:
+
+**Path**: `modules/Guidance/` **Responsibility**: Handbook and guidance material distribution **Key
+Features**:
+
 - Upload and organize guidance documents
 - PDF handbook generation
 - Version tracking
@@ -483,11 +536,13 @@ Grading, evaluation, and academic management.
 - Search and categorization
 
 **Key Files**:
+
 - `src/Models/Handbook.php`
 - `src/Services/Contracts/GuidanceService.php`
 - `src/Livewire/HandbookViewer.php`
 
 **Relations**:
+
 - Uses: Media module
 - Used by: All modules (reference materials)
 
@@ -500,9 +555,9 @@ Grading, evaluation, and academic management.
 System operations, reporting, and support functions.
 
 ### Report Module
-**Path**: `modules/Report/`
-**Responsibility**: Analytics and reporting dashboards
-**Key Features**:
+
+**Path**: `modules/Report/` **Responsibility**: Analytics and reporting dashboards **Key Features**:
+
 - Progress dashboards
 - Attendance reports
 - Assessment analytics
@@ -512,12 +567,14 @@ System operations, reporting, and support functions.
 - Compliance reporting
 
 **Key Files**:
+
 - `src/Models/Report.php` — Saved report
 - `src/Services/Contracts/ReportService.php`
 - `src/Livewire/ReportBuilder.php`
 - `src/Http/Controllers/ReportExportController.php`
 
 **Report Types**:
+
 - Attendance summary
 - Assessment results
 - Progress tracking
@@ -525,6 +582,7 @@ System operations, reporting, and support functions.
 - Compliance audit
 
 **Relations**:
+
 - Uses: Student, Journal, Attendance, Assessment modules
 - Used by: Teacher, Admin dashboards
 
@@ -533,9 +591,9 @@ System operations, reporting, and support functions.
 ---
 
 ### Notification Module
-**Path**: `modules/Notification/`
-**Responsibility**: Multi-channel alert system
-**Key Features**:
+
+**Path**: `modules/Notification/` **Responsibility**: Multi-channel alert system **Key Features**:
+
 - Email notifications
 - SMS notifications (optional)
 - In-app notifications
@@ -545,12 +603,14 @@ System operations, reporting, and support functions.
 - Retry logic
 
 **Key Files**:
+
 - `src/Models/Notification.php`
 - `src/Services/Contracts/NotificationService.php`
 - `src/Jobs/SendNotificationJob.php`
 - `src/Events/NotificationCreated.php`
 
 **Notification Types**:
+
 - Account activation
 - Assignment submission deadline
 - Grade posted
@@ -559,6 +619,7 @@ System operations, reporting, and support functions.
 - System announcements
 
 **Relations**:
+
 - Uses: User, Media modules
 - Used by: All modules (event listeners)
 
@@ -567,9 +628,9 @@ System operations, reporting, and support functions.
 ---
 
 ### Log Module
-**Path**: `modules/Log/`
-**Responsibility**: Activity audit trail and logging
-**Key Features**:
+
+**Path**: `modules/Log/` **Responsibility**: Activity audit trail and logging **Key Features**:
+
 - Automatic activity logging (via spatie/activitylog)
 - PII masking
 - Search and filter logs
@@ -578,10 +639,12 @@ System operations, reporting, and support functions.
 - Admin audit view
 
 **Key Files**:
+
 - `src/Livewire/ActivityLog.php` — Log viewer
 - `src/Services/Contracts/LogService.php`
 
 **Logged Actions**:
+
 - User login/logout
 - Data creation, update, delete
 - Permission changes
@@ -590,6 +653,7 @@ System operations, reporting, and support functions.
 - Journal submissions
 
 **Relations**:
+
 - Uses: No module (integrates with all)
 - Used by: Admin, Security audits
 
@@ -598,9 +662,9 @@ System operations, reporting, and support functions.
 ---
 
 ### Setting Module
-**Path**: `modules/Setting/`
-**Responsibility**: System-wide configuration
-**Key Features**:
+
+**Path**: `modules/Setting/` **Responsibility**: System-wide configuration **Key Features**:
+
 - Global configuration management
 - Feature flags
 - Email templates
@@ -609,11 +673,13 @@ System operations, reporting, and support functions.
 - Admin settings UI
 
 **Key Files**:
+
 - `src/Models/Setting.php`
 - `src/Services/Contracts/SettingService.php`
 - `src/Livewire/SystemSettings.php`
 
 **Configuration Areas**:
+
 - Mail settings
 - Queue settings
 - Cache settings
@@ -622,6 +688,7 @@ System operations, reporting, and support functions.
 - Notification templates
 
 **Relations**:
+
 - Uses: No module (global)
 - Used by: All modules
 
@@ -630,9 +697,9 @@ System operations, reporting, and support functions.
 ---
 
 ### Media Module
-**Path**: `modules/Media/`
-**Responsibility**: File storage and management
-**Key Features**:
+
+**Path**: `modules/Media/` **Responsibility**: File storage and management **Key Features**:
+
 - File upload and storage (via spatie/laravel-medialibrary)
 - Cloud storage support (S3, etc.)
 - Image optimization
@@ -641,16 +708,19 @@ System operations, reporting, and support functions.
 - File cleanup
 
 **Key Files**:
+
 - `src/Services/Contracts/MediaService.php`
 - `src/Http/Controllers/MediaUploadController.php`
 
 **Supported Files**:
+
 - Images (JPEG, PNG, GIF, WebP)
 - Documents (PDF, Word, Excel)
 - Videos (MP4, WebM)
 - Archives (ZIP, RAR)
 
 **Relations**:
+
 - Uses: No module (utility)
 - Used by: User, Profile, Journal, Guidance modules
 
@@ -663,9 +733,9 @@ System operations, reporting, and support functions.
 Core infrastructure and shared services.
 
 ### Core Module
-**Path**: `modules/Core/`
-**Responsibility**: Shared kernel and base classes
-**Key Features**:
+
+**Path**: `modules/Core/` **Responsibility**: Shared kernel and base classes **Key Features**:
+
 - Base model class (with common traits)
 - Base service class
 - Eloquent query builder (with common scopes)
@@ -674,20 +744,23 @@ Core infrastructure and shared services.
 - Constants and enumerations
 
 **Key Files**:
+
 - `src/Models/BaseModel.php` — Base class (UUID, timestamps, soft delete)
 - `src/Services/BaseService.php` — Service base class
 - `src/Query/EloquentQuery.php` — Query builder
 - `src/Exceptions/*` — Custom exceptions
 
 **Relations**:
+
 - Used by: All other modules (foundation)
 
 ---
 
 ### Shared Module
-**Path**: `modules/Shared/`
-**Responsibility**: Cross-module utilities and contracts
-**Key Features**:
+
+**Path**: `modules/Shared/` **Responsibility**: Cross-module utilities and contracts **Key
+Features**:
+
 - Common contracts/interfaces
 - Shared utilities
 - Collection helpers
@@ -696,18 +769,20 @@ Core infrastructure and shared services.
 - Validation rules
 
 **Key Files**:
+
 - `src/Contracts/*` — Common interfaces
 - `src/Utilities/*` — Helper classes
 
 **Relations**:
+
 - Used by: Multiple modules
 
 ---
 
 ### UI Module
-**Path**: `modules/UI/`
-**Responsibility**: Design system and shared components
-**Key Features**:
+
+**Path**: `modules/UI/` **Responsibility**: Design system and shared components **Key Features**:
+
 - Component library
 - Tailwind CSS configuration
 - Icon sets
@@ -717,19 +792,21 @@ Core infrastructure and shared services.
 - Toast notifications
 
 **Key Files**:
+
 - `resources/views/components/*` — Blade components
 - `resources/css/ui.css` — Design system
 - `src/Livewire/RecordManager.php` — Base CRUD component
 
 **Relations**:
+
 - Used by: All modules (UI)
 
 ---
 
 ### Status Module
-**Path**: `modules/Status/`
-**Responsibility**: Shared status enumerations
-**Key Features**:
+
+**Path**: `modules/Status/` **Responsibility**: Shared status enumerations **Key Features**:
+
 - Internship statuses
 - Journal entry statuses
 - Attendance statuses
@@ -737,45 +814,51 @@ Core infrastructure and shared services.
 - Registration statuses
 
 **Key Files**:
+
 - `src/Enums/*` — Status enums
 
 **Example Statuses**:
+
 - Internship: draft, active, completed, suspended
 - Journal: draft, submitted, approved, rejected
 - Attendance: present, absent, late, excused
 
 **Relations**:
+
 - Used by: Internship, Journal, Attendance, Assessment modules
 
 ---
 
 ### Exception Module
-**Path**: `modules/Exception/`
-**Responsibility**: Custom application exceptions
-**Key Features**:
+
+**Path**: `modules/Exception/` **Responsibility**: Custom application exceptions **Key Features**:
+
 - Custom exception classes
 - HTTP status mapping
 - User-friendly error messages
 - Logging integration
 
 **Key Files**:
+
 - `src/Exceptions/*` — Custom exceptions
 
 **Example Exceptions**:
+
 - `InternshipNotFoundException`
 - `UnauthorizedAccessException`
 - `InvalidTransitionException`
 - `ValidationException`
 
 **Relations**:
+
 - Used by: All modules
 
 ---
 
 ### Admin Module
-**Path**: `modules/Admin/`
-**Responsibility**: Administrative dashboards and tools
-**Key Features**:
+
+**Path**: `modules/Admin/` **Responsibility**: Administrative dashboards and tools **Key Features**:
+
 - Admin dashboard
 - Job monitoring
 - System health
@@ -784,19 +867,22 @@ Core infrastructure and shared services.
 - User management
 
 **Key Files**:
+
 - `src/Livewire/Dashboard.php` — Admin dashboard
 - `src/Livewire/JobMonitor.php` — Queue monitoring
 
 **Relations**:
+
 - Uses: All modules
 - Used by: Super Admin role
 
 ---
 
 ### Support Module
-**Path**: `modules/Support/`
-**Responsibility**: **Infrastructure support, technical installation, and help documentation**
-**Key Features**:
+
+**Path**: `modules/Support/` **Responsibility**: **Infrastructure support, technical installation,
+and help documentation** **Key Features**:
+
 - **System Installation**: Automated technical initialization via CLI
 - **Environment Auditing**: Pre-flight checks for requirements and permissions
 - Help article and FAQ management
@@ -804,11 +890,12 @@ Core infrastructure and shared services.
 - Support ticket integration
 
 **Key Files**:
+
 - `src/Services/SystemInstaller.php` — Technical installation engine
 - `src/Services/InstallationAuditor.php` — Environment requirement auditor
 
-
 **Relations**:
+
 - Uses: Media, Setting modules
 - Used by: All users, System Administrators
 
@@ -892,4 +979,4 @@ php artisan migrate
 
 ---
 
-*Organized modularity at scale.* 📚
+_Organized modularity at scale._ 📚

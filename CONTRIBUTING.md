@@ -22,47 +22,52 @@ composer dev     # start all dev processes
 
 1. **Fork** the repository on GitHub.
 2. **Create a branch** following the naming convention:
-   ```
-   feature/{module}/{short-description}   # new feature
-   fix/{module}/{short-description}       # bug fix
-   refactor/{module}/{short-description}  # refactor without behavior change
-   docs/{scope}                           # documentation only
-   ```
-   Examples: `feature/journal/export-pdf`, `fix/attendance/date-validation`, `docs/readme`
+
+    ```
+    feature/{module}/{short-description}   # new feature
+    fix/{module}/{short-description}       # bug fix
+    refactor/{module}/{short-description}  # refactor without behavior change
+    docs/{scope}                           # documentation only
+    ```
+
+    Examples: `feature/journal/export-pdf`, `fix/attendance/date-validation`, `docs/readme`
 
 3. **Implement your changes** — see [Code Patterns](#-code-patterns) below.
 4. **Verify** your work passes all quality gates:
-   ```bash
-   composer test    # full Pest test suite
-   composer lint    # style check (Pint + Prettier) — no writes
-   ```
+    ```bash
+    composer test    # full Pest test suite
+    composer lint    # style check (Pint + Prettier) — no writes
+    ```
 5. **Format** before committing:
-   ```bash
-   composer format  # auto-format PHP + JS/CSS
-   ```
+    ```bash
+    composer format  # auto-format PHP + JS/CSS
+    ```
 6. **Commit** using Conventional Commits format:
-   ```
-   type(module): short description
 
-   Body explaining WHY this change was made (optional but recommended).
-   ```
-   | Type | When to Use |
-   | :--- | :--- |
-   | `feat` | New feature or behavior |
-   | `fix` | Bug fix |
-   | `refactor` | Refactor without behavior change |
-   | `docs` | Documentation only |
-   | `test` | Test additions or corrections |
-   | `perf` | Performance improvement |
-   | `chore` | Tooling, dependencies, CI |
+    ```
+    type(module): short description
 
-   Examples:
-   ```
-   feat(journal): add PDF export for student journals
-   fix(attendance): correct date comparison for absence requests
-   perf(internship): cache dropdown queries with Cache::remember
-   docs(readme): add quick start and module table
-   ```
+    Body explaining WHY this change was made (optional but recommended).
+    ```
+
+    | Type       | When to Use                      |
+    | :--------- | :------------------------------- |
+    | `feat`     | New feature or behavior          |
+    | `fix`      | Bug fix                          |
+    | `refactor` | Refactor without behavior change |
+    | `docs`     | Documentation only               |
+    | `test`     | Test additions or corrections    |
+    | `perf`     | Performance improvement          |
+    | `chore`    | Tooling, dependencies, CI        |
+
+    Examples:
+
+    ```
+    feat(journal): add PDF export for student journals
+    fix(attendance): correct date comparison for absence requests
+    perf(internship): cache dropdown queries with Cache::remember
+    docs(readme): add quick start and module table
+    ```
 
 7. **Submit a Pull Request** with a clear description of what changed and why.
 
@@ -78,7 +83,8 @@ Before requesting review, confirm:
 - [ ] No hard-coded user-facing strings — all use `__('module::file.key')`
 - [ ] New models use UUID (`HasUuid` trait) and `timestamps()`
 - [ ] New services extend `EloquentQuery` or `BaseService` and implement a Contract
-- [ ] New Livewire managers extend `RecordManager` and implement `initialize()` and `getTableHeaders()`
+- [ ] New Livewire managers extend `RecordManager` and implement `initialize()` and
+      `getTableHeaders()`
 - [ ] No cross-module physical foreign keys in migrations
 - [ ] Relevant documentation updated (especially for new modules or changed patterns)
 
@@ -120,7 +126,8 @@ class ExampleManager extends RecordManager
 
 ### Computed Properties
 
-Use `#[Computed]` (Livewire 3) for all computed values. Wrap shared dropdown data in `Cache::remember()`:
+Use `#[Computed]` (Livewire 3) for all computed values. Wrap shared dropdown data in
+`Cache::remember()`:
 
 ```php
 use Illuminate\Support\Facades\Cache;
@@ -171,4 +178,3 @@ the responsible disclosure process. **Do not** open a public issue.
 ## ⚖️ License
 
 By contributing, you agree that your contributions will be licensed under the **MIT License**.
-

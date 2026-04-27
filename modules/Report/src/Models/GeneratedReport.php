@@ -33,9 +33,6 @@ class GeneratedReport extends Model
      */
     public function user()
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'user_id',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'user_id');
     }
 }

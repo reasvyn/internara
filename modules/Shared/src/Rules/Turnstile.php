@@ -48,7 +48,7 @@ class Turnstile implements ImplicitRule
                 ],
             );
 
-            if (! $response->json('success')) {
+            if (!$response->json('success')) {
                 $fail(__('shared::exceptions.turnstile_failed'));
             }
         } catch (\Exception $e) {

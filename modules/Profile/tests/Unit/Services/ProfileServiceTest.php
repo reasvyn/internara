@@ -28,7 +28,7 @@ describe('ProfileService S1 Security', function () {
         $builder
             ->shouldReceive('firstOrCreate')
             ->with(['user_id' => $uuid])
-            ->andReturn(new Profile);
+            ->andReturn(new Profile());
 
         $service->getByUserId($uuid);
     });
@@ -38,8 +38,7 @@ describe('ProfileService S1 Security', function () {
         $service = new ProfileService($profileModel);
 
         $profile = mock(Profile::class)->makePartial();
-        $student = new class extends Model
-        {
+        $student = new class extends Model {
             protected $keyType = 'string';
 
             public function getKey()
@@ -78,8 +77,16 @@ describe('ProfileService S1 Security', function () {
         $profile = mock(Profile::class)->makePartial();
 
         $profileModel->shouldReceive('newQuery')->once()->andReturn($builder);
-        $builder->shouldReceive('firstOrCreate')->once()->with(['user_id' => $uuid])->andReturn($profile);
-        $profile->shouldReceive('fill')->once()->with(['phone' => '08123'])->andReturnSelf();
+        $builder
+            ->shouldReceive('firstOrCreate')
+            ->once()
+            ->with(['user_id' => $uuid])
+            ->andReturn($profile);
+        $profile
+            ->shouldReceive('fill')
+            ->once()
+            ->with(['phone' => '08123'])
+            ->andReturnSelf();
         $profile->shouldReceive('save')->once();
 
         $service->upsertManagedProfile($uuid, ['phone' => '08123']);

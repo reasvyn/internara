@@ -68,7 +68,8 @@ class AccountAuditLogger
     private function logVerification(User $user, ?User $triggeredBy): void
     {
         Log::channel('audit')->info(
-            "✅ Account verified: {$user->email}".($triggeredBy ? " by {$triggeredBy->email}" : ''),
+            "✅ Account verified: {$user->email}" .
+                ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
                 'verified_by' => $triggeredBy?->id,
@@ -80,7 +81,8 @@ class AccountAuditLogger
     private function logRestriction(User $user, ?User $triggeredBy): void
     {
         Log::channel('audit')->notice(
-            "⚠️  Account restricted: {$user->email}".($triggeredBy ? " by {$triggeredBy->email}" : ''),
+            "⚠️  Account restricted: {$user->email}" .
+                ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
                 'restricted_by' => $triggeredBy?->id,
@@ -92,7 +94,8 @@ class AccountAuditLogger
     private function logSuspension(User $user, ?string $reason, ?User $triggeredBy): void
     {
         Log::channel('audit')->warning(
-            "🚫 Account suspended: {$user->email}".($triggeredBy ? " by {$triggeredBy->email}" : ''),
+            "🚫 Account suspended: {$user->email}" .
+                ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
                 'suspended_by' => $triggeredBy?->id,
@@ -105,7 +108,8 @@ class AccountAuditLogger
     private function logArchival(User $user, ?User $triggeredBy): void
     {
         Log::channel('audit')->info(
-            "📦 Account archived: {$user->email}".($triggeredBy ? " by {$triggeredBy->email}" : ''),
+            "📦 Account archived: {$user->email}" .
+                ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
                 'archived_by' => $triggeredBy?->id,
@@ -119,21 +123,21 @@ class AccountAuditLogger
      */
     public function logFailedLogin(User $user, ?string $ipAddress = null): void
     {
-        Log::channel('audit')->notice(
-            "Failed login attempt: {$user->email}",
-            [
-                'user_id' => $user->id,
-                'ip_address' => $ipAddress,
-                'action' => 'failed_login_attempt',
-            ],
-        );
+        Log::channel('audit')->notice("Failed login attempt: {$user->email}", [
+            'user_id' => $user->id,
+            'ip_address' => $ipAddress,
+            'action' => 'failed_login_attempt',
+        ]);
     }
 
     /**
      * Log account lockout.
      */
-    public function logAccountLockout(User $user, int $attemptCount, ?string $ipAddress = null): void
-    {
+    public function logAccountLockout(
+        User $user,
+        int $attemptCount,
+        ?string $ipAddress = null,
+    ): void {
         Log::channel('audit')->warning(
             "⛔ Account locked out: {$user->email} after {$attemptCount} failed attempts",
             [
@@ -150,15 +154,12 @@ class AccountAuditLogger
      */
     public function logSessionExpired(User $user, string $reason, ?string $ipAddress = null): void
     {
-        Log::channel('audit')->info(
-            "🔓 Session expired: {$user->email}",
-            [
-                'user_id' => $user->id,
-                'reason' => $reason,
-                'ip_address' => $ipAddress,
-                'action' => 'session_expired',
-            ],
-        );
+        Log::channel('audit')->info("🔓 Session expired: {$user->email}", [
+            'user_id' => $user->id,
+            'reason' => $reason,
+            'ip_address' => $ipAddress,
+            'action' => 'session_expired',
+        ]);
     }
 
     /**
@@ -166,13 +167,10 @@ class AccountAuditLogger
      */
     public function logSuccessfulLogin(User $user, ?string $ipAddress = null): void
     {
-        Log::channel('audit')->info(
-            "✅ Successful login: {$user->email}",
-            [
-                'user_id' => $user->id,
-                'ip_address' => $ipAddress,
-                'action' => 'successful_login',
-            ],
-        );
+        Log::channel('audit')->info("✅ Successful login: {$user->email}", [
+            'user_id' => $user->id,
+            'ip_address' => $ipAddress,
+            'action' => 'successful_login',
+        ]);
     }
 }

@@ -73,7 +73,8 @@ class AttendanceServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Attendance\Services\Contracts\AttendanceService::class => AttendanceService::class,
+            \Modules\Attendance\Services\Contracts\AttendanceService::class =>
+                AttendanceService::class,
         ];
     }
 }

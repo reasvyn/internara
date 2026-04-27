@@ -60,7 +60,8 @@ return [
             'active_count' => ':count Filter Aktif',
         ],
         'import' => [
-            'instructions' => 'Template/import/export CSV hanya untuk pengguna operasional. Peran hanya boleh student, teacher, atau mentor. Kosongkan kolom roles untuk default student, gunakan department_name persis seperti data jurusan tersimpan, dan jangan sertakan kata sandi.',
+            'instructions' =>
+                'Template/import/export CSV hanya untuk pengguna operasional. Peran hanya boleh student, teacher, atau mentor. Kosongkan kolom roles untuk default student, gunakan department_name persis seperti data jurusan tersimpan, dan jangan sertakan kata sandi.',
             'columns' => [
                 'roles' => 'Peran',
                 'department_name' => 'Nama Jurusan',
@@ -99,8 +100,10 @@ return [
             'reissue_code' => 'Terbitkan Ulang Kode Aktivasi',
             'activation_pending_claim' => 'Menunggu Klaim',
             'activation_claimed' => 'Diklaim',
-            'password_setup_notice' => 'Akun ini akan diamankan melalui tautan setup via email. Administrator tidak dapat melihat kata sandi pengguna.',
-            'password_reset_notice' => 'Gunakan aksi kirim tautan reset dari tabel untuk membiarkan pengguna mengatur kata sandi baru secara aman.',
+            'password_setup_notice' =>
+                'Akun ini akan diamankan melalui tautan setup via email. Administrator tidak dapat melihat kata sandi pengguna.',
+            'password_reset_notice' =>
+                'Gunakan aksi kirim tautan reset dari tabel untuk membiarkan pengguna mengatur kata sandi baru secara aman.',
             'nip' => 'NIP (Nomor Induk Pegawai)',
             'nip_hint' => 'Wajib untuk peran Guru.',
             'nisn' => 'NISN (Nomor Induk Siswa Nasional)',
@@ -111,7 +114,8 @@ return [
         ],
         'delete' => [
             'title' => 'Konfirmasi Penghapusan',
-            'message' => 'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
+            'message' =>
+                'Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.',
         ],
         'deleted_successfully' => ':count data pengguna berhasil dihapus.',
         'credential_slips' => [

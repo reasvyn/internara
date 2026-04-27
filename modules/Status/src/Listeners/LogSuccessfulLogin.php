@@ -28,10 +28,7 @@ class LogSuccessfulLogin
         if ($user instanceof User) {
             $ipAddress = request()->ip();
 
-            $this->auditLogger->logSuccessfulLogin(
-                user: $user,
-                ipAddress: $ipAddress,
-            );
+            $this->auditLogger->logSuccessfulLogin(user: $user, ipAddress: $ipAddress);
 
             // Initialize session expiration tracking for admin roles
             if (\in_array($user->role, ['super_admin', 'admin'], true)) {

@@ -6,12 +6,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         // Enhanced login history table
-        if (! Schema::hasTable('login_history')) {
+        if (!Schema::hasTable('login_history')) {
             Schema::create('login_history', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -33,7 +32,7 @@ return new class extends Migration
         }
 
         // Suspicious login attempts table
-        if (! Schema::hasTable('suspicious_login_attempts')) {
+        if (!Schema::hasTable('suspicious_login_attempts')) {
             Schema::create('suspicious_login_attempts', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -41,7 +40,10 @@ return new class extends Migration
                 $table->string('user_agent')->nullable();
                 $table->json('suspicions'); // Array of reasons (impossible travel, simultaneous login, etc)
                 $table->json('actions_taken'); // Array of actions (force_reauthentication, notify_user, etc)
-                $table->enum('severity', ['low', 'medium', 'high', 'critical'])->default('medium')->index();
+                $table
+                    ->enum('severity', ['low', 'medium', 'high', 'critical'])
+                    ->default('medium')
+                    ->index();
                 $table->boolean('user_verified')->default(false); // User confirmed this was them?
                 $table->dateTime('detected_at')->index();
                 $table->dateTime('resolved_at')->nullable();

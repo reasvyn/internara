@@ -67,13 +67,15 @@ return [
 
     'setup_required' => [
         'title' => 'Action Required: Complete Your Account Setup',
-        'description' => 'Your account was provisioned by an administrator. Please set a personal password to secure your account.',
+        'description' =>
+            'Your account was provisioned by an administrator. Please set a personal password to secure your account.',
         'action' => 'Set Password',
     ],
 
     'email_unverified' => [
         'title' => 'Email Not Yet Verified',
-        'description' => 'Verify your email address to secure your account and receive important notifications.',
+        'description' =>
+            'Verify your email address to secure your account and receive important notifications.',
         'action' => 'Resend Verification Link',
     ],
 

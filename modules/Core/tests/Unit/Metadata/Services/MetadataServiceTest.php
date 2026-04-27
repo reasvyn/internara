@@ -11,10 +11,8 @@ use Modules\Shared\Support\AppInfo;
 describe('Metadata Service', function () {
     beforeEach(function () {
         $this->path = base_path('app_info.json');
-        $this->original = File::exists($this->path)
-            ? File::get($this->path)
-            : null;
-        $this->service = new MetadataService;
+        $this->original = File::exists($this->path) ? File::get($this->path) : null;
+        $this->service = new MetadataService();
         AppInfo::clearCache();
     });
 

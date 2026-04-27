@@ -77,10 +77,7 @@ class InternshipPlacement extends Model
      */
     public function mentor(): BelongsTo
     {
-        return app(UserService::class)->defineBelongsTo(
-            $this,
-            'mentor_id',
-        );
+        return app(UserService::class)->defineBelongsTo($this, 'mentor_id');
     }
 
     /**
@@ -103,13 +100,13 @@ class InternshipPlacement extends Model
                 // For placements, the number of registrations is typically small.
                 foreach ($this->registrations as $registration) {
                     $status = $registration->latestStatus();
-                    if (! $status || $status->name !== 'inactive') {
+                    if (!$status || $status->name !== 'inactive') {
                         $occupied++;
                     }
                 }
 
                 return max(0, $this->capacity_quota - $occupied);
-            }
+            },
         );
     }
 
@@ -129,7 +126,7 @@ class InternshipPlacement extends Model
                     ->count();
 
                 return (int) min(100, round(($activeCount / $this->capacity_quota) * 100));
-            }
+            },
         );
     }
 }

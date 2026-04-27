@@ -26,7 +26,7 @@ test('it calculates institutional summary', function () {
     // Bypass actual caching to avoid missing table issues in test environment
     Cache::shouldReceive('remember')
         ->once()
-        ->andReturnUsing(fn ($key, $ttl, $callback) => $callback());
+        ->andReturnUsing(fn($key, $ttl, $callback) => $callback());
 
     $builder = mock(Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);
@@ -47,9 +47,12 @@ test('it calculates institutional summary', function () {
 
     $summary = $aggregator->getInstitutionalSummary();
 
-    expect($summary['total_interns'])->toBe(10)
-        ->and($summary['active_partners'])->toBe(3)
-        ->and($summary['placement_rate'])->toBe(80.0);
+    expect($summary['total_interns'])
+        ->toBe(10)
+        ->and($summary['active_partners'])
+        ->toBe(3)
+        ->and($summary['placement_rate'])
+        ->toBe(80.0);
 });
 
 test('it identifies at risk students', function () {

@@ -15,8 +15,7 @@ test('report service can register and list providers', function () {
 
     // Register a mock provider for isolation
     $service->registerProvider(
-        new class implements ExportableDataProvider
-        {
+        new class implements ExportableDataProvider {
             public function getIdentifier(): string
             {
                 return 'test';
@@ -56,8 +55,7 @@ test('it synthesizes a PDF and stores it on the private disk', function () {
 
     // Register a dummy provider
     $service->registerProvider(
-        new class implements ExportableDataProvider
-        {
+        new class implements ExportableDataProvider {
             public function getIdentifier(): string
             {
                 return 'test_report';

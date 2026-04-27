@@ -13,9 +13,7 @@ use Spatie\ModelStatus\Models\Status as StatusModel;
 
 class StatusTransitionService
 {
-    public function __construct(
-        private AccountAuditLogger $auditLogger,
-    ) {}
+    public function __construct(private AccountAuditLogger $auditLogger) {}
 
     /**
      * Attempt to transition a user's account status using Spatie's status system.
@@ -35,20 +33,22 @@ class StatusTransitionService
     ): StatusModel {
         // Prevent transitioning protected accounts (Super Admins)
         if ($user->isProtected()) {
-            throw new \LogicException('Protected accounts cannot be transitioned. Status is immutable.');
+            throw new \LogicException(
+                'Protected accounts cannot be transitioned. Status is immutable.',
+            );
         }
 
         // Get current status from Spatie
         $currentStatus = $user->getStatus();
 
-        if (! $currentStatus) {
+        if (!$currentStatus) {
             throw new \LogicException('User has no current status set');
         }
 
         // Check if transition is valid
-        if (! $currentStatus->canTransitionTo($newStatus)) {
+        if (!$currentStatus->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException(
-                "Invalid transition: {$currentStatus->value} → {$newStatus->value}"
+                "Invalid transition: {$currentStatus->value} → {$newStatus->value}",
             );
         }
 
@@ -90,13 +90,15 @@ class StatusTransitionService
 
             // Send notification to user about status change
             try {
-                $user->notify(new AccountStatusChanged(
-                    user: $user,
-                    oldStatus: $currentStatus,
-                    newStatus: $newStatus,
-                    reason: $reason,
-                    changedBy: $triggeredBy,
-                ));
+                $user->notify(
+                    new AccountStatusChanged(
+                        user: $user,
+                        oldStatus: $currentStatus,
+                        newStatus: $newStatus,
+                        reason: $reason,
+                        changedBy: $triggeredBy,
+                    ),
+                );
             } catch (\Exception $e) {
                 Log::warning('Failed to send status change notification', [
                     'user_id' => $user->id,
@@ -127,7 +129,7 @@ class StatusTransitionService
         ?User $triggeredBy = null,
     ): void {
         // If no one triggered it, assume system action (allowed)
-        if (! $triggeredBy) {
+        if (!$triggeredBy) {
             return;
         }
 
@@ -135,30 +137,26 @@ class StatusTransitionService
         if ($triggeredBy->role !== 'super_admin' && $triggeredBy->role !== 'admin') {
             if ($triggeredBy->id !== $user->id) {
                 throw new \InvalidArgumentException(
-                    'Users can only change their own account status'
+                    'Users can only change their own account status',
                 );
             }
             // Regular users cannot transition themselves to PROTECTED or VERIFIED
             if (\in_array($newStatus, [Status::PROTECTED, Status::VERIFIED], true)) {
                 throw new \InvalidArgumentException(
-                    "Users cannot self-transition to {$newStatus->value} status"
+                    "Users cannot self-transition to {$newStatus->value} status",
                 );
             }
         }
 
         // Only Super Admins can set PROTECTED status
         if ($newStatus === Status::PROTECTED && $triggeredBy->role !== 'super_admin') {
-            throw new \InvalidArgumentException(
-                'Only Super Admins can set PROTECTED status'
-            );
+            throw new \InvalidArgumentException('Only Super Admins can set PROTECTED status');
         }
 
         // Only Super Admin or higher can verify other admins
         if ($user->role === 'admin' && $newStatus === Status::VERIFIED) {
             if ($triggeredBy->role !== 'super_admin') {
-                throw new \InvalidArgumentException(
-                    'Only Super Admins can verify Admin accounts'
-                );
+                throw new \InvalidArgumentException('Only Super Admins can verify Admin accounts');
             }
         }
     }
@@ -173,7 +171,7 @@ class StatusTransitionService
         }
 
         $currentStatus = $user->getStatus();
-        if (! $currentStatus) {
+        if (!$currentStatus) {
             return [];
         }
 
@@ -191,7 +189,7 @@ class StatusTransitionService
             }
 
             $currentStatus = $user->getStatus();
-            if (! $currentStatus) {
+            if (!$currentStatus) {
                 return false;
             }
 

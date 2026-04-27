@@ -16,9 +16,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        SetupFinalized::class => [
-            ConfigureInstitutionalBranding::class,
-        ],
+        SetupFinalized::class => [ConfigureInstitutionalBranding::class],
     ];
 
     /**

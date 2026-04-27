@@ -43,9 +43,7 @@ test('it can retrieve student timeline filtered by registration', function () {
     $service = app(ScheduleService::class);
     $studentId = (string) Str::uuid();
 
-    $internship = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $internship = app(InternshipService::class)->factory()->create();
     $registration = app(RegistrationService::class)
         ->factory()
         ->create([
@@ -65,9 +63,7 @@ test('it can retrieve student timeline filtered by registration', function () {
         'academic_year' => '2025/2026',
     ]);
 
-    $otherInternship = app(InternshipService::class)
-        ->factory()
-        ->create();
+    $otherInternship = app(InternshipService::class)->factory()->create();
     Schedule::factory()->create([
         'title' => 'Other Event',
         'internship_id' => $otherInternship->id,

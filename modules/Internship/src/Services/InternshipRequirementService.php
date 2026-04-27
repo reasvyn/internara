@@ -61,12 +61,9 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     ): RequirementSubmission {
         $requirement = $this->find($requirementId);
 
-        if (! $requirement) {
-            $e = new ModelNotFoundException;
-            throw $e->setModel(
-                InternshipRequirement::class,
-                [$requirementId],
-            );
+        if (!$requirement) {
+            $e = new ModelNotFoundException();
+            throw $e->setModel(InternshipRequirement::class, [$requirementId]);
         }
 
         $submission = RequirementSubmission::updateOrCreate(
@@ -89,10 +86,8 @@ class InternshipRequirementService extends EloquentQuery implements Contract
     /**
      * {@inheritdoc}
      */
-    public function verify(
-        string $submissionId,
-        string $adminId,
-    ): RequirementSubmission {
+    public function verify(string $submissionId, string $adminId): RequirementSubmission
+    {
         $submission = RequirementSubmission::findOrFail($submissionId);
 
         $submission->update([
@@ -129,11 +124,9 @@ class InternshipRequirementService extends EloquentQuery implements Contract
      */
     public function hasClearedMandatory(string $registrationId): bool
     {
-        $registration = app(
-            RegistrationService::class,
-        )->find($registrationId);
+        $registration = app(RegistrationService::class)->find($registrationId);
 
-        if (! $registration) {
+        if (!$registration) {
             return false;
         }
 

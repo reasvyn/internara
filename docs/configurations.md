@@ -13,6 +13,7 @@ Internara configuration uses Laravel's standard `.env` file approach. Configurat
 - **`modules/*/config/`** — Module-specific configs
 
 Key configuration areas:
+
 - Application settings (name, URL, timezone, debug)
 - Database connection (SQLite, MySQL, PostgreSQL)
 - Mail/Email (SMTP, Mailer drivers)
@@ -101,6 +102,7 @@ APP_KEY=base64:...
 ### Environment-Specific Examples
 
 **Development** (local):
+
 ```env
 APP_ENV=local
 APP_DEBUG=true
@@ -112,6 +114,7 @@ SESSION_DRIVER=database
 ```
 
 **Staging**:
+
 ```env
 APP_ENV=staging
 APP_DEBUG=false
@@ -123,6 +126,7 @@ SESSION_DRIVER=cookie
 ```
 
 **Production**:
+
 ```env
 APP_ENV=production
 APP_DEBUG=false
@@ -148,16 +152,19 @@ DB_DATABASE=database/database.sqlite
 ```
 
 **Pros**:
+
 - Zero setup (single file)
 - Fast for development
 - Good for testing (`:memory:`)
 
 **Cons**:
+
 - Single user only
 - Not for production
 - Limited concurrency
 
 **Setup**:
+
 ```bash
 # Database created automatically during migration
 php artisan migrate
@@ -176,12 +183,14 @@ DB_CHARSET=utf8
 ```
 
 **Pros**:
+
 - Excellent for production
 - Strong ACID compliance
 - Built-in JSON support
 - Scalable
 
 **Setup**:
+
 ```bash
 # 1. Create database and user
 sudo -u postgres createdb internara
@@ -210,6 +219,7 @@ DB_COLLATION=utf8mb4_unicode_ci
 ```
 
 **Setup**:
+
 ```bash
 # 1. Create database and user
 mysql -u root -p
@@ -261,6 +271,7 @@ MAIL_FROM_NAME=Internara
 ```
 
 **Steps**:
+
 1. Enable 2-factor authentication on Google Account
 2. Generate App Password: https://myaccount.google.com/apppasswords
 3. Use generated password (16 characters)
@@ -315,18 +326,18 @@ MAIL_PASSWORD=null
 
 ### Mail Mailer Options
 
-| Mailer | Use Case | Config | Reliability |
-| :--- | :--- | :--- | :--- |
-| `smtp` | General purpose | Host, port, credentials | Excellent |
-| `sendmail` | Server with sendmail | Path to sendmail binary | Good |
-| `ses` | AWS hosted | AWS credentials | Excellent |
-| `postmark` | Postmark service | API token | Excellent |
-| `resend` | Resend service | API token | Excellent |
-| `mailgun` | Mailgun service | Domain + token | Excellent |
-| `log` | Development | Write to logs | N/A |
-| `array` | Testing | Store in memory | N/A |
-| `failover` | Redundancy | Multiple mailers | Very good |
-| `roundrobin` | Load balance | Multiple mailers | Good |
+| Mailer       | Use Case             | Config                  | Reliability |
+| :----------- | :------------------- | :---------------------- | :---------- |
+| `smtp`       | General purpose      | Host, port, credentials | Excellent   |
+| `sendmail`   | Server with sendmail | Path to sendmail binary | Good        |
+| `ses`        | AWS hosted           | AWS credentials         | Excellent   |
+| `postmark`   | Postmark service     | API token               | Excellent   |
+| `resend`     | Resend service       | API token               | Excellent   |
+| `mailgun`    | Mailgun service      | Domain + token          | Excellent   |
+| `log`        | Development          | Write to logs           | N/A         |
+| `array`      | Testing              | Store in memory         | N/A         |
+| `failover`   | Redundancy           | Multiple mailers        | Very good   |
+| `roundrobin` | Load balance         | Multiple mailers        | Good        |
 
 ### Global "From" Address
 
@@ -339,24 +350,26 @@ MAIL_FROM_NAME=Internara
 Override per email:
 
 ```php
-Mail::send($mailable)
-    ->from('admin@internara.test', 'Admin');
+Mail::send($mailable)->from('admin@internara.test', 'Admin');
 ```
 
 ### Testing Emails
 
 **Log all emails** (development):
+
 ```env
 MAIL_MAILER=log
 MAIL_LOG_CHANNEL=daily
 ```
 
 Check logs:
+
 ```bash
 tail -f storage/logs/laravel.log | grep -i mail
 ```
 
 **Fake emails** (automated testing):
+
 ```php
 use Illuminate\Support\Facades\Mail;
 
@@ -392,11 +405,11 @@ MEMCACHED_HOST=127.0.0.1
 
 ### Recommended Per Environment
 
-| Environment | Store | Speed | Persistence |
-| :--- | :--- | :--- | :--- |
-| **Development** | `database` | Slow | Yes |
-| **Staging** | `redis` | Fast | Yes |
-| **Production** | `redis` | Fast | Yes |
+| Environment     | Store      | Speed | Persistence |
+| :-------------- | :--------- | :---- | :---------- |
+| **Development** | `database` | Slow  | Yes         |
+| **Staging**     | `redis`    | Fast  | Yes         |
+| **Production**  | `redis`    | Fast  | Yes         |
 
 ---
 
@@ -420,6 +433,7 @@ SESSION_DOMAIN=null
 ### Development vs. Production
 
 **Development**:
+
 ```env
 SESSION_DRIVER=database
 SESSION_ENCRYPT=false
@@ -427,6 +441,7 @@ SESSION_LIFETIME=120
 ```
 
 **Production**:
+
 ```env
 SESSION_DRIVER=cookie
 SESSION_ENCRYPT=true
@@ -463,12 +478,12 @@ supervisor/internara-worker.conf
 
 ### Recommended Per Environment
 
-| Environment | Driver | Why |
-| :--- | :--- | :--- |
-| **Development** | `sync` | Synchronous (instant) |
+| Environment                       | Driver     | Why                          |
+| :-------------------------------- | :--------- | :--------------------------- |
+| **Development**                   | `sync`     | Synchronous (instant)        |
 | **Development (background jobs)** | `database` | Persistent, no extra service |
-| **Staging** | `redis` | Fast, scalable |
-| **Production** | `redis` | Fast, reliable, scalable |
+| **Staging**                       | `redis`    | Fast, scalable               |
+| **Production**                    | `redis`    | Fast, reliable, scalable     |
 
 ---
 
@@ -546,16 +561,16 @@ LOG_DEPRECATIONS_CHANNEL=null
 
 ### Log Levels
 
-| Level | Use |
-| :--- | :--- |
-| `emergency` | System unusable |
-| `alert` | Immediate action required |
-| `critical` | Critical condition |
-| `error` | Error condition |
-| `warning` | Warning condition |
-| `notice` | Normal but significant |
-| `info` | Informational |
-| `debug` | Debug-level messages |
+| Level       | Use                       |
+| :---------- | :------------------------ |
+| `emergency` | System unusable           |
+| `alert`     | Immediate action required |
+| `critical`  | Critical condition        |
+| `error`     | Error condition           |
+| `warning`   | Warning condition         |
+| `notice`    | Normal but significant    |
+| `info`      | Informational             |
+| `debug`     | Debug-level messages      |
 
 ### Log Stacks
 
@@ -595,6 +610,7 @@ HTTPS_ONLY=true  # Custom setting (if implemented)
 ```
 
 In production, configure:
+
 ```php
 // bootstrap/app.php or middleware
 if (config('app.env') === 'production') {
@@ -718,6 +734,7 @@ SQLSTATE[HY000] [1045] Access denied for user
 ```
 
 **Solution**:
+
 - Check `DB_USERNAME` and `DB_PASSWORD`
 - Verify user exists: `mysql -u user -p`
 - Check `DB_HOST` is correct
@@ -730,6 +747,7 @@ Swift_TransportException: Connection could not be established
 ```
 
 **Solutions**:
+
 - Check `MAIL_HOST`, `MAIL_PORT`
 - Verify credentials: `telnet MAIL_HOST MAIL_PORT`
 - For Gmail, generate App Password (not account password)
@@ -742,12 +760,14 @@ Connection refused: REDIS_HOST:REDIS_PORT
 ```
 
 **Solution**:
+
 - Start Redis: `redis-server`
 - Or switch to `CACHE_STORE=database`
 
 ### ❌ Session Not Persisting
 
 **Solution**:
+
 - Check `SESSION_DRIVER=database`
 - Run migration: `php artisan migrate`
 - Check `sessions` table exists
@@ -815,4 +835,4 @@ php artisan queue:status
 
 ---
 
-*Proper configuration is the foundation of reliable systems.* ⚙️
+_Proper configuration is the foundation of reliable systems._ ⚙️

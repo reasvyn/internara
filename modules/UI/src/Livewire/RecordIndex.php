@@ -59,12 +59,12 @@ abstract class RecordIndex extends Component
     {
         return view($this->getView(), [
             'managerComponent' => $this->managerComponent,
-        ])->layout(
-            'ui::components.layouts.dashboard',
-            [
-                'title' => ($this->titleKey ? __($this->titleKey) : '').' | '.setting('brand_name', setting('app_name')),
-                'context' => $this->titleKey,
-            ],
-        );
+        ])->layout('ui::components.layouts.dashboard', [
+            'title' =>
+                ($this->titleKey ? __($this->titleKey) : '') .
+                ' | ' .
+                setting('brand_name', setting('app_name')),
+            'context' => $this->titleKey,
+        ]);
     }
 }

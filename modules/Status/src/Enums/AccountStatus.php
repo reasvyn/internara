@@ -223,14 +223,14 @@ enum AccountStatus: string
     public function color(): string
     {
         return match ($this) {
-            self::PROVISIONED => 'warning',      // ⏳ Yellow - waiting for action
-            self::ACTIVATED => 'info',            // 🔵 Blue - almost ready
-            self::VERIFIED => 'success',          // 🟢 Green - fully active
-            self::PROTECTED => 'primary',         // 🔒 Blue - system-protected
-            self::RESTRICTED => 'warning',        // ⚠️  Orange - limited access
-            self::SUSPENDED => 'error',           // 🔴 Red - no access
-            self::INACTIVE => 'warning',          // ⏳ Yellow - dormant
-            self::ARCHIVED => 'error',            // 📦 Red - historical only
+            self::PROVISIONED => 'warning', // ⏳ Yellow - waiting for action
+            self::ACTIVATED => 'info', // 🔵 Blue - almost ready
+            self::VERIFIED => 'success', // 🟢 Green - fully active
+            self::PROTECTED => 'primary', // 🔒 Blue - system-protected
+            self::RESTRICTED => 'warning', // ⚠️  Orange - limited access
+            self::SUSPENDED => 'error', // 🔴 Red - no access
+            self::INACTIVE => 'warning', // ⏳ Yellow - dormant
+            self::ARCHIVED => 'error', // 📦 Red - historical only
         };
     }
 
@@ -239,7 +239,7 @@ enum AccountStatus: string
      */
     public function label(): string
     {
-        return 'account_status.status.'.$this->value;
+        return 'account_status.status.' . $this->value;
     }
 
     /**
@@ -247,7 +247,7 @@ enum AccountStatus: string
      */
     public function description(): string
     {
-        return 'account_status.description.'.$this->value;
+        return 'account_status.description.' . $this->value;
     }
 
     /**
@@ -257,12 +257,12 @@ enum AccountStatus: string
     {
         return match ($this) {
             self::PROVISIONED => false,
-            self::ACTIVATED => true,          // Limited mode
-            self::VERIFIED => true,            // Full access
-            self::PROTECTED => true,           // Full access
-            self::RESTRICTED => true,          // Conditional
+            self::ACTIVATED => true, // Limited mode
+            self::VERIFIED => true, // Full access
+            self::PROTECTED => true, // Full access
+            self::RESTRICTED => true, // Conditional
             self::SUSPENDED => false,
-            self::INACTIVE => true,            // Can log in (with warning)
+            self::INACTIVE => true, // Can log in (with warning)
             self::ARCHIVED => false,
         };
     }

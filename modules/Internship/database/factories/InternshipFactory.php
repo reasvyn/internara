@@ -25,7 +25,7 @@ class InternshipFactory extends Factory
             'id' => (string) Str::uuid(),
             'title' => $this->faker->unique()->sentence(3),
             'description' => $this->faker->paragraph,
-            'academic_year' => date('Y').'/'.(date('Y') + 1),
+            'academic_year' => date('Y') . '/' . (date('Y') + 1),
             'semester' => 'Ganjil',
             'date_start' => now()->toDateString(),
             'date_finish' => now()->addMonths(3)->toDateString(),

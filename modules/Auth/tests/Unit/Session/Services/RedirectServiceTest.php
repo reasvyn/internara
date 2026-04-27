@@ -14,39 +14,42 @@ beforeEach(function () {
 });
 
 test('it redirects unverified users to verification notice', function () {
-    $user = mock(User::class);
+    $user = mock(User::class)->makePartial();
+    $user->email = 'test@example.com';
     $user->shouldReceive('hasAnyRole')->andReturn(false);
     $user->shouldReceive('hasVerifiedEmail')->andReturn(false);
 
-    $service = new RedirectService;
+    $service = new RedirectService();
     $url = $service->getTargetUrl($user);
 
     expect($url)->toBe(route('verification.notice'));
 });
 
 test('it redirects admins to admin dashboard', function () {
-    $user = mock(User::class);
+    $user = mock(User::class)->makePartial();
+    $user->email = 'test@example.com';
     $user->shouldReceive('hasVerifiedEmail')->andReturn(true);
     $user
         ->shouldReceive('hasAnyRole')
         ->with([Role::SUPER_ADMIN->value, Role::ADMIN->value])
         ->andReturn(true);
 
-    $service = new RedirectService;
+    $service = new RedirectService();
     $url = $service->getTargetUrl($user);
 
     expect($url)->toBe(route('admin.dashboard'));
 });
 
 test('it redirects students to student dashboard', function () {
-    $user = mock(User::class);
+    $user = mock(User::class)->makePartial();
+    $user->email = 'test@example.com';
     $user->shouldReceive('hasAnyRole')->andReturn(false);
     $user->shouldReceive('hasVerifiedEmail')->andReturn(true);
     $user->shouldReceive('hasRole')->with(Role::TEACHER->value)->andReturn(false);
     $user->shouldReceive('hasRole')->with(Role::MENTOR->value)->andReturn(false);
     $user->shouldReceive('hasRole')->with(Role::STUDENT->value)->andReturn(true);
 
-    $service = new RedirectService;
+    $service = new RedirectService();
     $url = $service->getTargetUrl($user);
 
     expect($url)->toBe(route('student.dashboard'));

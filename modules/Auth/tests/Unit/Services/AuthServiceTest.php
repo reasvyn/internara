@@ -7,13 +7,15 @@ namespace Modules\Auth\Tests\Unit\Services;
 use Illuminate\Support\Facades\Auth;
 use Modules\Auth\Services\AuthService;
 use Modules\Permission\Enums\Role;
+use Modules\Status\Services\SessionExpirationService;
 use Modules\User\Models\User;
 use Modules\User\Services\Contracts\UserService;
 
 describe('Auth Service', function () {
     beforeEach(function () {
         $this->userService = mock(UserService::class);
-        $this->service = new AuthService($this->userService);
+        $this->sessionService = mock(SessionExpirationService::class);
+        $this->service = new AuthService($this->userService, $this->sessionService);
     });
 
     test('it can authenticate a user with email', function () {
@@ -22,14 +24,19 @@ describe('Auth Service', function () {
             ->with(['email' => 'test@example.com', 'password' => 'password'], false)
             ->andReturn(true);
 
-        Auth::shouldReceive('user')->andReturn(new User);
+        $user = mock(User::class)->makePartial();
+        $user->shouldReceive('isSuspended')->andReturn(false);
+        $user->shouldReceive('isArchived')->andReturn(false);
+        $user->shouldReceive('isInactive')->andReturn(false);
 
-        $user = $this->service->login([
+        Auth::shouldReceive('user')->andReturn($user);
+
+        $result = $this->service->login([
             'identifier' => 'test@example.com',
             'password' => 'password',
         ]);
 
-        expect($user)->toBeInstanceOf(User::class);
+        expect($result)->toBeInstanceOf(User::class);
     });
 
     test('it can authenticate a user with username', function () {
@@ -38,11 +45,16 @@ describe('Auth Service', function () {
             ->with(['username' => 'testuser', 'password' => 'password'], false)
             ->andReturn(true);
 
-        Auth::shouldReceive('user')->andReturn(new User);
+        $user = mock(User::class)->makePartial();
+        $user->shouldReceive('isSuspended')->andReturn(false);
+        $user->shouldReceive('isArchived')->andReturn(false);
+        $user->shouldReceive('isInactive')->andReturn(false);
 
-        $user = $this->service->login(['identifier' => 'testuser', 'password' => 'password']);
+        Auth::shouldReceive('user')->andReturn($user);
 
-        expect($user)->toBeInstanceOf(User::class);
+        $result = $this->service->login(['identifier' => 'testuser', 'password' => 'password']);
+
+        expect($result)->toBeInstanceOf(User::class);
     });
 
     test('it prevents role escalation during registration [SYRS-NF-502]', function () {
@@ -59,10 +71,10 @@ describe('Auth Service', function () {
             ->with(
                 \Mockery::on(function ($arg) {
                     // Ensure 'role' or 'roles' from input is removed/ignored
-                    return ! isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
+                    return !isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
                 }),
             )
-            ->andReturn(new User);
+            ->andReturn(new User());
 
         $this->service->register($data, Role::STUDENT->value);
     });

@@ -89,7 +89,7 @@ class AppTestCommand extends Command
         $requestedModules = array_map('strtolower', $this->argument('modules'));
         $targets = $discovery->identify($requestedModules, (bool) $this->option('dirty'), $missing);
 
-        if (! empty($missing)) {
+        if (!empty($missing)) {
             $this->newLine();
             foreach ($missing as $module) {
                 $this->components->error(
@@ -132,7 +132,7 @@ class AppTestCommand extends Command
             $subsegments = $target['segments'] ?? ['Arch', 'Unit', 'Feature', 'Browser'];
 
             foreach ($subsegments as $sub) {
-                $testPath = $target['path'].DIRECTORY_SEPARATOR.$sub;
+                $testPath = $target['path'] . DIRECTORY_SEPARATOR . $sub;
 
                 if (File::isDirectory($testPath)) {
                     if ($this->shouldSkipSegment($sub)) {
@@ -185,15 +185,15 @@ class AppTestCommand extends Command
                         $segmentOutput,
                         $segmentError,
                     );
-                    $allOutput .= $segmentOutput.$segmentError;
+                    $allOutput .= $segmentOutput . $segmentError;
 
                     $duration = microtime(true) - $segmentStart;
                     $row[$sub] = $success
-                        ? '<fg=green>PASS</> ('.number_format($duration, 2).'s)'
+                        ? '<fg=green>PASS</> (' . number_format($duration, 2) . 's)'
                         : '<fg=red>FAIL</>';
                     $row['total'] += $duration;
 
-                    if (! $success) {
+                    if (!$success) {
                         $overallSuccess = false;
                         $failures[] = [
                             'label' => $segmentLabel,
@@ -261,8 +261,8 @@ class AppTestCommand extends Command
             ' <fg=white;bg=magenta;options=bold> INTERNARA </> <fg=magenta;options=bold>MODULAR VERIFICATION ENGINE</>',
         );
         $this->line(
-            ' <fg=gray>Advanced Infrastructure Testing Tool v'.
-                config('app.version', '0.14.0').
+            ' <fg=gray>Advanced Infrastructure Testing Tool v' .
+                config('app.version', '0.14.0') .
                 '</>',
         );
         $this->newLine();
@@ -277,10 +277,10 @@ class AppTestCommand extends Command
 
         if ($passRate < $threshold) {
             $this->components->error(
-                'Stability failure: Global pass rate ('.
-                    number_format($passRate, 2).
-                    '%) is below required threshold ('.
-                    number_format($threshold, 2).
+                'Stability failure: Global pass rate (' .
+                    number_format($passRate, 2) .
+                    '%) is below required threshold (' .
+                    number_format($threshold, 2) .
                     '%).',
             );
 
@@ -307,12 +307,12 @@ class AppTestCommand extends Command
         }
         if (
             $sub === 'Browser' &&
-            ! $this->option('with-browser') &&
-            ! $this->option('browser-only')
+            !$this->option('with-browser') &&
+            !$this->option('browser-only')
         ) {
             return true;
         }
-        if ($onlyFlags && ! $this->option("{$subLower}-only")) {
+        if ($onlyFlags && !$this->option("{$subLower}-only")) {
             return true;
         }
 
@@ -328,8 +328,8 @@ class AppTestCommand extends Command
         foreach ($targets as $target) {
             foreach ($target['segments'] ?? ['Arch', 'Unit', 'Feature', 'Browser'] as $sub) {
                 if (
-                    File::isDirectory($target['path'].DIRECTORY_SEPARATOR.$sub) &&
-                    ! $this->shouldSkipSegment($sub)
+                    File::isDirectory($target['path'] . DIRECTORY_SEPARATOR . $sub) &&
+                    !$this->shouldSkipSegment($sub)
                 ) {
                     $count++;
                 }

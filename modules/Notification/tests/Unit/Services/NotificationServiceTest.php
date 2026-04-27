@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Modules\Notification\Services\NotificationService;
 
 test('it delegates send to facade', function () {
-    $service = new NotificationService;
+    $service = new NotificationService();
     $notification = mock(Notification::class);
 
     NotificationFacade::shouldReceive('send')->once()->with('user', $notification);
@@ -19,7 +19,7 @@ test('it delegates send to facade', function () {
 });
 
 test('it delegates sendNow to facade', function () {
-    $service = new NotificationService;
+    $service = new NotificationService();
     $notification = mock(Notification::class);
 
     NotificationFacade::shouldReceive('sendNow')->once()->with('user', $notification);

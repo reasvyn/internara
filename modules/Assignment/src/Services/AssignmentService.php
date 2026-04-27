@@ -35,7 +35,8 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function getMandatoryAssignments(string $internshipId)
     {
-        return $this->model->newQuery()
+        return $this->model
+            ->newQuery()
             ->where('internship_id', $internshipId)
             ->where('is_mandatory', true)
             ->get();
@@ -76,14 +77,16 @@ class AssignmentService extends EloquentQuery implements Contract
         ];
 
         foreach ($defaults as $data) {
-            if (! $data['assignment_type_id']) {
+            if (!$data['assignment_type_id']) {
                 continue;
             }
 
-            $this->withoutAuthorization()->create(array_merge($data, [
-                'internship_id' => $internshipId,
-                'academic_year' => $academicYear,
-            ]));
+            $this->withoutAuthorization()->create(
+                array_merge($data, [
+                    'internship_id' => $internshipId,
+                    'academic_year' => $academicYear,
+                ]),
+            );
         }
     }
 
@@ -94,11 +97,12 @@ class AssignmentService extends EloquentQuery implements Contract
     {
         $reg = app(RegistrationService::class)->find($registrationId);
 
-        if (! $reg) {
+        if (!$reg) {
             return false;
         }
 
-        $query = $this->model->newQuery()
+        $query = $this->model
+            ->newQuery()
             ->where('internship_id', $reg->internship_id)
             ->where('is_mandatory', true);
 

@@ -35,8 +35,7 @@ describe('StudentManager Component', function () {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        Livewire::test(StudentManager::class)
-            ->assertForbidden();
+        Livewire::test(StudentManager::class)->assertForbidden();
     });
 
     test('it can create a student user', function () {
@@ -81,15 +80,17 @@ describe('StudentManager Component', function () {
         expect($student->fresh()->name)->toBe('Updated Student Name');
     });
 
-    test('it forbids non-admin roles even if they somehow receive student manage permission', function () {
-        $teacher = User::factory()->create();
-        $teacher->assignRole(Role::TEACHER->value);
-        $teacher->givePermissionTo('student.manage');
-        $this->actingAs($teacher);
+    test(
+        'it forbids non-admin roles even if they somehow receive student manage permission',
+        function () {
+            $teacher = User::factory()->create();
+            $teacher->assignRole(Role::TEACHER->value);
+            $teacher->givePermissionTo('student.manage');
+            $this->actingAs($teacher);
 
-        Livewire::test(StudentManager::class)
-            ->assertForbidden();
-    });
+            Livewire::test(StudentManager::class)->assertForbidden();
+        },
+    );
 
     test('it validates form inputs', function () {
         $admin = User::factory()->create();

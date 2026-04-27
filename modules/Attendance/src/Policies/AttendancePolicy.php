@@ -17,7 +17,7 @@ class AttendancePolicy
      */
     public function view(User $user, AttendanceLog $log): bool
     {
-        if (! $user->can('attendance.view')) {
+        if (!$user->can('attendance.view')) {
             return false;
         }
 

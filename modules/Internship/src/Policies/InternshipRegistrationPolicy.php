@@ -25,7 +25,7 @@ class InternshipRegistrationPolicy
      */
     public function update(User $user, ?InternshipRegistration $registration = null): bool
     {
-        if (! $registration) {
+        if (!$registration) {
             return $user->hasAnyRole(['super-admin', 'admin', 'staff']);
         }
 
@@ -38,11 +38,11 @@ class InternshipRegistrationPolicy
      */
     public function view(User $user, ?InternshipRegistration $registration = null): bool
     {
-        if (! $user->can('registration.view')) {
+        if (!$user->can('registration.view')) {
             return false;
         }
 
-        if (! $registration) {
+        if (!$registration) {
             return true;
         }
 

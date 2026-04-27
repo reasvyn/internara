@@ -30,7 +30,7 @@ class SubmissionService extends EloquentQuery implements Contract
 
         if (
             $settingService->getValue('feature_guidance_enabled', true) &&
-            ! $guidanceService->hasCompletedMandatory((string) auth()->id())
+            !$guidanceService->hasCompletedMandatory((string) auth()->id())
         ) {
             throw new AppException(
                 userMessage: 'guidance::messages.must_complete_guidance',
