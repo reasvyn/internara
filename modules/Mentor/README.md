@@ -3,8 +3,9 @@
 The `Mentor` module is the dedicated workspace for industry mentors. It is designed to be simple and
 mobile-friendly to facilitate quick feedback from busy professionals.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative All
-> implementation must adhere to the
+> **Governance Mandate:** This module strictly adheres to the **3S Doctrine** (Secure, Sustain,
+> Scalable) and the **Modular Domain-Driven Design (DDD)** architecture. All implementations must
+> preserve its Bounded Context isolation and maintain Documentation Parity (Sync or Sink).
 
 ---
 

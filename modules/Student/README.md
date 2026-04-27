@@ -3,8 +3,9 @@
 The `Student` module serves as the dedicated workspace for students within Internara. It focuses on
 providing a personalized interface for managing their internship lifecycle.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative All
-> implementation must adhere to the
+> **Governance Mandate:** This module strictly adheres to the **3S Doctrine** (Secure, Sustain,
+> Scalable) and the **Modular Domain-Driven Design (DDD)** architecture. All implementations must
+> preserve its Bounded Context isolation and maintain Documentation Parity (Sync or Sink).
 
 ---
 
