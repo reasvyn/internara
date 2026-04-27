@@ -209,62 +209,6 @@ class SetupService extends BaseService implements Contracts\SetupService
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function generateTechnicalReport(): string
-    {
-        $auditor = app(\Modules\Setup\Services\Contracts\SystemAuditor::class);
-        $audit = $auditor->audit();
-        $appName = $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara');
-        $now = now()->toDayDateTimeString();
-
-        $report = "INTERNARA INSTALLATION REPORT\n";
-        $report .= "============================\n";
-        $report .= "Application: {$appName}\n";
-        $report .= "Generated At: {$now}\n";
-        $report .= "Environment: " . config('app.env') . "\n\n";
-
-        $report .= "1. INFRASTRUCTURE AUDIT\n";
-        $report .= "-----------------------\n";
-        foreach ($audit['requirements'] as $label => $passed) {
-            $report .= sprintf("[%s] %s\n", $passed ? 'PASS' : 'FAIL', $label);
-        }
-
-        $report .= "\n2. PERMISSIONS AUDIT\n";
-        $report .= "--------------------\n";
-        foreach ($audit['permissions'] as $label => $passed) {
-            $report .= sprintf("[%s] %s\n", $passed ? 'PASS' : 'FAIL', $label);
-        }
-
-        $report .= "\n3. DATABASE CONNECTIVITY\n";
-        $report .= "-----------------------\n";
-        $report .= "Status: " . ($audit['database']['connection'] ? 'CONNECTED' : 'DISCONNECTED') . "\n";
-        $report .= "Detail: " . $audit['database']['message'] . "\n\n";
-
-        $report .= "4. SETUP PROGRESSION\n";
-        $report .= "--------------------\n";
-        $steps = [
-            self::STEP_WELCOME,
-            self::STEP_ENVIRONMENT,
-            self::STEP_SCHOOL,
-            self::STEP_ACCOUNT,
-            self::STEP_DEPARTMENT,
-            self::STEP_INTERNSHIP,
-            self::STEP_SYSTEM,
-            'complete',
-        ];
-
-        foreach ($steps as $step) {
-            $completed = $this->isStepCompleted($step);
-            $report .= sprintf("[%s] Step: %s\n", $completed ? 'DONE' : 'PENDING', strtoupper($step));
-        }
-
-        $report .= "\n============================\n";
-        $report .= "END OF REPORT\n";
-
-        return $report;
-    }
-    /**
      * Stores the completion status of a setup step in the settings.
      */
     protected function storeStep(string $name, bool $completed = true): bool

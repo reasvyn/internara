@@ -52,19 +52,6 @@ class SetupComplete extends Component
     }
 
     /**
-     * Downloads a comprehensive technical report of the installation process.
-     */
-    public function downloadTechnicalReport()
-    {
-        $report = $this->setupService->generateTechnicalReport();
-        $filename = 'internara-install-report-' . now()->format('Y-m-d-His') . '.txt';
-
-        return response()->streamDownload(function () use ($report) {
-            echo $report;
-        }, $filename);
-    }
-
-    /**
      * Handles the login attempt after validating the governance checklist.
      */
     public function nextStep(): void

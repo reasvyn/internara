@@ -122,10 +122,9 @@ return [
         'headline' => 'Finalization and Synchronization: :app Ready for Action! ✨',
         'description' => 'This is the final touch—like an artist signing their work. This step will bring together everything we have prepared, activate all modules, and ensure :app is ready to serve you fully.',
         'description_extra' => 'With one final click, you will open the door to a new internship management experience. Ready to start this new chapter?',
-        'cta' => 'Finalize & Start Adventure',
+        'cta' => 'Complete Installation',
         'checkup_title' => 'System Readiness Check-up',
         'checkup_desc' => 'Please review and confirm your compliance with system governance standards.',
-        'download_report' => 'Download Technical Report',
         'checkup' => [
             'data_verified_label' => 'Data Integrity Confirmation',
             'data_verified_desc' => 'I have reviewed the school, department, and program data. I confirm that all entered information is accurate and reflects the official status of the institution.',

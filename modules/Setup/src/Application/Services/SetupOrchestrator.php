@@ -185,13 +185,4 @@ class SetupOrchestrator implements SetupService
             return true;
         });
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function generateTechnicalReport(): string
-    {
-        // ... Logic will be delegated to a specialized reporter later
-        return "DDD-aligned Technical Report Placeholder";
-    }
 }
