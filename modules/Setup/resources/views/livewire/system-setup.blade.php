@@ -1,139 +1,116 @@
-<x-setup::layouts.setup-wizard>
+<x-setup::layouts.setup-wizard :step="6" :totalSteps="7">
     <x-slot:header>
         <x-setup::wizard-header 
-            step="7"
-            :title="__('setup::wizard.system.headline')"
-            :description="__('setup::wizard.system.description', ['app' => setting('app_name')])"
-            :badgeText="__('setup::wizard.common.later_at_settings')"
+            step="6"
+            :title="__('setup::wizard.system.title')"
+            :description="__('setup::wizard.system.description', ['app' => setting('app_name', 'Internara')])"
+            badgeText="Optional"
         />
+    </x-slot:header>
 
-        <div 
-            class="mt-12 flex flex-wrap items-center gap-4" 
-            x-data="{ mailHost: @entangle('mail_host').live }"
-        >
+    <x-slot:content>
+        <div class="space-y-6" x-data="{ mailHost: @entangle('mail_host').live }">
+            <!-- SMTP Form -->
+            <div class="space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <x-ui::input
+                        :label="__('setup::wizard.system.fields.smtp_host')"
+                        wire:model.live.debounce.500ms="mail_host"
+                        placeholder="smtp.example.com"
+                        icon="tabler.server"
+                    />
+                    <div class="grid grid-cols-2 gap-4">
+                        <x-ui::input
+                            :label="__('setup::wizard.system.fields.smtp_port')"
+                            wire:model="mail_port"
+                            placeholder="587"
+                        />
+                        <x-ui::input
+                            :label="__('setup::wizard.system.fields.encryption')"
+                            wire:model="mail_encryption"
+                            placeholder="tls"
+                        />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <x-ui::input
+                        :label="__('setup::wizard.system.fields.username')"
+                        wire:model="mail_username"
+                        icon="tabler.user"
+                    />
+                    <x-ui::input
+                        :label="__('setup::wizard.system.fields.password')"
+                        wire:model="mail_password"
+                        type="password"
+                        icon="tabler.key"
+                    />
+                </div>
+            </div>
+
+            <!-- Sender Info -->
+            <div class="pt-4 border-t border-base-200/50 dark:border-base-200/30">
+                <h3 class="text-sm font-semibold text-base-content/70 dark:text-base-content/60 mb-4">
+                    {{ __('setup::wizard.system.sender_information') }}
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <x-ui::input
+                        :label="__('setup::wizard.system.fields.from_email')"
+                        wire:model="mail_from_address"
+                        placeholder="no-reply@school.id"
+                        icon="tabler.mail"
+                    />
+                    <x-ui::input
+                        :label="__('setup::wizard.system.fields.from_name')"
+                        wire:model="mail_from_name"
+                        icon="tabler.id"
+                    />
+                </div>
+            </div>
+
+            <!-- Test Connection -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <x-ui::button
+                    variant="secondary"
+                    class="btn-md"
+                    :label="__('setup::wizard.system.test_connection')"
+                    icon="tabler.plug-connected"
+                    wire:click="testConnection"
+                    spinner="testConnection"
+                />
+                <x-ui::button
+                    variant="ghost"
+                    class="btn-md"
+                    :label="__('setup::wizard.system.skip')"
+                    wire:click="skip"
+                    spinner="skip"
+                />
+            </div>
+        </div>
+    </x-slot:content>
+
+    <x-slot:footer>
+        <div class="flex items-center justify-between gap-3">
             <x-ui::button
-                variant="secondary"
+                variant="tertiary"
+                class="btn-md"
                 :label="__('setup::wizard.common.back')"
                 wire:click="backToPrev"
             />
-            <x-ui::button
-                variant="primary"
-                class="btn-lg px-12 shadow-lg shadow-primary/20"
-                wire:click="skip"
-                spinner="skip"
-            >
-                <span x-text="mailHost ? '{{ __('setup::wizard.common.continue') }}' : '{{ __('setup::wizard.system.skip') }}'"></span>
-            </x-ui::button>
-        </div>
-    </x-slot>
-
-    <x-slot:content>
-        <div class="space-y-12">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                <!-- SMTP Configuration -->
-                <div class="lg:col-span-7 space-y-8">
-                    <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
-                        <div class="mb-10">
-                            <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.system.smtp_configuration') }}</h3>
-                            <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.system.smtp_configuration_desc') ?? 'Configure your outbound mail delivery service.' }}</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-8">
-                            <x-ui::input
-                                :label="__('setup::wizard.system.fields.smtp_host')"
-                                wire:model.live.debounce.500ms="mail_host"
-                                placeholder="smtp.example.com"
-                                icon="tabler.server"
-                            />
-                            
-                            <div class="grid grid-cols-2 gap-8">
-                                <x-ui::input
-                                    :label="__('setup::wizard.system.fields.smtp_port')"
-                                    wire:model="mail_port"
-                                    placeholder="587"
-                                    icon="tabler.hash"
-                                />
-                                <x-ui::input
-                                    :label="__('setup::wizard.system.fields.encryption')"
-                                    wire:model="mail_encryption"
-                                    placeholder="tls"
-                                    icon="tabler.lock"
-                                />
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <x-ui::input
-                                    :label="__('setup::wizard.system.fields.username')"
-                                    wire:model="mail_username"
-                                    icon="tabler.user"
-                                />
-                                <x-ui::input
-                                    :label="__('setup::wizard.system.fields.password')"
-                                    wire:model="mail_password"
-                                    type="password"
-                                    icon="tabler.key"
-                                />
-                            </div>
-                        </div>
-
-                        <div class="mt-12 flex justify-start">
-                            <x-ui::button
-                                variant="secondary"
-                                class="border-info/30 text-info hover:bg-info/5 hover:border-info px-8"
-                                :label="__('setup::wizard.system.test_connection')"
-                                icon="tabler.plug-connected"
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sender Information -->
-                <div class="lg:col-span-5 space-y-8">
-                    <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
-                        <div class="mb-10">
-                            <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.system.sender_information') }}</h3>
-                            <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.system.sender_information_desc') ?? 'Define the identity of outgoing system emails.' }}</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-8">
-                            <x-ui::input
-                                :label="__('setup::wizard.system.fields.from_email')"
-                                wire:model="mail_from_address"
-                                placeholder="no-reply@school.id"
-                                icon="tabler.mail"
-                            />
-                            <x-ui::input
-                                :label="__('setup::wizard.system.fields.from_name')"
-                                wire:model="mail_from_name"
-                                icon="tabler.id"
-                            />
-                        </div>
-
-                        <div class="mt-12 flex justify-end">
-                            <x-ui::button
-                                variant="primary"
-                                class="w-full btn-lg shadow-lg shadow-primary/10"
-                                :label="__('setup::wizard.common.save')"
-                                icon="tabler.device-floppy"
-                                wire:click="save"
-                                spinner="save"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- Guidance Note -->
-                    <div class="p-6 rounded-2xl bg-primary/5 border border-primary/10">
-                        <div class="flex gap-4">
-                            <x-ui::icon name="tabler.bulb" class="size-6 text-primary shrink-0" />
-                            <div>
-                                <h4 class="text-sm font-bold text-primary">Pro Tip</h4>
-                                <p class="text-xs text-base-content/60 mt-1 leading-relaxed">
-                                    {{ __('setup::wizard.system.guidance_note') ?? 'Use a dedicated SMTP service like Mailgun, Resend, or Amazon SES for reliable delivery of internship notifications.' }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex items-center gap-3">
+                <x-ui::button
+                    variant="tertiary"
+                    class="btn-md"
+                    :label="__('setup::wizard.system.skip')"
+                    wire:click="skip"
+                />
+                <x-ui::button
+                    variant="primary"
+                    class="btn-md"
+                    :label="__('setup::wizard.common.continue')"
+                    wire:click="nextStep"
+                    spinner
+                />
             </div>
         </div>
-    </x-slot>
+    </x-slot:footer>
 </x-setup::layouts.setup-wizard>

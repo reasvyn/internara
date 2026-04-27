@@ -6,6 +6,7 @@ namespace Modules\Setup\Providers;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Setup\Console\Commands\AppInstallCommand;
 use Modules\Setup\Console\Commands\SetupResetCommand;
@@ -33,6 +34,12 @@ class SetupServiceProvider extends ServiceProvider
     {
         $this->bootModule();
         $this->registerSetupGates();
+        
+        // Register anonymous components
+        Blade::anonymousComponentPath(
+            module_path('Setup', 'resources/views/components'),
+            'setup'
+        );
     }
 
     /**

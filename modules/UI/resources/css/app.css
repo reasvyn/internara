@@ -39,24 +39,24 @@
     prefersdark: false;
     color-scheme: 'light';
     --color-base-100: oklch(100% 0 0); /* Pure White - Cards */
-    --color-base-200: oklch(97% 0 0); /* Sidebar */
+    --color-base-200: oklch(97% 0 0); /* Light Gray */
     --color-base-300: oklch(94% 0 0); /* Dashboard Background */
-    --color-base-content: oklch(10% 0 0); /* Soft Black */
-    --color-primary: oklch(0% 0 0); /* Pure Black */
-    --color-primary-content: oklch(100% 0 0); /* Pure White */
-    --color-secondary: oklch(20% 0 0); /* Dark Gray */
-    --color-secondary-content: oklch(100% 0 0); /* Pure White */
-    --color-accent: oklch(69% 0.17 162.48); /* Emerald - UNCHANGED */
+    --color-base-content: oklch(10% 0 0); /* Near Black */
+    --color-primary: oklch(0% 0 0); /* Pure Black - Primary action */
+    --color-primary-content: oklch(100% 0 0); /* White */
+    --color-secondary: oklch(45% 0 0); /* Medium Gray - Secondary */
+    --color-secondary-content: oklch(100% 0 0); /* White */
+    --color-accent: oklch(25% 0 0); /* Darker Gray - Accent */
     --color-accent-content: oklch(100% 0 0);
-    --color-neutral: oklch(0% 0 0);
+    --color-neutral: oklch(45% 0 0); /* Neutral Gray */
     --color-neutral-content: oklch(100% 0 0);
-    --color-info: oklch(62.24% 0.165 251.34); /* Vibrant Blue - High Contrast */
+    --color-info: oklch(55% 0.05 250); /* Muted Blue */
     --color-info-content: oklch(100% 0 0);
-    --color-success: oklch(61.85% 0.15 156.4); /* Vibrant Emerald */
+    --color-success: oklch(55% 0.08 150); /* Muted Green */
     --color-success-content: oklch(100% 0 0);
-    --color-warning: oklch(82.68% 0.16 83.22); /* Vibrant Amber */
-    --color-warning-content: oklch(15% 0.05 83.22); /* Dark Brown for Warning */
-    --color-error: oklch(60.1% 0.205 27.24); /* Vibrant Crimson */
+    --color-warning: oklch(60% 0.1 80); /* Muted Amber */
+    --color-warning-content: oklch(0% 0 0);
+    --color-error: oklch(55% 0.1 25); /* Muted Red */
     --color-error-content: oklch(100% 0 0);
     --radius-selector: 0.5rem;
     --radius-field: 0.5rem;
@@ -75,26 +75,26 @@
     default: false;
     prefersdark: true;
     color-scheme: 'dark';
-    --color-base-100: oklch(15% 0 0); /* Cards */
-    --color-base-200: oklch(10% 0 0); /* Sidebar */
-    --color-base-300: oklch(7% 0 0); /* Dashboard Background */
-    --color-base-content: oklch(95% 0 0); /* Soft White */
-    --color-primary: oklch(100% 0 0); /* Pure White */
-    --color-primary-content: oklch(0% 0 0); /* Pure Black */
-    --color-secondary: oklch(85% 0 0); /* Light Gray */
-    --color-secondary-content: oklch(0% 0 0); /* Pure Black */
-    --color-accent: oklch(69% 0.17 162.48); /* Emerald - UNCHANGED */
-    --color-accent-content: oklch(100% 0 0);
-    --color-neutral: oklch(26% 0 0);
-    --color-neutral-content: oklch(98% 0 0);
-    --color-info: oklch(72.06% 0.135 251.34); /* Glowing Blue */
-    --color-info-content: oklch(10% 0.05 251.34);
-    --color-success: oklch(71.85% 0.14 156.4); /* Glowing Emerald */
-    --color-success-content: oklch(10% 0.05 156.4);
-    --color-warning: oklch(85.68% 0.16 83.22); /* Glowing Amber */
-    --color-warning-content: oklch(10% 0.05 83.22);
-    --color-error: oklch(70.1% 0.18 27.24); /* Glowing Crimson */
-    --color-error-content: oklch(10% 0.05 27.24);
+    --color-base-100: oklch(15% 0 0); /* Dark Gray - Cards */
+    --color-base-200: oklch(10% 0 0); /* Darker Gray - Sidebar */
+    --color-base-300: oklch(7% 0 0); /* Near Black - Dashboard BG */
+    --color-base-content: oklch(95% 0 0); /* Near White */
+    --color-primary: oklch(90% 0 0); /* Light Gray - Primary (inverse of black) */
+    --color-primary-content: oklch(10% 0 0); /* Near Black */
+    --color-secondary: oklch(55% 0 0); /* Medium Gray */
+    --color-secondary-content: oklch(100% 0 0); /* White */
+    --color-accent: oklch(75% 0 0); /* Lighter Gray - Accent */
+    --color-accent-content: oklch(10% 0 0);
+    --color-neutral: oklch(30% 0 0); /* Dark Gray */
+    --color-neutral-content: oklch(95% 0 0);
+    --color-info: oklch(65% 0.05 250); /* Muted Blue */
+    --color-info-content: oklch(10% 0 0);
+    --color-success: oklch(65% 0.08 150); /* Muted Green */
+    --color-success-content: oklch(10% 0 0);
+    --color-warning: oklch(70% 0.1 80); /* Muted Amber */
+    --color-warning-content: oklch(10% 0 0);
+    --color-error: oklch(65% 0.1 25); /* Muted Red */
+    --color-error-content: oklch(10% 0 0);
     --radius-selector: 0.5rem;
     --radius-field: 0.5rem;
     --radius-box: 0.75rem;

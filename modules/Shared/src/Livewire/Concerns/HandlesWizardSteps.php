@@ -125,6 +125,14 @@ trait HandlesWizardSteps
     }
 
     /**
+     * Redirects to a specific step by key.
+     */
+    public function goToStep(string $step): void
+    {
+        $this->redirectToStep($step);
+    }
+
+    /**
      * Determines if the required record for the current step exists.
      */
     #[Computed]

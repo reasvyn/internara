@@ -1,39 +1,22 @@
-<x-setup::layouts.setup-wizard>
+<x-setup::layouts.setup-wizard :step="5" :totalSteps="7">
     <x-slot:header>
         <x-setup::wizard-header 
-            step="6"
-            :title="__('setup::wizard.internship.headline')"
-            :description="__('setup::wizard.internship.description', ['app' => setting('app_name')])"
-            :badgeText="__('setup::wizard.common.later_at_settings')"
+            step="5"
+            :title="__('setup::wizard.internship.title')"
+            :description="__('setup::wizard.internship.description', ['app' => setting('app_name', 'Internara')])"
+            badgeText="Period"
         />
-
-        <div 
-            class="mt-12 flex flex-wrap items-center gap-4"
-            x-data="{ canContinue: @json($this->isRecordExists) }"
-            @internship:saved.window="canContinue = true"
-            @internship:deleted.window="canContinue = $event.detail.exists"
-        >
-            <x-ui::button
-                variant="secondary"
-                :label="__('setup::wizard.common.back')"
-                wire:click="backToPrev"
-            />
-            <x-ui::button
-                variant="primary"
-                class="btn-lg px-12 shadow-lg shadow-primary/20"
-                :label="__('setup::wizard.common.continue')"
-                wire:click="nextStep"
-                x-bind:disabled="!canContinue"
-                spinner
-            />
-        </div>
-    </x-slot>
+    </x-slot:header>
 
     <x-slot:content>
-        <div class="w-full">
-            <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
-                @slotRender('internship-manager')
-            </div>
+        <div class="p-5 sm:p-6">
+            @slotRender('internship-manager')
         </div>
-    </x-slot>
+    </x-slot:content>
+
+    <x-slot:footer>
+        <x-setup::action-footer 
+            :isRecordExists="$this->isRecordExists"
+        />
+    </x-slot:footer>
 </x-setup::layouts.setup-wizard>
