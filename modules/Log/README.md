@@ -4,8 +4,9 @@ The `Log` module provides the observability and auditing infrastructure for the 
 It ensures accountability by tracking user actions and system events while maintaining strict
 privacy standards through automated PII masking.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative All
-> implementation must adhere to the
+> **Governance Mandate:** This module strictly adheres to the **3S Doctrine** (Secure, Sustain,
+> Scalable) and the **Modular Domain-Driven Design (DDD)** architecture. All implementations must
+> preserve its Bounded Context isolation and maintain Documentation Parity (Sync or Sink).
 
 ---
 

@@ -3,8 +3,9 @@
 The `Report` module serves as the reporting engine for the Internara system, responsible for
 exporting administrative and academic data into document formats.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative All
-> implementation must adhere to the
+> **Governance Mandate:** This module strictly adheres to the **3S Doctrine** (Secure, Sustain,
+> Scalable) and the **Modular Domain-Driven Design (DDD)** architecture. All implementations must
+> preserve its Bounded Context isolation and maintain Documentation Parity (Sync or Sink).
 
 ---
 

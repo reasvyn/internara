@@ -4,8 +4,9 @@ The `Exception` module provides the foundational infrastructure for standardized
 fault tolerance within the Internara ecosystem. It ensures that technical failures are captured,
 logged, and presented to users in a secure, localized, and context-aware manner.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative All
-> implementation must adhere to the
+> **Governance Mandate:** This module strictly adheres to the **3S Doctrine** (Secure, Sustain,
+> Scalable) and the **Modular Domain-Driven Design (DDD)** architecture. All implementations must
+> preserve its Bounded Context isolation and maintain Documentation Parity (Sync or Sink).
 
 ---
 

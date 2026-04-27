@@ -4,8 +4,9 @@ The `UI` module serves as the authoritative, "headless" source of truth for Inte
 language and shared frontend components. it encapsulates the design system, interactive elements,
 and presentation layouts without containing business logic or data persistence.
 
-> **Governance Mandate:** This module implements the requirements defined in the authoritative All
-> implementation must adhere to the
+> **Governance Mandate:** This module strictly adheres to the **3S Doctrine** (Secure, Sustain,
+> Scalable) and the **Modular Domain-Driven Design (DDD)** architecture. All implementations must
+> preserve its Bounded Context isolation and maintain Documentation Parity (Sync or Sink).
 
 ---
 
