@@ -59,7 +59,7 @@ class InternshipPlacementManager extends RecordManager
             ['key' => 'internship_title', 'label' => __('internship::ui.program'), 'sortable' => true],
             ['key' => 'quota', 'label' => __('internship::ui.capacity_quota')],
             ['key' => 'mentor_name', 'label' => __('internship::ui.mentor')],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
 

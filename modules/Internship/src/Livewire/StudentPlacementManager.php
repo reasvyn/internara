@@ -88,7 +88,7 @@ class StudentPlacementManager extends RecordManager
             ['key' => 'placement_company', 'label' => __('internship::ui.placement'), 'sortable' => false],
             ['key' => 'teacher_name', 'label' => __('internship::ui.teacher'), 'sortable' => false],
             ['key' => 'status', 'label' => __('internship::ui.status'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
 

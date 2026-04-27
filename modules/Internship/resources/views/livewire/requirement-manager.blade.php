@@ -69,10 +69,24 @@
                 <div class="flex justify-center">
                     <div class="size-2 rounded-full {{ $requirement['is_active'] ? 'bg-success shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-base-content/20' }}"></div>
                 </div>
-            @endscope
-        </x-slot:tableCells>
+            </div>
+            </x-slot:tableCells>
 
-        {{-- 2. Form Fields --}}
+            {{-- Row Actions --}}
+            <x-slot:rowActions>
+            @scope('actions', $requirement)
+                <div class="flex items-center justify-end gap-1 px-2">
+                    @if($this->can('update', $requirement['id']))
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $requirement['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
+                    @endif
+                    @if($this->can('delete', $requirement['id']))
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $requirement['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
+                    @endif
+                </div>
+            @endscope
+            </x-slot:rowActions>
+
+            {{-- 2. Form Fields --}}
         <x-slot:formFields>
             <x-ui::input :label="__('internship::ui.requirement_name')" icon="tabler.list-details" wire:model="form.name" required />
             <x-ui::textarea :label="__('ui::common.description')" icon="tabler.align-left" wire:model="form.description" />

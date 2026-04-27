@@ -83,7 +83,7 @@ class InternshipManager extends RecordManager
                 'label' => __('internship::ui.date_finish'),
                 'sort_by' => 'date_finish',
             ],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
 

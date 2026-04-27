@@ -106,7 +106,7 @@ class CompanyManager extends RecordManager
             ],
             [
                 'key' => 'actions',
-                'label' => '',
+                'label' => __('ui::common.actions'),
                 'class' => 'w-1 text-right',
             ],
         ];
