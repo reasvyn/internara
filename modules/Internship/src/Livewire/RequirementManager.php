@@ -64,7 +64,7 @@ class RequirementManager extends RecordManager
             ['key' => 'is_mandatory', 'label' => __('internship::ui.mandatory'), 'sortable' => true],
             ['key' => 'is_active', 'label' => __('internship::ui.active')],
             ['key' => 'academic_year', 'label' => __('internship::ui.academic_year'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
 

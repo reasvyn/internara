@@ -61,7 +61,7 @@ class AssignmentManager extends RecordManager
             ['key' => 'type_name', 'label' => __('assignment::ui.type')],
             ['key' => 'is_mandatory', 'label' => __('assignment::ui.is_mandatory'), 'sortable' => true],
             ['key' => 'due_date', 'label' => __('assignment::ui.due_date'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
 

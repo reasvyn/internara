@@ -72,7 +72,7 @@ class DepartmentManager extends RecordManager
                 'sort_by' => 'created_at',
                 'sortable' => true,
             ],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
 

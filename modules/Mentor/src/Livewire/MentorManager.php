@@ -67,7 +67,7 @@ class MentorManager extends RecordManager
             ['key' => 'username', 'label' => __('user::ui.manager.table.username'), 'sortable' => true],
             ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
             ['key' => 'activation_status', 'label' => __('user::ui.manager.table.activation_status')],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
 

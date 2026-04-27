@@ -74,7 +74,7 @@ class AdminManager extends RecordManager
             ['key' => 'email', 'label' => __('user::ui.manager.table.email'), 'sortable' => true],
             ['key' => 'invitation_status', 'label' => __('admin::ui.manager.invitation_status')],
             ['key' => 'created_at', 'label' => __('ui::common.created_at'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
 

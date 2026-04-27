@@ -83,7 +83,7 @@
                 ['key' => 'teacher.name', 'label' => __('internship::ui.teacher')],
                 ['key' => 'mentor.name', 'label' => __('internship::ui.mentor')],
                 ['key' => 'status', 'label' => __('internship::ui.status')],
-                ['key' => 'actions', 'label' => ''],
+                ['key' => 'actions', 'label' => __('ui::common.actions')],
             ]" :rows="$records" wire:model="selectedIds" selectable with-pagination>
                 @scope('cell_requirements', $registration)
                     @php

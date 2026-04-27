@@ -58,7 +58,7 @@ class AssignmentTypeManager extends RecordManager
             ['key' => 'name', 'label' => __('assignment::ui.name'), 'sortable' => true],
             ['key' => 'slug', 'label' => __('assignment::ui.slug'), 'sortable' => true],
             ['key' => 'group_label', 'label' => __('assignment::ui.group'), 'sort_by' => 'group'],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
 

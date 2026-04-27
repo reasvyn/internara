@@ -95,6 +95,20 @@
             @endscope
         </x-slot:tableCells>
 
+        {{-- Row Actions --}}
+        <x-slot:rowActions>
+            @scope('actions', $company)
+                <div class="flex items-center justify-end gap-1 px-2">
+                    @if($this->can('update', $company['id']))
+                        <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $company['id'] }}')" tooltip="{{ __('ui::common.edit') }}" />
+                    @endif
+                    @if($this->can('delete', $company['id']))
+                        <x-ui::button icon="tabler.trash" variant="tertiary" class="text-error/40 hover:text-error btn-xs" wire:click="discard('{{ $company['id'] }}')" tooltip="{{ __('ui::common.delete') }}" />
+                    @endif
+                </div>
+            @endscope
+        </x-slot:rowActions>
+
         {{-- 3. Form Fields --}}
         <x-slot:formFields>
             <x-ui::input

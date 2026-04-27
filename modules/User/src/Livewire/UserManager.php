@@ -64,7 +64,7 @@ class UserManager extends RecordManager
             ['key' => 'username', 'label' => __('user::ui.manager.table.username'), 'sortable' => true],
             ['key' => 'role_labels', 'label' => __('user::ui.manager.table.roles')],
             ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
 

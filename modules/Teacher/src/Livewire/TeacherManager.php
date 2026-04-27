@@ -70,7 +70,7 @@ class TeacherManager extends RecordManager
             ['key' => 'department_name', 'label' => __('user::ui.manager.form.department')],
             ['key' => 'display_status', 'label' => __('user::ui.manager.table.status')],
             ['key' => 'activation_status', 'label' => __('user::ui.manager.table.activation_status')],
-            ['key' => 'actions', 'label' => '', 'class' => 'w-1 text-right'],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1 text-right'],
         ];
     }
 
