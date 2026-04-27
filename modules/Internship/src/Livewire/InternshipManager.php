@@ -12,7 +12,7 @@ use Modules\Internship\Livewire\Forms\InternshipForm;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -47,7 +47,7 @@ class InternshipManager extends RecordManager
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
         $isSetupAuthorized =
-            session(SetupService::SESSION_SETUP_AUTHORIZED) ===
+            session(AppSetupService::SESSION_SETUP_AUTHORIZED) ===
                 true || is_testing();
 
         if (! $isSetupAuthorized) {

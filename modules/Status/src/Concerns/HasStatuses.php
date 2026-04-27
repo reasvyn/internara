@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Status\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Carbon;
 use Modules\Status\Enums\Status as StatusEnum;
 use Spatie\ModelStatus\HasStatuses as SpatieHasStatuses;
 
@@ -102,6 +103,95 @@ trait HasStatuses
     public function isStatusExpired(): bool
     {
         return $this->latestStatus()?->isExpired() ?? false;
+    }
+
+    /**
+     * Check if the current model status matches a given status.
+     */
+    public function hasStatus(StatusEnum|string $status): bool
+    {
+        $current = $this->getStatus();
+
+        if ($status instanceof StatusEnum) {
+            return $current === $status;
+        }
+
+        return $current?->value === $status;
+    }
+
+    /**
+     * Determine if the model is in an active/usable state.
+     */
+    public function isActive(): bool
+    {
+        return $this->getStatus()?->isActive() ?? false;
+    }
+
+    /**
+     * Determine if the model has a "Problem" status (Restricted/Suspended).
+     */
+    public function isProblem(): bool
+    {
+        return $this->getStatus()?->isProblem() ?? false;
+    }
+
+    /**
+     * Lifecycle status checkers.
+     */
+    public function isPending(): bool
+    {
+        return $this->hasStatus(StatusEnum::PENDING);
+    }
+
+    public function isActivated(): bool
+    {
+        return $this->hasStatus(StatusEnum::ACTIVATED);
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->hasStatus(StatusEnum::VERIFIED);
+    }
+
+    public function isProtected(): bool
+    {
+        return $this->hasStatus(StatusEnum::PROTECTED);
+    }
+
+    public function isRestricted(): bool
+    {
+        return $this->hasStatus(StatusEnum::RESTRICTED);
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->hasStatus(StatusEnum::SUSPENDED);
+    }
+
+    public function isInactive(): bool
+    {
+        return $this->hasStatus(StatusEnum::INACTIVE);
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->hasStatus(StatusEnum::ARCHIVED);
+    }
+
+    /**
+     * Check if can transition to another status.
+     */
+    public function canTransitionTo(StatusEnum $target): bool
+    {
+        return $this->getStatus()?->canTransitionTo($target) ?? false;
+    }
+
+    /**
+     * Get the timestamp of the last status change.
+     */
+    public function getLastStatusChangeAt(): ?Carbon
+    {
+        return $this->latestStatus()?->created_at;
     }
 
     /**

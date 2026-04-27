@@ -33,7 +33,7 @@ class SchoolSetup extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppSetupService $setupService): void
+    public function boot(AppAppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -44,10 +44,10 @@ class SchoolSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_SCHOOL,
-            nextStep: AppSetupService::STEP_ACCOUNT,
+            currentStep: AppAppSetupService::STEP_SCHOOL,
+            nextStep: AppAppSetupService::STEP_ACCOUNT,
             prevStep: '',
-            extra: ['req_record' => AppSetupService::RECORD_SCHOOL],
+            extra: ['req_record' => AppAppSetupService::RECORD_SCHOOL],
         );
 
         $this->requireWizardAccess();
@@ -61,14 +61,18 @@ class SchoolSetup extends Component
     {
         try {
             $this->validate([
-                'turnstile' => [new Turnstile],
-                'contact_me' => [new Honeypot],
+                'turnstile' => [new Turnstile()],
+                'contact_me' => [new Honeypot()],
             ]);
 
             $this->nextStep();
         } catch (\Exception $e) {
             report($e);
-            flash()->error($e instanceof AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
+            flash()->error(
+                $e instanceof AppException
+                    ? $e->getUserMessage()
+                    : __('ui::errors.unexpected_technical_failure'),
+            );
         }
     }
 
@@ -78,8 +82,9 @@ class SchoolSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.school-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.school.title').
-                ' | '.
+            'title' =>
+                __('setup::wizard.school.title') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

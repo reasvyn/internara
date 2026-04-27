@@ -12,7 +12,7 @@ use Modules\Setup\Services\SystemAuditor;
 describe('SystemAuditor Unit Test', function () {
     beforeEach(function () {
         app()->setLocale('en');
-        $this->service = new SystemAuditor;
+        $this->service = new SystemAuditor();
     });
 
     test('it can perform a full system audit', function () {
@@ -40,7 +40,8 @@ describe('SystemAuditor Unit Test', function () {
 
         $permissions = $this->service->checkPermissions();
 
-        expect($permissions)->toBeArray()
+        expect($permissions)
+            ->toBeArray()
             ->toHaveKeys([
                 __('setup::wizard.environment.audit.storage_root'),
                 __('setup::wizard.environment.audit.storage_logs'),

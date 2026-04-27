@@ -42,7 +42,7 @@ Provides custom Artisan generators that enforce Internara's architectural standa
 ## 3. Verification & Validation (V&V)
 
 - **Unit Tests**: Validates the audit logic and installation engine.
-- **Feature Tests**: Verifies the `system:install` command execution and requirement check components.
+
 - **Command**: `php artisan test modules/Support`
 
 ---

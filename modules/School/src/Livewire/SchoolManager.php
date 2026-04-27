@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\School\Livewire\Forms\SchoolForm;
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 /**
  * Class SchoolManager
@@ -65,7 +65,7 @@ class SchoolManager extends Component
     {
         // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
         $isSetupAuthorized =
-            session(SetupService::SESSION_SETUP_AUTHORIZED) ===
+            session(AppSetupService::SESSION_SETUP_AUTHORIZED) ===
             true;
 
         if (! $isSetupAuthorized) {

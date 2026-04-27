@@ -35,7 +35,7 @@ class SetupComplete extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppSetupService $setupService): void
+    public function boot(AppAppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -46,9 +46,9 @@ class SetupComplete extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_COMPLETE,
+            currentStep: AppAppSetupService::STEP_COMPLETE,
             nextStep: '',
-            prevStep: AppSetupService::STEP_SYSTEM,
+            prevStep: AppAppSetupService::STEP_SYSTEM,
             extra: ['landing_route' => 'login'],
         );
 
@@ -82,8 +82,9 @@ class SetupComplete extends Component
     public function render(): View
     {
         return view('setup::livewire.setup-complete')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.complete.title').
-                ' | '.
+            'title' =>
+                __('setup::wizard.complete.title') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

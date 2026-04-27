@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Modules\Support\Services;
+namespace Modules\Setup\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Modules\Setup\Services\Contracts\InstallationAuditor as Contract;
 use Modules\Shared\Services\BaseService;
-use Modules\Support\Services\Contracts\InstallationAuditor as Contract;
 
 /**
  * Service implementation for performing technical pre-flight system audits.
@@ -37,11 +37,7 @@ class InstallationAuditor extends BaseService implements Contract
     /**
      * Required PHP functions for system operations.
      */
-    protected const PHP_FUNCTIONS = [
-        'proc_open',
-        'exec',
-        'shell_exec',
-    ];
+    protected const PHP_FUNCTIONS = ['proc_open', 'exec', 'shell_exec'];
 
     /**
      * Minimum PHP version.
@@ -67,11 +63,15 @@ class InstallationAuditor extends BaseService implements Contract
     public function checkRequirements(): array
     {
         $results = [
-            __('setup::wizard.environment.audit.php_version', ['version' => self::MIN_PHP_VERSION]) => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
+            __('setup::wizard.environment.audit.php_version', [
+                'version' => self::MIN_PHP_VERSION,
+            ]) => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
         ];
 
         foreach (self::PHP_EXTENSIONS as $extension) {
-            $label = __('setup::wizard.environment.audit.php_extension', ['extension' => strtoupper($extension)]);
+            $label = __('setup::wizard.environment.audit.php_extension', [
+                'extension' => strtoupper($extension),
+            ]);
             $results[$label] = extension_loaded($extension);
         }
 
@@ -87,7 +87,9 @@ class InstallationAuditor extends BaseService implements Contract
 
         foreach (self::PHP_FUNCTIONS as $function) {
             $label = __('setup::wizard.environment.audit.php_function', ['function' => $function]);
-            $results[$label] = function_exists($function) && ! in_array($function, explode(',', ini_get('disable_functions')));
+            $results[$label] =
+                function_exists($function) &&
+                !in_array($function, explode(',', ini_get('disable_functions')));
         }
 
         return $results;
@@ -101,8 +103,12 @@ class InstallationAuditor extends BaseService implements Contract
         return [
             __('setup::wizard.environment.audit.storage_root') => is_writable(storage_path()),
             __('setup::wizard.environment.audit.storage_logs') => is_writable(storage_path('logs')),
-            __('setup::wizard.environment.audit.storage_framework') => is_writable(storage_path('framework')),
-            __('setup::wizard.environment.audit.bootstrap_cache') => is_writable(base_path('bootstrap/cache')),
+            __('setup::wizard.environment.audit.storage_framework') => is_writable(
+                storage_path('framework'),
+            ),
+            __('setup::wizard.environment.audit.bootstrap_cache') => is_writable(
+                base_path('bootstrap/cache'),
+            ),
             __('setup::wizard.environment.audit.env_file') => File::exists(base_path('.env'))
                 ? is_writable(base_path('.env'))
                 : is_writable(base_path()),
@@ -144,10 +150,10 @@ class InstallationAuditor extends BaseService implements Contract
     {
         $audit = $this->audit();
 
-        $requirementsPassed = ! in_array(false, $audit['requirements'], true);
-        $permissionsPassed = ! in_array(false, $audit['permissions'], true);
+        $requirementsPassed = !in_array(false, $audit['requirements'], true);
+        $permissionsPassed = !in_array(false, $audit['permissions'], true);
         $databasePassed = (bool) $audit['database']['connection'];
-        $functionsPassed = ! in_array(false, $audit['functions'], true);
+        $functionsPassed = !in_array(false, $audit['functions'], true);
 
         return $requirementsPassed && $permissionsPassed && $databasePassed && $functionsPassed;
     }

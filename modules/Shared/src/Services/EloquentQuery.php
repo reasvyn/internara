@@ -313,10 +313,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         }
 
         $this->skipAuthorization = false;
+        $filteredData = $this->filterFillable($data);
 
         try {
             $instance = $this->model->newInstance();
-            $instance->forceFill($data);
+            $instance->fill($filteredData);
             $instance->save();
 
             return $instance;

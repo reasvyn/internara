@@ -6,7 +6,7 @@ namespace Modules\Internship\Setup;
 
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\Setup\Services\Contracts\SetupRequirementProvider;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 class InternshipSetupRequirement implements SetupRequirementProvider
 {
@@ -14,7 +14,7 @@ class InternshipSetupRequirement implements SetupRequirementProvider
 
     public function getRequirementIdentifier(): string
     {
-        return SetupService::RECORD_INTERNSHIP;
+        return AppSetupService::RECORD_INTERNSHIP;
     }
 
     public function isSatisfied(): bool

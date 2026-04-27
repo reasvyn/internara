@@ -319,7 +319,7 @@ After technical installation via CLI, the **Setup Wizard** guides you through bu
 
 1. Start the technical installation and initialization suite:
    ```bash
-   php artisan system:install
+   php artisan app:install
    ```
    *This command prepares the database, environment, performs audits, and generates a secure, timed access token.*
 

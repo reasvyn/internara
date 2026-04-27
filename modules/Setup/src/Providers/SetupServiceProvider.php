@@ -7,10 +7,13 @@ namespace Modules\Setup\Providers;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Modules\Setup\Console\Commands\AppInstallCommand;
 use Modules\Setup\Console\Commands\SetupResetCommand;
 use Modules\Setup\Onboarding\Services\OnboardingService;
 use Modules\Setup\Services\AppSetupService;
+use Modules\Setup\Services\InstallationAuditor;
 use Modules\Setup\Services\SetupRequirementRegistry;
+use Modules\Setup\Services\SystemInstaller;
 use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
@@ -39,12 +42,23 @@ class SetupServiceProvider extends ServiceProvider
     {
         // Define common authorization for all setup actions
         $setupAuth = function (?Authenticatable $user) {
-            return session()->get(\Modules\Setup\Services\Contracts\AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+            return session()->get(
+                \Modules\Setup\Services\Contracts\AppAppSetupService::SESSION_SETUP_AUTHORIZED,
+            ) === true;
         };
 
         Gate::define('performStep', $setupAuth);
         Gate::define('saveSettings', $setupAuth);
         Gate::define('finalize', $setupAuth);
+        Gate::define('install', function ($user = null) {
+            // Allow installation only if the app is not yet installed,
+            // or from the console (where user is null).
+            $isInstalled = resolve(
+                \Modules\Setup\Services\Contracts\AppAppSetupService::class,
+            )->isAppInstalled();
+
+            return !$isInstalled || is_null($user);
+        });
     }
 
     /**
@@ -60,8 +74,8 @@ class SetupServiceProvider extends ServiceProvider
         $this->app->singleton(SetupRequirementRegistry::class);
 
         $this->app->singleton(
-            \Modules\Setup\Services\Contracts\AppSetupService::class,
-            AppSetupService::class,
+            \Modules\Setup\Services\Contracts\AppAppSetupService::class,
+            AppAppSetupService::class,
         );
     }
 
@@ -73,7 +87,11 @@ class SetupServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Setup\Onboarding\Services\Contracts\OnboardingService::class => OnboardingService::class,
+            \Modules\Setup\Onboarding\Services\Contracts\OnboardingService::class =>
+                OnboardingService::class,
+            \Modules\Setup\Services\Contracts\SystemInstaller::class => SystemInstaller::class,
+            \Modules\Setup\Services\Contracts\InstallationAuditor::class =>
+                InstallationAuditor::class,
         ];
     }
 
@@ -82,9 +100,7 @@ class SetupServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        $this->commands([
-            SetupResetCommand::class,
-        ]);
+        $this->commands([SetupResetCommand::class, AppInstallCommand::class]);
     }
 
     /**

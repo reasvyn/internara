@@ -83,21 +83,19 @@ class AuthService extends BaseService implements AuthServiceContract
 
         $user = Auth::user();
 
-        // Initialize session expiration tracking for admin roles
-        if (\in_array($user->role, ['super_admin', 'admin'], true)) {
-            $sessionId = request()->getSession()->getId();
-            $this->sessionExpiration->recordSessionStart(
-                user: $user,
-                sessionId: $sessionId,
-                ipAddress: request()->ip(),
-            );
+        // [S1 - Secure] Account Lifecycle Access Control
+        // Block users with suspended, inactive, or archived status from logging in.
+        if ($user->isSuspended() || $user->isArchived() || $user->isInactive()) {
+            Auth::logout();
 
-            // Log successful login
-            app(AccountAuditLogger::class)->logSuccessfulLogin(
-                user: $user,
-                ipAddress: request()->ip(),
+            throw new AppException(
+                userMessage: 'auth::exceptions.account_blocked',
+                logMessage: 'Login blocked for restricted account status: '.$user->id,
+                code: Response::HTTP_FORBIDDEN,
             );
         }
+
+        $this->initializeAdminSession($user);
 
         return $user;
     }
@@ -145,23 +143,35 @@ class AuthService extends BaseService implements AuthServiceContract
     {
         $user = Auth::user();
 
-        // Initialize session expiration tracking for admin roles
-        if (\in_array($user->role, ['super_admin', 'admin'], true)) {
-            $sessionId = request()->getSession()->getId();
-            $this->sessionExpiration->recordSessionStart(
-                user: $user,
-                sessionId: $sessionId,
-                ipAddress: request()->ip(),
-            );
-
-            // Log successful login
-            app(AccountAuditLogger::class)->logSuccessfulLogin(
-                user: $user,
-                ipAddress: request()->ip(),
-            );
+        if ($user) {
+            $this->initializeAdminSession($user);
         }
 
         return $user;
+    }
+
+    /**
+     * Initializes session tracking and audit logging for administrative users.
+     */
+    private function initializeAdminSession(Authenticatable $user): void
+    {
+        if (! property_exists($user, 'role') || ! \in_array($user->role, ['super_admin', 'admin'], true)) {
+            return;
+        }
+
+        $sessionId = request()->getSession()->getId();
+
+        $this->sessionExpiration->recordSessionStart(
+            user: $user,
+            sessionId: $sessionId,
+            ipAddress: request()->ip(),
+        );
+
+        // Log successful login
+        app(AccountAuditLogger::class)->logSuccessfulLogin(
+            user: $user,
+            ipAddress: request()->ip(),
+        );
     }
 
     /**

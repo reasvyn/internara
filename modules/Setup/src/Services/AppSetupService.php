@@ -49,7 +49,10 @@ class AppSetupService extends BaseService implements Contract
 
         $completedSteps = [];
         foreach ($steps as $step) {
-            $completedSteps[$step] = (bool) $this->settingService->getValue("setup_step_{$step}", false);
+            $completedSteps[$step] = (bool) $this->settingService->getValue(
+                "setup_step_{$step}",
+                false,
+            );
         }
 
         return SetupProcess::fromState($isInstalled, $completedSteps);
@@ -90,7 +93,7 @@ class AppSetupService extends BaseService implements Contract
             return false;
         }
 
-        if ($prevStep && ! $process->isStepCompleted($prevStep)) {
+        if ($prevStep && !$process->isStepCompleted($prevStep)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -112,14 +115,14 @@ class AppSetupService extends BaseService implements Contract
         $lock = Cache::lock("setup.step.{$step}", 30);
 
         return $lock->get(function () use ($step, $reqRecord, $process) {
-            if (! $process->canProceedTo($step)) {
+            if (!$process->canProceedTo($step)) {
                 throw new AppException(
                     userMessage: 'setup::exceptions.require_step_completed',
                     code: 403,
                 );
             }
 
-            $requiredRecord = $reqRecord ?? SetupProcess::STEP_RECORDS[$step] ?? null;
+            $requiredRecord = $reqRecord ?? (SetupProcess::STEP_RECORDS[$step] ?? null);
             if ($requiredRecord) {
                 $exists = $this->isRecordExists($requiredRecord);
 
@@ -146,10 +149,8 @@ class AppSetupService extends BaseService implements Contract
                 ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
 
             return true;
-        }) ?: throw new AppException(
-            userMessage: 'setup::exceptions.concurrency_lock',
-            code: 423,
-        );
+        }) ?:
+            throw new AppException(userMessage: 'setup::exceptions.concurrency_lock', code: 423);
     }
 
     /**
@@ -176,11 +177,9 @@ class AppSetupService extends BaseService implements Contract
             $this->settingService->setValue(self::SETTING_SETUP_TOKEN, null);
             $this->settingService->setValue('setup_step_complete', true);
 
-            event(new SetupFinalized);
+            event(new SetupFinalized());
 
-            activity('setup')
-                ->event('finalized')
-                ->log(__('setup::wizard.audit_logs.finalized'));
+            activity('setup')->event('finalized')->log(__('setup::wizard.audit_logs.finalized'));
 
             Session::forget(self::SESSION_SETUP_AUTHORIZED);
             Session::regenerate();

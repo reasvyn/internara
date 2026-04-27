@@ -46,13 +46,13 @@ class SetupResetCommand extends Command
         $this->components->warn(__('setup::console.reset.header'));
 
         // [S1 - Secure] Production Safeguard
-        if (app()->environment('production') && ! $this->option('force')) {
+        if (app()->environment('production') && !$this->option('force')) {
             $this->components->error(__('setup::console.reset.production_warning'));
 
             return self::FAILURE;
         }
 
-        if (! $this->confirmReset()) {
+        if (!$this->confirmReset()) {
             return self::FAILURE;
         }
 
@@ -64,7 +64,16 @@ class SetupResetCommand extends Command
             Cache::forget('internara.installed');
 
             // [S2 - Sustain] Recursive step cleanup
-            $steps = ['welcome', 'environment', 'school', 'account', 'department', 'internship', 'system', 'complete'];
+            $steps = [
+                'welcome',
+                'environment',
+                'school',
+                'account',
+                'department',
+                'internship',
+                'system',
+                'complete',
+            ];
             foreach ($steps as $step) {
                 $this->settingService->setValue("setup_step_{$step}", false);
             }
@@ -74,12 +83,15 @@ class SetupResetCommand extends Command
         $ttl = 60; // Minutes
         $expiresAt = now()->addMinutes($ttl);
 
-        $this->components->task(__('setup::console.reset.tasks.regenerating_token'), function () use ($token, $expiresAt) {
-            $this->settingService->setValue([
-                'setup_token' => $token,
-                'setup_token_expires_at' => $expiresAt->toIso8601String(),
-            ]);
-        });
+        $this->components->task(
+            __('setup::console.reset.tasks.regenerating_token'),
+            function () use ($token, $expiresAt) {
+                $this->settingService->setValue([
+                    'setup_token' => $token,
+                    'setup_token_expires_at' => $expiresAt->toIso8601String(),
+                ]);
+            },
+        );
 
         // [S2 - Sustain] Audit Logging
         activity('setup')
@@ -107,9 +119,6 @@ class SetupResetCommand extends Command
             return true;
         }
 
-        return $this->confirm(
-            __('setup::console.reset.confirm_question'),
-            false,
-        );
+        return $this->confirm(__('setup::console.reset.confirm_question'), false);
     }
 }

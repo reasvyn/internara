@@ -13,7 +13,7 @@ use Mockery;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Http\Middleware\ProtectSetupRoute;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 describe('ProtectSetupRoute Middleware', function () {
@@ -22,18 +22,18 @@ describe('ProtectSetupRoute Middleware', function () {
         Cache::flush();
         RateLimiter::clear('setup_throttle:127.0.0.1');
 
-        $this->setupService = Mockery::mock(SetupService::class);
+        $this->setupService = Mockery::mock(AppSetupService::class);
         $this->superAdminService = Mockery::mock(SuperAdminService::class);
         $this->settingService = Mockery::mock(SettingService::class);
 
-        $this->app->instance(SetupService::class, $this->setupService);
+        $this->app->instance(AppSetupService::class, $this->setupService);
         $this->app->instance(SuperAdminService::class, $this->superAdminService);
         $this->app->instance(SettingService::class, $this->settingService);
 
         $this->middleware = new ProtectSetupRoute(
             $this->setupService,
             $this->superAdminService,
-            $this->settingService
+            $this->settingService,
         );
     });
 
@@ -45,12 +45,18 @@ describe('ProtectSetupRoute Middleware', function () {
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
         $request->setLaravelSession($this->app['session']->driver());
 
-        $this->settingService->shouldReceive('getValue')->with('setup_token')->andReturn('valid-token');
-        $this->settingService->shouldReceive('getValue')->with('setup_token_expires_at')->andReturn(now()->addHour()->toIso8601String());
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token')
+            ->andReturn('valid-token');
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token_expires_at')
+            ->andReturn(now()->addHour()->toIso8601String());
 
         $this->setupService->shouldReceive('isStepCompleted')->andReturn(false);
 
-        $next = fn () => new Response('OK');
+        $next = fn() => new Response('OK');
 
         for ($i = 0; $i < 20; $i++) {
             $response = $this->middleware->handle($request, $next);
@@ -75,7 +81,7 @@ describe('ProtectSetupRoute Middleware', function () {
 
         $this->withoutExceptionHandling();
         try {
-            $this->middleware->handle($request, fn () => new Response('OK'));
+            $this->middleware->handle($request, fn() => new Response('OK'));
         } catch (HttpException $e) {
             expect($e->getStatusCode())->toBe(404);
         }
@@ -90,12 +96,18 @@ describe('ProtectSetupRoute Middleware', function () {
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
         $request->setLaravelSession($this->app['session']->driver());
 
-        $this->settingService->shouldReceive('getValue')->with('setup_token')->andReturn('valid-token');
-        $this->settingService->shouldReceive('getValue')->with('setup_token_expires_at')->andReturn(now()->addHour()->toIso8601String());
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token')
+            ->andReturn('valid-token');
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token_expires_at')
+            ->andReturn(now()->addHour()->toIso8601String());
 
         $this->withoutExceptionHandling();
         try {
-            $this->middleware->handle($request, fn () => new Response('OK'));
+            $this->middleware->handle($request, fn() => new Response('OK'));
         } catch (HttpException $e) {
             expect($e->getStatusCode())->toBe(403);
         }
@@ -109,13 +121,19 @@ describe('ProtectSetupRoute Middleware', function () {
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
         $request->setLaravelSession($this->app['session']->driver());
 
-        $this->settingService->shouldReceive('getValue')->with('setup_token')->andReturn('valid-token');
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token')
+            ->andReturn('valid-token');
         // Token expired
-        $this->settingService->shouldReceive('getValue')->with('setup_token_expires_at')->andReturn(now()->subHour()->toIso8601String());
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token_expires_at')
+            ->andReturn(now()->subHour()->toIso8601String());
 
         $this->withoutExceptionHandling();
         try {
-            $this->middleware->handle($request, fn () => new Response('OK'));
+            $this->middleware->handle($request, fn() => new Response('OK'));
         } catch (HttpException $e) {
             expect($e->getStatusCode())->toBe(403);
         }
@@ -129,15 +147,21 @@ describe('ProtectSetupRoute Middleware', function () {
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
         $request->setLaravelSession($this->app['session']->driver());
 
-        $this->settingService->shouldReceive('getValue')->with('setup_token')->andReturn('valid-token');
-        $this->settingService->shouldReceive('getValue')->with('setup_token_expires_at')->andReturn(now()->addHour()->toIso8601String());
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token')
+            ->andReturn('valid-token');
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token_expires_at')
+            ->andReturn(now()->addHour()->toIso8601String());
 
         // Mock all dependencies completed EXCEPT the final one
         $this->setupService->shouldReceive('isStepCompleted')->andReturnUsing(function ($step) {
-            return $step !== SetupService::STEP_COMPLETE;
+            return $step !== AppSetupService::STEP_COMPLETE;
         });
 
-        $response = $this->middleware->handle($request, fn () => new Response('OK'));
+        $response = $this->middleware->handle($request, fn() => new Response('OK'));
         expect($response->isRedirect(route('setup.complete')))->toBeTrue();
     });
 
@@ -149,13 +173,19 @@ describe('ProtectSetupRoute Middleware', function () {
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
         $request->setLaravelSession($this->app['session']->driver());
 
-        $this->settingService->shouldReceive('getValue')->with('setup_token')->andReturn('valid-token');
-        $this->settingService->shouldReceive('getValue')->with('setup_token_expires_at')->andReturn(now()->addHour()->toIso8601String());
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token')
+            ->andReturn('valid-token');
+        $this->settingService
+            ->shouldReceive('getValue')
+            ->with('setup_token_expires_at')
+            ->andReturn(now()->addHour()->toIso8601String());
 
         // First step is not completed
         $this->setupService->shouldReceive('isStepCompleted')->andReturn(false);
 
-        $response = $this->middleware->handle($request, fn () => new Response('OK'));
+        $response = $this->middleware->handle($request, fn() => new Response('OK'));
         expect($response->getStatusCode())->toBe(200);
         expect($response->getContent())->toBe('OK');
     });

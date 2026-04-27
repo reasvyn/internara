@@ -10,7 +10,7 @@ use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Permission\Database\Seeders\RoleSeeder;
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);
@@ -55,42 +55,48 @@ test('it redirects setup routes to setup complete when only finalization remains
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'valid-token-123');
 
-    foreach ([
-        SetupService::STEP_WELCOME,
-        SetupService::STEP_ENVIRONMENT,
-        SetupService::STEP_SCHOOL,
-        SetupService::STEP_ACCOUNT,
-        SetupService::STEP_DEPARTMENT,
-        SetupService::STEP_INTERNSHIP,
-        SetupService::STEP_SYSTEM,
-    ] as $step) {
+    foreach (
+        [
+            AppSetupService::STEP_WELCOME,
+            AppSetupService::STEP_ENVIRONMENT,
+            AppSetupService::STEP_SCHOOL,
+            AppSetupService::STEP_ACCOUNT,
+            AppSetupService::STEP_DEPARTMENT,
+            AppSetupService::STEP_INTERNSHIP,
+            AppSetupService::STEP_SYSTEM,
+        ]
+        as $step
+    ) {
         app(SettingService::class)->setValue("setup_step_{$step}", true);
     }
 
     app(SettingService::class)->setValue('setup_step_complete', false);
 
-    $this->get(route('setup.welcome', ['token' => 'valid-token-123']))
-        ->assertRedirect(route('setup.complete'));
+    $this->get(route('setup.welcome', ['token' => 'valid-token-123']))->assertRedirect(
+        route('setup.complete'),
+    );
 });
 
 test('it does not redirect setup complete to avoid redirect loops', function () {
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'valid-token-123');
 
-    foreach ([
-        SetupService::STEP_WELCOME,
-        SetupService::STEP_ENVIRONMENT,
-        SetupService::STEP_SCHOOL,
-        SetupService::STEP_ACCOUNT,
-        SetupService::STEP_DEPARTMENT,
-        SetupService::STEP_INTERNSHIP,
-        SetupService::STEP_SYSTEM,
-    ] as $step) {
+    foreach (
+        [
+            AppSetupService::STEP_WELCOME,
+            AppSetupService::STEP_ENVIRONMENT,
+            AppSetupService::STEP_SCHOOL,
+            AppSetupService::STEP_ACCOUNT,
+            AppSetupService::STEP_DEPARTMENT,
+            AppSetupService::STEP_INTERNSHIP,
+            AppSetupService::STEP_SYSTEM,
+        ]
+        as $step
+    ) {
         app(SettingService::class)->setValue("setup_step_{$step}", true);
     }
 
     app(SettingService::class)->setValue('setup_step_complete', false);
 
-    $this->get(route('setup.complete', ['token' => 'valid-token-123']))
-        ->assertOk();
+    $this->get(route('setup.complete', ['token' => 'valid-token-123']))->assertOk();
 });

@@ -39,22 +39,23 @@ describe('AppTestCommand', function () {
         $junitPath = storage_path('test-results/junit.xml');
         $jsonPath = storage_path('test-results/report.json');
 
-        $this->discovery->shouldReceive('identify')->twice()->andReturn([
-            [
-                'label' => 'Core',
-                'path' => base_path('modules/Core/tests'),
-                'segments' => ['Unit'],
-            ],
-        ]);
+        $this->discovery
+            ->shouldReceive('identify')
+            ->twice()
+            ->andReturn([
+                [
+                    'label' => 'Core',
+                    'path' => base_path('modules/Core/tests'),
+                    'segments' => ['Unit'],
+                ],
+            ]);
 
         // Mock directory check
         File::shouldReceive('isDirectory')->andReturn(true);
 
-        $this->executor->shouldReceive('execute')
-            ->once()
-            ->andReturn(true);
+        $this->executor->shouldReceive('execute')->once()->andReturn(true);
 
-        $this->artisan('app:test --log-junit='.$junitPath.' --log-json='.$jsonPath)
+        $this->artisan('app:test --log-junit=' . $junitPath . ' --log-json=' . $jsonPath)
             ->expectsOutputToContain('JUnit XML report exported to')
             ->expectsOutputToContain('JSON report exported to')
             ->assertExitCode(0);
@@ -66,13 +67,16 @@ describe('AppTestCommand', function () {
     });
 
     it('enforces stability threshold for CI/CD', function () {
-        $this->discovery->shouldReceive('identify')->twice()->andReturn([
-            [
-                'label' => 'Core',
-                'path' => base_path('modules/Core/tests'),
-                'segments' => ['Unit', 'Feature'],
-            ],
-        ]);
+        $this->discovery
+            ->shouldReceive('identify')
+            ->twice()
+            ->andReturn([
+                [
+                    'label' => 'Core',
+                    'path' => base_path('modules/Core/tests'),
+                    'segments' => ['Unit', 'Feature'],
+                ],
+            ]);
 
         File::shouldReceive('isDirectory')->andReturn(true);
 
@@ -81,33 +85,46 @@ describe('AppTestCommand', function () {
 
         // Fail when threshold is 80%
         $this->artisan('app:test --fail-on-stability=80')
-            ->expectsOutputToContain('Stability failure: Global pass rate (50.00%) is below required threshold (80.00%)')
+            ->expectsOutputToContain(
+                'Stability failure: Global pass rate (50.00%) is below required threshold (80.00%)',
+            )
             ->assertExitCode(1);
 
         // Pass when threshold is 40%
         $this->executor->shouldReceive('execute')->twice()->andReturn(true, false);
-        $this->artisan('app:test --fail-on-stability=40')
-            ->assertExitCode(0);
+        $this->artisan('app:test --fail-on-stability=40')->assertExitCode(0);
     });
 
     it('resumes previous session with --continue', function () {
         $session = new TestSessionManager('test-session');
         $session->record('Core', 'Unit', true, 'Output', '');
 
-        $this->discovery->shouldReceive('identify')->twice()->andReturn([
-            [
-                'label' => 'Core',
-                'path' => base_path('modules/Core/tests'),
-                'segments' => ['Unit', 'Feature'],
-            ],
-        ]);
+        $this->discovery
+            ->shouldReceive('identify')
+            ->twice()
+            ->andReturn([
+                [
+                    'label' => 'Core',
+                    'path' => base_path('modules/Core/tests'),
+                    'segments' => ['Unit', 'Feature'],
+                ],
+            ]);
 
         File::shouldReceive('isDirectory')->andReturn(true);
 
         // Should only execute 'Feature' since 'Unit' is already passed in session
-        $this->executor->shouldReceive('execute')
+        $this->executor
+            ->shouldReceive('execute')
             ->once()
-            ->with(Mockery::on(fn ($path) => str_contains($path, 'Feature')), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any(), Mockery::any())
+            ->with(
+                Mockery::on(fn($path) => str_contains($path, 'Feature')),
+                Mockery::any(),
+                Mockery::any(),
+                Mockery::any(),
+                Mockery::any(),
+                Mockery::any(),
+                Mockery::any(),
+            )
             ->andReturn(true);
 
         $this->artisan('app:test --session=test-session --continue')

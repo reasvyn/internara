@@ -6,7 +6,7 @@ namespace Modules\Admin\Setup;
 
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Setup\Services\Contracts\SetupRequirementProvider;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 
 class AdminSetupRequirement implements SetupRequirementProvider
 {
@@ -14,7 +14,7 @@ class AdminSetupRequirement implements SetupRequirementProvider
 
     public function getRequirementIdentifier(): string
     {
-        return SetupService::RECORD_SUPER_ADMIN;
+        return AppSetupService::RECORD_SUPER_ADMIN;
     }
 
     public function isSatisfied(): bool

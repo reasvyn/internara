@@ -13,7 +13,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 use Throwable;
 
@@ -151,7 +151,7 @@ abstract class RecordManager extends Component
     #[Computed]
     public function records(): LengthAwarePaginator
     {
-        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
 
         if ($isSetupAuthorized) {
             $this->service->withoutAuthorization();
@@ -219,7 +219,7 @@ abstract class RecordManager extends Component
 
     public function can(string $action, mixed $target = null): bool
     {
-        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
         if ($isSetupAuthorized) {
             return true;
         }
@@ -275,7 +275,7 @@ abstract class RecordManager extends Component
             return;
         }
         $this->form->validate();
-        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
         try {
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();
@@ -310,7 +310,7 @@ abstract class RecordManager extends Component
         $id = $id ?: $this->recordId;
         $record = $this->service->find($id);
         if ($record) {
-            $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();
             } else {
@@ -330,7 +330,7 @@ abstract class RecordManager extends Component
         if (empty($this->selectedIds)) {
             return;
         }
-        $isSetupAuthorized = session(SetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
         try {
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();
@@ -440,7 +440,7 @@ abstract class RecordManager extends Component
             $data[$key] = $row[$index] ?? null;
         }
 
-return $data;
+        return $data;
     }
 
     protected function getExportQuery(): Builder

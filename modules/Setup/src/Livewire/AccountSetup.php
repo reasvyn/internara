@@ -34,9 +34,9 @@ class AccountSetup extends Component
     /**
      * Boots the component and injects the AppSetupService.
      *
-     * @param AppSetupService $setupService The service for handling setup logic.
+     * @param AppAppSetupService $setupService The service for handling setup logic.
      */
-    public function boot(AppSetupService $setupService): void
+    public function boot(AppAppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -47,10 +47,10 @@ class AccountSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_ACCOUNT,
-            nextStep: AppSetupService::STEP_DEPARTMENT,
-            prevStep: AppSetupService::STEP_SCHOOL,
-            extra: ['req_record' => AppSetupService::RECORD_SUPER_ADMIN],
+            currentStep: AppAppSetupService::STEP_ACCOUNT,
+            nextStep: AppAppSetupService::STEP_DEPARTMENT,
+            prevStep: AppAppSetupService::STEP_SCHOOL,
+            extra: ['req_record' => AppAppSetupService::RECORD_SUPER_ADMIN],
         );
 
         $this->requireWizardAccess();
@@ -64,14 +64,18 @@ class AccountSetup extends Component
     {
         try {
             $this->validate([
-                'turnstile' => [new Turnstile],
-                'contact_me' => [new Honeypot],
+                'turnstile' => [new Turnstile()],
+                'contact_me' => [new Honeypot()],
             ]);
 
             $this->nextStep();
         } catch (\Exception $e) {
             report($e);
-            flash()->error($e instanceof AppException ? $e->getUserMessage() : __('ui::errors.unexpected_technical_failure'));
+            flash()->error(
+                $e instanceof AppException
+                    ? $e->getUserMessage()
+                    : __('ui::errors.unexpected_technical_failure'),
+            );
         }
     }
 
@@ -83,8 +87,9 @@ class AccountSetup extends Component
     public function render(): View
     {
         return view('setup::livewire.account-setup')->layout('setup::components.layouts.setup', [
-            'title' => __('setup::wizard.account.title').
-                ' | '.
+            'title' =>
+                __('setup::wizard.account.title') .
+                ' | ' .
                 setting('site_title', setting('app_name')),
         ]);
     }

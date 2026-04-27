@@ -10,7 +10,7 @@ use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Services\SetupService;
+use Modules\Setup\Services\AppSetupService;
 
 describe('SetupService S1 Security', function () {
     beforeEach(function () {
@@ -24,10 +24,10 @@ describe('SetupService S1 Security', function () {
     });
 
     test('performSetupStep enforces authorization', function () {
-        Gate::shouldReceive('authorize')->once()->with('performStep', SetupService::class);
+        Gate::shouldReceive('authorize')->once()->with('performStep', AppSetupService::class);
 
         // We call the actual method but ignore its internal logic impact
-        $service = new SetupService(
+        $service = new AppSetupService(
             $this->settingService,
             $this->superAdminService,
             $this->schoolService,
@@ -43,9 +43,9 @@ describe('SetupService S1 Security', function () {
     });
 
     test('finalizeSetupStep enforces authorization', function () {
-        Gate::shouldReceive('authorize')->once()->with('finalize', SetupService::class);
+        Gate::shouldReceive('authorize')->once()->with('finalize', AppSetupService::class);
 
-        $service = new SetupService(
+        $service = new AppSetupService(
             $this->settingService,
             $this->superAdminService,
             $this->schoolService,

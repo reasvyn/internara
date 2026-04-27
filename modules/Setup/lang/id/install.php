@@ -26,16 +26,22 @@ return [
         'aborted' => 'Instalasi dibatalkan oleh pengguna.',
         'production_title' => 'PERINGATAN KRITIS',
         'production_env' => 'Anda menjalankan perintah ini di lingkungan PRODUKSI.',
-        'production_loss' => 'Tindakan ini akan mengakibatkan KEHILANGAN DATA YANG TIDAK DAPAT DIKEMBALIKAN dengan mereset database Anda.',
-        'production_confirm' => 'Apakah Anda benar-benar yakin ingin melanjutkan operasi destruktif ini?',
-        'env_notice' => 'Pemberitahuan Lingkungan: URL Sistem dikonfigurasi ke localhost. Pemetaan port mungkin diperlukan untuk akses eksternal.',
+        'production_loss' =>
+            'Tindakan ini akan mengakibatkan KEHILANGAN DATA YANG TIDAK DAPAT DIKEMBALIKAN dengan mereset database Anda.',
+        'production_confirm' =>
+            'Apakah Anda benar-benar yakin ingin melanjutkan operasi destruktif ini?',
+        'env_notice' =>
+            'Pemberitahuan Lingkungan: URL Sistem dikonfigurasi ke localhost. Pemetaan port mungkin diperlukan untuk akses eksternal.',
     ],
-    'confirmation' => 'Prosedur ini akan mereset database dan menginisialisasi sistem. Apakah Anda ingin melanjutkan?',
+    'confirmation' =>
+        'Prosedur ini akan mereset database dan menginisialisasi sistem. Apakah Anda ingin melanjutkan?',
     'success' => 'Inisialisasi sistem inti berhasil diselesaikan.',
     'auth_required' => 'Otorisasi Diperlukan',
-    'auth_description' => 'Silakan gunakan tautan terautentikasi berikut untuk memfinalisasi konfigurasi sistem:',
+    'auth_description' =>
+        'Silakan gunakan tautan terautentikasi berikut untuk memfinalisasi konfigurasi sistem:',
     'audit_logs' => [
-        'migrations_executed' => 'Instalasi teknis: Migrasi database dijalankan menggunakan [:command].',
+        'migrations_executed' =>
+            'Instalasi teknis: Migrasi database dijalankan menggunakan [:command].',
         'seeding_completed' => 'Instalasi teknis: Seeding database selesai dan token setup dibuat.',
         'env_created' => 'Instalasi teknis: File .env dibuat dari .env.example.',
     ],
