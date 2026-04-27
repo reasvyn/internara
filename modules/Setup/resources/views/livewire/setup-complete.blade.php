@@ -39,14 +39,6 @@
                             <h3 class="text-2xl font-bold text-base-content">{{ __('setup::wizard.complete.checkup_title') }}</h3>
                             <p class="text-sm text-base-content/50 mt-1">{{ __('setup::wizard.complete.checkup_desc') }}</p>
                         </div>
-                        <x-ui::button
-                            variant="secondary"
-                            size="sm"
-                            class="border-base-content/10 text-base-content/60 hover:text-primary hover:border-primary/30"
-                            :label="__('setup::wizard.complete.download_report')"
-                            icon="tabler.file-download"
-                            wire:click="downloadTechnicalReport"
-                        />
                     </div>
 
                     <div class="space-y-6">
