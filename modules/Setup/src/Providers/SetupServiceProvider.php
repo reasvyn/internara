@@ -57,7 +57,7 @@ class SetupServiceProvider extends ServiceProvider
 
         $this->app->singleton(
             \Modules\Setup\Services\Contracts\SetupService::class,
-            \Modules\Setup\Application\Services\SetupOrchestrator::class,
+            \Modules\Setup\Services\SetupService::class,
         );
     }
 

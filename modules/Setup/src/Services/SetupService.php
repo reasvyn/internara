@@ -4,44 +4,63 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Services;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
-use InvalidArgumentException;
-use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\Department\Services\Contracts\DepartmentService;
 use Modules\Exception\AppException;
-use Modules\Internship\Services\Contracts\InternshipService;
-use Modules\School\Services\Contracts\SchoolService;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\Setup\Domain\Models\SetupProcess;
+use Modules\Setup\Events\SetupFinalized;
 use Modules\Shared\Services\BaseService;
 
 /**
  * Service implementation for handling the application setup process.
+ * 
+ * [S2 - Sustain] Aligned with project-wide Service Layer pattern.
+ * [S3 - Scalable] Uses Registry pattern to decouple module dependencies.
  */
 class SetupService extends BaseService implements Contracts\SetupService
 {
-    /**
-     * Setting key for application name.
-     */
-    public const SETTING_APP_NAME = 'app_name';
-
     /**
      * Create a new SetupService instance.
      */
     public function __construct(
         protected SettingService $settingService,
-        protected SuperAdminService $superAdminService,
-        protected SchoolService $schoolService,
-        protected DepartmentService $departmentService,
-        protected InternshipService $internshipService,
+        protected SetupRequirementRegistry $registry,
     ) {}
+
+    /**
+     * Reconstitutes the SetupProcess aggregate to validate state invariants.
+     */
+    protected function getProcess(): SetupProcess
+    {
+        $isInstalled = (bool) $this->settingService->getValue(self::SETTING_APP_INSTALLED, false);
+        
+        $steps = [
+            self::STEP_WELCOME,
+            self::STEP_ENVIRONMENT,
+            self::STEP_SCHOOL,
+            self::STEP_ACCOUNT,
+            self::STEP_DEPARTMENT,
+            self::STEP_INTERNSHIP,
+            self::STEP_SYSTEM,
+            self::STEP_COMPLETE,
+        ];
+
+        $completedSteps = [];
+        foreach ($steps as $step) {
+            $completedSteps[$step] = (bool) $this->settingService->getValue("setup_step_{$step}", false);
+        }
+
+        return SetupProcess::fromState($isInstalled, $completedSteps);
+    }
 
     /**
      * {@inheritDoc}
      */
     public function isAppInstalled(bool $skipCache = true): bool
     {
-        return $this->settingService->getValue(self::SETTING_APP_INSTALLED, false, $skipCache);
+        return $this->getProcess()->isInstalled();
     }
 
     /**
@@ -49,11 +68,7 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function isStepCompleted(string $step, bool $skipCache = true): bool
     {
-        if (empty($step)) {
-            return true;
-        }
-
-        return $this->settingService->getValue("setup_step_{$step}", false, $skipCache);
+        return $this->getProcess()->isStepCompleted($step);
     }
 
     /**
@@ -61,15 +76,8 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function isRecordExists(string $recordName): bool
     {
-        return match ($recordName) {
-            self::RECORD_SUPER_ADMIN => $this->superAdminService->exists(),
-            self::RECORD_SCHOOL => $this->schoolService->exists(),
-            self::RECORD_DEPARTMENT => $this->departmentService->exists(),
-            self::RECORD_INTERNSHIP => $this->internshipService->exists(),
-            default => throw new InvalidArgumentException(
-                "Unknown record type '{$recordName}' requested.",
-            ),
-        };
+        // [S3 - Scalable] Delegation to Decoupled Registry
+        return $this->registry->isRequirementSatisfied($recordName);
     }
 
     /**
@@ -77,11 +85,13 @@ class SetupService extends BaseService implements Contracts\SetupService
      */
     public function requireSetupAccess(string $prevStep = ''): bool
     {
-        if (!$prevStep) {
-            return !$this->isAppInstalled();
+        $process = $this->getProcess();
+
+        if ($process->isInstalled()) {
+            return false;
         }
 
-        if (!$this->isStepCompleted($prevStep, true)) {
+        if ($prevStep && !$process->isStepCompleted($prevStep)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -98,34 +108,46 @@ class SetupService extends BaseService implements Contracts\SetupService
     {
         Gate::authorize('performStep', self::class);
 
-        // [S1 - Secure] Atomic Step Locking
-        // Prevents race conditions if multiple admins are accessing the setup suite simultaneously.
+        $process = $this->getProcess();
+
+        // [S1 - Secure] Atomic Concurrency Control
         $lock = \Illuminate\Support\Facades\Cache::lock("setup.step.{$step}", 30);
 
-        return $lock->get(function () use ($step, $reqRecord) {
-            if ($step === self::STEP_COMPLETE) {
-                return $this->finalizeSetupStep();
-            }
-
-            if ($reqRecord && !$this->isRecordExists($reqRecord)) {
-                throw new AppException(
-                    userMessage: 'setup::exceptions.require_record_exists',
+        return $lock->get(function () use ($step, $reqRecord, $process) {
+            if (!$process->canProceedTo($step)) {
+                 throw new AppException(
+                    userMessage: 'setup::exceptions.require_step_completed',
                     code: 403,
                 );
             }
 
-            $success = $this->storeStep($step);
-
-            if ($success) {
-                // [S2 - Sustain] Technical Step Logging
-                // Switched from Log to activity() for UI-visible audit trail
-                activity('setup')
-                    ->event('step_completed')
-                    ->withProperties(['step' => $step])
-                    ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
+            $requiredRecord = $reqRecord ?? SetupProcess::STEP_RECORDS[$step] ?? null;
+            if ($requiredRecord) {
+                $exists = $this->isRecordExists($requiredRecord);
+                
+                try {
+                    $process->validateStepFinalization($step, $exists);
+                } catch (\DomainException $e) {
+                    throw new AppException(
+                        userMessage: 'setup::exceptions.require_record_exists',
+                        logMessage: $e->getMessage(),
+                        code: 403,
+                    );
+                }
             }
 
-            return $success;
+            if ($step === self::STEP_COMPLETE) {
+                return $this->finalizeSetupStep();
+            }
+
+            $this->settingService->setValue("setup_step_{$step}", true);
+
+            activity('setup')
+                ->event('step_completed')
+                ->withProperties(['step' => $step])
+                ->log(__('setup::wizard.audit_logs.step_completed', ['step' => $step]));
+
+            return true;
         }) ?: throw new AppException(
             userMessage: 'setup::exceptions.concurrency_lock',
             code: 423,
@@ -151,85 +173,24 @@ class SetupService extends BaseService implements Contracts\SetupService
     {
         Gate::authorize('finalize', self::class);
 
-        // [S1 - Secure] Enterprise Concurrency Lock
-        $lock = \Illuminate\Support\Facades\Cache::lock('setup.finalizing', 60);
+        return DB::transaction(function () {
+            $this->settingService->setValue(self::SETTING_APP_INSTALLED, true);
+            $this->settingService->setValue(self::SETTING_SETUP_TOKEN, null);
+            $this->settingService->setValue("setup_step_complete", true);
 
-        return $lock->get(function () {
-            return \Illuminate\Support\Facades\DB::transaction(function () {
-                $schoolRecord = $this->schoolService->getSchool();
-                
-                if (! $schoolRecord) {
-                    throw new AppException(
-                        userMessage: 'setup::exceptions.require_record_exists',
-                        code: 403,
-                    );
-                }
+            // [S3 - Scalable] Event-Driven Finalization
+            event(new SetupFinalized());
 
-                $settings = [
-                    // [SYRS-C-004] Branding Invariant
-                    self::SETTING_BRAND_NAME => $schoolRecord->name,
-                    self::SETTING_BRAND_LOGO => $schoolRecord->logo_url ?? null,
-                    self::SETTING_SITE_TITLE =>
-                        $schoolRecord->name .
-                        ' - ' .
-                        $this->settingService->getValue(self::SETTING_APP_NAME, 'Internara'),
-                    self::SETTING_APP_INSTALLED => true,
-                    self::SETTING_SETUP_TOKEN => null,
-                ];
+            activity('setup')
+                ->event('finalized')
+                ->log(__('setup::wizard.audit_logs.finalized'));
 
-                $this->settingService->setValue($settings);
+            Session::forget(self::SESSION_SETUP_AUTHORIZED);
+            Session::regenerate();
 
-                // [S3 - Scalable] Dispatch finalization event
-                event(
-                    new \Modules\Setup\Events\SetupFinalized(
-                        schoolName: $schoolRecord->name,
-                        installedAt: now()->toIso8601String(),
-                    ),
-                );
+            \Illuminate\Support\Facades\Cache::forget('internara.installed');
 
-                // [S2 - Sustain] Log finalization
-                activity('setup')
-                    ->event('finalized')
-                    ->log(__('setup::wizard.audit_logs.finalized'));
-
-                // Enterprise-grade session cleanup
-                $this->cleanupSetupSessions();
-
-                Session::regenerate();
-
-                $this->storeStep('complete');
-
-                // Force cache refresh for app_installed
-                $this->settingService->setValue(self::SETTING_APP_INSTALLED, true);
-                \Illuminate\Support\Facades\Cache::forget('internara.installed');
-
-                return $this->isAppInstalled(true);
-            });
+            return true;
         });
-    }
-
-    /**
-     * Stores the completion status of a setup step in the settings.
-     */
-    protected function storeStep(string $name, bool $completed = true): bool
-    {
-        $this->settingService->setValue("setup_step_{$name}", $completed);
-
-        return true;
-    }
-
-    /**
-     * Thoroughly cleans up all setup-related session data.
-     */
-    protected function cleanupSetupSessions(): void
-    {
-        Session::forget(self::SESSION_SETUP_AUTHORIZED);
-
-        $keys = Session::all();
-        foreach (array_keys($keys) as $key) {
-            if (str_starts_with($key, 'setup_step_')) {
-                Session::forget($key);
-            }
-        }
     }
 }
