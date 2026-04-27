@@ -1,64 +1,85 @@
 <div>
-    <x-ui::header 
-        :title="__('guidance::ui.manage_title')" 
-        :subtitle="__('guidance::ui.manage_subtitle')"
-        :context="'guidance::ui.manage_title'"
-    >
-        <x-slot:actions>
-            <x-ui::button label="{{ __('guidance::ui.add_handbook') }}" icon="tabler.plus" class="btn-primary" wire:click="create" />
-        </x-slot:actions>
-    </x-ui::header>
+    <x-ui::card>
+        <div class="w-full overflow-auto rounded-xl border border-base-200 bg-base-100 shadow-sm max-h-[60vh]">
+            <x-mary-table 
+                class="table-zebra table-md"
+                :headers="$this->headers" 
+                :rows="$this->records" 
+                with-pagination
+            >
+                @scope('cell_is_mandatory', $handbook)
+                    @if($handbook->is_mandatory)
+                        <x-ui::badge :value="__('guidance::ui.mandatory')" variant="warning" class="badge-sm font-bold" />
+                    @else
+                        <x-ui::badge :value="__('guidance::ui.optional')" variant="secondary" class="badge-sm" />
+                    @endif
+                @endscope
 
-    <x-ui::card shadow>
-        <x-ui::tabs selected="list">
-            <x-ui::tab name="list" label="{{ __('guidance::ui.list_tab') }}" icon="tabler.list">
-                <div class="flex flex-col md:flex-row gap-4 my-6">
-                    <div class="flex-1">
-                        <x-ui::input icon="tabler.search" placeholder="{{ __('schedule::ui.search_placeholder') }}" wire:model.live.debounce.300ms="search" />
-                    </div>
-                </div>
+                @scope('cell_is_active', $handbook)
+                    @if($handbook->is_active)
+                        <x-ui::badge :value="__('guidance::ui.active')" variant="success" class="badge-sm" />
+                    @else
+                        <x-ui::badge :value="__('guidance::ui.inactive')" variant="error" class="badge-sm" />
+                    @endif
+                @endscope
 
-                <x-ui::table :headers="$headers" :rows="$handbooks" with-pagination>
-                    @scope('cell_is_mandatory', $handbook)
-                        @if($handbook->is_mandatory)
-                            <x-ui::badge label="{{ __('guidance::ui.mandatory') }}" class="badge-error" />
-                        @else
-                            <x-ui::badge label="{{ __('guidance::ui.optional') }}" class="badge-ghost" />
+                @scope('actions', $handbook)
+                    <div class="flex justify-end gap-2">
+                        @if($this->can('update', $handbook['id']))
+                            <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $handbook['id'] }}')" class="text-info" tooltip="{{ __('guidance::ui.edit_handbook') }}" />
                         @endif
-                    @endscope
-
-                    @scope('cell_is_active', $handbook)
-                        @if($handbook->is_active)
-                            <x-ui::badge label="{{ __('guidance::ui.active') }}" class="badge-success" />
-                        @else
-                            <x-ui::badge label="{{ __('guidance::ui.draft') }}" class="badge-warning" />
-                        @endif
-                    @endscope
-
-                    @scope('actions', $handbook)
-                        <div class="flex items-center gap-2">
-                            <x-ui::button icon="tabler.edit" class="btn-ghost btn-sm btn-circle" wire:click="edit('{{ $handbook->id }}')" />
+                        
+                        @if($this->can('delete', $handbook['id']))
                             <x-ui::button 
                                 icon="tabler.trash" 
-                                class="btn-ghost btn-sm btn-circle text-error" 
-                                wire:confirm="{{ __('guidance::ui.delete_confirm') }}"
-                                wire:click="delete('{{ $handbook->id }}')" 
+                                variant="tertiary" 
+                                wire:click="discard('{{ $handbook['id'] }}')"
+                                class="text-error" 
+                                tooltip="{{ __('ui::common.delete') }}" 
                             />
-                        </div>
-                    @endscope
-                </x-ui::table>
-            </x-ui::tab>
-
-            <x-ui::tab name="monitoring" label="{{ __('guidance::ui.monitoring_tab') }}" icon="tabler.users-check">
-                <div class="py-4">
-                    <livewire:guidance::tables.handbook-acknowledgement-table />
-                </div>
-            </x-ui::tab>
-        </x-ui::tabs>
+                        @endif
+                    </div>
+                @endscope
+            </x-mary-table>
+        </div>
     </x-ui::card>
 
-    {{-- Handbook Form Modal --}}
-    <x-ui::modal wire:model="showForm" title="{{ $selectedHandbookId ? __('guidance::ui.edit_handbook') : __('guidance::ui.new_handbook') }}" separator>
-        <livewire:guidance::handbook-form :handbook-id="$selectedHandbookId" wire:key="{{ $selectedHandbookId ?? 'new' }}" />
+    <div class="mt-12">
+        <h3 class="text-xl font-bold mb-6 flex items-center gap-3">
+            <x-ui::icon name="tabler.users-check" class="size-6 text-primary" />
+            {{ __('guidance::ui.acknowledgement_status') }}
+        </h3>
+        <livewire:guidance::tables.handbook-acknowledgement-table />
+    </div>
+
+    {{-- Form Modal --}}
+    <x-ui::modal wire:model="formModal" :title="$form->id ? __('guidance::ui.edit_handbook') : __('guidance::ui.new_handbook')">
+        <x-ui::form wire:submit="save">
+            <x-ui::input :label="__('guidance::ui.handbook_title')" wire:model="form.title" required />
+            <x-ui::input :label="__('guidance::ui.version_label')" wire:model="form.version" required />
+            
+            <x-ui::textarea :label="__('guidance::ui.description')" wire:model="form.description" rows="3" />
+            
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <x-ui::checkbox :label="__('guidance::ui.mandatory')" wire:model="form.is_mandatory" />
+                <x-ui::checkbox :label="__('guidance::ui.active')" wire:model="form.is_active" />
+            </div>
+
+            <x-ui::file :label="__('guidance::ui.pdf_file')" wire:model="form.file" accept="application/pdf" />
+
+            <x-slot:actions>
+                <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('formModal', false)" />
+                <x-ui::button :label="__('ui::common.save')" type="submit" variant="primary" spinner="save" />
+            </x-slot:actions>
+        </x-ui::form>
+    </x-ui::modal>
+
+    {{-- Confirm Delete --}}
+    <x-ui::modal wire:model="confirmModal" :title="__('ui::common.confirm_delete')">
+        <div class="py-4">{{ $this->deleteConfirmMessage }}</div>
+        <x-slot:actions>
+            <x-ui::button :label="__('ui::common.cancel')" wire:click="$set('confirmModal', false)" />
+            <x-ui::button :label="__('ui::common.delete')" variant="error" wire:click="remove" spinner="remove" />
+        </x-slot:actions>
     </x-ui::modal>
 </div>

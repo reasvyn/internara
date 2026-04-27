@@ -21,11 +21,11 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:admin|super-admin'])->group(function () {
-    Route::get('/admin/assignments', \Modules\Assignment\Livewire\AssignmentManager::class)->name(
+    Route::get('/admin/assignments', \Modules\Assignment\Livewire\AssignmentIndex::class)->name(
         'admin.assignments.index',
     );
     Route::get(
         '/admin/assignments/types',
-        \Modules\Assignment\Livewire\AssignmentTypeManager::class,
+        \Modules\Assignment\Livewire\AssignmentTypeIndex::class,
     )->name('admin.assignments.types');
 });

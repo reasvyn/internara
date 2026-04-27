@@ -5,111 +5,102 @@ declare(strict_types=1);
 namespace Modules\Guidance\Livewire;
 
 use Illuminate\View\View;
-use Livewire\Attributes\Url;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Modules\Guidance\Models\Handbook;
+use Livewire\Attributes\Computed;
+use Modules\Guidance\Livewire\Forms\HandbookForm;
 use Modules\Guidance\Services\Contracts\HandbookService;
+use Modules\UI\Livewire\RecordManager;
 
 /**
  * Class ManageHandbook
  *
  * Provides the administrative interface for managing instructional handbooks.
  */
-class ManageHandbook extends Component
+class ManageHandbook extends RecordManager
 {
-    use WithPagination;
+    public HandbookForm $form;
 
     /**
-     * Search query for filtering handbooks.
+     * Initialize the component metadata and services.
      */
-    #[Url(history: true)]
-    public string $search = '';
-
-    /**
-     * Selected handbook ID for editing.
-     */
-    public ?string $selectedHandbookId = null;
-
-    /**
-     * Whether the handbook form modal is open.
-     */
-    public bool $showForm = false;
-
-    /**
-     * Reset pagination when searching.
-     */
-    public function updatedSearch(): void
+    public function boot(HandbookService $handbookService): void
     {
-        $this->resetPage();
+        $this->service = $handbookService;
+        $this->eventPrefix = 'handbook';
+        $this->modelClass = \Modules\Guidance\Models\Handbook::class;
     }
 
     /**
-     * Open the form to create a new handbook.
+     * Configure the component's basic properties.
      */
-    public function create(): void
+    public function initialize(): void
     {
-        $this->authorize('create', Handbook::class);
+        $this->title = __('guidance::ui.manage_title');
+        $this->subtitle = __('guidance::ui.manage_subtitle');
+        $this->context = 'guidance::ui.hub_title';
+        $this->addLabel = __('guidance::ui.add_handbook');
+        $this->deleteConfirmMessage = __('guidance::ui.delete_confirm');
 
-        $this->selectedHandbookId = null;
-        $this->showForm = true;
+        $this->viewPermission = 'internship.manage';
+        $this->createPermission = 'internship.manage';
+        $this->updatePermission = 'internship.manage';
+        $this->deletePermission = 'internship.manage';
+
+        $this->searchable = ['title', 'description', 'version'];
+        $this->sortable = ['title', 'version', 'is_mandatory', 'is_active', 'created_at'];
     }
 
     /**
-     * Open the form to edit an existing handbook.
+     * Define the table structure.
      */
-    public function edit(string $id): void
+    protected function getTableHeaders(): array
     {
-        $this->authorize('update', Handbook::class);
-
-        $this->selectedHandbookId = $id;
-        $this->showForm = true;
+        return [
+            ['key' => 'title', 'label' => __('guidance::ui.handbook_title'), 'sortable' => true],
+            ['key' => 'version', 'label' => __('guidance::ui.version_label'), 'sortable' => true],
+            ['key' => 'is_mandatory', 'label' => __('guidance::ui.mandatory'), 'sortable' => true],
+            ['key' => 'is_active', 'label' => __('guidance::ui.status'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
+        ];
     }
 
     /**
-     * Delete a handbook.
+     * Save the handbook with media handling.
      */
-    public function delete(string $id, HandbookService $service): void
+    public function save(): void
     {
-        $this->authorize('delete', Handbook::class);
+        $this->form->validate([
+            'form.title' => 'required|string|max:255',
+            'form.version' => 'required|string|max:20',
+            'form.file' => $this->form->id ? 'nullable|mimes:pdf|max:10240' : 'required|mimes:pdf|max:10240',
+        ]);
 
-        if ($service->delete($id)) {
-            flash()->success(__('guidance::messages.handbook_deleted'));
+        try {
+            $data = $this->form->all();
+            unset($data['file']);
+
+            if ($this->form->id) {
+                $handbook = $this->service->update($this->form->id, $data);
+            } else {
+                $handbook = $this->service->create($data);
+            }
+
+            if ($this->form->file) {
+                $handbook->setMedia($this->form->file, 'document');
+            }
+
+            $this->toggleModal(self::MODAL_FORM, false);
+            flash()->success(__('guidance::messages.handbook_saved'));
+            $this->dispatch('handbook:saved');
+        } catch (\Throwable $e) {
+            $this->handleAppExceptionInLivewire($e);
         }
-    }
-
-    /**
-     * Handle handbook saved event.
-     */
-    public function handbookSaved(): void
-    {
-        $this->showForm = false;
-        flash()->success(__('guidance::messages.handbook_saved'));
     }
 
     /**
      * Render the component view.
      */
-    public function render(HandbookService $service): View
+    public function render(): View
     {
-        $this->authorize('viewAny', Handbook::class);
-
-        $headers = [
-            ['key' => 'title', 'label' => __('guidance::ui.handbook_title')],
-            ['key' => 'version', 'label' => __('guidance::ui.version_label')],
-            ['key' => 'is_mandatory', 'label' => __('guidance::ui.mandatory')],
-            ['key' => 'is_active', 'label' => __('guidance::ui.status')],
-        ];
-
-        $handbooks = $service->paginate(filters: ['search' => $this->search], perPage: 10);
-
-        return view('guidance::livewire.manage-handbook', [
-            'handbooks' => $handbooks,
-            'headers' => $headers,
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('guidance::ui.manage_title').
-                ' | '.
-                setting('brand_name', setting('app_name')),
-        ]);
+        return view('guidance::livewire.manage-handbook');
     }
 }

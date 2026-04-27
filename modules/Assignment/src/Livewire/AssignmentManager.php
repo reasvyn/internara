@@ -4,131 +4,103 @@ declare(strict_types=1);
 
 namespace Modules\Assignment\Livewire;
 
-use Livewire\Attributes\Validate;
-use Livewire\Component;
-use Livewire\WithPagination;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\View\View;
+use Livewire\Attributes\Computed;
+use Modules\Assignment\Livewire\Forms\AssignmentForm;
 use Modules\Assignment\Services\Contracts\AssignmentService;
+use Modules\UI\Livewire\RecordManager;
 
 /**
  * Class AssignmentManager
  *
  * Allows administrators to manage internship assignments and policies.
  */
-class AssignmentManager extends Component
+class AssignmentManager extends RecordManager
 {
-    use WithPagination;
-
-    public bool $formModal = false;
-
-    public ?string $recordId = null;
-
-    #[Validate('required|string|max:255')]
-    public string $title = '';
-
-    #[Validate('required|string')]
-    public string $assignment_type_id = '';
-
-    #[Validate('nullable|string')]
-    public string $description = '';
-
-    #[Validate('boolean')]
-    public bool $is_mandatory = true;
-
-    #[Validate('nullable|date')]
-    public $due_date;
+    public AssignmentForm $form;
 
     /**
-     * Reset the form fields.
+     * Initialize the component metadata and services.
      */
-    public function resetForm(): void
+    public function boot(AssignmentService $assignmentService): void
     {
-        $this->reset([
-            'recordId',
-            'title',
-            'assignment_type_id',
-            'description',
-            'is_mandatory',
-            'due_date',
-        ]);
+        $this->service = $assignmentService;
+        $this->eventPrefix = 'assignment';
+        $this->modelClass = \Modules\Assignment\Models\Assignment::class;
     }
 
     /**
-     * Show the form to create a new assignment.
+     * Configure the component's basic properties.
      */
-    public function add(): void
+    public function initialize(): void
     {
-        $this->resetForm();
-        $this->formModal = true;
+        $this->title = __('assignment::ui.manage_assignments');
+        $this->subtitle = __('assignment::ui.subtitle');
+        $this->context = 'assignment::ui.menu.assignments';
+        $this->addLabel = __('assignment::ui.add_assignment');
+        $this->deleteConfirmMessage = __('assignment::ui.delete_confirm');
+
+        $this->viewPermission = 'journal.view';
+        $this->createPermission = 'journal.manage';
+        $this->updatePermission = 'journal.manage';
+        $this->deletePermission = 'journal.manage';
+
+        $this->searchable = ['title', 'description'];
+        $this->sortable = ['title', 'is_mandatory', 'due_date', 'created_at'];
     }
 
     /**
-     * Show the form to edit an existing assignment.
+     * Define the table structure.
      */
-    public function edit(string $id, AssignmentService $service): void
+    protected function getTableHeaders(): array
     {
-        $assignment = $service->find($id);
-
-        if (! $assignment) {
-            return;
-        }
-
-        $this->recordId = $id;
-        $this->title = $assignment->title;
-        $this->assignment_type_id = $assignment->assignment_type_id;
-        $this->description = $assignment->description ?? '';
-        $this->is_mandatory = $assignment->is_mandatory;
-        $this->due_date = $assignment->due_date?->format('Y-m-d\TH:i');
-
-        $this->formModal = true;
-    }
-
-    /**
-     * Save the assignment record.
-     */
-    public function save(AssignmentService $service): void
-    {
-        $this->validate();
-
-        $data = [
-            'title' => $this->title,
-            'assignment_type_id' => $this->assignment_type_id,
-            'description' => $this->description,
-            'is_mandatory' => $this->is_mandatory,
-            'due_date' => $this->due_date,
+        return [
+            ['key' => 'title', 'label' => __('assignment::ui.title'), 'sortable' => true],
+            ['key' => 'type_name', 'label' => __('assignment::ui.type')],
+            ['key' => 'is_mandatory', 'label' => __('assignment::ui.is_mandatory'), 'sortable' => true],
+            ['key' => 'due_date', 'label' => __('assignment::ui.due_date'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'class' => 'w-1'],
         ];
-
-        if ($this->recordId) {
-            $service->update($this->recordId, $data);
-            flash()->success(__('assignment::ui.success_updated'));
-        } else {
-            $service->create($data);
-            flash()->success(__('assignment::ui.success_created'));
-        }
-
-        $this->formModal = false;
     }
 
     /**
-     * Delete an assignment.
+     * Transform raw record for UI display.
      */
-    public function remove(string $id, AssignmentService $service): void
+    protected function mapRecord(mixed $record): array
     {
-        $service->delete($id);
-        flash()->success(__('assignment::ui.success_deleted'));
-    }
-
-    /**
-     * Render the component.
-     */
-    public function render(AssignmentService $service)
-    {
-        return view('assignment::livewire.assignment-manager', [
-            'assignments' => $service->paginate([], 10),
-            'types' => $service->getTypes(),
-        ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('assignment::ui.manage_assignments').
-                ' | '.
-                setting('brand_name', setting('app_name')),
+        return array_merge($record->toArray(), [
+            'type_name' => $record->type?->name ?? '-',
         ]);
+    }
+
+    /**
+     * Fetch and transform records for the table.
+     */
+    #[Computed]
+    public function records(): LengthAwarePaginator
+    {
+        return $this->service->query($this->filters)
+            ->with(['type'])
+            ->paginate($this->perPage)
+            ->through(fn ($assignment) => $this->mapRecord($assignment));
+    }
+
+    /**
+     * Get available assignment types for the form.
+     */
+    #[Computed]
+    public function types(): array
+    {
+        return $this->service->getTypes();
+    }
+
+    /**
+     * Render the component view.
+     */
+    public function render(): View
+    {
+        return view('assignment::livewire.assignment-manager');
     }
 }
