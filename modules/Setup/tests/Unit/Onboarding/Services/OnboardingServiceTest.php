@@ -42,7 +42,10 @@ describe('OnboardingService Unit Test', function () {
     });
 
     test('it processes valid csv row', function () {
-        $this->provisioningService->shouldReceive('createWithRoles')->once()->andReturn((object)['id' => 'user-uuid']);
+        $userMock = \Mockery::mock(\Modules\User\Models\User::class);
+        $userMock->shouldReceive('getAttribute')->with('id')->andReturn('user-uuid');
+        $this->provisioningService->shouldReceive('createWithRoles')->once()->andReturn($userMock);
+        $this->provisioningService->shouldReceive('provision')->once();
         $this->studentService->shouldReceive('create')->once();
 
         // Create temporary CSV with correct headers matching service logic

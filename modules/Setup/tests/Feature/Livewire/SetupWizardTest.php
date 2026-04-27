@@ -165,7 +165,12 @@ describe('Setup Wizard Transitions', function () {
         }
         $this->get(route('setup.complete', ['token' => 'test-token']));
 
-        Livewire::test(SetupComplete::class)->call('nextStep')->assertRedirect(route('login'));
+        Livewire::test(SetupComplete::class)
+            ->set('data_verified', true)
+            ->set('security_aware', true)
+            ->set('legal_agreed', true)
+            ->call('nextStep')
+            ->assertRedirect(route('login'));
 
         expect($settings->getValue('setup_step_complete', skipCache: true))->toBeTrue();
     });

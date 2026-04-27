@@ -30,7 +30,7 @@ describe('AppInstallCommand', function () {
         });
 
         $this->artisan('app:install')
-            ->expectsConfirmation(__('setup::install.warnings.destructive_confirmation'), 'no')
+            ->expectsConfirmation('This procedure will reset the database and initialize the system. Do you want to proceed?', 'no')
             ->expectsOutputToContain('Installation aborted by user.')
             ->assertExitCode(1);
     });
@@ -50,7 +50,7 @@ describe('AppInstallCommand', function () {
         $this->artisan('app:install')
             ->expectsOutputToContain('CRITICAL WARNING')
             ->expectsOutputToContain('You are running this command in a PRODUCTION environment.')
-            ->expectsConfirmation('Are you absolutely certain you want to proceed with this destructive operation?', 'no')
+            ->expectsConfirmation(__('setup::install.warnings.production_confirm'), 'no')
             ->assertExitCode(1);
     });
 

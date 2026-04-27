@@ -43,6 +43,9 @@ describe('SetupComplete Component', function () {
         $this->get(route('setup.complete', ['token' => 'test-token']));
 
         Livewire::test(SetupComplete::class)
+            ->set('data_verified', true)
+            ->set('security_aware', true)
+            ->set('legal_agreed', true)
             ->call('nextStep')
             ->assertRedirect(route('login'));
     });
