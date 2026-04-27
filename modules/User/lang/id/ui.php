@@ -38,6 +38,7 @@ return [
         'edit_admin' => 'Ubah Data Admin',
         'search_placeholder' => 'Cari data...',
         'table' => [
+            'user' => 'Pengguna',
             'name' => 'Nama',
             'email' => 'Email',
             'username' => 'Username',

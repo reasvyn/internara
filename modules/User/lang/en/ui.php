@@ -38,6 +38,7 @@ return [
         'edit_admin' => 'Edit Admin Data',
         'search_placeholder' => 'Search records...',
         'table' => [
+            'user' => 'User',
             'name' => 'Name',
             'email' => 'Email',
             'username' => 'Username',

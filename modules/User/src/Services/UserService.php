@@ -45,15 +45,26 @@ class UserService extends EloquentQuery implements Contract
      */
     public function getStats(): array
     {
-        return [
-            'total' => $this->count(),
-            'students' => $this->model->newQuery()->role(Role::STUDENT->value)->count(),
-            'staff' => $this->model->newQuery()->role([Role::TEACHER->value, Role::MENTOR->value])->count(),
-            'active' => $this->model->newQuery()->whereHas('statuses', function ($q) {
+        return Cache::remember('user.stats', now()->addMinutes(10), function () {
+            $roleCounts = DB::table('model_has_roles')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->whereIn('roles.name', [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value])
+                ->select('roles.name', DB::raw('count(*) as total'))
+                ->groupBy('roles.name')
+                ->pluck('total', 'name');
+
+            $activeCount = $this->model->newQuery()->whereHas('statuses', function ($q) {
                 $q->where('name', User::STATUS_ACTIVE)
                     ->whereRaw('created_at = (select max(s2.created_at) from statuses as s2 where s2.model_id = users.id)');
-            })->count(),
-        ];
+            })->count();
+
+            return [
+                'total' => $this->count(),
+                'students' => $roleCounts[Role::STUDENT->value] ?? 0,
+                'staff' => ($roleCounts[Role::TEACHER->value] ?? 0) + ($roleCounts[Role::MENTOR->value] ?? 0),
+                'active' => $activeCount,
+            ];
+        });
     }
 
     /**
@@ -64,7 +75,10 @@ class UserService extends EloquentQuery implements Contract
         $profileData = $data['profile'] ?? [];
         unset($data['profile']);
 
-        return $this->createWithProfile($data, $profileData);
+        $user = $this->createWithProfile($data, $profileData);
+        Cache::forget('user.stats');
+
+        return $user;
     }
 
     /**
@@ -147,6 +161,8 @@ class UserService extends EloquentQuery implements Contract
 
             $user->notify(new WelcomeUserNotification);
 
+            Cache::forget('user.stats');
+
             return $user;
         });
     }
@@ -175,7 +191,11 @@ class UserService extends EloquentQuery implements Contract
         $user = $this->find($id);
 
         if (! $user) {
-            throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
+            throw new RecordNotFoundException(
+                message: 'exception::messages.record_not_found',
+                replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
+                module: 'User'
+            );
         }
 
         if (! $this->skipAuthorization) {
@@ -196,6 +216,8 @@ class UserService extends EloquentQuery implements Contract
         $user->setStatus($newStatus);
         $this->skipAuthorization = false;
 
+        Cache::forget('user.stats');
+
         return $user;
     }
 
@@ -207,7 +229,11 @@ class UserService extends EloquentQuery implements Contract
         $user = $this->find($id);
 
         if (! $user) {
-            throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
+            throw new RecordNotFoundException(
+                message: 'exception::messages.record_not_found',
+                replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
+                module: 'User'
+            );
         }
 
         if (! $this->skipAuthorization) {
@@ -242,6 +268,7 @@ class UserService extends EloquentQuery implements Contract
             }
 
             $updatedUser->syncRoles($roles);
+            Cache::forget('user.stats');
         }
 
         $effectiveRoles = Arr::wrap($roles ?? $updatedUser->roles()->pluck('name')->all());
@@ -249,8 +276,10 @@ class UserService extends EloquentQuery implements Contract
 
         if ($status !== null) {
             $updatedUser->setStatus($isPrivilegedRole ? Status::VERIFIED->value : $status);
+            Cache::forget('user.stats');
         } elseif ($isPrivilegedRole) {
             $updatedUser->setStatus(Status::VERIFIED->value);
+            Cache::forget('user.stats');
         }
 
         if ($isPrivilegedRole) {
@@ -272,7 +301,11 @@ class UserService extends EloquentQuery implements Contract
         $user = $this->find($id);
 
         if (! $user) {
-            throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
+            throw new RecordNotFoundException(
+                message: 'exception::messages.record_not_found',
+                replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
+                module: 'User'
+            );
         }
 
         if (! $this->skipAuthorization) {
@@ -316,7 +349,11 @@ class UserService extends EloquentQuery implements Contract
         $user = $this->find($id);
 
         if (! $user) {
-            throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $id]);
+            throw new RecordNotFoundException(
+                message: 'exception::messages.record_not_found',
+                replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
+                module: 'User'
+            );
         }
 
         if (! $this->skipAuthorization) {
@@ -331,6 +368,8 @@ class UserService extends EloquentQuery implements Contract
 
         $result = $this->withoutAuthorization()->parentDelete($id, $force);
         $this->skipAuthorization = false;
+
+        Cache::forget('user.stats');
 
         return $result;
     }
