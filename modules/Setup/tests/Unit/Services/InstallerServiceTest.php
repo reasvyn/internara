@@ -7,13 +7,13 @@ namespace Modules\Setup\Tests\Unit\Services;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Gate;
 use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Services\Contracts\SystemAuditor;
+use Modules\Setup\Services\Contracts\InstallationAuditor;
 use Modules\Setup\Services\InstallerService;
 
 describe('InstallerService Unit Test', function () {
     beforeEach(function () {
         $this->settingService = $this->mock(SettingService::class);
-        $this->auditor = $this->mock(SystemAuditor::class);
+        $this->auditor = $this->mock(InstallationAuditor::class);
 
         // Ensure Gate is always authorized for unit tests
         Gate::shouldReceive('authorize')->byDefault()->andReturn(true);
@@ -21,7 +21,7 @@ describe('InstallerService Unit Test', function () {
 
         // Bind the mocks to the container so partials can find them
         app()->instance(SettingService::class, $this->settingService);
-        app()->instance(SystemAuditor::class, $this->auditor);
+        app()->instance(InstallationAuditor::class, $this->auditor);
     });
 
     test('it validates environment requirements correctly', function () {

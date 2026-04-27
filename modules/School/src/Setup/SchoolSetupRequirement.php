@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\School\Setup;
 
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 
 /**
  * Provides setup requirement validation for the School module.

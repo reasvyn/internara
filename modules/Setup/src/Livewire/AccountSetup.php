@@ -10,8 +10,6 @@ use Livewire\Component;
 use Modules\Exception\AppException;
 use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
-use Modules\Shared\Rules\Honeypot;
-use Modules\Shared\Rules\Turnstile;
 
 /**
  * Represents the 'Account Creation' step in the application setup process.
@@ -22,21 +20,11 @@ class AccountSetup extends Component
     use HandlesWizardSteps;
 
     /**
-     * Turnstile token for S1 security compliance.
-     */
-    public ?string $turnstile = null;
-
-    /**
-     * Honeypot field for bot protection.
-     */
-    public ?string $contact_me = null;
-
-    /**
      * Boots the component and injects the AppSetupService.
      *
-     * @param AppAppSetupService $setupService The service for handling setup logic.
+     * @param AppSetupService $setupService The service for handling setup logic.
      */
-    public function boot(AppAppSetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -47,10 +35,10 @@ class AccountSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppAppSetupService::STEP_ACCOUNT,
-            nextStep: AppAppSetupService::STEP_DEPARTMENT,
-            prevStep: AppAppSetupService::STEP_SCHOOL,
-            extra: ['req_record' => AppAppSetupService::RECORD_SUPER_ADMIN],
+            currentStep: AppSetupService::STEP_ACCOUNT,
+            nextStep: AppSetupService::STEP_DEPARTMENT,
+            prevStep: AppSetupService::STEP_SCHOOL,
+            extra: ['req_record' => AppSetupService::RECORD_SUPER_ADMIN],
         );
 
         $this->requireWizardAccess();
@@ -63,10 +51,7 @@ class AccountSetup extends Component
     public function handleSuperAdminRegistered(): void
     {
         try {
-            $this->validate([
-                'turnstile' => [new Turnstile()],
-                'contact_me' => [new Honeypot()],
-            ]);
+            $this->validate([]);
 
             $this->nextStep();
         } catch (\Exception $e) {

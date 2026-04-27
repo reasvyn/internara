@@ -30,9 +30,6 @@
 
     <x-slot:content>
         <div class="w-full">
-            <x-ui::honeypot wire:model="contact_me" />
-            <x-ui::turnstile wire:model="turnstile" class="mb-8" />
-            
             <div class="bg-base-100 rounded-3xl p-8 md:p-12 shadow-sm border border-base-content/5">
                 @slotRender('school-manager')
             </div>

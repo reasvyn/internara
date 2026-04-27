@@ -55,7 +55,7 @@ describe('AppTestCommand', function () {
 
         $this->executor->shouldReceive('execute')->once()->andReturn(true);
 
-        $this->artisan('app:test --log-junit=' . $junitPath . ' --log-json=' . $jsonPath)
+        $this->artisan('app:test --log-junit='.$junitPath.' --log-json='.$jsonPath)
             ->expectsOutputToContain('JUnit XML report exported to')
             ->expectsOutputToContain('JSON report exported to')
             ->assertExitCode(0);
@@ -117,7 +117,7 @@ describe('AppTestCommand', function () {
             ->shouldReceive('execute')
             ->once()
             ->with(
-                Mockery::on(fn($path) => str_contains($path, 'Feature')),
+                Mockery::on(fn ($path) => str_contains($path, 'Feature')),
                 Mockery::any(),
                 Mockery::any(),
                 Mockery::any(),

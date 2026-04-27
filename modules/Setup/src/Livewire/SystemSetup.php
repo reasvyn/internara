@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Livewire;
 
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 use Livewire\Component;
 use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
-use Modules\Shared\Rules\Honeypot;
-use Modules\Shared\Rules\Turnstile;
 
 /**
  * Represents the 'System & SMTP' setup step in the application setup process.
@@ -35,19 +32,9 @@ class SystemSetup extends Component
     public string $mail_from_name = '';
 
     /**
-     * Turnstile token for S1 security compliance.
-     */
-    public ?string $turnstile = null;
-
-    /**
-     * Honeypot field for bot protection.
-     */
-    public ?string $contact_me = null;
-
-    /**
      * Boots the component and injects the AppSetupService.
      */
-    public function boot(AppAppSetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -58,9 +45,9 @@ class SystemSetup extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppAppSetupService::STEP_SYSTEM,
-            nextStep: AppAppSetupService::STEP_COMPLETE,
-            prevStep: AppAppSetupService::STEP_INTERNSHIP,
+            currentStep: AppSetupService::STEP_SYSTEM,
+            nextStep: AppSetupService::STEP_COMPLETE,
+            prevStep: AppSetupService::STEP_INTERNSHIP,
         );
 
         $this->requireWizardAccess();
@@ -76,60 +63,6 @@ class SystemSetup extends Component
     }
 
     /**
-     * Tests the SMTP connection with the provided settings.
-     */
-    public function testConnection(): void
-    {
-        // [S1 - Secure] Rate limit connection tests to prevent SMTP amplification attacks
-        $key = 'setup_smtp_test:' . request()->ip();
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            flash()->error(
-                __('ui::messages.too_many_requests', ['seconds' => RateLimiter::availableIn($key)]),
-            );
-
-            return;
-        }
-        RateLimiter::hit($key, 60);
-
-        $this->validate([
-            'mail_host' => 'required|string',
-            'mail_port' => 'required|numeric',
-            'mail_encryption' => 'nullable|string',
-        ]);
-
-        try {
-            // Enterprise Grade: Real SMTP handshake check
-            $timeout = 5;
-            $socket = @fsockopen(
-                $this->mail_host,
-                (int) $this->mail_port,
-                $errno,
-                $errstr,
-                $timeout,
-            );
-
-            if ($socket) {
-                $response = fgets($socket, 1024);
-                fclose($socket);
-
-                if (str_starts_with((string) $response, '220')) {
-                    flash()->success(__('setup::wizard.system.smtp_connection_success'));
-                } else {
-                    throw new \Exception('Server responded with: ' . trim((string) $response));
-                }
-            } else {
-                throw new \Exception(
-                    $errstr ?: 'Connection timed out after ' . $timeout . ' seconds.',
-                );
-            }
-        } catch (\Exception $e) {
-            flash()->error(
-                __('setup::wizard.system.smtp_connection_failed', ['message' => $e->getMessage()]),
-            );
-        }
-    }
-
-    /**
      * Skips the SMTP configuration and proceeds to the next step.
      */
     public function skip(): void
@@ -142,10 +75,7 @@ class SystemSetup extends Component
      */
     public function save(): void
     {
-        // [S1 - Secure] Bot & Amplification Protection
         $this->validate([
-            'turnstile' => [new Turnstile()],
-            'contact_me' => [new Honeypot()],
             'mail_host' => 'required|string',
             'mail_port' => 'required|numeric',
             'mail_username' => 'nullable|string',

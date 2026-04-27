@@ -71,7 +71,6 @@ return [
         'audit' => [
             'php_version' => 'PHP Version (>= :version)',
             'php_extension' => 'PHP Extension: :extension',
-            'php_function' => 'PHP Function: :function()',
             'storage_root' => 'Root Storage Directory',
             'storage_logs' => 'Storage Logs Directory',
             'storage_framework' => 'Storage Framework Directory',

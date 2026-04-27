@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Internship\Setup;
 
 use Modules\Internship\Services\Contracts\InternshipService;
-use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 
 class InternshipSetupRequirement implements SetupRequirementProvider
 {

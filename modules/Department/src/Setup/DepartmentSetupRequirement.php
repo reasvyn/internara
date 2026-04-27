@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Modules\Department\Setup;
 
 use Modules\Department\Services\Contracts\DepartmentService;
-use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Setup\Services\Contracts\SetupRequirementProvider;
 
 class DepartmentSetupRequirement implements SetupRequirementProvider
 {

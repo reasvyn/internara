@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequireSetupAccess
 {
-    public function __construct(protected AppAppSetupService $setupService) {}
+    public function __construct(protected AppSetupService $setupService) {}
 
     /**
      * Handle an incoming request.

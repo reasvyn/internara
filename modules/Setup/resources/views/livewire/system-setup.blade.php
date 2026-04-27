@@ -29,9 +29,6 @@
 
     <x-slot:content>
         <div class="space-y-12">
-            <x-ui::honeypot wire:model="contact_me" />
-            <x-ui::turnstile wire:model="turnstile" class="mb-4" />
-
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <!-- SMTP Configuration -->
                 <div class="lg:col-span-7 space-y-8">
@@ -85,9 +82,6 @@
                                 class="border-info/30 text-info hover:bg-info/5 hover:border-info px-8"
                                 :label="__('setup::wizard.system.test_connection')"
                                 icon="tabler.plug-connected"
-                                wire:click="testConnection"
-                                spinner="testConnection"
-                            />
                         </div>
                     </div>
                 </div>

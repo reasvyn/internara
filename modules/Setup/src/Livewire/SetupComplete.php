@@ -35,7 +35,7 @@ class SetupComplete extends Component
     /**
      * Initializes the component.
      */
-    public function boot(AppAppSetupService $setupService): void
+    public function boot(AppSetupService $setupService): void
     {
         $this->setupService = $setupService;
     }
@@ -46,9 +46,9 @@ class SetupComplete extends Component
     public function mount(): void
     {
         $this->initWizardStepProps(
-            currentStep: AppAppSetupService::STEP_COMPLETE,
+            currentStep: AppSetupService::STEP_COMPLETE,
             nextStep: '',
-            prevStep: AppAppSetupService::STEP_SYSTEM,
+            prevStep: AppSetupService::STEP_SYSTEM,
             extra: ['landing_route' => 'login'],
         );
 
