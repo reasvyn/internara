@@ -93,27 +93,19 @@ class MentorManager extends RecordManager
     }
 
     /**
-     * Fetch and transform records for the table.
+     * Define relationships to eager load.
      */
-    #[Computed]
-    public function records(): LengthAwarePaginator
+    protected function getWith(): array
     {
-        return $this->managedMentorQuery($this->filters)
-            ->with(['statuses'])
-            ->paginate($this->perPage)
-            ->through(function ($user) {
-                $mapped = $this->mapRecord($user);
+        return ['statuses'];
+    }
 
-                if (is_array($mapped)) {
-                    foreach ($mapped as $key => $value) {
-                        if (!$user->relationLoaded($key)) {
-                            $user->{$key} = $value;
-                        }
-                    }
-                }
-
-                return $user;
-            });
+    /**
+     * Apply mentor-specific query scoping.
+     */
+    protected function applyScoping(Builder $query): Builder
+    {
+        return $this->managedMentorQuery($this->filters);
     }
 
     public function reissueActivationCode(mixed $id): void

@@ -258,30 +258,24 @@ class InternshipRegistration extends RecordManager
     }
 
     /**
-     * Override records to apply eager loading specific to registrations.
+     * Define relationships to eager load.
      */
-    #[Computed]
-    public function records(): LengthAwarePaginator
+    protected function getWith(): array
     {
-        $sortByColumn = $this->sortBy['column'] ?? 'created_at';
-        $sortDir = $this->sortBy['direction'] ?? 'desc';
+        return [
+            'student:id,name,username',
+            'internship:id,title',
+            'placement:id,company_id',
+            'placement.company:id,name',
+        ];
+    }
 
-        return $this->service
-            ->query(
-                [
-                    'search' => $this->search,
-                    'sort_by' => $sortByColumn,
-                    'sort_dir' => $sortDir,
-                ],
-                ['id', 'student_id', 'internship_id', 'placement_id', 'status', 'created_at'],
-            )
-            ->with([
-                'student:id,name,username',
-                'internship:id,title',
-                'placement:id,company_id',
-                'placement.company:id,name',
-            ])
-            ->paginate($this->perPage);
+    /**
+     * Define specific columns for the query.
+     */
+    protected function getColumns(): array
+    {
+        return ['id', 'student_id', 'internship_id', 'placement_id', 'status', 'created_at'];
     }
 
     public function render()

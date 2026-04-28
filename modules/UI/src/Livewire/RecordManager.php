@@ -147,6 +147,30 @@ abstract class RecordManager extends Component
     }
 
     /**
+     * Define relationships to eager load for the primary record set.
+     */
+    protected function getWith(): array
+    {
+        return [];
+    }
+
+    /**
+     * Define specific columns to select for performance.
+     */
+    protected function getColumns(): array
+    {
+        return ['*'];
+    }
+
+    /**
+     * Apply module-specific query scoping or additional constraints.
+     */
+    protected function applyScoping(Builder $query): Builder
+    {
+        return $query;
+    }
+
+    /**
      * Orchestrates the final data set using Client-side search and sort logic
      * on top of the Server-side base query.
      */
@@ -159,9 +183,10 @@ abstract class RecordManager extends Component
             $this->service->withoutAuthorization();
         }
 
-        // 1. Get base query from Server (Service Layer)
-        // We only pass 'filters' (scoping), not UI-level search/sort.
-        $query = $this->service->query($this->filters);
+        // 1. Resolve base query with module hooks
+        $query = $this->service->query($this->filters, $this->getColumns());
+        $query = $this->applyScoping($query);
+        $query->with($this->getWith());
 
         // 2. Apply Client-side Search (Independent implementation)
         if ($this->search && !empty($this->searchable)) {

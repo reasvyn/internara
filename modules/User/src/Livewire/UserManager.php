@@ -75,6 +75,22 @@ class UserManager extends RecordManager
     }
 
     /**
+     * Define relationships to eager load.
+     */
+    protected function getWith(): array
+    {
+        return ['roles:id,name', 'profile', 'statuses'];
+    }
+
+    /**
+     * Apply user-specific query scoping.
+     */
+    protected function applyScoping(Builder $query): Builder
+    {
+        return $this->userQuery($this->filters);
+    }
+
+    /**
      * Transform raw user record for UI display.
      */
     protected function mapRecord(mixed $record): array
@@ -85,35 +101,11 @@ class UserManager extends RecordManager
             ? 'verified'
             : $record->latestStatus()?->name ?? User::STATUS_ACTIVE;
 
-        return array_merge($record->toArray(), [
+        return [
             'avatar_url' => $record->avatar_url,
             'role_labels' => $roleNames,
             'display_status' => $displayStatus,
-        ]);
-    }
-
-    /**
-     * Fetch and transform records for the table.
-     */
-    #[Computed]
-    public function records(): LengthAwarePaginator
-    {
-        return $this->userQuery($this->filters)
-            ->with(['roles:id,name', 'profile', 'statuses'])
-            ->paginate($this->perPage)
-            ->through(function ($user) {
-                $mapped = $this->mapRecord($user);
-
-                if (is_array($mapped)) {
-                    foreach ($mapped as $key => $value) {
-                        if (!$user->relationLoaded($key)) {
-                            $user->{$key} = $value;
-                        }
-                    }
-                }
-
-                return $user;
-            });
+        ];
     }
 
     /**

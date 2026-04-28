@@ -88,29 +88,33 @@ class StudentManager extends RecordManager
     }
 
     /**
+     * Define relationships to eager load.
+     */
+    protected function getWith(): array
+    {
+        return ['profile.department', 'statuses'];
+    }
+
+    /**
+     * Apply student-specific query scoping.
+     */
+    protected function applyScoping(Builder $query): Builder
+    {
+        return $this->managedStudentQuery($this->filters);
+    }
+
+    /**
      * Transform raw student record for UI display.
      */
     protected function mapRecord(mixed $record): array
     {
-        return array_merge($record->toArray(), [
+        return [
             'avatar_url' => $record->avatar_url,
             'registration_number' => $record->profile?->registration_number ?? '-',
             'department_name' => $record->profile?->department?->name ?? '-',
             'display_status' => $record->latestStatus()?->name ?? User::STATUS_ACTIVE,
             'activation_status' => $record->setup_required ? 'pending_claim' : 'claimed',
-        ]);
-    }
-
-    /**
-     * Fetch and transform records for the table.
-     */
-    #[Computed]
-    public function records(): LengthAwarePaginator
-    {
-        return $this->managedStudentQuery($this->filters)
-            ->with(['profile.department', 'statuses'])
-            ->paginate($this->perPage)
-            ->through(fn($user) => $this->mapRecord($user));
+        ];
     }
 
     public function reissueActivationCode(mixed $id): void

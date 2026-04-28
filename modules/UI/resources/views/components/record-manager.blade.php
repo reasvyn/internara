@@ -4,6 +4,8 @@
         selectedIds: $wire.entangle('selectedIds'),
         items: $wire.entangle('items'),
         
+        get hasItems() { return this.items.length > 0 },
+        
         get filteredCount() {
             if (!this.search) return this.items.length;
             let term = this.search.toLowerCase();
@@ -16,14 +18,10 @@
 
         applyLocalFilter() {
             let term = this.search.toLowerCase();
-            let visibleCount = 0;
             this.$el.querySelectorAll('tbody tr:not(.mary-table-empty):not(.mary-table-loading)').forEach(tr => {
                 let text = tr.innerText.toLowerCase();
-                let isMatch = !term || text.includes(term);
-                tr.style.display = isMatch ? '' : 'none';
-                if (isMatch) visibleCount++;
+                tr.style.display = !term || text.includes(term) ? '' : 'none';
             });
-            return visibleCount;
         }
     }"
     x-init=\"$watch('search', () => applyLocalFilter()); $watch('items', () => applyLocalFilter())\"
@@ -158,7 +156,7 @@
 
                 {{-- Instant Empty State Feedback (Client-side) --}}
                 <div 
-                    x-show="filteredCount === 0 && items.length > 0" 
+                    x-show="filteredCount === 0 && hasItems" 
                     x-cloak 
                     class="py-20 text-center"
                 >
