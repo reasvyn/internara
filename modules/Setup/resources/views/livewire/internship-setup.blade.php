@@ -1,4 +1,4 @@
-<x-setup::layouts.setup-wizard :step="5" :totalSteps="7">
+<x-setup::layouts.setup-wizard :step="5" :totalSteps="6">
     <x-slot:header>
         <x-setup::wizard-header 
             step="5"

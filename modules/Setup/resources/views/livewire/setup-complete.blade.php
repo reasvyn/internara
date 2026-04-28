@@ -6,10 +6,10 @@
         return this.dataVerified && this.securityAware && this.legalAgreed;
     }
 }">
-    <x-setup::layouts.setup-wizard :step="7" :totalSteps="7">
+    <x-setup::layouts.setup-wizard :step="6" :totalSteps="6">
         <x-slot:header>
             <x-setup::wizard-header 
-                step="7"
+                step="6"
                 :title="__('setup::wizard.complete.title')"
                 :description="__('setup::wizard.complete.description', ['app' => setting('app_name', 'Internara')])"
                 badgeText="Final"
