@@ -116,8 +116,7 @@ class SetupProcess
             AppSetupService::STEP_ACCOUNT => AppSetupService::STEP_SCHOOL,
             AppSetupService::STEP_DEPARTMENT => AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_INTERNSHIP => AppSetupService::STEP_DEPARTMENT,
-            AppSetupService::STEP_SYSTEM => AppSetupService::STEP_INTERNSHIP,
-            AppSetupService::STEP_COMPLETE => AppSetupService::STEP_SYSTEM,
+            AppSetupService::STEP_COMPLETE => AppSetupService::STEP_INTERNSHIP,
             default => throw new InvalidArgumentException("Unknown setup step: {$step}"),
         };
     }

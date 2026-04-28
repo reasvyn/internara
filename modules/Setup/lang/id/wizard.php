@@ -10,7 +10,6 @@ return [
         'account' => 'Administrator',
         'department' => 'Jurusan',
         'internship' => 'Magang',
-        'system' => 'Email',
         'complete' => 'Selesai',
     ],
     'status' => [
@@ -106,38 +105,11 @@ return [
         'description' =>
             'Setiap jurusan adalah jalur unik yang akan ditempuh siswa. Dengan mendefinisikan jurusan-jurusan ini, kita memudahkan penempatan magang yang sesuai dengan keahlian mereka. Masukkan jurusan-jurusan yang ada di sekolah Anda.',
     ],
-    'internship' => [
-        'title' => 'Atur Data PKL',
+'internship' => [
+        'title' => 'Siapkan Data Magang',
         'headline' => 'Menentukan Periode Magang.',
         'description' =>
             'Sekarang, mari kita tentukan periode atau tahun ajaran program magang yang akan dikelola. Ini akan menjadi \'wadah\' utama untuk semua aktivitas magang yang akan datang.',
-    ],
-    'system' => [
-        'title' => 'Pengaturan Sistem',
-        'headline' => 'Pastikan Jalur Komunikasi Terbuka.',
-        'description' =>
-            'Internara perlu mengirimkan notifikasi penting, laporan, dan konfirmasi akun melalui email. Konfigurasikan server SMTP Anda untuk memastikan setiap pesan sampai ke tujuannya.',
-        'description_extra' =>
-            'Anda dapat menggunakan penyedia layanan SMTP gratis atau yang disediakan oleh institusi Anda.',
-        'smtp_configuration' => 'Konfigurasi SMTP',
-        'smtp_configuration_desc' => 'Konfigurasikan layanan pengiriman email keluar Anda.',
-        'sender_information' => 'Informasi Pengirim',
-        'sender_information_desc' => 'Tentukan identitas email sistem yang dikirim keluar.',
-        'guidance_note' =>
-            'Gunakan layanan SMTP khusus seperti Mailgun, Resend, atau Amazon SES untuk pengiriman notifikasi magang yang andal.',
-        'test_connection' => 'Tes Koneksi',
-        'skip' => 'Lewati Dulu',
-        'smtp_connection_success' => 'Koneksi SMTP berhasil!',
-        'smtp_connection_failed' => 'Koneksi gagal: :message',
-        'fields' => [
-            'smtp_host' => 'SMTP Host',
-            'smtp_port' => 'SMTP Port',
-            'encryption' => 'Enkripsi',
-            'username' => 'Nama Pengguna',
-            'password' => 'Kata Sandi',
-            'from_email' => 'Email Pengirim',
-            'from_name' => 'Nama Pengirim',
-        ],
     ],
     'complete' => [
         'title' => 'Setup Selesai',
