@@ -65,7 +65,7 @@
                 </div>
             @endscope
 
-            @scope('cell_status', $internship)
+            @scope('cell_current_status', $internship)
                 <x-ui::badge 
                     :value="$internship->status_label" 
                     :variant="$internship->status_color" 

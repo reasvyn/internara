@@ -13,7 +13,6 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 use Throwable;
 
@@ -154,7 +153,7 @@ abstract class RecordManager extends Component
     #[Computed]
     public function records(): LengthAwarePaginator
     {
-        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = (bool) session('setup_authorized');
 
         if ($isSetupAuthorized) {
             $this->service->withoutAuthorization();
@@ -192,7 +191,23 @@ abstract class RecordManager extends Component
         // 4. Paginate and apply client-side mapping
         return $query
             ->paginate($this->perPage)
-            ->through(fn($item) => (object) $this->mapRecord($item));
+            ->through(function ($item) {
+                $mapped = $this->mapRecord($item);
+
+                // If mapping returns an array, we merge it into the model instance
+                // to preserve the class identity for Gate/Policy checks.
+                if (is_array($mapped)) {
+                    foreach ($mapped as $key => $value) {
+                        // We only set properties that don't collide with model relations
+                        // or essential attributes to avoid breaking the model.
+                        if (!$item->relationLoaded($key)) {
+                            $item->{$key} = $value;
+                        }
+                    }
+                }
+
+                return $item;
+            });
     }
 
     public function mount(): void
@@ -225,7 +240,7 @@ abstract class RecordManager extends Component
 
     public function can(string $action, mixed $target = null): bool
     {
-        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = (bool) session('setup_authorized');
         if ($isSetupAuthorized) {
             return true;
         }
@@ -290,7 +305,7 @@ abstract class RecordManager extends Component
             return;
         }
         $this->form->validate();
-        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = (bool) session('setup_authorized');
         try {
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();
@@ -325,7 +340,7 @@ abstract class RecordManager extends Component
         $id = $id ?: $this->recordId;
         $record = $this->service->find($id);
         if ($record) {
-            $isSetupAuthorized = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED);
+            $isSetupAuthorized = (bool) session('setup_authorized');
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();
             } else {
@@ -348,7 +363,7 @@ abstract class RecordManager extends Component
         if (empty($this->selectedIds)) {
             return;
         }
-        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = (bool) session('setup_authorized');
         try {
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();

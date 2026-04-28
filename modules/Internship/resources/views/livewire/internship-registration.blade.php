@@ -82,7 +82,7 @@
                 ['key' => 'placement.company_name', 'label' => __('internship::ui.placement')],
                 ['key' => 'teacher.name', 'label' => __('internship::ui.teacher')],
                 ['key' => 'mentor.name', 'label' => __('internship::ui.mentor')],
-                ['key' => 'status', 'label' => __('internship::ui.status')],
+                ['key' => 'current_status', 'label' => __('internship::ui.status')],
                 ['key' => 'actions', 'label' => __('ui::common.actions')],
             ]" :rows="$records" wire:model="selectedIds" selectable with-pagination>
                 @scope('cell_requirements', $registration)
@@ -100,7 +100,7 @@
                     </div>
                 @endscope
 
-                @scope('cell_status', $registration)
+                @scope('cell_current_status', $registration)
                     <x-ui::badge :label="$registration->getStatusLabel()" :class="'badge-' . $registration->getStatusColor()" />
                 @endscope
 

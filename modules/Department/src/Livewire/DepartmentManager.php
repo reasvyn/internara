@@ -8,7 +8,6 @@ use Illuminate\View\View;
 use Modules\Department\Livewire\Forms\DepartmentForm;
 use Modules\Department\Models\Department;
 use Modules\Department\Services\Contracts\DepartmentService;
-use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -47,7 +46,7 @@ class DepartmentManager extends RecordManager
             'columns' => 'name, description',
         ]);
 
-        $isSetupPhase = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED) || is_testing();
+        $isSetupPhase = (bool) session('setup_authorized') || is_testing();
 
         if (!$isSetupPhase) {
             $this->viewPermission = 'department.view';

@@ -12,7 +12,6 @@ use Modules\Internship\Livewire\Forms\InternshipForm;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
 use Modules\School\Services\Contracts\SchoolService;
-use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -47,7 +46,7 @@ class InternshipManager extends RecordManager
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
         $isSetupAuthorized =
-            (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED) || is_testing();
+            (bool) session('setup_authorized') || is_testing();
 
         if (!$isSetupAuthorized) {
             $this->viewPermission = 'internship.view';
@@ -74,7 +73,7 @@ class InternshipManager extends RecordManager
     {
         return [
             ['key' => 'title', 'label' => __('internship::ui.title'), 'sortable' => true],
-            ['key' => 'status', 'label' => __('internship::ui.status')],
+            ['key' => 'current_status', 'label' => __('internship::ui.status')],
             [
                 'key' => 'academic_year',
                 'label' => __('internship::ui.academic_year'),

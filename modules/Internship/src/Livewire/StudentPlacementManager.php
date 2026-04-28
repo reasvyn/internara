@@ -96,7 +96,7 @@ class StudentPlacementManager extends RecordManager
                 'sortable' => false,
             ],
             ['key' => 'teacher_name', 'label' => __('internship::ui.teacher'), 'sortable' => false],
-            ['key' => 'status', 'label' => __('internship::ui.status'), 'sortable' => true],
+            ['key' => 'current_status', 'label' => __('internship::ui.status'), 'sortable' => true, 'sort_by' => 'status'],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
@@ -127,7 +127,8 @@ class StudentPlacementManager extends RecordManager
             'placement_company' => $record->placement?->company?->name ?? '-',
             'proposed_company_name' => $record->proposed_company_name,
             'teacher_name' => $record->teacher?->name ?? '-',
-            'status' => $record->status,
+            'current_status' => $record->getStatusLabel(),
+            'status_color' => $record->getStatusColor(),
             'readiness' => $record->getRequirementCompletionPercentage(),
         ];
     }

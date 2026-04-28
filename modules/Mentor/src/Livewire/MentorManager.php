@@ -101,7 +101,19 @@ class MentorManager extends RecordManager
         return $this->managedMentorQuery($this->filters)
             ->with(['statuses'])
             ->paginate($this->perPage)
-            ->through(fn($user) => $this->mapRecord($user));
+            ->through(function ($user) {
+                $mapped = $this->mapRecord($user);
+
+                if (is_array($mapped)) {
+                    foreach ($mapped as $key => $value) {
+                        if (!$user->relationLoaded($key)) {
+                            $user->{$key} = $value;
+                        }
+                    }
+                }
+
+                return $user;
+            });
     }
 
     public function reissueActivationCode(mixed $id): void
