@@ -17,11 +17,11 @@
         </x-ui::card>
     </div>
 
-    <x-ui::card :title="__('mentor::ui.dashboard.assigned_interns')">
         <x-ui::table :headers="[
             ['key' => 'student.name', 'label' => __('mentor::ui.dashboard.table.student_name')],
             ['key' => 'internship.title', 'label' => __('mentor::ui.dashboard.table.program')],
             ['key' => 'status', 'label' => __('mentor::ui.dashboard.table.status')],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ]" :rows="$this->students">
             @scope('cell_status', $registration)
                 <x-ui::badge 
@@ -30,7 +30,7 @@
                 />
             @endscope
             
-            @scope('actions', $registration)
+            @scope('cell_actions', $registration)
                 <div class="flex gap-1">
                     <x-ui::button 
                         :label="__('mentor::ui.dashboard.actions.mentoring')" 

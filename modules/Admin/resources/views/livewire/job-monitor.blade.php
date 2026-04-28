@@ -43,7 +43,7 @@
                             {{ Str::limit($job->exception, 100) }}
                         </div>
                     @endscope
-                    @scope('actions', $job)
+                    @scope('cell_actions', $job)
                         <div class="flex gap-2">
                             <x-ui::button icon="tabler.refresh" class="btn-ghost btn-sm text-primary" wire:click="retry('{{ $job->uuid }}')" tooltip="{{ __('Retry') }}" />
                             <x-ui::button icon="tabler.trash" class="btn-ghost btn-sm text-error" wire:click="forget('{{ $job->uuid }}')" tooltip="{{ __('Delete') }}" />

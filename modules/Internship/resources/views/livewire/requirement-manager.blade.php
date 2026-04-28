@@ -74,7 +74,7 @@
 
             {{-- Row Actions --}}
             <x-slot:rowActions>
-                @scope('actions', $requirement)
+                @scope('cell_actions', $requirement)
                     <div class="flex items-center justify-end gap-1 px-2">
                         @if($this->can('update', $requirement))
                             <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $requirement->id }}')" tooltip="{{ __('ui::common.edit') }}" />

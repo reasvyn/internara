@@ -26,7 +26,7 @@
                     @endif
                 @endscope
 
-                @scope('actions', $assignment)
+                @scope('cell_actions', $assignment)
                     <div class="flex justify-end gap-2">
                         @if($this->can('update', $assignment->id))
                             <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $assignment->id }}')" class="text-info" tooltip="{{ __('assignment::ui.edit_assignment') }}" />

@@ -3,9 +3,10 @@
         search: $wire.entangle('search', true),
         selectedIds: $wire.entangle('selectedIds'),
         items: $wire.entangle('items'),
+        totalCount: @js($this->records->total()),
         
         get filteredCount() {
-            if (!this.search) return this.items.length;
+            if (!this.search) return this.totalCount;
             let term = this.search.toLowerCase();
             return this.items.filter(item => 
                 Object.values(item).some(val => 
@@ -16,13 +17,17 @@
 
         applyLocalFilter() {
             let term = this.search.toLowerCase();
-            this.$el.querySelectorAll('tbody tr:not(.mary-table-empty)').forEach(tr => {
+            let visibleCount = 0;
+            this.$el.querySelectorAll('tbody tr:not(.mary-table-empty):not(.mary-table-loading)').forEach(tr => {
                 let text = tr.innerText.toLowerCase();
-                tr.style.display = !term || text.includes(term) ? '' : 'none';
+                let isMatch = !term || text.includes(term);
+                tr.style.display = isMatch ? '' : 'none';
+                if (isMatch) visibleCount++;
             });
+            return visibleCount;
         }
     }"
-    x-init="$watch('search', () => applyLocalFilter())"
+    x-init=\"$watch('search', () => applyLocalFilter()); $watch('items', () => applyLocalFilter())\"
 >
     <x-ui::header 
         wire:key="{{ $this->getEventPrefix() }}-header"
@@ -138,7 +143,7 @@
                         @if(isset($rowActions))
                             {{ $rowActions }}
                         @else
-                            @scope('actions', $record)
+                            @scope('cell_actions', $record)
                                 <div class="flex items-center justify-end gap-1 px-2">
                                     @if($this->can('update', $record))
                                         <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info btn-circle btn-xs hover:bg-info/10 transition-colors" wire:click="edit('{{ $record->id }}')" tooltip="{{ __('ui::common.edit') }}" />
@@ -154,9 +159,7 @@
 
                 {{-- Instant Empty State Feedback (Client-side) --}}
                 <div 
-                    x-show="filteredCount === 0" 
-                    wire:loading.remove 
-                    wire:target="search"
+                    x-show="filteredCount === 0 && totalCount > 0" 
                     x-cloak 
                     class="py-20 text-center"
                 >
@@ -166,6 +169,17 @@
                     </div>
                     <p class="text-[10px] font-black uppercase tracking-widest opacity-30">{{ __('ui::common.no_results') }}</p>
                 </div>
+
+                {{-- Server-side Empty State (When table is actually empty) --}}
+                @if($this->records->isEmpty())
+                    <div wire:loading.remove wire:target="search" class="py-20 text-center">
+                        <div class="relative inline-flex mb-6">
+                            <div class="absolute inset-0 bg-base-content/5 blur-3xl rounded-full"></div>
+                            <x-ui::icon name="tabler.database-off" class="relative size-16 text-base-content/10" />
+                        </div>
+                        <p class="text-[10px] font-black uppercase tracking-widest opacity-30">{{ __('ui::common.no_records') }}</p>
+                    </div>
+                @endif
             </div>
         </x-ui::card>
     </div>

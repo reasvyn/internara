@@ -97,7 +97,7 @@
 
         {{-- Row Actions --}}
         <x-slot:rowActions>
-            @scope('actions', $company)
+            @scope('cell_actions', $company)
                 <div class="flex items-center justify-end gap-1 px-2">
                     @if($this->can('update', $company))
                         <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $company->id }}')" tooltip="{{ __('ui::common.edit') }}" />

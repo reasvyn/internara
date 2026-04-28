@@ -75,7 +75,7 @@
                         />
                     @endscope
 
-                    @scope('actions', $entry)
+                    @scope('cell_actions', $entry)
                         <div class="flex gap-1">
                             <x-ui::button icon="tabler.eye" variant="tertiary" class="text-info btn-sm" tooltip="{{ __('journal::ui.index.actions.view_detail') }}" wire:click="showDetail('{{ $entry->id }}')" />
                             

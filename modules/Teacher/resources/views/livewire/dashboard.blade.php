@@ -17,12 +17,12 @@
         </x-ui::card>
     </div>
 
-    <x-ui::card :title="__('teacher::ui.dashboard.assigned_students')">
         <x-ui::table :headers="[
             ['key' => 'student.name', 'label' => __('teacher::ui.dashboard.table.student_name')],
             ['key' => 'placement.company_name', 'label' => __('teacher::ui.dashboard.table.placement')],
             ['key' => 'status', 'label' => __('teacher::ui.dashboard.table.status')],
             ['key' => 'readiness', 'label' => __('teacher::ui.dashboard.table.readiness'), 'sortable' => false],
+            ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ]" :rows="$this->students">
             @scope('cell_status', $registration)
                 <x-ui::badge 
@@ -42,7 +42,7 @@
                 @endif
             @endscope
             
-            @scope('actions', $registration)
+            @scope('cell_actions', $registration)
                 <div class="flex gap-1">
                     <x-ui::button 
                         :label="__('teacher::ui.dashboard.actions.supervise')" 

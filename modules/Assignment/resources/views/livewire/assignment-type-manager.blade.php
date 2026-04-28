@@ -7,7 +7,7 @@
                 :rows="$this->records" 
                 with-pagination
             >
-                @scope('actions', $type)
+                @scope('cell_actions', $type)
                     <div class="flex justify-end gap-2">
                         @if($this->can('update', $type->id))
                             <x-ui::button icon="tabler.edit" variant="tertiary" wire:click="edit('{{ $type->id }}')" class="text-info" tooltip="{{ __('assignment::ui.edit_type') }}" />

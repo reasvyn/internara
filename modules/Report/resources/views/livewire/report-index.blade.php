@@ -62,7 +62,7 @@
                             <span class="text-xs opacity-70">{{ $report->created_at->translatedFormat('d M Y H:i') }}</span>
                         @endscope
 
-                        @scope('actions', $report)
+                        @scope('cell_actions', $report)
                             <x-ui::button 
                                 icon="tabler.download" 
                                 variant="tertiary" 

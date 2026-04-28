@@ -31,7 +31,7 @@
                     @endif
                 @endscope
 
-                @scope('actions', $reg)
+                @scope('cell_actions', $reg)
                     <div class="flex gap-2">
                         @php $readiness = $this->getReadiness($reg->id); @endphp
                         @if($readiness['is_ready'])

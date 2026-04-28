@@ -97,7 +97,7 @@
                         @endif
                     @endscope
 
-                    @scope('actions', $row)
+                    @scope('cell_actions', $row)
                         <div class="flex gap-1 justify-end">
                             <x-ui::button icon="tabler.certificate" variant="ghost" class="btn-xs text-primary/40 hover:text-primary hover:bg-primary/10" tooltip="Certificate" link="{{ route('assessment.certificate', $row['id']) }}" />
                             <x-ui::button icon="tabler.file-description" variant="ghost" class="btn-xs text-primary/40 hover:text-primary hover:bg-primary/10" tooltip="Transcript" link="{{ route('assessment.transcript', $row['id']) }}" />
@@ -126,7 +126,7 @@
                             class="badge-sm font-black text-[9px] uppercase tracking-tighter" 
                         />
                     @endscope
-                    @scope('actions', $item)
+                    @scope('cell_actions', $item)
                         <div class="flex justify-end">
                             <x-ui::button 
                                 :label="__('journal::ui.view_journal')" 

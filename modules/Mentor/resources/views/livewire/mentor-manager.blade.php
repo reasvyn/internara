@@ -60,7 +60,7 @@
                 />
             @endscope
 
-            @scope('actions', $user)
+            @scope('cell_actions', $user)
                 <div class="flex justify-end gap-2">
                     <x-ui::button
                         icon="tabler.key"

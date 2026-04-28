@@ -50,7 +50,7 @@
                 </div>
             @endscope
 
-            @scope('actions', $schedule)
+            @scope('cell_actions', $schedule)
                 <div class="flex items-center gap-2">
                     <x-ui::button 
                         icon="tabler.edit" 

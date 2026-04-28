@@ -65,7 +65,7 @@
 
         {{-- Row Actions --}}
         <x-slot:rowActions>
-            @scope('actions', $placement)
+            @scope('cell_actions', $placement)
                 <div class="flex items-center justify-end gap-1 px-2">
                     @if($this->can('update', $placement))
                         <x-ui::button icon="tabler.edit" variant="tertiary" class="text-info/40 hover:text-info btn-xs" wire:click="edit('{{ $placement->id }}')" tooltip="{{ __('ui::common.edit') }}" />

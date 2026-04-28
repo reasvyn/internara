@@ -76,7 +76,7 @@
 
         {{-- 3. Customized Row Actions --}}
         <x-slot:rowActions>
-            @scope('actions', $internship)
+            @scope('cell_actions', $internship)
                 <div class="flex items-center justify-end gap-1">
                     {{-- Status Transition Menu --}}
                     <x-ui::dropdown icon="tabler.settings-automation" variant="tertiary" class="btn-xs text-primary/40 hover:text-primary" right>
