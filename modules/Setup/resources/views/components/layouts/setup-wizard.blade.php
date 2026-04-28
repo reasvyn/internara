@@ -2,7 +2,7 @@
     'header' => null,
     'content' => null,
     'step' => 1,
-    'totalSteps' => 7,
+    'totalSteps' => 6,
 ])
 
 @php
@@ -12,8 +12,7 @@ $steps = [
     3 => ['key' => 'account', 'label' => __('setup::wizard.step_labels.account'), 'icon' => 'tabler-shield-check'],
     4 => ['key' => 'department', 'label' => __('setup::wizard.step_labels.department'), 'icon' => 'tabler-users'],
     5 => ['key' => 'internship', 'label' => __('setup::wizard.step_labels.internship'), 'icon' => 'tabler-calendar'],
-    6 => ['key' => 'system', 'label' => __('setup::wizard.step_labels.system'), 'icon' => 'tabler-mail'],
-    7 => ['key' => 'complete', 'label' => __('setup::wizard.step_labels.complete'), 'icon' => 'tabler-check'],
+    6 => ['key' => 'complete', 'label' => __('setup::wizard.step_labels.complete'), 'icon' => 'tabler-check'],
 ];
 @endphp
 
