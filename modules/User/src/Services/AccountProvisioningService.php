@@ -130,7 +130,7 @@ class AccountProvisioningService implements Contract
             if ($user->getStatus()?->value === Status::PENDING->value
                 || $user->latestStatus() === null
             ) {
-                $user->setStatus(Status::ACTIVE->value);
+                $user->setStatus(Status::ACTIVATED->value);
             }
         });
     }
