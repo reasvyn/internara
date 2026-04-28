@@ -34,7 +34,7 @@ class SchoolSetup extends Component
         $this->initWizardStepProps(
             currentStep: AppSetupService::STEP_SCHOOL,
             nextStep: AppSetupService::STEP_ACCOUNT,
-            prevStep: '',
+            prevStep: AppSetupService::STEP_WELCOME,
             extra: ['req_record' => AppSetupService::RECORD_SCHOOL],
         );
 
