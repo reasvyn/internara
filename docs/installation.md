@@ -366,7 +366,12 @@ configuration via a secure web interface.
 
 ### Wizard Steps (Setup Module)
 
-#### 1️⃣ School/Institution Setup
+#### 1️⃣ Welcome
+
+- **Introduction**: Overview of the setup process.
+- **Actions**: Click "Mulai Inisialisasi" to begin.
+
+#### 2️⃣ School/Institution Setup
 
 - **School Name**: Full name of educational institution
 - **School Type**: Type of institution (SMA, SMK, University, etc.)
@@ -376,31 +381,24 @@ configuration via a secure web interface.
 - **Logo**: Upload school logo (optional)
 - **Actions**: Fill form, upload logo, click "Next"
 
-#### 2️⃣ Administrator Account
+#### 3️⃣ Administrator Account
 
 - **Email**: SuperAdmin account email
 - **Password**: Strong password (min 8 chars, mixed case, numbers)
 - **Confirm Password**: Verify password
 - **Actions**: Fill form, click "Create Administrator"
 
-#### 3️⃣ Department Setup
+#### 4️⃣ Department Setup
 
 - **Create Departments**: Add organizational units (e.g., "Accounting", "Information Technology").
 - **Actions**: Add departments, click "Next"
 
-#### 4️⃣ Internship Configuration
+#### 5️⃣ Internship Configuration
 
 - **Program Name**: Primary internship program name.
 - **Duration**: Default internship length.
 - **Grading Scale**: Assessment scale configuration.
 - **Actions**: Configure program, click "Next"
-
-#### 5️⃣ System & SMTP Configuration
-
-- **SMTP Settings**: Configure outgoing mail server (Host, Port, User, Pass).
-- **Encryption**: TLS/SSL selection.
-- **Test Connection**: Perform real-time SMTP handshake verification.
-- **Actions**: Configure mail, test connection, click "Next"
 
 #### 6️⃣ Completion
 
