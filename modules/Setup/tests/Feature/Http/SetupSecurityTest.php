@@ -58,12 +58,10 @@ test('it redirects setup routes to setup complete when only finalization remains
     foreach (
         [
             AppSetupService::STEP_WELCOME,
-            AppSetupService::STEP_ENVIRONMENT,
             AppSetupService::STEP_SCHOOL,
             AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_DEPARTMENT,
             AppSetupService::STEP_INTERNSHIP,
-            AppSetupService::STEP_SYSTEM,
         ]
         as $step
     ) {
@@ -84,12 +82,10 @@ test('it does not redirect setup complete to avoid redirect loops', function () 
     foreach (
         [
             AppSetupService::STEP_WELCOME,
-            AppSetupService::STEP_ENVIRONMENT,
             AppSetupService::STEP_SCHOOL,
             AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_DEPARTMENT,
             AppSetupService::STEP_INTERNSHIP,
-            AppSetupService::STEP_SYSTEM,
         ]
         as $step
     ) {

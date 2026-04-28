@@ -32,7 +32,7 @@ class SetupWelcome extends Component
     {
         $this->initWizardStepProps(
             currentStep: AppSetupService::STEP_WELCOME,
-            nextStep: AppSetupService::STEP_ENVIRONMENT,
+            nextStep: AppSetupService::STEP_SCHOOL,
         );
 
         // Security gate: only uninstalled apps can access welcome

@@ -21,7 +21,6 @@ use Modules\Setup\Livewire\InternshipSetup;
 use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
-use Modules\Setup\Livewire\SystemSetup;
 use Modules\Setup\Services\Contracts\InstallationAuditor;
 
 uses(LazilyRefreshDatabase::class);
@@ -116,35 +115,21 @@ describe('Setup Wizard Transitions', function () {
         $settings = app(SettingService::class);
         $settings->setValue('setup_step_department', true);
 
-        // 6. Internship -> System
+        // 5. Internship -> Complete (no system step)
         Internship::factory()->create();
         $this->get(route('setup.internship', ['token' => 'test-token']));
         Livewire::test(InternshipSetup::class)
             ->call('nextStep')
-            ->assertRedirect(route('setup.system'));
+            ->assertRedirect(route('setup.complete'));
 
         expect($settings->getValue('setup_step_internship', skipCache: true))->toBeTrue();
     });
 
-    test('it completes setup_step_system successfully', function () {
+    test('it completes setup_step_complete successfully', function () {
         $settings = app(SettingService::class);
         $settings->setValue('setup_step_internship', true);
 
-        // 7. System -> Complete
-        $this->get(route('setup.system', ['token' => 'test-token']));
-
-        Livewire::test(SystemSetup::class)
-            ->call('nextStep')
-            ->assertRedirect(route('setup.complete'));
-
-        expect($settings->getValue('setup_step_system', skipCache: true))->toBeTrue();
-    });
-
-    test('it completes setup_step_complete successfully', function () {
-        $settings = app(SettingService::class);
-        $settings->setValue('setup_step_system', true);
-
-        // 8. Complete -> Dashboard (Login)
+        // 6. Complete -> Dashboard (Login)
         if (!School::exists()) {
             School::factory()->create();
         }

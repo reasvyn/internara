@@ -32,7 +32,7 @@ class InternshipSetup extends Component
     {
         $this->initWizardStepProps(
             currentStep: AppSetupService::STEP_INTERNSHIP,
-            nextStep: AppSetupService::STEP_SYSTEM,
+            nextStep: AppSetupService::STEP_COMPLETE,
             prevStep: AppSetupService::STEP_DEPARTMENT,
             extra: ['req_record' => AppSetupService::RECORD_INTERNSHIP],
         );

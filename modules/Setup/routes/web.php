@@ -10,7 +10,6 @@ use Modules\Setup\Livewire\InternshipSetup;
 use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
-use Modules\Setup\Livewire\SystemSetup;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +29,6 @@ Route::prefix('setup')
         Route::get('/welcome', SetupWelcome::class)->name('setup.welcome');
         Route::get('/school', SchoolSetup::class)->name('setup.school');
         Route::get('/account', AccountSetup::class)->name('setup.account');
-        Route::get('/system', SystemSetup::class)->name('setup.system');
         Route::get('/department', DepartmentSetup::class)->name('setup.department');
         Route::get('/internship', InternshipSetup::class)->name('setup.internship');
         Route::get('/complete', SetupComplete::class)->name('setup.complete');

@@ -43,7 +43,6 @@ class AppSetupService extends BaseService implements Contract
             self::STEP_ACCOUNT,
             self::STEP_DEPARTMENT,
             self::STEP_INTERNSHIP,
-            self::STEP_SYSTEM,
             self::STEP_COMPLETE,
         ];
 
@@ -151,18 +150,6 @@ class AppSetupService extends BaseService implements Contract
             return true;
         }) ?:
             throw new AppException(userMessage: 'setup::exceptions.concurrency_lock', code: 423);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function saveSystemSettings(array $settings): bool
-    {
-        Gate::authorize('saveSettings', self::class);
-
-        $this->settingService->setValue($settings);
-
-        return true;
     }
 
     /**

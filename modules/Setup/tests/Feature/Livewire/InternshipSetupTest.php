@@ -34,17 +34,13 @@ describe('InternshipSetup Component', function () {
             ->assertSee(__('setup::wizard.internship.headline'));
     });
 
-    test('it proceeds to system setup step on next action', function () {
-        app(SettingService::class)->setValue('setup_step_department', true);
-
-        // Required record 'internship' must exist
+test('it proceeds to complete setup step on next action', function () {
         Internship::factory()->create();
 
         $this->get(route('setup.internship', ['token' => 'test-token']));
-
         Livewire::test(InternshipSetup::class)
             ->call('nextStep')
-            ->assertRedirect(route('setup.system'));
+            ->assertRedirect(route('setup.complete'));
     });
 
     test('it enforces setup sequence access control by redirecting', function () {

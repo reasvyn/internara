@@ -17,8 +17,6 @@ interface AppSetupService
      */
     public const STEP_WELCOME = 'welcome';
 
-    public const STEP_ENVIRONMENT = 'environment';
-
     public const STEP_SCHOOL = 'school';
 
     public const STEP_ACCOUNT = 'account';
@@ -26,8 +24,6 @@ interface AppSetupService
     public const STEP_DEPARTMENT = 'department';
 
     public const STEP_INTERNSHIP = 'internship';
-
-    public const STEP_SYSTEM = 'system';
 
     public const STEP_COMPLETE = 'complete';
 
@@ -86,11 +82,6 @@ interface AppSetupService
      * Performs a specific setup step's business logic.
      */
     public function performSetupStep(string $step, ?string $reqRecord = null): bool;
-
-    /**
-     * Saves the system and SMTP settings provided by the user.
-     */
-    public function saveSystemSettings(array $settings): bool;
 
     /**
      * Finalizes the current setup step by persisting its completion state.

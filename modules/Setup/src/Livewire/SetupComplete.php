@@ -48,7 +48,7 @@ class SetupComplete extends Component
         $this->initWizardStepProps(
             currentStep: AppSetupService::STEP_COMPLETE,
             nextStep: '',
-            prevStep: AppSetupService::STEP_SYSTEM,
+            prevStep: AppSetupService::STEP_INTERNSHIP,
             extra: ['landing_route' => 'login'],
         );
 
