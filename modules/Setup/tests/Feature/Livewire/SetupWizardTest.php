@@ -95,7 +95,7 @@ describe('Setup Wizard Transitions', function () {
         $settings->setValue('setup_step_school', true);
 
         // 4. Account -> Department
-        $superAdmin = app(SuperAdminService::class)->create([
+        app(SuperAdminService::class)->create([
             'name' => 'Admin Test',
             'username' => 'admin.test',
             'email' => 'admin@internara.test',
@@ -104,7 +104,7 @@ describe('Setup Wizard Transitions', function () {
         $this->get(route('setup.account', ['token' => 'test-token']));
 
         Livewire::test(AccountSetup::class)
-            ->dispatch('super_admin_registered')
+            ->call('nextStep')
             ->assertRedirect(route('setup.department'));
 
         expect($settings->getValue('setup_step_account', skipCache: true))->toBeTrue();
