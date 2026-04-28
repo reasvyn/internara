@@ -56,7 +56,8 @@
                             icon="tabler.layers-intersect" 
                             variant="secondary"
                             class="btn-sm sm:btn-md"
-                            :label="window.innerWidth > 640 ? __('ui::common.bulk_actions') : null"
+                            :label="__('ui::common.bulk_actions')"
+                            label-class="hidden sm:inline"
                         >
                             {{ $bulkActions ?? '' }}
                             <x-ui::menu-item 
