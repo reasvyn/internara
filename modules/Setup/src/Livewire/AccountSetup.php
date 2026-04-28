@@ -51,8 +51,6 @@ class AccountSetup extends Component
     public function handleSuperAdminRegistered(): void
     {
         try {
-            $this->validate([]);
-
             $this->nextStep();
         } catch (\Exception $e) {
             report($e);

@@ -48,8 +48,6 @@ class SchoolSetup extends Component
     public function handleSchoolSaved(): void
     {
         try {
-            $this->validate([]);
-
             $this->nextStep();
         } catch (\Exception $e) {
             report($e);

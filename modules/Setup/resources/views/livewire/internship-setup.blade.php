@@ -16,7 +16,7 @@
 
     <x-slot:footer>
         <x-setup::action-footer 
-            :isRecordExists="$this->isRecordExists"
+            :canContinue="$this->canContinue"
         />
     </x-slot:footer>
 </x-setup::layouts.setup-wizard>

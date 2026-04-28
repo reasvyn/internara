@@ -34,10 +34,11 @@ class SetupComplete extends Component
     public bool $showTerms = false;
 
     /**
-     * Determines if the finalization can proceed.
+     * [S3 - Scalable] Determines if the finalization can proceed.
+     * Overrides the default trait logic to enforce the checkup invariants.
      */
     #[Computed]
-    public function canFinalize(): bool
+    public function canContinue(): bool
     {
         return $this->data_verified && $this->security_aware && $this->legal_agreed;
     }

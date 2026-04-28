@@ -1,11 +1,11 @@
 @props([
     'canContinue' => true,
+    'alpineContinue' => null,
     'showBack' => true,
     'showSkip' => false,
     'backLabel' => null,
     'continueLabel' => null,
     'skipLabel' => null,
-    'isRecordExists' => true,
     'loading' => false,
     'icon' => null,
     'iconPosition' => null,
@@ -15,7 +15,6 @@
 $backLabel = $backLabel ?? __('setup::wizard.common.back');
 $continueLabel = $continueLabel ?? __('setup::wizard.common.continue');
 $skipLabel = $skipLabel ?? __('setup::wizard.common.skip');
-$canContinue = $isRecordExists;
 @endphp
 
 <div class="flex items-center justify-between gap-3">
@@ -45,10 +44,12 @@ $canContinue = $isRecordExists;
             class="btn-md"
             :label="$continueLabel"
             wire:click="nextStep"
-            x-bind:disabled="!$canContinue"
+            :disabled="!$canContinue"
+            :attributes="$alpineContinue ? $attributes->merge(['x-bind:disabled' => '!('.$alpineContinue.')']) : $attributes"
             :spinner="$loading"
             :icon="$icon"
             :iconPosition="$iconPosition"
+            wire:key="btn-next-step"
         />
     </div>
 </div>

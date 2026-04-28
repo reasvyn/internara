@@ -16,10 +16,10 @@ $steps = [
 ];
 @endphp
 
-<div class="min-h-screen flex flex-col bg-base-100 dark:bg-base-300">
+<div class="flex-1 flex flex-col bg-base-100 dark:bg-base-300">
     <!-- Progress Bar with Step Navigation -->
-    <div class="sticky top-0 z-50 bg-base-100/80 dark:bg-base-300/80 backdrop-blur-md border-b border-base-200/50 dark:border-base-200/20">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <div class="sticky top-16 z-30 bg-base-100/80 dark:bg-base-300/80 backdrop-blur-md border-b border-base-200/50 dark:border-base-200/20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div class="flex items-center justify-between gap-4">
                 <span class="text-xs font-medium text-base-content/50 dark:text-base-content/40">
                     {{ __('setup::wizard.steps', ['current' => $step, 'total' => $totalSteps]) }}
@@ -70,7 +70,7 @@ $steps = [
 
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col">
-        <div class="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div class="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 md:py-12">
             <!-- Header -->
             <header class="mb-8 md:mb-10">
                 {{ $header }}
@@ -88,7 +88,7 @@ $steps = [
     <!-- Footer Actions -->
     @isset($footer)
 	    <div class="sticky bottom-0 bg-base-100/80 dark:bg-base-300/80 backdrop-blur-md border-t border-base-200/50 dark:border-base-200/20">
-	        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+	        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 	            {{ $footer }}
 	        </div>
 	    </div>

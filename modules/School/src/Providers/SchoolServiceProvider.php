@@ -71,7 +71,7 @@ class SchoolServiceProvider extends ServiceProvider
     protected function viewSlots(): array
     {
         return [
-            'school-manager' => 'livewire:school::school-manager',
+            'school-form' => 'livewire:school::school-manager',
         ];
     }
 }

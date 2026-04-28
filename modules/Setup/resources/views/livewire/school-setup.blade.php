@@ -16,7 +16,7 @@
 
     <x-slot:footer>
         <x-setup::action-footer 
-            :isRecordExists="$this->isRecordExists"
+            :canContinue="$this->canContinue"
             :continueLabel="__('setup::wizard.common.save_continue')"
         />
     </x-slot:footer>

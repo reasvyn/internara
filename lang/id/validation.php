@@ -161,4 +161,6 @@ return [
     'uppercase' => ':Attribute harus berupa huruf kapital.',
     'url' => ':Attribute harus berupa URL yang valid.',
     'uuid' => ':Attribute harus merupakan UUID yang valid.',
+
+    'attributes' => [],
 ];

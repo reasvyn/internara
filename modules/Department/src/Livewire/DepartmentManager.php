@@ -47,7 +47,7 @@ class DepartmentManager extends RecordManager
             'columns' => 'name, description',
         ]);
 
-        $isSetupPhase = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true || is_testing();
+        $isSetupPhase = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED) || is_testing();
 
         if (!$isSetupPhase) {
             $this->viewPermission = 'department.view';

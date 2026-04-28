@@ -64,7 +64,7 @@ class SchoolManager extends Component
     public function save(): void
     {
         // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
-        $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+        $isSetupAuthorized = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED);
 
         if (!$isSetupAuthorized) {
             $this->authorize('school.manage');

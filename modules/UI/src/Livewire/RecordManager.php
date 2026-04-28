@@ -325,7 +325,7 @@ abstract class RecordManager extends Component
         $id = $id ?: $this->recordId;
         $record = $this->service->find($id);
         if ($record) {
-            $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+            $isSetupAuthorized = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED);
             if ($isSetupAuthorized) {
                 $this->service->withoutAuthorization();
             } else {

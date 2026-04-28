@@ -33,6 +33,7 @@ return [
         'continue' => 'Continue',
         'save_continue' => 'Save & Continue',
         'finish' => 'Finish',
+        'skip' => 'Skip',
         'later_at_settings' => 'You can change these settings later in the settings page.',
         'step_success' => '[:step] completed successfully.',
         'admin_account' => 'Admin',

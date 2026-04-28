@@ -2,7 +2,7 @@
     dataVerified: @entangle('data_verified'),
     securityAware: @entangle('security_aware'),
     legalAgreed: @entangle('legal_agreed'),
-    get canFinalize() {
+    get canComplete() {
         return this.dataVerified && this.securityAware && this.legalAgreed;
     }
 }">
@@ -69,11 +69,12 @@
         </x-slot:content>
 
         <x-slot:footer>
-        <x-setup::action-footer 
-            :canContinue="$this->canFinalize()"
-            :continueLabel="__('setup::wizard.complete.cta')"
-        />
-    </x-slot:footer>
+            <x-setup::action-footer 
+                :canContinue="$this->canContinue"
+                alpineContinue="canComplete"
+                :continueLabel="__('setup::wizard.complete.cta')"
+            />
+        </x-slot:footer>
     </x-setup::layouts.setup-wizard>
 
     <!-- Legal Modals -->

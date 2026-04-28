@@ -47,7 +47,7 @@ class InternshipManager extends RecordManager
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
         $isSetupAuthorized =
-            session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true || is_testing();
+            (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED) || is_testing();
 
         if (!$isSetupAuthorized) {
             $this->viewPermission = 'internship.view';

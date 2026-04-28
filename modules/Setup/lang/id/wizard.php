@@ -33,6 +33,7 @@ return [
         'continue' => 'Lanjutkan',
         'save_continue' => 'Simpan & Lanjutkan',
         'finish' => 'Selesai',
+        'skip' => 'Lewati',
         'later_at_settings' =>
             'Anda dapat mengubah pengaturan ini nanti melalui halaman pengaturan.',
         'step_success' => '[:step] berhasil diselesaikan.',

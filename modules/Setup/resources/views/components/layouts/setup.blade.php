@@ -34,7 +34,7 @@
             </x-ui::nav>
 
             {{-- Main Content --}}
-            <main id="main-content" class="flex-1 flex flex-col items-center justify-center p-4">
+            <main id="main-content" class="flex-1 flex flex-col">
                 {{ $slot }}
             </main>
 

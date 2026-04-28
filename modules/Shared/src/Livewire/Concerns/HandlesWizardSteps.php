@@ -133,10 +133,12 @@ trait HandlesWizardSteps
     }
 
     /**
-     * Determines if the required record for the current step exists.
+     * [S3 - Scalable] Determines if the user can proceed to the next step.
+     * This is the authoritative source for the "Next" button state and can
+     * be overridden by components with complex multi-prerequisite logic.
      */
     #[Computed]
-    public function isRecordExists(): bool
+    public function canContinue(): bool
     {
         $record = $this->wizardStepProps['extra']['req_record'] ?? null;
 
@@ -144,22 +146,11 @@ trait HandlesWizardSteps
     }
 
     /**
-     * Determines if the 'next step' button should be disabled.
-     */
-    #[Computed]
-    public function disableNextStep(): bool
-    {
-        $record = $this->wizardStepProps['extra']['req_record'] ?? null;
-
-        return $record ? !$this->setupService->isRecordExists($record) : false;
-    }
-
-    /**
      * Re-evaluates the step completion status.
      */
     public function updateStepStatus(): void
     {
-        unset($this->disableNextStep);
+        unset($this->canContinue);
     }
 
     /**
