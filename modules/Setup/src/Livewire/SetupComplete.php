@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Setup\Livewire;
 
 use Illuminate\View\View;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Modules\Setup\Services\Contracts\AppSetupService;
 use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
@@ -31,6 +32,15 @@ class SetupComplete extends Component
     public bool $showPrivacy = false;
 
     public bool $showTerms = false;
+
+    /**
+     * Determines if the finalization can proceed.
+     */
+    #[Computed]
+    public function canFinalize(): bool
+    {
+        return $this->data_verified && $this->security_aware && $this->legal_agreed;
+    }
 
     /**
      * Initializes the component.

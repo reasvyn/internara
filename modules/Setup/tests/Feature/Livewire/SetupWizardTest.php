@@ -22,6 +22,8 @@ use Modules\Setup\Livewire\SchoolSetup;
 use Modules\Setup\Livewire\SetupComplete;
 use Modules\Setup\Livewire\SetupWelcome;
 use Modules\Setup\Services\Contracts\InstallationAuditor;
+use Modules\Setup\Services\Contracts\SetupRequirementProvider;
+use Modules\Setup\Services\SetupRequirementRegistry;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -45,6 +47,17 @@ beforeEach(function () {
         'permissions' => ['storage_directory' => true],
         'database' => ['connection' => true],
     ]);
+
+    // Mock requirement providers to always return satisfied
+    $registry = app(SetupRequirementRegistry::class);
+    foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
+        $mockProvider = new class($identifier) implements SetupRequirementProvider {
+            public function __construct(private string $id) {}
+            public function getRequirementIdentifier(): string { return $this->id; }
+            public function isSatisfied(): bool { return true; }
+        };
+        $registry->register($mockProvider);
+    }
 });
 
 describe('Setup Wizard Transitions', function () {
@@ -78,6 +91,7 @@ describe('Setup Wizard Transitions', function () {
 
     test('it completes setup_step_account successfully', function () {
         $settings = app(SettingService::class);
+        $settings->setValue('setup_step_welcome', true);
         $settings->setValue('setup_step_school', true);
 
         // 4. Account -> Department

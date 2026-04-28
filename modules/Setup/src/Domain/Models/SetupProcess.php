@@ -112,7 +112,8 @@ class SetupProcess
     protected function getPreviousStepFor(string $step): ?string
     {
         return match ($step) {
-            AppSetupService::STEP_SCHOOL => null,
+            AppSetupService::STEP_WELCOME => null,
+            AppSetupService::STEP_SCHOOL => AppSetupService::STEP_WELCOME,
             AppSetupService::STEP_ACCOUNT => AppSetupService::STEP_SCHOOL,
             AppSetupService::STEP_DEPARTMENT => AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_INTERNSHIP => AppSetupService::STEP_DEPARTMENT,

@@ -70,7 +70,7 @@
 
         <x-slot:footer>
         <x-setup::action-footer 
-            :canContinue="$canFinalize"
+            :canContinue="$this->canFinalize()"
             :continueLabel="__('setup::wizard.complete.cta')"
         />
     </x-slot:footer>

@@ -39,6 +39,7 @@ class AppSetupService extends BaseService implements Contract
         $isInstalled = (bool) $this->settingService->getValue(self::SETTING_APP_INSTALLED, false);
 
         $steps = [
+            self::STEP_WELCOME,
             self::STEP_SCHOOL,
             self::STEP_ACCOUNT,
             self::STEP_DEPARTMENT,

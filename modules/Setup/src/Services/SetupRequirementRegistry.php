@@ -32,9 +32,7 @@ class SetupRequirementRegistry
     public function isRequirementSatisfied(string $identifier): bool
     {
         if (!isset($this->providers[$identifier])) {
-            throw new \InvalidArgumentException(
-                "No setup requirement provider registered for identifier '{$identifier}'.",
-            );
+            return false;
         }
 
         return $this->providers[$identifier]->isSatisfied();

@@ -24,6 +24,7 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
+    app(SettingService::class)->setValue('setup_step_welcome', true);
     Gate::define('performStep', fn() => true);
 });
 
