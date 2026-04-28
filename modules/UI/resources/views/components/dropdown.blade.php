@@ -1,5 +1,6 @@
 @props([
     'label' => null,
+    'labelClass' => null,
     'icon' => null,
     'right' => false,
     'variant' => 'secondary', // primary, secondary, tertiary
@@ -41,7 +42,9 @@
             {{ $attributes->class([$variantClasses, 'btn min-h-[2.75rem] relative z-[1000] list-none', 'pointer-events-none opacity-50' => $isDisabled]) }}
             aria-label="{{ $ariaLabel }}"
         >
-            {{ $label }}
+            @if($label)
+                <span class="{{ $labelClass }}">{{ $label }}</span>
+            @endif
             @if($icon)
                 <x-mary-icon :name="$icon" />
             @endif
