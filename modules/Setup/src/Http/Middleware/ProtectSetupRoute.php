@@ -87,12 +87,10 @@ class ProtectSetupRoute
     {
         return [
             AppSetupService::STEP_WELCOME,
-            AppSetupService::STEP_ENVIRONMENT,
             AppSetupService::STEP_SCHOOL,
             AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_DEPARTMENT,
             AppSetupService::STEP_INTERNSHIP,
-            AppSetupService::STEP_SYSTEM,
         ];
     }
 
