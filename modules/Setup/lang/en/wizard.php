@@ -10,7 +10,6 @@ return [
         'account' => 'Administrator',
         'department' => 'Department',
         'internship' => 'Internship',
-        'system' => 'Email',
         'complete' => 'Complete',
     ],
     'status' => [
@@ -112,33 +111,6 @@ return [
         'headline' => 'Defining the Internship Period.',
         'description' =>
             'Now, let\'s define the internship period or academic year to be managed. This will be the main \'container\' for all future internship activities.',
-    ],
-    'system' => [
-        'title' => 'System Settings',
-        'headline' => 'Ensure Communication Lines Are Open.',
-        'description' =>
-            ':app needs to send important notifications, reports, and account confirmations via email. Configure your SMTP server to ensure every message reaches its destination.',
-        'description_extra' =>
-            'You can use a free SMTP service provider or one provided by your institution.',
-        'smtp_configuration' => 'SMTP Configuration',
-        'smtp_configuration_desc' => 'Configure your outbound mail delivery service.',
-        'sender_information' => 'Sender Information',
-        'sender_information_desc' => 'Define the identity of outgoing system emails.',
-        'guidance_note' =>
-            'Use a dedicated SMTP service like Mailgun, Resend, or Amazon SES for reliable delivery of internship notifications.',
-        'test_connection' => 'Test Connection',
-        'skip' => 'Skip for Now',
-        'smtp_connection_success' => 'SMTP Connection successful!',
-        'smtp_connection_failed' => 'Connection failed: :message',
-        'fields' => [
-            'smtp_host' => 'SMTP Host',
-            'smtp_port' => 'SMTP Port',
-            'encryption' => 'Encryption',
-            'username' => 'Username',
-            'password' => 'Password',
-            'from_email' => 'Sender Email',
-            'from_name' => 'Sender Name',
-        ],
     ],
     'complete' => [
         'title' => 'Setup Complete',
