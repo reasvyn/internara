@@ -28,11 +28,19 @@ beforeEach(function () {
     // Mock requirement providers
     $registry = app(SetupRequirementRegistry::class);
     foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
-        $registry->register(new class($identifier) implements SetupRequirementProvider {
-            public function __construct(private string $id) {}
-            public function getRequirementIdentifier(): string { return $this->id; }
-            public function isSatisfied(): bool { return true; }
-        });
+        $registry->register(
+            new class ($identifier) implements SetupRequirementProvider {
+                public function __construct(private string $id) {}
+                public function getRequirementIdentifier(): string
+                {
+                    return $this->id;
+                }
+                public function isSatisfied(): bool
+                {
+                    return true;
+                }
+            },
+        );
     }
 });
 
@@ -43,8 +51,7 @@ describe('DepartmentSetup Component', function () {
 
         $this->get(route('setup.department', ['token' => 'test-token']));
 
-        Livewire::test(DepartmentSetup::class)
-            ->assertStatus(200);
+        Livewire::test(DepartmentSetup::class)->assertStatus(200);
     });
 
     test('it proceeds to internship setup step when department exists', function () {

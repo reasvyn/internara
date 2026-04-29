@@ -4,76 +4,78 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Livewire;
 
-use Illuminate\View\View;
-use Livewire\Attributes\On;
-use Livewire\Component;
-use Modules\Exception\AppException;
-use Modules\Setup\Services\Contracts\AppSetupService;
-use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
+use Illuminate\Support\Facades\Hash;
+use Modules\User\Models\User;
+use Modules\Profile\Models\Profile;
+use Modules\Admin\Services\Contracts\SuperAdminService;
 
 /**
- * Represents the 'Account Creation' step in the application setup process.
- * This component is responsible for handling the creation of the initial SuperAdmin account.
+ * Account Setup - Create super admin
+ *
+ * [S1 - Secure] Encrypted PII, hashed password, UUID generation
+ * [S2 - Sustain] Clear validation, audit logging
+ * [S3 - Scalable] Service contract usage, event dispatch
  */
-class AccountSetup extends Component
+class AccountSetup extends SetupWizardBase
 {
-    use HandlesWizardSteps;
+    public string $name = '';
+    public string $email = '';
+    public string $password = '';
+    public string $passwordConfirmation = '';
 
-    /**
-     * Boots the component and injects the AppSetupService.
-     *
-     * @param AppSetupService $setupService The service for handling setup logic.
-     */
-    public function boot(AppSetupService $setupService): void
-    {
-        $this->setupService = $setupService;
-    }
-
-    /**
-     * Mounts the component, initializes setup properties, and ensures step progression is valid.
-     */
     public function mount(): void
     {
-        $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_ACCOUNT,
-            nextStep: AppSetupService::STEP_DEPARTMENT,
-            prevStep: AppSetupService::STEP_SCHOOL,
-            extra: ['req_record' => AppSetupService::RECORD_SUPER_ADMIN],
-        );
-
-        $this->requireWizardAccess();
+        $this->authorizeStepAccess('account');
+        $this->ensureNotInstalled();
     }
 
-    /**
-     * Handles the 'super_admin_registered' event to proceed to the next setup step.
-     */
-    #[On('super_admin_registered')]
-    public function handleSuperAdminRegistered(): void
+    public function rules(): array
     {
-        try {
-            $this->nextStep();
-        } catch (\Exception $e) {
-            report($e);
-            flash()->error(
-                $e instanceof AppException
-                    ? $e->getUserMessage()
-                    : __('ui::errors.unexpected_technical_failure'),
-            );
-        }
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'passwordConfirmation' => ['required', 'same:password'],
+        ];
     }
 
-    /**
-     * Renders the component's view.
-     *
-     * @return View The view for the account setup step.
-     */
-    public function render(): View
+    public function messages(): array
     {
-        return view('setup::livewire.account-setup')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.account.title') .
-                ' | ' .
-                setting('site_title', setting('app_name')),
+        return [
+            'name.required' => __('setup::validation.account.name_required'),
+            'email.required' => __('setup::validation.account.email_required'),
+            'email.email' => __('setup::validation.account.email_invalid'),
+            'email.unique' => __('setup::validation.account.email_taken'),
+            'password.required' => __('setup::validation.account.password_required'),
+            'password.min' => __('setup::validation.account.password_min'),
+            'passwordConfirmation.required' => __('setup::validation.account.confirm_password'),
+            'passwordConfirmation.same' => __('setup::validation.account.password_mismatch'),
+        ];
+    }
+
+    public function saveAccount(SuperAdminService $adminService): void
+    {
+        $validated = $this->validate();
+
+        $user = $adminService->createSuperAdmin([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $this->setupService->completeStep('account', [
+            'admin_id' => $user->id,
+        ]);
+
+        $token = request()->get('token') ?? session('setup_token');
+        
+        $this->redirect(route('setup.department', ['token' => $token]));
+    }
+
+    public function render()
+    {
+        return view('setup::livewire.account-setup', [
+            'progress' => $this->progress,
         ]);
     }
 }

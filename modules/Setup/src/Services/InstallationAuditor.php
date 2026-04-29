@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Services;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Modules\Setup\Services\Contracts\InstallationAuditor as Contract;
-use Modules\Shared\Services\BaseService;
 
 /**
- * Service implementation for performing technical pre-flight system audits.
+ * Installation Auditor - Pre-flight system checks
  *
- * [S1 - Secure] Sanitizes sensitive database connection information in error logs.
+ * [S1 - Secure] Sanitizes sensitive data from error messages
+ * [S2 - Sustain] Clear pass/fail reporting
+ * [S3 - Scalable] Extensible requirement registry
  */
-class InstallationAuditor extends BaseService implements Contract
+class InstallationAuditor implements Contract
 {
-    /**
-     * Required PHP extensions.
-     */
-    protected const PHP_EXTENSIONS = [
+    protected const REQUIRED_PHP_VERSION = '8.4.0';
+
+    protected const REQUIRED_EXTENSIONS = [
         'bcmath',
         'ctype',
         'fileinfo',
@@ -34,10 +33,11 @@ class InstallationAuditor extends BaseService implements Contract
         'zip',
     ];
 
-    /**
-     * Minimum PHP version.
-     */
-    protected const MIN_PHP_VERSION = '8.4.0';
+    protected const RECOMMENDED_EXTENSIONS = [
+        'redis',
+        'pcntl',
+        'posix',
+    ];
 
     /**
      * {@inheritdoc}
@@ -48,76 +48,8 @@ class InstallationAuditor extends BaseService implements Contract
             'requirements' => $this->checkRequirements(),
             'permissions' => $this->checkPermissions(),
             'database' => $this->checkDatabase(),
+            'recommendations' => $this->checkRecommendations(),
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkRequirements(): array
-    {
-        $results = [
-            __('setup::wizard.environment.audit.php_version', [
-                'version' => self::MIN_PHP_VERSION,
-            ]) => version_compare(PHP_VERSION, self::MIN_PHP_VERSION, '>='),
-        ];
-
-        foreach (self::PHP_EXTENSIONS as $extension) {
-            $label = __('setup::wizard.environment.audit.php_extension', [
-                'extension' => strtoupper($extension),
-            ]);
-            $results[$label] = extension_loaded($extension);
-        }
-
-        return $results;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkPermissions(): array
-    {
-        return [
-            __('setup::wizard.environment.audit.storage_root') => is_writable(storage_path()),
-            __('setup::wizard.environment.audit.storage_logs') => is_writable(storage_path('logs')),
-            __('setup::wizard.environment.audit.storage_framework') => is_writable(
-                storage_path('framework'),
-            ),
-            __('setup::wizard.environment.audit.bootstrap_cache') => is_writable(
-                base_path('bootstrap/cache'),
-            ),
-            __('setup::wizard.environment.audit.env_file') => File::exists(base_path('.env'))
-                ? is_writable(base_path('.env'))
-                : is_writable(base_path()),
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkDatabase(): array
-    {
-        try {
-            DB::connection()->getPdo();
-
-            return [
-                'connection' => true,
-                'message' => __('setup::wizard.environment.audit.db_connected'),
-            ];
-        } catch (\Exception $e) {
-            $rawMessage = $e->getMessage();
-            // [S1 - Secure] Robust sanitization of sensitive data from DB errors
-            $sanitizedMessage = preg_replace(
-                '/(password|pwd|user|usr|host|address|dsn|credential|token)=[^; ]+/i',
-                '$1=****',
-                $rawMessage,
-            );
-
-            return [
-                'connection' => false,
-                'message' => $sanitizedMessage,
-            ];
-        }
     }
 
     /**
@@ -127,10 +59,134 @@ class InstallationAuditor extends BaseService implements Contract
     {
         $audit = $this->audit();
 
-        $requirementsPassed = !in_array(false, $audit['requirements'], true);
-        $permissionsPassed = !in_array(false, $audit['permissions'], true);
-        $databasePassed = (bool) $audit['database']['connection'];
+        foreach ($audit['requirements'] as $check) {
+            if ($check['status'] === false) {
+                return false;
+            }
+        }
 
-        return $requirementsPassed && $permissionsPassed && $databasePassed;
+        foreach ($audit['permissions'] as $check) {
+            if ($check['status'] === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check PHP version and required extensions
+     */
+    protected function checkRequirements(): array
+    {
+        $results = [];
+
+        // PHP version
+        $results[] = [
+            'name' => 'PHP Version >= ' . self::REQUIRED_PHP_VERSION,
+            'status' => version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '>='),
+            'value' => PHP_VERSION,
+            'required' => self::REQUIRED_PHP_VERSION,
+        ];
+
+        // Required extensions
+        foreach (self::REQUIRED_EXTENSIONS as $extension) {
+            $loaded = extension_loaded($extension);
+            $results[] = [
+                'name' => "PHP Extension: {$extension}",
+                'status' => $loaded,
+                'value' => $loaded ? 'Loaded' : 'Missing',
+                'required' => 'Loaded',
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Check file permissions
+     */
+    protected function checkPermissions(): array
+    {
+        $results = [];
+        $paths = [
+            'storage' => storage_path(),
+            'bootstrap/cache' => base_path('bootstrap/cache'),
+            'database' => database_path(),
+        ];
+
+        foreach ($paths as $name => $path) {
+            $writable = File::isWritable($path);
+            $results[] = [
+                'name' => "Directory writable: {$name}",
+                'status' => $writable,
+                'path' => $path,
+                'value' => $writable ? 'Writable' : 'Not writable',
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Check database connectivity (without exposing credentials)
+     */
+    protected function checkDatabase(): array
+    {
+        try {
+            DB::connection()->getPdo();
+
+            return [
+                [
+                    'name' => 'Database connection',
+                    'status' => true,
+                    'value' => 'Connected',
+                    'driver' => config('database.default'),
+                ],
+            ];
+        } catch (\Exception $e) {
+            $sanitizedMessage = $this->sanitizeErrorMessage($e->getMessage());
+
+            return [
+                [
+                    'name' => 'Database connection',
+                    'status' => false,
+                    'value' => $sanitizedMessage,
+                    'driver' => config('database.default'),
+                ],
+            ];
+        }
+    }
+
+    /**
+     * Check recommended extensions (non-blocking)
+     */
+    protected function checkRecommendations(): array
+    {
+        $results = [];
+
+        foreach (self::RECOMMENDED_EXTENSIONS as $extension) {
+            $loaded = extension_loaded($extension);
+            $results[] = [
+                'name' => "Recommended: {$extension}",
+                'status' => $loaded,
+                'value' => $loaded ? 'Loaded' : 'Not loaded',
+                'required' => false,
+            ];
+        }
+
+        return $results;
+    }
+
+    /**
+     * [S1 - Secure] Sanitize sensitive data from error messages
+     */
+    protected function sanitizeErrorMessage(string $rawMessage): string
+    {
+        return preg_replace(
+            '/(password|pwd|user|usr|host|address|dsn|credential|token)=[^;\s]+/i',
+            '$1=****',
+            $rawMessage,
+        );
     }
 }

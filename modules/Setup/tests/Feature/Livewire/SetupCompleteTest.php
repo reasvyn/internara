@@ -28,11 +28,19 @@ beforeEach(function () {
     // Mock requirement providers
     $registry = app(SetupRequirementRegistry::class);
     foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
-        $registry->register(new class($identifier) implements SetupRequirementProvider {
-            public function __construct(private string $id) {}
-            public function getRequirementIdentifier(): string { return $this->id; }
-            public function isSatisfied(): bool { return true; }
-        });
+        $registry->register(
+            new class ($identifier) implements SetupRequirementProvider {
+                public function __construct(private string $id) {}
+                public function getRequirementIdentifier(): string
+                {
+                    return $this->id;
+                }
+                public function isSatisfied(): bool
+                {
+                    return true;
+                }
+            },
+        );
     }
 });
 
@@ -43,8 +51,7 @@ describe('SetupComplete Component', function () {
 
         $this->get(route('setup.complete', ['token' => 'test-token']));
 
-        Livewire::test(SetupComplete::class)
-            ->assertStatus(200);
+        Livewire::test(SetupComplete::class)->assertStatus(200);
     });
 
     test('it finalizes setup and redirects to landing when all checkboxes verified', function () {

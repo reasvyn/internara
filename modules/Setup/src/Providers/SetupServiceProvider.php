@@ -4,125 +4,54 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Providers;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Setup\Console\Commands\AppInstallCommand;
-use Modules\Setup\Console\Commands\SetupResetCommand;
-use Modules\Setup\Onboarding\Services\OnboardingService;
-use Modules\Setup\Services\AppSetupService;
-use Modules\Setup\Services\InstallationAuditor;
-use Modules\Setup\Services\SetupRequirementRegistry;
-use Modules\Setup\Services\SystemInstaller;
-use Modules\Shared\Providers\Concerns\ManagesModuleProvider;
-use Nwidart\Modules\Traits\PathNamespace;
+use Modules\Setup\Services\Contracts\SystemInstaller;
+use Modules\Setup\Services\Contracts\InstallationAuditor;
+use Modules\Setup\Services\Contracts\SetupService;
+use Modules\Setup\Services\SystemInstaller as SystemInstallerImpl;
+use Modules\Setup\Services\InstallationAuditor as InstallationAuditorImpl;
+use Modules\Setup\Services\SetupService as SetupServiceImpl;
 
+/**
+ * Setup Service Provider
+ *
+ * [S1 - Secure] Proper service binding
+ * [S2 - Sustain] Clear registration
+ * [S3 - Scalable] Contract-based bindings
+ */
 class SetupServiceProvider extends ServiceProvider
 {
-    use ManagesModuleProvider;
-    use PathNamespace;
-
-    protected string $name = 'Setup';
-
-    protected string $nameLower = 'setup';
-
     /**
-     * Boot the application events.
-     */
-    public function boot(): void
-    {
-        $this->bootModule();
-        $this->registerSetupGates();
-        
-        // Register anonymous components
-        Blade::anonymousComponentPath(
-            module_path('Setup', 'resources/views/components'),
-            'setup'
-        );
-    }
-
-    /**
-     * Register authorization gates for the setup process.
-     */
-    protected function registerSetupGates(): void
-    {
-        // Define common authorization for all setup actions
-        $setupAuth = function (?Authenticatable $user) {
-            return session()->get(
-                \Modules\Setup\Services\Contracts\AppSetupService::SESSION_SETUP_AUTHORIZED,
-            ) === true;
-        };
-
-        Gate::define('performStep', $setupAuth);
-        Gate::define('saveSettings', $setupAuth);
-        Gate::define('finalize', $setupAuth);
-        Gate::define('install', function ($user = null) {
-            // Allow installation only if the app is not yet installed,
-            // or from the console (where user is null).
-            $isInstalled = resolve(
-                \Modules\Setup\Services\Contracts\AppSetupService::class,
-            )->isAppInstalled();
-
-            return !$isInstalled || is_null($user);
-        });
-    }
-
-    /**
-     * Register the service provider.
+     * Register services
      */
     public function register(): void
     {
-        $this->registerModule();
-
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(RouteServiceProvider::class);
-
-        $this->app->singleton(SetupRequirementRegistry::class);
-
-        $this->app->singleton(
-            \Modules\Setup\Services\Contracts\AppSetupService::class,
-            AppSetupService::class,
-        );
+        // Bind contracts to implementations
+        $this->app->bind(SystemInstaller::class, SystemInstallerImpl::class);
+        $this->app->bind(InstallationAuditor::class, InstallationAuditorImpl::class);
+        $this->app->bind(SetupService::class, SetupServiceImpl::class);
     }
 
     /**
-     * Get the service bindings for the module.
-     *
-     * @return array<string, string|\Closure>
+     * Bootstrap services
      */
-    protected function bindings(): array
+    public function boot(): void
     {
-        return [
-            \Modules\Setup\Onboarding\Services\Contracts\OnboardingService::class =>
-                OnboardingService::class,
-            \Modules\Setup\Services\Contracts\SystemInstaller::class => SystemInstaller::class,
-            \Modules\Setup\Services\Contracts\InstallationAuditor::class =>
-                InstallationAuditor::class,
-        ];
-    }
+        // Load routes
+        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
 
-    /**
-     * Register commands in the format of Command::class
-     */
-    protected function registerCommands(): void
-    {
-        $this->commands([SetupResetCommand::class, AppInstallCommand::class]);
-    }
+        // Load migrations
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
-    /**
-     * Register command Schedules.
-     */
-    protected function registerCommandSchedules(): void
-    {
-        //
-    }
+        // Load views
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'setup');
 
-    /**
-     * Define view slots for UI injection.
-     */
-    protected function viewSlots(): array
-    {
-        return [];
+        // Load translations
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'setup');
+
+        // Register middleware aliases
+        $this->app['router']->aliasMiddleware('setup.protect', \Modules\Setup\Http\Middleware\ProtectSetupRoute::class);
+        $this->app['router']->aliasMiddleware('setup.require', \Modules\Setup\Http\Middleware\RequireSetupAccess::class);
     }
 }

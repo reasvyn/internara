@@ -112,6 +112,8 @@ are decoupled at both the logic and persistence layers, we preserve the strategi
 specific domains independently to meet the needs of massive institutional or national-level
 deployments.
 
+**Note**: Domain layers (Domain/ directory) are **optional** - only add when complexity is earned by demonstrated need (Principle 3: "Simplicity Is a Feature").
+
 ---
 
 ## Integration: How 3S Works Together
@@ -128,19 +130,22 @@ Sustain (S2): HOW to write code correctly?
   Types ensure correctness
   Tests verify behavior
   Documentation explains why
+  Simplicity is a feature (no premature complexity)
 
 Scalable (S3): HOW to grow without breaking?
   ↓
   Modules stay independent
   Contracts define boundaries
   Changes stay localized
+  Domain thinking is a mindset, not a prescribed layer
 ```
 
-**These three pillars are **mutually reinforcing\*\*:
+**These three pillars are **mutually reinforcing**:
 
 - Modularity (S3) makes testing (S2) easier
 - Tests (S2) ensure security (S1) isn't broken by refactoring
 - Auditing (S1) works across modules because of clear boundaries (S3)
+- Simplicity (S2) ensures Domain layers are only added when earned by demonstrated need
 
 ---
 

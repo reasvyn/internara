@@ -4,63 +4,75 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Livewire;
 
-use Illuminate\View\View;
-use Livewire\Attributes\On;
-use Livewire\Component;
-use Modules\Setup\Services\Contracts\AppSetupService;
-use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
+use Modules\Internship\Models\Internship;
+use Modules\Internship\Services\Contracts\InternshipService;
 
 /**
- * Represents the 'Internship Setup' step in the application setup process.
+ * Internship Program Setup step
+ *
+ * [S1 - Secure] Date validation, authorization
+ * [S2 - Sustain] Clear date handling
+ * [S3 - Scalable] UUID-based, service contract
  */
-class InternshipSetup extends Component
+class InternshipSetup extends SetupWizardBase
 {
-    use HandlesWizardSteps;
+    public string $name = '';
+    public string $startDate = '';
+    public string $endDate = '';
+    public string $description = '';
 
-    /**
-     * Initializes the component.
-     */
-    public function boot(AppSetupService $setupService): void
-    {
-        $this->setupService = $setupService;
-    }
-
-    /**
-     * Mounts the component.
-     */
     public function mount(): void
     {
-        $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_INTERNSHIP,
-            nextStep: AppSetupService::STEP_COMPLETE,
-            prevStep: AppSetupService::STEP_DEPARTMENT,
-            extra: ['req_record' => AppSetupService::RECORD_INTERNSHIP],
-        );
-
-        $this->requireWizardAccess();
+        $this->authorizeStepAccess('internship');
+        $this->ensureNotInstalled();
     }
 
-    /**
-     * Re-evaluates step status after records are modified.
-     */
-    #[On('internship:saved')]
-    #[On('internship:deleted')]
-    public function handleRecordsChanged(): void
+    public function rules(): array
     {
-        unset($this->isRecordExists);
-        unset($this->disableNextStep);
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'startDate' => ['required', 'date', 'after:today'],
+            'endDate' => ['required', 'date', 'after:startDate'],
+            'description' => ['nullable', 'string', 'max:2000'],
+        ];
     }
 
-    /**
-     * Renders the component view.
-     */
-    public function render(): View
+    public function messages(): array
     {
-        return view('setup::livewire.internship-setup')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.internship.title') .
-                ' | ' .
-                setting('site_title', setting('app_name')),
+        return [
+            'name.required' => __('setup::validation.internship.name_required'),
+            'startDate.required' => __('setup::validation.internship.start_required'),
+            'startDate.after' => __('setup::validation.internship.start_future'),
+            'endDate.required' => __('setup::validation.internship.end_required'),
+            'endDate.after' => __('setup::validation.internship.end_after_start'),
+        ];
+    }
+
+    public function saveInternship(InternshipService $internshipService): void
+    {
+        $validated = $this->validate();
+
+        $internship = $internshipService->create([
+            'name' => $validated['name'],
+            'start_date' => $validated['startDate'],
+            'end_date' => $validated['endDate'],
+            'description' => $validated['description'] ?? null,
+            'status' => 'draft',
+        ]);
+
+        $this->setupService->completeStep('internship', [
+            'internship_id' => $internship->id,
+        ]);
+
+        $token = request()->get('token') ?? session('setup_token');
+        
+        $this->redirect(route('setup.complete', ['token' => $token]));
+    }
+
+    public function render()
+    {
+        return view('setup::livewire.internship-setup', [
+            'progress' => $this->progress,
         ]);
     }
 }

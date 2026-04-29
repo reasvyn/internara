@@ -4,63 +4,66 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Livewire;
 
-use Illuminate\View\View;
-use Livewire\Attributes\On;
-use Livewire\Component;
-use Modules\Setup\Services\Contracts\AppSetupService;
-use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
+use Modules\Department\Models\Department;
+use Modules\Department\Services\Contracts\DepartmentService;
 
 /**
- * Represents the 'Department Setup' step in the application setup process.
+ * Department Setup step
+ *
+ * [S1 - Secure] Validated input, authorization
+ * [S2 - Sustain] Clear form handling
+ * [S3 - Scalable] UUID-based, service contract
  */
-class DepartmentSetup extends Component
+class DepartmentSetup extends SetupWizardBase
 {
-    use HandlesWizardSteps;
+    public string $name = '';
+    public string $code = '';
+    public string $description = '';
 
-    /**
-     * Initializes the component.
-     */
-    public function boot(AppSetupService $setupService): void
-    {
-        $this->setupService = $setupService;
-    }
-
-    /**
-     * Mounts the component.
-     */
     public function mount(): void
     {
-        $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_DEPARTMENT,
-            nextStep: AppSetupService::STEP_INTERNSHIP,
-            prevStep: AppSetupService::STEP_ACCOUNT,
-            extra: ['req_record' => AppSetupService::RECORD_DEPARTMENT],
-        );
-
-        $this->requireWizardAccess();
+        $this->authorizeStepAccess('department');
+        $this->ensureNotInstalled();
     }
 
-    /**
-     * Re-evaluates step status after records are modified.
-     */
-    #[On('department:saved')]
-    #[On('department:deleted')]
-    public function handleRecordsChanged(): void
+    public function rules(): array
     {
-        unset($this->isRecordExists);
-        unset($this->disableNextStep);
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:10', 'unique:departments,code'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ];
     }
 
-    /**
-     * Renders the component view.
-     */
-    public function render(): View
+    public function messages(): array
     {
-        return view('setup::livewire.department-setup')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.department.title') .
-                ' | ' .
-                setting('site_title', setting('app_name')),
+        return [
+            'name.required' => __('setup::validation.department.name_required'),
+            'code.required' => __('setup::validation.department.code_required'),
+            'code.unique' => __('setup::validation.department.code_taken'),
+            'description.max' => __('setup::validation.department.description_max'),
+        ];
+    }
+
+    public function saveDepartment(DepartmentService $departmentService): void
+    {
+        $validated = $this->validate();
+
+        $department = $departmentService->create($validated);
+
+        $this->setupService->completeStep('department', [
+            'department_id' => $department->id,
+        ]);
+
+        $token = request()->get('token') ?? session('setup_token');
+        
+        $this->redirect(route('setup.internship', ['token' => $token]));
+    }
+
+    public function render()
+    {
+        return view('setup::livewire.department-setup', [
+            'progress' => $this->progress,
         ]);
     }
 }

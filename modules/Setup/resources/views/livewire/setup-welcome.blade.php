@@ -1,64 +1,69 @@
-<x-setup::layouts.setup-wizard :step="1" :totalSteps="6">
-    <x-slot:header>
-        <x-setup::wizard-header 
-            step="1"
-            :title="__('setup::wizard.welcome.title')"
-            :description="__('setup::wizard.welcome.headline')"
-            badgeText="Start"
-        />
-    </x-slot:header>
-
-    <x-slot:content>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="p-5 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors">
-                <div class="p-2 rounded-lg bg-base-content/5 dark:bg-base-content/10 w-fit mb-3">
-                    <x-ui::icon name="tabler.puzzle" class="size-5 text-base-content/60 dark:text-base-content/50" />
-                </div>
-                <h3 class="text-sm font-semibold text-base-content dark:text-base-content/90 mb-1.5">
-                    {{ __('setup::wizard.welcome.problem.title') }}
-                </h3>
-                <p class="text-xs text-base-content/50 dark:text-base-content/40 leading-relaxed">
-                    {{ __('setup::wizard.welcome.problem.description') }}
-                </p>
+<div>
+    <div class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow">
+        <h1 class="text-2xl font-bold mb-4">{{ __('setup::wizard.welcome_title') }}</h1>
+        
+        <div class="mb-6">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progress }}%"></div>
             </div>
-            
-            <div class="p-5 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors">
-                <div class="p-2 rounded-lg bg-base-content/5 dark:bg-base-content/10 w-fit mb-3">
-                    <x-ui::icon name="tabler.rocket" class="size-5 text-base-content/60 dark:text-base-content/50" />
-                </div>
-                <h3 class="text-sm font-semibold text-base-content dark:text-base-content/90 mb-1.5">
-                    {{ __('setup::wizard.welcome.solution.title') }}
-                </h3>
-                <p class="text-xs text-base-content/50 dark:text-base-content/40 leading-relaxed">
-                    {{ __('setup::wizard.welcome.solution.description', ['app' => setting('app_name', 'Internara')]) }}
-                </p>
-            </div>
-            
-            <div class="p-5 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors">
-                <div class="p-2 rounded-lg bg-base-content/5 dark:bg-base-content/10 w-fit mb-3">
-                    <x-ui::icon name="tabler.map-pin" class="size-5 text-base-content/60 dark:text-base-content/50" />
-                </div>
-                <h3 class="text-sm font-semibold text-base-content dark:text-base-content/90 mb-1.5">
-                    {{ __('setup::wizard.welcome.journey.title') }}
-                </h3>
-                <p class="text-xs text-base-content/50 dark:text-base-content/40 leading-relaxed">
-                    {{ __('setup::wizard.welcome.journey.description') }}
-                </p>
-            </div>
+            <p class="text-sm text-gray-600 mt-2">{{ __('setup::wizard.progress', ['progress' => $progress]) }}</p>
         </div>
-    </x-slot:content>
 
-    <x-slot:footer>
-        <div class="flex items-center justify-end gap-3">
-            <x-ui::button
-                variant="primary"
-                class="btn-md"
-                :label="__('setup::wizard.welcome.cta')"
-                wire:click="nextStep"
-                spinner
-                icon="tabler.arrow-right"
-                iconPosition="right"
-            />
+        @if($hasErrors)
+            <div class="bg-red-50 border border-red-200 text-red-800 p-4 rounded mb-6">
+                <p class="font-bold">{{ __('setup::wizard.requirements_not_met') }}</p>
+            </div>
+        @endif
+
+        <h2 class="text-xl font-semibold mb-4">{{ __('setup::wizard.system_requirements') }}</h2>
+
+        <div class="space-y-3 mb-6">
+            @foreach($requirements as $req)
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                    <span class="text-sm">{{ $req['name'] }}</span>
+                    @if($req['status'])
+                        <span class="text-green-600">✓ {{ $req['value'] }}</span>
+                    @else
+                        <span class="text-red-600">✗ {{ $req['value'] }}</span>
+                    @endif
+                </div>
+            @endforeach
         </div>
-    </x-slot:footer>
-</x-setup::layouts.setup-wizard>
+
+        <h2 class="text-xl font-semibold mb-4">{{ __('setup::wizard.permissions') }}</h2>
+
+        <div class="space-y-3 mb-6">
+            @foreach($permissions as $perm)
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                    <span class="text-sm">{{ $perm['name'] }}</span>
+                    @if($perm['status'])
+                        <span class="text-green-600">✓ Writable</span>
+                    @else
+                        <span class="text-red-600">✗ Not writable</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+        <h2 class="text-xl font-semibold mb-4">{{ __('setup::wizard.database') }}</h2>
+
+        <div class="space-y-3 mb-6">
+            @foreach($database as $db)
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                    <span class="text-sm">{{ $db['name'] }}</span>
+                    @if($db['status'])
+                        <span class="text-green-600">✓ Connected</span>
+                    @else
+                        <span class="text-red-600">✗ {{ $db['value'] }}</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+        <div class="flex justify-end">
+            <button wire:click="nextStep" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                {{ __('setup::wizard.next_step') }}
+            </button>
+        </div>
+    </div>
+</div>

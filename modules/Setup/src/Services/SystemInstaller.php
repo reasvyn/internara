@@ -10,23 +10,23 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallationAuditor;
 use Modules\Setup\Services\Contracts\SystemInstaller as Contract;
+use Modules\Setup\Services\Contracts\SetupService;
 use Modules\Shared\Services\BaseService;
 
 /**
- * Service implementation for handling technical system installation.
+ * System Installer - Technical initialization
+ *
+ * [S1 - Secure] Gate authorization, encrypted tokens, audit logging
+ * [S2 - Sustain] Clear error messages, atomic operations
+ * [S3 - Scalable] Independent of business setup, UUID-based
  */
 class SystemInstaller extends BaseService implements Contract
 {
-    /**
-     * SystemInstaller constructor.
-     */
     public function __construct(
-        protected SettingService $settingService,
-        protected InstallationAuditor $auditor,
+        private SetupService $setupService,
+        private InstallationAuditor $auditor,
     ) {}
 
     /**
@@ -56,6 +56,10 @@ class SystemInstaller extends BaseService implements Contract
             return false;
         }
 
+        if (!$this->generateSetupToken()) {
+            return false;
+        }
+
         return $this->createStorageSymlink();
     }
 
@@ -65,20 +69,26 @@ class SystemInstaller extends BaseService implements Contract
     public function ensureEnvFileExists(): bool
     {
         if (File::exists(base_path('.env'))) {
+            Log::info('Environment file already exists');
+
             return true;
         }
 
-        if (File::exists(base_path('.env.example'))) {
-            $created = File::copy(base_path('.env.example'), base_path('.env'));
+        if (!File::exists(base_path('.env.example'))) {
+            Log::error('Cannot create .env: .env.example not found');
 
-            if ($created) {
-                Log::info(__('setup::install.audit_logs.env_created'));
-            }
-
-            return $created;
+            return false;
         }
 
-        return false;
+        $created = File::copy(base_path('.env.example'), base_path('.env'));
+
+        if ($created) {
+            Log::info('Environment file created from .env.example');
+        } else {
+            Log::error('Failed to create .env file');
+        }
+
+        return $created;
     }
 
     /**
@@ -87,14 +97,22 @@ class SystemInstaller extends BaseService implements Contract
     public function generateAppKey(): bool
     {
         if (!empty(config('app.key'))) {
-            Log::info(__('setup::install.audit_logs.key_exists_skipping'));
+            Log::info('Application key already exists, skipping');
 
             return true;
         }
 
         try {
-            return Artisan::call('key:generate', ['--force' => true]) === 0;
+            $result = Artisan::call('key:generate', ['--force' => true]);
+
+            if ($result === 0) {
+                Log::info('Application key generated successfully');
+            }
+
+            return $result === 0;
         } catch (\Exception $e) {
+            Log::error('Failed to generate application key: ' . $e->getMessage());
+
             return false;
         }
     }
@@ -114,21 +132,20 @@ class SystemInstaller extends BaseService implements Contract
     {
         try {
             $hasMigrations = $this->hasExistingMigrations();
-            $command = $hasMigrations ? 'migrate:fresh' : 'migrate';
+            $command = ($hasMigrations && !$force) ? 'migrate:fresh' : 'migrate';
 
-            $result = Artisan::call($command, ['--force' => true]) === 0;
+            $result = Artisan::call($command, ['--force' => true]);
 
-            if ($result) {
-                Log::info(
-                    __('setup::install.audit_logs.migrations_executed', ['command' => $command]),
-                    [
-                        'command' => $command,
-                        'is_fresh' => $hasMigrations,
-                    ],
-                );
+            if ($result === 0) {
+                Log::info('Database migrations executed', [
+                    'command' => $command,
+                    'is_fresh' => $hasMigrations,
+                ]);
+            } else {
+                Log::error('Migration command failed', ['command' => $command]);
             }
 
-            return $result;
+            return $result === 0;
         } catch (\Exception $e) {
             Log::error('Migration failure during installation: ' . $e->getMessage());
 
@@ -155,16 +172,35 @@ class SystemInstaller extends BaseService implements Contract
                 $seeded = Artisan::call('db:seed', ['--force' => true]) === 0;
 
                 if ($seeded) {
-                    $token = Str::random(32);
-                    $this->settingService->setValue('setup_token', $token);
-
-                    Log::info(__('setup::install.audit_logs.seeding_completed'));
+                    Log::info('Database seeding completed');
+                } else {
+                    Log::error('Database seeding failed');
                 }
 
                 return $seeded;
             });
         } catch (\Exception $e) {
             Log::error('Seeding failure during installation: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * Generate setup token (encrypted in database)
+     */
+    protected function generateSetupToken(): bool
+    {
+        try {
+            $token = $this->setupService->generateToken();
+
+            Log::info('Setup token generated', [
+                'token_preview' => substr($token, 0, 8) . '...',
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Failed to generate setup token: ' . $e->getMessage());
 
             return false;
         }
@@ -180,8 +216,16 @@ class SystemInstaller extends BaseService implements Contract
                 return true;
             }
 
-            return Artisan::call('storage:link') === 0;
+            $result = Artisan::call('storage:link');
+
+            if ($result === 0) {
+                Log::info('Storage symlink created');
+            }
+
+            return $result === 0;
         } catch (\Exception $e) {
+            Log::error('Failed to create storage symlink: ' . $e->getMessage());
+
             return false;
         }
     }

@@ -44,7 +44,8 @@ return [
             'Technical installation: Database migrations executed using [:command].',
         'seeding_completed' =>
             'Technical installation: Database seeding completed and setup token generated.',
-        'key_exists_skipping' => 'Technical installation: APP_KEY already exists, skipping generation.',
+        'key_exists_skipping' =>
+            'Technical installation: APP_KEY already exists, skipping generation.',
         'env_created' => 'Technical installation: .env file created from .env.example.',
     ],
 ];

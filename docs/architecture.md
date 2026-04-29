@@ -70,31 +70,32 @@ Traditional Monolith        Modular Monolith            Microservices
 
 ### Standard Module Structure
 
-Every module follows a consistent directory structure:
+Every module follows a consistent directory structure. **Domain layer is optional** — only add when module has complex business logic that needs encapsulation (see AGENTS.md Principle 3: "Complexity must be earned by demonstrated need").
 
 ```
 modules/{ModuleName}/
 │
 ├── src/
-│   ├── Models/                    # Eloquent models (entities)
+│   ├── Domain/              # OPTIONAL - Only for modules with complex business logic
+│   │   ├── Models/        # Domain models (business logic, invariants)
+│   │   ├── ValueObjects/  # Immutable value objects
+│   │   └── Events/       # Domain events
+│   │
+│   ├── Models/            # Eloquent models (persistence) - ALWAYS present
 │   │   ├── Student.php
 │   │   ├── Registration.php
 │   │   └── ...
 │   │
 │   ├── Services/
-│   │   ├── Contracts/             # Public API (interfaces)
+│   │   ├── Contracts/             # Interfaces (recommended for all modules)
 │   │   │   ├── StudentService.php       (interface)
 │   │   │   └── RegistrationService.php  (interface)
 │   │   │
-│   │   └── Implementations/        # Concrete implementations
-│   │       ├── StudentService.php       (class)
-│   │       └── RegistrationService.php  (class)
+│   │   └── StudentService.php       (implementation)
 │   │
 │   ├── Livewire/                  # Interactive UI components
 │   │   ├── StudentManager.php      (data management)
 │   │   ├── StudentForm.php         (form component)
-│   │   ├── Forms/
-│   │   │   └── StudentData.php     (form data class)
 │   │   └── ...
 │   │
 │   ├── Http/
@@ -105,17 +106,13 @@ modules/{ModuleName}/
 │   │   ├── ModuleServiceProvider.php
 │   │   └── RouteServiceProvider.php
 │   │
-│   ├── Views/                      # Blade templates (if needed)
-│   └── Routes/
-│       └── web.php
+│   └── Views/                      # Blade templates (if needed)
 │
 ├── tests/
 │   ├── Unit/                       # Component logic tests
 │   │   └── Services/StudentServiceTest.php
 │   ├── Feature/                    # Business workflow tests
 │   │   └── StudentRegistrationTest.php
-│   ├── Browser/                    # UI tests (Dusk)
-│   │   └── StudentManagerTest.php
 │   └── Arch/                       # Architecture tests
 │       └── DependencyTest.php
 │
@@ -123,25 +120,25 @@ modules/{ModuleName}/
 │   ├── migrations/                 # Schema changes
 │   │   └── 2026_04_22_create_students_table.php
 │   ├── seeders/                    # Data seeders
-│   │   └── StudentSeeder.php
 │   └── factories/                  # Faker factories
-│       └── StudentFactory.php
 │
 ├── resources/
 │   ├── css/                        # Module styles
-│   │   └── student.css
 │   ├── js/                         # Module scripts
-│   │   └── student.js
 │   └── lang/                       # Translations
 │       ├── en/
-│       │   └── student.php
 │       └── id/
-│           └── student.php
 │
 ├── composer.json                   # Module dependencies
 ├── Module.php                      # Module configuration
 └── README.md                       # Module documentation
 ```
+
+**Current modules with Domain layer:**
+- `Auth` - Authentication domain logic
+- `Setup` - System setup invariants
+
+**Modules without Domain layer:** All other 27 modules (follows simplicity principle - no premature abstraction).
 
 ### Module Directory (`modules/`)
 

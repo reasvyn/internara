@@ -1,6 +1,6 @@
 # 📚 Modules Catalog
 
-Complete directory of all **29+ modules** in Internara, organized by domain. Each module is an
+Complete directory of all **29+ modules** in Internara, organized by operational priority. Each module is an
 independent, testable unit.
 
 ---
@@ -9,12 +9,160 @@ independent, testable unit.
 
 | Domain                                              | Modules                                              |
 | :-------------------------------------------------- | :--------------------------------------------------- |
+| **[Infrastructure](#-infrastructure)**              | Shared, Core, Exception, Status, UI, Support         |
 | **[Identity & Access](#-identity--access)**         | Auth, User, Profile, Permission                      |
-| **[Lifecycle Management](#-lifecycle-management)**  | Internship, Setup, Student, Mentor, Teacher          |
-| **[Activity Monitoring](#-activity-monitoring)**    | Journal, Attendance, Schedule                        |
-| **[Academic & Assessment](#-academic--assessment)** | Assessment, Assignment, School, Department, Guidance |
-| **[Operations & Support](#-operations--support)**   | Report, Notification, Log, Setting, Media            |
-| **[Infrastructure](#-infrastructure)**              | Core, Shared, UI, Status, Exception, Admin, Support  |
+| **[Lifecycle & Setup](#-lifecycle--setup)**         | Setup, Setting, School, Department, Teacher, Mentor, Student, Internship |
+| **[Activity Monitoring](#-activity-monitoring)**    | Schedule, Attendance, Journal, Assignment             |
+| **[Operations & Support](#-operations--support)**   | Assessment, Report, Notification, Media, Log, Guidance, Admin |
+
+---
+
+## 🏢 Infrastructure
+
+Core infrastructure, shared services, and foundational kernel.
+
+### Shared Module
+
+**Path**: `modules/Shared/` **Responsibility**: Cross-module utilities and contracts **Key
+Features**:
+
+- Common contracts/interfaces
+- Shared utilities
+- Collection helpers
+- String utilities
+- Date utilities
+- Validation rules
+
+**Key Files**:
+
+- `src/Contracts/*` — Common interfaces
+- `src/Utilities/*` — Helper classes
+
+**Relations**:
+
+- Used by: Multiple modules
+
+---
+
+### Core Module
+
+**Path**: `modules/Core/` **Responsibility**: Shared kernel and base classes **Key Features**:
+
+- Base model class (with common traits)
+- Base service class
+- Eloquent query builder (with common scopes)
+- Shared exceptions
+- Helper functions
+- Constants and enumerations
+
+**Key Files**:
+
+- `src/Models/BaseModel.php` — Base class (UUID, timestamps, soft delete)
+- `src/Services/BaseService.php` — Service base class
+- `src/Query/EloquentQuery.php` — Query builder
+- `src/Exceptions/*` — Custom exceptions
+
+**Relations**:
+
+- Used by: All other modules (foundation)
+
+---
+
+### Exception Module
+
+**Path**: `modules/Exception/` **Responsibility**: Custom application exceptions **Key Features**:
+
+- Custom exception classes
+- HTTP status mapping
+- User-friendly error messages
+- Logging integration
+
+**Key Files**:
+
+- `src/Exceptions/*` — Custom exceptions
+
+**Example Exceptions**:
+
+- `InternshipNotFoundException`
+- `UnauthorizedAccessException`
+- `InvalidTransitionException`
+- `ValidationException`
+
+**Relations**:
+
+- Used by: All modules
+
+---
+
+### Status Module
+
+**Path**: `modules/Status/` **Responsibility**: Shared status enumerations **Key Features**:
+
+- Internship statuses
+- Journal entry statuses
+- Attendance statuses
+- Assessment statuses
+- Registration statuses
+
+**Key Files**:
+
+- `src/Enums/*` — Status enums
+
+**Example Statuses**:
+
+- Internship: draft, active, completed, suspended
+- Journal: draft, submitted, approved, rejected
+- Attendance: present, absent, late, excused
+
+**Relations**:
+
+- Used by: Internship, Journal, Attendance, Assessment modules
+
+---
+
+### UI Module
+
+**Path**: `modules/UI/` **Responsibility**: Design system and shared components **Key Features**:
+
+- Component library
+- Tailwind CSS configuration
+- Icon sets
+- Form components
+- Table components
+- Modal components
+- Toast notifications
+
+**Key Files**:
+
+- `resources/views/components/*` — Blade components
+- `resources/css/ui.css` — Design system
+- `src/Livewire/RecordManager.php` — Base CRUD component
+
+**Relations**:
+
+- Used by: All modules (UI)
+
+---
+
+### Support Module
+
+**Path**: `modules/Support/` **Responsibility**: **Infrastructure support, scaffolding, and help documentation** **Key Features**:
+
+- **Scaffolding**: Automated generation of Interfaces, Traits, and Classes
+- **Testing Orchestration**: Advanced modular verification with memory isolation
+- Help article and FAQ management
+- Knowledge base for students and mentors
+- Support ticket integration
+
+**Key Files**:
+
+- `src/Testing/Console/Commands/AppTestCommand.php` — Testing orchestrator
+- `src/Scaffolding/Console/Commands/MakeInterfaceCommand.php` — Generator example
+
+**Relations**:
+
+- Uses: Media, Setting modules
+- Used by: All users, System Administrators
 
 ---
 
@@ -34,10 +182,14 @@ Core identity, authentication, and access control modules.
 
 **Key Files**:
 
+- `src/Domain/ValueObjects/AuthCredentials.php` — Value object (credential encapsulation)
+- `src/Domain/Models/User.php` — Domain model (authentication logic)
 - `src/Services/Contracts/AuthService.php` — Authentication interface
 - `src/Services/AuthService.php` — Implementation
 - `src/Livewire/Login.php` — Login component
 - `database/migrations/create_auth_tables.php`
+
+**Note**: Auth module has **Domain layer** for complex authentication logic and credential encapsulation.
 
 **Relations**:
 
@@ -145,42 +297,13 @@ Features**:
 
 ---
 
-## 🎓 Lifecycle Management
+## 🎓 Lifecycle & Setup
 
-Modules managing the internship lifecycle from enrollment to completion.
-
-### Internship Module
-
-**Path**: `modules/Internship/` **Responsibility**: Internship program setup and management **Key
-Features**:
-
-- Create and manage internship programs
-- Define internship requirements
-- Placement slot management
-- Registration tracking
-- Status lifecycle (planning → active → completed)
-- Duration and timeline management
-
-**Key Files**:
-
-- `src/Models/Internship.php` — Internship program
-- `src/Models/Registration.php` — Student registration
-- `src/Models/Placement.php` — Industry placement slot
-- `src/Services/Contracts/InternshipService.php`
-- `src/Livewire/InternshipManager.php`
-
-**Relations**:
-
-- Uses: School, Assessment, Notification modules
-- Used by: All modules (central to system)
-
-**Testing**: `tests/Feature/InternshipManagementTest.php`
-
----
+Modules managing the system bootstrapping and internship lifecycle.
 
 ### Setup Module
 
-**Path**: `modules/Setup/` **Responsibility**: **Application business configuration and onboarding
+**Path**: `modules/Setup/` **Responsibility**: **Application business configuration and onboarding**
 wizard** **Key Features**:
 
 - Multi-step guided configuration process
@@ -190,10 +313,12 @@ wizard** **Key Features**:
 - Departmental structure setup
 - Internship program bootstrapping
 - Automatic security lockdown after completion
+- **System Installation**: Automated technical initialization via CLI
+- **Environment Auditing**: Pre-flight checks for requirements and permissions
 
 **Setup Wizard Steps**:
 
-1. School/Institution (identity, logo)
+1. School/Institution (identity and logo)
 2. Administrator Account (superadmin credentials)
 3. Department Configuration (organizational units)
 4. Internship Program (dates, requirements)
@@ -202,10 +327,14 @@ wizard** **Key Features**:
 
 **Key Files**:
 
+- `src/Domain/Models/SetupProcess.php` — Domain model (state invariant management)
 - `src/Services/AppSetupService.php` — Setup lifecycle coordination
-- `src/Domain/Models/SetupProcess.php` — State invariant management
 - `src/Http/Middleware/RequireSetupAccess.php` — Security enforcement
 - `src/Http/Middleware/ProtectSetupRoute.php` — Completion lockdown
+- `src/Services/SystemInstaller.php` — Technical installation engine
+- `src/Services/InstallationAuditor.php` — Environment requirement auditor
+
+**Note**: Setup module has **Domain layer** for managing setup state invariants and business rules.
 
 **Security**:
 
@@ -222,251 +351,38 @@ wizard** **Key Features**:
 
 ---
 
-### Student Module
+### Setting Module
 
-**Path**: `modules/Student/` **Responsibility**: Student account and internship tracking **Key
-Features**:
+**Path**: `modules/Setting/` **Responsibility**: System-wide configuration **Key Features**:
 
-- Student profile information
-- Enrollment and registration
-- Progress tracking
-- Grade viewing
-- Journal access
-- Dashboard and reporting
-
-**Key Files**:
-
-- `src/Models/Student.php` — Student model
-- `src/Services/Contracts/StudentService.php`
-- `src/Livewire/Dashboard.php` — Student dashboard
-- `src/Livewire/StudentManager.php` — Admin student management
-
-**Relations**:
-
-- Uses: User, Profile, Internship, Journal, Assessment
-- Used by: Teacher, Mentor modules
-
-**Testing**: `tests/Feature/StudentManagementTest.php`
-
----
-
-### Mentor Module
-
-**Path**: `modules/Mentor/` **Responsibility**: Industry mentor account and mentoring **Key
-Features**:
-
-- Mentor profile and organization
-- Mentee assignment and tracking
-- Evaluation and feedback
-- Schedule management
-- Attendance marking
-- Mentee progress monitoring
+- Global configuration management
+- Feature flags
+- Email templates
+- SMS templates
+- System preferences
+- Admin settings UI
 
 **Key Files**:
 
-- `src/Models/Mentor.php`
-- `src/Services/Contracts/MentorService.php`
-- `src/Livewire/Dashboard.php` — Mentor dashboard
-- `src/Livewire/MenteeManager.php` — Mentee tracking
+- `src/Models/Setting.php`
+- `src/Services/Contracts/SettingService.php`
+- `src/Livewire/SystemSettings.php`
+
+**Configuration Areas**:
+
+- Mail settings
+- Queue settings
+- Cache settings
+- API keys
+- Feature toggles
+- Notification templates
 
 **Relations**:
 
-- Uses: User, Profile, Internship, Attendance
-- Used by: Internship, Assessment modules
+- Uses: No module (global)
+- Used by: All modules
 
-**Testing**: `tests/Feature/MentorManagementTest.php`
-
----
-
-### Teacher Module
-
-**Path**: `modules/Teacher/` **Responsibility**: Educational institution teacher/coordinator **Key
-Features**:
-
-- Teacher profile and subject assignment
-- Class and curriculum management
-- Assessment creation and grading
-- Student progress oversight
-- Report generation
-- Internship monitoring
-
-**Key Files**:
-
-- `src/Models/Teacher.php`
-- `src/Services/Contracts/TeacherService.php`
-- `src/Livewire/Dashboard.php` — Teacher dashboard
-- `src/Livewire/StudentGrading.php` — Assessment component
-
-**Relations**:
-
-- Uses: User, Profile, School, Assessment, Report
-- Used by: Assessment, Internship modules
-
-**Testing**: `tests/Feature/TeacherManagementTest.php`
-
----
-
-## 📊 Activity Monitoring
-
-Real-time tracking and logging of internship activities.
-
-### Journal Module
-
-**Path**: `modules/Journal/` **Responsibility**: Daily activity logging and supervision **Key
-Features**:
-
-- Daily journal entries (student writes activities)
-- Supervisor validation (mentor reviews)
-- Activity categories and tagging
-- Media attachments
-- Status tracking (draft, submitted, approved)
-- History and revision tracking
-
-**Key Files**:
-
-- `src/Models/Journal.php` — Journal entry
-- `src/Models/JournalValidator.php` — Validation status
-- `src/Services/Contracts/JournalService.php`
-- `src/Livewire/JournalWriter.php` — Write component
-- `src/Livewire/JournalValidator.php` — Review component
-
-**Statuses**:
-
-- Draft (student writing)
-- Submitted (waiting mentor review)
-- Approved (mentor validated)
-- Rejected (mentor needs changes)
-
-**Relations**:
-
-- Uses: Student, Mentor, Media modules
-- Used by: Assessment, Report modules
-
-**Testing**: `tests/Feature/JournalManagementTest.php`
-
----
-
-### Attendance Module
-
-**Path**: `modules/Attendance/` **Responsibility**: Check-in tracking and absence management **Key
-Features**:
-
-- Daily check-in/check-out
-- GPS location tracking (optional)
-- Absence requests and approvals
-- Late arrival tracking
-- Monthly attendance summary
-- Compliance reporting
-
-**Key Files**:
-
-- `src/Models/Attendance.php` — Daily record
-- `src/Models/AbsenceRequest.php` — Leave request
-- `src/Services/Contracts/AttendanceService.php`
-- `src/Livewire/CheckinComponent.php` — Mobile check-in
-
-**Relations**:
-
-- Uses: Student, Mentor, Notification modules
-- Used by: Assessment, Report modules
-
-**Testing**: `tests/Feature/AttendanceTrackingTest.php`
-
----
-
-### Schedule Module
-
-**Path**: `modules/Schedule/` **Responsibility**: Internship timeline and event management **Key
-Features**:
-
-- Internship start/end dates
-- Important dates (holidays, breaks)
-- Event scheduling
-- Reminder notifications
-- Calendar integration
-- Timeline visualization
-
-**Key Files**:
-
-- `src/Models/InternshipSchedule.php`
-- `src/Services/Contracts/ScheduleService.php`
-- `src/Livewire/ScheduleCalendar.php`
-
-**Relations**:
-
-- Uses: Internship, Notification modules
-- Used by: All modules (reference dates)
-
-**Testing**: `tests/Feature/ScheduleManagementTest.php`
-
----
-
-## 🎓 Academic & Assessment
-
-Grading, evaluation, and academic management.
-
-### Assessment Module
-
-**Path**: `modules/Assessment/` **Responsibility**: Multi-stakeholder evaluation and grading **Key
-Features**:
-
-- Rubric-based assessment
-- Multi-evaluator scoring (teacher, mentor)
-- Grade calculation and weighting
-- Competency tracking
-- Transcript generation
-- Certificate issuance
-- Compliance auditing
-
-**Key Files**:
-
-- `src/Models/Assessment.php` — Assessment definition
-- `src/Models/AssessmentScore.php` — Score record
-- `src/Models/Rubric.php` — Rubric definition
-- `src/Services/Contracts/AssessmentService.php`
-- `src/Livewire/GradingComponent.php`
-
-**Assessment Types**:
-
-- Daily performance
-- Technical skills
-- Soft skills
-- Final evaluation
-- Competency-based
-
-**Relations**:
-
-- Uses: Student, Teacher, Mentor, Journal modules
-- Used by: Report, Notification modules
-
-**Testing**: `tests/Feature/AssessmentGradingTest.php`
-
----
-
-### Assignment Module
-
-**Path**: `modules/Assignment/` **Responsibility**: Task and submission management **Key Features**:
-
-- Assignment creation by teachers
-- Submission tracking
-- Deadline management
-- Peer/mentor review
-- Grading integration
-- File attachment handling
-
-**Key Files**:
-
-- `src/Models/Assignment.php`
-- `src/Models/Submission.php`
-- `src/Services/Contracts/AssignmentService.php`
-- `src/Livewire/AssignmentViewer.php`
-
-**Relations**:
-
-- Uses: Student, Teacher, Media modules
-- Used by: Assessment module
-
-**Testing**: `tests/Feature/AssignmentTrackingTest.php`
+**Testing**: `tests/Feature/SettingManagementTest.php`
 
 ---
 
@@ -523,36 +439,282 @@ Features**:
 
 ---
 
-### Guidance Module
+### Teacher Module
 
-**Path**: `modules/Guidance/` **Responsibility**: Handbook and guidance material distribution **Key
+**Path**: `modules/Teacher/` **Responsibility**: Educational institution teacher/coordinator **Key
 Features**:
 
-- Upload and organize guidance documents
-- PDF handbook generation
-- Version tracking
-- Access control per role
-- Download and printing support
-- Search and categorization
+- Teacher profile and subject assignment
+- Class and curriculum management
+- Assessment creation and grading
+- Student progress oversight
+- Report generation
+- Internship monitoring
 
 **Key Files**:
 
-- `src/Models/Handbook.php`
-- `src/Services/Contracts/GuidanceService.php`
-- `src/Livewire/HandbookViewer.php`
+- `src/Models/Teacher.php`
+- `src/Services/Contracts/TeacherService.php`
+- `src/Livewire/Dashboard.php` — Teacher dashboard
+- `src/Livewire/StudentGrading.php` — Assessment component
 
 **Relations**:
 
-- Uses: Media module
-- Used by: All modules (reference materials)
+- Uses: User, Profile, School, Assessment, Report
+- Used by: Assessment, Internship modules
 
-**Testing**: `tests/Feature/GuidanceDistributionTest.php`
+**Testing**: `tests/Feature/TeacherManagementTest.php`
 
 ---
 
-## 📈 Operations & Support
+### Mentor Module
 
-System operations, reporting, and support functions.
+**Path**: `modules/Mentor/` **Responsibility**: Industry mentor account and mentoring **Key
+Features**:
+
+- Mentor profile and organization
+- Mentee assignment and tracking
+- Evaluation and feedback
+- Schedule management
+- Attendance marking
+- Mentee progress monitoring
+
+**Key Files**:
+
+- `src/Models/Mentor.php`
+- `src/Services/Contracts/MentorService.php`
+- `src/Livewire/Dashboard.php` — Mentor dashboard
+- `src/Livewire/MenteeManager.php` — Mentee tracking
+
+**Relations**:
+
+- Uses: User, Profile, Internship, Attendance
+- Used by: Internship, Assessment modules
+
+**Testing**: `tests/Feature/MentorManagementTest.php`
+
+---
+
+### Student Module
+
+**Path**: `modules/Student/` **Responsibility**: Student account and internship tracking **Key
+Features**:
+
+- Student profile information
+- Enrollment and registration
+- Progress tracking
+- Grade viewing
+- Journal access
+- Dashboard and reporting
+
+**Key Files**:
+
+- `src/Models/Student.php` — Student model
+- `src/Services/Contracts/StudentService.php`
+- `src/Livewire/Dashboard.php` — Student dashboard
+- `src/Livewire/StudentManager.php` — Admin student management
+
+**Relations**:
+
+- Uses: User, Profile, Internship, Journal, Assessment
+- Used by: Teacher, Mentor modules
+
+**Testing**: `tests/Feature/StudentManagementTest.php`
+
+---
+
+### Internship Module
+
+**Path**: `modules/Internship/` **Responsibility**: Internship program setup and management **Key
+Features**:
+
+- Create and manage internship programs
+- Define internship requirements
+- Placement slot management
+- Registration tracking
+- Status lifecycle (planning → active → completed)
+- Duration and timeline management
+
+**Key Files**:
+
+- `src/Models/Internship.php` — Internship program
+- `src/Models/Registration.php` — Student registration
+- `src/Models/Placement.php` — Industry placement slot
+- `src/Services/Contracts/InternshipService.php`
+- `src/Livewire/InternshipManager.php`
+
+**Relations**:
+
+- Uses: School, Assessment, Notification modules
+- Used by: All modules (central to system)
+
+**Testing**: `tests/Feature/InternshipManagementTest.php`
+
+---
+
+## 📊 Activity Monitoring
+
+Real-time tracking and logging of internship activities.
+
+### Schedule Module
+
+**Path**: `modules/Schedule/` **Responsibility**: Internship timeline and event management **Key
+Features**:
+
+- Internship start/end dates
+- Important dates (holidays, breaks)
+- Event scheduling
+- Reminder notifications
+- Calendar integration
+- Timeline visualization
+
+**Key Files**:
+
+- `src/Models/InternshipSchedule.php`
+- `src/Services/Contracts/ScheduleService.php`
+- `src/Livewire/ScheduleCalendar.php`
+
+**Relations**:
+
+- Uses: Internship, Notification modules
+- Used by: All modules (reference dates)
+
+**Testing**: `tests/Feature/ScheduleManagementTest.php`
+
+---
+
+### Attendance Module
+
+**Path**: `modules/Attendance/` **Responsibility**: Check-in tracking and absence management **Key
+Features**:
+
+- Daily check-in/check-out
+- GPS location tracking (optional)
+- Absence requests and approvals
+- Late arrival tracking
+- Monthly attendance summary
+- Compliance reporting
+
+**Key Files**:
+
+- `src/Models/Attendance.php` — Daily record
+- `src/Models/AbsenceRequest.php` — Leave request
+- `src/Services/Contracts/AttendanceService.php`
+- `src/Livewire/CheckinComponent.php` — Mobile check-in
+
+**Relations**:
+
+- Uses: Student, Mentor, Notification modules
+- Used by: Assessment, Report modules
+
+**Testing**: `tests/Feature/AttendanceTrackingTest.php`
+
+---
+
+### Journal Module
+
+**Path**: `modules/Journal/` **Responsibility**: Daily activity logging and supervision **Key
+Features**:
+
+- Daily journal entries (student writes activities)
+- Supervisor validation (mentor reviews)
+- Activity categories and tagging
+- Media attachments
+- Status tracking (draft, submitted, approved)
+- History and revision tracking
+
+**Key Files**:
+
+- `src/Models/Journal.php` — Journal entry
+- `src/Models/JournalValidator.php` — Validation status
+- `src/Services/Contracts/JournalService.php`
+- `src/Livewire/JournalWriter.php` — Write component
+- `src/Livewire/JournalValidator.php` — Review component
+
+**Statuses**:
+
+- Draft (student writing)
+- Submitted (waiting mentor review)
+- Approved (mentor validated)
+- Rejected (mentor needs changes)
+
+**Relations**:
+
+- Uses: Student, Mentor, Media modules
+- Used by: Assessment, Report modules
+
+**Testing**: `tests/Feature/JournalManagementTest.php`
+
+---
+
+### Assignment Module
+
+**Path**: `modules/Assignment/` **Responsibility**: Task and submission management **Key Features**:
+
+- Assignment creation by teachers
+- Submission tracking
+- Deadline management
+- Peer/mentor review
+- Grading integration
+- File attachment handling
+
+**Key Files**:
+
+- `src/Models/Assignment.php`
+- `src/Models/Submission.php`
+- `src/Services/Contracts/AssignmentService.php`
+- `src/Livewire/AssignmentViewer.php`
+
+**Relations**:
+
+- Uses: Student, Teacher, Media modules
+- Used by: Assessment module
+
+**Testing**: `tests/Feature/AssignmentTrackingTest.php`
+
+---
+
+## 🎓 Academic & Assessment
+
+Grading, evaluation, and academic management.
+
+### Assessment Module
+
+**Path**: `modules/Assessment/` **Responsibility**: Multi-stakeholder evaluation and grading **Key
+Features**:
+
+- Rubric-based assessment
+- Multi-evaluator scoring (teacher, mentor)
+- Grade calculation and weighting
+- Competency tracking
+- Transcript generation
+- Certificate issuance
+- Compliance auditing
+
+**Key Files**:
+
+- `src/Models/Assessment.php` — Assessment definition
+- `src/Models/AssessmentScore.php` — Score record
+- `src/Models/Rubric.php` — Rubric definition
+- `src/Services/Contracts/AssessmentService.php`
+- `src/Livewire/GradingComponent.php`
+
+**Assessment Types**:
+
+- Daily performance
+- Technical skills
+- Soft skills
+- Final evaluation
+- Competency-based
+
+**Relations**:
+
+- Uses: Student, Teacher, Mentor, Journal modules
+- Used by: Report, Notification modules
+
+**Testing**: `tests/Feature/AssessmentGradingTest.php`
+
+---
 
 ### Report Module
 
@@ -627,6 +789,38 @@ System operations, reporting, and support functions.
 
 ---
 
+### Media Module
+
+**Path**: `modules/Media/` **Responsibility**: File storage and management **Key Features**:
+
+- File upload and storage (via spatie/laravel-medialibrary)
+- Cloud storage support (S3, etc.)
+- Image optimization
+- Virus scanning (optional)
+- Access control (private/public)
+- File cleanup
+
+**Key Files**:
+
+- `src/Services/Contracts/MediaService.php`
+- `src/Http/Controllers/MediaUploadController.php`
+
+**Supported Files**:
+
+- Images (JPEG, PNG, GIF, WebP)
+- Documents (PDF, Word, Excel)
+- Videos (MP4, WebM)
+- Archives (ZIP, RAR)
+
+**Relations**:
+
+- Uses: No module (utility)
+- Used by: User, Profile, Journal, Guidance modules
+
+**Testing**: `tests/Feature/FileUploadTest.php`
+
+---
+
 ### Log Module
 
 **Path**: `modules/Log/` **Responsibility**: Activity audit trail and logging **Key Features**:
@@ -661,197 +855,30 @@ System operations, reporting, and support functions.
 
 ---
 
-### Setting Module
+### Guidance Module
 
-**Path**: `modules/Setting/` **Responsibility**: System-wide configuration **Key Features**:
-
-- Global configuration management
-- Feature flags
-- Email templates
-- SMS templates
-- System preferences
-- Admin settings UI
-
-**Key Files**:
-
-- `src/Models/Setting.php`
-- `src/Services/Contracts/SettingService.php`
-- `src/Livewire/SystemSettings.php`
-
-**Configuration Areas**:
-
-- Mail settings
-- Queue settings
-- Cache settings
-- API keys
-- Feature toggles
-- Notification templates
-
-**Relations**:
-
-- Uses: No module (global)
-- Used by: All modules
-
-**Testing**: `tests/Feature/SettingManagementTest.php`
-
----
-
-### Media Module
-
-**Path**: `modules/Media/` **Responsibility**: File storage and management **Key Features**:
-
-- File upload and storage (via spatie/laravel-medialibrary)
-- Cloud storage support (S3, etc.)
-- Image optimization
-- Virus scanning (optional)
-- Access control (private/public)
-- File cleanup
-
-**Key Files**:
-
-- `src/Services/Contracts/MediaService.php`
-- `src/Http/Controllers/MediaUploadController.php`
-
-**Supported Files**:
-
-- Images (JPEG, PNG, GIF, WebP)
-- Documents (PDF, Word, Excel)
-- Videos (MP4, WebM)
-- Archives (ZIP, RAR)
-
-**Relations**:
-
-- Uses: No module (utility)
-- Used by: User, Profile, Journal, Guidance modules
-
-**Testing**: `tests/Feature/FileUploadTest.php`
-
----
-
-## 🏢 Infrastructure
-
-Core infrastructure and shared services.
-
-### Core Module
-
-**Path**: `modules/Core/` **Responsibility**: Shared kernel and base classes **Key Features**:
-
-- Base model class (with common traits)
-- Base service class
-- Eloquent query builder (with common scopes)
-- Shared exceptions
-- Helper functions
-- Constants and enumerations
-
-**Key Files**:
-
-- `src/Models/BaseModel.php` — Base class (UUID, timestamps, soft delete)
-- `src/Services/BaseService.php` — Service base class
-- `src/Query/EloquentQuery.php` — Query builder
-- `src/Exceptions/*` — Custom exceptions
-
-**Relations**:
-
-- Used by: All other modules (foundation)
-
----
-
-### Shared Module
-
-**Path**: `modules/Shared/` **Responsibility**: Cross-module utilities and contracts **Key
+**Path**: `modules/Guidance/` **Responsibility**: Handbook and guidance material distribution **Key
 Features**:
 
-- Common contracts/interfaces
-- Shared utilities
-- Collection helpers
-- String utilities
-- Date utilities
-- Validation rules
+- Upload and organize guidance documents
+- PDF handbook generation
+- Version tracking
+- Access control per role
+- Download and printing support
+- Search and categorization
 
 **Key Files**:
 
-- `src/Contracts/*` — Common interfaces
-- `src/Utilities/*` — Helper classes
+- `src/Models/Handbook.php`
+- `src/Services/Contracts/GuidanceService.php`
+- `src/Livewire/HandbookViewer.php`
 
 **Relations**:
 
-- Used by: Multiple modules
+- Uses: Media module
+- Used by: All modules (reference materials)
 
----
-
-### UI Module
-
-**Path**: `modules/UI/` **Responsibility**: Design system and shared components **Key Features**:
-
-- Component library
-- Tailwind CSS configuration
-- Icon sets
-- Form components
-- Table components
-- Modal components
-- Toast notifications
-
-**Key Files**:
-
-- `resources/views/components/*` — Blade components
-- `resources/css/ui.css` — Design system
-- `src/Livewire/RecordManager.php` — Base CRUD component
-
-**Relations**:
-
-- Used by: All modules (UI)
-
----
-
-### Status Module
-
-**Path**: `modules/Status/` **Responsibility**: Shared status enumerations **Key Features**:
-
-- Internship statuses
-- Journal entry statuses
-- Attendance statuses
-- Assessment statuses
-- Registration statuses
-
-**Key Files**:
-
-- `src/Enums/*` — Status enums
-
-**Example Statuses**:
-
-- Internship: draft, active, completed, suspended
-- Journal: draft, submitted, approved, rejected
-- Attendance: present, absent, late, excused
-
-**Relations**:
-
-- Used by: Internship, Journal, Attendance, Assessment modules
-
----
-
-### Exception Module
-
-**Path**: `modules/Exception/` **Responsibility**: Custom application exceptions **Key Features**:
-
-- Custom exception classes
-- HTTP status mapping
-- User-friendly error messages
-- Logging integration
-
-**Key Files**:
-
-- `src/Exceptions/*` — Custom exceptions
-
-**Example Exceptions**:
-
-- `InternshipNotFoundException`
-- `UnauthorizedAccessException`
-- `InvalidTransitionException`
-- `ValidationException`
-
-**Relations**:
-
-- Used by: All modules
+**Testing**: `tests/Feature/GuidanceDistributionTest.php"
 
 ---
 
@@ -875,29 +902,6 @@ Features**:
 
 - Uses: All modules
 - Used by: Super Admin role
-
----
-
-### Support Module
-
-**Path**: `modules/Support/` **Responsibility**: **Infrastructure support, technical installation,
-and help documentation** **Key Features**:
-
-- **System Installation**: Automated technical initialization via CLI
-- **Environment Auditing**: Pre-flight checks for requirements and permissions
-- Help article and FAQ management
-- Knowledge base for students and mentors
-- Support ticket integration
-
-**Key Files**:
-
-- `src/Services/SystemInstaller.php` — Technical installation engine
-- `src/Services/InstallationAuditor.php` — Environment requirement auditor
-
-**Relations**:
-
-- Uses: Media, Setting modules
-- Used by: All users, System Administrators
 
 ---
 

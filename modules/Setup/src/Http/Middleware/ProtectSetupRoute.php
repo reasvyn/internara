@@ -6,114 +6,99 @@ namespace Modules\Setup\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
-use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Services\Contracts\AppSetupService;
+use Illuminate\Support\Facades\Log;
+use Modules\Setup\Services\Contracts\SetupService;
 
+/**
+ * Protect Setup Routes - Token validation, rate limiting
+ *
+ * [S1 - Secure] Rate limiting, timing-safe token comparison, TTL check
+ * [S2 - Sustain] Clear error messages
+ * [S3 - Scalable] Stateless validation (no session dependency)
+ */
 class ProtectSetupRoute
 {
-    public function __construct(
-        protected AppSetupService $setupService,
-        protected SuperAdminService $superAdminService,
-        protected SettingService $settingService,
-    ) {}
+    protected const RATE_LIMIT_ATTEMPTS = 20;
+    protected const RATE_LIMIT_DECAY = 60; // seconds
 
     /**
-     * Handle an incoming request.
+     * Handle incoming request
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
-        // [S1 - Secure] Apply Rate Limiting for Setup Routes
-        $key = 'setup_throttle:' . $request->ip();
-        if (RateLimiter::tooManyAttempts($key, 20)) {
-            $seconds = RateLimiter::availableIn($key);
+        // Check rate limiting
+        if ($this->isRateLimited($request)) {
+            $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
-            return abort(429, __('ui::messages.too_many_requests', ['seconds' => $seconds]));
-        }
-        RateLimiter::hit($key, 60);
+            Log::warning('Setup route rate limit exceeded', [
+                'ip' => $request->ip(),
+                'seconds_remaining' => $seconds,
+            ]);
 
-        // [S1 - Secure] Check installation status directly
-        $isInstalled = $this->setupService->isAppInstalled(true);
-
-        // 1. Total lockdown if application is already installed
-        if ($isInstalled) {
-            return abort(404);
+            return response()->json([
+                'error' => __('setup::messages.rate_limited', ['seconds' => $seconds]),
+                'retry_after' => $seconds,
+            ], 429);
         }
 
-        // 2. Enforce Signed URL validation or Authorized Session
-        $isAuthorized = $request->session()->get(AppSetupService::SESSION_SETUP_AUTHORIZED);
+        RateLimiter::hit($this->throttleKey($request), self::RATE_LIMIT_DECAY);
 
-        // [S1 - Secure] Only grant new session authorization if valid signature OR valid token is present
-        if (!$isAuthorized && ($request->hasValidSignature() || $this->hasValidToken($request))) {
-            $request->session()->put(AppSetupService::SESSION_SETUP_AUTHORIZED, true);
-            $isAuthorized = true;
+        // Validate setup token (from URL or session)
+        $token = $request->get('token') ?? $request->session()->get('setup_token');
+
+        if (empty($token)) {
+            Log::warning('Setup access denied: no token provided', ['ip' => $request->ip()]);
+
+            return $this->denyAccess(__('setup::messages.token_required'));
         }
 
-        // Verify authorized session AND ensure setup_token still exists in DB
-        $storedToken = $this->settingService->getValue('setup_token');
-        if (!$isAuthorized || empty($storedToken)) {
-            return abort(403, __('exception::messages.unauthorized_setup_access'));
+        $setupService = app(SetupService::class);
+
+        if (!$setupService->validateToken($token)) {
+            Log::warning('Setup access denied: invalid/expired token', [
+                'ip' => $request->ip(),
+                'token_prefix' => substr($token, 0, 8) . '...',
+            ]);
+
+            return $this->denyAccess(__('setup::messages.token_invalid'));
         }
 
-        if ($this->shouldRedirectToCompletion($request)) {
-            return redirect()->route('setup.complete');
-        }
+        // Store validated token in session for subsequent requests
+        $request->session()->put('setup_token', $token);
+        $request->session()->put('setup_authorized', true);
 
         return $next($request);
     }
 
-    protected function shouldRedirectToCompletion(Request $request): bool
-    {
-        return !$request->routeIs('setup.complete') && $this->isFinalizationOnlyStepRemaining();
-    }
-
-    protected function isFinalizationOnlyStepRemaining(): bool
-    {
-        foreach ($this->setupStepsBeforeCompletion() as $step) {
-            if (!$this->setupService->isStepCompleted($step, true)) {
-                return false;
-            }
-        }
-
-        return !$this->setupService->isStepCompleted(AppSetupService::STEP_COMPLETE, true);
-    }
-
     /**
-     * @return array<int, string>
+     * [S1 - Secure] Check rate limiting
      */
-    protected function setupStepsBeforeCompletion(): array
+    protected function isRateLimited(Request $request): bool
     {
-        return [
-            AppSetupService::STEP_WELCOME,
-            AppSetupService::STEP_SCHOOL,
-            AppSetupService::STEP_ACCOUNT,
-            AppSetupService::STEP_DEPARTMENT,
-            AppSetupService::STEP_INTERNSHIP,
-        ];
-    }
-
-    protected function superAdminExists(): bool
-    {
-        return Cache::remember(
-            'user.super_admin',
-            now()->addDay(),
-            fn() => $this->superAdminService->exists(),
+        return RateLimiter::tooManyAttempts(
+            $this->throttleKey($request),
+            self::RATE_LIMIT_ATTEMPTS
         );
     }
 
-    protected function hasValidToken(Request $request): bool
+    /**
+     * Generate throttle key (IP-based)
+     */
+    protected function throttleKey(Request $request): string
     {
-        $token = $request->query('token');
-        $storedToken = $this->settingService->getValue('setup_token');
-        $expiresAt = $this->settingService->getValue('setup_token_expires_at');
+        return 'setup_throttle:' . $request->ip();
+    }
 
-        // [S1 - Secure] Enforce Token TTL
-        if ($expiresAt && now()->parse($expiresAt)->isPast()) {
-            return false;
+    /**
+     * Deny access with proper response
+     */
+    protected function denyAccess(string $message): mixed
+    {
+        if (request()->expectsJson()) {
+            return response()->json(['error' => $message], 403);
         }
 
-        return $token && $storedToken && is_string($token) && hash_equals($storedToken, $token);
+        return redirect()->route('setup.welcome')->withErrors(['token' => $message]);
     }
 }

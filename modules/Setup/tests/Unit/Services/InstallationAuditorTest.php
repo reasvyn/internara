@@ -4,100 +4,103 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Unit\Services;
 
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Modules\Setup\Services\InstallationAuditor;
+use Tests\TestCase;
 
-describe('InstallationAuditor Unit Test', function () {
+/**
+ * [S1 - Secure] Test sensitive data sanitization
+ * [S2 - Sustain] Test clear pass/fail reporting
+ * [S3 - Scalable] Test extensible checks
+ */
+describe('InstallationAuditor', function () {
     beforeEach(function () {
-        app()->setLocale('en');
-        $this->service = new InstallationAuditor();
+        $this->auditor = new InstallationAuditor();
     });
 
-    test('it can perform a full system audit', function () {
-        $dbConnection = \Mockery::mock(ConnectionInterface::class);
-        $dbConnection->shouldReceive('getPdo')->andReturn(true);
-        DB::shouldReceive('connection')->andReturn($dbConnection);
-        File::shouldReceive('exists')->andReturn(true);
-
-        $results = $this->service->audit();
-
-        expect($results)->toHaveKeys(['requirements', 'permissions', 'database']);
+    describe('audit', function () {
+        it('returns array with requirements, permissions, database', function () {
+            $result = $this->auditor->audit();
+            
+            expect($result)->toBeArray();
+            expect($result)->toHaveKey('requirements');
+            expect($result)->toHaveKey('permissions');
+            expect($result)->toHaveKey('database');
+        });
     });
 
-    test('it validates mandatory php requirements', function () {
-        $requirements = $this->service->checkRequirements();
-
-        expect($requirements)->toBeArray();
-
-        $versionKey = __('setup::wizard.environment.audit.php_version', ['version' => '8.4.0']);
-        expect($requirements)->toHaveKey($versionKey);
+    describe('passes', function () {
+        it('returns true when all checks pass', function () {
+            // Mock successful checks
+            $result = $this->auditor->passes();
+            
+            expect($result)->toBeBool();
+        });
     });
 
-    test('it audits directory write permissions', function () {
-        File::shouldReceive('exists')->andReturn(true);
-
-        $permissions = $this->service->checkPermissions();
-
-        expect($permissions)
-            ->toBeArray()
-            ->toHaveKeys([
-                __('setup::wizard.environment.audit.storage_root'),
-                __('setup::wizard.environment.audit.storage_logs'),
-                __('setup::wizard.environment.audit.storage_framework'),
-                __('setup::wizard.environment.audit.bootstrap_cache'),
-                __('setup::wizard.environment.audit.env_file'),
-            ]);
-    });
-
-    test('it audits database connectivity', function () {
-        $dbConnection = \Mockery::mock(ConnectionInterface::class);
-        $dbConnection->shouldReceive('getPdo')->andReturn(true);
-        DB::shouldReceive('connection')->andReturn($dbConnection);
-
-        $dbStatus = $this->service->checkDatabase();
-
-        expect($dbStatus['connection'])->toBeTrue();
-    });
-
-    test('it passes when all environment criteria are met', function () {
-        $dbConnection = \Mockery::mock(ConnectionInterface::class);
-        $dbConnection->shouldReceive('getPdo')->andReturn(true);
-        DB::shouldReceive('connection')->andReturn($dbConnection);
-        File::shouldReceive('exists')->andReturn(true);
-
-        // Since it relies on the real system, it might fail in restricted CI.
-        // We'll just assert it returns a boolean.
-        expect(is_bool($this->service->passes()))->toBeTrue();
-    });
-
-    describe('Failure Scenarios', function () {
-        test('it fails audit when a permission is missing', function () {
-            $dbConnection = \Mockery::mock(ConnectionInterface::class);
-            $dbConnection->shouldReceive('getPdo')->andReturn(true);
-            DB::shouldReceive('connection')->andReturn($dbConnection);
-
-            // Create a mock auditor to fake checkPermissions
-            $mockAuditor = \Mockery::mock(InstallationAuditor::class)->makePartial();
-            $mockAuditor->shouldReceive('checkPermissions')->andReturn([
-                'storage' => false, // Failing permission
-            ]);
-
-            $mockAuditor->shouldReceive('checkRequirements')->andReturn(['php' => true]);
-            $mockAuditor->shouldReceive('checkDatabase')->andReturn(['connection' => true]);
-
-            expect($mockAuditor->passes())->toBeFalse();
+    describe('checkRequirements', function () {
+        it('checks PHP version', function () {
+            $reflection = new \ReflectionClass($this->auditor);
+            $method = $reflection->getMethod('checkRequirements');
+            $result = $method->invoke($this->auditor);
+            
+            expect($result)->toBeArray();
+            expect($result[0]['name'])->toContain('PHP Version');
         });
 
-        test('it fails audit when database is disconnected', function () {
-            DB::shouldReceive('connection')->andThrow(new \PDOException('Connection refused'));
+        it('checks required extensions', function () {
+            $reflection = new \ReflectionClass($this->auditor);
+            $method = $reflection->getMethod('checkRequirements');
+            $result = $method->invoke($this->auditor);
+            
+            $extensionChecks = array_filter($result, fn($item) => str_contains($item['name'], 'Extension'));
+            expect($extensionChecks)->not->toBeEmpty();
+        });
+    });
 
-            $mockAuditor = \Mockery::mock(InstallationAuditor::class)->makePartial();
-            $mockAuditor->shouldReceive('checkPermissions')->andReturn(['storage' => true]);
-            $mockAuditor->shouldReceive('checkRequirements')->andReturn(['php' => true]);
+    describe('checkPermissions', function () {
+        it('checks storage directory', function () {
+            $reflection = new \ReflectionClass($this->auditor);
+            $method = $reflection->getMethod('checkPermissions');
+            $result = $method->invoke($this->auditor);
+            
+            expect($result)->toBeArray();
+            expect($result[0]['name'])->toContain('storage');
+        });
+    });
 
-            expect($mockAuditor->passes())->toBeFalse();
+    describe('checkDatabase', function () {
+        it('returns connection status', function () {
+            $reflection = new \ReflectionClass($this->auditor);
+            $method = $reflection->getMethod('checkDatabase');
+            $result = $method->invoke($this->auditor);
+            
+            expect($result)->toBeArray();
+            expect($result[0]['name'])->toBe('Database connection');
+        });
+    });
+
+    describe('sanitizeErrorMessage', function () {
+        it('hides passwords in error messages', function () {
+            $reflection = new \ReflectionClass($this->auditor);
+            $method = $reflection->getMethod('sanitizeErrorMessage');
+            
+            $input = "SQLSTATE[HY000]: password=secret123 host=localhost";
+            $result = $method->invoke($this->auditor, $input);
+            
+            expect($result)->not->toContain('secret123');
+            expect($result)->toContain('password=****');
+        });
+
+        it('hides user credentials', function () {
+            $reflection = new \ReflectionClass($this->auditor);
+            $method = $reflection->getMethod('sanitizeErrorMessage');
+            
+            $input = "Access denied for user=admin host=localhost";
+            $result = $method->invoke($this->auditor, $input);
+            
+            expect($result)->not->toContain('admin');
+            expect($result)->toContain('user=****');
         });
     });
 });

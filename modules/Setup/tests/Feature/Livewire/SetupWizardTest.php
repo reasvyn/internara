@@ -12,7 +12,7 @@ use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Department\Models\Department;
 use Modules\Internship\Models\Internship;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
-use Modules\Permission\Database\Seeders\RoleSeeder;
+use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\School\Models\School;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Livewire\AccountSetup;
@@ -30,7 +30,7 @@ uses(LazilyRefreshDatabase::class);
 beforeEach(function () {
     App::setLocale('en');
     $this->seed(PermissionSeeder::class);
-    $this->seed(RoleSeeder::class);
+    $this->seed(PermissionSeeder::class);
 
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
@@ -51,10 +51,16 @@ beforeEach(function () {
     // Mock requirement providers to always return satisfied
     $registry = app(SetupRequirementRegistry::class);
     foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
-        $mockProvider = new class($identifier) implements SetupRequirementProvider {
+        $mockProvider = new class ($identifier) implements SetupRequirementProvider {
             public function __construct(private string $id) {}
-            public function getRequirementIdentifier(): string { return $this->id; }
-            public function isSatisfied(): bool { return true; }
+            public function getRequirementIdentifier(): string
+            {
+                return $this->id;
+            }
+            public function isSatisfied(): bool
+            {
+                return true;
+            }
         };
         $registry->register($mockProvider);
     }

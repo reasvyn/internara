@@ -996,6 +996,542 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 
 ---
 
+## API Standards
+
+### RESTful API Conventions
+
+```php
+// ✅ Resource naming (plural, kebab-case)
+GET    /api/students           // List resources
+POST   /api/students           // Create resource
+GET    /api/students/{id}      // Show resource
+PUT    /api/students/{id}      // Update resource
+DELETE /api/students/{id}      // Delete resource
+
+// ✅ Nested resources (when logically owned)
+GET    /api/students/{id}/journals
+POST   /api/students/{id}/journals
+
+// ✅ Actions (non-CRUD) use verb as endpoint
+POST   /api/students/{id}/approve
+POST   /api/internships/{id}/complete
+```
+
+### API Response Format
+
+```php
+// ✅ Success response
+return response()->json([
+    'success' => true,
+    'data' => $student,
+    'message' => __('student.messages.created'),
+], 201);
+
+// ✅ Error response
+return response()->json([
+    'success' => false,
+    'message' => __('student.validation.email_required'),
+    'errors' => $validator->errors(),
+], 422);
+```
+
+### API Authentication
+
+```php
+// ✅ Use Laravel Sanctum for SPA authentication
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::apiResource('students', StudentController::class);
+});
+
+// ✅ API tokens for external integrations
+$token = $user->createToken('integration-token', ['read', 'write'])->plainTextToken;
+```
+
+---
+
+## Module Structure Standards
+
+### Directory Layout (Recommended)
+
+```
+modules/
+└── Student/
+    ├── Config/
+    │   └── config.php
+    ├── Console/
+    │   └── Commands/
+    ├── Database/
+    │   ├── Factories/
+    │   ├── Migrations/
+    │   └── Seeders/
+    ├── Domain/              # OPTIONAL - Only for modules with complex business logic
+    │   ├── Models/        # Domain models (business logic, invariants)
+    │   ├── ValueObjects/  # Immutable value objects
+    │   └── Events/       # Domain events
+    ├── Http/
+    │   ├── Controllers/
+    │   ├── Requests/
+    │   └── Resources/
+    ├── Livewire/           # Livewire components
+    ├── Models/            # Eloquent models (persistence)
+    ├── Services/
+    │   ├── Contracts/   # Interfaces (recommended for all modules)
+    │   └── Impl...       # Service implementations
+    ├── Providers/
+    │   └── StudentServiceProvider.php
+    ├── Resources/
+    │   └── views/
+    ├── Routes/
+    │   ├── api.php
+    │   └── web.php
+    ├── Tests/
+    │   ├── Feature/
+    │   └── Unit/
+    └── lang/
+        ├── en/
+        └── id/
+```
+
+**Note:** Domain layer is **optional**. Only add it when:
+- Module has complex business logic that needs encapsulation
+- Business rules require explicit invariants
+- Domain models differ significantly from Eloquent models
+
+**Simplicity Principle:** If a module only does CRUD with basic validation, skip the Domain layer. Complexity must be earned by demonstrated need (AGENTS.md Principle 3).
+
+### Module Provider Registration
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\Student\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class StudentServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->bind(
+            \Modules\Student\Services\Contracts\StudentService::class,
+            \Modules\Student\Services\StudentService::class
+        );
+    }
+
+    public function boot(): void
+    {
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'student');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'student');
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+    }
+}
+```
+
+---
+
+## Security Standards
+
+### Input Validation (Context-Aware)
+
+```php
+// Public API (strict validation)
+class RegisterStudentRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'email' => ['required', 'email', 'max:255', 'unique:students'],
+            'name' => ['required', 'string', 'max:255'],
+            'nis' => ['required', 'string', new ValidNIS()],
+            'birth_date' => ['required', 'date', 'before:today'],
+        ];
+    }
+}
+
+// Internal admin (lighter validation)
+class UpdateSettingRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'key' => ['required', 'string'],
+            'value' => ['present'],
+        ];
+    }
+}
+```
+
+### Authorization (Policies)
+
+```php
+// ✅ Policy for authorization
+class StudentPolicy
+{
+    public function view(User $user, Student $student): bool
+    {
+        return $user->isAdmin() || $user->id === $student->user_id;
+    }
+
+    public function update(User $user, Student $student): bool
+    {
+        return $user->isAdmin() || 
+               ($user->id === $student->user_id && $student->isEditable());
+    }
+
+    public function delete(User $user, Student $student): bool
+    {
+        return $user->isAdmin(); // Only admins can delete
+    }
+}
+
+// Usage in controller
+$this->authorize('view', $student);
+```
+
+### Data Protection
+
+| Data Type | Protection Level | Example |
+|----------|----------------|---------|
+| **PII** (name, email, NIS, NIK) | Encrypt at rest, mask in logs | `Cast: 'nis' => 'encrypted'` |
+| **Credentials** (passwords) | Hash with bcrypt/argon2 | `Hash::make($password)` |
+| **Tokens** (API keys) | Never log, rotate regularly | `Laravel Sanctum` |
+| **Public data** (modules, settings) | No special protection | Plain storage |
+
+**Rules**:
+- **Never** commit `.env` or secrets to version control
+- **Never** expose PII in logs or error messages
+- **Always** use HTTPS in production
+- **Prefer** environment variables for configuration
+
+---
+
+## Error Handling Standards
+
+### Explicit Failure (Not Paranoid)
+
+```php
+// ❌ Silent failure (bad)
+try {
+    $student->submitJournal($journal);
+} catch (\Exception $e) {
+    // Silently swallowed - BAD
+}
+
+// ✅ Balanced approach
+try {
+    return $student->submitJournal($journal);
+} catch (ValidationException $e) {
+    throw $e;  // Re-throw domain exceptions
+} catch (\Exception $e) {
+    Log::error('Journal submission failed', [
+        'student_id' => $student->id,
+        'error' => $e->getMessage(),
+    ]);
+    throw new DomainException(__('student.errors.submission_failed'), 0, $e);
+}
+```
+
+### Custom Exception Classes
+
+```php
+// ✅ Domain-specific exceptions
+class InvalidNISException extends DomainException {}
+class JournalSubmissionClosedException extends DomainException {}
+class StudentNotEligibleException extends DomainException {}
+
+// Usage
+throw new InvalidNISException(__('student.validation.nis_invalid'));
+```
+
+---
+
+## Event & Listener Standards
+
+### Domain Events
+
+```php
+// ✅ Event definition
+class StudentRegistered
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public function __construct(
+        public readonly Student $student,
+        public readonly string $password
+    ) {}
+}
+
+// ✅ Event dispatch
+event(new StudentRegistered($student, $password));
+
+// ✅ Listener
+class SendWelcomeEmail
+{
+    public function handle(StudentRegistered $event): void
+    {
+        Notification::send(
+            $event->student,
+            new WelcomeNotification($event->password)
+        );
+    }
+}
+```
+
+### EventServiceProvider Registration
+
+```php
+protected $listen = [
+    StudentRegistered::class => [
+        SendWelcomeEmail::class,
+        LogActivity::class,
+    ],
+    JournalSubmitted::class => [
+        NotifyMentor::class,
+        UpdateProgress::class,
+    ],
+];
+```
+
+---
+
+## Notification Standards
+
+### Notification Structure
+
+```php
+// ✅ Notification class
+class WelcomeNotification extends Notification
+{
+    public function __construct(
+        private readonly string $password
+    ) {}
+
+    public function via($notifiable): array
+    {
+        return ['mail', 'database'];
+    }
+
+    public function toMail($notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject(__('student.emails.welcome.subject'))
+            ->greeting(__('student.emails.welcome.greeting', ['name' => $notifiable->name]))
+            ->line(__('student.emails.welcome.line1'))
+            ->action(__('student.emails.welcome.action'), url('/login'))
+            ->line(__('student.emails.welcome.password', ['password' => $this->password]));
+    }
+
+    public function toArray($notifiable): array
+    {
+        return [
+            'title' => __('student.notifications.welcome.title'),
+            'message' => __('student.notifications.welcome.message'),
+        ];
+    }
+}
+```
+
+---
+
+## File Upload Standards
+
+### Validation & Storage
+
+```php
+// ✅ File upload validation
+class UploadJournalRequest extends FormRequest
+{
+    public function rules(): array
+    {
+        return [
+            'file' => [
+                'required',
+                'file',
+                'mimes:pdf,doc,docx',
+                'max:5120', // 5MB
+            ],
+            'journal_id' => ['required', 'exists:journals,id'],
+        ];
+    }
+}
+
+// ✅ Secure file storage
+$path = $request->file('journal')->store(
+    "journals/{$journal->id}",
+    'private' // Use 'private' disk for sensitive files
+);
+
+// ✅ Generate secure download URL
+return response()->download(storage_path("app/private/{$path}"));
+```
+
+### Allowed File Types
+
+| Type | Extensions | Max Size | Storage |
+|------|-----------|----------|---------|
+| Documents | pdf, doc, docx | 5MB | private |
+| Images | jpg, png, jpeg | 2MB | public |
+| Archives | zip, rar | 10MB | private |
+
+---
+
+## Audit Trail Standards
+
+### Activity Logging
+
+```php
+// ✅ Log important actions using spatie/laravel-activitylog
+activity()
+    ->causedBy(auth()->user())
+    ->performedOn($student)
+    ->withProperties([
+        'attributes' => $student->getAttributes(),
+        'old' => $student->getOriginal(),
+    ])
+    ->log('updated');
+
+// ✅ Custom activity description
+public function getActivitylogOptions(): LogOptions
+{
+    return LogOptions::defaults()
+        ->logOnly(['name', 'email', 'nis'])
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+}
+```
+
+### What to Log
+
+- [x] User login/logout
+- [x] Student create/update/delete
+- [x] Journal submissions
+- [x] Grade changes
+- [x] Setting changes
+- [x] Permission changes
+- [x] File uploads/deletions
+
+---
+
+## Environment Configuration
+
+### .env Standards
+
+```bash
+# ✅ Use descriptive prefixes
+INTERNARA_APP_NAME="Internara"
+INTERNARA_APP_URL="${APP_URL}"
+
+# Module-specific config
+STUDENT_MAX_JOURNALS_PER_DAY=3
+STUDENT_ALLOWED_FILE_TYPES="pdf,doc,docx"
+STUDENT_MAX_FILE_SIZE=5120
+
+# External services
+MAIL_MAILER=smtp
+MAIL_HOST=...
+```
+
+### Config File Structure
+
+```php
+// modules/Student/Config/config.php
+return [
+    'max_journals_per_day' => env('STUDENT_MAX_JOURNALS_PER_DAY', 3),
+    'allowed_file_types' => env('STUDENT_ALLOWED_FILE_TYPES', 'pdf,doc,docx'),
+    'max_file_size' => env('STUDENT_MAX_FILE_SIZE', 5120),
+    
+    // Don't expose sensitive data in config
+    // Use .env for secrets
+];
+```
+
+---
+
+## Performance Standards
+
+### Query Optimization
+
+```php
+// ❌ N+1 problem
+foreach ($students as $student) {
+    echo $student->department->name; // 1 + N queries
+}
+
+// ✅ Eager loading
+$students = Student::with('department')->get();
+foreach ($students as $student) {
+    echo $student->department->name; // 2 queries total
+}
+
+// ✅ Specific columns
+$students = Student::with('department:id,name')->get(['id', 'name', 'department_id']);
+```
+
+### Caching Strategy
+
+```php
+// ✅ Cache dropdowns (rarely change)
+$departments = Cache::remember(
+    'dropdowns:departments',
+    now()->addDay(),
+    fn() => Department::all(['id', 'name'])
+);
+
+// ✅ Clear cache on updates
+public function updated(Department $department): void
+{
+    Cache::forget('dropdowns:departments');
+}
+
+// ✅ Cache expensive computations
+$statistics = Cache::remember(
+    "student:{$student->id}:statistics",
+    now()->addHour(),
+    fn() => $this->calculateStatistics($student)
+);
+```
+
+---
+
+## Testing Standards
+
+### Test Structure (Pest PHP)
+
+```php
+// ✅ Clear, behavior-focused tests
+describe('StudentService', function () {
+    describe('register', function () {
+        it('creates student with valid data', function () {
+            $data = Student::factory()->make()->toArray();
+            
+            $student = app(StudentService::class)->register($data);
+            
+            expect($student)->toBeInstanceOf(Student::class)
+                ->and($student->email)->toBe($data['email']);
+        });
+        
+        it('throws exception for invalid NIS', function () {
+            $data = Student::factory()->make(['nis' => 'invalid'])->toArray();
+            
+            expect(fn() => app(StudentService::class)->register($data))
+                ->toThrow(InvalidNISException::class);
+        });
+    });
+});
+```
+
+### Test Coverage Requirements
+
+| Type | Coverage Target | Notes |
+|------|----------------|-------|
+| Unit Tests | 80% | Domain logic, services |
+| Feature Tests | 70% | HTTP endpoints, Livewire |
+| Critical Paths | 100% | Registration, payment, submission |
+
+---
+
 ## Further Reading
 
 - [Philosophy Guide](philosophy.md) — 3S Doctrine principles
