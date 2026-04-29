@@ -7,8 +7,8 @@ namespace Modules\Internship\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\RequirementForm;
-use Modules\Internship\Models\InternshipRequirement;
-use Modules\Internship\Services\Contracts\InternshipRequirementService;
+use Modules\Internship\Services\Contracts\RequirementService;
+use Modules\Permission\Enums\Permission;
 use Modules\UI\Livewire\RecordManager;
 
 class RequirementManager extends RecordManager
@@ -36,10 +36,10 @@ class RequirementManager extends RecordManager
         $this->addLabel = __('internship::ui.add_requirement');
         $this->deleteConfirmMessage = __('internship::ui.delete_requirement_confirm');
 
-        $this->viewPermission = 'internship.view';
-        $this->createPermission = 'internship.manage';
-        $this->updatePermission = 'internship.manage';
-        $this->deletePermission = 'internship.manage';
+        $this->viewPermission = Permission::INTERNSHIP_VIEW;
+        $this->createPermission = Permission::INTERNSHIP_MANAGE;
+        $this->updatePermission = Permission::INTERNSHIP_MANAGE;
+        $this->deletePermission = Permission::INTERNSHIP_MANAGE;
 
         $this->searchable = ['name', 'description', 'academic_year'];
         $this->sortable = ['name', 'type', 'is_mandatory', 'academic_year', 'created_at'];

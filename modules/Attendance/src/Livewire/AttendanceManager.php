@@ -10,10 +10,20 @@ use Modules\Attendance\Models\AttendanceLog;
 use Modules\Attendance\Services\Contracts\AttendanceService;
 use Modules\Exception\AppException;
 use Modules\Guidance\Services\Contracts\HandbookService;
+use Modules\Permission\Enums\Permission;
 use Modules\Setting\Services\Contracts\SettingService;
+use Modules\UI\Livewire\Traits\RbacTrait;
 
 class AttendanceManager extends Component
 {
+    use RbacTrait;
+
+    protected ?Permission $viewPermission = Permission::ATTENDANCE_VIEW;
+
+    protected ?Permission $createPermission = Permission::ATTENDANCE_CREATE;
+
+    protected ?Permission $updatePermission = Permission::ATTENDANCE_UPDATE;
+
     public ?AttendanceLog $todayLog = null;
 
     protected AttendanceService $attendanceService;

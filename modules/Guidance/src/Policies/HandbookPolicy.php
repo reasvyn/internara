@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Guidance\Policies;
 
 use Modules\Guidance\Models\Handbook;
+use Modules\Permission\Enums\Permission;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
 /**
@@ -19,7 +21,10 @@ class HandbookPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('guidance.view') || $user->can('guidance.manage');
+        return $user->hasAnyPermission([
+            Permission::GUIDANCE_VIEW->value,
+            Permission::GUIDANCE_MANAGE->value,
+        ]);
     }
 
     /**
@@ -27,7 +32,10 @@ class HandbookPolicy
      */
     public function view(User $user, Handbook $handbook): bool
     {
-        return $user->can('guidance.view') || $user->can('guidance.manage');
+        return $user->hasAnyPermission([
+            Permission::GUIDANCE_VIEW->value,
+            Permission::GUIDANCE_MANAGE->value,
+        ]);
     }
 
     /**
@@ -35,7 +43,7 @@ class HandbookPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('guidance.create') || $user->can('guidance.manage');
+        return $user->hasPermissionTo(Permission::GUIDANCE_MANAGE->value);
     }
 
     /**
@@ -43,7 +51,7 @@ class HandbookPolicy
      */
     public function update(User $user, Handbook $handbook): bool
     {
-        return $user->can('guidance.update') || $user->can('guidance.manage');
+        return $user->hasPermissionTo(Permission::GUIDANCE_MANAGE->value);
     }
 
     /**
@@ -51,6 +59,14 @@ class HandbookPolicy
      */
     public function delete(User $user, Handbook $handbook): bool
     {
-        return $user->can('guidance.delete') || $user->can('guidance.manage');
+        return $user->hasPermissionTo(Permission::GUIDANCE_MANAGE->value);
+    }
+
+    /**
+     * Determine whether the user can force delete the model.
+     */
+    public function forceDelete(User $user, Handbook $handbook): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }

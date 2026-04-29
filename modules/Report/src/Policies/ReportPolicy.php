@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Report\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Permission\Enums\Permission;
 use Modules\Report\Models\GeneratedReport;
 use Modules\User\Models\User;
 
@@ -15,14 +15,12 @@ use Modules\User\Models\User;
  */
 class ReportPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any reports.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('report.view');
+        return $user->hasPermissionTo(Permission::REPORT_VIEW->value);
     }
 
     /**
@@ -30,19 +28,45 @@ class ReportPolicy
      */
     public function view(User $user, GeneratedReport $report): bool
     {
-        if (!$user->can('report.view')) {
+        if (!$user->hasPermissionTo(Permission::REPORT_VIEW->value)) {
             return false;
         }
 
-        // Only the user who generated the report or an admin can view it
-        return $user->id === $report->user_id || $user->hasRole('super-admin');
+        if ($user->id === $report->generated_by) {
+            return true;
+        }
+
+        return $user->hasAnyPermission([
+            Permission::REPORT_GENERATE->value,
+            Permission::REPORT_EXPORT->value,
+        ]);
     }
 
     /**
-     * Determine whether the user can delete the report.
+     * Determine whether the user can create/generate reports.
+     */
+    public function create(User $user): bool
+    {
+        return $user->hasPermissionTo(Permission::REPORT_GENERATE->value);
+    }
+
+    /**
+     * Determine whether the user can export reports.
+     */
+    public function export(User $user, GeneratedReport $report): bool
+    {
+        if (!$user->hasPermissionTo(Permission::REPORT_EXPORT->value)) {
+            return false;
+        }
+
+        return $user->id === $report->generated_by || $user->hasPermissionTo(Permission::REPORT_GENERATE->value);
+    }
+
+    /**
+     * Determine whether the user can delete reports.
      */
     public function delete(User $user, GeneratedReport $report): bool
     {
-        return $user->id === $report->user_id || $user->hasRole('super-admin');
+        return $user->hasRole(\Modules\Permission\Enums\Role::SUPER_ADMIN->value);
     }
 }

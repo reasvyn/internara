@@ -6,6 +6,7 @@ namespace Modules\Permission\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
 use Modules\Permission\Models\Permission as PermissionModel;
 use Modules\Permission\Models\Role as RoleModel;
@@ -42,7 +43,7 @@ class AccessManager extends RecordManager
         $this->subtitle = __('permission::ui.access_manager.subtitle');
         $this->context = 'permission::ui.menu.access';
 
-        $this->viewPermission = 'user.manage';
+        $this->viewPermission = Permission::USER_MANAGE;
         $this->searchable = ['name', 'description'];
         $this->sortable = ['name', 'created_at'];
     }

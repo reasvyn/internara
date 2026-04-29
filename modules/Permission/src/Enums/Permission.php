@@ -122,6 +122,22 @@ enum Permission: string
     case NOTIFICATION_SEND = 'notification.send';
     case NOTIFICATION_MANAGE = 'notification.manage';
 
+    // ==================== ADMIN (super-admin only) ====================
+    case ADMIN_VIEW = 'admin.view';
+    case ADMIN_MANAGE = 'admin.manage';
+
+    // ==================== STUDENT ====================
+    case STUDENT_VIEW = 'student.view';
+    case STUDENT_MANAGE = 'student.manage';
+
+    // ==================== TEACHER ====================
+    case TEACHER_VIEW = 'teacher.view';
+    case TEACHER_MANAGE = 'teacher.manage';
+
+    // ==================== MENTOR ====================
+    case MENTOR_VIEW = 'mentor.view';
+    case MENTOR_MANAGE = 'mentor.manage';
+
     /**
      * Get all permissions grouped by module.
      *
@@ -245,6 +261,22 @@ enum Permission: string
                 self::NOTIFICATION_VIEW,
                 self::NOTIFICATION_SEND,
                 self::NOTIFICATION_MANAGE,
+            ],
+            'admin' => [
+                self::ADMIN_VIEW,
+                self::ADMIN_MANAGE,
+            ],
+            'student' => [
+                self::STUDENT_VIEW,
+                self::STUDENT_MANAGE,
+            ],
+            'teacher' => [
+                self::TEACHER_VIEW,
+                self::TEACHER_MANAGE,
+            ],
+            'mentor' => [
+                self::MENTOR_VIEW,
+                self::MENTOR_MANAGE,
             ],
         ];
     }

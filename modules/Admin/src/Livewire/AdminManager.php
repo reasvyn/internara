@@ -10,6 +10,7 @@ use Livewire\Attributes\Computed;
 use Modules\Admin\Livewire\Forms\AdminForm;
 use Modules\Admin\Services\Contracts\AdminService;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Models\AccountToken;
@@ -20,6 +21,15 @@ class AdminManager extends RecordManager
     use HandlesAppException;
 
     public AdminForm $form;
+
+    /**
+     * Get summary statistics for admin distribution.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
 
     /**
      * Initialize the component.
@@ -42,10 +52,10 @@ class AdminManager extends RecordManager
         $this->addLabel = __('admin::ui.manager.add');
         $this->deleteConfirmMessage = __('admin::ui.manager.delete_confirm');
 
-        $this->viewPermission = 'admin.manage';
-        $this->createPermission = 'admin.manage';
-        $this->updatePermission = 'admin.manage';
-        $this->deletePermission = 'admin.manage';
+        $this->viewPermission = Permission::ADMIN_MANAGE;
+        $this->createPermission = Permission::ADMIN_MANAGE;
+        $this->updatePermission = Permission::ADMIN_MANAGE;
+        $this->deletePermission = Permission::ADMIN_MANAGE;
 
         $this->searchable = ['name', 'email'];
         $this->sortable = ['name', 'email', 'created_at'];

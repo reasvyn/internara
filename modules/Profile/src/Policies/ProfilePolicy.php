@@ -4,14 +4,25 @@ declare(strict_types=1);
 
 namespace Modules\Profile\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
 use Modules\Profile\Models\Profile;
 use Modules\User\Models\User;
 
+/**
+ * Class ProfilePolicy
+ *
+ * Controls access to Profile model operations.
+ */
 class ProfilePolicy
 {
-    use HandlesAuthorization;
+    /**
+     * Determine whether the user can view any profiles.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->hasPermissionTo(Permission::PROFILE_VIEW->value);
+    }
 
     /**
      * Determine whether the user can view the profile.
@@ -23,7 +34,6 @@ class ProfilePolicy
         }
 
         if (is_string($profile)) {
-            // Check by User UUID if passed
             return $user->id === $profile;
         }
 
@@ -44,5 +54,21 @@ class ProfilePolicy
         }
 
         return $user->id === $profile->user_id;
+    }
+
+    /**
+     * Determine whether the user can delete the profile.
+     */
+    public function delete(User $user, Profile $profile): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
+    }
+
+    /**
+     * Determine whether the user can force delete the profile.
+     */
+    public function forceDelete(User $user, Profile $profile): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }

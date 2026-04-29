@@ -6,20 +6,10 @@ namespace Modules\Internship\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Modules\Internship\Livewire\Forms\CompanyForm;
-use Modules\Internship\Models\Company;
-use Modules\Internship\Services\Contracts\CompanyService;
+use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Permission\Enums\Permission;
 use Modules\UI\Livewire\RecordManager;
 
-/**
- * Class CompanyManager
- *
- * Manages industry partner (company) master data with filtering and bulk operations.
- *
- * Access control:
- * - SuperAdmin/Admin: full CRUD + bulk operations
- * - Others: no access
- */
 class CompanyManager extends RecordManager
 {
     public CompanyForm $form;
@@ -43,10 +33,10 @@ class CompanyManager extends RecordManager
         $this->subtitle = __('internship::ui.company_subtitle');
         $this->context = 'admin::ui.menu.companies';
 
-        $this->viewPermission = 'internship.manage';
-        $this->createPermission = 'internship.manage';
-        $this->updatePermission = 'internship.manage';
-        $this->deletePermission = 'internship.manage';
+        $this->viewPermission = Permission::INTERNSHIP_MANAGE;
+        $this->createPermission = Permission::INTERNSHIP_MANAGE;
+        $this->updatePermission = Permission::INTERNSHIP_MANAGE;
+        $this->deletePermission = Permission::INTERNSHIP_MANAGE;
 
         $this->addLabel = __('internship::ui.add_company');
         $this->deleteConfirmMessage = __('internship::ui.delete_company_confirm');

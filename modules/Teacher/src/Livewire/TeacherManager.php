@@ -11,15 +11,23 @@ use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Permission\Enums\Permission;
 use Modules\Teacher\Livewire\Forms\TeacherForm;
 use Modules\Teacher\Services\Contracts\TeacherService;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Models\AccountToken;
 use Modules\User\Models\User;
-use Modules\User\Services\Contracts\AccountProvisioningService;
 
 class TeacherManager extends RecordManager
 {
+    /**
+     * Get summary statistics for teachers.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
     use HandlesAppException;
     use HasDepartmentOptions;
 
@@ -50,10 +58,10 @@ class TeacherManager extends RecordManager
         $this->addLabel = __('user::ui.manager.add_teacher');
         $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
 
-        $this->viewPermission = 'teacher.manage';
-        $this->createPermission = 'teacher.manage';
-        $this->updatePermission = 'teacher.manage';
-        $this->deletePermission = 'teacher.manage';
+        $this->viewPermission = Permission::TEACHER_MANAGE;
+        $this->createPermission = Permission::TEACHER_MANAGE;
+        $this->updatePermission = Permission::TEACHER_MANAGE;
+        $this->deletePermission = Permission::TEACHER_MANAGE;
 
         $this->searchable = [
             'name',

@@ -13,6 +13,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Modules\Permission\Enums\Permission;
 use Modules\Shared\Services\Contracts\EloquentQuery;
 use Throwable;
 
@@ -51,14 +52,6 @@ abstract class RecordManager extends Component
     protected array $sortable = [];
 
     public string $eventPrefix = '';
-
-    protected string $viewPermission = '';
-
-    protected string $createPermission = '';
-
-    protected string $updatePermission = '';
-
-    protected string $deletePermission = '';
 
     #[Url(except: '')]
     public string $search = '';
@@ -118,7 +111,7 @@ abstract class RecordManager extends Component
     {
         try {
             $this->items = collect($this->records->items())
-                ->map(fn($item) => (array) $item)
+                ->map(fn($item) => $item->toArray())
                 ->toArray();
         } catch (\Exception $e) {
             $this->items = [];
@@ -214,25 +207,23 @@ abstract class RecordManager extends Component
         }
 
         // 4. Paginate and apply client-side mapping
-        return $query
-            ->paginate($this->perPage)
-            ->through(function ($item) {
-                $mapped = $this->mapRecord($item);
+        return $query->paginate($this->perPage)->through(function ($item) {
+            $mapped = $this->mapRecord($item);
 
-                // If mapping returns an array, we merge it into the model instance
-                // to preserve the class identity for Gate/Policy checks.
-                if (is_array($mapped)) {
-                    foreach ($mapped as $key => $value) {
-                        // We only set properties that don't collide with model relations
-                        // or essential attributes to avoid breaking the model.
-                        if (!$item->relationLoaded($key)) {
-                            $item->{$key} = $value;
-                        }
+            // If mapping returns an array, we merge it into the model instance
+            // to preserve the class identity for Gate/Policy checks.
+            if (is_array($mapped)) {
+                foreach ($mapped as $key => $value) {
+                    // We only set properties that don't collide with model relations
+                    // or essential attributes to avoid breaking the model.
+                    if (!$item->relationLoaded($key)) {
+                        $item->{$key} = $value;
                     }
                 }
+            }
 
-                return $item;
-            });
+            return $item;
+        });
     }
 
     public function mount(): void
@@ -273,22 +264,24 @@ abstract class RecordManager extends Component
         if (!$user) {
             return false;
         }
-        $target = $target ?: ($this->modelClass ?: null);
+        $permission = $this->resolvePermission($action);
 
         return match ($action) {
-            'view' => $this->viewPermission ? $user->can($this->viewPermission) : true,
-            'create' => $this->createPermission ? $user->can($this->createPermission) : true,
-            'update' => $this->updatePermission
-                ? $user->can($this->updatePermission)
-                : ($target
-                    ? $user->can('update', $target)
-                    : true),
-            'delete' => $this->deletePermission
-                ? $user->can($this->deletePermission)
-                : ($target
-                    ? $user->can('delete', $target)
-                    : true),
+            'view', 'create', 'update', 'delete' => $permission
+                ? $user->can($permission->value)
+                : ($target ? $user->can($action, $target) : true),
             default => false,
+        };
+    }
+
+    protected function resolvePermission(string $action): ?Permission
+    {
+        return match ($action) {
+            'view' => $this->viewPermission,
+            'create' => $this->createPermission,
+            'update' => $this->updatePermission,
+            'delete' => $this->deletePermission,
+            default => null,
         };
     }
 
@@ -345,7 +338,7 @@ abstract class RecordManager extends Component
                 if (!$isSetupAuthorized && $this->createPermission) {
                     $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
                     $authModel = $this->modelClass ?: config('auth.providers.users.model');
-                    Gate::authorize($this->createPermission, [$authModel, $roles]);
+                    Gate::authorize($this->createPermission->value, [$authModel, $roles]);
                 }
                 $this->service->create($this->form->all());
             }

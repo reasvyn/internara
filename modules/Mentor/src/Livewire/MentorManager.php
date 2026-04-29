@@ -10,7 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Exception\Concerns\HandlesAppException;
-use Modules\Mentor\Services\Contracts\MentorService;
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
@@ -23,6 +23,15 @@ class MentorManager extends RecordManager
     use HandlesAppException;
 
     public UserForm $form;
+
+    /**
+     * Get summary statistics for mentors.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
 
     public array $credentialSlips = [];
 
@@ -49,10 +58,10 @@ class MentorManager extends RecordManager
         $this->addLabel = __('user::ui.manager.add_mentor');
         $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
 
-        $this->viewPermission = 'mentor.manage';
-        $this->createPermission = 'mentor.manage';
-        $this->updatePermission = 'mentor.manage';
-        $this->deletePermission = 'mentor.manage';
+        $this->viewPermission = Permission::MENTOR_MANAGE;
+        $this->createPermission = Permission::MENTOR_MANAGE;
+        $this->updatePermission = Permission::MENTOR_MANAGE;
+        $this->deletePermission = Permission::MENTOR_MANAGE;
 
         $this->searchable = ['name', 'email', 'username'];
         $this->sortable = ['name', 'email', 'username', 'created_at'];

@@ -9,6 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Models\User;
@@ -27,6 +28,15 @@ class UserManager extends RecordManager
     }
 
     /**
+     * Get summary statistics for user distribution.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
+
+    /**
      * Configure the component's basic properties.
      */
     public function initialize(): void
@@ -36,8 +46,8 @@ class UserManager extends RecordManager
         $this->context = 'admin::ui.menu.users';
 
         // SuperAdmin can delete; Admin is read-only
-        $this->viewPermission = 'user.view';
-        $this->deletePermission = 'user.manage';
+        $this->viewPermission = Permission::USER_VIEW;
+        $this->deletePermission = Permission::USER_MANAGE;
 
         $this->searchable = ['name', 'email', 'username'];
         $this->sortable = ['name', 'email', 'username', 'created_at'];
@@ -99,7 +109,7 @@ class UserManager extends RecordManager
 
         $displayStatus = $record->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])
             ? 'verified'
-            : $record->latestStatus()?->name ?? User::STATUS_ACTIVE;
+            : $record->latestStatus()?->name ?? \Modules\Status\Enums\Status::VERIFIED->value;
 
         return [
             'avatar_url' => $record->avatar_url,
@@ -141,10 +151,10 @@ class UserManager extends RecordManager
     public function statusBadgeVariant(string $status): string
     {
         return match ($status) {
-            User::STATUS_ACTIVE => 'success',
-            'verified' => 'info',
-            User::STATUS_PENDING => 'warning',
-            User::STATUS_INACTIVE => 'error',
+            \Modules\Status\Enums\Status::VERIFIED->value, 'verified' => 'success',
+            \Modules\Status\Enums\Status::ACTIVATED->value => 'info',
+            \Modules\Status\Enums\Status::PENDING->value => 'warning',
+            \Modules\Status\Enums\Status::INACTIVE->value => 'error',
             default => 'neutral',
         };
     }
@@ -204,7 +214,11 @@ class UserManager extends RecordManager
         if (
             in_array(
                 $selectedStatus,
-                [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING],
+                [
+                    \Modules\Status\Enums\Status::VERIFIED->value,
+                    \Modules\Status\Enums\Status::INACTIVE->value,
+                    \Modules\Status\Enums\Status::PENDING->value,
+                ],
                 true,
             )
         ) {

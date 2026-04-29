@@ -11,6 +11,8 @@ use Modules\Internship\Livewire\Forms\RegistrationForm;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Enums\Permission;
+use Modules\UI\Livewire\Traits\RbacTrait;
 
 /**
  * Class InternshipRegistrationManager (Student)
@@ -20,6 +22,14 @@ use Modules\Internship\Services\Contracts\RegistrationService;
  */
 class InternshipRegistrationManager extends Component
 {
+    use RbacTrait;
+
+    protected ?Permission $viewPermission = Permission::REGISTRATION_VIEW;
+
+    protected ?Permission $createPermission = Permission::REGISTRATION_CREATE;
+
+    protected ?Permission $updatePermission = Permission::REGISTRATION_UPDATE;
+
     public RegistrationForm $form;
 
     public bool $proposeNewPartner = false;

@@ -7,8 +7,8 @@ namespace Modules\Assignment\Livewire;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Assignment\Livewire\Forms\AssignmentTypeForm;
-use Modules\Assignment\Models\AssignmentType;
-use Modules\Assignment\Services\Contracts\AssignmentTypeService;
+use Modules\Assignment\Services\Contracts\AssignmentService;
+use Modules\Permission\Enums\Permission;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -41,10 +41,10 @@ class AssignmentTypeManager extends RecordManager
         $this->addLabel = __('assignment::ui.add_type');
         $this->deleteConfirmMessage = __('assignment::ui.delete_type_confirm');
 
-        $this->viewPermission = 'journal.view';
-        $this->createPermission = 'journal.manage';
-        $this->updatePermission = 'journal.manage';
-        $this->deletePermission = 'journal.manage';
+        $this->viewPermission = Permission::JOURNAL_VIEW;
+        $this->createPermission = Permission::JOURNAL_MANAGE;
+        $this->updatePermission = Permission::JOURNAL_MANAGE;
+        $this->deletePermission = Permission::JOURNAL_MANAGE;
 
         $this->searchable = ['name', 'slug', 'description'];
         $this->sortable = ['name', 'slug', 'group', 'created_at'];

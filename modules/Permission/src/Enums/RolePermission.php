@@ -155,6 +155,22 @@ enum RolePermission: string
             Permission::NOTIFICATION_VIEW->value,
             Permission::NOTIFICATION_SEND->value,
             Permission::NOTIFICATION_MANAGE->value,
+
+            // Admin
+            Permission::ADMIN_VIEW->value,
+            Permission::ADMIN_MANAGE->value,
+
+            // Student
+            Permission::STUDENT_VIEW->value,
+            Permission::STUDENT_MANAGE->value,
+
+            // Teacher
+            Permission::TEACHER_VIEW->value,
+            Permission::TEACHER_MANAGE->value,
+
+            // Mentor
+            Permission::MENTOR_VIEW->value,
+            Permission::MENTOR_MANAGE->value,
         ];
     }
 

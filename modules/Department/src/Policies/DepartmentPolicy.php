@@ -4,71 +4,87 @@ declare(strict_types=1);
 
 namespace Modules\Department\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Department\Models\Department;
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
 /**
  * Class DepartmentPolicy
  *
- * Controls access to Department resources.
+ * Policy for Department model operations.
  */
 class DepartmentPolicy
 {
-    use HandlesAuthorization;
-
     /**
-     * Internal: Check if the user has the master management permission.
+     * Determine whether the user can view any departments.
      */
-    protected function canManage(User $user): bool
+    public function viewAny(?User $user): bool
     {
-        // 1. SuperAdmin bypass
-        if ($user->hasRole(Role::SUPER_ADMIN->value)) {
+        if (session('setup_authorized')) {
             return true;
         }
 
-        // 2. Standard permission check
-        return $user->hasPermissionTo('department.manage');
+        return $user?->hasPermissionTo(Permission::DEPARTMENT_VIEW->value) ?? false;
     }
 
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view the department.
      */
-    public function viewAny(User $user): bool
+    public function view(User $user, Department $department): bool
     {
-        return $this->canManage($user) || $user->hasPermissionTo('department.view');
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user->hasPermissionTo(Permission::DEPARTMENT_VIEW->value);
     }
 
     /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, ?Department $department = null): bool
-    {
-        return $this->viewAny($user);
-    }
-
-    /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create departments.
      */
     public function create(User $user): bool
     {
-        return $this->canManage($user);
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user->hasPermissionTo(Permission::DEPARTMENT_CREATE->value);
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the department.
      */
-    public function update(User $user, ?Department $department = null): bool
+    public function update(User $user, Department $department): bool
     {
-        return $this->canManage($user);
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user->hasPermissionTo(Permission::DEPARTMENT_UPDATE->value);
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the department.
      */
-    public function delete(User $user, ?Department $department = null): bool
+    public function delete(User $user, Department $department): bool
     {
-        return $this->canManage($user);
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        if (!$user->hasPermissionTo(Permission::DEPARTMENT_DELETE->value)) {
+            return false;
+        }
+
+        return !$department->profiles()->exists();
+    }
+
+    /**
+     * Determine whether the user can force delete the department.
+     */
+    public function forceDelete(User $user, Department $department): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }

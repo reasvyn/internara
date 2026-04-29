@@ -8,17 +8,22 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Modules\Internship\Livewire\Forms\RegistrationForm;
-use Modules\Internship\Models\InternshipPlacement;
-use Modules\Internship\Models\InternshipRegistration;
-use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Livewire\Forms\PlacementForm;
 use Modules\Internship\Services\Contracts\PlacementService;
-use Modules\Internship\Services\Contracts\RegistrationService;
+use Modules\Permission\Enums\Permission;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Models\User;
 
 class StudentPlacementManager extends RecordManager
 {
+    /**
+     * Get summary statistics for student placements.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
     /**
      * Tab selection (individual|bulk)
      */
@@ -69,10 +74,10 @@ class StudentPlacementManager extends RecordManager
         $this->addLabel = __('internship::ui.place_student');
         $this->deleteConfirmMessage = __('internship::ui.delete_registration_confirm');
 
-        $this->viewPermission = 'internship.view';
-        $this->createPermission = 'internship.manage';
-        $this->updatePermission = 'internship.manage';
-        $this->deletePermission = 'internship.manage';
+        $this->viewPermission = Permission::INTERNSHIP_VIEW;
+        $this->createPermission = Permission::INTERNSHIP_MANAGE;
+        $this->updatePermission = Permission::INTERNSHIP_MANAGE;
+        $this->deletePermission = Permission::INTERNSHIP_MANAGE;
 
         $this->searchable = ['student.name', 'internship.title', 'placement.company.name'];
         $this->sortable = ['created_at', 'status'];
@@ -96,7 +101,12 @@ class StudentPlacementManager extends RecordManager
                 'sortable' => false,
             ],
             ['key' => 'teacher_name', 'label' => __('internship::ui.teacher'), 'sortable' => false],
-            ['key' => 'current_status', 'label' => __('internship::ui.status'), 'sortable' => true, 'sort_by' => 'status'],
+            [
+                'key' => 'current_status',
+                'label' => __('internship::ui.status'),
+                'sortable' => true,
+                'sort_by' => 'status',
+            ],
             ['key' => 'actions', 'label' => __('ui::common.actions'), 'class' => 'w-1'],
         ];
     }
