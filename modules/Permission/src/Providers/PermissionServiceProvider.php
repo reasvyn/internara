@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
+use Modules\Permission\Services\AccessManagementService;
+use Modules\Permission\Services\Contracts\AccessManagementService as AccessManagementServiceContract;
 use Modules\Permission\Services\Contracts\PermissionManager as PermissionManagerContract;
 use Modules\Permission\Services\Contracts\PermissionService as PermissionServiceContract;
 use Modules\Permission\Services\Contracts\RoleService as RoleServiceContract;
@@ -73,6 +75,10 @@ class PermissionServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
+            // New consolidated access management service
+            AccessManagementServiceContract::class => AccessManagementService::class,
+
+            // Legacy services - kept for backward compatibility
             PermissionManagerContract::class => PermissionManager::class,
             RoleServiceContract::class => RoleService::class,
             PermissionServiceContract::class => PermissionService::class,

@@ -7,6 +7,7 @@ namespace Modules\Permission\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Permission\Models\Permission;
 use Modules\Permission\Models\Role;
+use Modules\Permission\Services\AccessManagementService;
 
 class RoleSeeder extends Seeder
 {
@@ -15,6 +16,8 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $accessService = app(AccessManagementService::class);
+
         $roles = [
             'super-admin' => ['Full system ownership', 'Core'],
             'admin' => ['General management', 'Core'],
@@ -24,23 +27,16 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $name => $data) {
-            /** @var Role $role */
-            $role = Role::updateOrCreate(
-                ['name' => $name, 'guard_name' => 'web'],
-                [
-                    'description' => $data[0],
-                    'module' => $data[1],
-                ],
-            );
+            $role = $accessService->createRole($name, $data[0], $data[1]);
 
-            $this->assignPermissionsToRole($role);
+            $this->assignPermissionsToRole($accessService, $role);
         }
     }
 
     /**
      * Assign relevant permissions based on role name.
      */
-    protected function assignPermissionsToRole(Role $role): void
+    protected function assignPermissionsToRole(AccessManagementService $service, Role $role): void
     {
         if ($role->name === 'super-admin') {
             // SuperAdmin has Gate::before bypass, but we seed all permissions anyway for UI clarity
@@ -96,8 +92,8 @@ class RoleSeeder extends Seeder
             default => [],
         };
 
-        if (!empty($permissions)) {
-            $role->syncPermissions($permissions);
+        if (! empty($permissions)) {
+            $service->assignPermissionsToRole($role->name, $permissions);
         }
     }
 }
