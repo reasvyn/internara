@@ -14,9 +14,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\ModelStatus\HasStatuses;
 
 /**
- * A formal document (Letter, Certificate, Report).
+ * An official document (Letter, Certificate, Report, Permit).
  */
-class FormalDocument extends Model implements HasMedia
+class OfficialDocument extends Model implements HasMedia
 {
     use HasFactory, HasUuid, HasStatuses, InteractsWithMedia;
 
@@ -28,7 +28,7 @@ class FormalDocument extends Model implements HasMedia
         'document_number',
         'issued_at',
         'expires_at',
-        'metadata', // JSON for additional dynamic data
+        'metadata',
     ];
 
     protected $casts = [

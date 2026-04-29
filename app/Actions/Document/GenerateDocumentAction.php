@@ -6,39 +6,42 @@ namespace App\Actions\Document;
 
 use App\Actions\Audit\LogAuditAction;
 use App\Models\DocumentTemplate;
-use App\Models\FormalDocument;
+use App\Models\OfficialDocument;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
- * S2 - Sustain: Logic for generating formal documents from templates.
+ * S2 - Sustain: Logic for generating official documents from templates.
  * S3 - Scalable: Stateless action.
  */
 class GenerateDocumentAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected LogAuditAction $logAuditAction,
+        protected GeneratePdfAction $generatePdfAction
     ) {}
 
     /**
-     * Generate a formal document from a template.
+     * Generate an official document from a template and save as PDF.
      */
-    public function execute(Model $target, DocumentTemplate $template, array $additionalData = []): FormalDocument
+    public function execute(Model $target, DocumentTemplate $template, array $additionalData = []): OfficialDocument
     {
         return DB::transaction(function () use ($target, $template, $additionalData) {
-            // Prepare merge data (e.g., student name, school name)
             $mergeData = array_merge([
                 'target' => $target,
                 'now' => now()->format('d F Y'),
             ], $additionalData);
 
-            // Render content using Blade engine
             $renderedContent = Blade::render($template->content, $mergeData);
 
-            /** @var FormalDocument $document */
-            $document = FormalDocument::create([
+            // Generate PDF file
+            $pdfPath = $this->generatePdfAction->execute($renderedContent, $template->slug);
+
+            /** @var OfficialDocument $document */
+            $document = OfficialDocument::create([
                 'documentable_id' => $target->getKey(),
                 'documentable_type' => $target->getMorphClass(),
                 'template_id' => $template->id,
@@ -50,11 +53,14 @@ class GenerateDocumentAction
                 ],
             ]);
 
-            $document->setStatus('draft', 'Generated from template.');
+            // Attach the generated PDF file via Media Library
+            $document->addMedia($pdfPath)->toMediaCollection('file');
+
+            $document->setStatus('active', 'Generated automatically from template.');
 
             $this->logAuditAction->execute(
                 action: 'document_generated',
-                subjectType: FormalDocument::class,
+                subjectType: OfficialDocument::class,
                 subjectId: $document->id,
                 payload: [
                     'template_id' => $template->id,
@@ -69,8 +75,7 @@ class GenerateDocumentAction
 
     protected function generateDocumentNumber(DocumentTemplate $template): string
     {
-        // Simple sequential number for now
-        $count = FormalDocument::where('template_id', $template->id)->count() + 1;
+        $count = OfficialDocument::where('template_id', $template->id)->count() + 1;
         return strtoupper($template->category) . '/' . now()->format('Ymd') . '/' . Str::padLeft((string) $count, 4, '0');
     }
 }

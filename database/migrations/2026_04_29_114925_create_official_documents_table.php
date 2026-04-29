@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formal_documents', function (Blueprint $table) {
+        Schema::create('official_documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('template_id')->nullable()->constrained('document_templates')->onDelete('set null');
             
-            // Polymorphic relation (User, InternshipRegistration, etc.)
+            // Polymorphic relation
             $table->uuid('documentable_id');
             $table->string('documentable_type');
             $table->index(['documentable_id', 'documentable_type']);
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formal_documents');
+        Schema::dropIfExists('official_documents');
     }
 };
