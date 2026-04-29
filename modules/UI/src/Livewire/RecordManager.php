@@ -43,6 +43,14 @@ abstract class RecordManager extends Component
 
     protected string $modelClass = '';
 
+    protected ?Permission $viewPermission = null;
+
+    protected ?Permission $createPermission = null;
+
+    protected ?Permission $updatePermission = null;
+
+    protected ?Permission $deletePermission = null;
+
     /**
      * Client-side Logic: Define which columns are searchable and sortable in the UI.
      * These are independent of the Service Layer configuration.
