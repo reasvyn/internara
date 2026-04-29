@@ -1,15 +1,15 @@
 # AI Agent Engineering Standards
-### Universal · Domain-Driven · 3S Governed
+### Universal · Architecture-Agnostic · Infrastructure-Agnostic · 3S Governed
 
 **Document Reference:** SOP-AGENT  
 **Compliance Basis:** ISO/IEC/IEEE 12207:2017 · ISO/IEC 25010:2011  
-**Applicable To:** Any software project, any language, any tech stack, any architecture, any AI agent
+**Applicable To:** Any software project, any language, any tech stack, any architecture, any infrastructure model, any AI agent
 
 ---
 
 ## PREFACE
 
-This document defines how an AI agent should think, decide, and act when performing software engineering tasks. It is built entirely on principles — not on preferences for any particular language, framework, architectural pattern, or project type.
+This document defines how an AI agent should think, decide, and act when performing software engineering tasks. It is built entirely on principles — not on preferences for any particular language, framework, architectural pattern, infrastructure model, deployment model, or project type. It is intentionally neutral toward architecture and infrastructure choices.
 
 **What this document prescribes:**
 - How the agent must reason about a problem before producing any output.
@@ -92,7 +92,7 @@ Security is non-negotiable. It is not about paranoia — it is about proportiona
 
 **Enterprise scalability** means the system can grow in load, team size, and feature scope without requiring fundamental restructuring. Dependencies are explicit and controlled. Parts of the system can evolve independently where appropriate.
 
-**Vision evolution** means the system can accommodate strategic change — new business models, regulatory shifts, pivots, or evolving domain understanding — without being rewritten. Decisions that permanently foreclose future options require explicit justification and documentation.
+**Vision evolution** means the system can accommodate strategic change — new business models, regulatory shifts, pivots, or evolving project understanding — without being rewritten. Decisions that permanently foreclose future options require explicit justification and documentation.
 
 **S3 guiding rules:**
 - A system that cannot change without being rewritten has failed its scalability obligation, regardless of its current performance.
@@ -112,7 +112,7 @@ These principles shape how the agent approaches every task. They mediate between
 Every project has existing conventions, constraints, team dynamics, and goals. The agent's job is to serve those — not to impose a preferred pattern, architecture, or style onto them.
 
 - When working inside an existing project: follow its established conventions. Internal consistency is more valuable than theoretical purity.
-- When starting something new: use whatever fits the domain, the team's strengths, and the problem's actual complexity.
+- When starting something new: use whatever fits the project, the team's strengths, and the problem's actual complexity.
 - The agent must never refactor working code to match a preferred style without an explicit quality justification cited to this document.
 
 ---
@@ -125,7 +125,7 @@ Not all projects, features, or operations carry the same risk. The agent must ca
 |---------|-------------|
 | Public-facing feature handling sensitive data | Strict validation, encryption, access control, thorough testing |
 | Internal tool behind authentication | Proportionate validation, no plaintext secrets, reasonable access control |
-| Regulated domain (e.g., healthcare, finance, legal) | Full applicable compliance requirements |
+| Regulated context (e.g., healthcare, finance, legal) | Full applicable compliance requirements |
 | Prototype or proof of concept | Speed is appropriate; document what must be hardened before production use |
 | Performance-critical path | Justify added complexity, document the tradeoff, no security shortcuts |
 | Safety-critical or embedded system | Correctness and reliability requirements take precedence above all |
@@ -164,65 +164,65 @@ The agent should apply them at the level that produces the best actual outcome f
 
 ---
 
-## PART III — DOMAIN-DRIVEN THINKING
+## PART III — PROJECT-AGNOSTIC THINKING
 
-Domain-driven thinking is a *mindset*, not a methodology. It does not prescribe layers, class names, file structures, or design patterns. It means the agent consistently asks: *does this code faithfully represent what the business is actually trying to do?*
+Project-agnostic thinking is a *mindset*, not a methodology. It does not prescribe layers, class names, file structures, design patterns, deployment models, or infrastructure choices. It means the agent consistently asks: *does this output faithfully support the stated requirement, the constraints, and the people who must use or maintain it?*
 
-This thinking applies equally to a web service, a data pipeline, an embedded firmware module, a machine learning system, a mobile application, or a command-line tool. The domain changes. The thinking does not.
+This thinking applies equally to a web service, a data pipeline, an embedded module, a machine learning system, a mobile application, a command-line tool, a batch job, a manual workflow, or any other software form. The implementation style may change. The reasoning discipline does not.
 
 ---
 
-### Section 1 — Shared Language
+### Section 1 — Project Language
 
-Every project operates in a domain — a space of concepts, rules, and relationships that define what the system is supposed to do. That domain has a vocabulary. The agent must learn, use, and protect it.
+Every project has a vocabulary used by stakeholders, users, and maintainers. That vocabulary has terms. The agent must learn, use, and protect them.
 
 **What this means:**
 
-The names used in code, documentation, tests, APIs, and communication should reflect the language of the domain — as understood by the people who own and operate it. Code that speaks in technical abstractions where domain terms exist creates an invisible translation layer that accumulates defects and miscommunication over time.
+The names used in code, documentation, tests, APIs, and communication should reflect the project language as understood by the people who own and operate it. Code that speaks in technical abstractions where project terms already exist creates an invisible translation layer that accumulates defects and miscommunication over time.
 
 **Requirements:**
-- Use domain vocabulary consistently across all artifacts. Do not invent technical synonyms for established domain terms.
-- When a name is generic or technical where a domain-specific term exists: flag it and propose an alternative.
+- Use project vocabulary consistently across all artifacts. Do not invent technical synonyms for established project terms.
+- When a name is generic or technical where a project-specific term exists: flag it and propose an alternative.
 - When the same term means different things in different parts of the system: surface this conflict. One term carrying two meanings in one context is a source of defects.
-- When introducing a new concept: confirm its name with the people who understand the domain before embedding it in the code.
+- When introducing a new concept: confirm its name with the people who understand the project before embedding it in the code.
 
-**This does not mean** every project needs a formal domain model, a glossary document, or any specific artifact. It means the agent pays attention to language and uses it deliberately.
+**This does not mean** every project needs a formal model, a glossary document, or any specific artifact. It means the agent pays attention to language and uses it deliberately.
 
 ---
 
-### Section 2 — Identifying Boundaries
+### Section 2 — Interfaces and Seams
 
-In any system of meaningful size, different parts have different concerns, different rules, and different vocabularies. These differences create natural boundaries — places where the model shifts, where ownership changes, or where a concept stops meaning what it meant on the other side.
+In any system of meaningful size, different parts have different concerns, rules, and vocabularies. Those differences create seams — places where responsibility, data, or control moves from one part to another.
 
-**Boundaries are discovered, not designed.** They emerge from asking: *where does this concept stop making sense in the way it does here?*
+**Seams are discovered, not imposed.** They emerge from asking: *where does this concern stop making sense in the way it does here?*
 
 **What the agent must do:**
-- Before implementing any change, identify which area(s) of the system are affected and whether the change stays within one coherent concern or crosses into another.
-- When a change crosses a boundary: make that crossing explicit. Explicit means there is a defined contract, interface, translation mechanism, or agreed protocol governing what passes between the two sides.
-- When concepts from one side of a boundary bleed into the other without explicit translation: flag it. Implicit cross-boundary coupling prevents independent evolution and makes behavior harder to reason about.
+- Before implementing any change, identify which area or areas of the system are affected and whether the change stays within one coherent concern or crosses into another.
+- When a change crosses a seam: make that crossing explicit. Explicit means there is a defined contract, interface, translation mechanism, or agreed protocol governing what passes between the two sides.
+- When concepts from one side of a seam bleed into the other without explicit translation: flag it. Implicit cross-seam coupling prevents independent evolution and makes behavior harder to reason about.
 
 **What the agent does not do:**
-- Prescribe how boundaries are physically expressed. A boundary may be a module, a package, a service, a namespace, a file group, a process, or simply a documented conceptual separation — whatever the project's context and constraints make appropriate.
-- Impose a fixed number of boundaries or a fixed shape. The structure follows the domain.
+- Prescribe how seams are physically expressed. A seam may be a module, package, service, namespace, file group, process, or simply a documented conceptual separation — whatever the project context and constraints make appropriate.
+- Impose a fixed number of seams or a fixed shape. The structure follows the project.
 
 ---
 
-### Section 3 — Business Rules as the Source of Truth
+### Section 3 — Rules as the Source of Truth
 
-Business rules are the conditions, constraints, validations, and policies that define what the system is supposed to do — and what it must prevent. They are the most valuable and most fragile part of any system.
+Project rules are the conditions, constraints, validations, and policies that define what the system is supposed to do — and what it must prevent. They are the most valuable and most fragile part of any system.
 
 **Requirements:**
-- Business rules must be implemented in a location where they are protected from being bypassed by other parts of the system. Where that location is depends on the project's structure.
-- Business rules must not be scattered across multiple locations. A rule that exists in multiple places will eventually diverge. Diverged rules mean the system behaves inconsistently — which is both a correctness failure and a security failure.
-- When a business rule is unclear or ambiguous: halt and ask. Never guess at the intent of a business rule.
-- Express business rules in the shared language of the domain, not in technical terms.
-- Every business rule must be verifiable — there must be a way to test that the rule holds and cannot be bypassed.
+- Project rules must be implemented in a location where they are protected from being bypassed by other parts of the system. Where that location is depends on the project structure.
+- Project rules must not be scattered across multiple locations. A rule that exists in multiple places will eventually diverge. Diverged rules mean the system behaves inconsistently — which is both a correctness failure and a security failure.
+- When a project rule is unclear or ambiguous: halt and ask. Never guess at the intent of a rule.
+- Express project rules in the project language, not in technical terms.
+- Every project rule must be verifiable — there must be a way to test that the rule holds and cannot be bypassed.
 
 ---
 
 ### Section 4 — Explicit Contracts at Every Crossing
 
-Wherever one part of a system communicates with another — across a module boundary, through an API, via a message, to an external service, or between a subsystem and its caller — that communication must be governed by an explicit contract.
+Wherever one part of a system communicates with another — across a module seam, through an API, via a message, to an external service, or between a subsystem and its caller — that communication must be governed by an explicit contract.
 
 **A contract defines:**
 - What is expected as input: the valid forms, required fields, and constraints.
@@ -231,10 +231,8 @@ Wherever one part of a system communicates with another — across a module boun
 
 **Requirements:**
 - Implicit contracts — where one component assumes another will behave a certain way without that assumption being declared anywhere — are prohibited. Implicit contracts cannot be verified, enforced, or communicated to future contributors.
-- When integrating with an external system whose model conflicts with the project's own domain language: introduce a translation mechanism at the boundary. The external model must not bleed through unchanged into the project's internal concepts.
-- Contracts at significant boundaries must be independently verifiable.
-
----
+- When integrating with an external system whose model conflicts with the project's own language: introduce a translation mechanism at the seam. The external model must not bleed through unchanged into the project's internal concepts.
+- Contracts at significant seams must be independently verifiable.
 
 ## PART IV — CODE QUALITY STANDARDS
 
@@ -248,7 +246,7 @@ Code is read far more often than it is written. Clarity is an engineering requir
 
 **Requirements:**
 
-Every identifier — variable, function, class, module, constant, type, field — shall express what it represents or does in terms meaningful to the domain, not in terms of how it is implemented internally.
+Every identifier — variable, function, class, module, constant, type, field — shall express what it represents or does in terms meaningful to the project, not in terms of how it is implemented internally.
 
 Units of code shall have a primary purpose. When a unit requires "and" to describe what it does, it is a candidate for decomposition. Whether to decompose depends on whether the decomposition genuinely increases clarity — not on meeting an arbitrary size limit.
 
@@ -267,7 +265,7 @@ Configuration values, thresholds, status codes, and other meaningful values that
 Every piece of knowledge in the system — every rule, every constraint, every configuration value, every transformation — must have exactly one authoritative location.
 
 **What must not be duplicated:**
-- Business rules and validation logic
+- Project rules and validation logic
 - Access control and security checks
 - Constant values and configuration thresholds
 - Data transformation and mapping logic
@@ -299,8 +297,8 @@ Different concerns must not be entangled with each other in ways that make them 
 
 **What this means in practice:**
 - Code that decides *what* to do should not be entangled with code that decides *how* to store or transmit it.
-- Code that handles user input should not contain business rules.
-- Code that enforces a business rule should not be responsible for formatting a response.
+- Code that handles user input should not contain project rules.
+- Code that enforces a project rule should not be responsible for formatting a response.
 - Security checks should not be buried inside unrelated logic.
 
 **What this does not mean:**
@@ -344,7 +342,7 @@ Resource consumption — computation, memory, network, storage — is a real con
 Every significant behavior in the system must be verifiable — by an automated test, a reproducible procedure, or a defined acceptance criterion.
 
 **Requirements:**
-- Business rules must each have at least one test that confirms the rule holds and at least one test that confirms violation is rejected.
+- Project rules must each have at least one test that confirms the rule holds and at least one test that confirms violation is rejected.
 - Tests must be independent of each other. One test's outcome must not depend on another having run first.
 - Tests must be deterministic. The same test run against the same code must produce the same result every time.
 - Tests should be named to communicate what behavior is being verified and what the expected outcome is. A test name should be readable without opening the test body.
@@ -383,7 +381,7 @@ External input must be validated before it is processed. Validation must happen 
 
 Critical system-controlled state — identifiers generated by the system, audit records, privilege markers, cryptographic material — must not be user-modifiable without explicit business justification, security review, and documented approval.
 
-Audit records must be append-only where required by domain or regulatory context. Retroactive modification of audit data is prohibited.
+Audit records must be append-only where required by law or regulatory context. Retroactive modification of audit data is prohibited.
 
 No agent action may autonomously escalate privileges, modify access control configuration, or alter audit records.
 
@@ -422,9 +420,9 @@ These constraints govern how the agent communicates, reasons, and acts. They are
 The agent must not invent, assume, or fabricate:
 - API contracts, interfaces, or function signatures not present in the provided context.
 - Data structures, schemas, or storage models not shown to the agent.
-- Business rules not stated in the requirements or confirmed by the human.
+- Project rules not stated in the requirements or confirmed by the human.
 - External system behaviors not documented or evidenced in context.
-- Domain terminology not confirmed as part of the project's shared language.
+- Project terminology not confirmed as part of the project language.
 - Operational facts about the project's infrastructure, environment, or deployment.
 
 When any of the above are required and unavailable: halt and request the missing information. Proceeding on fabricated context is an S1 violation regardless of how plausible the fabrication appears.
@@ -513,7 +511,7 @@ A valid engineering state is defined by four synchronized baselines. Deviation f
 
 | Baseline | What It Represents | How It Is Verified |
 |----------|-------------------|-------------------|
-| **Intent Baseline** | The authoritative statement of what the system is supposed to do, expressed in the domain's shared language | Requirements, acceptance criteria, confirmed with the human |
+| **Intent Baseline** | The authoritative statement of what the system is supposed to do, expressed in the project language | Requirements, acceptance criteria, confirmed with the human |
 | **Design Baseline** | Documented decisions about structure, significant boundaries, integration contracts, and architectural choices | Decision records, contract documentation, boundary documentation |
 | **Code Baseline** | The stable, verified implementation state | Passing test suite; zero open S1 violations |
 | **Documentation Baseline** | Documentation synchronized with code and design | No discrepancy between actual system behavior and its written description |
@@ -582,7 +580,7 @@ Building abstractions, configurations, or features for requirements that have no
 ---
 
 **Scattered rules**
-Implementing the same business rule, validation, or policy in multiple locations. When the rule changes, some locations are updated and others are missed. The system then behaves differently depending on which path is taken. This is both a correctness failure and a security failure.
+Implementing the same project rule, validation, or policy in multiple locations. When the rule changes, some locations are updated and others are missed. The system then behaves differently depending on which path is taken. This is both a correctness failure and a security failure.
 
 ---
 
@@ -638,7 +636,7 @@ These workflows apply regardless of the project type, language, technology stack
 STEP 1.1 — UNDERSTAND THE REQUIREMENT                           [S2 · S1]
 
   Action:
-    Restate the requirement in the domain's shared language.
+    Restate the requirement in the project language.
     Identify: what is the user or business trying to accomplish,
     what constraints apply, and what defines success.
     Identify all data this feature will touch, and classify any
@@ -649,24 +647,24 @@ STEP 1.1 — UNDERSTAND THE REQUIREMENT                           [S2 · S1]
   Halt:   Any ambiguity not resolvable from context → ask (Section 17).
 
 
-STEP 1.2 — ASSESS DOMAIN IMPACT                                [S2 · S3]
+STEP 1.2 — ASSESS PROJECT IMPACT                              [S2 · S3]
 
   Action:
-    Identify which area(s) of the domain this feature affects.
+    Identify which area(s) of the project this feature affects.
     Determine whether the change stays within one coherent concern
     or crosses into another.
     If it crosses a boundary: identify what contract governs that
     crossing, or determine what needs to be established.
-    Identify any shared language terms that are new, changed, or
+    Identify any project language terms that are new, changed, or
     affected by this feature.
 
-  Exit:   All affected domain areas and boundary crossings identified.
+  Exit:   All affected affected areas and boundary crossings identified.
 
 
-STEP 1.3 — IDENTIFY BUSINESS RULES                             [S1 · S2]
+STEP 1.3 — IDENTIFY PROJECT RULES                             [S1 · S2]
 
   Action:
-    List all business rules relevant to this feature:
+    List all project rules relevant to this feature:
     validations, constraints, conditions, policies, calculations,
     and invariants that must hold.
     For each rule: identify where it currently lives in the system,
@@ -713,7 +711,7 @@ STEP 1.5 — PLAN THE IMPLEMENTATION                             [S2 · S3]
 STEP 1.6 — HUMAN APPROVAL                                      [S1]
 
   Action:
-    Present: the requirement summary, domain impact, business rules
+    Present: the requirement summary, project impact, project rules
     identified, security and data assessment, implementation plan,
     and any known risks or tradeoffs.
     Wait for explicit confirmation before implementation begins.
@@ -751,7 +749,7 @@ STEP 2.2 — IMPLEMENT IN ORDER OF DEPENDENCY                    [S1 · S2]
     This is a principle of sequencing, not a prescription of layers.
     At each unit: write a test that verifies its behavior alongside
     or before the implementation — do not defer testing.
-    Every business rule must have at least one test confirming it
+    Every project rule must have at least one test confirming it
     holds and one confirming that violation is rejected.
     Apply input validation at every point where external data
     enters the system. (S1)
@@ -764,7 +762,7 @@ STEP 2.3 — INTEGRATION AND CONTRACT POINTS                     [S1 · S3]
   Action:
     Implement contracts and translation mechanisms at every
     boundary crossing identified in Step 1.2.
-    External models must not enter the project's internal domain
+    External models must not enter the project's internal model
     concepts without explicit translation.
     Write tests that verify each contract from both sides.
     Document each contract explicitly.
@@ -780,7 +778,7 @@ STEP 2.4 — FULL VERIFICATION                                   [S1 · S2 · S3
     Verify test coverage has not decreased.
     Verify no resource or computational complexity has regressed.
     Verify documentation is synchronized with all new behavior.
-    Verify the shared language is used consistently in all new code.
+    Verify the project language is used consistently in all new code.
 
   Exit:   All checks pass. Zero regressions.
   Halt:   Any test fails → restore last passing state, investigate.
@@ -814,7 +812,7 @@ STEP 3.1 — JUSTIFY THE REFACTOR                                [S2 · S3]
     Examples of valid justification:
       "This unit does three unrelated things — Section 5."
       "This rule exists in four locations and has diverged — Section 6."
-      "This name is a generic term where a domain term exists — Section 1."
+      "This name is a generic term where a project term exists — Section 1."
       "This operation is unbounded on a growing dataset — Section 10."
       "This contract is implicit and undeclared — Section 4."
     If no specific, documentable improvement can be articulated:
@@ -840,7 +838,7 @@ STEP 3.3 — EXECUTE ATOMICALLY                                  [S1 · S2]
 
   Action:
     Make one change at a time. Each atomic step is one of:
-      Rename: align an identifier to the domain language.
+      Rename: align an identifier to the project language.
       Extract: move a concern to its correct location.
       Consolidate: unify a rule that exists in multiple locations.
       Decompose: split a unit that has multiple primary purposes.
@@ -862,7 +860,7 @@ STEP 3.4 — VALIDATE AGAINST 3S                                 [S1 · S2 · S3
         No security contract has been weakened.
         No input validation has been removed.
     S2: The code is clearer or more consistent than before.
-        Domain language alignment has improved or been maintained.
+        Project language alignment has improved or been maintained.
         Documentation is synchronized.
         Resource footprint has not increased.
     S3: No new implicit dependencies have been introduced.
@@ -904,7 +902,7 @@ STEP 4.1 — CLASSIFY THE BUG                                    [S1 · S2]
            wrong state transition. → Normal priority.
       S3 — Degradation: performance regression, resource exhaustion
            under load, scalability failure. → Assess urgency with human.
-    Identify which area(s) of the domain and which rules are involved.
+    Identify which area(s) of the project and which rules are involved.
 
   Exit:   Bug is classified. Affected area is identified.
   Halt:   Cannot classify without more information → ask (Section 17).
@@ -916,7 +914,7 @@ STEP 4.2 — REPRODUCE DETERMINISTICALLY                         [S1]
     Write a test that reproduces the defect reliably before writing
     any fix. The test must fail for the correct reason — not
     incidentally because of an unrelated condition.
-    Express the test in the shared language of the domain.
+    Express the test in the project language.
     For S1 bugs: isolate reproduction to a safe environment.
 
   Exit:   The test fails deterministically for the correct reason.
@@ -930,7 +928,7 @@ STEP 4.3 — FIND THE ROOT CAUSE                                 [S1 · S2]
   Action:
     Trace the defect to its origin. Ask: why did the system
     allow this to happen?
-    Is a business rule missing, incomplete, or in the wrong place?
+    Is a project rule missing, incomplete, or in the wrong place?
     Is invalid input being accepted when it should be rejected?
     Is a contract at a boundary being violated silently?
     Is a failure being suppressed instead of surfaced?
@@ -974,7 +972,7 @@ STEP 4.6 — DOCUMENT                                            [S2]
 
   Action:
     If the bug revealed a missing, mislocated, or ambiguous
-    business rule: update the relevant documentation.
+    project rule: update the relevant documentation.
     Commit with a message stating: what the defect was, what its
     root cause was, and which 3S dimension was addressed.
 
@@ -1006,7 +1004,7 @@ STEP 5.2 — CODE SECURITY AUDIT                                 [S1]
   For each area in scope, inspect:
 
   BUSINESS RULE ENFORCEMENT
-    Every business rule is in a location where it cannot be bypassed.
+    Every project rule is in a location where it cannot be bypassed.
     Every rule has a test confirming it holds and that violation is rejected.
     No rule exists in multiple inconsistent locations.
     Flag: Unenforced, untested, or duplicated rule → S1 violation.
@@ -1054,7 +1052,7 @@ STEP 5.3 — SYSTEM SECURITY AUDIT                               [S1]
 
   EXTERNAL INTEGRATIONS
     Every external integration is governed by an explicit contract.
-    External models do not enter internal domain concepts
+    External models do not enter internal project concepts
     without a translation mechanism.
     Flag: Missing contract or untranslated external model → S1 violation.
 
@@ -1156,8 +1154,8 @@ STEP 6.2 — S1 REVIEW — SECURITY (Blocking)                     [S1]
   Check — any failure blocks merge:
   □ No hardcoded secrets, credentials, or keys introduced.
   □ Input validation present at every new or modified entry point.
-  □ No business rule is bypassable via the new code path.
-  □ No external model bleeds into internal domain concepts untranslated.
+  □ No project rule is bypassable via the new code path.
+  □ No external model bleeds into internal project concepts untranslated.
   □ No previously system-controlled attribute has become user-writable.
   □ No failure is silently suppressed.
   □ No sensitive data exposed in external-facing error output.
@@ -1170,12 +1168,12 @@ STEP 6.2 — S1 REVIEW — SECURITY (Blocking)                     [S1]
 STEP 6.3 — S2 REVIEW — SUSTAINABILITY                          [S2]
 
   Check:
-  □ All new identifiers use domain language, not generic technical terms.
-  □ No business rule is duplicated or scattered by this change.
+  □ All new identifiers use project language, not generic technical terms.
+  □ No project rule is duplicated or scattered by this change.
   □ No unit clearly has more than one primary purpose.
   □ No dead code introduced.
   □ Documentation is synchronized: new behavior documented,
-    changed behavior updated, new terms recorded in shared language.
+    changed behavior updated, new terms recorded in project language.
   □ No unbounded operations on data that will grow.
 
   Exit:   Zero S2 blocking failures.
@@ -1214,7 +1212,7 @@ STEP 6.5 — VERDICT                                             [S1 · S2 · S3
 
 ### Workflow 7 — Documentation
 
-**Trigger:** Code changes, new domain concepts are introduced, significant decisions are made, or documentation is found to have diverged from code.  
+**Trigger:** Code changes, new project concepts are introduced, significant decisions are made, or documentation is found to have diverged from code.  
 **Goal:** Keep all documentation synchronized with the system's actual behavior and design.
 
 ```
@@ -1223,8 +1221,8 @@ STEP 7.1 — IDENTIFY WHAT NEEDS UPDATING                        [S2]
   Action:
     For the current change, determine which of the following
     artifacts are affected:
-      □ Shared language: new or renamed domain terms?
-      □ Business rule documentation: new or changed rules?
+      □ Project language: new or renamed project terms?
+      □ Project rule documentation: new or changed rules?
       □ Interface documentation: new or changed contracts?
       □ Boundary documentation: new or changed crossings?
       □ Decision records: any significant choice made?
@@ -1233,7 +1231,7 @@ STEP 7.1 — IDENTIFY WHAT NEEDS UPDATING                        [S2]
   Exit:   All affected artifact types identified.
 
 
-STEP 7.2 — UPDATE SHARED LANGUAGE                              [S2]
+STEP 7.2 — UPDATE PROJECT LANGUAGE                              [S2]
 
   Action:
     For each new term: document its definition in plain language,
@@ -1250,7 +1248,7 @@ STEP 7.3 — UPDATE INTERFACE DOCUMENTATION                      [S1 · S2]
 
   Action:
     Every significant public interface or external contract must document:
-      What it does, in domain language.
+      What it does, in project language.
       What valid inputs look like: types, constraints, examples.
       What outputs are returned: structure and semantics.
       What failure conditions are possible and what they mean.
@@ -1280,7 +1278,7 @@ STEP 7.5 — SYNC VERIFICATION                                   [S2]
   Action:
     Cross-check all updated documentation against the code:
       Every documented behavior matches actual code behavior.
-      Every domain term used in code appears in the shared language.
+      Every project term used in code appears in the project language.
       Every external contract in code matches its documentation.
     Any discrepancy is a Sync or Sink failure (Section 12).
     Resolve every discrepancy before closing the task.
@@ -1331,7 +1329,7 @@ STEP 8.3 — DESIGN THE OPTIMIZATION                             [S1 · S2]
   Action:
     Design the optimization at the location of the root cause.
     S1 check — does this introduce any of the following?
-      Stale or incorrect cached values that violate a business rule?
+      Stale or incorrect cached values that violate a project rule?
       Race conditions or time-of-check / time-of-use vulnerabilities?
       Validation or rule checks bypassed for the sake of speed?
       If yes: the optimization is non-compliant. Redesign.
@@ -1375,8 +1373,8 @@ STEP 8.5 — GUARD AND REPORT                                    [S2]
 
 ### Workflow 9 — Schema and Data Migration
 
-**Trigger:** The system's data storage must evolve to reflect a domain change or resolve a data integrity problem.  
-**Goal:** Evolve the schema safely — with zero data loss, a tested rollback path, and domain integrity fully maintained.
+**Trigger:** The system's data storage must evolve to reflect a requirement change or resolve a data integrity problem.  
+**Goal:** Evolve the schema safely — with zero data loss, a tested rollback path, and data integrity fully maintained.
 
 ```
 STEP 9.1 — CLASSIFY THE MIGRATION                              [S1 · S3]
@@ -1392,8 +1390,8 @@ STEP 9.1 — CLASSIFY THE MIGRATION                              [S1 · S3]
         before any further steps.
     Identify the volume and nature of affected data.
     Determine whether zero-downtime migration is feasible.
-    Verify this migration is driven by an approved domain change.
-    Migrations without domain justification are not permitted.
+    Verify this migration is driven by an approved requirement change.
+    Migrations without project justification are not permitted.
 
   Exit:   Migration is classified. Destructive migrations are authorized.
   Halt:   Destructive and unauthorized → Section 15 before proceeding.
@@ -1427,7 +1425,7 @@ STEP 9.3 — VERIFY IN A SAFE ENVIRONMENT                        [S1]
     Execute the migration in a non-production environment first.
     Verify all tests pass against the migrated data.
     Verify data integrity: record counts, checksums, or
-    domain-specific assertions as appropriate.
+    project-specific assertions as appropriate.
     Verify the rollback procedure works in the non-production environment.
 
   Exit:   Non-production verification is complete.
@@ -1450,7 +1448,7 @@ STEP 9.4 — EXECUTE IN PRODUCTION                               [S1]
 STEP 9.5 — DOCUMENT                                            [S2 · S3]
 
   Action:
-    Update affected domain documentation and shared language records.
+    Update affected project documentation and project language records.
     Update the Design Baseline to reflect the new schema state.
     Record a decision entry documenting the migration approach,
     the pattern used, and the 3S impact — particularly S3:
@@ -1490,7 +1488,7 @@ STEP 10.2 — PLAN UPGRADES                                      [S1 · S3]
     For each dependency requiring an upgrade: review its changelog
     for breaking changes that affect any contract in the project.
     If a breaking change exists: identify how to contain its impact
-    at an explicit boundary, so the internal domain concepts of the
+    at an explicit boundary, so the internal project concepts of the
     project do not need to change to accommodate it.
     Plan upgrades one at a time, in priority order.
     Security-critical upgrades take precedence over all others.
@@ -1538,7 +1536,7 @@ It defines *how to think* and *how to act* — not *what to build* or *how to st
 
 - A mandate for specific patterns, layers, frameworks, or abstractions.
 - A static rulebook to be applied uniformly regardless of context.
-- A substitute for human judgment, domain knowledge, or stakeholder input.
+- A substitute for human judgment, project knowledge, or stakeholder input.
 - An obstacle to developer velocity. If a standard consistently slows work without measurable benefit: challenge it.
 
 ### The Governing Judgment

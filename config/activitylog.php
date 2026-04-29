@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use Modules\Log\Models\Activity;
+use Spatie\Activitylog\Models\Activity;
 
 return [
     /*

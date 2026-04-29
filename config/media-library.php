@@ -1,8 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use Modules\Media\Models\Media;
-use Modules\Media\Observers\MediaObserver;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\MediaCollections\Models\Observers\MediaObserver;
 use Spatie\ImageOptimizer\Optimizers\Avifenc;
 use Spatie\ImageOptimizer\Optimizers\Cwebp;
 use Spatie\ImageOptimizer\Optimizers\Gifsicle;

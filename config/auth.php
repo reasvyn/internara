@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use Modules\User\Models\User;
+use App\Models\User;
 
 return [
     /*
@@ -132,8 +132,8 @@ return [
         // Maximum concurrent sessions per Super Admin
         'max_concurrent_sessions' => env('SUPER_ADMIN_MAX_SESSIONS', 1),
 
-        // Require MFA for Super Admin
-        'require_mfa' => env('SUPER_ADMIN_REQUIRE_MFA', true),
+        // Require MFA for Super Admin (DISABLED - not required)
+        'require_mfa' => env('SUPER_ADMIN_REQUIRE_MFA', false),
 
         // Password change frequency (days)
         'password_change_frequency' => env('SUPER_ADMIN_PASSWORD_CHANGE_DAYS', 30),

@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use Modules\Status\Models\Status;
+use Spatie\ModelStatus\Status;
 
 return [
     /*
