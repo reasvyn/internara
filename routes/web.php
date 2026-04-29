@@ -11,6 +11,9 @@ use App\Livewire\Admin\School\SchoolProfile;
 use App\Livewire\Dashboard\StudentDashboard;
 use App\Livewire\Setup\SetupWizard;
 use App\Livewire\Student\JournalManager;
+use App\Livewire\Supervision\MonitoringVisitIndex;
+use App\Livewire\Supervision\SupervisionManager;
+use App\Livewire\Supervision\SupervisorLogManager;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,4 +34,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', StudentDashboard::class)->name('dashboard');
     Route::get('/journals', JournalManager::class)->name('journals');
+    Route::get('/supervision', SupervisionManager::class)->name('supervision');
+});
+
+Route::prefix('supervision')->name('supervision.')->group(function () {
+    Route::get('/logs', SupervisorLogManager::class)->name('logs');
+    Route::get('/monitoring', MonitoringVisitIndex::class)->name('monitoring');
 });
