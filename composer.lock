@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b74ee4ca6d3bfa955c28afd5a4abd4a",
+    "content-hash": "e6c8da1168fddb995258d4cfdd6c55c0",
     "packages": [
         {
             "name": "archtechx/enums",
@@ -4607,33 +4607,33 @@
         },
         {
             "name": "nwidart/laravel-modules",
-            "version": "v12.0.5",
+            "version": "v13.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nWidart/laravel-modules.git",
-                "reference": "5fe38e88b66394debeac785278a7e40eb81df51a"
+                "reference": "6aa5461e57ac89d0dc8377cdda074c10487f92f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nWidart/laravel-modules/zipball/5fe38e88b66394debeac785278a7e40eb81df51a",
-                "reference": "5fe38e88b66394debeac785278a7e40eb81df51a",
+                "url": "https://api.github.com/repos/nWidart/laravel-modules/zipball/6aa5461e57ac89d0dc8377cdda074c10487f92f9",
+                "reference": "6aa5461e57ac89d0dc8377cdda074c10487f92f9",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-json": "*",
                 "ext-simplexml": "*",
-                "php": ">=8.2",
+                "php": "^8.3",
                 "wikimedia/composer-merge-plugin": "^2.1"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^v3.52",
-                "laravel/framework": "^v12.0",
+                "laravel/framework": "^13.0",
                 "laravel/pint": "^1.16",
                 "mockery/mockery": "^1.6",
-                "orchestra/testbench": "^v10.0",
+                "orchestra/testbench": "^11.0",
                 "phpstan/phpstan": "^2.0",
-                "phpunit/phpunit": "^11.5.3|^12.0.",
+                "phpunit/phpunit": "^12.0.",
                 "spatie/phpunit-snapshot-assertions": "^5.0"
             },
             "type": "library",
@@ -4647,7 +4647,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-master": "12.x-dev"
+                    "dev-master": "13.x-dev"
                 }
             },
             "autoload": {
@@ -4680,7 +4680,7 @@
             ],
             "support": {
                 "issues": "https://github.com/nWidart/laravel-modules/issues",
-                "source": "https://github.com/nWidart/laravel-modules/tree/v12.0.5"
+                "source": "https://github.com/nWidart/laravel-modules/tree/v13.0.0"
             },
             "funding": [
                 {
@@ -4692,7 +4692,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-19T18:16:17+00:00"
+            "time": "2026-03-19T19:16:52+00:00"
         },
         {
             "name": "php-flasher/flasher",
