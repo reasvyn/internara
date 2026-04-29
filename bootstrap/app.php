@@ -33,12 +33,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Modules\Auth\Http\Middleware\EnsureEmailIsVerified;
-use Modules\Core\Localization\Http\Middleware\SetLocale;
-use Modules\Exception\Handler;
-use Modules\Setup\Http\Middleware\BypassSetupAuthorization;
-use Modules\Setup\Http\Middleware\RequireSetupAccess;
-use Modules\Status\Middleware\CheckSessionExpiration;
+// use Modules\Auth\Http\Middleware\EnsureEmailIsVerified;
+// use Modules\Core\Localization\Http\Middleware\SetLocale;
+// use Modules\Exception\Handler;
+// use Modules\Setup\Http\Middleware\BypassSetupAuthorization;
+// use Modules\Setup\Http\Middleware\RequireSetupAccess;
+// use Modules\Status\Middleware\CheckSessionExpiration;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -49,25 +49,26 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        \App\Console\Commands\AppInstallCommand::class,
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
-            prepend: [RequireSetupAccess::class, BypassSetupAuthorization::class],
-            append: [CheckSessionExpiration::class, SetLocale::class],
+            // prepend: [RequireSetupAccess::class, BypassSetupAuthorization::class],
+            // append: [CheckSessionExpiration::class, SetLocale::class],
         );
         $middleware->alias([
-            'session.expire' => CheckSessionExpiration::class,
+            // 'session.expire' => CheckSessionExpiration::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
-            // Override Laravel's default verified middleware to allow users without an email
-            // address to pass through (they get a soft dashboard banner instead).
-            'verified' => EnsureEmailIsVerified::class,
+            // 'verified' => EnsureEmailIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->map(
-            ModelNotFoundException::class,
-            fn(ModelNotFoundException $e) => Handler::map($e),
-        );
+        // $exceptions->map(
+        //     ModelNotFoundException::class,
+        //     fn(ModelNotFoundException $e) => Handler::map($e),
+        // );
     })
     ->create();

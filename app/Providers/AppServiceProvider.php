@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (is_debug_mode()) {
+        if (config('app.debug')) {
             $this->app
                 ->make('translator')
                 ->handleMissingKeysUsing(

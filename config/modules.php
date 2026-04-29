@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-use Modules\Support\Scaffolding\Console\Commands\MakeClassCommand;
-use Modules\Support\Scaffolding\Console\Commands\MakeDuskCommand;
-use Modules\Support\Scaffolding\Console\Commands\MakeInterfaceCommand;
-use Modules\Support\Scaffolding\Console\Commands\MakeTraitCommand;
 use Nwidart\Modules\Activators\FileActivator;
 use Nwidart\Modules\Providers\ConsoleServiceProvider;
 
@@ -255,14 +251,7 @@ return [
     | application. You can add your own commands to merge section.
     |
     */
-    'commands' => ConsoleServiceProvider::defaultCommands()
-        ->merge([
-            MakeClassCommand::class,
-            MakeInterfaceCommand::class,
-            MakeTraitCommand::class,
-            MakeDuskCommand::class,
-        ])
-        ->toArray(),
+    'commands' => ConsoleServiceProvider::defaultCommands()->toArray(),
 
     /*
     |--------------------------------------------------------------------------
