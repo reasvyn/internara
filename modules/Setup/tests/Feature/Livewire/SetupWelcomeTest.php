@@ -34,8 +34,6 @@ describe('SetupWelcome Component', function () {
     test('it responds to next step action without error', function () {
         $this->get(route('setup.welcome', ['token' => 'test-token']));
 
-        Livewire::test(SetupWelcome::class)
-            ->call('nextStep')
-            ->assertStatus(200);
+        Livewire::test(SetupWelcome::class)->call('nextStep')->assertStatus(200);
     });
 });

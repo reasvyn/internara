@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Services\Contracts;
 
+use Modules\Shared\Contracts\WizardService;
+
 /**
  * Interface AppSetupService
  *
  * Defines the contract for handling business/application configuration logic.
  * Formerly SetupService.
  */
-interface AppSetupService
+interface AppSetupService extends WizardService
 {
     /**
      * Standard setup steps.

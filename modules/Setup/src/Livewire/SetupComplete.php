@@ -4,99 +4,66 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Livewire;
 
-use Illuminate\View\View;
-use Livewire\Attributes\Computed;
-use Livewire\Component;
-use Modules\Setup\Services\Contracts\AppSetupService;
-use Modules\Shared\Livewire\Concerns\HandlesWizardSteps;
-
 /**
- * Represents the final 'Complete' screen of the application setup process.
+ * Setup Complete - Finalization step
+ *
+ * [S1 - Secure] Server-side mandates, token cleanup
+ * [S2 - Sustain] Clear completion logic
+ * [S3 - Scalable] Event dispatch, audit logging
  */
-class SetupComplete extends Component
+class SetupComplete extends SetupWizardBase
 {
-    use HandlesWizardSteps;
+    public bool $dataVerified = false;
+    public bool $securityAware = false;
+    public bool $legalAgreed = false;
 
-    /**
-     * Flags for the final user check-up.
-     */
-    public bool $data_verified = false;
-
-    public bool $security_aware = false;
-
-    public bool $legal_agreed = false;
-
-    /**
-     * Modal visibility flags.
-     */
-    public bool $showPrivacy = false;
-
-    public bool $showTerms = false;
-
-    /**
-     * [S3 - Scalable] Determines if the finalization can proceed.
-     * Overrides the default trait logic to enforce the checkup invariants.
-     */
-    #[Computed]
-    public function canContinue(): bool
-    {
-        return $this->data_verified && $this->security_aware && $this->legal_agreed;
-    }
-
-    /**
-     * Initializes the component.
-     */
-    public function boot(AppSetupService $setupService): void
-    {
-        $this->setupService = $setupService;
-    }
-
-    /**
-     * Mounts the component.
-     */
     public function mount(): void
     {
-        $this->initWizardStepProps(
-            currentStep: AppSetupService::STEP_COMPLETE,
-            nextStep: '',
-            prevStep: AppSetupService::STEP_INTERNSHIP,
-            extra: ['landing_route' => 'login'],
-        );
-
-        $this->requireWizardAccess();
+        $this->authorizeStepAccess('complete');
+        $this->ensureNotInstalled();
     }
 
-    /**
-     * Handles the login attempt after validating the governance checklist.
-     */
-    public function nextStep(): void
+    public function completeSetup(): void
     {
         // [S1 - Secure] Server-side mandate enforcement
         $this->validate([
-            'data_verified' => 'accepted',
-            'security_aware' => 'accepted',
-            'legal_agreed' => 'accepted',
+            'dataVerified' => 'accepted',
+            'securityAware' => 'accepted',
+            'legalAgreed' => 'accepted',
+        ], [
+            'dataVerified.accepted' => __('setup::validation.complete.verify_data'),
+            'securityAware.accepted' => __('setup::validation.complete.security_aware'),
+            'legalAgreed.accepted' => __('setup::validation.complete.legal_agree'),
         ]);
 
-        $currentStep = $this->wizardStepProps['currentStep'] ?? '';
-
-        $success = $this->setupService->performSetupStep($currentStep);
-
-        if ($success) {
-            $this->redirectToLanding();
+        $setup = $this->setupService->getSetup();
+        
+        // Get admin ID from completed steps
+        $adminId = $setup->admin_id;
+        
+        if (!$adminId) {
+            $this->addError('general', __('setup::messages.admin_not_found'));
+            return;
         }
+
+        // Finalize (atomic operation, clears tokens)
+        $this->setupService->finalize($setup, $adminId);
+
+        // Clear session
+        session()->forget(['setup_token', 'setup_authorized']);
+
+        // Redirect to login
+        $this->redirect(route('login'));
     }
 
-    /**
-     * Renders the component's view.
-     */
-    public function render(): View
+    public function render()
     {
-        return view('setup::livewire.setup-complete')->layout('setup::components.layouts.setup', [
-            'title' =>
-                __('setup::wizard.complete.title') .
-                ' | ' .
-                setting('site_title', setting('app_name')),
+        $setup = $this->setupService->getSetup();
+        
+        return view('setup::livewire.setup-complete', [
+            'progress' => $this->progress,
+            'setup' => $setup,
+            'schoolName' => $setup->school?->name ?? '-',
         ]);
     }
 }

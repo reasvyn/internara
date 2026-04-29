@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\InstallationAuditor;
-use Modules\Setup\Services\InstallerService;
+use Modules\Setup\Services\SystemInstaller;
 
 describe('InstallerService Feature Test', function () {
     beforeEach(function () {
         $this->settingService = $this->mock(SettingService::class);
         $this->auditor = $this->mock(InstallationAuditor::class);
 
-        $this->installer = new InstallerService($this->settingService, $this->auditor);
+        $this->installer = new SystemInstaller($this->settingService, $this->auditor);
 
         // Authorize session for setup actions
         session(['setup_authorized' => true]);

@@ -106,7 +106,7 @@ return [
         'description' =>
             'Setiap jurusan adalah jalur unik yang akan ditempuh siswa. Dengan mendefinisikan jurusan-jurusan ini, kita memudahkan penempatan magang yang sesuai dengan keahlian mereka. Masukkan jurusan-jurusan yang ada di sekolah Anda.',
     ],
-'internship' => [
+    'internship' => [
         'title' => 'Siapkan Data Magang',
         'headline' => 'Menentukan Periode Magang.',
         'description' =>

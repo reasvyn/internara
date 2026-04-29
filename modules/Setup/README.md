@@ -10,14 +10,14 @@ system to a fully operational academic ecosystem.
 
 The setup wizard consists of **6 sequential steps**:
 
-| # | Step | Component | Purpose |
-|---|------|-----------|---------|
-| 1 | **Welcome** | `SetupWelcome` | Introduction and prerequisites check |
-| 2 | **School** | `SchoolSetup` | Configure institution details |
-| 3 | **Administrator** | `AccountSetup` | Create super admin account |
-| 4 | **Department** | `DepartmentSetup` | Define organizational departments |
-| 5 | **Internship** | `InternshipSetup` | Configure internship period |
-| 6 | **Complete** | `SetupComplete` | Finalization and system activation |
+| #   | Step              | Component         | Purpose                              |
+| --- | ----------------- | ----------------- | ------------------------------------ |
+| 1   | **Welcome**       | `SetupWelcome`    | Introduction and prerequisites check |
+| 2   | **School**        | `SchoolSetup`     | Configure institution details        |
+| 3   | **Administrator** | `AccountSetup`    | Create super admin account           |
+| 4   | **Department**    | `DepartmentSetup` | Define organizational departments    |
+| 5   | **Internship**    | `InternshipSetup` | Configure internship period          |
+| 6   | **Complete**      | `SetupComplete`   | Finalization and system activation   |
 
 Each step must be completed sequentially. Access is controlled via `setup_token` middleware.
 
@@ -28,15 +28,15 @@ Each step must be completed sequentially. Access is controlled via `setup_token`
 ### 2.1 Service Layer
 
 - **`AppSetupService`**: Orchestrates the business configuration wizard and state invariants.
-  - Manages step completion tracking via `setup_step_*` settings
-  - Enforces sequential integrity via `SetupProcess` aggregate
-  - _Contract_: `Modules\Setup\Services\Contracts\AppSetupService`
+    - Manages step completion tracking via `setup_step_*` settings
+    - Enforces sequential integrity via `SetupProcess` aggregate
+    - _Contract_: `Modules\Setup\Services\Contracts\AppSetupService`
 - **`SetupRequirementRegistry`**: Centralized registry for external setup requirement providers
-  - Allows modules to register their setup completion conditions
-  - _Contract_: `Modules\Setup\Services\Contracts\SetupRequirementProvider`
+    - Allows modules to register their setup completion conditions
+    - _Contract_: `Modules\Setup\Services\Contracts\SetupRequirementProvider`
 - **`OnboardingService`**: Provides administrative orchestration for batch onboarding stakeholders
   through CSV data processing.
-  - _Contract_: `Modules\Setup\Onboarding\Services\Contracts\OnboardingService`
+    - _Contract_: `Modules\Setup\Onboarding\Services\Contracts\OnboardingService`
 
 ### 2.2 Security Infrastructure
 
@@ -53,7 +53,9 @@ Each step must be completed sequentially. Access is controlled via `setup_token`
 ### 2.4 Livewire Components
 
 Each wizard step is implemented as a standalone Livewire component:
-- `SetupWelcome`, `SchoolSetup`, `AccountSetup`, `DepartmentSetup`, `InternshipSetup`, `SetupComplete`
+
+- `SetupWelcome`, `SchoolSetup`, `AccountSetup`, `DepartmentSetup`, `InternshipSetup`,
+  `SetupComplete`
 - Shared behavior via `HandlesWizardSteps` trait
 
 ---
@@ -75,12 +77,12 @@ Each wizard step is implemented as a standalone Livewire component:
 
 - **Unit Tests**: Validates state management in `SetupProcess` and service logic.
 - **Feature Tests**: Verifies the end-to-end onboarding flow and security middleware.
-  - `SetupCompleteTest`: 3 tests
-  - `SchoolSetupTest`: 3 tests
-  - `AccountSetupTest`: 3 tests
-  - `DepartmentSetupTest`: 3 tests
-  - `InternshipSetupTest`: 3 tests
-  - `SetupWelcomeTest`: 2 tests
+    - `SetupCompleteTest`: 3 tests
+    - `SchoolSetupTest`: 3 tests
+    - `AccountSetupTest`: 3 tests
+    - `DepartmentSetupTest`: 3 tests
+    - `InternshipSetupTest`: 3 tests
+    - `SetupWelcomeTest`: 2 tests
 - **Command**: `php artisan test modules/Setup`
 
 ---

@@ -1,98 +1,51 @@
-<div x-data="{ 
-    dataVerified: @entangle('data_verified'),
-    securityAware: @entangle('security_aware'),
-    legalAgreed: @entangle('legal_agreed'),
-    get canComplete() {
-        return this.dataVerified && this.securityAware && this.legalAgreed;
-    }
-}">
-    <x-setup::layouts.setup-wizard :step="6" :totalSteps="6">
-        <x-slot:header>
-            <x-setup::wizard-header 
-                step="6"
-                :title="__('setup::wizard.complete.title')"
-                :description="__('setup::wizard.complete.description', ['app' => setting('app_name', 'Internara')])"
-                badgeText="Final"
-            />
-        </x-slot:header>
-
-        <x-slot:content>
-            <div class="p-5 sm:p-6">
-                <h3 class="text-base font-semibold text-base-content/80 dark:text-base-content/70 mb-4">
-                    {{ __('setup::wizard.complete.checkup_title') }}
-                </h3>
-
-                <div class="space-y-3">
-                    <!-- Data Verification -->
-                    <label class="flex items-start gap-3 p-4 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors cursor-pointer">
-                        <input type="checkbox" x-model="dataVerified" class="checkbox checkbox-sm mt-0.5" />
-                        <div class="flex-1">
-                            <span class="block text-sm font-medium text-base-content dark:text-base-content/90">
-                                {{ __('setup::wizard.complete.checkup.data_verified_label') }}
-                            </span>
-                            <span class="block text-xs text-base-content/50 dark:text-base-content/40 mt-1">
-                                {{ __('setup::wizard.complete.checkup.data_verified_desc') }}
-                            </span>
-                        </div>
-                    </label>
-
-                    <!-- Security Awareness -->
-                    <label class="flex items-start gap-3 p-4 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors cursor-pointer">
-                        <input type="checkbox" x-model="securityAware" class="checkbox checkbox-sm mt-0.5" />
-                        <div class="flex-1">
-                            <span class="block text-sm font-medium text-base-content dark:text-base-content/90">
-                                {{ __('setup::wizard.complete.checkup.security_aware_label') }}
-                            </span>
-                            <span class="block text-xs text-base-content/50 dark:text-base-content/40 mt-1">
-                                {{ __('setup::wizard.complete.checkup.security_aware_desc') }}
-                            </span>
-                        </div>
-                    </label>
-
-                    <!-- Legal Agreement -->
-                    <label class="flex items-start gap-3 p-4 rounded-xl bg-base-200/30 dark:bg-base-200/20 border border-base-200/50 dark:border-base-200/30 hover:border-base-300/50 dark:hover:border-base-300/30 transition-colors cursor-pointer">
-                        <input type="checkbox" x-model="legalAgreed" class="checkbox checkbox-sm mt-0.5" />
-                        <div class="flex-1">
-                            <span class="block text-sm font-medium text-base-content dark:text-base-content/90">
-                                {{ __('setup::wizard.complete.checkup.legal_agreed_label') }}
-                            </span>
-                            <span class="block text-xs text-base-content/50 dark:text-base-content/40 mt-1">
-                                {!! __('setup::wizard.complete.checkup.legal_agreed_desc', [
-                                    'privacy' => '<a href=# x-on:click.prevent=$wire.set(\'showPrivacy\', true) class=underline font-medium>Privacy Policy</a>',
-                                    'terms' => '<a href=# x-on:click.prevent=$wire.set(\'showTerms\', true) class=underline font-medium>Terms of Service</a>'
-                                ]) !!}
-                            </span>
-                        </div>
-                    </label>
-                </div>
+<div>
+    <div class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow">
+        <h1 class="text-2xl font-bold mb-4">{{ __('setup::wizard.complete_title') }}</h1>
+        
+        <div class="mb-6">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $progress }}%"></div>
             </div>
-        </x-slot:content>
-
-        <x-slot:footer>
-            <x-setup::action-footer 
-                :canContinue="$this->canContinue"
-                alpineContinue="canComplete"
-                :continueLabel="__('setup::wizard.complete.cta')"
-            />
-        </x-slot:footer>
-    </x-setup::layouts.setup-wizard>
-
-    <!-- Legal Modals -->
-    <x-ui::modal wire:model="showPrivacy" :title="__('Privacy Policy')">
-        <div class="p-4 max-h-96 overflow-y-auto">
-            @include('shared::legal.privacy-policy')
         </div>
-        <x-slot:actions>
-            <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.set('showPrivacy', false)" />
-        </x-slot:actions>
-    </x-ui::modal>
 
-    <x-ui::modal wire:model="showTerms" :title="__('Terms of Service')">
-        <div class="p-4 max-h-96 overflow-y-auto">
-            @include('shared::legal.terms-of-service')
+        <div class="mb-6 p-4 bg-gray-50 rounded">
+            <h2 class="font-semibold mb-2">{{ __('setup::wizard.summary') }}</h2>
+            <p><strong>{{ __('setup::wizard.school') }}:</strong> {{ $schoolName }}</p>
+            <p><strong>{{ __('setup::wizard.setup_id') }}:</strong> {{ $setup->id }}</p>
         </div>
-        <x-slot:actions>
-            <x-ui::button :label="__('ui::common.close')" x-on:click="$wire.set('showTerms', false)" />
-        </x-slot:actions>
-    </x-ui::modal>
+
+        <form wire:submit="completeSetup">
+            <div class="space-y-4 mb-6">
+                <label class="flex items-center">
+                    <input wire:model="dataVerified" type="checkbox" class="mr-2">
+                    <span class="text-sm">{{ __('setup::wizard.verify_data') }}</span>
+                </label>
+                @error('dataVerified') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
+                <label class="flex items-center">
+                    <input wire:model="securityAware" type="checkbox" class="mr-2">
+                    <span class="text-sm">{{ __('setup::wizard.security_aware') }}</span>
+                </label>
+                @error('securityAware') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+
+                <label class="flex items-center">
+                    <input wire:model="legalAgreed" type="checkbox" class="mr-2">
+                    <span class="text-sm">{{ __('setup::wizard.legal_agree') }}</span>
+                </label>
+                @error('legalAgreed') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+
+            @if(session('error'))
+                <div class="mb-4 p-3 bg-red-50 text-red-800 rounded">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <div class="flex justify-end">
+                <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    {{ __('setup::wizard.finalize_setup') }}
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

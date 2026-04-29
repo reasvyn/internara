@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Modules\Admin\Services\Contracts\SuperAdminService;
 use Modules\Permission\Database\Seeders\PermissionSeeder;
-use Modules\Permission\Database\Seeders\RoleSeeder;
+use Modules\Permission\Database\Seeders\PermissionSeeder;
 use Modules\Setting\Services\Contracts\SettingService;
 use Modules\Setup\Services\Contracts\AppSetupService;
 
 beforeEach(function () {
     $this->seed(PermissionSeeder::class);
-    $this->seed(RoleSeeder::class);
+    $this->seed(PermissionSeeder::class);
 });
 
 test('it aborts 403 on setup routes if token is missing or invalid', function () {

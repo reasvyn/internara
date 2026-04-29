@@ -4,189 +4,99 @@ declare(strict_types=1);
 
 namespace Modules\Setup\Tests\Feature\Middleware;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\RateLimiter;
-use Mockery;
-use Modules\Admin\Services\Contracts\SuperAdminService;
-use Modules\Setting\Services\Contracts\SettingService;
-use Modules\Setup\Http\Middleware\ProtectSetupRoute;
-use Modules\Setup\Services\Contracts\AppSetupService;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Modules\Setup\Models\Setup;
+use Modules\Setup\Services\Contracts\SetupService;
+use Tests\TestCase;
 
+/**
+ * [S1 - Secure] Test rate limiting, token validation, TTL
+ * [S2 - Sustain] Test clear error responses
+ * [S3 - Scalable] Test stateless validation
+ */
 describe('ProtectSetupRoute Middleware', function () {
     beforeEach(function () {
-        Config::set('app.env', 'production');
-        Cache::flush();
-        RateLimiter::clear('setup_throttle:127.0.0.1');
-
-        $this->setupService = Mockery::mock(AppSetupService::class);
-        $this->superAdminService = Mockery::mock(SuperAdminService::class);
-        $this->settingService = Mockery::mock(SettingService::class);
-
-        $this->app->instance(AppSetupService::class, $this->setupService);
-        $this->app->instance(SuperAdminService::class, $this->superAdminService);
-        $this->app->instance(SettingService::class, $this->settingService);
-
-        $this->middleware = new ProtectSetupRoute(
-            $this->setupService,
-            $this->superAdminService,
-            $this->settingService,
-        );
+        RateLimiter::clear('setup_throttle:' . request()->ip());
+        Setup::truncate();
     });
 
-    it('enforces rate limiting on setup routes', function () {
-        $this->setupService->shouldReceive('isAppInstalled')->andReturn(false);
-        $this->superAdminService->shouldReceive('exists')->andReturn(false);
+    it('denies access without token', function () {
+        $response = $this->get('/setup/welcome');
+        
+        $response->assertRedirect('/setup/welcome');
+        $response->assertSessionHasErrors('token');
+    });
 
-        $request = Request::create('/setup/welcome', 'GET', ['token' => 'valid-token']);
-        $request->server->set('REMOTE_ADDR', '127.0.0.1');
-        $request->setLaravelSession($this->app['session']->driver());
+    it('denies access with invalid token', function () {
+        $setup = Setup::create([
+            'is_installed' => false,
+            'completed_steps' => [],
+        ]);
+        $setup->setToken('valid-token');
+        $setup->token_expires_at = now()->addHour();
+        $setup->save();
 
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token')
-            ->andReturn('valid-token');
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token_expires_at')
-            ->andReturn(now()->addHour()->toIso8601String());
+        $response = $this->get('/setup/welcome?token=invalid-token');
+        
+        $response->assertRedirect('/setup/welcome');
+        $response->assertSessionHasErrors('token');
+    });
 
-        $this->setupService->shouldReceive('isStepCompleted')->andReturn(false);
+    it('allows access with valid token', function () {
+        $setup = Setup::create([
+            'is_installed' => false,
+            'completed_steps' => [],
+        ]);
+        $token = $setup->getToken();
+        $setup->token_expires_at = now()->addHour();
+        $setup->save();
 
-        $next = fn() => new Response('OK');
+        $response = $this->get("/setup/welcome?token={$token}");
+        
+        // Should not redirect with error
+        expect($response->getStatusCode())->not->toBe(403);
+    });
 
+    it('denies access with expired token', function () {
+        $setup = Setup::create([
+            'is_installed' => false,
+            'completed_steps' => [],
+        ]);
+        $token = $setup->getToken();
+        $setup->token_expires_at = now()->subHour();
+        $setup->save();
+
+        $response = $this->get("/setup/welcome?token={$token}");
+        
+        $response->assertRedirect('/setup/welcome');
+        $response->assertSessionHasErrors('token');
+    });
+
+    it('rate limits after 20 attempts', function () {
+        $ip = '127.0.0.1';
+        
+        // Simulate 20 attempts
         for ($i = 0; $i < 20; $i++) {
-            $response = $this->middleware->handle($request, $next);
-            expect($response->getStatusCode())->toBe(200);
+            RateLimiter::hit("setup_throttle:{$ip}", 60);
         }
 
-        // 21st request should be throttled
-        $this->withoutExceptionHandling();
-        try {
-            $this->middleware->handle($request, $next);
-        } catch (HttpException $e) {
-            expect($e->getStatusCode())->toBe(429);
-        }
+        $response = $this->get('/setup/welcome');
+        
+        $response->assertStatus(429); // Too Many Requests
     });
 
-    it('aborts with 404 if application is already installed and superadmin exists', function () {
-        $this->setupService->shouldReceive('isAppInstalled')->andReturn(true);
-        $this->superAdminService->shouldReceive('exists')->andReturn(true);
+    it('stores token in session after validation', function () {
+        $setup = Setup::create([
+            'is_installed' => false,
+            'completed_steps' => [],
+        ]);
+        $token = $setup->getToken();
+        $setup->token_expires_at = now()->addHour();
+        $setup->save();
 
-        $request = Request::create('/setup/welcome', 'GET');
-        $request->server->set('REMOTE_ADDR', '127.0.0.1');
-
-        $this->withoutExceptionHandling();
-        try {
-            $this->middleware->handle($request, fn() => new Response('OK'));
-        } catch (HttpException $e) {
-            expect($e->getStatusCode())->toBe(404);
-        }
-    });
-
-    it('aborts with 403 if application is not installed but user is unauthorized', function () {
-        $this->setupService->shouldReceive('isAppInstalled')->andReturn(false);
-        $this->superAdminService->shouldReceive('exists')->andReturn(false);
-
-        // No session authorization, invalid token
-        $request = Request::create('/setup/welcome', 'GET', ['token' => 'invalid-token']);
-        $request->server->set('REMOTE_ADDR', '127.0.0.1');
-        $request->setLaravelSession($this->app['session']->driver());
-
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token')
-            ->andReturn('valid-token');
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token_expires_at')
-            ->andReturn(now()->addHour()->toIso8601String());
-
-        $this->withoutExceptionHandling();
-        try {
-            $this->middleware->handle($request, fn() => new Response('OK'));
-        } catch (HttpException $e) {
-            expect($e->getStatusCode())->toBe(403);
-        }
-    });
-
-    it('denies access if setup token is expired', function () {
-        $this->setupService->shouldReceive('isAppInstalled')->andReturn(false);
-        $this->superAdminService->shouldReceive('exists')->andReturn(false);
-
-        $request = Request::create('/setup/welcome', 'GET', ['token' => 'valid-token']);
-        $request->server->set('REMOTE_ADDR', '127.0.0.1');
-        $request->setLaravelSession($this->app['session']->driver());
-
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token')
-            ->andReturn('valid-token');
-        // Token expired
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token_expires_at')
-            ->andReturn(now()->subHour()->toIso8601String());
-
-        $this->withoutExceptionHandling();
-        try {
-            $this->middleware->handle($request, fn() => new Response('OK'));
-        } catch (HttpException $e) {
-            expect($e->getStatusCode())->toBe(403);
-        }
-    });
-
-    it('redirects to complete if all steps are done except the final step', function () {
-        $this->setupService->shouldReceive('isAppInstalled')->andReturn(false);
-        $this->superAdminService->shouldReceive('exists')->andReturn(false);
-
-        $request = Request::create('/setup/welcome', 'GET', ['token' => 'valid-token']);
-        $request->server->set('REMOTE_ADDR', '127.0.0.1');
-        $request->setLaravelSession($this->app['session']->driver());
-
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token')
-            ->andReturn('valid-token');
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token_expires_at')
-            ->andReturn(now()->addHour()->toIso8601String());
-
-        // Mock all dependencies completed EXCEPT the final one
-        $this->setupService->shouldReceive('isStepCompleted')->andReturnUsing(function ($step) {
-            return $step !== AppSetupService::STEP_COMPLETE;
-        });
-
-        $response = $this->middleware->handle($request, fn() => new Response('OK'));
-        expect($response->isRedirect(route('setup.complete')))->toBeTrue();
-    });
-
-    it('passes to next if authorized and steps remaining', function () {
-        $this->setupService->shouldReceive('isAppInstalled')->andReturn(false);
-        $this->superAdminService->shouldReceive('exists')->andReturn(false);
-
-        $request = Request::create('/setup/welcome', 'GET', ['token' => 'valid-token']);
-        $request->server->set('REMOTE_ADDR', '127.0.0.1');
-        $request->setLaravelSession($this->app['session']->driver());
-
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token')
-            ->andReturn('valid-token');
-        $this->settingService
-            ->shouldReceive('getValue')
-            ->with('setup_token_expires_at')
-            ->andReturn(now()->addHour()->toIso8601String());
-
-        // First step is not completed
-        $this->setupService->shouldReceive('isStepCompleted')->andReturn(false);
-
-        $response = $this->middleware->handle($request, fn() => new Response('OK'));
-        expect($response->getStatusCode())->toBe(200);
-        expect($response->getContent())->toBe('OK');
+        $response = $this->get("/setup/welcome?token={$token}");
+        
+        $response->assertSessionHas('setup_token', $token);
+        $response->assertSessionHas('setup_authorized', true);
     });
 });

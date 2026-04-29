@@ -43,7 +43,8 @@ return [
         'migrations_executed' =>
             'Instalasi teknis: Migrasi database dijalankan menggunakan [:command].',
         'seeding_completed' => 'Instalasi teknis: Seeding database selesai dan token setup dibuat.',
-        'key_exists_skipping' => 'Instalasi teknis: Kunci APP_KEY sudah ada, melewati pembuatan baru.',
+        'key_exists_skipping' =>
+            'Instalasi teknis: Kunci APP_KEY sudah ada, melewati pembuatan baru.',
         'env_created' => 'Instalasi teknis: File .env dibuat dari .env.example.',
     ],
 ];

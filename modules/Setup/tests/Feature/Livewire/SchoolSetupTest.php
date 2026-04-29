@@ -27,11 +27,19 @@ beforeEach(function () {
     // Mock requirement providers
     $registry = app(SetupRequirementRegistry::class);
     foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
-        $registry->register(new class($identifier) implements SetupRequirementProvider {
-            public function __construct(private string $id) {}
-            public function getRequirementIdentifier(): string { return $this->id; }
-            public function isSatisfied(): bool { return true; }
-        });
+        $registry->register(
+            new class ($identifier) implements SetupRequirementProvider {
+                public function __construct(private string $id) {}
+                public function getRequirementIdentifier(): string
+                {
+                    return $this->id;
+                }
+                public function isSatisfied(): bool
+                {
+                    return true;
+                }
+            },
+        );
     }
 });
 
@@ -41,8 +49,7 @@ describe('SchoolSetup Component', function () {
 
         $this->get(route('setup.school', ['token' => 'test-token']));
 
-        Livewire::test(SchoolSetup::class)
-            ->assertStatus(200);
+        Livewire::test(SchoolSetup::class)->assertStatus(200);
     });
 
     test('it proceeds to account setup step upon school creation', function () {

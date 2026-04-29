@@ -36,7 +36,7 @@ test('it resets setup state correctly', function () {
 test('it fails if reset not confirmed', function () {
     $this->artisan('setup:reset')
         ->expectsConfirmation(
-            'This will unlock the setup routes and allow reconfiguration. Continue?',
+            __('setup::console.reset.confirm_question'),
             'no',
         )
         ->assertFailed();

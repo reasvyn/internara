@@ -6,55 +6,55 @@ namespace Modules\Setup\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Livewire\Livewire;
-use Modules\Setup\Services\Contracts\AppSetupService;
-use Symfony\Component\HttpFoundation\Response;
+use Modules\Setup\Services\Contracts\SetupService;
 
+/**
+ * Require Setup Access - Redirect logic for setup flow
+ *
+ * [S1 - Secure] Prevents bypassing setup, hides routes when installed
+ * [S2 - Sustain] Clear redirect logic
+ * [S3 - Scalable] Works with any auth guard
+ */
 class RequireSetupAccess
 {
-    public function __construct(protected AppSetupService $setupService) {}
-
     /**
-     * Handle an incoming request.
-     *
-     * @param Closure(Request): (Response) $next
+     * Handle incoming request
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): mixed
     {
-        // 1. If already installed and trying to access setup route, hide it (404)
-        if ($this->setupService->isAppInstalled() && $this->isSetupRoute($request)) {
+        $setupService = app(SetupService::class);
+        $isInstalled = $setupService->isInstalled();
+        $isSetupRoute = $this->isSetupRoute($request);
+
+        // If already installed and trying to access setup route -> 404
+        if ($isInstalled && $isSetupRoute) {
             return abort(404);
         }
 
-        // 2. If NOT installed, and NOT trying to access setup route, redirect to setup
-        if (!$this->setupService->isAppInstalled() && !$this->isSetupRoute($request)) {
-            // Bypass specific requests
-            if ($this->bypassSpecificRequests($request)) {
-                return $next($request);
+        // If NOT installed and NOT trying to access setup -> redirect to setup
+        if (!$isInstalled && !$isSetupRoute) {
+            $setup = $setupService->getSetup();
+
+            // Generate token if not exists
+            if ($setup->token_expires_at === null || $setup->isTokenExpired()) {
+                $token = $setupService->generateToken();
+
+                return redirect()->route('setup.welcome', ['token' => $token]);
             }
 
-            return redirect()->route('setup.welcome');
+            $token = $setup->getToken();
+
+            return redirect()->route('setup.welcome', ['token' => $token]);
         }
 
         return $next($request);
     }
 
-    protected function bypassSpecificRequests(Request $request): bool
-    {
-        return app()->runningInConsole() || $this->isLivewireRequest($request) || is_testing();
-    }
-
     /**
-     * Check if the current request is for a setup route.
+     * Check if current route is a setup route
      */
-    private function isSetupRoute(Request $request): bool
+    protected function isSetupRoute(Request $request): bool
     {
-        return $request->routeIs('setup') || $request->routeIs('setup.*');
-    }
-
-    private function isLivewireRequest(Request $request): bool
-    {
-        // for UI Interaction and file upload
-        return Livewire::isLivewireRequest() || $request->is('livewire/*');
+        return str_starts_with($request->path(), 'setup');
     }
 }
