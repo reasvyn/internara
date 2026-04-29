@@ -27,4 +27,19 @@ return [
         'inactive' => 'No login for 180+ days',
         'archived' => 'Permanent archive - awaiting deletion',
     ],
+
+    // Quick action reasons
+    'quick_actions' => [
+        'verify_reason' => 'Quick verified by :name',
+        'suspend_reason' => 'Quick suspended by :name',
+        'unlock_reason' => 'Quick unlocked',
+    ],
+
+    // Role labels
+    'roles' => [
+        'student' => 'Siswa',
+        'teacher' => 'Guru Pembimbing',
+        'mentor' => 'Pembimbing Industri',
+        'admin' => 'Admin',
+    ],
 ];

@@ -15,7 +15,7 @@ return [
         'full_name' => 'Full Name',
         'username' => 'Username',
         'username_immutable_hint' => 'Username is system-generated and cannot be changed.',
-        'system_protected_hint' => 'This account is system protected.',
+        'system_protected_hint' => 'This account is system-protected.',
         'email' => 'Email Address',
         'phone' => 'Phone Number',
         'phone_institutional' => 'Institutional / Service Contact',

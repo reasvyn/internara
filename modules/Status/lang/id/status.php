@@ -27,4 +27,19 @@ return [
         'inactive' => 'Tidak login 180+ hari',
         'archived' => 'Arsip permanen - menunggu penghapusan',
     ],
+
+    // Quick action reasons
+    'quick_actions' => [
+        'verify_reason' => 'Cepat diverifikasi oleh :name',
+        'suspend_reason' => 'Disuspensi dengan cepat oleh :name',
+        'unlock_reason' => 'Dibuka dengan cepat',
+    ],
+
+    // Role labels
+    'roles' => [
+        'student' => 'Siswa',
+        'teacher' => 'Guru Pembimbing',
+        'mentor' => 'Pembimbing Industri',
+        'admin' => 'Admin',
+    ],
 ];

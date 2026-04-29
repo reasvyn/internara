@@ -44,7 +44,7 @@ class QuickActionButtons extends Component
             $service->transition(
                 user: $this->user,
                 newStatus: Status::VERIFIED,
-                reason: 'Cepat diverifikasi oleh ' . auth()->user()->name,
+                reason: __('status::quick_actions.verify_reason', ['name' => auth()->user()->name]),
                 triggeredBy: auth()->user(),
                 ipAddress: request()->ip(),
             );
@@ -67,7 +67,7 @@ class QuickActionButtons extends Component
             $service->transition(
                 user: $this->user,
                 newStatus: Status::SUSPENDED,
-                reason: 'Disuspensi dengan cepat oleh ' . auth()->user()->name,
+                reason: __('status::quick_actions.suspend_reason', ['name' => auth()->user()->name]),
                 triggeredBy: auth()->user(),
                 ipAddress: request()->ip(),
             );
@@ -87,7 +87,7 @@ class QuickActionButtons extends Component
     {
         try {
             $service = app(AccountLockoutService::class);
-            $service->unlockAccount($this->user, auth()->user(), 'Dibuka dengan cepat');
+            $service->unlockAccount($this->user, auth()->user(), __('status::quick_actions.unlock_reason'));
 
             flash()->success(__('Akun berhasil dibuka'));
             $this->dispatch('accountUpdated', userId: $this->user->id);

@@ -47,6 +47,11 @@ return [
         'widget' => [
             'series' => 'Series',
             'license' => 'License',
+            'enterprise_core' => 'Enterprise Core',
+            'stability' => 'Stability',
+            'stability_optimal' => 'Optimal',
+            'proprietary' => 'Proprietary',
+            'author_name' => 'Reas Vyn',
         ],
     ],
     'stats' => [

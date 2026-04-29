@@ -62,10 +62,10 @@ class AdminVerificationQueue extends Component
             'selectedCount' => count($this->selectedUsers),
             'showBulkActionsBar' => count($this->selectedUsers) > 0,
             'roles' => [
-                'student' => 'Pelajar',
-                'teacher' => 'Pengajar',
-                'mentor' => 'Pembimbing',
-                'admin' => 'Admin',
+                'student' => __('status::roles.student'),
+                'teacher' => __('status::roles.teacher'),
+                'mentor' => __('status::roles.mentor'),
+                'admin' => __('status::roles.admin'),
             ],
         ]);
     }

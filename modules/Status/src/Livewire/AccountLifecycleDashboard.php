@@ -44,22 +44,27 @@ class AccountLifecycleDashboard extends Component
     }
 
     /**
-     * Load dashboard statistics.
+     * Load dashboard statistics (single query with groupBy for performance).
      */
     public function loadStats(): void
     {
-        $this->totalUsers = User::count();
+        // Single query to get all status counts at once
+        $statusCounts = User::select('account_status', \DB::raw('count(*) as count'))
+            ->groupBy('account_status')
+            ->pluck('count', 'account_status')
+            ->toArray();
 
-        // Count users by status
+        $this->totalUsers = array_sum($statusCounts);
+
         $this->statusStats = [
-            'provisioned' => User::where('account_status', Status::PENDING->value)->count(),
-            'activated' => User::where('account_status', Status::ACTIVATED->value)->count(),
-            'verified' => User::where('account_status', Status::VERIFIED->value)->count(),
-            'protected' => User::where('account_status', Status::PROTECTED->value)->count(),
-            'restricted' => User::where('account_status', Status::RESTRICTED->value)->count(),
-            'suspended' => User::where('account_status', Status::SUSPENDED->value)->count(),
-            'inactive' => User::where('account_status', Status::INACTIVE->value)->count(),
-            'archived' => User::where('account_status', Status::ARCHIVED->value)->count(),
+            'provisioned' => $statusCounts[Status::PENDING->value] ?? 0,
+            'activated' => $statusCounts[Status::ACTIVATED->value] ?? 0,
+            'verified' => $statusCounts[Status::VERIFIED->value] ?? 0,
+            'protected' => $statusCounts[Status::PROTECTED->value] ?? 0,
+            'restricted' => $statusCounts[Status::RESTRICTED->value] ?? 0,
+            'suspended' => $statusCounts[Status::SUSPENDED->value] ?? 0,
+            'inactive' => $statusCounts[Status::INACTIVE->value] ?? 0,
+            'archived' => $statusCounts[Status::ARCHIVED->value] ?? 0,
         ];
     }
 

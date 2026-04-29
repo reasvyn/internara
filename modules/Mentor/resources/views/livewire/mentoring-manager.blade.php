@@ -16,7 +16,7 @@
             <div class="flex items-center gap-4">
                 <x-ui::icon name="tabler.map-pin" class="w-8 h-8 text-primary" />
                 <div>
-                    <div class="text-sm opacity-70">{{ __('Total Kunjungan') }}</div>
+                    <div class="text-sm opacity-70">{{ __('mentor::ui.manager.stats.total_visits') }}</div>
                     <div class="text-2xl font-bold">{{ $stats['visits_count'] }}</div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
             <div class="flex items-center gap-4">
                 <x-ui::icon name="tabler.messages" class="w-8 h-8 text-secondary" />
                 <div>
-                    <div class="text-sm opacity-70">{{ __('Total Log/Feedback') }}</div>
+                    <div class="text-sm opacity-70">{{ __('mentor::ui.manager.stats.total_logs') }}</div>
                     <div class="text-2xl font-bold">{{ $stats['logs_count'] }}</div>
                 </div>
             </div>
@@ -34,14 +34,14 @@
             <div class="flex items-center gap-4">
                 <x-ui::icon name="tabler.calendar-event" class="w-8 h-8 text-accent" />
                 <div>
-                    <div class="text-sm opacity-70">{{ __('Kunjungan Terakhir') }}</div>
+                    <div class="text-sm opacity-70">{{ __('mentor::ui.manager.stats.last_visit') }}</div>
                     <div class="text-lg font-bold">{{ $stats['last_visit'] ? $stats['last_visit']->visit_date->format('d M Y') : '-' }}</div>
                 </div>
             </div>
         </x-ui::card>
     </div>
 
-    <x-ui::card title="{{ __('Timeline Pembimbingan') }}" subtitle="{{ __('Gabungan log bimbingan dan kunjungan lapangan secara kronologis.') }}" shadow>
+    <x-ui::card title="{{ __('mentor::ui.manager.timeline.title') }}" subtitle="{{ __('mentor::ui.manager.timeline.subtitle') }}" shadow>
         <div class="space-y-6">
             @forelse($timeline as $item)
                 <div class="relative pl-8 border-l-2 {{ $item['type'] === 'visit' ? 'border-primary' : 'border-secondary' }}">
