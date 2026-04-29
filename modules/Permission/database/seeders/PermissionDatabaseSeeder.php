@@ -6,6 +6,12 @@ namespace Modules\Permission\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Main seeder for Permission module.
+ *
+ * Calls PermissionSeeder which handles both permissions AND roles
+ * in a single transaction for data integrity.
+ */
 class PermissionDatabaseSeeder extends Seeder
 {
     /**
@@ -13,6 +19,7 @@ class PermissionDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([PermissionSeeder::class, RoleSeeder::class]);
+        // Single seeder handles both permissions and roles
+        $this->call(PermissionSeeder::class);
     }
 }
