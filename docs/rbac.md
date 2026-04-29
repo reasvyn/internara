@@ -38,6 +38,17 @@ User accounts transition through several states to ensure security and GDPR comp
 - **Archived**: Restricted access after long-term inactivity.
 - **Deactivated**: Explicitly disabled by an administrator.
 
-## 4. Security Standards (S1)
+## 4. Management Interfaces
+Administrators manage identity and authority through specialized Livewire components:
+
+- **User Management**: `App\Livewire\Admin\UserManager` - General user oversight.
+- **Access Management**: `App\Livewire\Admin\AccessManager` - Granular permission/role syncing.
+- **Specialized Managers**:
+    - **Admin Manager**: `App\Livewire\Admin\User\AdminManager`
+    - **Student Manager**: `App\Livewire\Admin\User\StudentManager` (NISN/NIS integration).
+    - **Teacher Manager**: `App\Livewire\Admin\User\TeacherManager` (NIP integration).
+    - **Mentor Manager**: `App\Livewire\Admin\User\MentorManager` (Company/Phone integration).
+
+## 5. Security Standards (S1)
 - **Direct Object Reference**: Every Action must verify that the authenticated user has the right to act on the specific UUID provided.
 - **Audit Integration**: All role/permission changes are automatically logged via `LogAuditAction`.
