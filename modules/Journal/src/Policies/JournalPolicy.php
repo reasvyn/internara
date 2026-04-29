@@ -4,81 +4,124 @@ declare(strict_types=1);
 
 namespace Modules\Journal\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Journal\Models\JournalEntry;
+use Modules\Permission\Enums\Permission;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
+/**
+ * Class JournalPolicy
+ *
+ * Policy for JournalEntry model operations.
+ */
 class JournalPolicy
 {
-    use HandlesAuthorization;
+    /**
+     * Determine whether the user can view any journal entries.
+     */
+    public function viewAny(?User $user): bool
+    {
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user?->hasAnyPermission([
+            Permission::JOURNAL_VIEW->value,
+            Permission::JOURNAL_MANAGE->value,
+        ]) ?? false;
+    }
 
     /**
-     * Determine if the user can view the journal entry.
+     * Determine whether the user can view the journal entry.
      */
     public function view(User $user, JournalEntry $entry): bool
     {
-        if (!$user->can('journal.view')) {
-            return false;
+        if (session('setup_authorized')) {
+            return true;
         }
 
-        // Student can view their own
         if ($user->id === $entry->student_id) {
             return true;
         }
 
-        // Teacher or Mentor assigned to this registration can view
-        $registration = $entry->registration;
-
-        return $user->id === $registration->teacher_id || $user->id === $registration->mentor_id;
+        return $user->hasAnyPermission([
+            Permission::JOURNAL_VIEW->value,
+            Permission::JOURNAL_MANAGE->value,
+        ]);
     }
 
     /**
-     * Determine if the user can create journal entries.
+     * Determine whether the user can create journal entries.
      */
     public function create(User $user): bool
     {
-        return $user->can('journal.create') && $user->hasRole('student');
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user->hasAnyPermission([
+            Permission::JOURNAL_CREATE->value,
+            Permission::JOURNAL_MANAGE->value,
+        ]);
     }
 
     /**
-     * Determine if the user can update the journal entry.
+     * Determine whether the user can update the journal entry.
      */
     public function update(User $user, JournalEntry $entry): bool
     {
-        if (!$user->can('journal.update')) {
-            return false;
+        if (session('setup_authorized')) {
+            return true;
         }
 
-        // Only student can update their own, and only if not approved
-        return $user->id === $entry->student_id && $entry->latestStatus()?->name !== 'approved';
+        if ($user->id === $entry->student_id) {
+            return $user->hasPermissionTo(Permission::JOURNAL_UPDATE->value);
+        }
+
+        return $user->hasAnyPermission([
+            Permission::JOURNAL_UPDATE->value,
+            Permission::JOURNAL_MANAGE->value,
+        ]);
     }
 
     /**
-     * Determine if the user can approve/reject the journal entry.
+     * Determine whether the user can validate the journal entry.
      */
     public function validate(User $user, JournalEntry $entry): bool
     {
-        if (!$user->can('journal.validate')) {
-            return false;
+        if (session('setup_authorized')) {
+            return true;
         }
 
-        $registration = $entry->registration;
-
-        // Either assigned Teacher OR assigned Mentor can validate
-        return $user->id === $registration->teacher_id || $user->id === $registration->mentor_id;
+        return $user->hasAnyPermission([
+            Permission::JOURNAL_APPROVE->value,
+            Permission::JOURNAL_MANAGE->value,
+        ]);
     }
 
     /**
-     * Determine if the user can delete the journal entry.
+     * Determine whether the user can delete the journal entry.
      */
     public function delete(User $user, JournalEntry $entry): bool
     {
-        if (!$user->can('journal.delete')) {
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        if ($user->id === $entry->student_id) {
             return false;
         }
 
-        // Only student can delete their own draft.
-        // Cannot delete once submitted or approved.
-        return $user->id === $entry->student_id && $entry->latestStatus()?->name === 'draft';
+        return $user->hasAnyPermission([
+            Permission::JOURNAL_MANAGE->value,
+        ]);
+    }
+
+    /**
+     * Determine whether the user can force delete the journal entry.
+     */
+    public function forceDelete(User $user, JournalEntry $entry): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }

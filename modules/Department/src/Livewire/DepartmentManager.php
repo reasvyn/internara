@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use Modules\Department\Livewire\Forms\DepartmentForm;
 use Modules\Department\Models\Department;
 use Modules\Department\Services\Contracts\DepartmentService;
+use Modules\Permission\Enums\Permission;
 use Modules\UI\Livewire\RecordManager;
 
 /**
@@ -49,10 +50,10 @@ class DepartmentManager extends RecordManager
         $isSetupPhase = (bool) session('setup_authorized') || is_testing();
 
         if (!$isSetupPhase) {
-            $this->viewPermission = 'department.view';
-            $this->createPermission = 'department.create';
-            $this->updatePermission = 'department.update';
-            $this->deletePermission = 'department.delete';
+            $this->viewPermission = Permission::DEPARTMENT_VIEW;
+            $this->createPermission = Permission::DEPARTMENT_CREATE;
+            $this->updatePermission = Permission::DEPARTMENT_UPDATE;
+            $this->deletePermission = Permission::DEPARTMENT_DELETE;
         }
     }
 

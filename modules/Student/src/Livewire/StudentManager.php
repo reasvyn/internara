@@ -11,6 +11,8 @@ use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Department\Livewire\Concerns\HasDepartmentOptions;
 use Modules\Exception\Concerns\HandlesAppException;
+use Modules\Permission\Enums\Permission;
+use Modules\Status\Enums\Status;
 use Modules\Student\Livewire\Forms\StudentForm;
 use Modules\Student\Services\Contracts\StudentService;
 use Modules\UI\Livewire\RecordManager;
@@ -24,6 +26,15 @@ class StudentManager extends RecordManager
     use HasDepartmentOptions;
 
     public StudentForm $form;
+
+    /**
+     * Get summary statistics for students.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
 
     public array $credentialSlips = [];
 
@@ -50,10 +61,10 @@ class StudentManager extends RecordManager
         $this->addLabel = __('user::ui.manager.add_student');
         $this->deleteConfirmMessage = __('user::ui.manager.delete.message');
 
-        $this->viewPermission = 'student.manage';
-        $this->createPermission = 'student.manage';
-        $this->updatePermission = 'student.manage';
-        $this->deletePermission = 'student.manage';
+        $this->viewPermission = Permission::STUDENT_MANAGE;
+        $this->createPermission = Permission::STUDENT_MANAGE;
+        $this->updatePermission = Permission::STUDENT_MANAGE;
+        $this->deletePermission = Permission::STUDENT_MANAGE;
 
         $this->searchable = [
             'name',
@@ -203,7 +214,7 @@ class StudentManager extends RecordManager
         if (
             in_array(
                 $selectedStatus,
-                [User::STATUS_ACTIVE, User::STATUS_INACTIVE, User::STATUS_PENDING],
+                [Status::VERIFIED->value, Status::INACTIVE->value, Status::PENDING->value],
                 true,
             )
         ) {

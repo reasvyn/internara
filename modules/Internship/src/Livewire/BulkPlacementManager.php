@@ -11,6 +11,8 @@ use Modules\Internship\Models\Company;
 use Modules\Internship\Models\Internship;
 use Modules\Internship\Models\InternshipPlacement;
 use Modules\Internship\Models\InternshipRegistration;
+use Modules\Permission\Enums\Permission;
+use Modules\UI\Livewire\Traits\RbacTrait;
 
 /**
  * Class BulkPlacementManager
@@ -20,7 +22,9 @@ use Modules\Internship\Models\InternshipRegistration;
  */
 class BulkPlacementManager extends Component
 {
-    protected string $viewPermission = 'internship.manage';
+    use RbacTrait;
+
+    protected ?Permission $viewPermission = Permission::INTERNSHIP_MANAGE;
 
     /**
      * Form state

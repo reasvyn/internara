@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Modules\School\Livewire;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\School\Livewire\Forms\SchoolForm;
 use Modules\School\Services\Contracts\SchoolService;
+use Modules\Permission\Enums\Permission;
 use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\UI\Livewire\Traits\RbacTrait;
 
 /**
  * Class SchoolManager
@@ -18,7 +21,14 @@ use Modules\Setup\Services\Contracts\AppSetupService;
  */
 class SchoolManager extends Component
 {
+    use RbacTrait;
     use WithFileUploads;
+
+    protected ?Permission $viewPermission = Permission::SCHOOL_VIEW;
+
+    protected ?Permission $createPermission = Permission::SCHOOL_MANAGE;
+
+    protected ?Permission $updatePermission = Permission::SCHOOL_MANAGE;
 
     /**
      * The form object holding school data.
@@ -67,7 +77,7 @@ class SchoolManager extends Component
         $isSetupAuthorized = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED);
 
         if (!$isSetupAuthorized) {
-            $this->authorize('school.manage');
+            $this->rbacAuthorize('update');
         }
 
         $this->form->validate();

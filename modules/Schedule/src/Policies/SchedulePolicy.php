@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Schedule\Policies;
 
+use Modules\Permission\Enums\Permission;
+use Modules\Permission\Enums\Role;
 use Modules\Schedule\Models\Schedule;
 use Modules\User\Models\User;
 
@@ -15,42 +17,56 @@ use Modules\User\Models\User;
 class SchedulePolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any schedules.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('schedule.view') || $user->can('schedule.manage');
+        return $user->hasAnyPermission([
+            Permission::SCHEDULE_VIEW->value,
+            Permission::SCHEDULE_MANAGE->value,
+        ]);
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the schedule.
      */
     public function view(User $user, Schedule $schedule): bool
     {
-        return $user->can('schedule.view') || $user->can('schedule.manage');
+        return $user->hasAnyPermission([
+            Permission::SCHEDULE_VIEW->value,
+            Permission::SCHEDULE_MANAGE->value,
+        ]);
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create schedules.
      */
     public function create(User $user): bool
     {
-        return $user->can('schedule.create') || $user->can('schedule.manage');
+        return $user->hasPermissionTo(Permission::SCHEDULE_MANAGE->value);
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the schedule.
      */
     public function update(User $user, Schedule $schedule): bool
     {
-        return $user->can('schedule.update') || $user->can('schedule.manage');
+        return $user->hasPermissionTo(Permission::SCHEDULE_MANAGE->value);
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the schedule.
      */
     public function delete(User $user, Schedule $schedule): bool
     {
-        return $user->can('schedule.delete') || $user->can('schedule.manage');
+        return $user->hasPermissionTo(Permission::SCHEDULE_MANAGE->value);
+    }
+
+    /**
+     * Determine whether the user can force delete.
+     */
+    public function forceDelete(User $user, Schedule $schedule): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }

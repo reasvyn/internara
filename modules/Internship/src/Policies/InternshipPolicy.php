@@ -4,80 +4,104 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Internship\Models\Internship;
-use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\Permission\Enums\Permission;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
+/**
+ * Class InternshipPolicy
+ *
+ * Policy for Internship model operations.
+ */
 class InternshipPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(?User $user): bool
     {
-        if ($this->isSetupAuthorized()) {
+        if (session('setup_authorized')) {
             return true;
         }
 
-        return $user?->hasAnyPermission(['internship.view', 'internship.manage']) ?? false;
+        return $user?->hasAnyPermission([
+            Permission::INTERNSHIP_VIEW->value,
+            Permission::INTERNSHIP_MANAGE->value,
+        ]) ?? false;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Internship|string|null $internship = null): bool
+    public function view(?User $user, Internship $internship): bool
     {
-        if ($this->isSetupAuthorized()) {
+        if (session('setup_authorized')) {
             return true;
         }
 
-        return $user?->hasAnyPermission(['internship.view', 'internship.manage']) ?? false;
+        return $user?->hasAnyPermission([
+            Permission::INTERNSHIP_VIEW->value,
+            Permission::INTERNSHIP_MANAGE->value,
+        ]) ?? false;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(?User $user, Internship|string|null $internship = null): bool
+    public function create(?User $user): bool
     {
-        if ($this->isSetupAuthorized()) {
+        if (session('setup_authorized')) {
             return true;
         }
 
-        return $user?->hasPermissionTo('internship.manage') ?? false;
+        return $user?->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value) ?? false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(?User $user, Internship|string|null $internship = null): bool
+    public function update(?User $user, Internship $internship): bool
     {
-        if ($this->isSetupAuthorized()) {
+        if (session('setup_authorized')) {
             return true;
         }
 
-        return $user?->hasAnyPermission(['internship.update', 'internship.manage']) ?? false;
+        return $user?->hasAnyPermission([
+            Permission::INTERNSHIP_UPDATE->value,
+            Permission::INTERNSHIP_MANAGE->value,
+        ]) ?? false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(?User $user, Internship|string|null $internship = null): bool
+    public function delete(?User $user, Internship $internship): bool
     {
-        if ($this->isSetupAuthorized()) {
+        if (session('setup_authorized')) {
             return true;
         }
 
-        return $user?->hasPermissionTo('internship.manage') ?? false;
+        if (!$user?->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value)) {
+            return false;
+        }
+
+        return !$internship->registrations()->exists();
     }
 
     /**
-     * Check if the current session is an authorized setup session.
+     * Determine whether the user can restore the model.
      */
-    protected function isSetupAuthorized(): bool
+    public function restore(?User $user, Internship $internship): bool
     {
-        return session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
+        return $user?->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value) ?? false;
+    }
+
+    /**
+     * Determine whether the user can force delete the model.
+     */
+    public function forceDelete(?User $user, Internship $internship): bool
+    {
+        return $user?->hasRole(Role::SUPER_ADMIN->value) ?? false;
     }
 }

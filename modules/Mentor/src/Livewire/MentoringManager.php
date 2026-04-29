@@ -8,10 +8,20 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Modules\Internship\Models\InternshipRegistration;
 use Modules\Mentor\Services\Contracts\MentoringService;
+use Modules\Permission\Enums\Permission;
+use Modules\UI\Livewire\Traits\RbacTrait;
 
 class MentoringManager extends Component
 {
-    public string $registrationId;
+    use RbacTrait;
+
+    protected ?Permission $viewPermission = Permission::MENTOR_VIEW;
+
+    protected ?Permission $createPermission = Permission::MENTOR_MANAGE;
+
+    protected ?Permission $updatePermission = Permission::MENTOR_MANAGE;
+
+    public string $registrationId = '';
 
     public bool $visitModal = false;
 
@@ -40,6 +50,8 @@ class MentoringManager extends Component
 
     public function recordVisit(MentoringService $service)
     {
+        $this->authorize('create');
+
         $this->validate([
             'visit_date' => 'required|date',
             'visit_notes' => 'nullable|string',
@@ -59,6 +71,8 @@ class MentoringManager extends Component
 
     public function recordLog(MentoringService $service)
     {
+        $this->authorize('create');
+
         $this->validate([
             'log_subject' => 'required|string|max:255',
             'log_content' => 'required|string',

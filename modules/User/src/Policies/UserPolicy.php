@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\User\Policies;
 
+use Modules\Permission\Enums\Permission;
 use Modules\Permission\Enums\Role;
+use Modules\Permission\Policies\Traits\BasePolicyTrait;
 use Modules\User\Models\User;
 
 /**
@@ -14,28 +16,26 @@ use Modules\User\Models\User;
  */
 class UserPolicy
 {
+    use BasePolicyTrait;
+
     /**
      * Determine whether the user can view the user list.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value]);
+        return $this->isAdmin($user);
     }
 
     /**
      * Determine whether the user can view a specific user.
      */
-    public function view(User $user, ?User $model = null): bool
+    public function view(User $user, User $model): bool
     {
-        if (!$model) {
-            return true;
-        }
-
         if ($user->id === $model->id) {
             return true;
         }
 
-        return $this->isAuthoritativeOver($user, $model);
+        return $this->canManage($user, $model);
     }
 
     /**
@@ -46,14 +46,11 @@ class UserPolicy
      */
     public function create(?User $user, ?array $roles = null): bool
     {
-        // 1. Handle Guest Access (Public Registration or Initial Setup)
         if ($user === null) {
-            // Allow if only 'student' role is being assigned (Public Registration)
             if ($roles && count($roles) === 1 && in_array(Role::STUDENT->value, $roles)) {
                 return true;
             }
 
-            // Allow any role during initial setup (Super Admin creation)
             if (!setting('app_installed', false)) {
                 return true;
             }
@@ -61,18 +58,14 @@ class UserPolicy
             return false;
         }
 
-        // 2. Handle Authenticated User Authority
-        // Basic requirement: must be an admin of some sort to create users via Manager
-        if (!$user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
+        if (!$this->isAdmin($user)) {
             return false;
         }
 
-        // Role-specific creation authority
         if ($roles) {
             foreach ($roles as $role) {
-                // Only Super Admin can create administrative accounts
                 if (in_array($role, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
-                    if (!$user->hasRole(Role::SUPER_ADMIN->value)) {
+                    if (!$this->isSuperAdmin($user)) {
                         return false;
                     }
                 }
@@ -85,55 +78,56 @@ class UserPolicy
     /**
      * Determine whether the user can update the user.
      */
-    public function update(User $user, ?User $model = null): bool
+    public function update(User $user, User $model): bool
     {
-        if (!$model) {
-            return true;
-        }
-
         if ($user->id === $model->id) {
             return true;
         }
 
-        return $this->isAuthoritativeOver($user, $model);
+        return $this->canManage($user, $model);
     }
 
     /**
      * Determine whether the user can delete the user.
      */
-    public function delete(User $user, ?User $model = null): bool
+    public function delete(User $user, User $model): bool
     {
-        if (!$model) {
-            return true;
-        }
-
-        // Protected Accounts
-        if ($model->hasRole(Role::SUPER_ADMIN->value) || $user->id === $model->id) {
+        if ($model->hasRole(Role::SUPER_ADMIN->value)) {
             return false;
         }
 
-        return $this->isAuthoritativeOver($user, $model);
+        if ($user->id === $model->id) {
+            return false;
+        }
+
+        return $this->canManage($user, $model);
     }
 
     /**
-     * Internal check for hierarchical authority.
+     * Determine whether the user can force delete the user.
      */
-    protected function isAuthoritativeOver(User $subject, User $target): bool
+    public function forceDelete(User $user, User $model): bool
     {
-        // Super Admin is authoritative over everyone EXCEPT other Super Admins
-        if ($subject->hasRole(Role::SUPER_ADMIN->value)) {
-            return !$target->hasRole(Role::SUPER_ADMIN->value);
+        if ($model->hasRole(Role::SUPER_ADMIN->value)) {
+            return false;
         }
 
-        // Admin is authoritative over operational roles only
-        if ($subject->hasRole(Role::ADMIN->value)) {
-            return $target->hasAnyRole([
-                Role::STUDENT->value,
-                Role::TEACHER->value,
-                Role::MENTOR->value,
-            ]);
+        if ($user->id === $model->id) {
+            return false;
         }
 
-        return false;
+        return $this->isSuperAdmin($user);
+    }
+
+    /**
+     * Determine whether the user can restore the user.
+     */
+    public function restore(User $user, User $model): bool
+    {
+        if ($model->hasRole(Role::SUPER_ADMIN->value)) {
+            return false;
+        }
+
+        return $this->canManage($user, $model);
     }
 }

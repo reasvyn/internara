@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace Modules\Internship\Livewire;
 
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Modules\Internship\Livewire\Forms\PlacementForm;
-use Modules\Internship\Models\Company;
-use Modules\Internship\Models\InternshipPlacement;
-use Modules\Internship\Services\Contracts\InternshipPlacementService;
-use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Internship\Services\Contracts\PlacementService;
+use Modules\Permission\Enums\Permission;
 use Modules\UI\Livewire\RecordManager;
 use Modules\User\Livewire\Forms\UserForm;
 use Modules\User\Services\Contracts\UserService;
@@ -20,6 +16,15 @@ use Modules\User\Services\Contracts\UserService;
 class InternshipPlacementManager extends RecordManager
 {
     public PlacementForm $form;
+
+    /**
+     * Get summary statistics for internship placements.
+     */
+    #[Computed]
+    public function stats(): array
+    {
+        return $this->service->getStats();
+    }
 
     public UserForm $mentorForm;
 
@@ -46,10 +51,10 @@ class InternshipPlacementManager extends RecordManager
         $this->addLabel = __('internship::ui.add_placement');
         $this->deleteConfirmMessage = __('internship::ui.delete_placement_confirm');
 
-        $this->viewPermission = 'internship.manage';
-        $this->createPermission = 'internship.manage';
-        $this->updatePermission = 'internship.manage';
-        $this->deletePermission = 'internship.manage';
+        $this->viewPermission = Permission::INTERNSHIP_MANAGE;
+        $this->createPermission = Permission::INTERNSHIP_MANAGE;
+        $this->updatePermission = Permission::INTERNSHIP_MANAGE;
+        $this->deletePermission = Permission::INTERNSHIP_MANAGE;
     }
 
     /**

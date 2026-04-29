@@ -7,10 +7,9 @@ namespace Modules\Internship\Livewire;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Modules\Internship\Enums\Semester;
 use Modules\Internship\Livewire\Forms\InternshipForm;
-use Modules\Internship\Models\Internship;
 use Modules\Internship\Services\Contracts\InternshipService;
+use Modules\Permission\Enums\Permission;
 use Modules\School\Services\Contracts\SchoolService;
 use Modules\UI\Livewire\RecordManager;
 
@@ -45,14 +44,13 @@ class InternshipManager extends RecordManager
         $this->addLabel = __('internship::ui.add_program');
         $this->deleteConfirmMessage = __('internship::ui.delete_program_confirm');
 
-        $isSetupAuthorized =
-            (bool) session('setup_authorized') || is_testing();
+        $isSetupAuthorized = (bool) session('setup_authorized') || is_testing();
 
         if (!$isSetupAuthorized) {
-            $this->viewPermission = 'internship.view';
-            $this->createPermission = 'internship.manage';
-            $this->updatePermission = 'internship.manage';
-            $this->deletePermission = 'internship.manage';
+            $this->viewPermission = Permission::INTERNSHIP_VIEW;
+            $this->createPermission = Permission::INTERNSHIP_MANAGE;
+            $this->updatePermission = Permission::INTERNSHIP_MANAGE;
+            $this->deletePermission = Permission::INTERNSHIP_MANAGE;
         }
 
         $this->searchable = ['title', 'description', 'academic_year'];

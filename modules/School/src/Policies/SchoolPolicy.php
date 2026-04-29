@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\School\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
+use Modules\Permission\Enums\Permission;
+use Modules\Permission\Enums\Role;
 use Modules\School\Models\School;
 use Modules\User\Models\User;
 
@@ -15,14 +16,11 @@ use Modules\User\Models\User;
  */
 class SchoolPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(?User $user): bool
     {
-        // Publicly visible or requires basic access
         return true;
     }
 
@@ -39,7 +37,11 @@ class SchoolPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('school.manage');
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user->hasPermissionTo(Permission::SCHOOL_MANAGE->value);
     }
 
     /**
@@ -47,15 +49,28 @@ class SchoolPolicy
      */
     public function update(User $user, ?School $school = null): bool
     {
-        return $user->hasPermissionTo('school.manage');
+        if (session('setup_authorized')) {
+            return true;
+        }
+
+        return $user->hasPermissionTo(Permission::SCHOOL_MANAGE->value);
     }
 
     /**
      * Determine whether the user can delete the model.
+     *
+     * Deletion of institutional record is restricted to Super Admin only.
      */
     public function delete(User $user, ?School $school = null): bool
     {
-        // Institutional records are rarely deleted, but managed by authorized personnel.
-        return $user->hasPermissionTo('school.manage');
+        return $user->hasRole(Role::SUPER_ADMIN->value);
+    }
+
+    /**
+     * Determine whether the user can force delete the model.
+     */
+    public function forceDelete(User $user, ?School $school = null): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }

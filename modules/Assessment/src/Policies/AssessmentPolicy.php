@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Assessment\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Modules\Assessment\Models\Assessment;
+use Modules\Permission\Enums\Permission;
+use Modules\Permission\Enums\Role;
 use Modules\User\Models\User;
 
 /**
@@ -15,14 +16,12 @@ use Modules\User\Models\User;
  */
 class AssessmentPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any assessments.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('assessment.view');
+        return $user->hasPermissionTo(Permission::ASSESSMENT_VIEW->value);
     }
 
     /**
@@ -30,22 +29,17 @@ class AssessmentPolicy
      */
     public function view(User $user, Assessment $assessment): bool
     {
-        if (!$user->can('assessment.view')) {
+        if (!$user->hasPermissionTo(Permission::ASSESSMENT_VIEW->value)) {
             return false;
         }
 
-        // Student can view their own assessment
         if ($user->id === $assessment->registration->student_id) {
             return true;
         }
 
-        // Supervisors (Teacher/Mentor) assigned to this registration
         $registration = $assessment->registration;
-        if ($user->id === $registration->teacher_id || $user->id === $registration->mentor_id) {
-            return true;
-        }
 
-        return false;
+        return $user->id === $registration->teacher_id || $user->id === $registration->mentor_id;
     }
 
     /**
@@ -53,7 +47,7 @@ class AssessmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('assessment.manage');
+        return $user->hasPermissionTo(Permission::ASSESSMENT_MANAGE->value);
     }
 
     /**
@@ -61,12 +55,10 @@ class AssessmentPolicy
      */
     public function update(User $user, Assessment $assessment): bool
     {
-        if (!$user->can('assessment.manage')) {
+        if (!$user->hasPermissionTo(Permission::ASSESSMENT_MANAGE->value)) {
             return false;
         }
 
-        // Only the evaluator can update their own assessment before it's finalized
-        // Note: submitEvaluation currently automatically finalizes it.
         return $user->id === $assessment->evaluator_id && !$assessment->isFinalized();
     }
 
@@ -75,6 +67,24 @@ class AssessmentPolicy
      */
     public function delete(User $user, Assessment $assessment): bool
     {
-        return $user->can('assessment.manage') && $user->id === $assessment->evaluator_id;
+        return $user->hasPermissionTo(Permission::ASSESSMENT_MANAGE->value)
+            && $user->id === $assessment->evaluator_id;
+    }
+
+    /**
+     * Determine whether the user can grade the assessment.
+     */
+    public function grade(User $user, Assessment $assessment): bool
+    {
+        return $user->hasPermissionTo(Permission::ASSESSMENT_GRADE->value)
+            && $user->id === $assessment->evaluator_id;
+    }
+
+    /**
+     * Determine whether the user can force delete the assessment.
+     */
+    public function forceDelete(User $user, Assessment $assessment): bool
+    {
+        return $user->hasRole(Role::SUPER_ADMIN->value);
     }
 }
