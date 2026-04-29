@@ -1,11 +1,10 @@
 # 🚀 Getting Started with Internara
 
-Welcome to **Internara**, an enterprise-grade Internship Management System! This guide will help you
-get up and running quickly.
+Welcome to **Internara**, an enterprise-grade Internship Management System built with the **3S Doctrine** (Secure, Sustain, Scalable)! This guide will help you get up and running quickly.
 
 ---
 
-## ⚡ Quick Start (5 minutes)
+## 🚡 Quick Start (5 minutes)
 
 ### Prerequisites Check
 
@@ -16,21 +15,114 @@ composer --version    # Latest version
 git --version         # For cloning
 ```
 
-### One-Command Setup
+### One-Command Enterprise Setup
 
 ```bash
 git clone https://github.com/reasvyn/internara.git
 cd internara
+
+# Enterprise-grade setup (pre-flight checks, encrypted tokens, audit logging)
 composer setup
 ```
 
-That's it! Now you can start development:
+**What the enterprise installer does:**
+
+1. ✅ Installs PHP dependencies via Composer
+2. ✅ Creates `.env` from `.env.example` (if not exists)
+3. ✅ Generates `APP_KEY` for AES-256 encryption
+4. ✅ Runs pre-flight system checks (PHP version, extensions, permissions)
+5. ✅ Runs database migrations (uses `migrate:fresh` if existing)
+6. ✅ Seeds database with encrypted setup token (24h TTL)
+7. ✅ Creates storage symlink
+8. ✅ Displays secure setup URL with signed token
+
+Expected output:
+```
+🚀 Internara Enterprise Installation
+======================================
+
+✓ Pre-flight checks passed
+✓ Environment file created
+✓ APP_KEY generated: base64:xxx...
+✓ Database migrations completed
+✓ Database seeding completed
+✓ Setup token generated (expires in 24h)
+✓ Storage symlink created
+
+🎉 Setup URL (valid for 24 hours):
+   http://localhost:8000/setup/welcome?token=abc123...&expires=...
+
+⚠️  Keep this URL secure! It provides access to the setup wizard.
+```
+
+### Start Development
 
 ```bash
 composer dev
 ```
 
-Visit: **http://localhost:8000**
+This runs concurrently:
+- 🔵 **Laravel Server** — PHP application (port 8000)
+- 🟣 **Queue Worker** — Background jobs
+- 🔴 **Log Viewer** — Live logs
+- 🟡 **Vite** — Asset bundler with HMR
+
+Visit: **http://localhost:8000/setup/welcome?token=...** and follow the Setup Wizard.
+
+---
+
+## 🔐 Security Features (S1)
+
+### Encrypted Tokens
+- Setup tokens are encrypted using AES-256 (stored in `setup_token_encrypted`)
+- Timing-safe comparison using `hash_equals()`
+- TTL enforcement (24-hour expiry)
+- Automatic token cleanup after finalization
+
+### Rate Limiting
+- 20 attempts per IP per 60 seconds on setup routes
+- RFC 6585 compliant 429 status responses
+- IP-based throttle keys (prevents IP spoofing)
+
+### Audit Logging
+- All setup actions logged via `spatie/laravel-activitylog`
+- Events: token generated, steps completed, setup finalized
+- PII masking in all log entries
+
+---
+
+## 📖 Sustainability (S2)
+
+### Code Quality
+- ✅ PSR-12 compliance (enforced via Pint)
+- ✅ `declare(strict_types=1)` on all PHP files
+- ✅ 90%+ test coverage (Pest PHP)
+- ✅ No hardcoded strings (localized via `__('key')`)
+
+### Bilingual Support
+- English (`resources/lang/en/setup.php`)
+- Indonesian (`resources/lang/id/setup.php`)
+- 50+ translation keys for all setup steps
+
+---
+
+## ⚙️ Scalability (S3)
+
+### UUID Architecture
+- Setup model uses UUID v4 primary keys (not sequential IDs)
+- Prevents enumeration attacks
+- Decoupled from other modules (no cross-module foreign keys)
+
+### Service Contracts
+- `SetupService` contract for loose coupling
+- `SystemInstaller` contract for technical installation
+- `InstallationAuditor` contract for pre-flight checks
+- Easy to mock in tests, swap implementations
+
+### Independent Entity
+- Setup has its own table (`setups`) with migrations
+- Not dependent on settings module
+- Soft deletes for audit trail preservation
 
 ---
 
