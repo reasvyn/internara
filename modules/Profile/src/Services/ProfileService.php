@@ -24,20 +24,60 @@ class ProfileService extends EloquentQuery implements Contract
     }
 
     /**
-     * Define the HasOne relationship for the User model.
+     * Find a profile by ID.
      */
-    public function defineHasOne(
-        Model $related,
-        ?string $foreignKey = null,
-        ?string $localKey = null,
-    ): HasOne {
-        return $related->hasOne(Profile::class, $foreignKey ?: 'user_id', $localKey);
+    public function findById(string $id): ?Profile
+    {
+        return $this->model->newQuery()->find($id);
+    }
+
+    /**
+     * Create a new profile.
+     */
+    public function create(array $data): Profile
+    {
+        if (!$this->skipAuthorization) {
+            Gate::authorize('create', $this->model);
+        }
+
+        /** @var Profile $profile */
+        $profile = $this->model->newQuery()->create($data);
+        $this->skipAuthorization = false;
+
+        return $profile;
+    }
+
+    /**
+     * Update an existing profile.
+     */
+    public function update(Profile $profile, array $data): void
+    {
+        if (!$this->skipAuthorization) {
+            Gate::authorize('update', $profile);
+        }
+
+        $profile->fill($data);
+        $profile->save();
+        $this->skipAuthorization = false;
+    }
+
+    /**
+     * Delete a profile.
+     */
+    public function delete(Profile $profile): void
+    {
+        if (!$this->skipAuthorization) {
+            Gate::authorize('delete', $profile);
+        }
+
+        $profile->delete();
+        $this->skipAuthorization = false;
     }
 
     /**
      * Get or create a profile for a specific user.
      */
-    public function getByUserId(string $userId): Profile
+    public function getByUserId(string $userId): ?Profile
     {
         if (!$this->skipAuthorization) {
             Gate::authorize('view', [$this->model, $userId]);
@@ -45,6 +85,17 @@ class ProfileService extends EloquentQuery implements Contract
 
         /** @var Profile */
         return $this->model->newQuery()->firstOrCreate(['user_id' => $userId]);
+    }
+
+    /**
+     * Define the HasOne relationship for the User model.
+     */
+    public function defineHasOne(
+        Model $related,
+        ?string $foreignKey = null,
+        ?string $localKey = null,
+    ): HasOne {
+        return $related->hasOne(Profile::class, $foreignKey ?? 'user_id', $localKey);
     }
 
     public function upsertManagedProfile(string $userId, array $data): Profile
