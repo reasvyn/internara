@@ -11,24 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendance_logs', function (Blueprint $table) {
+        Schema::create('journal_entries', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
             $table->date('date');
-            $table->time('clock_in')->nullable();
-            $table->time('clock_out')->nullable();
-            $table->string('clock_in_ip')->nullable();
-            $table->string('clock_out_ip')->nullable();
-            $table->decimal('clock_in_latitude', 10, 8)->nullable();
-            $table->decimal('clock_in_longitude', 11, 8)->nullable();
-            $table->decimal('clock_out_latitude', 10, 8)->nullable();
-            $table->decimal('clock_out_longitude', 11, 8)->nullable();
-            $table->string('status')->default('present'); // present, late, early_out, etc.
+            $table->text('content');
+            $table->text('learning_outcomes')->nullable();
+            $table->string('status')->default('draft'); // draft, submitted, verified, revision_required
             $table->boolean('is_verified')->default(false);
             $table->foreignUuid('verified_by')->nullable()->constrained('users');
             $table->timestamp('verified_at')->nullable();
-            $table->text('notes')->nullable();
+            $table->text('mentor_feedback')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
@@ -40,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendance_logs');
+        Schema::dropIfExists('journal_entries');
     }
 };
