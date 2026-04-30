@@ -63,7 +63,7 @@ app/
     - Invokes Business Rules in Models.
     - Performs side-effects via Events or direct calls (database writes, file uploads).
     - May use Repositories for complex data retrieval.
-- **Current Domains**: Analytics, Assessment, Assignment, Attendance, Audit, Auth, Company, Department, Document, Internship, Journal, Notification, Permission, Profile, Report, School, Setting, Setup, Supervision.
+- **Current Domains**: AcademicYear, AccountLifecycle, Analytics, Assessment, Assignment, Attendance, Audit, Auth, Company, Department, Document, Guidance, Internship, Journal, Mentor, Notification, Permission, Profile, Report, Schedule, School, Setting, Setup, Supervision, Teacher.
 
 ### C. Domain Layer (Rich Models / Business Rules)
 - **Location**: `app/Models/`
@@ -247,11 +247,9 @@ The system includes a centralized engine for managing institutional corresponden
 - **Generation**: `GenerateDocumentAction` uses `dompdf` via `GeneratePdfAction` to convert templates into formal PDFs.
 - **Storage**: All documents are attached via **Spatie Media Library** for consistent file handling and UUID protection.
 
-## 7. Legacy Modules (Pending Removal)
+## 7. Legacy Modules (Reference Only)
 
-> **Status**: The `modules/` directory contains legacy code from the pre-MVC modular monolith. These modules are **not** part of the active architecture and cause fatal errors when running tests. `app/Console/Kernel.php` still references a module class, which breaks the test suite.
->
-> **Resolution**: See `.agents/todo/2026-04-30-fix-checklist-accuracy-and-test-blocker.md` — Step 1.
+> **Status**: The `modules/` directory contains legacy code from the pre-MVC modular monolith (29 modules, ~1,142 PHP files). These modules are **disabled from autoloading** and are retained solely as reference material during the ongoing MVC migration. Module scaffolding for 8 new domains (Report, Handbook, Schedule, AcademicYear, AccountLifecycle, ActivityFeed, MentorEvaluation, TeacherDashboard) has been created in `app/` to support incremental migration.
 
 ## 8. Anti-Patterns to Avoid
 
@@ -266,11 +264,11 @@ The system includes a centralized engine for managing institutional corresponden
 - Actions must not contain HTTP-specific code (use Form Requests)
 
 ### ✅ Do Keep It Simple
-- Lifecycle Layers (Repositories, Events, Listeners, Services) terintegrasi dalam request lifecycle
+- `Repositories/`, `Events/`, `Listeners/`, `Services/` integrated into the request lifecycle
 - Prefer direct calls over abstractions when clarity is better
 - Document why you added a layer (see Decision Records)
 
-## 8. Documentation & Sync
+## 9. Documentation & Sync
 Every change to this architecture must be recorded in **Decision Records** according to the `AGENTS.md` standards. The code must always remain in sync with this documentation.
 
 When adding lifecycle layers (Repositories, Events, etc.), create a Decision Record explaining:
@@ -287,7 +285,7 @@ The architecture is enforced by automated testing in `tests/Arch/`:
 - `Models/ModelStandardsTest.php` — UUIDs, traits, no side effects
 - `Actions/ActionStandardsTest.php` — Stateless, execute method
 - `Controllers/ControllerStandardsTest.php` — Thin controllers
-- `OptionalLayers/` — Repositories, Events, Listeners standards
+- `Repositories/`, `Events/`, `Listeners/`, `Services/` — standards for supplementary layers
 - `Requests/RequestStandardsTest.php` — FormRequest validation
 - `Services/ServiceStandardsTest.php` — Infrastructure only
 

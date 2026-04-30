@@ -117,5 +117,12 @@ The project uses GitHub Actions for continuous integration:
 
 All jobs must pass before merging to main/develop branches.
 
-## 9. Known Issue
-Tests currently cannot execute due to a fatal error from legacy module code. See `.agents/todo/2026-04-30-fix-checklist-accuracy-and-test-blocker.md` — Step 1.
+## 9. Known Issues
+
+9 tests currently fail out of 216 total (197 passed, 9 failed, 17 todos). Categories:
+- **Heroicons SVG missing** (7 failures) — `o-palette` icon not found in SystemSettingTest
+- **Role not seeded** (1 failure) — `super_admin` missing in SetupWizardTest
+- **Pest duplicate names** (2 failures) — `->todo()` syntax in InternshipRegistrationTest
+- **RBAC assertion** (1 failure) — `->throws()` mismatch in AssignmentTest
+
+Tracked in: `.agents/todo/2026-04-30-fix-test-failures-and-implement-domains.md` — Steps 1-4
