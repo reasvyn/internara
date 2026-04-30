@@ -7,27 +7,20 @@
     <testsuites>
         <testsuite name="Arch">
             <directory>tests/Arch</directory>
-            <directory>modules/*/tests/Arch</directory>
         </testsuite>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
-            <directory>modules/*/tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
-            <directory>modules/*/tests/Feature</directory>
         </testsuite>
         <testsuite name="Quality">
             <directory>tests/Quality</directory>
-        </testsuite>
-        <testsuite name="All">
-            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>app</directory>
-            <directory>modules/*/src</directory>
         </include>
     </source>
     <php>

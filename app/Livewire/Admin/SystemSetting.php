@@ -69,8 +69,14 @@ class SystemSetting extends Component
      * Identity assets.
      */
     public $brand_logo;
-
     public $site_favicon;
+    
+    /**
+     * Color scheme settings.
+     */
+    public string $primary_color = '#0ea5e9'; // sky-500
+    public string $secondary_color = '#64748b'; // slate-500
+    public string $accent_color = '#f59e0b'; // amber-500
 
     /**
      * Existing URLs for preview.
@@ -96,6 +102,11 @@ class SystemSetting extends Component
         // Assets
         $this->current_logo_url = Settings::get('brand_logo');
         $this->current_favicon_url = Settings::get('site_favicon');
+
+        // Color scheme
+        $this->primary_color = Settings::get('primary_color', '#0ea5e9');
+        $this->secondary_color = Settings::get('secondary_color', '#64748b');
+        $this->accent_color = Settings::get('accent_color', '#f59e0b');
 
         // Operational
         $this->active_academic_year = Settings::get(
@@ -130,6 +141,13 @@ class SystemSetting extends Component
             'brand_logo' => 'nullable|image|max:1024',
             'site_favicon' => 'nullable|image|max:512',
 
+            // Color scheme
+            'primary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'secondary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'accent_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+
+            'accent_color' => $this->accent_color,
+            
             // Operational
             'active_academic_year' => 'required|string|regex:/^\d{4}\/\d{4}$/',
             'attendance_check_in_start' => 'required|date_format:H:i',
@@ -167,9 +185,10 @@ class SystemSetting extends Component
             'mail_encryption' => $this->mail_encryption,
             'mail_username' => $this->mail_username,
             'mail_password' => $this->mail_password,
+            'primary_color' => $this->primary_color,
+            'secondary_color' => $this->secondary_color,
+            'accent_color' => $this->accent_color,
         ];
-
-        // Handle file uploads
         if ($this->brand_logo) {
             $path = $this->brand_logo->store('brand', 'public');
             $settings['brand_logo'] = Storage::url($path);

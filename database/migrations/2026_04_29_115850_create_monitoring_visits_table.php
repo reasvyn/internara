@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('company_feedback')->nullable();
             $table->text('student_condition')->nullable();
             $table->string('attachment_path')->nullable();
+            $table->string('status')->default('completed');
             $table->timestamps();
         });
     }

@@ -8,7 +8,6 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Modules\Status\Services\Jobs\DetectIdleAccountsJob;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,24 +18,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        /**
-         * Account Status Automation
-         *
-         * Daily job to detect and handle idle accounts:
-         * - 180+ days → send warning (INACTIVE approaching)
-         * - 365+ days → auto-archive (ARCHIVED)
-         * - 7+ years → GDPR anonymization & purge
-         */
-        $schedule
-            ->job(new DetectIdleAccountsJob())
-            ->daily()
-            ->onSuccess(function () {
-                Log::info('Idle account detection completed successfully');
-            })
-            ->onFailure(function () {
-                Log::error('Idle account detection job failed - check logs');
-            });
-
         /**
          * Cleanup expired activation tokens
          * Remove tokens older than 24 hours + expired

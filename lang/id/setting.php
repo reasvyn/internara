@@ -9,6 +9,7 @@ return [
     'groups' => [
         'general' => 'Konfigurasi Umum',
         'identity' => 'Identitas Visual',
+        'color_scheme' => 'Skema Warna',
         'operational' => 'Aturan Operasional',
         'mail' => 'Layanan Email',
         'system' => 'Informasi Sistem',
@@ -34,6 +35,10 @@ return [
         'mail_encryption' => 'Enkripsi SMTP',
         'mail_username' => 'Username SMTP',
         'mail_password' => 'Password SMTP',
+        
+        'primary_color' => 'Warna Utama',
+        'secondary_color' => 'Warna Sekunder',
+        'accent_color' => 'Warna Aksen',
     ],
 
     'hints' => [

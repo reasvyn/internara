@@ -19,6 +19,13 @@ class TeacherManager extends Component
 {
     use WithPagination, Toast;
 
+    public function boot(): void
+    {
+        if (!auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+            abort(403, 'Unauthorized access.');
+        }
+    }
+
     public string $search = '';
     
     public bool $userModal = false;

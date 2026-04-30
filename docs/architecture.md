@@ -51,6 +51,8 @@ app/
 - **Constraint**: Must not contain business logic or complex database queries.
 - **Controllers**: Handle API requests (stateless, return JSON).
 - **Livewire**: Handle Web requests (stateful, return Blade views).
+- **UI Components**: Base layout (`app.blade.php`), header with navbar (`header.blade.php`), footer with author credit (`app-signature.blade.php`).
+- **Translations**: Indonesian & English for all pages (auth, dashboard, school, department, internship, company, setting, setup).
 
 ### B. Action Layer (Stateless Logic / Use Cases)
 - **Location**: `app/Actions/{Domain}/`
@@ -61,19 +63,25 @@ app/
     - Invokes Business Rules in Models.
     - Performs side-effects via Events or direct calls (database writes, file uploads).
     - May use Repositories for complex data retrieval.
+- **Current Domains**: Analytics, Assessment, Assignment, Attendance, Audit, Auth, Company, Department, Document, Internship, Journal, Notification, Permission, Profile, Report, School, Setting, Setup, Supervision.
 
 ### C. Domain Layer (Rich Models / Business Rules)
 - **Location**: `app/Models/`
 - **Responsibility**: Handle stateful business rules and data relationships.
 - **Methods**: Contains logic for "Is it allowed?", "What is the status?", or internal calculations.
 - **Constraint**: Models should not directly call external services or send notifications (use Events instead).
+- **Key Models**: School (HasMedia), Department, Internship, InternshipCompany, InternshipPlacement, InternshipRegistration (HasStatuses), InternshipRequirement, RequirementSubmission, AttendanceLog, AbsenceRequest, JournalEntry, SupervisionLog (HasStatuses), MonitoringVisit, Assignment, AssignmentType, Submission, Assessment, Competency, StudentCompetencyLog, DepartmentCompetency, DocumentTemplate, OfficialDocument, Notification, Profile, Setting, Setup, User, AuditLog. See `docs/database.md` for full schema.
+- **Enums**: `AbsenceReasonType`, `AbsenceRequestStatus`, `AccountStatus`, `AssignmentStatus`, `AttendanceStatus`, `BloodType`, `DocumentCategory`, `Gender`, `InternshipStatus`, `JournalEntryStatus`, `NotificationType`, `RequirementType`, `Role`, `SubmissionStatus`, `SupervisionLogStatus`, `SupervisionType`.
 
 ### D. Data Layer (DTOs & Enums)
 - **Location**: `app/Data/` & `app/Enums/`
 - **Responsibility**: Standardize data flow between layers and define fixed business statuses.
+- **DTOs**: `CreateUserData`, `JournalEntryData`, `DirectPlacementData`, `InternshipRegistrationData`, `ClockInData`.
+- **Enums**: See list in section C above.
 
 ### E. Repository Layer (Optional - Complex Queries Only)
 - **Location**: `app/Repositories/{Domain}/`
+- **Current**: `InternshipRepository`.
 - **When to Use**:
     - Complex queries with multiple joins or conditions
     - Queries reused across multiple Actions
@@ -88,6 +96,7 @@ app/
 
 ### F. Event/Listener Layer (Side Effects)
 - **Location**: `app/Events/` & `app/Listeners/`
+- **Current**: `InternshipCreated` event with `SendInternshipCreatedNotifications` listener.
 - **Purpose**: Decouple side effects from core business logic.
 - **When to Use**:
     - Sending notifications (email, in-app)
@@ -100,11 +109,8 @@ app/
 
 ### G. Service Layer (Infrastructure Services)
 - **Location**: `app/Services/`
+- **Current**: `SetupService` (installation wizard orchestration, token management, lock file guard), `InstallationAuditor` (pre-flight system checks).
 - **Purpose**: Handle technical/infrastructure concerns.
-- **Examples**:
-    - `SetupService`: Installation and setup orchestration
-    - `PdfGenerationService`: Document generation
-    - `GeoLocationService`: External API integration
 - **Constraint**: Services should not contain business rules (those belong in Models).
 
 ## 4. Implementation Guidelines
@@ -241,7 +247,13 @@ The system includes a centralized engine for managing institutional corresponden
 - **Generation**: `GenerateDocumentAction` uses `dompdf` via `GeneratePdfAction` to convert templates into formal PDFs.
 - **Storage**: All documents are attached via **Spatie Media Library** for consistent file handling and UUID protection.
 
-## 7. Anti-Patterns to Avoid
+## 7. Legacy Modules (Pending Removal)
+
+> **Status**: The `modules/` directory contains legacy code from the pre-MVC modular monolith. These modules are **not** part of the active architecture and cause fatal errors when running tests. `app/Console/Kernel.php` still references a module class, which breaks the test suite.
+>
+> **Resolution**: See `.agents/todo/2026-04-30-fix-checklist-accuracy-and-test-blocker.md` — Step 1.
+
+## 8. Anti-Patterns to Avoid
 
 ### ❌ Don't Over-Engineer
 - Don't create Repositories for simple CRUD (use Eloquent directly)
@@ -267,17 +279,20 @@ When adding optional layers (Repositories, Events, etc.), create a Decision Reco
 - Which 3S dimension it serves (usually S3 - Scalable)
 
 ## 9. Infrastructure Support
-The architecture is enforced by comprehensive automated testing:
+The architecture is enforced by automated testing in `tests/Arch/`:
 
-### Architectural Tests (53 tests)
-- Split by concern into focused files in `tests/Arch/`
-- Enforces layer separation rules (Controllers → Actions → Models)
-- Validates stateless Actions, UUID models, Form Requests
+### Architectural Tests
+- `GlobalCodingStandardsTest.php` — Strict types, clean code
+- `Layers/LayerSeparationTest.php` — Layer dependency rules
+- `Models/ModelStandardsTest.php` — UUIDs, traits, no side effects
+- `Actions/ActionStandardsTest.php` — Stateless, execute method
+- `Controllers/ControllerStandardsTest.php` — Thin controllers
+- `OptionalLayers/` — Repositories, Events, Listeners standards
+- `Requests/RequestStandardsTest.php` — FormRequest validation
+- `Services/ServiceStandardsTest.php` — Infrastructure only
 
-### Quality Tests (12 tests)
-- Code stability (hardcoded paths, SQL injection, error handling)
-- Performance (N+1 queries, pagination, optimization)
-- Security (mass assignment, validation, sensitive data)
+### Quality Tests
+`tests/Quality/` covers code stability, performance, and security.
 
 ### CI/CD Pipeline
 - GitHub Actions workflow: `.github/workflows/ci.yml`
@@ -285,3 +300,27 @@ The architecture is enforced by comprehensive automated testing:
 - All jobs must pass before merging to `main`/`develop`
 
 See `docs/infrastructure.md` for detailed CI/CD configuration and tooling setup.
+
+## 10. AI Quick Reference
+
+> For AI agents: Use this section to quickly locate where to implement changes.
+
+| Change Type | Where to put it | Pattern |
+|-------------|----------------|---------|
+| New use case / workflow | `app/Actions/{Domain}/` | `XxxAction` with `execute()` method |
+| New business rule | `app/Models/{Model}.php` | Method on the relevant model |
+| New HTTP endpoint | `app/Http/Controllers/` (API) or `app/Livewire/` (Web) | Thin → delegate to Action |
+| New validation | `app/Http/Requests/` | FormRequest class |
+| New database table | `database/migrations/` | UUID primary key, `foreignUuid()` |
+| New status/enum | `app/Enums/` | Backed enum, add to relevant model |
+| New data transfer | `app/Data/` | DTO class with typed properties |
+| New authorization | `app/Policies/` | Policy class + register in `AuthServiceProvider` |
+| New scheduled job | `routes/console.php` or `app/Console/Commands/` | Console command or closure schedule |
+| New notification | `app/Actions/Notification/SendNotificationAction` | In-app notification |
+| New audit entry | `app/Actions/Audit/LogAuditAction` | Call from Action after state change |
+| Complex query reuse | `app/Repositories/{Domain}/` | Only when used by 2+ Actions |
+| Multiple side effects | `app/Events/` + `app/Listeners/` | Only when 2+ things happen after event |
+
+**Layer call chain**: `Controller/Livewire` → `Action` → `Model` (business rules) → `Repository` (optional, read-only)
+
+**Never**: Put business logic in Controllers, call external services from Models, or bypass FormRequest validation.

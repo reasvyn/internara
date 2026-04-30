@@ -34,6 +34,10 @@ jobs:
       
       - name: Run PHPStan (Static Analysis)
         run: vendor/bin/phpstan analyse --no-progress
+      
+      - name: Composer Security Audit
+        run: composer audit --format=json
+        continue-on-error: true
 
   architecture:
     name: Architecture Tests
@@ -54,6 +58,10 @@ jobs:
       
       - name: Run Architectural Tests
         run: vendor/bin/pest tests/Arch --colors=never
+      
+      - name: NPM Security Audit
+        run: npm audit --json
+        continue-on-error: true
 
   tests:
     name: Feature & Unit Tests

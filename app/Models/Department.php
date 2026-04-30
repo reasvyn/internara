@@ -20,6 +20,8 @@ class Department extends Model
         'school_id',
     ];
 
+    protected $with = ['school'];
+
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);

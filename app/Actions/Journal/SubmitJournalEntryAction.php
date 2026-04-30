@@ -19,10 +19,10 @@ class SubmitJournalEntryAction
         return DB::transaction(function () use ($user, $data) {
             $date = $data['date'] ?? Carbon::now()->toDateString();
             
-            // Find active registration
+            // Find active registration (using Spatie HasStatuses)
             $registration = $user->registrations()
-                ->where('status', 'active')
-                ->first();
+                ->get()
+                ->first(fn ($reg) => $reg->hasStatus('active'));
 
             if (!$registration) {
                 throw new \Exception('No active internship registration found.');

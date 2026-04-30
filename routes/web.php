@@ -9,6 +9,10 @@ use App\Livewire\Admin\Internship\InternshipIndex;
 use App\Livewire\Admin\Internship\PlacementIndex;
 use App\Livewire\Admin\School\SchoolProfile;
 use App\Livewire\Admin\SystemSetting;
+use App\Livewire\Admin\User\AdminManager;
+use App\Livewire\Admin\User\StudentManager;
+use App\Livewire\Admin\User\TeacherManager;
+use App\Livewire\Admin\User\MentorManager;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
@@ -55,7 +59,7 @@ Route::middleware('setup.protected')->group(function () {
 | Admin Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:super_admin|admin'])->group(function () {
     Route::get('/school', SchoolProfile::class)->name('school');
     Route::get('/departments', DepartmentIndex::class)->name('departments');
     Route::get('/companies', CompanyIndex::class)->name('companies');
@@ -63,6 +67,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/internships/placements', PlacementIndex::class)->name('internships.placements');
     Route::get('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
     Route::get('/settings', SystemSetting::class)->name('settings');
+
+    // User Management Routes
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/admins', AdminManager::class)->name('admins');
+        Route::get('/students', StudentManager::class)->name('students');
+        Route::get('/teachers', TeacherManager::class)->name('teachers');
+        Route::get('/mentors', MentorManager::class)->name('mentors');
+    });
 });
 
 /*
@@ -70,7 +82,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 | Student Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('student')->name('student.')->middleware(['auth'])->group(function () {
+Route::get('/dashboard', function () {
+    return redirect()->route('student.dashboard');
+})->middleware('auth')->name('dashboard');
+
+Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])->group(function () {
     Route::get('/dashboard', StudentDashboard::class)->name('dashboard');
     Route::get('/journals', JournalManager::class)->name('journals');
     Route::get('/supervision', SupervisionManager::class)->name('supervision');
@@ -78,10 +94,10 @@ Route::prefix('student')->name('student.')->middleware(['auth'])->group(function
 
 /*
 |--------------------------------------------------------------------------
-| Supervision Routes
+| Supervision Routes (Teacher & Mentor)
 |--------------------------------------------------------------------------
 */
-Route::prefix('supervision')->name('supervision.')->middleware(['auth'])->group(function () {
+Route::prefix('supervision')->name('supervision.')->middleware(['auth', 'role:teacher|mentor'])->group(function () {
     Route::get('/logs', SupervisorLogManager::class)->name('logs');
     Route::get('/monitoring', MonitoringVisitIndex::class)->name('monitoring');
 });

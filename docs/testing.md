@@ -105,28 +105,8 @@ composer analyse:strict
 ## 6. Mandatory Regression (Workflow 4)
 According to `AGENTS.md`, every bug fix **must** include a reproduction test that prevents recurrence.
 
-## 7. Architectural Test Coverage
-
-### Current Test Count: 41 tests (130 assertions)
-
-| Category | Tests | Assertions | Purpose |
-|----------|------|-------------|---------|
-| Global Standards | 3 | 3 | Strict types, clean code |
-| Layer Separation | 9 | 9 | Dependency rules between layers |
-| Model Standards | 5 | 5 | UUIDs, no side effects |
-| Action Standards | 4 | 4 | Stateless, execute method |
-| Controller Standards | 3 | 3 | Thin controllers |
-| Optional Layers | 8 | 8 | Repositories, Events, Listeners |
-| Request Standards | 4 | 4 | FormRequest validation |
-| Service Standards | 3 | 3 | Infrastructure only |
-
-### Quality Test Coverage
-
-| Category | Tests | Purpose |
-|----------|------|---------|
-| Code Stability | 5 | Hardcoded paths, SQL injection, error handling |
-| Performance | 3 | N+1 queries, pagination, optimization |
-| Security | 4 | Mass assignment, validation, sensitive data |
+## 7. Mandatory Regression (Workflow 4)
+According to `AGENTS.md`, every bug fix **must** include a reproduction test that prevents recurrence.
 
 ## 8. CI Pipeline
 The project uses GitHub Actions for continuous integration:
@@ -136,3 +116,6 @@ The project uses GitHub Actions for continuous integration:
 - **Security job**: Trivy vulnerability scanner
 
 All jobs must pass before merging to main/develop branches.
+
+## 9. Known Issue
+Tests currently cannot execute due to a fatal error from legacy module code. See `.agents/todo/2026-04-30-fix-checklist-accuracy-and-test-blocker.md` — Step 1.

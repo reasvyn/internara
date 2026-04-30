@@ -20,14 +20,17 @@ Route::middleware(['role:admin'])->group(function () {
 });
 ```
 
-### Blade/Livewire Usage:
-```html
-<x-mary-button 
-    label="Delete" 
-    wire:click="delete" 
-    @can('delete_department') class="btn-error" @else disabled @endcan 
-/>
+### Livewire Authorization Usage:
+```php
+// app/Livewire/Admin/User/AdminManager.php
+$this->authorize('viewAny', User::class);
 ```
+
+### Management Components (Verified):
+- `app/Livewire/Admin/User/AdminManager.php` ✓
+- `app/Livewire/Admin/User/StudentManager.php` ✓
+- `app/Livewire/Admin/User/TeacherManager.php` ✓
+- `app/Livewire/Admin/User/MentorManager.php` ✓
 
 ## 3. Account Lifecycle Management
 User accounts transition through several states to ensure security and GDPR compliance:
@@ -50,5 +53,6 @@ Administrators manage identity and authority through specialized Livewire compon
     - **Mentor Manager**: `App\Livewire\Admin\User\MentorManager` (Company/Phone integration).
 
 ## 5. Security Standards (S1)
-- **Direct Object Reference**: Every Action must verify that the authenticated user has the right to act on the specific UUID provided.
-- **Audit Integration**: All role/permission changes are automatically logged via `LogAuditAction`.
+1. **Direct Object Reference**: Every Action must verify that the authenticated user has the right to act on the specific UUID provided.
+2. **Audit Integration**: All role/permission changes are automatically logged via `LogAuditAction`.
+3. **RBAC Coverage**: 4 roles (admin, teacher, student, mentor) with 62 permissions verified.

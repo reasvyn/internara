@@ -6,6 +6,7 @@ namespace App\Actions\School;
 
 use App\Actions\Audit\LogAuditAction;
 use App\Models\School;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -21,7 +22,16 @@ class UpdateSchoolAction
     public function execute(School $school, array $data): School
     {
         return DB::transaction(function () use ($school, $data) {
+            // Extract logo file if present
+            $logoFile = $data['logo_file'] ?? null;
+            unset($data['logo_file']);
+
             $school->update($data);
+
+            // Handle logo if provided
+            if ($logoFile !== null) {
+                $school->setLogo($logoFile);
+            }
 
             $this->logAudit->execute(
                 action: 'school_profile_updated',

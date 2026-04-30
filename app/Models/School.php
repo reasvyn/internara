@@ -8,10 +8,15 @@ use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\UploadedFile;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class School extends Model
+class School extends Model implements HasMedia
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, InteractsWithMedia;
+
+    public const COLLECTION_LOGO = 'logo';
 
     protected $fillable = [
         'institutional_code',
@@ -23,6 +28,8 @@ class School extends Model
         'principal_name',
     ];
 
+    protected $appends = ['logo_url'];
+
     public function departments(): HasMany
     {
         return $this->hasMany(Department::class);
@@ -31,5 +38,26 @@ class School extends Model
     public function internships(): HasMany
     {
         return $this->hasManyThrough(Internship::class, Department::class);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(self::COLLECTION_LOGO)->singleFile();
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl(self::COLLECTION_LOGO) ?? null;
+    }
+
+    public function setLogo(UploadedFile|string $file): bool
+    {
+        $this->clearMediaCollection(self::COLLECTION_LOGO);
+        return $this->addMedia($file)->toMediaCollection(self::COLLECTION_LOGO) !== null;
+    }
+
+    public function canBeCreated(): bool
+    {
+        return config('school.single_record', true) ? $this->newQuery()->doesntExist() : true;
     }
 }

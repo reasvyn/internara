@@ -3,7 +3,17 @@
 declare(strict_types=1);
 
 return [
-    'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'title' => 'Authentication',
+    'login' => 'Login',
+    'logout' => 'Logout',
+    'email' => 'Email',
+    'password' => 'Password',
+    'remember_me' => 'Remember me',
+    'forgot_password' => 'Forgot password?',
+    'reset_password' => 'Reset Password',
+    'login_success' => 'Login successful!',
+    'logout_success' => 'You have been logged out.',
+    'invalid_credentials' => 'Invalid email or password.',
+    'email_reset_link' => 'We have emailed your password reset link.',
+    'password_reset_success' => 'Your password has been reset.',
 ];
