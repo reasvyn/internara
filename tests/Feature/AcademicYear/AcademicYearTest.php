@@ -2,10 +2,19 @@
 
 declare(strict_types=1);
 
+use App\Enums\Role as RoleEnum;
 use App\Models\AcademicYear;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    foreach (RoleEnum::cases() as $role) {
+        Role::firstOrCreate([
+            'name' => $role->value,
+            'guard_name' => 'web',
+        ]);
+    }
+
     $this->superAdmin = User::factory()->create();
     $this->superAdmin->assignRole('super_admin');
 });
