@@ -13,8 +13,6 @@ export default defineConfig({
             config: {
                 content: [
                     './resources/views/**/*.blade.php',
-                    './modules/**/*.blade.php',
-                    './modules/**/*.js',
                 ],
                 plugins: [daisyui],
             },

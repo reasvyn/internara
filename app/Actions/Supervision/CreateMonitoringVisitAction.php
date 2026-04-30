@@ -12,10 +12,21 @@ class CreateMonitoringVisitAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    public function execute(array $data): MonitoringVisit
+    public function execute(User|array $user, array $data = []): MonitoringVisit
     {
-        return DB::transaction(function () use ($data) {
-            $visit = MonitoringVisit::create($data);
+        // Support both old and new calling conventions
+        if ($user instanceof User) {
+            $data['teacher_id'] = $user->id;
+            $user = $data;
+        }
+
+        // Set default status if not provided
+        if (!isset($user['status'])) {
+            $user['status'] = 'completed';
+        }
+
+        return DB::transaction(function () use ($user) {
+            $visit = MonitoringVisit::create($user);
 
             $this->logAudit->execute(
                 action: 'monitoring_visit_created',

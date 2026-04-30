@@ -21,6 +21,7 @@ class MonitoringVisit extends Model
         'company_feedback',
         'student_condition',
         'attachment_path',
+        'status',
     ];
 
     protected $casts = [

@@ -25,8 +25,8 @@ The project leverages high-quality industry-standard packages:
 - **Access Control**: `spatie/laravel-permission` (Roles and Permissions)
 - **Media Management**: `spatie/laravel-medialibrary`
 - **Audit Trails**: `spatie/laravel-activitylog`
-- **State Management**: `spatie/laravel-model-status` (Tracking model transitions)
-- **Modular Structure**: `nwidart/laravel-modules` & `mhmiton/laravel-modules-livewire` (Note: Currently being phased out in favor of standardized MVC).
+- **State Management**: `spatie/laravel-model-states` ^2.14 (Tracking model transitions for InternshipRegistration, SupervisionLog, RequirementSubmission, OfficialDocument)
+- **Modular Structure**: `nwidart/laravel-modules` & `mhmiton/laravel-modules-livewire` — legacy, pending removal. See section "Known Issues" below.
 - **Notifications**: `php-flasher/flasher-laravel`
 - **Security**: `spatie/laravel-honeypot` (Spam protection)
 
@@ -53,16 +53,14 @@ The project includes comprehensive quality tooling:
 
 #### Architectural Tests (`tests/Arch/`)
 Split by concern into focused files:
-- `GlobalCodingStandardsTest.php` - Strict types, clean code
-- `Layers/LayerSeparationTest.php` - Layer dependency rules
-- `Models/ModelStandardsTest.php` - UUIDs, business rules
-- `Actions/ActionStandardsTest.php` - Stateless actions, execute() method
-- `Controllers/ControllerStandardsTest.php` - Thin controllers
-- `OptionalLayers/*Test.php` - Repositories, Events, Listeners
-- `Requests/RequestStandardsTest.php` - FormRequest validation
-- `Services/ServiceStandardsTest.php` - Infrastructure services
-
-**Total**: 53 tests (142 assertions) enforcing 3S Doctrine compliance.
+- `GlobalCodingStandardsTest.php` — Strict types, clean code
+- `Layers/LayerSeparationTest.php` — Layer dependency rules
+- `Models/ModelStandardsTest.php` — UUIDs, business rules
+- `Actions/ActionStandardsTest.php` — Stateless actions, execute() method
+- `Controllers/ControllerStandardsTest.php` — Thin controllers
+- `OptionalLayers/*Test.php` — Repositories, Events, Listeners
+- `Requests/RequestStandardsTest.php` — FormRequest validation
+- `Services/ServiceStandardsTest.php` — Infrastructure services
 
 #### Composer Scripts for Quality
 ```bash
@@ -80,13 +78,14 @@ composer analyse:strict  # PHPStan level max
 - **Image Processing**: Cropperjs
 - **Plugins**: `@tailwindcss/vite`, `prettier-plugin-blade`, `@prettier/plugin-php`.
 
-## 7. Configuration Summary (config/)
-- **Activity Log**: Configured in `config/activitylog.php`.
-- **Permissions**: Configured in `config/permission.php`.
-- **Media Library**: Configured in `config/media-library.php`.
-- **Modules**: Configuration for modular structure in `config/modules.php`.
-- **Livewire**: Custom settings in `config/livewire.php` and `config/modules-livewire.php`.
-- **Flasher**: Integration for flash messages in `config/flasher.php`.
+## 7. Configuration Summary
+- **Activity Log**: `config/activitylog.php`
+- **Permissions**: `config/permission.php`
+- **Media Library**: `config/media-library.php`
+- **Livewire**: `config/livewire.php`
+- **Flasher**: `config/flasher.php`
+
+> **Note**: `config/modules.php` and `config/modules-livewire.php` are legacy and will be removed with the modules.
 
 ## 8. CI/CD Pipeline (`.github/workflows/ci.yml`)
 Automated quality checks via GitHub Actions:
@@ -97,17 +96,20 @@ Automated quality checks via GitHub Actions:
 | **architecture** | Layer separation enforcement | Pest Arch Tests |
 | **tests** | Feature & Unit tests with coverage | Pest PHP (min 80%) |
 | **security** | Vulnerability scanning | Trivy |
-| **summary** | Overall status check | - |
+| **summary** | Overall status check | — |
 
 All jobs must pass before merging to `main` or `develop` branches.
 
-## 9. Requirements for Deployment
+## 9. Known Issues
+- **Legacy modules**: `modules/` directory contains unused code from the pre-MVC architecture. `app/Console/Kernel.php` still references a module class, which causes fatal errors when running tests. Resolution is tracked in `.agents/todo/2026-04-30-fix-checklist-accuracy-and-test-blocker.md`.
+
+## 10. Requirements for Deployment
 - **Web Server**: Nginx or Apache (Laravel compatible).
 - **Database**: MySQL, PostgreSQL, or SQLite (SQLite is mentioned in `post-create-project-cmd`).
 - **Cache/Queue**: Redis or Database driver (Standard Laravel drivers).
 - **File Storage**: Local or S3-compatible (Spatie Media Library requirement).
 
-## 10. Project Structure (Enhanced Layered Architecture)
+## 11. Project Structure (Enhanced Layered Architecture)
 ```
 app/
 ├── Actions/           # Stateless use cases (orchestration layer)

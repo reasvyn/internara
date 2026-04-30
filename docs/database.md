@@ -39,8 +39,6 @@ DB_PASSWORD=
 ## 3. Migration System
 
 ### Migration Files (`database/migrations/`)
-Total: **36 migrations** (as of latest update)
-
 #### Core Tables (Batch 1)
 | Table | Migration | Purpose |
 |-------|-----------|---------|
@@ -161,7 +159,7 @@ protected $fillable = [
 ## 5. Factories & Seeders
 
 ### Model Factories (`database/factories/`)
-Total: **17 factories** for all major models
+Factories exist for all major models. Key factories:
 
 | Factory | Model | Purpose |
 |----------|-------|---------|
@@ -224,7 +222,7 @@ php artisan migrate:fresh --seed
 
 ## 7. Eloquent Models (`app/Models/`)
 
-### Core Models (24 models)
+### Core Models
 All models use:
 - `HasUuid` trait (UUID primary keys)
 - `strict_types=1`
@@ -328,7 +326,4 @@ Indexed for performance:
 
 ---
 
-**Last Updated**: April 30, 2026  
-**Migration Count**: 36  
-**Model Count**: 24  
-**Factory Count**: 17
+**Last Updated**: April 30, 2026

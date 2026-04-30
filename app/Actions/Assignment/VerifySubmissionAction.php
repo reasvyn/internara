@@ -17,17 +17,18 @@ class VerifySubmissionAction
 {
     public function execute(
         Submission $submission,
-        string $status, // 'verified' or 'revision_required'
+        SubmissionStatus|string $status, // 'verified' or 'revision_required'
         ?string $feedback = null,
     ): Submission {
+        $statusValue = is_string($status) ? $status : $status->value;
         $validStatuses = [SubmissionStatus::VERIFIED->value, SubmissionStatus::REVISION_REQUIRED->value];
 
-        if (!in_array($status, $validStatuses)) {
+        if (!in_array($statusValue, $validStatuses)) {
             throw new \InvalidArgumentException('Invalid verification status.');
         }
 
         $submission->update([
-            'status' => $status,
+            'status' => $statusValue,
             'metadata' => array_merge($submission->metadata ?? [], [
                 'feedback' => $feedback,
                 'verified_at' => now()->toIso8601String(),

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignUuid('supervisor_id')->constrained('users'); // The Teacher or Mentor
             $table->string('type'); // guidance, mentoring
             $table->date('date');
-            $table->string('topic');
+            $table->string('topic')->nullable();
             $table->text('notes');
             $table->string('status')->default('pending');
             $table->boolean('is_verified')->default(false);

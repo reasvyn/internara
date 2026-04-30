@@ -7,5 +7,9 @@
     "This action is unauthorized.": "Tindakan ini tidak diizinkan.",
     "Hello!": "Halo!",
     "Whoops!": "Waduh!",
-    "Regards,": "Salam,"
+    "Regards,": "Salam,",
+    "setting.groups.color_scheme": "Skema Warna",
+    "setting.fields.primary_color": "Warna Utama",
+    "setting.fields.secondary_color": "Warna Sekunder",
+    "setting.fields.accent_color": "Warna Aksen"
 }

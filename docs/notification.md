@@ -562,8 +562,4 @@ $user->unread_count = Notification::where('user_id', $user->id)
 
 ---
 
-**Last Updated**: April 30, 2026  
-**Notification Table**: `notifications`  
-**Model**: `App\Models\Notification`  
-**Actions**: 5 actions in `app/Actions/Notification/`  
-**UI**: `app/Livewire/Admin/NotificationManager.php`
+**Last Updated**: April 30, 2026

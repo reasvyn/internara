@@ -35,11 +35,13 @@ Explore the detailed documentation in the `docs/` directory:
 | [**Filesystem**](docs/filesystem.md) | File storage, disks, and Spatie Media Library. |
 | [**Notifications**](docs/notification.md) | In-app notifications, email alerts, and real-time updates. |
 | [**Configuration**](docs/configuration.md) | Config vs Settings boundaries, AppInfo SSoT, and usage. |
+| [**Installation**](docs/installation.md) | CLI and web wizard setup, lock file gate, security. |
 | [**Engineering Standards**](docs/standards.md) | The 3S Doctrine (Secure, Sustain, Scalable) and coding conventions. |
 | [**Access Control (RBAC)**](docs/rbac.md) | User roles, permissions, and account lifecycle management. |
 | [**System Audits**](docs/audits.md) | Forensic logging and the `LogAuditAction` system. |
 | [**Logging & Monitoring**](docs/logging.md) | Standard logs and real-time observability with Laravel Pulse. |
 | [**Testing Strategy**](docs/testing.md) | Architectural, Quality, Feature, and Unit testing guidelines. |
+| [**Known Issues**](docs/known-issues.md) | Active problems, technical debt, and blockers with resolution paths. |
 
 ---
 
@@ -60,9 +62,9 @@ If you are an AI agent reading this document, **your primary workspace is `.agen
 ## 🛡️ Quality Assurance
 
 ### Automated Checks
-- **53 architectural tests** enforcing layer separation and coding standards
-- **12 quality tests** checking stability, performance, and security
-- **181 total tests** with 429 assertions
+- **Architectural tests** enforcing layer separation and coding standards
+- **Quality tests** checking stability, performance, and security
+- **Feature & Unit tests** for functional correctness
 - **Minimum 80% code coverage** requirement
 
 ### CI/CD Pipeline

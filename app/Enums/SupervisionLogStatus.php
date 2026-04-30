@@ -11,6 +11,7 @@ enum SupervisionLogStatus: string
 {
     case PENDING = 'pending';
     case IN_PROGRESS = 'in_progress';
+    case VERIFIED = 'verified';
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
 

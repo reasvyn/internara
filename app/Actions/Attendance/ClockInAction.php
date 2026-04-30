@@ -20,23 +20,24 @@ class ClockInAction
             $now = Carbon::now();
             
             // Check if already clocked in today
-            $log = AttendanceLog::where('user_id', $user->id)
+            $existingLog = AttendanceLog::where('user_id', $user->id)
                 ->where('date', $now->toDateString())
+                ->lockForUpdate()
                 ->first();
 
-            if ($log) {
+            if ($existingLog) {
                 throw new \Exception('Already clocked in for today.');
             }
-
-            // Find active registration
+            
+            // Find active registration (using Spatie HasStatuses)
             $registration = $user->registrations()
-                ->where('status', 'active')
-                ->first();
-
+                ->get()
+                ->first(fn ($reg) => $reg->hasStatus('active'));
+            
             if (!$registration) {
                 throw new \Exception('No active internship registration found.');
             }
-
+            
             $log = AttendanceLog::create([
                 'user_id' => $user->id,
                 'registration_id' => $registration->id,
@@ -47,7 +48,7 @@ class ClockInAction
                 'clock_in_longitude' => $data['longitude'] ?? null,
                 'status' => $data['status'] ?? 'present',
             ]);
-
+            
             $this->logAudit->execute(
                 action: 'clock_in',
                 subjectType: AttendanceLog::class,
@@ -55,7 +56,7 @@ class ClockInAction
                 payload: ['time' => $log->clock_in],
                 module: 'Attendance'
             );
-
+            
             return $log;
         });
     }

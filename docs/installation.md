@@ -1,39 +1,88 @@
-# System Installation Documentation
+# System Installation
 
-## Overview
-Internara provides a streamlined, automated installation process via the Artisan CLI. This process handles the technical initialization of the database, system settings, and core infrastructure.
+Internara provides two installation paths: CLI for technical initialization and a web-based wizard for configuration.
 
-## CLI Usage
-To install or reset the system, run the following command from the project root:
+---
+
+## CLI Installation
 
 ```bash
-php artisan app:install
+php artisan setup:install
 ```
 
-### Options:
-- `--force`: Bypasses the confirmation prompt and forces the installation (WARNING: This will wipe your database).
+### Options
+- `--force`: Bypass confirmation (WARNING: wipes database)
 
-## Installation Workflow
-The installation is orchestrated by the stateless `App\Actions\Setup\InstallSystemAction` and performs the following tasks in order:
+### What It Does
+1. Runs `migrate:fresh` — wipes and rebuilds all tables
+2. Runs database seeders
+3. Sets system metadata in `settings` table (`app_version`, `installed_at`)
+4. Logs `system_installed` audit event
+5. Creates storage symlink (`storage:link`)
+6. Clears application cache
+7. Generates a setup token for web wizard continuation
 
-1. **Database Migration**: Wipes the database and runs all migrations using UUID-based primary keys.
-2. **Data Seeding**: Populates the database with foundational data and system-level records.
-3. **System Configuration**: Persists critical settings to the `settings` table:
-   - `app_installed`: Set to `true`.
-   - `app_version`: Captured from `app_info.json`.
-   - `installed_at`: Timestamp of completion.
-4. **Audit Logging**: Records a `system_installed` event in the `audit_logs` table for forensic tracking.
-5. **Storage Integration**: Automatically creates the public storage symlink (`storage:link`).
-6. **System Optimization**: Clears and warms up the application cache.
+### Output
+Generates a signed URL with token to continue the web-based setup wizard.
+
+---
+
+## Web Setup Wizard
+
+**Route**: `/setup?setup_token=...`  
+**Component**: `App\Livewire\Setup\SetupWizard`
+
+### 6-Step Flow
+| Step | Purpose |
+|------|---------|
+| Welcome | Pre-flight system audit (PHP version, extensions, writability, DB connectivity) |
+| School | School profile data (name, code, address, email) |
+| Account | Super admin user creation |
+| Department | First academic department |
+| Internship | First internship program |
+| Finalize | Verification checklist, then lock the installation |
+
+### Lock File Gate
+
+After finalization, `SetupService::finalize()` creates a lock file at `storage/app/.installed` containing:
+```json
+{
+    "installed_at": "<ISO 8601 timestamp>",
+    "version": "<app version>"
+}
+```
+
+**Purpose**: Prevents access to setup routes after installation is complete.
+
+**How it works**:
+1. `ProtectSetupRoute` middleware checks `SetupService::isInstalled()` — redirects to login if installed
+2. `SetupWizard::mount()` double-checks the lock file independently
+3. `SetupInstallCommand` checks the lock file before allowing `--force` reinstall
+
+**To reset**: Run `php artisan setup:reset` or delete `storage/app/.installed` manually.
+
+---
 
 ## Post-Installation State
-After a successful installation:
-- The database schema is fully initialized.
-- System resources (Cache, Queue, Notifications tables) are ready.
-- **Laravel Pulse** is active and monitoring system health.
-- The application identity is established based on `app_info.json`.
 
-## Security Considerations (S1)
-- The installation command requires manual confirmation in non-testing environments.
-- All database operations are wrapped in a transaction to ensure atomicity.
-- Every installation event is logged with the user's environment context (IP, Agent).
+- Database schema is fully initialized
+- Super admin user is created with full RBAC access
+- School, department, and internship records exist
+- `settings` table has `setup_completed = true`
+- Lock file prevents unauthorized re-access to setup routes
+- Laravel Pulse is active at `/pulse`
+
+---
+
+## Security (S1)
+
+- Installation requires manual confirmation (non-testing environments)
+- Database operations are wrapped in a transaction (atomicity)
+- Setup routes are token-protected with rate limiting (20 attempts/minute/IP)
+- Setup tokens expire after 24 hours
+- Lock file provides defense-in-depth (checked by both middleware and component)
+- Every installation event is logged with environment context (IP, User Agent)
+
+---
+
+*Last Updated: April 30, 2026*

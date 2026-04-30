@@ -9,6 +9,7 @@ return [
     'groups' => [
         'general' => 'General Configuration',
         'identity' => 'Visual Identity',
+        'color_scheme' => 'Color Scheme',
         'operational' => 'Operational Rules',
         'mail' => 'Mail Services',
         'system' => 'System Information',
@@ -34,6 +35,10 @@ return [
         'mail_encryption' => 'SMTP Encryption',
         'mail_username' => 'SMTP Username',
         'mail_password' => 'SMTP Password',
+        
+        'primary_color' => 'Primary Color',
+        'secondary_color' => 'Secondary Color',
+        'accent_color' => 'Accent Color',
     ],
 
     'hints' => [

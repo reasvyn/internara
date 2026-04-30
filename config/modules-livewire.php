@@ -2,50 +2,7 @@
 
 declare(strict_types=1);
 
-return [
-    /*
-    |--------------------------------------------------------------------------
-    | Class Namespace
-    |--------------------------------------------------------------------------
-    |
-    */
+// DISABLED: Legacy modules-livewire configuration.
+// All livewire components are now handled via app/ domain code.
 
-    'namespace' => 'Livewire',
-
-    /*
-    |--------------------------------------------------------------------------
-    | App Path
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'app_path' => 'src',
-
-    /*
-    |--------------------------------------------------------------------------
-    | View Path
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'view' => 'resources/views/livewire',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Custom modules setup
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'custom_modules' => [
-        // 'Chat' => [
-        //     'name_lower' => 'chat',
-        //     'path' => base_path('libraries/Chat'),
-        //     // 'app_path' => 'src',
-        //     'module_namespace' => 'Libraries\\Chat',
-        //     'namespace' => 'Livewire',
-        //     'view' => 'resources/views/livewire',
-        //     'views_path' => 'resources/views',
-        // ],
-    ],
-];
+return [];

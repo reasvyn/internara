@@ -55,7 +55,7 @@ Internara uses a **three-tier configuration system** to separate concerns and pr
 **Static configuration** that defines how the application works at the code level. These are **infrastructure settings** that rarely change.
 
 ### Location
-- **Files**: `config/*.php` (17 config files)
+- **Files**: `config/*.php`
 - **Access**: `config('file.key')` or `config()->get('file.key')`
 - **Environment**: `.env` file overrides via `env('KEY', 'default')`
 
@@ -629,8 +629,4 @@ public function execute(string $key, mixed $value): void
 
 ---
 
-**Last Updated**: April 30, 2026  
-**Config Files**: 17 files in `config/`  
-**Settings Table**: `settings` (UUID, cached forever)  
-**AppInfo File**: `app_info.json` (SSoT)  
-**Helper Function**: `setting()` (unified API)
+**Last Updated**: April 30, 2026

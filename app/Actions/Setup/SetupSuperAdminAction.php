@@ -27,8 +27,8 @@ class SetupSuperAdminAction
                 'setup_required' => false,
             ]);
 
-            // Assign Super Admin role (assuming Spatie Permissions are set up)
-            // $user->assignRole('super-admin'); 
+            // Assign super_admin role using Spatie Permission (matches RoleEnum::SUPER_ADMIN)
+            $user->assignRole('super_admin');
 
             $this->logAudit->execute(
                 action: 'super_admin_created',
