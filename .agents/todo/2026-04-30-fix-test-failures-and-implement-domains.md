@@ -105,6 +105,12 @@
 
 **Exit criterion:** ✅ Issue report reflects current state.
 
+**Note:** Migration filenames in Step 6-9 descriptions use `2026_04_30_create_*` but actual files use `_140000`/`_140001` suffixes. Cosmetic discrepancy, no functional impact.
+
+---
+
+## Todo Status: ✅ CLOSED
+
 ---
 
 ## Step 11 — Fix maryUI Component Errors — P2 ✅ COMPLETED (discovered during implementation)
