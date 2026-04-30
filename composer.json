@@ -30,7 +30,7 @@
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-model-states": "^2.14",
         "spatie/laravel-model-status": "^1.18",
-        "spatie/laravel-permission": "^6.24"
+        "spatie/laravel-permission": "^7.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
