@@ -101,7 +101,7 @@ Automated quality checks via GitHub Actions:
 All jobs must pass before merging to `main` or `develop` branches.
 
 ## 9. Known Issues
-- **Legacy modules**: `modules/` directory contains unused code from the pre-MVC architecture. `app/Console/Kernel.php` still references a module class, which causes fatal errors when running tests. Resolution is tracked in `.agents/todo/2026-04-30-fix-checklist-accuracy-and-test-blocker.md`.
+- **Legacy modules**: `modules/` directory contains unused code from the pre-MVC architecture. `app/Console/Kernel.php` still references a module class, which causes fatal errors when running tests. Resolution: module autoloading has been disabled in `config/modules.php` and related configs.
 
 ## 10. Requirements for Deployment
 - **Web Server**: Nginx or Apache (Laravel compatible).
