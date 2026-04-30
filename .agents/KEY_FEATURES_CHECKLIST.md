@@ -48,15 +48,17 @@
 ### Domain: System Core & Infrastructure
 - [v] [v] [v] Laravel MVC Architecture (Action-Oriented) ✓
 	- [v] [v] [v] Layered Sparations ✓
-	- [v] [v] [v] Action Layer (70 stateless use cases) ✓
+	- [v] [v] [v] Action Layer (stateless use cases across 25+ domains) ✓
 	- [v] [v] [v] Rich Models (UUID, business rules) ✓
-	- [v] [v] [v] Form Requests and Thin Controllers (12 Form Requests - IMPROVED) ✓
+	- [v] [v] [v] Form Requests and Thin Controllers ✓
 - [v] [v] [v] System Infrastructure ✓
-	- [v] [v] [v] Database (SQLite, MySQL, PostgreSQL) - 41 migrations ✓
+	- [v] [v] [v] Database (SQLite, MySQL, PostgreSQL) ✓
 	- [v] [v] [v] Cache and Session (Database default, Redis-ready) ✓
-	- [v] [v] [v] File System and Static Assets (Local + S3, Spatie MediaLibrary on 4 models) ✓
-	- [v] [v] [v] System and user notification (4 actions, email template, NotificationManager) ✓
+	- [v] [v] [v] File System and Static Assets (Local + S3, Spatie MediaLibrary) ✓
+	- [v] [v] [v] System and user notification ✓
 	- [v] [v] [v] CI/CD Workflows (GitHub Actions, 5 jobs) ✓
+- [v] [v] [v] Background Jobs (queued async processing) ✓
+	- [v] [v] [v] Report generation job (GenerateReportJob) ✓
 - [?] Multi-language support (EN/ID translation coverage across all system-level strings)
 
 ### Domain: Configuration & Branding
@@ -77,6 +79,13 @@
 	- [v] [v] [v] Footer with author credit ✓
 	- [v] [?] [v] Language Switcher (EN/ID, session-based) ✓
 	- [v] [?] [v] Theme Switcher (light/dark/system, cookie-based) ✓
+- [!] [ ] [ ] Layout Hierarchy Gaps (tracked in `ui-layout-audit.md`)
+	- [!] [ ] [ ] `auth.blade.php` duplicates DOCTYPE instead of extending `base.blade.php`
+	- [ ] [ ] [ ] Missing `dashboard` layout (sidebar, drawer, mobile-responsive nav)
+	- [ ] [ ] [ ] Missing `wizard` layout (progress bar, step navigation, sticky footer)
+	- [ ] [ ] [ ] Missing `with-navbar` wrapper (sticky nav + scrollable content)
+	- [ ] [ ] [ ] Missing preloader, skip-to-content link, mobile sidebar/drawer
+- [!] [ ] [ ] View Style Inconsistency — scaffolded views use plain HTML, existing views use maryUI components
 - [?] Multi-language support (EN/ID translation coverage across all UI components and layouts)
 
 ### Domain: Installation & Setup
@@ -110,48 +119,44 @@
 - [role] SuperAdmin, Admin
 	- [v] [v] [v] School model and settings ✓
 	- [v] [v] [v] Department management ✓
-- [role] SuperAdmin
-	- [v] [v] [v] Academic year model and trait ✓
-	- [v] [v] [v] Academic year management ✓
-- [?] Multi-language support (EN/ID translation coverage across all school and department labels)
-
-### Domain: Internship Management
-- [role] SuperAdmin, Admin
-	- [*] [*] [*] Official document management
-	- [*] [*] [*] Internship requirement submission
-	- [ ] [ ] [ ] Registration listing and management
-	- [ ] [ ] [ ] Bulk student placement
-	- [ ] [ ] [ ] Placement history tracking
-	- [ ] [ ] [ ] Requirement submission management UI
-- [role] Student
-	- [*] [!] [*] Student internship registration (needs security review)
-	- [*] [*] [*] Internship report and feedback system
-- [?] Multi-language support (EN/ID translation coverage across all internship forms, labels, and status messages)
-
-### Domain: Attendance & Journal
-- [role] Student
-	- [*] [!] [*] Clock In/Clock Out actions (needs security review)
-	- [*] [*] [*] Absence requests
-	- [*] [!] [*] Journal entries with verification (needs security review)
-	- [ ] [ ] [ ] Journal listing and index
-- [role] Teacher, Mentor
-	- [ ] [ ] [ ] Attendance listing and management
-- [role] SuperAdmin, Admin
-	- [ ] [ ] [ ] Attendance listing and management (via modules/Attendance)
-- [?] Multi-language support (EN/ID translation coverage across all attendance and journal labels and status messages)
-
-### Domain: Academic Year
-- [role] SuperAdmin, Admin
 	- [v] [v] [v] Academic year CRUD ✓
 	- [v] [v] [v] Single active year enforcement ✓
 	- [v] [v] [v] Academic year activation ✓
 - [role] All roles
 	- [v] [v] [v] Academic year model and trait ✓
+- [?] Multi-language support (EN/ID translation coverage across all school and department labels)
+
+### Domain: Internship Management
+- [role] SuperAdmin, Admin
+	- [*] [!] [*] Official document management (needs security review — file upload validation, type restrictions)
+	- [*] [!] [*] Internship requirement submission (needs security review)
+	- [ ] [ ] [ ] Registration listing and management (UI in modules/)
+	- [ ] [ ] [ ] Bulk student placement (UI in modules/)
+	- [ ] [ ] [ ] Placement history tracking (UI in modules/)
+	- [ ] [ ] [ ] Requirement submission management UI (UI in modules/)
+- [role] Student
+	- [*] [!] [*] Student internship registration (needs security review — single active registration enforcement)
+	- [*] [!] [*] Internship report and feedback system (needs security review — data isolation)
+- [ ] [ ] [ ] Student registration test (todo placeholder — needs wiring)
+- [?] Multi-language support (EN/ID translation coverage across all internship forms, labels, and status messages)
+
+### Domain: Attendance & Journal
+- [role] Student
+	- [*] [!] [*] Clock In/Clock Out actions (needs security review — time manipulation, duplicate prevention)
+	- [*] [*] [*] Absence requests
+	- [*] [!] [*] Journal entries with verification (needs security review — immutability of submitted journals)
+	- [ ] [ ] [ ] Journal listing and index
+- [role] Teacher, Mentor
+	- [ ] [ ] [ ] Attendance listing and management
+- [role] SuperAdmin, Admin
+	- [ ] [ ] [ ] Attendance listing and management (via modules/Attendance)
+- [!] [ ] [ ] 3 tests blocked by `Carbon::now()` timing issues (clock in, clock out, absence request)
+- [?] Multi-language support (EN/ID translation coverage across all attendance and journal labels and status messages)
 
 ### Domain: Guidance & Mentoring
 - [role] Mentor
-	- [v] [v] [v] Supervision logs ✓
-	- [v] [v] [v] Monitoring visits ✓
+	- [*] [!] [!] Supervision logs (tests failing — COL2 WRONG field mapping error, needs security review)
+	- [*] [!] [!] Monitoring visits (related tests failing — COL2 WRONG, needs security review)
 	- [*] [*] [*] Mentor assignment
 - [role] SuperAdmin, Admin
 	- [v] [v] [v] Handbook CRUD and management ✓
@@ -160,19 +165,20 @@
 - [role] Student
 	- [ ] [ ] [ ] Handbook download
 	- [ ] [ ] [ ] Handbook acknowledgement tracking
+- [ ] [ ] [ ] Supervision test blocked by field mapping error (COL2 WRONG)
 - [?] Multi-language support (EN/ID translation coverage across all supervision, mentoring, and handbook labels)
 
 ### Domain: Assessment & Assignment
 - [role] Teacher
-	- [*] [*] [ ] Assignment types and submissions
-	- [*] [!] [*] Assessment grading (needs review)
-	- [*] [*] [*] Competency tracking
-	- [ ] [ ] [ ] Assignment type CRUD management
-	- [ ] [ ] [ ] Rubric form for assessments
-	- [ ] [ ] [ ] Skill progress visualization
-	- [ ] [ ] [ ] Certificate generation
+	- [*] [!] [*] Assignment types and submissions (needs security review — deadline enforcement, who can submit)
+	- [*] [!] [*] Assessment grading (needs security review — only teacher can grade assigned submissions)
+	- [*] [*] [*] Competency tracking (needs security review — data integrity)
+	- [ ] [ ] [ ] Assignment type CRUD management (UI in modules/)
+	- [ ] [ ] [ ] Rubric form for assessments (UI in modules/)
+	- [ ] [ ] [ ] Skill progress visualization (UI in modules/)
+	- [ ] [ ] [ ] Certificate generation (UI in modules/)
 - [role] Student
-	- [ ] [ ] [ ] Assignment submission
+	- [ ] [ ] [ ] Assignment submission (2 tests todo — action parameter mismatch, status enum fix needed)
 	- [ ] [ ] [ ] Skill progress visualization
 	- [ ] [ ] [ ] Certificate generation
 - [?] Multi-language support (EN/ID translation coverage across all assignment, assessment, and competency labels)
@@ -231,4 +237,7 @@
 - **Domains implemented this cycle:** Academic Year, Handbook, Schedule, Report
 - **Corrected items:** Base controller created, maryUI views replaced with plain HTML, HandbookFactory published() state added, AcademicYear view variable fixed, Student RBAC test assertion corrected
 - **Todo tests (7):** Intentional placeholders for Assignment (2), Attendance (3), Supervision (1), Student (1)
-- **See:** `.agents/issues/2026-04-30-requirement-fulfillment-report.md` for consolidated issue report
+- **Open issues:**
+  - `security-review-domains.md` — 4 domains flagged for security audit (Internship, Attendance, Supervision, Assessment)
+  - `remaining-todo-tests.md` — 7 todo tests with specific blockers and root causes
+  - `ui-layout-audit.md` — layout hierarchy gaps, missing layouts, view style inconsistency
