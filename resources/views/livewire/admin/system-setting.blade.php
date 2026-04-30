@@ -27,23 +27,23 @@
              <x-mary-card title="{{ __('setting.groups.color_scheme') }}" shadow separator class="bg-base-100 border border-base-200">
                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                      <x-mary-input 
-                         label="{{ __('setting.fields.primary_color') }}" 
-                         icon="o-palette" 
-                         type="color" 
-                         wire:model="primary_color" 
-                     />
-                     <x-mary-input 
-                         label="{{ __('setting.fields.secondary_color') }}" 
-                         icon="o-palette" 
-                         type="color" 
-                         wire:model="secondary_color" 
-                     />
-                     <x-mary-input 
-                         label="{{ __('setting.fields.accent_color') }}" 
-                         icon="o-palette" 
-                         type="color" 
-                         wire:model="accent_color" 
-                     />
+                          label="{{ __('setting.fields.primary_color') }}" 
+                          icon="o-swatch" 
+                          type="color" 
+                          wire:model="primary_color" 
+                      />
+                      <x-mary-input 
+                          label="{{ __('setting.fields.secondary_color') }}" 
+                          icon="o-swatch" 
+                          type="color" 
+                          wire:model="secondary_color" 
+                      />
+                      <x-mary-input 
+                          label="{{ __('setting.fields.accent_color') }}" 
+                          icon="o-swatch" 
+                          type="color" 
+                          wire:model="accent_color" 
+                      />
                  </div>
              </x-mary-card>
 
