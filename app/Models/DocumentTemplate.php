@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DocumentCategory;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,17 +21,18 @@ class DocumentTemplate extends Model
         'name',
         'slug',
         'description',
-        'content', // Blade/Markdown content with placeholders
+        'content',
         'is_active',
-        'category', // e.g., 'application', 'permit', 'certificate'
+        'category',
     ];
 
     protected $casts = [
+        'category' => DocumentCategory::class,
         'is_active' => 'boolean',
     ];
 
     public function documents(): HasMany
     {
-        return $this->hasMany(FormalDocument::class, 'template_id');
+        return $this->hasMany(OfficialDocument::class, 'template_id');
     }
 }

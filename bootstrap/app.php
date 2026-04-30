@@ -39,6 +39,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 // use Modules\Setup\Http\Middleware\BypassSetupAuthorization;
 // use Modules\Setup\Http\Middleware\RequireSetupAccess;
 // use Modules\Status\Middleware\CheckSessionExpiration;
+use App\Http\Middleware\ProtectSetupRoute;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
@@ -51,6 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withCommands([
         \App\Console\Commands\AppInstallCommand::class,
+        \App\Console\Commands\SetupResetCommand::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
@@ -58,11 +60,10 @@ return Application::configure(basePath: dirname(__DIR__))
             // append: [CheckSessionExpiration::class, SetLocale::class],
         );
         $middleware->alias([
-            // 'session.expire' => CheckSessionExpiration::class,
+            'setup.protected' => ProtectSetupRoute::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
-            // 'verified' => EnsureEmailIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

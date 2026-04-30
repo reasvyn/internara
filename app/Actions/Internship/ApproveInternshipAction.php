@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 class ApproveInternshipAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     /**

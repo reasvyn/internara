@@ -24,6 +24,12 @@
                     {{ $footer }}
                 </div>
             </footer>
+        @else
+            <footer class="mt-auto">
+                <div class="container mx-auto px-4 md:px-6 lg:px-8">
+                    <livewire:layout.app-signature />
+                </div>
+            </footer>
         @endisset
     </div>
 </x-layouts.base>

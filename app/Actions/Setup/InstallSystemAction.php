@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\DB;
 class InstallSystemAction
 {
     public function __construct(
-        protected SetSettingAction $setSetting,
-        protected LogAuditAction $logAudit
+        protected readonly SetSettingAction $setSetting,
+        protected readonly LogAuditAction $logAudit
     ) {}
 
     /**

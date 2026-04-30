@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * S1 - Secure: Implements strict authentication logic and auditing.
@@ -18,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LoginAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(string $identifier, string $password, bool $remember = false): Authenticatable
@@ -38,7 +37,7 @@ class LoginAction
                 module: 'Auth'
             );
 
-            abort(Response::HTTP_UNAUTHORIZED, __('auth.failed'));
+            abort(401, __('auth.failed'));
         }
 
         /** @var User $user */
@@ -56,7 +55,7 @@ class LoginAction
                 module: 'Auth'
             );
 
-            abort(Response::HTTP_FORBIDDEN, __('auth.blocked'));
+            abort(403, __('auth.blocked'));
         }
 
         $this->logAuditAction->execute(

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
  */
 class CreateDepartmentAction
 {
-    public function __construct(protected LogAuditAction $logAudit) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     public function execute(array $data): Department
     {

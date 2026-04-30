@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Password;
 class SendPasswordResetLinkAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(string $email): string

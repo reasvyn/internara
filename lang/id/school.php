@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'settings' => 'Pengaturan Sekolah',
+    'title' => 'Profil Institusi',
+    'subtitle' => 'Kelola identitas dan informasi kontak institusi',
+    'identity_branding' => 'Identitas & Branding',
+    'identity_branding_desc' => 'Konfigurasi identitas resmi institusi Anda.',
+    'contact_leadership' => 'Kontak & Kepemimpinan',
+    'contact_leadership_desc' => 'Tentukan saluran kontak resmi dan detail kepemimpinan.',
+    'name' => 'Nama Sekolah',
+    'name_placeholder' => 'contoh: SMK Negeri 1 Jakarta',
+    'institutional_code' => 'Kode Institusi',
+    'institutional_code_placeholder' => 'contoh: 10293847',
+    'institutional_code_hint' => 'Identifikasi unik yang ditetapkan oleh badan regulasi.',
+    'address' => 'Alamat Resmi',
+    'address_placeholder' => 'Alamat lengkap, kota, dan kode pos.',
+    'email' => 'Email Institusi',
+    'email_placeholder' => 'contoh: info@sekolah.sch.id',
+    'phone' => 'Telepon Utama',
+    'phone_placeholder' => 'contoh: +62 21 1234567',
+    'fax' => 'Nomor Faks',
+    'fax_placeholder' => 'contoh: +62 21 7654321',
+    'principal_name' => 'Nama Kepala Sekolah',
+    'principal_name_placeholder' => 'Nama lengkap beserta gelar akademik.',
+    'logo' => 'Logo Resmi',
+    'logo_hint' => 'Disarankan 512x512px. Maksimal 2MB (JPG, PNG, WEBP).',
+    'save_success' => 'Profil sekolah berhasil diperbarui.',
+    'system_context' => 'Konteks Sistem',
+    'system_context_desc' => 'Informasi ini digunakan untuk menghasilkan sertifikat, surat resmi, dan laporan magang.',
+    'uuid_enabled' => 'UUID Aktif',
+    'audit_logged' => 'Tercatat Audit',
+    'discard' => 'Batal',
+    'save_changes' => 'Simpan Perubahan',
+];

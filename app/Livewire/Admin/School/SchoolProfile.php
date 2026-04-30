@@ -19,28 +19,31 @@ class SchoolProfile extends Component
     public string $principal_name = '';
     public string $email = '';
     public string $phone = '';
+    public string $fax = '';
 
     public function mount(): void
     {
         $this->school = School::firstOrFail();
-        
+
         $this->name = $this->school->name;
         $this->institutional_code = $this->school->institutional_code;
         $this->address = $this->school->address ?? '';
         $this->principal_name = $this->school->principal_name ?? '';
         $this->email = $this->school->email ?? '';
         $this->phone = $this->school->phone ?? '';
+        $this->fax = $this->school->fax ?? '';
     }
 
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'institutional_code' => ['required', 'string', 'unique:schools,institutional_code,' . $this->school->id],
-            'address' => ['required', 'string'],
+            'institutional_code' => ['required', 'string', 'max:50', 'unique:schools,institutional_code,' . $this->school->id],
+            'address' => ['required', 'string', 'max:1000'],
             'principal_name' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'unique:schools,email,' . $this->school->id],
+            'email' => ['nullable', 'email', 'max:255', 'unique:schools,email,' . $this->school->id],
             'phone' => ['nullable', 'string', 'max:20'],
+            'fax' => ['nullable', 'string', 'max:20'],
         ];
     }
 
@@ -50,7 +53,7 @@ class SchoolProfile extends Component
 
         $updateSchool->execute($this->school, $validated);
 
-        session()->flash('success', 'School profile updated successfully.');
+        flash()->success(__('school.save_success'));
     }
 
     #[Layout('components.layouts.app')]

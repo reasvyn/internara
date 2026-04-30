@@ -8,6 +8,7 @@ use App\Enums\AccountStatus;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -61,6 +62,30 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
+    }
+
+    /**
+     * Get all internship registrations for this user (as student, teacher, or mentor).
+     */
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(InternshipRegistration::class, 'student_id');
+    }
+
+    /**
+     * Get registrations where this user is the assigned teacher.
+     */
+    public function teachingRegistrations(): HasMany
+    {
+        return $this->hasMany(InternshipRegistration::class, 'teacher_id');
+    }
+
+    /**
+     * Get registrations where this user is the assigned mentor.
+     */
+    public function mentoringRegistrations(): HasMany
+    {
+        return $this->hasMany(InternshipRegistration::class, 'mentor_id');
     }
 
     /**

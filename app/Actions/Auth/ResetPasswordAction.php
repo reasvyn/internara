@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Password;
 class ResetPasswordAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(array $credentials): bool

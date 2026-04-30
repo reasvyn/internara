@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ClockInAction
 {
-    public function __construct(protected LogAuditAction $logAudit) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     public function execute(User $user, array $data): AttendanceLog
     {

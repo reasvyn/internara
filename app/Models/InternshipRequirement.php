@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\RequirementType;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,12 +20,13 @@ class InternshipRequirement extends Model
     protected $fillable = [
         'name',
         'description',
-        'type', // document, skill, text
+        'type',
         'is_mandatory',
         'is_active',
     ];
 
     protected $casts = [
+        'type' => RequirementType::class,
         'is_mandatory' => 'boolean',
         'is_active' => 'boolean',
     ];
@@ -32,5 +34,10 @@ class InternshipRequirement extends Model
     public function submissions(): HasMany
     {
         return $this->hasMany(RequirementSubmission::class, 'requirement_id');
+    }
+
+    public function supportsFileUpload(): bool
+    {
+        return $this->type?->supportsFileUpload() ?? false;
     }
 }

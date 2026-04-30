@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\AttendanceStatus;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,6 +37,7 @@ class AttendanceLog extends Model
         'date' => 'date',
         'clock_in' => 'datetime:H:i',
         'clock_out' => 'datetime:H:i',
+        'status' => AttendanceStatus::class,
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
     ];
@@ -53,5 +55,15 @@ class AttendanceLog extends Model
     public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function hasClockOut(): bool
+    {
+        return $this->clock_out !== null;
+    }
+
+    public function isExcused(): bool
+    {
+        return $this->status?->isExcused() ?? false;
     }
 }

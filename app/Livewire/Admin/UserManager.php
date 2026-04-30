@@ -7,10 +7,12 @@ namespace App\Livewire\Admin;
 use App\Actions\Auth\CreateUserAction;
 use App\Actions\Auth\DeleteUserAction;
 use App\Actions\Auth\UpdateUserAction;
+use App\Enums\AccountStatus;
 use App\Enums\Role as RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -24,6 +26,7 @@ class UserManager extends Component
     
     public array $filters = [
         'role' => null,
+        'status' => null,
     ];
 
     public bool $userModal = false;
@@ -34,6 +37,7 @@ class UserManager extends Component
         'email' => '',
         'username' => '',
         'roles' => [],
+        'password' => '',
     ];
 
     /**
@@ -42,12 +46,11 @@ class UserManager extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'email', 'label' => 'Email', 'sortable' => true],
-            ['key' => 'username', 'label' => 'Username'],
-            ['key' => 'roles', 'label' => 'Roles'],
-            ['key' => 'created_at', 'label' => 'Joined', 'sortable' => true],
+            ['key' => 'email', 'label' => 'Account Info'],
+            ['key' => 'roles', 'label' => 'Roles', 'sortable' => false],
+            ['key' => 'status', 'label' => 'Status'],
+            ['key' => 'actions', 'label' => '', 'sortable' => false]
         ];
     }
 
@@ -57,7 +60,7 @@ class UserManager extends Component
     public function users(): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles'])
+            ->with(['roles', 'statuses'])
             ->when($this->search, function (Builder $q) {
                 $q->where('name', 'like', "%{$this->search}%")
                     ->orWhere('email', 'like', "%{$this->search}%")
@@ -70,9 +73,6 @@ class UserManager extends Component
             ->paginate(10);
     }
 
-    /**
-     * Open modal for creating a new user.
-     */
     public function createUser(): void
     {
         $this->resetErrorBag();
@@ -82,13 +82,11 @@ class UserManager extends Component
             'email' => '',
             'username' => '',
             'roles' => [],
+            'password' => '',
         ];
         $this->userModal = true;
     }
 
-    /**
-     * Open modal for editing a user.
-     */
     public function editUser(User $user): void
     {
         $this->resetErrorBag();
@@ -102,9 +100,6 @@ class UserManager extends Component
         $this->userModal = true;
     }
 
-    /**
-     * Save the user (create or update).
-     */
     public function saveUser(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
         $rules = [
@@ -114,23 +109,48 @@ class UserManager extends Component
             'userData.roles' => 'required|array|min:1',
         ];
 
+        if (!$this->userData['id']) {
+            $rules['userData.password'] = 'required|min:8';
+        }
+
         $this->validate($rules);
 
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, null, $this->userData['roles']);
-            $this->success('User updated successfully.');
+            $this->success('User updated.');
         } else {
             $createAction->execute($this->userData, [], $this->userData['roles']);
-            $this->success('User created successfully.');
+            $this->success('User created.');
         }
 
         $this->userModal = false;
     }
 
-    /**
-     * Delete a user.
-     */
+    public function toggleStatus(User $user): void
+    {
+        if ($user->id === auth()->id()) {
+            $this->error('Cannot change your own status.');
+            return;
+        }
+
+        $currentStatus = $user->latestStatus()?->name;
+        $newStatus = $currentStatus === AccountStatus::ACTIVE->value 
+            ? AccountStatus::SUSPENDED->value 
+            : AccountStatus::ACTIVE->value;
+
+        $user->setStatus($newStatus, 'Changed via User Manager');
+        $this->success("User status changed to {$newStatus}.");
+    }
+
+    public function resetPassword(User $user): void
+    {
+        $newPassword = str()->random(10);
+        $user->update(['password' => Hash::make($newPassword)]);
+        
+        $this->info("Password reset to: {$newPassword}", 'Temp Password', position: 'toast-bottom-center', timeout: 10000);
+    }
+
     public function deleteUser(User $user, DeleteUserAction $deleteAction): void
     {
         if ($user->id === auth()->id()) {
@@ -139,7 +159,7 @@ class UserManager extends Component
         }
 
         $deleteAction->execute($user);
-        $this->success('User deleted successfully.');
+        $this->success('User deleted.');
     }
 
     public function render()

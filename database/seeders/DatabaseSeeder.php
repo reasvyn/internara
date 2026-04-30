@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Add core seeders here as they are transformed
+        $this->call([
+            AppSettingSeeder::class,
+        ]);
     }
 }

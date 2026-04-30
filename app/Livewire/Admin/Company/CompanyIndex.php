@@ -8,6 +8,8 @@ use App\Actions\Company\CreateCompanyAction;
 use App\Actions\Company\DeleteCompanyAction;
 use App\Actions\Company\UpdateCompanyAction;
 use App\Models\InternshipCompany;
+use App\Models\InternshipPlacement;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -29,6 +31,20 @@ class CompanyIndex extends Component
     public string $search = '';
 
     protected $queryString = ['search'];
+
+    #[Computed]
+    public function stats(): array
+    {
+        $companies = InternshipCompany::query();
+
+        return [
+            'total' => $companies->count(),
+            'with_placements' => InternshipCompany::whereHas('placements')->count(),
+            'available_slots' => InternshipPlacement::query()
+                ->selectRaw('SUM(quota - filled_quota) as available')
+                ->value('available') ?? 0,
+        ];
+    }
 
     public function rules(): array
     {
@@ -69,10 +85,10 @@ class CompanyIndex extends Component
         if ($this->companyId) {
             $company = InternshipCompany::findOrFail($this->companyId);
             $update->execute($company, $validated);
-            session()->flash('success', 'Company updated successfully.');
+            flash()->success(__('company.update_success'));
         } else {
             $create->execute($validated);
-            session()->flash('success', 'Company created successfully.');
+            flash()->success(__('company.save_success'));
         }
 
         $this->showModal = false;
@@ -81,15 +97,22 @@ class CompanyIndex extends Component
 
     public function delete(InternshipCompany $company, DeleteCompanyAction $deleteAction): void
     {
+        if ($company->placements()->exists()) {
+            flash()->error(__('company.delete_blocked'));
+            return;
+        }
+
         $deleteAction->execute($company);
-        session()->flash('success', 'Company deleted successfully.');
+        flash()->success(__('company.delete_success'));
     }
 
     #[Layout('components.layouts.app')]
     public function render()
     {
         $companies = InternshipCompany::query()
+            ->withCount('placements')
             ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->latest()
             ->paginate(10);
 
         return view('livewire.admin.company.company-index', [

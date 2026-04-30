@@ -34,7 +34,6 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/boost": "^1.8",
-        "laravel/dusk": "^8.3",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
@@ -50,6 +49,9 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
+        "files": [
+            "app/Support/helpers.php"
+        ],
         "exclude-from-classmap": [
             ".temp"
         ]
@@ -79,9 +81,37 @@
             "@php artisan optimize:clear --ansi",
             "@php artisan app:test"
         ],
-        "test:dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --env=dusk.local\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"vite -m \\\"dusk.local\\\"\" --names=server,queue,logs,vite --kill-others"
+        "test:coverage": [
+            "@php artisan optimize:clear --ansi",
+            "vendor/bin/pest --coverage --min=80"
+        ],
+        "test:arch": [
+            "@php artisan optimize:clear --ansi",
+            "vendor/bin/pest tests/Arch --colors=never"
+        ],
+        "test:feature": [
+            "@php artisan optimize:clear --ansi",
+            "vendor/bin/pest tests/Feature --colors=never"
+        ],
+        "test:unit": [
+            "@php artisan optimize:clear --ansi",
+            "vendor/bin/pest tests/Unit --colors=never"
+        ],
+        "analyse": [
+            "vendor/bin/phpstan analyse --no-progress"
+        ],
+        "analyse:strict": [
+            "vendor/bin/phpstan analyse --level=max --no-progress"
+        ],
+        "quality": [
+            "@lint",
+            "@analyse",
+            "@test:arch"
+        ],
+        "quality:full": [
+            "@format",
+            "@analyse:strict",
+            "@test:coverage"
         ],
         "check": [
             "@php artisan about"

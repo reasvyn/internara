@@ -1,11 +1,1 @@
-{
-    "name": "Internara",
-    "version": "0.1.0",
-    "support": "Experimental",
-    "author": {
-        "name": "Reas Vyn",
-        "email": "reasvyn@gmail.com",
-        "github": "https://github.com/reasvyn"
-    },
-    "license": "MIT"
-}
+{"name":"Internara","version":"0.1.0","support":"Experimental","author":{"name":"Reas Vyn","email":"reasvyn@gmail.com","github":"https:\/\/github.com\/reasvyn"},"license":"MIT"}

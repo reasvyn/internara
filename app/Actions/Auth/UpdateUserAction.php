@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 class UpdateUserAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     /**

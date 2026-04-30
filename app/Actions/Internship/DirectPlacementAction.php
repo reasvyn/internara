@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class DirectPlacementAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     /**
