@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'title' => 'Mitra Industri',
+    'subtitle' => 'Kelola perusahaan dan mitra industri untuk penempatan magang',
+    'add_company' => 'Tambah Perusahaan',
+    'edit_company' => 'Edit Perusahaan',
+    'new_company' => 'Perusahaan Baru',
+    'name' => 'Nama Perusahaan',
+    'name_placeholder' => 'contoh: PT Maju Mundur',
+    'industry_sector' => 'Sektor Industri',
+    'industry_sector_placeholder' => 'contoh: Teknologi',
+    'general_sector' => 'Umum',
+    'address' => 'Alamat Lengkap',
+    'address_placeholder' => 'Alamat lengkap perusahaan',
+    'phone' => 'Nomor Telepon',
+    'phone_placeholder' => 'contoh: +62 21 1234567',
+    'email' => 'Alamat Email',
+    'email_placeholder' => 'contoh: info@perusahaan.com',
+    'website' => 'Website',
+    'website_placeholder' => 'https://...',
+    'description' => 'Deskripsi / Catatan',
+    'description_placeholder' => 'Informasi tambahan tentang perusahaan ini',
+    'search_placeholder' => 'Cari berdasarkan nama perusahaan...',
+    'cancel' => 'Batal',
+    'save' => 'Simpan',
+    'save_success' => 'Perusahaan berhasil ditambahkan.',
+    'update_success' => 'Perusahaan berhasil diperbarui.',
+    'delete_success' => 'Perusahaan berhasil dihapus.',
+    'delete_confirm' => 'Apakah Anda yakin ingin menghapus perusahaan ini?',
+    'delete_blocked' => 'Tidak dapat menghapus perusahaan: masih memiliki penempatan aktif.',
+    'company_name' => 'Nama Perusahaan',
+    'actions' => 'Aksi',
+    'stats' => [
+        'total' => 'Total Perusahaan',
+        'with_placements' => 'Dengan Penempatan',
+        'available_slots' => 'Slot Tersedia',
+    ],
+];

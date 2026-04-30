@@ -13,7 +13,7 @@ return new class extends Migration {
         if (!Schema::hasTable('login_history')) {
             Schema::create('login_history', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->string('ip_address')->index();
                 $table->string('user_agent')->nullable();
                 $table->boolean('successful')->default(false)->index();
@@ -35,7 +35,7 @@ return new class extends Migration {
         if (!Schema::hasTable('suspicious_login_attempts')) {
             Schema::create('suspicious_login_attempts', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->string('ip_address');
                 $table->string('user_agent')->nullable();
                 $table->json('suspicions'); // Array of reasons (impossible travel, simultaneous login, etc)

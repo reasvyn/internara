@@ -17,9 +17,11 @@
             <directory>tests/Feature</directory>
             <directory>modules/*/tests/Feature</directory>
         </testsuite>
-        <testsuite name="Browser">
-            <directory>tests/Browser</directory>
-            <directory>modules/*/tests/Browser</directory>
+        <testsuite name="Quality">
+            <directory>tests/Quality</directory>
+        </testsuite>
+        <testsuite name="All">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <source>

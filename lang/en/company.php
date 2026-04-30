@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'title' => 'Industry Partners',
+    'subtitle' => 'Manage companies and industry partners for internship placements',
+    'add_company' => 'Add Company',
+    'edit_company' => 'Edit Company',
+    'new_company' => 'New Company',
+    'name' => 'Company Name',
+    'name_placeholder' => 'e.g. PT Maju Mundur',
+    'industry_sector' => 'Industry Sector',
+    'industry_sector_placeholder' => 'e.g. Technology',
+    'general_sector' => 'General',
+    'address' => 'Full Address',
+    'address_placeholder' => 'Complete company address',
+    'phone' => 'Phone Number',
+    'phone_placeholder' => 'e.g. +62 21 1234567',
+    'email' => 'Email Address',
+    'email_placeholder' => 'e.g. info@company.com',
+    'website' => 'Website',
+    'website_placeholder' => 'https://...',
+    'description' => 'Description / Notes',
+    'description_placeholder' => 'Additional information about this company',
+    'search_placeholder' => 'Search by company name...',
+    'cancel' => 'Cancel',
+    'save' => 'Save',
+    'save_success' => 'Company created successfully.',
+    'update_success' => 'Company updated successfully.',
+    'delete_success' => 'Company deleted successfully.',
+    'delete_confirm' => 'Are you sure you want to delete this company?',
+    'delete_blocked' => 'Cannot delete company: it has active placements.',
+    'company_name' => 'Company Name',
+    'actions' => 'Actions',
+    'stats' => [
+        'total' => 'Total Companies',
+        'with_placements' => 'With Placements',
+        'available_slots' => 'Available Slots',
+    ],
+];

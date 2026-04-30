@@ -1,0 +1,96 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'already_installed' => 'Aplikasi ini sudah terinstal.',
+    'rate_limited' => 'Terlalu banyak percobaan setup. Silakan coba lagi dalam :seconds detik.',
+    'invalid_token' => 'Token setup tidak valid atau sudah kadaluarsa.',
+
+    'checks' => [
+        'php_version' => 'Versi PHP >= :required',
+        'php_version_pass' => 'PHP :current terinstal',
+        'php_version_fail' => 'PHP :current ditemukan, :required diperlukan',
+
+        'extension' => 'Ekstensi: :extension',
+        'extension_pass' => ':extension sudah dimuat',
+        'extension_fail' => ':extension belum terinstal',
+
+        'recommended_extension' => 'Ekstensi: :extension (direkomendasikan)',
+        'recommended_pass' => ':extension sudah dimuat',
+        'recommended_fail' => ':extension belum dimuat',
+
+        'writable_dir' => 'Direktori: :directory',
+        'writable_pass' => ':directory dapat ditulis',
+        'writable_fail' => ':directory tidak dapat ditulis',
+
+        'db_connection' => 'Koneksi Database',
+        'db_pass' => 'Terhubung melalui :driver (v:version)',
+        'db_fail' => 'Tidak dapat terhubung ke database',
+        'db_fail_message' => 'Koneksi gagal: :error',
+
+        'app_key' => 'Kunci Aplikasi',
+        'app_key_pass' => 'Kunci aplikasi sudah diatur',
+        'app_key_fail' => 'Kunci aplikasi belum diatur. Jalankan `php artisan key:generate`',
+    ],
+
+    'cli' => [
+        'starting_installation' => 'Memulai instalasi sistem...',
+        'forcing_reinstall' => 'Memaksa instalasi ulang...',
+        'already_installed' => 'Sistem sudah terinstal. Gunakan --force untuk menginstal ulang.',
+        'installation_failed' => 'Instalasi gagal: :message',
+        'installation_completed' => 'Instalasi sistem selesai dengan sukses!',
+        'next_steps' => 'LANGKAH SELANJUTNYA',
+        'visit_url' => 'Kunjungi URL berikut di peramban web Anda:',
+        'complete_wizard' => 'Lengkapi wizard setup (sekolah, departemen, akun admin)',
+        'token_expires' => 'Kadaluarsa: 24 jam',
+        'token_note' => 'Catatan: URL ini berlaku selama 24 jam. Setelah itu, jalankan `php artisan setup:reset` untuk membuat yang baru.',
+        'tasks' => [
+            'migrations' => 'Menjalankan migrasi',
+            'seeders' => 'Menjalankan seeder',
+            'system_metadata' => 'Mengatur metadata sistem',
+            'installed_timestamp' => 'Mengatur stempel waktu instalasi',
+            'logging' => 'Mencatat event instalasi',
+            'storage_link' => 'Menautkan storage',
+            'clear_cache' => 'Membersihkan cache',
+        ],
+    ],
+
+    'wizard' => [
+        'title' => 'Setup',
+        'step_of' => 'Langkah :current dari 6',
+        'welcome' => 'Selamat Datang di Internara',
+        'welcome_desc' => 'Kami akan membantu Anda mengatur sistem manajemen magang profesional hanya dalam beberapa langkah.',
+        'system_requirements' => 'Persyaratan Sistem',
+        'start_setup' => 'Mulai Setup',
+        'recheck' => 'Periksa Ulang',
+        'school_info' => 'Informasi Sekolah',
+        'school_name' => 'Nama Sekolah/Institusi',
+        'school_code' => 'Kode Institusi',
+        'school_address' => 'Alamat Lengkap',
+        'school_email' => 'Email',
+        'school_phone' => 'Telepon',
+        'principal_name' => 'Nama Kepala Sekolah',
+        'admin_account' => 'Administrator Pertama',
+        'full_name' => 'Nama Lengkap',
+        'email_address' => 'Alamat Email',
+        'username' => 'Nama Pengguna',
+        'password' => 'Kata Sandi',
+        'confirm_password' => 'Konfirmasi Kata Sandi',
+        'department' => 'Departemen Awal',
+        'department_desc' => 'Buat departemen pertama Anda (Jurusan). Anda dapat menambah lebih banyak nanti.',
+        'department_name' => 'Nama Departemen',
+        'internship' => 'Angkatan Magang',
+        'program_name' => 'Nama Program',
+        'start_date' => 'Tanggal Mulai',
+        'end_date' => 'Tanggal Selesai',
+        'next_step' => 'Langkah Berikutnya',
+        'back' => 'Kembali',
+        'finish_setup' => 'Selesaikan Setup',
+        'setup_complete' => 'Setup Selesai!',
+        'ready_desc' => 'Internara siap mengelola program magang Anda. Anda sekarang dapat masuk dengan akun administrator Anda.',
+        'go_to_login' => 'Masuk ke Login',
+        'data_verified' => 'Saya memverifikasi bahwa data yang dimasukkan sudah benar',
+        'security_aware' => 'Saya memahami persyaratan keamanan sistem ini',
+    ],
+];

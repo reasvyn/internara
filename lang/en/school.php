@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'settings' => 'School Settings',
+    'title' => 'Institutional Profile',
+    'subtitle' => 'Manage institution identity and contact information',
+    'identity_branding' => 'Identity & Branding',
+    'identity_branding_desc' => 'Configure the official identity of your institution.',
+    'contact_leadership' => 'Contact & Leadership',
+    'contact_leadership_desc' => 'Define official contact channels and leadership details.',
+    'name' => 'School Name',
+    'name_placeholder' => 'e.g. SMK Negeri 1 Jakarta',
+    'institutional_code' => 'Institutional Code',
+    'institutional_code_placeholder' => 'e.g. 10293847',
+    'institutional_code_hint' => 'Unique identifier assigned by the regulatory body.',
+    'address' => 'Official Address',
+    'address_placeholder' => 'Complete street address, city, and postal code.',
+    'email' => 'Institutional Email',
+    'email_placeholder' => 'e.g. info@school.edu',
+    'phone' => 'Primary Phone',
+    'phone_placeholder' => 'e.g. +62 21 1234567',
+    'fax' => 'Fax Number',
+    'fax_placeholder' => 'e.g. +62 21 7654321',
+    'principal_name' => 'Principal / Headmaster Name',
+    'principal_name_placeholder' => 'Full name with academic titles.',
+    'logo' => 'Official Logo',
+    'logo_hint' => 'Recommended 512x512px. Max 2MB (JPG, PNG, WEBP).',
+    'save_success' => 'School profile updated successfully.',
+    'system_context' => 'System Context',
+    'system_context_desc' => 'This information is used for generating certificates, formal letters, and internship reports.',
+    'uuid_enabled' => 'UUID Enabled',
+    'audit_logged' => 'Audit-Logged',
+    'discard' => 'Discard',
+    'save_changes' => 'Save Changes',
+];

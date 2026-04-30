@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 class ChangePasswordAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(User $user, string $currentPassword, string $newPassword): void

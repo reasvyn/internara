@@ -11,7 +11,7 @@ return new class extends Migration {
     {
         Schema::create('activation_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('token')->index(); // Hashed token
             $table->enum('token_type', ['email', 'sms'])->default('email');
             $table->dateTime('expires_at')->index();

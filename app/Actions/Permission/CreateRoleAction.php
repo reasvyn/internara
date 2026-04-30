@@ -14,7 +14,7 @@ use Spatie\Permission\Models\Role;
 class CreateRoleAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(string $name, string $guardName = 'web'): Role

@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions\Notification;
+
+use App\Models\User;
+
+/**
+ * Stateless Action to get user's notifications.
+ *
+ * S2 - Sustain: Filtered retrieval with pagination support.
+ */
+class GetNotificationsAction
+{
+    public function execute(
+        string $userId,
+        bool $unreadOnly = false,
+        int $limit = 20,
+    ): \Illuminate\Database\Eloquent\Collection {
+        $query = \App\Models\Notification::where('user_id', $userId);
+
+        if ($unreadOnly) {
+            $query->where('is_read', false);
+        }
+
+        return $query->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+}

@@ -13,7 +13,7 @@ use Spatie\Permission\Models\Role;
 class UpdateRolePermissionsAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     /**

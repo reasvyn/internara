@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\BloodType;
+use App\Enums\Gender;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,11 +33,24 @@ class Profile extends Model
         'department_id',
     ];
 
+    protected $casts = [
+        'gender' => Gender::class,
+        'blood_type' => BloodType::class,
+    ];
+
     /**
      * Get the user that owns the profile.
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the department the profile belongs to.
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

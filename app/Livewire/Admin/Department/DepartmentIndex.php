@@ -55,11 +55,11 @@ class DepartmentIndex extends Component
         if ($this->departmentId) {
             $department = Department::findOrFail($this->departmentId);
             $update->execute($department, $validated);
-            session()->flash('success', 'Department updated successfully.');
+            flash()->success(__('department.save_success_updated'));
         } else {
             $school = School::firstOrFail();
             $create->execute(array_merge($validated, ['school_id' => $school->id]));
-            session()->flash('success', 'Department created successfully.');
+            flash()->success(__('department.save_success_created'));
         }
 
         $this->showModal = false;
@@ -68,19 +68,38 @@ class DepartmentIndex extends Component
 
     public function delete(Department $department, DeleteDepartmentAction $deleteAction): void
     {
+        $profileCount = $department->profiles()->count();
+
+        if ($profileCount > 0) {
+            flash()->error(__('department.delete_blocked', ['count' => $profileCount]));
+
+            return;
+        }
+
         $deleteAction->execute($department);
-        session()->flash('success', 'Department deleted successfully.');
+        flash()->success(__('department.delete_success'));
+    }
+
+    public function stats(): array
+    {
+        return [
+            'total' => Department::count(),
+            'with_internships' => Department::whereHas('profiles')->count(),
+        ];
     }
 
     #[Layout('components.layouts.app')]
     public function render()
     {
         $departments = Department::query()
+            ->with('school')
             ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->orderBy('name')
             ->paginate(10);
 
         return view('livewire.admin.department.department-index', [
             'departments' => $departments,
+            'stats' => $this->stats(),
         ]);
     }
 }

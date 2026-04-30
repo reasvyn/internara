@@ -11,8 +11,8 @@ return new class extends Migration {
     {
         Schema::create('super_admin_approvals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('target_user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('requested_by_user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('target_user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('requested_by_user_id')->constrained('users')->onDelete('cascade');
             $table->enum('change_type', ['password', 'email', 'settings', 'deactivate', 'roles']);
             $table->json('change_data')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');

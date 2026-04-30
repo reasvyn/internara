@@ -28,12 +28,50 @@ Explore the detailed documentation in the `docs/` directory:
 | Document | Description |
 | :--- | :--- |
 | [**Architecture**](docs/architecture.md) | Deep dive into layers, Actions, and Rich Models. |
-| [**Infrastructure**](docs/infrastructure.md) | Technical stack, dependencies, and environment requirements. |
+| [**Infrastructure**](docs/infrastructure.md) | Technical stack, dependencies, CI/CD, and quality tooling. |
+| [**Database**](docs/database.md) | Migrations, models, factories, and database standards. |
+| [**Cache**](docs/cache.md) | Cache drivers, configuration, and usage patterns. |
+| [**Session**](docs/session.md) | Session management, drivers, and security settings. |
+| [**Filesystem**](docs/filesystem.md) | File storage, disks, and Spatie Media Library. |
+| [**Notifications**](docs/notification.md) | In-app notifications, email alerts, and real-time updates. |
+| [**Configuration**](docs/configuration.md) | Config vs Settings boundaries, AppInfo SSoT, and usage. |
 | [**Engineering Standards**](docs/standards.md) | The 3S Doctrine (Secure, Sustain, Scalable) and coding conventions. |
 | [**Access Control (RBAC)**](docs/rbac.md) | User roles, permissions, and account lifecycle management. |
 | [**System Audits**](docs/audits.md) | Forensic logging and the `LogAuditAction` system. |
 | [**Logging & Monitoring**](docs/logging.md) | Standard logs and real-time observability with Laravel Pulse. |
-| [**Testing Strategy**](docs/testing.md) | Architectural, Feature, and Unit testing guidelines. |
+| [**Testing Strategy**](docs/testing.md) | Architectural, Quality, Feature, and Unit testing guidelines. |
+
+---
+
+## 🤖 AI Agent Access
+
+If you are an AI agent reading this document, **your primary workspace is `.agents/`**. Before performing any work:
+
+1. **Read `.agents/README.md`** — workspace governance, agent roles (Supervisor/Engineer), and operating protocols.
+2. **Check `.agents/KEY_FEATURES_CHECKLIST.md`** — Single Source of Truth for feature evolution tracking.
+3. **Read `AGENTS.md`** — the 3S Doctrine, engineering workflows, and behavioral constraints that govern all your actions.
+4. **Identify your role** — Supervisor (audit/review) or Engineer (implementation). Stay in scope.
+5. **Use `.agents/plans/`** for proposals requiring human approval before implementation.
+6. **Use `.agents/todo/`** for step-by-step execution of approved plans.
+7. **Use `.agents/issues/`** for audit reports, bug findings, and technical notes.
+
+**Rule**: Do not proceed with any engineering task without first consulting the `.agents/` workspace and the documents listed above.
+
+## 🛡️ Quality Assurance
+
+### Automated Checks
+- **53 architectural tests** enforcing layer separation and coding standards
+- **12 quality tests** checking stability, performance, and security
+- **181 total tests** with 429 assertions
+- **Minimum 80% code coverage** requirement
+
+### CI/CD Pipeline
+All commits to `main`/`develop` branches must pass:
+- ✅ Code style (Pint + Prettier)
+- ✅ Static analysis (PHPStan level 8)
+- ✅ Architectural integrity (Pest Arch)
+- ✅ Security scan (Trivy)
+- ✅ Test coverage ≥80%
 
 ---
 

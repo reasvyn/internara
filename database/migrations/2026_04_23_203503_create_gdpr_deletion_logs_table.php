@@ -17,7 +17,7 @@ return new class extends Migration {
                 ->enum('deletion_type', ['anonymization', 'permanent_deletion'])
                 ->default('anonymization');
             $table->string('reason');
-            $table->foreignId('deleted_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('deleted_by')->constrained('users')->onDelete('cascade');
             $table->json('metadata')->nullable(); // User data snapshot for audit
             $table->dateTime('deleted_at');
             $table->timestamps();

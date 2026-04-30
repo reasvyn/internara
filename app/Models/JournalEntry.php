@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\JournalEntryStatus;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,6 +29,7 @@ class JournalEntry extends Model
 
     protected $casts = [
         'date' => 'date',
+        'status' => JournalEntryStatus::class,
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
     ];
@@ -45,5 +47,18 @@ class JournalEntry extends Model
     public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->status === JournalEntryStatus::VERIFIED;
+    }
+
+    public function canBeEdited(): bool
+    {
+        return in_array($this->status, [
+            JournalEntryStatus::DRAFT,
+            JournalEntryStatus::REVISION_REQUIRED,
+        ], true);
     }
 }

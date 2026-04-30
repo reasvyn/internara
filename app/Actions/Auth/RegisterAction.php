@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class RegisterAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(array $data, ?array $roles = null): User

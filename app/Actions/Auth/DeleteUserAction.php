@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class DeleteUserAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     /**

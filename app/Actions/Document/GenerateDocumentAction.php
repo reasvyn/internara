@@ -20,8 +20,8 @@ use Illuminate\Support\Str;
 class GenerateDocumentAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction,
-        protected GeneratePdfAction $generatePdfAction
+        protected readonly LogAuditAction $logAuditAction,
+        protected readonly GeneratePdfAction $generatePdfAction
     ) {}
 
     /**

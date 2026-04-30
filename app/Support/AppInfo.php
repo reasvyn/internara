@@ -14,19 +14,28 @@ use Illuminate\Support\Facades\File;
 class AppInfo
 {
     /**
+     * Cached application information.
+     */
+    private static ?array $info = null;
+
+    /**
      * Get application metadata.
      *
      * @return array<string, mixed>
      */
     public static function all(): array
     {
-        $path = base_path('app_info.json');
+        if (self::$info === null) {
+            $path = base_path('app_info.json');
 
-        if (!File::exists($path)) {
-            return [];
+            if (! File::exists($path)) {
+                self::$info = [];
+            } else {
+                self::$info = json_decode(File::get($path), true) ?? [];
+            }
         }
 
-        return json_decode(File::get($path), true) ?? [];
+        return self::$info;
     }
 
     /**
@@ -42,7 +51,7 @@ class AppInfo
      */
     public static function version(): string
     {
-        return self::get('version', '0.0.0');
+        return (string) self::get('version', '0.0.0');
     }
 
     /**
@@ -53,5 +62,14 @@ class AppInfo
     public static function author(): array
     {
         return self::get('author', []);
+    }
+
+    /**
+     * Clear the cached application information.
+     * Useful for testing environments.
+     */
+    public static function clearCache(): void
+    {
+        self::$info = null;
     }
 }

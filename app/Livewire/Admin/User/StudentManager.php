@@ -8,9 +8,11 @@ use App\Actions\Auth\CreateUserAction;
 use App\Actions\Auth\DeleteUserAction;
 use App\Actions\Auth\UpdateUserAction;
 use App\Enums\Role as RoleEnum;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
@@ -21,6 +23,10 @@ class StudentManager extends Component
 
     public string $search = '';
     
+    public array $filters = [
+        'department_id' => null,
+    ];
+
     public bool $userModal = false;
     
     public array $userData = [
@@ -30,17 +36,24 @@ class StudentManager extends Component
         'username' => '',
         'national_identifier' => '',
         'registration_number' => '',
+        'department_id' => '',
     ];
+
+    #[Computed]
+    public function departments()
+    {
+        return Department::orderBy('name')->get();
+    }
 
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'name', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'username', 'label' => 'Username'],
+            ['key' => 'name', 'label' => 'Student Name', 'sortable' => true],
             ['key' => 'profile.national_identifier', 'label' => 'NISN'],
             ['key' => 'profile.registration_number', 'label' => 'NIS'],
+            ['key' => 'profile.department.name', 'label' => 'Department'],
             ['key' => 'created_at', 'label' => 'Joined', 'sortable' => true],
+            ['key' => 'actions', 'label' => '']
         ];
     }
 
@@ -48,11 +61,14 @@ class StudentManager extends Component
     {
         return User::query()
             ->role(RoleEnum::STUDENT->value)
-            ->with(['profile'])
+            ->with(['profile.department'])
             ->when($this->search, function (Builder $q) {
                 $q->where('name', 'like', "%{$this->search}%")
                     ->orWhere('email', 'like', "%{$this->search}%")
                     ->orWhere('username', 'like', "%{$this->search}%");
+            })
+            ->when($this->filters['department_id'], function (Builder $q) {
+                $q->whereHas('profile', fn($qp) => $qp->where('department_id', $this->filters['department_id']));
             })
             ->latest()
             ->paginate(10);
@@ -68,6 +84,7 @@ class StudentManager extends Component
             'username' => '',
             'national_identifier' => '',
             'registration_number' => '',
+            'department_id' => '',
         ];
         $this->userModal = true;
     }
@@ -82,6 +99,7 @@ class StudentManager extends Component
             'username' => $user->username,
             'national_identifier' => $user->profile?->national_identifier ?? '',
             'registration_number' => $user->profile?->registration_number ?? '',
+            'department_id' => $user->profile?->department_id ?? '',
         ];
         $this->userModal = true;
     }
@@ -92,11 +110,14 @@ class StudentManager extends Component
             'userData.name' => 'required|string|max:255',
             'userData.email' => 'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
             'userData.username' => 'required|string|unique:users,username,' . ($this->userData['id'] ?? 'NULL'),
+            'userData.national_identifier' => 'required|string|max:20',
+            'userData.department_id' => 'required|exists:departments,id',
         ]);
 
         $profileData = [
             'national_identifier' => $this->userData['national_identifier'],
             'registration_number' => $this->userData['registration_number'],
+            'department_id' => $this->userData['department_id'],
         ];
 
         if ($this->userData['id']) {

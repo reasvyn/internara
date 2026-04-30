@@ -10,6 +10,7 @@ use App\Actions\Internship\UpdatePlacementAction;
 use App\Models\Internship;
 use App\Models\InternshipCompany;
 use App\Models\InternshipPlacement;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -35,13 +36,26 @@ class PlacementIndex extends Component
     #[Computed]
     public function companies()
     {
-        return InternshipCompany::orderBy('name')->get();
+        return InternshipCompany::orderBy('name')->get(['id', 'name'])->map(fn($c) => ['id' => $c->id, 'name' => $c->name]);
     }
 
     #[Computed]
     public function internships()
     {
-        return Internship::where('status', 'active')->orderBy('name')->get();
+        return Internship::whereIn('status', ['published', 'active'])->orderBy('name')->get(['id', 'name'])->map(fn($i) => ['id' => $i->id, 'name' => $i->name]);
+    }
+
+    #[Computed]
+    public function stats(): array
+    {
+        $placements = InternshipPlacement::query();
+
+        return [
+            'total' => $placements->count(),
+            'total_quota' => $placements->sum('quota'),
+            'filled' => $placements->sum('filled_quota'),
+            'available' => $placements->sum(DB::raw('quota - filled_quota')),
+        ];
     }
 
     public function rules(): array
@@ -50,7 +64,7 @@ class PlacementIndex extends Component
             'company_id' => ['required', 'exists:internship_companies,id'],
             'internship_id' => ['required', 'exists:internships,id'],
             'name' => ['required', 'string', 'max:255'],
-            'address' => ['required', 'string'],
+            'address' => ['nullable', 'string'],
             'quota' => ['required', 'integer', 'min:1'],
             'description' => ['nullable', 'string'],
         ];
@@ -81,10 +95,10 @@ class PlacementIndex extends Component
         if ($this->placementId) {
             $placement = InternshipPlacement::findOrFail($this->placementId);
             $update->execute($placement, $validated);
-            session()->flash('success', 'Placement updated successfully.');
+            flash()->success(__('placement.update_success'));
         } else {
             $create->execute($validated);
-            session()->flash('success', 'Placement created successfully.');
+            flash()->success(__('placement.save_success'));
         }
 
         $this->showModal = false;
@@ -93,8 +107,13 @@ class PlacementIndex extends Component
 
     public function delete(InternshipPlacement $placement, DeletePlacementAction $deleteAction): void
     {
+        if ($placement->registrations()->exists()) {
+            flash()->error(__('placement.delete_blocked'));
+            return;
+        }
+
         $deleteAction->execute($placement);
-        session()->flash('success', 'Placement deleted successfully.');
+        flash()->success(__('placement.delete_success'));
     }
 
     #[Layout('components.layouts.app')]
@@ -104,6 +123,7 @@ class PlacementIndex extends Component
             ->with(['company', 'internship'])
             ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%")
                 ->orWhereHas('company', fn($q) => $q->where('name', 'like', "%{$this->search}%")))
+            ->latest()
             ->paginate(10);
 
         return view('livewire.admin.internship.placement-index', [

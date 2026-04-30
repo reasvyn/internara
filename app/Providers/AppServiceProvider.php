@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,14 +23,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.debug')) {
-            $this->app
-                ->make('translator')
-                ->handleMissingKeysUsing(
-                    fn(string $key, array $replace, ?string $locale) => Log::warning(
-                        "Translation key missing: '{$key}' (Locale: {$locale})",
-                    ),
-                );
+        // S1 - Secure: Restrict Pulse dashboard to Super Admin and Admin only
+        Gate::define('viewPulse', function (User $user) {
+            return $user->hasRole('super_admin') || $user->hasRole('admin');
+        });
+
+        // S2 - Sustain: Protect author credit for OSS Internara
+        $author = \App\Support\AppInfo::author();
+        $authorName = $author['name'] ?? '';
+
+        if ($authorName !== 'Reas Vyn') {
+            throw new \RuntimeException('Invalid author signature. Unauthorized modification detected.');
         }
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('monitoring_visits', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
+            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
             $table->foreignUuid('teacher_id')->constrained('users');
             $table->date('date');
             $table->text('notes');

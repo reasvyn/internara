@@ -1,0 +1,33 @@
+parameters:
+	level: 8
+	paths:
+		- app
+		- tests
+		- config
+	excludePaths:
+		- vendor/*
+		- node_modules/*
+		- storage/*
+		- bootstrap/cache/*
+		- app/Support/helpers.php
+	checkMissingIterableValueType: false
+	checkGenericClassInNonGenericObjectType: false
+	reportUnmatchedIgnoredErrors: false
+
+includes:
+	- vendor/laravel/pulse/extension.neon
+	- vendor/phpstan/phpstan-laravel/extension.neon
+	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
+	- vendor/nunomaduro/larastan/extension.neon
+
+rules:
+	- PHPStan\Rules\Deprecations\UsageOfDeprecatedNamesRule
+
+ignoreErrors:
+	# Ignore Livewire magic methods
+	- '#Access to an undefined property App\\Livewire\\.*::\\$#'
+	- '#Call to an undefined method App\\Livewire\\.*::#'
+	# Ignore Spatie package magic methods
+	- '#Access to an undefined property Spatie\\.*::\\$#'
+	# Ignore form request validation rules
+	- '#Method App\\Http\\Requests\\.*::rules\(\) should return array#'

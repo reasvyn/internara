@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\AbsenceReasonType;
+use App\Enums\AbsenceRequestStatus;
 use App\Models\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +32,8 @@ class AbsenceRequest extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'status' => AbsenceRequestStatus::class,
+        'reason_type' => AbsenceReasonType::class,
         'processed_at' => 'datetime',
     ];
 
@@ -46,5 +50,15 @@ class AbsenceRequest extends Model
     public function processor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'processed_by');
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === AbsenceRequestStatus::PENDING;
+    }
+
+    public function isProcessed(): bool
+    {
+        return $this->status?->isProcessed() ?? false;
     }
 }

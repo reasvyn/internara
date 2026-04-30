@@ -14,7 +14,7 @@ use App\Models\User;
 class RemoveRoleAction
 {
     public function __construct(
-        protected LogAuditAction $logAuditAction
+        protected readonly LogAuditAction $logAuditAction
     ) {}
 
     public function execute(User $user, string|array $roles): void

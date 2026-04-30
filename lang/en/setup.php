@@ -1,0 +1,96 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'already_installed' => 'This application is already installed.',
+    'rate_limited' => 'Too many setup attempts. Please try again in :seconds seconds.',
+    'invalid_token' => 'Invalid or expired setup token.',
+
+    'checks' => [
+        'php_version' => 'PHP Version >= :required',
+        'php_version_pass' => 'PHP :current installed',
+        'php_version_fail' => 'PHP :current found, :required required',
+
+        'extension' => 'Extension: :extension',
+        'extension_pass' => ':extension is loaded',
+        'extension_fail' => ':extension is missing',
+
+        'recommended_extension' => 'Extension: :extension (recommended)',
+        'recommended_pass' => ':extension is loaded',
+        'recommended_fail' => ':extension is not loaded',
+
+        'writable_dir' => 'Directory: :directory',
+        'writable_pass' => ':directory is writable',
+        'writable_fail' => ':directory is not writable',
+
+        'db_connection' => 'Database Connection',
+        'db_pass' => 'Connected via :driver (v:version)',
+        'db_fail' => 'Unable to connect to the database',
+        'db_fail_message' => 'Connection failed: :error',
+
+        'app_key' => 'Application Key',
+        'app_key_pass' => 'Application key is set',
+        'app_key_fail' => 'Application key is not set. Run `php artisan key:generate`',
+    ],
+
+    'cli' => [
+        'starting_installation' => 'Starting system installation...',
+        'forcing_reinstall' => 'Forcing reinstallation...',
+        'already_installed' => 'System is already installed. Use --force to reinstall.',
+        'installation_failed' => 'Installation failed: :message',
+        'installation_completed' => 'System installation completed successfully!',
+        'next_steps' => 'NEXT STEPS',
+        'visit_url' => 'Visit the following URL in your browser:',
+        'complete_wizard' => 'Complete the setup wizard (school, department, admin account)',
+        'token_expires' => 'Expires: 24 hours',
+        'token_note' => 'Note: This URL is valid for 24 hours. After that, run `php artisan setup:reset` to generate a new one.',
+        'tasks' => [
+            'migrations' => 'Running migrations',
+            'seeders' => 'Running seeders',
+            'system_metadata' => 'Setting system metadata',
+            'installed_timestamp' => 'Setting installed timestamp',
+            'logging' => 'Logging installation event',
+            'storage_link' => 'Linking storage',
+            'clear_cache' => 'Clearing cache',
+        ],
+    ],
+
+    'wizard' => [
+        'title' => 'Setup',
+        'step_of' => 'Step :current of 6',
+        'welcome' => 'Welcome to Internara',
+        'welcome_desc' => 'We will help you set up your professional internship management system in just a few steps.',
+        'system_requirements' => 'System Requirements',
+        'start_setup' => 'Start Setup',
+        'recheck' => 'Re-check',
+        'school_info' => 'School Information',
+        'school_name' => 'School/Institution Name',
+        'school_code' => 'Institutional Code',
+        'school_address' => 'Full Address',
+        'school_email' => 'Email',
+        'school_phone' => 'Phone',
+        'principal_name' => 'Principal Name',
+        'admin_account' => 'First Administrator',
+        'full_name' => 'Full Name',
+        'email_address' => 'Email Address',
+        'username' => 'Username',
+        'password' => 'Password',
+        'confirm_password' => 'Confirm Password',
+        'department' => 'Initial Department',
+        'department_desc' => 'Create your first department (Jurusan). You can add more later.',
+        'department_name' => 'Department Name',
+        'internship' => 'Internship Batch',
+        'program_name' => 'Program Name',
+        'start_date' => 'Start Date',
+        'end_date' => 'End Date',
+        'next_step' => 'Next Step',
+        'back' => 'Back',
+        'finish_setup' => 'Finish Setup',
+        'setup_complete' => 'Setup Complete!',
+        'ready_desc' => 'Internara is ready to manage your internship programs. You can now login with your administrator account.',
+        'go_to_login' => 'Go to Login',
+        'data_verified' => 'I verify that the data entered is correct',
+        'security_aware' => 'I understand the security requirements of this system',
+    ],
+];

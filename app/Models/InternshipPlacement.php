@@ -46,4 +46,14 @@ class InternshipPlacement extends Model
     {
         return $this->filled_quota >= $this->quota;
     }
+
+    public function availableSlots(): int
+    {
+        return max(0, $this->quota - $this->filled_quota);
+    }
+
+    public function hasAvailableSlots(): bool
+    {
+        return $this->availableSlots() > 0;
+    }
 }
