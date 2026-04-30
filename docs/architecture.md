@@ -266,14 +266,14 @@ The system includes a centralized engine for managing institutional corresponden
 - Actions must not contain HTTP-specific code (use Form Requests)
 
 ### ✅ Do Keep It Simple
-- Start without optional layers, add them only when needed
+- Lifecycle Layers (Repositories, Events, Listeners, Services) terintegrasi dalam request lifecycle
 - Prefer direct calls over abstractions when clarity is better
 - Document why you added a layer (see Decision Records)
 
 ## 8. Documentation & Sync
 Every change to this architecture must be recorded in **Decision Records** according to the `AGENTS.md` standards. The code must always remain in sync with this documentation.
 
-When adding optional layers (Repositories, Events, etc.), create a Decision Record explaining:
+When adding lifecycle layers (Repositories, Events, etc.), create a Decision Record explaining:
 - What problem the layer solves
 - Why simpler approaches weren't sufficient
 - Which 3S dimension it serves (usually S3 - Scalable)

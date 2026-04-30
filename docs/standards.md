@@ -67,7 +67,7 @@ All development must adhere to the **3S Doctrine** defined in `AGENTS.md`:
 - **Naming**: Use business language (e.g., `ClockInAction` instead of `SaveAttendance`).
 - **Formatting**: Use `Laravel Pint` for PHP and `Prettier` for JS/Blade.
 - **Fail Fast**: Use Custom Exceptions to handle invalid business states early.
-- **Documentation**: Document why optional layers (Repositories, Events) were added in Decision Records.
+- **Documentation**: Document why lifecycle layers (Repositories, Events) were added in Decision Records.
 
 ## 4. Layer Separation Rules
 - **Controllers/Livewire** → Can call Actions, Repositories (read-only), Policies
