@@ -115,8 +115,8 @@ This report consolidates all open issues, requirement fulfillment status, and in
 
 **`modules/` directory:** 29 modules, ~1,142 PHP files, ~182 test files  
 **Status:** Disabled from autoloading (config returns empty array, test paths removed from phpunit.xml)  
-**Impact:** Files retained for reference during migration. Should be cleaned up after full MVC migration.  
-**Risk:** Low (not loaded), but technical debt if left indefinitely.
+**Impact:** Files retained for reference during migration. No active impact on test suite or application.  
+**Risk:** Low (not loaded). Migration status tracked per-domain in Part 1.3.
 
 ---
 
@@ -147,7 +147,6 @@ This report consolidates all open issues, requirement fulfillment status, and in
 | P3 | Implement Account Lifecycle domain (scaffold exists) | 4-8 hours |
 | P3 | Implement Academic Year domain (scaffold exists) | 2-4 hours |
 | P4 | Migrate remaining partial features from modules/ | Per-feature |
-| P5 | Clean up `modules/` directory after full migration | 1-2 hours |
 
 ---
 
