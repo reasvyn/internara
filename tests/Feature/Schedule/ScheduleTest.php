@@ -2,10 +2,19 @@
 
 declare(strict_types=1);
 
+use App\Enums\Role as RoleEnum;
 use App\Models\Schedule;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    foreach (RoleEnum::cases() as $role) {
+        Role::firstOrCreate([
+            'name' => $role->value,
+            'guard_name' => 'web',
+        ]);
+    }
+
     $this->admin = User::factory()->create();
     $this->admin->assignRole('admin');
 });
@@ -15,7 +24,7 @@ test('admin can view schedule index', function () {
         ->get(route('admin.schedules.index'));
 
     $response->assertOk();
-})->todo('Implement schedule index route and view');
+});
 
 test('admin can create a new schedule', function () {
     $response = $this->actingAs($this->admin)
@@ -27,7 +36,7 @@ test('admin can create a new schedule', function () {
 
     $response->assertRedirect();
     $this->assertDatabaseHas('schedules', ['title' => 'Internship Orientation']);
-})->todo('Implement schedule creation');
+});
 
 test('admin can update a schedule', function () {
     $schedule = Schedule::factory()->create(['created_by' => $this->admin->id]);
@@ -39,7 +48,7 @@ test('admin can update a schedule', function () {
 
     $response->assertRedirect();
     $this->assertDatabaseHas('schedules', ['id' => $schedule->id, 'title' => 'Updated Title']);
-})->todo('Implement schedule update');
+});
 
 test('admin can delete a schedule', function () {
     $schedule = Schedule::factory()->create(['created_by' => $this->admin->id]);
@@ -49,4 +58,4 @@ test('admin can delete a schedule', function () {
 
     $response->assertRedirect();
     $this->assertDatabaseMissing('schedules', ['id' => $schedule->id]);
-})->todo('Implement schedule deletion');
+});

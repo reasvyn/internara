@@ -48,7 +48,7 @@ class ScheduleController extends Controller
             ->with('success', 'Schedule updated successfully.');
     }
 
-    public function destroy(Schedule $schedule, DeleteScheduleAction $action)
+    public function destroy(Schedule $schedule, Request $request, DeleteScheduleAction $action)
     {
         Gate::authorize('delete', $schedule);
 

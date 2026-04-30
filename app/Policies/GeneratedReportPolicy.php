@@ -30,7 +30,7 @@ class GeneratedReportPolicy
 
     public function download(User $user, GeneratedReport $report): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin'])
+        return $user->hasRole('super_admin')
             || $report->user_id === $user->id;
     }
 

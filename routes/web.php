@@ -16,6 +16,7 @@ use App\Livewire\Admin\Internship\InternshipIndex;
 use App\Livewire\Admin\Internship\PlacementIndex;
 use App\Livewire\Admin\School\SchoolProfile;
 use App\Livewire\Admin\SystemSetting;
+use App\Livewire\Admin\Report\ReportsManager;
 use App\Livewire\Admin\User\AdminManager;
 use App\Livewire\Admin\User\StudentManager;
 use App\Livewire\Admin\User\TeacherManager;
@@ -85,8 +86,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:super_admin|ad
 
     // Report Management Routes
     Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', [ReportController::class, 'index'])->name('index');
-        Route::post('/', [ReportController::class, 'store'])->name('store');
+        Route::get('/', ReportsManager::class)->name('index');
         Route::get('/{report}/download', [ReportController::class, 'download'])->name('download');
     });
 

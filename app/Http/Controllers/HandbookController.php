@@ -36,7 +36,7 @@ class HandbookController extends Controller
             ->with('success', 'Handbook created successfully.');
     }
 
-    public function acknowledge(Handbook $handbook, AcknowledgeHandbookAction $action)
+    public function acknowledge(Handbook $handbook, Request $request, AcknowledgeHandbookAction $action)
     {
         $action->execute($request->user(), $handbook);
 

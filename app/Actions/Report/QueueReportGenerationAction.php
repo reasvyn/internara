@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Report;
 
 use App\Actions\Audit\LogAuditAction;
+use App\Jobs\Report\GenerateReportJob;
 use App\Models\GeneratedReport;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -31,8 +32,7 @@ class QueueReportGenerationAction
                 'status' => 'pending',
             ]);
 
-            // Dispatch report generation job (to be implemented)
-            // GenerateReportJob::dispatch($report->id);
+            GenerateReportJob::dispatch($report->id);
 
             $this->logAudit->execute(
                 action: 'report_queued',
