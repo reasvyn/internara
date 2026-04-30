@@ -79,7 +79,20 @@ app/
 - **DTOs**: `CreateUserData`, `JournalEntryData`, `DirectPlacementData`, `InternshipRegistrationData`, `ClockInData`.
 - **Enums**: See list in section C above.
 
-### E. Repository Layer (Optional - Complex Queries Only)
+### E. Job Layer (Queued Background Processing)
+- **Location**: `app/Jobs/{Domain}/`
+- **Current**: `GenerateReportJob` (asynchronous report generation).
+- **When to Use**:
+    - Long-running operations that should not block HTTP responses
+    - PDF/report generation, file processing, bulk operations
+    - Third-party API calls that may timeout
+- **Properties**:
+    - Implements `ShouldQueue` interface
+    - Uses `Queueable` trait
+    - Receives minimal data (IDs, not full models) for efficient serialization
+    - Handles its own error states (success/failure tracking on related models)
+
+### F. Repository Layer (Optional - Complex Queries Only)
 - **Location**: `app/Repositories/{Domain}/`
 - **Current**: `InternshipRepository`.
 - **When to Use**:
@@ -94,7 +107,7 @@ app/
     - Do not contain business logic
     - May use Query Scopes from Models
 
-### F. Event/Listener Layer (Side Effects)
+### G. Event/Listener Layer (Side Effects)
 - **Location**: `app/Events/` & `app/Listeners/`
 - **Current**: `InternshipCreated` event with `SendInternshipCreatedNotifications` listener.
 - **Purpose**: Decouple side effects from core business logic.
@@ -249,7 +262,7 @@ The system includes a centralized engine for managing institutional corresponden
 
 ## 7. Legacy Modules (Reference Only)
 
-> **Status**: The `modules/` directory contains legacy code from the pre-MVC modular monolith (29 modules, ~1,142 PHP files). These modules are **disabled from autoloading** and are retained solely as reference material during the ongoing MVC migration. Module scaffolding for 8 new domains (Report, Handbook, Schedule, AcademicYear, AccountLifecycle, ActivityFeed, MentorEvaluation, TeacherDashboard) has been created in `app/` to support incremental migration.
+> **Status**: The `modules/` directory contains legacy code from the pre-MVC modular monolith. These modules are **disabled from autoloading** and are retained solely as reference material during the ongoing MVC migration. Domain scaffolding for new features (Report, Handbook, Schedule, AcademicYear, AccountLifecycle, ActivityFeed, MentorEvaluation, TeacherDashboard) has been created in `app/` to support incremental migration. Report, Handbook, Schedule, and AcademicYear are now fully implemented.
 
 ## 8. Anti-Patterns to Avoid
 

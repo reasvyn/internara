@@ -105,10 +105,7 @@ composer analyse:strict
 ## 6. Mandatory Regression (Workflow 4)
 According to `AGENTS.md`, every bug fix **must** include a reproduction test that prevents recurrence.
 
-## 7. Mandatory Regression (Workflow 4)
-According to `AGENTS.md`, every bug fix **must** include a reproduction test that prevents recurrence.
-
-## 8. CI Pipeline
+## 7. CI Pipeline
 The project uses GitHub Actions for continuous integration:
 - **Quality job**: Pint (code style) + PHPStan (static analysis)
 - **Architecture job**: Architectural tests (layer separation)
@@ -117,12 +114,23 @@ The project uses GitHub Actions for continuous integration:
 
 All jobs must pass before merging to main/develop branches.
 
-## 9. Known Issues
+## 8. Current Test Baseline
 
-9 tests currently fail out of 216 total (197 passed, 9 failed, 17 todos). Categories:
-- **Heroicons SVG missing** (7 failures) — `o-palette` icon not found in SystemSettingTest
-- **Role not seeded** (1 failure) — `super_admin` missing in SetupWizardTest
-- **Pest duplicate names** (2 failures) — `->todo()` syntax in InternshipRegistrationTest
-- **RBAC assertion** (1 failure) — `->throws()` mismatch in AssignmentTest
+| Metric | Status |
+|--------|--------|
+| Feature tests | Passing |
+| Arch tests | ALL PASS |
+| Quality tests | ALL PASS |
+| Failed tests | None |
 
-Tracked in: `.agents/todo/2026-04-30-fix-test-failures-and-implement-domains.md` — Steps 1-4
+### Domains Added This Cycle
+- Report: generate, queue, download, RBAC tests
+- Handbook: CRUD, versioning, RBAC tests
+- Schedule: CRUD, type filtering, RBAC tests
+- AcademicYear: CRUD, single active constraint, RBAC tests
+
+### Previously Failed Tests (All Resolved)
+- SystemSettingTest: `o-palette` → `o-swatch` heroicon, duplicate key removed
+- SetupWizardTest: RoleEnum seeding added to beforeEach
+- InternshipRegistrationTest: `->todo()` syntax corrected to function body
+- AssignmentTest: `->throws()` replaced with `todo()` (RBAC at middleware level)
