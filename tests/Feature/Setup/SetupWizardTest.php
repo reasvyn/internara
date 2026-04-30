@@ -4,12 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup;
 
+use App\Enums\Role as RoleEnum;
 use App\Livewire\Setup\SetupWizard;
 use App\Services\Setup\SetupService;
 use Illuminate\Support\Facades\File;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    foreach (RoleEnum::cases() as $role) {
+        Role::firstOrCreate([
+            'name' => $role->value,
+            'guard_name' => 'web',
+        ]);
+    }
+
     $service = new SetupService;
     if ($service->isInstalled()) {
         File::delete(storage_path('app/.installed'));

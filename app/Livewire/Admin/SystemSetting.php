@@ -146,8 +146,6 @@ class SystemSetting extends Component
             'secondary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'accent_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
 
-            'accent_color' => $this->accent_color,
-            
             // Operational
             'active_academic_year' => 'required|string|regex:/^\d{4}\/\d{4}$/',
             'attendance_check_in_start' => 'required|date_format:H:i',
