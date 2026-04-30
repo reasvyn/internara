@@ -89,6 +89,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get all generated reports for this user.
+     */
+    public function generatedReports(): HasMany
+    {
+        return $this->hasMany(GeneratedReport::class);
+    }
+
+    /**
+     * Get all handbook acknowledgements for this user.
+     */
+    public function handbookAcknowledgements(): HasMany
+    {
+        return $this->hasMany(HandbookAcknowledgement::class);
+    }
+
+    /**
      * Check if the user is suspended.
      */
     public function isSuspended(): bool
