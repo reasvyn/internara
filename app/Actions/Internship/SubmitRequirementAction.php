@@ -9,23 +9,41 @@ use App\Models\InternshipRegistration;
 use App\Models\RequirementSubmission;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 /**
- * S1 - Secure: Atomic submission with file handling and auditing.
+ * S1 - Secure: Atomic submission with file validation, type restrictions, and auditing.
  * S3 - Scalable: Stateless action.
  */
 class SubmitRequirementAction
 {
+    private const ALLOWED_MIME_TYPES = [
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+
+    private const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
     public function __construct(
         protected readonly LogAuditAction $logAuditAction
     ) {}
 
     /**
      * Execute the requirement submission.
+     *
+     * @throws RuntimeException if file type or size is invalid
      */
     public function execute(InternshipRegistration $registration, string $requirementId, mixed $value): RequirementSubmission
     {
         return DB::transaction(function () use ($registration, $requirementId, $value) {
+            if ($value instanceof UploadedFile) {
+                $this->validateFile($value);
+            }
+
             /** @var RequirementSubmission $submission */
             $submission = RequirementSubmission::updateOrCreate(
                 [
@@ -39,6 +57,7 @@ class SubmitRequirementAction
 
             // Handle file upload via Spatie Media Library
             if ($value instanceof UploadedFile) {
+                $submission->clearMediaCollection('document');
                 $submission->addMedia($value)->toMediaCollection('document');
             }
 
@@ -58,5 +77,19 @@ class SubmitRequirementAction
 
             return $submission;
         });
+    }
+
+    /**
+     * Validate uploaded file type and size.
+     */
+    private function validateFile(UploadedFile $file): void
+    {
+        if (!in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
+            throw new RuntimeException('File type not allowed. Allowed: PDF, JPEG, PNG, DOC, DOCX.');
+        }
+
+        if ($file->getSize() > self::MAX_FILE_SIZE) {
+            throw new RuntimeException('File size exceeds maximum allowed (5MB).');
+        }
     }
 }

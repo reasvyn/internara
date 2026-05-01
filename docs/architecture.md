@@ -1,28 +1,31 @@
 # Architecture Design: Internara (Enhanced Action-Oriented MVC)
 
 ## 1. Introduction
-This document defines the architectural standards for the `internara` project following its transformation from a modular monolith to a modern Laravel MVC architecture. This design prioritizes the separation of **Business Rules (Stateful)** and **Application Logic (Stateless)** to achieve 3S quality standards (Secure, Sustain, Scalable).
 
-## 2. The 3S Doctrine Alignment
+This document defines the architectural standards for Internara. The design separates **Business Rules (Stateful)** from **Application Logic (Stateless)** to achieve three quality dimensions: Secure, Sustainable, and Scalable.
 
-### S1 - Secure (Security of Code, System, and Data)
-- **Input Validation**: Validation is performed at the outermost layer (Form Requests) before entering any business logic.
-- **Explicit Failure**: Custom Exceptions are used to handle business logic failures explicitly without leaking internal system details.
-- **Protected Rules**: Business rules are centralized within Eloquent Models, ensuring they cannot be bypassed by direct database access in Controllers.
-- **Authorization**: Policies enforce authorization at the HTTP layer with additional checks in Actions.
+The architecture is built to support extensibility — any institution or developer can adapt, extend, or integrate with the system without modifying core logic.
 
-### S2 - Sustain (Sustainability)
-- **Clarity & Project Language**: Action and Model naming follows business terminology (e.g., `ClockInAction` instead of `SaveAttendance`).
-- **Single Responsibility**: Each Action has a single `execute()` method representing one specific Use Case.
-- **Maintainability**: Removes the overhead of module management (`nwidart/laravel-modules`) to accelerate development and simplify onboarding.
-- **Bounded Complexity**: Optional layers (Repositories, Events) are used only when they provide measurable value.
+## 2. Quality Principles
 
-### S3 - Scalable (Enterprise Scalability)
-- **Stateless Actions**: Application logic is stateless, allowing for reusability across different entry points (Web, API, CLI).
-- **Domain-Driven Grouping**: `Actions/`, `Models/`, and optional `Repositories/` folders are grouped by business domain.
-- **Event-Driven Side Effects**: Decouples notifications, emails, and audit logging from core business logic.
+### Secure
+- **Input Validation**: Performed at the outermost layer (Form Requests) before entering any business logic
+- **Explicit Failure**: Custom Exceptions handle business logic failures without leaking internal details
+- **Protected Rules**: Business rules are centralized within Eloquent Models, preventing bypass via direct controller access
+- **Authorization**: Policies enforce access control at the HTTP layer with additional checks in Actions
 
-## 3. Enhanced Layered Architecture
+### Sustainable
+- **Business Language**: Actions and Models use domain terminology (e.g., `ClockInAction`, not `SaveAttendance`)
+- **Single Responsibility**: Each Action has one `execute()` method representing one use case
+- **Maintainability**: Flat layer structure (no module nesting) simplifies onboarding and code navigation
+- **Bounded Complexity**: Optional layers (Repositories, Events) are used only when they provide measurable value
+
+### Scalable
+- **Stateless Actions**: Application logic is reusable across web, API, and CLI entry points
+- **Domain-Driven Grouping**: Actions, Models, and supporting layers are organized by business domain
+- **Event-Driven Side Effects**: Notifications, emails, and audit logs are decoupled from core business logic
+
+## 3. Layer Structure
 
 ```
 app/
@@ -260,11 +263,52 @@ The system includes a centralized engine for managing institutional corresponden
 - **Generation**: `GenerateDocumentAction` uses `dompdf` via `GeneratePdfAction` to convert templates into formal PDFs.
 - **Storage**: All documents are attached via **Spatie Media Library** for consistent file handling and UUID protection.
 
-## 7. Legacy Modules (Reference Only)
+## 7. Extension Points
 
-> **Status**: The `modules/` directory contains legacy code from the pre-MVC modular monolith. These modules are **disabled from autoloading** and are retained solely as reference material during the ongoing MVC migration. Domain scaffolding for new features (Report, Handbook, Schedule, AcademicYear, AccountLifecycle, ActivityFeed, MentorEvaluation, TeacherDashboard) has been created in `app/` to support incremental migration. Report, Handbook, Schedule, and AcademicYear are now fully implemented.
+Internara is designed to be extended without modifying core logic. The following patterns enable safe customization:
 
-## 8. Anti-Patterns to Avoid
+### Adding a New Domain
+1. Create the domain folder: `app/Actions/{NewDomain}/`
+2. Create the Action: `app/Actions/{NewDomain}/XxxAction.php` with `execute()` method
+3. Create the Model: `app/Models/{NewDomain}.php` with `HasUuid` trait and business rules
+4. Create the migration: `database/migrations/YYYY_MM_DD_create_{table}.php`
+5. Create the Livewire component: `app/Livewire/Admin/{NewDomain}/XxxManager.php`
+6. Create the view: `resources/views/livewire/admin/{new-domain}/index.blade.php`
+7. Add routes in `routes/web.php` with role-based middleware
+
+### Adding a New Report Type
+1. Register the type in `ReportsManager::$reportTypes`
+2. Create or reuse an Action that gathers the report data
+3. The queued `GenerateReportJob` handles async generation and delivery automatically
+
+### Adding a New Language
+1. Create translation files in `lang/{locale}/` (e.g., `lang/ja/` for Japanese)
+2. Use existing translation keys as reference from `lang/en/` and `lang/id/`
+3. The language switcher automatically detects available locales from the `lang/` directory
+
+### Adding a Custom Theme
+1. Define a new `@plugin "daisyui/theme"` block in `resources/css/app.css`
+2. Set the theme name, color palette, and radius tokens
+3. Users can switch to the new theme via the theme switcher component
+
+### Adding an API Endpoint
+1. Create a Controller in `app/Http/Controllers/Api/`
+2. Create a FormRequest for input validation
+3. Call an existing Action (or create a new one) from the controller
+4. Add the route in `routes/api.php` with appropriate middleware
+5. The Action layer is API-agnostic — no changes needed to existing Actions
+
+### Hooking into Events
+1. Create an Event class: `app/Events/{Domain}Created.php`
+2. Create a Listener: `app/Listeners/Handle{Domain}Created.php`
+3. Register the Event → Listener mapping in `EventServiceProvider`
+4. Dispatch the event from the relevant Action after the business operation
+
+## 8. Legacy Modules (Reference Only)
+
+> **Status**: The `modules/` directory contains code from a previous modular monolith structure. These modules are **disabled from autoloading** and are retained as reference material. All active domain implementations live in `app/`. Report, Handbook, Schedule, and AcademicYear are fully implemented in the current architecture.
+
+## 9. Anti-Patterns to Avoid
 
 ### ❌ Don't Over-Engineer
 - Don't create Repositories for simple CRUD (use Eloquent directly)
@@ -281,16 +325,16 @@ The system includes a centralized engine for managing institutional corresponden
 - Prefer direct calls over abstractions when clarity is better
 - Document why you added a layer (see Decision Records)
 
-## 9. Documentation & Sync
-Every change to this architecture must be recorded in **Decision Records** according to the `AGENTS.md` standards. The code must always remain in sync with this documentation.
+## 10. Documentation & Sync
+Every significant architectural change should be documented so future contributors understand the reasoning behind decisions. The code must always remain in sync with this documentation.
 
-When adding lifecycle layers (Repositories, Events, etc.), create a Decision Record explaining:
+When adding lifecycle layers (Repositories, Events, etc.), document:
 - What problem the layer solves
 - Why simpler approaches weren't sufficient
-- Which 3S dimension it serves (usually S3 - Scalable)
+- Which quality dimension it serves
 
-## 9. Infrastructure Support
-The architecture is enforced by automated testing in `tests/Arch/`:
+## 11. Automated Verification
+The architecture is enforced by automated tests in `tests/Arch/`:
 
 ### Architectural Tests
 - `GlobalCodingStandardsTest.php` — Strict types, clean code
@@ -308,13 +352,11 @@ The architecture is enforced by automated testing in `tests/Arch/`:
 ### CI/CD Pipeline
 - GitHub Actions workflow: `.github/workflows/ci.yml`
 - Jobs: quality, architecture, tests, security
-- All jobs must pass before merging to `main`/`develop`
+- All jobs must pass before merging
 
 See `docs/infrastructure.md` for detailed CI/CD configuration and tooling setup.
 
-## 10. AI Quick Reference
-
-> For AI agents: Use this section to quickly locate where to implement changes.
+## 12. Developer Quick Reference
 
 | Change Type | Where to put it | Pattern |
 |-------------|----------------|---------|

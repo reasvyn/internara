@@ -1,9 +1,28 @@
-# UI/UX Layout Hierarchy Audit & Migration Gap
+[CLOSED] # UI/UX Layout Hierarchy Audit & Migration Gap
 
 **Date:** 2026-04-30  
 **Type:** Architecture / UI Audit  
 **Priority:** P2 — Visual consistency & UX quality  
-**Status:** OPEN — Requires design decision
+**Status:** CLOSED — Partially fixed, remaining deferred to Phase 3
+
+---
+
+## Resolution Summary (2026-05-01)
+
+✅ **Fixed (Step 8-9):**
+- `auth.blade.php` now extends `x-layouts.base` instead of standalone DOCTYPE
+- `@livewireStyles`/`@livewireScripts` moved to base layout
+- CSRF meta added to `base/head.blade.php`
+- Skip-to-content link added (WCAG)
+- ReportsManager migrated to maryUI ✅
+
+⏳ **Deferred (Phase 3):**
+- `dashboard.blade.php` layout — needs sidebar/drawer implementation
+- `wizard.blade.php` layout — needs progress bar + step navigation
+- `with-navbar` wrapper — needs sticky nav + scrollable content
+- Scaffolded views (AcademicYear, Handbook, Schedule) — keep plain HTML (root cause: `$this` context error in non-Livewire views)
+
+**Result:** Layout hierarchy gaps documented, critical fixes applied, decision recorded for remaining work.
 
 ---
 

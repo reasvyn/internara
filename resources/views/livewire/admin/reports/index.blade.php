@@ -11,20 +11,8 @@
                 <x-mary-input wire:model.live.debounce.300ms="search" placeholder="Search reports..." icon="o-magnifying-glass" clearable />
             </div>
             <div class="flex gap-2">
-                <x-mary-select
-                    wire:model.live="filters.report_type"
-                    :options="$this->reportTypes"
-                    placeholder="Filter by type"
-                    icon="o-document"
-                    clearable
-                />
-                <x-mary-select
-                    wire:model.live="filters.status"
-                    :options="$this->statusOptions"
-                    placeholder="Filter by status"
-                    icon="o-flag"
-                    clearable
-                />
+                <x-mary-select wire:model.live="filters.report_type" :options="$this->reportTypes" placeholder="Filter by type" icon="o-document" clearable />
+                <x-mary-select wire:model.live="filters.status" :options="$this->statusOptions" placeholder="Filter by status" icon="o-flag" clearable />
             </div>
         </div>
 
@@ -64,7 +52,7 @@
             @scope('actions', $report)
                 <div class="flex justify-end gap-1">
                     @if ($report->isCompleted())
-                        <x-mary-button icon="o-arrow-down-tray" class="btn-ghost btn-sm text-success" />
+                        <x-mary-button icon="o-arrow-down-tray" class="btn-ghost btn-sm text-success" link="{{ route('admin.reports.download', $report) }}" />
                     @endif
                 </div>
             @endscope
@@ -74,12 +62,7 @@
     {{-- Generate Report Modal --}}
     <x-mary-modal wire:model="generateModal" title="Generate New Report" separator>
         <div class="space-y-6">
-            <x-mary-select
-                label="Report Type"
-                wire:model="reportData.report_type"
-                :options="$this->reportTypes"
-                placeholder="Select report type"
-            />
+            <x-mary-select label="Report Type" wire:model="reportData.report_type" :options="$this->reportTypes" placeholder="Select report type" />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <x-mary-input label="Date From" type="date" wire:model="reportData.date_from" />

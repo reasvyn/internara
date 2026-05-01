@@ -1,124 +1,152 @@
-# Internara: Modern Internship Management System
+# Internara: Internship Management System
 
 [![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHP Version](https://img.shields.io/badge/PHP-8.4.x-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-Internara is a cutting-edge Internship Management System built with a focus on developer velocity, architectural integrity, and system observability. It is designed to streamline the relationship between **Schools**, **Students**, **Teachers**, and **Companies (Mentors)**.
+Internara is a self-hosted internship management system built for schools, vocational programs, and educational institutions. It manages the full internship lifecycle — from student registration and company placements to daily attendance, supervision visits, assessments, and final reporting.
 
-## 🚀 The "MARY" Stack
-Internara leverages a modern "No-JS" (Livewire-heavy) tech stack:
-- **UI Components**: [Mary UI](https://mary-ui.com/)
-- **Frontend Engine**: [Laravel Livewire 3](https://livewire.laravel.com/)
-- **CSS Framework**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **UI Library**: [DaisyUI 5](https://daisyui.com/)
+## What It Does
 
-## 🏛️ Architecture: Action-Oriented MVC
-The project follows a strict **Action-Oriented Architecture** that separates stateless application logic from stateful business rules:
-- **Stateless Actions**: Encapsulate single use-cases (e.g., `ClockInAction`, `LoginAction`).
-- **Rich Models**: Centralize business rules and data integrity (e.g., `isWithinRadius()`, `canBeApproved()`).
-- **UUID Primary Keys**: Global standardization on UUIDs for all database entities.
-- **Audited by Design**: Every critical action is automatically recorded in the system audit trail.
+- **For Schools** — Manage departments, academic years, internship programs, company partnerships, and student placements
+- **For Students** — Register for internships, log daily attendance and journals, submit assignments, and track competency progress
+- **For Teachers** — Create assignments, grade submissions, manage assessments, and monitor student competencies
+- **For Mentors** — Log supervision visits, evaluate interns, and track assigned students
 
----
-
-## 📚 Documentation Index
-Explore the detailed documentation in the `docs/` directory:
-
-| Document | Description |
-| :--- | :--- |
-| [**Architecture**](docs/architecture.md) | Deep dive into layers, Actions, and Rich Models. |
-| [**Infrastructure**](docs/infrastructure.md) | Technical stack, dependencies, CI/CD, and quality tooling. |
-| [**Database**](docs/database.md) | Migrations, models, factories, and database standards. |
-| [**Cache**](docs/cache.md) | Cache drivers, configuration, and usage patterns. |
-| [**Session**](docs/session.md) | Session management, drivers, and security settings. |
-| [**Filesystem**](docs/filesystem.md) | File storage, disks, and Spatie Media Library. |
-| [**Notifications**](docs/notification.md) | In-app notifications, email alerts, and real-time updates. |
-| [**Configuration**](docs/configuration.md) | Config vs Settings boundaries, AppInfo SSoT, and usage. |
-| [**Installation**](docs/installation.md) | CLI and web wizard setup, lock file gate, security. |
-| [**Engineering Standards**](docs/standards.md) | The 3S Doctrine (Secure, Sustain, Scalable) and coding conventions. |
-| [**Access Control (RBAC)**](docs/rbac.md) | User roles, permissions, and account lifecycle management. |
-| [**System Audits**](docs/audits.md) | Forensic logging and the `LogAuditAction` system. |
-| [**Logging & Monitoring**](docs/logging.md) | Standard logs and real-time observability with Laravel Pulse. |
-| [**Testing Strategy**](docs/testing.md) | Architectural, Quality, Feature, and Unit testing guidelines. |
-| [**Known Issues**](docs/known-issues.md) | Active problems, technical debt, and blockers with resolution paths. |
-
----
-
-## 🤖 AI Agent Access
-
-If you are an AI agent reading this document, **your primary workspace is `.agents/`**. Before performing any work:
-
-1. **Read `.agents/README.md`** — workspace governance, agent roles (Supervisor/Engineer), and operating protocols.
-2. **Check `.agents/KEY_FEATURES_CHECKLIST.md`** — Single Source of Truth for feature evolution tracking.
-3. **Read `AGENTS.md`** — the 3S Doctrine, engineering workflows, and behavioral constraints that govern all your actions.
-4. **Identify your role** — Supervisor (audit/review) or Engineer (implementation). Stay in scope.
-5. **Use `.agents/plans/`** for proposals requiring human approval before implementation.
-6. **Use `.agents/todo/`** for step-by-step execution of approved plans.
-7. **Use `.agents/issues/`** for audit reports, bug findings, and technical notes.
-
-**Rule**: Do not proceed with any engineering task without first consulting the `.agents/` workspace and the documents listed above.
-
-## 🛡️ Quality Assurance
-
-### Automated Checks
-- **Architectural tests** enforcing layer separation and coding standards
-- **Quality tests** checking stability, performance, and security
-- **Feature & Unit tests** for functional correctness
-- **Minimum 80% code coverage** requirement
-
-### CI/CD Pipeline
-All commits to `main`/`develop` branches must pass:
-- ✅ Code style (Pint + Prettier)
-- ✅ Static analysis (PHPStan level 8)
-- ✅ Architectural integrity (Pest Arch)
-- ✅ Security scan (Trivy)
-- ✅ Test coverage ≥80%
-
----
-
-## 🛠️ Getting Started
+## Quick Start
 
 ### Prerequisites
 - PHP 8.4+
-- Node.js & NPM/PNPM
-- SQLite (or preferred SQL database)
+- Node.js & PNPM (or npm)
+- SQLite, MySQL, or PostgreSQL
 
-### Installation
-1. Clone the repository.
-2. Install PHP dependencies:
-   ```bash
-   composer install
-   ```
-3. Install JS dependencies:
-   ```bash
-   pnpm install
-   ```
-4. Setup environment:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-5. Run migrations & seed:
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
-6. Start the development server:
-   ```bash
-   php artisan serve
-   pnpm dev
-   ```
+### Install & Run
+```bash
+# 1. Clone and install dependencies
+git clone https://github.com/reasvyn/internara.git
+cd internara
+composer install
+pnpm install
 
-## 📊 Observability
-Internara includes built-in real-time monitoring via **Laravel Pulse**.
-Access the dashboard at: `http://localhost:8000/pulse`
+# 2. Configure environment
+cp .env.example .env
+php artisan key:generate
 
----
+# 3. Initialize database and start
+php artisan setup:install
+php artisan serve & pnpm dev
+```
 
-## 👤 Author Credits
-- **Name**: Reas Vyn
-- **Email**: reasvyn@gmail.com
-- **GitHub**: [github.com/reasvyn](https://github.com/reasvyn)
+The setup wizard will guide you through school configuration, admin account creation, and first internship setup. After installation, access the application at `http://localhost:8000`.
 
-## 📄 License
-This project is open-sourced software licensed under the [MIT license](LICENSE).
+## Features
+
+### Core
+- Role-based access control (SuperAdmin, Admin, Student, Teacher, Mentor)
+- School, department, and academic year management
+- Company partnerships and internship program configuration
+- Student registration and placement (self-service or bulk admin assignment)
+- Multi-language support (Indonesian & English, extensible to additional locales)
+- Light and dark theme with system preference detection
+
+### Daily Operations
+- Clock in/out attendance with late threshold configuration
+- Student journal entries with teacher/mentor verification
+- Absence request workflow with approval chain
+- Assignment creation, submission, and grading
+- Competency tracking and skill progress monitoring
+
+### Supervision & Assessment
+- Mentor supervision visit logging
+- Teacher assessment and grading with rubric support
+- Internship evaluation and feedback
+- Official document generation (certificates, reports, correspondence)
+
+### Administration
+- Async report generation with queued background jobs
+- System health monitoring via Laravel Pulse
+- Activity audit trail for all critical operations
+- Database-backed settings — no code changes needed for configuration updates
+- White-label branding (logo, favicon, color scheme configurable from admin panel)
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | Laravel 12, PHP 8.4 |
+| UI Components | maryUI (Blade), DaisyUI 5 |
+| Interactivity | Livewire 3 (server-state), Alpine.js (instant client-side) |
+| Styling | TailwindCSS 4, OKLCH color system |
+| Database | SQLite / MySQL / PostgreSQL (UUID primary keys) |
+| File Storage | Local or S3 (Spatie MediaLibrary) |
+| Queue | Database (Redis-ready) |
+| Monitoring | Laravel Pulse |
+
+## Architecture Overview
+
+Internara uses an **Action-Oriented MVC** pattern that separates business rules from application workflows:
+
+```
+HTTP Request → Form Request (validation)
+             → Livewire/Controller (thin, delegates)
+             → Action (stateless use case)
+             → Model (business rules, UUID, relationships)
+             → Response/View
+```
+
+- **Stateless Actions** — Each use case is a single `execute()` method, reusable across web, API, and CLI entry points
+- **Rich Models** — Business rules live on the model (`canBeApproved()`, `isWithinRadius()`, etc.)
+- **UUID Primary Keys** — All entities use UUIDs for global uniqueness and security
+- **Event-Driven Side Effects** — Notifications, emails, and audit logs decoupled from core logic
+
+See [Architecture](docs/architecture.md) for the full design documentation.
+
+## Customization & Extension
+
+Internara is designed to be adapted to any institution's needs:
+
+- **Branding** — Change logo, favicon, colors, and site name from the admin settings panel — no code changes required
+- **Languages** — Add new locales by creating translation files in `lang/` — the system automatically detects available languages
+- **Settings** — All business rules (attendance thresholds, feature flags, academic year dates) are stored in the database and configurable from the UI
+- **Themes** — Light/dark themes are built in; the DaisyUI token system in `resources/css/app.css` makes custom themes straightforward
+- **Reports** — Document templates use Blade, making it easy to add custom report types
+- **API** — The Action layer is API-ready — any Action can be called from a controller endpoint without modification
+
+See [Configuration](docs/configuration.md) and [UI/UX](docs/ui-ux.md) for detailed customization guides.
+
+## Documentation
+
+| Document | For | Description |
+|----------|-----|-------------|
+| [Installation](docs/installation.md) | Everyone | CLI setup, web wizard, post-installation state |
+| [Architecture](docs/architecture.md) | Developers | Layers, Actions, Models, extension points |
+| [Configuration](docs/configuration.md) | Developers, Admins | Three-tier config system, settings, branding |
+| [UI/UX](docs/ui-ux.md) | Developers, Designers | Theming, layouts, component patterns, interactions |
+| [Database](docs/database.md) | Developers | Schema, migrations, models, factories |
+| [RBAC](docs/rbac.md) | Developers, Admins | Roles, permissions, user lifecycle |
+| [Testing Strategy](docs/testing.md) | Developers | Test types, coverage, running tests |
+| [Engineering Standards](docs/standards.md) | Developers | 3S Doctrine, coding conventions, layer rules |
+| [Filesystem](docs/filesystem.md) | Developers | Storage, Spatie MediaLibrary, S3 setup |
+| [Notifications](docs/notification.md) | Developers | In-app notifications, email alerts |
+| [Cache](docs/cache.md) | Developers | Cache drivers, invalidation patterns |
+| [Session](docs/session.md) | Developers | Session management, security |
+| [Logging & Monitoring](docs/logging.md) | Admins, Developers | Laravel Pulse, system observability |
+| [System Audits](docs/audits.md) | Developers | Audit trail, forensic logging |
+| [Known Issues](docs/known-issues.md) | Everyone | Active problems and resolution paths |
+
+## Contributing
+
+Contributions are welcome. Before submitting a pull request:
+
+1. Read the [Engineering Standards](docs/standards.md) for coding conventions and architecture rules
+2. Ensure all tests pass: `./vendor/bin/pest`
+3. Run the CI/CD checks locally: code style (Pint), static analysis (PHPStan), architectural tests
+4. Document any new features or changes to existing behavior in the relevant `docs/` file
+
+## Author
+
+- **Reas Vyn** — [github.com/reasvyn](https://github.com/reasvyn)
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.

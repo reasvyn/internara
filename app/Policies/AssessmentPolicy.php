@@ -6,44 +6,53 @@ namespace App\Policies;
 
 use App\Models\Assessment;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- * Policy for Assessment model.
- *
- * S1 - Secure: Only evaluators can create/update assessments.
+ * S1 - Secure: Only teachers can create/update assessments. Students can only view their own.
  */
 class AssessmentPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(User $user): bool
     {
-        return $user->can('manage-assessments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
     public function view(User $user, Assessment $assessment): bool
     {
-        return $user->id === $assessment->evaluator_id || $user->can('manage-assessments');
+        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+            return true;
+        }
+
+        if ($assessment->evaluator_id === $user->id) {
+            return true;
+        }
+
+        $registration = $assessment->registration;
+
+        return $registration && $registration->student_id === $user->id;
     }
 
     public function create(User $user): bool
     {
-        return $user->can('manage-assessments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
     public function update(User $user, Assessment $assessment): bool
     {
-        return $user->id === $assessment->evaluator_id && ! $assessment->isFinalized();
-    }
+        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+            return true;
+        }
 
-    public function delete(User $user, Assessment $assessment): bool
-    {
-        return $user->can('manage-assessments') && ! $assessment->isFinalized();
+        return $assessment->evaluator_id === $user->id && !$assessment->isFinalized();
     }
 
     public function finalize(User $user, Assessment $assessment): bool
     {
-        return $user->id === $assessment->evaluator_id;
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+    }
+
+    public function delete(User $user, Assessment $assessment): bool
+    {
+        return $user->hasAnyRole(['super_admin', 'admin']) && !$assessment->isFinalized();
     }
 }
