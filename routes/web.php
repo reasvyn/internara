@@ -134,6 +134,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])
     Route::get('/dashboard', StudentDashboard::class)->name('dashboard');
     Route::get('/journals', JournalManager::class)->name('journals');
     Route::get('/supervision', SupervisionManager::class)->name('supervision');
+    Route::get('/internships/register', \App\Livewire\Internship\RegistrationWizard::class)->name('internships.register');
 });
 
 /*

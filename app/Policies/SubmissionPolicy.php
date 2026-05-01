@@ -6,26 +6,30 @@ namespace App\Policies;
 
 use App\Models\Submission;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- * Policy for Submission model.
- *
- * S1 - Secure: Students can only submit/view their own submissions.
- * Supervisors/Admin can verify.
+ * S1 - Secure: Students can only view/submit their own submissions.
  */
 class SubmissionPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(User $user): bool
     {
-        return true; // Students can view their own
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
     public function view(User $user, Submission $submission): bool
     {
-        return $user->id === $submission->student_id || $user->can('verify-submissions');
+        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+            return true;
+        }
+
+        $assignment = $submission->assignment;
+
+        if ($user->hasRole('teacher') && $assignment && $assignment->created_by === $user->id) {
+            return true;
+        }
+
+        return $submission->student_id === $user->id;
     }
 
     public function create(User $user): bool
@@ -35,17 +39,17 @@ class SubmissionPolicy
 
     public function update(User $user, Submission $submission): bool
     {
-        // Students can edit their own draft submissions
-        return $user->id === $submission->student_id && $submission->canBeEdited();
-    }
-
-    public function delete(User $user, Submission $submission): bool
-    {
-        return $user->id === $submission->student_id && $submission->canBeEdited();
+        return $submission->student_id === $user->id
+            && $submission->status?->value === 'submitted';
     }
 
     public function verify(User $user, Submission $submission): bool
     {
-        return $user->can('verify-submissions');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+    }
+
+    public function delete(User $user, Submission $submission): bool
+    {
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 }

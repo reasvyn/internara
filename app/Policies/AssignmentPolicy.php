@@ -6,44 +6,39 @@ namespace App\Policies;
 
 use App\Models\Assignment;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
- * Policy for Assignment model.
- *
- * S1 - Secure: Authorization checks for CRUD operations.
+ * S1 - Secure: Only teachers can create/publish assignments.
  */
 class AssignmentPolicy
 {
-    use HandlesAuthorization;
-
     public function viewAny(User $user): bool
     {
-        return $user->can('manage-assignments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'mentor', 'student']);
     }
 
     public function view(User $user, Assignment $assignment): bool
     {
-        return $user->can('manage-assignments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'mentor', 'student']);
     }
 
     public function create(User $user): bool
     {
-        return $user->can('manage-assignments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
     public function update(User $user, Assignment $assignment): bool
     {
-        return $user->can('manage-assignments');
-    }
-
-    public function delete(User $user, Assignment $assignment): bool
-    {
-        return $user->can('manage-assignments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
     public function publish(User $user, Assignment $assignment): bool
     {
-        return $user->can('manage-assignments');
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+    }
+
+    public function delete(User $user, Assignment $assignment): bool
+    {
+        return $user->hasAnyRole(['super_admin', 'admin']) && !$assignment->submissions()->exists();
     }
 }

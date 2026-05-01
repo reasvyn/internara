@@ -13,14 +13,14 @@ use App\Models\User;
  */
 class InternshipPlacementPolicy
 {
-    public function viewAny(?User $user): bool
+    public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'mentor', 'student']);
     }
 
-    public function view(?User $user, InternshipPlacement $placement): bool
+    public function view(User $user, InternshipPlacement $placement): bool
     {
-        return true;
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'mentor', 'student']);
     }
 
     public function create(User $user): bool

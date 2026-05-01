@@ -5,23 +5,32 @@ declare(strict_types=1);
 namespace App\Actions\Assessment;
 
 use App\Models\Assessment;
+use App\Models\User;
+use InvalidArgumentException;
 
 /**
  * Stateless Action to update an assessment.
  *
- * S1 - Secure: Only evaluator can update before finalization.
+ * S1 - Secure: Only evaluator or admin can update before finalization.
  * S2 - Sustain: Single-purpose action.
  */
 class UpdateAssessmentAction
 {
     public function execute(
+        User $user,
         Assessment $assessment,
         ?array $content = null,
         ?float $score = null,
         ?string $feedback = null,
     ): Assessment {
         if ($assessment->isFinalized()) {
-            throw new \InvalidArgumentException('Cannot update finalized assessment.');
+            throw new InvalidArgumentException('Cannot update finalized assessment.');
+        }
+
+        if (!$user->hasAnyRole(['super_admin', 'admin'])) {
+            if ($assessment->evaluator_id !== $user->id) {
+                throw new InvalidArgumentException('Not authorized to update this assessment.');
+            }
         }
 
         $assessment->update(array_filter([

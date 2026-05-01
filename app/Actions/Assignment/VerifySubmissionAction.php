@@ -6,6 +6,8 @@ namespace App\Actions\Assignment;
 
 use App\Enums\SubmissionStatus;
 use App\Models\Submission;
+use App\Models\User;
+use InvalidArgumentException;
 
 /**
  * Stateless Action to verify a submission.
@@ -17,14 +19,19 @@ class VerifySubmissionAction
 {
     public function execute(
         Submission $submission,
-        SubmissionStatus|string $status, // 'verified' or 'revision_required'
+        User $verifier,
+        SubmissionStatus|string $status,
         ?string $feedback = null,
     ): Submission {
         $statusValue = is_string($status) ? $status : $status->value;
         $validStatuses = [SubmissionStatus::VERIFIED->value, SubmissionStatus::REVISION_REQUIRED->value];
 
         if (!in_array($statusValue, $validStatuses)) {
-            throw new \InvalidArgumentException('Invalid verification status.');
+            throw new InvalidArgumentException('Invalid verification status.');
+        }
+
+        if (!$verifier->hasAnyRole(['super_admin', 'admin', 'teacher'])) {
+            throw new InvalidArgumentException('Not authorized to verify submissions.');
         }
 
         $submission->update([
@@ -32,6 +39,7 @@ class VerifySubmissionAction
             'metadata' => array_merge($submission->metadata ?? [], [
                 'feedback' => $feedback,
                 'verified_at' => now()->toIso8601String(),
+                'verified_by' => $verifier->name,
             ]),
         ]);
 

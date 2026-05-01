@@ -9,6 +9,7 @@ use App\Models\JournalEntry;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class SubmitJournalEntryAction
 {
@@ -17,17 +18,28 @@ class SubmitJournalEntryAction
     public function execute(User $user, array $data): JournalEntry
     {
         return DB::transaction(function () use ($user, $data) {
-            $date = $data['date'] ?? Carbon::now()->toDateString();
-            
+            $date = Carbon::now()->toDateString();
+
             // Find active registration (using Spatie HasStatuses)
             $registration = $user->registrations()
                 ->get()
                 ->first(fn ($reg) => $reg->hasStatus('active'));
 
             if (!$registration) {
-                throw new \Exception('No active internship registration found.');
+                throw new RuntimeException('No active internship registration found.');
             }
 
+            // Check if a submitted journal already exists for today
+            $existing = JournalEntry::where('user_id', $user->id)
+                ->whereDate('date', $date)
+                ->where('status', 'submitted')
+                ->first();
+
+            if ($existing) {
+                throw new RuntimeException('Journal entry for today has already been submitted.');
+            }
+
+            // Update existing draft or create new
             $journal = JournalEntry::updateOrCreate(
                 [
                     'user_id' => $user->id,

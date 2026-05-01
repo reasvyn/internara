@@ -28,6 +28,7 @@ class Submission extends Model implements HasMedia
         'student_id',
         'content',
         'metadata',
+        'status',
         'submitted_at',
     ];
 

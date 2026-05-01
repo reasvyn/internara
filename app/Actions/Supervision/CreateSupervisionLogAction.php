@@ -6,22 +6,34 @@ namespace App\Actions\Supervision;
 
 use App\Actions\Audit\LogAuditAction;
 use App\Models\SupervisionLog;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class CreateSupervisionLogAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    public function execute(array|User $user, array $data = []): SupervisionLog
+    public function execute(User $teacher, array $data): SupervisionLog
     {
-        // Support both old and new calling conventions
-        if ($user instanceof User) {
-            $data['teacher_id'] = $user->id;
-            $user = $data;
-        }
+        return DB::transaction(function () use ($teacher, $data) {
+            if (!isset($data['registration_id'])) {
+                throw new RuntimeException('Registration ID is required.');
+            }
 
-        return DB::transaction(function () use ($user) {
-            $log = SupervisionLog::create($user);
+            if (!isset($data['type'])) {
+                throw new RuntimeException('Supervision type is required.');
+            }
+
+            $log = SupervisionLog::create([
+                'registration_id' => $data['registration_id'],
+                'supervisor_id' => $teacher->id,
+                'type' => $data['type'],
+                'date' => $data['date'] ?? now()->toDateString(),
+                'topic' => $data['topic'] ?? null,
+                'notes' => $data['notes'] ?? null,
+                'status' => 'in_progress',
+            ]);
 
             $this->logAudit->execute(
                 action: 'supervision_log_created',

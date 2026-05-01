@@ -8,12 +8,15 @@ use App\Enums\AssignmentStatus;
 use App\Enums\SubmissionStatus;
 use App\Models\Assignment;
 use App\Models\Submission;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Stateless Action to submit an assignment.
  *
- * S1 - Secure: Validates submission eligibility.
+ * S1 - Secure: Validates submission eligibility, prevents duplicate submissions.
  * S2 - Sustain: Creates submission with media support.
  */
 class SubmitAssignmentAction
@@ -23,17 +26,27 @@ class SubmitAssignmentAction
         string $registrationId,
         string $studentId,
         ?string $content = null,
-        ?string $mediaPath = null,
+        ?UploadedFile $file = null,
     ): Submission {
         if ($assignment->status !== AssignmentStatus::PUBLISHED) {
-            throw new \InvalidArgumentException('Cannot submit to unpublished assignment.');
+            throw new InvalidArgumentException('Cannot submit to unpublished assignment.');
         }
 
         if ($assignment->isOverdue()) {
-            throw new \InvalidArgumentException('Assignment is overdue.');
+            throw new InvalidArgumentException('Assignment is overdue.');
         }
 
-        return DB::transaction(function () use ($assignment, $registrationId, $studentId, $content, $mediaPath) {
+        // Prevent duplicate submissions
+        $existing = Submission::where('assignment_id', $assignment->id)
+            ->where('student_id', $studentId)
+            ->where('registration_id', $registrationId)
+            ->exists();
+
+        if ($existing) {
+            throw new RuntimeException('You have already submitted this assignment.');
+        }
+
+        return DB::transaction(function () use ($assignment, $registrationId, $studentId, $content, $file) {
             $submission = Submission::create([
                 'assignment_id' => $assignment->id,
                 'registration_id' => $registrationId,
@@ -43,9 +56,8 @@ class SubmitAssignmentAction
                 'status' => SubmissionStatus::SUBMITTED,
             ]);
 
-            if ($mediaPath) {
-                $submission->addMedia($mediaPath)
-                    ->toMediaCollection('file');
+            if ($file instanceof UploadedFile) {
+                $submission->addMedia($file)->toMediaCollection('file');
             }
 
             return $submission;
