@@ -164,9 +164,15 @@ app/
 
 - **Location**: `app/Services/`
 - **Current**: `SetupService` (installation wizard orchestration, token management, lock file
-  guard), `EnvAuditor` (pre-flight system checks).
+  guard), `OnboardingService` (post-installation user guidance), `EnvAuditor` (pre-flight system
+  checks using `SetupRequirementRegistry`).
 - **Purpose**: Handle technical/infrastructure concerns.
 - **Constraint**: Services should not contain business rules (those belong in Models).
+
+### H. Event Layer (System Events)
+
+- **SetupFinalized**: Triggered when the installation is complete, allowing for cross-module
+  initialization.
 
 ## 4. Implementation Guidelines
 
