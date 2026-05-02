@@ -42,7 +42,7 @@ class SetupService
      * Setup steps in order.
      * Follows professional naming: snake_case, semantic clarity.
      */
-    public const STEPS = ['welcome', 'school', 'account', 'department', 'internship', 'finalize'];
+    public const STEPS = ['welcome', 'school', 'account', 'department', 'internship', 'finalize', 'complete'];
 
     /**
      * Check if the application is already installed.
@@ -250,7 +250,7 @@ class SetupService
     /**
      * Finalize the installation: create lock file, clear session state.
      */
-    public function finalize(): void
+    public function finalize(bool $clearSession = true): void
     {
         $lockContent = (string) json_encode(
             [
@@ -267,7 +267,12 @@ class SetupService
             File::delete(storage_path(self::CLI_TOKEN_FILE));
         }
 
-        $this->clearSession();
+        if ($clearSession) {
+            $this->clearSession();
+        } else {
+            // S1: Set a short-lived finalization timestamp for Step 7 access
+            Session::put(self::SESSION_PREFIX . 'finalized_at', now()->toIso8601String());
+        }
     }
 
     /**
@@ -330,8 +335,23 @@ class SetupService
     }
 
     /**
+     * Check if the short window for viewing the setup summary is still active.
+     * S1: Limits access to 5 minutes after finalization.
+     */
+    public function isFinalizationWindowActive(): bool
+    {
+        $finalizedAt = Session::get(self::SESSION_PREFIX . 'finalized_at');
+
+        if ($finalizedAt === null) {
+            return false;
+        }
+
+        return now()->diffInMinutes(Carbon::parse($finalizedAt)) < 5;
+    }
+
+    /**
      * Get the lock file content (if installed).
-     *
+     */
      * @return array<string, mixed>|null
      */
     public function getLockData(): ?array

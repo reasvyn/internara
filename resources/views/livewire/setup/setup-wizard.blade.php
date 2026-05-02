@@ -285,11 +285,31 @@
                         <x-mary-icon name="o-check-badge" class="size-12" />
                     </div>
                     <h2 class="text-4xl font-black tracking-tighter mb-4">{{ __('setup.wizard.setup_complete') }}</h2>
-                    <p class="text-base-content/60 mb-10 max-w-md mx-auto leading-relaxed font-medium">
+                    <p class="text-base-content/60 mb-8 max-w-md mx-auto leading-relaxed font-medium">
                         {{ __('setup.wizard.ready_desc') }}
                     </p>
+
+                    {{-- Admin Credentials Summary --}}
+                    <div class="max-w-sm mx-auto bg-base-200/50 rounded-3xl p-6 mb-10 border border-success/20">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-success mb-4">{{ __('setup.wizard.admin_credentials') }}</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-base-content/50">{{ __('setup.wizard.username') }}</span>
+                                <span class="font-black text-primary">{{ $adminUsername }}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-base-content/50">{{ __('setup.wizard.email') }}</span>
+                                <span class="font-black">{{ $adminEmail }}</span>
+                            </div>
+                            <div class="divider my-1 opacity-10"></div>
+                            <p class="text-[10px] text-base-content/40 leading-tight">
+                                {{ __('setup.wizard.login_notice') }}
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="flex justify-center">
-                        <x-mary-button label="{{ __('setup.wizard.go_to_login') }}" icon-right="o-arrow-right" class="btn-success btn-wide rounded-2xl font-black uppercase tracking-widest" link="{{ route('login') }}" />
+                        <x-mary-button label="{{ __('setup.wizard.go_to_login') }}" icon-right="o-arrow-right" class="btn-success btn-wide rounded-2xl font-black uppercase tracking-widest text-white" wire:click="finishSession" />
                     </div>
                 </div>
             @endif

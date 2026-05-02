@@ -282,7 +282,7 @@ class SetupWizard extends Component
             ]);
 
             // 5. Create Setup audit record
-            Setup::create([
+            $setupRecord = Setup::create([
                 'version' => AppInfo::version(),
                 'is_installed' => true,
                 'admin_id' => $admin->id,
@@ -294,10 +294,13 @@ class SetupWizard extends Component
 
             // 6. Persist setup_completed setting
             app(SetSettingAction::class)->execute('setup_completed', 'true', 'boolean', 'system');
+
+            // 7. Dispatch Finalized Event
+            event(new \App\Events\Setup\SetupFinalized($setupRecord));
         });
 
-        // 7. Create lock file and clear session
-        app(SetupService::class)->finalize();
+        // 8. Create lock file and clear session (S1: don't clear immediately to allow Step 7 access)
+        app(SetupService::class)->finalize(clearSession: false);
 
         $this->currentStep = 7;
 
@@ -337,6 +340,16 @@ class SetupWizard extends Component
             $this->currentStep = $stepNumber;
             app(SetupService::class)->setCurrentStep($this->currentStep);
         }
+    }
+
+    /**
+     * Clear the setup session and redirect to login.
+     * S1: Final security cleanup when leaving the wizard.
+     */
+    public function finishSession(): void
+    {
+        app(SetupService::class)->clearSession();
+        $this->redirectRoute('login');
     }
 
     public function render()

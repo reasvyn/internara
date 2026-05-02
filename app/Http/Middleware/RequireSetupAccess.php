@@ -25,10 +25,15 @@ class RequireSetupAccess
         $isInstalled = $this->setupService->isInstalled();
         $isSetupRoute = $request->is('setup*');
 
-        // Jika sudah terinstal, larang akses ke rute setup
+        // Jika sudah terinstal, larang akses ke rute setup (kecuali sedang di jendela waktu sukses/akhir)
         if ($isInstalled) {
             if ($isSetupRoute) {
-                return redirect()->route('login')->with('info', __('setup.already_installed'));
+                $isStep7 = $this->setupService->getCurrentStep() === 7;
+                $isWindowActive = $this->setupService->isFinalizationWindowActive();
+
+                if (!$isStep7 || !$isWindowActive) {
+                    return redirect()->route('login')->with('info', __('setup.already_installed'));
+                }
             }
 
             return $next($request);
