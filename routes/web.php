@@ -2,29 +2,33 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\AccountLifecycleController;
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\AccountLifecycleController;
 use App\Http\Controllers\HandbookController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TeacherController;
+use App\Livewire\Admin\AdminDashboard;
 use App\Livewire\Admin\Company\CompanyIndex;
 use App\Livewire\Admin\Department\DepartmentIndex;
 use App\Livewire\Admin\Internship\DirectPlacementManager;
 use App\Livewire\Admin\Internship\InternshipIndex;
 use App\Livewire\Admin\Internship\PlacementIndex;
+use App\Livewire\Admin\Report\ReportsManager;
 use App\Livewire\Admin\School\SchoolProfile;
 use App\Livewire\Admin\SystemSetting;
-use App\Livewire\Admin\Report\ReportsManager;
 use App\Livewire\Admin\User\AdminManager;
+use App\Livewire\Admin\User\MentorManager;
 use App\Livewire\Admin\User\StudentManager;
 use App\Livewire\Admin\User\TeacherManager;
-use App\Livewire\Admin\User\MentorManager;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Common\NotificationCenter;
 use App\Livewire\Dashboard\StudentDashboard;
+use App\Livewire\Internship\RegistrationWizard;
+use App\Livewire\Profile\ProfileEditor;
 use App\Livewire\Setup\SetupWizard;
 use App\Livewire\Student\JournalManager;
 use App\Livewire\Supervision\MonitoringVisitIndex;
@@ -38,18 +42,23 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
-    Route::get('/login', Login::class)->name('login');
-    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
-    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+    Route::livewire('/login', Login::class)->name('login');
+    Route::livewire('/forgot-password', ForgotPassword::class)->name('password.request');
+    Route::livewire('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
-Route::post('/logout', function () {
-    auth()->logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
+Route::middleware('auth')->group(function () {
+    Route::livewire('/profile', ProfileEditor::class)->name('profile');
+    Route::livewire('/notifications', NotificationCenter::class)->name('notifications');
 
-    return redirect()->route('login');
-})->middleware('auth')->name('logout');
+    Route::post('/logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login');
+    })->name('logout');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +68,7 @@ Route::post('/logout', function () {
 Route::redirect('/', '/login');
 
 Route::middleware('setup.protected')->group(function () {
-    Route::get('/setup', SetupWizard::class)->name('setup');
+    Route::livewire('/setup', SetupWizard::class)->name('setup');
 });
 
 /*
@@ -68,25 +77,26 @@ Route::middleware('setup.protected')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:super_admin|admin'])->group(function () {
-    Route::get('/school', SchoolProfile::class)->name('school');
-    Route::get('/departments', DepartmentIndex::class)->name('departments');
-    Route::get('/companies', CompanyIndex::class)->name('companies');
-    Route::get('/internships', InternshipIndex::class)->name('internships');
-    Route::get('/internships/placements', PlacementIndex::class)->name('internships.placements');
-    Route::get('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
-    Route::get('/settings', SystemSetting::class)->name('settings');
+    Route::livewire('/dashboard', AdminDashboard::class)->name('dashboard');
+    Route::livewire('/school', SchoolProfile::class)->name('school');
+    Route::livewire('/departments', DepartmentIndex::class)->name('departments');
+    Route::livewire('/companies', CompanyIndex::class)->name('companies');
+    Route::livewire('/internships', InternshipIndex::class)->name('internships');
+    Route::livewire('/internships/placements', PlacementIndex::class)->name('internships.placements');
+    Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
+    Route::livewire('/settings', SystemSetting::class)->name('settings');
 
     // User Management Routes
     Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/admins', AdminManager::class)->name('admins');
-        Route::get('/students', StudentManager::class)->name('students');
-        Route::get('/teachers', TeacherManager::class)->name('teachers');
-        Route::get('/mentors', MentorManager::class)->name('mentors');
+        Route::livewire('/admins', AdminManager::class)->name('admins');
+        Route::livewire('/students', StudentManager::class)->name('students');
+        Route::livewire('/teachers', TeacherManager::class)->name('teachers');
+        Route::livewire('/mentors', MentorManager::class)->name('mentors');
     });
 
     // Report Management Routes
     Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/', ReportsManager::class)->name('index');
+        Route::livewire('/', ReportsManager::class)->name('index');
         Route::get('/{report}/download', [ReportController::class, 'download'])->name('download');
     });
 
@@ -127,14 +137,32 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:super_admin|ad
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard', function () {
-    return redirect()->route('student.dashboard');
+    $user = auth()->user();
+
+    if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    if ($user->hasRole('student')) {
+        return redirect()->route('student.dashboard');
+    }
+
+    if ($user->hasRole('teacher')) {
+        return redirect()->route('teacher.dashboard');
+    }
+
+    if ($user->hasRole('mentor')) {
+        return redirect()->route('mentor.dashboard');
+    }
+
+    return redirect()->route('home');
 })->middleware('auth')->name('dashboard');
 
 Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])->group(function () {
-    Route::get('/dashboard', StudentDashboard::class)->name('dashboard');
-    Route::get('/journals', JournalManager::class)->name('journals');
-    Route::get('/supervision', SupervisionManager::class)->name('supervision');
-    Route::get('/internships/register', \App\Livewire\Internship\RegistrationWizard::class)->name('internships.register');
+    Route::livewire('/dashboard', StudentDashboard::class)->name('dashboard');
+    Route::livewire('/journals', JournalManager::class)->name('journals');
+    Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
+    Route::livewire('/internships/register', RegistrationWizard::class)->name('internships.register');
 });
 
 /*
@@ -143,8 +171,8 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])
 |--------------------------------------------------------------------------
 */
 Route::prefix('supervision')->name('supervision.')->middleware(['auth', 'role:teacher|mentor'])->group(function () {
-    Route::get('/logs', SupervisorLogManager::class)->name('logs');
-    Route::get('/monitoring', MonitoringVisitIndex::class)->name('monitoring');
+    Route::livewire('/logs', SupervisorLogManager::class)->name('logs');
+    Route::livewire('/monitoring', MonitoringVisitIndex::class)->name('monitoring');
 });
 
 /*

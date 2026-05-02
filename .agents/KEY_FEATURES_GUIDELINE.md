@@ -24,24 +24,6 @@ Starts with `- ` followed by the status marker. Segments are separated by ` | `.
 
 Indented with 2 spaces. Inherits scope and roles from parent. Evolves independently with its own markers.
 
-### 3. Note Line (not tracked)
-
-```
-  > Note text here — provides context, not tracked
-```
-
-Indented with 2 spaces, uses `> `. Provides context but is **not** part of the tracking system.
-
-### Domain Notes Section
-
-```
-### Notes
-- Context, decisions, references, or technical details
-- Not tracked — does not have markers
-```
-
-Used at the domain level for information that applies to multiple features.
-
 ---
 
 ## Format Anatomy
@@ -105,15 +87,13 @@ Used at the domain level for information that applies to multiple features.
 - Written in project language, not technical jargon
 - Starts with a noun or action phrase, not a sentence
 - Max one line
-- No inline comments, parentheses, or notes
-- Use notes (`> `) for additional context on the line below
+- No inline comments or parentheses
 
 ### Correct vs Incorrect
 
 ```
 CORRECT:
 - [v] | [v] [v] [v] | [MUST HAVE] [roles:Admin] Manage user accounts
-  > Uses UUID-based users, email as unique identifier
 
 INCORRECT (missing separator):
 - [v] [v] [v] [v] [MUST HAVE] Manage user accounts
@@ -132,11 +112,6 @@ INCORRECT (custom priority):
 
 CORRECT (using [?] for audit-needed features):
 - [?] | [ ] [ ] [ ] | [MUST HAVE] [roles:Admin] Manage user accounts
-  > Needs deep audit — possible requirement mismatch or hidden issues
-
-INCORRECT (misusing [?]):
-- [?] | [v] [v] [v] | [MUST HAVE] [roles:Admin] Manage user accounts
-  > Wrong: [?] should only be used when feature is NOT started ([ ]) or needs re-audit
 ```
 
 ---
@@ -328,7 +303,6 @@ Periodically verify that all defined roles have at least one feature tagged to t
 - Use `### Domain: {name}` to group related features
 - One domain per business area or system module
 - Features within a domain are related by concern, not by implementation detail
-- Use `---` between domains only if the domain has a `### Notes` section
 
 ### Sub-Feature Rules
 
@@ -337,69 +311,6 @@ Periodically verify that all defined roles have at least one feature tagged to t
 - Sub-features inherit scope and roles from parent but evolve independently
 - Use sub-features when a feature has distinct, independently trackable components
 - Do not nest deeper than one level (parent → sub-feature only)
-
-### Note Placement
-
-- **Inline note** (`> `): placed immediately below the feature it describes, indented 2 spaces
-- **Domain notes** (`### Notes`): placed at the end of a domain, before `---` or the next domain
-- Notes never appear on the same line as a feature
-
----
-
-## Feature Evolution in Practice
-
-### Scenario 1: Feature Gets Improved
-
-```
-# Before (feature is complete)
-- [v] | [v] [v] [v] | [SHOULD HAVE] [roles:ALL] Email notification system
-
-# Audit finds it needs template system and queue integration
-- [+] | [ ] [ ] [ ] | [SHOULD HAVE] [roles:ALL] Email notification system
-  > Needs: template system, queue integration, retry logic
-
-# Engineer starts improvement
-- [*] | [v] [ ] [ ] | [SHOULD HAVE] [roles:ALL] Email notification system
-  > Template engine implemented, queue wiring in progress
-
-# Improvement ready for review
-- [R] | [v] [v] [v] | [SHOULD HAVE] [roles:ALL] Email notification system
-  > Now supports templates, queue-based delivery, 3-retry with backoff
-
-# Supervisor approves
-- [v] | [v] [v] [v] | [SHOULD HAVE] [roles:ALL] Email notification system
-  > Now supports templates, queue-based delivery, 3-retry with backoff
-```
-
-### Scenario 2: Feature Has a Bug
-
-```
-# Before (feature is complete)
-- [v] | [v] [v] [v] | [MUST HAVE] [roles:ALL] Password reset
-
-# Bug reported: rate limiting bypassed
-- [!] | [v] [v] [v] | [MUST HAVE] [roles:ALL] Password reset
-  > Rate limiting bypassed — tracked in issue 2026-01-20-bug-rate-limit.md
-
-# Fix in progress
-- [*] | [v] [ ] [ ] | [MUST HAVE] [roles:ALL] Password reset
-  > Added rate limiting middleware, updating tests
-
-# Fix verified
-- [v] | [v] [v] [v] | [MUST HAVE] [roles:ALL] Password reset
-  > Rate limiting now enforced at middleware and action level
-```
-
-### Scenario 3: Feature Deprecation
-
-```
-# Before
-- [v] | [v] [v] [v] | [WON'T HAVE] [roles:Admin] Legacy dashboard widgets
-
-# Human confirms deprecation
-- [x] | [v] [v] [x] | [WON'T HAVE] [roles:Admin] Legacy dashboard widgets
-  > Replaced by new dashboard system — legacy code removed
-```
 
 ---
 
@@ -410,7 +321,6 @@ Periodically verify that all defined roles have at least one feature tagged to t
 ```
 ### Domain: Core
 - [v] | [v] [v] [v] | [MUST HAVE] User registration
-  > Email-based, UUID identifiers
   - [v] | [v] [v] [v] | Email verification
   - [v] | [v] [v] [v] | Password reset
 - [v] | [v] [v] [v] | [MUST HAVE] Dashboard
@@ -424,21 +334,12 @@ Periodically verify that all defined roles have at least one feature tagged to t
 ```
 ### Domain: Authentication
 - [v] | [v] [v] [v] | [MUST HAVE] [roles:ALL] User registration
-  > Uses UUID-based users, email as unique identifier
   - [v] | [v] [v] [v] | Email verification flow
   - [v] | [v] [v] [v] | Invitation-based onboarding
 - [*] | [v] [ ] [ ] | [MUST HAVE] [roles:ALL] Password reset
-  > Email template needs refinement — tracked in issue 2026-01-15-audit-email-templates.md
   - [ ] | [ ] [ ] [ ] | Rate limiting on reset requests
 - [v] | [v] [v] [v] | [MUST HAVE] [roles:ALL] Session management
-  > Token-based, 24h expiry, refresh on activity
 - [+] | [v] [v] [v] | [SHOULD HAVE] [roles:ALL] Two-factor authentication
-  > Exists but needs SMS as alternative to TOTP
-
-### Notes
-- Registration flow was redesigned in cycle 2 to support invitation-based onboarding
-- TOTP uses RFC 6238 standard — no custom implementation
-- Session storage uses database driver, Redis-ready
 ```
 
 ### Example: Multiple Domains with Role Separation
@@ -457,21 +358,51 @@ Periodically verify that all defined roles have at least one feature tagged to t
 
 ### Domain: User Management
 - [v] | [v] [v] [v] | [MUST HAVE] [roles:Admin] Manage user accounts
-  > Full CRUD with role assignment and status control
   - [v] | [v] [v] [v] | User listing with pagination and search
   - [v] | [v] [v] [v] | Role assignment and modification
 - [P] | [ ] [ ] [ ] | [SHOULD HAVE] [roles:Admin] Bulk user import
-  > CSV-based onboarding for large cohorts
 
 ---
 
 ### Domain: Dashboard
 - [v] | [v] [v] [v] | [MUST HAVE] [roles:ALL] Role-based dashboard
-  > Content changes based on authenticated user's role
   - [v] | [v] [v] [v] | Admin dashboard widgets
   - [v] | [v] [v] [v] | Student dashboard widgets
   - [*] | [v] [ ] [ ] | Teacher dashboard widgets
 ```
+
+---
+
+## Known Context Section
+
+### Purpose
+
+The **Known Context** section appears at the end of `KEY_FEATURES_CHECKLIST.md`, after the Verification Summary. It stores non-feature technical facts about the project that are relevant for engineers but do not belong as feature entries.
+
+### What Belongs in Known Context
+
+- Technology stack details (UI framework, CSS framework, etc.)
+- Configuration facts (session driver, token TTL, lock file paths)
+- Test status and known issues
+- File backup information
+- Any technical context that helps engineers understand the current state
+
+### Format
+
+```
+## Known Context
+
+- {bullet point describing technical fact}
+- {bullet point describing technical fact}
+```
+
+### Rules
+
+- Appears once, at the end of the checklist file
+- Uses simple bullet points (`- `)
+- No tracking markers, no separators, no role tags
+- Keep concise and factual
+- Update when technical context changes
 
 ---
 
@@ -482,7 +413,7 @@ Periodically verify that all defined roles have at least one feature tagged to t
 | Anti-Pattern | Why | Correct Approach |
 |-------------|-----|-----------------|
 | Create new feature entry for evolution | Duplicates history, loses context | Update the existing entry |
-| Put notes inline on feature line | Breaks visual scan, hard to parse | Use `> ` on next line |
+| Put notes inline on feature line | Breaks visual scan, hard to parse | Keep description clean |
 | Skip the separator ` \| ` | Columns and status become ambiguous | Always use separators |
 | Use custom markers or priority tags | Not in the tracking system | Use defined markers only |
 | Use undefined roles in role tag | Makes RBAC unverifiable | Define role in Stakeholders first |
@@ -491,8 +422,7 @@ Periodically verify that all defined roles have at least one feature tagged to t
 | Leave `[P]` without an approved plan | `[P]` means a plan exists | Create plan first, then mark `[P]` |
 | Mark `[R]` without all three `[v]` | Not actually ready for review | Complete all gates before `[R]` |
 | Mark `[v]` without Supervisor review | Self-review prohibited | Supervisor must approve |
-| Track technical debt as a feature | Not a feature — it's context | Document in notes or create an issue |
-| Use `[!]` for low-priority bugs | `[!]` is for critical issues only | Use notes for non-critical observations |
+| Use `[!]` for low-priority bugs | `[!]` is for critical issues only | Use `[?]` for audit-needed features |
 | Use `[?]` for started features | `[?]` is for audit-needed, not in-progress | Use `[*]` or `[ ]` instead |
 | Leave `[?]` without audit plan | `[?]` means deep audit needed | Create audit plan, then mark `[?]` |
 
@@ -504,12 +434,11 @@ Before adding a feature entry, confirm:
 
 - [ ] Feature belongs to an existing domain or a clearly defined new domain
 - [ ] Description is in project language, not technical jargon
-- [ ] Description is one line, no inline notes
+- [ ] Description is one line, no inline notes or parentheses
 - [ ] Status marker is appropriate for current state
 - [ ] Separators ` \| ` are present between status, columns, and tags
 - [ ] All three implementation columns are present
 - [ ] Priority tag is from the defined set
 - [ ] Role tag uses only defined roles or `[roles:ALL]` / `[roles:System]` (if project uses RBAC)
-- [ ] Notes (if any) are on their own line with `> `
 - [ ] Sub-features (if any) are indented 2 spaces
 - [ ] Feature entry will be permanent — this is the one entry for this feature

@@ -6,8 +6,12 @@ namespace App\Actions\Auth;
 
 use App\Actions\Audit\LogAuditAction;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
+use App\Rules\SystemUsername;
+use App\Support\UserIdentifierGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * S1 - Secure: Atomic user creation with profile and role assignment.
@@ -23,22 +27,35 @@ class CreateUserAction
      */
     public function execute(array $userData, array $profileData = [], array $roles = []): User
     {
-        return DB::transaction(function () use ($userData, $profileData, $roles) {
+        $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername();
+        $plainPassword = $userData['password'] ?? str()->random(12);
+
+        Validator::make($userData, [
+            'username' => ['required', 'string', 'unique:users,username', new SystemUsername],
+            'email' => ['required', 'email', 'unique:users,email'],
+        ])->validate();
+
+        return DB::transaction(function () use ($userData, $profileData, $roles, $plainPassword) {
             $user = User::create([
                 'name' => $userData['name'],
                 'email' => $userData['email'],
-                'username' => $userData['username'] ?? str($userData['email'])->before('@')->slug()->toString(),
-                'password' => Hash::make($userData['password'] ?? str()->random(12)),
+                'username' => $userData['username'],
+                'password' => Hash::make($plainPassword),
                 'setup_required' => $userData['setup_required'] ?? false,
             ]);
 
-            if (!empty($profileData)) {
+            if (! empty($profileData)) {
                 $user->profile()->create($profileData);
             }
 
-            if (!empty($roles)) {
+            if (! empty($roles)) {
                 $user->assignRole($roles);
             }
+
+            // Notify User (Welcome)
+            $user->notify(new WelcomeNotification(
+                isset($userData['password']) ? '' : $plainPassword
+            ));
 
             $this->logAuditAction->execute(
                 action: 'user_created',
@@ -46,7 +63,7 @@ class CreateUserAction
                 subjectId: $user->id,
                 payload: [
                     'email' => $user->email,
-                    'roles' => $roles
+                    'roles' => $roles,
                 ],
                 module: 'Auth'
             );

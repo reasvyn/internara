@@ -51,18 +51,35 @@ class Settings
      *
      * @param string|array<string> $key Single key or array of keys
      */
-    public static function get(string|array $key, mixed $default = null): mixed
+    public static function get(string|array $key, mixed $default = null, bool $skipCache = false): mixed
     {
         if (is_array($key)) {
             $results = [];
             foreach ($key as $k) {
-                $results[$k] = self::resolveSingle($k, $default);
+                $results[$k] = self::resolveSingle($k, $default, $skipCache);
             }
 
             return $results;
         }
 
-        return self::resolveSingle($key, $default);
+        return self::resolveSingle($key, $default, $skipCache);
+    }
+
+    /**
+     * Get all settings from the database (cached).
+     *
+     * @return Collection<string, mixed>
+     */
+    public static function all(bool $skipCache = false): Collection
+    {
+        if ($skipCache) {
+            Cache::forget(self::CACHE_PREFIX.'all');
+        }
+
+        return Cache::rememberForever(
+            self::CACHE_PREFIX.'all',
+            fn () => Setting::all()->pluck('value', 'key'),
+        );
     }
 
     /**
@@ -76,8 +93,12 @@ class Settings
     /**
      * Get all settings belonging to a group (cached).
      */
-    public static function group(string $name): Collection
+    public static function group(string $name, bool $skipCache = false): Collection
     {
+        if ($skipCache) {
+            Cache::forget(self::CACHE_PREFIX.'group.'.$name);
+        }
+
         return Cache::rememberForever(
             self::CACHE_PREFIX.'group.'.$name,
             fn () => Setting::group($name)->get(),
@@ -119,7 +140,7 @@ class Settings
     /**
      * Resolve a single setting key through the tier chain.
      */
-    protected static function resolveSingle(string $key, mixed $default): mixed
+    protected static function resolveSingle(string $key, mixed $default, bool $skipCache = false): mixed
     {
         // 1. Runtime overrides
         if (array_key_exists($key, self::$overrides)) {
@@ -132,6 +153,10 @@ class Settings
         }
 
         // 3. Database (cached)
+        if ($skipCache) {
+            Cache::forget(self::CACHE_PREFIX.$key);
+        }
+
         $dbValue = Cache::rememberForever(
             self::CACHE_PREFIX.$key,
             function () use ($key) {

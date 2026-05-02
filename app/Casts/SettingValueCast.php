@@ -6,12 +6,14 @@ namespace App\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * Casts setting values between database storage and typed PHP values.
+ * Now supports 'encrypted' type for sensitive data like SMTP passwords.
  *
- * S2 - Sustain: Values are stored and retrieved with their correct PHP types,
- * eliminating manual casting throughout the codebase.
+ * S1 - Secure: Sensitive strings are transparently encrypted at rest.
+ * S2 - Sustain: Values are stored and retrieved with their correct PHP types.
  */
 class SettingValueCast implements CastsAttributes
 {
@@ -33,6 +35,7 @@ class SettingValueCast implements CastsAttributes
             'boolean' => (bool) $value,
             'integer' => (int) $value,
             'float' => (float) $value,
+            'encrypted' => $this->decrypt($value),
             'null' => null,
             default => $value,
         };
@@ -47,6 +50,16 @@ class SettingValueCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
+        // If type is already set as encrypted (manual override)
+        $targetType = $attributes['type'] ?? null;
+
+        if ($targetType === 'encrypted') {
+            return [
+                'value' => Crypt::encryptString((string) $value),
+                'type' => 'encrypted',
+            ];
+        }
+
         $phpType = gettype($value);
 
         $dbType = match ($phpType) {
@@ -69,5 +82,18 @@ class SettingValueCast implements CastsAttributes
             'value' => $storableValue,
             'type' => $dbType,
         ];
+    }
+
+    /**
+     * Decrypt a value, returning original if decryption fails.
+     */
+    private function decrypt(string $value): string
+    {
+        try {
+            return Crypt::decryptString($value);
+        } catch (\Exception $e) {
+            // Fallback for legacy plaintext data
+            return $value;
+        }
     }
 }

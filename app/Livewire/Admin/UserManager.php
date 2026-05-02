@@ -8,70 +8,82 @@ use App\Actions\Auth\CreateUserAction;
 use App\Actions\Auth\DeleteUserAction;
 use App\Actions\Auth\UpdateUserAction;
 use App\Enums\AccountStatus;
-use App\Enums\Role as RoleEnum;
+use App\Livewire\BaseRecordManager;
 use App\Models\User;
+use App\Notifications\AccountStatusNotification;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Mary\Traits\Toast;
+use Livewire\Attributes\Computed;
 use Spatie\Permission\Models\Role;
 
-class UserManager extends Component
+/**
+ * Modernized User Manager using BaseRecordManager pattern.
+ */
+class UserManager extends BaseRecordManager
 {
-    use WithPagination, Toast;
-
-    public string $search = '';
-    
-    public array $filters = [
-        'role' => null,
-        'status' => null,
-    ];
-
     public bool $userModal = false;
-    
+
     public array $userData = [
         'id' => null,
         'name' => '',
         'email' => '',
-        'username' => '',
         'roles' => [],
         'password' => '',
     ];
 
     /**
-     * Get the headers for the table.
+     * Define columns and sorting.
      */
     public function headers(): array
     {
         return [
             ['key' => 'name', 'label' => 'Name', 'sortable' => true],
             ['key' => 'email', 'label' => 'Account Info'],
-            ['key' => 'roles', 'label' => 'Roles', 'sortable' => false],
+            ['key' => 'roles_list', 'label' => 'Roles'],
             ['key' => 'status', 'label' => 'Status'],
-            ['key' => 'actions', 'label' => '', 'sortable' => false]
+            ['key' => 'actions', 'label' => ''],
         ];
     }
 
     /**
-     * Get the users for the table.
+     * Base query for users.
      */
-    public function users(): LengthAwarePaginator
+    protected function query(): Builder
     {
-        return User::query()
-            ->with(['roles', 'statuses'])
-            ->when($this->search, function (Builder $q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhere('username', 'like', "%{$this->search}%");
-            })
-            ->when($this->filters['role'], function (Builder $q) {
-                $q->role($this->filters['role']);
-            })
-            ->latest()
-            ->paginate(10);
+        return User::query()->with(['roles', 'statuses']);
     }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where(function ($q) {
+            $q->where('name', 'like', "%{$this->search}%")
+                ->orWhere('email', 'like', "%{$this->search}%")
+                ->orWhere('username', 'like', "%{$this->search}%");
+        });
+    }
+
+    /**
+     * Filter implementation.
+     */
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['role'] ?? null, function ($q, $role) {
+            $q->role($role);
+        })->when($this->filters['status'] ?? null, function ($q, $status) {
+            $q->whereHas('statuses', fn ($qs) => $qs->where('name', $status)->latest());
+        });
+    }
+
+    #[Computed]
+    public function roles()
+    {
+        return Role::all();
+    }
+
+    // --- Record Actions ---
 
     public function createUser(): void
     {
@@ -80,7 +92,6 @@ class UserManager extends Component
             'id' => null,
             'name' => '',
             'email' => '',
-            'username' => '',
             'roles' => [],
             'password' => '',
         ];
@@ -94,7 +105,6 @@ class UserManager extends Component
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'username' => $user->username,
             'roles' => $user->roles->pluck('name')->toArray(),
         ];
         $this->userModal = true;
@@ -104,12 +114,11 @@ class UserManager extends Component
     {
         $rules = [
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
-            'userData.username' => 'required|string|unique:users,username,' . ($this->userData['id'] ?? 'NULL'),
+            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
             'userData.roles' => 'required|array|min:1',
         ];
 
-        if (!$this->userData['id']) {
+        if (! $this->userData['id']) {
             $rules['userData.password'] = 'required|min:8';
         }
 
@@ -131,23 +140,28 @@ class UserManager extends Component
     {
         if ($user->id === auth()->id()) {
             $this->error('Cannot change your own status.');
+
             return;
         }
 
         $currentStatus = $user->latestStatus()?->name;
-        $newStatus = $currentStatus === AccountStatus::ACTIVE->value 
-            ? AccountStatus::SUSPENDED->value 
+        $newStatus = $currentStatus === AccountStatus::ACTIVE->value
+            ? AccountStatus::SUSPENDED->value
             : AccountStatus::ACTIVE->value;
 
         $user->setStatus($newStatus, 'Changed via User Manager');
-        $this->success("User status changed to {$newStatus}.");
+
+        // Notify User
+        $user->notify(new AccountStatusNotification($newStatus, 'Updated by Administrator'));
+
+        $this->success("User status changed to {$newStatus}. Notification sent.");
     }
 
     public function resetPassword(User $user): void
     {
         $newPassword = str()->random(10);
         $user->update(['password' => Hash::make($newPassword)]);
-        
+
         $this->info("Password reset to: {$newPassword}", 'Temp Password', position: 'toast-bottom-center', timeout: 10000);
     }
 
@@ -155,6 +169,7 @@ class UserManager extends Component
     {
         if ($user->id === auth()->id()) {
             $this->error('You cannot delete yourself.');
+
             return;
         }
 
@@ -162,12 +177,23 @@ class UserManager extends Component
         $this->success('User deleted.');
     }
 
+    // --- Bulk Actions ---
+
+    public function deleteSelected(DeleteUserAction $deleteAction): void
+    {
+        $this->performBulkAction('Delete', function ($id) use ($deleteAction) {
+            if ($id === auth()->id()) {
+                return;
+            }
+            $user = User::find($id);
+            if ($user) {
+                $deleteAction->execute($user);
+            }
+        });
+    }
+
     public function render()
     {
-        return view('livewire.admin.user-manager', [
-            'users' => $this->users(),
-            'roles' => Role::all(),
-            'headers' => $this->headers(),
-        ]);
+        return view('livewire.admin.user-manager');
     }
 }

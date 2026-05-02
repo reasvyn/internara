@@ -37,7 +37,7 @@ afterEach(function () {
 test('setup wizard renders welcome step', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
 
     // Set locale to English for consistent test behavior
     app()->setLocale('en');
@@ -59,7 +59,7 @@ test('setup wizard redirects if already installed', function () {
 test('setup wizard advances from welcome step when audit passes', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
 
     // Set locale to English for consistent test behavior
     app()->setLocale('en');
@@ -74,7 +74,7 @@ test('setup wizard advances from welcome step when audit passes', function () {
 test('setup wizard validates school data', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->setCurrentStep(2);
 
@@ -91,7 +91,7 @@ test('setup wizard validates school data', function () {
 test('setup wizard validates department data', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
     $service->completeStep('account');
@@ -108,7 +108,7 @@ test('setup wizard validates department data', function () {
 test('setup wizard validates internship data on finish', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
     $service->completeStep('account');
@@ -130,7 +130,7 @@ test('setup wizard validates internship data on finish', function () {
 test('setup wizard validates admin credentials', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
     $service->setCurrentStep(3);
@@ -140,17 +140,16 @@ test('setup wizard validates admin credentials', function () {
         ->set('currentStep', 3)
         ->set('adminName', '')
         ->set('adminEmail', 'invalid')
-        ->set('adminUsername', '')
         ->set('adminPassword', '')
         ->set('adminPassword_confirmation', '')
         ->call('nextStep')
-        ->assertHasErrors(['adminName', 'adminEmail', 'adminUsername', 'adminPassword']);
+        ->assertHasErrors(['adminName', 'adminEmail', 'adminPassword']);
 });
 
 test('setup wizard requires finalization checkboxes', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
     $service->completeStep('account');
@@ -173,7 +172,7 @@ test('setup wizard requires finalization checkboxes', function () {
 test('setup wizard completes and creates lock file', function () {
     $service = new SetupService;
     $token = $service->generateToken();
-    $service->authorizeSession();
+    $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
     $service->completeStep('account');
@@ -187,9 +186,9 @@ test('setup wizard completes and creates lock file', function () {
         ->set('schoolName', 'Test School')
         ->set('schoolCode', 'TEST001')
         ->set('schoolAddress', '123 Test Street')
-        ->set('adminName', 'Test Admin')
+        ->set('adminName', 'Setup Admin')
         ->set('adminEmail', 'admin@testsetup.com')
-        ->set('adminUsername', 'testsetupadmin')
+        ->set('adminUsername', 'u12345678')
         ->set('adminPassword', 'password123')
         ->set('adminPassword_confirmation', 'password123')
         ->set('departmentName', 'Test Department')

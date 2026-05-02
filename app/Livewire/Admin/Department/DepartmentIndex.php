@@ -7,63 +7,96 @@ namespace App\Livewire\Admin\Department;
 use App\Actions\Department\CreateDepartmentAction;
 use App\Actions\Department\DeleteDepartmentAction;
 use App\Actions\Department\UpdateDepartmentAction;
+use App\Livewire\BaseRecordManager;
 use App\Models\Department;
 use App\Models\School;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class DepartmentIndex extends Component
+/**
+ * Modernized Department Manager using BaseRecordManager pattern.
+ */
+class DepartmentIndex extends BaseRecordManager
 {
-    use WithPagination;
-
     public bool $showModal = false;
-    public string $departmentId = '';
-    public string $name = '';
-    public string $description = '';
 
-    public string $search = '';
+    public array $formData = [
+        'id' => null,
+        'name' => '',
+        'description' => '',
+    ];
 
-    protected $queryString = ['search'];
-
-    public function rules(): array
+    /**
+     * Define columns and sorting.
+     */
+    public function headers(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:departments,name,' . $this->departmentId],
-            'description' => ['nullable', 'string', 'max:1000'],
+            ['key' => 'name', 'label' => __('department.name'), 'sortable' => true],
+            ['key' => 'description', 'label' => __('department.description'), 'sortable' => true],
+            ['key' => 'created_at', 'label' => __('department.created_at'), 'sortable' => true],
+            ['key' => 'actions', 'label' => ''],
         ];
     }
 
+    /**
+     * Base query for departments.
+     */
+    protected function query(): Builder
+    {
+        return Department::query()->with('school');
+    }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('name', 'like', "%{$this->search}%");
+    }
+
+    // --- Record Actions ---
+
     public function create(): void
     {
-        $this->reset(['departmentId', 'name', 'description']);
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => null,
+            'name' => '',
+            'description' => '',
+        ];
         $this->showModal = true;
     }
 
     public function edit(Department $department): void
     {
-        $this->departmentId = $department->id;
-        $this->name = $department->name;
-        $this->description = $department->description ?? '';
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => $department->id,
+            'name' => $department->name,
+            'description' => $department->description ?? '',
+        ];
         $this->showModal = true;
     }
 
     public function save(CreateDepartmentAction $create, UpdateDepartmentAction $update): void
     {
-        $validated = $this->validate();
+        $this->validate([
+            'formData.name' => ['required', 'string', 'max:255', 'unique:departments,name,'.($this->formData['id'] ?? 'NULL')],
+            'formData.description' => ['nullable', 'string', 'max:1000'],
+        ]);
 
-        if ($this->departmentId) {
-            $department = Department::findOrFail($this->departmentId);
-            $update->execute($department, $validated);
-            flash()->success(__('department.save_success_updated'));
+        if ($this->formData['id']) {
+            $department = Department::findOrFail($this->formData['id']);
+            $update->execute($department, $this->formData);
+            $this->success(__('department.save_success_updated'));
         } else {
             $school = School::firstOrFail();
-            $create->execute(array_merge($validated, ['school_id' => $school->id]));
-            flash()->success(__('department.save_success_created'));
+            $create->execute(array_merge($this->formData, ['school_id' => $school->id]));
+            $this->success(__('department.save_success_created'));
         }
 
         $this->showModal = false;
-        $this->reset(['departmentId', 'name', 'description']);
     }
 
     public function delete(Department $department, DeleteDepartmentAction $deleteAction): void
@@ -71,13 +104,25 @@ class DepartmentIndex extends Component
         $profileCount = $department->profiles()->count();
 
         if ($profileCount > 0) {
-            flash()->error(__('department.delete_blocked', ['count' => $profileCount]));
+            $this->error(__('department.delete_blocked', ['count' => $profileCount]));
 
             return;
         }
 
         $deleteAction->execute($department);
-        flash()->success(__('department.delete_success'));
+        $this->success(__('department.delete_success'));
+    }
+
+    // --- Bulk Actions ---
+
+    public function deleteSelected(DeleteDepartmentAction $deleteAction): void
+    {
+        $this->performBulkAction('Delete', function ($id) use ($deleteAction) {
+            $department = Department::find($id);
+            if ($department && $department->profiles()->count() === 0) {
+                $deleteAction->execute($department);
+            }
+        });
     }
 
     public function stats(): array
@@ -91,14 +136,7 @@ class DepartmentIndex extends Component
     #[Layout('components.layouts.app')]
     public function render()
     {
-        $departments = Department::query()
-            ->with('school')
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
-            ->orderBy('name')
-            ->paginate(10);
-
         return view('livewire.admin.department.department-index', [
-            'departments' => $departments,
             'stats' => $this->stats(),
         ]);
     }

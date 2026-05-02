@@ -149,6 +149,26 @@
         @apply bg-base-200/60;
     }
 
+    .stat-enterprise {
+        @apply bg-base-100 rounded-[2.5rem] border border-base-content/5 shadow-xl shadow-base-content/5 p-6 transition-all duration-300 hover:scale-[1.02];
+    }
+
+    .stat-enterprise .stat-value {
+        @apply font-black tracking-tighter text-3xl;
+    }
+
+    .stat-enterprise .stat-title {
+        @apply font-black uppercase tracking-[0.2em] text-[10px] text-base-content/40;
+    }
+
+    .stat-enterprise .stat-figure {
+        @apply text-primary opacity-20;
+    }
+
+    .alert-enterprise {
+        @apply rounded-3xl border-none shadow-lg px-6 py-4 flex items-center gap-4;
+    }
+
     .table-enterprise thead th {
         @apply text-[10px] uppercase tracking-widest opacity-50 font-black py-4;
     }

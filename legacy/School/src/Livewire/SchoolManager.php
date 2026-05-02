@@ -1,0 +1,109 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Modules\School\Livewire;
+
+use Illuminate\View\View;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use Modules\Permission\Enums\Permission;
+use Modules\School\Livewire\Forms\SchoolForm;
+use Modules\School\Services\Contracts\SchoolService;
+use Modules\Setup\Services\Contracts\AppSetupService;
+use Modules\UI\Livewire\Traits\RbacTrait;
+
+/**
+ * Class SchoolManager
+ *
+ * Orchestrates the management of institutional metadata, including branding and contact information.
+ */
+class SchoolManager extends Component
+{
+    use RbacTrait;
+    use WithFileUploads;
+
+    protected ?Permission $viewPermission = Permission::SCHOOL_VIEW;
+
+    protected ?Permission $createPermission = Permission::SCHOOL_MANAGE;
+
+    protected ?Permission $updatePermission = Permission::SCHOOL_MANAGE;
+
+    /**
+     * The form object holding school data.
+     */
+    public SchoolForm $form;
+
+    /**
+     * The service responsible for institutional logic.
+     */
+    protected SchoolService $schoolService;
+
+    /**
+     * Injects dependencies into the component.
+     */
+    public function boot(SchoolService $schoolService): void
+    {
+        $this->schoolService = $schoolService;
+    }
+
+    /**
+     * Initializes the component state.
+     */
+    public function mount(): void
+    {
+        $this->loadSchoolData();
+    }
+
+    /**
+     * Retrieves the current school record and populates the form.
+     */
+    protected function loadSchoolData(): void
+    {
+        $school = $this->schoolService->getSchool();
+
+        if ($school) {
+            $this->form->fill($school->toArray());
+        }
+    }
+
+    /**
+     * Persists institutional changes to the database.
+     */
+    public function save(): void
+    {
+        // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
+        $isSetupAuthorized = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED);
+
+        if (! $isSetupAuthorized) {
+            $this->rbacAuthorize('update');
+        }
+
+        $this->form->validate();
+
+        // Ensure we use the existing school ID if available to prevent duplicate record errors
+        $schoolRecord = $this->schoolService->getSchool(['id']);
+        $schoolId = $this->form->id ?: $schoolRecord?->id;
+        $this->form->id = $schoolId;
+
+        // Pass attributes to the service for persistence
+        $school = $this->schoolService->save(['id' => $this->form->id], $this->form->all());
+
+        // Synchronize form with the fresh record state
+        $this->form->fill($school->toArray());
+
+        flash()->success(__('shared::messages.record_saved'));
+
+        $this->dispatch('school_saved', schoolId: $school->id);
+    }
+
+    /**
+     * Renders the administrative interface.
+     */
+    public function render(): View
+    {
+        return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
+            'title' => __('school::ui.settings').' | '.setting('brand_name', setting('app_name')),
+        ]);
+    }
+}

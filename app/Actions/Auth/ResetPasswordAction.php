@@ -19,8 +19,18 @@ class ResetPasswordAction
         protected readonly LogAuditAction $logAuditAction
     ) {}
 
-    public function execute(array $credentials): bool
+    /**
+     * Reset the user's password.
+     */
+    public function execute(string $email, string $token, string $password, string $passwordConfirmation): bool
     {
+        $credentials = [
+            'email' => $email,
+            'token' => $token,
+            'password' => $password,
+            'password_confirmation' => $passwordConfirmation,
+        ];
+
         $status = Password::reset($credentials, function (User $user, string $password) {
             $user->forceFill([
                 'password' => Hash::make($password),
@@ -37,7 +47,7 @@ class ResetPasswordAction
         if ($status !== Password::PASSWORD_RESET) {
             $this->logAuditAction->execute(
                 action: 'password_reset_failed',
-                payload: ['email' => $credentials['email'] ?? null],
+                payload: ['email' => $email],
                 module: 'Auth'
             );
         }

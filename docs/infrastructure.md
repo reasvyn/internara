@@ -4,8 +4,8 @@ This document provides a comprehensive overview of the technical stack, infrastr
 
 ## 1. Core Runtime
 - **PHP**: `^8.4`
-- **Framework**: Laravel `^12.0`
-- **Frontend Engine**: Livewire `^3.7` & Livewire Volt `^1.10`
+- **Framework**: Laravel `^13.0`
+- **Frontend Engine**: Livewire `^4.3`
 - **Node.js**: Required for frontend asset bundling (Vite).
 - **Package Managers**: 
   - `composer` for PHP dependencies.
@@ -16,9 +16,7 @@ The project utilizes a modern Laravel stack focused on developer velocity and a 
 - **UI Components**: [Mary UI](https://mary-ui.com/) `^2.4`
 - **CSS Framework**: Tailwind CSS `^4.2` (via `@tailwindcss/vite`)
 - **UI Library**: DaisyUI `^5.5`
-- **Icons**: 
-  - Blade Tabler Icons `^3.36`
-  - Blade MDI Icons `^1.1`
+- **Icons**: Blade Tabler Icons `^3.36`
 
 ## 3. Primary Backend Dependencies (Spatie Ecosystem & Others)
 The project leverages high-quality industry-standard packages:
@@ -27,8 +25,25 @@ The project leverages high-quality industry-standard packages:
 - **Audit Trails**: `spatie/laravel-activitylog`
 - **State Management**: `spatie/laravel-model-states` ^2.14 (Tracking model transitions for InternshipRegistration, SupervisionLog, RequirementSubmission, OfficialDocument)
 - **Modular Structure**: `nwidart/laravel-modules` & `mhmiton/laravel-modules-livewire` — legacy, pending removal. See section "Known Issues" below.
-- **Notifications**: `php-flasher/flasher-laravel`
+- **Flash Notifications**: `php-flasher/flasher-laravel` (Temporary user feedback messages)
 - **Security**: `spatie/laravel-honeypot` (Spam protection)
+
+### PHPFlasher Details
+- **Package**: `php-flasher/flasher-laravel`
+- **Version**: Latest stable
+- **Purpose**: Provides elegant flash messages (success, error, warning, info) with toastr-style notifications
+- **Theme**: Emerald (configured in `config/flasher.php`)
+- **Integration**: 
+  - Backend: `flash()` helper function
+  - Frontend: `@flasher_render` Blade directive in `resources/views/components/layouts/base.blade.php`
+  - Assets: Automatically included via config (minified JS/CSS)
+- **Features**:
+  - Multiple message types (success, error, warning, info)
+  - Auto-dismiss with configurable timeout (default: 5000ms)
+  - Position control (bottom-right, top-center, etc.)
+  - Dark mode support (`'darkMode' => true`)
+  - Session-based flash message mapping (`flash_bag` config)
+- **Usage**: See `docs/notification.md` section 7 for complete documentation
 
 ## 4. Utilities and Tools
 - **PDF Generation**: `barryvdh/laravel-dompdf`
@@ -83,7 +98,12 @@ composer analyse:strict  # PHPStan level max
 - **Permissions**: `config/permission.php`
 - **Media Library**: `config/media-library.php`
 - **Livewire**: `config/livewire.php`
-- **Flasher**: `config/flasher.php`
+- **Flasher**: `config/flasher.php` — PHPFlasher toastr notifications configuration
+  - Theme: Emerald
+  - Timeout: 5000ms
+  - Position: bottom-right
+  - Dark mode: enabled
+  - Assets: `/vendor/flasher/` (JS/CSS)
 
 > **Note**: `config/modules.php` and `config/modules-livewire.php` are legacy and will be removed with the modules.
 

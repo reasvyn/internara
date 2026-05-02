@@ -1,0 +1,101 @@
+<?php
+
+declare(strict_types=1);
+
+use Modules\Permission\Models\Role;
+use Modules\Setup\Onboarding\Services\Contracts\OnboardingService;
+use Modules\User\Models\User;
+
+beforeEach(function () {
+    // Setup roles
+    Role::create(['name' => 'student', 'guard_name' => 'web']);
+    Role::create(['name' => 'teacher', 'guard_name' => 'web']);
+    Role::create(['name' => 'mentor', 'guard_name' => 'web']);
+    Role::create(['name' => 'super-admin', 'guard_name' => 'web']);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('super-admin');
+    $this->actingAs($admin);
+});
+
+test('it can import students from CSV', function () {
+    $csvContent = "name,email,national_identifier,phone\n";
+    $csvContent .= "John Doe,john@example.com,1234567890,08123456789\n";
+    $csvContent .= "Jane Doe,jane@example.com,0987654321,08987654321\n";
+
+    $filePath = tempnam(sys_get_temp_dir(), 'import_').'.csv';
+    file_put_contents($filePath, $csvContent);
+
+    $service = app(OnboardingService::class);
+    $results = $service->importFromCsv($filePath, 'student');
+
+    expect($results['success'])->toBe(2)->and($results['failure'])->toBe(0);
+
+    $this->assertDatabaseHas('users', ['email' => 'john@example.com', 'name' => 'John Doe']);
+    $this->assertDatabaseHas('users', ['email' => 'jane@example.com', 'name' => 'Jane Doe']);
+
+    $john = User::where('email', 'john@example.com')->first();
+    expect($john->hasRole('student'))->toBeTrue();
+    expect($john->profile->national_identifier)->toBe('1234567890');
+
+    unlink($filePath);
+});
+
+test('it can import teachers from CSV', function () {
+    $csvContent = "name,email,nip\n";
+    $csvContent .= "Teacher One,teacher1@example.com,19900101\n";
+
+    $filePath = tempnam(sys_get_temp_dir(), 'import_').'.csv';
+    file_put_contents($filePath, $csvContent);
+
+    $service = app(OnboardingService::class);
+    $results = $service->importFromCsv($filePath, 'teacher');
+
+    expect($results['success'])->toBe(1);
+
+    $teacher = User::where('email', 'teacher1@example.com')->first();
+    expect($teacher->hasRole('teacher'))->toBeTrue();
+    expect($teacher->profile->national_identifier)->toBe('19900101');
+
+    unlink($filePath);
+});
+
+test('it handles validation errors in CSV rows', function () {
+    $csvContent = "name,email\n";
+    $csvContent .= ",missing@email.com\n"; // Missing name
+    $csvContent .= "Invalid Email,not-an-email\n";
+
+    $filePath = tempnam(sys_get_temp_dir(), 'import_').'.csv';
+    file_put_contents($filePath, $csvContent);
+
+    $service = app(OnboardingService::class);
+    $results = $service->importFromCsv($filePath, 'student');
+
+    expect($results['failure'])->toBe(2);
+    expect($results['errors'])->toHaveCount(2);
+
+    unlink($filePath);
+});
+
+test('it can handle a larger batch of student imports', function () {
+    $count = 20;
+    $csvContent = "name,email,national_identifier\n";
+    for ($i = 1; $i <= $count; $i++) {
+        $csvContent .= "Student {$i},student{$i}@example.com,national_identifier{$i}\n";
+    }
+
+    $filePath = tempnam(sys_get_temp_dir(), 'import_bulk_').'.csv';
+    file_put_contents($filePath, $csvContent);
+
+    $service = app(OnboardingService::class);
+    $results = $service->importFromCsv($filePath, 'student');
+
+    expect($results['success'])->toBe($count);
+    $this->assertDatabaseCount('users', $count + 1);
+
+    // Verify one of them
+    $student = User::where('email', 'student10@example.com')->first();
+    expect($student->name)->toBe('Student 10');
+
+    unlink($filePath);
+});

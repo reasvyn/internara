@@ -2,66 +2,67 @@
 
 declare(strict_types=1);
 
-/*
-|--------------------------------------------------------------------------
-| Integrity & Attribution Verification
-|--------------------------------------------------------------------------
-|
-| This block ensures the application's core metadata is intact and that
-| the original author is properly attributed. Tampering with this
-| metadata will prevent the application from booting.
-*/
-(function () {
-    $authorIdentity = 'Reas Vyn';
-    $path = dirname(__DIR__) . '/app_info.json';
-
-    if (!file_exists($path)) {
-        header('HTTP/1.1 403 Forbidden');
-        exit('Critical Error: Core system metadata (app_info.json) is missing.');
-    }
-
-    $info = json_decode(file_get_contents($path), true);
-    if (($info['author']['name'] ?? null) !== $authorIdentity) {
-        header('HTTP/1.1 403 Forbidden');
-        exit(
-            "Attribution Error: Unauthorized author modification detected. This system requires attribution to [{$authorIdentity}]."
-        );
-    }
-})();
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
+use App\Console\Commands\AppInstallCommand;
+use App\Console\Commands\SetupResetCommand;
+use App\Console\Commands\System\AdminPromoteCommand;
+use App\Console\Commands\System\CleanupCommand;
 // use Modules\Auth\Http\Middleware\EnsureEmailIsVerified;
 // use Modules\Core\Localization\Http\Middleware\SetLocale;
 // use Modules\Exception\Handler;
 // use Modules\Setup\Http\Middleware\BypassSetupAuthorization;
 // use Modules\Setup\Http\Middleware\RequireSetupAccess;
 // use Modules\Status\Middleware\CheckSessionExpiration;
+use App\Console\Commands\System\HealthCommand;
+use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\ProtectSetupRoute;
+use App\Http\Middleware\SetLocale;
+use App\Support\Integrity;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
-use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+
+/*
+|--------------------------------------------------------------------------
+| Integrity & Attribution Verification
+|--------------------------------------------------------------------------
+|
+| This block ensures the application's core metadata is intact and that
+| the original author is properly attributed.
+*/
+Integrity::verify();
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withCommands([
-        \App\Console\Commands\AppInstallCommand::class,
-        \App\Console\Commands\SetupResetCommand::class,
+        AppInstallCommand::class,
+        SetupResetCommand::class,
+        HealthCommand::class,
+        CleanupCommand::class,
+        AdminPromoteCommand::class,
     ])
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('system:cleanup --force')->daily();
+        $schedule->command('model:prune')->daily();
+    })
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(
-            // prepend: [RequireSetupAccess::class, BypassSetupAuthorization::class],
-            // append: [CheckSessionExpiration::class, SetLocale::class],
+            append: [
+                App\Http\Middleware\RequireSetupAccess::class,
+                SetLocale::class,
+            ],
         );
         $middleware->alias([
             'setup.protected' => ProtectSetupRoute::class,
-            'role' => RoleMiddleware::class,
+            'setup.auto-redirect' => RequireSetupAccess::class,
+            'role' => CheckRole::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);

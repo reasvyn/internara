@@ -18,18 +18,22 @@ return new class extends Migration
             $table->foreignUuid('student_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
             $table->foreignUuid('placement_id')->nullable()->constrained('internship_placements')->onDelete('set null');
-            
+
             $table->foreignUuid('teacher_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignUuid('mentor_id')->nullable()->constrained('users')->onDelete('set null');
 
             $table->string('academic_year')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            
+
             $table->string('proposed_company_name')->nullable();
             $table->text('proposed_company_address')->nullable();
 
             $table->timestamps();
+
+            $table->index(['student_id', 'internship_id']);
+            $table->index(['teacher_id', 'mentor_id']);
+            $table->index(['start_date', 'end_date']);
         });
     }
 

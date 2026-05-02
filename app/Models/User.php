@@ -17,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasRoles, HasUuid, HasStatuses;
+    use HasFactory, HasRoles, HasStatuses, HasUuid, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -126,5 +126,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isInactive(): bool
     {
         return $this->latestStatus()?->name === AccountStatus::INACTIVE->value;
+    }
+
+    /**
+     * Check if the user requires account setup.
+     */
+    public function requiresSetup(): bool
+    {
+        return (bool) $this->setup_required;
     }
 }

@@ -32,7 +32,7 @@ class QueueReportGenerationAction
                 'status' => 'pending',
             ]);
 
-            GenerateReportJob::dispatch($report->id);
+            GenerateReportJob::dispatch($report->id)->afterCommit();
 
             $this->logAudit->execute(
                 action: 'report_queued',

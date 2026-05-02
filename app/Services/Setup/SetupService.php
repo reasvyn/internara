@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Setup;
 
 use App\Support\AppInfo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -21,6 +22,11 @@ class SetupService
      * Path to the installation lock file.
      */
     private const LOCK_FILE = 'app/.installed';
+
+    /**
+     * Path to the CLI-generated setup token.
+     */
+    private const CLI_TOKEN_FILE = 'app/.setup_token';
 
     /**
      * Session key prefix for setup state.
@@ -60,8 +66,54 @@ class SetupService
     {
         $token = bin2hex(random_bytes(32));
 
-        Session::put(self::SESSION_PREFIX . 'token', Crypt::encryptString($token));
-        Session::put(self::SESSION_PREFIX . 'token_expires_at', now()->addHours(self::TOKEN_TTL_HOURS)->toIso8601String());
+        Session::put(self::SESSION_PREFIX.'token', Crypt::encryptString($token));
+        Session::put(self::SESSION_PREFIX.'token_expires_at', now()->addHours(self::TOKEN_TTL_HOURS)->toIso8601String());
+
+        return $token;
+    }
+
+    /**
+     * Generate a CLI-accessible setup token and store it in a file.
+     * S1: Used for setup:install command to hand-off to Web Wizard.
+     */
+    public function generateCliToken(): string
+    {
+        $token = bin2hex(random_bytes(32));
+        $expiresAt = now()->addHours(self::TOKEN_TTL_HOURS)->toIso8601String();
+
+        File::put(
+            storage_path(self::CLI_TOKEN_FILE),
+            $token.'|'.$expiresAt
+        );
+
+        return $token;
+    }
+
+    /**
+     * Get the token from CLI storage if it exists and is valid.
+     */
+    public function getCliToken(): ?string
+    {
+        $path = storage_path(self::CLI_TOKEN_FILE);
+
+        if (! File::exists($path)) {
+            return null;
+        }
+
+        $content = File::get($path);
+        $parts = explode('|', $content, 2);
+
+        if (count($parts) < 2) {
+            return null;
+        }
+
+        [$token, $expiresAt] = $parts;
+
+        if (now()->greaterThan(Carbon::parse($expiresAt))) {
+            File::delete($path);
+
+            return null;
+        }
 
         return $token;
     }
@@ -71,13 +123,17 @@ class SetupService
      */
     public function getToken(): ?string
     {
-        $encrypted = Session::get(self::SESSION_PREFIX . 'token');
+        $encrypted = Session::get(self::SESSION_PREFIX.'token');
 
         if ($encrypted === null) {
             return null;
         }
 
-        return Crypt::decryptString($encrypted);
+        try {
+            return Crypt::decryptString($encrypted);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -85,17 +141,23 @@ class SetupService
      */
     public function validateToken(string $token): bool
     {
-        $stored = $this->getToken();
-
-        if ($stored === null) {
-            return false;
+        // 1. Try session token
+        $sessionToken = $this->getToken();
+        if ($sessionToken !== null && ! $this->isTokenExpired()) {
+            if (hash_equals($sessionToken, $token)) {
+                return true;
+            }
         }
 
-        if ($this->isTokenExpired()) {
-            return false;
+        // 2. Try CLI token
+        $cliToken = $this->getCliToken();
+        if ($cliToken !== null) {
+            if (hash_equals($cliToken, $token)) {
+                return true;
+            }
         }
 
-        return hash_equals($stored, $token);
+        return false;
     }
 
     /**
@@ -103,13 +165,13 @@ class SetupService
      */
     public function isTokenExpired(): bool
     {
-        $expiresAt = Session::get(self::SESSION_PREFIX . 'token_expires_at');
+        $expiresAt = Session::get(self::SESSION_PREFIX.'token_expires_at');
 
         if ($expiresAt === null) {
             return true;
         }
 
-        return now()->greaterThan(\Illuminate\Support\Carbon::parse($expiresAt));
+        return now()->greaterThan(Carbon::parse($expiresAt));
     }
 
     /**
@@ -117,7 +179,7 @@ class SetupService
      */
     public function getCurrentStep(): int
     {
-        return (int) Session::get(self::SESSION_PREFIX . 'current_step', 1);
+        return (int) Session::get(self::SESSION_PREFIX.'current_step', 1);
     }
 
     /**
@@ -125,7 +187,7 @@ class SetupService
      */
     public function setCurrentStep(int $step): void
     {
-        Session::put(self::SESSION_PREFIX . 'current_step', max(1, min(7, $step)));
+        Session::put(self::SESSION_PREFIX.'current_step', max(1, min(7, $step)));
     }
 
     /**
@@ -137,7 +199,7 @@ class SetupService
 
         if (! in_array($step, $steps)) {
             $steps[] = $step;
-            Session::put(self::SESSION_PREFIX . 'completed_steps', $steps);
+            Session::put(self::SESSION_PREFIX.'completed_steps', $steps);
         }
     }
 
@@ -156,7 +218,7 @@ class SetupService
      */
     public function getCompletedSteps(): array
     {
-        return Session::get(self::SESSION_PREFIX . 'completed_steps', []);
+        return Session::get(self::SESSION_PREFIX.'completed_steps', []);
     }
 
     /**
@@ -181,7 +243,7 @@ class SetupService
      */
     public function storeEntityId(string $key, string $id): void
     {
-        Session::put(self::SESSION_PREFIX . 'entity.' . $key, $id);
+        Session::put(self::SESSION_PREFIX.'entity.'.$key, $id);
     }
 
     /**
@@ -189,7 +251,7 @@ class SetupService
      */
     public function getEntityId(string $key): ?string
     {
-        return Session::get(self::SESSION_PREFIX . 'entity.' . $key);
+        return Session::get(self::SESSION_PREFIX.'entity.'.$key);
     }
 
     /**
@@ -197,12 +259,17 @@ class SetupService
      */
     public function finalize(): void
     {
-        $lockContent = json_encode([
+        $lockContent = (string) json_encode([
             'installed_at' => now()->toIso8601String(),
             'version' => AppInfo::version(),
         ], JSON_PRETTY_PRINT);
 
         File::put(storage_path(self::LOCK_FILE), $lockContent);
+
+        // Remove CLI token file if it exists
+        if (File::exists(storage_path(self::CLI_TOKEN_FILE))) {
+            File::delete(storage_path(self::CLI_TOKEN_FILE));
+        }
 
         $this->clearSession();
     }
@@ -212,11 +279,13 @@ class SetupService
      */
     public function clearSession(): void
     {
-        Session::forget(self::SESSION_PREFIX . 'token');
-        Session::forget(self::SESSION_PREFIX . 'token_expires_at');
-        Session::forget(self::SESSION_PREFIX . 'current_step');
-        Session::forget(self::SESSION_PREFIX . 'completed_steps');
-        Session::forget(self::SESSION_PREFIX . 'entity');
+        Session::forget(self::SESSION_PREFIX.'token');
+        Session::forget(self::SESSION_PREFIX.'token_expires_at');
+        Session::forget(self::SESSION_PREFIX.'current_step');
+        Session::forget(self::SESSION_PREFIX.'completed_steps');
+        Session::forget(self::SESSION_PREFIX.'entity');
+        Session::forget(self::SESSION_PREFIX.'authorized');
+        Session::forget('setup.token_input');
     }
 
     /**
@@ -228,25 +297,40 @@ class SetupService
             File::delete(storage_path(self::LOCK_FILE));
         }
 
+        if (File::exists(storage_path(self::CLI_TOKEN_FILE))) {
+            File::delete(storage_path(self::CLI_TOKEN_FILE));
+        }
+
         $this->clearSession();
 
         return $this->generateToken();
     }
 
     /**
-     * Check if the current session is authorized for setup access.
+     * Mark the current session as authorized for a specific token.
      */
-    public function isSessionAuthorized(): bool
+    public function authorizeSession(string $token): void
     {
-        return (bool) Session::get(self::SESSION_PREFIX . 'authorized', false);
+        Session::put(self::SESSION_PREFIX.'authorized', true);
+        Session::put(self::SESSION_PREFIX.'authorized_token', $token);
     }
 
     /**
-     * Mark the current session as authorized.
+     * Check if the current session is authorized and matches the current valid tokens.
      */
-    public function authorizeSession(): void
+    public function isSessionAuthorized(): bool
     {
-        Session::put(self::SESSION_PREFIX . 'authorized', true);
+        $authorized = (bool) Session::get(self::SESSION_PREFIX.'authorized', false);
+        if (! $authorized) {
+            return false;
+        }
+
+        $token = Session::get(self::SESSION_PREFIX.'authorized_token');
+        if ($token === null) {
+            return false;
+        }
+
+        return $this->validateToken((string) $token);
     }
 
     /**

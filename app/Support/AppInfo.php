@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\File;
 
 /**
  * Provides access to application metadata from app_info.json.
- * 
+ *
  * S2 - Sustain: Centralized metadata management.
  */
 class AppInfo
@@ -25,6 +25,8 @@ class AppInfo
      */
     public static function all(): array
     {
+        Integrity::verify();
+
         if (self::$info === null) {
             $path = base_path('app_info.json');
 
@@ -62,6 +64,14 @@ class AppInfo
     public static function author(): array
     {
         return self::get('author', []);
+    }
+
+    /**
+     * Get the application logo URL.
+     */
+    public static function logo(): string
+    {
+        return (string) self::get('logo_url', asset('/brand/logo.png'));
     }
 
     /**

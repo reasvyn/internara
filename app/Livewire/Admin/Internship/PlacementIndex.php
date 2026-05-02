@@ -7,127 +7,182 @@ namespace App\Livewire\Admin\Internship;
 use App\Actions\Internship\CreatePlacementAction;
 use App\Actions\Internship\DeletePlacementAction;
 use App\Actions\Internship\UpdatePlacementAction;
+use App\Livewire\BaseRecordManager;
 use App\Models\Internship;
 use App\Models\InternshipCompany;
 use App\Models\InternshipPlacement;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class PlacementIndex extends Component
+/**
+ * Modernized Placement Manager using BaseRecordManager pattern.
+ */
+class PlacementIndex extends BaseRecordManager
 {
-    use WithPagination;
-
     public bool $showModal = false;
-    public string $placementId = '';
-    public string $company_id = '';
-    public string $internship_id = '';
-    public string $name = '';
-    public string $address = '';
-    public ?int $quota = null;
-    public string $description = '';
 
-    public string $search = '';
+    public array $formData = [
+        'id' => null,
+        'company_id' => '',
+        'internship_id' => '',
+        'name' => '',
+        'address' => '',
+        'quota' => null,
+        'description' => '',
+    ];
 
-    protected $queryString = ['search'];
+    /**
+     * Define columns and sorting.
+     */
+    public function headers(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('placement.name'), 'sortable' => true],
+            ['key' => 'company.name', 'label' => __('placement.company')],
+            ['key' => 'internship.name', 'label' => __('placement.batch')],
+            ['key' => 'quota', 'label' => __('placement.quota'), 'class' => 'text-center'],
+            ['key' => 'filled_quota', 'label' => __('placement.filled'), 'class' => 'text-center'],
+            ['key' => 'actions', 'label' => ''],
+        ];
+    }
+
+    /**
+     * Base query for placements.
+     */
+    protected function query(): Builder
+    {
+        return InternshipPlacement::query()
+            ->with(['company', 'internship']);
+    }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('name', 'like', "%{$this->search}%")
+            ->orWhereHas('company', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
+    }
+
+    /**
+     * Filter implementation.
+     */
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['company_id'] ?? null, function ($q, $companyId) {
+            $q->where('company_id', $companyId);
+        })->when($this->filters['internship_id'] ?? null, function ($q, $internshipId) {
+            $q->where('internship_id', $internshipId);
+        });
+    }
 
     #[Computed]
     public function companies()
     {
-        return InternshipCompany::orderBy('name')->get(['id', 'name'])->map(fn($c) => ['id' => $c->id, 'name' => $c->name]);
+        return InternshipCompany::orderBy('name')->get(['id', 'name']);
     }
 
     #[Computed]
     public function internships()
     {
-        return Internship::whereIn('status', ['published', 'active'])->orderBy('name')->get(['id', 'name'])->map(fn($i) => ['id' => $i->id, 'name' => $i->name]);
+        return Internship::whereIn('status', ['published', 'active'])->orderBy('name')->get(['id', 'name']);
     }
 
     #[Computed]
     public function stats(): array
     {
-        $placements = InternshipPlacement::query();
-
         return [
-            'total' => $placements->count(),
-            'total_quota' => $placements->sum('quota'),
-            'filled' => $placements->sum('filled_quota'),
-            'available' => $placements->sum(DB::raw('quota - filled_quota')),
+            'total' => InternshipPlacement::count(),
+            'total_quota' => InternshipPlacement::sum('quota'),
+            'filled' => InternshipPlacement::sum('filled_quota'),
+            'available' => InternshipPlacement::sum(DB::raw('quota - filled_quota')),
         ];
     }
 
-    public function rules(): array
-    {
-        return [
-            'company_id' => ['required', 'exists:internship_companies,id'],
-            'internship_id' => ['required', 'exists:internships,id'],
-            'name' => ['required', 'string', 'max:255'],
-            'address' => ['nullable', 'string'],
-            'quota' => ['required', 'integer', 'min:1'],
-            'description' => ['nullable', 'string'],
-        ];
-    }
+    // --- Record Actions ---
 
     public function create(): void
     {
-        $this->reset(['placementId', 'company_id', 'internship_id', 'name', 'address', 'quota', 'description']);
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => null,
+            'company_id' => '',
+            'internship_id' => '',
+            'name' => '',
+            'address' => '',
+            'quota' => null,
+            'description' => '',
+        ];
         $this->showModal = true;
     }
 
     public function edit(InternshipPlacement $placement): void
     {
-        $this->placementId = $placement->id;
-        $this->company_id = $placement->company_id;
-        $this->internship_id = $placement->internship_id;
-        $this->name = $placement->name;
-        $this->address = $placement->address ?? '';
-        $this->quota = $placement->quota;
-        $this->description = $placement->description ?? '';
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => $placement->id,
+            'company_id' => $placement->company_id,
+            'internship_id' => $placement->internship_id,
+            'name' => $placement->name,
+            'address' => $placement->address ?? '',
+            'quota' => $placement->quota,
+            'description' => $placement->description ?? '',
+        ];
         $this->showModal = true;
     }
 
     public function save(CreatePlacementAction $create, UpdatePlacementAction $update): void
     {
-        $validated = $this->validate();
+        $this->validate([
+            'formData.company_id' => ['required', 'exists:internship_companies,id'],
+            'formData.internship_id' => ['required', 'exists:internships,id'],
+            'formData.name' => ['required', 'string', 'max:255'],
+            'formData.address' => ['nullable', 'string'],
+            'formData.quota' => ['required', 'integer', 'min:1'],
+            'formData.description' => ['nullable', 'string'],
+        ]);
 
-        if ($this->placementId) {
-            $placement = InternshipPlacement::findOrFail($this->placementId);
-            $update->execute($placement, $validated);
-            flash()->success(__('placement.update_success'));
+        if ($this->formData['id']) {
+            $placement = InternshipPlacement::findOrFail($this->formData['id']);
+            $update->execute($placement, $this->formData);
+            $this->success(__('placement.update_success'));
         } else {
-            $create->execute($validated);
-            flash()->success(__('placement.save_success'));
+            $create->execute($this->formData);
+            $this->success(__('placement.save_success'));
         }
 
         $this->showModal = false;
-        $this->reset(['placementId', 'company_id', 'internship_id', 'name', 'address', 'quota', 'description']);
     }
 
     public function delete(InternshipPlacement $placement, DeletePlacementAction $deleteAction): void
     {
         if ($placement->registrations()->exists()) {
-            flash()->error(__('placement.delete_blocked'));
+            $this->error(__('placement.delete_blocked'));
+
             return;
         }
 
         $deleteAction->execute($placement);
-        flash()->success(__('placement.delete_success'));
+        $this->success(__('placement.delete_success'));
+    }
+
+    // --- Bulk Actions ---
+
+    public function deleteSelected(DeletePlacementAction $deleteAction): void
+    {
+        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+            $placement = InternshipPlacement::find($id);
+            if ($placement && ! $placement->registrations()->exists()) {
+                $deleteAction->execute($placement);
+            }
+        });
     }
 
     #[Layout('components.layouts.app')]
     public function render()
     {
-        $placements = InternshipPlacement::query()
-            ->with(['company', 'internship'])
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%")
-                ->orWhereHas('company', fn($q) => $q->where('name', 'like', "%{$this->search}%")))
-            ->latest()
-            ->paginate(10);
-
-        return view('livewire.admin.internship.placement-index', [
-            'placements' => $placements,
-        ]);
+        return view('livewire.admin.internship.placement-index');
     }
 }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Services\Setup\InstallationAuditor;
 use App\Services\Setup\SetupService;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Session;
 
 beforeEach(function () {
     $service = new SetupService;
@@ -113,14 +111,28 @@ test('reset removes lock file and generates new token', function () {
         ->toHaveLength(64);
 });
 
-test('authorizeSession sets authorized flag', function () {
+test('authorizeSession sets authorized flag for specific token', function () {
     $service = new SetupService;
+    $token = $service->generateToken();
 
     expect($service->isSessionAuthorized())->toBeFalse();
 
-    $service->authorizeSession();
+    $service->authorizeSession($token);
 
     expect($service->isSessionAuthorized())->toBeTrue();
+});
+
+test('isSessionAuthorized returns false if token changes', function () {
+    $service = new SetupService;
+    $token1 = $service->generateToken();
+    $service->authorizeSession($token1);
+
+    expect($service->isSessionAuthorized())->toBeTrue();
+
+    // Reset and generate new token (this simulates setup:install)
+    $token2 = $service->reset();
+
+    expect($service->isSessionAuthorized())->toBeFalse();
 });
 
 test('storeEntityId persists and retrieves entity IDs', function () {

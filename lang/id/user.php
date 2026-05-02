@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'student' => [
+        'title' => 'Manajemen Siswa',
+        'subtitle' => 'Kelola semua siswa dan profil magang mereka',
+        'name' => 'Nama Siswa',
+        'username' => 'Username',
+        'nisn' => 'NISN',
+        'nis' => 'NIS',
+        'department' => 'Jurusan',
+        'joined' => 'Bergabung',
+        'new' => 'Daftarkan Siswa',
+        'edit' => 'Ubah Siswa',
+        'save' => 'Simpan Siswa',
+        'update' => 'Perbarui Siswa',
+        'delete' => 'Hapus Siswa',
+        'success_created' => 'Siswa berhasil didaftarkan.',
+        'success_updated' => 'Siswa berhasil diperbarui.',
+        'success_deleted' => 'Siswa berhasil dihapus.',
+    ],
+    'teacher' => [
+        'title' => 'Manajemen Guru',
+        'subtitle' => 'Kelola anggota fakultas dan pembimbing sekolah',
+        'name' => 'Nama Guru',
+        'nip' => 'NIP / Nomor Registrasi',
+        'new' => 'Tambah Guru',
+        'edit' => 'Ubah Guru',
+        'save' => 'Simpan Guru',
+        'success_created' => 'Guru berhasil ditambahkan.',
+    ],
+    'mentor' => [
+        'title' => 'Manajemen Mentor',
+        'subtitle' => 'Kelola mentor industri dari perusahaan mitra',
+        'name' => 'Nama Mentor',
+        'phone' => 'Nomor Telepon',
+        'company' => 'Perusahaan Mitra',
+        'new' => 'Tambah Mentor',
+        'edit' => 'Ubah Mentor',
+        'save' => 'Simpan Mentor',
+        'success_created' => 'Mentor berhasil ditambahkan.',
+    ],
+    'admin' => [
+        'title' => 'Manajemen Administrator',
+        'subtitle' => 'Kelola administrator sistem dan staf',
+        'name' => 'Nama Admin',
+        'new' => 'Tambah Admin',
+        'edit' => 'Ubah Admin',
+        'save' => 'Simpan Admin',
+        'success_created' => 'Admin berhasil ditambahkan.',
+    ],
+    'fields' => [
+        'full_name' => 'Nama Lengkap',
+        'email' => 'Alamat Email',
+        'password' => 'Kata Sandi',
+        'username' => 'Username',
+        'roles' => 'Peran yang Ditetapkan',
+        'bio' => 'Biografi',
+    ],
+];

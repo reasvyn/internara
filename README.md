@@ -1,6 +1,6 @@
 # Internara: Internship Management System
 
-[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
+[![Laravel Version](https://img.shields.io/badge/Laravel-13.x-red.svg)](https://laravel.com)
 [![PHP Version](https://img.shields.io/badge/PHP-8.4.x-blue.svg)](https://php.net)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -73,9 +73,9 @@ The setup wizard will guide you through school configuration, admin account crea
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Laravel 12, PHP 8.4 |
+| Backend | Laravel 13, PHP 8.4 |
 | UI Components | maryUI (Blade), DaisyUI 5 |
-| Interactivity | Livewire 3 (server-state), Alpine.js (instant client-side) |
+| Interactivity | Livewire 4 (server-state), Alpine.js (instant client-side) |
 | Styling | TailwindCSS 4, OKLCH color system |
 | Database | SQLite / MySQL / PostgreSQL (UUID primary keys) |
 | File Storage | Local or S3 (Spatie MediaLibrary) |

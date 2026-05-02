@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'student' => [
+        'title' => 'Student Management',
+        'subtitle' => 'Manage all students and their internship profiles',
+        'name' => 'Student Name',
+        'username' => 'Username',
+        'nisn' => 'NISN',
+        'nis' => 'NIS',
+        'department' => 'Department',
+        'joined' => 'Joined',
+        'new' => 'Register Student',
+        'edit' => 'Edit Student',
+        'save' => 'Save Student',
+        'update' => 'Update Student',
+        'delete' => 'Delete Student',
+        'success_created' => 'Student created successfully.',
+        'success_updated' => 'Student updated successfully.',
+        'success_deleted' => 'Student deleted successfully.',
+    ],
+    'teacher' => [
+        'title' => 'Teacher Management',
+        'subtitle' => 'Manage faculty members and supervisors',
+        'name' => 'Teacher Name',
+        'nip' => 'NIP / Registration Number',
+        'new' => 'Add Teacher',
+        'edit' => 'Edit Teacher',
+        'save' => 'Save Teacher',
+        'success_created' => 'Teacher added successfully.',
+    ],
+    'mentor' => [
+        'title' => 'Mentor Management',
+        'subtitle' => 'Manage industry mentors from partner companies',
+        'name' => 'Mentor Name',
+        'phone' => 'Phone Number',
+        'company' => 'Partner Company',
+        'new' => 'Add Mentor',
+        'edit' => 'Edit Mentor',
+        'save' => 'Save Mentor',
+        'success_created' => 'Mentor added successfully.',
+    ],
+    'admin' => [
+        'title' => 'Administrator Management',
+        'subtitle' => 'Manage system administrators and staff',
+        'name' => 'Admin Name',
+        'new' => 'Add Admin',
+        'edit' => 'Edit Admin',
+        'save' => 'Save Admin',
+        'success_created' => 'Admin added successfully.',
+    ],
+    'fields' => [
+        'full_name' => 'Full Name',
+        'email' => 'Email Address',
+        'password' => 'Password',
+        'username' => 'Username',
+        'roles' => 'Assigned Roles',
+        'bio' => 'Biography',
+    ],
+];

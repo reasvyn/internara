@@ -4,23 +4,18 @@
             <x-mary-button 
                 icon="o-language" 
                 class="btn-ghost btn-sm" 
-                title="{{ __('language.switch') }}"
-            >
-                {{ $locales[$currentLocale] ?? 'EN' }}
-            </x-mary-button>
+                :label="strtoupper($currentLocale)"
+                title="{{ __('common.language.switch', default: 'Switch Language') }}"
+            />
         </x-slot:trigger>
         
-        <x-mary-menu-item 
-            title="English" 
-            icon="o-flag-en" 
-            @click="switchLanguage('en')"
-            :class="$currentLocale === 'en' ? 'bg-primary text-white' : ''"
-        />
-        <x-mary-menu-item 
-            title="Indonesia" 
-            icon="o-flag-id" 
-            @click="switchLanguage('id')"
-            :class="$currentLocale === 'id' ? 'bg-primary text-white' : ''"
-        />
+        @foreach($supportedLocales as $code => $label)
+            <x-mary-menu-item 
+                :title="$label" 
+                icon="o-flag" 
+                wire:click="switchLanguage('{{ $code }}')"
+                :class="$currentLocale === $code ? 'bg-primary/10 text-primary font-bold' : ''"
+            />
+        @endforeach
     </x-mary-dropdown>
 </div>

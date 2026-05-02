@@ -8,122 +8,141 @@ use App\Actions\Auth\CreateUserAction;
 use App\Actions\Auth\DeleteUserAction;
 use App\Actions\Auth\UpdateUserAction;
 use App\Enums\Role as RoleEnum;
+use App\Livewire\BaseRecordManager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Mary\Traits\Toast;
-use Spatie\Permission\Models\Role;
 
-class AdminManager extends Component
+/**
+ * Modernized Admin Manager using BaseRecordManager pattern.
+ */
+class AdminManager extends BaseRecordManager
 {
-    use WithPagination, Toast;
-
-    public function boot(): void
-    {
-        if (!auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
-            abort(403, 'Unauthorized access.');
-        }
-    }
-
-    public string $search = '';
-    
     public bool $userModal = false;
-    
+
     public array $userData = [
         'id' => null,
         'name' => '',
         'email' => '',
-        'username' => '',
         'roles' => [RoleEnum::ADMIN->value],
     ];
 
+    public function boot(): void
+    {
+        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+            abort(403, 'Unauthorized access.');
+        }
+    }
+
+    /**
+     * Define columns and sorting.
+     */
     public function headers(): array
     {
         return [
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'name', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'email', 'label' => 'Email', 'sortable' => true],
-            ['key' => 'username', 'label' => 'Username'],
-            ['key' => 'created_at', 'label' => 'Joined', 'sortable' => true],
+            ['key' => 'name', 'label' => __('user.admin.name'), 'sortable' => true],
+            ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
+            ['key' => 'username', 'label' => __('user.fields.username'), 'class' => 'font-mono text-xs'],
+            ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
+            ['key' => 'actions', 'label' => ''],
         ];
     }
 
-    public function users(): LengthAwarePaginator
+    /**
+     * Base query for admins.
+     */
+    protected function query(): Builder
     {
         return User::query()
-            ->role([RoleEnum::ADMIN->value, RoleEnum::SUPER_ADMIN->value])
-            ->when($this->search, function (Builder $q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%");
-            })
-            ->latest()
-            ->paginate(10);
+            ->role([RoleEnum::ADMIN->value, RoleEnum::SUPER_ADMIN->value]);
     }
 
-    public function createUser(): void
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where(function ($q) {
+            $q->where('name', 'like', "%{$this->search}%")
+                ->orWhere('email', 'like', "%{$this->search}%")
+                ->orWhere('username', 'like', "%{$this->search}%");
+        });
+    }
+
+    // --- Record Actions ---
+
+    public function create(): void
     {
         $this->resetErrorBag();
         $this->userData = [
             'id' => null,
             'name' => '',
             'email' => '',
-            'username' => '',
             'roles' => [RoleEnum::ADMIN->value],
         ];
         $this->userModal = true;
     }
 
-    public function editUser(User $user): void
+    public function edit(User $user): void
     {
         $this->resetErrorBag();
         $this->userData = [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'username' => $user->username,
             'roles' => $user->roles->pluck('name')->toArray(),
         ];
         $this->userModal = true;
     }
 
-    public function saveUser(CreateUserAction $createAction, UpdateUserAction $updateAction): void
+    public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
         $this->validate([
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
-            'userData.username' => 'required|string|unique:users,username,' . ($this->userData['id'] ?? 'NULL'),
+            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
         ]);
 
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData);
-            $this->success('Admin updated.');
+            $this->success(__('user.admin.success_updated', default: 'Admin updated.'));
         } else {
             $createAction->execute($this->userData, [], $this->userData['roles']);
-            $this->success('Admin created.');
+            $this->success(__('user.admin.success_created'));
         }
 
         $this->userModal = false;
     }
 
-    public function deleteUser(User $user, DeleteUserAction $deleteAction): void
+    public function delete(User $user, DeleteUserAction $deleteAction): void
     {
         if ($user->id === auth()->id()) {
             $this->error('Cannot delete yourself.');
+
             return;
         }
 
         $deleteAction->execute($user);
-        $this->success('Admin deleted.');
+        $this->success(__('user.admin.success_deleted', default: 'Admin deleted.'));
+    }
+
+    // --- Bulk Actions ---
+
+    public function deleteSelected(DeleteUserAction $deleteAction): void
+    {
+        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+            if ($id === auth()->id()) {
+                return;
+            }
+            $user = User::find($id);
+            if ($user) {
+                $deleteAction->execute($user);
+            }
+        });
     }
 
     public function render()
     {
-        return view('livewire.admin.user.admin-manager', [
-            'users' => $this->users(),
-            'headers' => $this->headers(),
-        ]);
+        return view('livewire.admin.user.admin-manager');
     }
 }

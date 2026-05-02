@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -32,6 +34,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
+            $table->index('registration_id');
+            $table->index(['user_id', 'status']);
         });
     }
 

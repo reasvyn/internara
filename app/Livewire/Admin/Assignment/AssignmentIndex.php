@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace App\Livewire\Admin\Assignment;
 
 use App\Actions\Assignment\CreateAssignmentAction;
-use App\Actions\Assignment\UpdateAssignmentAction;
 use App\Actions\Assignment\DeleteAssignmentAction;
+use App\Actions\Assignment\UpdateAssignmentAction;
+use App\Livewire\BaseRecordManager;
 use App\Models\Assignment;
 use App\Models\AssignmentType;
 use App\Models\Internship;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Mary\Traits\Toast;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Computed;
 
-class AssignmentIndex extends Component
+/**
+ * Modernized Assignment Manager using BaseRecordManager pattern.
+ */
+class AssignmentIndex extends BaseRecordManager
 {
-    use WithPagination, Toast;
-
     public bool $showModal = false;
-    public array $assignmentData = [
+
+    public array $formData = [
         'id' => null,
         'assignment_type_id' => '',
         'internship_id' => '',
@@ -31,8 +32,9 @@ class AssignmentIndex extends Component
         'due_date' => '',
     ];
 
-    public string $search = '';
-
+    /**
+     * Define columns and sorting.
+     */
     public function headers(): array
     {
         return [
@@ -40,24 +42,59 @@ class AssignmentIndex extends Component
             ['key' => 'title', 'label' => 'Title', 'sortable' => true],
             ['key' => 'type.name', 'label' => 'Type'],
             ['key' => 'internship.name', 'label' => 'Internship'],
-            ['key' => 'due_date', 'label' => 'Due Date'],
+            ['key' => 'due_date', 'label' => 'Due Date', 'sortable' => true],
             ['key' => 'is_mandatory', 'label' => 'Mandatory'],
+            ['key' => 'actions', 'label' => ''],
         ];
     }
 
-    public function assignments(): LengthAwarePaginator
+    /**
+     * Base query for assignments.
+     */
+    protected function query(): Builder
     {
         return Assignment::query()
-            ->with(['type', 'internship'])
-            ->when($this->search, fn ($q) => $q->where('title', 'like', "%{$this->search}%"))
-            ->latest()
-            ->paginate(10);
+            ->with(['type', 'internship']);
     }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('title', 'like', "%{$this->search}%");
+    }
+
+    /**
+     * Filter implementation.
+     */
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['internship_id'] ?? null, function ($q, $internshipId) {
+            $q->where('internship_id', $internshipId);
+        })->when($this->filters['type_id'] ?? null, function ($q, $typeId) {
+            $q->where('assignment_type_id', $typeId);
+        });
+    }
+
+    #[Computed]
+    public function assignmentTypes()
+    {
+        return AssignmentType::all();
+    }
+
+    #[Computed]
+    public function internships()
+    {
+        return Internship::all();
+    }
+
+    // --- Record Actions ---
 
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->assignmentData = [
+        $this->formData = [
             'id' => null,
             'assignment_type_id' => '',
             'internship_id' => '',
@@ -73,7 +110,7 @@ class AssignmentIndex extends Component
     public function edit(Assignment $assignment): void
     {
         $this->resetErrorBag();
-        $this->assignmentData = [
+        $this->formData = [
             'id' => $assignment->id,
             'assignment_type_id' => $assignment->assignment_type_id,
             'internship_id' => $assignment->internship_id,
@@ -89,26 +126,26 @@ class AssignmentIndex extends Component
     public function save(CreateAssignmentAction $createAction, UpdateAssignmentAction $updateAction): void
     {
         $this->validate([
-            'assignmentData.assignment_type_id' => 'required|exists:assignment_types,id',
-            'assignmentData.internship_id' => 'required|exists:internships,id',
-            'assignmentData.title' => 'required|string|max:255',
-            'assignmentData.due_date' => 'required|date',
+            'formData.assignment_type_id' => 'required|exists:assignment_types,id',
+            'formData.internship_id' => 'required|exists:internships,id',
+            'formData.title' => 'required|string|max:255',
+            'formData.due_date' => 'required|date',
         ]);
 
-        if ($this->assignmentData['id']) {
-            $assignment = Assignment::findOrFail($this->assignmentData['id']);
-            $updateAction->execute($assignment, $this->assignmentData);
+        if ($this->formData['id']) {
+            $assignment = Assignment::findOrFail($this->formData['id']);
+            $updateAction->execute($assignment, $this->formData);
             $this->success('Assignment updated.');
         } else {
             $createAction->execute(
-                $this->assignmentData['assignment_type_id'],
-                $this->assignmentData['internship_id'],
-                $this->assignmentData['title'],
-                $this->assignmentData['description'],
-                $this->assignmentData['group'],
+                $this->formData['assignment_type_id'],
+                $this->formData['internship_id'],
+                $this->formData['title'],
+                $this->formData['description'],
+                $this->formData['group'],
                 null,
-                $this->assignmentData['is_mandatory'],
-                ['due_date' => $this->assignmentData['due_date']]
+                $this->formData['is_mandatory'],
+                ['due_date' => $this->formData['due_date']]
             );
             $this->success('Assignment created.');
         }
@@ -122,13 +159,20 @@ class AssignmentIndex extends Component
         $this->success('Assignment deleted.');
     }
 
+    // --- Bulk Actions ---
+
+    public function deleteSelected(DeleteAssignmentAction $action): void
+    {
+        $this->performBulkAction('Delete', function ($id) use ($action) {
+            $assignment = Assignment::find($id);
+            if ($assignment) {
+                $action->execute($assignment);
+            }
+        });
+    }
+
     public function render()
     {
-        return view('livewire.admin.assignment.index', [
-            'assignments' => $this->assignments(),
-            'headers' => $this->headers(),
-            'types' => AssignmentType::all(),
-            'internships' => Internship::all(),
-        ]);
+        return view('livewire.admin.assignment.index');
     }
 }

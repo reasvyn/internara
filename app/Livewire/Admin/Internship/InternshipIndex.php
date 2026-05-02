@@ -8,34 +8,65 @@ use App\Actions\Internship\CreateInternshipAction;
 use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
 use App\Enums\InternshipStatus;
+use App\Livewire\BaseRecordManager;
 use App\Models\Internship;
 use App\Models\InternshipPlacement;
 use App\Models\InternshipRegistration;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
 
-class InternshipIndex extends Component
+/**
+ * Modernized Internship Manager using BaseRecordManager pattern.
+ */
+class InternshipIndex extends BaseRecordManager
 {
-    use WithPagination;
-
     public bool $showModal = false;
-    public string $internshipId = '';
-    public string $name = '';
-    public string $start_date = '';
-    public string $end_date = '';
-    public string $description = '';
-    public string $status = InternshipStatus::DRAFT->value;
 
-    public string $search = '';
+    public array $formData = [
+        'id' => null,
+        'name' => '',
+        'start_date' => '',
+        'end_date' => '',
+        'description' => '',
+        'status' => 'draft',
+    ];
 
-    protected $queryString = ['search'];
+    /**
+     * Define columns and sorting.
+     */
+    public function headers(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('internship.batch_name'), 'sortable' => true],
+            ['key' => 'start_date', 'label' => __('internship.start_date'), 'sortable' => true],
+            ['key' => 'end_date', 'label' => __('internship.end_date'), 'sortable' => true],
+            ['key' => 'status', 'label' => __('internship.status'), 'sortable' => true],
+            ['key' => 'actions', 'label' => ''],
+        ];
+    }
+
+    /**
+     * Base query for internships.
+     */
+    protected function query(): Builder
+    {
+        return Internship::query()
+            ->withCount(['placements', 'registrations']);
+    }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('name', 'like', "%{$this->search}%");
+    }
 
     #[Computed]
     public function statusOptions(): array
     {
-        return collect(InternshipStatus::cases())->map(fn($s) => [
+        return collect(InternshipStatus::cases())->map(fn ($s) => [
             'id' => $s->value,
             'name' => __("internship.statuses.{$s->value}"),
         ])->toArray();
@@ -52,76 +83,84 @@ class InternshipIndex extends Component
         ];
     }
 
-    public function rules(): array
-    {
-        $validStatuses = collect(InternshipStatus::cases())->map(fn($s) => $s->value)->toArray();
-
-        return [
-            'name' => ['required', 'string', 'max:255', 'unique:internships,name,' . $this->internshipId],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', 'string', 'in:' . implode(',', $validStatuses)],
-        ];
-    }
+    // --- Record Actions ---
 
     public function create(): void
     {
-        $this->reset(['internshipId', 'name', 'start_date', 'end_date', 'description']);
-        $this->status = InternshipStatus::DRAFT->value;
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => null,
+            'name' => '',
+            'start_date' => '',
+            'end_date' => '',
+            'description' => '',
+            'status' => InternshipStatus::DRAFT->value,
+        ];
         $this->showModal = true;
     }
 
     public function edit(Internship $internship): void
     {
-        $this->internshipId = $internship->id;
-        $this->name = $internship->name;
-        $this->start_date = $internship->start_date->format('Y-m-d');
-        $this->end_date = $internship->end_date->format('Y-m-d');
-        $this->description = $internship->description ?? '';
-        $this->status = $internship->status->value;
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => $internship->id,
+            'name' => $internship->name,
+            'start_date' => $internship->start_date->format('Y-m-d'),
+            'end_date' => $internship->end_date->format('Y-m-d'),
+            'description' => $internship->description ?? '',
+            'status' => $internship->status->value,
+        ];
         $this->showModal = true;
     }
 
     public function save(CreateInternshipAction $create, UpdateInternshipAction $update): void
     {
-        $validated = $this->validate();
+        $validStatuses = collect(InternshipStatus::cases())->map(fn ($s) => $s->value)->toArray();
 
-        if ($this->internshipId) {
-            $internship = Internship::findOrFail($this->internshipId);
-            $update->execute($internship, $validated);
-            flash()->success(__('internship.update_success'));
+        $this->validate([
+            'formData.name' => ['required', 'string', 'max:255', 'unique:internships,name,'.($this->formData['id'] ?? 'NULL')],
+            'formData.start_date' => ['required', 'date'],
+            'formData.end_date' => ['required', 'date', 'after:formData.start_date'],
+            'formData.description' => ['nullable', 'string'],
+            'formData.status' => ['required', 'string', 'in:'.implode(',', $validStatuses)],
+        ]);
+
+        if ($this->formData['id']) {
+            $internship = Internship::findOrFail($this->formData['id']);
+            $update->execute($internship, $this->formData);
+            $this->success(__('internship.update_success'));
         } else {
-            $create->execute($validated);
-            flash()->success(__('internship.save_success'));
+            $create->execute($this->formData);
+            $this->success(__('internship.save_success'));
         }
 
         $this->showModal = false;
-        $this->reset(['internshipId', 'name', 'start_date', 'end_date', 'description', 'status']);
     }
 
     public function delete(Internship $internship, DeleteInternshipAction $deleteAction): void
     {
         if ($internship->placements()->exists() || $internship->registrations()->exists()) {
-            flash()->error(__('internship.delete_blocked'));
+            $this->error(__('internship.delete_blocked'));
+
             return;
         }
 
         $deleteAction->execute($internship);
-        flash()->success(__('internship.delete_success'));
+        $this->success(__('internship.delete_success'));
+    }
+
+    // --- Mass Actions ---
+
+    public function closeAllFiltered(): void
+    {
+        $this->performMassAction('Close All Filtered', function ($query) {
+            $query->update(['status' => InternshipStatus::COMPLETED->value]);
+        });
     }
 
     #[Layout('components.layouts.app')]
     public function render()
     {
-        $internships = Internship::query()
-            ->withCount(['placements', 'registrations'])
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
-            ->latest('start_date')
-            ->paginate(10);
-
-        return view('livewire.admin.internship.internship-index', [
-            'internships' => $internships,
-        ]);
+        return view('livewire.admin.internship.internship-index');
     }
 }

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Actions\Internship;
 
 use App\Actions\Audit\LogAuditAction;
+use App\Models\Internship;
 use App\Models\InternshipRegistration;
 use App\Models\User;
+use App\Notifications\InternshipRegistrationNotification;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -50,6 +52,14 @@ class RegisterInternshipAction
             ]);
 
             $registration->setStatus('pending', 'Initial registration submitted by student.');
+
+            // Notify Student
+            $internship = Internship::find($data['internship_id']);
+            $student->notify(new InternshipRegistrationNotification(
+                $internship->name,
+                'pending',
+                'Your registration has been submitted and is awaiting review.'
+            ));
 
             $this->logAuditAction->execute(
                 action: 'internship_registered',

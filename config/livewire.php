@@ -31,19 +31,19 @@ return [
 
     /*
     |---------------------------------------------------------------------------
-    | Layout
+    | Component Layout
     |---------------------------------------------------------------------------
     | The view that will be used as the layout when rendering a single component
-    | as an entire page via `Route::get('/post/create', CreatePost::class);`.
+    | as an entire page via `Route::livewire('/post/create', CreatePost::class);`.
     | In this case, the view returned by CreatePost will render into $slot.
     |
     */
 
-    'layout' => 'components.layouts.app',
+    'component_layout' => 'layouts::app',
 
     /*
     |---------------------------------------------------------------------------
-    | Lazy Loading Placeholder
+    | Component Placeholder
     |---------------------------------------------------------------------------
     | Livewire allows you to lazy load components that would otherwise slow down
     | the initial page load. Every component can have a custom placeholder or
@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'lazy_placeholder' => null,
+    'component_placeholder' => null,
 
     /*
     |---------------------------------------------------------------------------
@@ -65,12 +65,11 @@ return [
     */
 
     'temporary_file_upload' => [
-        'disk' => null, // Example: 'local', 's3'              | Default: 'default'
-        'rules' => null, // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
-        'directory' => null, // Example: 'tmp'                      | Default: 'livewire-tmp'
-        'middleware' => null, // Example: 'throttle:5,1'             | Default: 'throttle:60,1'
+        'disk' => null,
+        'rules' => null,
+        'directory' => null,
+        'middleware' => null,
         'preview_mimes' => [
-            // Supported file types for temporary pre-signed file URLs...
             'png',
             'gif',
             'bmp',
@@ -88,8 +87,8 @@ return [
             'webp',
             'wma',
         ],
-        'max_upload_time' => 5, // Max duration (in minutes) before an upload is invalidated...
-        'cleanup' => true, // Should cleanup temporary uploads older than 24 hrs...
+        'max_upload_time' => 5,
+        'cleanup' => true,
     ],
 
     /*
@@ -171,7 +170,7 @@ return [
     |
     */
 
-    'smart_wire_keys' => false,
+    'smart_wire_keys' => true,
 
     /*
     |---------------------------------------------------------------------------
@@ -198,4 +197,60 @@ return [
     */
 
     'release_token' => 'a',
+
+    /*
+    |---------------------------------------------------------------------------
+    | Component Locations
+    |---------------------------------------------------------------------------
+    |
+    | Defines where Livewire looks for single-file and multi-file (view-based)
+    | components.
+    |
+    */
+
+    'component_locations' => [
+        resource_path('views/components'),
+        resource_path('views/livewire'),
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Component Namespaces
+    |---------------------------------------------------------------------------
+    |
+    | Creates custom namespaces for organizing view-based components.
+    |
+    */
+
+    'component_namespaces' => [
+        'layouts' => resource_path('views/layouts'),
+        'pages' => resource_path('views/pages'),
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Make Command Defaults
+    |---------------------------------------------------------------------------
+    |
+    | Configure default component format and emoji usage for artisan make commands.
+    | Set 'type' to 'class' to match v3 class-based component behavior.
+    |
+    */
+
+    'make_command' => [
+        'type' => 'class',
+        'emoji' => true,
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | CSP Safe Mode
+    |---------------------------------------------------------------------------
+    |
+    | Enable Content Security Policy mode to avoid unsafe-eval violations.
+    | When enabled, Livewire uses the Alpine CSP build.
+    |
+    */
+
+    'csp_safe' => false,
 ];

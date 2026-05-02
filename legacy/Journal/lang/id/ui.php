@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'index' => [
+        'title' => 'Jurnal Harian',
+        'subtitle' => 'Catat dan pantau aktivitas magang setiap hari.',
+        'create_new' => 'Buat Jurnal Baru',
+        'create_title' => 'Buat Jurnal Baru',
+        'edit_title' => 'Ubah Jurnal',
+        'menu_title' => 'Jurnal Harian',
+        'nav_title' => 'Jurnal',
+        'this_week' => 'Minggu Ini',
+        'week_subtitle' => 'Status jurnal harian Anda.',
+        'not_filled' => 'Belum diisi',
+        'search_placeholder' => 'Cari topik atau kompetensi...',
+        'filter_date' => 'Tanggal: :date',
+        'table' => [
+            'date' => 'Tanggal',
+            'student' => 'Siswa',
+            'work_topic' => 'Topik Pekerjaan',
+            'status' => 'Status',
+        ],
+        'actions' => [
+            'view_detail' => 'Lihat Detail',
+            'edit' => 'Edit Jurnal',
+            'approve' => 'Setujui',
+            'reject' => 'Tolak',
+            'approve_confirm' => 'Setujui jurnal ini?',
+            'reject_confirm' => 'Tolak jurnal ini?',
+        ],
+        'modal' => [
+            'title' => 'Detail Jurnal',
+            'work_topic' => 'Topik Pekerjaan',
+            'description' => 'Deskripsi Aktivitas',
+            'competence' => 'Kompetensi Dasar',
+            'character' => 'Nilai Karakter',
+            'reflection' => 'Refleksi & Pembelajaran',
+            'notes' => 'Keterangan Tambahan',
+            'attachments' => 'Lampiran',
+        ],
+        'form' => [
+            'date' => 'Tanggal Kehadiran',
+            'work_topic' => 'Topik Pekerjaan',
+            'work_topic_placeholder' => 'Misal: Instalasi OS, Troubleshooting Jaringan, dll',
+            'description' => 'Deskripsi Aktivitas',
+            'description_placeholder' => 'Jelaskan secara mendetail apa saja yang Anda kerjakan hari ini...',
+            'competence' => 'Kompetensi Dasar / Skill',
+            'competence_hint' => 'Pilih kompetensi yang relevan dengan pekerjaan hari ini.',
+            'character' => 'Nilai-nilai Karakter',
+            'character_placeholder' => 'Misal: Disiplin, Kerjasama, Tanggung Jawab',
+            'reflection' => 'Refleksi & Pembelajaran',
+            'reflection_placeholder' => 'Apa hal baru atau tantangan yang Anda hadapi hari ini?',
+            'notes' => 'Keterangan Tambahan',
+            'notes_placeholder' => 'Informasi tambahan lainnya jika diperlukan.',
+            'attachments' => 'Lampiran / Bukti Kegiatan',
+            'submit' => 'Kirim Jurnal',
+            'save_draft' => 'Simpan Draf',
+        ],
+    ],
+];
