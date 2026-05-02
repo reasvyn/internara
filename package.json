@@ -24,7 +24,7 @@
         "lightningcss-linux-x64-gnu": "^1.31.1"
     },
     "devDependencies": {
-        "@prettier/plugin-php": "^0.24.0",
+        "@prettier/plugin-php": "^0.25.0",
         "@tailwindcss/vite": "^4.1.18",
         "daisyui": "^5.5.19",
         "prettier": "^3.8.1",
