@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Setup;
 
+use App\Services\Setup\SetupRequirementRegistry;
 use Illuminate\Support\Facades\DB;
 use PDO;
 use PDOException;
@@ -13,6 +14,7 @@ use PDOException;
  *
  * S1 - Secure: Sanitizes errors to prevent credential exposure.
  * S2 - Sustain: Clear, actionable check results for operators.
+ * S3 - Scalable: Uses Registry for dynamic requirement management.
  */
 class EnvAuditor
 {
@@ -21,54 +23,12 @@ class EnvAuditor
      */
     private const MIN_PHP_VERSION = '8.4.0';
 
-    /**
-     * Required PHP extensions for Laravel 13 + Core Features.
-     *
-     * @var array<int, string>
-     */
-    private const REQUIRED_EXTENSIONS = [
-        'bcmath',
-        'ctype',
-        'fileinfo',
-        'mbstring',
-        'openssl',
-        'pdo',
-        'tokenizer',
-        'xml',
-        'curl',
-        'gd',
-        'intl',
-        'zip',
-    ];
-
-    /**
-     * Recommended PHP extensions for production.
-     *
-     * @var array<int, string>
-     */
-    private const RECOMMENDED_EXTENSIONS = ['redis', 'pcntl', 'posix'];
-
-    /**
-     * Directories that must be writable.
-     *
-     * @var array<int, string>
-     */
-    private const WRITABLE_DIRS = ['storage', 'bootstrap/cache', 'database'];
+    public function __construct(private SetupRequirementRegistry $registry)
+    {
+    }
 
     /**
      * Run all pre-flight checks and return results.
-     *
-     * @return array{
-     *     passed: bool,
-     *     categories: array<string, array{
-     *         label: string,
-     *         checks: array<int, array{
-     *             name: string,
-     *             status: 'pass'|'fail'|'warn',
-     *             message: string,
-     *         }>
-     *     }>,
-     * }
      */
     public function audit(): array
     {
@@ -102,9 +62,6 @@ class EnvAuditor
         ];
     }
 
-    /**
-     * Check PHP version meets minimum requirement.
-     */
     private function checkPhpVersion(): array
     {
         $current = PHP_VERSION;
@@ -122,18 +79,11 @@ class EnvAuditor
         ];
     }
 
-    /**
-     * Check all required PHP extensions are loaded.
-     *
-     * @return array<int, array>
-     */
     private function checkRequiredExtensions(): array
     {
         $checks = [];
-
-        foreach (self::REQUIRED_EXTENSIONS as $ext) {
+        foreach ($this->registry->getRequiredExtensions() as $ext) {
             $loaded = extension_loaded($ext);
-
             $checks[] = [
                 'name' => __('setup.checks.extension', ['extension' => $ext]),
                 'status' => $loaded ? 'pass' : 'fail',
@@ -142,22 +92,14 @@ class EnvAuditor
                     : __('setup.checks.extension_fail', ['extension' => $ext]),
             ];
         }
-
         return $checks;
     }
 
-    /**
-     * Check recommended PHP extensions.
-     *
-     * @return array<int, array>
-     */
     private function checkRecommendedExtensions(): array
     {
         $checks = [];
-
-        foreach (self::RECOMMENDED_EXTENSIONS as $ext) {
+        foreach ($this->registry->getRecommendedExtensions() as $ext) {
             $loaded = extension_loaded($ext);
-
             $checks[] = [
                 'name' => __('setup.checks.recommended_extension', ['extension' => $ext]),
                 'status' => $loaded ? 'pass' : 'warn',
@@ -166,23 +108,15 @@ class EnvAuditor
                     : __('setup.checks.recommended_fail', ['extension' => $ext]),
             ];
         }
-
         return $checks;
     }
 
-    /**
-     * Check required directories are writable.
-     *
-     * @return array<int, array>
-     */
     private function checkWritableDirectories(): array
     {
         $checks = [];
-
-        foreach (self::WRITABLE_DIRS as $dir) {
+        foreach ($this->registry->getWritableDirs() as $dir) {
             $path = base_path($dir);
             $writable = is_writable($path);
-
             $checks[] = [
                 'name' => __('setup.checks.writable_dir', ['directory' => $dir]),
                 'status' => $writable ? 'pass' : 'fail',
@@ -191,14 +125,9 @@ class EnvAuditor
                     : __('setup.checks.writable_fail', ['directory' => $dir]),
             ];
         }
-
         return $checks;
     }
 
-    /**
-     * Check database connectivity.
-     * S1: Sanitizes error messages to prevent credential exposure.
-     */
     private function checkDatabaseConnection(): array
     {
         try {
@@ -225,7 +154,6 @@ class EnvAuditor
                 ]),
             ];
         } catch (PDOException $e) {
-            // S1: Never expose connection details or credentials in error messages
             return [
                 'name' => __('setup.checks.db_connection'),
                 'status' => 'fail',
@@ -236,32 +164,18 @@ class EnvAuditor
         }
     }
 
-    /**
-     * Check if application key is set.
-     */
     private function checkAppKey(): array
     {
         $key = config('app.key');
-
-        if ($key === null || $key === '') {
-            return [
-                'name' => __('setup.checks.app_key'),
-                'status' => 'fail',
-                'message' => __('setup.checks.app_key_fail'),
-            ];
-        }
-
         return [
             'name' => __('setup.checks.app_key'),
-            'status' => 'pass',
-            'message' => __('setup.checks.app_key_pass'),
+            'status' => ($key !== null && $key !== '') ? 'pass' : 'fail',
+            'message' => ($key !== null && $key !== '') 
+                ? __('setup.checks.app_key_pass') 
+                : __('setup.checks.app_key_fail'),
         ];
     }
 
-    /**
-     * Sanitize error messages to prevent credential exposure.
-     * S1: Remove any connection strings, credentials, or paths from error output.
-     */
     private function sanitizeError(string $message): string
     {
         $patterns = [
@@ -275,7 +189,6 @@ class EnvAuditor
             $message = preg_replace($pattern, '[redacted]', $message) ?? $message;
         }
 
-        // Truncate to prevent leaking sensitive context
         if (strlen($message) > 120) {
             $message = substr($message, 0, 117) . '...';
         }

@@ -26,7 +26,14 @@ class ProtectSetupRoute
     {
         // Block access if already installed
         if ($this->setupService->isInstalled()) {
-            return redirect()->route('login')->with('info', __('setup.already_installed'));
+            // S1: Allow access only if the session is currently on the final 'complete' step
+            // AND within the short 5-minute finalization window.
+            if (
+                $this->setupService->getCurrentStep() !== 7 ||
+                !$this->setupService->isFinalizationWindowActive()
+            ) {
+                return redirect()->route('login')->with('info', __('setup.already_installed'));
+            }
         }
 
         // Rate limit: 20 attempts per 60 seconds per IP
