@@ -1,9 +1,0 @@
-{
-    "name": "Notification",
-    "alias": "notifications",
-    "description": "",
-    "keywords": [],
-    "priority": 0,
-    "providers": ["Modules\\Notification\\Providers\\NotificationServiceProvider"],
-    "files": []
-}

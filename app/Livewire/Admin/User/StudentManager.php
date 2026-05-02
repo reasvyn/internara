@@ -8,43 +8,84 @@ use App\Actions\Auth\CreateUserAction;
 use App\Actions\Auth\DeleteUserAction;
 use App\Actions\Auth\UpdateUserAction;
 use App\Enums\Role as RoleEnum;
+use App\Livewire\BaseRecordManager;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
-class StudentManager extends Component
+/**
+ * Modernized Student Manager using BaseRecordManager pattern.
+ *
+ * S2 - Sustain: Clean, reusable, and follows architecture guidelines.
+ */
+class StudentManager extends BaseRecordManager
 {
-    use WithPagination, Toast;
-
-    public function boot(): void
-    {
-        if (!auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
-            abort(403, 'Unauthorized access.');
-        }
-    }
-
-    public string $search = '';
-    
-    public array $filters = [
-        'department_id' => null,
-    ];
-
     public bool $userModal = false;
-    
+
     public array $userData = [
         'id' => null,
         'name' => '',
         'email' => '',
-        'username' => '',
         'national_identifier' => '',
         'registration_number' => '',
         'department_id' => '',
     ];
+
+    public function boot(): void
+    {
+        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+            abort(403, 'Unauthorized access.');
+        }
+    }
+
+    /**
+     * Define columns and sorting.
+     */
+    public function headers(): array
+    {
+        return [
+            ['key' => 'name', 'label' => __('user.student.name'), 'sortable' => true],
+            ['key' => 'username', 'label' => __('user.student.username'), 'class' => 'font-mono text-xs'],
+            ['key' => 'profile.national_identifier', 'label' => __('user.student.nisn')],
+            ['key' => 'profile.registration_number', 'label' => __('user.student.nis')],
+            ['key' => 'profile.department.name', 'label' => __('user.student.department')],
+            ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
+            ['key' => 'actions', 'label' => ''],
+        ];
+    }
+
+    /**
+     * Base query for students.
+     */
+    protected function query(): Builder
+    {
+        return User::query()
+            ->role(RoleEnum::STUDENT->value)
+            ->with(['profile.department']);
+    }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where(function ($q) {
+            $q->where('name', 'like', "%{$this->search}%")
+                ->orWhere('email', 'like', "%{$this->search}%")
+                ->orWhere('username', 'like', "%{$this->search}%");
+        });
+    }
+
+    /**
+     * Filter implementation.
+     */
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['department_id'] ?? null, function ($q, $deptId) {
+            $q->whereHas('profile', fn ($qp) => $qp->where('department_id', $deptId));
+        });
+    }
 
     #[Computed]
     public function departments()
@@ -52,34 +93,7 @@ class StudentManager extends Component
         return Department::orderBy('name')->get();
     }
 
-    public function headers(): array
-    {
-        return [
-            ['key' => 'name', 'label' => 'Student Name', 'sortable' => true],
-            ['key' => 'profile.national_identifier', 'label' => 'NISN'],
-            ['key' => 'profile.registration_number', 'label' => 'NIS'],
-            ['key' => 'profile.department.name', 'label' => 'Department'],
-            ['key' => 'created_at', 'label' => 'Joined', 'sortable' => true],
-            ['key' => 'actions', 'label' => '']
-        ];
-    }
-
-    public function users(): LengthAwarePaginator
-    {
-        return User::query()
-            ->role(RoleEnum::STUDENT->value)
-            ->with(['profile.department'])
-            ->when($this->search, function (Builder $q) {
-                $q->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%")
-                    ->orWhere('username', 'like', "%{$this->search}%");
-            })
-            ->when($this->filters['department_id'], function (Builder $q) {
-                $q->whereHas('profile', fn($qp) => $qp->where('department_id', $this->filters['department_id']));
-            })
-            ->latest()
-            ->paginate(10);
-    }
+    // --- Record Actions ---
 
     public function createUser(): void
     {
@@ -88,7 +102,6 @@ class StudentManager extends Component
             'id' => null,
             'name' => '',
             'email' => '',
-            'username' => '',
             'national_identifier' => '',
             'registration_number' => '',
             'department_id' => '',
@@ -103,7 +116,6 @@ class StudentManager extends Component
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'username' => $user->username,
             'national_identifier' => $user->profile?->national_identifier ?? '',
             'registration_number' => $user->profile?->registration_number ?? '',
             'department_id' => $user->profile?->department_id ?? '',
@@ -115,8 +127,7 @@ class StudentManager extends Component
     {
         $this->validate([
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
-            'userData.username' => 'required|string|unique:users,username,' . ($this->userData['id'] ?? 'NULL'),
+            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
             'userData.national_identifier' => 'required|string|max:20',
             'userData.department_id' => 'required|exists:departments,id',
         ]);
@@ -130,10 +141,10 @@ class StudentManager extends Component
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, $profileData);
-            $this->success('Student updated.');
+            $this->success(__('user.student.success_updated'));
         } else {
             $createAction->execute($this->userData, $profileData, [RoleEnum::STUDENT->value]);
-            $this->success('Student created.');
+            $this->success(__('user.student.success_created'));
         }
 
         $this->userModal = false;
@@ -142,14 +153,32 @@ class StudentManager extends Component
     public function deleteUser(User $user, DeleteUserAction $deleteAction): void
     {
         $deleteAction->execute($user);
-        $this->success('Student deleted.');
+        $this->success(__('user.student.success_deleted'));
+    }
+
+    // --- Bulk Actions (Selected Rows) ---
+
+    public function deleteSelected(DeleteUserAction $deleteAction): void
+    {
+        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+            $user = User::find($id);
+            if ($user) {
+                $deleteAction->execute($user);
+            }
+        });
+    }
+
+    // --- Mass Actions (Active Query) ---
+
+    public function archiveAllFiltered(): void
+    {
+        $this->performMassAction('Archive Filtered', function ($query) {
+            $query->each(fn ($user) => $user->setStatus('archived', 'Mass archived via Student Manager'));
+        });
     }
 
     public function render()
     {
-        return view('livewire.admin.user.student-manager', [
-            'users' => $this->users(),
-            'headers' => $this->headers(),
-        ]);
+        return view('livewire.admin.user.student-manager');
     }
 }

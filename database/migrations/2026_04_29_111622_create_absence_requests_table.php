@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -25,6 +27,9 @@ return new class extends Migration
             $table->timestamp('processed_at')->nullable();
             $table->text('admin_notes')->nullable();
             $table->timestamps();
+
+            $table->index(['user_id', 'status']);
+            $table->index('registration_id');
         });
     }
 

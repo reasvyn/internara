@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\Setting\SetSettingAction;
+use App\Support\Environment;
 use App\Support\Settings;
 
 if (! function_exists('setting')) {
@@ -15,7 +16,7 @@ if (! function_exists('setting')) {
      *
      * @param string|array|null $key Setting key, array of key-value pairs to set, or null to get Settings instance
      * @param mixed $default Default value when getting a setting
-     * @param bool $skipCache Deprecated parameter kept for backward compatibility
+     * @param bool $skipCache Whether to skip the cache and read from database
      */
     function setting(
         string|array|null $key = null,
@@ -34,9 +35,49 @@ if (! function_exists('setting')) {
 
         // Get single setting value
         if (is_string($key)) {
-            return Settings::get($key, $default);
+            return Settings::get($key, $default, $skipCache);
         }
 
         return $default;
+    }
+}
+
+if (! function_exists('is_debug_mode')) {
+    /**
+     * Determine if the application is currently in debug mode.
+     */
+    function is_debug_mode(): bool
+    {
+        return Environment::isDebugMode();
+    }
+}
+
+if (! function_exists('is_development')) {
+    /**
+     * Determine if the application is running in a development environment.
+     */
+    function is_development(): bool
+    {
+        return Environment::isDevelopment();
+    }
+}
+
+if (! function_exists('is_testing')) {
+    /**
+     * Determine if the application is currently running tests.
+     */
+    function is_testing(): bool
+    {
+        return Environment::isTesting();
+    }
+}
+
+if (! function_exists('is_maintenance')) {
+    /**
+     * Determine if the application is currently in maintenance mode.
+     */
+    function is_maintenance(): bool
+    {
+        return Environment::isMaintenance();
     }
 }

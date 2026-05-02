@@ -20,14 +20,15 @@ class SetSettingAction
      * Execute the setting update.
      *
      * The value's PHP type is automatically detected and stored with the
-     * correct database type via SettingValueCast.
+     * correct database type via SettingValueCast, unless $type is explicitly provided.
      */
-    public function execute(string $key, mixed $value, ?string $group = 'general', ?string $description = null): Setting
+    public function execute(string $key, mixed $value, ?string $group = 'general', ?string $description = null, ?string $type = null): Setting
     {
         $setting = Setting::updateOrCreate(
             ['key' => $key],
             [
                 'value' => $value,
+                'type' => $type ?? 'string', // Default to string, cast will detect if type is null
                 'group' => $group,
                 'description' => $description,
             ],
@@ -55,13 +56,15 @@ class SetSettingAction
                 $value = $config['value'];
                 $group = $config['group'] ?? 'general';
                 $description = $config['description'] ?? null;
+                $type = $config['type'] ?? null;
             } else {
                 $value = $config;
                 $group = 'general';
                 $description = null;
+                $type = null;
             }
 
-            $results->push($this->execute($key, $value, $group, $description));
+            $results->push($this->execute($key, $value, $group, $description, $type));
         }
 
         return $results;

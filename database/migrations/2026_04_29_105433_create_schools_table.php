@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('phone')->nullable();
+            $table->string('website')->nullable();
             $table->string('fax')->nullable();
             $table->string('principal_name')->nullable();
             $table->timestamps();

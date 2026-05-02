@@ -17,13 +17,14 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
             $table->foreignUuid('requirement_id')->constrained('internship_requirements')->onDelete('cascade');
-            
+
             $table->text('value')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('verified_at')->nullable();
             $table->foreignUuid('verified_by')->nullable()->constrained('users')->onDelete('set null');
 
             $table->unique(['registration_id', 'requirement_id']);
+            $table->index('registration_id');
             $table->timestamps();
         });
     }

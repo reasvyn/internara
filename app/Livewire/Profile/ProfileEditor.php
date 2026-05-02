@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Profile;
 
+use App\Actions\Auth\UpdatePasswordAction;
 use App\Actions\Profile\UpdateProfileAction;
 use App\Models\User;
+use Illuminate\Validation\Rules\Password;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -14,18 +17,24 @@ class ProfileEditor extends Component
     use Toast;
 
     public User $user;
-    
+
     public array $data = [];
+
+    public array $passwordData = [
+        'current_password' => '',
+        'password' => '',
+        'password_confirmation' => '',
+    ];
 
     /**
      * Initialize the component.
      */
     public function mount()
     {
-        $this->user = auth()->user();
-        
+        $this->user = auth()->user()->load(['profile', 'roles']);
+
         $profile = $this->user->profile;
-        
+
         $this->data = [
             'name' => $this->user->name,
             'email' => $this->user->email,
@@ -42,9 +51,9 @@ class ProfileEditor extends Component
     {
         $this->validate([
             'data.name' => 'required|string|max:255',
-            'data.email' => 'required|email|unique:users,email,' . $this->user->id,
-            'data.phone' => 'nullable|string',
-            'data.address' => 'nullable|string',
+            'data.email' => 'required|email|unique:users,email,'.$this->user->id,
+            'data.phone' => 'nullable|string|max:20',
+            'data.address' => 'nullable|string|max:500',
             'data.bio' => 'nullable|string|max:1000',
         ]);
 
@@ -62,26 +71,25 @@ class ProfileEditor extends Component
         $this->success('Profile updated successfully.');
     }
 
+    /**
+     * Update the user's password.
+     */
+    public function updatePassword(UpdatePasswordAction $updatePassword)
+    {
+        $this->validate([
+            'passwordData.current_password' => ['required', 'current_password'],
+            'passwordData.password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $updatePassword->execute($this->user, $this->passwordData['password']);
+
+        $this->reset('passwordData');
+        $this->success('Password updated successfully.');
+    }
+
+    #[Layout('components.layouts.app')]
     public function render()
     {
-        return <<<'HTML'
-        <div>
-            <x-mary-header title="Your Profile" subtitle="Manage your account information" separator />
-            
-            <x-mary-form wire:submit="save">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-mary-input label="Full Name" wire:model="data.name" icon="o-user" />
-                    <x-mary-input label="Email Address" wire:model="data.email" icon="o-envelope" />
-                    <x-mary-input label="Phone Number" wire:model="data.phone" icon="o-phone" />
-                    <x-mary-textarea label="Bio" wire:model="data.bio" placeholder="Tell us about yourself..." class="md:col-span-2" />
-                    <x-mary-textarea label="Address" wire:model="data.address" class="md:col-span-2" />
-                </div>
-                
-                <x-slot:actions>
-                    <x-mary-button label="Save Changes" type="submit" icon="o-check" class="btn-primary" />
-                </x-slot:actions>
-            </x-mary-form>
-        </div>
-        HTML;
+        return view('livewire.profile.profile-editor');
     }
 }

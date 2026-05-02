@@ -5,38 +5,72 @@ declare(strict_types=1);
 namespace App\Livewire\Admin\Report;
 
 use App\Actions\Report\QueueReportGenerationAction;
+use App\Livewire\BaseRecordManager;
 use App\Models\GeneratedReport;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
-class ReportsManager extends Component
+/**
+ * Modernized Reports Manager using BaseRecordManager pattern.
+ */
+class ReportsManager extends BaseRecordManager
 {
-    use WithPagination, Toast;
-
-    public function boot(): void
-    {
-        if (!auth()->user()?->hasAnyRole(['super_admin', 'admin', 'teacher'])) {
-            abort(403, 'Unauthorized access.');
-        }
-    }
-
-    public string $search = '';
-
-    public array $filters = [
-        'report_type' => null,
-        'status' => null,
-    ];
-
     public bool $generateModal = false;
 
-    public array $reportData = [
+    public array $formData = [
         'report_type' => '',
         'date_from' => '',
         'date_to' => '',
     ];
+
+    public function boot(): void
+    {
+        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin', 'teacher'])) {
+            abort(403, 'Unauthorized access.');
+        }
+    }
+
+    /**
+     * Define columns and sorting.
+     */
+    public function headers(): array
+    {
+        return [
+            ['key' => 'report_type', 'label' => 'Report Type', 'sortable' => true],
+            ['key' => 'status', 'label' => 'Status', 'class' => 'text-center'],
+            ['key' => 'file_size', 'label' => 'Size'],
+            ['key' => 'generated_at', 'label' => 'Generated', 'sortable' => true],
+            ['key' => 'actions', 'label' => ''],
+        ];
+    }
+
+    /**
+     * Base query for reports.
+     */
+    protected function query(): Builder
+    {
+        return auth()->user()->generatedReports();
+    }
+
+    /**
+     * Search implementation.
+     */
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('report_type', 'like', "%{$this->search}%");
+    }
+
+    /**
+     * Filter implementation.
+     */
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['report_type'] ?? null, function ($q, $type) {
+            $q->where('report_type', $type);
+        })->when($this->filters['status'] ?? null, function ($q, $status) {
+            $q->where('status', $status);
+        });
+    }
 
     #[Computed]
     public function reportTypes(): array
@@ -59,40 +93,10 @@ class ReportsManager extends Component
         ];
     }
 
-    public function reports(): LengthAwarePaginator
-    {
-        $query = auth()->user()->generatedReports()->latest();
-
-        if ($this->search) {
-            $query->where('report_type', 'like', "%{$this->search}%");
-        }
-
-        if ($this->filters['report_type']) {
-            $query->where('report_type', $this->filters['report_type']);
-        }
-
-        if ($this->filters['status']) {
-            $query->where('status', $this->filters['status']);
-        }
-
-        return $query->paginate(20);
-    }
-
-    public function headers(): array
-    {
-        return [
-            ['key' => 'report_type', 'label' => 'Report Type', 'sortable' => true],
-            ['key' => 'status', 'label' => 'Status', 'class' => 'text-center'],
-            ['key' => 'file_size', 'label' => 'Size'],
-            ['key' => 'generated_at', 'label' => 'Generated', 'sortable' => true],
-            ['key' => 'actions', 'label' => ''],
-        ];
-    }
-
     public function openGenerateModal(): void
     {
         $this->resetErrorBag();
-        $this->reportData = [
+        $this->formData = [
             'report_type' => '',
             'date_from' => '',
             'date_to' => '',
@@ -103,27 +107,46 @@ class ReportsManager extends Component
     public function generateReport(QueueReportGenerationAction $action): void
     {
         $this->validate([
-            'reportData.report_type' => 'required|string|in:attendance_summary,internship_placements,student_performance,company_overview',
-            'reportData.date_from' => 'nullable|date',
-            'reportData.date_to' => 'nullable|date|after_or_equal:reportData.date_from',
+            'formData.report_type' => 'required|string|in:attendance_summary,internship_placements,student_performance,company_overview',
+            'formData.date_from' => 'nullable|date',
+            'formData.date_to' => 'nullable|date|after_or_equal:formData.date_from',
         ]);
 
         $filters = array_filter([
-            'date_from' => $this->reportData['date_from'] ?: null,
-            'date_to' => $this->reportData['date_to'] ?: null,
+            'date_from' => $this->formData['date_from'] ?: null,
+            'date_to' => $this->formData['date_to'] ?: null,
         ]);
 
-        $action->execute(auth()->user(), $this->reportData['report_type'], $filters);
+        $action->execute(auth()->user(), $this->formData['report_type'], $filters);
 
         $this->generateModal = false;
         $this->success('Report generation has been queued.');
     }
 
+    // --- Bulk Actions ---
+
+    public function deleteSelected(): void
+    {
+        $this->performBulkAction('Delete', function ($id) {
+            $report = GeneratedReport::find($id);
+            if ($report) {
+                // Should also delete file if exists
+                $report->delete();
+            }
+        });
+    }
+
+    // --- Mass Actions ---
+
+    public function cleanFailedReports(): void
+    {
+        $this->performMassAction('Clean Failed', function ($query) {
+            $query->where('status', 'failed')->delete();
+        });
+    }
+
     public function render()
     {
-        return view('livewire.admin.reports.index', [
-            'reports' => $this->reports(),
-            'headers' => $this->headers(),
-        ]);
+        return view('livewire.admin.reports.index');
     }
 }

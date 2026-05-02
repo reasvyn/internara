@@ -1,9 +1,0 @@
-{
-    "name": "Setup",
-    "alias": "setup",
-    "description": "Application Setup",
-    "keywords": [],
-    "priority": 0,
-    "providers": ["Modules\\Setup\\Providers\\SetupServiceProvider"],
-    "files": []
-}

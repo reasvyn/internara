@@ -1,104 +1,116 @@
 <div class="p-8">
-    <x-mary-header title="User Management" subtitle="Manage all system users, roles, and account status" separator progress-indicator>
+    <x-layouts.manager 
+        title="User Access Control" 
+        subtitle="Manage all users and system permissions" 
+        :rows="$this->rows()" 
+        :headers="$this->headers()"
+        :selected-count="$this->selected_count"
+        :sort-by="$sortBy"
+    >
+        {{-- Top Actions --}}
         <x-slot:actions>
-            <x-mary-button label="Add User" icon="o-plus" class="btn-primary" wire:click="createUser" />
+            <x-mary-button label="Create User" icon="o-plus" class="btn-primary" wire:click="createUser" />
         </x-slot:actions>
-    </x-mary-header>
 
-    <x-mary-card shadow class="bg-base-100 border border-base-200">
-        <div class="mb-6 flex flex-col md:flex-row justify-between gap-4">
-            <div class="w-full max-w-sm">
-                <x-mary-input wire:model.live.debounce.300ms="search" placeholder="Search by name, email, or username..." icon="o-magnifying-glass" clearable />
-            </div>
-            <div class="flex gap-2">
-                <x-mary-select wire:model.live="filters.role" :options="$roles" placeholder="Filter by Role" icon="o-funnel" clearable />
-            </div>
-        </div>
+        {{-- Filters --}}
+        <x-slot:filters>
+            <x-mary-select 
+                wire:model.live="filters.role" 
+                :options="$this->roles" 
+                placeholder="Filter by Role" 
+                icon="o-shield-check" 
+                clearable 
+                class="rounded-xl border-base-300"
+            />
+        </x-slot:filters>
 
-        <x-mary-table :headers="$headers" :rows="$users" with-pagination>
-            @scope('cell_name', $user)
-                <div class="flex items-center gap-3">
-                    <x-mary-avatar :title="$user->name" class="w-9 h-9" />
-                    <div class="font-medium text-sm">{{ $user->name }}</div>
-                </div>
-            @endscope
+        {{-- Bulk Actions --}}
+        <x-slot:bulkActions>
+            <x-mary-button 
+                label="Delete Selected" 
+                icon="o-trash" 
+                class="btn-sm btn-error text-white font-bold rounded-lg" 
+                wire:confirm="Are you sure you want to delete the selected users?"
+                wire:click="deleteSelected" 
+            />
+        </x-slot:bulkActions>
 
-            @scope('cell_email', $user)
+        {{-- Table Cell Overrides --}}
+        @scope('cell_name', $user)
+            <div class="flex items-center gap-3">
+                <x-mary-avatar :title="$user->name" class="w-9 h-9" />
                 <div class="flex flex-col">
-                    <span class="text-sm">{{ $user->email }}</span>
-                    <span class="text-xs opacity-50">{{ $user->username }}</span>
+                    <span class="font-medium text-sm">{{ $user->name }}</span>
+                    <span class="text-[10px] opacity-40 font-mono tracking-tight">{{ $user->id }}</span>
                 </div>
-            @endscope
+            </div>
+        @endscope
 
-            @scope('cell_roles', $user)
-                <div class="flex flex-wrap gap-1">
-                    @foreach($user->roles as $role)
-                        <x-mary-badge :value="$role->name" class="badge-outline text-[10px]" />
-                    @endforeach
-                </div>
-            @endscope
+        @scope('cell_email', $user)
+            <div class="flex flex-col">
+                <span class="text-xs font-bold">{{ $user->email }}</span>
+                <span class="text-[10px] opacity-50">{{ $user->username }}</span>
+            </div>
+        @endscope
 
-            @scope('cell_status', $user)
-                @php
-                    $status = $user->latestStatus()?->name ?? 'active';
-                    $color = match($status) {
-                        'active' => 'badge-success',
-                        'suspended' => 'badge-error',
-                        'inactive' => 'badge-warning',
-                        default => 'badge-neutral'
-                    };
-                @endphp
-                <x-mary-badge :value="ucfirst($status)" :class="$color" />
-            @endscope
+        @scope('cell_roles_list', $user)
+            <div class="flex flex-wrap gap-1">
+                @foreach($user->roles as $role)
+                    <x-mary-badge :value="$role->name" class="badge-ghost text-[10px] uppercase font-bold" />
+                @endforeach
+            </div>
+        @endscope
 
-            @scope('actions', $user)
-                <div class="flex justify-end gap-1">
-                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="editUser('{{ $user->id }}')" />
-                    
-                    <x-mary-button 
-                        icon="o-key" 
-                        class="btn-ghost btn-sm text-warning" 
-                        wire:confirm="Reset password for this user? A temporary password will be shown."
-                        wire:click="resetPassword('{{ $user->id }}')" />
+        @scope('cell_status', $user)
+            @php
+                $status = $user->latestStatus()?->name ?? 'unknown';
+                $statusClass = match($status) {
+                    'active' => 'badge-success',
+                    'suspended' => 'badge-error',
+                    'pending' => 'badge-warning',
+                    default => 'badge-ghost',
+                };
+            @endphp
+            <x-mary-button 
+                wire:click="toggleStatus('{{ $user->id }}')" 
+                wire:confirm="Change user status?"
+                class="badge {{ $statusClass }} border-none font-black text-[10px] uppercase cursor-pointer hover:scale-105 transition-transform"
+            >
+                {{ $status }}
+            </x-mary-button>
+        @endscope
 
-                    @if($user->id !== auth()->id())
-                        <x-mary-button 
-                            icon="{{ ($user->latestStatus()?->name ?? 'active') === 'active' ? 'o-lock-closed' : 'o-lock-open' }}" 
-                            class="btn-ghost btn-sm {{ ($user->latestStatus()?->name ?? 'active') === 'active' ? 'text-error' : 'text-success' }}" 
-                            wire:click="toggleStatus('{{ $user->id }}')" />
-                        
-                        <x-mary-button 
-                            icon="o-trash" 
-                            class="btn-ghost btn-sm text-error" 
-                            wire:confirm="Are you sure you want to delete this user?"
-                            wire:click="deleteUser('{{ $user->id }}')" />
-                    @endif
-                </div>
-            @endscope
-        </x-mary-table>
-    </x-mary-card>
+        @scope('actions', $user)
+            <div class="flex justify-end gap-1">
+                <x-mary-button icon="o-key" class="btn-ghost btn-sm text-warning" wire:confirm="Reset password for this user?" wire:click="resetPassword('{{ $user->id }}')" />
+                <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="editUser('{{ $user->id }}')" />
+                <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="Are you sure?" wire:click="deleteUser('{{ $user->id }}')" />
+            </div>
+        @endscope
+    </x-layouts.manager>
 
-    {{-- Form Modal --}}
-    <x-mary-modal wire:model="userModal" title="{{ $userData['id'] ? 'Edit User' : 'New User' }}" separator>
+    {{-- Modals --}}
+    <x-mary-modal wire:model="userModal" title="{{ $userData['id'] ? 'Edit User' : 'New User Account' }}" separator>
         <div class="space-y-6">
-            <x-mary-input label="Full Name" wire:model="userData.name" />
-            <x-mary-input label="Email Address" type="email" wire:model="userData.email" />
-            <x-mary-input label="Username" wire:model="userData.username" />
+            <x-mary-input label="Full Name" wire:model="userData.name" icon="o-user" class="rounded-xl border-base-300" />
+            <x-mary-input label="Email" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-xl border-base-300" />
             
             @if(!$userData['id'])
-                <x-mary-input label="Temporary Password" type="password" wire:model="userData.password" hint="User should change this after first login" />
+                <x-mary-input label="Password" type="password" wire:model="userData.password" icon="o-key" class="rounded-xl border-base-300" />
             @endif
 
             <x-mary-choices
-                label="Assign Roles"
+                label="Assigned Roles"
                 wire:model="userData.roles"
-                :options="$roles"
-                placeholder="Select roles..." />
+                :options="$this->roles"
+                icon="o-shield-check"
+                class="rounded-xl border-base-300"
+            />
         </div>
 
         <x-slot:actions>
-            <x-mary-button label="Cancel" @click="$wire.userModal = false" />
-            <x-mary-button label="Save User" class="btn-primary" wire:click="saveUser" spinner="saveUser" />
+            <x-mary-button label="Cancel" @click="$wire.userModal = false" class="rounded-xl" />
+            <x-mary-button label="Save User" class="btn-primary rounded-xl font-bold uppercase tracking-widest" wire:click="saveUser" spinner="saveUser" />
         </x-slot:actions>
     </x-mary-modal>
 </div>

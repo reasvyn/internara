@@ -1,9 +1,0 @@
-{
-    "name": "Exception",
-    "alias": "exception",
-    "description": "",
-    "keywords": [],
-    "priority": 0,
-    "providers": ["Modules\\Exception\\Providers\\ExceptionServiceProvider"],
-    "files": []
-}

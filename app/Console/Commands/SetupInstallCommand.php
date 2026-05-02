@@ -4,112 +4,178 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Actions\Audit\LogAuditAction;
-use App\Actions\Setting\SetSettingAction;
+use App\Actions\Setup\InstallSystemAction;
+use App\Services\Setup\EnvAuditor;
+use App\Services\Setup\SetupService;
 use App\Support\AppInfo;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 /**
  * CLI system installation with signed URL output for web wizard continuation.
  *
- * S1 - Secure: Atomic installation, token-based URL generation.
- * S2 - Sustain: Clear output, minimal user interaction.
+ * S1 - Secure: Atomic installation, token-based URL generation, environment audit.
+ * S2 - Sustain: Clear output, comprehensive checks, minimal user interaction.
  * S3 - Scalable: Stateless token generation for web continuation.
  */
 class SetupInstallCommand extends Command
 {
     protected $signature = 'setup:install {--force : Force installation even if already installed}';
+
     protected $description = 'Install system technically and generate a URL with token for web setup wizard';
 
     public function handle(
-        SetSettingAction $setSetting,
-        LogAuditAction $logAudit,
+        InstallSystemAction $installSystem,
+        EnvAuditor $auditor,
+        SetupService $setupService
     ): int {
         $this->displayBanner();
+        $this->displayPreFlightSummary();
+
+        $isInstalled = $setupService->isInstalled();
 
         // Check if already installed
-        $lockFile = storage_path('app/.installed');
-        if (File::exists($lockFile) && ! $this->option('force')) {
+        if ($isInstalled && ! $this->option('force')) {
             $this->error(__('setup.cli.already_installed'));
+
             return self::FAILURE;
         }
 
-        if (File::exists($lockFile) && $this->option('force')) {
+        if ($isInstalled && $this->option('force')) {
             $this->warn(__('setup.cli.forcing_reinstall'));
-            File::delete($lockFile);
+            // reset() handles lock file deletion and session clearing
+            $setupService->reset();
+        } elseif (! $isInstalled) {
+            // Clean any stale setup session data for new installation
+            $setupService->clearSession();
         }
 
-        $this->info(__('setup.cli.starting_installation'));
-        $this->newLine();
+        // Determine if we should force a fresh migration
+        // Force fresh if --force is used OR if it's the first technical installation
+        $shouldForceFresh = (bool) $this->option('force') || ! $isInstalled;
 
-        try {
-            DB::transaction(function () use ($setSetting, $logAudit) {
-            // 1. Run Migrations
-            $this->task(__('setup.cli.tasks.migrations'), function () {
-                Artisan::call('migrate:fresh', ['--force' => true]);
-                return true;
-            });
-
-            // 2. Run Seeders
-            $this->task(__('setup.cli.tasks.seeders'), function () {
-                Artisan::call('db:seed', ['--force' => true]);
-                return true;
-            });
-
-            // 3. Set system metadata (but NOT installed flag)
-            $this->task(__('setup.cli.tasks.system_metadata'), function () use ($setSetting) {
-                $setSetting->execute('app_version', AppInfo::version(), 'string', 'system');
-                return true;
-            });
-
-            $this->task(__('setup.cli.tasks.installed_timestamp'), function () use ($setSetting) {
-                $setSetting->execute('installed_at', now()->toIso8601String(), 'datetime', 'system');
-                return true;
-            });
-
-            // 4. Log audit event
-            $this->task(__('setup.cli.tasks.logging'), function () use ($logAudit) {
-                $logAudit->execute(
-                    action: 'system_installed_cli',
-                    payload: ['version' => AppInfo::version()],
-                    module: 'System'
-                );
-                return true;
-            });
-            });
-
-        // 5. Link Storage (outside transaction)
-        $this->task(__('setup.cli.tasks.storage_link'), function () {
-            Artisan::call('storage:link', ['--force' => true]);
-            return true;
-        });
-
-        // 6. Clear Cache (optimize:clear only as requested)
+        // 1. Initial Cleanup
         $this->task(__('setup.cli.tasks.clear_cache'), function () {
             Artisan::call('optimize:clear');
+
             return true;
         });
 
-            // 7. Generate setup token and signed URL
+        // 2. Pre-flight Audit
+        $this->info(__('setup.cli.running_audit'));
+        $audit = $auditor->audit();
+
+        foreach ($audit['categories'] as $category) {
             $this->newLine();
-            $token = $this->generateSetupToken();
+            $this->line(" <fg=gray>●</> <options=bold>{$category['label']}</>");
+
+            foreach ($category['checks'] as $check) {
+                $statusStr = match ($check['status']) {
+                    'pass' => '<fg=green>PASS</>',
+                    'fail' => '<fg=red>FAIL</>',
+                    'warn' => '<fg=yellow>WARN</>',
+                };
+                $this->line("   [{$statusStr}] {$check['name']}: {$check['message']}");
+            }
+        }
+
+        if (! $audit['passed']) {
+            $this->newLine();
+            $this->error(__('setup.cli.audit_failed'));
+
+            return self::FAILURE;
+        }
+
+        $this->newLine();
+        if (! $this->confirm(__('setup.cli.proceed_confirm'), true)) {
+            $this->warn(__('setup.cli.aborted'));
+
+            return self::SUCCESS;
+        }
+
+        $this->newLine();
+        $this->info(__('setup.cli.starting_installation'));
+
+        try {
+            $force = $shouldForceFresh;
+
+            // 1. .env file
+            $this->task(__('setup.cli.tasks.ensure_env'), function () use ($installSystem) {
+                $installSystem->ensureEnvFileExists();
+
+                return true;
+            });
+
+            // 2. App Key
+            $this->task(__('setup.cli.tasks.generate_key'), function () use ($installSystem) {
+                $installSystem->ensureAppKeyExists();
+
+                return true;
+            });
+
+            // 3. Migrations
+            $this->task(__('setup.cli.tasks.run_migrations'), function () use ($installSystem, $force) {
+                $installSystem->runMigrations($force);
+
+                return true;
+            });
+
+            // 4. Seeders
+            $this->task(__('setup.cli.tasks.run_seeders'), function () use ($installSystem) {
+                $installSystem->runSeeders();
+
+                return true;
+            });
+
+            // 5. Initial Settings
+            $this->task(__('setup.cli.tasks.system_settings'), function () use ($installSystem) {
+                $installSystem->configureInitialSettings();
+
+                return true;
+            });
+
+            // 6. Storage Link
+            $this->task(__('setup.cli.tasks.storage_link'), function () use ($installSystem) {
+                $installSystem->linkStorage();
+
+                return true;
+            });
+
+            // 7. Final Optimization
+            $this->task(__('setup.cli.tasks.optimize'), function () use ($installSystem) {
+                $installSystem->optimize();
+
+                return true;
+            });
+
+            // 4. Generate setup token and signed URL
+            $this->newLine();
+            $token = $setupService->generateCliToken();
             $signedUrl = $this->generateSignedUrl($token);
 
-            // 8. Output results
+            // 5. Output results
             $this->displaySuccess($token, $signedUrl);
 
             return self::SUCCESS;
-
         } catch (\Throwable $e) {
             $this->error(__('setup.cli.installation_failed', ['message' => $e->getMessage()]));
             if ($this->option('verbose')) {
                 $this->error($e->getTraceAsString());
             }
+
             return self::FAILURE;
         }
+    }
+
+    /**
+     * Technical summary of the current environment.
+     */
+    protected function displayPreFlightSummary(): void
+    {
+        $this->components->twoColumnDetail(__('setup.cli.php_version'), PHP_VERSION);
+        $this->components->twoColumnDetail(__('setup.cli.environment'), (string) config('app.env'));
+        $this->components->twoColumnDetail(__('setup.cli.db_driver'), (string) config('database.default'));
+        $this->newLine();
     }
 
     /**
@@ -118,34 +184,6 @@ class SetupInstallCommand extends Command
     protected function task(string $description, callable $task): void
     {
         $this->components->task($description, $task);
-    }
-
-    /**
-     * Generate a setup token and store it.
-     */
-    protected function generateSetupToken(): string
-    {
-        $token = bin2hex(random_bytes(32));
-        $expiresAt = now()->addHours(24)->toIso8601String();
-
-        $tokenData = [
-            'token' => $token,
-            'expires_at' => $expiresAt,
-            'created_at' => now()->toIso8601String(),
-        ];
-
-        File::put(
-            storage_path('app/setup_token.json'),
-            json_encode($tokenData, JSON_PRETTY_PRINT)
-        );
-
-        // Also store in a location accessible by the web middleware
-        File::put(
-            storage_path('app/.setup_token'),
-            $token . '|' . $expiresAt
-        );
-
-        return $token;
     }
 
     /**
@@ -165,18 +203,18 @@ class SetupInstallCommand extends Command
         $this->components->info(__('setup.cli.installation_completed'));
         $this->newLine();
 
-        $this->line(' <fg=white;bg=green;options=bold> ' . __('setup.cli.next_steps') . ' </>');
+        $this->line(' <fg=white;bg=green;options=bold> '.__('setup.cli.next_steps').' </>');
         $this->newLine();
 
-        $this->line(' 1. ' . __('setup.cli.visit_url'));
-        $this->line('    <fg=cyan>' . $signedUrl . '</>');
+        $this->line(' 1. '.__('setup.cli.visit_url'));
+        $this->line('    <fg=cyan>'.$signedUrl.'</>');
         $this->newLine();
 
-        $this->line(' 2. ' . __('setup.cli.complete_wizard'));
+        $this->line(' 2. '.__('setup.cli.complete_wizard'));
         $this->newLine();
 
-        $this->line(' <fg=gray>Token: ' . $token . '</>');
-        $this->line(' <fg=gray>' . __('setup.cli.token_expires') . '</>');
+        $this->line(' <fg=gray>Token: '.$token.'</>');
+        $this->line(' <fg=gray>'.__('setup.cli.token_expires').'</>');
         $this->newLine();
 
         $this->warn(__('setup.cli.token_note'));
@@ -188,8 +226,8 @@ class SetupInstallCommand extends Command
     protected function displayBanner(): void
     {
         $this->newLine();
-        $this->line(' <fg=white;bg=blue;options=bold> SYSTEM INSTALLER </> <fg=blue;options=bold>CLI TOOL</>');
-        $this->line(' <fg=gray>Version: ' . AppInfo::version() . '</>');
+        $this->line(' <fg=white;bg=blue;options=bold> '.__('setup.cli.banner_title').' </> <fg=blue;options=bold>'.__('setup.cli.banner_subtitle').'</>');
+        $this->line(' <fg=gray>'.__('setup.cli.version').': '.AppInfo::version().'</>');
         $this->newLine();
     }
 }

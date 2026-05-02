@@ -6,6 +6,7 @@ namespace App\Actions\Internship;
 
 use App\Actions\Audit\LogAuditAction;
 use App\Models\InternshipRegistration;
+use App\Notifications\InternshipRegistrationNotification;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -30,6 +31,13 @@ class ApproveInternshipAction
             if ($registration->placement_id) {
                 $registration->placement()->increment('filled_quota');
             }
+
+            // Notify Student
+            $registration->student->notify(new InternshipRegistrationNotification(
+                $registration->internship->name,
+                'active',
+                $comment
+            ));
 
             $this->logAuditAction->execute(
                 action: 'internship_approved',

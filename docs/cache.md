@@ -8,6 +8,25 @@ Internara uses Laravel's cache system for performance optimization and data cach
 - **Config File**: `config/cache.php`
 - **Environment Variables**: `CACHE_STORE`, `CACHE_PREFIX`, `DB_CACHE_CONNECTION`
 - **Default Store**: Database (`env('CACHE_STORE', 'database')`)
+- **Serializable Classes**: Set to `false` by default for security hardening (Laravel 13+)
+
+### Security: Serializable Classes (Laravel 13+)
+
+Laravel 13 introduces the `serializable_classes` configuration option to prevent PHP deserialization gadget chain attacks. By default, this is set to `false`, which blocks unserialization of arbitrary PHP objects from cache.
+
+If your application needs to store PHP objects in cache, you must explicitly whitelist the allowed classes:
+
+```php
+// config/cache.php
+'serializable_classes' => [
+    App\Data\CachedDashboardStats::class,
+    App\Support\CachedPricingSnapshot::class,
+],
+```
+
+**Current Setting**: `false` (blocks all object unserialization)
+
+If you attempt to retrieve a cached PHP object that isn't whitelisted, Laravel will throw an exception. Migrate object-based cache payloads to arrays or add the classes to the allow-list.
 
 ## 2. Cache Drivers
 
@@ -103,6 +122,17 @@ $value = Cache::remember('users.active', now()->addHour(), function () {
 $settings = Cache::rememberForever('app.settings', function () {
     return Setting::all();
 });
+```
+
+#### Touch (Extend TTL - Laravel 13+)
+```php
+// Extend TTL without fetching or re-storing the value
+Cache::touch('users.active', now()->addMinutes(30));
+
+// Returns true if key exists and was touched, false otherwise
+if (Cache::touch('session.'.$userId, now()->addHour())) {
+    // Session extended successfully
+}
 ```
 
 #### Cache Locking (Atomic Operations)
@@ -368,7 +398,8 @@ Cache::flush();
 
 ---
 
-**Last Updated**: April 30, 2026  
+**Last Updated**: May 2, 2026  
 **Default Driver**: Database  
 **Test Driver**: Array  
-**Cache Table**: `cache` (with optional `cache_locks`)
+**Cache Table**: `cache` (with optional `cache_locks`)  
+**Laravel Version**: 13+ (includes `Cache::touch()` and `serializable_classes`)

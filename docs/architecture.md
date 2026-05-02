@@ -125,7 +125,7 @@ app/
 
 ### G. Service Layer (Infrastructure Services)
 - **Location**: `app/Services/`
-- **Current**: `SetupService` (installation wizard orchestration, token management, lock file guard), `InstallationAuditor` (pre-flight system checks).
+- **Current**: `SetupService` (installation wizard orchestration, token management, lock file guard), `EnvAuditor` (pre-flight system checks).
 - **Purpose**: Handle technical/infrastructure concerns.
 - **Constraint**: Services should not contain business rules (those belong in Models).
 
@@ -242,7 +242,7 @@ class CreateInternshipRequest extends FormRequest
 // routes/web.php
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:student'])->group(function () {
-        Route::get('/internships', InternshipBrowser::class);
+        Route::livewire('/internships', InternshipBrowser::class);
     });
 });
 ```

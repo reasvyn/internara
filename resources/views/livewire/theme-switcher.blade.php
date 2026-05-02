@@ -4,7 +4,7 @@
             <x-mary-button 
                 :icon="$themes[$currentTheme]['icon']" 
                 class="btn-ghost btn-sm" 
-                title="{{ __('theme.switch') }}"
+                title="{{ __('common.theme.switch') }}"
             >
                 {{ $themes[$currentTheme]['label'] }}
             </x-mary-button>
@@ -14,8 +14,8 @@
             <x-mary-menu-item 
                 :title="$theme['label']" 
                 :icon="$theme['icon']" 
-                @click="switchTheme('{{ $key }}')"
-                :class="$currentTheme === $key ? 'bg-primary text-white' : ''"
+                wire:click="switchTheme('{{ $key }}')"
+                :class="$currentTheme === $key ? 'bg-primary text-primary-content hover:text-primary-content/70' : ''"
             />
         @endforeach
     </x-mary-dropdown>

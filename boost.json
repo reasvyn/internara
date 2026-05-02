@@ -1,5 +1,23 @@
 {
-    "agents": ["opencode"],
-    "editors": ["opencode", "vscode"],
-    "guidelines": []
+    "agents": [
+        "opencode",
+        "copilot",
+        "gemini"
+    ],
+    "cloud": false,
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch": false,
+    "packages": [
+        "spatie/laravel-medialibrary"
+    ],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "pulse-development",
+        "livewire-development",
+        "pest-testing",
+        "tailwindcss-development",
+        "medialibrary-development"
+    ]
 }

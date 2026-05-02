@@ -3,50 +3,60 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
-            <x-mary-card shadow class="bg-base-100 border border-base-200">
-                <form wire:submit="save" class="space-y-6">
+            <x-mary-card shadow class="card-enterprise">
+                <form wire:submit="save" class="space-y-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <x-mary-input :label="__('school.name')" wire:model="name" :placeholder="__('school.name_placeholder')" icon="o-academic-cap" />
-                        <x-mary-input :label="__('school.institutional_code')" wire:model="institutional_code" :placeholder="__('school.institutional_code_placeholder')" icon="o-hashtag" :hint="__('school.institutional_code_hint')" />
+                        <x-mary-input :label="__('school.name')" wire:model="name" :placeholder="__('school.name_placeholder')" icon="o-academic-cap" class="rounded-2xl" />
+                        <x-mary-input :label="__('school.institutional_code')" wire:model="institutional_code" :placeholder="__('school.institutional_code_placeholder')" icon="o-hashtag" :hint="__('school.institutional_code_hint')" class="rounded-2xl" />
 
                         <div class="md:col-span-2">
-                            <x-mary-textarea :label="__('school.address')" wire:model="address" :placeholder="__('school.address_placeholder')" rows="3" icon="o-map-pin" />
+                            <x-mary-textarea :label="__('school.address')" wire:model="address" :placeholder="__('school.address_placeholder')" rows="3" icon="o-map-pin" class="rounded-2xl" />
                         </div>
 
-                        <x-mary-input :label="__('school.principal_name')" wire:model="principal_name" :placeholder="__('school.principal_name_placeholder')" icon="o-user" />
-                        <x-mary-input :label="__('school.email')" type="email" wire:model="email" :placeholder="__('school.email_placeholder')" icon="o-envelope" />
-                        <x-mary-input :label="__('school.phone')" wire:model="phone" :placeholder="__('school.phone_placeholder')" icon="o-phone" />
-                        <x-mary-input :label="__('school.fax')" wire:model="fax" :placeholder="__('school.fax_placeholder')" icon="o-printer" />
+                        <x-mary-input :label="__('school.principal_name')" wire:model="principal_name" :placeholder="__('school.principal_name_placeholder')" icon="o-user" class="rounded-2xl" />
+                        <x-mary-input :label="__('school.email')" type="email" wire:model="email" :placeholder="__('school.email_placeholder')" icon="o-envelope" class="rounded-2xl" />
+                        <x-mary-input :label="__('school.phone')" wire:model="phone" :placeholder="__('school.phone_placeholder')" icon="o-phone" class="rounded-2xl" />
+                        <x-mary-input :label="__('school.fax')" wire:model="fax" :placeholder="__('school.fax_placeholder')" icon="o-printer" class="rounded-2xl" />
                     </div>
 
-                    <div class="flex justify-end gap-2 border-t border-base-200 pt-6">
-                        <x-mary-button :label="__('school.discard')" link="{{ url()->previous() }}" />
-                        <x-mary-button :label="__('school.save_changes')" type="submit" class="btn-primary" spinner="save" />
+                    <div class="flex justify-end gap-3 border-t border-base-200 pt-6">
+                        <x-mary-button :label="__('school.discard')" link="{{ url()->previous() }}" class="btn-ghost font-bold uppercase tracking-widest text-[10px]" />
+                        <x-mary-button :label="__('school.save_changes')" type="submit" class="btn-primary px-8 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-primary/20" icon="o-check" spinner="save" />
                     </div>
                 </form>
             </x-mary-card>
         </div>
 
-        <div>
-            <x-mary-card :title="__('school.system_context')" shadow class="bg-base-200/50">
-                <p class="text-sm text-base-content/70">
+        <div class="space-y-6">
+            <x-mary-card :title="__('school.system_context')" shadow class="bg-base-200/50 rounded-3xl border-none">
+                <p class="text-sm text-base-content/60 leading-relaxed font-medium">
                     {{ __('school.system_context_desc') }}
                 </p>
-                <div class="mt-4 space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-primary/10 p-2 rounded-lg">
-                            <x-mary-icon name="o-check-badge" class="w-5 h-5 text-primary" />
+                <div class="mt-6 space-y-3">
+                    <div class="flex items-center gap-4 p-3 rounded-2xl bg-base-100/50 border border-base-content/5">
+                        <div class="size-10 rounded-xl bg-success/10 text-success flex items-center justify-center">
+                            <x-mary-icon name="o-check-badge" class="size-6" />
                         </div>
-                        <span class="text-sm font-medium">{{ __('school.uuid_enabled') }}</span>
+                        <span class="text-xs font-black uppercase tracking-tight">{{ __('school.uuid_enabled') }}</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="bg-primary/10 p-2 rounded-lg">
-                            <x-mary-icon name="o-shield-check" class="w-5 h-5 text-primary" />
+                    <div class="flex items-center gap-4 p-3 rounded-2xl bg-base-100/50 border border-base-content/5">
+                        <div class="size-10 rounded-xl bg-info/10 text-info flex items-center justify-center">
+                            <x-mary-icon name="o-shield-check" class="size-6" />
                         </div>
-                        <span class="text-sm font-medium">{{ __('school.audit_logged') }}</span>
+                        <span class="text-xs font-black uppercase tracking-tight">{{ __('school.audit_logged') }}</span>
                     </div>
                 </div>
             </x-mary-card>
+
+            <div class="bg-primary/5 border border-primary/10 rounded-[2rem] p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <x-mary-icon name="o-information-circle" class="size-5 text-primary" />
+                    <span class="text-xs font-black uppercase tracking-widest text-primary">Identity Tip</span>
+                </div>
+                <p class="text-[11px] text-base-content/60 leading-relaxed">
+                    Changes made here will be reflected in official documents and certificates generated by the system.
+                </p>
+            </div>
         </div>
     </div>
 </div>

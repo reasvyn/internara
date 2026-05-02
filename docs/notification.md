@@ -330,7 +330,154 @@ protected $listen = [
 ];
 ```
 
-## 7. Email Notifications (Optional)
+## 7. Flash Messages (PHPFlasher)
+
+Internara uses **PHPFlasher** for temporary flash messages (success, error, warning, info) that appear after user actions and automatically disappear.
+
+### Configuration
+- **Package**: `php-flasher/flasher-laravel`
+- **Config File**: `config/flasher.php`
+- **Theme**: Emerald (default)
+- **Render Location**: `resources/views/components/layouts/base.blade.php` with `@flasher_render`
+
+### Config Structure (`config/flasher.php`)
+```php
+return [
+    'default' => 'flasher',
+    
+    'main_script' => '/vendor/flasher/flasher.min.js',
+    'styles' => ['/vendor/flasher/flasher.min.css'],
+    
+    'options' => [
+        'theme' => 'emerald',
+        'timeout' => 5000,
+        'position' => 'bottom-right',
+        'darkMode' => true // Supports dark theme
+    ],
+    
+    'plugins' => [
+        'flasher' => [
+            'scripts' => [
+                '/vendor/flasher/flasher.min.js',
+                '/vendor/flasher/themes/emerald/emerald.min.js',
+            ],
+            'styles' => [
+                '/vendor/flasher/flasher.min.css',
+                '/vendor/flasher/themes/emerald/emerald.min.css',
+            ],
+        ],
+    ],
+    
+    // Laravel session flash message mapping
+    'flash_bag' => [
+        'success' => ['success'],
+        'error' => ['error', 'danger'],
+        'warning' => ['warning', 'alarm'],
+        'info' => ['info', 'notice', 'alert'],
+    ],
+];
+```
+
+### Usage in PHP (Backend)
+```php
+// Using helper function (simplest - matches actual codebase usage)
+flash()->success('Internship created successfully!');
+flash()->error('Failed to save attendance log.');
+flash()->warning('Your submission is pending review.');
+flash()->info('System maintenance scheduled tonight.');
+
+// In Actions/Controllers (example from codebase)
+class CreateInternshipAction
+{
+    public function execute(CreateInternshipRequest $request): Internship
+    {
+        $internship = Internship::create($request->validated());
+        
+        // Flash success message (actual pattern used in Livewire components)
+        flash()->success(__('internship.save_success'));
+        
+        return $internship;
+    }
+}
+
+// With translation strings (as used in the project)
+flash()->success(__('auth::ui.login.welcome_back', ['name' => $user->name]));
+flash()->error(__('setup.wizard.requirements_not_met'));
+flash()->warning(__('placement.update_success'));
+```
+
+### Actual Usage in Codebase
+Based on `app/Livewire/` components:
+```php
+// app/Livewire/Auth/Login.php:52
+flash()->success(__('auth::ui.login.welcome_back', ['name' => $user->name]));
+
+// app/Livewire/Setup/SetupWizard.php:272
+flash()->success(__('setup.wizard.setup_complete'));
+
+// app/Livewire/Admin/Internship/InternshipIndex.php:93
+flash()->success(__('internship.update_success'));
+
+// app/Livewire/Admin/Company/CompanyIndex.php:88
+flash()->success(__('company.save_success'));
+```
+
+### Usage in Blade (Frontend)
+The `@flasher_render` directive is placed in the base layout to automatically render all queued flash messages:
+
+```blade
+{{-- In resources/views/components/layouts/base.blade.php --}}
+@flasher_render  {{-- Renders all queued messages --}}
+```
+
+This directive:
+- Automatically includes required JS/CSS assets from config
+- Renders all pending flash messages (success, error, warning, info)
+- Respects configured theme (Emerald), position, timeout, and dark mode settings
+
+### Flash vs In-App Notifications
+| Feature | PHPFlasher (Flash) | In-App Notifications |
+|---------|----------------------|----------------------|
+| **Persistence** | Temporary (session-based) | Permanent (database) |
+| **Lifespan** | Disappears after 5s | Stays until manually read |
+| **Use Case** | Action feedback (save, delete, error) | Important alerts, approvals |
+| **Storage** | Session flash data | `notifications` table |
+| **Example** | "Student registered!" | "Your internship was approved" |
+
+### Testing with PHPFlasher
+> **Note**: PHPFlasher provides testing utilities via `Flasher\Prime\Test\FlasherAssert`. However, the project currently doesn't have Flasher-specific tests. Below are example patterns:
+
+```php
+use Flasher\Prime\Test\FlasherAssert;
+
+test('it shows success message', function () {
+    // Perform action that triggers flasher
+    $this->post('/internships', $data);
+    
+    // Assert flash message was added
+    FlasherAssert::assertHasFlash('success', 'Internship created successfully!');
+});
+
+test('it shows error on failure', function () {
+    // Simulate failure
+    $this->post('/internships', []);
+    
+    FlasherAssert::assertHasFlash('error');
+});
+```
+
+### S1 Security Considerations
+```php
+// ✅ DO: Sanitize user input in messages
+flash()->error('Failed to process: ' . e($validatedError));
+
+// ❌ DON'T: Include sensitive data
+flash()->error('Database connection failed: ' . $dbPassword); // Never!
+```
+
+---
+
+## 8. Email Notifications (Optional)
 
 ### Using Laravel's Notification System
 ```php
@@ -380,7 +527,7 @@ class InternshipApproved extends Notification
 }
 ```
 
-## 8. Notification Testing
+## 9. Notification Testing
 
 ### Pest PHP Tests
 ```php
@@ -425,7 +572,7 @@ test('can get unread count', function () {
 });
 ```
 
-## 9. Real-Time Notifications (Broadcasting)
+## 10. Real-Time Notifications (Broadcasting)
 
 ### Configuration
 ```env
@@ -465,7 +612,7 @@ public function getListeners(): array
 }
 ```
 
-## 10. Performance Considerations
+## 11. Performance Considerations
 
 ### Database Indexes
 ```php
@@ -500,7 +647,7 @@ Schedule::call(function () {
 })->monthly();
 ```
 
-## 11. Security (S1)
+## 12. Security (S1)
 
 ### S1 - Secure: Authorization
 ```php
@@ -538,7 +685,7 @@ SendNotificationAction::execute(
 );
 ```
 
-## 12. Troubleshooting
+## 13. Troubleshooting
 
 ### Notifications Not Appearing
 1. Check if notification was created: `php artisan tinker` → `Notification::all()`

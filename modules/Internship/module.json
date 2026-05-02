@@ -1,9 +1,0 @@
-{
-    "name": "Internship",
-    "alias": "internship",
-    "description": "",
-    "keywords": [],
-    "priority": 0,
-    "providers": ["Modules\\Internship\\Providers\\InternshipServiceProvider"],
-    "files": []
-}
