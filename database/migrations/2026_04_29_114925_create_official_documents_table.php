@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('official_documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('template_id')->nullable()->constrained('document_templates')->onDelete('set null');
-            
+
             // Polymorphic relation
             $table->uuid('documentable_id');
             $table->string('documentable_type');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('document_number')->nullable()->unique();
             $table->timestamp('issued_at')->nullable();
             $table->timestamp('expires_at')->nullable();
-            
+
             $table->json('metadata')->nullable();
 
             $table->timestamps();

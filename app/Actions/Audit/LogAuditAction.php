@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Request;
 
 /**
  * Stateless Action to log system and user audit events.
- * 
+ *
  * S1 - Secure: Centralized logging for forensic analysis.
  * S3 - Scalable: Stateless and can be called from any entry point.
  */
@@ -27,7 +27,7 @@ class LogAuditAction
         ?string $module = null,
     ): AuditLog {
         // Here we could add PII masking logic
-        
+
         return AuditLog::create([
             'user_id' => Auth::id(),
             'subject_id' => $subjectId,

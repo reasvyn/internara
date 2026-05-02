@@ -5,7 +5,7 @@
                 icon="o-language" 
                 class="btn-ghost btn-sm" 
                 :label="strtoupper($currentLocale)"
-                title="{{ __('common.language.switch', default: 'Switch Language') }}"
+                title="{{ trans('common.language.switch') ?: 'Switch Language' }}"
             />
         </x-slot:trigger>
         

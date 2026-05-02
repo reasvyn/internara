@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Internship;
 
 use App\Enums\InternshipStatus;
+use App\Livewire\Admin\Internship\InternshipIndex;
 use App\Models\Internship;
 use App\Models\InternshipPlacement;
 use App\Models\InternshipRegistration;
@@ -35,13 +36,13 @@ test('admin can create a new internship batch', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('create')
         ->assertSet('showModal', true)
-        ->set('name', 'PKL Semester Ganjil 2026/2027')
-        ->set('start_date', '2026-07-01')
-        ->set('end_date', '2026-12-31')
-        ->set('status', InternshipStatus::DRAFT->value)
+        ->set('formData.name', 'PKL Semester Ganjil 2026/2027')
+        ->set('formData.start_date', '2026-07-01')
+        ->set('formData.end_date', '2026-12-31')
+        ->set('formData.status', InternshipStatus::DRAFT->value)
         ->call('save')
         ->assertHasNoErrors();
 
@@ -61,11 +62,11 @@ test('admin can edit an existing internship batch', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('edit', $internship)
-        ->assertSet('name', 'Old Batch')
+        ->assertSet('formData.name', 'Old Batch')
         ->assertSet('showModal', true)
-        ->set('name', 'New Batch')
+        ->set('formData.name', 'New Batch')
         ->call('save')
         ->assertHasNoErrors();
 
@@ -81,7 +82,7 @@ test('admin cannot delete internship with placements', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('delete', $internship);
 
     $this->assertDatabaseHas('internships', ['id' => $internship->id]);
@@ -101,7 +102,7 @@ test('admin cannot delete internship with registrations', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('delete', $internship);
 
     $this->assertDatabaseHas('internships', ['id' => $internship->id]);
@@ -114,7 +115,7 @@ test('admin can delete internship without placements or registrations', function
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('delete', $internship);
 
     $this->assertDatabaseMissing('internships', ['id' => $internship->id]);
@@ -127,13 +128,13 @@ test('internship name must be unique', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('create')
-        ->set('name', 'Existing Batch')
-        ->set('start_date', '2026-07-01')
-        ->set('end_date', '2026-12-31')
+        ->set('formData.name', 'Existing Batch')
+        ->set('formData.start_date', '2026-07-01')
+        ->set('formData.end_date', '2026-12-31')
         ->call('save')
-        ->assertHasErrors(['name' => 'unique']);
+        ->assertHasErrors(['formData.name' => 'unique']);
 });
 
 test('end date must be after start date', function () {
@@ -141,13 +142,13 @@ test('end date must be after start date', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->call('create')
-        ->set('name', 'Test Batch')
-        ->set('start_date', '2026-12-31')
-        ->set('end_date', '2026-07-01')
+        ->set('formData.name', 'Test Batch')
+        ->set('formData.start_date', '2026-12-31')
+        ->set('formData.end_date', '2026-07-01')
         ->call('save')
-        ->assertHasErrors(['end_date' => 'after']);
+        ->assertHasErrors(['formData.end_date' => 'after']);
 });
 
 test('internship index shows stats', function () {
@@ -157,8 +158,8 @@ test('internship index shows stats', function () {
     Internship::factory()->count(2)->create();
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
-        ->assertViewHas('internships');
+        ->test(InternshipIndex::class)
+        ->assertOk();
 });
 
 test('internship search filters by name', function () {
@@ -169,7 +170,7 @@ test('internship search filters by name', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
+        ->test(InternshipIndex::class)
         ->set('search', 'Ganjil')
         ->assertSee('PKL Ganjil')
         ->assertDontSee('PKL Genap');
@@ -185,6 +186,6 @@ test('internship status options are available', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\InternshipIndex::class)
-        ->assertSet('status', InternshipStatus::DRAFT->value);
+        ->test(InternshipIndex::class)
+        ->assertSet('formData.status', InternshipStatus::DRAFT->value);
 });

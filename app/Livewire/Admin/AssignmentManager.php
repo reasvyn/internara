@@ -10,7 +10,7 @@ use App\Actions\Assignment\PublishAssignmentAction;
 use App\Models\Assignment;
 use App\Models\AssignmentType;
 use App\Models\Internship;
-use Illuminate\Support\Collection;
+use Illuminate\View\View;
 use Livewire\Component;
 
 /**
@@ -22,18 +22,25 @@ class AssignmentManager extends Component
 {
     // Form state
     public ?string $assignmentTypeId = null;
+
     public ?string $internshipId = null;
+
     public string $title = '';
+
     public string $description = '';
+
     public bool $isMandatory = false;
+
     public string $dueDate = '';
+
     public string $academicYear = '';
 
     // UI state
     public bool $showForm = false;
+
     public ?string $editingId = null;
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.admin.assignment-manager', [
             'assignments' => Assignment::with(['type', 'internship'])->get(),

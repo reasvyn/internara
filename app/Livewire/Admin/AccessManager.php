@@ -16,9 +16,9 @@ class AccessManager extends Component
     use Toast;
 
     public bool $roleModal = false;
-    
+
     public ?Role $selectedRole = null;
-    
+
     public array $selectedPermissions = [];
 
     /**
@@ -52,7 +52,7 @@ class AccessManager extends Component
      */
     public function savePermissions(UpdateRolePermissionsAction $updateAction): void
     {
-        if (!$this->selectedRole) {
+        if (! $this->selectedRole) {
             return;
         }
 

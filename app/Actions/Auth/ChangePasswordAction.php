@@ -20,7 +20,7 @@ class ChangePasswordAction
 
     public function execute(User $user, string $currentPassword, string $newPassword): void
     {
-        if (!Hash::check($currentPassword, $user->password)) {
+        if (! Hash::check($currentPassword, $user->password)) {
             $this->logAuditAction->execute(
                 action: 'password_change_failed',
                 subjectType: User::class,

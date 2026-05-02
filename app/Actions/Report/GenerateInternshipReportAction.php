@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Actions\Report;
 
 use App\Models\InternshipRegistration;
-use App\Models\JournalEntry;
 use Illuminate\Support\Facades\DB;
 
 /**

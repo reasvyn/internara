@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Actions\Internship\RegisterInternshipAction;
+use App\Actions\Internship\CreatePlacementAction;
 use App\Enums\Role as RoleEnum;
 use App\Models\Internship;
+use App\Models\InternshipCompany;
+use App\Models\InternshipPlacement;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
     foreach (RoleEnum::cases() as $role) {
@@ -48,9 +49,9 @@ describe('Internship Approval', function () {
 
 describe('Placement Management', function () {
     it('allows admin to create placement', function () {
-        $action = app(\App\Actions\Internship\CreatePlacementAction::class);
+        $action = app(CreatePlacementAction::class);
 
-        $company = \App\Models\InternshipCompany::factory()->create();
+        $company = InternshipCompany::factory()->create();
 
         $placement = $action->execute([
             'name' => 'Batch 2026/2027',
@@ -60,6 +61,6 @@ describe('Placement Management', function () {
             'end_date' => '2026-12-31',
         ]);
 
-        expect($placement)->toBeInstanceOf(\App\Models\InternshipPlacement::class);
+        expect($placement)->toBeInstanceOf(InternshipPlacement::class);
     });
 });

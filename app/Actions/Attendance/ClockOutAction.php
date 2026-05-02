@@ -24,7 +24,7 @@ class ClockOutAction
                 ->whereDate('date', $now->toDateString())
                 ->first();
 
-            if (!$log) {
+            if (! $log) {
                 throw new RuntimeException('You must clock in first.');
             }
 

@@ -52,7 +52,7 @@ class DepartmentPolicy
     public function delete(User $user, Department $department): bool
     {
         return $user->hasAnyRole(['super_admin', 'admin'])
-            && !$department->profiles()->exists();
+            && ! $department->profiles()->exists();
     }
 
     /**

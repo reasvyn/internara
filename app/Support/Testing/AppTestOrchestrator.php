@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 
 /**
  * Orchestrates test environment setup and cleanup.
- * 
+ *
  * S2 - Sustain: Centralized test management tools.
  */
 class AppTestOrchestrator

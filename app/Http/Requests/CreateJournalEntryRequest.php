@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\JournalEntryStatus;
+use App\Models\JournalEntry;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 /**
  * Form Request for creating journal entry.
- * 
+ *
  * S1 - Secure: Validates journal entry data at HTTP layer.
  */
 class CreateJournalEntryRequest extends FormRequest
@@ -20,13 +22,13 @@ class CreateJournalEntryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\JournalEntry::class);
+        return $this->user()->can('create', JournalEntry::class);
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

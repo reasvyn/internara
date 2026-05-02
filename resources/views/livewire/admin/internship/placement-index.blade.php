@@ -1,27 +1,31 @@
 <div class="p-8">
-    <x-layouts.manager 
-        title="Placement Management" 
-        subtitle="Manage industry partner internship slots" 
-        :rows="$this->rows()" 
-        :headers="$this->headers()"
-        :selected-count="$this->selected_count"
-        :sort-by="$sortBy"
-    >
-        {{-- Stats Header --}}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <x-mary-stat :value="$this->stats['total']" title="Total Placements" icon="o-briefcase" class="rounded-[2rem] bg-base-100 border border-base-200" />
-            <x-mary-stat :value="$this->stats['total_quota']" title="Total Quota" icon="o-user-group" class="rounded-[2rem] bg-base-100 border border-base-200" />
-            <x-mary-stat :value="$this->stats['filled']" title="Filled" icon="o-check-circle" icon-class="text-success" class="rounded-[2rem] bg-base-100 border border-base-200" />
-            <x-mary-stat :value="$this->stats['available']" title="Available" icon="o-plus-circle" icon-class="text-primary" class="rounded-[2rem] bg-base-100 border border-base-200" />
-        </div>
-
-        {{-- Top Actions --}}
+    {{-- Header Section --}}
+    <x-mary-header title="Placement Management" subtitle="Manage industry partner internship slots" separator progress-indicator>
         <x-slot:actions>
             <x-mary-button label="Add Placement" icon="o-plus" class="btn-primary" wire:click="create" />
         </x-slot:actions>
+    </x-mary-header>
 
-        {{-- Filters --}}
-        <x-slot:filters>
+    {{-- Stats Header --}}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <x-mary-stat :value="$this->stats['total']" title="Total Placements" icon="o-briefcase" class="rounded-[2rem] bg-base-100 border border-base-200" />
+        <x-mary-stat :value="$this->stats['total_quota']" title="Total Quota" icon="o-user-group" class="rounded-[2rem] bg-base-100 border border-base-200" />
+        <x-mary-stat :value="$this->stats['filled']" title="Filled" icon="o-check-circle" icon-class="text-success" class="rounded-[2rem] bg-base-100 border border-base-200" />
+        <x-mary-stat :value="$this->stats['available']" title="Available" icon="o-plus-circle" icon-class="text-primary" class="rounded-[2rem] bg-base-100 border border-base-200" />
+    </div>
+
+    {{-- Controls Section --}}
+    <div class="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div class="w-full lg:max-w-md">
+            <x-mary-input 
+                wire:model.live.debounce.300ms="search" 
+                placeholder="{{ __('Search records...') }}" 
+                icon="o-magnifying-glass" 
+                clearable 
+                class="rounded-2xl border-base-300 focus:border-primary transition-all duration-300 shadow-sm"
+            />
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <x-mary-select 
                 wire:model.live="filters.company_id" 
                 :options="$this->companies" 
@@ -38,40 +42,75 @@
                 clearable 
                 class="rounded-xl border-base-300"
             />
-        </x-slot:filters>
+        </div>
+    </div>
 
-        {{-- Bulk Actions --}}
-        <x-slot:bulkActions>
-            <x-mary-button 
-                label="Delete Selected" 
-                icon="o-trash" 
-                class="btn-sm btn-error text-white font-bold rounded-lg" 
-                wire:confirm="Delete selected placements? Only placements without students will be deleted."
-                wire:click="deleteSelected" 
-            />
-        </x-slot:bulkActions>
-
-        {{-- Table Cell Overrides --}}
-        @scope('cell_quota', $placement)
-            <span class="font-bold">{{ $placement->quota }}</span>
-        @endscope
-
-        @scope('cell_filled_quota', $placement)
-            <div class="flex items-center gap-2">
-                <x-mary-progress value="{{ ($placement->filled_quota / $placement->quota) * 100 }}" class="progress-primary h-2 w-16" />
-                <span class="text-xs font-mono">{{ $placement->filled_quota }}</span>
+    {{-- Selection Bar --}}
+    @if($this->selected_count > 0)
+        <div class="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2 duration-500 shadow-xl shadow-primary/5">
+            <div class="flex items-center gap-4">
+                <div class="size-12 rounded-2xl bg-primary text-primary-content flex items-center justify-center font-black shadow-lg shadow-primary/20">
+                    {{ $this->selected_count }}
+                </div>
+                <div class="text-center sm:text-left">
+                    <h4 class="font-black text-sm text-primary uppercase tracking-tight">{{ __('Records Selected') }}</h4>
+                    <p class="text-[10px] uppercase font-black tracking-widest opacity-40">{{ __('Apply bulk operations') }}</p>
+                </div>
             </div>
-        @endscope
-
-        @scope('actions', $placement)
-            <div class="flex justify-end gap-1">
-                <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $placement->id }}')" />
-                <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                    wire:confirm="Delete this placement?"
-                    wire:click="delete('{{ $placement->id }}')" />
+            <div class="flex items-center gap-3">
+                <div class="flex gap-2">
+                    <x-mary-button 
+                        label="Delete Selected" 
+                        icon="o-trash" 
+                        class="btn-sm btn-error text-white font-bold rounded-lg" 
+                        wire:confirm="Delete selected placements? Only placements without students will be deleted."
+                        wire:click="deleteSelected" 
+                    />
+                </div>
+                <div class="divider divider-horizontal mx-1"></div>
+                <x-mary-button 
+                    label="{{ __('Cancel') }}" 
+                    wire:click="clearSelection" 
+                    class="btn-sm btn-ghost rounded-xl font-black uppercase tracking-widest text-[10px]" 
+                />
             </div>
-        @endscope
-    </x-layouts.manager>
+        </div>
+    @endif
+
+    {{-- Table Section --}}
+    <x-mary-card shadow class="card-enterprise">
+        <div class="table-enterprise">
+            <x-mary-table 
+                :headers="$this->headers()" 
+                :rows="$this->rows()" 
+                :sort-by="$sortBy"
+                with-pagination 
+                selectable
+                wire:model="selectedIds"
+                class="table-sm"
+            >
+                @scope('cell_quota', $placement)
+                    <span class="font-bold">{{ $placement->quota }}</span>
+                @endscope
+
+                @scope('cell_filled_quota', $placement)
+                    <div class="flex items-center gap-2">
+                        <x-mary-progress value="{{ ($placement->filled_quota / $placement->quota) * 100 }}" class="progress-primary h-2 w-16" />
+                        <span class="text-xs font-mono">{{ $placement->filled_quota }}</span>
+                    </div>
+                @endscope
+
+                @scope('actions', $placement)
+                    <div class="flex justify-end gap-1">
+                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $placement->id }}')" />
+                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
+                            wire:confirm="Delete this placement?"
+                            wire:click="delete('{{ $placement->id }}')" />
+                    </div>
+                @endscope
+            </x-mary-table>
+        </div>
+    </x-mary-card>
 
     {{-- Form Modal --}}
     <x-mary-modal wire:model="showModal" title="{{ $formData['id'] ? 'Edit Placement' : 'New Placement' }}" separator>

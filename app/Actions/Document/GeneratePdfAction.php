@@ -16,15 +16,15 @@ class GeneratePdfAction
 {
     /**
      * Generate a PDF from HTML and save it to temporary storage.
-     * 
+     *
      * @return string The temporary file path.
      */
     public function execute(string $html, string $filename = 'document'): string
     {
         $pdf = Pdf::loadHTML($this->wrapHtml($html));
-        
-        $tempPath = 'temp/' . Str::random(40) . '.pdf';
-        
+
+        $tempPath = 'temp/'.Str::random(40).'.pdf';
+
         Storage::disk('local')->put($tempPath, $pdf->output());
 
         return Storage::disk('local')->path($tempPath);

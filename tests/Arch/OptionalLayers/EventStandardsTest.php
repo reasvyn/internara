@@ -9,11 +9,11 @@ namespace Tests\Arch\OptionalLayers;
  * Ensures Events are used correctly for side effects
  */
 describe('Event Standards', function () {
-    
+
     test('events should use strict types')
         ->expect('App\Events')
         ->toUseStrictTypes();
-    
+
     test('events should use Dispatchable trait')
         ->expect('App\Events')
         ->classes()

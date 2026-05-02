@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Notification;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Stateless Action to send email notification.
@@ -29,7 +30,7 @@ class SendEmailNotificationAction
 
         $view = $view ?? 'emails.notification';
 
-        \Illuminate\Support\Facades\Mail::send($view, array_merge($data, [
+        Mail::send($view, array_merge($data, [
             'user' => $user,
             'subject' => $subject,
             'body' => $body,

@@ -45,7 +45,7 @@ class GenerateDocumentAction
                 'documentable_id' => $target->getKey(),
                 'documentable_type' => $target->getMorphClass(),
                 'template_id' => $template->id,
-                'title' => $template->name . ' - ' . ($target->name ?? $target->id),
+                'title' => $template->name.' - '.($target->name ?? $target->id),
                 'document_number' => $this->generateDocumentNumber($template),
                 'issued_at' => now(),
                 'metadata' => [
@@ -64,7 +64,7 @@ class GenerateDocumentAction
                 subjectId: $document->id,
                 payload: [
                     'template_id' => $template->id,
-                    'target_id' => $target->getKey()
+                    'target_id' => $target->getKey(),
                 ],
                 module: 'Document'
             );
@@ -76,6 +76,7 @@ class GenerateDocumentAction
     protected function generateDocumentNumber(DocumentTemplate $template): string
     {
         $count = OfficialDocument::where('template_id', $template->id)->count() + 1;
-        return strtoupper($template->category) . '/' . now()->format('Ymd') . '/' . Str::padLeft((string) $count, 4, '0');
+
+        return strtoupper($template->category).'/'.now()->format('Ymd').'/'.Str::padLeft((string) $count, 4, '0');
     }
 }

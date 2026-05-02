@@ -20,7 +20,7 @@ enum Role: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::SUPER_ADMIN => 'Super Admin',
             self::ADMIN => 'Administrator Sekolah',
             self::TEACHER => 'Guru Pembimbing',
@@ -31,7 +31,7 @@ enum Role: string
 
     public function icon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::SUPER_ADMIN => 'o-shield-check',
             self::ADMIN => 'o-user-group',
             self::TEACHER => 'o-academic-cap',

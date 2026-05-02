@@ -13,12 +13,12 @@ use Mary\Traits\Toast;
 
 class TemplateManager extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
     public string $search = '';
-    
+
     public bool $templateModal = false;
-    
+
     public array $templateData = [
         'id' => null,
         'name' => '',
@@ -41,7 +41,7 @@ class TemplateManager extends Component
     public function templates(): LengthAwarePaginator
     {
         return DocumentTemplate::query()
-            ->when($this->search, fn(Builder $q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->search, fn (Builder $q) => $q->where('name', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate(10);
     }

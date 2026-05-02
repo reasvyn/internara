@@ -27,7 +27,7 @@ class AssignSupervisorAction
             $registration->update(array_filter([
                 'teacher_id' => $teacherId,
                 'mentor_id' => $mentorId,
-            ], fn($v) => $v !== null));
+            ], fn ($v) => $v !== null));
 
             $this->logAuditAction->execute(
                 action: 'supervisors_assigned',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Placement;
 
+use App\Livewire\Admin\Internship\PlacementIndex;
 use App\Models\Internship;
 use App\Models\InternshipCompany;
 use App\Models\InternshipPlacement;
@@ -38,7 +39,7 @@ test('admin can create a new placement', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->call('create')
         ->assertSet('showModal', true)
         ->set('company_id', $company->id)
@@ -61,7 +62,7 @@ test('admin can edit an existing placement', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->call('edit', $placement)
         ->assertSet('name', 'Old Position')
         ->assertSet('showModal', true)
@@ -88,7 +89,7 @@ test('admin cannot delete placement with registered students', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->call('delete', $placement);
 
     $this->assertDatabaseHas('internship_placements', ['id' => $placement->id]);
@@ -101,7 +102,7 @@ test('admin can delete placement without registrations', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->call('delete', $placement);
 
     $this->assertDatabaseMissing('internship_placements', ['id' => $placement->id]);
@@ -112,7 +113,7 @@ test('placement requires company and internship', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->call('create')
         ->set('company_id', '')
         ->set('internship_id', '')
@@ -130,7 +131,7 @@ test('placement quota must be positive integer', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->call('create')
         ->set('company_id', $company->id)
         ->set('internship_id', $internship->id)
@@ -147,7 +148,7 @@ test('placement index shows stats', function () {
     InternshipPlacement::factory()->count(2)->create(['quota' => 10]);
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->assertViewHas('placements');
 });
 
@@ -160,7 +161,7 @@ test('placement search filters by name and company', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->set('search', 'Developer')
         ->assertSee('Developer Intern')
         ->assertDontSee('Accountant Intern');
@@ -179,6 +180,6 @@ test('placement companies computed returns ordered list', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Internship\PlacementIndex::class)
+        ->test(PlacementIndex::class)
         ->assertViewHas('placements');
 });

@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 /**
  * Trait HasUuid
- * 
+ *
  * Automatically generates a UUID v4 for the model's primary key.
  */
 trait HasUuid

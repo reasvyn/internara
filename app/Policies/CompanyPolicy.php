@@ -36,7 +36,7 @@ class CompanyPolicy
     public function delete(User $user, InternshipCompany $company): bool
     {
         return $user->hasAnyRole(['super_admin', 'admin'])
-            && !$company->placements()->exists();
+            && ! $company->placements()->exists();
     }
 
     public function forceDelete(User $user, InternshipCompany $company): bool

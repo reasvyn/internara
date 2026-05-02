@@ -1,43 +1,84 @@
 <div class="p-8">
-    <x-layouts.manager 
-        :title="__('user.teacher.title')" 
-        :subtitle="__('user.teacher.subtitle')" 
-        :rows="$this->rows()" 
-        :headers="$this->headers()"
-        :selected-count="$this->selected_count"
-        :sort-by="$sortBy"
-    >
-        {{-- Top Actions --}}
+    {{-- Header Section --}}
+    <x-mary-header :title="__('user.teacher.title')" :subtitle="__('user.teacher.subtitle')" separator progress-indicator>
         <x-slot:actions>
             <x-mary-button :label="__('user.teacher.new')" icon="o-plus" class="btn-primary" wire:click="create" />
         </x-slot:actions>
+    </x-mary-header>
 
-        {{-- Bulk Actions --}}
-        <x-slot:bulkActions>
-            <x-mary-button 
-                :label="__('common.actions.delete_selected')" 
-                icon="o-trash" 
-                class="btn-sm btn-error text-white font-bold rounded-lg" 
-                :wire:confirm="__('common.actions.confirm_action')"
-                wire:click="deleteSelected" 
+    {{-- Controls Section --}}
+    <div class="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div class="w-full lg:max-w-md">
+            <x-mary-input 
+                wire:model.live.debounce.300ms="search" 
+                placeholder="{{ __('Search records...') }}" 
+                icon="o-magnifying-glass" 
+                clearable 
+                class="rounded-2xl border-base-300 focus:border-primary transition-all duration-300 shadow-sm"
             />
-        </x-slot:bulkActions>
+        </div>
+    </div>
 
-        {{-- Table Cell Overrides --}}
-        @scope('cell_name', $user)
-            <div class="flex gap-4 items-center">
-                <x-mary-avatar :title="$user->name" class="w-9 h-9" />
-                <span class="text-sm font-bold">{{ $user->name }}</span>
+    {{-- Selection Bar --}}
+    @if($this->selected_count > 0)
+        <div class="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2 duration-500 shadow-xl shadow-primary/5">
+            <div class="flex items-center gap-4">
+                <div class="size-12 rounded-2xl bg-primary text-primary-content flex items-center justify-center font-black shadow-lg shadow-primary/20">
+                    {{ $this->selected_count }}
+                </div>
+                <div class="text-center sm:text-left">
+                    <h4 class="font-black text-sm text-primary uppercase tracking-tight">{{ __('Records Selected') }}</h4>
+                    <p class="text-[10px] uppercase font-black tracking-widest opacity-40">{{ __('Apply bulk operations') }}</p>
+                </div>
             </div>
-        @endscope
+            <div class="flex items-center gap-3">
+                <div class="flex gap-2">
+                    <x-mary-button 
+                        :label="__('common.actions.delete_selected')" 
+                        icon="o-trash" 
+                        class="btn-sm btn-error text-white font-bold rounded-lg" 
+                        :wire:confirm="__('common.actions.confirm_action')"
+                        wire:click="deleteSelected" 
+                    />
+                </div>
+                <div class="divider divider-horizontal mx-1"></div>
+                <x-mary-button 
+                    label="{{ __('Cancel') }}" 
+                    wire:click="clearSelection" 
+                    class="btn-sm btn-ghost rounded-xl font-black uppercase tracking-widest text-[10px]" 
+                />
+            </div>
+        </div>
+    @endif
 
-        @scope('actions', $user)
-            <div class="flex justify-end gap-1">
-                <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $user->id }}')" />
-                <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $user->id }}')" />
-            </div>
-        @endscope
-    </x-layouts.manager>
+    {{-- Table Section --}}
+    <x-mary-card shadow class="card-enterprise">
+        <div class="table-enterprise">
+            <x-mary-table 
+                :headers="$this->headers()" 
+                :rows="$this->rows()" 
+                :sort-by="$sortBy"
+                with-pagination 
+                selectable
+                wire:model="selectedIds"
+                class="table-sm"
+            >
+                @scope('cell_name', $user)
+                    <div class="flex gap-4 items-center">
+                        <x-mary-avatar :title="$user->name" class="w-9 h-9" />
+                        <span class="text-sm font-bold">{{ $user->name }}</span>
+                    </div>
+                @endscope
+
+                @scope('actions', $user)
+                    <div class="flex justify-end gap-1">
+                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $user->id }}')" />
+                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $user->id }}')" />
+                    </div>
+                @endscope
+            </x-mary-table>
+        </div>
+    </x-mary-card>
 
     {{-- Teacher Modal --}}
     <x-mary-modal wire:model="userModal" :title="$userData['id'] ? __('user.teacher.edit') : __('user.teacher.new')" separator>

@@ -25,7 +25,7 @@ class SubmitJournalEntryAction
                 ->get()
                 ->first(fn ($reg) => $reg->hasStatus('active'));
 
-            if (!$registration) {
+            if (! $registration) {
                 throw new RuntimeException('No active internship registration found.');
             }
 

@@ -8,6 +8,7 @@ use App\Actions\Assignment\SubmitAssignmentAction;
 use App\Models\Assignment;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -22,10 +23,12 @@ class AssignmentSubmission extends Component
     use WithFileUploads;
 
     public ?string $assignmentId = null;
+
     public string $content = '';
+
     public $file = null;
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         $studentId = Auth::id();
         $registration = Auth::user()->activeRegistration;
@@ -60,6 +63,7 @@ class AssignmentSubmission extends Component
 
         if (! $registration) {
             $this->dispatch('swal:error', message: 'No active internship registration.');
+
             return;
         }
 

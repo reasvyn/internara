@@ -29,7 +29,7 @@ class LoginAction
             'password' => $password,
         ];
 
-        if (!Auth::attempt($credentials, $remember)) {
+        if (! Auth::attempt($credentials, $remember)) {
             $this->logAuditAction->execute(
                 action: 'login_failed',
                 subjectType: User::class,
@@ -46,7 +46,7 @@ class LoginAction
         // Check account status
         if ($user->isSuspended() || $user->isArchived() || $user->isInactive()) {
             Auth::logout();
-            
+
             $this->logAuditAction->execute(
                 action: 'login_blocked',
                 subjectType: User::class,

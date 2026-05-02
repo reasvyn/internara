@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasUuid;
+use Database\Factories\StudentCompetencyLogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -57,8 +58,8 @@ class StudentCompetencyLog extends Model
     /**
      * Create a new factory instance.
      */
-    protected static function newFactory(): \Database\Factories\StudentCompetencyLogFactory
+    protected static function newFactory(): StudentCompetencyLogFactory
     {
-        return \Database\Factories\StudentCompetencyLogFactory::new();
+        return StudentCompetencyLogFactory::new();
     }
 }

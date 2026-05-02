@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\LoginAction;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -71,7 +70,7 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->identifier) . '|' . request()->ip());
+        return Str::transliterate(Str::lower($this->identifier).'|'.request()->ip());
     }
 
     /**

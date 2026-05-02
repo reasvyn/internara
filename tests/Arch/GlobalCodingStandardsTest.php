@@ -9,18 +9,18 @@ namespace Tests\Arch;
  * Ensures all code in App namespace follows basic standards
  */
 describe('Global Coding Standards', function () {
-    
+
     test('global: strict types')
         ->expect('App')
         ->toUseStrictTypes();
-    
+
     test('global: clean code invariants')
         ->expect('App')
         ->not->toUse(['dd', 'dump', 'die', 'var_dump', 'env'])
         ->ignoring([
             // Add specific exceptions here if needed
         ]);
-    
+
     test('global: no hardcoded secrets in code')
         ->expect('App')
         ->not->toUse(['API_KEY', 'SECRET_KEY', 'password =', 'secret ='])

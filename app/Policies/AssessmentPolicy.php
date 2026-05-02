@@ -43,7 +43,7 @@ class AssessmentPolicy
             return true;
         }
 
-        return $assessment->evaluator_id === $user->id && !$assessment->isFinalized();
+        return $assessment->evaluator_id === $user->id && ! $assessment->isFinalized();
     }
 
     public function finalize(User $user, Assessment $assessment): bool
@@ -53,6 +53,6 @@ class AssessmentPolicy
 
     public function delete(User $user, Assessment $assessment): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']) && !$assessment->isFinalized();
+        return $user->hasAnyRole(['super_admin', 'admin']) && ! $assessment->isFinalized();
     }
 }

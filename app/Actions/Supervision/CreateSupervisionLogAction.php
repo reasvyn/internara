@@ -17,11 +17,11 @@ class CreateSupervisionLogAction
     public function execute(User $teacher, array $data): SupervisionLog
     {
         return DB::transaction(function () use ($teacher, $data) {
-            if (!isset($data['registration_id'])) {
+            if (! isset($data['registration_id'])) {
                 throw new RuntimeException('Registration ID is required.');
             }
 
-            if (!isset($data['type'])) {
+            if (! isset($data['type'])) {
                 throw new RuntimeException('Supervision type is required.');
             }
 

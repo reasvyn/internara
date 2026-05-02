@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Notification;
 
+use App\Models\Notification;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Stateless Action to get user's notifications.
@@ -17,8 +19,8 @@ class GetNotificationsAction
         string $userId,
         bool $unreadOnly = false,
         int $limit = 20,
-    ): \Illuminate\Database\Eloquent\Collection {
-        $query = \App\Models\Notification::where('user_id', $userId);
+    ): Collection {
+        $query = Notification::where('user_id', $userId);
 
         if ($unreadOnly) {
             $query->where('is_read', false);

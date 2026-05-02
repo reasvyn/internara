@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\AbsenceReasonType;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 /**
  * Form Request for submitting absence request.
- * 
+ *
  * S1 - Secure: Validates absence submission at HTTP layer.
  */
 class SubmitAbsenceRequest extends FormRequest
@@ -26,7 +27,7 @@ class SubmitAbsenceRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

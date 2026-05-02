@@ -6,13 +6,21 @@
     'selectedCount' => 0,
     'filters' => null,
     'sortBy' => ['column' => 'created_at', 'direction' => 'desc'],
+    'actions' => null,
+    'bulkActions' => null,
+    'massActions' => null,
+    'recordActions' => null,
 ])
 
 <div>
     {{-- Header Section --}}
     <x-mary-header :$title :$subtitle separator progress-indicator>
         <x-slot:actions>
-            {{ $actions ?? '' }}
+            @if($actions instanceof \Closure)
+                {{ $actions() }}
+            @elseif($actions)
+                {{ $actions }}
+            @endif
         </x-slot:actions>
     </x-mary-header>
 
@@ -28,7 +36,9 @@
             />
         </div>
         <div class="flex flex-wrap gap-2 w-full lg:w-auto">
-            @if($filters)
+            @if($filters instanceof \Closure)
+                {{ $filters() }}
+            @elseif($filters)
                 {{ $filters }}
             @endif
         </div>
@@ -48,7 +58,11 @@
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex gap-2">
-                    {{ $bulkActions ?? '' }}
+                    @if($bulkActions instanceof \Closure)
+                        {{ $bulkActions() }}
+                    @elseif($bulkActions)
+                        {{ $bulkActions }}
+                    @endif
                 </div>
                 <div class="divider divider-horizontal mx-1"></div>
                 <x-mary-button 
@@ -72,35 +86,27 @@
                 wire:model="selectedIds"
                 class="table-sm"
             >
-                {{-- Default Slots --}}
+                {{-- Pass through all scoped slots from parent component --}}
                 @foreach($headers as $header)
                     @if(isset($header['key']) && $header['key'] !== 'actions')
-                        @scope('cell_' . str_replace('.', '_', $header['key']), $record)
-                            <span class="font-medium text-base-content/80">{{ $record->{$header['key']} ?? '' }}</span>
-                        @endscope
+                        @php
+                            $slotKey = 'cell_' . str_replace('.', '_', $header['key']);
+                        @endphp
+                        @if($slot->hasActual($slotKey))
+                            {{ $slot->getActual($slotKey) }}
+                        @endif
                     @endif
                 @endforeach
-
-                {{-- Dynamic Slots passed from implementation --}}
-                {{ $slot }}
-
-                {{-- Standard Actions Column if not overridden --}}
-                @scope('actions', $record)
-                    @if(isset($recordActions))
-                        {{ $recordActions($record) }}
-                    @else
-                        <div class="flex justify-end gap-1">
-                            <x-mary-button icon="o-pencil-square" class="btn-ghost btn-sm text-primary transition-transform hover:scale-110" />
-                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error transition-transform hover:scale-110" />
-                        </div>
-                    @endif
-                @endscope
+                
+                @if($slot->hasActual('actions'))
+                    {{ $slot->getActual('actions') }}
+                @endif
             </x-mary-table>
         </div>
     </x-mary-card>
     
     {{-- Mass Actions Section (Footer) --}}
-    @if(isset($massActions))
+    @if($massActions)
         <div class="mt-8 p-8 bg-base-200/50 rounded-[2.5rem] border-2 border-base-300 border-dashed group transition-all duration-300 hover:bg-base-200">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
                 <div class="flex items-center gap-6">
@@ -113,7 +119,11 @@
                     </div>
                 </div>
                 <div class="flex flex-wrap justify-center gap-3">
-                    {{ $massActions }}
+                    @if($massActions instanceof \Closure)
+                        {{ $massActions() }}
+                    @else
+                        {{ $massActions }}
+                    @endif
                 </div>
             </div>
         </div>

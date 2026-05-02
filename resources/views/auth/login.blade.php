@@ -21,6 +21,7 @@
                 label="{{ __('auth::ui.login.form.password') ?? 'Passkey' }}"
                 placeholder="Your secure password"
                 icon="o-key"
+                right
                 class="rounded-2xl border-base-content/10 focus:border-primary transition-all duration-300"
             />
 

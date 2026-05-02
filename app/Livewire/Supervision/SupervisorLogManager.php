@@ -16,13 +16,18 @@ use Mary\Traits\Toast;
 
 class SupervisorLogManager extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
     public bool $showModal = false;
+
     public string $registrationId = '';
+
     public string $date = '';
+
     public string $topic = '';
+
     public string $notes = '';
+
     public string $type = 'guidance';
 
     public function mount(): void

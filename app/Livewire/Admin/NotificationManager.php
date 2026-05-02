@@ -20,6 +20,7 @@ use Livewire\Component;
 class NotificationManager extends Component
 {
     public bool $showAll = false;
+
     public int $unreadCount = 0;
 
     public function mount(): void

@@ -17,15 +17,15 @@ class DownloadReportAction
 {
     public function execute(User $user, GeneratedReport $report): ?string
     {
-        if (!$report->isCompleted()) {
+        if (! $report->isCompleted()) {
             throw new \Exception('Report is not ready for download.');
         }
 
-        if (!$user->hasRole('super_admin') && $report->user_id !== $user->id) {
+        if (! $user->hasRole('super_admin') && $report->user_id !== $user->id) {
             throw new \Exception('Unauthorized to download this report.');
         }
 
-        if (!Storage::disk('private')->exists($report->file_path)) {
+        if (! Storage::disk('private')->exists($report->file_path)) {
             throw new \Exception('Report file not found.');
         }
 

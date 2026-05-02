@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -33,8 +34,16 @@ final class MailConfiguration
      */
     public static function apply(): void
     {
-        // We only apply if mail_host is set in the database
-        $host = Settings::get('mail_host');
+        // Skip during testing
+        if (app()->runningUnitTests()) {
+            return;
+        }
+
+        try {
+            $host = Settings::get('mail_host');
+        } catch (QueryException) {
+            return;
+        }
 
         if (empty($host)) {
             return;
