@@ -15,19 +15,14 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class GetNotificationsAction
 {
-    public function execute(
-        string $userId,
-        bool $unreadOnly = false,
-        int $limit = 20,
-    ): Collection {
+    public function execute(string $userId, bool $unreadOnly = false, int $limit = 20): Collection
+    {
         $query = Notification::where('user_id', $userId);
 
         if ($unreadOnly) {
             $query->where('is_read', false);
         }
 
-        return $query->orderBy('created_at', 'desc')
-            ->limit($limit)
-            ->get();
+        return $query->orderBy('created_at', 'desc')->limit($limit)->get();
     }
 }

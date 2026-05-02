@@ -20,18 +20,24 @@ abstract class TestCase extends BaseTestCase
         // Restore app_info.json if missing (from previous test cleanup)
         $appInfoPath = base_path('app_info.json');
         $appInfoBackup = base_path('app_info.json.backup');
-        if (! File::exists($appInfoPath) && File::exists($appInfoBackup)) {
+        if (!File::exists($appInfoPath) && File::exists($appInfoBackup)) {
             File::copy($appInfoBackup, $appInfoPath);
         }
 
         // Mark app as installed for tests (create lock file)
         $lockPath = storage_path('app/.installed');
-        if (! File::exists($lockPath)) {
+        if (!File::exists($lockPath)) {
             File::ensureDirectoryExists(dirname($lockPath));
-            File::put($lockPath, json_encode([
-                'installed_at' => now()->toIso8601String(),
-                'version' => 'testing',
-            ], JSON_PRETTY_PRINT));
+            File::put(
+                $lockPath,
+                json_encode(
+                    [
+                        'installed_at' => now()->toIso8601String(),
+                        'version' => 'testing',
+                    ],
+                    JSON_PRETTY_PRINT,
+                ),
+            );
         }
 
         Gate::before(function ($user, $ability) {
@@ -47,7 +53,7 @@ abstract class TestCase extends BaseTestCase
         $path = base_path('app_info.json');
         $backup = base_path('app_info.json.backup');
 
-        if (! File::exists($path) && File::exists($backup)) {
+        if (!File::exists($path) && File::exists($backup)) {
             File::move($backup, $path);
         }
 

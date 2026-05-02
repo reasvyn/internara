@@ -19,13 +19,7 @@ class StudentCompetencyLog extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'registration_id',
-        'competency_id',
-        'evaluator_id',
-        'score',
-        'notes',
-    ];
+    protected $fillable = ['registration_id', 'competency_id', 'evaluator_id', 'score', 'notes'];
 
     protected $casts = [
         'score' => 'float',

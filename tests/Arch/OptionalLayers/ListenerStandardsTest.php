@@ -9,10 +9,7 @@ namespace Tests\Arch\OptionalLayers;
  * Ensures Listeners handle side effects correctly
  */
 describe('Listener Standards', function () {
-
-    test('listeners should use strict types')
-        ->expect('App\Listeners')
-        ->toUseStrictTypes();
+    test('listeners should use strict types')->expect('App\Listeners')->toUseStrictTypes();
 
     test('listeners should have handle method')
         ->expect('App\Listeners')

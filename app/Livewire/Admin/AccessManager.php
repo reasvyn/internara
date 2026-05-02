@@ -52,7 +52,7 @@ class AccessManager extends Component
      */
     public function savePermissions(UpdateRolePermissionsAction $updateAction): void
     {
-        if (! $this->selectedRole) {
+        if (!$this->selectedRole) {
             return;
         }
 

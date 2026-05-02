@@ -16,7 +16,7 @@ class JobFailedNotification extends Notification implements ShouldQueue
     public function __construct(
         public string $taskName,
         public string $errorMessage = 'An unexpected error occurred during processing.',
-        public ?string $link = null
+        public ?string $link = null,
     ) {}
 
     public function via($notifiable): array

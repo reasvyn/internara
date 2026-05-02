@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\DB;
  */
 class QueueReportGenerationAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAudit
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     public function execute(User $user, string $reportType, array $filters = []): GeneratedReport
     {
@@ -39,7 +37,7 @@ class QueueReportGenerationAction
                 subjectType: GeneratedReport::class,
                 subjectId: $report->id,
                 payload: ['report_type' => $reportType],
-                module: 'Report'
+                module: 'Report',
             );
 
             return $report;

@@ -14,9 +14,7 @@ class WelcomeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        public string $temporaryPassword = ''
-    ) {}
+    public function __construct(public string $temporaryPassword = '') {}
 
     public function via($notifiable): array
     {
@@ -34,19 +32,32 @@ class WelcomeNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
+        $message = new MailMessage()
             ->subject(__('notifications.welcome.mail_subject'))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
             ->line(__('notifications.welcome.mail_line1'))
-            ->line(__('notifications.welcome.mail_username', ['username' => $notifiable->username]));
+            ->line(
+                __('notifications.welcome.mail_username', ['username' => $notifiable->username]),
+            );
 
         if ($this->temporaryPassword) {
-            $message->line(__('notifications.welcome.mail_password', ['password' => $this->temporaryPassword]))
+            $message
+                ->line(
+                    __('notifications.welcome.mail_password', [
+                        'password' => $this->temporaryPassword,
+                    ]),
+                )
                 ->line(__('notifications.welcome.mail_line2'));
         }
 
-        return $message->action(__('notifications.welcome.mail_action'), url('/login'))
-            ->line(__('notifications.welcome.mail_line3', default: 'Thank you for using our application!'));
+        return $message
+            ->action(__('notifications.welcome.mail_action'), url('/login'))
+            ->line(
+                __(
+                    'notifications.welcome.mail_line3',
+                    default: 'Thank you for using our application!',
+                ),
+            );
     }
 
     public function toCustomDatabase($notifiable): array

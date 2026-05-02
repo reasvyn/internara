@@ -29,7 +29,7 @@ class DeleteSchoolAction
                 action: 'school_deleted',
                 subjectType: School::class,
                 subjectId: $school->id,
-                module: 'School'
+                module: 'School',
             );
         });
     }

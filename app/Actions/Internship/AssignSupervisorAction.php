@@ -14,20 +14,26 @@ use Illuminate\Support\Facades\DB;
  */
 class AssignSupervisorAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Execute the supervisor assignment.
      */
-    public function execute(InternshipRegistration $registration, ?string $teacherId = null, ?string $mentorId = null): void
-    {
+    public function execute(
+        InternshipRegistration $registration,
+        ?string $teacherId = null,
+        ?string $mentorId = null,
+    ): void {
         DB::transaction(function () use ($registration, $teacherId, $mentorId) {
-            $registration->update(array_filter([
-                'teacher_id' => $teacherId,
-                'mentor_id' => $mentorId,
-            ], fn ($v) => $v !== null));
+            $registration->update(
+                array_filter(
+                    [
+                        'teacher_id' => $teacherId,
+                        'mentor_id' => $mentorId,
+                    ],
+                    fn($v) => $v !== null,
+                ),
+            );
 
             $this->logAuditAction->execute(
                 action: 'supervisors_assigned',
@@ -37,7 +43,7 @@ class AssignSupervisorAction
                     'teacher_id' => $teacherId,
                     'mentor_id' => $mentorId,
                 ],
-                module: 'Internship'
+                module: 'Internship',
             );
         });
     }

@@ -42,14 +42,7 @@ class SetupService
      * Setup steps in order.
      * Follows professional naming: snake_case, semantic clarity.
      */
-    public const STEPS = [
-        'welcome',
-        'school',
-        'account',
-        'department',
-        'internship',
-        'finalize',
-    ];
+    public const STEPS = ['welcome', 'school', 'account', 'department', 'internship', 'finalize'];
 
     /**
      * Check if the application is already installed.
@@ -66,8 +59,11 @@ class SetupService
     {
         $token = bin2hex(random_bytes(32));
 
-        Session::put(self::SESSION_PREFIX.'token', Crypt::encryptString($token));
-        Session::put(self::SESSION_PREFIX.'token_expires_at', now()->addHours(self::TOKEN_TTL_HOURS)->toIso8601String());
+        Session::put(self::SESSION_PREFIX . 'token', Crypt::encryptString($token));
+        Session::put(
+            self::SESSION_PREFIX . 'token_expires_at',
+            now()->addHours(self::TOKEN_TTL_HOURS)->toIso8601String(),
+        );
 
         return $token;
     }
@@ -81,10 +77,7 @@ class SetupService
         $token = bin2hex(random_bytes(32));
         $expiresAt = now()->addHours(self::TOKEN_TTL_HOURS)->toIso8601String();
 
-        File::put(
-            storage_path(self::CLI_TOKEN_FILE),
-            $token.'|'.$expiresAt
-        );
+        File::put(storage_path(self::CLI_TOKEN_FILE), $token . '|' . $expiresAt);
 
         return $token;
     }
@@ -96,7 +89,7 @@ class SetupService
     {
         $path = storage_path(self::CLI_TOKEN_FILE);
 
-        if (! File::exists($path)) {
+        if (!File::exists($path)) {
             return null;
         }
 
@@ -123,7 +116,7 @@ class SetupService
      */
     public function getToken(): ?string
     {
-        $encrypted = Session::get(self::SESSION_PREFIX.'token');
+        $encrypted = Session::get(self::SESSION_PREFIX . 'token');
 
         if ($encrypted === null) {
             return null;
@@ -143,7 +136,7 @@ class SetupService
     {
         // 1. Try session token
         $sessionToken = $this->getToken();
-        if ($sessionToken !== null && ! $this->isTokenExpired()) {
+        if ($sessionToken !== null && !$this->isTokenExpired()) {
             if (hash_equals($sessionToken, $token)) {
                 return true;
             }
@@ -165,7 +158,7 @@ class SetupService
      */
     public function isTokenExpired(): bool
     {
-        $expiresAt = Session::get(self::SESSION_PREFIX.'token_expires_at');
+        $expiresAt = Session::get(self::SESSION_PREFIX . 'token_expires_at');
 
         if ($expiresAt === null) {
             return true;
@@ -179,7 +172,7 @@ class SetupService
      */
     public function getCurrentStep(): int
     {
-        return (int) Session::get(self::SESSION_PREFIX.'current_step', 1);
+        return (int) Session::get(self::SESSION_PREFIX . 'current_step', 1);
     }
 
     /**
@@ -187,7 +180,7 @@ class SetupService
      */
     public function setCurrentStep(int $step): void
     {
-        Session::put(self::SESSION_PREFIX.'current_step', max(1, min(7, $step)));
+        Session::put(self::SESSION_PREFIX . 'current_step', max(1, min(7, $step)));
     }
 
     /**
@@ -197,9 +190,9 @@ class SetupService
     {
         $steps = $this->getCompletedSteps();
 
-        if (! in_array($step, $steps)) {
+        if (!in_array($step, $steps)) {
             $steps[] = $step;
-            Session::put(self::SESSION_PREFIX.'completed_steps', $steps);
+            Session::put(self::SESSION_PREFIX . 'completed_steps', $steps);
         }
     }
 
@@ -218,7 +211,7 @@ class SetupService
      */
     public function getCompletedSteps(): array
     {
-        return Session::get(self::SESSION_PREFIX.'completed_steps', []);
+        return Session::get(self::SESSION_PREFIX . 'completed_steps', []);
     }
 
     /**
@@ -243,7 +236,7 @@ class SetupService
      */
     public function storeEntityId(string $key, string $id): void
     {
-        Session::put(self::SESSION_PREFIX.'entity.'.$key, $id);
+        Session::put(self::SESSION_PREFIX . 'entity.' . $key, $id);
     }
 
     /**
@@ -251,7 +244,7 @@ class SetupService
      */
     public function getEntityId(string $key): ?string
     {
-        return Session::get(self::SESSION_PREFIX.'entity.'.$key);
+        return Session::get(self::SESSION_PREFIX . 'entity.' . $key);
     }
 
     /**
@@ -259,10 +252,13 @@ class SetupService
      */
     public function finalize(): void
     {
-        $lockContent = (string) json_encode([
-            'installed_at' => now()->toIso8601String(),
-            'version' => AppInfo::version(),
-        ], JSON_PRETTY_PRINT);
+        $lockContent = (string) json_encode(
+            [
+                'installed_at' => now()->toIso8601String(),
+                'version' => AppInfo::version(),
+            ],
+            JSON_PRETTY_PRINT,
+        );
 
         File::put(storage_path(self::LOCK_FILE), $lockContent);
 
@@ -279,12 +275,12 @@ class SetupService
      */
     public function clearSession(): void
     {
-        Session::forget(self::SESSION_PREFIX.'token');
-        Session::forget(self::SESSION_PREFIX.'token_expires_at');
-        Session::forget(self::SESSION_PREFIX.'current_step');
-        Session::forget(self::SESSION_PREFIX.'completed_steps');
-        Session::forget(self::SESSION_PREFIX.'entity');
-        Session::forget(self::SESSION_PREFIX.'authorized');
+        Session::forget(self::SESSION_PREFIX . 'token');
+        Session::forget(self::SESSION_PREFIX . 'token_expires_at');
+        Session::forget(self::SESSION_PREFIX . 'current_step');
+        Session::forget(self::SESSION_PREFIX . 'completed_steps');
+        Session::forget(self::SESSION_PREFIX . 'entity');
+        Session::forget(self::SESSION_PREFIX . 'authorized');
         Session::forget('setup.token_input');
     }
 
@@ -311,8 +307,8 @@ class SetupService
      */
     public function authorizeSession(string $token): void
     {
-        Session::put(self::SESSION_PREFIX.'authorized', true);
-        Session::put(self::SESSION_PREFIX.'authorized_token', $token);
+        Session::put(self::SESSION_PREFIX . 'authorized', true);
+        Session::put(self::SESSION_PREFIX . 'authorized_token', $token);
     }
 
     /**
@@ -320,12 +316,12 @@ class SetupService
      */
     public function isSessionAuthorized(): bool
     {
-        $authorized = (bool) Session::get(self::SESSION_PREFIX.'authorized', false);
-        if (! $authorized) {
+        $authorized = (bool) Session::get(self::SESSION_PREFIX . 'authorized', false);
+        if (!$authorized) {
             return false;
         }
 
-        $token = Session::get(self::SESSION_PREFIX.'authorized_token');
+        $token = Session::get(self::SESSION_PREFIX . 'authorized_token');
         if ($token === null) {
             return false;
         }
@@ -340,7 +336,7 @@ class SetupService
      */
     public function getLockData(): ?array
     {
-        if (! $this->isInstalled()) {
+        if (!$this->isInstalled()) {
             return null;
         }
 

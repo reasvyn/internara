@@ -11,9 +11,7 @@ export default defineConfig({
         }),
         tailwindcss({
             config: {
-                content: [
-                    './resources/views/**/*.blade.php',
-                ],
+                content: ['./resources/views/**/*.blade.php'],
                 plugins: [daisyui],
             },
         }),

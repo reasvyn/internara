@@ -128,7 +128,7 @@ return [
     |
     */
 
-    'cookie' => env('SESSION_COOKIE', Str::snake((string) env('APP_NAME', 'laravel')).'_session'),
+    'cookie' => env('SESSION_COOKIE', Str::snake((string) env('APP_NAME', 'laravel')) . '_session'),
 
     /*
     |--------------------------------------------------------------------------

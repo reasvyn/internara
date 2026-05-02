@@ -21,7 +21,7 @@ class InstallSystemAction
 {
     public function __construct(
         protected readonly SetSettingAction $setSetting,
-        protected readonly LogAuditAction $logAudit
+        protected readonly LogAuditAction $logAudit,
     ) {}
 
     /**
@@ -73,12 +73,17 @@ class InstallSystemAction
         DB::transaction(function () {
             $this->setSetting->execute('app_installed', 'true', 'boolean', 'system');
             $this->setSetting->execute('app_version', AppInfo::version(), 'string', 'system');
-            $this->setSetting->execute('installed_at', now()->toIso8601String(), 'datetime', 'system');
+            $this->setSetting->execute(
+                'installed_at',
+                now()->toIso8601String(),
+                'datetime',
+                'system',
+            );
 
             $this->logAudit->execute(
                 action: 'system_installed',
                 payload: ['version' => AppInfo::version()],
-                module: 'System'
+                module: 'System',
             );
         });
     }

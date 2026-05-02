@@ -30,17 +30,21 @@ class HandbookFactory extends Factory
 
     public function draft(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => false,
-            'published_at' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'is_active' => false,
+                'published_at' => null,
+            ],
+        );
     }
 
     public function published(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_active' => true,
-            'published_at' => now(),
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'is_active' => true,
+                'published_at' => now(),
+            ],
+        );
     }
 }

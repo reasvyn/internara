@@ -157,14 +157,14 @@ class SetupWizard extends Component
         $this->auditResults = $auditor->audit();
         $this->auditPassed = $this->auditResults['passed'];
 
-        if (! $this->auditPassed) {
+        if (!$this->auditPassed) {
             flash()->error(__('setup.wizard.requirements_not_met'));
         }
     }
 
     public function nextStep(): void
     {
-        if ($this->currentStep === 1 && ! $this->auditPassed) {
+        if ($this->currentStep === 1 && !$this->auditPassed) {
             flash()->warning(__('setup.wizard.audit_must_pass'));
 
             return;
@@ -225,7 +225,7 @@ class SetupWizard extends Component
         SetupSchoolAction $setupSchool,
         SetupDepartmentAction $setupDepartment,
         SetupInternshipAction $setupInternship,
-        SetupSuperAdminAction $setupSuperAdmin
+        SetupSuperAdminAction $setupSuperAdmin,
     ): void {
         // Validate finalization requirements
         $this->validate([
@@ -240,7 +240,12 @@ class SetupWizard extends Component
             'endDate' => 'required|date|after:startDate',
         ]);
 
-        DB::transaction(function () use ($setupSchool, $setupDepartment, $setupInternship, $setupSuperAdmin) {
+        DB::transaction(function () use (
+            $setupSchool,
+            $setupDepartment,
+            $setupInternship,
+            $setupSuperAdmin,
+        ) {
             // 1. Setup School (step 2)
             $school = $setupSchool->execute([
                 'name' => $this->schoolName,
@@ -325,7 +330,10 @@ class SetupWizard extends Component
         $stepNumber = $this->getStepNumber($stepName);
 
         // Only allow navigating back or to steps already completed
-        if ($stepNumber < $this->currentStep || app(SetupService::class)->isStepCompleted($stepName)) {
+        if (
+            $stepNumber < $this->currentStep ||
+            app(SetupService::class)->isStepCompleted($stepName)
+        ) {
             $this->currentStep = $stepNumber;
             app(SetupService::class)->setCurrentStep($this->currentStep);
         }

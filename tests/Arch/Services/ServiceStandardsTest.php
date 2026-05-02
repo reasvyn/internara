@@ -9,10 +9,7 @@ namespace Tests\Arch\Services;
  * Ensures Services handle infrastructure concerns only
  */
 describe('Service Standards', function () {
-
-    test('services should use strict types')
-        ->expect('App\Services')
-        ->toUseStrictTypes();
+    test('services should use strict types')->expect('App\Services')->toUseStrictTypes();
 
     test('services should not contain business rules')
         ->expect('App\Services')
@@ -21,7 +18,5 @@ describe('Service Standards', function () {
             // Allow type hints in method parameters
         ]);
 
-    test('services should not use actions')
-        ->expect('App\Services')
-        ->not->toUse('App\Actions');
+    test('services should not use actions')->expect('App\Services')->not->toUse('App\Actions');
 });

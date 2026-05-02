@@ -18,20 +18,19 @@ use Illuminate\Support\Facades\Validator;
  */
 class CreateUserAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Create a new user with associated profile and roles.
      */
     public function execute(array $userData, array $profileData = [], array $roles = []): User
     {
-        $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername();
+        $userData['username'] =
+            $userData['username'] ?? UserIdentifierGenerator::generateUsername();
         $plainPassword = $userData['password'] ?? str()->random(12);
 
         Validator::make($userData, [
-            'username' => ['required', 'string', 'unique:users,username', new SystemUsername],
+            'username' => ['required', 'string', 'unique:users,username', new SystemUsername()],
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
 
@@ -44,18 +43,18 @@ class CreateUserAction
                 'setup_required' => $userData['setup_required'] ?? false,
             ]);
 
-            if (! empty($profileData)) {
+            if (!empty($profileData)) {
                 $user->profile()->create($profileData);
             }
 
-            if (! empty($roles)) {
+            if (!empty($roles)) {
                 $user->assignRole($roles);
             }
 
             // Notify User (Welcome)
-            $user->notify(new WelcomeNotification(
-                isset($userData['password']) ? '' : $plainPassword
-            ));
+            $user->notify(
+                new WelcomeNotification(isset($userData['password']) ? '' : $plainPassword),
+            );
 
             $this->logAuditAction->execute(
                 action: 'user_created',
@@ -65,7 +64,7 @@ class CreateUserAction
                     'email' => $user->email,
                     'roles' => $roles,
                 ],
-                module: 'Auth'
+                module: 'Auth',
             );
 
             return $user;

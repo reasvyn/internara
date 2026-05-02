@@ -6,7 +6,7 @@ use App\Actions\Setting\SetSettingAction;
 use App\Support\Environment;
 use App\Support\Settings;
 
-if (! function_exists('setting')) {
+if (!function_exists('setting')) {
     /**
      * Get or set application settings.
      *
@@ -29,7 +29,7 @@ if (! function_exists('setting')) {
         }
 
         // Set multiple settings (associative array)
-        if (is_array($key) && ! empty($key) && is_string(array_key_first($key))) {
+        if (is_array($key) && !empty($key) && is_string(array_key_first($key))) {
             return app(SetSettingAction::class)->executeBatch($key);
         }
 
@@ -42,7 +42,7 @@ if (! function_exists('setting')) {
     }
 }
 
-if (! function_exists('is_debug_mode')) {
+if (!function_exists('is_debug_mode')) {
     /**
      * Determine if the application is currently in debug mode.
      */
@@ -52,7 +52,7 @@ if (! function_exists('is_debug_mode')) {
     }
 }
 
-if (! function_exists('is_development')) {
+if (!function_exists('is_development')) {
     /**
      * Determine if the application is running in a development environment.
      */
@@ -62,7 +62,7 @@ if (! function_exists('is_development')) {
     }
 }
 
-if (! function_exists('is_testing')) {
+if (!function_exists('is_testing')) {
     /**
      * Determine if the application is currently running tests.
      */
@@ -72,7 +72,7 @@ if (! function_exists('is_testing')) {
     }
 }
 
-if (! function_exists('is_maintenance')) {
+if (!function_exists('is_maintenance')) {
     /**
      * Determine if the application is currently in maintenance mode.
      */

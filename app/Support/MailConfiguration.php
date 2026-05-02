@@ -52,7 +52,7 @@ final class MailConfiguration
         foreach (self::CONFIG_MAP as $settingKey => $configKey) {
             $value = Settings::get($settingKey);
 
-            if (! is_null($value) && $value !== '') {
+            if (!is_null($value) && $value !== '') {
                 Config::set($configKey, $value);
             }
         }

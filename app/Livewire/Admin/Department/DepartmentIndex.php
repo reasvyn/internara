@@ -82,7 +82,12 @@ class DepartmentIndex extends BaseRecordManager
     public function save(CreateDepartmentAction $create, UpdateDepartmentAction $update): void
     {
         $this->validate([
-            'formData.name' => ['required', 'string', 'max:255', 'unique:departments,name,'.($this->formData['id'] ?? 'NULL')],
+            'formData.name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:departments,name,' . ($this->formData['id'] ?? 'NULL'),
+            ],
             'formData.description' => ['nullable', 'string', 'max:1000'],
         ]);
 

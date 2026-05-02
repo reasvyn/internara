@@ -17,14 +17,7 @@ class DocumentTemplate extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'content',
-        'is_active',
-        'category',
-    ];
+    protected $fillable = ['name', 'slug', 'description', 'content', 'is_active', 'category'];
 
     protected $casts = [
         'category' => DocumentCategory::class,

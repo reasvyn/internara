@@ -29,8 +29,12 @@ class DocumentExplorer extends Component
     public function documents(): LengthAwarePaginator
     {
         return OfficialDocument::query()
-            ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%{$this->search}%")
-                ->orWhere('document_number', 'like', "%{$this->search}%"))
+            ->when(
+                $this->search,
+                fn(Builder $q) => $q
+                    ->where('title', 'like', "%{$this->search}%")
+                    ->orWhere('document_number', 'like', "%{$this->search}%"),
+            )
             ->latest()
             ->paginate(15);
     }

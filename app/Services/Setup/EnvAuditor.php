@@ -46,22 +46,14 @@ class EnvAuditor
      *
      * @var array<int, string>
      */
-    private const RECOMMENDED_EXTENSIONS = [
-        'redis',
-        'pcntl',
-        'posix',
-    ];
+    private const RECOMMENDED_EXTENSIONS = ['redis', 'pcntl', 'posix'];
 
     /**
      * Directories that must be writable.
      *
      * @var array<int, string>
      */
-    private const WRITABLE_DIRS = [
-        'storage',
-        'bootstrap/cache',
-        'database',
-    ];
+    private const WRITABLE_DIRS = ['storage', 'bootstrap/cache', 'database'];
 
     /**
      * Run all pre-flight checks and return results.
@@ -83,10 +75,7 @@ class EnvAuditor
         $categories = [
             'requirements' => [
                 'label' => __('setup.wizard.system_requirements'),
-                'checks' => [
-                    $this->checkPhpVersion(),
-                    ...$this->checkRequiredExtensions(),
-                ],
+                'checks' => [$this->checkPhpVersion(), ...$this->checkRequiredExtensions()],
             ],
             'permissions' => [
                 'label' => __('setup.wizard.permissions'),
@@ -98,10 +87,7 @@ class EnvAuditor
             ],
             'recommendations' => [
                 'label' => __('setup.wizard.recommendations'),
-                'checks' => [
-                    ...$this->checkRecommendedExtensions(),
-                    $this->checkAppKey(),
-                ],
+                'checks' => [...$this->checkRecommendedExtensions(), $this->checkAppKey()],
             ],
         ];
 
@@ -111,7 +97,7 @@ class EnvAuditor
         }
 
         return [
-            'passed' => collect($allChecks)->every(fn ($c) => $c['status'] !== 'fail'),
+            'passed' => collect($allChecks)->every(fn($c) => $c['status'] !== 'fail'),
             'categories' => $categories,
         ];
     }
@@ -129,7 +115,10 @@ class EnvAuditor
             'status' => $meets ? 'pass' : 'fail',
             'message' => $meets
                 ? __('setup.checks.php_version_pass', ['current' => $current])
-                : __('setup.checks.php_version_fail', ['current' => $current, 'required' => self::MIN_PHP_VERSION]),
+                : __('setup.checks.php_version_fail', [
+                    'current' => $current,
+                    'required' => self::MIN_PHP_VERSION,
+                ]),
         ];
     }
 
@@ -230,14 +219,19 @@ class EnvAuditor
             return [
                 'name' => __('setup.checks.db_connection'),
                 'status' => 'pass',
-                'message' => __('setup.checks.db_pass', ['driver' => $driver, 'version' => $version]),
+                'message' => __('setup.checks.db_pass', [
+                    'driver' => $driver,
+                    'version' => $version,
+                ]),
             ];
         } catch (PDOException $e) {
             // S1: Never expose connection details or credentials in error messages
             return [
                 'name' => __('setup.checks.db_connection'),
                 'status' => 'fail',
-                'message' => __('setup.checks.db_fail_message', ['error' => $this->sanitizeError($e->getMessage())]),
+                'message' => __('setup.checks.db_fail_message', [
+                    'error' => $this->sanitizeError($e->getMessage()),
+                ]),
             ];
         }
     }
@@ -283,7 +277,7 @@ class EnvAuditor
 
         // Truncate to prevent leaking sensitive context
         if (strlen($message) > 120) {
-            $message = substr($message, 0, 117).'...';
+            $message = substr($message, 0, 117) . '...';
         }
 
         return $message;

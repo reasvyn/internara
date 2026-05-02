@@ -25,7 +25,7 @@ class SetupSchoolAction
                 subjectType: School::class,
                 subjectId: $school->id,
                 payload: $data,
-                module: 'Setup'
+                module: 'Setup',
             );
 
             return $school;

@@ -22,7 +22,7 @@ class TestMailNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject('Internara: Test SMTP Configuration')
             ->greeting('Hello, Admin!')
             ->line('This is a test email sent from Internara to verify your SMTP configuration.')

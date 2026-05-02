@@ -62,11 +62,18 @@ class CheckRole
         ]);
 
         if ($request->expectsJson()) {
-            return response()->json([
-                'message' => 'Security Access Denied. Your identity profile does not have the required clearance level.',
-            ], 403);
+            return response()->json(
+                [
+                    'message' =>
+                        'Security Access Denied. Your identity profile does not have the required clearance level.',
+                ],
+                403,
+            );
         }
 
-        abort(403, 'Your identity profile does not have the required clearance level to access this encrypted node.');
+        abort(
+            403,
+            'Your identity profile does not have the required clearance level to access this encrypted node.',
+        );
     }
 }

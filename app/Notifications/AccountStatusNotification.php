@@ -14,10 +14,7 @@ class AccountStatusNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        public string $status,
-        public ?string $reason = null
-    ) {}
+    public function __construct(public string $status, public ?string $reason = null) {}
 
     public function via($notifiable): array
     {
@@ -28,20 +25,28 @@ class AccountStatusNotification extends Notification implements ShouldQueue
     {
         return [
             'title' => __('notifications.account_status.title'),
-            'message' => __('notifications.account_status.broadcast', ['status' => strtoupper($this->status)]),
+            'message' => __('notifications.account_status.broadcast', [
+                'status' => strtoupper($this->status),
+            ]),
             'link' => '/profile',
         ];
     }
 
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
+        $message = new MailMessage()
             ->subject(__('notifications.account_status.mail_subject'))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.account_status.mail_line1', ['status' => strtoupper($this->status)]));
+            ->line(
+                __('notifications.account_status.mail_line1', [
+                    'status' => strtoupper($this->status),
+                ]),
+            );
 
         if ($this->reason) {
-            $message->line(__('notifications.account_status.mail_reason', ['reason' => $this->reason]));
+            $message->line(
+                __('notifications.account_status.mail_reason', ['reason' => $this->reason]),
+            );
         }
 
         return $message->action(__('notifications.welcome.mail_action'), url('/login'));

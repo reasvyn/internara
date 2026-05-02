@@ -1,19 +1,20 @@
 # Installation Guide
 
-Internara can be installed in any environment that meets the system requirements. The installation process supports both automated CLI initialization and a guided web-based setup wizard.
+Internara can be installed in any environment that meets the system requirements. The installation
+process supports both automated CLI initialization and a guided web-based setup wizard.
 
 ---
 
 ## System Requirements
 
-| Requirement | Minimum | Recommended |
-|-------------|---------|-------------|
-| PHP | 8.4 | 8.4+ |
-| Extensions | `mbstring`, `ctype`, `fileinfo`, `pdo`, `openssl`, `tokenizer`, `xml`, `json`, `curl` | All minimum + `redis` (for queue/cache) |
-| Database | SQLite 3, MySQL 8.0+, PostgreSQL 14+ | MySQL 8.0+ or PostgreSQL 15+ |
-| Node.js | 20+ | 22+ (LTS) |
-| Memory | 512 MB PHP memory limit | 1 GB+ |
-| Disk | 500 MB (base installation) | 2 GB+ (with file storage) |
+| Requirement | Minimum                                                                               | Recommended                             |
+| ----------- | ------------------------------------------------------------------------------------- | --------------------------------------- |
+| PHP         | 8.4                                                                                   | 8.4+                                    |
+| Extensions  | `mbstring`, `ctype`, `fileinfo`, `pdo`, `openssl`, `tokenizer`, `xml`, `json`, `curl` | All minimum + `redis` (for queue/cache) |
+| Database    | SQLite 3, MySQL 8.0+, PostgreSQL 14+                                                  | MySQL 8.0+ or PostgreSQL 15+            |
+| Node.js     | 20+                                                                                   | 22+ (LTS)                               |
+| Memory      | 512 MB PHP memory limit                                                               | 1 GB+                                   |
+| Disk        | 500 MB (base installation)                                                            | 2 GB+ (with file storage)               |
 
 ---
 
@@ -46,7 +47,8 @@ php artisan key:generate
 php artisan setup:install
 ```
 
-The command outputs a signed URL with a setup token. Open it in your browser to continue with the web wizard.
+The command outputs a signed URL with a setup token. Open it in your browser to continue with the
+web wizard.
 
 ### Method 2: Manual Initialization
 
@@ -59,7 +61,8 @@ php artisan storage:link
 php artisan serve
 ```
 
-After manual initialization, create a SuperAdmin user directly in the database or use the seeder output to log in.
+After manual initialization, create a SuperAdmin user directly in the database or use the seeder
+output to log in.
 
 ---
 
@@ -70,18 +73,19 @@ After manual initialization, create a SuperAdmin user directly in the database o
 
 The wizard guides you through initial configuration in 6 steps:
 
-| Step | Purpose | What You'll Enter |
-|------|---------|-------------------|
-| 1. Welcome | Pre-flight system audit | — (automatic checks) |
-| 2. School | School profile | Name, code, address, email, logo |
-| 3. Account | Admin user | Name, email, password |
-| 4. Department | First academic department | Department name |
-| 5. Internship | First internship program | Name, dates, description |
-| 6. Finalize | Verification & lock | Review checklist, confirm |
+| Step          | Purpose                   | What You'll Enter                |
+| ------------- | ------------------------- | -------------------------------- |
+| 1. Welcome    | Pre-flight system audit   | — (automatic checks)             |
+| 2. School     | School profile            | Name, code, address, email, logo |
+| 3. Account    | Admin user                | Name, email, password            |
+| 4. Department | First academic department | Department name                  |
+| 5. Internship | First internship program  | Name, dates, description         |
+| 6. Finalize   | Verification & lock       | Review checklist, confirm        |
 
 ### Pre-Flight Checks
 
 The wizard automatically verifies:
+
 - PHP version (must be 8.4+)
 - Required PHP extensions loaded
 - Storage directory writability
@@ -182,7 +186,8 @@ php artisan view:clear
 pnpm build
 ```
 
-**Important**: Always back up your database before running migrations. Migrations are designed to be additive and non-destructive, but a backup ensures safety.
+**Important**: Always back up your database before running migrations. Migrations are designed to be
+additive and non-destructive, but a backup ensures safety.
 
 ---
 
@@ -196,13 +201,14 @@ pnpm build
 4. Create `.env` with your database credentials
 5. Run `php artisan setup:install`
 6. Set up a cron job for scheduled tasks:
-   ```
-   * * * * * cd /path/to/internara && php artisan schedule:run >> /dev/null 2>&1
-   ```
+    ```
+    * * * * * cd /path/to/internara && php artisan schedule:run >> /dev/null 2>&1
+    ```
 
 ### VPS / Dedicated Server
 
 Recommended stack:
+
 - **Web server**: Nginx with PHP-FPM
 - **Database**: MySQL 8.0+ or PostgreSQL 15+
 - **Queue worker**: Supervisor for `php artisan queue:work`
@@ -210,6 +216,7 @@ Recommended stack:
 - **SSL**: Let's Encrypt (certbot)
 
 Nginx configuration:
+
 ```nginx
 server {
     listen 80;
@@ -246,7 +253,8 @@ server {
 
 ### Docker
 
-A `docker-compose.yml` setup is recommended for local development. For production, use a multi-stage Dockerfile with PHP-FPM, Nginx, and a separate database container.
+A `docker-compose.yml` setup is recommended for local development. For production, use a multi-stage
+Dockerfile with PHP-FPM, Nginx, and a separate database container.
 
 ---
 
@@ -261,4 +269,4 @@ A `docker-compose.yml` setup is recommended for local development. For productio
 
 ---
 
-*Last Updated: April 30, 2026*
+_Last Updated: April 30, 2026_

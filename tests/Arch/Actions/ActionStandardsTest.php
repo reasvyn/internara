@@ -9,14 +9,9 @@ namespace Tests\Arch\Actions;
  * Ensures all Actions follow the stateless use-case pattern
  */
 describe('Action Standards', function () {
+    test('all actions should have execute method')->expect('App\Actions')->toHaveMethod('execute');
 
-    test('all actions should have execute method')
-        ->expect('App\Actions')
-        ->toHaveMethod('execute');
-
-    test('all actions should use strict types')
-        ->expect('App\Actions')
-        ->toUseStrictTypes();
+    test('all actions should use strict types')->expect('App\Actions')->toUseStrictTypes();
 
     test('actions should be stateless')
         ->expect('App\Actions')

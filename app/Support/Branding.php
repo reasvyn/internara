@@ -29,7 +29,7 @@ final class Branding
      */
     public static function brandName(): string
     {
-        if (! self::isInstalled()) {
+        if (!self::isInstalled()) {
             return self::appName();
         }
 
@@ -41,8 +41,8 @@ final class Branding
      */
     public static function siteTitle(): string
     {
-        if (! self::isInstalled()) {
-            return self::appName().' - Setup';
+        if (!self::isInstalled()) {
+            return self::appName() . ' - Setup';
         }
 
         return (string) Settings::get('site_title', self::brandName());
@@ -55,7 +55,7 @@ final class Branding
     {
         $defaultLogo = asset('/brand/logo.png');
 
-        if (! self::isInstalled()) {
+        if (!self::isInstalled()) {
             return $defaultLogo;
         }
 
@@ -71,7 +71,7 @@ final class Branding
     {
         $defaultFavicon = asset('/brand/favicon.ico');
 
-        if (! self::isInstalled()) {
+        if (!self::isInstalled()) {
             return $defaultFavicon;
         }
 

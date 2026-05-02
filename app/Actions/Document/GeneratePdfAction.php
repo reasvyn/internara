@@ -23,7 +23,7 @@ class GeneratePdfAction
     {
         $pdf = Pdf::loadHTML($this->wrapHtml($html));
 
-        $tempPath = 'temp/'.Str::random(40).'.pdf';
+        $tempPath = 'temp/' . Str::random(40) . '.pdf';
 
         Storage::disk('local')->put($tempPath, $pdf->output());
 

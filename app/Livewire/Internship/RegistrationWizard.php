@@ -41,14 +41,14 @@ class RegistrationWizard extends Component
     #[Computed]
     public function placements(): Collection
     {
-        if (! $this->data['internship_id']) {
-            return new Collection;
+        if (!$this->data['internship_id']) {
+            return new Collection();
         }
 
         return InternshipPlacement::where('internship_id', $this->data['internship_id'])
             ->with('company')
             ->get()
-            ->filter(fn ($p) => ! $p->isFull());
+            ->filter(fn($p) => !$p->isFull());
     }
 
     public function nextStep(): void
@@ -83,7 +83,7 @@ class RegistrationWizard extends Component
         return <<<'HTML'
         <div>
             <x-mary-header title="Internship Registration" subtitle="Register for your upcoming internship program" separator />
-            
+
             <ul class="steps steps-vertical lg:steps-horizontal w-full mb-8">
                 <li class="step {{ $step >= 1 ? 'step-primary' : '' }}">Program Selection</li>
                 <li class="step {{ $step >= 2 ? 'step-primary' : '' }}">Placement Choice</li>
@@ -93,25 +93,25 @@ class RegistrationWizard extends Component
             <x-mary-card>
                 @if($step === 1)
                     <div class="grid grid-cols-1 gap-4">
-                        <x-mary-select 
-                            label="Select Internship Program" 
-                            wire:model.live="data.internship_id" 
-                            :options="$this->internships" 
+                        <x-mary-select
+                            label="Select Internship Program"
+                            wire:model.live="data.internship_id"
+                            :options="$this->internships"
                             placeholder="Choose a program" />
-                            
+
                         <x-mary-input label="Academic Year" wire:model="data.academic_year" placeholder="e.g. 2025/2026" />
                     </div>
                 @elseif($step === 2)
                     <div class="grid grid-cols-1 gap-4">
-                        <x-mary-select 
-                            label="Industry Partner (Optional)" 
-                            wire:model="data.placement_id" 
-                            :options="$this->placements" 
-                            placeholder="Choose a placement" 
+                        <x-mary-select
+                            label="Industry Partner (Optional)"
+                            wire:model="data.placement_id"
+                            :options="$this->placements"
+                            placeholder="Choose a placement"
                             hint="Leave empty if you want to propose your own company" />
-                        
+
                         <div class="divider">OR</div>
-                        
+
                         <x-mary-input label="Proposed Company Name" wire:model="data.proposed_company_name" />
                         <x-mary-textarea label="Proposed Company Address" wire:model="data.proposed_company_address" />
                     </div>
@@ -131,7 +131,7 @@ class RegistrationWizard extends Component
                     @if($step > 1)
                         <x-mary-button label="Previous" wire:click="previousStep" />
                     @endif
-                    
+
                     @if($step < 3)
                         <x-mary-button label="Next" wire:click="nextStep" class="btn-primary" />
                     @else

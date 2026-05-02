@@ -23,11 +23,19 @@ class AttendanceLogPolicy
             return true;
         }
 
-        if ($user->hasRole('teacher') && $log->registration && $log->registration->teacher_id === $user->id) {
+        if (
+            $user->hasRole('teacher') &&
+            $log->registration &&
+            $log->registration->teacher_id === $user->id
+        ) {
             return true;
         }
 
-        if ($user->hasRole('mentor') && $log->registration && $log->registration->mentor_id === $user->id) {
+        if (
+            $user->hasRole('mentor') &&
+            $log->registration &&
+            $log->registration->mentor_id === $user->id
+        ) {
             return true;
         }
 

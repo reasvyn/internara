@@ -18,12 +18,7 @@ class HandbookAcknowledgement extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'user_id',
-        'handbook_id',
-        'acknowledged_at',
-        'ip_address',
-    ];
+    protected $fillable = ['user_id', 'handbook_id', 'acknowledged_at', 'ip_address'];
 
     protected $casts = [
         'acknowledged_at' => 'datetime',

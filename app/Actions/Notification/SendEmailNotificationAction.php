@@ -24,19 +24,22 @@ class SendEmailNotificationAction
     ): void {
         $user = User::findOrFail($userId);
 
-        if (! $user->email) {
+        if (!$user->email) {
             throw new \InvalidArgumentException('User does not have an email address.');
         }
 
         $view = $view ?? 'emails.notification';
 
-        Mail::send($view, array_merge($data, [
-            'user' => $user,
-            'subject' => $subject,
-            'body' => $body,
-        ]), function ($message) use ($user, $subject) {
-            $message->to($user->email, $user->name)
-                ->subject($subject);
-        });
+        Mail::send(
+            $view,
+            array_merge($data, [
+                'user' => $user,
+                'subject' => $subject,
+                'body' => $body,
+            ]),
+            function ($message) use ($user, $subject) {
+                $message->to($user->email, $user->name)->subject($subject);
+            },
+        );
     }
 }

@@ -68,10 +68,11 @@ class Submission extends Model implements HasMedia
      */
     public function canBeEdited(): bool
     {
-        return in_array($this->status, [
-            SubmissionStatus::DRAFT,
-            SubmissionStatus::REVISION_REQUIRED,
-        ], true);
+        return in_array(
+            $this->status,
+            [SubmissionStatus::DRAFT, SubmissionStatus::REVISION_REQUIRED],
+            true,
+        );
     }
 
     /**

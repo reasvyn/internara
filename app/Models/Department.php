@@ -14,11 +14,7 @@ class Department extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'school_id',
-    ];
+    protected $fillable = ['name', 'description', 'school_id'];
 
     protected $with = ['school'];
 

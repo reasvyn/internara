@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class LogoutAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(): void
     {
@@ -27,7 +25,7 @@ class LogoutAction
                 action: 'logout',
                 subjectType: User::class,
                 subjectId: $user->getAuthIdentifier(),
-                module: 'Auth'
+                module: 'Auth',
             );
         }
 

@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('assignments', function (Blueprint $table) {
@@ -24,8 +23,16 @@ return new class extends Migration
             $table->string('status', 20)->default('draft');
             $table->timestamps();
 
-            $table->foreign('assignment_type_id')->references('id')->on('assignment_types')->onDelete('cascade');
-            $table->foreign('internship_id')->references('id')->on('internships')->onDelete('cascade');
+            $table
+                ->foreign('assignment_type_id')
+                ->references('id')
+                ->on('assignment_types')
+                ->onDelete('cascade');
+            $table
+                ->foreign('internship_id')
+                ->references('id')
+                ->on('internships')
+                ->onDelete('cascade');
             $table->index(['internship_id', 'status']);
         });
     }

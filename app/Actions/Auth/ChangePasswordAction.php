@@ -14,18 +14,16 @@ use Illuminate\Support\Facades\Hash;
  */
 class ChangePasswordAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(User $user, string $currentPassword, string $newPassword): void
     {
-        if (! Hash::check($currentPassword, $user->password)) {
+        if (!Hash::check($currentPassword, $user->password)) {
             $this->logAuditAction->execute(
                 action: 'password_change_failed',
                 subjectType: User::class,
                 subjectId: $user->id,
-                module: 'Auth'
+                module: 'Auth',
             );
 
             abort(422, __('auth.password_mismatch'));
@@ -39,7 +37,7 @@ class ChangePasswordAction
             action: 'password_changed',
             subjectType: User::class,
             subjectId: $user->id,
-            module: 'Auth'
+            module: 'Auth',
         );
     }
 }

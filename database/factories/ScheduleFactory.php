@@ -24,7 +24,13 @@ class ScheduleFactory extends Factory
             'description' => $this->faker->paragraph(),
             'start_at' => $startAt,
             'end_at' => $endAt,
-            'type' => $this->faker->randomElement(['orientation', 'workshop', 'evaluation', 'visit', 'presentation']),
+            'type' => $this->faker->randomElement([
+                'orientation',
+                'workshop',
+                'evaluation',
+                'visit',
+                'presentation',
+            ]),
             'location' => $this->faker->city(),
             'internship_id' => Internship::factory(),
             'created_by' => User::factory(),
@@ -33,11 +39,11 @@ class ScheduleFactory extends Factory
 
     public function orientation(): static
     {
-        return $this->state(fn (array $attributes) => ['type' => 'orientation']);
+        return $this->state(fn(array $attributes) => ['type' => 'orientation']);
     }
 
     public function workshop(): static
     {
-        return $this->state(fn (array $attributes) => ['type' => 'workshop']);
+        return $this->state(fn(array $attributes) => ['type' => 'workshop']);
     }
 }

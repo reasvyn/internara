@@ -32,7 +32,12 @@ class UpdateSchoolRequest extends FormRequest
         $schoolId = $this->route('school')?->id;
 
         return [
-            'institutional_code' => ['sometimes', 'string', 'max:50', 'unique:schools,institutional_code,'.$schoolId],
+            'institutional_code' => [
+                'sometimes',
+                'string',
+                'max:50',
+                'unique:schools,institutional_code,' . $schoolId,
+            ],
             'name' => ['sometimes', 'string', 'max:255'],
             'address' => ['sometimes', 'string', 'max:500'],
             'email' => ['sometimes', 'email', 'max:255'],

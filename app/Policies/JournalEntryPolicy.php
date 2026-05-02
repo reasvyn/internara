@@ -23,11 +23,19 @@ class JournalEntryPolicy
             return true;
         }
 
-        if ($user->hasRole('teacher') && $entry->registration && $entry->registration->teacher_id === $user->id) {
+        if (
+            $user->hasRole('teacher') &&
+            $entry->registration &&
+            $entry->registration->teacher_id === $user->id
+        ) {
             return true;
         }
 
-        if ($user->hasRole('mentor') && $entry->registration && $entry->registration->mentor_id === $user->id) {
+        if (
+            $user->hasRole('mentor') &&
+            $entry->registration &&
+            $entry->registration->mentor_id === $user->id
+        ) {
             return true;
         }
 

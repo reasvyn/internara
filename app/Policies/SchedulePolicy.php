@@ -29,8 +29,7 @@ class SchedulePolicy
 
     public function update(User $user, Schedule $schedule): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin'])
-            || $schedule->created_by === $user->id;
+        return $user->hasAnyRole(['super_admin', 'admin']) || $schedule->created_by === $user->id;
     }
 
     public function delete(User $user, Schedule $schedule): bool

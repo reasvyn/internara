@@ -18,10 +18,7 @@ class ReportController extends Controller
     {
         Gate::authorize('viewAny', GeneratedReport::class);
 
-        $reports = $request->user()
-            ->generatedReports()
-            ->latest()
-            ->paginate(20);
+        $reports = $request->user()->generatedReports()->latest()->paginate(20);
 
         return view('livewire.admin.reports.index', [
             'reports' => $reports,
@@ -35,15 +32,19 @@ class ReportController extends Controller
         $report = $action->execute(
             $request->user(),
             $request->validated('report_type'),
-            $request->validated('filters', [])
+            $request->validated('filters', []),
         );
 
-        return redirect()->route('admin.reports.index')
+        return redirect()
+            ->route('admin.reports.index')
             ->with('success', 'Report generation has been queued.');
     }
 
-    public function download(GeneratedReport $report, Request $request, DownloadReportAction $action): StreamedResponse
-    {
+    public function download(
+        GeneratedReport $report,
+        Request $request,
+        DownloadReportAction $action,
+    ): StreamedResponse {
         Gate::authorize('download', $report);
 
         $content = $action->execute($request->user(), $report);
@@ -53,7 +54,7 @@ class ReportController extends Controller
                 echo $content;
             },
             basename($report->file_path),
-            ['Content-Type' => 'application/pdf']
+            ['Content-Type' => 'application/pdf'],
         );
     }
 }

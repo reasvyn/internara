@@ -50,7 +50,8 @@ return [
         'visit_url' => 'Visit the setup URL in your browser to complete the configuration:',
         'complete_wizard' => 'Complete the web wizard steps to finish the setup.',
         'token_expires' => 'This token and URL will expire in 1 hour.',
-        'token_note' => 'Keep this URL safe. If it expires, you will need to run this command again.',
+        'token_note' =>
+            'Keep this URL safe. If it expires, you will need to run this command again.',
         'running_audit' => 'Running system environment audit...',
         'audit_failed' => 'Pre-flight audit failed. Please fix the issues above before continuing.',
         'proceed_confirm' => 'Do you want to proceed with the technical installation?',
@@ -72,7 +73,8 @@ return [
         'title' => 'Setup',
         'step_of' => 'Step :current of 6',
         'welcome' => 'Welcome to Internara',
-        'welcome_desc' => 'We will help you set up your professional internship management system in just a few steps.',
+        'welcome_desc' =>
+            'We will help you set up your professional internship management system in just a few steps.',
         'system_requirements' => 'System Requirements',
         'permissions' => 'Folder Permissions',
         'database' => 'Database Connection',
@@ -104,7 +106,8 @@ return [
         'email_address' => 'Email Address',
         'username' => 'Unique Username',
         'generated' => 'Generated',
-        'username_notice' => 'This username is automatically generated for security and is permanent. You will use this to login to the system.',
+        'username_notice' =>
+            'This username is automatically generated for security and is permanent. You will use this to login to the system.',
         'password' => 'Password',
         'confirm_password' => 'Confirm Password',
 
@@ -132,7 +135,8 @@ return [
         'back' => 'Back',
         'finish_setup' => 'Finish Setup',
         'setup_complete' => 'Setup Complete!',
-        'ready_desc' => 'Internara is ready to manage your internship programs. You can now login with your administrator account.',
+        'ready_desc' =>
+            'Internara is ready to manage your internship programs. You can now login with your administrator account.',
         'go_to_login' => 'Go to Login',
         'data_verified' => 'I verify that the data entered is correct',
         'security_aware' => 'I understand the security requirements of this system',

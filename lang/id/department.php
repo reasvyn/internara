@@ -8,7 +8,8 @@ return [
     'add' => 'Tambah Jurusan',
     'edit' => 'Edit Jurusan',
     'new' => 'Jurusan Baru',
-    'delete_confirm' => 'Apakah Anda yakin ingin menghapus jurusan ini? Tindakan ini tidak dapat dibatalkan.',
+    'delete_confirm' =>
+        'Apakah Anda yakin ingin menghapus jurusan ini? Tindakan ini tidak dapat dibatalkan.',
     'delete_blocked' => 'Tidak dapat menghapus: jurusan ini memiliki :count profil siswa terkait.',
     'stats' => [
         'total' => 'Total Jurusan',

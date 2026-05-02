@@ -37,23 +37,21 @@ class AdminPromoteCommand extends Command
         $identifier = $this->argument('identifier');
         $roleName = $this->option('role');
 
-        $user = User::where('email', $identifier)
-            ->orWhere('username', $identifier)
-            ->first();
+        $user = User::where('email', $identifier)->orWhere('username', $identifier)->first();
 
-        if (! $user) {
+        if (!$user) {
             $this->error("User not found with identifier: {$identifier}");
 
             return Command::FAILURE;
         }
 
-        if (! in_array($roleName, ['admin', 'super_admin'])) {
+        if (!in_array($roleName, ['admin', 'super_admin'])) {
             $this->error("Invalid role: {$roleName}. Only admin or super_admin are allowed.");
 
             return Command::FAILURE;
         }
 
-        if (! Role::where('name', $roleName)->exists()) {
+        if (!Role::where('name', $roleName)->exists()) {
             $this->error("Role '{$roleName}' does not exist in the database.");
 
             return Command::FAILURE;

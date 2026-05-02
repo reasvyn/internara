@@ -19,14 +19,7 @@ class Competency extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'department_id',
-        'name',
-        'code',
-        'description',
-        'max_score',
-        'weight',
-    ];
+    protected $fillable = ['department_id', 'name', 'code', 'description', 'max_score', 'weight'];
 
     protected $casts = [
         'max_score' => 'float',

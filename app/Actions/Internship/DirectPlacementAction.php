@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\DB;
  */
 class DirectPlacementAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Execute direct placement by an administrator.
@@ -55,7 +53,7 @@ class DirectPlacementAction
                 subjectType: InternshipRegistration::class,
                 subjectId: $registration->id,
                 payload: $data,
-                module: 'Internship'
+                module: 'Internship',
             );
 
             return $registration;

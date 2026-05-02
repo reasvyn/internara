@@ -117,7 +117,12 @@ abstract class BaseRecordManager extends Component
             $callback($id);
         }
 
-        $this->success(__(':count records updated via :action.', ['count' => count($this->selectedIds), 'action' => $name]));
+        $this->success(
+            __(':count records updated via :action.', [
+                'count' => count($this->selectedIds),
+                'action' => $name,
+            ]),
+        );
         $this->clearSelection();
     }
 
@@ -148,7 +153,12 @@ abstract class BaseRecordManager extends Component
 
         $callback($query);
 
-        $this->success(__(':count records processed via mass action: :action.', ['count' => $count, 'action' => $name]));
+        $this->success(
+            __(':count records processed via mass action: :action.', [
+                'count' => $count,
+                'action' => $name,
+            ]),
+        );
         $this->clearSelection();
     }
 }

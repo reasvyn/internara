@@ -21,7 +21,7 @@ class SetupSuperAdminAction
     public function execute(array $data): User
     {
         Validator::make($data, [
-            'username' => ['required', 'string', 'unique:users,username', new SystemUsername],
+            'username' => ['required', 'string', 'unique:users,username', new SystemUsername()],
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
 
@@ -45,7 +45,7 @@ class SetupSuperAdminAction
                 subjectType: User::class,
                 subjectId: $user->id,
                 payload: ['username' => $data['username']],
-                module: 'Setup'
+                module: 'Setup',
             );
 
             return $user;

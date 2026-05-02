@@ -113,7 +113,7 @@ class SystemSetting extends Component
         // Operational
         $this->active_academic_year = Settings::get(
             'active_academic_year',
-            date('Y').'/'.(date('Y') + 1),
+            date('Y') . '/' . (date('Y') + 1),
         );
 
         // Mail
@@ -235,13 +235,12 @@ class SystemSetting extends Component
             Config::set('mail.from.address', $this->mail_from_address);
             Config::set('mail.from.name', $this->mail_from_name);
 
-            Notification::route('mail', auth()->user()->email)
-                ->notify(new TestMailNotification);
+            Notification::route('mail', auth()->user()->email)->notify(new TestMailNotification());
 
             $this->success(__('setting.messages.test_email_sent'));
         } catch (\Exception $e) {
-            logger()->error('SMTP Test Failed: '.$e->getMessage());
-            $this->error(__('setting.messages.test_email_failed').': '.$e->getMessage());
+            logger()->error('SMTP Test Failed: ' . $e->getMessage());
+            $this->error(__('setting.messages.test_email_failed') . ': ' . $e->getMessage());
         }
     }
 

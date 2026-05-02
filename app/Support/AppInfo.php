@@ -30,7 +30,7 @@ class AppInfo
         if (self::$info === null) {
             $path = base_path('app_info.json');
 
-            if (! File::exists($path)) {
+            if (!File::exists($path)) {
                 self::$info = [];
             } else {
                 self::$info = json_decode(File::get($path), true) ?? [];

@@ -41,8 +41,10 @@ class UserFactory extends Factory
      */
     public function requiresSetup(): static
     {
-        return $this->state(fn () => [
-            'setup_required' => true,
-        ]);
+        return $this->state(
+            fn() => [
+                'setup_required' => true,
+            ],
+        );
     }
 }

@@ -15,9 +15,7 @@ use Illuminate\Support\Facades\DB;
  */
 class UpdateProfileAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Execute the profile update.
@@ -25,17 +23,14 @@ class UpdateProfileAction
     public function execute(User $user, array $data): Profile
     {
         return DB::transaction(function () use ($user, $data) {
-            $profile = $user->profile()->updateOrCreate(
-                ['user_id' => $user->id],
-                $data
-            );
+            $profile = $user->profile()->updateOrCreate(['user_id' => $user->id], $data);
 
             $this->logAuditAction->execute(
                 action: 'profile_updated',
                 subjectType: Profile::class,
                 subjectId: $profile->id,
                 payload: $data,
-                module: 'Profile'
+                module: 'Profile',
             );
 
             return $profile;

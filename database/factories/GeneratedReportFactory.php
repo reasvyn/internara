@@ -33,19 +33,23 @@ class GeneratedReportFactory extends Factory
 
     public function pending(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'pending',
-            'file_path' => null,
-            'file_size' => null,
-            'generated_at' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'status' => 'pending',
+                'file_path' => null,
+                'file_size' => null,
+                'generated_at' => null,
+            ],
+        );
     }
 
     public function failed(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'failed',
-            'error_message' => 'Report generation timed out.',
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'status' => 'failed',
+                'error_message' => 'Report generation timed out.',
+            ],
+        );
     }
 }

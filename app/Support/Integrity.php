@@ -24,17 +24,18 @@ final class Integrity
         // We use absolute path calculation instead of Laravel helpers
         // to support early-stage boot checking (before app is fully loaded).
         $basePath = dirname(__DIR__, 2);
-        $path = $basePath.'/app_info.json';
+        $path = $basePath . '/app_info.json';
 
         // Skip during testing - detect PHPUnit context early
-        if (class_exists(\PHPUnit\Framework\TestCase::class, false)
-            || defined('PHPUNIT_COMPOSER_INSTALL')
-            || (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'testing')
-            || (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'testing')
+        if (
+            class_exists(\PHPUnit\Framework\TestCase::class, false) ||
+            defined('PHPUNIT_COMPOSER_INSTALL') ||
+            (isset($_ENV['APP_ENV']) && $_ENV['APP_ENV'] === 'testing') ||
+            (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] === 'testing')
         ) {
             // Ensure app_info.json exists with proper author for tests
-            if (! file_exists($path)) {
-                $backupPath = $basePath.'/app_info.json.backup';
+            if (!file_exists($path)) {
+                $backupPath = $basePath . '/app_info.json.backup';
                 if (file_exists($backupPath)) {
                     copy($backupPath, $path);
                 }
@@ -42,7 +43,7 @@ final class Integrity
             return;
         }
 
-        if (! file_exists($path)) {
+        if (!file_exists($path)) {
             self::fatal('Core system metadata (app_info.json) is missing.');
         }
 
@@ -52,8 +53,8 @@ final class Integrity
 
         if (md5($authorName) !== self::AUTHOR_HASH) {
             self::fatal(
-                'Attribution Error: Unauthorized author modification detected. '.
-                'This system requires attribution to the original author (Reas Vyn).'
+                'Attribution Error: Unauthorized author modification detected. ' .
+                    'This system requires attribution to the original author (Reas Vyn).',
             );
         }
     }
@@ -69,7 +70,7 @@ final class Integrity
             exit(1);
         }
 
-        if (! headers_sent()) {
+        if (!headers_sent()) {
             header('HTTP/1.1 403 Forbidden');
         }
 
@@ -79,6 +80,6 @@ final class Integrity
         echo "<hr style='border:0; border-top:1px solid #fee2e2; margin:2rem auto; max-width:100px;'>";
         echo "<footer style='opacity:0.5; font-size:0.875rem;'>Internara Core Protection System</footer>";
         echo '</body></html>';
-        exit;
+        exit();
     }
 }

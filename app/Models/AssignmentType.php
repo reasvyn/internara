@@ -18,12 +18,7 @@ class AssignmentType extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'group',
-        'description',
-    ];
+    protected $fillable = ['name', 'slug', 'group', 'description'];
 
     /**
      * Get assignments of this type.

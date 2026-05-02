@@ -30,11 +30,12 @@ class ClockInAction
             }
 
             // Find active registration (using Spatie HasStatuses)
-            $registration = $user->registrations()
+            $registration = $user
+                ->registrations()
                 ->get()
-                ->first(fn ($reg) => $reg->hasStatus('active'));
+                ->first(fn($reg) => $reg->hasStatus('active'));
 
-            if (! $registration) {
+            if (!$registration) {
                 throw new RuntimeException('No active internship registration found.');
             }
 
@@ -54,7 +55,7 @@ class ClockInAction
                 subjectType: AttendanceLog::class,
                 subjectId: $log->id,
                 payload: ['time' => $log->clock_in],
-                module: 'Attendance'
+                module: 'Attendance',
             );
 
             return $log;

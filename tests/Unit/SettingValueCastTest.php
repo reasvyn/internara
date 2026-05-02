@@ -8,8 +8,8 @@ use App\Casts\SettingValueCast;
 use App\Models\Setting;
 
 test('setting value cast returns string value as-is', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->get($model, 'value', 'hello', ['type' => 'string']);
 
@@ -17,16 +17,16 @@ test('setting value cast returns string value as-is', function () {
 });
 
 test('setting value cast casts boolean correctly', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     expect($cast->get($model, 'value', '1', ['type' => 'boolean']))->toBeTrue();
     expect($cast->get($model, 'value', '0', ['type' => 'boolean']))->toBeFalse();
 });
 
 test('setting value cast casts integer correctly', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->get($model, 'value', '42', ['type' => 'integer']);
 
@@ -34,8 +34,8 @@ test('setting value cast casts integer correctly', function () {
 });
 
 test('setting value cast casts float correctly', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->get($model, 'value', '3.14', ['type' => 'float']);
 
@@ -43,8 +43,8 @@ test('setting value cast casts float correctly', function () {
 });
 
 test('setting value cast decodes json type to array', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->get($model, 'value', '{"key":"value"}', ['type' => 'json']);
 
@@ -52,8 +52,8 @@ test('setting value cast decodes json type to array', function () {
 });
 
 test('setting value cast returns null for null type', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->get($model, 'value', 'anything', ['type' => 'null']);
 
@@ -61,8 +61,8 @@ test('setting value cast returns null for null type', function () {
 });
 
 test('setting value cast returns null for null database value', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->get($model, 'value', null, ['type' => 'string']);
 
@@ -70,8 +70,8 @@ test('setting value cast returns null for null database value', function () {
 });
 
 test('setting value cast set detects boolean type', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->set($model, 'value', true, []);
 
@@ -80,8 +80,8 @@ test('setting value cast set detects boolean type', function () {
 });
 
 test('setting value cast set detects integer type', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->set($model, 'value', 42, []);
 
@@ -90,8 +90,8 @@ test('setting value cast set detects integer type', function () {
 });
 
 test('setting value cast set detects float type', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->set($model, 'value', 3.14, []);
 
@@ -100,8 +100,8 @@ test('setting value cast set detects float type', function () {
 });
 
 test('setting value cast set detects json type for arrays', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->set($model, 'value', ['foo' => 'bar'], []);
 
@@ -110,8 +110,8 @@ test('setting value cast set detects json type for arrays', function () {
 });
 
 test('setting value cast set detects null type', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->set($model, 'value', null, []);
 
@@ -120,8 +120,8 @@ test('setting value cast set detects null type', function () {
 });
 
 test('setting value cast set defaults to string type', function () {
-    $cast = new SettingValueCast;
-    $model = new Setting;
+    $cast = new SettingValueCast();
+    $model = new Setting();
 
     $result = $cast->set($model, 'value', 'hello', []);
 

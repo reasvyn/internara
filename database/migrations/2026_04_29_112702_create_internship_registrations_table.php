@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,10 +16,22 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('student_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->foreignUuid('placement_id')->nullable()->constrained('internship_placements')->onDelete('set null');
+            $table
+                ->foreignUuid('placement_id')
+                ->nullable()
+                ->constrained('internship_placements')
+                ->onDelete('set null');
 
-            $table->foreignUuid('teacher_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignUuid('mentor_id')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('teacher_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
+            $table
+                ->foreignUuid('mentor_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
 
             $table->string('academic_year')->nullable();
             $table->date('start_date')->nullable();

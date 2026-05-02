@@ -1,6 +1,7 @@
 # Laravel Media Library Reference
 
-Complete reference for `spatie/laravel-medialibrary`. Full documentation: https://spatie.be/docs/laravel-medialibrary
+Complete reference for `spatie/laravel-medialibrary`. Full documentation:
+https://spatie.be/docs/laravel-medialibrary
 
 ## Model Setup
 
@@ -22,8 +23,7 @@ class BlogPost extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')
-            ->fit(Fit::Contain, 300, 300);
+        $this->addMediaConversion('thumb')->fit(Fit::Contain, 300, 300);
     }
 }
 ```
@@ -97,14 +97,15 @@ $model->addMedia($pathToFile)->preservingOriginal()->toMediaCollection('images')
 All methods are chainable before calling `toMediaCollection()`:
 
 ```php
-$model->addMedia($file)
-    ->usingName('Custom Name')              // display name
-    ->usingFileName('custom-name.jpg')      // filename on disk
-    ->setOrder(3)                           // order within collection
+$model
+    ->addMedia($file)
+    ->usingName('Custom Name') // display name
+    ->usingFileName('custom-name.jpg') // filename on disk
+    ->setOrder(3) // order within collection
     ->withCustomProperties(['alt' => 'A landscape photo'])
     ->withManipulations(['thumb' => ['filter' => 'greyscale']])
-    ->withResponsiveImages()                // generate responsive variants
-    ->storingConversionsOnDisk('s3')         // put conversions on different disk
+    ->withResponsiveImages() // generate responsive variants
+    ->storingConversionsOnDisk('s3') // put conversions on different disk
     ->addCustomHeaders(['CacheControl' => 'max-age=31536000'])
     ->toMediaCollection('images');
 ```
@@ -222,23 +223,29 @@ public function registerMediaConversions(?Media $media = null): void
 ### Image Manipulation Methods (via spatie/image)
 
 Resizing and fitting:
+
 - `width(int)`, `height(int)` — constrain dimensions
-- `fit(Fit, int, int)` — fit within bounds using `Fit::Contain`, `Fit::Max`, `Fit::Fill`, `Fit::Stretch`, `Fit::Crop`
+- `fit(Fit, int, int)` — fit within bounds using `Fit::Contain`, `Fit::Max`, `Fit::Fill`,
+  `Fit::Stretch`, `Fit::Crop`
 - `crop(int, int)` — crop to exact dimensions
 
 Effects:
+
 - `sharpen(int)`, `blur(int)`, `pixelate(int)`
 - `greyscale()`, `sepia()`
 - `brightness(int)`, `contrast(int)`, `colorize(int, int, int)`
 
 Orientation:
+
 - `orientation(int)`, `flip(string)`, `rotate(int)`
 
 Format:
+
 - `format(string)` — `'jpg'`, `'png'`, `'webp'`, `'avif'`
 - `quality(int)` — 1-100
 
 Other:
+
 - `border(int, string, string)`, `watermark(string)`
 - `optimize()`, `nonOptimized()`
 
@@ -256,35 +263,31 @@ Other:
 ### Getting media items
 
 ```php
-$media = $model->getMedia('images');                    // all in collection
-$first = $model->getFirstMedia('images');               // first item
-$last  = $model->getLastMedia('images');                // last item
-$has   = $model->hasMedia('images');                    // boolean check
+$media = $model->getMedia('images'); // all in collection
+$first = $model->getFirstMedia('images'); // first item
+$last = $model->getLastMedia('images'); // last item
+$has = $model->hasMedia('images'); // boolean check
 ```
 
 ### Getting URLs
 
 ```php
-$url     = $model->getFirstMediaUrl('images');           // original URL
+$url = $model->getFirstMediaUrl('images'); // original URL
 $thumbUrl = $model->getFirstMediaUrl('images', 'thumb'); // conversion URL
-$lastUrl  = $model->getLastMediaUrl('images', 'thumb');
+$lastUrl = $model->getLastMediaUrl('images', 'thumb');
 ```
 
 ### Getting paths
 
 ```php
-$path     = $model->getFirstMediaPath('images');
+$path = $model->getFirstMediaPath('images');
 $thumbPath = $model->getFirstMediaPath('images', 'thumb');
 ```
 
 ### Temporary URLs (S3)
 
 ```php
-$tempUrl = $model->getFirstTemporaryUrl(
-    now()->addMinutes(30),
-    'images',
-    'thumb'
-);
+$tempUrl = $model->getFirstTemporaryUrl(now()->addMinutes(30), 'images', 'thumb');
 ```
 
 ### Fallback URLs
@@ -298,12 +301,12 @@ $url = $model->getFallbackMediaUrl('avatar');
 ```php
 $media = $model->getFirstMedia('images');
 
-$media->getUrl();                    // original URL
-$media->getUrl('thumb');             // conversion URL
-$media->getPath();                   // disk path
-$media->getFullUrl();                // full URL with domain
+$media->getUrl(); // original URL
+$media->getUrl('thumb'); // conversion URL
+$media->getPath(); // disk path
+$media->getFullUrl(); // full URL with domain
 $media->getTemporaryUrl(now()->addMinutes(30));
-$media->hasGeneratedConversion('thumb');  // check if conversion exists
+$media->hasGeneratedConversion('thumb'); // check if conversion exists
 ```
 
 ### Filtering media
@@ -322,7 +325,8 @@ Store arbitrary metadata on media items:
 
 ```php
 // When adding
-$model->addMedia($file)
+$model
+    ->addMedia($file)
     ->withCustomProperties([
         'alt' => 'Descriptive text',
         'credits' => 'Photographer Name',
@@ -345,18 +349,13 @@ Generate multiple sizes for optimal loading:
 
 ```php
 // On the FileAdder
-$model->addMedia($file)
-    ->withResponsiveImages()
-    ->toMediaCollection('images');
+$model->addMedia($file)->withResponsiveImages()->toMediaCollection('images');
 
 // On a conversion
-$this->addMediaConversion('hero')
-    ->fit(Fit::Max, 1200, 800)
-    ->withResponsiveImages();
+$this->addMediaConversion('hero')->fit(Fit::Max, 1200, 800)->withResponsiveImages();
 
 // On a collection
-$this->addMediaCollection('photos')
-    ->withResponsiveImages();
+$this->addMediaCollection('photos')->withResponsiveImages();
 ```
 
 ### Using in Blade
@@ -436,6 +435,7 @@ use Spatie\MediaLibrary\MediaCollections\Events\CollectionHasBeenClearedEvent;
 ```
 
 Listen to these events to hook into the media lifecycle:
+
 ```php
 Event::listen(MediaHasBeenAddedEvent::class, function ($event) {
     $event->media; // the added Media model
@@ -453,19 +453,21 @@ Key `config/media-library.php` options:
 
 ```php
 return [
-    'disk_name' => 'public',                    // default disk
-    'max_file_size' => 1024 * 1024 * 10,         // 10MB
-    'queue_connection_name' => '',                // queue connection
-    'queue_name' => '',                          // queue name
-    'queue_conversions_by_default' => true,       // queue conversions
+    'disk_name' => 'public', // default disk
+    'max_file_size' => 1024 * 1024 * 10, // 10MB
+    'queue_connection_name' => '', // queue connection
+    'queue_name' => '', // queue name
+    'queue_conversions_by_default' => true, // queue conversions
     'media_model' => Spatie\MediaLibrary\MediaCollections\Models\Media::class,
     'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
     'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
     'url_generator' => Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator::class,
-    'image_driver' => 'gd',                      // 'gd', 'imagick', or 'vips'
-    'image_optimizers' => [/* optimizer config */],
-    'version_urls' => true,                       // cache busting
-    'default_loading_attribute_value' => null,     // 'lazy' for lazy loading
+    'image_driver' => 'gd', // 'gd', 'imagick', or 'vips'
+    'image_optimizers' => [
+        /* optimizer config */
+    ],
+    'version_urls' => true, // cache busting
+    'default_loading_attribute_value' => null, // 'lazy' for lazy loading
 ];
 ```
 
@@ -545,8 +547,7 @@ return $media->stream(); // stream
 ```php
 use Spatie\MediaLibrary\Support\MediaStream;
 
-return MediaStream::create('photos.zip')
-    ->addMedia($model->getMedia('images'));
+return MediaStream::create('photos.zip')->addMedia($model->getMedia('images'));
 ```
 
 ## Using with API Resources

@@ -18,9 +18,7 @@ class SupervisionManager extends Component
 
     public function mount(): void
     {
-        $this->registration = auth()->user()->registrations()
-            ->where('status', 'active')
-            ->first();
+        $this->registration = auth()->user()->registrations()->where('status', 'active')->first();
     }
 
     #[Layout('components.layouts.app')]

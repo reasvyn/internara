@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\DB;
  */
 class UploadOfficialDocumentAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Upload an official document.
@@ -47,7 +45,7 @@ class UploadOfficialDocumentAction
                 subjectType: OfficialDocument::class,
                 subjectId: $document->id,
                 payload: array_merge($data, ['file_name' => $file->getClientOriginalName()]),
-                module: 'Document'
+                module: 'Document',
             );
 
             return $document;

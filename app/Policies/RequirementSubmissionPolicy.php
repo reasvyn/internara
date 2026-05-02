@@ -47,8 +47,8 @@ class RequirementSubmissionPolicy
             return true;
         }
 
-        return $submission->registration->student_id === $user->id
-            && $submission->latestStatus()?->name === 'pending';
+        return $submission->registration->student_id === $user->id &&
+            $submission->latestStatus()?->name === 'pending';
     }
 
     public function verify(User $user, RequirementSubmission $submission): bool
@@ -62,7 +62,7 @@ class RequirementSubmissionPolicy
             return true;
         }
 
-        return $submission->registration->student_id === $user->id
-            && $submission->latestStatus()?->name === 'pending';
+        return $submission->registration->student_id === $user->id &&
+            $submission->latestStatus()?->name === 'pending';
     }
 }

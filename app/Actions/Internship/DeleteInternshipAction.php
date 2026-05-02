@@ -25,7 +25,7 @@ class DeleteInternshipAction
                 subjectType: Internship::class,
                 subjectId: $internshipId,
                 payload: ['name' => $internshipName],
-                module: 'Internship'
+                module: 'Internship',
             );
         });
     }

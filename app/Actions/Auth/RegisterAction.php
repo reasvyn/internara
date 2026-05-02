@@ -15,9 +15,7 @@ use Illuminate\Support\Str;
  */
 class RegisterAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(array $data, ?array $roles = null): User
     {
@@ -37,7 +35,7 @@ class RegisterAction
             subjectType: User::class,
             subjectId: $user->id,
             payload: ['roles' => $roles],
-            module: 'Auth'
+            module: 'Auth',
         );
 
         return $user;

@@ -49,11 +49,13 @@ describe('Assignment Management', function () {
             'Learn PHP syntax and basics',
             null, // academicYear
             false, // isMandatory
-            '2026-05-15' // dueDate
+            '2026-05-15', // dueDate
         );
 
-        expect($assignment)->toBeInstanceOf(Assignment::class)
-            ->and($assignment->title)->toBe('PHP Basics Assignment');
+        expect($assignment)
+            ->toBeInstanceOf(Assignment::class)
+            ->and($assignment->title)
+            ->toBe('PHP Basics Assignment');
     });
 
     it('allows teacher to update assignment', function () {
@@ -62,11 +64,7 @@ describe('Assignment Management', function () {
         ]);
 
         $action = app(UpdateAssignmentAction::class);
-        $action->execute(
-            $assignment,
-            'Updated Title',
-            'Updated description'
-        );
+        $action->execute($assignment, 'Updated Title', 'Updated description');
 
         expect($assignment->fresh()->title)->toBe('Updated Title');
     });
@@ -90,9 +88,11 @@ describe('Assignment Submission', function () {
         ]);
         $registration->setStatus('active');
 
-        $assignment = Assignment::factory()->published()->create([
-            'due_date' => now()->addDays(7),
-        ]);
+        $assignment = Assignment::factory()
+            ->published()
+            ->create([
+                'due_date' => now()->addDays(7),
+            ]);
 
         $action = app(SubmitAssignmentAction::class);
         $submission = $action->execute(
@@ -102,9 +102,12 @@ describe('Assignment Submission', function () {
             'Here is my submission content.',
         );
 
-        expect($submission)->toBeInstanceOf(Submission::class)
-            ->and($submission->content)->toBe('Here is my submission content.')
-            ->and($submission->status->value)->toBe('submitted');
+        expect($submission)
+            ->toBeInstanceOf(Submission::class)
+            ->and($submission->content)
+            ->toBe('Here is my submission content.')
+            ->and($submission->status->value)
+            ->toBe('submitted');
     });
 
     it('allows teacher to verify submission', function () {
@@ -115,9 +118,11 @@ describe('Assignment Submission', function () {
         ]);
         $registration->setStatus('active');
 
-        $assignment = Assignment::factory()->published()->create([
-            'due_date' => now()->addDays(7),
-        ]);
+        $assignment = Assignment::factory()
+            ->published()
+            ->create([
+                'due_date' => now()->addDays(7),
+            ]);
 
         $submitAction = app(SubmitAssignmentAction::class);
         $submission = $submitAction->execute(
@@ -128,15 +133,12 @@ describe('Assignment Submission', function () {
         );
 
         $verifyAction = app(VerifySubmissionAction::class);
-        $result = $verifyAction->execute(
-            $submission,
-            $this->teacher,
-            'verified',
-            'Good work!'
-        );
+        $result = $verifyAction->execute($submission, $this->teacher, 'verified', 'Good work!');
 
-        expect($result->status->value)->toBe('verified')
-            ->and($result->metadata['feedback'])->toBe('Good work!');
+        expect($result->status->value)
+            ->toBe('verified')
+            ->and($result->metadata['feedback'])
+            ->toBe('Good work!');
     });
 });
 

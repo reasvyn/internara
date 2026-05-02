@@ -16,35 +16,46 @@ use Illuminate\Support\Facades\Validator;
  */
 class UpdateUserAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Update an existing user.
      */
-    public function execute(User $user, array $userData, ?array $profileData = null, ?array $roles = null): User
-    {
+    public function execute(
+        User $user,
+        array $userData,
+        ?array $profileData = null,
+        ?array $roles = null,
+    ): User {
         if (isset($userData['username'])) {
             Validator::make($userData, [
-                'username' => ['required', 'string', 'unique:users,username,'.$user->id, new SystemUsername],
+                'username' => [
+                    'required',
+                    'string',
+                    'unique:users,username,' . $user->id,
+                    new SystemUsername(),
+                ],
             ])->validate();
         }
 
         return DB::transaction(function () use ($user, $userData, $profileData, $roles) {
-            $user->update(array_filter([
-                'name' => $userData['name'] ?? null,
-                'email' => $userData['email'] ?? null,
-                'username' => $userData['username'] ?? null,
-                'password' => isset($userData['password']) ? Hash::make($userData['password']) : null,
-                'setup_required' => $userData['setup_required'] ?? null,
-            ], fn ($v) => $v !== null));
+            $user->update(
+                array_filter(
+                    [
+                        'name' => $userData['name'] ?? null,
+                        'email' => $userData['email'] ?? null,
+                        'username' => $userData['username'] ?? null,
+                        'password' => isset($userData['password'])
+                            ? Hash::make($userData['password'])
+                            : null,
+                        'setup_required' => $userData['setup_required'] ?? null,
+                    ],
+                    fn($v) => $v !== null,
+                ),
+            );
 
             if ($profileData !== null) {
-                $user->profile()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    $profileData
-                );
+                $user->profile()->updateOrCreate(['user_id' => $user->id], $profileData);
             }
 
             if ($roles !== null) {
@@ -59,7 +70,7 @@ class UpdateUserAction
                     'email' => $user->email,
                     'roles' => $roles,
                 ],
-                module: 'Auth'
+                module: 'Auth',
             );
 
             return $user;

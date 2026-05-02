@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +14,10 @@ return new class extends Migration
     {
         Schema::create('supervision_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table
+                ->foreignUuid('registration_id')
+                ->constrained('internship_registrations')
+                ->onDelete('cascade');
             $table->foreignUuid('supervisor_id')->constrained('users'); // The Teacher or Mentor
             $table->string('type'); // guidance, mentoring
             $table->date('date');

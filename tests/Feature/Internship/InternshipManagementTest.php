@@ -81,9 +81,7 @@ test('admin cannot delete internship with placements', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(InternshipIndex::class)
-        ->call('delete', $internship);
+    Livewire::actingAs($user)->test(InternshipIndex::class)->call('delete', $internship);
 
     $this->assertDatabaseHas('internships', ['id' => $internship->id]);
 });
@@ -101,9 +99,7 @@ test('admin cannot delete internship with registrations', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(InternshipIndex::class)
-        ->call('delete', $internship);
+    Livewire::actingAs($user)->test(InternshipIndex::class)->call('delete', $internship);
 
     $this->assertDatabaseHas('internships', ['id' => $internship->id]);
 });
@@ -114,9 +110,7 @@ test('admin can delete internship without placements or registrations', function
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(InternshipIndex::class)
-        ->call('delete', $internship);
+    Livewire::actingAs($user)->test(InternshipIndex::class)->call('delete', $internship);
 
     $this->assertDatabaseMissing('internships', ['id' => $internship->id]);
 });
@@ -157,9 +151,7 @@ test('internship index shows stats', function () {
 
     Internship::factory()->count(2)->create();
 
-    Livewire::actingAs($user)
-        ->test(InternshipIndex::class)
-        ->assertOk();
+    Livewire::actingAs($user)->test(InternshipIndex::class)->assertOk();
 });
 
 test('internship search filters by name', function () {
@@ -177,8 +169,7 @@ test('internship search filters by name', function () {
 });
 
 test('unauthenticated user cannot access internship index', function () {
-    $this->get(route('admin.internships'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.internships'))->assertRedirect(route('login'));
 });
 
 test('internship status options are available', function () {

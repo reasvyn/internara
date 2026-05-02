@@ -25,7 +25,7 @@ class DeletePlacementAction
                 subjectType: InternshipPlacement::class,
                 subjectId: $placementId,
                 payload: ['name' => $placementName],
-                module: 'Internship'
+                module: 'Internship',
             );
         });
     }

@@ -25,13 +25,7 @@ class Setting extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'key',
-        'value',
-        'type',
-        'description',
-        'group',
-    ];
+    protected $fillable = ['key', 'value', 'type', 'description', 'group'];
 
     /**
      * The attributes that should be cast.

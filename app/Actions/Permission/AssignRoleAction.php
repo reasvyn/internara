@@ -13,9 +13,7 @@ use App\Models\User;
  */
 class AssignRoleAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(User $user, string|array $roles): void
     {
@@ -26,7 +24,7 @@ class AssignRoleAction
             subjectType: User::class,
             subjectId: $user->id,
             payload: ['roles' => $roles],
-            module: 'Permission'
+            module: 'Permission',
         );
     }
 }

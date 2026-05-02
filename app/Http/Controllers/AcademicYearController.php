@@ -27,14 +27,17 @@ class AcademicYearController extends Controller
     {
         Gate::authorize('create', AcademicYear::class);
 
-        $action->execute($request->validate([
-            'name' => ['required', 'string', 'max:50'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
-            'is_active' => ['nullable', 'boolean'],
-        ]));
+        $action->execute(
+            $request->validate([
+                'name' => ['required', 'string', 'max:50'],
+                'start_date' => ['required', 'date'],
+                'end_date' => ['required', 'date', 'after:start_date'],
+                'is_active' => ['nullable', 'boolean'],
+            ]),
+        );
 
-        return redirect()->route('admin.academic-years.index')
+        return redirect()
+            ->route('admin.academic-years.index')
             ->with('success', 'Academic year created successfully.');
     }
 

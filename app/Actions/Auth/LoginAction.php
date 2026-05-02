@@ -16,12 +16,13 @@ use Illuminate\Support\Str;
  */
 class LoginAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
-    public function execute(string $identifier, string $password, bool $remember = false): Authenticatable
-    {
+    public function execute(
+        string $identifier,
+        string $password,
+        bool $remember = false,
+    ): Authenticatable {
         $loginField = Str::contains($identifier, '@') ? 'email' : 'username';
 
         $credentials = [
@@ -29,12 +30,12 @@ class LoginAction
             'password' => $password,
         ];
 
-        if (! Auth::attempt($credentials, $remember)) {
+        if (!Auth::attempt($credentials, $remember)) {
             $this->logAuditAction->execute(
                 action: 'login_failed',
                 subjectType: User::class,
                 payload: ['identifier' => $identifier],
-                module: 'Auth'
+                module: 'Auth',
             );
 
             abort(401, __('auth.failed'));
@@ -52,7 +53,7 @@ class LoginAction
                 subjectType: User::class,
                 subjectId: $user->id,
                 payload: ['status' => $user->latestStatus()?->name],
-                module: 'Auth'
+                module: 'Auth',
             );
 
             abort(403, __('auth.blocked'));
@@ -62,7 +63,7 @@ class LoginAction
             action: 'login_success',
             subjectType: User::class,
             subjectId: $user->id,
-            module: 'Auth'
+            module: 'Auth',
         );
 
         return $user;

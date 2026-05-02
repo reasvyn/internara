@@ -35,9 +35,9 @@ class InternshipPolicy
 
     public function delete(User $user, Internship $internship): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin'])
-            && ! $internship->placements()->exists()
-            && ! $internship->registrations()->exists();
+        return $user->hasAnyRole(['super_admin', 'admin']) &&
+            !$internship->placements()->exists() &&
+            !$internship->registrations()->exists();
     }
 
     public function forceDelete(User $user, Internship $internship): bool

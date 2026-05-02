@@ -17,9 +17,7 @@ class AccountLifecycleController extends Controller
     {
         Gate::authorize('viewLifecycleDashboard', User::class);
 
-        $users = User::with('statuses')
-            ->latest()
-            ->paginate(20);
+        $users = User::with('statuses')->latest()->paginate(20);
 
         return view('livewire.admin.accounts.lifecycle', [
             'users' => $users,

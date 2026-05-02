@@ -23,28 +23,28 @@ class ManagerialWidgets extends Component
     {
         return <<<'HTML'
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <x-mary-stat 
-                title="Total Students" 
-                value="{{ $this->stats['users']['students'] }}" 
-                icon="o-academic-cap" 
+            <x-mary-stat
+                title="Total Students"
+                value="{{ $this->stats['users']['students'] }}"
+                icon="o-academic-cap"
                 color="text-primary" />
-                
-            <x-mary-stat 
-                title="Active Internships" 
-                value="{{ $this->stats['internships']['active'] }}" 
-                icon="o-briefcase" 
+
+            <x-mary-stat
+                title="Active Internships"
+                value="{{ $this->stats['internships']['active'] }}"
+                icon="o-briefcase"
                 color="text-success" />
-                
-            <x-mary-stat 
-                title="Placement Rate" 
-                value="{{ $this->stats['internships']['placement_rate'] }}%" 
-                icon="o-chart-pie" 
+
+            <x-mary-stat
+                title="Placement Rate"
+                value="{{ $this->stats['internships']['placement_rate'] }}%"
+                icon="o-chart-pie"
                 color="text-info" />
-                
-            <x-mary-stat 
-                title="Today's Attendance" 
-                value="{{ $this->stats['attendance']['today_present'] }}" 
-                icon="o-check-circle" 
+
+            <x-mary-stat
+                title="Today's Attendance"
+                value="{{ $this->stats['attendance']['today_present'] }}"
+                icon="o-check-circle"
                 color="text-warning" />
         </div>
         HTML;

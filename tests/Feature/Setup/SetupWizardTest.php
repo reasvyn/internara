@@ -19,7 +19,7 @@ beforeEach(function () {
         ]);
     }
 
-    $service = new SetupService;
+    $service = new SetupService();
     if ($service->isInstalled()) {
         File::delete(storage_path('app/.installed'));
     }
@@ -27,7 +27,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    $service = new SetupService;
+    $service = new SetupService();
     if ($service->isInstalled()) {
         File::delete(storage_path('app/.installed'));
     }
@@ -35,7 +35,7 @@ afterEach(function () {
 });
 
 test('setup wizard renders welcome step', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
 
@@ -49,15 +49,14 @@ test('setup wizard renders welcome step', function () {
 });
 
 test('setup wizard redirects if already installed', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $service->finalize();
 
-    Livewire::test(SetupWizard::class)
-        ->assertRedirect(route('login'));
+    Livewire::test(SetupWizard::class)->assertRedirect(route('login'));
 });
 
 test('setup wizard advances from welcome step when audit passes', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
 
@@ -72,7 +71,7 @@ test('setup wizard advances from welcome step when audit passes', function () {
 });
 
 test('setup wizard validates school data', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -89,7 +88,7 @@ test('setup wizard validates school data', function () {
 });
 
 test('setup wizard validates department data', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -106,7 +105,7 @@ test('setup wizard validates department data', function () {
 });
 
 test('setup wizard validates internship data on finish', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -128,7 +127,7 @@ test('setup wizard validates internship data on finish', function () {
 });
 
 test('setup wizard validates admin credentials', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -147,7 +146,7 @@ test('setup wizard validates admin credentials', function () {
 });
 
 test('setup wizard requires finalization checkboxes', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -170,7 +169,7 @@ test('setup wizard requires finalization checkboxes', function () {
 });
 
 test('setup wizard completes and creates lock file', function () {
-    $service = new SetupService;
+    $service = new SetupService();
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -200,6 +199,8 @@ test('setup wizard completes and creates lock file', function () {
         ->call('finish')
         ->assertSet('currentStep', 7);
 
-    expect($service->isInstalled())->toBeTrue()
-        ->and(File::exists(storage_path('app/.installed')))->toBeTrue();
+    expect($service->isInstalled())
+        ->toBeTrue()
+        ->and(File::exists(storage_path('app/.installed')))
+        ->toBeTrue();
 });

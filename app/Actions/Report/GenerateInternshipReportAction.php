@@ -16,8 +16,9 @@ class GenerateInternshipReportAction
 {
     public function execute(string $registrationId): array
     {
-        $registration = InternshipRegistration::with(['student', 'internship'])
-            ->findOrFail($registrationId);
+        $registration = InternshipRegistration::with(['student', 'internship'])->findOrFail(
+            $registrationId,
+        );
 
         // Get journal statistics
         $journalStats = DB::table('journal_entries')
@@ -39,7 +40,11 @@ class GenerateInternshipReportAction
         $competencyLogs = DB::table('student_competency_logs')
             ->join('competencies', 'student_competency_logs.competency_id', '=', 'competencies.id')
             ->where('student_competency_logs.registration_id', $registrationId)
-            ->select('competencies.name', 'student_competency_logs.score', 'student_competency_logs.notes')
+            ->select(
+                'competencies.name',
+                'student_competency_logs.score',
+                'student_competency_logs.notes',
+            )
             ->get();
 
         return [

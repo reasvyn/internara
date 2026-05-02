@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RequireSetupAccess
 {
-    public function __construct(
-        protected readonly SetupService $setupService
-    ) {}
+    public function __construct(protected readonly SetupService $setupService) {}
 
     /**
      * Handle an incoming request.
@@ -37,7 +35,7 @@ class RequireSetupAccess
         }
 
         // Jika belum terinstal, dan bukan rute setup/livewire -> paksa ke setup
-        if (! $isSetupRoute && ! $request->is('livewire/*')) {
+        if (!$isSetupRoute && !$request->is('livewire/*')) {
             return redirect()->route('setup');
         }
 

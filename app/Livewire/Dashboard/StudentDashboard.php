@@ -20,7 +20,8 @@ class StudentDashboard extends Component
     public function mount(): void
     {
         $user = auth()->user();
-        $this->registration = $user->registrations()
+        $this->registration = $user
+            ->registrations()
             ->with(['placement.company', 'internship'])
             ->where('status', 'active')
             ->first();

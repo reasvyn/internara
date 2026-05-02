@@ -15,9 +15,7 @@ use App\Models\User;
  */
 class AcknowledgeHandbookAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAudit
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     public function execute(User $user, Handbook $handbook): void
     {
@@ -32,7 +30,7 @@ class AcknowledgeHandbookAction
             subjectType: Handbook::class,
             subjectId: $handbook->id,
             payload: ['user_id' => $user->id],
-            module: 'Guidance'
+            module: 'Guidance',
         );
     }
 }

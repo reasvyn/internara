@@ -16,7 +16,11 @@ class GenerateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'report_type' => ['required', 'string', 'in:attendance_summary,internship_placements,student_performance,company_overview'],
+            'report_type' => [
+                'required',
+                'string',
+                'in:attendance_summary,internship_placements,student_performance,company_overview',
+            ],
             'filters' => ['nullable', 'array'],
             'filters.date_from' => ['nullable', 'date'],
             'filters.date_to' => ['nullable', 'date', 'after_or_equal:filters.date_from'],

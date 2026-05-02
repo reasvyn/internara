@@ -20,7 +20,13 @@ class NotificationFactory extends Factory
         return [
             'id' => $this->faker->uuid(),
             'user_id' => User::factory(),
-            'type' => $this->faker->randomElement(['success', 'error', 'warning', 'info', 'system']),
+            'type' => $this->faker->randomElement([
+                'success',
+                'error',
+                'warning',
+                'info',
+                'system',
+            ]),
             'title' => $this->faker->sentence(3),
             'message' => $this->faker->paragraph(),
             'data' => ['key' => 'value'],
@@ -34,17 +40,21 @@ class NotificationFactory extends Factory
 
     public function unread(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_read' => false,
-            'read_at' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'is_read' => false,
+                'read_at' => null,
+            ],
+        );
     }
 
     public function read(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_read' => true,
-            'read_at' => now(),
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'is_read' => true,
+                'read_at' => now(),
+            ],
+        );
     }
 }

@@ -51,8 +51,11 @@ class Settings
      *
      * @param string|array<string> $key Single key or array of keys
      */
-    public static function get(string|array $key, mixed $default = null, bool $skipCache = false): mixed
-    {
+    public static function get(
+        string|array $key,
+        mixed $default = null,
+        bool $skipCache = false,
+    ): mixed {
         if (is_array($key)) {
             $results = [];
             foreach ($key as $k) {
@@ -73,12 +76,12 @@ class Settings
     public static function all(bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.'all');
+            Cache::forget(self::CACHE_PREFIX . 'all');
         }
 
         return Cache::rememberForever(
-            self::CACHE_PREFIX.'all',
-            fn () => Setting::all()->pluck('value', 'key'),
+            self::CACHE_PREFIX . 'all',
+            fn() => Setting::all()->pluck('value', 'key'),
         );
     }
 
@@ -87,7 +90,7 @@ class Settings
      */
     public static function has(string $key): bool
     {
-        return ! is_null(self::get($key));
+        return !is_null(self::get($key));
     }
 
     /**
@@ -96,12 +99,12 @@ class Settings
     public static function group(string $name, bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.'group.'.$name);
+            Cache::forget(self::CACHE_PREFIX . 'group.' . $name);
         }
 
         return Cache::rememberForever(
-            self::CACHE_PREFIX.'group.'.$name,
-            fn () => Setting::group($name)->get(),
+            self::CACHE_PREFIX . 'group.' . $name,
+            fn() => Setting::group($name)->get(),
         );
     }
 
@@ -128,20 +131,23 @@ class Settings
      */
     public static function forget(string $key, ?string $group = null): void
     {
-        Cache::forget(self::CACHE_PREFIX.$key);
+        Cache::forget(self::CACHE_PREFIX . $key);
 
         if ($group) {
-            Cache::forget(self::CACHE_PREFIX.'group.'.$group);
+            Cache::forget(self::CACHE_PREFIX . 'group.' . $group);
         }
 
-        Cache::forget(self::CACHE_PREFIX.'all');
+        Cache::forget(self::CACHE_PREFIX . 'all');
     }
 
     /**
      * Resolve a single setting key through the tier chain.
      */
-    protected static function resolveSingle(string $key, mixed $default, bool $skipCache = false): mixed
-    {
+    protected static function resolveSingle(
+        string $key,
+        mixed $default,
+        bool $skipCache = false,
+    ): mixed {
         // 1. Runtime overrides
         if (array_key_exists($key, self::$overrides)) {
             return self::$overrides[$key];
@@ -154,19 +160,16 @@ class Settings
 
         // 3. Database (cached)
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.$key);
+            Cache::forget(self::CACHE_PREFIX . $key);
         }
 
-        $dbValue = Cache::rememberForever(
-            self::CACHE_PREFIX.$key,
-            function () use ($key) {
-                $setting = Setting::where('key', $key)->first();
+        $dbValue = Cache::rememberForever(self::CACHE_PREFIX . $key, function () use ($key) {
+            $setting = Setting::where('key', $key)->first();
 
-                return $setting?->value;
-            },
-        );
+            return $setting?->value;
+        });
 
-        if (! is_null($dbValue)) {
+        if (!is_null($dbValue)) {
             return $dbValue;
         }
 
@@ -184,7 +187,7 @@ class Settings
      */
     protected static function resolveAppInfoValue(string $key): mixed
     {
-        if (! isset(self::$appInfoMap[$key])) {
+        if (!isset(self::$appInfoMap[$key])) {
             return null;
         }
 

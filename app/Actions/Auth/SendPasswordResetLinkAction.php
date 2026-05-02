@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Password;
  */
 class SendPasswordResetLinkAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(string $email): string
     {
@@ -24,7 +22,7 @@ class SendPasswordResetLinkAction
         $this->logAuditAction->execute(
             action: 'password_reset_link_requested',
             payload: ['email' => $email, 'status' => $status],
-            module: 'Auth'
+            module: 'Auth',
         );
 
         return $status;

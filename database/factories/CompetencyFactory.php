@@ -23,8 +23,8 @@ class CompetencyFactory extends Factory
             'name' => $this->faker->words(2, true),
             'code' => strtoupper($this->faker->lexify('???')),
             'description' => $this->faker->sentence(),
-            'max_score' => 100.00,
-            'weight' => 1.00,
+            'max_score' => 100.0,
+            'weight' => 1.0,
         ];
     }
 }

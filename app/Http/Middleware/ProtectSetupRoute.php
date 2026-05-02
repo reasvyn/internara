@@ -30,14 +30,17 @@ class ProtectSetupRoute
         }
 
         // Rate limit: 20 attempts per 60 seconds per IP
-        $key = 'setup:'.$request->ip();
+        $key = 'setup:' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($key, 20)) {
             $seconds = RateLimiter::availableIn($key);
 
-            return response()->json([
-                'message' => __('setup.rate_limited', ['seconds' => $seconds]),
-            ], Response::HTTP_TOO_MANY_REQUESTS);
+            return response()->json(
+                [
+                    'message' => __('setup.rate_limited', ['seconds' => $seconds]),
+                ],
+                Response::HTTP_TOO_MANY_REQUESTS,
+            );
         }
 
         RateLimiter::hit($key, 60);
@@ -48,10 +51,9 @@ class ProtectSetupRoute
         }
 
         // Validate token from query parameter or session
-        $token = $request->query('setup_token')
-            ?? $request->session()->get('setup.token_input');
+        $token = $request->query('setup_token') ?? $request->session()->get('setup.token_input');
 
-        if ($token === null || ! $this->setupService->validateToken((string) $token)) {
+        if ($token === null || !$this->setupService->validateToken((string) $token)) {
             abort(Response::HTTP_FORBIDDEN, __('setup.invalid_token'));
         }
 

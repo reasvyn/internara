@@ -43,14 +43,16 @@ return [
         'broadcast' => "Pengajuan Anda untuk ':title' telah ditandai sebagai :status",
         'database' => "Pembaruan pada ':title': :status",
         'mail_subject' => 'Umpan Balik pada Tugas: :title',
-        'mail_line1' => "Pengajuan Anda untuk ':title' telah ditinjau dan ditandai sebagai: :status",
+        'mail_line1' =>
+            "Pengajuan Anda untuk ':title' telah ditinjau dan ditandai sebagai: :status",
         'mail_feedback' => 'Umpan Balik: :feedback',
     ],
     'report_generated' => [
         'title' => 'Laporan Siap',
         'message' => 'Laporan :type Anda siap untuk diunduh.',
         'mail_subject' => 'Laporan :type Anda Siap',
-        'mail_line1' => 'Laporan :type yang Anda minta telah berhasil dibuat dan sekarang siap untuk diunduh.',
+        'mail_line1' =>
+            'Laporan :type yang Anda minta telah berhasil dibuat dan sekarang siap untuk diunduh.',
     ],
     'job_failed' => [
         'title' => 'Tugas Latar Belakang Gagal',

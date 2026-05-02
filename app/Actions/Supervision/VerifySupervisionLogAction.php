@@ -35,7 +35,7 @@ class VerifySupervisionLogAction
                 subjectType: SupervisionLog::class,
                 subjectId: $log->id,
                 payload: ['verifier' => $verifier->name],
-                module: 'Supervision'
+                module: 'Supervision',
             );
 
             return $log;

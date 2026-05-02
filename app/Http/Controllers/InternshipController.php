@@ -47,7 +47,7 @@ class InternshipController extends Controller
     {
         $internship = $this->repository->findWithDetails($id);
 
-        if (! $internship) {
+        if (!$internship) {
             return response()->json(['message' => 'Internship not found'], 404);
         }
 
@@ -63,10 +63,13 @@ class InternshipController extends Controller
     {
         $internship = $this->createAction->execute($request);
 
-        return response()->json([
-            'message' => 'Internship created successfully',
-            'data' => $internship,
-        ], 201);
+        return response()->json(
+            [
+                'message' => 'Internship created successfully',
+                'data' => $internship,
+            ],
+            201,
+        );
     }
 
     /**

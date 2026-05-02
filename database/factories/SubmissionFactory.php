@@ -33,14 +33,16 @@ class SubmissionFactory extends Factory
 
     public function verified(): static
     {
-        return $this->state(fn (array $attributes) => ['status' => 'verified']);
+        return $this->state(fn(array $attributes) => ['status' => 'verified']);
     }
 
     public function draft(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'draft',
-            'submitted_at' => null,
-        ]);
+        return $this->state(
+            fn(array $attributes) => [
+                'status' => 'draft',
+                'submitted_at' => null,
+            ],
+        );
     }
 }

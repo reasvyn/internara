@@ -3,10 +3,12 @@
 ## 1. Overview
 
 Internara implements a dual notification system:
+
 1. **In-App Notifications**: Custom `notifications` table with read/unread tracking
 2. **Email Notifications**: Optional Laravel notifications (via events/listeners)
 
 ### Configuration
+
 - **Model**: `app/Models/Notification.php`
 - **Migration**: `2026_04_30_022555_create_notifications_table.php`
 - **Actions**: `app/Actions/Notification/`
@@ -15,6 +17,7 @@ Internara implements a dual notification system:
 ## 2. Database Structure
 
 ### Notifications Table
+
 ```php
 Schema::create('notifications', function (Blueprint $table) {
     $table->uuid('id')->primary();
@@ -27,7 +30,7 @@ Schema::create('notifications', function (Blueprint $table) {
     $table->boolean('is_read')->default(false);
     $table->timestamp('read_at')->nullable();
     $table->timestamps();
-    
+
     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     $table->index(['user_id', 'is_read']);
     $table->index(['user_id', 'created_at']);
@@ -35,41 +38,40 @@ Schema::create('notifications', function (Blueprint $table) {
 ```
 
 ### Model: `App\Models\Notification`
+
 ```php
 class Notification extends Model
 {
     use HasFactory, HasUuid;
-    
-    protected $fillable = [
-        'user_id', 'type', 'title', 'message', 'data', 'link', 'is_read'
-    ];
-    
+
+    protected $fillable = ['user_id', 'type', 'title', 'message', 'data', 'link', 'is_read'];
+
     protected $casts = [
         'data' => 'array',
         'is_read' => 'boolean',
         'read_at' => 'datetime',
     ];
-    
+
     // Relationships
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    
+
     // Business Rules
     public function markAsRead(): void
     {
-        if (! $this->is_read) {
+        if (!$this->is_read) {
             $this->update([
                 'is_read' => true,
                 'read_at' => now(),
             ]);
         }
     }
-    
+
     public function isUnread(): bool
     {
-        return ! $this->is_read;
+        return !$this->is_read;
     }
 }
 ```
@@ -77,6 +79,7 @@ class Notification extends Model
 ## 3. Notification Types
 
 ### Standard Types (Constants)
+
 ```php
 // Suggested type constants (not enforced by DB)
 INTERNSHIP_CREATED = 'internship_created'
@@ -89,6 +92,7 @@ SYSTEM_ALERT = 'system_alert'
 ```
 
 ### Type Usage
+
 ```php
 // Creating notification with type
 Notification::create([
@@ -104,6 +108,7 @@ Notification::create([
 ## 4. Core Actions
 
 ### SendNotificationAction
+
 ```php
 namespace App\Actions\Notification;
 
@@ -121,7 +126,7 @@ class SendNotificationAction
         ?string $link = null,
     ): Notification {
         $user = User::findOrFail($userId);
-        
+
         $notification = Notification::create([
             'user_id' => $user->id,
             'type' => $type,
@@ -131,32 +136,32 @@ class SendNotificationAction
             'link' => $link,
             'is_read' => false,
         ]);
-        
+
         return $notification;
     }
 }
 ```
 
 ### GetNotificationsAction
+
 ```php
 class GetNotificationsAction
 {
     public function execute(string $userId, bool $unreadOnly = false, int $limit = 50): Collection
     {
         $query = Notification::where('user_id', $userId);
-        
+
         if ($unreadOnly) {
             $query->where('is_read', false);
         }
-        
-        return $query->orderBy('created_at', 'desc')
-                    ->limit($limit)
-                    ->get();
+
+        return $query->orderBy('created_at', 'desc')->limit($limit)->get();
     }
 }
 ```
 
 ### MarkAsReadAction
+
 ```php
 class MarkAsReadAction
 {
@@ -168,6 +173,7 @@ class MarkAsReadAction
 ```
 
 ### MarkAllAsReadAction
+
 ```php
 class MarkAllAsReadAction
 {
@@ -184,6 +190,7 @@ class MarkAllAsReadAction
 ```
 
 ### DeleteNotificationAction
+
 ```php
 class DeleteNotificationAction
 {
@@ -197,86 +204,87 @@ class DeleteNotificationAction
 ## 5. Livewire UI: NotificationManager
 
 ### Component: `app/Livewire/Admin/NotificationManager.php`
+
 ```php
 class NotificationManager extends Component
 {
     public bool $showAll = false;
     public int $unreadCount = 0;
-    
+
     public function mount(): void
     {
         $this->updateUnreadCount();
     }
-    
+
     public function render()
     {
         $userId = Auth::id();
         $action = app(GetNotificationsAction::class);
-        
+
         return view('livewire.admin.notification-manager', [
             'notifications' => $action->execute($userId, false, 50),
             'unreadCount' => $this->unreadCount,
         ]);
     }
-    
+
     public function markAsRead(string $id, MarkAsReadAction $action): void
     {
         $notification = Notification::findOrFail($id);
         $action->execute($notification);
-        
+
         $this->updateUnreadCount();
         $this->dispatch('notification-read');
     }
-    
+
     public function markAllAsRead(MarkAllAsReadAction $action): void
     {
         $action->execute(Auth::id());
-        
+
         $this->updateUnreadCount();
         $this->dispatch('notifications-read');
     }
-    
+
     public function delete(string $id, DeleteNotificationAction $action): void
     {
         $notification = Notification::findOrFail($id);
         $action->execute($notification);
-        
+
         $this->updateUnreadCount();
     }
-    
+
     public function updateUnreadCount(): void
     {
         $this->unreadCount = Notification::where('user_id', Auth::id())
             ->where('is_read', false)
             ->count();
     }
-    
+
     public function getListeners(): array
     {
         return [
-            'echo:private-user.{Auth::id()},Illuminate\Notifications\Events\BroadcastNotificationCreated' => 'updateUnreadCount',
+            'echo:private-user.{Auth::id()},Illuminate\Notifications\Events\BroadcastNotificationCreated' =>
+                'updateUnreadCount',
         ];
     }
 }
 ```
 
 ### Blade View (Simplified)
+
 ```blade
 <div>
     <div class="badge badge-primary">{{ $unreadCount }} unread</div>
-    
-    @foreach($notifications as $notification)
+
+    @foreach ($notifications as $notification)
         <div class="card @if(!$notification->is_read) bg-blue-50 @endif">
             <h3>{{ $notification->title }}</h3>
             <p>{{ $notification->message }}</p>
-            @if($notification->link)
+            @if ($notification->link)
                 <a href="{{ $notification->link }}">View</a>
             @endif
-            
-            @if(!$notification->is_read)
-                <button wire:click="markAsRead('{{ $notification->id }}')">
-                    Mark as Read
-                </button>
+
+            @if (! $notification->is_read)
+                <button wire:click="markAsRead('{{ $notification->id }}')">Mark as Read</button>
             @endif
         </div>
     @endforeach
@@ -286,12 +294,13 @@ class NotificationManager extends Component
 ## 6. Event-Driven Notifications (Optional)
 
 ### Example: Internship Created Event
+
 ```php
 // Event: app/Events/InternshipCreated.php
 class InternshipCreated
 {
     use Dispatchable;
-    
+
     public function __construct(
         public readonly Internship $internship,
         public readonly User $createdBy,
@@ -301,10 +310,8 @@ class InternshipCreated
 // Listener: app/Listeners/SendInternshipCreatedNotifications.php
 class SendInternshipCreatedNotifications
 {
-    public function __construct(
-        private readonly SendNotificationAction $sendNotification,
-    ) {}
-    
+    public function __construct(private readonly SendNotificationAction $sendNotification) {}
+
     public function handle(InternshipCreated $event): void
     {
         // Notify the student
@@ -314,13 +321,14 @@ class SendInternshipCreatedNotifications
             title: 'Internship Created',
             message: 'Your internship "' . $event->internship->name . '" has been created.',
             link: route('internships.show', $event->internship->id),
-            data: ['internship_id' => $event->internship->id]
+            data: ['internship_id' => $event->internship->id],
         );
     }
 }
 ```
 
 ### Register Listener
+
 ```php
 // app/Providers/EventServiceProvider.php
 protected $listen = [
@@ -332,29 +340,32 @@ protected $listen = [
 
 ## 7. Flash Messages (PHPFlasher)
 
-Internara uses **PHPFlasher** for temporary flash messages (success, error, warning, info) that appear after user actions and automatically disappear.
+Internara uses **PHPFlasher** for temporary flash messages (success, error, warning, info) that
+appear after user actions and automatically disappear.
 
 ### Configuration
+
 - **Package**: `php-flasher/flasher-laravel`
 - **Config File**: `config/flasher.php`
 - **Theme**: Emerald (default)
 - **Render Location**: `resources/views/components/layouts/base.blade.php` with `@flasher_render`
 
 ### Config Structure (`config/flasher.php`)
+
 ```php
 return [
     'default' => 'flasher',
-    
+
     'main_script' => '/vendor/flasher/flasher.min.js',
     'styles' => ['/vendor/flasher/flasher.min.css'],
-    
+
     'options' => [
         'theme' => 'emerald',
         'timeout' => 5000,
         'position' => 'bottom-right',
-        'darkMode' => true // Supports dark theme
+        'darkMode' => true, // Supports dark theme
     ],
-    
+
     'plugins' => [
         'flasher' => [
             'scripts' => [
@@ -367,7 +378,7 @@ return [
             ],
         ],
     ],
-    
+
     // Laravel session flash message mapping
     'flash_bag' => [
         'success' => ['success'],
@@ -379,6 +390,7 @@ return [
 ```
 
 ### Usage in PHP (Backend)
+
 ```php
 // Using helper function (simplest - matches actual codebase usage)
 flash()->success('Internship created successfully!');
@@ -392,10 +404,10 @@ class CreateInternshipAction
     public function execute(CreateInternshipRequest $request): Internship
     {
         $internship = Internship::create($request->validated());
-        
+
         // Flash success message (actual pattern used in Livewire components)
         flash()->success(__('internship.save_success'));
-        
+
         return $internship;
     }
 }
@@ -407,7 +419,9 @@ flash()->warning(__('placement.update_success'));
 ```
 
 ### Actual Usage in Codebase
+
 Based on `app/Livewire/` components:
+
 ```php
 // app/Livewire/Auth/Login.php:52
 flash()->success(__('auth::ui.login.welcome_back', ['name' => $user->name]));
@@ -423,29 +437,36 @@ flash()->success(__('company.save_success'));
 ```
 
 ### Usage in Blade (Frontend)
-The `@flasher_render` directive is placed in the base layout to automatically render all queued flash messages:
+
+The `@flasher_render` directive is placed in the base layout to automatically render all queued
+flash messages:
 
 ```blade
 {{-- In resources/views/components/layouts/base.blade.php --}}
-@flasher_render  {{-- Renders all queued messages --}}
+@flasher_render
+{{-- Renders all queued messages --}}
 ```
 
 This directive:
+
 - Automatically includes required JS/CSS assets from config
 - Renders all pending flash messages (success, error, warning, info)
 - Respects configured theme (Emerald), position, timeout, and dark mode settings
 
 ### Flash vs In-App Notifications
-| Feature | PHPFlasher (Flash) | In-App Notifications |
-|---------|----------------------|----------------------|
-| **Persistence** | Temporary (session-based) | Permanent (database) |
-| **Lifespan** | Disappears after 5s | Stays until manually read |
-| **Use Case** | Action feedback (save, delete, error) | Important alerts, approvals |
-| **Storage** | Session flash data | `notifications` table |
-| **Example** | "Student registered!" | "Your internship was approved" |
+
+| Feature         | PHPFlasher (Flash)                    | In-App Notifications           |
+| --------------- | ------------------------------------- | ------------------------------ |
+| **Persistence** | Temporary (session-based)             | Permanent (database)           |
+| **Lifespan**    | Disappears after 5s                   | Stays until manually read      |
+| **Use Case**    | Action feedback (save, delete, error) | Important alerts, approvals    |
+| **Storage**     | Session flash data                    | `notifications` table          |
+| **Example**     | "Student registered!"                 | "Your internship was approved" |
 
 ### Testing with PHPFlasher
-> **Note**: PHPFlasher provides testing utilities via `Flasher\Prime\Test\FlasherAssert`. However, the project currently doesn't have Flasher-specific tests. Below are example patterns:
+
+> **Note**: PHPFlasher provides testing utilities via `Flasher\Prime\Test\FlasherAssert`. However,
+> the project currently doesn't have Flasher-specific tests. Below are example patterns:
 
 ```php
 use Flasher\Prime\Test\FlasherAssert;
@@ -453,7 +474,7 @@ use Flasher\Prime\Test\FlasherAssert;
 test('it shows success message', function () {
     // Perform action that triggers flasher
     $this->post('/internships', $data);
-    
+
     // Assert flash message was added
     FlasherAssert::assertHasFlash('success', 'Internship created successfully!');
 });
@@ -461,12 +482,13 @@ test('it shows success message', function () {
 test('it shows error on failure', function () {
     // Simulate failure
     $this->post('/internships', []);
-    
+
     FlasherAssert::assertHasFlash('error');
 });
 ```
 
 ### S1 Security Considerations
+
 ```php
 // ✅ DO: Sanitize user input in messages
 flash()->error('Failed to process: ' . e($validatedError));
@@ -480,6 +502,7 @@ flash()->error('Database connection failed: ' . $dbPassword); // Never!
 ## 8. Email Notifications (Optional)
 
 ### Using Laravel's Notification System
+
 ```php
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\InternshipApproved;
@@ -489,6 +512,7 @@ $user->notify(new InternshipApproved($internship));
 ```
 
 ### Creating Notification Class
+
 ```bash
 php artisan make:notification InternshipApproved
 ```
@@ -501,20 +525,20 @@ use Illuminate\Notifications\Messages\MailMessage;
 class InternshipApproved extends Notification
 {
     public function __construct(public Internship $internship) {}
-    
+
     public function via($notifiable): array
     {
-        return ['mail', 'database'];  // Both email and in-app
+        return ['mail', 'database']; // Both email and in-app
     }
-    
+
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject('Internship Approved')
             ->line('Your internship has been approved!')
             ->action('View Internship', route('internships.show', $this->internship->id));
     }
-    
+
     public function toArray($notifiable): array
     {
         return [
@@ -530,21 +554,22 @@ class InternshipApproved extends Notification
 ## 9. Notification Testing
 
 ### Pest PHP Tests
+
 ```php
 use App\Actions\Notification\SendNotificationAction;
 use App\Models\Notification;
 
 test('can send notification', function () {
     $user = User::factory()->create();
-    
+
     $action = app(SendNotificationAction::class);
     $notification = $action->execute(
         userId: $user->id,
         type: 'test_notification',
         title: 'Test Title',
-        message: 'Test Message'
+        message: 'Test Message',
     );
-    
+
     expect($notification)->toBeInstanceOf(Notification::class);
     expect($notification->user_id)->toBe($user->id);
     expect($notification->is_read)->toBeFalse();
@@ -552,9 +577,9 @@ test('can send notification', function () {
 
 test('can mark as read', function () {
     $notification = Notification::factory()->create(['is_read' => false]);
-    
+
     $notification->markAsRead();
-    
+
     expect($notification->fresh()->is_read)->toBeTrue();
     expect($notification->read_at)->not->toBeNull();
 });
@@ -563,11 +588,9 @@ test('can get unread count', function () {
     $user = User::factory()->create();
     Notification::factory(3)->create(['user_id' => $user->id, 'is_read' => false]);
     Notification::factory(2)->create(['user_id' => $user->id, 'is_read' => true]);
-    
-    $count = Notification::where('user_id', $user->id)
-        ->where('is_read', false)
-        ->count();
-    
+
+    $count = Notification::where('user_id', $user->id)->where('is_read', false)->count();
+
     expect($count)->toBe(3);
 });
 ```
@@ -575,6 +598,7 @@ test('can get unread count', function () {
 ## 10. Real-Time Notifications (Broadcasting)
 
 ### Configuration
+
 ```env
 BROADCAST_DRIVER=pusher  # or 'reverb', 'redis', 'log'
 
@@ -586,6 +610,7 @@ PUSHER_APP_CLUSTER=mt1
 ```
 
 ### Broadcasting Notification
+
 ```php
 // In your notification class
 public function via($notifiable): array
@@ -603,6 +628,7 @@ public function toBroadcast($notifiable)
 ```
 
 ### Listening in Livewire
+
 ```php
 public function getListeners(): array
 {
@@ -615,29 +641,32 @@ public function getListeners(): array
 ## 11. Performance Considerations
 
 ### Database Indexes
+
 ```php
 // Already added in migration
-$table->index(['user_id', 'is_read']);      // For unread count queries
-$table->index(['user_id', 'created_at']);  // For listing with orderBy
+$table->index(['user_id', 'is_read']); // For unread count queries
+$table->index(['user_id', 'created_at']); // For listing with orderBy
 ```
 
 ### Pagination for Large Lists
+
 ```php
 // In GetNotificationsAction
 public function execute(string $userId, bool $unreadOnly = false, int $perPage = 20): LengthAwarePaginator
 {
     $query = Notification::where('user_id', $userId);
-    
+
     if ($unreadOnly) {
         $query->where('is_read', false);
     }
-    
+
     return $query->orderBy('created_at', 'desc')
                 ->paginate($perPage);
 }
 ```
 
 ### Archiving Old Notifications
+
 ```php
 // Scheduled job to archive/readelete old notifications
 Schedule::call(function () {
@@ -650,29 +679,31 @@ Schedule::call(function () {
 ## 12. Security (S1)
 
 ### S1 - Secure: Authorization
+
 ```php
 // Always check user owns the notification
 public function markAsRead(string $id): void
 {
     $notification = Notification::findOrFail($id);
-    
+
     // Authorize: User can only read their own notifications
     if ($notification->user_id !== Auth::id()) {
         abort(403, 'Unauthorized');
     }
-    
+
     $notification->markAsRead();
 }
 ```
 
 ### S1 - Secure: No Sensitive Data in Notifications
+
 ```php
 // ❌ DON'T
 SendNotificationAction::execute(
     userId: $user->id,
     type: 'security_alert',
     title: 'Password Changed',
-    data: ['new_password' => 'plaintext_password']  // ❌ Never!
+    data: ['new_password' => 'plaintext_password'], // ❌ Never!
 );
 
 // ✅ DO
@@ -680,7 +711,7 @@ SendNotificationAction::execute(
     userId: $user->id,
     type: 'security_alert',
     title: 'Password Changed',
-    message: 'Your password was changed successfully.'
+    message: 'Your password was changed successfully.',
     // No sensitive data in data/message
 );
 ```
@@ -688,21 +719,22 @@ SendNotificationAction::execute(
 ## 13. Troubleshooting
 
 ### Notifications Not Appearing
+
 1. Check if notification was created: `php artisan tinker` → `Notification::all()`
 2. Verify user_id is correct
 3. Check if Livewire component is listening to events
 4. For real-time: Check broadcasting configuration
 
 ### Unread Count Incorrect
+
 ```php
 // Manually recalculate
 $user = Auth::user();
-$user->unread_count = Notification::where('user_id', $user->id)
-    ->where('is_read', false)
-    ->count();
+$user->unread_count = Notification::where('user_id', $user->id)->where('is_read', false)->count();
 ```
 
 ### Performance Issues
+
 - Add index on `(user_id, is_read)` if missing
 - Use pagination for notification lists
 - Archive old notifications (older than 3 months)

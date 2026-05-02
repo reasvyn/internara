@@ -41,7 +41,7 @@ class LanguageSwitcher extends Component
      */
     public function switchLanguage(string $locale): void
     {
-        if (! array_key_exists($locale, $this->supportedLocales)) {
+        if (!array_key_exists($locale, $this->supportedLocales)) {
             return;
         }
 

@@ -14,10 +14,7 @@ class InternshipRegistrationNotification extends Notification implements ShouldQ
 {
     use Queueable;
 
-    public function __construct(
-        public string $internshipName,
-        public string $status
-    ) {}
+    public function __construct(public string $internshipName, public string $status) {}
 
     public function via($notifiable): array
     {
@@ -38,14 +35,19 @@ class InternshipRegistrationNotification extends Notification implements ShouldQ
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('notifications.internship_registration.mail_subject'))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.internship_registration.mail_line1', [
-                'internship' => $this->internshipName,
-                'status' => strtoupper($this->status),
-            ]))
-            ->action(__('common.setup_required.action', default: 'View Dashboard'), url('/student/dashboard'));
+            ->line(
+                __('notifications.internship_registration.mail_line1', [
+                    'internship' => $this->internshipName,
+                    'status' => strtoupper($this->status),
+                ]),
+            )
+            ->action(
+                __('common.setup_required.action', default: 'View Dashboard'),
+                url('/student/dashboard'),
+            );
     }
 
     public function toCustomDatabase($notifiable): array

@@ -17,13 +17,7 @@ class InternshipRequirement extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'type',
-        'is_mandatory',
-        'is_active',
-    ];
+    protected $fillable = ['name', 'description', 'type', 'is_mandatory', 'is_active'];
 
     protected $casts = [
         'type' => RequirementType::class,

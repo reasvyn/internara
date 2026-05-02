@@ -88,9 +88,7 @@ test('admin cannot delete placement with registered students', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(PlacementIndex::class)
-        ->call('delete', $placement);
+    Livewire::actingAs($user)->test(PlacementIndex::class)->call('delete', $placement);
 
     $this->assertDatabaseHas('internship_placements', ['id' => $placement->id]);
 });
@@ -101,9 +99,7 @@ test('admin can delete placement without registrations', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(PlacementIndex::class)
-        ->call('delete', $placement);
+    Livewire::actingAs($user)->test(PlacementIndex::class)->call('delete', $placement);
 
     $this->assertDatabaseMissing('internship_placements', ['id' => $placement->id]);
 });
@@ -145,17 +141,23 @@ test('placement index shows stats', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    InternshipPlacement::factory()->count(2)->create(['quota' => 10]);
+    InternshipPlacement::factory()
+        ->count(2)
+        ->create(['quota' => 10]);
 
-    Livewire::actingAs($user)
-        ->test(PlacementIndex::class)
-        ->assertViewHas('placements');
+    Livewire::actingAs($user)->test(PlacementIndex::class)->assertViewHas('placements');
 });
 
 test('placement search filters by name and company', function () {
     $company = InternshipCompany::factory()->create(['name' => 'Tech Corp']);
-    InternshipPlacement::factory()->create(['name' => 'Developer Intern', 'company_id' => $company->id]);
-    InternshipPlacement::factory()->create(['name' => 'Accountant Intern', 'company_id' => $company->id]);
+    InternshipPlacement::factory()->create([
+        'name' => 'Developer Intern',
+        'company_id' => $company->id,
+    ]);
+    InternshipPlacement::factory()->create([
+        'name' => 'Accountant Intern',
+        'company_id' => $company->id,
+    ]);
 
     $user = User::factory()->create();
     $user->assignRole('admin');
@@ -168,8 +170,7 @@ test('placement search filters by name and company', function () {
 });
 
 test('unauthenticated user cannot access placement index', function () {
-    $this->get(route('admin.internships.placements'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.internships.placements'))->assertRedirect(route('login'));
 });
 
 test('placement companies computed returns ordered list', function () {
@@ -179,7 +180,5 @@ test('placement companies computed returns ordered list', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(PlacementIndex::class)
-        ->assertViewHas('placements');
+    Livewire::actingAs($user)->test(PlacementIndex::class)->assertViewHas('placements');
 });

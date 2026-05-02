@@ -24,23 +24,32 @@ beforeEach(function () {
     }
 
     // Create school and internship first
-    $school = School::firstOrCreate([], [
-        'name' => 'Test School',
-        'institutional_code' => 'TEST001',
-        'address' => 'Test Address',
-    ]);
+    $school = School::firstOrCreate(
+        [],
+        [
+            'name' => 'Test School',
+            'institutional_code' => 'TEST001',
+            'address' => 'Test Address',
+        ],
+    );
 
-    $internship = Internship::firstOrCreate([], [
-        'name' => 'Test Internship',
-        'start_date' => '2026-01-01',
-        'end_date' => '2026-12-31',
-        'status' => 'active',
-    ]);
+    $internship = Internship::firstOrCreate(
+        [],
+        [
+            'name' => 'Test Internship',
+            'start_date' => '2026-01-01',
+            'end_date' => '2026-12-31',
+            'status' => 'active',
+        ],
+    );
 
-    $department = Department::firstOrCreate([], [
-        'name' => 'Test Department',
-        'school_id' => $school->id,
-    ]);
+    $department = Department::firstOrCreate(
+        [],
+        [
+            'name' => 'Test Department',
+            'school_id' => $school->id,
+        ],
+    );
 
     $this->teacher = User::factory()->create();
     $this->teacher->assignRole(RoleEnum::TEACHER);
@@ -51,11 +60,14 @@ beforeEach(function () {
     $this->student->profile()->create(['department_id' => $department->id]);
 
     // Create registration for student with active status
-    $this->registration = InternshipRegistration::firstOrCreate([
-        'student_id' => $this->student->id,
-    ], [
-        'internship_id' => $internship->id,
-    ]);
+    $this->registration = InternshipRegistration::firstOrCreate(
+        [
+            'student_id' => $this->student->id,
+        ],
+        [
+            'internship_id' => $internship->id,
+        ],
+    );
     $this->registration->setStatus('active', 'Active for testing.');
 
     $this->admin = User::factory()->create();
@@ -74,9 +86,12 @@ describe('Supervision Logs', function () {
             'notes' => 'Initial visit.',
         ]);
 
-        expect($log)->toBeInstanceOf(SupervisionLog::class)
-            ->and($log->supervisor_id)->toBe($this->teacher->id)
-            ->and($log->type->value)->toBe('monitoring');
+        expect($log)
+            ->toBeInstanceOf(SupervisionLog::class)
+            ->and($log->supervisor_id)
+            ->toBe($this->teacher->id)
+            ->and($log->type->value)
+            ->toBe('monitoring');
     });
 
     it('allows teacher to verify supervision log', function () {
@@ -92,9 +107,12 @@ describe('Supervision Logs', function () {
         $verifyAction = app(VerifySupervisionLogAction::class);
         $result = $verifyAction->execute($log, $this->teacher);
 
-        expect($result)->toBeInstanceOf(SupervisionLog::class)
-            ->and($result->status->value)->toBe('verified')
-            ->and($result->is_verified)->toBeTrue();
+        expect($result)
+            ->toBeInstanceOf(SupervisionLog::class)
+            ->and($result->status->value)
+            ->toBe('verified')
+            ->and($result->is_verified)
+            ->toBeTrue();
     });
 });
 
@@ -108,9 +126,12 @@ describe('Monitoring Visits', function () {
             'notes' => 'Monitoring visit completed.',
         ]);
 
-        expect($result)->toBeInstanceOf(MonitoringVisit::class)
-            ->and($result->teacher_id)->toBe($this->admin->id)
-            ->and($result->status)->toBe('completed');
+        expect($result)
+            ->toBeInstanceOf(MonitoringVisit::class)
+            ->and($result->teacher_id)
+            ->toBe($this->admin->id)
+            ->and($result->status)
+            ->toBe('completed');
     });
 });
 
@@ -118,10 +139,12 @@ describe('RBAC for Supervision', function () {
     it('prevents student from creating supervision log', function () {
         $action = app(CreateSupervisionLogAction::class);
 
-        expect(fn () => $action->execute($this->student, [
-            'registration_id' => $this->registration->id,
-            'type' => 'monitoring',
-            'notes' => 'Unauthorized attempt',
-        ]))->not->toThrow(RuntimeException::class);
+        expect(
+            fn() => $action->execute($this->student, [
+                'registration_id' => $this->registration->id,
+                'type' => 'monitoring',
+                'notes' => 'Unauthorized attempt',
+            ]),
+        )->not->toThrow(RuntimeException::class);
     });
 });

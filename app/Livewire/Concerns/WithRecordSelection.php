@@ -30,7 +30,7 @@ trait WithRecordSelection
         if ($value) {
             $this->selectedIds = collect($this->rows()->items())
                 ->pluck('id')
-                ->map(fn ($id) => (string) $id)
+                ->map(fn($id) => (string) $id)
                 ->toArray();
         } else {
             $this->selectedIds = [];

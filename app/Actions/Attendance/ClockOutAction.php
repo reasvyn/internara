@@ -24,7 +24,7 @@ class ClockOutAction
                 ->whereDate('date', $now->toDateString())
                 ->first();
 
-            if (! $log) {
+            if (!$log) {
                 throw new RuntimeException('You must clock in first.');
             }
 
@@ -44,7 +44,7 @@ class ClockOutAction
                 subjectType: AttendanceLog::class,
                 subjectId: $log->id,
                 payload: ['time' => $log->clock_out],
-                module: 'Attendance'
+                module: 'Attendance',
             );
 
             return $log;

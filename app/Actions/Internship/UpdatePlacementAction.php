@@ -22,7 +22,7 @@ class UpdatePlacementAction
                 subjectType: InternshipPlacement::class,
                 subjectId: $placement->id,
                 payload: ['name' => $placement->name, 'quota' => $placement->quota],
-                module: 'Internship'
+                module: 'Internship',
             );
 
             return $placement;

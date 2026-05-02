@@ -37,7 +37,7 @@ class UpdateSchoolAction
                 subjectType: School::class,
                 subjectId: $school->id,
                 payload: $data,
-                module: 'School'
+                module: 'School',
             );
 
             return $school;

@@ -70,11 +70,13 @@ class UserManager extends BaseRecordManager
      */
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['role'] ?? null, function ($q, $role) {
-            $q->role($role);
-        })->when($this->filters['status'] ?? null, function ($q, $status) {
-            $q->whereHas('statuses', fn ($qs) => $qs->where('name', $status)->latest());
-        });
+        return $query
+            ->when($this->filters['role'] ?? null, function ($q, $role) {
+                $q->role($role);
+            })
+            ->when($this->filters['status'] ?? null, function ($q, $status) {
+                $q->whereHas('statuses', fn($qs) => $qs->where('name', $status)->latest());
+            });
     }
 
     #[Computed]
@@ -114,11 +116,12 @@ class UserManager extends BaseRecordManager
     {
         $rules = [
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
+            'userData.email' =>
+                'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
             'userData.roles' => 'required|array|min:1',
         ];
 
-        if (! $this->userData['id']) {
+        if (!$this->userData['id']) {
             $rules['userData.password'] = 'required|min:8';
         }
 
@@ -145,9 +148,10 @@ class UserManager extends BaseRecordManager
         }
 
         $currentStatus = $user->latestStatus()?->name;
-        $newStatus = $currentStatus === AccountStatus::ACTIVE->value
-            ? AccountStatus::SUSPENDED->value
-            : AccountStatus::ACTIVE->value;
+        $newStatus =
+            $currentStatus === AccountStatus::ACTIVE->value
+                ? AccountStatus::SUSPENDED->value
+                : AccountStatus::ACTIVE->value;
 
         $user->setStatus($newStatus, 'Changed via User Manager');
 
@@ -162,7 +166,12 @@ class UserManager extends BaseRecordManager
         $newPassword = str()->random(10);
         $user->update(['password' => Hash::make($newPassword)]);
 
-        $this->info("Password reset to: {$newPassword}", 'Temp Password', position: 'toast-bottom-center', timeout: 10000);
+        $this->info(
+            "Password reset to: {$newPassword}",
+            'Temp Password',
+            position: 'toast-bottom-center',
+            timeout: 10000,
+        );
     }
 
     public function deleteUser(User $user, DeleteUserAction $deleteAction): void

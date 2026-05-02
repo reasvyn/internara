@@ -25,7 +25,7 @@ class CreateDepartmentAction
                 subjectType: Department::class,
                 subjectId: $department->id,
                 payload: $data,
-                module: 'Department'
+                module: 'Department',
             );
 
             return $department;

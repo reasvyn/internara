@@ -21,11 +21,12 @@ class SubmitJournalEntryAction
             $date = Carbon::now()->toDateString();
 
             // Find active registration (using Spatie HasStatuses)
-            $registration = $user->registrations()
+            $registration = $user
+                ->registrations()
                 ->get()
-                ->first(fn ($reg) => $reg->hasStatus('active'));
+                ->first(fn($reg) => $reg->hasStatus('active'));
 
-            if (! $registration) {
+            if (!$registration) {
                 throw new RuntimeException('No active internship registration found.');
             }
 
@@ -50,7 +51,7 @@ class SubmitJournalEntryAction
                     'content' => $data['content'],
                     'learning_outcomes' => $data['learning_outcomes'] ?? null,
                     'status' => 'submitted',
-                ]
+                ],
             );
 
             $this->logAudit->execute(
@@ -58,7 +59,7 @@ class SubmitJournalEntryAction
                 subjectType: JournalEntry::class,
                 subjectId: $journal->id,
                 payload: ['date' => $journal->date],
-                module: 'Journal'
+                module: 'Journal',
             );
 
             return $journal;

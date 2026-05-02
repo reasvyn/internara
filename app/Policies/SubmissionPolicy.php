@@ -39,8 +39,7 @@ class SubmissionPolicy
 
     public function update(User $user, Submission $submission): bool
     {
-        return $submission->student_id === $user->id
-            && $submission->status?->value === 'submitted';
+        return $submission->student_id === $user->id && $submission->status?->value === 'submitted';
     }
 
     public function verify(User $user, Submission $submission): bool

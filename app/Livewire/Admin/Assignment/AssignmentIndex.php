@@ -53,8 +53,7 @@ class AssignmentIndex extends BaseRecordManager
      */
     protected function query(): Builder
     {
-        return Assignment::query()
-            ->with(['type', 'internship']);
+        return Assignment::query()->with(['type', 'internship']);
     }
 
     /**
@@ -70,11 +69,13 @@ class AssignmentIndex extends BaseRecordManager
      */
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['internship_id'] ?? null, function ($q, $internshipId) {
-            $q->where('internship_id', $internshipId);
-        })->when($this->filters['type_id'] ?? null, function ($q, $typeId) {
-            $q->where('assignment_type_id', $typeId);
-        });
+        return $query
+            ->when($this->filters['internship_id'] ?? null, function ($q, $internshipId) {
+                $q->where('internship_id', $internshipId);
+            })
+            ->when($this->filters['type_id'] ?? null, function ($q, $typeId) {
+                $q->where('assignment_type_id', $typeId);
+            });
     }
 
     #[Computed]
@@ -123,8 +124,10 @@ class AssignmentIndex extends BaseRecordManager
         $this->showModal = true;
     }
 
-    public function save(CreateAssignmentAction $createAction, UpdateAssignmentAction $updateAction): void
-    {
+    public function save(
+        CreateAssignmentAction $createAction,
+        UpdateAssignmentAction $updateAction,
+    ): void {
         $this->validate([
             'formData.assignment_type_id' => 'required|exists:assignment_types,id',
             'formData.internship_id' => 'required|exists:internships,id',
@@ -145,7 +148,7 @@ class AssignmentIndex extends BaseRecordManager
                 $this->formData['group'],
                 null,
                 $this->formData['is_mandatory'],
-                ['due_date' => $this->formData['due_date']]
+                ['due_date' => $this->formData['due_date']],
             );
             $this->success('Assignment created.');
         }

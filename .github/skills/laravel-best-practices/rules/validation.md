@@ -5,6 +5,7 @@
 Extract validation from controllers into dedicated Form Request classes.
 
 Incorrect:
+
 ```php
 public function store(Request $request)
 {
@@ -16,6 +17,7 @@ public function store(Request $request)
 ```
 
 Correct:
+
 ```php
 public function store(StorePostRequest $request)
 {
@@ -25,7 +27,8 @@ public function store(StorePostRequest $request)
 
 ## Array vs. String Notation for Rules
 
-Array syntax is more readable and composes cleanly with `Rule::` objects. Prefer it in new code, but check existing Form Requests first and match whatever notation the project already uses.
+Array syntax is more readable and composes cleanly with `Rule::` objects. Prefer it in new code, but
+check existing Form Requests first and match whatever notation the project already uses.
 
 ```php
 // Preferred for new code
@@ -40,11 +43,13 @@ Array syntax is more readable and composes cleanly with `Rule::` objects. Prefer
 Get only validated data. Never use `$request->all()` for mass operations.
 
 Incorrect:
+
 ```php
 Post::create($request->all());
 ```
 
 Correct:
+
 ```php
 Post::create($request->validated());
 ```
@@ -59,7 +64,8 @@ Post::create($request->validated());
 
 ## Use the `after()` Method for Custom Validation
 
-Use `after()` instead of `withValidator()` for custom validation logic that depends on multiple fields.
+Use `after()` instead of `withValidator()` for custom validation logic that depends on multiple
+fields.
 
 ```php
 public function after(): array

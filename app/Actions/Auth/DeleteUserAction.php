@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\DB;
  */
 class DeleteUserAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Delete a user.
@@ -31,7 +29,7 @@ class DeleteUserAction
                     'name' => $user->name,
                     'email' => $user->email,
                 ],
-                module: 'Auth'
+                module: 'Auth',
             );
 
             $user->delete();

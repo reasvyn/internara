@@ -13,9 +13,7 @@ use App\Models\User;
  */
 class SyncPermissionsAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(User $user, array $permissions): void
     {
@@ -26,7 +24,7 @@ class SyncPermissionsAction
             subjectType: User::class,
             subjectId: $user->id,
             payload: ['permissions' => $permissions],
-            module: 'Permission'
+            module: 'Permission',
         );
     }
 }

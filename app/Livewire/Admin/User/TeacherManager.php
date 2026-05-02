@@ -28,7 +28,11 @@ class TeacherManager extends BaseRecordManager
 
     public function boot(): void
     {
-        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+        if (
+            !auth()
+                ->user()
+                ?->hasAnyRole(['super_admin', 'admin'])
+        ) {
             abort(403, 'Unauthorized access.');
         }
     }
@@ -41,7 +45,11 @@ class TeacherManager extends BaseRecordManager
         return [
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.teacher.name'), 'sortable' => true],
-            ['key' => 'username', 'label' => __('user.fields.username'), 'class' => 'font-mono text-xs'],
+            [
+                'key' => 'username',
+                'label' => __('user.fields.username'),
+                'class' => 'font-mono text-xs',
+            ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             ['key' => 'profile.registration_number', 'label' => __('user.teacher.nip')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
@@ -101,7 +109,8 @@ class TeacherManager extends BaseRecordManager
     {
         $this->validate([
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
+            'userData.email' =>
+                'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
         ]);
 
         $profileData = [

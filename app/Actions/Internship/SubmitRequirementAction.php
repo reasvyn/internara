@@ -28,17 +28,18 @@ class SubmitRequirementAction
 
     private const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Execute the requirement submission.
      *
      * @throws RuntimeException if file type or size is invalid
      */
-    public function execute(InternshipRegistration $registration, string $requirementId, mixed $value): RequirementSubmission
-    {
+    public function execute(
+        InternshipRegistration $registration,
+        string $requirementId,
+        mixed $value,
+    ): RequirementSubmission {
         return DB::transaction(function () use ($registration, $requirementId, $value) {
             if ($value instanceof UploadedFile) {
                 $this->validateFile($value);
@@ -52,7 +53,7 @@ class SubmitRequirementAction
                 ],
                 [
                     'value' => is_string($value) ? $value : null,
-                ]
+                ],
             );
 
             // Handle file upload via Spatie Media Library
@@ -72,7 +73,7 @@ class SubmitRequirementAction
                     'requirement_id' => $requirementId,
                     'is_file' => $value instanceof UploadedFile,
                 ],
-                module: 'Internship'
+                module: 'Internship',
             );
 
             return $submission;
@@ -84,8 +85,10 @@ class SubmitRequirementAction
      */
     private function validateFile(UploadedFile $file): void
     {
-        if (! in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
-            throw new RuntimeException('File type not allowed. Allowed: PDF, JPEG, PNG, DOC, DOCX.');
+        if (!in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
+            throw new RuntimeException(
+                'File type not allowed. Allowed: PDF, JPEG, PNG, DOC, DOCX.',
+            );
         }
 
         if ($file->getSize() > self::MAX_FILE_SIZE) {

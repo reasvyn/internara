@@ -1,1 +1,7 @@
-{"name":"Internara","version":"1.0.0","author":{"name":"Reas Vyn"},"support":{"email":"support@internara.test"},"license":"MIT"}
+{
+    "name": "Internara",
+    "version": "1.0.0",
+    "author": { "name": "Reas Vyn" },
+    "support": { "email": "support@internara.test" },
+    "license": "MIT"
+}

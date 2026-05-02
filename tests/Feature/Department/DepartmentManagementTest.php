@@ -22,7 +22,9 @@ test('department index page is accessible for authenticated admin user', functio
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Department::factory()->count(3)->create(['school_id' => $this->school->id]);
+    Department::factory()
+        ->count(3)
+        ->create(['school_id' => $this->school->id]);
 
     $this->actingAs($user)
         ->get(route('admin.departments'))
@@ -79,9 +81,7 @@ test('admin cannot delete department with student profiles', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(DepartmentIndex::class)
-        ->call('delete', $department);
+    Livewire::actingAs($user)->test(DepartmentIndex::class)->call('delete', $department);
 
     $this->assertDatabaseHas('departments', ['id' => $department->id]);
 });
@@ -92,9 +92,7 @@ test('admin can delete department without student profiles', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(DepartmentIndex::class)
-        ->call('delete', $department);
+    Livewire::actingAs($user)->test(DepartmentIndex::class)->call('delete', $department);
 
     $this->assertDatabaseMissing('departments', ['id' => $department->id]);
 });
@@ -120,15 +118,18 @@ test('department index shows stats', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Department::factory()->count(2)->create(['school_id' => $this->school->id]);
+    Department::factory()
+        ->count(2)
+        ->create(['school_id' => $this->school->id]);
 
-    Livewire::actingAs($user)
-        ->test(DepartmentIndex::class)
-        ->assertOk();
+    Livewire::actingAs($user)->test(DepartmentIndex::class)->assertOk();
 });
 
 test('department search filters by name', function () {
-    Department::factory()->create(['school_id' => $this->school->id, 'name' => 'Teknik Informatika']);
+    Department::factory()->create([
+        'school_id' => $this->school->id,
+        'name' => 'Teknik Informatika',
+    ]);
     Department::factory()->create(['school_id' => $this->school->id, 'name' => 'Akuntansi']);
 
     $user = User::factory()->create();
@@ -142,6 +143,5 @@ test('department search filters by name', function () {
 });
 
 test('unauthenticated user cannot access department index', function () {
-    $this->get(route('admin.departments'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.departments'))->assertRedirect(route('login'));
 });

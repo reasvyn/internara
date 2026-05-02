@@ -13,13 +13,7 @@ class Internship extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'name',
-        'start_date',
-        'end_date',
-        'description',
-        'status',
-    ];
+    protected $fillable = ['name', 'start_date', 'end_date', 'description', 'status'];
 
     protected $casts = [
         'start_date' => 'date',

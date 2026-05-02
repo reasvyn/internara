@@ -28,7 +28,11 @@ class AdminManager extends BaseRecordManager
 
     public function boot(): void
     {
-        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+        if (
+            !auth()
+                ->user()
+                ?->hasAnyRole(['super_admin', 'admin'])
+        ) {
             abort(403, 'Unauthorized access.');
         }
     }
@@ -42,7 +46,11 @@ class AdminManager extends BaseRecordManager
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.admin.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
-            ['key' => 'username', 'label' => __('user.fields.username'), 'class' => 'font-mono text-xs'],
+            [
+                'key' => 'username',
+                'label' => __('user.fields.username'),
+                'class' => 'font-mono text-xs',
+            ],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => ''],
         ];
@@ -53,8 +61,7 @@ class AdminManager extends BaseRecordManager
      */
     protected function query(): Builder
     {
-        return User::query()
-            ->role([RoleEnum::ADMIN->value, RoleEnum::SUPER_ADMIN->value]);
+        return User::query()->role([RoleEnum::ADMIN->value, RoleEnum::SUPER_ADMIN->value]);
     }
 
     /**
@@ -99,7 +106,8 @@ class AdminManager extends BaseRecordManager
     {
         $this->validate([
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
+            'userData.email' =>
+                'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
         ]);
 
         if ($this->userData['id']) {

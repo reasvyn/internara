@@ -19,9 +19,7 @@ use Illuminate\Support\Facades\DB;
  */
 class CreateInternshipAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAudit,
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     /**
      * Execute the internship creation use case.
@@ -42,7 +40,7 @@ class CreateInternshipAction
                 subjectType: Internship::class,
                 subjectId: $internship->id,
                 payload: ['name' => $internship->name],
-                module: 'Internship'
+                module: 'Internship',
             );
 
             // Option 2: Event-driven side effects (complex case)

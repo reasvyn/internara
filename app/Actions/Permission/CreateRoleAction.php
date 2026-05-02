@@ -13,9 +13,7 @@ use Spatie\Permission\Models\Role;
  */
 class CreateRoleAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     public function execute(string $name, string $guardName = 'web'): Role
     {
@@ -29,7 +27,7 @@ class CreateRoleAction
             subjectType: Role::class,
             subjectId: (string) $role->id,
             payload: ['name' => $name, 'guard_name' => $guardName],
-            module: 'Permission'
+            module: 'Permission',
         );
 
         return $role;

@@ -46,7 +46,13 @@ class SubmitAssignmentAction
             throw new RuntimeException('You have already submitted this assignment.');
         }
 
-        return DB::transaction(function () use ($assignment, $registrationId, $studentId, $content, $file) {
+        return DB::transaction(function () use (
+            $assignment,
+            $registrationId,
+            $studentId,
+            $content,
+            $file,
+        ) {
             $submission = Submission::create([
                 'assignment_id' => $assignment->id,
                 'registration_id' => $registrationId,

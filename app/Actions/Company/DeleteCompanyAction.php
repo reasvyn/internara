@@ -25,7 +25,7 @@ class DeleteCompanyAction
                 subjectType: InternshipCompany::class,
                 subjectId: $companyId,
                 payload: ['name' => $companyName],
-                module: 'Company'
+                module: 'Company',
             );
         });
     }

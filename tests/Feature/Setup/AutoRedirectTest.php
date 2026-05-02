@@ -37,7 +37,7 @@ test('it allows access to setup route when not installed', function () {
     $setupService = app(SetupService::class);
     $token = $setupService->generateToken();
 
-    $response = $this->get('/setup?setup_token='.$token);
+    $response = $this->get('/setup?setup_token=' . $token);
 
     $response->assertStatus(200);
 });

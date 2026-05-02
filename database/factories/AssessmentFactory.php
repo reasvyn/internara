@@ -37,6 +37,6 @@ class AssessmentFactory extends Factory
 
     public function finalized(): static
     {
-        return $this->state(fn (array $attributes) => ['finalized_at' => now()]);
+        return $this->state(fn(array $attributes) => ['finalized_at' => now()]);
     }
 }

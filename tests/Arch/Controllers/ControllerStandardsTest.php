@@ -9,16 +9,15 @@ namespace Tests\Arch\Controllers;
  * Ensures controllers are thin and delegate to Actions
  */
 describe('Controller Standards', function () {
-
-    test('controllers should use strict types')
-        ->expect('App\Http\Controllers')
-        ->toUseStrictTypes();
+    test('controllers should use strict types')->expect('App\Http\Controllers')->toUseStrictTypes();
 
     test('controllers should be thin (not contain business logic)')
         ->expect('App\Http\Controllers')
         ->not->toUse([
-            'DB::', 'Illuminate\Support\Facades\DB',
-            'validator()->make', 'Validator::make',
+            'DB::',
+            'Illuminate\Support\Facades\DB',
+            'validator()->make',
+            'Validator::make',
         ])
         ->ignoring(['App\Http\Controllers\Controller']);
 

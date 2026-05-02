@@ -25,7 +25,11 @@ class ReportsManager extends BaseRecordManager
 
     public function boot(): void
     {
-        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin', 'teacher'])) {
+        if (
+            !auth()
+                ->user()
+                ?->hasAnyRole(['super_admin', 'admin', 'teacher'])
+        ) {
             abort(403, 'Unauthorized access.');
         }
     }
@@ -65,11 +69,13 @@ class ReportsManager extends BaseRecordManager
      */
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['report_type'] ?? null, function ($q, $type) {
-            $q->where('report_type', $type);
-        })->when($this->filters['status'] ?? null, function ($q, $status) {
-            $q->where('status', $status);
-        });
+        return $query
+            ->when($this->filters['report_type'] ?? null, function ($q, $type) {
+                $q->where('report_type', $type);
+            })
+            ->when($this->filters['status'] ?? null, function ($q, $status) {
+                $q->where('status', $status);
+            });
     }
 
     #[Computed]
@@ -107,7 +113,8 @@ class ReportsManager extends BaseRecordManager
     public function generateReport(QueueReportGenerationAction $action): void
     {
         $this->validate([
-            'formData.report_type' => 'required|string|in:attendance_summary,internship_placements,student_performance,company_overview',
+            'formData.report_type' =>
+                'required|string|in:attendance_summary,internship_placements,student_performance,company_overview',
             'formData.date_from' => 'nullable|date',
             'formData.date_to' => 'nullable|date|after_or_equal:formData.date_from',
         ]);

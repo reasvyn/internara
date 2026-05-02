@@ -21,7 +21,11 @@ class NotificationCenter extends BaseRecordManager
     {
         return [
             ['key' => 'title', 'label' => __('notifications.ui.message_col')],
-            ['key' => 'created_at', 'label' => __('notifications.ui.received_col'), 'sortable' => true],
+            [
+                'key' => 'created_at',
+                'label' => __('notifications.ui.received_col'),
+                'sortable' => true,
+            ],
             ['key' => 'actions', 'label' => ''],
         ];
     }
@@ -40,8 +44,11 @@ class NotificationCenter extends BaseRecordManager
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
-            $q->where('title', 'like', "%{$this->search}%")
-                ->orWhere('message', 'like', "%{$this->search}%");
+            $q->where('title', 'like', "%{$this->search}%")->orWhere(
+                'message',
+                'like',
+                "%{$this->search}%",
+            );
         });
     }
 

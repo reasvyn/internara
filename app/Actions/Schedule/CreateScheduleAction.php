@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\DB;
  */
 class CreateScheduleAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAudit
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     public function execute(User $user, array $data): Schedule
     {
@@ -39,7 +37,7 @@ class CreateScheduleAction
                 subjectType: Schedule::class,
                 subjectId: $schedule->id,
                 payload: ['title' => $schedule->title, 'type' => $schedule->type],
-                module: 'Schedule'
+                module: 'Schedule',
             );
 
             return $schedule;

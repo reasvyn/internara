@@ -51,8 +51,7 @@ class InternshipIndex extends BaseRecordManager
      */
     protected function query(): Builder
     {
-        return Internship::query()
-            ->withCount(['placements', 'registrations']);
+        return Internship::query()->withCount(['placements', 'registrations']);
     }
 
     /**
@@ -66,10 +65,14 @@ class InternshipIndex extends BaseRecordManager
     #[Computed]
     public function statusOptions(): array
     {
-        return collect(InternshipStatus::cases())->map(fn ($s) => [
-            'id' => $s->value,
-            'name' => __("internship.statuses.{$s->value}"),
-        ])->toArray();
+        return collect(InternshipStatus::cases())
+            ->map(
+                fn($s) => [
+                    'id' => $s->value,
+                    'name' => __("internship.statuses.{$s->value}"),
+                ],
+            )
+            ->toArray();
     }
 
     #[Computed]
@@ -115,14 +118,19 @@ class InternshipIndex extends BaseRecordManager
 
     public function save(CreateInternshipAction $create, UpdateInternshipAction $update): void
     {
-        $validStatuses = collect(InternshipStatus::cases())->map(fn ($s) => $s->value)->toArray();
+        $validStatuses = collect(InternshipStatus::cases())->map(fn($s) => $s->value)->toArray();
 
         $this->validate([
-            'formData.name' => ['required', 'string', 'max:255', 'unique:internships,name,'.($this->formData['id'] ?? 'NULL')],
+            'formData.name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:internships,name,' . ($this->formData['id'] ?? 'NULL'),
+            ],
             'formData.start_date' => ['required', 'date'],
             'formData.end_date' => ['required', 'date', 'after:formData.start_date'],
             'formData.description' => ['nullable', 'string'],
-            'formData.status' => ['required', 'string', 'in:'.implode(',', $validStatuses)],
+            'formData.status' => ['required', 'string', 'in:' . implode(',', $validStatuses)],
         ]);
 
         if ($this->formData['id']) {

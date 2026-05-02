@@ -19,10 +19,7 @@ test('school profile page is accessible for authenticated super admin user', fun
     $user = User::factory()->create();
     $user->assignRole('super_admin');
 
-    $this->actingAs($user)
-        ->get(route('admin.school'))
-        ->assertOk()
-        ->assertSee($this->school->name);
+    $this->actingAs($user)->get(route('admin.school'))->assertOk()->assertSee($this->school->name);
 });
 
 test('super admin can update school profile', function () {
@@ -43,12 +40,18 @@ test('super admin can update school profile', function () {
 
     $this->school->refresh();
 
-    expect($this->school->name)->toBe('Updated School Name')
-        ->and($this->school->institutional_code)->toBe('UPDATED123')
-        ->and($this->school->address)->toBe('Updated Address')
-        ->and($this->school->principal_name)->toBe('New Principal')
-        ->and($this->school->email)->toBe('new@school.edu')
-        ->and($this->school->phone)->toBe('+62 21 9999999');
+    expect($this->school->name)
+        ->toBe('Updated School Name')
+        ->and($this->school->institutional_code)
+        ->toBe('UPDATED123')
+        ->and($this->school->address)
+        ->toBe('Updated Address')
+        ->and($this->school->principal_name)
+        ->toBe('New Principal')
+        ->and($this->school->email)
+        ->toBe('new@school.edu')
+        ->and($this->school->phone)
+        ->toBe('+62 21 9999999');
 });
 
 test('school profile requires name and institutional code', function () {
@@ -91,6 +94,5 @@ test('school institutional code must be unique', function () {
 });
 
 test('unauthenticated user cannot access school profile', function () {
-    $this->get(route('admin.school'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.school'))->assertRedirect(route('login'));
 });

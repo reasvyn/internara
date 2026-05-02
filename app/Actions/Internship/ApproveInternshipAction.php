@@ -15,15 +15,15 @@ use Illuminate\Support\Facades\DB;
  */
 class ApproveInternshipAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Execute the registration approval.
      */
-    public function execute(InternshipRegistration $registration, string $comment = 'Approved by administrator.'): void
-    {
+    public function execute(
+        InternshipRegistration $registration,
+        string $comment = 'Approved by administrator.',
+    ): void {
         DB::transaction(function () use ($registration, $comment) {
             $registration->setStatus('active', $comment);
 
@@ -33,18 +33,20 @@ class ApproveInternshipAction
             }
 
             // Notify Student
-            $registration->student->notify(new InternshipRegistrationNotification(
-                $registration->internship->name,
-                'active',
-                $comment
-            ));
+            $registration->student->notify(
+                new InternshipRegistrationNotification(
+                    $registration->internship->name,
+                    'active',
+                    $comment,
+                ),
+            );
 
             $this->logAuditAction->execute(
                 action: 'internship_approved',
                 subjectType: InternshipRegistration::class,
                 subjectId: $registration->id,
                 payload: ['comment' => $comment],
-                module: 'Internship'
+                module: 'Internship',
             );
         });
     }

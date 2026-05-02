@@ -17,9 +17,7 @@ use Illuminate\Support\Str;
  */
 class CreateHandbookAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAudit
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     public function execute(User $user, array $data): Handbook
     {
@@ -39,7 +37,7 @@ class CreateHandbookAction
                 subjectType: Handbook::class,
                 subjectId: $handbook->id,
                 payload: ['title' => $handbook->title, 'version' => $handbook->version],
-                module: 'Guidance'
+                module: 'Guidance',
             );
 
             return $handbook;

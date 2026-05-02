@@ -25,7 +25,7 @@ class SetupDepartmentAction
                 subjectType: Department::class,
                 subjectId: $department->id,
                 payload: $data,
-                module: 'Setup'
+                module: 'Setup',
             );
 
             return $department;

@@ -44,7 +44,7 @@ class DirectPlacementManager extends Component
     {
         return InternshipPlacement::with(['company', 'internship'])
             ->get()
-            ->filter(fn ($p) => ! $p->isFull());
+            ->filter(fn($p) => !$p->isFull());
     }
 
     public function submit(DirectPlacementAction $placementAction): void
@@ -71,27 +71,27 @@ class DirectPlacementManager extends Component
         return <<<'HTML'
         <div>
             <x-mary-header title="Direct Placement" subtitle="Manually assign students to industry partners" separator />
-            
+
             <x-mary-card>
                 <x-mary-form wire:submit="submit">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select 
-                            label="Target Student" 
-                            wire:model="student_id" 
-                            :options="$this->students" 
-                            placeholder="Search and select student" 
+                        <x-mary-select
+                            label="Target Student"
+                            wire:model="student_id"
+                            :options="$this->students"
+                            placeholder="Search and select student"
                             icon="o-user" />
-                            
-                        <x-mary-input 
-                            label="Academic Year" 
-                            wire:model="academic_year" 
+
+                        <x-mary-input
+                            label="Academic Year"
+                            wire:model="academic_year"
                             placeholder="e.g. 2025/2026" />
 
-                        <x-mary-select 
-                            label="Target Placement" 
-                            wire:model="placement_id" 
-                            :options="$this->placements" 
-                            placeholder="Select industry partner" 
+                        <x-mary-select
+                            label="Target Placement"
+                            wire:model="placement_id"
+                            :options="$this->placements"
+                            placeholder="Select industry partner"
                             class="md:col-span-2"
                             icon="o-briefcase" />
                     </div>

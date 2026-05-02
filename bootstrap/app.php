@@ -37,8 +37,8 @@ Integrity::verify();
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withCommands([
@@ -53,12 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('model:prune')->daily();
     })
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(
-            append: [
-                App\Http\Middleware\RequireSetupAccess::class,
-                SetLocale::class,
-            ],
-        );
+        $middleware->web(append: [App\Http\Middleware\RequireSetupAccess::class, SetLocale::class]);
         $middleware->alias([
             'setup.protected' => ProtectSetupRoute::class,
             'setup.auto-redirect' => RequireSetupAccess::class,

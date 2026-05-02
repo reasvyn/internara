@@ -87,7 +87,7 @@ class Setup extends Model
     {
         $steps = $this->completed_steps ?? [];
 
-        if (! in_array($step, $steps)) {
+        if (!in_array($step, $steps)) {
             $steps[] = $step;
             $this->completed_steps = $steps;
             $this->save();

@@ -21,19 +21,25 @@ class GenerateDocumentAction
 {
     public function __construct(
         protected readonly LogAuditAction $logAuditAction,
-        protected readonly GeneratePdfAction $generatePdfAction
+        protected readonly GeneratePdfAction $generatePdfAction,
     ) {}
 
     /**
      * Generate an official document from a template and save as PDF.
      */
-    public function execute(Model $target, DocumentTemplate $template, array $additionalData = []): OfficialDocument
-    {
+    public function execute(
+        Model $target,
+        DocumentTemplate $template,
+        array $additionalData = [],
+    ): OfficialDocument {
         return DB::transaction(function () use ($target, $template, $additionalData) {
-            $mergeData = array_merge([
-                'target' => $target,
-                'now' => now()->format('d F Y'),
-            ], $additionalData);
+            $mergeData = array_merge(
+                [
+                    'target' => $target,
+                    'now' => now()->format('d F Y'),
+                ],
+                $additionalData,
+            );
 
             $renderedContent = Blade::render($template->content, $mergeData);
 
@@ -45,7 +51,7 @@ class GenerateDocumentAction
                 'documentable_id' => $target->getKey(),
                 'documentable_type' => $target->getMorphClass(),
                 'template_id' => $template->id,
-                'title' => $template->name.' - '.($target->name ?? $target->id),
+                'title' => $template->name . ' - ' . ($target->name ?? $target->id),
                 'document_number' => $this->generateDocumentNumber($template),
                 'issued_at' => now(),
                 'metadata' => [
@@ -66,7 +72,7 @@ class GenerateDocumentAction
                     'template_id' => $template->id,
                     'target_id' => $target->getKey(),
                 ],
-                module: 'Document'
+                module: 'Document',
             );
 
             return $document;
@@ -77,6 +83,10 @@ class GenerateDocumentAction
     {
         $count = OfficialDocument::where('template_id', $template->id)->count() + 1;
 
-        return strtoupper($template->category).'/'.now()->format('Ymd').'/'.Str::padLeft((string) $count, 4, '0');
+        return strtoupper($template->category) .
+            '/' .
+            now()->format('Ymd') .
+            '/' .
+            Str::padLeft((string) $count, 4, '0');
     }
 }

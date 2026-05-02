@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('department_competency', function (Blueprint $table) {
@@ -17,8 +16,16 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
-            $table->foreign('competency_id')->references('id')->on('competencies')->onDelete('cascade');
+            $table
+                ->foreign('department_id')
+                ->references('id')
+                ->on('departments')
+                ->onDelete('cascade');
+            $table
+                ->foreign('competency_id')
+                ->references('id')
+                ->on('competencies')
+                ->onDelete('cascade');
             $table->unique(['department_id', 'competency_id']);
         });
     }

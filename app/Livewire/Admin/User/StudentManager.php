@@ -34,7 +34,11 @@ class StudentManager extends BaseRecordManager
 
     public function boot(): void
     {
-        if (! auth()->user()?->hasAnyRole(['super_admin', 'admin'])) {
+        if (
+            !auth()
+                ->user()
+                ?->hasAnyRole(['super_admin', 'admin'])
+        ) {
             abort(403, 'Unauthorized access.');
         }
     }
@@ -46,7 +50,11 @@ class StudentManager extends BaseRecordManager
     {
         return [
             ['key' => 'name', 'label' => __('user.student.name'), 'sortable' => true],
-            ['key' => 'username', 'label' => __('user.student.username'), 'class' => 'font-mono text-xs'],
+            [
+                'key' => 'username',
+                'label' => __('user.student.username'),
+                'class' => 'font-mono text-xs',
+            ],
             ['key' => 'profile.national_identifier', 'label' => __('user.student.nisn')],
             ['key' => 'profile.registration_number', 'label' => __('user.student.nis')],
             ['key' => 'profile.department.name', 'label' => __('user.student.department')],
@@ -83,7 +91,7 @@ class StudentManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query->when($this->filters['department_id'] ?? null, function ($q, $deptId) {
-            $q->whereHas('profile', fn ($qp) => $qp->where('department_id', $deptId));
+            $q->whereHas('profile', fn($qp) => $qp->where('department_id', $deptId));
         });
     }
 
@@ -127,7 +135,8 @@ class StudentManager extends BaseRecordManager
     {
         $this->validate([
             'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
+            'userData.email' =>
+                'required|email|unique:users,email,' . ($this->userData['id'] ?? 'NULL'),
             'userData.national_identifier' => 'required|string|max:20',
             'userData.department_id' => 'required|exists:departments,id',
         ]);
@@ -173,7 +182,9 @@ class StudentManager extends BaseRecordManager
     public function archiveAllFiltered(): void
     {
         $this->performMassAction('Archive Filtered', function ($query) {
-            $query->each(fn ($user) => $user->setStatus('archived', 'Mass archived via Student Manager'));
+            $query->each(
+                fn($user) => $user->setStatus('archived', 'Mass archived via Student Manager'),
+            );
         });
     }
 

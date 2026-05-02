@@ -53,8 +53,7 @@ class PlacementIndex extends BaseRecordManager
      */
     protected function query(): Builder
     {
-        return InternshipPlacement::query()
-            ->with(['company', 'internship']);
+        return InternshipPlacement::query()->with(['company', 'internship']);
     }
 
     /**
@@ -62,8 +61,9 @@ class PlacementIndex extends BaseRecordManager
      */
     protected function applySearch(Builder $query): Builder
     {
-        return $query->where('name', 'like', "%{$this->search}%")
-            ->orWhereHas('company', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
+        return $query
+            ->where('name', 'like', "%{$this->search}%")
+            ->orWhereHas('company', fn($q) => $q->where('name', 'like', "%{$this->search}%"));
     }
 
     /**
@@ -71,11 +71,13 @@ class PlacementIndex extends BaseRecordManager
      */
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['company_id'] ?? null, function ($q, $companyId) {
-            $q->where('company_id', $companyId);
-        })->when($this->filters['internship_id'] ?? null, function ($q, $internshipId) {
-            $q->where('internship_id', $internshipId);
-        });
+        return $query
+            ->when($this->filters['company_id'] ?? null, function ($q, $companyId) {
+                $q->where('company_id', $companyId);
+            })
+            ->when($this->filters['internship_id'] ?? null, function ($q, $internshipId) {
+                $q->where('internship_id', $internshipId);
+            });
     }
 
     #[Computed]
@@ -87,7 +89,9 @@ class PlacementIndex extends BaseRecordManager
     #[Computed]
     public function internships()
     {
-        return Internship::whereIn('status', ['published', 'active'])->orderBy('name')->get(['id', 'name']);
+        return Internship::whereIn('status', ['published', 'active'])
+            ->orderBy('name')
+            ->get(['id', 'name']);
     }
 
     #[Computed]
@@ -156,8 +160,10 @@ class PlacementIndex extends BaseRecordManager
         $this->showModal = false;
     }
 
-    public function delete(InternshipPlacement $placement, DeletePlacementAction $deleteAction): void
-    {
+    public function delete(
+        InternshipPlacement $placement,
+        DeletePlacementAction $deleteAction,
+    ): void {
         if ($placement->registrations()->exists()) {
             $this->error(__('placement.delete_blocked'));
 
@@ -174,7 +180,7 @@ class PlacementIndex extends BaseRecordManager
     {
         $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
             $placement = InternshipPlacement::find($id);
-            if ($placement && ! $placement->registrations()->exists()) {
+            if ($placement && !$placement->registrations()->exists()) {
                 $deleteAction->execute($placement);
             }
         });

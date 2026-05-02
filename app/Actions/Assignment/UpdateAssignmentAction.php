@@ -23,14 +23,19 @@ class UpdateAssignmentAction
         ?string $dueDate = null,
         array $config = [],
     ): Assignment {
-        $assignment->update(array_filter([
-            'title' => $title,
-            'description' => $description,
-            'academic_year' => $academicYear,
-            'is_mandatory' => $isMandatory,
-            'due_date' => $dueDate,
-            'config' => $config,
-        ], fn ($value) => ! is_null($value)));
+        $assignment->update(
+            array_filter(
+                [
+                    'title' => $title,
+                    'description' => $description,
+                    'academic_year' => $academicYear,
+                    'is_mandatory' => $isMandatory,
+                    'due_date' => $dueDate,
+                    'config' => $config,
+                ],
+                fn($value) => !is_null($value),
+            ),
+        );
 
         return $assignment->fresh();
     }

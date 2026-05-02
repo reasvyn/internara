@@ -44,10 +44,20 @@ class SchoolProfile extends Component
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'institutional_code' => ['required', 'string', 'max:50', 'unique:schools,institutional_code,'.$this->school->id],
+            'institutional_code' => [
+                'required',
+                'string',
+                'max:50',
+                'unique:schools,institutional_code,' . $this->school->id,
+            ],
             'address' => ['required', 'string', 'max:1000'],
             'principal_name' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', 'unique:schools,email,'.$this->school->id],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                'unique:schools,email,' . $this->school->id,
+            ],
             'phone' => ['nullable', 'string', 'max:20'],
             'fax' => ['nullable', 'string', 'max:20'],
         ];

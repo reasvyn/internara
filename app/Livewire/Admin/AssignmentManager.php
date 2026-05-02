@@ -90,7 +90,15 @@ class AssignmentManager extends Component
 
     public function resetForm(): void
     {
-        $this->reset(['assignmentTypeId', 'internshipId', 'title', 'description', 'isMandatory', 'dueDate', 'academicYear']);
+        $this->reset([
+            'assignmentTypeId',
+            'internshipId',
+            'title',
+            'description',
+            'isMandatory',
+            'dueDate',
+            'academicYear',
+        ]);
         $this->showForm = false;
         $this->editingId = null;
     }

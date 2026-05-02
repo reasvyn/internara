@@ -22,7 +22,7 @@ class CreateCompanyAction
                 subjectType: InternshipCompany::class,
                 subjectId: $company->id,
                 payload: ['name' => $company->name],
-                module: 'Company'
+                module: 'Company',
             );
 
             return $company;

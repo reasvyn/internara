@@ -19,9 +19,7 @@ class ScheduleController extends Controller
     {
         Gate::authorize('viewAny', Schedule::class);
 
-        $schedules = Schedule::with('creator')
-            ->latest('start_at')
-            ->paginate(20);
+        $schedules = Schedule::with('creator')->latest('start_at')->paginate(20);
 
         return view('livewire.admin.schedules.index', [
             'schedules' => $schedules,
@@ -34,17 +32,22 @@ class ScheduleController extends Controller
 
         $action->execute($request->user(), $request->validated());
 
-        return redirect()->route('admin.schedules.index')
+        return redirect()
+            ->route('admin.schedules.index')
             ->with('success', 'Schedule created successfully.');
     }
 
-    public function update(UpdateScheduleRequest $request, Schedule $schedule, UpdateScheduleAction $action)
-    {
+    public function update(
+        UpdateScheduleRequest $request,
+        Schedule $schedule,
+        UpdateScheduleAction $action,
+    ) {
         Gate::authorize('update', $schedule);
 
         $action->execute($request->user(), $schedule, $request->validated());
 
-        return redirect()->route('admin.schedules.index')
+        return redirect()
+            ->route('admin.schedules.index')
             ->with('success', 'Schedule updated successfully.');
     }
 
@@ -54,7 +57,8 @@ class ScheduleController extends Controller
 
         $action->execute($request->user(), $schedule);
 
-        return redirect()->route('admin.schedules.index')
+        return redirect()
+            ->route('admin.schedules.index')
             ->with('success', 'Schedule deleted successfully.');
     }
 }

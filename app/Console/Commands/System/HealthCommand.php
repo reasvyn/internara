@@ -47,7 +47,7 @@ class HealthCommand extends Command
 
         $this->table(['Service', 'Status', 'Details'], $results);
 
-        $hasFailures = collect($results)->contains(fn ($r) => $r[1] === 'FAIL');
+        $hasFailures = collect($results)->contains(fn($r) => $r[1] === 'FAIL');
 
         if ($hasFailures) {
             $this->error("\nSystem health checks failed! Please review the details above.");
@@ -65,8 +65,8 @@ class HealthCommand extends Command
         $this->line('<fg=cyan>==================================================</>');
         $this->line('<fg=cyan>         INTERNARA SYSTEM HEALTH CHECK            </>');
         $this->line('<fg=cyan>==================================================</>');
-        $this->line('Time: '.now()->toDateTimeString());
-        $this->line('Env:  '.app()->environment());
+        $this->line('Time: ' . now()->toDateTimeString());
+        $this->line('Env:  ' . app()->environment());
         $this->line('');
     }
 
@@ -74,10 +74,7 @@ class HealthCommand extends Command
     {
         $exists = File::exists(base_path('.env'));
 
-        return [
-            $exists ? 'OK' : 'FAIL',
-            $exists ? '.env file detected' : '.env file is missing!',
-        ];
+        return [$exists ? 'OK' : 'FAIL', $exists ? '.env file detected' : '.env file is missing!'];
     }
 
     protected function checkDatabase(): array
@@ -88,14 +85,15 @@ class HealthCommand extends Command
 
             return ['OK', "Connected ({$tables} tables)"];
         } catch (\Exception $e) {
-            return ['FAIL', 'Connection failed: '.$exception->getMessage()];
+            return ['FAIL', 'Connection failed: ' . $exception->getMessage()];
         }
     }
 
     protected function checkStorage(): array
     {
-        $writable = File::isWritable(storage_path('framework/views')) &&
-                    File::isWritable(storage_path('logs'));
+        $writable =
+            File::isWritable(storage_path('framework/views')) &&
+            File::isWritable(storage_path('logs'));
 
         return [
             $writable ? 'OK' : 'FAIL',
@@ -123,7 +121,7 @@ class HealthCommand extends Command
 
             return [$val ? 'OK' : 'FAIL', 'Cache driver responding'];
         } catch (\Exception $e) {
-            return ['FAIL', 'Cache error: '.$e->getMessage()];
+            return ['FAIL', 'Cache error: ' . $e->getMessage()];
         }
     }
 }

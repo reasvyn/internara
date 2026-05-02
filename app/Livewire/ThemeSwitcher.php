@@ -24,7 +24,7 @@ class ThemeSwitcher extends Component
 
     public function switchTheme(string $theme): void
     {
-        if (! in_array($theme, ['light', 'dark', 'system'])) {
+        if (!in_array($theme, ['light', 'dark', 'system'])) {
             return;
         }
 

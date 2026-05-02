@@ -12,9 +12,7 @@ use Spatie\Permission\Models\Role;
  */
 class UpdateRolePermissionsAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Update permissions for a given role.
@@ -28,7 +26,7 @@ class UpdateRolePermissionsAction
             subjectType: Role::class,
             subjectId: (string) $role->id,
             payload: ['permissions' => $permissions],
-            module: 'Permission'
+            module: 'Permission',
         );
     }
 }

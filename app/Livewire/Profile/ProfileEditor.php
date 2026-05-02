@@ -31,7 +31,9 @@ class ProfileEditor extends Component
      */
     public function mount()
     {
-        $this->user = auth()->user()->load(['profile', 'roles']);
+        $this->user = auth()
+            ->user()
+            ->load(['profile', 'roles']);
 
         $profile = $this->user->profile;
 
@@ -51,7 +53,7 @@ class ProfileEditor extends Component
     {
         $this->validate([
             'data.name' => 'required|string|max:255',
-            'data.email' => 'required|email|unique:users,email,'.$this->user->id,
+            'data.email' => 'required|email|unique:users,email,' . $this->user->id,
             'data.phone' => 'nullable|string|max:20',
             'data.address' => 'nullable|string|max:500',
             'data.bio' => 'nullable|string|max:1000',

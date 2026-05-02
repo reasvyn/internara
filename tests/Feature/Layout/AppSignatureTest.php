@@ -25,8 +25,7 @@ test('app signature renders with author information', function () {
 });
 
 test('app signature renders github link when available', function () {
-    Livewire::test(AppSignature::class)
-        ->assertSee('https://github.com/reasvyn');
+    Livewire::test(AppSignature::class)->assertSee('https://github.com/reasvyn');
 });
 
 test('app signature handles missing author gracefully', function () {

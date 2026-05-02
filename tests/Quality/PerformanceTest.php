@@ -18,13 +18,13 @@ class PerformanceTest extends TestCase
     public function test_no_n1_query_patterns(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app/Actions')
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app/Actions'),
         );
 
         $violations = [];
 
         foreach ($iterator as $file) {
-            if (! $file->isFile() || $file->getExtension() !== 'php') {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
@@ -34,14 +34,21 @@ class PerformanceTest extends TestCase
             // Check for potential N+1 patterns: looping through collection and accessing relationship
             if (preg_match('/foreach\s*\([^)]+\)\s*\{[^}]*->[^}]*->[^}]*\}/s', $content)) {
                 // Simple heuristic: if we see a loop with relationship access
-                if (preg_match('/\$[a-z]+\s*=\s*.*::all\(\)/', $content) ||
-                    preg_match('/\$[a-z]+\s*=\s*.*::get\(\)/', $content)) {
-                    $violations[] = $basename.': Potential N+1 query pattern detected (use eager loading with with())';
+                if (
+                    preg_match('/\$[a-z]+\s*=\s*.*::all\(\)/', $content) ||
+                    preg_match('/\$[a-z]+\s*=\s*.*::get\(\)/', $content)
+                ) {
+                    $violations[] =
+                        $basename .
+                        ': Potential N+1 query pattern detected (use eager loading with with())';
                 }
             }
         }
 
-        $this->assertEmpty($violations, "Potential N+1 queries found:\n".implode("\n", $violations));
+        $this->assertEmpty(
+            $violations,
+            "Potential N+1 queries found:\n" . implode("\n", $violations),
+        );
     }
 
     /**
@@ -50,13 +57,13 @@ class PerformanceTest extends TestCase
     public function test_controllers_use_pagination_for_lists(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app/Http/Controllers')
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app/Http/Controllers'),
         );
 
         $violations = [];
 
         foreach ($iterator as $file) {
-            if (! $file->isFile() || $file->getExtension() !== 'php') {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
@@ -64,16 +71,26 @@ class PerformanceTest extends TestCase
             $basename = $file->getBasename();
 
             // Check for index methods that return all records without pagination
-            if (preg_match('/function\s+index\s*\([^)]*\)\s*\{[^}]*->get\(\)[^}]*\}/s', $content) ||
-                preg_match('/function\s+index\s*\([^)]*\)\s*\{[^}]*::all\(\)[^}]*\}/s', $content)) {
+            if (
+                preg_match('/function\s+index\s*\([^)]*\)\s*\{[^}]*->get\(\)[^}]*\}/s', $content) ||
+                preg_match('/function\s+index\s*\([^)]*\)\s*\{[^}]*::all\(\)[^}]*\}/s', $content)
+            ) {
                 // Make sure it's not using pagination
-                if (! preg_match('/->paginate\(/', $content) && ! preg_match('/->simplePaginate\(/', $content)) {
-                    $violations[] = $basename.': Controller index method should use pagination (paginate/simplePaginate) instead of get()/all()';
+                if (
+                    !preg_match('/->paginate\(/', $content) &&
+                    !preg_match('/->simplePaginate\(/', $content)
+                ) {
+                    $violations[] =
+                        $basename .
+                        ': Controller index method should use pagination (paginate/simplePaginate) instead of get()/all()';
                 }
             }
         }
 
-        $this->assertEmpty($violations, "Missing pagination in controllers:\n".implode("\n", $violations));
+        $this->assertEmpty(
+            $violations,
+            "Missing pagination in controllers:\n" . implode("\n", $violations),
+        );
     }
 
     /**
@@ -82,13 +99,13 @@ class PerformanceTest extends TestCase
     public function test_use_exists_for_existence_checks(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app')
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app'),
         );
 
         $violations = [];
 
         foreach ($iterator as $file) {
-            if (! $file->isFile() || $file->getExtension() !== 'php') {
+            if (!$file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
@@ -96,13 +113,20 @@ class PerformanceTest extends TestCase
             $basename = $file->getBasename();
 
             // Check for count() > 0 or count() == 0 patterns (should use exists())
-            if (preg_match('/\->count\(\)\s*[><=!]=?\s*0/', $content) ||
+            if (
+                preg_match('/\->count\(\)\s*[><=!]=?\s*0/', $content) ||
                 preg_match('/\->count\(\)\s*===?\s*0/', $content) ||
-                preg_match('/\->count\(\)\s*!==?\s*0/', $content)) {
-                $violations[] = $basename.': Use exists() or doesntExist() instead of count() > 0 for existence checks';
+                preg_match('/\->count\(\)\s*!==?\s*0/', $content)
+            ) {
+                $violations[] =
+                    $basename .
+                    ': Use exists() or doesntExist() instead of count() > 0 for existence checks';
             }
         }
 
-        $this->assertEmpty($violations, "Inefficient existence checks found:\n".implode("\n", $violations));
+        $this->assertEmpty(
+            $violations,
+            "Inefficient existence checks found:\n" . implode("\n", $violations),
+        );
     }
 }

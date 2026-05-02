@@ -19,8 +19,11 @@ final readonly class CreateUserData
         public array $roles = [],
     ) {}
 
-    public static function fromArray(array $userData, array $profileData = [], array $roles = []): self
-    {
+    public static function fromArray(
+        array $userData,
+        array $profileData = [],
+        array $roles = [],
+    ): self {
         return new self(
             name: $userData['name'],
             email: $userData['email'],

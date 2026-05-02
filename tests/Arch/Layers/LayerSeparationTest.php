@@ -9,11 +9,23 @@ namespace Tests\Arch\Layers;
  * Ensures that layers don't violate the dependency rules defined in docs/architecture.md
  */
 describe('Layer Separation Rules', function () {
-
     test('controllers should not directly use models for data manipulation')
         ->expect('App\Http\Controllers')
-        ->not->toUse(['App\Models\Internship', 'App\Models\InternshipPlacement', 'App\Models\AttendanceLog', 'App\Models\School', 'App\Models\Department', 'App\Models\InternshipCompany'])
-        ->ignoring(['App\Http\Controllers\Controller', 'App\Http\Controllers\MentorController', 'App\Http\Controllers\AccountLifecycleController', 'App\Http\Controllers\TeacherController', 'App\Http\Controllers\InternshipController']);
+        ->not->toUse([
+            'App\Models\Internship',
+            'App\Models\InternshipPlacement',
+            'App\Models\AttendanceLog',
+            'App\Models\School',
+            'App\Models\Department',
+            'App\Models\InternshipCompany',
+        ])
+        ->ignoring([
+            'App\Http\Controllers\Controller',
+            'App\Http\Controllers\MentorController',
+            'App\Http\Controllers\AccountLifecycleController',
+            'App\Http\Controllers\TeacherController',
+            'App\Http\Controllers\InternshipController',
+        ]);
 
     test('controllers should not use repositories for writes')
         ->expect('App\Http\Controllers')
@@ -27,9 +39,7 @@ describe('Layer Separation Rules', function () {
         ->expect('App\Actions')
         ->not->toUse(['App\Http\Controllers', 'App\Livewire']);
 
-    test('models should not depend on actions')
-        ->expect('App\Models')
-        ->not->toUse('App\Actions');
+    test('models should not depend on actions')->expect('App\Models')->not->toUse('App\Actions');
 
     test('models should not use http-specific code')
         ->expect('App\Models')

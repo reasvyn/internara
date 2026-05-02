@@ -28,8 +28,7 @@ describe('Student Registration', function () {
     it('can access registration page', function () {
         actingAs($this->student);
 
-        $this->get(route('student.internships.register'))
-            ->assertOk();
+        $this->get(route('student.internships.register'))->assertOk();
     });
 
     it('can register for internship', function () {
@@ -44,10 +43,14 @@ describe('Student Registration', function () {
             'academic_year' => now()->format('Y'),
         ]);
 
-        expect($registration)->toBeInstanceOf(InternshipRegistration::class)
-            ->and($registration->student_id)->toBe($this->student->id)
-            ->and($registration->internship_id)->toBe($internship->id)
-            ->and($registration->latestStatus()?->name)->toBe('pending');
+        expect($registration)
+            ->toBeInstanceOf(InternshipRegistration::class)
+            ->and($registration->student_id)
+            ->toBe($this->student->id)
+            ->and($registration->internship_id)
+            ->toBe($internship->id)
+            ->and($registration->latestStatus()?->name)
+            ->toBe('pending');
     });
 
     it('prevents duplicate registration', function () {
@@ -64,18 +67,25 @@ describe('Student Registration', function () {
         ]);
 
         // Second registration should throw RuntimeException
-        expect(fn () => $action->execute($this->student, [
-            'internship_id' => $internship->id,
-            'academic_year' => now()->format('Y'),
-        ]))->toThrow(RuntimeException::class, 'Student already has an active or pending internship registration.');
+        expect(
+            fn() => $action->execute($this->student, [
+                'internship_id' => $internship->id,
+                'academic_year' => now()->format('Y'),
+            ]),
+        )->toThrow(
+            RuntimeException::class,
+            'Student already has an active or pending internship registration.',
+        );
     });
 
     it('prevents registration without active internship', function () {
         $action = app(RegisterInternshipAction::class);
 
-        expect(fn () => $action->execute($this->student, [
-            'internship_id' => 'non-existent-id',
-            'academic_year' => now()->format('Y'),
-        ]))->toThrow(Exception::class);
+        expect(
+            fn() => $action->execute($this->student, [
+                'internship_id' => 'non-existent-id',
+                'academic_year' => now()->format('Y'),
+            ]),
+        )->toThrow(Exception::class);
     });
 });

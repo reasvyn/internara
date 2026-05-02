@@ -28,7 +28,7 @@ class DeleteDepartmentAction
                 subjectType: Department::class,
                 subjectId: $departmentId,
                 payload: ['name' => $departmentName],
-                module: 'Department'
+                module: 'Department',
             );
         });
     }

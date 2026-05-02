@@ -18,9 +18,7 @@ use RuntimeException;
  */
 class RegisterInternshipAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Execute the student internship registration.
@@ -31,11 +29,13 @@ class RegisterInternshipAction
     {
         $existing = InternshipRegistration::where('student_id', $student->id)
             ->get()
-            ->filter(fn ($reg) => $reg->hasStatus('active') || $reg->hasStatus('pending'))
+            ->filter(fn($reg) => $reg->hasStatus('active') || $reg->hasStatus('pending'))
             ->isNotEmpty();
 
         if ($existing) {
-            throw new RuntimeException('Student already has an active or pending internship registration.');
+            throw new RuntimeException(
+                'Student already has an active or pending internship registration.',
+            );
         }
 
         return DB::transaction(function () use ($student, $data) {
@@ -55,18 +55,20 @@ class RegisterInternshipAction
 
             // Notify Student
             $internship = Internship::find($data['internship_id']);
-            $student->notify(new InternshipRegistrationNotification(
-                $internship->name,
-                'pending',
-                'Your registration has been submitted and is awaiting review.'
-            ));
+            $student->notify(
+                new InternshipRegistrationNotification(
+                    $internship->name,
+                    'pending',
+                    'Your registration has been submitted and is awaiting review.',
+                ),
+            );
 
             $this->logAuditAction->execute(
                 action: 'internship_registered',
                 subjectType: InternshipRegistration::class,
                 subjectId: $registration->id,
                 payload: $data,
-                module: 'Internship'
+                module: 'Internship',
             );
 
             return $registration;

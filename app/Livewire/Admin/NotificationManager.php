@@ -74,7 +74,8 @@ class NotificationManager extends Component
     public function getListeners(): array
     {
         return [
-            'echo:private-user.{Auth::id()},.Illuminate\Notifications\Events\BroadcastNotificationCreated' => 'updateUnreadCount',
+            'echo:private-user.{Auth::id()},.Illuminate\Notifications\Events\BroadcastNotificationCreated' =>
+                'updateUnreadCount',
         ];
     }
 }

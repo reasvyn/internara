@@ -19,11 +19,7 @@ class DepartmentCompetency extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $fillable = [
-        'department_id',
-        'competency_id',
-        'is_active',
-    ];
+    protected $fillable = ['department_id', 'competency_id', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',

@@ -46,7 +46,7 @@ abstract class BaseJob implements ShouldQueue
      */
     public function failed(Throwable $exception): void
     {
-        Log::error('Background Job Failed: '.get_class($this), [
+        Log::error('Background Job Failed: ' . get_class($this), [
             'message' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
             'job_id' => $this->job ? $this->job->getJobId() : null,

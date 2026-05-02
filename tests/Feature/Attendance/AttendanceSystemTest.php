@@ -43,8 +43,7 @@ describe('Clock In', function () {
         $action = app(ClockInAction::class);
         $log = $action->execute($this->student, [], '127.0.0.1');
 
-        expect($log)->toBeInstanceOf(AttendanceLog::class)
-            ->and($log->clock_in)->not->toBeNull();
+        expect($log)->toBeInstanceOf(AttendanceLog::class)->and($log->clock_in)->not->toBeNull();
 
         Carbon::setTestNow();
     });
@@ -63,8 +62,9 @@ describe('Clock In', function () {
         $action->execute($this->student, [], '127.0.0.1');
 
         // The duplicate check should throw a RuntimeException
-        expect(fn () => $action->execute($this->student, [], '127.0.0.1'))
-            ->toThrow(Exception::class);
+        expect(fn() => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
+            Exception::class,
+        );
 
         Carbon::setTestNow();
     });
@@ -74,8 +74,10 @@ describe('Clock In', function () {
 
         $action = app(ClockInAction::class);
 
-        expect(fn () => $action->execute($this->student, [], '127.0.0.1'))
-            ->toThrow(RuntimeException::class, 'No active internship registration found.');
+        expect(fn() => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
+            RuntimeException::class,
+            'No active internship registration found.',
+        );
 
         Carbon::setTestNow();
     });
@@ -104,8 +106,10 @@ describe('Clock Out', function () {
         $clockOutAction = app(ClockOutAction::class);
         $clockOutLog = $clockOutAction->execute($this->student, [], '127.0.0.1');
 
-        expect($clockOutLog->clock_out)->not->toBeNull()
-            ->and($clockOutLog->id)->toBe($clockInLog->id);
+        expect($clockOutLog->clock_out)
+            ->not->toBeNull()
+            ->and($clockOutLog->id)
+            ->toBe($clockInLog->id);
 
         Carbon::setTestNow();
     });
@@ -115,8 +119,10 @@ describe('Clock Out', function () {
 
         $action = app(ClockOutAction::class);
 
-        expect(fn () => $action->execute($this->student, [], '127.0.0.1'))
-            ->toThrow(RuntimeException::class, 'You must clock in first.');
+        expect(fn() => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
+            RuntimeException::class,
+            'You must clock in first.',
+        );
 
         Carbon::setTestNow();
     });
@@ -144,8 +150,10 @@ describe('Journal Entry', function () {
             'learning_outcomes' => 'Understanding of layered architecture.',
         ]);
 
-        expect($journal)->toBeInstanceOf(JournalEntry::class)
-            ->and($journal->status->value)->toBe('submitted');
+        expect($journal)
+            ->toBeInstanceOf(JournalEntry::class)
+            ->and($journal->status->value)
+            ->toBe('submitted');
 
         Carbon::setTestNow();
     });

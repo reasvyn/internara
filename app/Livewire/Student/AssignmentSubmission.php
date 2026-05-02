@@ -33,7 +33,7 @@ class AssignmentSubmission extends Component
         $studentId = Auth::id();
         $registration = Auth::user()->activeRegistration;
 
-        if (! $registration) {
+        if (!$registration) {
             return view('livewire.student.assignment-submission', [
                 'assignments' => collect(),
                 'submissions' => collect(),
@@ -42,7 +42,7 @@ class AssignmentSubmission extends Component
 
         $assignments = Assignment::where('internship_id', $registration->internship_id)
             ->where('status', 'published')
-            ->with(['type', 'submissions' => fn ($query) => $query->where('student_id', $studentId)])
+            ->with(['type', 'submissions' => fn($query) => $query->where('student_id', $studentId)])
             ->get();
 
         return view('livewire.student.assignment-submission', [
@@ -61,7 +61,7 @@ class AssignmentSubmission extends Component
         $assignment = Assignment::findOrFail($assignmentId);
         $registration = Auth::user()->activeRegistration;
 
-        if (! $registration) {
+        if (!$registration) {
             $this->dispatch('swal:error', message: 'No active internship registration.');
 
             return;

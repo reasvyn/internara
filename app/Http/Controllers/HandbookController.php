@@ -17,9 +17,7 @@ class HandbookController extends Controller
     {
         Gate::authorize('viewAny', Handbook::class);
 
-        $handbooks = Handbook::with('author')
-            ->latest()
-            ->paginate(20);
+        $handbooks = Handbook::with('author')->latest()->paginate(20);
 
         return view('livewire.admin.handbooks.index', [
             'handbooks' => $handbooks,
@@ -32,12 +30,16 @@ class HandbookController extends Controller
 
         $action->execute($request->user(), $request->validated());
 
-        return redirect()->route('admin.handbooks.index')
+        return redirect()
+            ->route('admin.handbooks.index')
             ->with('success', 'Handbook created successfully.');
     }
 
-    public function acknowledge(Handbook $handbook, Request $request, AcknowledgeHandbookAction $action)
-    {
+    public function acknowledge(
+        Handbook $handbook,
+        Request $request,
+        AcknowledgeHandbookAction $action,
+    ) {
         $action->execute($request->user(), $handbook);
 
         return back()->with('success', 'Handbook acknowledged.');

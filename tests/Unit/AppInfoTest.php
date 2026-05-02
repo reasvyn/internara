@@ -18,7 +18,8 @@ afterEach(function () {
 test('all returns metadata from app_info.json', function () {
     $data = AppInfo::all();
 
-    expect($data)->toHaveKey('name')
+    expect($data)
+        ->toHaveKey('name')
         ->toHaveKey('version')
         ->toHaveKey('author')
         ->toHaveKey('license');
@@ -59,9 +60,7 @@ test('version returns version string', function () {
 test('author returns author array', function () {
     $author = AppInfo::author();
 
-    expect($author)->toHaveKey('name')
-        ->toHaveKey('email')
-        ->toHaveKey('github');
+    expect($author)->toHaveKey('name')->toHaveKey('email')->toHaveKey('github');
 });
 
 test('clearCache resets cached data', function () {

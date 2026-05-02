@@ -56,9 +56,10 @@ class JournalEntry extends Model
 
     public function canBeEdited(): bool
     {
-        return in_array($this->status, [
-            JournalEntryStatus::DRAFT,
-            JournalEntryStatus::REVISION_REQUIRED,
-        ], true);
+        return in_array(
+            $this->status,
+            [JournalEntryStatus::DRAFT, JournalEntryStatus::REVISION_REQUIRED],
+            true,
+        );
     }
 }

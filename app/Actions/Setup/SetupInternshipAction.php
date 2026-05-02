@@ -25,7 +25,7 @@ class SetupInternshipAction
                 subjectType: Internship::class,
                 subjectId: $internship->id,
                 payload: $data,
-                module: 'Setup'
+                module: 'Setup',
             );
 
             return $internship;

@@ -23,7 +23,7 @@ class SystemUsername implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (! is_string($value)) {
+        if (!is_string($value)) {
             $fail('validation.string')->translate(['attribute' => $attribute]);
 
             return;
@@ -31,7 +31,7 @@ class SystemUsername implements ValidationRule
 
         // Pattern: starts with 'u', followed by 8 or more alphanumeric characters
         // ^u[a-z0-9]{8,}$ (case insensitive handled by modifier if needed)
-        if (! preg_match('/^u[a-zA-Z0-9]{8,}$/', $value)) {
+        if (!preg_match('/^u[a-zA-Z0-9]{8,}$/', $value)) {
             $fail(__('validation.custom.username_format'));
         }
     }

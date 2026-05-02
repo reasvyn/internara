@@ -52,7 +52,8 @@ class InternshipRepository
             $query->where('start_date', '>=', $filters['start_date_after']);
         }
 
-        return $query->with(['company', 'department'])
+        return $query
+            ->with(['company', 'department'])
             ->orderBy('created_at', 'desc')
             ->get();
     }

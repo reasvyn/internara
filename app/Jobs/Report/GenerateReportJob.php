@@ -13,15 +13,13 @@ use Throwable;
 
 class GenerateReportJob extends BaseJob
 {
-    public function __construct(
-        public readonly string $reportId
-    ) {}
+    public function __construct(public readonly string $reportId) {}
 
     public function handle(): void
     {
         $report = GeneratedReport::find($this->reportId);
 
-        if (! $report) {
+        if (!$report) {
             return;
         }
 
@@ -41,10 +39,9 @@ class GenerateReportJob extends BaseJob
         ]);
 
         if ($report->user) {
-            $report->user->notify(new ReportGeneratedNotification(
-                $report->report_type,
-                (string) $report->id
-            ));
+            $report->user->notify(
+                new ReportGeneratedNotification($report->report_type, (string) $report->id),
+            );
         }
     }
 
@@ -52,7 +49,9 @@ class GenerateReportJob extends BaseJob
     {
         $filters = json_encode($report->filters ?? []);
 
-        return "Report: {$report->report_type}\nGenerated: ".now()->format('Y-m-d H:i:s')."\nFilters: {$filters}\n\n[Report content would be generated here in production]";
+        return "Report: {$report->report_type}\nGenerated: " .
+            now()->format('Y-m-d H:i:s') .
+            "\nFilters: {$filters}\n\n[Report content would be generated here in production]";
     }
 
     /**
@@ -69,11 +68,15 @@ class GenerateReportJob extends BaseJob
             ]);
 
             if ($report->user) {
-                $report->user->notify(new JobFailedNotification(
-                    'Generate '.ucwords(str_replace('_', ' ', $report->report_type)).' Report',
-                    $exception->getMessage(),
-                    '/admin/reports'
-                ));
+                $report->user->notify(
+                    new JobFailedNotification(
+                        'Generate ' .
+                            ucwords(str_replace('_', ' ', $report->report_type)) .
+                            ' Report',
+                        $exception->getMessage(),
+                        '/admin/reports',
+                    ),
+                );
             }
         }
     }

@@ -24,19 +24,23 @@ class SetupResetCommand extends Command
         $this->displayBanner();
 
         // Check if actually installed
-        if (! $setupService->isInstalled()) {
+        if (!$setupService->isInstalled()) {
             $this->warn('Setup has not been completed. No reset needed.');
             $this->info('A new setup token has been generated:');
-            $this->line('  '.$setupService->generateToken());
+            $this->line('  ' . $setupService->generateToken());
 
             return self::SUCCESS;
         }
 
-        if (! $this->option('force')) {
-            $this->error('This will REMOVE the installation lock file and allow the setup wizard to run again.');
-            $this->warn('Existing database records will NOT be removed. Run migrations manually if needed.');
+        if (!$this->option('force')) {
+            $this->error(
+                'This will REMOVE the installation lock file and allow the setup wizard to run again.',
+            );
+            $this->warn(
+                'Existing database records will NOT be removed. Run migrations manually if needed.',
+            );
 
-            if (! $this->confirm('Do you want to proceed?', false)) {
+            if (!$this->confirm('Do you want to proceed?', false)) {
                 $this->warn('Reset aborted.');
 
                 return self::FAILURE;
@@ -48,9 +52,11 @@ class SetupResetCommand extends Command
 
         $this->newLine();
         $this->components->info('Setup state has been reset.');
-        $this->line('Setup token: <fg=cyan>'.$token.'</>');
-        $this->line('Visit: <fg=cyan>'.route('setup', ['setup_token' => $token]).'</>');
-        $this->warn('Note: Existing database records are not removed. Run `php artisan migrate:fresh` if needed.');
+        $this->line('Setup token: <fg=cyan>' . $token . '</>');
+        $this->line('Visit: <fg=cyan>' . route('setup', ['setup_token' => $token]) . '</>');
+        $this->warn(
+            'Note: Existing database records are not removed. Run `php artisan migrate:fresh` if needed.',
+        );
 
         return self::SUCCESS;
     }
@@ -58,8 +64,10 @@ class SetupResetCommand extends Command
     protected function displayBanner(): void
     {
         $this->newLine();
-        $this->line(' <fg=white;bg=red;options=bold> SETUP RESET </> <fg=red;options=bold>UTILITY</>');
-        $this->line(' <fg=gray>Version: '.AppInfo::version().'</>');
+        $this->line(
+            ' <fg=white;bg=red;options=bold> SETUP RESET </> <fg=red;options=bold>UTILITY</>',
+        );
+        $this->line(' <fg=gray>Version: ' . AppInfo::version() . '</>');
         $this->newLine();
     }
 }

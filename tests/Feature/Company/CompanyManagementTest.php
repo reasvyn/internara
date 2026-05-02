@@ -74,9 +74,7 @@ test('admin cannot delete company with active placements', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(CompanyIndex::class)
-        ->call('delete', $company);
+    Livewire::actingAs($user)->test(CompanyIndex::class)->call('delete', $company);
 
     $this->assertDatabaseHas('internship_companies', ['id' => $company->id]);
 });
@@ -87,9 +85,7 @@ test('admin can delete company without placements', function () {
     $user = User::factory()->create();
     $user->assignRole('admin');
 
-    Livewire::actingAs($user)
-        ->test(CompanyIndex::class)
-        ->call('delete', $company);
+    Livewire::actingAs($user)->test(CompanyIndex::class)->call('delete', $company);
 
     $this->assertDatabaseMissing('internship_companies', ['id' => $company->id]);
 });
@@ -115,9 +111,7 @@ test('company index shows stats', function () {
 
     InternshipCompany::factory()->count(2)->create();
 
-    Livewire::actingAs($user)
-        ->test(CompanyIndex::class)
-        ->assertSee(__('company.stats.total'));
+    Livewire::actingAs($user)->test(CompanyIndex::class)->assertSee(__('company.stats.total'));
 });
 
 test('company search filters by name', function () {
@@ -135,8 +129,7 @@ test('company search filters by name', function () {
 });
 
 test('unauthenticated user cannot access company index', function () {
-    $this->get(route('admin.companies'))
-        ->assertRedirect(route('login'));
+    $this->get(route('admin.companies'))->assertRedirect(route('login'));
 });
 
 test('company email must be valid format', function () {

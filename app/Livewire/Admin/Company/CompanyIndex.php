@@ -51,8 +51,7 @@ class CompanyIndex extends BaseRecordManager
      */
     protected function query(): Builder
     {
-        return InternshipCompany::query()
-            ->withCount('placements');
+        return InternshipCompany::query()->withCount('placements');
     }
 
     /**
@@ -60,7 +59,8 @@ class CompanyIndex extends BaseRecordManager
      */
     protected function applySearch(Builder $query): Builder
     {
-        return $query->where('name', 'like', "%{$this->search}%")
+        return $query
+            ->where('name', 'like', "%{$this->search}%")
             ->orWhere('industry_sector', 'like', "%{$this->search}%");
     }
 
@@ -70,9 +70,10 @@ class CompanyIndex extends BaseRecordManager
         return [
             'total' => InternshipCompany::count(),
             'with_placements' => InternshipCompany::whereHas('placements')->count(),
-            'available_slots' => InternshipPlacement::query()
-                ->selectRaw('SUM(quota - filled_quota) as available')
-                ->value('available') ?? 0,
+            'available_slots' =>
+                InternshipPlacement::query()
+                    ->selectRaw('SUM(quota - filled_quota) as available')
+                    ->value('available') ?? 0,
         ];
     }
 
@@ -113,7 +114,12 @@ class CompanyIndex extends BaseRecordManager
     public function save(CreateCompanyAction $create, UpdateCompanyAction $update): void
     {
         $this->validate([
-            'formData.name' => ['required', 'string', 'max:255', 'unique:internship_companies,name,'.($this->formData['id'] ?? 'NULL')],
+            'formData.name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:internship_companies,name,' . ($this->formData['id'] ?? 'NULL'),
+            ],
             'formData.address' => ['required', 'string'],
             'formData.phone' => ['nullable', 'string', 'max:20'],
             'formData.email' => ['nullable', 'email', 'max:255'],
@@ -152,7 +158,7 @@ class CompanyIndex extends BaseRecordManager
     {
         $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
             $company = InternshipCompany::find($id);
-            if ($company && ! $company->placements()->exists()) {
+            if ($company && !$company->placements()->exists()) {
                 $deleteAction->execute($company);
             }
         });

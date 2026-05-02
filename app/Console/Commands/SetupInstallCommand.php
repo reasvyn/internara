@@ -27,7 +27,7 @@ class SetupInstallCommand extends Command
     public function handle(
         InstallSystemAction $installSystem,
         EnvAuditor $auditor,
-        SetupService $setupService
+        SetupService $setupService,
     ): int {
         $this->displayBanner();
         $this->displayPreFlightSummary();
@@ -35,7 +35,7 @@ class SetupInstallCommand extends Command
         $isInstalled = $setupService->isInstalled();
 
         // Check if already installed
-        if ($isInstalled && ! $this->option('force')) {
+        if ($isInstalled && !$this->option('force')) {
             $this->error(__('setup.cli.already_installed'));
 
             return self::FAILURE;
@@ -45,14 +45,14 @@ class SetupInstallCommand extends Command
             $this->warn(__('setup.cli.forcing_reinstall'));
             // reset() handles lock file deletion and session clearing
             $setupService->reset();
-        } elseif (! $isInstalled) {
+        } elseif (!$isInstalled) {
             // Clean any stale setup session data for new installation
             $setupService->clearSession();
         }
 
         // Determine if we should force a fresh migration
         // Force fresh if --force is used OR if it's the first technical installation
-        $shouldForceFresh = (bool) $this->option('force') || ! $isInstalled;
+        $shouldForceFresh = (bool) $this->option('force') || !$isInstalled;
 
         // 1. Initial Cleanup
         $this->task(__('setup.cli.tasks.clear_cache'), function () {
@@ -79,7 +79,7 @@ class SetupInstallCommand extends Command
             }
         }
 
-        if (! $audit['passed']) {
+        if (!$audit['passed']) {
             $this->newLine();
             $this->error(__('setup.cli.audit_failed'));
 
@@ -87,7 +87,7 @@ class SetupInstallCommand extends Command
         }
 
         $this->newLine();
-        if (! $this->confirm(__('setup.cli.proceed_confirm'), true)) {
+        if (!$this->confirm(__('setup.cli.proceed_confirm'), true)) {
             $this->warn(__('setup.cli.aborted'));
 
             return self::SUCCESS;
@@ -114,7 +114,10 @@ class SetupInstallCommand extends Command
             });
 
             // 3. Migrations
-            $this->task(__('setup.cli.tasks.run_migrations'), function () use ($installSystem, $force) {
+            $this->task(__('setup.cli.tasks.run_migrations'), function () use (
+                $installSystem,
+                $force,
+            ) {
                 $installSystem->runMigrations($force);
 
                 return true;
@@ -174,7 +177,10 @@ class SetupInstallCommand extends Command
     {
         $this->components->twoColumnDetail(__('setup.cli.php_version'), PHP_VERSION);
         $this->components->twoColumnDetail(__('setup.cli.environment'), (string) config('app.env'));
-        $this->components->twoColumnDetail(__('setup.cli.db_driver'), (string) config('database.default'));
+        $this->components->twoColumnDetail(
+            __('setup.cli.db_driver'),
+            (string) config('database.default'),
+        );
         $this->newLine();
     }
 
@@ -203,18 +209,18 @@ class SetupInstallCommand extends Command
         $this->components->info(__('setup.cli.installation_completed'));
         $this->newLine();
 
-        $this->line(' <fg=white;bg=green;options=bold> '.__('setup.cli.next_steps').' </>');
+        $this->line(' <fg=white;bg=green;options=bold> ' . __('setup.cli.next_steps') . ' </>');
         $this->newLine();
 
-        $this->line(' 1. '.__('setup.cli.visit_url'));
-        $this->line('    <fg=cyan>'.$signedUrl.'</>');
+        $this->line(' 1. ' . __('setup.cli.visit_url'));
+        $this->line('    <fg=cyan>' . $signedUrl . '</>');
         $this->newLine();
 
-        $this->line(' 2. '.__('setup.cli.complete_wizard'));
+        $this->line(' 2. ' . __('setup.cli.complete_wizard'));
         $this->newLine();
 
-        $this->line(' <fg=gray>Token: '.$token.'</>');
-        $this->line(' <fg=gray>'.__('setup.cli.token_expires').'</>');
+        $this->line(' <fg=gray>Token: ' . $token . '</>');
+        $this->line(' <fg=gray>' . __('setup.cli.token_expires') . '</>');
         $this->newLine();
 
         $this->warn(__('setup.cli.token_note'));
@@ -226,8 +232,14 @@ class SetupInstallCommand extends Command
     protected function displayBanner(): void
     {
         $this->newLine();
-        $this->line(' <fg=white;bg=blue;options=bold> '.__('setup.cli.banner_title').' </> <fg=blue;options=bold>'.__('setup.cli.banner_subtitle').'</>');
-        $this->line(' <fg=gray>'.__('setup.cli.version').': '.AppInfo::version().'</>');
+        $this->line(
+            ' <fg=white;bg=blue;options=bold> ' .
+                __('setup.cli.banner_title') .
+                ' </> <fg=blue;options=bold>' .
+                __('setup.cli.banner_subtitle') .
+                '</>',
+        );
+        $this->line(' <fg=gray>' . __('setup.cli.version') . ': ' . AppInfo::version() . '</>');
         $this->newLine();
     }
 }

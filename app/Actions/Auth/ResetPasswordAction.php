@@ -15,15 +15,17 @@ use Illuminate\Support\Facades\Password;
  */
 class ResetPasswordAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Reset the user's password.
      */
-    public function execute(string $email, string $token, string $password, string $passwordConfirmation): bool
-    {
+    public function execute(
+        string $email,
+        string $token,
+        string $password,
+        string $passwordConfirmation,
+    ): bool {
         $credentials = [
             'email' => $email,
             'token' => $token,
@@ -32,15 +34,17 @@ class ResetPasswordAction
         ];
 
         $status = Password::reset($credentials, function (User $user, string $password) {
-            $user->forceFill([
-                'password' => Hash::make($password),
-            ])->save();
+            $user
+                ->forceFill([
+                    'password' => Hash::make($password),
+                ])
+                ->save();
 
             $this->logAuditAction->execute(
                 action: 'password_reset_success',
                 subjectType: User::class,
                 subjectId: $user->id,
-                module: 'Auth'
+                module: 'Auth',
             );
         });
 
@@ -48,7 +52,7 @@ class ResetPasswordAction
             $this->logAuditAction->execute(
                 action: 'password_reset_failed',
                 payload: ['email' => $email],
-                module: 'Auth'
+                module: 'Auth',
             );
         }
 

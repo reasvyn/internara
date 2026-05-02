@@ -41,7 +41,7 @@ class TemplateManager extends Component
     public function templates(): LengthAwarePaginator
     {
         return DocumentTemplate::query()
-            ->when($this->search, fn (Builder $q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->search, fn(Builder $q) => $q->where('name', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate(10);
     }
@@ -79,7 +79,7 @@ class TemplateManager extends Component
             ['id' => $this->templateData['id']],
             array_merge($this->templateData, [
                 'slug' => str($this->templateData['name'])->slug()->toString(),
-            ])
+            ]),
         );
 
         $this->success('Template saved successfully.');

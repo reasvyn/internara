@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Hash;
  */
 class UpdatePasswordAction
 {
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction
-    ) {}
+    public function __construct(protected readonly LogAuditAction $logAuditAction) {}
 
     /**
      * Update the user's password.
@@ -30,7 +28,7 @@ class UpdatePasswordAction
             action: 'password_updated_manually',
             subjectType: User::class,
             subjectId: $user->id,
-            module: 'Auth'
+            module: 'Auth',
         );
     }
 }

@@ -19,8 +19,7 @@ class GeneratedReportPolicy
 
     public function view(User $user, GeneratedReport $report): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin'])
-            || $report->user_id === $user->id;
+        return $user->hasAnyRole(['super_admin', 'admin']) || $report->user_id === $user->id;
     }
 
     public function create(User $user): bool
@@ -30,8 +29,7 @@ class GeneratedReportPolicy
 
     public function download(User $user, GeneratedReport $report): bool
     {
-        return $user->hasRole('super_admin')
-            || $report->user_id === $user->id;
+        return $user->hasRole('super_admin') || $report->user_id === $user->id;
     }
 
     public function delete(User $user, GeneratedReport $report): bool

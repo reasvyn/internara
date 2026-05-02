@@ -34,7 +34,10 @@ class CleanupCommand extends Command
      */
     public function handle(): int
     {
-        if (! $this->option('force') && ! $this->confirm('This will perform system cleanup tasks. Continue?')) {
+        if (
+            !$this->option('force') &&
+            !$this->confirm('This will perform system cleanup tasks. Continue?')
+        ) {
             return Command::SUCCESS;
         }
 

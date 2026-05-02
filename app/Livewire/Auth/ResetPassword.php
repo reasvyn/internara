@@ -69,7 +69,9 @@ class ResetPassword extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate('reset-password|'.Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(
+            'reset-password|' . Str::lower($this->email) . '|' . request()->ip(),
+        );
     }
 
     /**

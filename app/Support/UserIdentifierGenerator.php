@@ -24,7 +24,7 @@ class UserIdentifierGenerator
         do {
             // Generate a random alphanumeric string and convert to lowercase for better UX
             $random = strtolower(Str::random($length));
-            $username = 'u'.$random;
+            $username = 'u' . $random;
         } while (User::where('username', $username)->exists());
 
         return $username;

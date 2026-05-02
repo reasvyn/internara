@@ -14,10 +14,7 @@ class ReportGeneratedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        public string $reportType,
-        public string $reportId
-    ) {}
+    public function __construct(public string $reportType, public string $reportId) {}
 
     public function via($notifiable): array
     {
@@ -39,11 +36,14 @@ class ReportGeneratedNotification extends Notification implements ShouldQueue
     {
         $readableType = ucwords(str_replace('_', ' ', $this->reportType));
 
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('notifications.report_generated.mail_subject', ['type' => $readableType]))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
             ->line(__('notifications.report_generated.mail_line1', ['type' => $readableType]))
-            ->action(__('common.setup_required.action', default: 'View Reports'), url('/admin/reports'));
+            ->action(
+                __('common.setup_required.action', default: 'View Reports'),
+                url('/admin/reports'),
+            );
     }
 
     public function toCustomDatabase($notifiable): array

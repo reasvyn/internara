@@ -26,18 +26,22 @@ class PublishAssignmentAction
         $assignment->update(['status' => AssignmentStatus::PUBLISHED]);
 
         // Notify all students in this internship program
-        $students = $assignment->internship->registrations()
+        $students = $assignment->internship
+            ->registrations()
             ->where('status', 'active')
             ->with('student')
             ->get()
             ->pluck('student');
 
         if ($students->isNotEmpty()) {
-            Notification::send($students, new AssignmentNotification(
-                $assignment->internship->name,
-                $assignment->title,
-                $assignment->due_date?->format('d M Y')
-            ));
+            Notification::send(
+                $students,
+                new AssignmentNotification(
+                    $assignment->internship->name,
+                    $assignment->title,
+                    $assignment->due_date?->format('d M Y'),
+                ),
+            );
         }
 
         return $assignment->fresh();
