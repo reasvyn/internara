@@ -50,6 +50,14 @@ php artisan setup:install
 The command outputs a signed URL with a setup token. Open it in your browser to continue with the
 web wizard.
 
+4.  **Onboarding**: Setelah login pertama, sistem akan membimbing administrator melalui langkah-langkah orientasi fitur.
+
+### Keamanan Instalasi
+
+- **Short-lived Summary**: Halaman ringkasan kredensial di akhir setup hanya dapat diakses selama 5 menit setelah instalasi selesai untuk mencegah kebocoran informasi.
+- **One-time Access**: Sesi setup akan dihancurkan seketika saat administrator mengklik tombol "Go to Login".
+- **Lock File**: Keberadaan file `storage/app/.installed` secara permanen menonaktifkan seluruh rute instalasi.
+
 ### Method 2: Manual Initialization
 
 ```bash
