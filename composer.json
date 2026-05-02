@@ -21,7 +21,7 @@
         "robsontenorio/mary": "^2.4",
         "secondnetwork/blade-tabler-icons": "^3.36",
         "simplesoftwareio/simple-qrcode": "^4.2",
-        "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-honeypot": "^4.6",
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-model-states": "^2.14",
