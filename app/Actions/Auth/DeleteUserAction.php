@@ -29,7 +29,7 @@ class DeleteUserAction
                 subjectId: $user->id,
                 payload: [
                     'name' => $user->name,
-                    'email' => $user->email
+                    'email' => $user->email,
                 ],
                 module: 'Auth'
             );

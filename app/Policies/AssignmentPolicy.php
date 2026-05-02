@@ -39,6 +39,6 @@ class AssignmentPolicy
 
     public function delete(User $user, Assignment $assignment): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']) && !$assignment->submissions()->exists();
+        return $user->hasAnyRole(['super_admin', 'admin']) && ! $assignment->submissions()->exists();
     }
 }

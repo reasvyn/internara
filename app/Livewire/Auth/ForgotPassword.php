@@ -50,7 +50,7 @@ class ForgotPassword extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate('forgot-password|' . Str::lower($this->email) . '|' . request()->ip());
+        return Str::transliterate('forgot-password|'.Str::lower($this->email).'|'.request()->ip());
     }
 
     /**

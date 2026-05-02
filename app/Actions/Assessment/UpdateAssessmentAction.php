@@ -27,7 +27,7 @@ class UpdateAssessmentAction
             throw new InvalidArgumentException('Cannot update finalized assessment.');
         }
 
-        if (!$user->hasAnyRole(['super_admin', 'admin'])) {
+        if (! $user->hasAnyRole(['super_admin', 'admin'])) {
             if ($assessment->evaluator_id !== $user->id) {
                 throw new InvalidArgumentException('Not authorized to update this assessment.');
             }

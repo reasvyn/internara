@@ -9,6 +9,7 @@ use App\Models\Internship;
 use App\Models\InternshipRegistration;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
@@ -66,7 +67,7 @@ describe('Student Registration', function () {
         expect(fn () => $action->execute($this->student, [
             'internship_id' => $internship->id,
             'academic_year' => now()->format('Y'),
-        ]))->toThrow(\RuntimeException::class, 'Student already has an active or pending internship registration.');
+        ]))->toThrow(RuntimeException::class, 'Student already has an active or pending internship registration.');
     });
 
     it('prevents registration without active internship', function () {
@@ -75,6 +76,6 @@ describe('Student Registration', function () {
         expect(fn () => $action->execute($this->student, [
             'internship_id' => 'non-existent-id',
             'academic_year' => now()->format('Y'),
-        ]))->toThrow(\Exception::class);
+        ]))->toThrow(Exception::class);
     });
 });

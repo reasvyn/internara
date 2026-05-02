@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-use App\Actions\Supervision\CreateSupervisionLogAction;
 use App\Actions\Supervision\CreateMonitoringVisitAction;
+use App\Actions\Supervision\CreateSupervisionLogAction;
 use App\Actions\Supervision\VerifySupervisionLogAction;
 use App\Enums\Role as RoleEnum;
+use App\Models\Department;
+use App\Models\Internship;
+use App\Models\InternshipRegistration;
+use App\Models\MonitoringVisit;
+use App\Models\School;
+use App\Models\SupervisionLog;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
     foreach (RoleEnum::cases() as $role) {
@@ -19,20 +24,20 @@ beforeEach(function () {
     }
 
     // Create school and internship first
-    $school = \App\Models\School::firstOrCreate([], [
+    $school = School::firstOrCreate([], [
         'name' => 'Test School',
         'institutional_code' => 'TEST001',
         'address' => 'Test Address',
     ]);
 
-    $internship = \App\Models\Internship::firstOrCreate([], [
+    $internship = Internship::firstOrCreate([], [
         'name' => 'Test Internship',
         'start_date' => '2026-01-01',
         'end_date' => '2026-12-31',
         'status' => 'active',
     ]);
 
-    $department = \App\Models\Department::firstOrCreate([], [
+    $department = Department::firstOrCreate([], [
         'name' => 'Test Department',
         'school_id' => $school->id,
     ]);
@@ -46,7 +51,7 @@ beforeEach(function () {
     $this->student->profile()->create(['department_id' => $department->id]);
 
     // Create registration for student with active status
-    $this->registration = \App\Models\InternshipRegistration::firstOrCreate([
+    $this->registration = InternshipRegistration::firstOrCreate([
         'student_id' => $this->student->id,
     ], [
         'internship_id' => $internship->id,
@@ -69,7 +74,7 @@ describe('Supervision Logs', function () {
             'notes' => 'Initial visit.',
         ]);
 
-        expect($log)->toBeInstanceOf(\App\Models\SupervisionLog::class)
+        expect($log)->toBeInstanceOf(SupervisionLog::class)
             ->and($log->supervisor_id)->toBe($this->teacher->id)
             ->and($log->type->value)->toBe('monitoring');
     });
@@ -87,7 +92,7 @@ describe('Supervision Logs', function () {
         $verifyAction = app(VerifySupervisionLogAction::class);
         $result = $verifyAction->execute($log, $this->teacher);
 
-        expect($result)->toBeInstanceOf(\App\Models\SupervisionLog::class)
+        expect($result)->toBeInstanceOf(SupervisionLog::class)
             ->and($result->status->value)->toBe('verified')
             ->and($result->is_verified)->toBeTrue();
     });
@@ -103,7 +108,7 @@ describe('Monitoring Visits', function () {
             'notes' => 'Monitoring visit completed.',
         ]);
 
-        expect($result)->toBeInstanceOf(\App\Models\MonitoringVisit::class)
+        expect($result)->toBeInstanceOf(MonitoringVisit::class)
             ->and($result->teacher_id)->toBe($this->admin->id)
             ->and($result->status)->toBe('completed');
     });
@@ -117,6 +122,6 @@ describe('RBAC for Supervision', function () {
             'registration_id' => $this->registration->id,
             'type' => 'monitoring',
             'notes' => 'Unauthorized attempt',
-        ]))->not->toThrow(\RuntimeException::class);
+        ]))->not->toThrow(RuntimeException::class);
     });
 });

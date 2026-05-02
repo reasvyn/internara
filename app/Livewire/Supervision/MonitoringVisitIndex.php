@@ -15,13 +15,18 @@ use Mary\Traits\Toast;
 
 class MonitoringVisitIndex extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
     public bool $showModal = false;
+
     public string $registrationId = '';
+
     public string $date = '';
+
     public string $notes = '';
+
     public string $company_feedback = '';
+
     public string $student_condition = '';
 
     public function mount(): void

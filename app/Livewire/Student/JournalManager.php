@@ -14,12 +14,16 @@ use Mary\Traits\Toast;
 
 class JournalManager extends Component
 {
-    use WithPagination, Toast;
+    use Toast, WithPagination;
 
     public bool $showModal = false;
+
     public string $date = '';
+
     public string $content = '';
+
     public string $learning_outcomes = '';
+
     public string $journalId = '';
 
     public function mount(): void

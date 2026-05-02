@@ -17,7 +17,7 @@ use Spatie\ModelStatus\HasStatuses;
  */
 class InternshipRegistration extends Model
 {
-    use HasFactory, HasUuid, HasStatuses;
+    use HasFactory, HasStatuses, HasUuid;
 
     protected $fillable = [
         'student_id',
@@ -108,7 +108,7 @@ class InternshipRegistration extends Model
      */
     public function isCurrentlyOngoing(): bool
     {
-        if (!$this->start_date || !$this->end_date) {
+        if (! $this->start_date || ! $this->end_date) {
             return false;
         }
 
@@ -122,7 +122,7 @@ class InternshipRegistration extends Model
      */
     public function hasEnded(): bool
     {
-        if (!$this->end_date) {
+        if (! $this->end_date) {
             return false;
         }
 
@@ -142,7 +142,7 @@ class InternshipRegistration extends Model
      */
     public function daysRemaining(): int
     {
-        if (!$this->end_date) {
+        if (! $this->end_date) {
             return 0;
         }
 
@@ -156,7 +156,7 @@ class InternshipRegistration extends Model
      */
     public function totalDuration(): int
     {
-        if (!$this->start_date || !$this->end_date) {
+        if (! $this->start_date || ! $this->end_date) {
             return 0;
         }
 

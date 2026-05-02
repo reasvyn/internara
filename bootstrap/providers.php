@@ -8,7 +8,7 @@ use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 
 return [
     AppServiceProvider::class,
-    App\Providers\BindServiceProvider::class,
+    BindServiceProvider::class,
     ServiceProvider::class,
     QrCodeServiceProvider::class,
 ];

@@ -21,7 +21,7 @@ class InternshipPlacementFactory extends Factory
         return [
             'company_id' => InternshipCompany::factory(),
             'internship_id' => Internship::factory(),
-            'name' => fake()->jobTitle() . ' Intern',
+            'name' => fake()->jobTitle().' Intern',
             'address' => fake()->optional()->address(),
             'quota' => fake()->numberBetween(5, 50),
             'filled_quota' => 0,

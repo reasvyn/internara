@@ -17,7 +17,7 @@ class CreateMonitoringVisitAction
     public function execute(User $teacher, array $data): MonitoringVisit
     {
         return DB::transaction(function () use ($teacher, $data) {
-            if (!isset($data['registration_id'])) {
+            if (! isset($data['registration_id'])) {
                 throw new RuntimeException('Registration ID is required.');
             }
 

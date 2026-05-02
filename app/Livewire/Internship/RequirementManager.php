@@ -14,10 +14,10 @@ use Mary\Traits\Toast;
 
 class RequirementManager extends Component
 {
-    use WithFileUploads, Toast;
+    use Toast, WithFileUploads;
 
     public InternshipRegistration $registration;
-    
+
     public array $files = [];
 
     /**
@@ -27,7 +27,7 @@ class RequirementManager extends Component
     public function requirements()
     {
         return InternshipRequirement::where('is_active', true)
-            ->with(['submissions' => function($q) {
+            ->with(['submissions' => function ($q) {
                 $q->where('registration_id', $this->registration->id);
             }])
             ->get();
@@ -39,7 +39,7 @@ class RequirementManager extends Component
     public function submitFile(string $requirementId, SubmitRequirementAction $submitAction)
     {
         $this->validate([
-            'files.' . $requirementId => 'required|file|max:5120', // 5MB limit
+            'files.'.$requirementId => 'required|file|max:5120', // 5MB limit
         ]);
 
         $submitAction->execute(
@@ -49,7 +49,7 @@ class RequirementManager extends Component
         );
 
         $this->success('File submitted successfully.');
-        $this->reset('files.' . $requirementId);
+        $this->reset('files.'.$requirementId);
     }
 
     public function render()

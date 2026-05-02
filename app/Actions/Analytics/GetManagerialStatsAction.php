@@ -16,7 +16,7 @@ class GetManagerialStatsAction
 {
     /**
      * Execute the stats calculation.
-     * 
+     *
      * @return array<string, mixed>
      */
     public function execute(): array
@@ -37,7 +37,7 @@ class GetManagerialStatsAction
                 'attendance' => [
                     'today_present' => 0, // Placeholder
                     'average_rate' => 0, // Placeholder
-                ]
+                ],
             ];
         });
     }

@@ -43,7 +43,7 @@
                     <div class="flex flex-col items-center gap-2">
                         <livewire:layout.app-signature />
                         <p class="text-[10px] uppercase font-bold tracking-[0.2em] opacity-30">
-                            {{ __('common.app_tagline', default: 'Professional Internship Management') }}
+                            {{ trans('common.app_tagline') ?: 'Professional Internship Management' }}
                         </p>
                     </div>
                 @endisset

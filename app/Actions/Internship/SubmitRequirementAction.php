@@ -70,7 +70,7 @@ class SubmitRequirementAction
                 payload: [
                     'registration_id' => $registration->id,
                     'requirement_id' => $requirementId,
-                    'is_file' => $value instanceof UploadedFile
+                    'is_file' => $value instanceof UploadedFile,
                 ],
                 module: 'Internship'
             );
@@ -84,7 +84,7 @@ class SubmitRequirementAction
      */
     private function validateFile(UploadedFile $file): void
     {
-        if (!in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
+        if (! in_array($file->getMimeType(), self::ALLOWED_MIME_TYPES, true)) {
             throw new RuntimeException('File type not allowed. Allowed: PDF, JPEG, PNG, DOC, DOCX.');
         }
 

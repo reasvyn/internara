@@ -6,9 +6,11 @@ use App\Actions\Auth\CreateUserAction;
 use App\Actions\Auth\DeleteUserAction;
 use App\Actions\Auth\UpdateUserAction;
 use App\Enums\Role as RoleEnum;
+use App\Models\Department;
 use App\Models\Profile;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
@@ -87,7 +89,7 @@ describe('Student Manager', function () {
     });
 
     it('can create student with NISN', function () {
-        $department = \App\Models\Department::factory()->create();
+        $department = Department::factory()->create();
 
         $data = [
             'name' => 'New Student',

@@ -18,7 +18,7 @@ use Spatie\ModelStatus\HasStatuses;
  */
 class OfficialDocument extends Model implements HasMedia
 {
-    use HasFactory, HasUuid, HasStatuses, InteractsWithMedia;
+    use HasFactory, HasStatuses, HasUuid, InteractsWithMedia;
 
     protected $fillable = [
         'template_id',

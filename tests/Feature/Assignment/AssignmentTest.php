@@ -3,15 +3,18 @@
 declare(strict_types=1);
 
 use App\Actions\Assignment\CreateAssignmentAction;
-use App\Actions\Assignment\UpdateAssignmentAction;
 use App\Actions\Assignment\DeleteAssignmentAction;
 use App\Actions\Assignment\SubmitAssignmentAction;
+use App\Actions\Assignment\UpdateAssignmentAction;
 use App\Actions\Assignment\VerifySubmissionAction;
 use App\Enums\Role as RoleEnum;
 use App\Models\Assignment;
+use App\Models\AssignmentType;
+use App\Models\Internship;
+use App\Models\InternshipRegistration;
+use App\Models\Submission;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
     foreach (RoleEnum::cases() as $role) {
@@ -34,8 +37,8 @@ beforeEach(function () {
 describe('Assignment Management', function () {
     it('allows teacher to create assignment', function () {
         // Create required models first
-        $type = \App\Models\AssignmentType::factory()->create();
-        $internship = \App\Models\Internship::factory()->create();
+        $type = AssignmentType::factory()->create();
+        $internship = Internship::factory()->create();
 
         $action = app(CreateAssignmentAction::class);
 
@@ -49,7 +52,7 @@ describe('Assignment Management', function () {
             '2026-05-15' // dueDate
         );
 
-        expect($assignment)->toBeInstanceOf(\App\Models\Assignment::class)
+        expect($assignment)->toBeInstanceOf(Assignment::class)
             ->and($assignment->title)->toBe('PHP Basics Assignment');
     });
 
@@ -80,8 +83,8 @@ describe('Assignment Management', function () {
 
 describe('Assignment Submission', function () {
     it('allows student to submit assignment', function () {
-        $internship = \App\Models\Internship::factory()->create();
-        $registration = \App\Models\InternshipRegistration::factory()->create([
+        $internship = Internship::factory()->create();
+        $registration = InternshipRegistration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -99,14 +102,14 @@ describe('Assignment Submission', function () {
             'Here is my submission content.',
         );
 
-        expect($submission)->toBeInstanceOf(\App\Models\Submission::class)
+        expect($submission)->toBeInstanceOf(Submission::class)
             ->and($submission->content)->toBe('Here is my submission content.')
             ->and($submission->status->value)->toBe('submitted');
     });
 
     it('allows teacher to verify submission', function () {
-        $internship = \App\Models\Internship::factory()->create();
-        $registration = \App\Models\InternshipRegistration::factory()->create([
+        $internship = Internship::factory()->create();
+        $registration = InternshipRegistration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -141,8 +144,8 @@ describe('RBAC for Assignments', function () {
     it('prevents student from creating assignment', function () {
         // RBAC is enforced at route middleware level, not in Action.
         // This test documents the expected behavior.
-        $type = \App\Models\AssignmentType::factory()->create();
-        $internship = \App\Models\Internship::factory()->create();
+        $type = AssignmentType::factory()->create();
+        $internship = Internship::factory()->create();
 
         $action = app(CreateAssignmentAction::class);
 

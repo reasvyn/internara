@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasUuid;
+use Database\Factories\DepartmentCompetencyFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,8 +48,8 @@ class DepartmentCompetency extends Model
     /**
      * Create a new factory instance.
      */
-    protected static function newFactory(): \Database\Factories\DepartmentCompetencyFactory
+    protected static function newFactory(): DepartmentCompetencyFactory
     {
-        return \Database\Factories\DepartmentCompetencyFactory::new();
+        return DepartmentCompetencyFactory::new();
     }
 }

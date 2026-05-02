@@ -30,7 +30,7 @@ class UpdateAssignmentAction
             'is_mandatory' => $isMandatory,
             'due_date' => $dueDate,
             'config' => $config,
-        ], fn ($value) => !is_null($value)));
+        ], fn ($value) => ! is_null($value)));
 
         return $assignment->fresh();
     }

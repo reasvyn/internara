@@ -27,7 +27,7 @@ class DirectPlacementAction
     {
         return DB::transaction(function () use ($student, $data) {
             $placement = InternshipPlacement::findOrFail($data['placement_id']);
-            
+
             if ($placement->isFull()) {
                 abort(422, 'Placement quota is already full.');
             }

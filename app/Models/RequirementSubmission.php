@@ -17,7 +17,7 @@ use Spatie\ModelStatus\HasStatuses;
  */
 class RequirementSubmission extends Model implements HasMedia
 {
-    use HasFactory, HasUuid, HasStatuses, InteractsWithMedia;
+    use HasFactory, HasStatuses, HasUuid, InteractsWithMedia;
 
     protected $fillable = [
         'registration_id',

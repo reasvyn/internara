@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Repository for complex Internship queries.
- * 
+ *
  * S3 - Scalable: Abstracts complex queries for reusability.
  * Only use when queries are complex or reused across multiple Actions.
  */
@@ -31,7 +31,7 @@ class InternshipRepository
             ->orderBy('start_date', 'asc')
             ->get();
     }
-    
+
     /**
      * Find internships by multiple filters.
      * Example of reusable complex query.
@@ -39,24 +39,24 @@ class InternshipRepository
     public function findByFilters(array $filters): Collection
     {
         $query = Internship::query();
-        
+
         if (isset($filters['status'])) {
             $query->where('status', '=', $filters['status']);
         }
-        
+
         if (isset($filters['department_id'])) {
             $query->where('department_id', '=', $filters['department_id']);
         }
-        
+
         if (isset($filters['start_date_after'])) {
             $query->where('start_date', '>=', $filters['start_date_after']);
         }
-        
+
         return $query->with(['company', 'department'])
             ->orderBy('created_at', 'desc')
             ->get();
     }
-    
+
     /**
      * Find internship with all related data for detail view.
      * Demonstrates eager loading optimization.

@@ -10,7 +10,7 @@ use App\Notifications\InternshipCreatedNotification;
 
 /**
  * Handles side effects when an internship is created.
- * 
+ *
  * S2 - Sustain: Separates concerns, keeps Action focused on core logic.
  * S3 - Scalable: Easy to add/remove side effects without touching Action.
  */
@@ -19,7 +19,7 @@ class SendInternshipCreatedNotifications
     public function __construct(
         private readonly LogAuditAction $logAudit,
     ) {}
-    
+
     /**
      * Handle the event.
      */
@@ -36,7 +36,7 @@ class SendInternshipCreatedNotifications
             ],
             module: 'Internship'
         );
-        
+
         // Notify relevant stakeholders (example)
         // $event->internship->company->notify(new InternshipCreatedNotification($event->internship));
     }

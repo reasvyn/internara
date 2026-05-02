@@ -18,9 +18,9 @@ class DirectPlacementManager extends Component
     use Toast;
 
     public string $student_id = '';
-    
+
     public string $placement_id = '';
-    
+
     public string $academic_year = '';
 
     /**
@@ -44,7 +44,7 @@ class DirectPlacementManager extends Component
     {
         return InternshipPlacement::with(['company', 'internship'])
             ->get()
-            ->filter(fn($p) => !$p->isFull());
+            ->filter(fn ($p) => ! $p->isFull());
     }
 
     public function submit(DirectPlacementAction $placementAction): void

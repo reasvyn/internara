@@ -15,7 +15,7 @@ class DepartmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->word() . ' Department',
+            'name' => fake()->unique()->word().' Department',
             'school_id' => School::factory(),
         ];
     }

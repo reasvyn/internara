@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasUuid;
+use Database\Factories\AssessmentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -80,8 +81,8 @@ class Assessment extends Model
     /**
      * Create a new factory instance.
      */
-    protected static function newFactory(): \Database\Factories\AssessmentFactory
+    protected static function newFactory(): AssessmentFactory
     {
-        return \Database\Factories\AssessmentFactory::new();
+        return AssessmentFactory::new();
     }
 }

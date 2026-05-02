@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Company;
 
+use App\Livewire\Admin\Company\CompanyIndex;
 use App\Models\InternshipCompany;
 use App\Models\InternshipPlacement;
 use App\Models\User;
@@ -32,12 +33,12 @@ test('admin can create a new company', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('create')
         ->assertSet('showModal', true)
-        ->set('name', 'PT Maju Mundur')
-        ->set('address', 'Jl. Contoh No. 123')
-        ->set('industry_sector', 'Technology')
+        ->set('formData.name', 'PT Maju Mundur')
+        ->set('formData.address', 'Jl. Contoh No. 123')
+        ->set('formData.industry_sector', 'Technology')
         ->call('save')
         ->assertHasNoErrors();
 
@@ -54,11 +55,11 @@ test('admin can edit an existing company', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('edit', $company)
-        ->assertSet('name', 'Old Name')
+        ->assertSet('formData.name', 'Old Name')
         ->assertSet('showModal', true)
-        ->set('name', 'New Name')
+        ->set('formData.name', 'New Name')
         ->call('save')
         ->assertHasNoErrors();
 
@@ -74,7 +75,7 @@ test('admin cannot delete company with active placements', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('delete', $company);
 
     $this->assertDatabaseHas('internship_companies', ['id' => $company->id]);
@@ -87,7 +88,7 @@ test('admin can delete company without placements', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('delete', $company);
 
     $this->assertDatabaseMissing('internship_companies', ['id' => $company->id]);
@@ -100,12 +101,12 @@ test('company name must be unique', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('create')
-        ->set('name', 'Existing Company')
-        ->set('address', 'Some Address')
+        ->set('formData.name', 'Existing Company')
+        ->set('formData.address', 'Some Address')
         ->call('save')
-        ->assertHasErrors(['name' => 'unique']);
+        ->assertHasErrors(['formData.name' => 'unique']);
 });
 
 test('company index shows stats', function () {
@@ -115,8 +116,8 @@ test('company index shows stats', function () {
     InternshipCompany::factory()->count(2)->create();
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
-        ->assertViewHas('companies');
+        ->test(CompanyIndex::class)
+        ->assertSee(__('company.stats.total'));
 });
 
 test('company search filters by name', function () {
@@ -127,7 +128,7 @@ test('company search filters by name', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->set('search', 'Tech')
         ->assertSee('Tech Corp')
         ->assertDontSee('Finance Ltd');
@@ -143,13 +144,13 @@ test('company email must be valid format', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('create')
-        ->set('name', 'Test Company')
-        ->set('address', 'Test Address')
-        ->set('email', 'not-an-email')
+        ->set('formData.name', 'Test Company')
+        ->set('formData.address', 'Test Address')
+        ->set('formData.email', 'not-an-email')
         ->call('save')
-        ->assertHasErrors(['email' => 'email']);
+        ->assertHasErrors(['formData.email' => 'email']);
 });
 
 test('company website must be valid url', function () {
@@ -157,11 +158,11 @@ test('company website must be valid url', function () {
     $user->assignRole('admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\Company\CompanyIndex::class)
+        ->test(CompanyIndex::class)
         ->call('create')
-        ->set('name', 'Test Company')
-        ->set('address', 'Test Address')
-        ->set('website', 'not-a-url')
+        ->set('formData.name', 'Test Company')
+        ->set('formData.address', 'Test Address')
+        ->set('formData.website', 'not-a-url')
         ->call('save')
-        ->assertHasErrors(['website' => 'url']);
+        ->assertHasErrors(['formData.website' => 'url']);
 });

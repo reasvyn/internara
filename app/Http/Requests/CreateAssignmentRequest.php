@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\AssignmentType;
+use App\Models\Assignment;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 /**
  * Form Request for creating assignment.
- * 
+ *
  * S1 - Secure: Validates assignment creation at HTTP layer.
  */
 class CreateAssignmentRequest extends FormRequest
@@ -20,13 +22,13 @@ class CreateAssignmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\Assignment::class);
+        return $this->user()->can('create', Assignment::class);
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

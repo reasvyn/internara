@@ -16,16 +16,16 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->unique()->constrained()->onDelete('cascade');
-            
+
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->string('gender')->nullable();
             $table->string('blood_type')->nullable();
-            
+
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();
             $table->text('emergency_contact_address')->nullable();
-            
+
             $table->text('bio')->nullable();
 
             // Identity identifiers (e.g. NISN, NIS, NIP)

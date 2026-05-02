@@ -39,7 +39,7 @@ class UploadOfficialDocumentAction
             ]);
 
             $document->addMedia($file)->toMediaCollection('file');
-            
+
             $document->setStatus('active', 'Uploaded by user.');
 
             $this->logAuditAction->execute(

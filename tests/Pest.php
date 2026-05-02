@@ -8,13 +8,13 @@ pest()
     ->extend(TestCase::class)
     ->use(LazilyRefreshDatabase::class)
     ->in(
-        __DIR__ . '/Feature',
+        __DIR__.'/Feature',
     );
 
 pest()
     ->extend(TestCase::class)
     ->in(
-        __DIR__ . '/Unit',
+        __DIR__.'/Unit',
     );
 
 /*

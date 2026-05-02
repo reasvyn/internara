@@ -6,12 +6,11 @@ namespace App\Actions\School;
 
 use App\Actions\Audit\LogAuditAction;
 use App\Models\School;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 /**
  * Action to update the institution's profile.
- * 
+ *
  * S1 - Secure: Logged for accountability.
  * S2 - Sustain: Atomic updates.
  */

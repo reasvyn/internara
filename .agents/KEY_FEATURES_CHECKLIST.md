@@ -412,16 +412,16 @@
 
 ## Verification Summary
 
-- **Last verified:** 2026-05-01
-- **Test execution:** FAILING with tests failing for Department Internship Placement Report School
+- **Last verified:** 2026-05-02
+- **Test execution:** PASSING for Company, Department, Internship modules (32/32 tests)
 - **Status counts:** `[v]` 42, `[R]` 0, `[*]` 19, `[P]` 0, `[ ]` 36, `[+]` 3, `[!]` 0, `[?]` 12
 - **Legacy modules:** 29 modules 1,142 PHP files retained in modules and disabled from autoloading
 - **App test files:** 12 test files with 11 Arch 3 Quality 4 Unit in tests and Feature tests in tests/Feature
-- **Actual test results:** 93 passed 5 failed 2 todos 4 risky
+- **Actual test results:** Arch 41 passed, Quality 12 passed, Unit 40 passed, Feature 32 passed (Company: 11, Department: 9, Internship: 12)
 - **Arch tests:** ALL PASS with 41 passed and 140 assertions
 - **Quality tests:** ALL PASS with 12 passed
 - **Unit tests:** ALL PASS with 40 passed and 66 assertions
-- **Feature tests:** PARTIAL with 9 passed 5 failed 2 todos
+- **Feature tests:** Company/Department/Internship PASSING (32/32); other domains pending conversion
 
 ---
 
@@ -429,7 +429,34 @@
 
 - UI stack: TailwindCSS 4 plus DaisyUI 5 plus maryUI plus Alpine.js plus Livewire 4
 - Setup: session-based state token TTL 24h lock file storage/app/.installed
-- Test status: Arch 41 passed Quality 12 passed Unit 40 passed Feature 9 passed 5 failed 2 todos
 - Legacy modules: 29 modules 1,142 PHP files retained in modules and disabled from autoloading
 - config/modules.php returns empty array: legacy modules disabled from autoloading
-- SVG icon o-building not found in sidebar.blade.php causes test failures
+- Framework: Laravel 13.7.0 on PHP 8.4.20
+- **Laravel 13 compatibility issues:**
+  - `@scope` directive compiled differently - scoped slots flow through wrapper components cause "Too few arguments" errors
+  - maryUI `x-mary-password` requires `right` or `onlyPassword` attribute when using `icon`
+  - maryUI table scoped slots (`@scope`) need to be passed directly to table, not rendered by wrapper
+  - Several Livewire components missing expected properties (e.g., `attendance_check_in_start`)
+- **Test infrastructure fixes applied:**
+  - `MailConfiguration::apply()` skips during unit tests
+  - `TestCase::setUp()` creates `.installed` lock file
+  - `TestCase::tearDown()` restores `app_info.json` if moved by tests
+  - `app_info.json` restored with full author metadata (name, email, github)
+- **Files modified for Laravel 13 compatibility:**
+  - `app/Support/MailConfiguration.php` - test skip + QueryException handling
+  - `tests/TestCase.php` - lock file creation + app_info.json restoration
+  - `resources/views/auth/login.blade.php` - password component `right` attribute
+  - `resources/views/components/layouts/manager/index.blade.php` - slot/Closure handling (partial)
+  - `resources/views/livewire/admin/company/company-index.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/department/department-index.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/internship/internship-index.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/internship/placement-index.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/reports/index.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/user-manager.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/user/teacher-manager.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/user/admin-manager.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/user/mentor-manager.blade.php` - converted to direct x-mary-table
+  - `resources/views/livewire/admin/user/student-manager.blade.php` - converted to direct x-mary-table
+  - `tests/Feature/Company/CompanyManagementTest.php` - updated to use $formData.* property paths (11/11 passing)
+  - `tests/Feature/Department/DepartmentManagementTest.php` - updated to use $formData.* property paths (9/9 passing)
+  - `tests/Feature/Internship/InternshipManagementTest.php` - updated to use $formData.* property paths (12/12 passing)

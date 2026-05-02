@@ -51,7 +51,7 @@ class SupervisionLogPolicy
             return true;
         }
 
-        return $log->supervisor_id === $user->id && !$log->is_verified;
+        return $log->supervisor_id === $user->id && ! $log->is_verified;
     }
 
     public function verify(User $user, SupervisionLog $log): bool
@@ -65,6 +65,6 @@ class SupervisionLogPolicy
             return true;
         }
 
-        return $log->supervisor_id === $user->id && !$log->is_verified;
+        return $log->supervisor_id === $user->id && ! $log->is_verified;
     }
 }

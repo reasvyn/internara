@@ -38,7 +38,7 @@ class BindServiceProvider extends ServiceProvider
             if (
                 interface_exists($abstract) &&
                 class_exists($concrete) &&
-                !interface_exists($concrete)
+                ! interface_exists($concrete)
             ) {
                 $this->app->{$method}($abstract, $concrete);
             }
@@ -98,16 +98,16 @@ class BindServiceProvider extends ServiceProvider
         $moduleAppPath = config('modules.paths.app_folder', 'src/');
         $modulesNamespace = config('modules.namespace', 'Modules');
 
-        if (!is_dir($modulesPath)) {
+        if (! is_dir($modulesPath)) {
             return $paths;
         }
 
         try {
             foreach (new DirectoryIterator($modulesPath) as $moduleDir) {
-                if ($moduleDir->isDir() && !$moduleDir->isDot()) {
+                if ($moduleDir->isDir() && ! $moduleDir->isDot()) {
                     $moduleName = $moduleDir->getBasename();
-                    $baseNamespace = $modulesNamespace . '\\' . $moduleName;
-                    $srcPath = $moduleDir->getPathname() . '/' . trim($moduleAppPath, '/');
+                    $baseNamespace = $modulesNamespace.'\\'.$moduleName;
+                    $srcPath = $moduleDir->getPathname().'/'.trim($moduleAppPath, '/');
 
                     if (is_dir($srcPath)) {
                         $this->findContractDirectories($srcPath, $baseNamespace, $paths);
@@ -116,7 +116,7 @@ class BindServiceProvider extends ServiceProvider
             }
         } catch (Throwable $e) {
             if (is_debug_mode()) {
-                Log::debug('BindServiceProvider: Failed to scan modules. ' . $e->getMessage());
+                Log::debug('BindServiceProvider: Failed to scan modules. '.$e->getMessage());
             }
         }
 
@@ -150,7 +150,7 @@ class BindServiceProvider extends ServiceProvider
         $bindings = [];
         $ignoredNamespaces = config('bindings.ignored_namespaces', []);
 
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             return $bindings;
         }
 
@@ -164,7 +164,7 @@ class BindServiceProvider extends ServiceProvider
 
             $interfaceInfo = $this->findInterfaceInFile($file->getPathname());
 
-            if (!$interfaceInfo) {
+            if (! $interfaceInfo) {
                 continue;
             }
 
@@ -201,18 +201,18 @@ class BindServiceProvider extends ServiceProvider
         try {
             $content = File::get($filePath);
 
-            if (!preg_match('/namespace\s+([^;]+);/', $content, $nsMatches)) {
+            if (! preg_match('/namespace\s+([^;]+);/', $content, $nsMatches)) {
                 return null;
             }
-            if (!preg_match('/interface\s+(\w+)/', $content, $ifMatches)) {
+            if (! preg_match('/interface\s+(\w+)/', $content, $ifMatches)) {
                 return null;
             }
 
             $namespace = trim($nsMatches[1]);
             $name = trim($ifMatches[1]);
-            $abstract = $namespace . '\\' . $name;
+            $abstract = $namespace.'\\'.$name;
 
-            if (!interface_exists($abstract)) {
+            if (! interface_exists($abstract)) {
                 return null;
             }
 
@@ -237,7 +237,7 @@ class BindServiceProvider extends ServiceProvider
         $candidates = $this->getConcreteCandidates($rootNamespace, $shortName);
 
         foreach ($candidates as $candidate) {
-            if (class_exists($candidate) && !interface_exists($candidate)) {
+            if (class_exists($candidate) && ! interface_exists($candidate)) {
                 return $candidate;
             }
         }

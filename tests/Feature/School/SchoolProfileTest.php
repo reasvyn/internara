@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\School;
 
+use App\Livewire\Admin\School\SchoolProfile;
 use App\Models\School;
 use App\Models\User;
 use Livewire\Livewire;
@@ -30,7 +31,7 @@ test('super admin can update school profile', function () {
     $user->assignRole('super_admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\School\SchoolProfile::class)
+        ->test(SchoolProfile::class)
         ->set('name', 'Updated School Name')
         ->set('institutional_code', 'UPDATED123')
         ->set('address', 'Updated Address')
@@ -56,7 +57,7 @@ test('school profile requires name and institutional code', function () {
     $user->assignRole('super_admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\School\SchoolProfile::class)
+        ->test(SchoolProfile::class)
         ->set('name', '')
         ->set('institutional_code', '')
         ->call('save')
@@ -69,7 +70,7 @@ test('school email must be valid email format', function () {
     $user->assignRole('super_admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\School\SchoolProfile::class)
+        ->test(SchoolProfile::class)
         ->set('email', 'not-an-email')
         ->call('save')
         ->assertHasErrors(['email' => 'email']);
@@ -83,7 +84,7 @@ test('school institutional code must be unique', function () {
     $user->assignRole('super_admin');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Admin\School\SchoolProfile::class)
+        ->test(SchoolProfile::class)
         ->set('institutional_code', 'UNIQUE123')
         ->call('save')
         ->assertHasErrors(['institutional_code' => 'unique']);

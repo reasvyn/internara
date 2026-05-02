@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\AssignmentStatus;
 use App\Models\Concerns\HasUuid;
+use Database\Factories\AssignmentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -83,8 +84,8 @@ class Assignment extends Model
     /**
      * Create a new factory instance.
      */
-    protected static function newFactory(): \Database\Factories\AssignmentFactory
+    protected static function newFactory(): AssignmentFactory
     {
-        return \Database\Factories\AssignmentFactory::new();
+        return AssignmentFactory::new();
     }
 }

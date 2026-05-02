@@ -16,6 +16,7 @@ class AttendanceWidget extends Component
     use Toast;
 
     public ?AttendanceLog $todayLog = null;
+
     public string $currentTime = '';
 
     public function mount(): void

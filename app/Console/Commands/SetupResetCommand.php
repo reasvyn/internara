@@ -27,7 +27,7 @@ class SetupResetCommand extends Command
         if (! $setupService->isInstalled()) {
             $this->warn('Setup has not been completed. No reset needed.');
             $this->info('A new setup token has been generated:');
-            $this->line('  ' . $setupService->generateToken());
+            $this->line('  '.$setupService->generateToken());
 
             return self::SUCCESS;
         }
@@ -48,8 +48,8 @@ class SetupResetCommand extends Command
 
         $this->newLine();
         $this->components->info('Setup state has been reset.');
-        $this->line('Setup token: <fg=cyan>' . $token . '</>');
-        $this->line('Visit: <fg=cyan>' . route('setup', ['setup_token' => $token]) . '</>');
+        $this->line('Setup token: <fg=cyan>'.$token.'</>');
+        $this->line('Visit: <fg=cyan>'.route('setup', ['setup_token' => $token]).'</>');
         $this->warn('Note: Existing database records are not removed. Run `php artisan migrate:fresh` if needed.');
 
         return self::SUCCESS;
@@ -59,7 +59,7 @@ class SetupResetCommand extends Command
     {
         $this->newLine();
         $this->line(' <fg=white;bg=red;options=bold> SETUP RESET </> <fg=red;options=bold>UTILITY</>');
-        $this->line(' <fg=gray>Version: ' . AppInfo::version() . '</>');
+        $this->line(' <fg=gray>Version: '.AppInfo::version().'</>');
         $this->newLine();
     }
 }

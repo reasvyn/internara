@@ -12,7 +12,9 @@ use Livewire\Component;
 class StudentDashboard extends Component
 {
     public ?InternshipRegistration $registration = null;
+
     public int $totalJournals = 0;
+
     public int $verifiedJournals = 0;
 
     public function mount(): void
@@ -27,7 +29,7 @@ class StudentDashboard extends Component
             $this->totalJournals = JournalEntry::where('user_id', $user->id)
                 ->where('registration_id', $this->registration->id)
                 ->count();
-            
+
             $this->verifiedJournals = JournalEntry::where('user_id', $user->id)
                 ->where('registration_id', $this->registration->id)
                 ->where('is_verified', true)

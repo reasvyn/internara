@@ -17,7 +17,7 @@ class RegistrationWizard extends Component
     use Toast;
 
     public int $step = 1;
-    
+
     public array $data = [
         'internship_id' => '',
         'placement_id' => '',
@@ -41,14 +41,14 @@ class RegistrationWizard extends Component
     #[Computed]
     public function placements(): Collection
     {
-        if (!$this->data['internship_id']) {
-            return new Collection();
+        if (! $this->data['internship_id']) {
+            return new Collection;
         }
 
         return InternshipPlacement::where('internship_id', $this->data['internship_id'])
             ->with('company')
             ->get()
-            ->filter(fn($p) => !$p->isFull());
+            ->filter(fn ($p) => ! $p->isFull());
     }
 
     public function nextStep(): void
@@ -56,7 +56,7 @@ class RegistrationWizard extends Component
         if ($this->step === 1) {
             $this->validate(['data.internship_id' => 'required']);
         }
-        
+
         $this->step++;
     }
 

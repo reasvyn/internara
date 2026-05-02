@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\InternshipStatus;
+use App\Models\Internship;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 /**
  * Form Request for creating internships.
- * 
+ *
  * S1 - Secure: Centralizes validation logic at the HTTP layer.
  * Validated data can be safely passed to Actions.
  */
@@ -21,13 +23,13 @@ class CreateInternshipRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\Internship::class);
+        return $this->user()->can('create', Internship::class);
     }
-    
+
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -41,7 +43,7 @@ class CreateInternshipRequest extends FormRequest
             'department_id' => ['required', 'uuid', 'exists:departments,id'],
         ];
     }
-    
+
     /**
      * Get custom error messages.
      *
@@ -56,7 +58,7 @@ class CreateInternshipRequest extends FormRequest
             'department_id.exists' => 'The selected department does not exist.',
         ];
     }
-    
+
     /**
      * Get custom attributes for validator errors.
      *

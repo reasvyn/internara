@@ -25,7 +25,7 @@ class CreateAssessmentAction
         ?array $content = null,
         ?float $score = null,
     ): Assessment {
-        if (!$evaluator->hasAnyRole(['super_admin', 'admin', 'teacher'])) {
+        if (! $evaluator->hasAnyRole(['super_admin', 'admin', 'teacher'])) {
             throw new InvalidArgumentException('Not authorized to create assessments.');
         }
 

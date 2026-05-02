@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\SubmissionStatus;
 use App\Models\Concerns\HasUuid;
+use Database\Factories\SubmissionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -92,8 +93,8 @@ class Submission extends Model implements HasMedia
     /**
      * Create a new factory instance.
      */
-    protected static function newFactory(): \Database\Factories\SubmissionFactory
+    protected static function newFactory(): SubmissionFactory
     {
-        return \Database\Factories\SubmissionFactory::new();
+        return SubmissionFactory::new();
     }
 }

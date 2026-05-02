@@ -28,7 +28,7 @@ $brandLogo = App\Support\Branding::logo();
             @auth
                 @if(auth()->user()->hasRole('super_admin|admin'))
                     <ul class="menu menu-sm gap-1">
-                        <li class="menu-title text-xs opacity-50">{{ __('admin.title', default: 'Administration') }}</li>
+                        <li class="menu-title text-xs opacity-50">{{ trans('admin.title') ?: 'Administration' }}</li>
                         <li>
                             <a href="{{ route('admin.school') }}" 
                                class="{{ request()->routeIs('admin.school*') ? 'active' : '' }}">
@@ -58,7 +58,7 @@ $brandLogo = App\Support\Branding::logo();
                             </a>
                         </li>
                         
-                        <li class="menu-title text-xs opacity-50 mt-4">{{ __('user.student.title', default: 'Users') }}</li>
+                        <li class="menu-title text-xs opacity-50 mt-4">{{ trans('user.student.title') ?: 'Users' }}</li>
                         <li>
                             <a href="{{ route('admin.users.admins') }}" 
                                class="{{ request()->routeIs('admin.users.admins*') ? 'active' : '' }}">
@@ -88,7 +88,7 @@ $brandLogo = App\Support\Branding::logo();
                             </a>
                         </li>
                         
-                        <li class="menu-title text-xs opacity-50 mt-4">{{ __('setting.groups.system', default: 'System') }}</li>
+                        <li class="menu-title text-xs opacity-50 mt-4">{{ trans('setting.groups.system') ?: 'System' }}</li>
                         <li>
                             <a href="{{ route('admin.settings') }}" 
                                class="{{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
@@ -101,7 +101,7 @@ $brandLogo = App\Support\Branding::logo();
 
                 @if(auth()->user()->hasRole('student'))
                     <ul class="menu menu-sm gap-1 mt-4">
-                        <li class="menu-title text-xs opacity-50">{{ __('student.title', default: 'Student Portal') }}</li>
+                        <li class="menu-title text-xs opacity-50">{{ trans('student.title') ?: 'Student Portal' }}</li>
                         <li>
                             <a href="{{ route('student.dashboard') }}" 
                                class="{{ request()->routeIs('student.dashboard*') ? 'active' : '' }}">
@@ -113,7 +113,7 @@ $brandLogo = App\Support\Branding::logo();
                             <a href="{{ route('student.journals') }}" 
                                class="{{ request()->routeIs('student.journals*') ? 'active' : '' }}">
                                 <x-mary-icon name="o-book-open" class="size-5" />
-                                {{ __('journal.title', default: 'Journals') }}
+                                {{ trans('journal.title') ?: 'Journals' }}
                             </a>
                         </li>
                     </ul>
@@ -121,19 +121,19 @@ $brandLogo = App\Support\Branding::logo();
 
                 @if(auth()->user()->hasRole('teacher|mentor'))
                     <ul class="menu menu-sm gap-1 mt-4">
-                        <li class="menu-title text-xs opacity-50">{{ __('supervision.title', default: 'Supervision') }}</li>
+                        <li class="menu-title text-xs opacity-50">{{ trans('supervision.title') ?: 'Supervision' }}</li>
                         <li>
                             <a href="{{ route('supervision.logs') }}" 
                                class="{{ request()->routeIs('supervision.logs*') ? 'active' : '' }}">
                                 <x-mary-icon name="o-clipboard-check" class="size-5" />
-                                {{ __('supervision.logs', default: 'Guidance Logs') }}
+                                {{ trans('supervision.logs') ?: 'Guidance Logs' }}
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('supervision.monitoring') }}" 
                                class="{{ request()->routeIs('supervision.monitoring*') ? 'active' : '' }}">
                                 <x-mary-icon name="o-map-pin" class="size-5" />
-                                {{ __('supervision.monitoring', default: 'Monitoring') }}
+                                {{ trans('supervision.monitoring') ?: 'Monitoring' }}
                             </a>
                         </li>
                     </ul>
