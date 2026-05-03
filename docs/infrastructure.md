@@ -11,7 +11,7 @@ and dependencies for the `internara` project.
 - **Node.js**: Required for frontend asset bundling (Vite).
 - **Package Managers**:
     - `composer` for PHP dependencies.
-    - `npm` or `pnpm` for JavaScript dependencies.
+    - `npm` for JavaScript dependencies (pnpm optional).
 
 ## 2. Technology Stack (The "MARY" Stack)
 
@@ -31,9 +31,7 @@ The project leverages high-quality industry-standard packages:
 - **Media Management**: `spatie/laravel-medialibrary`
 - **Audit Trails**: `spatie/laravel-activitylog`
 - **State Management**: `spatie/laravel-model-states` ^2.14 (Tracking model transitions for
-  InternshipRegistration, SupervisionLog, RequirementSubmission, OfficialDocument)
-- **Modular Structure**: `nwidart/laravel-modules` & `mhmiton/laravel-modules-livewire` — legacy,
-  pending removal. See section "Known Issues" below.
+  InternshipRegistration, InternshipPlacement, RequirementSubmission, OfficialDocument)
 - **Flash Notifications**: `php-flasher/flasher-laravel` (Temporary user feedback messages)
 - **Security**: `spatie/laravel-honeypot` (Spam protection)
 
@@ -126,8 +124,7 @@ composer analyse:strict  # PHPStan level max
     - Dark mode: enabled
     - Assets: `/vendor/flasher/` (JS/CSS)
 
-> **Note**: `config/modules.php` and `config/modules-livewire.php` are legacy and will be removed
-> with the modules.
+> **Note**: Legacy module configuration files have been removed.
 
 ## 8. CI/CD Pipeline (`.github/workflows/ci.yml`)
 
@@ -143,21 +140,14 @@ Automated quality checks via GitHub Actions:
 
 All jobs must pass before merging to `main` or `develop` branches.
 
-## 9. Known Issues
-
-- **Legacy modules**: `modules/` directory contains unused code from the pre-MVC architecture.
-  `app/Console/Kernel.php` still references a module class, which causes fatal errors when running
-  tests. Resolution: module autoloading has been disabled in `config/modules.php` and related
-  configs.
-
-## 10. Requirements for Deployment
+## 9. Requirements for Deployment
 
 - **Web Server**: Nginx or Apache (Laravel compatible).
 - **Database**: MySQL, PostgreSQL, or SQLite (SQLite is mentioned in `post-create-project-cmd`).
 - **Cache/Queue**: Redis or Database driver (Standard Laravel drivers).
 - **File Storage**: Local or S3-compatible (Spatie Media Library requirement).
 
-## 11. Project Structure (Enhanced Layered Architecture)
+## 10. Project Structure (Enhanced Layered Architecture)
 
 ```
 app/

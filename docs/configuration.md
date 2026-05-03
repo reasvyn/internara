@@ -22,7 +22,7 @@ Internara uses a **three-tier configuration system** to separate concerns and pr
                        │
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              AppInfo (app_info.json)              │
+│              AppInfo (composer.json)              │
 │           Immutable App Identity                │
 │    Name, Version, Author, License               │
 └──────────────────────┬──────────────────────────┘
@@ -200,7 +200,7 @@ class Settings
 
     // Resolution chain:
     // 1. Runtime overrides (for testing)
-    // 2. AppInfo (app_info.json) - for app metadata
+    // 2. AppInfo (composer.json) - for app metadata
     // 3. Database (cached forever)
     // 4. Laravel config (fallback)
     // 5. Default parameter
@@ -292,12 +292,12 @@ if (setting()->has('feature.internship_enabled')) {
 
 ### Purpose
 
-**Immutable application identity** stored in `app_info.json`. This is the **Single Source of Truth
+**Immutable application identity** derived from `composer.json`. This is the **Single Source of Truth
 (SSoT)** for app metadata.
 
 ### Location
 
-- **File**: `app_info.json` (root directory)
+- **File**: `composer.json` (root directory) — `name`, `version`, `authors`, `license`, `support`
 - **Class**: `App\Support\AppInfo`
 - **Access**: `AppInfo::get('key')` or `AppInfo::all()`
 
@@ -305,30 +305,53 @@ if (setting()->has('feature.internship_enabled')) {
 
 ✅ **App identity** (never changes after deployment):
 
-- App name (`name`)
-- Version (`version`)
-- Author info (`author.name`, `author.email`, `author.github`)
-- License (`license`)
+- App name (`name`) — derived from composer `name` (after `/`)
+- Version (`version`) — composer `version` field
+- Author info (`author.name`, `author.email`, `author.github`) — first `authors` entry
+- License (`license`) — composer `license` field
 
 ✅ **Static metadata**:
 
 - Values that are compiled into the app
 - Used for signatures, about pages, credits
 
-### File Structure (`app_info.json`)
+### composer.json Fields
 
 ```json
 {
-    "name": "Internara",
+    "name": "reasvyn/internara",
     "version": "0.1.0",
-    "support": "Experimental",
-    "author": {
-        "name": "Reas Vyn",
-        "email": "reasvyn@gmail.com",
-        "github": "https://github.com/reasvyn"
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasvyn@gmail.com",
+            "homepage": "https://github.com/reasvyn"
+        }
+    ],
+    "support": {
+        "email": "reasvyn@gmail.com"
     },
     "license": "MIT"
 }
+```
+
+### Mapped Structure (AppInfo::all() output)
+
+```php
+[
+    'name' => 'internara',          // from composer name (after /)
+    'version' => '0.1.0',           // from composer version
+    'description' => '...',         // from composer description
+    'author' => [
+        'name' => 'Reas Vyn',       // from authors[0].name
+        'email' => 'reasvyn@gmail.com', // from authors[0].email
+        'github' => 'https://github.com/reasvyn', // from authors[0].homepage
+    ],
+    'support' => [
+        'email' => 'reasvyn@gmail.com',
+    ],
+    'license' => 'MIT',             // from composer license
+]
 ```
 
 ### AppInfo Class
@@ -341,10 +364,37 @@ class AppInfo
     public static function all(): array
     {
         if (self::$info === null) {
-            $path = base_path('app_info.json');
-            self::$info = json_decode(File::get($path), true) ?? [];
+            self::$info = self::buildFromComposer();
         }
         return self::$info;
+    }
+
+    protected static function buildFromComposer(): array
+    {
+        $composer = json_decode(File::get(base_path('composer.json')), true) ?? [];
+
+        $packageName = $composer['name'] ?? '';
+        $appName = str_contains($packageName, '/')
+            ? Str::afterLast($packageName, '/')
+            : $packageName;
+
+        $authors = $composer['authors'] ?? [];
+        $primaryAuthor = $authors[0] ?? [];
+        $support = $composer['support'] ?? [];
+
+        return [
+            'name' => $appName ?: ($composer['description'] ?? 'Internara'),
+            'version' => $composer['version'] ?? '0.0.0',
+            'author' => [
+                'name' => $primaryAuthor['name'] ?? '',
+                'email' => $primaryAuthor['email'] ?? '',
+                'github' => $primaryAuthor['homepage'] ?? '',
+            ],
+            'support' => [
+                'email' => $support['email'] ?? '',
+            ],
+            'license' => $composer['license'] ?? 'MIT',
+        ];
     }
 
     public static function get(string $key, mixed $default = null): mixed
@@ -469,7 +519,7 @@ class AppSignature extends Component
 ```php
 class ClockInAction
 {
-    public function execute(Student $student): AttendanceLog
+    public function execute(Mentee $mentee): AttendanceLog
     {
         // Get business rule from setting()
         $checkInStart = setting('attendance_check_in_start', '07:00');
@@ -681,7 +731,7 @@ public function execute(string $key, mixed $value): void
 1. Check database: `SELECT * FROM settings WHERE key = 'your_key';`
 2. Check cache: `php artisan cache:clear`
 3. Verify fallback: `config('your.key')` exists?
-4. Check AppInfo: Is it in `app_info.json`?
+4. Check AppInfo: Is it defined in `composer.json` (`authors`, `version`, `license`)?
 
 ### Config Not Taking Effect
 
@@ -699,3 +749,184 @@ public function execute(string $key, mixed $value): void
 ---
 
 **Last Updated**: April 30, 2026
+
+---
+
+## 14. Service Container Bindings (`config/bindings.php`)
+
+### Purpose
+
+Centralized interface-to-implementation binding configuration. All container bindings are declared
+in `config/bindings.php` — the `BindServiceProvider` is a thin registrar that reads config and
+registers bindings, with no inline binding logic.
+
+### Architecture
+
+```
+config/bindings.php  ← Single Source of Truth for all bindings
+        │
+        ▼
+BindServiceProvider  ← Thin registrar (reads config, calls $this->app->bind/singleton)
+        │
+        ▼
+Laravel Container    ← Resolved dependencies via constructor injection
+```
+
+### Three Binding Mechanisms
+
+#### 1. Default Bindings (Explicit)
+
+Direct interface-to-implementation mappings declared in the `default` array:
+
+```php
+// config/bindings.php
+'default' => [
+    App\Contracts\Services\EmailServiceInterface::class => App\Services\EmailService::class,
+    App\Contracts\Repositories\UserRepositoryInterface::class => App\Repositories\UserRepository::class,
+],
+```
+
+**When to use**: Non-conventional mappings, multiple implementations, or when auto-discovery
+patterns don't match your naming.
+
+#### 2. Auto-Discovery Bindings (Pattern-Based)
+
+When `autobind` is `true`, the provider scans **two contract locations** for interfaces and resolves them
+to concrete classes using configured patterns:
+
+- **Centralized**: `App/Contracts/{Domain}/` — shared across domains
+- **Domain-scoped**: `App/{Domain}/Contracts/` — owned by one domain
+
+Both layouts resolve to the same domain namespace and use identical patterns:
+
+```php
+// config/bindings.php
+'autobind' => true,
+
+'patterns' => [
+    // Services: App\Services\XxxService
+    '{{domain}}\{{base}}',
+    '{{domain}}\{{name}}',
+
+    // Repositories: App\Repositories\XxxRepository
+    '{{domain}}\{{base}}Repository',
+
+    // Actions: App\Actions\XxxAction
+    '{{domain}}\{{base}}Action',
+],
+```
+
+**Placeholders**:
+
+| Placeholder | Resolves To | Example |
+|---|---|---|
+| `{{domain}}` | Domain namespace derived from interface path | `App\Services` from either layout |
+| `{{base}}` | Interface name without `Interface`/`Contract` suffix | `EmailService` from `EmailServiceInterface` |
+| `{{name}}` | Full interface short name | `EmailServiceInterface` |
+
+**Domain extraction** (handles both layouts):
+
+| Interface FQCN | Extracted `{{domain}}` |
+|---|---|
+| `App\Services\Contracts\PaymentServiceInterface` | `App\Services` |
+| `App\Contracts\Services\PaymentServiceInterface` | `App\Services` |
+
+**How it works**:
+
+1. Scans `app/Contracts/` (centralized) and all `app/{Domain}/Contracts/` (domain-scoped)
+2. Extracts namespace and interface name from each PHP file
+3. Derives domain namespace regardless of which contract layout is used
+4. Strips `Interface`/`Contract` suffix from interface name
+5. Applies each pattern in order; first matching class wins
+6. Skips namespaces listed in `ignored_namespaces`
+
+#### 3. Contextual Bindings (When-Needs-Give)
+
+Bindings scoped to a specific consumer class:
+
+```php
+// config/bindings.php
+'contextual' => [
+    [
+        'when'  => App\Http\Controllers\PhotoController::class,
+        'needs' => App\Contracts\StorageInterface::class,
+        'give'  => App\Services\S3Storage::class,
+    ],
+],
+```
+
+This is equivalent to Laravel's native:
+```php
+$this->app->when(PhotoController::class)
+          ->needs(StorageInterface::class)
+          ->give(S3Storage::class);
+```
+
+### Configuration Options
+
+| Key | Type | Default | Description |
+|---|---|---|---|
+| `autobind` | `bool` | `true` | Enable pattern-based auto-discovery |
+| `bind_as_singleton` | `bool` | `true` | Register all bindings as singletons |
+| `patterns` | `string[]` | (see below) | Naming patterns for auto-discovery |
+| `ignored_namespaces` | `string[]` | `['App\Contracts\Testing']` | Interface namespaces to exclude |
+| `default` | `array<string,string>` | `[]` | Explicit interface → class mappings |
+| `contextual` | `array<array>` | `[]` | When-Needs-Give bindings |
+
+### Provider Implementation
+
+The `BindServiceProvider` (`app/Providers/BindServiceProvider.php`) is intentionally thin:
+
+```php
+class BindServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->registerDefaultBindings();    // Reads config('bindings.default')
+        $this->registerAutobindings();        // Scans both contract locations using patterns
+        $this->registerContextualBindings();  // Reads config('bindings.contextual')
+    }
+}
+```
+
+**No binding declarations exist in the provider** — all mappings are in `config/bindings.php`.
+
+### Adding a New Binding
+
+**Option A: Follow the convention** (recommended)
+
+Choose the contract location based on scope:
+
+- **Domain-scoped** (`App/{Domain}/Contracts/`) — when the interface is owned by one domain
+- **Centralized** (`App/Contracts/{Domain}/`) — when the interface is shared across domains
+
+```
+# Domain-scoped (owned by Services)
+app/Services/Contracts/PaymentServiceInterface.php
+app/Services/PaymentService.php
+
+# Centralized (shared)
+app/Contracts/Services/NotificationServiceInterface.php
+app/Services/NotificationService.php
+```
+
+Both resolve to the same concrete class via `{{domain}}\{{base}}`.
+
+**Option B: Explicit declaration**
+
+Add to `config/bindings.php`:
+
+```php
+'default' => [
+    App\Contracts\Services\CustomInterface::class => App\Services\NonStandardClass::class,
+],
+```
+
+### Disabling Auto-Discovery
+
+```php
+'autobind' => false, // All bindings must be declared in 'default'
+```
+
+Useful when you want full control over which interfaces are bound, or when interface names
+don't follow the naming convention.

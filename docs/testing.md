@@ -118,7 +118,7 @@ composer analyse:strict
 
 ## 6. Mandatory Regression (Workflow 4)
 
-According to `AGENTS.md`, every bug fix **must** include a reproduction test that prevents
+According to `docs/standards.md`, every bug fix **must** include a reproduction test that prevents
 recurrence.
 
 ## 7. CI Pipeline
@@ -143,10 +143,10 @@ All jobs must pass before merging to main/develop branches.
 
 ### Domains Added This Cycle
 
-- Report: generate, queue, download, RBAC tests
-- Handbook: CRUD, versioning, RBAC tests
-- Schedule: CRUD, type filtering, RBAC tests
-- AcademicYear: CRUD, single active constraint, RBAC tests
+- Report: generate, queue, download, Auth tests
+- Document: CRUD, versioning, Auth tests
+- Schedule: CRUD, type filtering, Auth tests
+- Academic: CRUD, single active constraint, Auth tests
 
 ### Previously Failed Tests (All Resolved)
 

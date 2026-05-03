@@ -2,7 +2,7 @@
 
 ## 1. Core Principles
 
-All development must adhere to the **3S Doctrine** defined in `AGENTS.md`:
+All development must adhere to the **3S Doctrine** (Secure, Sustainable, Scalable) defined in `docs/architecture.md` section 2:
 
 - **S1 (Secure)**: Security first. No hardcoded secrets. Strict input validation.
 - **S2 (Sustain)**: Code must be readable and maintainable by humans.
@@ -15,6 +15,11 @@ All development must adhere to the **3S Doctrine** defined in `AGENTS.md`:
 - **UUIDs**: All models MUST use the `App\Models\Concerns\HasUuid` trait. No auto-incrementing IDs
   allowed.
 - **Strict Types**: All files MUST declare `strict_types=1`.
+- **Modern Attributes**: All models MUST use Laravel 13 PHP 8 Attributes for mass assignment and
+  serialization (e.g., `#[Fillable]`, `#[Hidden]`, `#[Appends]`).
+- **Casting**: Use the `protected function casts(): array` method instead of the `$casts` property.
+- **Strictness**: Eloquent strictness (`preventLazyLoading`, `preventSilentlyDiscardingAttributes`)
+  is enforced in non-production environments to ensure data integrity.
 - **Rich Models**: Models should contain business rules (e.g., `canBeApproved()`,
   `calculateStatus()`).
 - **No Side Effects**: Models MUST NOT send notifications or call external services directly. Use
@@ -30,6 +35,11 @@ All development must adhere to the **3S Doctrine** defined in `AGENTS.md`:
   DTOs.
 - **Side Effects**: Prefer Events for multiple side effects; direct calls are acceptable for simple
   cases.
+
+### Job Standards
+
+- **Modern Attributes**: All jobs SHOULD use Laravel 13 PHP 8 Attributes for configuration (e.g.,
+  `#[Tries]`, `#[Timeout]`, `#[FailOnTimeout]`).
 
 ### Controller Standards
 
@@ -72,7 +82,7 @@ All development must adhere to the **3S Doctrine** defined in `AGENTS.md`:
 - **When NOT to Use**:
     - Single, simple side effect (do it directly in Action)
     - When it reduces clarity without measurable benefit
-- **Naming**: Events should be past tense (e.g., `InternshipCreated`, `StudentRegistered`).
+- **Naming**: Events should be past tense (e.g., `InternshipCreated`, `MenteeRegistered`).
 
 ### Service Standards (Infrastructure Services)
 

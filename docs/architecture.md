@@ -86,9 +86,9 @@ app/
     - Invokes Business Rules in Models.
     - Performs side-effects via Events or direct calls (database writes, file uploads).
     - May use Repositories for complex data retrieval.
-- **Current Domains**: AcademicYear, AccountLifecycle, Analytics, Assessment, Assignment,
-  Attendance, Audit, Auth, Company, Department, Document, Guidance, Internship, Journal, Mentor,
-  Notification, Permission, Profile, Report, Schedule, School, Setting, Setup, Supervision, Teacher.
+- **Current Domains**: Core, Support, Shared, System, Audit, Auth, Account, Academic, Assessment,
+  Schedule, Registration, Placement, Attendance, Journal, Assignment, Mentee, Mentor,
+  Evaluation, Department, School, Company, Document, Report.
 
 ### C. Domain Layer (Rich Models / Business Rules)
 
@@ -96,17 +96,20 @@ app/
 - **Responsibility**: Handle stateful business rules and data relationships.
 - **Methods**: Contains logic for "Is it allowed?", "What is the status?", or internal calculations.
 - **Constraint**: Models should not directly call external services or send notifications (use
-  Events instead).
+  Events instead). Business rules = domain logic; Application logic = Actions.
+- **Standards**:
+    - **Modern Attributes**: Uses `#[Fillable]`, `#[Hidden]`, `#[Appends]` for configuration.
+    - **Casting**: Uses `casts(): array` method for attribute transformation.
+    - **Strictness**: Enforces `preventLazyLoading` in development.
 - **Key Models**: School (HasMedia), Department, Internship, InternshipCompany, InternshipPlacement,
   InternshipRegistration (HasStatuses), InternshipRequirement, RequirementSubmission, AttendanceLog,
-  AbsenceRequest, JournalEntry, SupervisionLog (HasStatuses), MonitoringVisit, Assignment,
-  AssignmentType, Submission, Assessment, Competency, StudentCompetencyLog, DepartmentCompetency,
-  DocumentTemplate, OfficialDocument, Notification, Profile, Setting, Setup, User, AuditLog. See
+  AbsenceRequest, JournalEntry, MonitoringVisit, Assignment,
+  AssignmentType, Submission, Assessment, Competency, MenteeCompetencyLog, DepartmentCompetency,
+  DocumentTemplate, OfficialDocument, Profile, Setting, Setup, User, AuditLog. See
   `docs/database.md` for full schema.
 - **Enums**: `AbsenceReasonType`, `AbsenceRequestStatus`, `AccountStatus`, `AssignmentStatus`,
   `AttendanceStatus`, `BloodType`, `DocumentCategory`, `Gender`, `InternshipStatus`,
-  `JournalEntryStatus`, `NotificationType`, `RequirementType`, `Role`, `SubmissionStatus`,
-  `SupervisionLogStatus`, `SupervisionType`.
+  `JournalEntryStatus`, `NotificationType`, `RequirementType`, `Role`, `SubmissionStatus`.
 
 ### D. Data Layer (DTOs & Enums)
 
@@ -160,7 +163,7 @@ app/
     - Single, simple side effect (do it directly in the Action)
     - When it reduces clarity without benefit
 
-### G. Service Layer (Infrastructure Services)
+### H. Service Layer (Infrastructure Services)
 
 - **Location**: `app/Services/`
 - **Current**: `SetupService` (installation wizard orchestration, token management, lock file
@@ -169,7 +172,7 @@ app/
 - **Purpose**: Handle technical/infrastructure concerns.
 - **Constraint**: Services should not contain business rules (those belong in Models).
 
-### H. Event Layer (System Events)
+### I. Event Layer (System Events)
 
 - **SetupFinalized**: Triggered when the installation is complete, allowing for cross-module
   initialization.
@@ -220,8 +223,24 @@ Rules that depend on model data must reside within the model itself.
 ```php
 namespace App\Models;
 
+use App\Models\Concerns\HasUuid;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+
+#[Fillable(['name', 'status', 'start_date', 'end_date'])]
 class Internship extends Model
 {
+    use HasUuid;
+
+    protected function casts(): array
+    {
+        return [
+            'status' => InternshipStatus::class,
+            'start_date' => 'date',
+            'end_date' => 'date',
+        ];
+    }
+
     public function canBeApproved(): bool
     {
         return $this->status === InternshipStatus::PENDING && $this->documents->isComplete();
@@ -244,12 +263,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class InternshipRepository
 {
-    public function findAvailableForStudent(Student $student): Collection
+    public function findAvailableForMentee(Mentee $mentee): Collection
     {
         return Internship::query()
             ->where('status', InternshipStatus::OPEN)
-            ->whereDoesntHave('registrations', function ($query) use ($student) {
-                $query->where('student_id', $student->id);
+            ->whereDoesntHave('registrations', function ($query) use ($mentee) {
+                $query->where('mentee_id', $mentee->id);
             })
             ->with(['company', 'requirements'])
             ->get();
@@ -292,7 +311,7 @@ class CreateInternshipRequest extends FormRequest
 ```php
 // routes/web.php
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::middleware(['role:student'])->group(function () {
+    Route::middleware(['role:mentee'])->group(function () {
         Route::livewire('/internships', InternshipBrowser::class);
     });
 });
@@ -331,8 +350,8 @@ safe customization:
 2. Create the Action: `app/Actions/{NewDomain}/XxxAction.php` with `execute()` method
 3. Create the Model: `app/Models/{NewDomain}.php` with `HasUuid` trait and business rules
 4. Create the migration: `database/migrations/YYYY_MM_DD_create_{table}.php`
-5. Create the Livewire component: `app/Livewire/Admin/{NewDomain}/XxxManager.php`
-6. Create the view: `resources/views/livewire/admin/{new-domain}/index.blade.php`
+5. Create the Livewire component (Web UI): `app/Livewire/{Role}/{NewDomain}/XxxManager.php`
+6. Create the view: `resources/views/livewire/{role}/{new-domain}/index.blade.php`
 7. Add routes in `routes/web.php` with role-based middleware
 
 ### Adding a New Report Type
@@ -365,15 +384,14 @@ safe customization:
 
 1. Create an Event class: `app/Events/{Domain}Created.php`
 2. Create a Listener: `app/Listeners/Handle{Domain}Created.php`
-3. Register the Event → Listener mapping in `EventServiceProvider`
+3. Register the Event → Listener mapping in `bootstrap/app.php` using `->withEvents()` or use `ShouldDiscoverEvents` trait
 4. Dispatch the event from the relevant Action after the business operation
 
-## 8. Legacy Modules (Reference Only)
+## 8. Legacy Code (Reference Only)
 
-> **Status**: The `modules/` directory contains code from a previous modular monolith structure.
-> These modules are **disabled from autoloading** and are retained as reference material. All active
-> domain implementations live in `app/`. Report, Handbook, Schedule, and AcademicYear are fully
-> implemented in the current architecture.
+> **Status**: The `legacy/` directory contains code from a previous modular monolith structure.
+> It is retained as reference material only. All active domain implementations live in `app/`.
+> Report, Handbook, Schedule, and Academic are fully implemented in the current architecture.
 
 ## 9. Anti-Patterns to Avoid
 

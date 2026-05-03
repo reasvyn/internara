@@ -5,39 +5,6 @@ here are acknowledged and have a planned resolution path.
 
 ---
 
-## P0 — Legacy Modules Disabled from Autoloading
-
-**Status**: Resolved (mitigated)  
-**Impact**: No longer affects test execution — modules disabled from autoloading  
-**Since**: Modular monolith → MVC migration (incomplete)
-
-### Symptom (Resolved)
-
-Previously, running `./vendor/bin/pest` failed immediately:
-
-```
-Trait "Modules\Core\Academic\Models\Concerns\HasAcademicYear" not found
-```
-
-### Root Cause
-
-The `modules/` directory contains legacy code from the pre-MVC modular monolith. It was autoloaded
-by Composer and referenced by `app/Console/Kernel.php`.
-
-### Resolution
-
-Module autoloading has been disabled:
-
-- `config/modules.php` returns empty array
-- `config/modules-livewire.php` returns empty array
-- `app/Console/Kernel.php` module import removed
-- `modules/*/tests/*` and `modules/*/src` removed from `phpunit.xml`
-- `./modules/**` paths removed from `vite.config.js` Tailwind config
-
-Result: Tests discoverable and executable. The `modules/` directory is retained as reference only.
-
----
-
 ## P0 — Failed Tests (Resolved)
 
 **Status**: Resolved  
@@ -64,9 +31,9 @@ All previously failing tests have been fixed:
 | Domain       | Migration     | Factory                    | View (Livewire)                     | Tests                | Status   |
 | ------------ | ------------- | -------------------------- | ----------------------------------- | -------------------- | -------- |
 | Report       | ✅            | ✅                         | ✅ `reports/index.blade.php`        | ✅ 7 assertions      | Complete |
-| Handbook     | ✅ (2 tables) | ✅ (+ `published()` state) | ✅ `handbooks/index.blade.php`      | ✅ RBAC corrected    | Complete |
+| Document     | ✅ (2 tables) | ✅ (+ `published()` state) | ✅ `handbooks/index.blade.php`      | ✅ RBAC corrected    | Complete |
 | Schedule     | ✅            | ✅                         | ✅ `schedules/index.blade.php`      | ✅ 6 assertions      | Complete |
-| AcademicYear | ✅            | ✅                         | ✅ `academic-years/index.blade.php` | ✅ active constraint | Complete |
+| Academic     | ✅            | ✅                         | ✅ `academic-years/index.blade.php` | ✅ active constraint | Complete |
 
 ---
 
@@ -79,10 +46,11 @@ migrations, views, and full implementation
 
 | Domain            | Scaffold Files        | Missing                  |
 | ----------------- | --------------------- | ------------------------ |
-| AccountLifecycle  | 4 Actions, Controller | Models, migration, views |
-| Activity Feed     | Controller            | Model, migration, views  |
-| Mentor Evaluation | Action, Controller    | Model, migration, views  |
-| Teacher Dashboard | Controller            | Views                    |
+| Account  | 4 Actions, Controller | Models, migration, views |
+| Audit     | Controller            | Model, migration, views  |
+| Mentor | Action, Controller    | Model, migration, views (specialization: school_teacher/industry_supervisor) |
+| Mentee | Controller            | Views                    |
+| Evaluation | Action             | Model, migration, views  |
 
 ---
 
@@ -119,4 +87,4 @@ components for consistency.
 
 ---
 
-_Last updated: April 30, 2026_
+_Last updated: May 3, 2026_

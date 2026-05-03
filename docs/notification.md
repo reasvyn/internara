@@ -84,7 +84,7 @@ class Notification extends Model
 // Suggested type constants (not enforced by DB)
 INTERNSHIP_CREATED = 'internship_created'
 INTERNSHIP_APPROVED = 'internship_approved'
-STUDENT_REGISTERED = 'student_registered'
+MENTEE_REGISTERED = 'mentee_registered'
 DOCUMENT_UPLOADED = 'document_uploaded'
 ASSESSMENT_GRADED = 'assessment_graded'
 GENERAL_INFO = 'general_info'
@@ -314,7 +314,7 @@ class SendInternshipCreatedNotifications
 
     public function handle(InternshipCreated $event): void
     {
-        // Notify the student
+        // Notify the mentee
         $this->sendNotification->execute(
             userId: $event->internship->student_id,
             type: 'internship_created',
@@ -461,7 +461,7 @@ This directive:
 | **Lifespan**    | Disappears after 5s                   | Stays until manually read      |
 | **Use Case**    | Action feedback (save, delete, error) | Important alerts, approvals    |
 | **Storage**     | Session flash data                    | `notifications` table          |
-| **Example**     | "Student registered!"                 | "Your internship was approved" |
+| **Example**     | "Mentee registered!"                 | "Your internship was approved" |
 
 ### Testing with PHPFlasher
 
