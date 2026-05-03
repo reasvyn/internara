@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Internship;
-use App\Models\InternshipRegistration;
-use App\Models\User;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<InternshipRegistration>
+ * @extends Factory<Registration>
  */
-class InternshipRegistrationFactory extends Factory
+class RegistrationFactory extends Factory
 {
-    protected $model = InternshipRegistration::class;
+    protected $model = Registration::class;
 
     public function definition(): array
     {
@@ -22,7 +22,7 @@ class InternshipRegistrationFactory extends Factory
             'student_id' => User::factory(),
             'internship_id' => Internship::factory(),
             'placement_id' => null,
-            'academic_year' => fake()->year() . '/' . (fake()->year() + 1),
+            'academic_year' => fake()->year().'/'.(fake()->year() + 1),
             'start_date' => fake()->dateTimeBetween('+1 month', '+3 months'),
             'end_date' => fake()->dateTimeBetween('+4 months', '+6 months'),
         ];

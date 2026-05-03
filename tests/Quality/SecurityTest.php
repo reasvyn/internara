@@ -18,13 +18,13 @@ class SecurityTest extends TestCase
     public function test_models_have_fillable_or_guarded(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app/Models'),
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app/Models'),
         );
 
         $violations = [];
 
         foreach ($iterator as $file) {
-            if (!$file->isFile() || $file->getExtension() !== 'php') {
+            if (! $file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
@@ -40,20 +40,22 @@ class SecurityTest extends TestCase
                 continue;
             }
 
-            // Check if model has $fillable or $guarded property
+            // Check if model has $fillable or $guarded property OR Attribute
             if (
-                !preg_match('/\$fillable\s*=/', $content) &&
-                !preg_match('/\$guarded\s*=/', $content)
+                ! preg_match('/\$fillable\s*=/', $content) &&
+                ! preg_match('/\$guarded\s*=/', $content) &&
+                ! preg_match('/#\[Fillable\s*\(/', $content) &&
+                ! preg_match('/#\[Guarded\s*\(/', $content)
             ) {
                 $violations[] =
-                    $basename .
+                    $basename.
                     ': Model missing \$fillable or \$guarded property (mass assignment protection)';
             }
         }
 
         $this->assertEmpty(
             $violations,
-            "Models without mass assignment protection:\n" . implode("\n", $violations),
+            "Models without mass assignment protection:\n".implode("\n", $violations),
         );
     }
 
@@ -65,13 +67,13 @@ class SecurityTest extends TestCase
     public function test_actions_validate_input(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app/Actions'),
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app/Actions'),
         );
 
         $violations = [];
 
         foreach ($iterator as $file) {
-            if (!$file->isFile() || $file->getExtension() !== 'php') {
+            if (! $file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
@@ -98,7 +100,7 @@ class SecurityTest extends TestCase
 
                 // For now, just log a warning (not a failure) if no validation found
                 // This is because Models have $fillable protection
-                if (!$hasValidation) {
+                if (! $hasValidation) {
                     // Only flag if doing create/update without any protection
                     if (
                         preg_match('/::create\(/', $content) ||
@@ -115,7 +117,7 @@ class SecurityTest extends TestCase
 
         $this->assertEmpty(
             $violations,
-            "Actions with potential missing validation:\n" . implode("\n", $violations),
+            "Actions with potential missing validation:\n".implode("\n", $violations),
         );
     }
 
@@ -125,7 +127,7 @@ class SecurityTest extends TestCase
     public function test_no_sensitive_data_in_logs(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app'),
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app'),
         );
 
         $violations = [];
@@ -138,21 +140,21 @@ class SecurityTest extends TestCase
         ];
 
         foreach ($iterator as $file) {
-            if (!$file->isFile() || $file->getExtension() !== 'php') {
+            if (! $file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
             $content = file_get_contents($file->getPathname());
-            $relativePath = str_replace(dirname(__DIR__, 2) . '/', '', $file->getPathname());
+            $relativePath = str_replace(dirname(__DIR__, 2).'/', '', $file->getPathname());
 
             foreach ($sensitivePatterns as $pattern) {
                 if (preg_match($pattern, $content)) {
-                    $violations[] = $relativePath . ': Potential sensitive data logging detected';
+                    $violations[] = $relativePath.': Potential sensitive data logging detected';
                 }
             }
         }
 
-        $this->assertEmpty($violations, "Sensitive data in logs:\n" . implode("\n", $violations));
+        $this->assertEmpty($violations, "Sensitive data in logs:\n".implode("\n", $violations));
     }
 
     /**
@@ -163,13 +165,13 @@ class SecurityTest extends TestCase
     public function test_controllers_check_authorization(): void
     {
         $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(dirname(__DIR__, 2) . '/app/Http/Controllers'),
+            new \RecursiveDirectoryIterator(dirname(__DIR__, 2).'/app/Http/Controllers'),
         );
 
         $violations = [];
 
         foreach ($iterator as $file) {
-            if (!$file->isFile() || $file->getExtension() !== 'php') {
+            if (! $file->isFile() || $file->getExtension() !== 'php') {
                 continue;
             }
 
@@ -198,9 +200,9 @@ class SecurityTest extends TestCase
                     preg_match('/use\s+App\\\\Http\\\\Requests/', $content) ||
                     preg_match('/Request\s+\$/', $content); // Type-hinted Form Request
 
-                if (!$hasAuthorization) {
+                if (! $hasAuthorization) {
                     $violations[] =
-                        $basename .
+                        $basename.
                         ': Controller missing authorization check (use $this->authorize(), Gate, or FormRequest with authorize())';
                 }
             }
@@ -208,7 +210,7 @@ class SecurityTest extends TestCase
 
         $this->assertEmpty(
             $violations,
-            "Missing authorization checks:\n" . implode("\n", $violations),
+            "Missing authorization checks:\n".implode("\n", $violations),
         );
     }
 }

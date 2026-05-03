@@ -12,7 +12,7 @@ describe('MetadataService', function () {
     beforeEach(function () {
         $this->path = base_path('app_info.json');
         $this->original = File::exists($this->path) ? File::get($this->path) : null;
-        $this->service = new MetadataService();
+        $this->service = new MetadataService;
         AppInfo::clearCache();
     });
 
@@ -74,14 +74,14 @@ describe('MetadataService', function () {
         $data = ['author' => ['name' => 'Reas Vyn']];
         File::put($this->path, json_encode($data));
 
-        expect(fn() => $this->service->verifyIntegrity())->not()->toThrow(\RuntimeException::class);
+        expect(fn () => $this->service->verifyIntegrity())->not()->toThrow(\RuntimeException::class);
     });
 
     test('it throws RuntimeException when author is unauthorized', function () {
         $data = ['author' => ['name' => 'Unauthorized User']];
         File::put($this->path, json_encode($data));
 
-        expect(fn() => $this->service->verifyIntegrity())->toThrow(\RuntimeException::class);
+        expect(fn () => $this->service->verifyIntegrity())->toThrow(\RuntimeException::class);
     });
 
     test('it returns brand name from app_info', function () {

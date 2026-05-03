@@ -123,7 +123,7 @@ class CompanyManager extends RecordManager
     #[Computed]
     public function activeFilterCount(): int
     {
-        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
+        return count(array_filter($this->filters, fn ($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     /**
@@ -137,7 +137,7 @@ class CompanyManager extends RecordManager
             ->whereNotNull('business_field')
             ->distinct('business_field')
             ->pluck('business_field')
-            ->map(fn($field) => ['id' => $field, 'name' => $field])
+            ->map(fn ($field) => ['id' => $field, 'name' => $field])
             ->values()
             ->toArray();
     }

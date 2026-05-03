@@ -89,8 +89,7 @@ return [
     ],
 
     'manager' => [
-        'subtitle' =>
-            'Kelola akun administrator sistem. Hanya SuperAdmin yang dapat mengakses halaman ini.',
+        'subtitle' => 'Kelola akun administrator sistem. Hanya SuperAdmin yang dapat mengakses halaman ini.',
         'add' => 'Tambah Administrator',
         'delete_confirm' => 'Apakah Anda yakin ingin menghapus akun administrator ini?',
         'invitation_status' => 'Status Undangan',
@@ -99,8 +98,7 @@ return [
         'invited' => 'Akun administrator dibuat dan undangan telah dikirim ke :email.',
         'reinvited' => 'Undangan berhasil dikirim ulang ke :email.',
         'already_accepted' => 'Administrator ini sudah menerima undangan mereka.',
-        'invitation_notice' =>
-            'Email undangan akan dikirim ke administrator ini. Mereka akan membuat kata sandi sendiri melalui tautan di email.',
+        'invitation_notice' => 'Email undangan akan dikirim ke administrator ini. Mereka akan membuat kata sandi sendiri melalui tautan di email.',
         'invitation_statuses' => [
             'not_invited' => 'Belum Diundang',
             'pending' => 'Menunggu Penerimaan',
@@ -125,15 +123,13 @@ return [
         'failure' => 'Gagal',
         'error_logs' => 'Log Error',
         'import_completed' => 'Import selesai: :success berhasil, :failure gagal.',
-        'credentials_notice' =>
-            'Kode aktivasi telah dibuat. Salin atau cetak sekarang — kode tidak bisa diambil lagi setelahnya.',
+        'credentials_notice' => 'Kode aktivasi telah dibuat. Salin atau cetak sekarang — kode tidak bisa diambil lagi setelahnya.',
         'show_codes' => 'Tampilkan Kode Aktivasi',
         'instructions_title' => 'Panduan',
         'instructions_intro' => 'Pastikan file CSV mengikuti format yang diperlukan:',
         'required_columns' => 'Wajib: ',
         'optional_columns' => 'Opsional: ',
         'role_specific' => 'Spesifik peran: ',
-        'activation_code_info' =>
-            'Kata sandi tidak perlu dicantumkan di CSV. Setiap akun yang diimpor akan otomatis mendapatkan kode aktivasi untuk diklaim pengguna saat pertama kali login.',
+        'activation_code_info' => 'Kata sandi tidak perlu dicantumkan di CSV. Setiap akun yang diimpor akan otomatis mendapatkan kode aktivasi untuk diklaim pengguna saat pertama kali login.',
     ],
 ];

@@ -82,7 +82,7 @@ describe('AppInstallCommand', function () {
         $this->artisan('app:install')
             ->expectsConfirmation(__('setup::install.confirmation'), 'yes')
             ->expectsOutputToContain(
-                'Critical system task failure: ' . __('setup::install.tasks.env'),
+                'Critical system task failure: '.__('setup::install.tasks.env'),
             )
             ->assertExitCode(1);
     });

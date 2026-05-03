@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Modules\Notification\Services\Contracts\Notifier;
 
-if (!function_exists('notify')) {
+if (! function_exists('notify')) {
     /**
      * Dispatch a system-wide notification or UI feedback.
      *

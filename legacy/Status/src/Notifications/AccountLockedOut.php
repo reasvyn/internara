@@ -34,13 +34,13 @@ class AccountLockedOut extends Notification
     {
         return new MailMessage()
             ->subject('⛔ Akun Anda Dikunci untuk Keamanan')
-            ->greeting('Halo ' . $notifiable->name . ',')
+            ->greeting('Halo '.$notifiable->name.',')
             ->line(
-                'Akun Anda telah dikunci setelah ' .
-                    $this->failedAttempts .
+                'Akun Anda telah dikunci setelah '.
+                    $this->failedAttempts.
                     ' percobaan login yang gagal.',
             )
-            ->line('Akun akan otomatis dibuka dalam ' . $this->lockoutMinutes . ' menit.')
+            ->line('Akun akan otomatis dibuka dalam '.$this->lockoutMinutes.' menit.')
             ->line('Jika ini bukan Anda, segera ubah kata sandi Anda dan hubungi tim dukungan.')
             ->action('Hubungi Dukungan', url('/support'))
             ->line('Kami hanya melakukan ini untuk melindungi akun Anda.');

@@ -43,7 +43,7 @@ class OnboardingService implements Contract
             'credentials' => [],
         ];
 
-        if (!file_exists($filePath) || !is_readable($filePath)) {
+        if (! file_exists($filePath) || ! is_readable($filePath)) {
             $results['errors'][] = __('setup::onboarding.errors.file_not_readable');
 
             return $results;
@@ -52,14 +52,14 @@ class OnboardingService implements Contract
         $handle = fopen($filePath, 'r');
         $header = fgetcsv($handle);
 
-        if (!$header) {
+        if (! $header) {
             $results['errors'][] = __('setup::onboarding.errors.empty_file');
             fclose($handle);
 
             return $results;
         }
 
-        $header = array_map(fn($h) => strtolower(trim((string) $h)), $header);
+        $header = array_map(fn ($h) => strtolower(trim((string) $h)), $header);
         $rowCount = 1;
 
         while (($row = fgetcsv($handle)) !== false) {
@@ -81,13 +81,13 @@ class OnboardingService implements Contract
             $data = array_combine($header, $row);
 
             try {
-                $slip = DB::transaction(fn() => $this->processRow($data, $type, $expiresInDays));
+                $slip = DB::transaction(fn () => $this->processRow($data, $type, $expiresInDays));
 
                 $results['success']++;
                 $results['credentials'][] = $slip;
             } catch (\Throwable $e) {
                 $results['failure']++;
-                $results['errors'][] = "Row {$rowCount}: " . $e->getMessage();
+                $results['errors'][] = "Row {$rowCount}: ".$e->getMessage();
             }
         }
 
@@ -111,7 +111,7 @@ class OnboardingService implements Contract
             $columns[] = 'nip';
         }
 
-        return implode(',', $columns) . "\n";
+        return implode(',', $columns)."\n";
     }
 
     /**
@@ -135,7 +135,7 @@ class OnboardingService implements Contract
         }
 
         // Email is optional — only validate format when it is provided
-        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if ($email !== '' && ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException(__('setup::onboarding.errors.invalid_email'));
         }
 

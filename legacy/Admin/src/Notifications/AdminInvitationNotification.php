@@ -65,7 +65,7 @@ class AdminInvitationNotification extends Notification implements ShouldQueue
         return [
             'message' => __('admin::notifications.invitation_db_message'),
             'action_url' => route('invitation.accept', ['token' => $this->plainToken]),
-            'sender_name' => setting('brand_name', setting('app_name')) . ' Team',
+            'sender_name' => setting('brand_name', setting('app_name')).' Team',
         ];
     }
 }

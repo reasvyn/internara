@@ -19,7 +19,7 @@ test('it generates correct initials', function () {
 
 test('it uses uuid if configured', function () {
     config(['user.type_id' => 'uuid']);
-    $user = new User();
+    $user = new User;
 
     // We access the protected method via reflection if necessary,
     // but here we can just check if it's called during boot or check the property

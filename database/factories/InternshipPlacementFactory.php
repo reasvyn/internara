@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Internship;
-use App\Models\InternshipCompany;
-use App\Models\InternshipPlacement;
+use App\Domain\Internship\Models\Company;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Placement;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<InternshipPlacement>
+ * @extends Factory<Placement>
  */
-class InternshipPlacementFactory extends Factory
+class PlacementFactory extends Factory
 {
-    protected $model = InternshipPlacement::class;
+    protected $model = Placement::class;
 
     public function definition(): array
     {
         return [
-            'company_id' => InternshipCompany::factory(),
+            'company_id' => Company::factory(),
             'internship_id' => Internship::factory(),
-            'name' => fake()->jobTitle() . ' Intern',
+            'name' => fake()->jobTitle().' Intern',
             'address' => fake()->optional()->address(),
             'quota' => fake()->numberBetween(5, 50),
             'filled_quota' => 0,

@@ -24,8 +24,7 @@ return [
             'date' => 'Tanggal Kehadiran',
             'status' => 'Status Kehadiran',
             'notes' => 'Keterangan / Alasan',
-            'notes_placeholder' =>
-                'Contoh: Izin keperluan keluarga, sakit, atau informasi tambahan lainnya.',
+            'notes_placeholder' => 'Contoh: Izin keperluan keluarga, sakit, atau informasi tambahan lainnya.',
             'submit' => 'Simpan Kehadiran',
         ],
     ],

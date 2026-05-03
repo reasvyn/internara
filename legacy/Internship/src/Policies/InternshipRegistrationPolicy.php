@@ -32,7 +32,7 @@ class InternshipRegistrationPolicy
      */
     public function view(User $user, InternshipRegistration $registration): bool
     {
-        if (!$user->hasPermissionTo(Permission::REGISTRATION_VIEW->value)) {
+        if (! $user->hasPermissionTo(Permission::REGISTRATION_VIEW->value)) {
             return false;
         }
 

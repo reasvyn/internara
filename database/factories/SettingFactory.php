@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Setting;
+use App\Domain\Core\Models\Setting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -36,7 +36,7 @@ class SettingFactory extends Factory
      */
     public function string(array $attributes = []): static
     {
-        return $this->state(fn() => $this->buildState('string', $attributes));
+        return $this->state(fn () => $this->buildState('string', $attributes));
     }
 
     /**
@@ -46,7 +46,7 @@ class SettingFactory extends Factory
      */
     public function integer(array $attributes = []): static
     {
-        return $this->state(fn() => $this->buildState('integer', $attributes));
+        return $this->state(fn () => $this->buildState('integer', $attributes));
     }
 
     /**
@@ -56,7 +56,7 @@ class SettingFactory extends Factory
      */
     public function float(array $attributes = []): static
     {
-        return $this->state(fn() => $this->buildState('float', $attributes));
+        return $this->state(fn () => $this->buildState('float', $attributes));
     }
 
     /**
@@ -66,7 +66,7 @@ class SettingFactory extends Factory
      */
     public function boolean(array $attributes = []): static
     {
-        return $this->state(fn() => $this->buildState('boolean', $attributes));
+        return $this->state(fn () => $this->buildState('boolean', $attributes));
     }
 
     /**
@@ -76,7 +76,7 @@ class SettingFactory extends Factory
      */
     public function json(array $attributes = []): static
     {
-        return $this->state(fn() => $this->buildState('json', $attributes));
+        return $this->state(fn () => $this->buildState('json', $attributes));
     }
 
     /**
@@ -86,7 +86,7 @@ class SettingFactory extends Factory
      */
     public function nullType(array $attributes = []): static
     {
-        return $this->state(fn() => $this->buildState('null', $attributes));
+        return $this->state(fn () => $this->buildState('null', $attributes));
     }
 
     /**

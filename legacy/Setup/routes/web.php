@@ -22,7 +22,7 @@ Route::prefix('setup')
     ->group(function () {
         Route::get(
             '/',
-            fn() => redirect()->route('setup.welcome', ['token' => request('token')]),
+            fn () => redirect()->route('setup.welcome', ['token' => request('token')]),
         )->name('setup');
 
         Route::livewire('/welcome', SetupWelcome::class)->name('setup.welcome');

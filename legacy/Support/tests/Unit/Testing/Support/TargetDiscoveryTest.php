@@ -9,7 +9,7 @@ use Modules\Support\Testing\Support\TargetDiscovery;
 
 describe('TargetDiscovery', function () {
     beforeEach(function () {
-        $this->discovery = new TargetDiscovery();
+        $this->discovery = new TargetDiscovery;
     });
 
     it('implements TargetDiscoveryInterface', function () {
@@ -21,7 +21,7 @@ describe('TargetDiscovery', function () {
         $targets = $this->discovery->discover([], false, $missing);
 
         // Should find at least the System target
-        $systemTargets = array_filter($targets, fn($t) => $t['label'] === 'System');
+        $systemTargets = array_filter($targets, fn ($t) => $t['label'] === 'System');
         expect($systemTargets)->not->toBeEmpty();
     });
 

@@ -38,7 +38,7 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
      */
     public function update(Schedule $schedule, array $data): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $schedule);
         }
 
@@ -58,7 +58,7 @@ class ScheduleService extends EloquentQuery implements ScheduleServiceContract
      */
     public function delete(Schedule $schedule): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('delete', $schedule);
         }
 

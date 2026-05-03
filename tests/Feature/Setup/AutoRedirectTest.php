@@ -37,16 +37,25 @@ test('it allows access to setup route when not installed', function () {
     $setupService = app(SetupService::class);
     $token = $setupService->generateToken();
 
-    $response = $this->get('/setup?setup_token=' . $token);
+    $response = $this->get('/setup?setup_token='.$token);
 
     $response->assertStatus(200);
 });
 
-test('it blocks setup route when already installed', function () {
+test('it blocks setup route with 404 when already installed', function () {
     // Mock instalasi sukses
     File::put(storage_path('app/.installed'), json_encode(['installed_at' => now()]));
 
     $response = $this->get('/setup');
 
-    $response->assertRedirect('/login');
+    $response->assertNotFound();
+});
+
+test('it allows normal routes when installed', function () {
+    // Mock instalasi sukses
+    File::put(storage_path('app/.installed'), json_encode(['installed_at' => now()]));
+
+    $response = $this->get('/login');
+
+    $response->assertStatus(200);
 });

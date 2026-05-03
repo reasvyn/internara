@@ -46,7 +46,7 @@ class SetupComplete extends SetupWizardBase
         // Get admin ID from completed steps
         $adminId = $setup->admin_id;
 
-        if (!$adminId) {
+        if (! $adminId) {
             $this->addError('general', __('setup::messages.admin_not_found'));
 
             return;

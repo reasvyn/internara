@@ -62,8 +62,7 @@ test('it redirects setup routes to setup complete when only finalization remains
             AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_DEPARTMENT,
             AppSetupService::STEP_INTERNSHIP,
-        ]
-        as $step
+        ] as $step
     ) {
         app(SettingService::class)->setValue("setup_step_{$step}", true);
     }
@@ -86,8 +85,7 @@ test('it does not redirect setup complete to avoid redirect loops', function () 
             AppSetupService::STEP_ACCOUNT,
             AppSetupService::STEP_DEPARTMENT,
             AppSetupService::STEP_INTERNSHIP,
-        ]
-        as $step
+        ] as $step
     ) {
         app(SettingService::class)->setValue("setup_step_{$step}", true);
     }

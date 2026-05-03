@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 describe('ResultReporter', function () {
     beforeEach(function () {
-        $output = new ConsoleOutput();
+        $output = new ConsoleOutput;
         $this->reporter = new ResultReporter(new Factory($output));
     });
 

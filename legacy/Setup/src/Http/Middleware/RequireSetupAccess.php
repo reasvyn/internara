@@ -32,7 +32,7 @@ class RequireSetupAccess
         }
 
         // If NOT installed and NOT trying to access setup -> redirect to setup
-        if (!$isInstalled && !$isSetupRoute) {
+        if (! $isInstalled && ! $isSetupRoute) {
             $setup = $setupService->getSetup();
 
             // Generate token if not exists

@@ -87,7 +87,7 @@ class AccountRestriction extends Model
      */
     public function autoLiftIfExpired(): bool
     {
-        if (!$this->hasExpired()) {
+        if (! $this->hasExpired()) {
             return false;
         }
 

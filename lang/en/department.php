@@ -8,8 +8,7 @@ return [
     'add' => 'Add Department',
     'edit' => 'Edit Department',
     'new' => 'New Department',
-    'delete_confirm' =>
-        'Are you sure you want to delete this department? This action cannot be undone.',
+    'delete_confirm' => 'Are you sure you want to delete this department? This action cannot be undone.',
     'delete_blocked' => 'Cannot delete: this department has :count student profile(s) associated.',
     'stats' => [
         'total' => 'Total Departments',

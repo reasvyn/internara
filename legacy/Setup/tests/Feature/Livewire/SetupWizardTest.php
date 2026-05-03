@@ -35,9 +35,9 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn() => true);
-    Gate::define('saveSettings', fn() => true);
-    Gate::define('finalize', fn() => true);
+    Gate::define('performStep', fn () => true);
+    Gate::define('saveSettings', fn () => true);
+    Gate::define('finalize', fn () => true);
 
     // Mock environment auditor to always be ready
     $mock = $this->mock(InstallationAuditor::class);
@@ -51,7 +51,8 @@ beforeEach(function () {
     // Mock requirement providers to always return satisfied
     $registry = app(SetupRequirementRegistry::class);
     foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
-        $mockProvider = new class ($identifier) implements SetupRequirementProvider {
+        $mockProvider = new class($identifier) implements SetupRequirementProvider
+        {
             public function __construct(private string $id) {}
 
             public function getRequirementIdentifier(): string
@@ -152,7 +153,7 @@ describe('Setup Wizard Transitions', function () {
         $settings->setValue('setup_step_internship', true);
 
         // 6. Complete -> Dashboard (Login)
-        if (!School::exists()) {
+        if (! School::exists()) {
             School::factory()->create();
         }
         $this->get(route('setup.complete', ['token' => 'test-token']));

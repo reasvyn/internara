@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Casts\SettingValueCast;
-use App\Models\Setting;
-use App\Support\AppInfo;
+use App\Domain\Core\Models\Setting;
+use App\Domain\Core\Support\AppInfo;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -167,7 +167,7 @@ class AppSettingSeeder extends Seeder
             // Operational group
             [
                 'key' => 'active_academic_year',
-                'value' => date('Y') - 1 . '/' . date('Y'),
+                'value' => date('Y') - 1 .'/'.date('Y'),
                 'type' => 'string',
                 'description' => 'The current active academic year for operational data.',
                 'group' => 'operational',
@@ -189,8 +189,8 @@ class AppSettingSeeder extends Seeder
         ];
 
         // Process values through the cast to ensure proper type storage
-        $caster = new SettingValueCast();
-        $dummyModel = new Setting();
+        $caster = new SettingValueCast;
+        $dummyModel = new Setting;
 
         $settingsToUpsert = [];
 

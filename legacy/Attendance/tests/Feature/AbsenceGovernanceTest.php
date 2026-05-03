@@ -32,7 +32,7 @@ test(
         ]);
         $absence->setStatus('approved');
 
-        expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
+        expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
             AppException::class,
             'attendance::messages.cannot_check_in_with_approved_absence',
         );

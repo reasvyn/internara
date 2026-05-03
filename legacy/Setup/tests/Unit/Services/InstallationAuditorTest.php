@@ -13,7 +13,7 @@ use Modules\Setup\Services\InstallationAuditor;
  */
 describe('InstallationAuditor', function () {
     beforeEach(function () {
-        $this->auditor = new InstallationAuditor();
+        $this->auditor = new InstallationAuditor;
     });
 
     describe('audit', function () {
@@ -53,7 +53,7 @@ describe('InstallationAuditor', function () {
 
             $extensionChecks = array_filter(
                 $result,
-                fn($item) => str_contains($item['name'], 'Extension'),
+                fn ($item) => str_contains($item['name'], 'Extension'),
             );
             expect($extensionChecks)->not->toBeEmpty();
         });

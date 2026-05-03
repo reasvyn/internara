@@ -55,7 +55,7 @@ class RegisterSuperAdmin extends Component
 
             // During setup phase, allow re-linking to an existing user record with the same email
             // to prevent "Email already taken" errors when repeating this step.
-            if (!setting('app_installed', false)) {
+            if (! setting('app_installed', false)) {
                 $existing = app(UserService::class)->findByEmail($this->form->email);
 
                 if ($existing) {
@@ -64,7 +64,7 @@ class RegisterSuperAdmin extends Component
             }
 
             // Generate a permanent, role-based username if not already set
-            if (empty($this->form->username) && !empty($this->form->email)) {
+            if (empty($this->form->username) && ! empty($this->form->email)) {
                 $this->form->username = $usernameGenerator->generate(
                     $this->form->email,
                     Role::SUPER_ADMIN->value,

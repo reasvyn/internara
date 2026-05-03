@@ -31,7 +31,7 @@ class SetupRequirementRegistry
      */
     public function isRequirementSatisfied(string $identifier): bool
     {
-        if (!isset($this->providers[$identifier])) {
+        if (! isset($this->providers[$identifier])) {
             return false;
         }
 

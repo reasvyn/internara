@@ -60,8 +60,7 @@ return [
             'active_count' => ':count Active Filters',
         ],
         'import' => [
-            'instructions' =>
-                'CSV template/import/export is limited to operational users. Roles may only be student, teacher, or mentor. Leave the roles column blank to default to student, use department_name exactly as stored, and do not include passwords.',
+            'instructions' => 'CSV template/import/export is limited to operational users. Roles may only be student, teacher, or mentor. Leave the roles column blank to default to student, use department_name exactly as stored, and do not include passwords.',
             'columns' => [
                 'roles' => 'Roles',
                 'department_name' => 'Department Name',
@@ -100,10 +99,8 @@ return [
             'reissue_code' => 'Reissue Activation Code',
             'activation_pending_claim' => 'Awaiting Claim',
             'activation_claimed' => 'Claimed',
-            'password_setup_notice' =>
-                'This account will be secured through an email setup link. Administrators cannot view the user password.',
-            'password_reset_notice' =>
-                'Use the reset-link action from the table to let the user set a new password securely.',
+            'password_setup_notice' => 'This account will be secured through an email setup link. Administrators cannot view the user password.',
+            'password_reset_notice' => 'Use the reset-link action from the table to let the user set a new password securely.',
             'nip' => 'NIP (Employee ID)',
             'nip_hint' => 'Mandatory for Teacher role.',
             'nisn' => 'NISN (National Student ID)',
@@ -114,8 +111,7 @@ return [
         ],
         'delete' => [
             'title' => 'Confirm Deletion',
-            'message' =>
-                'Are you sure you want to delete this record? This action cannot be undone.',
+            'message' => 'Are you sure you want to delete this record? This action cannot be undone.',
         ],
         'deleted_successfully' => ':count user data deleted successfully.',
         'credential_slips' => [

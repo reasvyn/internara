@@ -1,6 +1,6 @@
 @php
-    $brandName = App\Support\Branding::brandName();
-    $brandLogo = App\Support\Branding::logo();
+    $brandName = brand('name');
+    $brandLogo = brand('logo');
 @endphp
 
 <div id="preloader" class="fixed inset-0 z-[9999] flex items-center justify-center bg-base-100 transition-opacity duration-500">

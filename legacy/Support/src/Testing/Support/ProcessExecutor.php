@@ -71,7 +71,7 @@ class ProcessExecutor implements ProcessExecutorInterface
             $result = $this->doExecute($command, $env);
 
             // Success or non-transient failure
-            if ($result['exitCode'] === 0 || !$this->isTransientFailure($result)) {
+            if ($result['exitCode'] === 0 || ! $this->isTransientFailure($result)) {
                 return $result;
             }
 
@@ -191,7 +191,7 @@ class ProcessExecutor implements ProcessExecutorInterface
             // Remove from active processes
             $this->activeProcesses = array_filter(
                 $this->activeProcesses,
-                fn(Process $p) => $p !== $process,
+                fn (Process $p) => $p !== $process,
             );
 
             // Clear references

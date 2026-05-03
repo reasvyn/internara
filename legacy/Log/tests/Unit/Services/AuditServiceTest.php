@@ -16,7 +16,7 @@ beforeEach(function () {
 });
 
 test('it logs an audit event with PII masking', function () {
-    $service = new AuditService();
+    $service = new AuditService;
 
     $service->log('user_updated', 'Modules\User\Models\User', 'user-123', [
         'email' => 'test@example.com',
@@ -37,7 +37,7 @@ test('it logs an audit event with PII masking', function () {
 });
 
 test('it logs security events', function () {
-    $service = new AuditService();
+    $service = new AuditService;
 
     $service->logSecurity('login_failed', [
         'email' => 'hacker@example.com',
@@ -51,7 +51,7 @@ test('it logs security events', function () {
 });
 
 test('it logs data changes with comparison', function () {
-    $service = new AuditService();
+    $service = new AuditService;
 
     $oldValues = ['name' => 'Old Name', 'email' => 'old@example.com'];
     $newValues = ['name' => 'New Name', 'email' => 'new@example.com'];
@@ -65,7 +65,7 @@ test('it logs data changes with comparison', function () {
 });
 
 test('it does not log when no changes detected', function () {
-    $service = new AuditService();
+    $service = new AuditService;
 
     $values = ['name' => 'Same Name'];
 
@@ -96,7 +96,7 @@ test('it queries audit logs with filters', function () {
         'created_at' => now(),
     ]);
 
-    $service = new AuditService();
+    $service = new AuditService;
 
     // Filter by subject type
     $results = $service->query(['subject_type' => 'Modules\Student\Models\Student']);
@@ -121,7 +121,7 @@ test('it gets module statistics', function () {
         ]);
     }
 
-    $service = new AuditService();
+    $service = new AuditService;
     $stats = $service->getModuleStats('User');
 
     expect($stats['module'])->toBe('User');
@@ -139,7 +139,7 @@ test('it exports logs for compliance', function () {
         'created_at' => now(),
     ]);
 
-    $service = new AuditService();
+    $service = new AuditService;
     $export = $service->exportForCompliance(['subject_type' => 'Modules\Student\Models\Student']);
 
     expect($export)->toContain('Module');
@@ -162,7 +162,7 @@ test('it purges old logs based on retention policy', function () {
         'created_at' => now(),
     ]);
 
-    $service = new AuditService();
+    $service = new AuditService;
     $deleted = $service->purgeOldLogs(365);
 
     expect($deleted)->toBe(1);
@@ -174,7 +174,7 @@ test('it verifies audit trail integrity', function () {
     // Create valid logs
     for ($i = 0; $i < 10; $i++) {
         AuditLog::create([
-            'user_id' => 'user-' . $i,
+            'user_id' => 'user-'.$i,
             'subject_type' => 'Modules\User\Models\User',
             'action' => 'test_action',
             'payload' => ['field' => 'value'],
@@ -182,7 +182,7 @@ test('it verifies audit trail integrity', function () {
         ]);
     }
 
-    $service = new AuditService();
+    $service = new AuditService;
     $result = $service->verifyIntegrity();
 
     expect($result['total_checked'])->toBe(10);
@@ -199,14 +199,14 @@ test('it detects integrity issues', function () {
         'created_at' => now(),
     ]);
 
-    $service = new AuditService();
+    $service = new AuditService;
     $result = $service->verifyIntegrity();
 
     expect($result['issues_found'])->toBeGreaterThan(0);
 });
 
 test('it gets all auditable modules', function () {
-    $service = new AuditService();
+    $service = new AuditService;
     $modules = $service->getAuditableModules();
 
     expect($modules)->toBeArray();

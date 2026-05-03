@@ -23,7 +23,7 @@ final class Handler
     {
         if ($e instanceof EloquentModelNotFound) {
             $ids = $e->getIds();
-            $uuid = !empty($ids) ? (string) $ids[0] : 'multiple';
+            $uuid = ! empty($ids) ? (string) $ids[0] : 'multiple';
 
             // Extract module name from model namespace (Modules\{Module}\Models\...)
             $modelClass = $e->getModel();

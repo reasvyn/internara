@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Actions\Auth\CreateUserAction;
-use App\Actions\Auth\DeleteUserAction;
-use App\Actions\Auth\UpdateUserAction;
-use App\Enums\Role as RoleEnum;
-use App\Models\Department;
-use App\Models\Profile;
-use App\Models\User;
+use App\Domain\School\Models\Department;
+use App\Domain\User\Actions\CreateUserAction;
+use App\Domain\User\Actions\DeleteUserAction;
+use App\Domain\User\Actions\UpdateUserAction;
+use App\Domain\User\Models\Profile;
+use App\Domain\User\Models\User;
+use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 use function Pest\Laravel\actingAs;
@@ -37,7 +37,7 @@ describe('Admin Manager', function () {
         $data = [
             'name' => 'New Admin',
             'email' => 'newadmin@example.com',
-            'username' => 'newadmin',
+            'username' => 'u12345678',
             'roles' => [RoleEnum::ADMIN->value],
         ];
 
@@ -93,7 +93,7 @@ describe('Student Manager', function () {
         $data = [
             'name' => 'New Student',
             'email' => 'student@example.com',
-            'username' => 'student01',
+            'username' => 'u87654321',
             'national_identifier' => '1234567890', // NISN
             'registration_number' => 'REG001',
             'department_id' => $department->id,
@@ -151,7 +151,7 @@ describe('Teacher Manager', function () {
         $data = [
             'name' => 'New Teacher',
             'email' => 'teacher@example.com',
-            'username' => 'teacher01',
+            'username' => 'u11223344',
             'registration_number' => 'NIP001', // NIP
         ];
 
@@ -181,7 +181,7 @@ describe('Mentor Manager', function () {
         $data = [
             'name' => 'New Mentor',
             'email' => 'mentor@example.com',
-            'username' => 'mentor01',
+            'username' => 'u99887766',
             'phone' => '08123456789',
         ];
 
@@ -190,11 +190,11 @@ describe('Mentor Manager', function () {
             'phone' => '08123456789',
         ];
 
-        $user = $action->execute($data, $profileData, [RoleEnum::MENTOR->value]);
+        $user = $action->execute($data, $profileData, [RoleEnum::SUPERVISOR->value]);
 
         expect($user)
             ->toBeInstanceOf(User::class)
-            ->and($user->hasRole(RoleEnum::MENTOR))
+            ->and($user->hasRole(RoleEnum::SUPERVISOR))
             ->toBeTrue()
             ->and($user->profile->phone)
             ->toBe('08123456789');

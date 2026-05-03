@@ -72,14 +72,14 @@ class SlotManager implements SlotManagerContract
                 }
 
                 // 2. Check for specific permissions
-                if (isset($data['permission']) && !$user?->can($data['permission'])) {
+                if (isset($data['permission']) && ! $user?->can($data['permission'])) {
                     return false;
                 }
 
                 // 2. Check for required roles (e.g., 'admin|super-admin')
                 if (isset($data['role'])) {
                     $roles = explode('|', $data['role']);
-                    if (!$user?->hasRole($roles)) {
+                    if (! $user?->hasRole($roles)) {
                         return false;
                     }
                 }
@@ -104,7 +104,7 @@ class SlotManager implements SlotManagerContract
 
                     if (is_string($view) && Str::startsWith($view, 'livewire:')) {
                         $component = Str::after($view, 'livewire:');
-                        $stableId = md5($slot . $component);
+                        $stableId = md5($slot.$component);
 
                         return $this->livewireManager->mount($component, $data, $stableId);
                     }
@@ -123,8 +123,8 @@ class SlotManager implements SlotManagerContract
                 } catch (\Throwable $e) {
                     if (is_debug_mode()) {
                         Log::error(
-                            'Slot Injection Error: Failed to render component [' .
-                                (is_string($view) ? $view : 'Closure') .
+                            'Slot Injection Error: Failed to render component ['.
+                                (is_string($view) ? $view : 'Closure').
                                 "] in slot [{$slot}]. Error: {$e->getMessage()}",
                             [
                                 'exception' => $e,

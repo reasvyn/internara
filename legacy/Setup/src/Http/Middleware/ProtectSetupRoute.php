@@ -59,10 +59,10 @@ class ProtectSetupRoute
 
         $setupService = app(SetupService::class);
 
-        if (!$setupService->validateToken($token)) {
+        if (! $setupService->validateToken($token)) {
             Log::warning('Setup access denied: invalid/expired token', [
                 'ip' => $request->ip(),
-                'token_prefix' => substr($token, 0, 8) . '...',
+                'token_prefix' => substr($token, 0, 8).'...',
             ]);
 
             return $this->denyAccess(__('setup::messages.token_invalid'));
@@ -91,7 +91,7 @@ class ProtectSetupRoute
      */
     protected function throttleKey(Request $request): string
     {
-        return 'setup_throttle:' . $request->ip();
+        return 'setup_throttle:'.$request->ip();
     }
 
     /**

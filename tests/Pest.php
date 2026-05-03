@@ -7,11 +7,11 @@ use Tests\TestCase;
 pest()
     ->extend(TestCase::class)
     ->use(LazilyRefreshDatabase::class)
-    ->in(__DIR__ . '/Feature');
+    ->in(__DIR__.'/Feature');
 
 pest()
     ->extend(TestCase::class)
-    ->in(__DIR__ . '/Unit');
+    ->in(__DIR__.'/Unit');
 
 /*
 |--------------------------------------------------------------------------

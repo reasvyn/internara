@@ -65,7 +65,7 @@ class OnboardingBatch extends Model
     public function claimedCount(): int
     {
         return $this->users()
-            ->whereHas('accountTokens', fn($q) => $q->whereNotNull('claimed_at'))
+            ->whereHas('accountTokens', fn ($q) => $q->whereNotNull('claimed_at'))
             ->count();
     }
 

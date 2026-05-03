@@ -37,7 +37,7 @@ class CheckAccountLockout
     {
         // Only apply to login/password reset attempts
         if (
-            !in_array($request->route()?->getName(), [
+            ! in_array($request->route()?->getName(), [
                 'login',
                 'password.request',
                 'password.reset',

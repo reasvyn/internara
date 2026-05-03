@@ -94,17 +94,17 @@ class AppTestCommand extends Command
         // The orchestrator's reporter handles display during execution
 
         // Handle exports
-        if (!empty($options['log-junit'])) {
+        if (! empty($options['log-junit'])) {
             // Export handled by orchestrator
         }
 
-        if (!empty($options['log-json'])) {
+        if (! empty($options['log-json'])) {
             // Export handled by orchestrator
         }
 
         // Check for missing modules
         $missing = $orchestrator->getMissingModules();
-        if (!empty($missing)) {
+        if (! empty($missing)) {
             $this->newLine();
             foreach ($missing as $module) {
                 $this->components->error(
@@ -186,8 +186,8 @@ class AppTestCommand extends Command
             ' <fg=white;bg=magenta;options=bold> INTERNARA </> <fg=magenta;options=bold>MODULAR VERIFICATION ENGINE</>',
         );
         $this->line(
-            ' <fg=gray>Advanced Infrastructure Testing Tool v' .
-                config('app.version', '0.14.0') .
+            ' <fg=gray>Advanced Infrastructure Testing Tool v'.
+                config('app.version', '0.14.0').
                 '</>',
         );
         $this->newLine();

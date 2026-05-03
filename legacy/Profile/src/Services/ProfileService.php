@@ -36,7 +36,7 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function create(array $data): Profile
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('create', $this->model);
         }
 
@@ -52,7 +52,7 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function update(Profile $profile, array $data): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $profile);
         }
 
@@ -66,7 +66,7 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function delete(Profile $profile): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('delete', $profile);
         }
 
@@ -79,7 +79,7 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function getByUserId(string $userId): ?Profile
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('view', [$this->model, $userId]);
         }
 
@@ -102,11 +102,11 @@ class ProfileService extends EloquentQuery implements Contract
     {
         $user = User::query()->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(replace: ['record' => 'User', 'id' => $userId]);
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -125,7 +125,7 @@ class ProfileService extends EloquentQuery implements Contract
      */
     public function syncProfileable(Profile $profile, Model $profileable): Profile
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $profile);
         }
 

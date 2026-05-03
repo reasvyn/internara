@@ -51,11 +51,11 @@ describe('OnboardingService Unit Test', function () {
         $this->studentService->shouldReceive('create')->once();
 
         // Create temporary CSV with correct headers matching service logic
-        $csvPath = tempnam(sys_get_temp_dir(), 'test_') . '.csv';
+        $csvPath = tempnam(sys_get_temp_dir(), 'test_').'.csv';
         $headers =
             'name,email,username,phone,address,department_id,national_identifier,registration_number';
         $row = 'John Doe,john@example.com,jdoe,0812,Jl. Merdeka,dept-1,12345,67890';
-        file_put_contents($csvPath, $headers . "\n" . $row);
+        file_put_contents($csvPath, $headers."\n".$row);
 
         $results = $this->service->importFromCsv($csvPath, 'student');
 

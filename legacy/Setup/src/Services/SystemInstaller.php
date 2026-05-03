@@ -36,27 +36,27 @@ class SystemInstaller extends BaseService implements Contract
     {
         Gate::authorize('install', self::class);
 
-        if (!$this->ensureEnvFileExists()) {
+        if (! $this->ensureEnvFileExists()) {
             return false;
         }
 
-        if (!$this->auditor->passes()) {
+        if (! $this->auditor->passes()) {
             return false;
         }
 
-        if (!$this->generateAppKey()) {
+        if (! $this->generateAppKey()) {
             return false;
         }
 
-        if (!$this->runMigrations()) {
+        if (! $this->runMigrations()) {
             return false;
         }
 
-        if (!$this->runSeeders()) {
+        if (! $this->runSeeders()) {
             return false;
         }
 
-        if (!$this->generateSetupToken()) {
+        if (! $this->generateSetupToken()) {
             return false;
         }
 
@@ -74,7 +74,7 @@ class SystemInstaller extends BaseService implements Contract
             return true;
         }
 
-        if (!File::exists(base_path('.env.example'))) {
+        if (! File::exists(base_path('.env.example'))) {
             Log::error('Cannot create .env: .env.example not found');
 
             return false;
@@ -96,7 +96,7 @@ class SystemInstaller extends BaseService implements Contract
      */
     public function generateAppKey(): bool
     {
-        if (!empty(config('app.key'))) {
+        if (! empty(config('app.key'))) {
             Log::info('Application key already exists, skipping');
 
             return true;
@@ -111,7 +111,7 @@ class SystemInstaller extends BaseService implements Contract
 
             return $result === 0;
         } catch (\Exception $e) {
-            Log::error('Failed to generate application key: ' . $e->getMessage());
+            Log::error('Failed to generate application key: '.$e->getMessage());
 
             return false;
         }
@@ -132,7 +132,7 @@ class SystemInstaller extends BaseService implements Contract
     {
         try {
             $hasMigrations = $this->hasExistingMigrations();
-            $command = $hasMigrations && !$force ? 'migrate:fresh' : 'migrate';
+            $command = $hasMigrations && ! $force ? 'migrate:fresh' : 'migrate';
 
             $result = Artisan::call($command, ['--force' => true]);
 
@@ -147,7 +147,7 @@ class SystemInstaller extends BaseService implements Contract
 
             return $result === 0;
         } catch (\Exception $e) {
-            Log::error('Migration failure during installation: ' . $e->getMessage());
+            Log::error('Migration failure during installation: '.$e->getMessage());
 
             return false;
         }
@@ -180,7 +180,7 @@ class SystemInstaller extends BaseService implements Contract
                 return $seeded;
             });
         } catch (\Exception $e) {
-            Log::error('Seeding failure during installation: ' . $e->getMessage());
+            Log::error('Seeding failure during installation: '.$e->getMessage());
 
             return false;
         }
@@ -195,12 +195,12 @@ class SystemInstaller extends BaseService implements Contract
             $token = $this->setupService->generateToken();
 
             Log::info('Setup token generated', [
-                'token_preview' => substr($token, 0, 8) . '...',
+                'token_preview' => substr($token, 0, 8).'...',
             ]);
 
             return true;
         } catch (\Exception $e) {
-            Log::error('Failed to generate setup token: ' . $e->getMessage());
+            Log::error('Failed to generate setup token: '.$e->getMessage());
 
             return false;
         }
@@ -224,7 +224,7 @@ class SystemInstaller extends BaseService implements Contract
 
             return $result === 0;
         } catch (\Exception $e) {
-            Log::error('Failed to create storage symlink: ' . $e->getMessage());
+            Log::error('Failed to create storage symlink: '.$e->getMessage());
 
             return false;
         }

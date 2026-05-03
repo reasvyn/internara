@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Internship;
 
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Placement;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\User\Models\User;
 use App\Enums\InternshipStatus;
-use App\Livewire\Admin\Internship\InternshipIndex;
-use App\Models\Internship;
-use App\Models\InternshipPlacement;
-use App\Models\InternshipRegistration;
-use App\Models\User;
+use App\Livewire\Internship\InternshipIndex;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
@@ -76,7 +76,7 @@ test('admin can edit an existing internship batch', function () {
 
 test('admin cannot delete internship with placements', function () {
     $internship = Internship::factory()->create();
-    InternshipPlacement::factory()->create(['internship_id' => $internship->id]);
+    Placement::factory()->create(['internship_id' => $internship->id]);
 
     $user = User::factory()->create();
     $user->assignRole('admin');
@@ -91,7 +91,7 @@ test('admin cannot delete internship with registrations', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    InternshipRegistration::factory()->create([
+    Registration::factory()->create([
         'student_id' => $student->id,
         'internship_id' => $internship->id,
     ]);

@@ -84,7 +84,7 @@ class ClaimAccount extends Component
         $this->validate($this->stepOneRules());
 
         // Rate-limit by username to prevent brute-force code enumeration.
-        $key = 'claim-account:' . Str::lower($this->username);
+        $key = 'claim-account:'.Str::lower($this->username);
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
             // [S2 - Sustain] Audit Log for Brute Force Attempt
@@ -101,7 +101,7 @@ class ClaimAccount extends Component
         $plainCode = Str::upper(str_replace([' ', '-'], '-', $this->activation_code));
         $token = $provisioning->findActiveToken($this->username, $plainCode);
 
-        if (!$token) {
+        if (! $token) {
             RateLimiter::hit($key, 300); // 5 min decay
 
             // [S2 - Sustain] Audit Log for Failed Attempt
@@ -133,7 +133,7 @@ class ClaimAccount extends Component
 
         $token = AccountToken::find($this->verifiedTokenId);
 
-        if (!$token || !$token->isActive()) {
+        if (! $token || ! $token->isActive()) {
             // Token was consumed or expired between steps (edge case)
             $this->reset();
             $this->step = 1;
@@ -166,7 +166,7 @@ class ClaimAccount extends Component
     public function render(): View
     {
         return view('auth::livewire.claim-account')->layout('auth::components.layouts.auth', [
-            'title' => __('auth::claim.page_title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::claim.page_title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

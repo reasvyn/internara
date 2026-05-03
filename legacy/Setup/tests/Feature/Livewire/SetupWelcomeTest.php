@@ -19,7 +19,7 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn() => true);
+    Gate::define('performStep', fn () => true);
 });
 
 describe('SetupWelcome Component', function () {

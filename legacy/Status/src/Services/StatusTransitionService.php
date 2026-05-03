@@ -41,12 +41,12 @@ class StatusTransitionService
         // Get current status from Spatie
         $currentStatus = $user->getStatus();
 
-        if (!$currentStatus) {
+        if (! $currentStatus) {
             throw new \LogicException('User has no current status set');
         }
 
         // Check if transition is valid
-        if (!$currentStatus->canTransitionTo($newStatus)) {
+        if (! $currentStatus->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException(
                 "Invalid transition: {$currentStatus->value} → {$newStatus->value}",
             );
@@ -129,7 +129,7 @@ class StatusTransitionService
         ?User $triggeredBy = null,
     ): void {
         // If no one triggered it, assume system action (allowed)
-        if (!$triggeredBy) {
+        if (! $triggeredBy) {
             return;
         }
 
@@ -171,7 +171,7 @@ class StatusTransitionService
         }
 
         $currentStatus = $user->getStatus();
-        if (!$currentStatus) {
+        if (! $currentStatus) {
             return [];
         }
 
@@ -189,7 +189,7 @@ class StatusTransitionService
             }
 
             $currentStatus = $user->getStatus();
-            if (!$currentStatus) {
+            if (! $currentStatus) {
                 return false;
             }
 

@@ -38,7 +38,7 @@ class AdminService extends EloquentQuery implements Contract
 
     public function query(array $filters = [], array $columns = ['*'], array $with = []): Builder
     {
-        if (!$this->baseQuery) {
+        if (! $this->baseQuery) {
             $this->setBaseQuery($this->model->newQuery()->role(Role::ADMIN->value));
         }
 
@@ -71,7 +71,7 @@ class AdminService extends EloquentQuery implements Contract
     {
         $query = $this->model->newQuery()->role([Role::ADMIN->value, Role::SUPER_ADMIN->value]);
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%");
@@ -105,7 +105,7 @@ class AdminService extends EloquentQuery implements Contract
             // Generate a cryptographically strong placeholder that nobody knows.
             $data['password'] = Str::password(32);
 
-            if (setting('app_installed', false) && !$this->skipAuthorization) {
+            if (setting('app_installed', false) && ! $this->skipAuthorization) {
                 Gate::authorize('create', [User::class, [Role::ADMIN->value]]);
             }
 
@@ -117,7 +117,7 @@ class AdminService extends EloquentQuery implements Contract
             // Email verification happens when invitation is accepted (inbox proof)
             if ($profileData !== []) {
                 $profileService =
-                    !setting('app_installed', false) || $this->skipAuthorization || auth()->guest()
+                    ! setting('app_installed', false) || $this->skipAuthorization || auth()->guest()
                         ? $this->profileService->withoutAuthorization()
                         : $this->profileService;
                 $profileService->upsertManagedProfile($user->id, $profileData);
@@ -133,7 +133,7 @@ class AdminService extends EloquentQuery implements Contract
     {
         $admins = $this->query()->whereKey(Arr::wrap($ids))->get();
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             foreach ($admins as $admin) {
                 Gate::authorize('delete', $admin);
             }

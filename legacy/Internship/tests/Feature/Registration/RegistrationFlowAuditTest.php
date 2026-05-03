@@ -40,7 +40,7 @@ test(
         $mock = $this->mock(InternshipRequirementService::class);
         $mock->shouldReceive('hasClearedMandatory')->once()->andReturn(false);
 
-        expect(fn() => app(RegistrationService::class)->approve($registration->id))->toThrow(
+        expect(fn () => app(RegistrationService::class)->approve($registration->id))->toThrow(
             AppException::class,
             'internship::exceptions.mandatory_requirements_not_met',
         );

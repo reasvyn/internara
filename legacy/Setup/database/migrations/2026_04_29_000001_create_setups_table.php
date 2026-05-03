@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Schema;
  * [S1 - Secure] UUID primary key, encrypted tokens, audit columns
  * [S3 - Scalable] Independent table (not settings-based), proper indexes
  */
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('setups', function (Blueprint $table) {

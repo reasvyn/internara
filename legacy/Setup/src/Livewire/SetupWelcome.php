@@ -36,7 +36,7 @@ class SetupWelcome extends SetupWizardBase
         $this->database = $audit['database'];
         $this->recommendations = $audit['recommendations'] ?? [];
 
-        $this->hasErrors = !$auditor->passes();
+        $this->hasErrors = ! $auditor->passes();
     }
 
     public function nextStep(): void

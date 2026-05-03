@@ -42,7 +42,7 @@ class RoleBasedAccessPolicy
         }
 
         // Admin can view non-admins
-        if ($user->isAdmin() && !$target->isAdmin() && !$target->isSuper()) {
+        if ($user->isAdmin() && ! $target->isAdmin() && ! $target->isSuper()) {
             return true;
         }
 
@@ -75,7 +75,7 @@ class RoleBasedAccessPolicy
 
         // Super Admin can change any status (except protecting other Super Admins)
         if ($user->isSuper()) {
-            return $newStatus !== Status::PROTECTED || !$target->isSuper();
+            return $newStatus !== Status::PROTECTED || ! $target->isSuper();
         }
 
         // Admin can:
@@ -114,12 +114,12 @@ class RoleBasedAccessPolicy
     {
         // Super Admin can verify anyone except other Super Admins
         if ($user->isSuper()) {
-            return !$target->isSuper();
+            return ! $target->isSuper();
         }
 
         // Admin can verify non-admin users
         if ($user->isAdmin()) {
-            return !$target->isAdmin() && !$target->isSuper();
+            return ! $target->isAdmin() && ! $target->isSuper();
         }
 
         // Supervisor can verify students
@@ -145,12 +145,12 @@ class RoleBasedAccessPolicy
 
         // Super Admin can restrict anyone except other Super Admins
         if ($user->isSuper()) {
-            return !$target->isSuper();
+            return ! $target->isSuper();
         }
 
         // Admin can restrict non-admin users only
         if ($user->isAdmin()) {
-            return !$target->isAdmin() && !$target->isSuper();
+            return ! $target->isAdmin() && ! $target->isSuper();
         }
 
         // Supervisor can restrict students
@@ -176,12 +176,12 @@ class RoleBasedAccessPolicy
 
         // Super Admin can suspend anyone except other Super Admins
         if ($user->isSuper()) {
-            return !$target->isSuper();
+            return ! $target->isSuper();
         }
 
         // Admin can suspend non-admin users only
         if ($user->isAdmin()) {
-            return !$target->isAdmin() && !$target->isSuper();
+            return ! $target->isAdmin() && ! $target->isSuper();
         }
 
         // Supervisor can suspend students only

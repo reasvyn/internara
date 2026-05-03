@@ -133,7 +133,7 @@ class UserManager extends RecordManager
      */
     public function activeFilterCount(): int
     {
-        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
+        return count(array_filter($this->filters, fn ($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     public function roleBadgeVariant(string $role): string
@@ -182,7 +182,7 @@ class UserManager extends RecordManager
 
         $viewer = auth()->user();
 
-        if ($viewer && !$viewer->hasRole(Role::SUPER_ADMIN->value)) {
+        if ($viewer && ! $viewer->hasRole(Role::SUPER_ADMIN->value)) {
             // Admin: show only students, teachers, and mentors
             $subordinateRoles = [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value];
 
@@ -190,12 +190,12 @@ class UserManager extends RecordManager
                 ->where(function (Builder $q) use ($subordinateRoles): void {
                     $q->whereHas(
                         'roles',
-                        fn(Builder $r) => $r->whereIn('name', $subordinateRoles),
+                        fn (Builder $r) => $r->whereIn('name', $subordinateRoles),
                     )->orWhereDoesntHave('roles');
                 })
                 ->whereDoesntHave(
                     'roles',
-                    fn(Builder $r) => $r->whereIn('name', [
+                    fn (Builder $r) => $r->whereIn('name', [
                         Role::SUPER_ADMIN->value,
                         Role::ADMIN->value,
                     ]),
@@ -207,7 +207,7 @@ class UserManager extends RecordManager
             if ($selectedRole === 'no_role') {
                 $query->whereDoesntHave('roles');
             } else {
-                $query->whereHas('roles', fn(Builder $r) => $r->where('name', $selectedRole));
+                $query->whereHas('roles', fn (Builder $r) => $r->where('name', $selectedRole));
             }
         }
 
@@ -222,11 +222,11 @@ class UserManager extends RecordManager
         }
 
         if ($createdFrom) {
-            $query->whereDate(new User()->getTable() . '.created_at', '>=', $createdFrom);
+            $query->whereDate(new User()->getTable().'.created_at', '>=', $createdFrom);
         }
 
         if ($createdTo) {
-            $query->whereDate(new User()->getTable() . '.created_at', '<=', $createdTo);
+            $query->whereDate(new User()->getTable().'.created_at', '<=', $createdTo);
         }
 
         return $query;
@@ -239,15 +239,15 @@ class UserManager extends RecordManager
 
         $query->whereExists(function ($sub) use ($status, $statusTable, $userTable): void {
             $sub->selectRaw('1')
-                ->from($statusTable . ' as latest_status')
-                ->whereColumn('latest_status.model_id', $userTable . '.id')
+                ->from($statusTable.' as latest_status')
+                ->whereColumn('latest_status.model_id', $userTable.'.id')
                 ->where('latest_status.model_type', User::class)
                 ->where('latest_status.name', $status)
                 ->whereRaw(
-                    'latest_status.created_at = (select max(s2.created_at) from ' .
-                        $statusTable .
-                        ' as s2 where s2.model_type = ? and s2.model_id = ' .
-                        $userTable .
+                    'latest_status.created_at = (select max(s2.created_at) from '.
+                        $statusTable.
+                        ' as s2 where s2.model_type = ? and s2.model_id = '.
+                        $userTable.
                         '.id)',
                     [User::class],
                 );

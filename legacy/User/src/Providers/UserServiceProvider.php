@@ -58,8 +58,7 @@ class UserServiceProvider extends ServiceProvider
     {
         return [
             \Modules\User\Services\Contracts\UserService::class => UserService::class,
-            \Modules\User\Services\Contracts\AccountProvisioningService::class =>
-                AccountProvisioningService::class,
+            \Modules\User\Services\Contracts\AccountProvisioningService::class => AccountProvisioningService::class,
         ];
     }
 }

@@ -23,7 +23,7 @@ test('it can import students from CSV', function () {
     $csvContent .= "John Doe,john@example.com,1234567890,08123456789\n";
     $csvContent .= "Jane Doe,jane@example.com,0987654321,08987654321\n";
 
-    $filePath = tempnam(sys_get_temp_dir(), 'import_') . '.csv';
+    $filePath = tempnam(sys_get_temp_dir(), 'import_').'.csv';
     file_put_contents($filePath, $csvContent);
 
     $service = app(OnboardingService::class);
@@ -45,7 +45,7 @@ test('it can import teachers from CSV', function () {
     $csvContent = "name,email,nip\n";
     $csvContent .= "Teacher One,teacher1@example.com,19900101\n";
 
-    $filePath = tempnam(sys_get_temp_dir(), 'import_') . '.csv';
+    $filePath = tempnam(sys_get_temp_dir(), 'import_').'.csv';
     file_put_contents($filePath, $csvContent);
 
     $service = app(OnboardingService::class);
@@ -65,7 +65,7 @@ test('it handles validation errors in CSV rows', function () {
     $csvContent .= ",missing@email.com\n"; // Missing name
     $csvContent .= "Invalid Email,not-an-email\n";
 
-    $filePath = tempnam(sys_get_temp_dir(), 'import_') . '.csv';
+    $filePath = tempnam(sys_get_temp_dir(), 'import_').'.csv';
     file_put_contents($filePath, $csvContent);
 
     $service = app(OnboardingService::class);
@@ -84,7 +84,7 @@ test('it can handle a larger batch of student imports', function () {
         $csvContent .= "Student {$i},student{$i}@example.com,national_identifier{$i}\n";
     }
 
-    $filePath = tempnam(sys_get_temp_dir(), 'import_bulk_') . '.csv';
+    $filePath = tempnam(sys_get_temp_dir(), 'import_bulk_').'.csv';
     file_put_contents($filePath, $csvContent);
 
     $service = app(OnboardingService::class);

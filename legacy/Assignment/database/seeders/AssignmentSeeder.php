@@ -19,15 +19,13 @@ class AssignmentSeeder extends Seeder
                 'name' => 'Laporan Kegiatan PKL',
                 'slug' => 'laporan-pkl',
                 'group' => 'report',
-                'description' =>
-                    'Laporan akhir pelaksanaan Praktik Kerja Lapangan (PKL) dalam format PDF.',
+                'description' => 'Laporan akhir pelaksanaan Praktik Kerja Lapangan (PKL) dalam format PDF.',
             ],
             [
                 'name' => 'Presentasi Kegiatan PKL',
                 'slug' => 'presentasi-pkl',
                 'group' => 'presentation',
-                'description' =>
-                    'Materi presentasi hasil pelaksanaan PKL dalam format PPT atau PDF.',
+                'description' => 'Materi presentasi hasil pelaksanaan PKL dalam format PPT atau PDF.',
             ],
             [
                 'name' => 'Sertifikat Industri',
@@ -39,8 +37,7 @@ class AssignmentSeeder extends Seeder
                 'name' => 'Dokumentasi Teknis',
                 'slug' => 'dokumentasi-teknis',
                 'group' => 'report',
-                'description' =>
-                    'Kumpulan dokumentasi teknis atau portofolio pekerjaan selama PKL.',
+                'description' => 'Kumpulan dokumentasi teknis atau portofolio pekerjaan selama PKL.',
             ],
         ];
 

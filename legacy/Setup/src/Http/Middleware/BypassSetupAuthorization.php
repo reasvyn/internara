@@ -22,7 +22,7 @@ class BypassSetupAuthorization
             $isSetupAuthorized = session(AppSetupService::SESSION_SETUP_AUTHORIZED) === true;
             $isAppInstalled = setting('app_installed', false);
 
-            if (!$isAppInstalled && $isSetupAuthorized) {
+            if (! $isAppInstalled && $isSetupAuthorized) {
                 return true;
             }
         });

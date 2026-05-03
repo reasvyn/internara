@@ -7,11 +7,9 @@ return [
     'title' => 'Profil Institusi',
     'subtitle' => 'Kelola identitas inti dan branding institusi Anda.',
     'identity_branding' => 'Identitas & Branding',
-    'identity_branding_desc' =>
-        'Konfigurasikan identitas visual utama dan kode pengenal resmi institusi Anda.',
+    'identity_branding_desc' => 'Konfigurasikan identitas visual utama dan kode pengenal resmi institusi Anda.',
     'contact_leadership' => 'Kontak & Pimpinan',
-    'contact_leadership_desc' =>
-        'Tentukan saluran kontak resmi dan detail pimpinan eksekutif saat ini.',
+    'contact_leadership_desc' => 'Tentukan saluran kontak resmi dan detail pimpinan eksekutif saat ini.',
     'name' => 'Nama Institusi',
     'name_placeholder' => 'Contoh: SMK Negeri 1 Jakarta',
     'institutional_code' => 'Kode Registrasi (NPSN)',

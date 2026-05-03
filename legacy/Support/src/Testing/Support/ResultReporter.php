@@ -60,7 +60,7 @@ class ResultReporter implements ResultReporterInterface
                 $row['Unit'] ?? '-',
                 $row['Feature'] ?? '-',
                 $row['Browser'] ?? '-',
-                number_format($row['total'] ?? 0, 2) . 's',
+                number_format($row['total'] ?? 0, 2).'s',
             ];
         }
 
@@ -76,7 +76,7 @@ class ResultReporter implements ResultReporterInterface
         float $duration,
     ): void {
         $failedSegments = $totalSegments - $passedSegments;
-        $peakMemory = number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) . ' MB';
+        $peakMemory = number_format(memory_get_peak_usage(true) / 1024 / 1024, 2).' MB';
 
         $this->output->info('Section 2: High-Fidelity Performance Metrics');
         $this->renderTable(
@@ -88,7 +88,7 @@ class ResultReporter implements ResultReporterInterface
                     'Failed (Red)',
                     $failedSegments > 0 ? "<fg=red>{$failedSegments}</>" : '<fg=green>0</>',
                 ],
-                ['Total Execution Time', number_format($duration, 2) . ' s'],
+                ['Total Execution Time', number_format($duration, 2).' s'],
                 ['Orchestrator Peak Memory', $peakMemory],
             ],
         );
@@ -109,10 +109,10 @@ class ResultReporter implements ResultReporterInterface
         foreach ($failures as $failure) {
             $this->output->block("FAIL: {$failure['label']}", 'FAIL', 'fg=white;bg=red', ' ', true);
 
-            if (!empty($failure['error'])) {
+            if (! empty($failure['error'])) {
                 $this->output->error($failure['error']);
             }
-            if (!empty($failure['output'])) {
+            if (! empty($failure['output'])) {
                 $this->output->text("<fg=gray>{$failure['output']}</>");
             }
         }
@@ -139,7 +139,7 @@ class ResultReporter implements ResultReporterInterface
 
         foreach ($sessionResults as $result) {
             $module = $result['module'];
-            if (!isset($grouped[$module])) {
+            if (! isset($grouped[$module])) {
                 $grouped[$module] = [
                     'Arch' => '-',
                     'Unit' => '-',
@@ -155,7 +155,7 @@ class ResultReporter implements ResultReporterInterface
                 $passedSegments++;
             }
 
-            if (!$latestTimestamp || $result['timestamp'] > $latestTimestamp) {
+            if (! $latestTimestamp || $result['timestamp'] > $latestTimestamp) {
                 $latestTimestamp = $result['timestamp'];
             }
         }
@@ -192,7 +192,7 @@ class ResultReporter implements ResultReporterInterface
                 'Last Execution Date',
                 $latestTimestamp ? Carbon::parse($latestTimestamp)->diffForHumans() : 'Unknown',
             ],
-            ['Global Pass Rate', number_format($passRate, 2) . '%'],
+            ['Global Pass Rate', number_format($passRate, 2).'%'],
             ['Stability Index', $stability],
         );
 
@@ -230,7 +230,7 @@ class ResultReporter implements ResultReporterInterface
                 $testcase->setAttribute('name', "{$module}: {$segment['type']}");
                 $testcase->setAttribute('classname', "Modules\\{$module}\\{$segment['type']}");
 
-                if (!($segment['success'] ?? false)) {
+                if (! ($segment['success'] ?? false)) {
                     $failures++;
                     $failure = $dom->createElement('failure');
                     $failure->setAttribute('message', "Test segment {$segment['type']} failed.");
@@ -264,8 +264,8 @@ class ResultReporter implements ResultReporterInterface
             'exported_at' => now()->toIso8601String(),
             'summary' => [
                 'total_segments' => count($results),
-                'passed' => count(array_filter($results, fn($r) => $r['success'] ?? false)),
-                'failed' => count(array_filter($results, fn($r) => !($r['success'] ?? false))),
+                'passed' => count(array_filter($results, fn ($r) => $r['success'] ?? false)),
+                'failed' => count(array_filter($results, fn ($r) => ! ($r['success'] ?? false))),
             ],
             'results' => $results,
         ];
@@ -281,7 +281,7 @@ class ResultReporter implements ResultReporterInterface
      */
     public function displayCoverageSummary(string $output): void
     {
-        if (!str_contains($output, 'Lines:')) {
+        if (! str_contains($output, 'Lines:')) {
             return;
         }
 
@@ -306,7 +306,7 @@ class ResultReporter implements ResultReporterInterface
      */
     protected function renderTable(array $headers, array $rows): void
     {
-        $table = new Table(new ConsoleOutput());
+        $table = new Table(new ConsoleOutput);
         $table->setHeaders($headers)->setRows($rows)->render();
     }
 }

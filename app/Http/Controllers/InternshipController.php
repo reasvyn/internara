@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Internship\CreateInternshipAction;
-use App\Actions\Internship\DeleteInternshipAction;
-use App\Actions\Internship\UpdateInternshipAction;
-use App\Http\Requests\CreateInternshipRequest;
+use App\Domain\Internship\Actions\CreateInternshipAction;
+use App\Domain\Internship\Actions\DeleteInternshipAction;
+use App\Domain\Internship\Actions\UpdateInternshipAction;
+use App\Domain\Internship\Models\Internship;
+use App\Http\Requests\Internship\CreateInternshipRequest;
 use App\Http\Requests\UpdateInternshipRequest;
-use App\Models\Internship;
 use App\Repositories\Internship\InternshipRepository;
 use Illuminate\Http\JsonResponse;
 
@@ -47,7 +47,7 @@ class InternshipController extends Controller
     {
         $internship = $this->repository->findWithDetails($id);
 
-        if (!$internship) {
+        if (! $internship) {
             return response()->json(['message' => 'Internship not found'], 404);
         }
 

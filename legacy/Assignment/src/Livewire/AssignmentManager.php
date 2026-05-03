@@ -89,7 +89,7 @@ class AssignmentManager extends RecordManager
             ->query($this->filters)
             ->with(['type'])
             ->paginate($this->perPage)
-            ->through(fn($assignment) => $this->mapRecord($assignment));
+            ->through(fn ($assignment) => $this->mapRecord($assignment));
     }
 
     /**

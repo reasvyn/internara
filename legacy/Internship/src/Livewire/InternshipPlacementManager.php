@@ -100,7 +100,7 @@ class InternshipPlacementManager extends RecordManager
         return Cache::remember(
             'dropdown:companies',
             self::DROPDOWN_TTL,
-            fn() => Company::all(['id', 'name']),
+            fn () => Company::all(['id', 'name']),
         );
     }
 
@@ -113,7 +113,7 @@ class InternshipPlacementManager extends RecordManager
         return Cache::remember(
             'dropdown:internships',
             self::DROPDOWN_TTL,
-            fn() => app(InternshipService::class)->all(['id', 'title']),
+            fn () => app(InternshipService::class)->all(['id', 'title']),
         );
     }
 
@@ -126,7 +126,7 @@ class InternshipPlacementManager extends RecordManager
         return Cache::remember(
             'dropdown:users:mentor',
             self::DROPDOWN_TTL,
-            fn() => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']),
+            fn () => app(UserService::class)->get(['roles.name' => 'mentor'], ['id', 'name']),
         );
     }
 

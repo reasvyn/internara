@@ -50,11 +50,9 @@ return [
         'visit_url' => 'Kunjungi URL setup di browser Anda untuk menyelesaikan konfigurasi:',
         'complete_wizard' => 'Selesaikan langkah-langkah web wizard untuk mengakhiri setup.',
         'token_expires' => 'Token dan URL ini akan kedaluwarsa dalam 1 jam.',
-        'token_note' =>
-            'Simpan URL ini dengan aman. Jika kedaluwarsa, Anda perlu menjalankan perintah ini lagi.',
+        'token_note' => 'Simpan URL ini dengan aman. Jika kedaluwarsa, Anda perlu menjalankan perintah ini lagi.',
         'running_audit' => 'Menjalankan audit lingkungan sistem...',
-        'audit_failed' =>
-            'Audit pre-flight gagal. Silakan perbaiki masalah di atas sebelum melanjutkan.',
+        'audit_failed' => 'Audit pre-flight gagal. Silakan perbaiki masalah di atas sebelum melanjutkan.',
         'proceed_confirm' => 'Apakah Anda ingin melanjutkan instalasi teknis?',
         'aborted' => 'Instalasi dibatalkan.',
         'executing_task' => 'Mengeksekusi instalasi sistem teknis',
@@ -70,12 +68,22 @@ return [
         ],
     ],
 
+    'reset' => [
+        'not_installed' => 'Setup belum selesai. Tidak perlu reset.',
+        'new_token_generated' => 'Token setup baru telah dibuat:',
+        'warning_lock_file' => 'Ini akan MENGHAPUS file kunci instalasi dan memungkinkan wizard setup dijalankan kembali.',
+        'warning_records' => 'Catatan database yang ada TIDAK akan dihapus. Jalankan migrasi secara manual jika diperlukan.',
+        'confirm_proceed' => 'Apakah Anda ingin melanjutkan?',
+        'aborted' => 'Reset dibatalkan.',
+        'success' => 'Status setup telah direset.',
+        'migration_note' => 'Catatan: Catatan database yang ada tidak dihapus. Jalankan `php artisan migrate:fresh` jika diperlukan.',
+    ],
+
     'wizard' => [
         'title' => 'Setup',
         'step_of' => 'Langkah :current dari 6',
         'welcome' => 'Selamat Datang di Internara',
-        'welcome_desc' =>
-            'Kami akan membantu Anda menyiapkan sistem manajemen magang profesional Anda hanya dalam beberapa langkah.',
+        'welcome_desc' => 'Kami akan membantu Anda menyiapkan sistem manajemen magang profesional Anda hanya dalam beberapa langkah.',
         'system_requirements' => 'Persyaratan Sistem',
         'permissions' => 'Izin Folder',
         'database' => 'Koneksi Database',
@@ -107,15 +115,13 @@ return [
         'email_address' => 'Alamat Email',
         'username' => 'Username Unik',
         'generated' => 'Digenerate',
-        'username_notice' =>
-            'Username ini digenerate secara otomatis untuk keamanan dan bersifat permanen. Anda akan menggunakan ini untuk login ke sistem.',
+        'username_notice' => 'Username ini digenerate secara otomatis untuk keamanan dan bersifat permanen. Anda akan menggunakan ini untuk login ke sistem.',
         'password' => 'Password',
         'confirm_password' => 'Konfirmasi Password',
 
         'department' => 'Jurusan Awal',
         'department_subtitle' => 'Spesialisasi Akademik',
-        'department_desc' =>
-            'Buat jurusan pertama Anda. Anda dapat menambahkan lebih banyak nanti.',
+        'department_desc' => 'Buat jurusan pertama Anda. Anda dapat menambahkan lebih banyak nanti.',
         'department_name' => 'Nama Jurusan',
         'department_name_placeholder' => 'contoh: Rekayasa Perangkat Lunak',
         'department_description' => 'Deskripsi (Opsional)',
@@ -137,8 +143,7 @@ return [
         'back' => 'Kembali',
         'finish_setup' => 'Selesaikan Setup',
         'setup_complete' => 'Setup Selesai!',
-        'ready_desc' =>
-            'Internara siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
+        'ready_desc' => 'Sistem siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
         'go_to_login' => 'Ke Halaman Login',
         'data_verified' => 'Saya menyatakan bahwa data yang dimasukkan sudah benar',
         'security_aware' => 'Saya memahami persyaratan keamanan sistem ini',

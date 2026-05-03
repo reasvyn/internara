@@ -76,7 +76,7 @@ enum Status: string
      */
     public function label(): string
     {
-        return 'status::status.' . $this->value;
+        return 'status::status.'.$this->value;
     }
 
     /**
@@ -86,12 +86,10 @@ enum Status: string
     {
         return match ($this) {
             self::PENDING => 'Akun telah dibuat. Menunggu untuk diaktifkan oleh pemilik akun.',
-            self::ACTIVATED
-                => 'Akun telah diaktifkan oleh pemilik. Menunggu verifikasi dari admin/pengajar.',
+            self::ACTIVATED => 'Akun telah diaktifkan oleh pemilik. Menunggu verifikasi dari admin/pengajar.',
             self::VERIFIED => 'Akun terverifikasi dan dapat digunakan secara penuh.',
             self::PROTECTED => 'Akun Super Admin terlindungi - tidak dapat diubah atau dihapus.',
-            self::RESTRICTED
-                => 'Akun dalam pembatasan sementara. Fungsionalitas terbatas selama investigasi.',
+            self::RESTRICTED => 'Akun dalam pembatasan sementara. Fungsionalitas terbatas selama investigasi.',
             self::SUSPENDED => 'Akun ditangguhkan - tidak memiliki akses ke sistem.',
             self::INACTIVE => 'Akun tidak aktif - tidak ada login selama 180+ hari.',
             self::ARCHIVED => 'Akun diarsipkan permanen - menunggu penghapusan data sesuai GDPR.',

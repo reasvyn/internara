@@ -72,7 +72,8 @@ describe('InstallerService Feature Test', function () {
 
                 // Mock DB exists check
                 DB::shouldReceive('table')->once()->with('migrations')->andReturn(
-                    new class {
+                    new class
+                    {
                         public function exists()
                         {
                             return true;
@@ -94,7 +95,8 @@ describe('InstallerService Feature Test', function () {
             Schema::shouldReceive('hasTable')->once()->with('migrations')->andReturn(true);
 
             DB::shouldReceive('table')->once()->with('migrations')->andReturn(
-                new class {
+                new class
+                {
                     public function exists()
                     {
                         return true;
@@ -122,7 +124,7 @@ describe('InstallerService Feature Test', function () {
         });
 
         test('it runs system seeders and generates a secure setup token', function () {
-            DB::shouldReceive('transaction')->once()->andReturnUsing(fn($callback) => $callback());
+            DB::shouldReceive('transaction')->once()->andReturnUsing(fn ($callback) => $callback());
 
             Artisan::shouldReceive('call')
                 ->with('db:seed', ['--force' => true])
@@ -173,7 +175,7 @@ describe('InstallerService Feature Test', function () {
                 // Mock seeders
                 DB::shouldReceive('transaction')
                     ->twice()
-                    ->andReturnUsing(fn($callback) => $callback());
+                    ->andReturnUsing(fn ($callback) => $callback());
                 Artisan::shouldReceive('call')
                     ->with('db:seed', ['--force' => true])
                     ->twice()

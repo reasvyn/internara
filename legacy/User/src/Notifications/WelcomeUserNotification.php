@@ -63,7 +63,7 @@ class WelcomeUserNotification extends Notification implements ShouldQueue
                 'school' => setting('brand_name', setting('app_name')),
             ]),
             'action_url' => route('forgot-password'),
-            'sender_name' => setting('brand_name', setting('app_name')) . ' Team',
+            'sender_name' => setting('brand_name', setting('app_name')).' Team',
         ];
     }
 }

@@ -58,7 +58,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
             $this->validateSchool($data['school_id']);
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $department);
         }
 
@@ -155,7 +155,7 @@ class DepartmentService extends EloquentQuery implements Contracts\DepartmentSer
      */
     protected function validateSchool(string $schoolId): void
     {
-        if (!$this->schoolService->exists(['id' => $schoolId])) {
+        if (! $this->schoolService->exists(['id' => $schoolId])) {
             throw new RecordNotFoundException(
                 uuid: $schoolId,
                 module: 'School',

@@ -46,7 +46,7 @@ class InternshipManager extends RecordManager
 
         $isSetupAuthorized = (bool) session('setup_authorized') || is_testing();
 
-        if (!$isSetupAuthorized) {
+        if (! $isSetupAuthorized) {
             $this->viewPermission = Permission::INTERNSHIP_VIEW;
             $this->createPermission = Permission::INTERNSHIP_MANAGE;
             $this->updatePermission = Permission::INTERNSHIP_MANAGE;
@@ -152,7 +152,7 @@ class InternshipManager extends RecordManager
         // Standard Auto-fills for institutional consistency
         $this->form->academic_year = (string) setting(
             'active_academic_year',
-            date('Y') . '/' . (date('Y') + 1),
+            date('Y').'/'.(date('Y') + 1),
         );
 
         $school = app(SchoolService::class)->getSchool();
@@ -178,7 +178,7 @@ class InternshipManager extends RecordManager
      */
     public function activeFilterCount(): int
     {
-        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
+        return count(array_filter($this->filters, fn ($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     /**
@@ -201,7 +201,7 @@ class InternshipManager extends RecordManager
     public function getSemesterOptions(): array
     {
         return array_map(
-            fn(Semester $semester) => [
+            fn (Semester $semester) => [
                 'id' => $semester->value,
                 'name' => $semester->label(),
             ],
@@ -253,8 +253,8 @@ class InternshipManager extends RecordManager
             'description' => $row[1] ?? '',
             'academic_year' => $row[2],
             'semester' => $row[3],
-            'date_start' => !empty($row[4]) ? $row[4] : null,
-            'date_finish' => !empty($row[5]) ? $row[5] : null,
+            'date_start' => ! empty($row[4]) ? $row[4] : null,
+            'date_finish' => ! empty($row[5]) ? $row[5] : null,
             'school_id' => app(SchoolService::class)->getSchool()?->id,
         ];
     }

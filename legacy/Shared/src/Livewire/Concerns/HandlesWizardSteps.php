@@ -59,7 +59,7 @@ trait HandlesWizardSteps
      */
     protected function requireWizardAccess(): void
     {
-        if (!session()->get('setup_authorized')) {
+        if (! session()->get('setup_authorized')) {
             $this->redirectRoute('setup', navigate: true);
 
             return;
@@ -68,7 +68,7 @@ trait HandlesWizardSteps
         $prevStep = $this->wizardStepProps['prevStep'] ?? null;
 
         try {
-            if (!$this->setupService->requireSetupAccess($prevStep)) {
+            if (! $this->setupService->requireSetupAccess($prevStep)) {
                 $this->redirectToStep($prevStep ?: 'setup');
             }
         } catch (AppException $e) {
@@ -92,7 +92,7 @@ trait HandlesWizardSteps
             if ($success) {
                 flash()->success(
                     __('setup::wizard.common.step_success', [
-                        'step' => __('setup::wizard.' . $currentStep . '.title'),
+                        'step' => __('setup::wizard.'.$currentStep.'.title'),
                     ]),
                 );
 

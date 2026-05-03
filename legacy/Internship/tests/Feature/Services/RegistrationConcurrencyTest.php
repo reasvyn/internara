@@ -54,7 +54,7 @@ test('concurrent enrollment audit: only one student can take the last slot', fun
     $service->register($data1);
 
     // Second one should fail
-    expect(fn() => $service->register($data2))->toThrow(
+    expect(fn () => $service->register($data2))->toThrow(
         AppException::class,
         'internship::exceptions.no_slots_available',
     );

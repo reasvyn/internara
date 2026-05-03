@@ -5,13 +5,11 @@
 Always use `php artisan make:migration` for consistent naming and timestamps.
 
 Incorrect (manually created file):
-
 ```php
 // database/migrations/posts_migration.php  ← wrong naming, no timestamp
 ```
 
 Correct (Artisan-generated):
-
 ```bash
 php artisan make:migration create_posts_table
 php artisan make:migration add_slug_to_posts_table
@@ -30,18 +28,15 @@ $table->foreignId('author_id')->constrained('users');
 
 ## Never Modify Deployed Migrations
 
-Once a migration has run in production, treat it as immutable. Create a new migration to change the
-table.
+Once a migration has run in production, treat it as immutable. Create a new migration to change the table.
 
 Incorrect (editing a deployed migration):
-
 ```php
 // 2024_01_01_create_posts_table.php — already in production
 $table->string('slug')->unique(); // ← added after deployment
 ```
 
 Correct (new migration to alter):
-
 ```php
 // 2024_03_15_add_slug_to_posts_table.php
 Schema::table('posts', function (Blueprint $table) {
@@ -51,11 +46,9 @@ Schema::table('posts', function (Blueprint $table) {
 
 ## Add Indexes in the Migration
 
-Add indexes when creating the table, not as an afterthought. Columns used in `WHERE`, `ORDER BY`,
-and `JOIN` clauses need indexes.
+Add indexes when creating the table, not as an afterthought. Columns used in `WHERE`, `ORDER BY`, and `JOIN` clauses need indexes.
 
 Incorrect:
-
 ```php
 Schema::create('orders', function (Blueprint $table) {
     $table->id();
@@ -66,7 +59,6 @@ Schema::create('orders', function (Blueprint $table) {
 ```
 
 Correct:
-
 ```php
 Schema::create('orders', function (Blueprint $table) {
     $table->id();
@@ -79,8 +71,7 @@ Schema::create('orders', function (Blueprint $table) {
 
 ## Mirror Defaults in Model `$attributes`
 
-When a column has a database default, mirror it in the model so new instances have correct values
-before saving.
+When a column has a database default, mirror it in the model so new instances have correct values before saving.
 
 ```php
 // Migration
@@ -94,8 +85,7 @@ protected $attributes = [
 
 ## Write Reversible `down()` Methods by Default
 
-Implement `down()` for schema changes that can be safely reversed so `migrate:rollback` works in CI
-and failed deployments.
+Implement `down()` for schema changes that can be safely reversed so `migrate:rollback` works in CI and failed deployments.
 
 ```php
 public function down(): void
@@ -106,15 +96,13 @@ public function down(): void
 }
 ```
 
-For intentionally irreversible migrations (e.g., destructive data backfills), leave a clear comment
-and require a forward fix migration instead of pretending rollback is supported.
+For intentionally irreversible migrations (e.g., destructive data backfills), leave a clear comment and require a forward fix migration instead of pretending rollback is supported.
 
 ## Keep Migrations Focused
 
 One concern per migration. Never mix DDL (schema changes) and DML (data manipulation).
 
 Incorrect (partial failure creates unrecoverable state):
-
 ```php
 public function up(): void
 {
@@ -124,7 +112,6 @@ public function up(): void
 ```
 
 Correct (separate migrations):
-
 ```php
 // Migration 1: create_settings_table
 Schema::create('settings', function (Blueprint $table) { ... });

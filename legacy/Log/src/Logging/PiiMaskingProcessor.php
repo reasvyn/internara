@@ -40,7 +40,7 @@ class PiiMaskingProcessor implements ProcessorInterface
     {
         $context = $record->context;
 
-        if (!empty($context)) {
+        if (! empty($context)) {
             $record = $record->with(context: $this->maskArray($context));
         }
 

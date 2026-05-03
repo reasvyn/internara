@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use App\Actions\Assignment\CreateAssignmentAction;
-use App\Actions\Assignment\DeleteAssignmentAction;
-use App\Actions\Assignment\SubmitAssignmentAction;
-use App\Actions\Assignment\UpdateAssignmentAction;
-use App\Actions\Assignment\VerifySubmissionAction;
-use App\Enums\Role as RoleEnum;
-use App\Models\Assignment;
-use App\Models\AssignmentType;
-use App\Models\Internship;
-use App\Models\InternshipRegistration;
-use App\Models\Submission;
-use App\Models\User;
+use App\Domain\Assignment\Actions\CreateAssignmentAction;
+use App\Domain\Assignment\Actions\DeleteAssignmentAction;
+use App\Domain\Assignment\Actions\SubmitAssignmentAction;
+use App\Domain\Assignment\Actions\UpdateAssignmentAction;
+use App\Domain\Assignment\Actions\VerifySubmissionAction;
+use App\Domain\Assignment\Models\Assignment;
+use App\Domain\Assignment\Models\AssignmentType;
+use App\Domain\Assignment\Models\Submission;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\User\Models\User;
+use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
@@ -82,7 +82,7 @@ describe('Assignment Management', function () {
 describe('Assignment Submission', function () {
     it('allows student to submit assignment', function () {
         $internship = Internship::factory()->create();
-        $registration = InternshipRegistration::factory()->create([
+        $registration = Registration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -112,7 +112,7 @@ describe('Assignment Submission', function () {
 
     it('allows teacher to verify submission', function () {
         $internship = Internship::factory()->create();
-        $registration = InternshipRegistration::factory()->create([
+        $registration = Registration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);

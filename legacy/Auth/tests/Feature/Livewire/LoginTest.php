@@ -94,7 +94,7 @@ describe('Login Component', function () {
             'password' => 'password',
         ]);
 
-        $throttleKey = Str::transliterate(Str::lower('test@example.com') . '|' . request()->ip());
+        $throttleKey = Str::transliterate(Str::lower('test@example.com').'|'.request()->ip());
         for ($i = 0; $i < 5; $i++) {
             RateLimiter::hit($throttleKey, 60);
         }

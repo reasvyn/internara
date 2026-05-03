@@ -63,7 +63,7 @@ test(
         $registrationService->shouldReceive('first')->andReturn($registration);
         $this->app->instance(RegistrationService::class, $registrationService);
 
-        expect(fn() => $this->attendanceService->checkIn($student->id))->toThrow(
+        expect(fn () => $this->attendanceService->checkIn($student->id))->toThrow(
             AppException::class,
             'attendance::messages.outside_internship_period',
         );

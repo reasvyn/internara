@@ -62,7 +62,7 @@ class TargetDiscovery
             }
         }
 
-        if (!empty($requestedModules)) {
+        if (! empty($requestedModules)) {
             $missing = array_diff($requestedModules, $foundRequested);
         }
 
@@ -76,7 +76,7 @@ class TargetDiscovery
     {
         $label = strtolower($label);
 
-        if (!empty($requested)) {
+        if (! empty($requested)) {
             return in_array($label, $requested);
         }
 
@@ -97,7 +97,7 @@ class TargetDiscovery
         $process = new Process(['git', 'status', '--porcelain'], base_path());
         $process->run();
 
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             return [];
         }
 

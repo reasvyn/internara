@@ -26,10 +26,10 @@ class GraduationReadiness extends Component
 
         if ($this->search) {
             $query->whereHas('student', function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')->orWhere(
+                $q->where('name', 'like', '%'.$this->search.'%')->orWhere(
                     'username',
                     'like',
-                    '%' . $this->search . '%',
+                    '%'.$this->search.'%',
                 );
             });
         }
@@ -37,8 +37,7 @@ class GraduationReadiness extends Component
         return view('admin::livewire.graduation-readiness', [
             'registrations' => $query->with(['student', 'placement'])->paginate(15),
         ])->layout('ui::components.layouts.dashboard', [
-            'title' =>
-                __('admin::ui.menu.readiness') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('admin::ui.menu.readiness').' | '.setting('brand_name', setting('app_name')),
             'context' => 'admin::ui.menu.readiness',
         ]);
     }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Actions\Internship\CreatePlacementAction;
-use App\Enums\Role as RoleEnum;
-use App\Models\Internship;
-use App\Models\InternshipCompany;
-use App\Models\InternshipPlacement;
-use App\Models\User;
+use App\Domain\Internship\Actions\CreatePlacementAction;
+use App\Domain\Internship\Models\Company;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Placement;
+use App\Domain\User\Models\User;
+use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
@@ -51,7 +51,7 @@ describe('Placement Management', function () {
     it('allows admin to create placement', function () {
         $action = app(CreatePlacementAction::class);
 
-        $company = InternshipCompany::factory()->create();
+        $company = Company::factory()->create();
 
         $placement = $action->execute([
             'name' => 'Batch 2026/2027',
@@ -61,6 +61,6 @@ describe('Placement Management', function () {
             'end_date' => '2026-12-31',
         ]);
 
-        expect($placement)->toBeInstanceOf(InternshipPlacement::class);
+        expect($placement)->toBeInstanceOf(Placement::class);
     });
 });

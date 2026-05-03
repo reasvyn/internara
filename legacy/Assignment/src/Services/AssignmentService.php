@@ -38,7 +38,7 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function create(array $data): Assignment
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('create', $this->model);
         }
 
@@ -62,7 +62,7 @@ class AssignmentService extends EloquentQuery implements Contract
      */
     public function update(Assignment $assignment, array $data): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $assignment);
         }
 
@@ -148,7 +148,7 @@ class AssignmentService extends EloquentQuery implements Contract
         ];
 
         foreach ($defaults as $data) {
-            if (!$data['assignment_type_id']) {
+            if (! $data['assignment_type_id']) {
                 continue;
             }
 
@@ -168,7 +168,7 @@ class AssignmentService extends EloquentQuery implements Contract
     {
         $reg = app(RegistrationService::class)->find($registrationId);
 
-        if (!$reg) {
+        if (! $reg) {
             return false;
         }
 

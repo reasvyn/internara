@@ -47,7 +47,7 @@ class GdprComplianceService
     {
         return DB::transaction(function () use ($user) {
             // Create temporary directory for export
-            $tempDir = storage_path('app/temp/' . $user->id . '_' . uniqid());
+            $tempDir = storage_path('app/temp/'.$user->id.'_'.uniqid());
             mkdir($tempDir, 0755, true);
 
             try {
@@ -112,7 +112,7 @@ class GdprComplianceService
     {
         return DB::transaction(function () use ($user, $reason) {
             // Generate anonymization token
-            $anonymizedId = 'ANON_' . hash('sha256', $user->id . config('app.key'));
+            $anonymizedId = 'ANON_'.hash('sha256', $user->id.config('app.key'));
 
             // Store anonymization details
             $anonymizationData = [
@@ -126,7 +126,7 @@ class GdprComplianceService
             // Update user with anonymized data
             $user->update([
                 'name' => $anonymizedId,
-                'email' => $anonymizedId . '@anonymized.local',
+                'email' => $anonymizedId.'@anonymized.local',
                 'phone' => null,
                 'address' => null,
                 'profile_picture' => null,
@@ -300,13 +300,13 @@ class GdprComplianceService
      */
     private function createZipArchive(User $user, string $tempDir): string
     {
-        $zipFileName = "user_{$user->id}_data_export_" . now()->format('Y_m_d_H_i_s') . '.zip';
+        $zipFileName = "user_{$user->id}_data_export_".now()->format('Y_m_d_H_i_s').'.zip';
         $zipPath = storage_path("app/gdpr-exports/$zipFileName");
 
         // Ensure export directory exists
         mkdir(dirname($zipPath), 0755, true);
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // Add all files from temp directory

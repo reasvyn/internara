@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\School;
 
-use App\Livewire\Admin\School\SchoolProfile;
-use App\Models\School;
-use App\Models\User;
+use App\Domain\School\Models\School;
+use App\Domain\User\Models\User;
+use App\Livewire\School\SchoolProfile;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 

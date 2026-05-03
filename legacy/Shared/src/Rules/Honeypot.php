@@ -22,7 +22,7 @@ class Honeypot implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!empty($value)) {
+        if (! empty($value)) {
             // No specific translation key to avoid giving bots clues.
             // Just fail the request.
             $fail('Spam detected.');

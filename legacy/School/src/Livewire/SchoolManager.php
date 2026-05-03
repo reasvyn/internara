@@ -75,7 +75,7 @@ class SchoolManager extends Component
         // Permission Bypass: Authorized setup sessions can manage school data without explicit 'manage' permission.
         $isSetupAuthorized = (bool) session(AppSetupService::SESSION_SETUP_AUTHORIZED);
 
-        if (!$isSetupAuthorized) {
+        if (! $isSetupAuthorized) {
             $this->rbacAuthorize('update');
         }
 
@@ -103,8 +103,7 @@ class SchoolManager extends Component
     public function render(): View
     {
         return view('school::livewire.school-manager')->layout('ui::components.layouts.dashboard', [
-            'title' =>
-                __('school::ui.settings') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('school::ui.settings').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

@@ -29,7 +29,7 @@ class SubmissionPolicy
      */
     public function view(User $user, Submission $submission): bool
     {
-        if (!$user->hasPermissionTo(Permission::ASSIGNMENT_VIEW->value)) {
+        if (! $user->hasPermissionTo(Permission::ASSIGNMENT_VIEW->value)) {
             return false;
         }
 
@@ -58,7 +58,7 @@ class SubmissionPolicy
      */
     public function update(User $user, Submission $submission): bool
     {
-        return $user->id === $submission->student_id && !$submission->isVerified();
+        return $user->id === $submission->student_id && ! $submission->isVerified();
     }
 
     /**

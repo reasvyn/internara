@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Handbook;
-use App\Models\User;
+use App\Domain\Guidance\Models\Handbook;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HandbookFactory extends Factory
@@ -31,7 +31,7 @@ class HandbookFactory extends Factory
     public function draft(): static
     {
         return $this->state(
-            fn(array $attributes) => [
+            fn (array $attributes) => [
                 'is_active' => false,
                 'published_at' => null,
             ],
@@ -41,7 +41,7 @@ class HandbookFactory extends Factory
     public function published(): static
     {
         return $this->state(
-            fn(array $attributes) => [
+            fn (array $attributes) => [
                 'is_active' => true,
                 'published_at' => now(),
             ],

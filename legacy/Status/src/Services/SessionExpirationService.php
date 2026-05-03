@@ -93,7 +93,7 @@ class SessionExpirationService
     public function isExpired(string $sessionId): bool
     {
         $startedAt = Cache::get("session:{$sessionId}:started_at");
-        if (!$startedAt) {
+        if (! $startedAt) {
             return true; // No session data = expired
         }
 
@@ -113,7 +113,7 @@ class SessionExpirationService
     public function getRemainingMinutes(string $sessionId): int
     {
         $startedAt = Cache::get("session:{$sessionId}:started_at");
-        if (!$startedAt) {
+        if (! $startedAt) {
             return 0;
         }
 
@@ -167,12 +167,12 @@ class SessionExpirationService
     private function getSessionTimeout(string $sessionId): ?int
     {
         $userId = Cache::get("session:{$sessionId}:user_id");
-        if (!$userId) {
+        if (! $userId) {
             return null;
         }
 
         $user = User::find($userId);
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 

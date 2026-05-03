@@ -10,10 +10,8 @@ return [
     'step_verify' => 'Verifikasi Kode',
     'step_password' => 'Buat Kata Sandi',
 
-    'info_step1' =>
-        'Kode aktivasi diberikan oleh administrator institusi Anda. Formatnya seperti: XXXX-XXXX-XXXX.',
-    'info_step2' =>
-        'Pilih kata sandi yang kuat. Anda akan menggunakannya untuk masuk mulai saat ini.',
+    'info_step1' => 'Kode aktivasi diberikan oleh administrator institusi Anda. Formatnya seperti: XXXX-XXXX-XXXX.',
+    'info_step2' => 'Pilih kata sandi yang kuat. Anda akan menggunakannya untuk masuk mulai saat ini.',
     'code_verified' => 'Kode terverifikasi! Sekarang buat kata sandi pribadi Anda.',
     'back_to_login' => 'Kembali ke halaman masuk',
 
@@ -32,8 +30,7 @@ return [
     ],
 
     'invalid_code' => 'Username atau kode aktivasi tidak sesuai, atau kode telah kedaluwarsa.',
-    'token_expired' =>
-        'Kode aktivasi Anda kedaluwarsa sebelum proses selesai. Hubungi administrator untuk mendapatkan kode baru.',
+    'token_expired' => 'Kode aktivasi Anda kedaluwarsa sebelum proses selesai. Hubungi administrator untuk mendapatkan kode baru.',
     'throttled' => 'Terlalu banyak percobaan. Tunggu beberapa menit sebelum mencoba kembali.',
     'success' => 'Akun Anda berhasil diaktifkan! Silakan masuk dengan kata sandi baru Anda.',
 ];

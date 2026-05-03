@@ -48,8 +48,8 @@ class IdleAccountDetectionService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::INACTIVE,
-                    reason: 'Automatic transition: Account idle for ' .
-                        self::IDLE_THRESHOLD_DAYS .
+                    reason: 'Automatic transition: Account idle for '.
+                        self::IDLE_THRESHOLD_DAYS.
                         ' days',
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
@@ -74,8 +74,8 @@ class IdleAccountDetectionService
                 $this->statusTransition->transition(
                     user: $user,
                     newStatus: Status::ARCHIVED,
-                    reason: 'Automatic transition: Account inactive for ' .
-                        self::ARCHIVE_THRESHOLD_DAYS .
+                    reason: 'Automatic transition: Account inactive for '.
+                        self::ARCHIVE_THRESHOLD_DAYS.
                         ' days',
                     ipAddress: null,
                     userAgent: 'System/IdleDetection',
@@ -163,7 +163,7 @@ class IdleAccountDetectionService
             ->orderByDesc('created_at')
             ->first();
 
-        if (!$archivalStatus) {
+        if (! $archivalStatus) {
             return null;
         }
 

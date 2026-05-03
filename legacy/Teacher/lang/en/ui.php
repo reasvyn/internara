@@ -57,12 +57,9 @@ return [
             'archived' => ':count teacher accounts archived successfully.',
         ],
         'form' => [
-            'password_setup_notice' =>
-                'Teacher accounts should not be managed through administrator-known passwords. Save the record first, then send a secure access setup link.',
-            'password_reset_notice' =>
-                'Use the send-setup-link action from the table to reset teacher access securely without viewing the password.',
-            'archive_hint' =>
-                'For annual archiving or assignment rotation, prefer setting teachers to Inactive so their history remains preserved.',
+            'password_setup_notice' => 'Teacher accounts should not be managed through administrator-known passwords. Save the record first, then send a secure access setup link.',
+            'password_reset_notice' => 'Use the send-setup-link action from the table to reset teacher access securely without viewing the password.',
+            'archive_hint' => 'For annual archiving or assignment rotation, prefer setting teachers to Inactive so their history remains preserved.',
         ],
     ],
 ];

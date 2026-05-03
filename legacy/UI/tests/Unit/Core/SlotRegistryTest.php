@@ -8,7 +8,7 @@ use Modules\UI\Core\SlotRegistry;
 
 describe('UI Slot Registry (Modular Orchestration)', function () {
     test('it can register and retrieve components for a named slot', function () {
-        $registry = new SlotRegistry();
+        $registry = new SlotRegistry;
 
         $registry->register('navbar.actions', 'ui::user-menu', ['order' => 10]);
         $registry->register('navbar.actions', 'ui::theme-toggle', ['order' => 5]);
@@ -24,7 +24,7 @@ describe('UI Slot Registry (Modular Orchestration)', function () {
     });
 
     test('it can check for existence of registered content in a slot', function () {
-        $registry = new SlotRegistry();
+        $registry = new SlotRegistry;
 
         expect($registry->hasSlot('empty-slot'))->toBeFalse();
 

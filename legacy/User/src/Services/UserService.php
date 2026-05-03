@@ -70,8 +70,7 @@ class UserService extends EloquentQuery implements Contract
             return [
                 'total' => $this->count(),
                 'students' => $roleCounts[Role::STUDENT->value] ?? 0,
-                'staff' =>
-                    ($roleCounts[Role::TEACHER->value] ?? 0) +
+                'staff' => ($roleCounts[Role::TEACHER->value] ?? 0) +
                     ($roleCounts[Role::MENTOR->value] ?? 0),
                 'active' => $activeCount,
             ];
@@ -126,7 +125,7 @@ class UserService extends EloquentQuery implements Contract
             $userData['password'] = $userData['password'] ?? Str::password(32);
 
             // Enforce hierarchical authority for user creation, except during initial setup
-            if (setting('app_installed', false) && !$this->skipAuthorization) {
+            if (setting('app_installed', false) && ! $this->skipAuthorization) {
                 Gate::authorize('create', [User::class, $roles]);
             }
 
@@ -161,9 +160,9 @@ class UserService extends EloquentQuery implements Contract
             }
 
             // UNIFIED: Initialize & Update Profile for ALL user types
-            if (!empty($profileData)) {
+            if (! empty($profileData)) {
                 $profileService =
-                    !setting('app_installed', false) || $this->skipAuthorization || auth()->guest()
+                    ! setting('app_installed', false) || $this->skipAuthorization || auth()->guest()
                         ? $this->profileService->withoutAuthorization()
                         : $this->profileService;
 
@@ -172,7 +171,7 @@ class UserService extends EloquentQuery implements Contract
 
             $this->skipAuthorization = false;
 
-            $user->notify(new WelcomeUserNotification());
+            $user->notify(new WelcomeUserNotification);
 
             Cache::forget('user.stats');
 
@@ -203,7 +202,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
@@ -211,7 +210,7 @@ class UserService extends EloquentQuery implements Contract
             );
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -243,7 +242,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
@@ -251,7 +250,7 @@ class UserService extends EloquentQuery implements Contract
             );
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -277,7 +276,7 @@ class UserService extends EloquentQuery implements Contract
         if ($roles !== null) {
             if (
                 in_array(Role::SUPER_ADMIN->value, Arr::wrap($roles), true) &&
-                !$user->hasRole(Role::SUPER_ADMIN->value)
+                ! $user->hasRole(Role::SUPER_ADMIN->value)
             ) {
                 throw new AppException(
                     userMessage: 'user::exceptions.super_admin_readonly',
@@ -323,7 +322,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
@@ -331,7 +330,7 @@ class UserService extends EloquentQuery implements Contract
             );
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $user);
         }
 
@@ -371,7 +370,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($id);
 
-        if (!$user) {
+        if (! $user) {
             throw new RecordNotFoundException(
                 message: 'exception::messages.record_not_found',
                 replace: ['record' => __('user::ui.manager.table.user'), 'id' => $id],
@@ -379,7 +378,7 @@ class UserService extends EloquentQuery implements Contract
             );
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('delete', $user);
         }
 
@@ -412,7 +411,7 @@ class UserService extends EloquentQuery implements Contract
     {
         $user = $this->find($userId);
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

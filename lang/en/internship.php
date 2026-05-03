@@ -21,8 +21,7 @@ return [
     'save_success' => 'Internship batch created successfully.',
     'update_success' => 'Internship batch updated successfully.',
     'delete_success' => 'Internship batch deleted successfully.',
-    'delete_confirm' =>
-        'Are you sure you want to delete this batch? This may affect student registrations.',
+    'delete_confirm' => 'Are you sure you want to delete this batch? This may affect student registrations.',
     'delete_blocked' => 'Cannot delete batch: it has placements or student registrations.',
     'batch_name' => 'Batch Name',
     'actions' => 'Actions',

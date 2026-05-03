@@ -10,7 +10,7 @@
         
         {{-- Dynamic Branding Colors --}}
         @php
-            $colors = App\Support\Branding::colors();
+            $colors = brand('colors');
         @endphp
         <style>
             :root {
@@ -31,7 +31,6 @@
             }
         </style>
 
-        @livewireStyles
         <script>
             // Theme initial application
             const theme = document.documentElement.getAttribute('data-theme');
@@ -80,7 +79,6 @@
         @flasher_render
 
         <!-- Scripts -->
-        @livewireScripts
         @stack('scripts')
 
         <script>
@@ -120,3 +118,4 @@
         </script>
     </body>
 </html>
+

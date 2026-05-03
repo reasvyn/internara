@@ -107,7 +107,7 @@ describe('SystemInstaller', function () {
         it('runs migrate if no migrations exist', function () {
             DB::shouldReceive('connection')->andReturnSelf();
             DB::shouldReceive('getPdo')->andReturnSelf();
-            DB::shouldReceive('table')->andThrow(new \Exception());
+            DB::shouldReceive('table')->andThrow(new \Exception);
 
             Artisan::shouldReceive('call')
                 ->with('migrate', ['--force' => true])

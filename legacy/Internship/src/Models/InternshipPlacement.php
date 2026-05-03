@@ -100,7 +100,7 @@ class InternshipPlacement extends Model
                 // For placements, the number of registrations is typically small.
                 foreach ($this->registrations as $registration) {
                     $status = $registration->latestStatus();
-                    if (!$status || $status->name !== 'inactive') {
+                    if (! $status || $status->name !== 'inactive') {
                         $occupied++;
                     }
                 }

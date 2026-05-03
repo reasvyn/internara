@@ -38,7 +38,7 @@ class VerifyEmail extends Component
 
     public function verify()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -62,7 +62,7 @@ class VerifyEmail extends Component
 
     public function resend()
     {
-        if (auth()->check() && !auth()->user()->hasVerifiedEmail()) {
+        if (auth()->check() && ! auth()->user()->hasVerifiedEmail()) {
             $this->authService->resendVerificationEmail(auth()->user());
             flash()->success(__('auth::ui.verification.resend_success'));
         } else {
@@ -75,8 +75,7 @@ class VerifyEmail extends Component
     public function render()
     {
         return view('auth::livewire.verify-email')->layout('auth::components.layouts.auth', [
-            'title' =>
-                __('auth::ui.verification.title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::ui.verification.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

@@ -72,9 +72,9 @@ class InternshipServiceProvider extends ServiceProvider
         // Register Report Providers
         if (class_exists(ReportService::class)) {
             $reportService = app(ReportService::class);
-            $reportService->registerProvider(new InternshipClassReportProvider());
-            $reportService->registerProvider(new PartnerEngagementReportProvider());
-            $reportService->registerProvider(new CompetencyAchievementReportProvider());
+            $reportService->registerProvider(new InternshipClassReportProvider);
+            $reportService->registerProvider(new PartnerEngagementReportProvider);
+            $reportService->registerProvider(new CompetencyAchievementReportProvider);
         }
     }
 
@@ -96,19 +96,13 @@ class InternshipServiceProvider extends ServiceProvider
     protected function bindings(): array
     {
         return [
-            \Modules\Internship\Services\Contracts\InternshipService::class =>
-                InternshipService::class,
+            \Modules\Internship\Services\Contracts\InternshipService::class => InternshipService::class,
             \Modules\Internship\Services\Contracts\CompanyService::class => CompanyService::class,
-            \Modules\Internship\Services\Contracts\InternshipPlacementService::class =>
-                InternshipPlacementService::class,
-            \Modules\Internship\Services\Contracts\RegistrationService::class =>
-                RegistrationService::class,
-            \Modules\Internship\Services\Contracts\SupervisorService::class =>
-                SupervisorService::class,
-            \Modules\Internship\Services\Contracts\PlacementService::class =>
-                PlacementService::class,
-            \Modules\Internship\Services\Contracts\InternshipRequirementService::class =>
-                InternshipRequirementService::class,
+            \Modules\Internship\Services\Contracts\InternshipPlacementService::class => InternshipPlacementService::class,
+            \Modules\Internship\Services\Contracts\RegistrationService::class => RegistrationService::class,
+            \Modules\Internship\Services\Contracts\SupervisorService::class => SupervisorService::class,
+            \Modules\Internship\Services\Contracts\PlacementService::class => PlacementService::class,
+            \Modules\Internship\Services\Contracts\InternshipRequirementService::class => InternshipRequirementService::class,
             PlacementLogger::class => PlacementLoggerService::class,
         ];
     }
@@ -122,8 +116,7 @@ class InternshipServiceProvider extends ServiceProvider
     {
         return [
             'internship-manager' => 'livewire:internship::internship-manager',
-            'student.dashboard.requirements' =>
-                'livewire:internship::requirement-submission-manager',
+            'student.dashboard.requirements' => 'livewire:internship::requirement-submission-manager',
             // Menu items now managed in UI/config/sidebar.php for centralized control
             'sidebar.menu' => [
                 'ui::menu-item#company-manager' => [

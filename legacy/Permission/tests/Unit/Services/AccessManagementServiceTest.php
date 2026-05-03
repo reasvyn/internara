@@ -79,13 +79,13 @@ it('can delete a permission', function () {
 it('throws exception for non-existent role', function () {
     $service = app(AccessManagementService::class);
 
-    expect(fn() => $service->deleteRole('non-existent'))->toThrow(RoleDoesNotExist::class);
+    expect(fn () => $service->deleteRole('non-existent'))->toThrow(RoleDoesNotExist::class);
 });
 
 it('throws exception for non-existent permission', function () {
     $service = app(AccessManagementService::class);
 
-    expect(fn() => $service->deletePermission('non-existent'))->toThrow(
+    expect(fn () => $service->deletePermission('non-existent'))->toThrow(
         PermissionDoesNotExist::class,
     );
 });

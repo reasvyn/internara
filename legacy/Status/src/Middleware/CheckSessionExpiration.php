@@ -21,14 +21,14 @@ class CheckSessionExpiration
     public function handle(Request $request, Closure $next): Response
     {
         // Only check for authenticated admin/super_admin users
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return $next($request);
         }
 
         $user = Auth::user();
 
         // Only apply to admin roles (security-focused)
-        if (!\in_array($user->role, ['super_admin', 'admin'], true)) {
+        if (! \in_array($user->role, ['super_admin', 'admin'], true)) {
             return $next($request);
         }
 

@@ -69,15 +69,14 @@ class ForgotPassword extends Component
     protected function throttleKey(): string
     {
         return Str::transliterate(
-            'forgot-password|' . Str::lower($this->email) . '|' . request()->ip(),
+            'forgot-password|'.Str::lower($this->email).'|'.request()->ip(),
         );
     }
 
     public function render(): View
     {
         return view('auth::livewire.forgot-password')->layout('auth::components.layouts.auth', [
-            'title' =>
-                __('auth::ui.forgot_password.title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::ui.forgot_password.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

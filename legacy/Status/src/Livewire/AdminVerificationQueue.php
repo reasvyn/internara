@@ -119,7 +119,7 @@ class AdminVerificationQueue extends Component
     public function toggleUserSelection(int $userId): void
     {
         if (in_array($userId, $this->selectedUsers)) {
-            $this->selectedUsers = array_filter($this->selectedUsers, fn($id) => $id !== $userId);
+            $this->selectedUsers = array_filter($this->selectedUsers, fn ($id) => $id !== $userId);
         } else {
             $this->selectedUsers[] = $userId;
         }
@@ -297,6 +297,6 @@ class AdminVerificationQueue extends Component
 
         return response()->streamDownload(function () use ($csv) {
             echo $csv;
-        }, 'pending-verifications-' . now()->format('Y-m-d') . '.csv');
+        }, 'pending-verifications-'.now()->format('Y-m-d').'.csv');
     }
 }

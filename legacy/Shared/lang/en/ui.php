@@ -15,6 +15,5 @@ return [
     'actions' => 'Actions',
     'optional' => 'Optional',
     'confirmation' => 'Confirmation',
-    'confirm_delete' =>
-        'Are you sure you want to delete this record? This action cannot be undone.',
+    'confirm_delete' => 'Are you sure you want to delete this record? This action cannot be undone.',
 ];

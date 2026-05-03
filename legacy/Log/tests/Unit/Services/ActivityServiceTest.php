@@ -21,13 +21,13 @@ test('it can query activities with filters', function () {
         'log_name' => 'security',
     ]);
 
-    $service = new ActivityService(new Activity());
+    $service = new ActivityService(new Activity);
 
     expect($service->query(['log_name' => 'security'])->count())->toBe(1);
 });
 
 test('it calculates engagement stats', function () {
-    $service = new ActivityService(new Activity());
+    $service = new ActivityService(new Activity);
 
     Activity::create([
         'description' => 'Created registration',

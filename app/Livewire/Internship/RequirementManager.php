@@ -1,12 +1,11 @@
-<?php
 
 declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Actions\Internship\SubmitRequirementAction;
-use App\Models\InternshipRegistration;
-use App\Models\InternshipRequirement;
+use App\Domain\Internship\Actions\SubmitRequirementAction;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\Internship\Models\Requirement;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,7 +15,7 @@ class RequirementManager extends Component
 {
     use Toast, WithFileUploads;
 
-    public InternshipRegistration $registration;
+    public Registration $registration;
 
     public array $files = [];
 
@@ -26,7 +25,7 @@ class RequirementManager extends Component
     #[Computed]
     public function requirements()
     {
-        return InternshipRequirement::where('is_active', true)
+        return Requirement::where('is_active', true)
             ->with([
                 'submissions' => function ($q) {
                     $q->where('registration_id', $this->registration->id);
@@ -41,13 +40,13 @@ class RequirementManager extends Component
     public function submitFile(string $requirementId, SubmitRequirementAction $submitAction)
     {
         $this->validate([
-            'files.' . $requirementId => 'required|file|max:5120', // 5MB limit
+            'files.'.$requirementId => 'required|file|max:5120', // 5MB limit
         ]);
 
         $submitAction->execute($this->registration, $requirementId, $this->files[$requirementId]);
 
         $this->success('File submitted successfully.');
-        $this->reset('files.' . $requirementId);
+        $this->reset('files.'.$requirementId);
     }
 
     public function render()

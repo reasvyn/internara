@@ -208,8 +208,8 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     public function save(array $attributes, array $values = []): Model
     {
         // Try to find the existing record to authorize properly
-        $searchAttributes = array_filter($attributes, fn($val) => !empty($val));
-        $model = !empty($searchAttributes)
+        $searchAttributes = array_filter($attributes, fn ($val) => ! empty($val));
+        $model = ! empty($searchAttributes)
             ? $this->model->newQuery()->where($searchAttributes)->first()
             : null;
 
@@ -279,7 +279,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     ): Model {
         $model = $this->first($filters, $columns, $with);
 
-        if (!$model) {
+        if (! $model) {
             throw new RecordNotFoundException(class_basename($this->model), 0);
         }
 
@@ -296,7 +296,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      */
     public function find(mixed $id, array $columns = ['*'], array $with = []): ?Model
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             // Authorization will be checked when needed
         }
 
@@ -317,11 +317,11 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
     {
         $model = $this->find($id, $columns, $with);
 
-        if (!$model) {
+        if (! $model) {
             throw new RecordNotFoundException(class_basename($this->model), $id);
         }
 
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('view', $model);
         }
 
@@ -352,7 +352,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      */
     public function create(array $data): Model
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('create', $this->model);
         }
 
@@ -375,7 +375,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      */
     public function update(Model $model, array $data): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $model);
         }
 
@@ -395,7 +395,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
      */
     public function delete(Model $model): bool
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('delete', $model);
         }
 
@@ -440,7 +440,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         $query = $this->model->newQuery()->whereIn($this->model->getKeyName(), $ids);
 
         // Security check for each record if authorization is not skipped
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             $records = $query->get();
             foreach ($records as $record) {
                 Gate::authorize('delete', $record);
@@ -525,7 +525,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
             return $callback($this);
         }
 
-        return Cache::remember($cacheKey, $ttl, fn() => $callback($this));
+        return Cache::remember($cacheKey, $ttl, fn () => $callback($this));
     }
 
     /**
@@ -550,7 +550,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         }
 
         // Search logic
-        if (!empty($this->searchable) && isset($filters['search'])) {
+        if (! empty($this->searchable) && isset($filters['search'])) {
             $search = $filters['search'];
             $query->where(function (Builder $q) use ($search) {
                 foreach ($this->searchable as $column) {
@@ -568,7 +568,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
         }
 
         // Apply remaining filters
-        if (!empty($filters)) {
+        if (! empty($filters)) {
             foreach ($filters as $key => $value) {
                 if ($value === '' || $value === null || (is_array($value) && empty($value))) {
                     continue;
@@ -599,7 +599,7 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
 
         return array_filter(
             $data,
-            fn($key) => $this->model->isFillable($key) || $key === $primaryKey,
+            fn ($key) => $this->model->isFillable($key) || $key === $primaryKey,
             ARRAY_FILTER_USE_KEY,
         );
     }
@@ -666,9 +666,9 @@ abstract class EloquentQuery extends BaseService implements EloquentQueryContrac
                 $count++;
             } catch (Exception $e) {
                 Log::error(
-                    'Bulk import failed for row in ' .
-                        get_class($this->model) .
-                        ': PII REDACTED. Error: ' .
+                    'Bulk import failed for row in '.
+                        get_class($this->model).
+                        ': PII REDACTED. Error: '.
                         $e->getMessage(),
                 );
             }

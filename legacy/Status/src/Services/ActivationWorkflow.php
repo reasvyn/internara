@@ -117,7 +117,7 @@ class ActivationWorkflow
                 ->where('expires_at', '>=', now())
                 ->first();
 
-            if (!$tokenRecord) {
+            if (! $tokenRecord) {
                 // Increment failed attempts even if token not found
                 $this->recordFailedAttempt($user, $ipAddress);
                 throw new \Exception('Invalid or expired activation token.');
@@ -234,7 +234,7 @@ class ActivationWorkflow
             ->where('expires_at', '>=', now())
             ->first();
 
-        if (!$token) {
+        if (! $token) {
             return null;
         }
 

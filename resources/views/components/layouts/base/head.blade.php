@@ -1,9 +1,9 @@
 @props([
-    'title' => App\Support\Branding::siteTitle(),
+    'title' => brand('site_title'),
 ])
 
 @php
-    $favicon = App\Support\Branding::favicon();
+    $favicon = brand('favicon');
     $manifest = asset('/brand/site.webmanifest');
 @endphp
 
@@ -25,10 +25,6 @@
 <link rel="apple-touch-icon" href="{{ $favicon }}" />
 
 <link rel="manifest" href="{{ $manifest }}">
-
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.bunny.net" />
-<link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
 <!-- Vite Assets -->
 @vite(['resources/css/app.css', 'resources/js/app.js'])

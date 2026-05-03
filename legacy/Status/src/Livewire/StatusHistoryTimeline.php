@@ -101,7 +101,7 @@ class StatusHistoryTimeline extends Component
             ->distinct('new_status')
             ->pluck('new_status')
             ->map(
-                fn($status) => [
+                fn ($status) => [
                     'value' => $status,
                     'label' => $status,
                 ],
@@ -121,7 +121,7 @@ class StatusHistoryTimeline extends Component
             ->with('triggeredBy')
             ->get()
             ->map(
-                fn($history) => [
+                fn ($history) => [
                     'value' => $history->triggered_by_user_id,
                     'label' => $history->triggeredBy?->name ?? 'Unknown Admin',
                 ],
@@ -136,8 +136,8 @@ class StatusHistoryTimeline extends Component
     {
         $records = $this->user
             ->statusHistory()
-            ->when($this->filterStatus, fn($q) => $q->where('new_status', $this->filterStatus))
-            ->when($this->filterBy, fn($q) => $q->where('triggered_by_user_id', $this->filterBy))
+            ->when($this->filterStatus, fn ($q) => $q->where('new_status', $this->filterStatus))
+            ->when($this->filterBy, fn ($q) => $q->where('triggered_by_user_id', $this->filterBy))
             ->orderBy($this->sortBy, $this->sortDir)
             ->get();
 
@@ -145,7 +145,7 @@ class StatusHistoryTimeline extends Component
 
         foreach ($records as $history) {
             $csv .= sprintf(
-                '"%s","%s","%s","%s","%s","%s","%s","%s"' . "\n",
+                '"%s","%s","%s","%s","%s","%s","%s","%s"'."\n",
                 $history->created_at->format('Y-m-d H:i:s'),
                 $history->old_status ?? 'N/A',
                 $history->new_status,
@@ -158,8 +158,8 @@ class StatusHistoryTimeline extends Component
         }
 
         return response()->streamDownload(
-            fn() => print $csv,
-            'status-history-' . $this->user->id . '-' . now()->format('Y-m-d') . '.csv',
+            fn () => print $csv,
+            'status-history-'.$this->user->id.'-'.now()->format('Y-m-d').'.csv',
             ['Content-Type' => 'text/csv'],
         );
     }

@@ -8,9 +8,17 @@ return [
     | Auto Binding
     |--------------------------------------------------------------------------
     |
-    | If enabled, the package will automatically discover and bind interfaces
-    | to their matching implementations based on naming conventions.
-    | e.g. UserServiceInterface -> UserService
+    | If enabled, the provider automatically discovers and binds interfaces
+    | from both contract locations to their matching implementations based
+    | on the naming patterns defined below.
+    |
+    | Contract locations:
+    |   - `App/Contracts/{Domain}/`    — centralized (shared across domains)
+    |   - `App/{Domain}/Contracts/`    — domain-scoped (owned by one domain)
+    |
+    | Example: `App\Contracts\Services\UserServiceInterface` or
+    | `App\Services\Contracts\UserServiceInterface` both resolve to
+    | `App\Services\UserService`.
     |
     */
 
@@ -21,8 +29,8 @@ return [
     | Bind as Singleton
     |--------------------------------------------------------------------------
     |
-    | If true, services will be registered as singletons instead of transient bindings.
-    | This is generally more memory efficient for stateless services.
+    | If true, services are registered as singletons. Set to false for
+    | transient (new instance per resolution) bindings.
     |
     */
 
@@ -33,28 +41,34 @@ return [
     | Concrete Class Patterns
     |--------------------------------------------------------------------------
     |
-    | Define the patterns used to guess the concrete class from the interface.
-    | Available placeholders:
-    | - {{root}}: The root namespace (e.g. App or Modules\User)
-    | - {{short}}: The short name of the interface without Interface/Contract suffix (e.g. User from UserInterface)
+    | Patterns used to resolve an interface to its concrete implementation.
+    | Scanning covers `App/Contracts/{Domain}/` (centralized) and
+    | `App/{Domain}/Contracts/` (domain-scoped). The provider derives the
+    | domain namespace from the interface path, then applies each pattern.
+    |
+    | Placeholders:
+    |   {{domain}} — Domain namespace (e.g. `App\Services` from either
+    |                `App\Services\Contracts\` or `App\Contracts\Services\`)
+    |   {{base}}   — Interface name without Interface/Contract suffix
+    |   {{name}}   — Full interface short name
+    |
+    | Patterns are tried in order. The first existing class wins.
     |
     */
 
     'patterns' => [
-        // Services
-        '{{root}}\Services\{{short}}Service',
-        '{{root}}\Services\{{short}}',
+        // Services: App\Contracts\Services\XxxInterface → App\Services\XxxService
+        '{{domain}}\{{base}}',
+        '{{domain}}\{{name}}',
 
-        // Repositories
-        '{{root}}\Repositories\Eloquent{{short}}Repository',
-        '{{root}}\Repositories\Eloquent{{short}}',
-        '{{root}}\Repositories\Eloquent\{{short}}Repository',
-        '{{root}}\Repositories\{{short}}Repository',
-        '{{root}}\Repositories\{{short}}',
+        // Domain-scoped services: App\Contracts\Services\XxxInterface → App\Services\Domain\XxxService
+        '{{domain}}\{{base}}',
 
-        // Actions / Direct
-        '{{root}}\Actions\{{short}}',
-        '{{root}}\{{short}}',
+        // Repositories: App\Contracts\Repositories\XxxInterface → App\Repositories\XxxRepository
+        '{{domain}}\{{base}}Repository',
+
+        // Actions: App\Contracts\Actions\XxxInterface → App\Actions\XxxAction
+        '{{domain}}\{{base}}Action',
     ],
 
     /*
@@ -62,25 +76,27 @@ return [
     | Ignored Namespaces
     |--------------------------------------------------------------------------
     |
-    | List of namespaces prefixes that should be ignored during auto-discovery.
-    | Use this to prevent sensitive or internal services from being auto-bound.
+    | Interface namespace prefixes excluded from auto-discovery.
+    | Use this to prevent internal or test contracts from being auto-bound.
     |
     */
 
-    'ignored_namespaces' => [],
+    'ignored_namespaces' => [
+        'App\Contracts\Testing',
+    ],
 
     /*
     |--------------------------------------------------------------------------
     | Default Bindings
     |--------------------------------------------------------------------------
     |
-    | Standard interface-to-implementation bindings.
+    | Explicit interface-to-implementation bindings registered regardless
+    | of auto-discovery. Useful for non-conventional mappings.
     |
     */
 
     'default' => [
-        // 'App\Contracts\SomeInterface' => 'App\Services\SomeService',
-        // 'Modules\ModuleName\Contracts\SomeInterface' => 'Modules\ModuleName\Services\SomeService',
+        // 'App\Contracts\XxxInterface' => 'App\Services\CustomXxx',
     ],
 
     /*
@@ -88,15 +104,15 @@ return [
     | Contextual Bindings
     |--------------------------------------------------------------------------
     |
-    | Define implementation based on the consumer class.
-    | Keys: 'when' (Consumer), 'needs' (Interface), 'give' (Implementation).
+    | Bindings scoped to a specific consumer class using Laravel's
+    | When-Needs-Give syntax.
     |
     */
 
     'contextual' => [
         // [
         //     'when'  => 'App\Http\Controllers\PhotoController',
-        //     'needs' => 'App\Contracts\Filesystem',
+        //     'needs' => 'App\Contracts\FilesystemInterface',
         //     'give'  => 'App\Services\LocalFilesystem',
         // ],
     ],

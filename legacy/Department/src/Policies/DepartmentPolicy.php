@@ -73,11 +73,11 @@ class DepartmentPolicy
             return true;
         }
 
-        if (!$user->hasPermissionTo(Permission::DEPARTMENT_DELETE->value)) {
+        if (! $user->hasPermissionTo(Permission::DEPARTMENT_DELETE->value)) {
             return false;
         }
 
-        return !$department->profiles()->exists();
+        return ! $department->profiles()->exists();
     }
 
     /**

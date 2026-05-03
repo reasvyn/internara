@@ -94,7 +94,7 @@ class RequirementManager extends RecordManager
         // Standard Auto-fills
         $this->form->academic_year = (string) setting(
             'active_academic_year',
-            date('Y') . '/' . (date('Y') + 1),
+            date('Y').'/'.(date('Y') + 1),
         );
         $this->form->is_active = true;
 
@@ -116,7 +116,7 @@ class RequirementManager extends RecordManager
      */
     public function activeFilterCount(): int
     {
-        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
+        return count(array_filter($this->filters, fn ($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     /**

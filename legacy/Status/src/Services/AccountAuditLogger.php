@@ -68,7 +68,7 @@ class AccountAuditLogger
     private function logVerification(User $user, ?User $triggeredBy): void
     {
         Log::channel('audit')->info(
-            "✅ Account verified: {$user->email}" .
+            "✅ Account verified: {$user->email}".
                 ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
@@ -81,7 +81,7 @@ class AccountAuditLogger
     private function logRestriction(User $user, ?User $triggeredBy): void
     {
         Log::channel('audit')->notice(
-            "⚠️  Account restricted: {$user->email}" .
+            "⚠️  Account restricted: {$user->email}".
                 ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
@@ -94,7 +94,7 @@ class AccountAuditLogger
     private function logSuspension(User $user, ?string $reason, ?User $triggeredBy): void
     {
         Log::channel('audit')->warning(
-            "🚫 Account suspended: {$user->email}" .
+            "🚫 Account suspended: {$user->email}".
                 ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,
@@ -108,7 +108,7 @@ class AccountAuditLogger
     private function logArchival(User $user, ?User $triggeredBy): void
     {
         Log::channel('audit')->info(
-            "📦 Account archived: {$user->email}" .
+            "📦 Account archived: {$user->email}".
                 ($triggeredBy ? " by {$triggeredBy->email}" : ''),
             [
                 'user_id' => $user->id,

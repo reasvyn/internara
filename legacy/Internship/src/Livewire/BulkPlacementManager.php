@@ -62,7 +62,7 @@ class BulkPlacementManager extends Component
     public function internships()
     {
         return Internship::query()->orderBy('title')->get()->map(
-            fn(Internship $internship) => [
+            fn (Internship $internship) => [
                 'value' => $internship->id,
                 'label' => "{$internship->title} ({$internship->academic_year})",
             ],
@@ -75,7 +75,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function companies()
     {
-        if (!$this->internshipId) {
+        if (! $this->internshipId) {
             return [];
         }
 
@@ -89,7 +89,7 @@ class BulkPlacementManager extends Component
             ->orderBy('name')
             ->get()
             ->map(
-                fn(Company $company) => [
+                fn (Company $company) => [
                     'value' => $company->id,
                     'label' => "{$company->name} ({$company->business_field})",
                 ],
@@ -102,7 +102,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function availableStudents()
     {
-        if (!$this->internshipId) {
+        if (! $this->internshipId) {
             return [];
         }
 
@@ -133,7 +133,7 @@ class BulkPlacementManager extends Component
     #[Computed]
     public function remainingQuota()
     {
-        if (!$this->companyId || !$this->internshipId) {
+        if (! $this->companyId || ! $this->internshipId) {
             return 0;
         }
 
@@ -142,7 +142,7 @@ class BulkPlacementManager extends Component
             ->where('internship_id', $this->internshipId)
             ->first();
 
-        if (!$placement) {
+        if (! $placement) {
             return 0;
         }
 
@@ -166,7 +166,7 @@ class BulkPlacementManager extends Component
             return;
         }
 
-        if (!$this->internshipId || !$this->companyId) {
+        if (! $this->internshipId || ! $this->companyId) {
             $this->dispatch(
                 'notify',
                 type: 'warning',
@@ -258,9 +258,8 @@ class BulkPlacementManager extends Component
         return view('internship::livewire.bulk-placement-manager')->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' =>
-                    __('internship::ui.bulk_placement_title') .
-                    ' | ' .
+                'title' => __('internship::ui.bulk_placement_title').
+                    ' | '.
                     setting('brand_name', setting('app_name')),
                 'context' => 'internship::ui.bulk_placement_context',
             ],

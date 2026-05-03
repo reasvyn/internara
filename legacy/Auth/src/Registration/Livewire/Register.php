@@ -106,7 +106,7 @@ class Register extends Component
             activity('security')
                 ->event('registration_failed')
                 ->withProperties(['ip' => request()->ip(), 'email' => $this->form->email])
-                ->log('Registration attempt failed: ' . $e->getMessage());
+                ->log('Registration attempt failed: '.$e->getMessage());
 
             $this->addError('form.email', $e->getUserMessage());
         }
@@ -117,7 +117,7 @@ class Register extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate('registration|' . request()->ip());
+        return Str::transliterate('registration|'.request()->ip());
     }
 
     /**

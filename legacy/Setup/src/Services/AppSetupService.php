@@ -93,7 +93,7 @@ class AppSetupService extends BaseService implements Contract
             return false;
         }
 
-        if ($prevStep && !$process->isStepCompleted($prevStep)) {
+        if ($prevStep && ! $process->isStepCompleted($prevStep)) {
             throw new AppException(
                 userMessage: 'setup::exceptions.require_step_completed',
                 code: 403,
@@ -115,7 +115,7 @@ class AppSetupService extends BaseService implements Contract
         $lock = Cache::lock("setup.step.{$step}", 30);
 
         return $lock->get(function () use ($step, $reqRecord, $process) {
-            if (!$process->canProceedTo($step)) {
+            if (! $process->canProceedTo($step)) {
                 throw new AppException(
                     userMessage: 'setup::exceptions.require_step_completed',
                     code: 403,
@@ -165,7 +165,7 @@ class AppSetupService extends BaseService implements Contract
             $this->settingService->setValue(self::SETTING_SETUP_TOKEN, null);
             $this->settingService->setValue('setup_step_complete', true);
 
-            event(new SetupFinalized());
+            event(new SetupFinalized);
 
             activity('setup')->event('finalized')->log(__('setup::wizard.audit_logs.finalized'));
 

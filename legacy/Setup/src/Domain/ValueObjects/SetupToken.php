@@ -60,7 +60,7 @@ final readonly class SetupToken
             return false;
         }
 
-        return new \DateTimeImmutable() > $this->expiresAt;
+        return new \DateTimeImmutable > $this->expiresAt;
     }
 
     /**

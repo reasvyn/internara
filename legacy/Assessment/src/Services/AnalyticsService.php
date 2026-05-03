@@ -25,7 +25,7 @@ class AnalyticsService extends BaseService implements Contract
         return Cache::remember(
             "assessment:analytics:competency:{$registrationId}",
             now()->addHours(1),
-            fn() => $this->competencyService->getProgressStats($registrationId),
+            fn () => $this->competencyService->getProgressStats($registrationId),
         );
     }
 
@@ -37,7 +37,7 @@ class AnalyticsService extends BaseService implements Contract
         return Cache::remember(
             "assessment:analytics:participation:{$registrationId}",
             now()->addHours(1),
-            fn() => $this->complianceService->calculateScore($registrationId),
+            fn () => $this->complianceService->calculateScore($registrationId),
         );
     }
 }

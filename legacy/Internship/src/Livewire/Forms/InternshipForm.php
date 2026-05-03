@@ -38,8 +38,8 @@ class InternshipForm extends Form
             'title' => array_filter([
                 'required',
                 'string',
-                $isProduction ? 'min:' . $config['title']['min_length'] : null,
-                'max:' . $config['title']['max_length'],
+                $isProduction ? 'min:'.$config['title']['min_length'] : null,
+                'max:'.$config['title']['max_length'],
                 Rule::unique('internships', 'title')->ignore($this->id),
             ]),
             'description' => ['nullable', 'string'],

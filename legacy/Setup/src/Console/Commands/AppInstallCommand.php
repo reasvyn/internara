@@ -44,7 +44,7 @@ class AppInstallCommand extends Command
         $this->displayBanner();
         $this->displayPreFlightSummary();
 
-        if (!$this->confirmInstallation()) {
+        if (! $this->confirmInstallation()) {
             $this->components->warn(__('setup::install.warnings.aborted'));
 
             return self::FAILURE;
@@ -54,13 +54,13 @@ class AppInstallCommand extends Command
             // 0. System Cleanup
             $this->performTask(
                 __('setup::install.tasks.cleanup'),
-                fn() => $this->callSilent('optimize:clear') === 0,
+                fn () => $this->callSilent('optimize:clear') === 0,
             );
 
             // 1. Environment Initialization
             $this->performTask(
                 __('setup::install.tasks.env'),
-                fn() => $this->installerService->ensureEnvFileExists(),
+                fn () => $this->installerService->ensureEnvFileExists(),
             );
 
             // 2. Environment Validation
@@ -76,9 +76,9 @@ class AppInstallCommand extends Command
                     }
                 }
 
-                if (isset($audit['database']) && !($audit['database']['connection'] ?? false)) {
+                if (isset($audit['database']) && ! ($audit['database']['connection'] ?? false)) {
                     $failures[] =
-                        'database.connection: ' .
+                        'database.connection: '.
                         ($audit['database']['message'] ?? 'Unknown error');
                 }
 
@@ -97,25 +97,25 @@ class AppInstallCommand extends Command
             // 3. Application Key Generation
             $this->performTask(
                 __('setup::install.tasks.key'),
-                fn() => $this->installerService->generateAppKey(),
+                fn () => $this->installerService->generateAppKey(),
             );
 
             // 4. Database Schema Initialization
             $this->performTask(
                 __('setup::install.tasks.schema'),
-                fn() => $this->installerService->runMigrations($this->option('force')),
+                fn () => $this->installerService->runMigrations($this->option('force')),
             );
 
             // 5. Foundational Data Seeding
             $this->performTask(
                 __('setup::install.tasks.seeding'),
-                fn() => $this->installerService->runSeeders(),
+                fn () => $this->installerService->runSeeders(),
             );
 
             // 6. Storage System Integration
             $this->performTask(
                 __('setup::install.tasks.storage'),
-                fn() => $this->installerService->createStorageSymlink(),
+                fn () => $this->installerService->createStorageSymlink(),
             );
         } catch (\RuntimeException $e) {
             $this->components->error($e->getMessage());
@@ -123,7 +123,7 @@ class AppInstallCommand extends Command
             return self::FAILURE;
         } catch (\Throwable $e) {
             $this->newLine();
-            $this->components->error('System Initialization Failed: ' . $e->getMessage());
+            $this->components->error('System Initialization Failed: '.$e->getMessage());
 
             return self::FAILURE;
         }
@@ -137,13 +137,13 @@ class AppInstallCommand extends Command
     {
         $this->newLine();
         $this->line(
-            ' <fg=white;bg=blue;options=bold> INTERNARA </> <fg=blue;options=bold>' .
-                __('setup::install.banner.engine') .
+            ' <fg=white;bg=blue;options=bold> INTERNARA </> <fg=blue;options=bold>'.
+                __('setup::install.banner.engine').
                 '</>',
         );
         $this->line(
-            ' <fg=gray>' .
-                __('setup::install.banner.tool', ['version' => config('app.version', '0.15.0')]) .
+            ' <fg=gray>'.
+                __('setup::install.banner.tool', ['version' => config('app.version', '0.15.0')]).
                 '</>',
         );
         $this->newLine();
@@ -176,7 +176,7 @@ class AppInstallCommand extends Command
 
         $token = $this->settingService->getValue('setup_token');
 
-        if (!$this->settingService->getValue('setup_token_expires_at')) {
+        if (! $this->settingService->getValue('setup_token_expires_at')) {
             $this->settingService->setValue(
                 'setup_token_expires_at',
                 now()->addHours(24)->toIso8601String(),
@@ -185,7 +185,7 @@ class AppInstallCommand extends Command
 
         $setupUrl = URL::temporarySignedRoute('setup', now()->addHours(24), ['token' => $token]);
 
-        $this->line(' <fg=blue;options=bold>' . __('setup::install.auth_required') . '</>');
+        $this->line(' <fg=blue;options=bold>'.__('setup::install.auth_required').'</>');
         $this->newLine();
         $this->line("  <fg=cyan;options=bold>{$setupUrl}</>");
         $this->newLine();

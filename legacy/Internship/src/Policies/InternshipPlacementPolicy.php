@@ -62,11 +62,11 @@ class InternshipPlacementPolicy
      */
     public function delete(User $user, InternshipPlacement $placement): bool
     {
-        if (!$user->hasPermissionTo(Permission::PLACEMENT_MANAGE->value)) {
+        if (! $user->hasPermissionTo(Permission::PLACEMENT_MANAGE->value)) {
             return false;
         }
 
-        return !$placement->student instanceof User || $placement->registrations()->exists();
+        return ! $placement->student instanceof User || $placement->registrations()->exists();
     }
 
     /**

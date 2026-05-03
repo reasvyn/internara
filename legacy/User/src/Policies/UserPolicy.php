@@ -50,21 +50,21 @@ class UserPolicy
                 return true;
             }
 
-            if (!setting('app_installed', false)) {
+            if (! setting('app_installed', false)) {
                 return true;
             }
 
             return false;
         }
 
-        if (!$this->isAdmin($user)) {
+        if (! $this->isAdmin($user)) {
             return false;
         }
 
         if ($roles) {
             foreach ($roles as $role) {
                 if (in_array($role, [Role::SUPER_ADMIN->value, Role::ADMIN->value])) {
-                    if (!$this->isSuperAdmin($user)) {
+                    if (! $this->isSuperAdmin($user)) {
                         return false;
                     }
                 }

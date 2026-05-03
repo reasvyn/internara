@@ -62,11 +62,11 @@ class CompanyPolicy
      */
     public function delete(User $user, Company $company): bool
     {
-        if (!$user->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value)) {
+        if (! $user->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value)) {
             return false;
         }
 
-        if (!$company->internshipPlacements()->exists()) {
+        if (! $company->internshipPlacements()->exists()) {
             return true;
         }
 

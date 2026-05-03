@@ -40,17 +40,17 @@ class SetupServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
 
         // Load migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         // Load views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'setup');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'setup');
 
         // Load translations
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'setup');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'setup');
 
         // Register middleware aliases
         $this->app['router']->aliasMiddleware('setup.protect', ProtectSetupRoute::class);

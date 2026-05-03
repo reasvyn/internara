@@ -74,7 +74,7 @@ class User
      */
     private function hasValidCredentials(): bool
     {
-        return !empty($this->email) && ($this->hasRole('admin') || !empty($this->username));
+        return ! empty($this->email) && ($this->hasRole('admin') || ! empty($this->username));
     }
 
     // Getters

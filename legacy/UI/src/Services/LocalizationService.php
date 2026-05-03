@@ -29,7 +29,7 @@ class LocalizationService extends BaseService implements Contract
      */
     public function setLocale(string $locale): bool
     {
-        if (!array_key_exists($locale, $this->getSupportedLocales())) {
+        if (! array_key_exists($locale, $this->getSupportedLocales())) {
             return false;
         }
 

@@ -22,13 +22,14 @@ beforeEach(function () {
     // Authorization for setup (Middleware & Gates)
     app(SettingService::class)->setValue('app_installed', false);
     app(SettingService::class)->setValue('setup_token', 'test-token');
-    Gate::define('performStep', fn() => true);
+    Gate::define('performStep', fn () => true);
 
     // Mock requirement providers
     $registry = app(SetupRequirementRegistry::class);
     foreach (['school', 'super-admin', 'department', 'internship'] as $identifier) {
         $registry->register(
-            new class ($identifier) implements SetupRequirementProvider {
+            new class($identifier) implements SetupRequirementProvider
+            {
                 public function __construct(private string $id) {}
 
                 public function getRequirementIdentifier(): string

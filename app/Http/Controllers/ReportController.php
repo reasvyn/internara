@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Report\DownloadReportAction;
-use App\Actions\Report\QueueReportGenerationAction;
+use App\Domain\Document\Actions\DownloadReportAction;
+use App\Domain\Document\Actions\QueueReportGenerationAction;
+use App\Domain\Document\Models\GeneratedReport;
 use App\Http\Requests\GenerateReportRequest;
-use App\Models\GeneratedReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\StreamedResponse;

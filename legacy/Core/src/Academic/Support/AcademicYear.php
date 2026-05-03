@@ -28,9 +28,9 @@ final class AcademicYear
         $transitionMonth = (int) Config::get('core.academic_year_transition_month', 7);
 
         if ($month < $transitionMonth) {
-            return $year - 1 . '/' . $year;
+            return $year - 1 .'/'.$year;
         }
 
-        return $year . '/' . ($year + 1);
+        return $year.'/'.($year + 1);
     }
 }

@@ -1,10 +1,8 @@
-<?php
-
 declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Actions\Auth\SendPasswordResetLinkAction;
+use App\Domain\Auth\Actions\SendPasswordResetLinkAction;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -51,14 +49,14 @@ class ForgotPassword extends Component
     protected function throttleKey(): string
     {
         return Str::transliterate(
-            'forgot-password|' . Str::lower($this->email) . '|' . request()->ip(),
+            'forgot-password|'.Str::lower($this->email).'|'.request()->ip(),
         );
     }
 
     /**
      * Render the forgot password view.
      */
-    #[Layout('components.layouts.auth', ['title' => 'Forgot Password'])]
+    #[Layout('layouts::auth', ['title' => 'Forgot Password'])]
     public function render(): View
     {
         return view('auth.forgot-password');

@@ -82,11 +82,11 @@ class InternshipPolicy
             return true;
         }
 
-        if (!$user?->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value)) {
+        if (! $user?->hasPermissionTo(Permission::INTERNSHIP_MANAGE->value)) {
             return false;
         }
 
-        return !$internship->registrations()->exists();
+        return ! $internship->registrations()->exists();
     }
 
     /**

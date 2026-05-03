@@ -119,7 +119,7 @@ class MentorManager extends RecordManager
     public function reissueActivationCode(mixed $id): void
     {
         $user = $this->service->find($id);
-        if (!$user) {
+        if (! $user) {
             return;
         }
 
@@ -157,7 +157,7 @@ class MentorManager extends RecordManager
 
     public function activeFilterCount(): int
     {
-        return count(array_filter($this->filters, fn($v) => $v !== null && $v !== '' && $v !== []));
+        return count(array_filter($this->filters, fn ($v) => $v !== null && $v !== '' && $v !== []));
     }
 
     public function statusBadgeVariant(string $status): string
@@ -258,15 +258,15 @@ class MentorManager extends RecordManager
 
         $query->whereExists(function ($q) use ($status, $statusTable, $userTable): void {
             $q->selectRaw('1')
-                ->from($statusTable . ' as latest_status')
-                ->whereColumn('latest_status.model_id', $userTable . '.id')
+                ->from($statusTable.' as latest_status')
+                ->whereColumn('latest_status.model_id', $userTable.'.id')
                 ->where('latest_status.model_type', User::class)
                 ->where('latest_status.name', $status)
                 ->whereRaw(
-                    'latest_status.created_at = (select max(s2.created_at) from ' .
-                        $statusTable .
-                        ' as s2 where s2.model_type = ? and s2.model_id = ' .
-                        $userTable .
+                    'latest_status.created_at = (select max(s2.created_at) from '.
+                        $statusTable.
+                        ' as s2 where s2.model_type = ? and s2.model_id = '.
+                        $userTable.
                         '.id)',
                     [User::class],
                 );

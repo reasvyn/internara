@@ -18,7 +18,7 @@ test('completion guard audit: registration cannot be completed if tasks are pend
     $mock->shouldReceive('isFulfillmentComplete')->with($reg->id)->andReturn(false);
 
     // 3. Act & Assert via Internship module
-    expect(fn() => app(RegistrationService::class)->complete($reg->id))->toThrow(
+    expect(fn () => app(RegistrationService::class)->complete($reg->id))->toThrow(
         AppException::class,
         'internship::exceptions.mandatory_assignments_not_verified',
     );

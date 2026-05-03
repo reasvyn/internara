@@ -86,7 +86,7 @@ describe('Register Component', function () {
     });
 
     test('it blocks registration after rate limit exceeded', function () {
-        $throttleKey = 'registration|' . request()->ip();
+        $throttleKey = 'registration|'.request()->ip();
         RateLimiter::hit($throttleKey, 3600);
         RateLimiter::hit($throttleKey, 3600);
 

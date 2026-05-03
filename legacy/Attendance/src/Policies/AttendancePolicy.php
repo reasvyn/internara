@@ -29,7 +29,7 @@ class AttendancePolicy
      */
     public function view(User $user, AttendanceLog $log): bool
     {
-        if (!$user->hasPermissionTo(Permission::ATTENDANCE_VIEW->value)) {
+        if (! $user->hasPermissionTo(Permission::ATTENDANCE_VIEW->value)) {
             return false;
         }
 

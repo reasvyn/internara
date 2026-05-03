@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Internara Notification</h1>
+            <h1>{{ config('app.name') }} Notification</h1>
         </div>
         <div class="content">
             <h2>Hello {{ $user->name }},</h2>
@@ -28,7 +28,7 @@
             @endif
         </div>
         <div class="footer">
-            <p>This email was sent from Internara System</p>
+            <p>This email was sent from {{ config('app.name') }} System</p>
             <p>If you don't want to receive these emails, you can update your notification preferences.</p>
         </div>
     </div>

@@ -64,7 +64,7 @@ class InternshipPlacementIndex extends RecordIndex
             ],
             [
                 'title' => __('internship::ui.stats.utilization_rate'),
-                'value' => $raw['utilization_rate'] . '%',
+                'value' => $raw['utilization_rate'].'%',
                 'icon' => 'tabler.chart-pie',
                 'variant' => 'primary',
             ],

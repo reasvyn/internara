@@ -44,7 +44,7 @@ class ModuleServiceProvider extends ServiceProvider
     protected function registerAllModuleTranslations(): void
     {
         $this->traverseModules(function (string $name, string $path) {
-            $langPath = $path . '/lang';
+            $langPath = $path.'/lang';
             if (is_dir($langPath)) {
                 $this->loadTranslationsFrom($langPath, strtolower($name));
             }
@@ -57,7 +57,7 @@ class ModuleServiceProvider extends ServiceProvider
     protected function registerAllModuleViews(): void
     {
         $this->traverseModules(function (string $name, string $path) {
-            $viewPath = $path . '/resources/views';
+            $viewPath = $path.'/resources/views';
             if (is_dir($viewPath)) {
                 $this->loadViewsFrom($viewPath, strtolower($name));
             }
@@ -74,13 +74,13 @@ class ModuleServiceProvider extends ServiceProvider
     {
         $modulesPath = base_path('modules');
 
-        if (!is_dir($modulesPath)) {
+        if (! is_dir($modulesPath)) {
             return;
         }
 
         try {
             foreach (new DirectoryIterator($modulesPath) as $moduleDir) {
-                if (!$moduleDir->isDir() || $moduleDir->isDot()) {
+                if (! $moduleDir->isDir() || $moduleDir->isDot()) {
                     continue;
                 }
 
@@ -88,10 +88,10 @@ class ModuleServiceProvider extends ServiceProvider
                 $modulePath = $moduleDir->getPathname();
 
                 // Validate: must be a legitimate module (S3 - explicit boundaries)
-                $hasComposer = file_exists($modulePath . '/composer.json');
-                $hasModuleFile = file_exists($modulePath . '/Module.php');
+                $hasComposer = file_exists($modulePath.'/composer.json');
+                $hasModuleFile = file_exists($modulePath.'/Module.php');
 
-                if (!$hasComposer && !$hasModuleFile) {
+                if (! $hasComposer && ! $hasModuleFile) {
                     if (is_debug_mode()) {
                         Log::debug(
                             "ModuleServiceProvider: Skipping non-module directory: {$moduleName}",
@@ -105,7 +105,7 @@ class ModuleServiceProvider extends ServiceProvider
             }
         } catch (Throwable $e) {
             if (is_debug_mode()) {
-                Log::debug('ModuleServiceProvider: Traversal failed. ' . $e->getMessage());
+                Log::debug('ModuleServiceProvider: Traversal failed. '.$e->getMessage());
             }
         }
     }

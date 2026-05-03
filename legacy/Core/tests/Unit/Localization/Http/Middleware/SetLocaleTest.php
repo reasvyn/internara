@@ -21,7 +21,7 @@ describe('SetLocale Middleware', function () {
         Session::put('locale', 'id');
 
         $request = Request::create('/', 'GET');
-        $middleware = new SetLocale();
+        $middleware = new SetLocale;
 
         $middleware->handle($request, function ($req) {
             expect(App::getLocale())->toBe('id');
@@ -34,7 +34,7 @@ describe('SetLocale Middleware', function () {
         Session::put('locale', 'en');
 
         $request = Request::create('/', 'GET');
-        $middleware = new SetLocale();
+        $middleware = new SetLocale;
 
         $middleware->handle($request, function ($req) {
             expect(App::getLocale())->toBe('en');
@@ -48,7 +48,7 @@ describe('SetLocale Middleware', function () {
         Session::put('locale', 'invalid_locale');
 
         $request = Request::create('/', 'GET');
-        $middleware = new SetLocale();
+        $middleware = new SetLocale;
 
         $middleware->handle($request, function ($req) use ($initialLocale) {
             expect(App::getLocale())->toBe($initialLocale);
@@ -62,7 +62,7 @@ describe('SetLocale Middleware', function () {
         Session::forget('locale');
 
         $request = Request::create('/', 'GET');
-        $middleware = new SetLocale();
+        $middleware = new SetLocale;
 
         $middleware->handle($request, function ($req) use ($initialLocale) {
             expect(App::getLocale())->toBe($initialLocale);
@@ -74,7 +74,7 @@ describe('SetLocale Middleware', function () {
     test('it passes request to next handler after setting locale', function () {
         Session::put('locale', 'id');
         $request = Request::create('/', 'GET');
-        $middleware = new SetLocale();
+        $middleware = new SetLocale;
 
         $nextCalled = false;
         $result = $middleware->handle($request, function ($req) use (&$nextCalled) {

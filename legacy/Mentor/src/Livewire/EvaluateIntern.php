@@ -41,7 +41,7 @@ class EvaluateIntern extends Component
 
         // Authorization check for viewing
         $registration = app(RegistrationService::class)->find($registrationId);
-        if (!$registration || $registration->mentor_id !== auth()->id()) {
+        if (! $registration || $registration->mentor_id !== auth()->id()) {
             abort(403, 'You are not authorized to evaluate this intern.');
         }
 
@@ -89,7 +89,7 @@ class EvaluateIntern extends Component
             'registration' => $registration,
             'claimedCompetencies' => $claimedCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' => __('Evaluate Intern') . ' | ' . setting('brand_name', setting('app_name')),
+            'title' => __('Evaluate Intern').' | '.setting('brand_name', setting('app_name')),
         ]);
     }
 }

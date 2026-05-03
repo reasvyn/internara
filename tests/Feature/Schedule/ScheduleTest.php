@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Enums\Role as RoleEnum;
-use App\Models\Schedule;
-use App\Models\User;
+use App\Domain\Schedule\Models\Schedule;
+use App\Domain\User\Models\User;
+use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {

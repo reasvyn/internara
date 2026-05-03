@@ -8,23 +8,18 @@ return [
         'subtitle' => 'Membangun otoritas utama untuk ekosistem Internara.',
         'page_title' => 'Otoritas Sistem | :site_title',
         'authority_title' => 'Otoritas Komando',
-        'authority_desc' =>
-            'Tentukan identitas personal untuk akun yang akan memegang hak istimewa sistem mutlak.',
+        'authority_desc' => 'Tentukan identitas personal untuk akun yang akan memegang hak istimewa sistem mutlak.',
         'sovereign_label' => 'Administrator Berdaulat',
-        'sovereign_help' =>
-            'Akun ini akan memiliki akses tak terbatas ke seluruh data, konfigurasi, dan manajemen pengguna.',
+        'sovereign_help' => 'Akun ini akan memiliki akses tak terbatas ke seluruh data, konfigurasi, dan manajemen pengguna.',
         'security_title' => 'Kredensial & Keamanan',
-        'security_desc' =>
-            'Tetapkan protokol akses yang aman. Standar enterprise untuk kompleksitas kata sandi diberlakukan.',
+        'security_desc' => 'Tetapkan protokol akses yang aman. Standar enterprise untuk kompleksitas kata sandi diberlakukan.',
         'form' => [
             'name' => 'Nama Lengkap',
             'name_placeholder' => 'Masukkan nama resmi Anda',
             'username' => 'Nama Pengguna Tergenerasi',
-            'username_auto_generated' =>
-                'Nama pengguna akan digenerate secara otomatis oleh sistem dengan pola uXXXXXXXX untuk keamanan.',
+            'username_auto_generated' => 'Nama pengguna akan digenerate secara otomatis oleh sistem dengan pola uXXXXXXXX untuk keamanan.',
             'username_placeholder' => 'Akan digenerate otomatis dari email',
-            'username_permanence_hint' =>
-                'Ditetapkan secara permanen untuk keamanan sistem dan tidak dapat diubah setelah digenerate.',
+            'username_permanence_hint' => 'Ditetapkan secara permanen untuk keamanan sistem dan tidak dapat diubah setelah digenerate.',
             'email' => 'Email Utama',
             'email_placeholder' => 'Masukkan email kontak resmi',
             'password' => 'Kata Sandi Aman',
@@ -33,8 +28,7 @@ return [
             'password_confirmation' => 'Konfirmasi Kata Sandi',
             'password_confirmation_placeholder' => 'Ulangi kata sandi aman',
             'submit' => 'Inisialisasi Akun Berdaulat',
-            'footer_warning' =>
-                'Jaga kerahasiaan kredensial ini. Akun ini memegang akses krusial ke seluruh data institusi.',
+            'footer_warning' => 'Jaga kerahasiaan kredensial ini. Akun ini memegang akses krusial ke seluruh data institusi.',
         ],
     ],
     'password_strength' => [
@@ -57,8 +51,7 @@ return [
             'forgot_password' => 'Lupa kata sandi Anda?',
             'remember_me' => 'Ingat saya',
             'submit' => 'Masuk Sekarang',
-            'rate_limited' =>
-                'Terlalu banyak percobaan masuk. Silakan coba lagi dalam :seconds detik.',
+            'rate_limited' => 'Terlalu banyak percobaan masuk. Silakan coba lagi dalam :seconds detik.',
             'no_account' => 'Belum punya akun?',
             'register_now' => 'Daftar Sekarang',
             'have_activation_code' => 'Punya kode aktivasi?',
@@ -81,8 +74,7 @@ return [
             'password_confirmation' => 'Konfirmasi Kata Sandi',
             'password_confirmation_placeholder' => 'Ulangi Kata Sandi Anda',
             'submit' => 'Daftar sebagai Siswa',
-            'policy_agreement' =>
-                'Dengan menekan tombol Daftar Sekarang, Anda otomatis menyetujui Kebijakan Privasi kami.',
+            'policy_agreement' => 'Dengan menekan tombol Daftar Sekarang, Anda otomatis menyetujui Kebijakan Privasi kami.',
             'rate_limited' => 'Terlalu banyak percobaan pendaftaran. Silakan coba lagi nanti.',
             'has_account' => 'Sudah memiliki akun?',
             'login_now' => 'Masuk',
@@ -91,8 +83,7 @@ return [
     'verification' => [
         'title' => 'Verifikasi Email Anda',
         'subtitle' => 'Satu langkah lagi — konfirmasi alamat email Anda.',
-        'notice' =>
-            'Kami mengirimkan tautan verifikasi ke kotak masuk Anda. Klik tautan tersebut untuk mengaktifkan akun.',
+        'notice' => 'Kami mengirimkan tautan verifikasi ke kotak masuk Anda. Klik tautan tersebut untuk mengaktifkan akun.',
         'sent_to' => 'Tautan verifikasi dikirim ke:',
         'resend_prompt' => 'Tidak menerima email?',
         'resend_button' => 'Kirim ulang tautan verifikasi',
@@ -101,8 +92,7 @@ return [
         'resend_success' => 'Tautan verifikasi baru telah dikirimkan ke alamat email Anda.',
         'skip_button' => 'Lewati untuk sekarang, ke dasbor',
         'no_email_title' => 'Tanpa Alamat Email',
-        'no_email_info' =>
-            'Akun Anda dibuat tanpa alamat email. Tambahkan di profil Anda untuk mengaktifkan verifikasi email.',
+        'no_email_info' => 'Akun Anda dibuat tanpa alamat email. Tambahkan di profil Anda untuk mengaktifkan verifikasi email.',
         'tips_title' => 'Email tidak ditemukan?',
         'tips' => 'Periksa folder spam atau sampah. Email dikirim dari :app.',
         'processing' => 'Memverifikasi email Anda…',
@@ -110,14 +100,12 @@ return [
     ],
     'forgot_password' => [
         'title' => 'Lupa Kata Sandi',
-        'subtitle' =>
-            'Masukkan email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.',
+        'subtitle' => 'Masukkan email Anda dan kami akan mengirimkan tautan untuk mengatur ulang kata sandi Anda.',
         'form' => [
             'email' => 'Alamat Email',
             'email_placeholder' => 'Masukkan alamat email akun Anda',
             'submit' => 'Kirim Tautan Reset',
-            'rate_limited' =>
-                'Terlalu banyak percobaan reset. Silakan coba lagi dalam :seconds detik.',
+            'rate_limited' => 'Terlalu banyak percobaan reset. Silakan coba lagi dalam :seconds detik.',
             'back_to_login' => 'Kembali ke halaman masuk',
         ],
         'sent' => 'Kami telah mengirimkan tautan reset kata sandi ke email Anda!',
@@ -132,8 +120,7 @@ return [
             'password_confirmation' => 'Konfirmasi Kata Sandi Baru',
             'password_confirmation_placeholder' => 'Ulangi kata sandi baru',
             'submit' => 'Atur Ulang Sekarang',
-            'rate_limited' =>
-                'Terlalu banyak percobaan reset. Silakan coba lagi dalam :seconds detik.',
+            'rate_limited' => 'Terlalu banyak percobaan reset. Silakan coba lagi dalam :seconds detik.',
         ],
         'success' => 'Kata sandi Anda telah berhasil diatur ulang!',
     ],

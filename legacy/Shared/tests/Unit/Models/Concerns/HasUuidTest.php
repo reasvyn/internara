@@ -34,7 +34,7 @@ describe('HasUuid Trait', function () {
     });
 
     test('test fulfills identity protection by generating uuid on creation', function () {
-        $model = new UuidModelStub();
+        $model = new UuidModelStub;
         $model->save();
 
         expect($model->id)

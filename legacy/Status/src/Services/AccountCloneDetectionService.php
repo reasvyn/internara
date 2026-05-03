@@ -130,13 +130,13 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->first(['created_at', 'ip_address', 'latitude', 'longitude']);
 
-        if (!$lastLogin) {
+        if (! $lastLogin) {
             return false;
         }
 
         // Get current IP geolocation
         $currentLocation = $this->getIpGeolocation($currentIp);
-        if (!$currentLocation) {
+        if (! $currentLocation) {
             return false; // Cannot determine location, assume safe
         }
 
@@ -176,7 +176,7 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->first(['created_at', 'ip_address']);
 
-        if (!$lastLogin) {
+        if (! $lastLogin) {
             return false; // First login
         }
 
@@ -206,7 +206,7 @@ class AccountCloneDetectionService
             ->orderBy('created_at', 'desc')
             ->value('user_agent');
 
-        if (!$lastUserAgent) {
+        if (! $lastUserAgent) {
             return false; // First login
         }
 

@@ -42,7 +42,7 @@ class MentoringService extends EloquentQuery implements Contract
         return Cache::remember(
             "mentoring_stats:{$registrationId}",
             now()->addDays(7),
-            fn() => [
+            fn () => [
                 'visits_count' => MentoringVisit::where(
                     'registration_id',
                     $registrationId,

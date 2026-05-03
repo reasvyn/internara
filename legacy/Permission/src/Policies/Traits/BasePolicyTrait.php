@@ -56,7 +56,7 @@ trait BasePolicyTrait
     protected function hasAnyPermission(User $user, array $permissions): bool
     {
         $permissionValues = array_filter(
-            array_map(fn($p) => $p instanceof Permission ? $p->value : $p, $permissions),
+            array_map(fn ($p) => $p instanceof Permission ? $p->value : $p, $permissions),
         );
 
         return $user->hasAnyPermission($permissionValues);
@@ -93,7 +93,7 @@ trait BasePolicyTrait
         }
 
         if ($this->isSuperAdmin($user)) {
-            return !$target->hasRole(Role::SUPER_ADMIN->value);
+            return ! $target->hasRole(Role::SUPER_ADMIN->value);
         }
 
         if ($this->isAdmin($user)) {

@@ -77,7 +77,7 @@ class AccessManager extends RecordManager
             ->orderBy('name')
             ->get()
             ->groupBy('module')
-            ->map(fn($perms) => $perms->pluck('name')->values()->all())
+            ->map(fn ($perms) => $perms->pluck('name')->values()->all())
             ->toArray();
     }
 
@@ -99,7 +99,7 @@ class AccessManager extends RecordManager
     {
         $role = RoleModel::findOrFail($roleId);
 
-        if (!$this->canManageRole($role->name)) {
+        if (! $this->canManageRole($role->name)) {
             $this->notify(__('permission::ui.access_manager.cannot_manage'), 'error');
 
             return;
@@ -125,7 +125,7 @@ class AccessManager extends RecordManager
     {
         $role = RoleModel::findOrFail($roleId);
 
-        if (!$this->canManageRole($role->name)) {
+        if (! $this->canManageRole($role->name)) {
             $this->notify(__('permission::ui.access_manager.cannot_manage'), 'error');
 
             return;

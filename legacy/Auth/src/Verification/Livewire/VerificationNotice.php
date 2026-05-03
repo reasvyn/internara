@@ -30,7 +30,7 @@ class VerificationNotice extends Component
 
     public function resend()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             flash()->error(__('exception::messages.unauthorized'));
 
             return;
@@ -47,8 +47,7 @@ class VerificationNotice extends Component
     public function render()
     {
         return view('auth::livewire.verification-notice')->layout('auth::components.layouts.auth', [
-            'title' =>
-                __('auth::ui.verification.title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::ui.verification.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

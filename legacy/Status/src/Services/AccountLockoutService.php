@@ -135,7 +135,7 @@ class AccountLockoutService
             })
             ->first();
 
-        if (!$restriction || !$restriction->expires_at) {
+        if (! $restriction || ! $restriction->expires_at) {
             return 0;
         }
 

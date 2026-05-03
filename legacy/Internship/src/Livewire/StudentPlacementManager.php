@@ -121,7 +121,7 @@ class StudentPlacementManager extends RecordManager
             ->query($this->filters)
             ->with(['student', 'internship', 'placement.company', 'teacher'])
             ->paginate($this->perPage)
-            ->through(fn($registration) => $this->mapRecord($registration));
+            ->through(fn ($registration) => $this->mapRecord($registration));
     }
 
     /**
@@ -161,13 +161,13 @@ class StudentPlacementManager extends RecordManager
     {
         return app(InternshipService::class)
             ->all(['id', 'title', 'academic_year'])
-            ->map(fn($i) => ['id' => $i->id, 'name' => "{$i->title} ({$i->academic_year})"]);
+            ->map(fn ($i) => ['id' => $i->id, 'name' => "{$i->title} ({$i->academic_year})"]);
     }
 
     #[Computed]
     public function placements(): Collection
     {
-        if (!$this->form->internship_id && !$this->internshipId) {
+        if (! $this->form->internship_id && ! $this->internshipId) {
             return collect();
         }
 
@@ -178,7 +178,7 @@ class StudentPlacementManager extends RecordManager
             ->with('company')
             ->get()
             ->map(
-                fn($p) => [
+                fn ($p) => [
                     'id' => $p->id,
                     'name' => $p->company?->name ?? 'Unknown',
                     'quota' => $p->capacity_quota,
@@ -190,7 +190,7 @@ class StudentPlacementManager extends RecordManager
     public function students(): Collection
     {
         $id = $this->activeTab === 'individual' ? $this->form->internship_id : $this->internshipId;
-        if (!$id) {
+        if (! $id) {
             return collect();
         }
 
@@ -200,7 +200,7 @@ class StudentPlacementManager extends RecordManager
             ->with('student')
             ->get()
             ->map(
-                fn($r) => [
+                fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->student?->name ?? 'Unknown',
                     'email' => $r->student?->email ?? '-',
@@ -231,12 +231,12 @@ class StudentPlacementManager extends RecordManager
     #[Computed]
     public function remainingQuota(): int
     {
-        if (!$this->companyId || !$this->internshipId) {
+        if (! $this->companyId || ! $this->internshipId) {
             return 0;
         }
 
         $placement = InternshipPlacement::find($this->companyId);
-        if (!$placement) {
+        if (! $placement) {
             return 0;
         }
 

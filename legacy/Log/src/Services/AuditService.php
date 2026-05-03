@@ -151,31 +151,31 @@ class AuditService implements AuditServiceInterface
     {
         $query = AuditLog::query();
 
-        if (!empty($filters['user_id'])) {
+        if (! empty($filters['user_id'])) {
             $query->where('user_id', $filters['user_id']);
         }
 
-        if (!empty($filters['subject_type'])) {
+        if (! empty($filters['subject_type'])) {
             $query->where('subject_type', $filters['subject_type']);
         }
 
-        if (!empty($filters['subject_id'])) {
+        if (! empty($filters['subject_id'])) {
             $query->where('subject_id', $filters['subject_id']);
         }
 
-        if (!empty($filters['action'])) {
+        if (! empty($filters['action'])) {
             $query->where('action', $filters['action']);
         }
 
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->where('created_at', '>=', $filters['date_from']);
         }
 
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->where('created_at', '<=', $filters['date_to']);
         }
 
-        if (!empty($filters['ip_address'])) {
+        if (! empty($filters['ip_address'])) {
             $query->where('ip_address', $filters['ip_address']);
         }
 
@@ -235,7 +235,7 @@ class AuditService implements AuditServiceInterface
             $payload = str_replace('"', '""', $payload ?? '');
 
             $export .= sprintf(
-                '"%s","%s","%s","%s","%s","%s","%s","%s"' . "\n",
+                '"%s","%s","%s","%s","%s","%s","%s","%s"'."\n",
                 $log->subject_type ?? '',
                 $log->subject_id ?? '',
                 $log->action,
@@ -273,7 +273,7 @@ class AuditService implements AuditServiceInterface
 
         foreach ($recentLogs as $log) {
             // Verify payload is valid JSON if present
-            if ($log->payload !== null && !is_array($log->payload)) {
+            if ($log->payload !== null && ! is_array($log->payload)) {
                 $issues[] = [
                     'id' => $log->id,
                     'issue' => 'Invalid payload format',
@@ -284,7 +284,7 @@ class AuditService implements AuditServiceInterface
             // Check for missing user_id on non-system events
             if (
                 $log->user_id === null &&
-                !in_array($log->action, ['system_start', 'system_stop'])
+                ! in_array($log->action, ['system_start', 'system_stop'])
             ) {
                 $issues[] = [
                     'id' => $log->id,
@@ -298,8 +298,7 @@ class AuditService implements AuditServiceInterface
             'total_checked' => $recentLogs->count(),
             'issues_found' => count($issues),
             'issues' => $issues,
-            'integrity_score' =>
-                $recentLogs->count() > 0
+            'integrity_score' => $recentLogs->count() > 0
                     ? (($recentLogs->count() - count($issues)) / $recentLogs->count()) * 100
                     : 100.0,
         ];

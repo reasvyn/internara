@@ -23,14 +23,14 @@ describe('Shared Global Helpers', function () {
     });
 
     test('it detects development environment', function () {
-        app()->detectEnvironment(fn() => 'local');
+        app()->detectEnvironment(fn () => 'local');
         expect(is_development())->toBeTrue();
 
-        app()->detectEnvironment(fn() => 'production');
+        app()->detectEnvironment(fn () => 'production');
         expect(is_development())->toBeFalse();
 
         // Restore for cleanup
-        app()->detectEnvironment(fn() => 'testing');
+        app()->detectEnvironment(fn () => 'testing');
     });
 
     test('it validates module activity without exceptions', function () {

@@ -4,16 +4,12 @@
 
 There are two valid approaches — choose one and apply it consistently across the project.
 
-**Co-location on the exception class** — keeps behavior alongside the exception definition, easier
-to find:
+**Co-location on the exception class** — keeps behavior alongside the exception definition, easier to find:
 
 ```php
 class InvalidOrderException extends Exception
 {
-    public function report(): void
-    {
-        /* custom reporting */
-    }
+    public function report(): void { /* custom reporting */ }
 
     public function render(Request $request): Response
     {
@@ -22,8 +18,7 @@ class InvalidOrderException extends Exception
 }
 ```
 
-**Centralized in `bootstrap/app.php`** — all exception handling in one place, easier to see the full
-picture:
+**Centralized in `bootstrap/app.php`** — all exception handling in one place, easier to see the full picture:
 
 ```php
 ->withExceptions(function (Exceptions $exceptions) {
@@ -46,18 +41,15 @@ class PodcastProcessingException extends Exception implements ShouldntReport {}
 
 ## Throttle High-Volume Exceptions
 
-A single failing integration can flood error tracking. Use `throttle()` to rate-limit per exception
-type.
+A single failing integration can flood error tracking. Use `throttle()` to rate-limit per exception type.
 
 ## Enable `dontReportDuplicates()`
 
-Prevents the same exception instance from being logged multiple times when `report($e)` is called in
-multiple catch blocks.
+Prevents the same exception instance from being logged multiple times when `report($e)` is called in multiple catch blocks.
 
 ## Force JSON Error Rendering for API Routes
 
-Laravel auto-detects `Accept: application/json` but API clients may not set it. Explicitly declare
-JSON rendering for API routes.
+Laravel auto-detects `Accept: application/json` but API clients may not set it. Explicitly declare JSON rendering for API routes.
 
 ```php
 $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
@@ -67,8 +59,7 @@ $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
 
 ## Add Context to Exception Classes
 
-Attach structured data to exceptions at the source via a `context()` method — Laravel includes it
-automatically in the log entry.
+Attach structured data to exceptions at the source via a `context()` method — Laravel includes it automatically in the log entry.
 
 ```php
 class InvalidOrderException extends Exception

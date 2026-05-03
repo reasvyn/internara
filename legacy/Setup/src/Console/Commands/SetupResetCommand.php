@@ -46,13 +46,13 @@ class SetupResetCommand extends Command
         $this->components->warn(__('setup::console.reset.header'));
 
         // [S1 - Secure] Production Safeguard
-        if (app()->environment('production') && !$this->option('force')) {
+        if (app()->environment('production') && ! $this->option('force')) {
             $this->components->error(__('setup::console.reset.production_warning'));
 
             return self::FAILURE;
         }
 
-        if (!$this->confirmReset()) {
+        if (! $this->confirmReset()) {
             return self::FAILURE;
         }
 

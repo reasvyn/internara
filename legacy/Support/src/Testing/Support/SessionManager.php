@@ -36,11 +36,11 @@ class SessionManager implements SessionManagerInterface
         $this->sessionId = $sessionId ?: $this->getLatestSessionId() ?: Str::uuid()->toString();
         $this->sessionPath = "{$basePath}/{$this->sessionId}";
 
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             File::makeDirectory($basePath, 0700, true);
         }
 
-        if (!File::isDirectory($this->sessionPath)) {
+        if (! File::isDirectory($this->sessionPath)) {
             File::makeDirectory($this->sessionPath, 0700, true);
         }
 
@@ -83,13 +83,13 @@ class SessionManager implements SessionManagerInterface
     {
         $file = $this->getSegmentFile($module, $type);
 
-        if (!File::exists($file)) {
+        if (! File::exists($file)) {
             return false;
         }
 
         $data = json_decode(File::get($file), true);
 
-        if (!($data['success'] ?? false)) {
+        if (! ($data['success'] ?? false)) {
             return false;
         }
 
@@ -125,7 +125,7 @@ class SessionManager implements SessionManagerInterface
         }
 
         // Sort by timestamp
-        usort($results, fn($a, $b) => ($a['timestamp'] ?? '') <=> ($b['timestamp'] ?? ''));
+        usort($results, fn ($a, $b) => ($a['timestamp'] ?? '') <=> ($b['timestamp'] ?? ''));
 
         return $results;
     }
@@ -155,7 +155,7 @@ class SessionManager implements SessionManagerInterface
     public function cleanup(int $olderThanDays = 7): int
     {
         $basePath = storage_path('framework/testing/sessions');
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             return 0;
         }
 
@@ -192,9 +192,9 @@ class SessionManager implements SessionManagerInterface
         }
 
         $oldestTimestamp = null;
-        if (!empty($results)) {
+        if (! empty($results)) {
             $timestamps = array_filter(array_column($results, 'timestamp'));
-            if (!empty($timestamps)) {
+            if (! empty($timestamps)) {
                 $oldestTimestamp = min($timestamps);
             }
         }
@@ -215,7 +215,7 @@ class SessionManager implements SessionManagerInterface
     public static function getAllSessions(): array
     {
         $basePath = storage_path('framework/testing/sessions');
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             return [];
         }
 
@@ -233,7 +233,7 @@ class SessionManager implements SessionManagerInterface
         }
 
         // Sort by lastModified descending (newest first)
-        usort($sessions, fn($a, $b) => $b['lastModified'] <=> $a['lastModified']);
+        usort($sessions, fn ($a, $b) => $b['lastModified'] <=> $a['lastModified']);
 
         return $sessions;
     }
@@ -244,7 +244,7 @@ class SessionManager implements SessionManagerInterface
     protected function pruneOldSessions(): void
     {
         $basePath = storage_path('framework/testing/sessions');
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             return;
         }
 
@@ -252,7 +252,7 @@ class SessionManager implements SessionManagerInterface
 
         // If we have too many sessions, delete the oldest ones
         if (count($directories) > self::MAX_SESSIONS) {
-            usort($directories, fn($a, $b) => File::lastModified($a) <=> File::lastModified($b));
+            usort($directories, fn ($a, $b) => File::lastModified($a) <=> File::lastModified($b));
 
             $toDelete = count($directories) - self::MAX_SESSIONS;
             for ($i = 0; $i < $toDelete; $i++) {
@@ -269,7 +269,7 @@ class SessionManager implements SessionManagerInterface
      */
     protected function calculateIntegrityHash(string $path): string
     {
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             return File::exists($path) ? (string) File::lastModified($path) : '';
         }
 
@@ -323,7 +323,7 @@ class SessionManager implements SessionManagerInterface
     protected function getLatestSessionId(): ?string
     {
         $basePath = storage_path('framework/testing/sessions');
-        if (!File::isDirectory($basePath)) {
+        if (! File::isDirectory($basePath)) {
             return null;
         }
 
@@ -332,7 +332,7 @@ class SessionManager implements SessionManagerInterface
             return null;
         }
 
-        usort($directories, fn($a, $b) => File::lastModified($b) <=> File::lastModified($a));
+        usort($directories, fn ($a, $b) => File::lastModified($b) <=> File::lastModified($a));
 
         return basename($directories[0]);
     }
@@ -345,7 +345,7 @@ class SessionManager implements SessionManagerInterface
         // Limit output size to prevent memory issues
         $maxLength = 10000;
         if (strlen($output) > $maxLength) {
-            $output = substr($output, 0, $maxLength) . "\n... [truncated]";
+            $output = substr($output, 0, $maxLength)."\n... [truncated]";
         }
 
         // Mask potential sensitive data patterns

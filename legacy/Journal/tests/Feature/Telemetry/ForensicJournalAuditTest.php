@@ -23,7 +23,7 @@ test(
         $entry->setStatus('approved', 'Locked by supervisor');
 
         expect(
-            fn() => app(JournalService::class)->update($entry->id, ['work_topic' => 'Hacked']),
+            fn () => app(JournalService::class)->update($entry->id, ['work_topic' => 'Hacked']),
         )->toThrow(AppException::class, 'journal::exceptions.cannot_edit_locked_journal');
     },
 );
@@ -42,7 +42,7 @@ test(
 
         // Attempt to log for 10 days ago
         expect(
-            fn() => app(JournalService::class)->create([
+            fn () => app(JournalService::class)->create([
                 'registration_id' => $reg->id,
                 'date' => now()->subDays(10)->toDateString(),
                 'work_topic' => 'Late log',
@@ -80,7 +80,7 @@ test(
         $this->actingAs($student);
 
         expect(
-            fn() => app(JournalService::class)->update($entry->id, ['work_topic' => 'Tampered']),
+            fn () => app(JournalService::class)->update($entry->id, ['work_topic' => 'Tampered']),
         )->toThrow(AppException::class, 'journal::exceptions.cannot_edit_locked_journal');
     },
 );

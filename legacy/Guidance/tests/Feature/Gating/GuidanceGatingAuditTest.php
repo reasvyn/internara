@@ -24,7 +24,7 @@ test(
         // We expect 403 Forbidden from JournalService
         // Note: This requires Journal module to be present and following the contract
         expect(
-            fn() => app(JournalService::class)->create([
+            fn () => app(JournalService::class)->create([
                 'registration_id' => \Str::uuid()->toString(), // Dummy UUID for isolation test
                 'work_topic' => 'Test',
                 'activity_description' => 'Test',

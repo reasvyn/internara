@@ -52,7 +52,7 @@ abstract class SetupWizardBase extends Component
         }
 
         for ($i = 0; $i < $currentIndex; $i++) {
-            if (!$setup->isStepCompleted($stepOrder[$i])) {
+            if (! $setup->isStepCompleted($stepOrder[$i])) {
                 $this->redirectToSetup();
             }
         }

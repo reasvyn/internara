@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ViewErrorBag;
 
 beforeEach(function () {
-    view()->share('errors', new ViewErrorBag());
+    view()->share('errors', new ViewErrorBag);
 });
 
 test('it renders input with label and aria-label', function () {

@@ -24,8 +24,7 @@ return [
             'date' => 'Attendance Date',
             'status' => 'Attendance Status',
             'notes' => 'Notes / Reason',
-            'notes_placeholder' =>
-                'e.g., Family business, illness, or other additional information.',
+            'notes_placeholder' => 'e.g., Family business, illness, or other additional information.',
             'submit' => 'Save Attendance',
         ],
     ],

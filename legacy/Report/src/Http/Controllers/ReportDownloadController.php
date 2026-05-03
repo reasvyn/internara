@@ -26,7 +26,7 @@ class ReportDownloadController extends Controller
         // Policy Check
         $this->authorize('view', $report);
 
-        if (!Storage::disk('local')->exists($report->file_path)) {
+        if (! Storage::disk('local')->exists($report->file_path)) {
             abort(404, __('report::messages.file_not_found'));
         }
 

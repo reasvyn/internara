@@ -26,7 +26,7 @@ test('it calculates institutional summary', function () {
     // Bypass actual caching to avoid missing table issues in test environment
     Cache::shouldReceive('remember')
         ->once()
-        ->andReturnUsing(fn($key, $ttl, $callback) => $callback());
+        ->andReturnUsing(fn ($key, $ttl, $callback) => $callback());
 
     $builder = mock(Builder::class);
     $registrationService->shouldReceive('query')->andReturn($builder);

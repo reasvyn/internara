@@ -71,10 +71,10 @@ describe('Auth Service', function () {
             ->with(
                 \Mockery::on(function ($arg) {
                     // Ensure 'role' or 'roles' from input is removed/ignored
-                    return !isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
+                    return ! isset($arg['role']) && $arg['roles'] === Role::STUDENT->value;
                 }),
             )
-            ->andReturn(new User());
+            ->andReturn(new User);
 
         $this->service->register($data, Role::STUDENT->value);
     });

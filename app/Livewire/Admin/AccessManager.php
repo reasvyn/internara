@@ -1,10 +1,8 @@
-<?php
-
 declare(strict_types=1);
 
 namespace App\Livewire\Admin;
 
-use App\Actions\Permission\UpdateRolePermissionsAction;
+use App\Domain\User\Actions\UpdateRolePermissionsAction;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Mary\Traits\Toast;
@@ -52,7 +50,7 @@ class AccessManager extends Component
      */
     public function savePermissions(UpdateRolePermissionsAction $updateAction): void
     {
-        if (!$this->selectedRole) {
+        if (! $this->selectedRole) {
             return;
         }
 

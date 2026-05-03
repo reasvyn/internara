@@ -45,8 +45,8 @@ describe('Setup Architecture', function () {
     });
 
     it('uses strict_types in all PHP files', function () {
-        $files = glob(__DIR__ . '/../../src/**/*.php');
-        $files += glob(__DIR__ . '/../../src/**/**/*.php');
+        $files = glob(__DIR__.'/../../src/**/*.php');
+        $files += glob(__DIR__.'/../../src/**/**/*.php');
 
         foreach ($files as $file) {
             $content = file_get_contents($file);
@@ -55,14 +55,14 @@ describe('Setup Architecture', function () {
     });
 
     it('has no hardcoded strings in views', function () {
-        $views = glob(__DIR__ . '/../../resources/views/**/*.blade.php');
+        $views = glob(__DIR__.'/../../resources/views/**/*.blade.php');
 
         foreach ($views as $view) {
             $content = file_get_contents($view);
             // Check for hardcoded strings (not in blade directives)
             preg_match_all("/{{\\s*'([^']+)'\\s*}}/", $content, $matches);
 
-            if (!empty($matches[1])) {
+            if (! empty($matches[1])) {
                 foreach ($matches[1] as $string) {
                     expect($string)->toContain('__(');
                 }
@@ -73,7 +73,7 @@ describe('Setup Architecture', function () {
     it('middleware uses rate limiting', function () {
         $reflection = new \ReflectionClass(ProtectSetupRoute::class);
         $method = $reflection->getMethod('handle');
-        $source = file_get_contents(__DIR__ . '/../../src/Http/Middleware/ProtectSetupRoute.php');
+        $source = file_get_contents(__DIR__.'/../../src/Http/Middleware/ProtectSetupRoute.php');
 
         expect($source)->toContain('RateLimiter');
         expect($source)->toContain('hash_equals');

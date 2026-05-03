@@ -62,7 +62,7 @@ class JournalEntryManager extends Component
                     'latest_status' => 'active',
                 ]);
 
-                if (!$registration) {
+                if (! $registration) {
                     throw new AppException(
                         userMessage: 'internship::messages.no_active_registration',
                         code: 404,
@@ -80,7 +80,7 @@ class JournalEntryManager extends Component
             $status = $asDraft ? 'draft' : 'submitted';
             $entry->setStatus($status, $asDraft ? 'Journal saved as draft.' : 'Journal submitted.');
 
-            if (!empty($this->form->attachments)) {
+            if (! empty($this->form->attachments)) {
                 $this->journalService->attachMedia($entry->id, $this->form->attachments);
             }
 
@@ -118,11 +118,10 @@ class JournalEntryManager extends Component
         return view('journal::livewire.journal-entry-manager', [
             'availableCompetencies' => $availableCompetencies,
         ])->layout('ui::components.layouts.dashboard', [
-            'title' =>
-                ($this->form->id
+            'title' => ($this->form->id
                     ? __('journal::ui.index.edit_title')
-                    : __('journal::ui.index.create_title')) .
-                ' | ' .
+                    : __('journal::ui.index.create_title')).
+                ' | '.
                 setting('brand_name', setting('app_name')),
         ]);
     }

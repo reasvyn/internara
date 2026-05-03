@@ -54,7 +54,7 @@ class InternshipRegistrationManager extends Component
             ->orderBy('date_start', 'desc')
             ->get()
             ->map(
-                fn(Internship $internship) => [
+                fn (Internship $internship) => [
                     'id' => $internship->id,
                     'name' => "{$internship->title} ({$internship->academic_year})",
                 ],
@@ -68,7 +68,7 @@ class InternshipRegistrationManager extends Component
     #[Computed]
     public function availablePlacements()
     {
-        if (!$this->form->internship_id) {
+        if (! $this->form->internship_id) {
             return [];
         }
 
@@ -77,7 +77,7 @@ class InternshipRegistrationManager extends Component
             ->with('company')
             ->get()
             ->map(
-                fn(InternshipPlacement $placement) => [
+                fn (InternshipPlacement $placement) => [
                     'id' => $placement->id,
                     'name' => $placement->company?->name ?? 'Unknown',
                 ],
@@ -116,7 +116,7 @@ class InternshipRegistrationManager extends Component
         return view('internship::livewire.internship-registration-manager')->layout(
             'ui::components.layouts.dashboard',
             [
-                'title' => __('internship::ui.registration_title') . ' | ' . setting('brand_name'),
+                'title' => __('internship::ui.registration_title').' | '.setting('brand_name'),
             ],
         );
     }

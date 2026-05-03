@@ -33,7 +33,7 @@ class SchoolService extends EloquentQuery implements SchoolServiceContract
      */
     public function update(School $school, array $data): void
     {
-        if (!$this->skipAuthorization) {
+        if (! $this->skipAuthorization) {
             Gate::authorize('update', $school);
         }
 

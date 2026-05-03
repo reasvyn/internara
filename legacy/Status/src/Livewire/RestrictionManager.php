@@ -122,7 +122,7 @@ class RestrictionManager extends Component
                 'restriction_type' => $this->restrictionType,
                 'restriction_key' => $this->restrictionKey,
                 'restriction_value' => $this->restrictionValue,
-                'reason' => $this->reason ?: 'Pembatasan diterapkan oleh ' . auth()->user()->name,
+                'reason' => $this->reason ?: 'Pembatasan diterapkan oleh '.auth()->user()->name,
                 'applied_by_user_id' => auth()->id(),
                 'applied_at' => now(),
                 'expires_at' => $this->expiresAt ? Carbon::parse($this->expiresAt) : null,
@@ -138,7 +138,7 @@ class RestrictionManager extends Component
             $this->resetForm();
             $this->dispatch('restrictionAdded', userId: $this->user->id);
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menambah pembatasan: ' . $e->getMessage()));
+            flash()->error(__('Gagal menambah pembatasan: '.$e->getMessage()));
         }
     }
 
@@ -163,7 +163,7 @@ class RestrictionManager extends Component
             flash()->success(__('Pembatasan berhasil dihapus'));
             $this->dispatch('restrictionRemoved', userId: $this->user->id);
         } catch (\Exception $e) {
-            flash()->error(__('Gagal menghapus pembatasan: ' . $e->getMessage()));
+            flash()->error(__('Gagal menghapus pembatasan: '.$e->getMessage()));
         }
     }
 

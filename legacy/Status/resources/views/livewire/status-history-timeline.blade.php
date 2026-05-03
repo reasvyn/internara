@@ -55,7 +55,7 @@
             <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
                 <div class="flex items-start gap-4">
                     {{-- Timeline Dot --}}
-                    <div class="flex-shrink-0 mt-1">
+                    <div class="shrink-0 mt-1">
                         <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
                     </div>
 

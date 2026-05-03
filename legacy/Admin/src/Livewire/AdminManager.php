@@ -111,7 +111,7 @@ class AdminManager extends RecordManager
             ->query($this->filters)
             ->with(['roles:id,name', 'accountTokens'])
             ->paginate($this->perPage)
-            ->through(fn($user) => $this->mapRecord($user));
+            ->through(fn ($user) => $this->mapRecord($user));
     }
 
     public function reinvite(mixed $id): void
@@ -119,7 +119,7 @@ class AdminManager extends RecordManager
         try {
             $admin = $this->service->findOrFail($id);
 
-            if (!$admin->requiresSetup()) {
+            if (! $admin->requiresSetup()) {
                 flash()->warning(__('admin::ui.manager.already_accepted'));
 
                 return;
@@ -137,7 +137,7 @@ class AdminManager extends RecordManager
         $this->form->validate();
 
         try {
-            $isNew = !$this->form->id;
+            $isNew = ! $this->form->id;
 
             if ($isNew) {
                 $admin = $this->service->create($this->form->all());
@@ -172,7 +172,7 @@ class AdminManager extends RecordManager
 
     private function resolveInvitationStatus(User $admin): string
     {
-        if (!$admin->requiresSetup()) {
+        if (! $admin->requiresSetup()) {
             return 'accepted';
         }
 
@@ -182,7 +182,7 @@ class AdminManager extends RecordManager
             return 'not_invited';
         }
 
-        $hasActive = $tokens->contains(fn(AccountToken $t) => $t->isActive());
+        $hasActive = $tokens->contains(fn (AccountToken $t) => $t->isActive());
 
         return $hasActive ? 'pending' : 'expired';
     }

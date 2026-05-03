@@ -6,8 +6,7 @@ return [
     'wizard' => [
         'welcome_title' => 'Selamat Datang di Pengaturan Internara',
         'progress' => 'Progres: :progress%',
-        'requirements_not_met' =>
-            'Persyaratan sistem belum terpenuhi. Silakan perbaiki masalah di atas.',
+        'requirements_not_met' => 'Persyaratan sistem belum terpenuhi. Silakan perbaiki masalah di atas.',
         'system_requirements' => 'Persyaratan Sistem',
         'permissions' => 'Izin Direktori',
         'database' => 'Koneksi Database',

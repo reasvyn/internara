@@ -29,15 +29,15 @@ class ComplianceService extends BaseService implements Contract
         /** @var InternshipRegistration|null $registration */
         $registration = $this->registrationService->find($registrationId);
 
-        if (!$registration) {
-            $e = new ModelNotFoundException();
+        if (! $registration) {
+            $e = new ModelNotFoundException;
             throw $e->setModel(InternshipRegistration::class, [$registrationId]);
         }
 
         $startDate = $registration->start_date;
         $endDate = $registration->end_date;
 
-        if (!$startDate || !$endDate) {
+        if (! $startDate || ! $endDate) {
             return $this->emptyScore();
         }
 
@@ -86,7 +86,7 @@ class ComplianceService extends BaseService implements Contract
         }
 
         return (int) $start->diffInDaysFiltered(
-            fn(Carbon $date) => !$date->isWeekend(),
+            fn (Carbon $date) => ! $date->isWeekend(),
             $end->addDay(),
         );
     }

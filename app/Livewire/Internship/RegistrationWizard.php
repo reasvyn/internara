@@ -1,12 +1,11 @@
-<?php
 
 declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Actions\Internship\RegisterInternshipAction;
-use App\Models\Internship;
-use App\Models\InternshipPlacement;
+use App\Domain\Internship\Actions\RegisterInternshipAction;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Placement;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -41,14 +40,14 @@ class RegistrationWizard extends Component
     #[Computed]
     public function placements(): Collection
     {
-        if (!$this->data['internship_id']) {
-            return new Collection();
+        if (! $this->data['internship_id']) {
+            return new Collection;
         }
 
-        return InternshipPlacement::where('internship_id', $this->data['internship_id'])
+        return Placement::where('internship_id', $this->data['internship_id'])
             ->with('company')
             ->get()
-            ->filter(fn($p) => !$p->isFull());
+            ->filter(fn ($p) => ! $p->isFull());
     }
 
     public function nextStep(): void

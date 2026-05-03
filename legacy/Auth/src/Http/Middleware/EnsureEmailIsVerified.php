@@ -27,22 +27,22 @@ class EnsureEmailIsVerified
     ): Response {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return $next($request);
         }
 
         // Gate disabled system-wide → pass through.
-        if (!setting('require_email_verification', true)) {
+        if (! setting('require_email_verification', true)) {
             return $next($request);
         }
 
         // User has no email address → cannot verify; pass through.
-        if (!$user->email) {
+        if (! $user->email) {
             return $next($request);
         }
 
         // User already verified → pass through.
-        if (!($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail()) {
+        if (! ($user instanceof MustVerifyEmail) || $user->hasVerifiedEmail()) {
             return $next($request);
         }
 

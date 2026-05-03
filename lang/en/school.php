@@ -29,8 +29,7 @@ return [
     'logo_hint' => 'Recommended 512x512px. Max 2MB (JPG, PNG, WEBP).',
     'save_success' => 'School profile updated successfully.',
     'system_context' => 'System Context',
-    'system_context_desc' =>
-        'This information is used for generating certificates, formal letters, and internship reports.',
+    'system_context_desc' => 'This information is used for generating certificates, formal letters, and internship reports.',
     'uuid_enabled' => 'UUID Enabled',
     'audit_logged' => 'Audit-Logged',
     'discard' => 'Discard',

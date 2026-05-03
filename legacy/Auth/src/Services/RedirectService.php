@@ -25,7 +25,7 @@ final class RedirectService extends BaseService implements Contract
         // They receive a soft dashboard notification instead.
         if (
             $user->email &&
-            !$user->hasVerifiedEmail() &&
+            ! $user->hasVerifiedEmail() &&
             setting('require_email_verification', true)
         ) {
             return route('verification.notice');

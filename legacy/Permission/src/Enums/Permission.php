@@ -255,6 +255,6 @@ enum Permission: string
      */
     public static function allValues(): array
     {
-        return array_values(array_map(fn(self $case) => $case->value, self::cases()));
+        return array_values(array_map(fn (self $case) => $case->value, self::cases()));
     }
 }

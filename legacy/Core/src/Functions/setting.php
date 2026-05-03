@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Log;
  *
  * Each function has a single, clear purpose (Section 6 compliance).
  */
-if (!function_exists('setting')) {
+if (! function_exists('setting')) {
     /**
      * Check if the Setting module is enabled.
      */
     function isSettingModuleActive(): bool
     {
-        $statusPath = dirname(__DIR__, 3) . '/modules_statuses.json';
+        $statusPath = dirname(__DIR__, 3).'/modules_statuses.json';
 
-        if (!file_exists($statusPath)) {
+        if (! file_exists($statusPath)) {
             return false;
         }
 
@@ -47,7 +47,7 @@ if (!function_exists('setting')) {
         $path = base_path('app_info.json');
         $authorIdentity = 'Reas Vyn';
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             throw new RuntimeException(
                 'Integrity Violation: Critical metadata (app_info.json) is missing.',
             );
@@ -105,12 +105,12 @@ if (!function_exists('setting')) {
             return resolveFromAppInfo('app_name', $default ?? 'Internara');
         }
 
-        if (!isset($appInfoMap[$key])) {
+        if (! isset($appInfoMap[$key])) {
             return null;
         }
 
         $path = base_path('app_info.json');
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             return null;
         }
 

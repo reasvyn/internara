@@ -39,7 +39,7 @@ class LocalizationService implements Contract
      */
     public function setLocale(string $locale): bool
     {
-        if (!isset(self::SUPPORTED_LOCALES[$locale])) {
+        if (! isset(self::SUPPORTED_LOCALES[$locale])) {
             return false;
         }
 

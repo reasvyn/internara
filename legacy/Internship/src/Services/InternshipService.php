@@ -55,12 +55,12 @@ class InternshipService extends EloquentQuery implements Contracts\InternshipSer
         /** @var Internship $internship */
         $internship = $this->find($id);
 
-        if (!$internship) {
+        if (! $internship) {
             return;
         }
 
         $newStatus = ProgramStatus::tryFrom($status);
-        if (!$newStatus) {
+        if (! $newStatus) {
             throw new \InvalidArgumentException("Invalid program status: {$status}");
         }
 

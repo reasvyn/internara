@@ -94,7 +94,7 @@ class AnalyticsAggregator implements Contract
                 $riskReasons[] = __('core::analytics.risks.low_score');
             }
 
-            if (!empty($riskReasons)) {
+            if (! empty($riskReasons)) {
                 $atRisk[] = [
                     'id' => $registrationId,
                     'student_name' => $registration->user->name,

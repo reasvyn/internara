@@ -187,7 +187,7 @@ abstract class RecordManager extends Component
         $query->with($this->getWith());
 
         // 2. Apply Client-side Search (Independent implementation)
-        if ($this->search && !empty($this->searchable)) {
+        if ($this->search && ! empty($this->searchable)) {
             $query->where(function (Builder $q) {
                 foreach ($this->searchable as $column) {
                     if (str_contains($column, '.')) {
@@ -204,7 +204,7 @@ abstract class RecordManager extends Component
 
         // 3. Apply Client-side Sort (Independent implementation)
         $sortByColumn = $this->sortBy['column'] ?? self::DEFAULT_SORT_BY;
-        $header = collect($this->getTableHeaders())->first(fn($h) => $h['key'] === $sortByColumn);
+        $header = collect($this->getTableHeaders())->first(fn ($h) => $h['key'] === $sortByColumn);
         $dbSortColumn = $header['sort_by'] ?? $sortByColumn;
 
         if (in_array($dbSortColumn, $this->sortable) || $dbSortColumn === self::DEFAULT_SORT_BY) {
@@ -221,7 +221,7 @@ abstract class RecordManager extends Component
                 foreach ($mapped as $key => $value) {
                     // We only set properties that don't collide with model relations
                     // or essential attributes to avoid breaking the model.
-                    if (!$item->relationLoaded($key)) {
+                    if (! $item->relationLoaded($key)) {
                         $item->{$key} = $value;
                     }
                 }
@@ -266,7 +266,7 @@ abstract class RecordManager extends Component
             return true;
         }
         $user = auth()->user();
-        if (!$user) {
+        if (! $user) {
             return false;
         }
         $permission = $this->resolvePermission($action);
@@ -350,7 +350,7 @@ abstract class RecordManager extends Component
     {
         $record = $this->service->find($id);
         if ($record) {
-            if (!$this->can('update', $record)) {
+            if (! $this->can('update', $record)) {
                 $this->authorize('update', $record);
             }
             if (property_exists($this, 'form')) {
@@ -372,7 +372,7 @@ abstract class RecordManager extends Component
 
     public function save(): void
     {
-        if (!property_exists($this, 'form')) {
+        if (! property_exists($this, 'form')) {
             return;
         }
         $this->form->validate();
@@ -383,12 +383,12 @@ abstract class RecordManager extends Component
             }
             if ($this->form->id) {
                 $record = $this->service->find($this->form->id);
-                if (!$isSetupAuthorized && $record && $this->updatePermission) {
+                if (! $isSetupAuthorized && $record && $this->updatePermission) {
                     Gate::authorize($this->updatePermission, $record);
                 }
                 $this->service->update($record, $this->form->all());
             } else {
-                if (!$isSetupAuthorized && $this->createPermission) {
+                if (! $isSetupAuthorized && $this->createPermission) {
                     $roles = property_exists($this->form, 'roles') ? $this->form->roles : null;
                     $authModel = $this->modelClass ?: config('auth.providers.users.model');
                     Gate::authorize($this->createPermission->value, [$authModel, $roles]);
@@ -397,7 +397,7 @@ abstract class RecordManager extends Component
             }
             $this->toggleModal(self::MODAL_FORM, false);
             flash()->success('shared::messages.record_saved');
-            $this->dispatch($this->getEventPrefix() . ':saved', exists: true);
+            $this->dispatch($this->getEventPrefix().':saved', exists: true);
         } catch (Throwable $e) {
             if (is_debug_mode()) {
                 throw $e;
@@ -422,7 +422,7 @@ abstract class RecordManager extends Component
                 $this->recordId = null;
                 flash()->success('shared::messages.record_deleted');
                 $this->dispatch(
-                    $this->getEventPrefix() . ':deleted',
+                    $this->getEventPrefix().':deleted',
                     exists: $this->service->exists(),
                 );
             }
@@ -449,7 +449,7 @@ abstract class RecordManager extends Component
             $count = $this->service->destroy($this->selectedIds);
             $this->selectedIds = [];
             flash()->success(__('shared::messages.records_deleted', ['count' => $count]));
-            $this->dispatch($this->getEventPrefix() . ':bulk-deleted', count: $count);
+            $this->dispatch($this->getEventPrefix().':bulk-deleted', count: $count);
         } catch (Throwable $e) {
             flash()->error($e->getMessage());
         }
@@ -458,7 +458,7 @@ abstract class RecordManager extends Component
     public function exportCsv()
     {
         $records = $this->getExportQuery()->get();
-        $filename = $this->getEventPrefix() . '-' . now()->format('Y-m-d-His') . '.csv';
+        $filename = $this->getEventPrefix().'-'.now()->format('Y-m-d-His').'.csv';
         $headers = $this->getExportHeaders();
 
         return response()->streamDownload(
@@ -477,7 +477,7 @@ abstract class RecordManager extends Component
 
     public function downloadTemplate()
     {
-        $filename = $this->getEventPrefix() . '-template.csv';
+        $filename = $this->getEventPrefix().'-template.csv';
         $headers = $this->getTemplateHeaders();
 
         return response()->streamDownload(
@@ -513,14 +513,14 @@ abstract class RecordManager extends Component
         $count = $this->service->import($data);
         $this->importModal = false;
         $this->csvFile = null;
-        $this->dispatch($this->getEventPrefix() . ':imported');
+        $this->dispatch($this->getEventPrefix().':imported');
         flash()->success(__('ui::common.imported_successfully', ['count' => $count]));
     }
 
     public function printPdf()
     {
         $records = $this->getExportQuery()->get();
-        if (!($view = $this->getPdfView())) {
+        if (! ($view = $this->getPdfView())) {
             flash()->error(__('shared::exceptions.pdf_view_undefined'));
 
             return null;
@@ -528,8 +528,8 @@ abstract class RecordManager extends Component
         $pdf = Pdf::loadView($view, $this->getPdfData($records));
 
         return response()->streamDownload(
-            fn() => print $pdf->output(),
-            $this->getEventPrefix() . '-' . now()->format('Y-m-d') . '.pdf',
+            fn () => print $pdf->output(),
+            $this->getEventPrefix().'-'.now()->format('Y-m-d').'.pdf',
         );
     }
 
@@ -545,7 +545,7 @@ abstract class RecordManager extends Component
 
     protected function mapRecordForExport($record, array $keys): array
     {
-        return array_map(fn($key) => $record->{$key}, $keys);
+        return array_map(fn ($key) => $record->{$key}, $keys);
     }
 
     protected function mapImportRow(array $row, array $keys): ?array
@@ -578,7 +578,7 @@ abstract class RecordManager extends Component
         $property = $name === self::MODAL_FORM ? 'formModal' : 'confirmModal';
         $this->{$property} = $visible;
         $this->dispatch(
-            $this->getEventPrefix() . ':' . ($visible ? 'open-modal' : 'close-modal'),
+            $this->getEventPrefix().':'.($visible ? 'open-modal' : 'close-modal'),
             $name,
             $params,
         );
@@ -591,6 +591,6 @@ abstract class RecordManager extends Component
 
     protected function getListeners(): array
     {
-        return [$this->getEventPrefix() . ':destroy-record' => 'remove'];
+        return [$this->getEventPrefix().':destroy-record' => 'remove'];
     }
 }

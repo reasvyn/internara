@@ -14,7 +14,7 @@ use Modules\Setup\Models\Setup;
  */
 describe('ProtectSetupRoute Middleware', function () {
     beforeEach(function () {
-        RateLimiter::clear('setup_throttle:' . request()->ip());
+        RateLimiter::clear('setup_throttle:'.request()->ip());
         Setup::truncate();
     });
 

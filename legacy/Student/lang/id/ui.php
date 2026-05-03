@@ -16,8 +16,7 @@ return [
         'my_program' => 'Program Magang Saya',
         'requirements_incomplete' => [
             'title' => 'Persyaratan Belum Lengkap',
-            'description' =>
-                'Mohon lengkapi persyaratan administrasi di bawah ini untuk melanjutkan proses magang.',
+            'description' => 'Mohon lengkapi persyaratan administrasi di bawah ini untuk melanjutkan proses magang.',
         ],
         'waiting_placement' => [
             'title' => 'Menunggu Penempatan',
@@ -54,12 +53,9 @@ return [
             'archived' => ':count akun siswa berhasil diarsipkan.',
         ],
         'form' => [
-            'password_setup_notice' =>
-                'Akun siswa tidak dikelola dengan kata sandi yang diketahui admin. Simpan data siswa lalu kirim tautan setup akses secara aman.',
-            'password_reset_notice' =>
-                'Gunakan aksi kirim tautan setup dari tabel untuk mereset akses siswa dengan aman tanpa melihat kata sandinya.',
-            'archive_hint' =>
-                'Untuk pengarsipan tahunan, gunakan status Nonaktif agar riwayat siswa tetap tersimpan.',
+            'password_setup_notice' => 'Akun siswa tidak dikelola dengan kata sandi yang diketahui admin. Simpan data siswa lalu kirim tautan setup akses secara aman.',
+            'password_reset_notice' => 'Gunakan aksi kirim tautan setup dari tabel untuk mereset akses siswa dengan aman tanpa melihat kata sandinya.',
+            'archive_hint' => 'Untuk pengarsipan tahunan, gunakan status Nonaktif agar riwayat siswa tetap tersimpan.',
         ],
     ],
 ];

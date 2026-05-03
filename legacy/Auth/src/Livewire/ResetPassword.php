@@ -101,15 +101,14 @@ class ResetPassword extends Component
     protected function throttleKey(): string
     {
         return Str::transliterate(
-            'reset-password|' . Str::lower($this->email) . '|' . request()->ip(),
+            'reset-password|'.Str::lower($this->email).'|'.request()->ip(),
         );
     }
 
     public function render(): View
     {
         return view('auth::livewire.reset-password')->layout('auth::components.layouts.auth', [
-            'title' =>
-                __('auth::ui.reset_password.title') . ' | ' . setting('site_title', 'Internara'),
+            'title' => __('auth::ui.reset_password.title').' | '.setting('site_title', 'Internara'),
         ]);
     }
 }

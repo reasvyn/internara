@@ -8,8 +8,7 @@ return [
     'information' => 'Informasi Profil',
     'information_desc' => 'Perbarui informasi profil akun dan alamat email Anda.',
     'password' => 'Perbarui Kata Sandi',
-    'password_desc' =>
-        'Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.',
+    'password_desc' => 'Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.',
     'save' => 'Simpan Perubahan',
     'save_profile' => 'Simpan Profil',
     'update_password' => 'Perbarui Kata Sandi',

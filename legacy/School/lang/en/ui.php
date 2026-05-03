@@ -7,11 +7,9 @@ return [
     'title' => 'Institutional Profile',
     'subtitle' => 'Manage your institution\'s core identity and branding.',
     'identity_branding' => 'Identity & Branding',
-    'identity_branding_desc' =>
-        'Configure the primary visual identity and official recognition codes of your institution.',
+    'identity_branding_desc' => 'Configure the primary visual identity and official recognition codes of your institution.',
     'contact_leadership' => 'Contact & Leadership',
-    'contact_leadership_desc' =>
-        'Define official contact channels and current executive leadership details.',
+    'contact_leadership_desc' => 'Define official contact channels and current executive leadership details.',
     'name' => 'Institution Name',
     'name_placeholder' => 'e.g. SMK Negeri 1 Jakarta',
     'institutional_code' => 'Registration Code',

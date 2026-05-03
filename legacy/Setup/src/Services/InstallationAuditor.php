@@ -78,7 +78,7 @@ class InstallationAuditor implements Contract
 
         // PHP version
         $results[] = [
-            'name' => 'PHP Version >= ' . self::REQUIRED_PHP_VERSION,
+            'name' => 'PHP Version >= '.self::REQUIRED_PHP_VERSION,
             'status' => version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '>='),
             'value' => PHP_VERSION,
             'required' => self::REQUIRED_PHP_VERSION,

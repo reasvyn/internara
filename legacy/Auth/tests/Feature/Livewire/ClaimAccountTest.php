@@ -58,7 +58,7 @@ describe('ClaimAccount Component', function () {
     test('it blocks after rate limit exceeded', function () {
         $user = User::factory()->create(['username' => 'testuser']);
 
-        $key = 'claim-account:' . Str::lower('testuser');
+        $key = 'claim-account:'.Str::lower('testuser');
         for ($i = 0; $i < 5; $i++) {
             RateLimiter::hit($key, 300);
         }

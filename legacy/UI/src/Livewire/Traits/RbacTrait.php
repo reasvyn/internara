@@ -43,7 +43,7 @@ trait RbacTrait
         }
 
         $user = auth()->user();
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

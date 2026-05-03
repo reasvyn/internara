@@ -19,7 +19,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    'driver' => (file_exists(storage_path('app/.installed')))
+        ? env('SESSION_DRIVER', 'database')
+        : 'file',
 
     /*
     |--------------------------------------------------------------------------
@@ -128,7 +130,7 @@ return [
     |
     */
 
-    'cookie' => env('SESSION_COOKIE', Str::snake((string) env('APP_NAME', 'laravel')) . '_session'),
+    'cookie' => env('SESSION_COOKIE', Str::snake((string) env('APP_NAME', 'laravel')).'_session'),
 
     /*
     |--------------------------------------------------------------------------

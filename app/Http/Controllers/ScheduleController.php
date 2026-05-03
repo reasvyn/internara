@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Schedule\CreateScheduleAction;
-use App\Actions\Schedule\DeleteScheduleAction;
-use App\Actions\Schedule\UpdateScheduleAction;
+use App\Domain\Schedule\Actions\CreateScheduleAction;
+use App\Domain\Schedule\Actions\DeleteScheduleAction;
+use App\Domain\Schedule\Actions\UpdateScheduleAction;
+use App\Domain\Schedule\Models\Schedule;
 use App\Http\Requests\CreateScheduleRequest;
 use App\Http\Requests\UpdateScheduleRequest;
-use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

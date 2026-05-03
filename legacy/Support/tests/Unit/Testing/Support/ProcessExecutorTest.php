@@ -9,7 +9,7 @@ use Modules\Support\Testing\Support\ProcessExecutor;
 
 describe('ProcessExecutor', function () {
     beforeEach(function () {
-        $this->executor = new ProcessExecutor();
+        $this->executor = new ProcessExecutor;
     });
 
     it('implements ProcessExecutorInterface', function () {
@@ -68,7 +68,7 @@ describe('ProcessExecutor', function () {
     });
 
     it('cleans up processes on destruct', function () {
-        $executor = new ProcessExecutor();
+        $executor = new ProcessExecutor;
         // Execute something
         $executor->execute([PHP_BINARY, '-r', 'echo "test";']);
 

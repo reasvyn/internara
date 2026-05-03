@@ -59,7 +59,7 @@ class AuthService extends BaseService implements AuthServiceContract
             'password' => $credentials['password'],
         ];
 
-        if (!Auth::attempt($authCredentials, $remember)) {
+        if (! Auth::attempt($authCredentials, $remember)) {
             // Mask identifier for logging
             $maskedIdentifier = Str::contains($identifier, '@')
                 ? Masker::email($identifier)
@@ -76,7 +76,7 @@ class AuthService extends BaseService implements AuthServiceContract
 
             throw new AppException(
                 userMessage: 'auth::exceptions.invalid_credentials',
-                logMessage: 'Authentication attempt failed for: ' . $maskedIdentifier,
+                logMessage: 'Authentication attempt failed for: '.$maskedIdentifier,
                 code: Response::HTTP_UNAUTHORIZED,
             );
         }
@@ -90,7 +90,7 @@ class AuthService extends BaseService implements AuthServiceContract
 
             throw new AppException(
                 userMessage: 'auth::exceptions.account_blocked',
-                logMessage: 'Login blocked for restricted account status: ' . $user->id,
+                logMessage: 'Login blocked for restricted account status: '.$user->id,
                 code: Response::HTTP_FORBIDDEN,
             );
         }
@@ -151,8 +151,8 @@ class AuthService extends BaseService implements AuthServiceContract
     private function initializeAdminSession(Authenticatable $user): void
     {
         if (
-            !property_exists($user, 'role') ||
-            !\in_array($user->role, ['super_admin', 'admin'], true)
+            ! property_exists($user, 'role') ||
+            ! \in_array($user->role, ['super_admin', 'admin'], true)
         ) {
             return;
         }
@@ -185,7 +185,7 @@ class AuthService extends BaseService implements AuthServiceContract
         string $currentPassword,
         string $newPassword,
     ): bool {
-        if (!Hash::check($currentPassword, $user->getAuthPassword())) {
+        if (! Hash::check($currentPassword, $user->getAuthPassword())) {
             throw new AppException(
                 userMessage: 'auth::exceptions.password_mismatch',
                 code: Response::HTTP_UNPROCESSABLE_ENTITY,
@@ -242,11 +242,11 @@ class AuthService extends BaseService implements AuthServiceContract
     {
         $user = $this->userService->find($id);
 
-        if (!$user instanceof MustVerifyEmail) {
+        if (! $user instanceof MustVerifyEmail) {
             return false;
         }
 
-        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
             return false;
         }
 
@@ -272,7 +272,7 @@ class AuthService extends BaseService implements AuthServiceContract
      */
     public function resendVerificationEmail(Authenticatable $user): void
     {
-        if (!$user instanceof MustVerifyEmail) {
+        if (! $user instanceof MustVerifyEmail) {
             return;
         }
 

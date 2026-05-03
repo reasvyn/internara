@@ -28,7 +28,7 @@ describe('ProfileService S1 Security', function () {
         $builder
             ->shouldReceive('firstOrCreate')
             ->with(['user_id' => $uuid])
-            ->andReturn(new Profile());
+            ->andReturn(new Profile);
 
         $service->getByUserId($uuid);
     });
@@ -38,7 +38,8 @@ describe('ProfileService S1 Security', function () {
         $service = new ProfileService($profileModel);
 
         $profile = mock(Profile::class)->makePartial();
-        $student = new class extends Model {
+        $student = new class extends Model
+        {
             protected $keyType = 'string';
 
             public function getKey()

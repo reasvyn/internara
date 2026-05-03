@@ -78,7 +78,7 @@ class AccountLifecycleDashboard extends Component
             ->limit(10)
             ->get()
             ->map(
-                fn($user) => [
+                fn ($user) => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
@@ -100,7 +100,7 @@ class AccountLifecycleDashboard extends Component
             ->limit(10)
             ->get()
             ->map(
-                fn($user) => [
+                fn ($user) => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
@@ -127,7 +127,7 @@ class AccountLifecycleDashboard extends Component
             ->limit(10)
             ->get()
             ->map(
-                fn($user) => [
+                fn ($user) => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
@@ -164,7 +164,7 @@ class AccountLifecycleDashboard extends Component
             ->limit(10)
             ->get()
             ->map(
-                fn($user) => [
+                fn ($user) => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
@@ -189,7 +189,7 @@ class AccountLifecycleDashboard extends Component
             ->with('user', 'triggeredBy')
             ->get()
             ->map(
-                fn($history) => [
+                fn ($history) => [
                     'id' => $history->id,
                     'userId' => $history->user_id,
                     'userName' => $history->user->name,

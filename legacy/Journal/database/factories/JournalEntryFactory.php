@@ -49,7 +49,7 @@ class JournalEntryFactory extends Factory
             'activity_description' => $this->faker->paragraph(),
             'basic_competence' => $this->faker->randomElement($competences),
             'character_values' => $this->faker->randomElement($characters),
-            'reflection' => 'Hari ini saya belajar bahwa ' . $this->faker->sentence(),
+            'reflection' => 'Hari ini saya belajar bahwa '.$this->faker->sentence(),
         ];
     }
 }

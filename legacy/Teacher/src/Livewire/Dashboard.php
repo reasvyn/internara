@@ -37,9 +37,8 @@ class Dashboard extends Component
     public function render(): View
     {
         return view('teacher::livewire.dashboard')->layout('ui::components.layouts.dashboard', [
-            'title' =>
-                __('teacher::ui.dashboard.title') .
-                ' | ' .
+            'title' => __('teacher::ui.dashboard.title').
+                ' | '.
                 setting('brand_name', setting('app_name')),
         ]);
     }

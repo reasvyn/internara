@@ -6,17 +6,11 @@ use App\Console\Commands\AppInstallCommand;
 use App\Console\Commands\SetupResetCommand;
 use App\Console\Commands\System\AdminPromoteCommand;
 use App\Console\Commands\System\CleanupCommand;
-// use Modules\Auth\Http\Middleware\EnsureEmailIsVerified;
-// use Modules\Core\Localization\Http\Middleware\SetLocale;
-// use Modules\Exception\Handler;
-// use Modules\Setup\Http\Middleware\BypassSetupAuthorization;
-// use Modules\Setup\Http\Middleware\RequireSetupAccess;
-// use Modules\Status\Middleware\CheckSessionExpiration;
 use App\Console\Commands\System\HealthCommand;
-use App\Http\Middleware\CheckRole;
-use App\Http\Middleware\ProtectSetupRoute;
-use App\Http\Middleware\SetLocale;
-use App\Support\Integrity;
+use App\Domain\Core\Support\Integrity;
+use App\Http\Middleware\CheckRoleMiddleware;
+use App\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Http\Middleware\SetLocaleMiddleware;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
@@ -37,8 +31,8 @@ Integrity::verify();
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withCommands([
@@ -53,11 +47,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('model:prune')->daily();
     })
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [App\Http\Middleware\RequireSetupAccess::class, SetLocale::class]);
+        $middleware->web(append: [App\Http\Middleware\RequireSetupAccessMiddleware::class, SetLocaleMiddleware::class]);
         $middleware->alias([
-            'setup.protected' => ProtectSetupRoute::class,
-            'setup.auto-redirect' => RequireSetupAccess::class,
-            'role' => CheckRole::class,
+            'setup.protected' => ProtectSetupRouteMiddleware::class,
+            'setup.auto-redirect' => RequireSetupAccessMiddleware::class,
+            'role' => CheckRoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);

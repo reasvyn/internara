@@ -96,7 +96,7 @@ class VerificationService
      */
     public function isReadyForAutoVerification(User $user): bool
     {
-        if (!$this->isEmailVerified($user)) {
+        if (! $this->isEmailVerified($user)) {
             return false;
         }
 
@@ -114,7 +114,7 @@ class VerificationService
      */
     public function getHoursUntilAutoVerification(User $user): int
     {
-        if (!$this->isEmailVerified($user)) {
+        if (! $this->isEmailVerified($user)) {
             return -1; // Not verified yet
         }
 
@@ -159,7 +159,7 @@ class VerificationService
     {
         $mfaMethods = $user->verification_metadata['mfa_methods'] ?? [];
 
-        if (!isset($mfaMethods[$method])) {
+        if (! isset($mfaMethods[$method])) {
             return false;
         }
 

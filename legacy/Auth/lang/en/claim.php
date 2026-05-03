@@ -10,8 +10,7 @@ return [
     'step_verify' => 'Verify Code',
     'step_password' => 'Set Password',
 
-    'info_step1' =>
-        'Your activation code was given to you by your institution administrator. It looks like: XXXX-XXXX-XXXX.',
+    'info_step1' => 'Your activation code was given to you by your institution administrator. It looks like: XXXX-XXXX-XXXX.',
     'info_step2' => 'Choose a strong password. You will use this to log in from now on.',
     'code_verified' => 'Code verified! Now set your personal password.',
     'back_to_login' => 'Back to login',
@@ -31,8 +30,7 @@ return [
     ],
 
     'invalid_code' => 'The username or activation code is incorrect, or the code has expired.',
-    'token_expired' =>
-        'Your activation code expired before you completed the process. Please contact your administrator to issue a new one.',
+    'token_expired' => 'Your activation code expired before you completed the process. Please contact your administrator to issue a new one.',
     'throttled' => 'Too many attempts. Please wait a few minutes before trying again.',
     'success' => 'Your account has been activated! You can now log in with your new password.',
 ];

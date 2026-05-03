@@ -16,7 +16,7 @@ class UserManagerForm extends UserForm
         $rules['roles.*'] = [
             'required',
             'string',
-            'in:' . implode(',', [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value]),
+            'in:'.implode(',', [Role::STUDENT->value, Role::TEACHER->value, Role::MENTOR->value]),
         ];
 
         $isPrivilegedContext =
@@ -26,7 +26,7 @@ class UserManagerForm extends UserForm
         $rules['status'] = [
             'required',
             'string',
-            'in:' .
+            'in:'.
             implode(',', $isPrivilegedContext ? ['verified'] : ['active', 'inactive', 'pending']),
         ];
 

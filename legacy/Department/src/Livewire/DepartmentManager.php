@@ -49,7 +49,7 @@ class DepartmentManager extends RecordManager
 
         $isSetupPhase = (bool) session('setup_authorized') || is_testing();
 
-        if (!$isSetupPhase) {
+        if (! $isSetupPhase) {
             $this->viewPermission = Permission::DEPARTMENT_VIEW;
             $this->createPermission = Permission::DEPARTMENT_CREATE;
             $this->updatePermission = Permission::DEPARTMENT_UPDATE;

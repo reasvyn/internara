@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Internship;
-use App\Models\Schedule;
-use App\Models\User;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Schedule\Models\Schedule;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ScheduleFactory extends Factory
@@ -39,11 +39,11 @@ class ScheduleFactory extends Factory
 
     public function orientation(): static
     {
-        return $this->state(fn(array $attributes) => ['type' => 'orientation']);
+        return $this->state(fn (array $attributes) => ['type' => 'orientation']);
     }
 
     public function workshop(): static
     {
-        return $this->state(fn(array $attributes) => ['type' => 'workshop']);
+        return $this->state(fn (array $attributes) => ['type' => 'workshop']);
     }
 }

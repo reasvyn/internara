@@ -24,7 +24,7 @@ class HandbookDownloadController extends Controller
 
         $media = $handbook->getFirstMedia('document');
 
-        if (!$media) {
+        if (! $media) {
             abort(404, __('Berkas tidak ditemukan.'));
         }
 

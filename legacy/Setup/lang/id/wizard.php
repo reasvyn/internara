@@ -34,8 +34,7 @@ return [
         'save_continue' => 'Simpan & Lanjutkan',
         'finish' => 'Selesai',
         'skip' => 'Lewati',
-        'later_at_settings' =>
-            'Anda dapat mengubah pengaturan ini nanti melalui halaman pengaturan.',
+        'later_at_settings' => 'Anda dapat mengubah pengaturan ini nanti melalui halaman pengaturan.',
         'step_success' => '[:step] berhasil diselesaikan.',
         'admin_account' => 'Admin',
     ],
@@ -44,34 +43,27 @@ return [
         'headline' => 'Berdayakan Institusi, Transformasikan Pengalaman Magang.',
         'problem' => [
             'title' => 'Melampaui Kerumitan',
-            'description' =>
-                'Mengelola praktik kerja industri tidak seharusnya terasa seperti menyatukan ribuan keping puzzle logistik yang rumit.',
+            'description' => 'Mengelola praktik kerja industri tidak seharusnya terasa seperti menyatukan ribuan keping puzzle logistik yang rumit.',
         ],
         'solution' => [
             'title' => 'Ekosistem Terintegrasi',
-            'description' =>
-                'Internara hadir sebagai mitra strategis Anda, menata setiap alur kerja agar Anda bisa fokus pada pertumbuhan siswa.',
+            'description' => 'Internara hadir sebagai mitra strategis Anda, menata setiap alur kerja agar Anda bisa fokus pada pertumbuhan siswa.',
         ],
         'journey' => [
             'title' => 'Perjalanan Mulus',
-            'description' =>
-                'Proses inisialisasi ini adalah langkah pertama Anda menuju program magang yang terorganisir dan berbasis data.',
-            'description_short' =>
-                'Nikmati proses penggelaran yang ramping, dirancang untuk standar akademik dan korporat modern.',
+            'description' => 'Proses inisialisasi ini adalah langkah pertama Anda menuju program magang yang terorganisir dan berbasis data.',
+            'description_short' => 'Nikmati proses penggelaran yang ramping, dirancang untuk standar akademik dan korporat modern.',
         ],
         'cta' => 'Mulai Inisialisasi',
     ],
     'environment' => [
         'title' => 'Audit Infrastruktur',
-        'description' =>
-            'Memverifikasi lingkungan sistem dan integritas direktori untuk stabilitas tingkat enterprise.',
+        'description' => 'Memverifikasi lingkungan sistem dan integritas direktori untuk stabilitas tingkat enterprise.',
         'audit_refreshed' => 'Audit lingkungan berhasil dievaluasi ulang.',
         'requirements' => 'Dependensi Inti',
-        'requirements_desc' =>
-            'Ekstensi PHP dan versi minimum yang diwajibkan agar Internara dapat beroperasi.',
+        'requirements_desc' => 'Ekstensi PHP dan versi minimum yang diwajibkan agar Internara dapat beroperasi.',
         'permissions' => 'Integritas Penyimpanan',
-        'permissions_desc' =>
-            'Memastikan sistem memiliki akses tulis yang sesuai pada lapisan penyimpanan kritis.',
+        'permissions_desc' => 'Memastikan sistem memiliki akses tulis yang sesuai pada lapisan penyimpanan kritis.',
         'database' => 'Persistensi Data',
         'database_desc' => 'Memvalidasi konektivitas ke mesin database yang dikonfigurasi.',
         'db_connection' => 'Status Handshake',
@@ -91,49 +83,39 @@ return [
     'account' => [
         'title' => 'Buat Akun Administrator',
         'headline' => 'Setiap Perjalanan Hebat Butuh Seorang Pemimpin.',
-        'description' =>
-            'Akun ini akan menjadi pusat kendali Anda. Dengan akun inilah Anda akan mengarahkan alur program magang di Internara, mengelola pengguna, dan memastikan semuanya berjalan lancar. Mari kita siapkan akun administrator utama Anda.',
+        'description' => 'Akun ini akan menjadi pusat kendali Anda. Dengan akun inilah Anda akan mengarahkan alur program magang di Internara, mengelola pengguna, dan memastikan semuanya berjalan lancar. Mari kita siapkan akun administrator utama Anda.',
     ],
     'school' => [
         'title' => 'Atur Data Sekolah',
         'headline' => 'Membangun Identitas Sekolah Anda.',
-        'description' =>
-            'Informasi ini akan menjadi fondasi dari seluruh sistem, memastikan setiap dokumen, laporan, dan komunikasi membawa identitas unik sekolah Anda. Mari kita perkenalkan institusi Anda pada Internara.',
+        'description' => 'Informasi ini akan menjadi fondasi dari seluruh sistem, memastikan setiap dokumen, laporan, dan komunikasi membawa identitas unik sekolah Anda. Mari kita perkenalkan institusi Anda pada Internara.',
     ],
     'department' => [
         'title' => 'Atur Data Jurusan',
         'headline' => 'Menyiapkan Jalur-Jalur Keahlian.',
-        'description' =>
-            'Setiap jurusan adalah jalur unik yang akan ditempuh siswa. Dengan mendefinisikan jurusan-jurusan ini, kita memudahkan penempatan magang yang sesuai dengan keahlian mereka. Masukkan jurusan-jurusan yang ada di sekolah Anda.',
+        'description' => 'Setiap jurusan adalah jalur unik yang akan ditempuh siswa. Dengan mendefinisikan jurusan-jurusan ini, kita memudahkan penempatan magang yang sesuai dengan keahlian mereka. Masukkan jurusan-jurusan yang ada di sekolah Anda.',
     ],
     'internship' => [
         'title' => 'Siapkan Data Magang',
         'headline' => 'Menentukan Periode Magang.',
-        'description' =>
-            'Sekarang, mari kita tentukan periode atau tahun ajaran program magang yang akan dikelola. Ini akan menjadi \'wadah\' utama untuk semua aktivitas magang yang akan datang.',
+        'description' => 'Sekarang, mari kita tentukan periode atau tahun ajaran program magang yang akan dikelola. Ini akan menjadi \'wadah\' utama untuk semua aktivitas magang yang akan datang.',
     ],
     'complete' => [
         'title' => 'Setup Selesai',
         'badge' => '🎉 Satu Sentuhan Terakhir! 🎉',
         'headline' => 'Finalisasi dan Sinkronisasi: Internara Siap Beraksi! ✨',
-        'description' =>
-            'Ini adalah sentuhan akhir—seperti seorang seniman yang membubuhkan tanda tangannya. Langkah ini akan menyatukan semua yang telah kita siapkan, mengaktifkan seluruh modul, dan memastikan Internara siap melayani Anda sepenuhnya.',
-        'description_extra' =>
-            'Dengan satu klik terakhir, Anda akan membuka pintu menuju pengalaman manajemen magang yang baru. Siap untuk memulai babak baru ini?',
+        'description' => 'Ini adalah sentuhan akhir—seperti seorang seniman yang membubuhkan tanda tangannya. Langkah ini akan menyatukan semua yang telah kita siapkan, mengaktifkan seluruh modul, dan memastikan Internara siap melayani Anda sepenuhnya.',
+        'description_extra' => 'Dengan satu klik terakhir, Anda akan membuka pintu menuju pengalaman manajemen magang yang baru. Siap untuk memulai babak baru ini?',
         'cta' => 'Selesaikan Instalasi',
         'checkup_title' => 'Pemeriksaan Kesiapan Sistem',
-        'checkup_desc' =>
-            'Silakan tinjau dan konfirmasikan kepatuhan Anda terhadap standar tata kelola sistem.',
+        'checkup_desc' => 'Silakan tinjau dan konfirmasikan kepatuhan Anda terhadap standar tata kelola sistem.',
         'checkup' => [
             'data_verified_label' => 'Konfirmasi Integritas Data',
-            'data_verified_desc' =>
-                'Saya telah meninjau data sekolah, jurusan, dan program. Saya mengonfirmasi bahwa semua informasi yang dimasukkan adalah akurat dan mencerminkan status resmi institusi.',
+            'data_verified_desc' => 'Saya telah meninjau data sekolah, jurusan, dan program. Saya mengonfirmasi bahwa semua informasi yang dimasukkan adalah akurat dan mencerminkan status resmi institusi.',
             'security_aware_label' => 'Pengakuan Kedaulatan Keamanan',
-            'security_aware_desc' =>
-                'Saya memahami bahwa akun SuperAdmin saya memegang otoritas mutlak. Saya berkomitmen untuk menjaga kerahasiaan kredensial dan mengikuti protokol keamanan enterprise untuk melindungi data institusi.',
+            'security_aware_desc' => 'Saya memahami bahwa akun SuperAdmin saya memegang otoritas mutlak. Saya berkomitmen untuk menjaga kerahasiaan kredensial dan mengikuti protokol keamanan enterprise untuk melindungi data institusi.',
             'legal_agreed_label' => 'Kepatuhan Hukum & Regulasi',
-            'legal_agreed_desc' =>
-                'Saya menyetujui :privacy dan :terms. Saya berkomitmen untuk mengoperasikan Internara sesuai dengan hukum perlindungan data yang berlaku.',
+            'legal_agreed_desc' => 'Saya menyetujui :privacy dan :terms. Saya berkomitmen untuk mengoperasikan Internara sesuai dengan hukum perlindungan data yang berlaku.',
         ],
     ],
     'audit_logs' => [
