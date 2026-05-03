@@ -23,6 +23,6 @@ describe('Global Coding Standards', function () {
         ->not->toUse(['API_KEY', 'SECRET_KEY', 'password =', 'secret ='])
         ->ignoring([
             // Allow password field references in Models
-            'App\Models\User',
+            'App\Domain\User\Models\User',
         ]);
 });

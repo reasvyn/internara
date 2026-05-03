@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\Guidance\AcknowledgeHandbookAction;
-use App\Actions\Guidance\CreateHandbookAction;
+use App\Domain\Guidance\Actions\AcknowledgeHandbookAction;
+use App\Domain\Guidance\Actions\CreateHandbookAction;
+use App\Domain\Guidance\Models\Handbook;
 use App\Http\Requests\CreateHandbookRequest;
-use App\Models\Handbook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

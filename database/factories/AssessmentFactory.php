@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Assessment;
-use App\Models\InternshipRegistration;
-use App\Models\User;
+use App\Domain\Assessment\Models\Assessment;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +20,7 @@ class AssessmentFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid(),
-            'registration_id' => InternshipRegistration::factory(),
+            'registration_id' => Registration::factory(),
             'academic_year' => $this->faker->year(),
             'evaluator_id' => User::factory(),
             'type' => $this->faker->randomElement(['midterm', 'final']),
@@ -37,6 +37,6 @@ class AssessmentFactory extends Factory
 
     public function finalized(): static
     {
-        return $this->state(fn(array $attributes) => ['finalized_at' => now()]);
+        return $this->state(fn (array $attributes) => ['finalized_at' => now()]);
     }
 }

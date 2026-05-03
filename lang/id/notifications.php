@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 return [
     'welcome' => [
-        'title' => 'Selamat datang di Internara!',
+        'title' => 'Selamat datang di Sistem!',
         'broadcast' => 'Akun Anda telah berhasil dibuat. Selamat magang!',
         'database' => 'Akun Anda telah dibuat. Lengkapi profil Anda untuk memulai.',
-        'mail_subject' => 'Selamat Datang di Internara',
+        'mail_subject' => 'Selamat Datang di Sistem',
         'mail_greeting' => 'Halo :name!',
-        'mail_line1' => 'Akun Anda untuk Sistem Manajemen Magang Internara telah dibuat.',
+        'mail_line1' => 'Akun Anda untuk Sistem Manajemen Magang telah dibuat.',
         'mail_username' => 'Username: :username',
         'mail_password' => 'Kata Sandi Sementara: :password',
         'mail_line2' => 'Silakan ganti kata sandi Anda setelah masuk.',
@@ -43,16 +43,14 @@ return [
         'broadcast' => "Pengajuan Anda untuk ':title' telah ditandai sebagai :status",
         'database' => "Pembaruan pada ':title': :status",
         'mail_subject' => 'Umpan Balik pada Tugas: :title',
-        'mail_line1' =>
-            "Pengajuan Anda untuk ':title' telah ditinjau dan ditandai sebagai: :status",
+        'mail_line1' => "Pengajuan Anda untuk ':title' telah ditinjau dan ditandai sebagai: :status",
         'mail_feedback' => 'Umpan Balik: :feedback',
     ],
     'report_generated' => [
         'title' => 'Laporan Siap',
         'message' => 'Laporan :type Anda siap untuk diunduh.',
         'mail_subject' => 'Laporan :type Anda Siap',
-        'mail_line1' =>
-            'Laporan :type yang Anda minta telah berhasil dibuat dan sekarang siap untuk diunduh.',
+        'mail_line1' => 'Laporan :type yang Anda minta telah berhasil dibuat dan sekarang siap untuk diunduh.',
     ],
     'job_failed' => [
         'title' => 'Tugas Latar Belakang Gagal',

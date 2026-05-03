@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Competency;
-use App\Models\DepartmentCompetency;
+use App\Domain\Assessment\Models\Competency;
+use App\Domain\School\Models\DepartmentCompetency;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

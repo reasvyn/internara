@@ -1,32 +1,20 @@
 ---
 name: laravel-best-practices
-description:
-    'Apply this skill whenever writing, reviewing, or refactoring Laravel PHP code. This includes
-    creating or modifying controllers, models, migrations, form requests, policies, jobs, scheduled
-    commands, service classes, and Eloquent queries. Triggers for N+1 and query performance issues,
-    caching strategies, authorization and security patterns, validation, error handling, queue and
-    job configuration, route definitions, and architectural decisions. Also use for Laravel code
-    reviews and refactoring existing Laravel code to follow best practices. Covers any task
-    involving Laravel backend PHP code patterns.'
+description: "Apply this skill whenever writing, reviewing, or refactoring Laravel PHP code. This includes creating or modifying controllers, models, migrations, form requests, policies, jobs, scheduled commands, service classes, and Eloquent queries. Triggers for N+1 and query performance issues, caching strategies, authorization and security patterns, validation, error handling, queue and job configuration, route definitions, and architectural decisions. Also use for Laravel code reviews and refactoring existing Laravel code to follow best practices. Covers any task involving Laravel backend PHP code patterns."
 license: MIT
 metadata:
-    author: laravel
+  author: laravel
 ---
 
 # Laravel Best Practices
 
-Best practices for Laravel, prioritized by impact. Each rule teaches what to do and why. For exact
-API syntax, verify with `search-docs`.
+Best practices for Laravel, prioritized by impact. Each rule teaches what to do and why. For exact API syntax, verify with `search-docs`.
 
 ## Consistency First
 
-Before applying any rule, check what the application already does. Laravel offers multiple valid
-approaches — the best choice is the one the codebase already uses, even if another pattern would be
-theoretically better. Inconsistency is worse than a suboptimal pattern.
+Before applying any rule, check what the application already does. Laravel offers multiple valid approaches — the best choice is the one the codebase already uses, even if another pattern would be theoretically better. Inconsistency is worse than a suboptimal pattern.
 
-Check sibling files, related controllers, models, or tests for established patterns. If one exists,
-follow it — don't introduce a second way. These rules are defaults for when no pattern exists yet,
-not overrides.
+Check sibling files, related controllers, models, or tests for established patterns. If one exists, follow it — don't introduce a second way. These rules are defaults for when no pattern exists yet, not overrides.
 
 ## Quick Reference
 
@@ -56,8 +44,7 @@ not overrides.
 
 - Define `$fillable` or `$guarded` on every model, authorize every action via policies or gates
 - No raw SQL with user input — use Eloquent or query builder
-- `{{ }}` for output escaping, `@csrf` on all POST/PUT/DELETE forms, `throttle` on auth and API
-  routes
+- `{{ }}` for output escaping, `@csrf` on all POST/PUT/DELETE forms, `throttle` on auth and API routes
 - Validate MIME type, extension, and size for file uploads
 - Never commit `.env`, use `config()` for secrets, `encrypted` cast for sensitive DB fields
 
@@ -101,8 +88,7 @@ not overrides.
 - `LazilyRefreshDatabase` over `RefreshDatabase` for speed
 - `assertModelExists()` over raw `assertDatabaseHas()`
 - Factory states and sequences over manual overrides
-- Use fakes (`Event::fake()`, `Exceptions::fake()`, etc.) — but always after factory setup, not
-  before
+- Use fakes (`Event::fake()`, `Exceptions::fake()`, etc.) — but always after factory setup, not before
 - `recycle()` to share relationship instances across factories
 
 ### 9. Queue & Job Patterns → `rules/queue-jobs.md`
@@ -162,8 +148,7 @@ not overrides.
 - Single-purpose Action classes; dependency injection over `app()` helper
 - Prefer official Laravel packages and follow conventions, don't override defaults
 - Default to `ORDER BY id DESC` or `created_at DESC`; `mb_*` for UTF-8 safety
-- `defer()` for post-response work; `Context` for request-scoped data; `Concurrency::run()` for
-  parallel execution
+- `defer()` for post-response work; `Context` for request-scoped data; `Concurrency::run()` for parallel execution
 
 ### 16. Migrations → `rules/migrations.md`
 
@@ -192,8 +177,7 @@ not overrides.
 ### 19. Conventions & Style → `rules/style.md`
 
 - Follow Laravel naming conventions for all entities
-- Prefer Laravel helpers (`Str`, `Arr`, `Number`, `Uri`, `Str::of()`, `$request->string()`) over raw
-  PHP functions
+- Prefer Laravel helpers (`Str`, `Arr`, `Number`, `Uri`, `Str::of()`, `$request->string()`) over raw PHP functions
 - No JS/CSS in Blade, no HTML in PHP classes
 - Code should be readable; comments only for config files
 
@@ -201,7 +185,6 @@ not overrides.
 
 Always use a sub-agent to read rule files and explore this skill's content.
 
-1. Identify the file type and select relevant sections (e.g., migration → §16, controller → §1, §3,
-   §5, §6, §10)
+1. Identify the file type and select relevant sections (e.g., migration → §16, controller → §1, §3, §5, §6, §10)
 2. Check sibling files for existing patterns — follow those first per Consistency First
 3. Verify API syntax with `search-docs` for the installed Laravel version

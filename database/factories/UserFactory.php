@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,7 +30,7 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'username' => $this->faker->unique()->userName(),
+            'username' => 'u'.$this->faker->unique()->numerify('########'),
             'password' => Hash::make('password'),
             'setup_required' => false,
         ];
@@ -42,7 +42,7 @@ class UserFactory extends Factory
     public function requiresSetup(): static
     {
         return $this->state(
-            fn() => [
+            fn () => [
                 'setup_required' => true,
             ],
         );

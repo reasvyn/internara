@@ -12,7 +12,7 @@ describe('Model Standards', function () {
     test('all models should use HasUuid trait')
         ->expect('App\Models')
         ->classes()
-        ->toUseTrait('App\Models\Concerns\HasUuid')
+        ->toUseTrait('App\Domain\Core\Concerns\HasUuid')
         ->ignoring([
             'App\Models\Concerns', // Ignore the trait itself
         ]);

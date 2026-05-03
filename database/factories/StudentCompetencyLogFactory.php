@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Competency;
-use App\Models\InternshipRegistration;
-use App\Models\StudentCompetencyLog;
-use App\Models\User;
+use App\Domain\Assessment\Models\Competency;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\Mentee\Models\CompetencyLog;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * Factory for StudentCompetencyLog model.
+ * Factory for CompetencyLog model.
  */
-class StudentCompetencyLogFactory extends Factory
+class CompetencyLogFactory extends Factory
 {
-    protected $model = StudentCompetencyLog::class;
+    protected $model = CompetencyLog::class;
 
     public function definition(): array
     {
         return [
             'id' => $this->faker->uuid(),
-            'registration_id' => InternshipRegistration::factory(),
+            'registration_id' => Registration::factory(),
             'competency_id' => Competency::factory(),
             'evaluator_id' => User::factory(),
             'score' => $this->faker->randomFloat(2, 0, 100),

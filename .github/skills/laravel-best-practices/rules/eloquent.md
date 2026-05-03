@@ -21,7 +21,6 @@ public function author(): BelongsTo
 Extract reusable query constraints into local scopes to avoid duplication.
 
 Incorrect:
-
 ```php
 $active = User::where('verified', true)->whereNotNull('activated_at')->get();
 $articles = Article::whereHas('user', function ($q) {
@@ -30,7 +29,6 @@ $articles = Article::whereHas('user', function ($q) {
 ```
 
 Correct:
-
 ```php
 public function scopeActive(Builder $query): Builder
 {
@@ -44,11 +42,9 @@ $articles = Article::whereHas('user', fn ($q) => $q->active())->get();
 
 ## Apply Global Scopes Sparingly
 
-Global scopes silently modify every query on the model, making debugging difficult. Prefer local
-scopes and reserve global scopes for truly universal constraints like soft deletes or multi-tenancy.
+Global scopes silently modify every query on the model, making debugging difficult. Prefer local scopes and reserve global scopes for truly universal constraints like soft deletes or multi-tenancy.
 
 Incorrect (global scope for a conditional filter):
-
 ```php
 class PublishedScope implements Scope
 {
@@ -61,7 +57,6 @@ class PublishedScope implements Scope
 ```
 
 Correct (local scope you opt into):
-
 ```php
 public function scopePublished(Builder $query): Builder
 {
@@ -74,8 +69,7 @@ Post::paginate(); // Admin sees all
 
 ## Define Attribute Casts
 
-Use the `casts()` method (or `$casts` property following project convention) for automatic type
-conversion.
+Use the `casts()` method (or `$casts` property following project convention) for automatic type conversion.
 
 ```php
 protected function casts(): array
@@ -93,13 +87,11 @@ protected function casts(): array
 Always cast date columns. Use Carbon instances in templates instead of formatting strings manually.
 
 Incorrect:
-
 ```blade
 {{ Carbon::createFromFormat('Y-d-m H-i', $order->ordered_at)->toDateString() }}
 ```
 
 Correct:
-
 ```php
 protected function casts(): array
 {
@@ -110,7 +102,8 @@ protected function casts(): array
 ```
 
 ```blade
-{{ $order->ordered_at->toDateString() }} {{ $order->ordered_at->format('m-d') }}
+{{ $order->ordered_at->toDateString() }}
+{{ $order->ordered_at->format('m-d') }}
 ```
 
 ## Use `whereBelongsTo()` for Relationship Queries
@@ -118,13 +111,11 @@ protected function casts(): array
 Cleaner than manually specifying foreign keys.
 
 Incorrect:
-
 ```php
 Post::where('user_id', $user->id)->get();
 ```
 
 Correct:
-
 ```php
 Post::whereBelongsTo($user)->get();
 Post::whereBelongsTo($user, 'author')->get();
@@ -132,12 +123,9 @@ Post::whereBelongsTo($user, 'author')->get();
 
 ## Avoid Hardcoded Table Names in Queries
 
-Never use string literals for table names in raw queries, joins, or subqueries. Hardcoded table
-names make it impossible to find all places a model is used and break refactoring (e.g., renaming a
-table requires hunting through every raw string).
+Never use string literals for table names in raw queries, joins, or subqueries. Hardcoded table names make it impossible to find all places a model is used and break refactoring (e.g., renaming a table requires hunting through every raw string).
 
 Incorrect:
-
 ```php
 DB::table('users')->where('active', true)->get();
 
@@ -147,21 +135,14 @@ DB::select('SELECT * FROM orders WHERE status = ?', ['pending']);
 ```
 
 Correct — reference the model's table:
-
 ```php
-DB::table(new User()->getTable())
-    ->where('active', true)
-    ->get();
+DB::table((new User)->getTable())->where('active', true)->get();
 
 // Even better — use Eloquent or the query builder instead of raw SQL
 User::where('active', true)->get();
 Order::where('status', 'pending')->get();
 ```
 
-Prefer Eloquent queries and relationships over `DB::table()` whenever possible — they already
-reference the model's table. When `DB::table()` or raw joins are unavoidable, always use
-`(new Model)->getTable()` to keep the reference traceable.
+Prefer Eloquent queries and relationships over `DB::table()` whenever possible — they already reference the model's table. When `DB::table()` or raw joins are unavoidable, always use `(new Model)->getTable()` to keep the reference traceable.
 
-**Exception — migrations:** In migrations, hardcoded table names via `DB::table('settings')` are
-acceptable and preferred. Models change over time but migrations are frozen snapshots — referencing
-a model that is later renamed or deleted would break the migration.
+**Exception — migrations:** In migrations, hardcoded table names via `DB::table('settings')` are acceptable and preferred. Models change over time but migrations are frozen snapshots — referencing a model that is later renamed or deleted would break the migration.

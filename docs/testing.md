@@ -1,156 +1,51 @@
 # Testing Documentation
 
-## Overview
+## 1. Strategy
 
-Internara utilizes [Pest PHP](https://pestphp.com/) for high-velocity, readable testing. Our
-strategy focuses on both **Functional Correctness** and **Architectural Integrity**.
+Internara uses [Pest PHP](https://pestphp.com/) for automated testing. Our strategy focuses on both **Functional Correctness** and **Architectural Integrity**.
 
-## 1. Test Categories
+## 2. Test Categories
 
-### Architectural Tests (`tests/Arch`)
+### Architectural Tests (`tests/Arch/`)
+Enforces the 3S Doctrine automatically by verifying layer separation and coding standards.
+- **Layer Separation**: Ensures UI components don't contain business logic and Models don't depend on Actions.
+- **Standard Enforcement**: Ensures all models use UUIDs and all Actions have an `execute()` method.
 
-Enforces the 3S Doctrine automatically. These tests ensure:
+### Quality Tests (`tests/Quality/`)
+Checks for common pitfalls that static analysis might miss:
+- **Performance**: Detects potential N+1 queries or missing pagination.
+- **Security**: Checks for insecure mass assignment or raw SQL usage.
+- **Stability**: Detects hardcoded paths or unhandled failure states.
 
-- Controllers stay thin.
-- Actions remain stateless (no instance properties beyond constructor-injected dependencies).
-- Models use UUIDs and contain business rules.
-- Proper layer separation is maintained.
+### Feature & Unit Tests
+- **Feature**: Verifies end-to-end user workflows (e.g., Student clock-in).
+- **Unit**: Verifies isolated business logic (e.g., Status calculation logic).
 
-#### Test Structure (Split by Concern)
+## 3. Tooling
 
-```
-tests/Arch/
-├── GlobalCodingStandardsTest.php    # Strict types, no debug functions
-├── Layers/
-│   └── LayerSeparationTest.php     # Layer dependency rules
-├── Models/
-│   └── ModelStandardsTest.php      # UUIDs, traits, no side effects
-├── Actions/
-│   ├── ActionStandardsTest.php     # execute() method, stateless
-│   └── ActionStatelessTest.php    # No mutable state
-├── Controllers/
-│   └── ControllerStandardsTest.php # Thin controllers, delegation
-├── OptionalLayers/
-│   ├── RepositoryStandardsTest.php # Read-only, eloquent returns
-│   ├── EventStandardsTest.php      # Past tense naming, Dispatchable
-│   └── ListenerStandardsTest.php  # Handle method, no models
-├── Requests/
-│   └── RequestStandardsTest.php   # FormRequest, rules method
-└── Services/
-    └── ServiceStandardsTest.php    # No business rules
-```
+- **Pest PHP**: Primary testing framework.
+- **PHPStan**: Static analysis (Level 8) to ensure type safety.
+- **Laravel Pint**: Automatic code style enforcement.
+- **AppTestOrchestrator**: Custom support class to manage test database state.
 
-### Quality Tests (`tests/Quality`)
+## 4. CI/CD Workflow
 
-Ensures code stability, performance, and security:
+Every Pull Request triggers a GitHub Actions workflow that runs:
+1. **Linting**: Pint style check.
+2. **Static Analysis**: PHPStan strict analysis.
+3. **Arch Tests**: Structural validation.
+4. **Feature/Unit Tests**: Functional validation.
 
-- **CodeStabilityTest**: Hardcoded paths, SQL injection, silent failures
-- **PerformanceTest**: N+1 queries, missing pagination, inefficient checks
-- **SecurityTest**: Mass assignment, input validation, sensitive data in logs
-
-### Feature Tests (`tests/Feature`)
-
-Verifies end-to-end workflows (Use Cases). Every `Action` must have a corresponding feature test.
-
-### Unit Tests (`tests/Unit`)
-
-Verifies pure business logic within Models or Support classes.
-
-## 2. Test Tools
-
-### AppTestOrchestrator
-
-The `App\Support\Testing\AppTestOrchestrator` handles the lifecycle of the test environment.
-
-- **bootstrap()**: Prepares the database (migrations + seeding).
-- **teardown()**: Cleans up after testing.
-
-## 3. Running Tests
+## 5. Execution
 
 ```bash
 # Run all tests
-./vendor/bin/pest
+php artisan test
 
-# Run only arch tests
+# Run specific suite
 ./vendor/bin/pest tests/Arch
-
-# Run quality tests (stability, performance, security)
 ./vendor/bin/pest tests/Quality
 
-# Run with coverage (requires Xdebug)
-./vendor/bin/pest --coverage
-
-# Run specific test suite
-./vendor/bin/pest --testsuite=Quality
-```
-
-## 4. Composer Scripts
-
-```bash
-# Quick quality check (lint + static analysis + arch tests)
-composer quality
-
-# Full quality check (format + strict analysis + coverage)
-composer quality:full
-
-# Test with coverage
-composer test:coverage
-
-# Run only architectural tests
-composer test:arch
-
-# Run only feature tests
-composer test:feature
-
-# Run only unit tests
-composer test:unit
-```
-
-## 5. Static Analysis
-
-```bash
-# Run PHPStan (level 8)
+# Static Analysis
 composer analyse
-
-# Run PHPStan with max level
-composer analyse:strict
 ```
-
-## 6. Mandatory Regression (Workflow 4)
-
-According to `docs/standards.md`, every bug fix **must** include a reproduction test that prevents
-recurrence.
-
-## 7. CI Pipeline
-
-The project uses GitHub Actions for continuous integration:
-
-- **Quality job**: Pint (code style) + PHPStan (static analysis)
-- **Architecture job**: Architectural tests (layer separation)
-- **Tests job**: Feature & Unit tests with coverage (min 80%)
-- **Security job**: Trivy vulnerability scanner
-
-All jobs must pass before merging to main/develop branches.
-
-## 8. Current Test Baseline
-
-| Metric        | Status   |
-| ------------- | -------- |
-| Feature tests | Passing  |
-| Arch tests    | ALL PASS |
-| Quality tests | ALL PASS |
-| Failed tests  | None     |
-
-### Domains Added This Cycle
-
-- Report: generate, queue, download, Auth tests
-- Document: CRUD, versioning, Auth tests
-- Schedule: CRUD, type filtering, Auth tests
-- Academic: CRUD, single active constraint, Auth tests
-
-### Previously Failed Tests (All Resolved)
-
-- SystemSettingTest: `o-palette` → `o-swatch` heroicon, duplicate key removed
-- SetupWizardTest: RoleEnum seeding added to beforeEach
-- InternshipRegistrationTest: `->todo()` syntax corrected to function body
-- AssignmentTest: `->throws()` replaced with `todo()` (RBAC at middleware level)

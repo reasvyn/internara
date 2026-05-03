@@ -8,6 +8,16 @@
         "laravel",
         "framework"
     ],
+    "authors": [
+        {
+            "name": "Reas Vyn",
+            "email": "reasvyn@gmail.com",
+            "homepage": "https://github.com/reasvyn"
+        }
+    ],
+    "support": {
+        "email": "reasvyn@gmail.com"
+    },
     "license": "MIT",
     "require": {
         "php": "^8.4",
@@ -47,7 +57,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Support/helpers.php"
+            "app/Domain/Core/Support/helpers.php"
         ],
         "exclude-from-classmap": [
             ".temp"
@@ -76,7 +86,7 @@
         ],
         "test": [
             "@php artisan optimize:clear --ansi",
-            "@php artisan app:test"
+            "@php artisan test"
         ],
         "test:coverage": [
             "@php artisan optimize:clear --ansi",

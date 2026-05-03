@@ -1,10 +1,16 @@
 {
-    "agents": ["opencode", "copilot", "gemini"],
+    "agents": [
+        "opencode",
+        "copilot",
+        "gemini"
+    ],
     "cloud": false,
     "guidelines": true,
     "mcp": true,
     "nightwatch": false,
-    "packages": ["spatie/laravel-medialibrary"],
+    "packages": [
+        "spatie/laravel-medialibrary"
+    ],
     "sail": false,
     "skills": [
         "laravel-best-practices",

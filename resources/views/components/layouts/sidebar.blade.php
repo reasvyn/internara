@@ -1,152 +1,172 @@
 @props(['items' => []])
 @php
 $currentRoute = request()->route()?->getName() ?? '';
-$brandName = App\Support\Branding::brandName();
-$brandLogo = App\Support\Branding::logo();
+$brandName = brand('name');
+$brandLogo = brand('logo');
 @endphp
 
-<div class="drawer-side z-40">
+<div class="drawer-side z-[60]">
     <label for="main-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
     
-    <aside class="bg-base-100 min-h-screen w-64 md:w-56 lg:w-64 shadow-xl border-r border-base-200 flex flex-col">
+    <aside class="bg-base-100 min-h-screen w-[280px] border-r border-base-content/5 flex flex-col shadow-2xl lg:shadow-none">
         <!-- Logo -->
-        <div class="p-4 border-b border-base-200">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-                <x-mary-avatar 
-                    :image="$brandLogo" 
-                    class="w-9 h-9 transition-transform group-hover:scale-110 duration-300" 
-                />
+        <div class="h-20 px-6 border-b border-base-content/5 flex items-center shrink-0">
+            <a wire:navigate href="{{ route('dashboard') }}" class="flex items-center gap-4 group w-full">
+                <div class="size-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transition-transform group-hover:scale-110 duration-500 shrink-0">
+                    <img 
+                        src="{{ $brandLogo }}" 
+                        class="size-6 object-contain brightness-0 invert" 
+                        alt="{{ $brandName }}"
+                    />
+                </div>
                 <div class="flex flex-col min-w-0">
-                    <span class="font-black text-base truncate leading-tight">{{ $brandName }}</span>
-                    <span class="text-[9px] uppercase tracking-widest font-black opacity-30 leading-none">Management</span>
+                    <span class="font-black text-lg truncate leading-none text-base-content group-hover:text-primary transition-colors">{{ $brandName }}</span>
+                    <span class="text-[8px] uppercase tracking-[0.3em] font-black opacity-40 mt-1">Management</span>
                 </div>
             </a>
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 overflow-y-auto p-4 space-y-1">
+        <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-8 no-scrollbar">
             @auth
                 @if(auth()->user()->hasRole('super_admin|admin'))
-                    <ul class="menu menu-sm gap-1">
-                        <li class="menu-title text-xs opacity-50">{{ trans('admin.title') ?: 'Administration' }}</li>
-                        <li>
-                            <a href="{{ route('admin.school') }}" 
-                               class="{{ request()->routeIs('admin.school*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-academic-cap" class="size-5" />
-                                {{ __('school.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.departments') }}" 
-                               class="{{ request()->routeIs('admin.departments*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-rectangle-group" class="size-5" />
-                                {{ __('department.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.internships') }}" 
-                               class="{{ request()->routeIs('admin.internships*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-briefcase" class="size-5" />
-                                {{ __('internship.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.companies') }}" 
-                               class="{{ request()->routeIs('admin.companies*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-building-office" class="size-5" />
-                                {{ __('company.title') }}
-                            </a>
-                        </li>
-                        
-                        <li class="menu-title text-xs opacity-50 mt-4">{{ trans('user.student.title') ?: 'Users' }}</li>
-                        <li>
-                            <a href="{{ route('admin.users.admins') }}" 
-                               class="{{ request()->routeIs('admin.users.admins*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-user-circle" class="size-5" />
-                                {{ __('user.admin.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.users.students') }}" 
-                               class="{{ request()->routeIs('admin.users.students*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-user-group" class="size-5" />
-                                {{ __('user.student.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.users.teachers') }}" 
-                               class="{{ request()->routeIs('admin.users.teachers*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-academic-cap" class="size-5" />
-                                {{ __('user.teacher.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.users.mentors') }}" 
-                               class="{{ request()->routeIs('admin.users.mentors*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-user-plus" class="size-5" />
-                                {{ __('user.mentor.title') }}
-                            </a>
-                        </li>
-                        
-                        <li class="menu-title text-xs opacity-50 mt-4">{{ trans('setting.groups.system') ?: 'System' }}</li>
-                        <li>
-                            <a href="{{ route('admin.settings') }}" 
-                               class="{{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-cog" class="size-5" />
-                                {{ __('setting.title') }}
-                            </a>
-                        </li>
-                    </ul>
+                    <div>
+                        <h3 class="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 mb-3">{{ trans('admin.title') ?: 'Administration' }}</h3>
+                        <ul class="space-y-1">
+                            <li>
+                                <a wire:navigate href="{{ route('admin.school') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.school*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-academic-cap" class="size-5 shrink-0 {{ request()->routeIs('admin.school*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('school.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('admin.departments') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.departments*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-rectangle-group" class="size-5 shrink-0 {{ request()->routeIs('admin.departments*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('department.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('admin.internships') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.internships*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-briefcase" class="size-5 shrink-0 {{ request()->routeIs('admin.internships*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('internship.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('admin.companies') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.companies*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-building-office" class="size-5 shrink-0 {{ request()->routeIs('admin.companies*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('company.title') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 mb-3">{{ trans('user.student.title') ?: 'Users' }}</h3>
+                        <ul class="space-y-1">
+                            <li>
+                                <a wire:navigate href="{{ route('admin.users.admins') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.users.admins*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-user-circle" class="size-5 shrink-0 {{ request()->routeIs('admin.users.admins*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('user.admin.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('admin.users.students') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.users.students*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-user-group" class="size-5 shrink-0 {{ request()->routeIs('admin.users.students*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('user.student.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('admin.users.teachers') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.users.teachers*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-academic-cap" class="size-5 shrink-0 {{ request()->routeIs('admin.users.teachers*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('user.teacher.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('admin.users.mentors') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.users.mentors*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-user-plus" class="size-5 shrink-0 {{ request()->routeIs('admin.users.mentors*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('user.mentor.title') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 mb-3">{{ trans('setting.groups.system') ?: 'System' }}</h3>
+                        <ul class="space-y-1">
+                            <li>
+                                <a wire:navigate href="{{ route('admin.settings') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('admin.settings*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-cog" class="size-5 shrink-0 {{ request()->routeIs('admin.settings*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('setting.title') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 @endif
 
                 @if(auth()->user()->hasRole('student'))
-                    <ul class="menu menu-sm gap-1 mt-4">
-                        <li class="menu-title text-xs opacity-50">{{ trans('student.title') ?: 'Student Portal' }}</li>
-                        <li>
-                            <a href="{{ route('student.dashboard') }}" 
-                               class="{{ request()->routeIs('student.dashboard*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-home" class="size-5" />
-                                {{ __('dashboard.title') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('student.journals') }}" 
-                               class="{{ request()->routeIs('student.journals*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-book-open" class="size-5" />
-                                {{ trans('journal.title') ?: 'Journals' }}
-                            </a>
-                        </li>
-                    </ul>
+                    <div>
+                        <h3 class="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 mb-3">{{ trans('student.title') ?: 'Student Portal' }}</h3>
+                        <ul class="space-y-1">
+                            <li>
+                                <a wire:navigate href="{{ route('student.dashboard') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('student.dashboard*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-home" class="size-5 shrink-0 {{ request()->routeIs('student.dashboard*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ __('dashboard.title') }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('student.journals') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('student.journals*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-book-open" class="size-5 shrink-0 {{ request()->routeIs('student.journals*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ trans('journal.title') ?: 'Journals' }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 @endif
 
                 @if(auth()->user()->hasRole('teacher|mentor'))
-                    <ul class="menu menu-sm gap-1 mt-4">
-                        <li class="menu-title text-xs opacity-50">{{ trans('supervision.title') ?: 'Supervision' }}</li>
-                        <li>
-                            <a href="{{ route('supervision.logs') }}" 
-                               class="{{ request()->routeIs('supervision.logs*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-clipboard-check" class="size-5" />
-                                {{ trans('supervision.logs') ?: 'Guidance Logs' }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('supervision.monitoring') }}" 
-                               class="{{ request()->routeIs('supervision.monitoring*') ? 'active' : '' }}">
-                                <x-mary-icon name="o-map-pin" class="size-5" />
-                                {{ trans('supervision.monitoring') ?: 'Monitoring' }}
-                            </a>
-                        </li>
-                    </ul>
+                    <div>
+                        <h3 class="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 mb-3">{{ trans('supervision.title') ?: 'Supervision' }}</h3>
+                        <ul class="space-y-1">
+                            <li>
+                                <a wire:navigate href="{{ route('supervision.logs') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->routeIs('supervision.logs*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-clipboard-check" class="size-5 shrink-0 {{ request()->routeIs('supervision.logs*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ trans('supervision.logs') ?: 'Guidance Logs' }}</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a wire:navigate href="{{ route('supervision.monitoring') }}" 
+                                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 {{ request()->requestIs('supervision.monitoring*') ? 'bg-primary/10 text-primary font-black' : 'text-base-content/70 hover:bg-base-200 hover:text-base-content font-bold' }}">
+                                    <x-mary-icon name="o-map-pin" class="size-5 shrink-0 {{ request()->routeIs('supervision.monitoring*') ? 'text-primary' : 'opacity-50' }}" />
+                                    <span class="text-sm">{{ trans('supervision.monitoring') ?: 'Monitoring' }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 @endif
             @else
-                <div class="p-4 text-center">
-                    <p class="text-xs opacity-40 font-bold uppercase tracking-widest">Setup in progress</p>
+                <div class="p-6 text-center bg-base-200/50 rounded-3xl border border-base-content/5">
+                    <div class="size-12 rounded-full bg-base-content/5 flex items-center justify-center mx-auto mb-3">
+                        <x-mary-icon name="o-cog" class="size-6 opacity-30 animate-spin-slow" />
+                    </div>
+                    <p class="text-[10px] opacity-40 font-black uppercase tracking-widest leading-relaxed">Setup in progress</p>
                 </div>
             @endauth
         </nav>
 
         <!-- Footer -->
-        <div class="p-4 border-t border-base-200">
+        <div class="p-6 border-t border-base-content/5 bg-base-200/30">
             <livewire:layout.app-signature />
         </div>
     </aside>

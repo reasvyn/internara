@@ -1,13 +1,11 @@
-<?php
-
 declare(strict_types=1);
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\Core;
 
-use App\Actions\Audit\LogAuditAction;
-use App\Actions\Setting\SetSettingAction;
+use App\Domain\Core\Actions\LogAuditAction;
+use App\Domain\Admin\Actions\SetSettingAction;
+use App\Domain\Core\Support\Settings;
 use App\Notifications\TestMailNotification;
-use App\Support\Settings;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -113,7 +111,7 @@ class SystemSetting extends Component
         // Operational
         $this->active_academic_year = Settings::get(
             'active_academic_year',
-            date('Y') . '/' . (date('Y') + 1),
+            date('Y').'/'.(date('Y') + 1),
         );
 
         // Mail
@@ -235,16 +233,16 @@ class SystemSetting extends Component
             Config::set('mail.from.address', $this->mail_from_address);
             Config::set('mail.from.name', $this->mail_from_name);
 
-            Notification::route('mail', auth()->user()->email)->notify(new TestMailNotification());
+            Notification::route('mail', auth()->user()->email)->notify(new TestMailNotification);
 
             $this->success(__('setting.messages.test_email_sent'));
         } catch (\Exception $e) {
-            logger()->error('SMTP Test Failed: ' . $e->getMessage());
-            $this->error(__('setting.messages.test_email_failed') . ': ' . $e->getMessage());
+            logger()->error('SMTP Test Failed: '.$e->getMessage());
+            $this->error(__('setting.messages.test_email_failed').': '.$e->getMessage());
         }
     }
 
-    #[Layout('components.layouts.app', ['title' => 'System Settings'])]
+    #[Layout('layouts::app', ['title' => 'System Settings'])]
     public function render()
     {
         return view('livewire.admin.system-setting');

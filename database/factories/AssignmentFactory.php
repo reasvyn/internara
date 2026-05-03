@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Assignment;
-use App\Models\AssignmentType;
-use App\Models\Internship;
+use App\Domain\Assignment\Models\Assignment;
+use App\Domain\Assignment\Models\AssignmentType;
+use App\Domain\Internship\Models\Internship;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -35,6 +35,6 @@ class AssignmentFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(fn(array $attributes) => ['status' => 'published']);
+        return $this->state(fn (array $attributes) => ['status' => 'published']);
     }
 }

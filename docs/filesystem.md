@@ -231,7 +231,7 @@ Storage::move('old.txt', 'new.txt');
 
 ## 5. Real-World Usage in Internara
 
-### Example 1: Brand Logo Upload (`app/Livewire/Admin/SystemSetting.php`)
+### Example 1: Brand Logo Upload (`app/Domain/System/Livewire/Admin/SystemSetting.php`)
 
 ```php
 class SystemSetting extends Component
@@ -264,7 +264,7 @@ class SystemSetting extends Component
 }
 ```
 
-### Example 2: PDF Generation (`app/Actions/Document/GeneratePdfAction.php`)
+### Example 2: PDF Generation (`app/Domain/Document/Actions/GeneratePdfAction.php`)
 
 ```php
 class GeneratePdfAction

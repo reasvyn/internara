@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Actions\Attendance\ClockInAction;
-use App\Actions\Attendance\ClockOutAction;
-use App\Actions\Journal\SubmitJournalEntryAction;
-use App\Enums\Role as RoleEnum;
-use App\Models\AttendanceLog;
-use App\Models\Internship;
-use App\Models\InternshipRegistration;
-use App\Models\JournalEntry;
-use App\Models\User;
+use App\Domain\Attendance\Actions\ClockInAction;
+use App\Domain\Attendance\Actions\ClockOutAction;
+use App\Domain\Attendance\Models\AttendanceLog;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\Logbook\Actions\SubmitLogbookEntryAction;
+use App\Domain\Logbook\Models\LogbookEntry;
+use App\Domain\User\Models\User;
+use App\Enums\Auth\Role as RoleEnum;
 use Carbon\Carbon;
 use Spatie\Permission\Models\Role;
 
@@ -32,7 +32,7 @@ beforeEach(function () {
 describe('Clock In', function () {
     it('allows student to clock in with active registration', function () {
         $internship = Internship::factory()->create();
-        $registration = InternshipRegistration::factory()->create([
+        $registration = Registration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -50,7 +50,7 @@ describe('Clock In', function () {
 
     it('prevents double clock in', function () {
         $internship = Internship::factory()->create();
-        $registration = InternshipRegistration::factory()->create([
+        $registration = Registration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -62,7 +62,7 @@ describe('Clock In', function () {
         $action->execute($this->student, [], '127.0.0.1');
 
         // The duplicate check should throw a RuntimeException
-        expect(fn() => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
+        expect(fn () => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
             Exception::class,
         );
 
@@ -74,7 +74,7 @@ describe('Clock In', function () {
 
         $action = app(ClockInAction::class);
 
-        expect(fn() => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
+        expect(fn () => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
             RuntimeException::class,
             'No active internship registration found.',
         );
@@ -86,7 +86,7 @@ describe('Clock In', function () {
 describe('Clock Out', function () {
     it('allows student to clock out after clock in', function () {
         $internship = Internship::factory()->create();
-        $registration = InternshipRegistration::factory()->create([
+        $registration = Registration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -119,7 +119,7 @@ describe('Clock Out', function () {
 
         $action = app(ClockOutAction::class);
 
-        expect(fn() => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
+        expect(fn () => $action->execute($this->student, [], '127.0.0.1'))->toThrow(
             RuntimeException::class,
             'You must clock in first.',
         );
@@ -131,7 +131,7 @@ describe('Clock Out', function () {
 describe('Journal Entry', function () {
     it('allows student to submit journal entry after clock in', function () {
         $internship = Internship::factory()->create();
-        $registration = InternshipRegistration::factory()->create([
+        $registration = Registration::factory()->create([
             'student_id' => $this->student->id,
             'internship_id' => $internship->id,
         ]);
@@ -144,14 +144,14 @@ describe('Journal Entry', function () {
 
         Carbon::setTestNow(Carbon::create(2026, 4, 30, 17, 0, 0));
 
-        $journalAction = app(SubmitJournalEntryAction::class);
+        $journalAction = app(SubmitLogbookEntryAction::class);
         $journal = $journalAction->execute($this->student, [
             'content' => 'Today I learned about system architecture.',
             'learning_outcomes' => 'Understanding of layered architecture.',
         ]);
 
         expect($journal)
-            ->toBeInstanceOf(JournalEntry::class)
+            ->toBeInstanceOf(LogbookEntry::class)
             ->and($journal->status->value)
             ->toBe('submitted');
 

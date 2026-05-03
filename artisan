@@ -9,7 +9,7 @@ define('LARAVEL_START', microtime(true));
 require __DIR__ . '/vendor/autoload.php';
 
 // System Integrity Check
-\App\Support\Integrity::verify();
+\App\Domain\Core\Support\Integrity::verify();
 
 // Bootstrap Laravel and handle the command...
 /** @var Application $app */

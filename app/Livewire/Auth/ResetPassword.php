@@ -1,10 +1,10 @@
-<?php
-
 declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Actions\Auth\ResetPasswordAction;
+use App\Domain\Auth\Actions\ResetPasswordAction;
+use App\Exceptions\AuthException;
+use App\Exceptions\AuthExceptionRenderer;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -58,9 +58,9 @@ class ResetPassword extends Component
             flash()->success(__('passwords.reset'));
 
             $this->redirectRoute('login', navigate: true);
-        } catch (\Exception $e) {
+        } catch (AuthException $e) {
             RateLimiter::hit($throttleKey, 300);
-            $this->addError('email', __('passwords.token'));
+            AuthExceptionRenderer::handle($this, $e);
         }
     }
 
@@ -70,14 +70,14 @@ class ResetPassword extends Component
     protected function throttleKey(): string
     {
         return Str::transliterate(
-            'reset-password|' . Str::lower($this->email) . '|' . request()->ip(),
+            'reset-password|'.Str::lower($this->email).'|'.request()->ip(),
         );
     }
 
     /**
      * Render the reset password view.
      */
-    #[Layout('components.layouts.auth', ['title' => 'Reset Password'])]
+    #[Layout('layouts::auth', ['title' => 'Reset Password'])]
     public function render(): View
     {
         return view('auth.reset-password');

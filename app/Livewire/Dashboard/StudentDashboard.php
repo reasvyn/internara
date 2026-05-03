@@ -1,17 +1,15 @@
-<?php
-
 declare(strict_types=1);
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\InternshipRegistration;
-use App\Models\JournalEntry;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\Logbook\Models\LogbookEntry;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class StudentDashboard extends Component
+class Dashboard extends Component
 {
-    public ?InternshipRegistration $registration = null;
+    public ?Registration $registration = null;
 
     public int $totalJournals = 0;
 
@@ -27,20 +25,20 @@ class StudentDashboard extends Component
             ->first();
 
         if ($this->registration) {
-            $this->totalJournals = JournalEntry::where('user_id', $user->id)
+            $this->totalJournals = LogbookEntry::where('user_id', $user->id)
                 ->where('registration_id', $this->registration->id)
                 ->count();
 
-            $this->verifiedJournals = JournalEntry::where('user_id', $user->id)
+            $this->verifiedJournals = LogbookEntry::where('user_id', $user->id)
                 ->where('registration_id', $this->registration->id)
                 ->where('is_verified', true)
                 ->count();
         }
     }
 
-    #[Layout('components.layouts.app')]
+    #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.dashboard.student-dashboard');
+        return view('livewire.dashboard.student');
     }
 }

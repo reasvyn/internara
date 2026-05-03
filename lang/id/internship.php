@@ -21,10 +21,8 @@ return [
     'save_success' => 'Batch magang berhasil ditambahkan.',
     'update_success' => 'Batch magang berhasil diperbarui.',
     'delete_success' => 'Batch magang berhasil dihapus.',
-    'delete_confirm' =>
-        'Apakah Anda yakin ingin menghapus batch ini? Hal ini dapat memengaruhi pendaftaran siswa.',
-    'delete_blocked' =>
-        'Tidak dapat menghapus batch: masih memiliki penempatan atau pendaftaran siswa.',
+    'delete_confirm' => 'Apakah Anda yakin ingin menghapus batch ini? Hal ini dapat memengaruhi pendaftaran siswa.',
+    'delete_blocked' => 'Tidak dapat menghapus batch: masih memiliki penempatan atau pendaftaran siswa.',
     'batch_name' => 'Nama Batch',
     'actions' => 'Aksi',
     'statuses' => [

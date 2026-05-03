@@ -1,10 +1,10 @@
-<?php
-
 declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Actions\Auth\LoginAction;
+use App\Domain\Auth\Actions\LoginAction;
+use App\Exceptions\AuthException;
+use App\Exceptions\AuthExceptionRenderer;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -48,12 +48,12 @@ class Login extends Component
             session()->regenerate();
             RateLimiter::clear($throttleKey);
 
-            flash()->success(__('auth::ui.login.welcome_back', ['name' => $user->name]));
+            flash()->success(__('auth.login.welcome_back', ['name' => $user->name]));
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
-        } catch (\Exception $e) {
+        } catch (AuthException $e) {
             RateLimiter::hit($throttleKey, 60);
-            $this->addError('identifier', $e->getMessage() ?: __('auth.failed'));
+            AuthExceptionRenderer::handle($this, $e);
         }
     }
 
@@ -70,13 +70,13 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->identifier) . '|' . request()->ip());
+        return Str::transliterate(Str::lower($this->identifier).'|'.request()->ip());
     }
 
     /**
      * Render the login view.
      */
-    #[Layout('components.layouts.auth', ['title' => 'Login'])]
+    #[Layout('layouts::auth', ['title' => 'Login'])]
     public function render(): View
     {
         return view('auth.login');

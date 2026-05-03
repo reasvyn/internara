@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 return [
     'welcome' => [
-        'title' => 'Welcome to Internara!',
+        'title' => 'Welcome to the System!',
         'broadcast' => 'Your account has been successfully created. Happy interning!',
         'database' => 'Your account has been created. Complete your profile to get started.',
-        'mail_subject' => 'Welcome to Internara',
+        'mail_subject' => 'Welcome to the System',
         'mail_greeting' => 'Hello :name!',
-        'mail_line1' =>
-            'Your account for the Internara Internship Management System has been created.',
+        'mail_line1' => 'Your account for the Internship Management System has been created.',
         'mail_username' => 'Username: :username',
         'mail_password' => 'Temporary Password: :password',
         'mail_line2' => 'Please change your password after logging in.',
@@ -35,8 +34,7 @@ return [
         'broadcast' => "New assignment ':title' for :internship",
         'database' => "Assignment ':title' is now available.",
         'mail_subject' => 'New Assignment: :title',
-        'mail_line1' =>
-            "A new assignment has been published for your internship program ':internship'.",
+        'mail_line1' => "A new assignment has been published for your internship program ':internship'.",
         'mail_title' => 'Title: :title',
         'mail_due_date' => 'Due Date: :due_date',
     ],
@@ -52,8 +50,7 @@ return [
         'title' => 'Report Ready',
         'message' => 'Your :type report is ready to download.',
         'mail_subject' => 'Your :type Report is Ready',
-        'mail_line1' =>
-            'The :type report you requested has been generated successfully and is now ready for download.',
+        'mail_line1' => 'The :type report you requested has been generated successfully and is now ready for download.',
     ],
     'job_failed' => [
         'title' => 'Background Task Failed',

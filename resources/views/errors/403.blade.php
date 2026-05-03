@@ -33,7 +33,7 @@
 
             <div class="mt-16 flex items-center justify-center gap-2 opacity-20">
                 <x-mary-icon name="o-shield-check" class="size-4" />
-                <span class="text-[9px] font-black uppercase tracking-[0.3em]">Internara S1 Protocol Active</span>
+                <span class="text-[9px] font-black uppercase tracking-[0.3em]">{{ config('app.name') }} S1 Protocol Active</span>
             </div>
         </div>
     </div>

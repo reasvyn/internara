@@ -9,10 +9,10 @@ Internara implements a dual notification system:
 
 ### Configuration
 
-- **Model**: `app/Models/Notification.php`
+- **Model**: `app/Domain/Notification/Models/Notification.php`
 - **Migration**: `2026_04_30_022555_create_notifications_table.php`
-- **Actions**: `app/Actions/Notification/`
-- **UI**: `app/Livewire/Admin/NotificationManager.php`
+- **Actions**: `app/Domain/Notification/Actions/`
+- **UI**: `app/Domain/Notification/Livewire/Admin/NotificationManager.php`
 
 ## 2. Database Structure
 
@@ -37,7 +37,7 @@ Schema::create('notifications', function (Blueprint $table) {
 });
 ```
 
-### Model: `App\Models\Notification`
+### Model: `App\Domain\Notification\Models\Notification`
 
 ```php
 class Notification extends Model
@@ -52,26 +52,9 @@ class Notification extends Model
         'read_at' => 'datetime',
     ];
 
-    // Relationships
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    // Business Rules
-    public function markAsRead(): void
-    {
-        if (!$this->is_read) {
-            $this->update([
-                'is_read' => true,
-                'read_at' => now(),
-            ]);
-        }
-    }
-
-    public function isUnread(): bool
-    {
-        return !$this->is_read;
     }
 }
 ```
@@ -203,7 +186,7 @@ class DeleteNotificationAction
 
 ## 5. Livewire UI: NotificationManager
 
-### Component: `app/Livewire/Admin/NotificationManager.php`
+### Component: `app/Domain/Notification/Livewire/Admin/NotificationManager.php`
 
 ```php
 class NotificationManager extends Component
@@ -420,20 +403,20 @@ flash()->warning(__('placement.update_success'));
 
 ### Actual Usage in Codebase
 
-Based on `app/Livewire/` components:
+Based on `app/Domain/*/Livewire/` components:
 
 ```php
-// app/Livewire/Auth/Login.php:52
-flash()->success(__('auth::ui.login.welcome_back', ['name' => $user->name]));
+// app/Domain/Auth/Livewire/Login.php:52
+'link' => route('login'),
 
-// app/Livewire/Setup/SetupWizard.php:272
-flash()->success(__('setup.wizard.setup_complete'));
+// app/Domain/System/Livewire/SetupWizard.php:272
+'link' => route('setup.wizard'),
 
-// app/Livewire/Admin/Internship/InternshipIndex.php:93
-flash()->success(__('internship.update_success'));
+// app/Domain/Internship/Livewire/Admin/InternshipIndex.php:93
+'link' => route('admin.internship.index'),
 
-// app/Livewire/Admin/Company/CompanyIndex.php:88
-flash()->success(__('company.save_success'));
+// app/Domain/Company/Livewire/Admin/CompanyIndex.php:88
+'link' => route('admin.company.index'),
 ```
 
 ### Usage in Blade (Frontend)

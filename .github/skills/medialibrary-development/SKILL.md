@@ -1,33 +1,26 @@
 ---
 name: medialibrary-development
-description:
-    Build and work with spatie/laravel-medialibrary features including associating files with
-    Eloquent models, defining media collections and conversions, generating responsive images, and
-    retrieving media URLs and paths.
+description: Build and work with spatie/laravel-medialibrary features including associating files with Eloquent models, defining media collections and conversions, generating responsive images, and retrieving media URLs and paths.
 license: MIT
 metadata:
-    author: Spatie
+  author: Spatie
 ---
 
 # Media Library Development
 
 ## Overview
 
-Use spatie/laravel-medialibrary to associate files with Eloquent models. Supports image/video
-conversions, responsive images, multiple collections, and various storage disks.
+Use spatie/laravel-medialibrary to associate files with Eloquent models. Supports image/video conversions, responsive images, multiple collections, and various storage disks.
 
 ## When to Activate
 
 - Activate when working with file uploads, media attachments, or image processing in Laravel.
-- Activate when code references `HasMedia`, `InteractsWithMedia`, the `Media` model, or media
-  collections/conversions.
-- Activate when the user wants to add, retrieve, convert, or manage files attached to Eloquent
-  models.
+- Activate when code references `HasMedia`, `InteractsWithMedia`, the `Media` model, or media collections/conversions.
+- Activate when the user wants to add, retrieve, convert, or manage files attached to Eloquent models.
 
 ## Scope
 
-- In scope: media uploads, collections, conversions, responsive images, custom properties, file
-  retrieval, path/URL generation.
+- In scope: media uploads, collections, conversions, responsive images, custom properties, file retrieval, path/URL generation.
 - Out of scope: general file storage without Eloquent association, non-Laravel frameworks.
 
 ## Workflow
@@ -95,7 +88,6 @@ $allMedia = $model->getMedia('images');
 ## Do and Don't
 
 Do:
-
 - Always implement the `HasMedia` interface alongside the `InteractsWithMedia` trait.
 - Use `?Media $media = null` as the parameter for `registerMediaConversions()`.
 - Call `->toMediaCollection()` to finalize adding media.
@@ -104,10 +96,7 @@ Do:
 - Use `Spatie\Image\Enums\Fit` enum values for fit methods.
 
 Don't:
-
-- Don't forget to run
-  `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"`
-  before migrating.
+- Don't forget to run `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"` before migrating.
 - Don't use `env()` for disk configuration; use `config()` or set it in `config/media-library.php`.
 - Don't call `addMedia()` without calling `toMediaCollection()` — the media won't be saved.
 - Don't reference conversion names that aren't registered in `registerMediaConversions()`.

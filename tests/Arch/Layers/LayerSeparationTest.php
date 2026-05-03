@@ -12,12 +12,12 @@ describe('Layer Separation Rules', function () {
     test('controllers should not directly use models for data manipulation')
         ->expect('App\Http\Controllers')
         ->not->toUse([
-            'App\Models\Internship',
-            'App\Models\InternshipPlacement',
-            'App\Models\AttendanceLog',
-            'App\Models\School',
-            'App\Models\Department',
-            'App\Models\InternshipCompany',
+            'App\Domain\Internship\Models\Internship',
+            'App\Domain\Internship\Models\Placement',
+            'App\Domain\Attendance\Models\AttendanceLog',
+            'App\Domain\School\Models\School',
+            'App\Domain\School\Models\Department',
+            'App\Domain\Internship\Models\Company',
         ])
         ->ignoring([
             'App\Http\Controllers\Controller',

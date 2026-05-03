@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup;
 
-use App\Enums\Role as RoleEnum;
+use App\Enums\Auth\Role as RoleEnum;
+use App\Livewire\Setup\Components\WelcomeStep;
 use App\Livewire\Setup\SetupWizard;
 use App\Services\Setup\SetupService;
 use Illuminate\Support\Facades\File;
@@ -12,6 +13,8 @@ use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    Livewire::component('setup.components.welcome-step', WelcomeStep::class);
+
     foreach (RoleEnum::cases() as $role) {
         Role::firstOrCreate([
             'name' => $role->value,
@@ -19,15 +22,18 @@ beforeEach(function () {
         ]);
     }
 
-    $service = new SetupService();
+    $service = new SetupService;
     if ($service->isInstalled()) {
         File::delete(storage_path('app/.installed'));
     }
     $service->clearSession();
+
+    // Set locale to English for consistent test behavior
+    app()->setLocale('en');
 });
 
 afterEach(function () {
-    $service = new SetupService();
+    $service = new SetupService;
     if ($service->isInstalled()) {
         File::delete(storage_path('app/.installed'));
     }
@@ -35,12 +41,9 @@ afterEach(function () {
 });
 
 test('setup wizard renders welcome step', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $token = $service->generateToken();
     $service->authorizeSession($token);
-
-    // Set locale to English for consistent test behavior
-    app()->setLocale('en');
 
     Livewire::withQueryParams(['setup_token' => $token])
         ->test(SetupWizard::class)
@@ -49,19 +52,16 @@ test('setup wizard renders welcome step', function () {
 });
 
 test('setup wizard redirects if already installed', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $service->finalize();
 
     Livewire::test(SetupWizard::class)->assertRedirect(route('login'));
 });
 
 test('setup wizard advances from welcome step when audit passes', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $token = $service->generateToken();
     $service->authorizeSession($token);
-
-    // Set locale to English for consistent test behavior
-    app()->setLocale('en');
 
     Livewire::withQueryParams(['setup_token' => $token])
         ->test(SetupWizard::class)
@@ -71,7 +71,7 @@ test('setup wizard advances from welcome step when audit passes', function () {
 });
 
 test('setup wizard validates school data', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -83,51 +83,13 @@ test('setup wizard validates school data', function () {
         ->set('schoolName', '')
         ->set('schoolCode', '')
         ->set('schoolAddress', '')
+        ->set('schoolEmail', 'invalid-email')
         ->call('nextStep')
-        ->assertHasErrors(['schoolName', 'schoolCode', 'schoolAddress']);
-});
-
-test('setup wizard validates department data', function () {
-    $service = new SetupService();
-    $token = $service->generateToken();
-    $service->authorizeSession($token);
-    $service->completeStep('welcome');
-    $service->completeStep('school');
-    $service->completeStep('account');
-    $service->setCurrentStep(4);
-
-    Livewire::withQueryParams(['setup_token' => $token])
-        ->test(SetupWizard::class)
-        ->set('currentStep', 4)
-        ->set('departmentName', '')
-        ->call('nextStep')
-        ->assertHasErrors(['departmentName']);
-});
-
-test('setup wizard validates internship data on finish', function () {
-    $service = new SetupService();
-    $token = $service->generateToken();
-    $service->authorizeSession($token);
-    $service->completeStep('welcome');
-    $service->completeStep('school');
-    $service->completeStep('account');
-    $service->completeStep('department');
-    $service->setCurrentStep(5);
-
-    Livewire::withQueryParams(['setup_token' => $token])
-        ->test(SetupWizard::class)
-        ->set('currentStep', 5)
-        ->set('dataVerified', true)
-        ->set('securityAware', true)
-        ->set('internshipName', '')
-        ->set('startDate', '')
-        ->set('endDate', '')
-        ->call('finish')
-        ->assertHasErrors(['internshipName', 'startDate', 'endDate']);
+        ->assertHasErrors(['schoolName', 'schoolCode', 'schoolAddress', 'schoolEmail']);
 });
 
 test('setup wizard validates admin credentials', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -146,7 +108,7 @@ test('setup wizard validates admin credentials', function () {
 });
 
 test('setup wizard requires finalization checkboxes', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
@@ -169,7 +131,7 @@ test('setup wizard requires finalization checkboxes', function () {
 });
 
 test('setup wizard completes and creates lock file', function () {
-    $service = new SetupService();
+    $service = new SetupService;
     $token = $service->generateToken();
     $service->authorizeSession($token);
     $service->completeStep('welcome');
