@@ -205,9 +205,9 @@ class GetManagerialStatsAction
     {
         return Cache::remember('managerial_stats', now()->addMinutes(10), function () {
             return [
-                'total_students' => User::whereHas(
+                'total_mentees' => User::whereHas(
                     'roles',
-                    fn($q) => $q->where('name', 'student'),
+                    fn($q) => $q->where('name', 'mentee'),
                 )->count(),
                 'active_internships' => Internship::where('status', 'active')->count(),
                 // ... more stats

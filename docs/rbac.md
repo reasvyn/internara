@@ -6,13 +6,15 @@ Internara utilizes a robust Role-Based Access Control (RBAC) system powered by
 `spatie/laravel-permission`. Access is governed by **Roles** (grouping of capabilities) and
 **Permissions** (specific granular actions).
 
-## 1. Core Roles
+## 1. Core Roles (5 Roles)
 
-- **Super Admin**: Full system access, infrastructure management, and setup orchestration.
-- **Admin**: School-level management, department control, and teacher oversight.
-- **Teacher**: Classroom management, student monitoring, and journal verification.
-- **Mentor**: Company-side oversight, student attendance verification, and assessment.
-- **Student**: Daily journals, clock-in/out, and personal profile management.
+- **SuperAdmin**: Full system access, infrastructure management, and setup orchestration.
+- **Admin**: School-level management, department control, and mentor oversight.
+- **Student**: Internship participant (mentee in domain model) — daily journals, clock-in/out, assignment submissions, competency tracking.
+- **Teacher**: School supervisor — classroom management, monitoring visits, journal verification, academic assessment.
+- **Supervisor**: Industry supervisor — company-side oversight, technical evaluation, internship performance.
+
+**Domain Model Note**: In code structure, Students are referred to as **Mentees** and Teachers/Supervisors are unified as **Mentors** with specializations (`teacher` or `supervisor`). One mentee can have multiple mentors with different specializations.
 
 ## 2. Implementation
 
@@ -39,6 +41,7 @@ $this->authorize('viewAny', User::class);
 - `app/Livewire/Admin/User/AdminManager.php` ✓
 - `app/Livewire/Admin/User/StudentManager.php` ✓
 - `app/Livewire/Admin/User/TeacherManager.php` ✓
+- `app/Livewire/Admin/User/SupervisorManager.php` ✓
 - `app/Livewire/Admin/User/MentorManager.php` ✓
 
 ## 3. Account Lifecycle Management
@@ -61,11 +64,11 @@ Administrators manage identity and authority through specialized Livewire compon
     - **Admin Manager**: `App\Livewire\Admin\User\AdminManager`
     - **Student Manager**: `App\Livewire\Admin\User\StudentManager` (NISN/NIS integration).
     - **Teacher Manager**: `App\Livewire\Admin\User\TeacherManager` (NIP integration).
-    - **Mentor Manager**: `App\Livewire\Admin\User\MentorManager` (Company/Phone integration).
+    - **Supervisor Manager**: `App\Livewire\Admin\User\SupervisorManager` (Company/Phone integration).
 
 ## 5. Security Standards (S1)
 
 1. **Direct Object Reference**: Every Action must verify that the authenticated user has the right
    to act on the specific UUID provided.
 2. **Audit Integration**: All role/permission changes are automatically logged via `LogAuditAction`.
-3. **RBAC Coverage**: 4 roles (admin, teacher, student, mentor) with 62 permissions verified.
+3. **RBAC Coverage**: 5 roles (admin, student, teacher, supervisor) with 62 permissions verified.

@@ -29,7 +29,7 @@ cd internara
 
 # 2. Install dependencies
 composer install --no-dev    # Use --no-dev for production
-pnpm install
+npm install
 
 # 3. Create environment file
 cp .env.example .env
@@ -50,18 +50,18 @@ php artisan setup:install
 The command outputs a signed URL with a setup token. Open it in your browser to continue with the
 web wizard.
 
-4.  **Onboarding**: Setelah login pertama, sistem akan membimbing administrator melalui langkah-langkah orientasi fitur.
+4.  **Onboarding**: After first login, the system guides the administrator through feature orientation steps.
 
-### Keamanan Instalasi
+### Installation Security
 
-- **Short-lived Summary**: Halaman ringkasan kredensial di akhir setup hanya dapat diakses selama 5 menit setelah instalasi selesai untuk mencegah kebocoran informasi.
-- **One-time Access**: Sesi setup akan dihancurkan seketika saat administrator mengklik tombol "Go to Login".
-- **Lock File**: Keberadaan file `storage/app/.installed` secara permanen menonaktifkan seluruh rute instalasi.
+- **Short-lived Summary**: The credential summary page at the end of setup is only accessible for 5 minutes after installation completes to prevent information leakage.
+- **One-time Access**: The setup session is destroyed immediately when the administrator clicks the "Go to Login" button.
+- **Lock File**: The presence of the `storage/app/.installed` file permanently disables all installation routes.
 
 ### Method 2: Manual Initialization
 
 ```bash
-composer install && pnpm install
+composer install && npm install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate:fresh --seed
@@ -180,7 +180,7 @@ git pull
 
 # 2. Update dependencies
 composer install
-pnpm install
+npm install
 
 # 3. Run migrations (safe — additive only)
 php artisan migrate
@@ -191,7 +191,7 @@ php artisan config:clear
 php artisan view:clear
 
 # 5. Rebuild assets
-pnpm build
+npm run build
 ```
 
 **Important**: Always back up your database before running migrations. Migrations are designed to be

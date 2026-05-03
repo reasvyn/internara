@@ -87,21 +87,20 @@ DB_PASSWORD=
 | -------------------------- | ----------------- | ------------------------ |
 | `internships`              | 2026_04_29_105438 | Internship programs      |
 | `internship_companies`     | 2026_04_29_112711 | Company partners         |
-| `internship_placements`    | 2026_04_29_112700 | Student placements       |
-| `internship_registrations` | 2026_04_29_112702 | Student registrations    |
-| `internship_requirements`  | 2026_04_29_113310 | Required documents/items |
-| `requirement_submissions`  | 2026_04_29_113312 | Student submissions      |
+| `internship_placements`    | 2026_04_29_112700 | Mentee placements       |
+| `internship_registrations` | 2026_04_29_112702 | Mentee registrations    |
+| `requirement_submissions`  | 2026_04_29_113312 | Mentee submissions      |
 
 #### Academic & Assessment
 
 | Table                     | Migration         | Purpose                     |
 | ------------------------- | ----------------- | --------------------------- |
-| `assignments`             | 2026_04_30_021949 | Student assignments         |
+| `assignments`             | 2026_04_30_021949 | Mentee assignments         |
 | `assignment_types`        | 2026_04_30_021953 | Assignment categories       |
 | `submissions`             | 2026_04_30_021952 | Assignment submissions      |
 | `assessments`             | 2026_04_30_021953 | Assessment records          |
 | `competencies`            | 2026_04_30_021952 | Competency definitions      |
-| `student_competency_logs` | 2026_04_30_021953 | Student competency tracking |
+| `student_competency_logs` | 2026_04_30_021953 | Mentee competency tracking |
 
 #### Attendance & Journal
 
@@ -109,7 +108,7 @@ DB_PASSWORD=
 | ------------------ | ----------------- | ------------------------ |
 | `attendance_logs`  | 2026_04_29_111619 | Daily attendance records |
 | `absence_requests` | 2026_04_29_111622 | Absence requests         |
-| `journal_entries`  | 2026_04_29_114909 | Student journal entries  |
+| `journal_entries`  | 2026_04_29_114909 | Mentee journal entries  |
 
 #### Documents & Media
 
@@ -119,11 +118,11 @@ DB_PASSWORD=
 | `official_documents` | 2026_04_29_114925      | Generated PDF documents     |
 | `media`              | (Spatie Media Library) | File attachments            |
 
-#### Monitoring & Supervision
+#### Monitoring & Evaluation
 
 | Table               | Migration         | Purpose                     |
 | ------------------- | ----------------- | --------------------------- |
-| `supervision_logs`  | 2026_04_29_115847 | Teacher supervision records |
+| `supervision_logs`  | 2026_04_29_115847 | Mentor supervision records (school_teacher or industry_supervisor) |
 | `monitoring_visits` | 2026_04_29_115850 | Company site visits         |
 
 #### Account Management
@@ -164,17 +163,19 @@ class User extends Model
 
 ### S2 - Sustain: Mass Assignment Protection
 
-All models must define `$fillable` or `$guarded`:
+All models must use Laravel 13 PHP 8 Attributes for mass assignment:
 
 ```php
-protected $fillable = [
-    'name',
-    'email',
-    'username',
-    'password',
-    'setup_required',
-];
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+
+#[Fillable(['name', 'email', 'username', 'password', 'setup_required'])]
+class User extends Model
+{
+    // No $fillable property needed
+}
 ```
+
+**Note**: `@see` docs/standards.md for Laravel 13 Modernization guidelines.
 
 ### S3 - Scalable: Indexes & Foreign Keys
 
@@ -262,17 +263,19 @@ All models use:
 
 - `HasUuid` trait (UUID primary keys)
 - `strict_types=1`
+- Laravel 13 PHP 8 Attributes (`#[Fillable]`, `#[Hidden]`, `#[Appends]`)
+- `casts(): array` method for attribute casting
 - Business rules in model methods
 
 Key models:
 
 - **User**: Authentication, roles, profile relationship
 - **Internship**: Program management, status tracking
-- **InternshipRegistration**: Student applications
+- **InternshipRegistration**: Mentee applications
 - **Assignment/Submission**: Academic workflow
 - **Assessment**: Grading & feedback
 - **AttendanceLog**: Daily attendance
-- **JournalEntry**: Student journals
+- **JournalEntry**: Mentee journals
 
 ### Relationships
 
@@ -281,7 +284,7 @@ Example: User model relationships
 ```php
 public function profile(): HasOne { return $this->hasOne(Profile::class); }
 public function registrations(): HasMany { return $this->hasMany(InternshipRegistration::class, 'student_id'); }
-public function teachingRegistrations(): HasMany { return $this->hasMany(InternshipRegistration::class, 'teacher_id'); }
+public function teachingRegistrations(): HasMany { return $this->hasMany(InternshipRegistration::class, 'mentor_id'); }
 public function mentoringRegistrations(): HasMany { return $this->hasMany(InternshipRegistration::class, 'mentor_id'); }
 ```
 
@@ -372,7 +375,7 @@ Indexed for performance:
 
 ### Query Optimization
 
-- Use eager loading: `$internship->load('registrations.student')`
+- Use eager loading: `$internship->load('registrations.mentee')`
 - Avoid N+1: Use `with()` in Repositories
 - Pagination: `->paginate(20)` for list endpoints
 

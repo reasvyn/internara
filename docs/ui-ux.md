@@ -219,7 +219,8 @@ resources/
 │   ├── livewire/
 │   │   ├── admin/           → Admin domain components
 │   │   ├── student/         → Student domain components
-│   │   ├── supervision/     → Mentor/Teacher domain components
+│   │   ├── teacher/         → Teacher domain components (academic supervision)
+│   │   ├── supervisor/      → Supervisor domain components (industry evaluation)
 │   │   ├── dashboard/       → Dashboard widgets
 │   │   ├── setup/           → Installation wizard
 │   │   ├── layout/          → Global layout components (signature)
