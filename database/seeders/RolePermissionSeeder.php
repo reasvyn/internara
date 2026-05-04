@@ -34,11 +34,11 @@ class RolePermissionSeeder extends Seeder
         'teachers.edit',
         'teachers.delete',
 
-        // Mentor management
-        'mentors.view',
-        'mentors.create',
-        'mentors.edit',
-        'mentors.delete',
+        // Supervisor management
+        'supervisors.view',
+        'supervisors.create',
+        'supervisors.edit',
+        'supervisors.delete',
 
         // Company management
         'companies.view',
@@ -119,11 +119,11 @@ class RolePermissionSeeder extends Seeder
     private function roles(): array
     {
         return [
-            \App\Enums\Role::SUPER_ADMIN->value => [
+            \App\Domain\Auth\Enums\Role::SUPER_ADMIN->value => [
                 // Super Admin gets all permissions
                 'all' => true,
             ],
-            \App\Enums\Role::ADMIN->value => [
+            \App\Domain\Auth\Enums\Role::ADMIN->value => [
                 // Admin gets most permissions except system-level ones
                 'users.view',
                 'users.create',
@@ -134,9 +134,9 @@ class RolePermissionSeeder extends Seeder
                 'teachers.view',
                 'teachers.create',
                 'teachers.edit',
-                'mentors.view',
-                'mentors.create',
-                'mentors.edit',
+                'supervisors.view',
+                'supervisors.create',
+                'supervisors.edit',
                 'companies.view',
                 'companies.create',
                 'companies.edit',
@@ -170,7 +170,7 @@ class RolePermissionSeeder extends Seeder
                 'settings.edit',
                 'dashboard.admin',
             ],
-            \App\Enums\Role::TEACHER->value => [
+            \App\Domain\Auth\Enums\Role::TEACHER->value => [
                 'students.view',
                 'students.create',
                 'students.edit',
@@ -198,7 +198,7 @@ class RolePermissionSeeder extends Seeder
                 'notifications.view',
                 'dashboard.teacher',
             ],
-            \App\Enums\Role::STUDENT->value => [
+            \App\Domain\Auth\Enums\Role::STUDENT->value => [
                 'companies.view',
                 'internships.view',
                 'assignments.view',
@@ -214,7 +214,7 @@ class RolePermissionSeeder extends Seeder
                 'notifications.view',
                 'dashboard.student',
             ],
-            \App\Enums\Role::SUPERVISOR->value => [
+            \App\Domain\Auth\Enums\Role::SUPERVISOR->value => [
                 'students.view',
                 'companies.view',
                 'internships.view',
@@ -226,7 +226,7 @@ class RolePermissionSeeder extends Seeder
                 'journals.verify',
                 'reports.view',
                 'notifications.view',
-                'dashboard.mentor',
+                'dashboard.supervisor',
             ],
         ];
     }

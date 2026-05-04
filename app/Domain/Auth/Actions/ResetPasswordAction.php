@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Auth\Actions;
 
+use App\Domain\Auth\Exceptions\AuthException;
 use App\Domain\Core\Actions\LogAuditAction;
-use App\Exceptions\AuthException;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

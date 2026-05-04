@@ -1,11 +1,13 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Assignment\Actions;
 
-use App\Enums\AssignmentStatus;
-use App\Enums\SubmissionStatus;
 use App\Domain\Assignment\Models\Assignment;
 use App\Domain\Assignment\Models\Submission;
+use App\Enums\AssignmentStatus;
+use App\Enums\SubmissionStatus;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;

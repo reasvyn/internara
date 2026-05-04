@@ -1,11 +1,12 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Livewire\Document\Admin;
 
 use App\Domain\Document\Actions\QueueReportGenerationAction;
-use App\Livewire\BaseRecordManager;
 use App\Domain\Document\Models\GeneratedReport;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 
@@ -152,6 +153,6 @@ class ReportsManager extends BaseRecordManager
 
     public function render()
     {
-        return view('livewire.admin.reports.index');
+        return view('livewire.document.report-index');
     }
 }

@@ -1,11 +1,13 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Internship\Actions;
 
 use App\Domain\Core\Actions\LogAuditAction;
-use App\Domain\User\Models\User;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Registration;
+use App\Domain\User\Models\User;
 use App\Notifications\RegistrationNotification;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

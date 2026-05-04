@@ -1,3 +1,6 @@
+<?php
+
+declare(strict_types=1);
 
 namespace App\Livewire\Logbook;
 
@@ -73,7 +76,7 @@ class LogbookManager extends Component
             ->latest('date')
             ->paginate(10);
 
-        return view('livewire.student.journal-manager', [
+        return view('livewire.logbook.logbook-manager', [
             'journals' => $journals,
         ]);
     }

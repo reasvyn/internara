@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Services\Setup\SetupService;
+use App\Domain\Setup\Services\SetupService;
 use Illuminate\Support\Facades\File;
 
 beforeEach(function () {

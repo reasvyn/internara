@@ -1,11 +1,13 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Internship\Actions;
 
 use App\Domain\Core\Actions\LogAuditAction;
+use App\Domain\Internship\Models\Internship;
 use App\Events\Internship\InternshipCreated;
 use App\Http\Requests\Internship\CreateInternshipRequest;
-use App\Domain\Internship\Models\Internship;
 use Illuminate\Support\Facades\DB;
 
 /**

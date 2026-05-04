@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Casts\SettingValueCast;
+use App\Domain\Core\Casts\SettingValueCast;
 use App\Domain\Core\Models\Setting;
 use App\Domain\Core\Support\AppInfo;
 use Illuminate\Database\Seeder;
@@ -23,19 +23,20 @@ class AppSettingSeeder extends Seeder
     public function run(): void
     {
         $info = AppInfo::all();
+        $appName = $info['name'] ?? 'Laravel';
 
         $rawSettings = [
             // System group - app metadata
             [
                 'key' => 'app_name',
-                'value' => $info['name'] ?? 'Internara',
+                'value' => $appName,
                 'type' => 'string',
                 'description' => 'Application name',
                 'group' => 'system',
             ],
             [
                 'key' => 'app_version',
-                'value' => $info['version'] ?? 'Unknown',
+                'value' => $info['version'] ?? '1.0.0',
                 'type' => 'string',
                 'description' => 'Application version',
                 'group' => 'system',
@@ -79,7 +80,7 @@ class AppSettingSeeder extends Seeder
             // General group - branding
             [
                 'key' => 'brand_name',
-                'value' => 'Internara',
+                'value' => $appName,
                 'type' => 'string',
                 'description' => 'The name of the institute brand',
                 'group' => 'general',
@@ -100,7 +101,7 @@ class AppSettingSeeder extends Seeder
             ],
             [
                 'key' => 'site_title',
-                'value' => 'Internara - Sistem Informasi Manajemen PKL',
+                'value' => $appName.' - Management System',
                 'type' => 'string',
                 'description' => 'The title of the site (browser tab)',
                 'group' => 'general',
@@ -116,7 +117,7 @@ class AppSettingSeeder extends Seeder
             // System group - mail
             [
                 'key' => 'mail_from_address',
-                'value' => 'no-reply@internara.test',
+                'value' => 'no-reply@localhost.test',
                 'type' => 'string',
                 'description' => 'Global outgoing mail sender address',
                 'group' => 'system',

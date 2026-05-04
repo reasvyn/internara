@@ -1,10 +1,11 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Domain\Dashboard\Actions;
 
-use App\Domain\User\Models\User;
 use App\Domain\Auth\Enums\Role;
+use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -25,7 +26,7 @@ class GetManagerialStatsAction
                 'users' => [
                     'students' => User::role(Role::STUDENT->value)->count(),
                     'teachers' => User::role(Role::TEACHER->value)->count(),
-                    'mentors' => User::role(Role::SUPERVISOR->value)->count(),
+                    'supervisors' => User::role(Role::SUPERVISOR->value)->count(),
                     'total' => User::count(),
                 ],
                 'internships' => [

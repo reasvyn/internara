@@ -1,12 +1,13 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Livewire\Dashboard;
 
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\School\Models\Department;
 use App\Domain\User\Models\User;
-use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Services\SystemAuditService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

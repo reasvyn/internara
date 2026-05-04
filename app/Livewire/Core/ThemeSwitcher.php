@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Core;
@@ -34,7 +36,7 @@ class ThemeSwitcher extends Component
 
     public function render()
     {
-        return view('livewire.theme-switcher', [
+        return view('livewire.core.theme-switcher', [
             'themes' => [
                 'light' => ['label' => __('common.light'), 'icon' => 'o-sun'],
                 'dark' => ['label' => __('common.dark'), 'icon' => 'o-moon'],

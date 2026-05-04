@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\School\Actions;
@@ -16,6 +18,7 @@ class CreateDepartmentAction
     public function execute(array $data): Department
     {
         return DB::transaction(function () use ($data) {
+            unset($data['id']);
             $department = Department::create($data);
 
             $this->logAudit->execute(

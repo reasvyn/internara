@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Support\Integrity;
 use App\Domain\Core\Support\MailConfiguration;
 use App\Domain\User\Models\User;
-use App\Enums\Auth\Role;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +31,13 @@ class AppServiceProvider extends ServiceProvider
         // S2 - Sustain: Configure Eloquent strictness for better DX
         Model::preventLazyLoading(! $this->app->isProduction());
         Model::preventSilentlyDiscardingAttributes(! $this->app->isProduction());
+
+        // S3 - Scalable: Custom factory discovery for DDD structure
+        Factory::guessFactoryNamesUsing(function (string $modelName) {
+            $baseName = class_basename($modelName);
+
+            return 'Database\\Factories\\'.$baseName.'Factory';
+        });
 
         // S1 - Secure: Global bypass for Super Admin
         Gate::before(function (User $user, string $ability) {

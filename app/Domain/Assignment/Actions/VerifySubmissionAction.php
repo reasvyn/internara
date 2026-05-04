@@ -1,10 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Assignment\Actions;
 
+use App\Domain\Assignment\Models\Submission;
 use App\Domain\User\Models\User;
 use App\Enums\SubmissionStatus;
-use App\Domain\Assignment\Models\Submission;
 use App\Notifications\SubmissionFeedbackNotification;
 use InvalidArgumentException;
 

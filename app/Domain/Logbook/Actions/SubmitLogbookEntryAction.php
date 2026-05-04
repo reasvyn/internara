@@ -1,10 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Logbook\Actions;
 
 use App\Domain\Core\Actions\LogAuditAction;
-use App\Domain\User\Models\User;
 use App\Domain\Logbook\Models\LogbookEntry;
+use App\Domain\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

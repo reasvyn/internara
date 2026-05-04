@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\School;
@@ -5,9 +7,9 @@ namespace App\Livewire\School;
 use App\Domain\School\Actions\CreateDepartmentAction;
 use App\Domain\School\Actions\DeleteDepartmentAction;
 use App\Domain\School\Actions\UpdateDepartmentAction;
-use App\Livewire\BaseRecordManager;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 
@@ -139,7 +141,7 @@ class DepartmentIndex extends BaseRecordManager
     #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.admin.department.department-index', [
+        return view('livewire.school.department-index', [
             'stats' => $this->stats(),
         ]);
     }

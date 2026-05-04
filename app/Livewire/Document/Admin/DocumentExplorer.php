@@ -1,3 +1,4 @@
+<?php
 
 declare(strict_types=1);
 
@@ -40,7 +41,7 @@ class DocumentExplorer extends Component
 
     public function render()
     {
-        return view('livewire.admin.document.document-explorer', [
+        return view('livewire.document.document-explorer', [
             'documents' => $this->documents(),
             'headers' => $this->headers(),
         ]);

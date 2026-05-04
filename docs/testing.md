@@ -26,7 +26,7 @@ Checks for common pitfalls that static analysis might miss:
 - **Pest PHP**: Primary testing framework.
 - **PHPStan**: Static analysis (Level 8) to ensure type safety.
 - **Laravel Pint**: Automatic code style enforcement.
-- **AppTestOrchestrator**: Custom support class to manage test database state.
+- **LazilyRefreshDatabase**: Laravel built-in trait for test database isolation.
 
 ## 4. CI/CD Workflow
 

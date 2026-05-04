@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Mentor\Supervision;
 
-use App\Domain\Mentor\Actions\CreateMonitoringVisitAction;
 use App\Domain\Internship\Models\Registration;
+use App\Domain\Mentor\Actions\CreateMonitoringVisitAction;
 use App\Domain\Mentor\Models\MonitoringVisit;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -78,7 +80,7 @@ class MonitoringVisitIndex extends Component
             ->latest('date')
             ->paginate(10);
 
-        return view('livewire.supervision.monitoring-visit-index', [
+        return view('livewire.mentor.monitoring-visit-index', [
             'visits' => $visits,
         ]);
     }

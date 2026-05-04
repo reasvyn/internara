@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Internship;
@@ -5,10 +7,10 @@ namespace App\Livewire\Internship;
 use App\Domain\Internship\Actions\CreatePlacementAction;
 use App\Domain\Internship\Actions\DeletePlacementAction;
 use App\Domain\Internship\Actions\UpdatePlacementAction;
-use App\Livewire\BaseRecordManager;
-use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Company;
+use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Placement;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
@@ -187,6 +189,6 @@ class PlacementIndex extends BaseRecordManager
     #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.admin.internship.placement-index');
+        return view('livewire.internship.placement-index');
     }
 }

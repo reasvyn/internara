@@ -1,3 +1,4 @@
+<?php
 
 declare(strict_types=1);
 
@@ -15,18 +16,21 @@ class SetupDepartmentAction
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     /**
-     * @param array{name: string, description: ?string, school_id: string} $data
+     * @param array{name: string, description?: ?string} $data
      */
-    public function execute(array $data): Department
+    public function execute(string $schoolId, array $data): Department
     {
-        return DB::transaction(function () use ($data) {
-            $department = Department::create($data);
+        return DB::transaction(function () use ($schoolId, $data) {
+            $department = Department::create([
+                ...$data,
+                'school_id' => $schoolId,
+            ]);
 
             $this->logAudit->execute(
                 action: 'department_setup_completed',
                 subjectType: Department::class,
                 subjectId: $department->id,
-                payload: $data,
+                payload: array_merge($data, ['school_id' => $schoolId]),
                 module: 'Setup',
             );
 

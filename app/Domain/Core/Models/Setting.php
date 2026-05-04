@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Core\Models;
@@ -9,6 +11,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 /**
  * System setting model with typed value storage.
@@ -18,19 +22,9 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['key', 'value', 'type', 'description', 'group'])]
 class Setting extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory;
+    use HasUuid;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'value' => SettingValueCast::class,
     ];
@@ -44,10 +38,32 @@ class Setting extends Model
     }
 
     /**
+     * Boot the model and add validation.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (self $model): void {
+            if ($model->key === '') {
+                Log::error('Attempted to save setting with empty key');
+
+                throw new InvalidArgumentException('Setting key must not be empty.');
+            }
+        });
+    }
+
+    /**
      * Scope a query to only include settings belonging to a given group.
      */
-    public function scopeGroup(Builder $query, string $name): void
+    public function scopeGroup(Builder $query, string $name): Builder
     {
-        $query->where('group', $name);
+        return $query->where('group', $name);
+    }
+
+    /**
+     * Scope a query to find a setting by its key.
+     */
+    public function scopeByKey(Builder $query, string $key): Builder
+    {
+        return $query->where('key', $key);
     }
 }

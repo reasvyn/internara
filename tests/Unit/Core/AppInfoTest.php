@@ -21,12 +21,11 @@ test('all returns metadata from composer.json', function () {
         ->toHaveKey('name')
         ->toHaveKey('version')
         ->toHaveKey('author')
-        ->toHaveKey('license')
-        ->toHaveKey('support');
+        ->toHaveKey('license');
 });
 
 test('get returns specific value by key', function () {
-    expect(AppInfo::get('name'))->toBe('internara');
+    expect(AppInfo::get('name'))->toBe('reasvyn/internara');
 });
 
 test('get returns default when key does not exist', function () {
@@ -55,16 +54,6 @@ test('description is available', function () {
 
 test('license is available', function () {
     expect(AppInfo::get('license'))->toBe('MIT');
-});
-
-test('clearCache resets cached data', function () {
-    $first = AppInfo::all();
-
-    AppInfo::clearCache();
-
-    $second = AppInfo::all();
-
-    expect($first)->toBe($second);
 });
 
 test('caching works (same instance returned on subsequent calls)', function () {

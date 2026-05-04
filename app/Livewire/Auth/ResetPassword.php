@@ -1,10 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
 use App\Domain\Auth\Actions\ResetPasswordAction;
-use App\Exceptions\AuthException;
-use App\Exceptions\AuthExceptionRenderer;
+use App\Domain\Auth\Exceptions\AuthException;
+use App\Domain\Auth\Exceptions\AuthExceptionRenderer;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -60,6 +62,7 @@ class ResetPassword extends Component
             $this->redirectRoute('login', navigate: true);
         } catch (AuthException $e) {
             RateLimiter::hit($throttleKey, 300);
+            $this->addError('email', $e->getMessage());
             AuthExceptionRenderer::handle($this, $e);
         }
     }

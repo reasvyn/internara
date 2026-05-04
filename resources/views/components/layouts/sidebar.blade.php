@@ -134,7 +134,7 @@ $brandLogo = brand('logo');
                     </div>
                 @endif
 
-                @if(auth()->user()->hasRole('teacher|mentor'))
+                @if(auth()->user()->hasRole('teacher|supervisor'))
                     <div>
                         <h3 class="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-base-content/30 mb-3">{{ trans('supervision.title') ?: 'Supervision' }}</h3>
                         <ul class="space-y-1">
@@ -167,7 +167,7 @@ $brandLogo = brand('logo');
 
         <!-- Footer -->
         <div class="p-6 border-t border-base-content/5 bg-base-200/30">
-            <livewire:layout.app-signature />
+            <livewire:core.app-signature />
         </div>
     </aside>
 </div>

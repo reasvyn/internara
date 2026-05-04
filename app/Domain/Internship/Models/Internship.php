@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Concerns\HasUuid;
-use App\Enums\InternshipStatus;
+use App\Domain\Internship\Enums\InternshipStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

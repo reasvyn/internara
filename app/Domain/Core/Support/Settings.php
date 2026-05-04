@@ -1,10 +1,14 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
 
 use App\Domain\Core\Models\Setting;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Centralized system setting retrieval with multi-tier resolution and caching.
@@ -19,23 +23,15 @@ use Illuminate\Support\Facades\Cache;
  * S2 - Sustain: Single API for all setting access patterns.
  * S3 - Scalable: Tiered caching reduces database load.
  */
-class Settings
+final class Settings
 {
-    /**
-     * Cache key prefix.
-     */
     protected const CACHE_PREFIX = 'settings.';
 
     /**
-     * Runtime override values.
-     *
      * @var array<string, mixed>
      */
     protected static array $overrides = [];
 
-    /**
-     * AppInfo key mapping for SSoT resolution.
-     */
     protected static array $appInfoMap = [
         'app_name' => 'name',
         'app_version' => 'version',
@@ -43,6 +39,30 @@ class Settings
         'app_support' => 'support',
         'app_license' => 'license',
     ];
+
+    /**
+     * Log a database query exception for settings operations.
+     *
+     * @param array<string, mixed> $context
+     */
+    protected static function logQueryError(string $message, QueryException $e, array $context = []): void
+    {
+        $context['error'] = $e->getMessage();
+
+        Log::error($message, $context);
+    }
+
+    /**
+     * Log a database query warning for settings operations.
+     *
+     * @param array<string, mixed> $context
+     */
+    protected static function logQueryWarning(string $message, QueryException $e, array $context = []): void
+    {
+        $context['error'] = $e->getMessage();
+
+        Log::warning($message, $context);
+    }
 
     /**
      * Get a setting value with multi-tier resolution.
@@ -56,6 +76,7 @@ class Settings
     ): mixed {
         if (is_array($key)) {
             $results = [];
+
             foreach ($key as $k) {
                 $results[$k] = self::resolveSingle($k, $default, $skipCache);
             }
@@ -77,10 +98,16 @@ class Settings
             Cache::forget(self::CACHE_PREFIX.'all');
         }
 
-        return Cache::rememberForever(
-            self::CACHE_PREFIX.'all',
-            fn () => Setting::all()->pluck('value', 'key'),
-        );
+        try {
+            return Cache::rememberForever(
+                self::CACHE_PREFIX.'all',
+                fn () => Setting::all()->pluck('value', 'key'),
+            );
+        } catch (QueryException $e) {
+            self::logQueryError('Failed to fetch all settings from database', $e);
+
+            return collect();
+        }
     }
 
     /**
@@ -100,10 +127,18 @@ class Settings
             Cache::forget(self::CACHE_PREFIX.'group.'.$name);
         }
 
-        return Cache::rememberForever(
-            self::CACHE_PREFIX.'group.'.$name,
-            fn () => Setting::group($name)->get(),
-        );
+        try {
+            return Cache::rememberForever(
+                self::CACHE_PREFIX.'group.'.$name,
+                fn () => Setting::group($name)->get(),
+            );
+        } catch (QueryException $e) {
+            self::logQueryError('Failed to fetch settings group from database', $e, [
+                'group' => $name,
+            ]);
+
+            return collect();
+        }
     }
 
     /**
@@ -136,6 +171,20 @@ class Settings
         }
 
         Cache::forget(self::CACHE_PREFIX.'all');
+
+        // Also invalidate any group cache this key might belong to
+        // by fetching the setting's group from the database
+        try {
+            $setting = Setting::where('key', $key)->first();
+
+            if ($setting?->group) {
+                Cache::forget(self::CACHE_PREFIX.'group.'.$setting->group);
+            }
+        } catch (QueryException $e) {
+            self::logQueryWarning('Failed to invalidate setting group cache', $e, [
+                'key' => $key,
+            ]);
+        }
     }
 
     /**
@@ -151,8 +200,10 @@ class Settings
             return self::$overrides[$key];
         }
 
-        // 2. AppInfo SSoT
-        if ($infoValue = self::resolveAppInfoValue($key)) {
+        // 2. AppInfo SSoT (use !== null to preserve falsy values like 0, false, '')
+        $infoValue = self::resolveAppInfoValue($key);
+
+        if ($infoValue !== null) {
             return $infoValue;
         }
 
@@ -161,11 +212,19 @@ class Settings
             Cache::forget(self::CACHE_PREFIX.$key);
         }
 
-        $dbValue = Cache::rememberForever(self::CACHE_PREFIX.$key, function () use ($key) {
-            $setting = Setting::where('key', $key)->first();
+        try {
+            $dbValue = Cache::rememberForever(self::CACHE_PREFIX.$key, function () use ($key) {
+                $setting = Setting::where('key', $key)->first();
 
-            return $setting?->value;
-        });
+                return $setting?->value;
+            });
+        } catch (QueryException $e) {
+            self::logQueryWarning('Failed to resolve setting from database', $e, [
+                'key' => $key,
+            ]);
+
+            $dbValue = null;
+        }
 
         if (! is_null($dbValue)) {
             return $dbValue;

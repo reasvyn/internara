@@ -1,13 +1,15 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\User\Admin;
 
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\User\Actions\CreateUserAction;
 use App\Domain\User\Actions\DeleteUserAction;
 use App\Domain\User\Actions\UpdateUserAction;
-use App\Domain\Auth\Enums\Role as RoleEnum;
-use App\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -146,6 +148,6 @@ class TeacherManager extends BaseRecordManager
 
     public function render()
     {
-        return view('livewire.admin.user.teacher-manager');
+        return view('livewire.user.teacher-manager');
     }
 }

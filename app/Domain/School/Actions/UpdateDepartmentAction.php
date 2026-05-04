@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\School\Actions;
@@ -16,6 +18,7 @@ class UpdateDepartmentAction
     public function execute(Department $department, array $data): Department
     {
         return DB::transaction(function () use ($department, $data) {
+            unset($data['id']);
             $department->update($data);
 
             $this->logAudit->execute(

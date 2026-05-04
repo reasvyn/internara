@@ -1,10 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Mentor\Supervision;
 
+use App\Domain\Internship\Models\Registration;
 use App\Domain\Mentor\Actions\CreateSupervisionLogAction;
 use App\Domain\Mentor\Actions\VerifySupervisionLogAction;
-use App\Domain\Internship\Models\Registration;
 use App\Domain\Mentor\Models\SupervisionLog;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -93,7 +95,7 @@ class SupervisorLogManager extends Component
             ->latest('date')
             ->paginate(10);
 
-        return view('livewire.supervision.supervisor-log-manager', [
+        return view('livewire.mentor.supervisor-log-manager', [
             'logs' => $logs,
         ]);
     }

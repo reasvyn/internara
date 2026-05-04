@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Auth\Enums;
+
+/**
+ * Enum Role
+ *
+ * Authoritative identifiers for system-wide user roles.
+ */
+enum Role: string
+{
+    case SUPER_ADMIN = 'super_admin';
+    case ADMIN = 'admin';
+    case TEACHER = 'teacher';
+    case STUDENT = 'student';
+    case SUPERVISOR = 'supervisor';
+
+    /**
+     * Get the human-readable label for the role.
+     */
+    public function label(): string
+    {
+        return __("permission::role.{$this->value}");
+    }
+}

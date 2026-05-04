@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
@@ -27,14 +29,19 @@ final class Environment
     }
 
     /**
+     * Determine if the application is running in a staging environment.
+     */
+    public static function isStaging(): bool
+    {
+        return app()->environment('staging');
+    }
+
+    /**
      * Determine if the application is currently running tests.
      */
     public static function isTesting(): bool
     {
-        return defined('PHPUNIT_COMPOSER_INSTALL') ||
-            defined('__PEST__') ||
-            app()->runningUnitTests() ||
-            app()->environment('testing');
+        return app()->runningUnitTests();
     }
 
     /**
@@ -50,6 +57,6 @@ final class Environment
      */
     public static function isProduction(): bool
     {
-        return config('app.env') === 'production';
+        return app()->environment('production');
     }
 }

@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup;
 
-use App\Enums\Auth\Role as RoleEnum;
-use App\Livewire\Setup\Components\WelcomeStep;
+use App\Domain\Auth\Enums\Role as RoleEnum;
+use App\Domain\Core\Support\AppInfo;
+use App\Domain\Setup\Services\SetupService;
 use App\Livewire\Setup\SetupWizard;
-use App\Services\Setup\SetupService;
 use Illuminate\Support\Facades\File;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    Livewire::component('setup.components.welcome-step', WelcomeStep::class);
-
     foreach (RoleEnum::cases() as $role) {
         Role::firstOrCreate([
             'name' => $role->value,
@@ -48,7 +46,7 @@ test('setup wizard renders welcome step', function () {
     Livewire::withQueryParams(['setup_token' => $token])
         ->test(SetupWizard::class)
         ->assertSet('currentStep', 1)
-        ->assertSee('Welcome to Internara');
+        ->assertSee(AppInfo::get('name', config('app.name')));
 });
 
 test('setup wizard redirects if already installed', function () {
@@ -81,11 +79,10 @@ test('setup wizard validates school data', function () {
         ->test(SetupWizard::class)
         ->set('currentStep', 2)
         ->set('schoolName', '')
-        ->set('schoolCode', '')
-        ->set('schoolAddress', '')
+        ->set('institutionalCode', '')
         ->set('schoolEmail', 'invalid-email')
         ->call('nextStep')
-        ->assertHasErrors(['schoolName', 'schoolCode', 'schoolAddress', 'schoolEmail']);
+        ->assertHasErrors(['schoolName', 'institutionalCode', 'schoolEmail']);
 });
 
 test('setup wizard validates admin credentials', function () {
@@ -94,15 +91,16 @@ test('setup wizard validates admin credentials', function () {
     $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
-    $service->setCurrentStep(3);
+    $service->completeStep('department');
+    $service->setCurrentStep(4);
 
     Livewire::withQueryParams(['setup_token' => $token])
         ->test(SetupWizard::class)
-        ->set('currentStep', 3)
+        ->set('currentStep', 4)
         ->set('adminName', '')
         ->set('adminEmail', 'invalid')
         ->set('adminPassword', '')
-        ->set('adminPassword_confirmation', '')
+        ->set('adminPasswordConfirmation', '')
         ->call('nextStep')
         ->assertHasErrors(['adminName', 'adminEmail', 'adminPassword']);
 });
@@ -113,21 +111,18 @@ test('setup wizard requires finalization checkboxes', function () {
     $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
-    $service->completeStep('account');
     $service->completeStep('department');
+    $service->completeStep('account');
     $service->completeStep('internship');
-    $service->setCurrentStep(5);
+    $service->setCurrentStep(6);
 
     Livewire::withQueryParams(['setup_token' => $token])
         ->test(SetupWizard::class)
-        ->set('currentStep', 5)
-        ->set('internshipName', 'Test Internship')
-        ->set('startDate', '2026-06-01')
-        ->set('endDate', '2026-09-01')
-        ->set('dataVerified', false)
+        ->set('currentStep', 6)
+        ->set('databaseAware', false)
         ->set('securityAware', false)
         ->call('finish')
-        ->assertHasErrors(['dataVerified', 'securityAware']);
+        ->assertHasErrors(['databaseAware', 'securityAware']);
 });
 
 test('setup wizard completes and creates lock file', function () {
@@ -136,27 +131,26 @@ test('setup wizard completes and creates lock file', function () {
     $service->authorizeSession($token);
     $service->completeStep('welcome');
     $service->completeStep('school');
-    $service->completeStep('account');
     $service->completeStep('department');
+    $service->completeStep('account');
     $service->completeStep('internship');
-    $service->setCurrentStep(5);
+    $service->setCurrentStep(6);
 
     Livewire::withQueryParams(['setup_token' => $token])
         ->test(SetupWizard::class)
-        ->set('currentStep', 5)
+        ->set('currentStep', 6)
         ->set('schoolName', 'Test School')
-        ->set('schoolCode', 'TEST001')
-        ->set('schoolAddress', '123 Test Street')
+        ->set('institutionalCode', 'TEST001')
+        ->set('schoolEmail', 'school@testsetup.com')
         ->set('adminName', 'Setup Admin')
         ->set('adminEmail', 'admin@testsetup.com')
-        ->set('adminUsername', 'u12345678')
         ->set('adminPassword', 'password123')
-        ->set('adminPassword_confirmation', 'password123')
+        ->set('adminPasswordConfirmation', 'password123')
         ->set('departmentName', 'Test Department')
         ->set('internshipName', 'Test Internship')
         ->set('startDate', '2026-06-01')
         ->set('endDate', '2026-09-01')
-        ->set('dataVerified', true)
+        ->set('databaseAware', true)
         ->set('securityAware', true)
         ->call('finish')
         ->assertSet('currentStep', 7);

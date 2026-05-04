@@ -1,3 +1,4 @@
+<?php
 
 declare(strict_types=1);
 
@@ -87,7 +88,7 @@ class TemplateManager extends Component
 
     public function render()
     {
-        return view('livewire.admin.document.template-manager', [
+        return view('livewire.document.template-manager', [
             'templates' => $this->templates(),
             'headers' => $this->headers(),
         ]);

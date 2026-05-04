@@ -30,8 +30,8 @@
 
         <!-- Footer / Language Toggle -->
         <div class="mt-12 text-center flex items-center justify-center gap-4 animate-in fade-in duration-1000 delay-500">
-            <livewire:theme-switcher />
-            <livewire:language-switcher />
+            <livewire:core.theme-switcher />
+            <livewire:core.language-switcher />
         </div>
     </div>
 </x-layouts.base>

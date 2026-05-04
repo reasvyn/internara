@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\School;
@@ -73,6 +75,6 @@ class SchoolProfile extends Component
     #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.admin.school.school-profile');
+        return view('livewire.school.school-profile');
     }
 }

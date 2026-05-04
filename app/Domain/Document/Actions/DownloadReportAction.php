@@ -1,10 +1,11 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Domain\Document\Actions;
 
-use App\Domain\User\Models\User;
 use App\Domain\Document\Models\GeneratedReport;
+use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 /**

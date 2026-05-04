@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Core;
 
-use App\Casts\SettingValueCast;
+use App\Domain\Core\Casts\SettingValueCast;
 use App\Domain\Core\Models\Setting;
 
 test('setting value cast returns string value as-is', function () {

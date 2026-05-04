@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands\Setup;
 
 use App\Domain\Core\Support\AppInfo;
-use App\Services\Setup\SetupService;
+use App\Domain\Setup\Services\SetupService;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\confirm;
@@ -13,6 +13,7 @@ use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
+use function Laravel\Prompts\outro;
 use function Laravel\Prompts\warning;
 
 /**
@@ -34,6 +35,7 @@ class SetupResetCommand extends Command
         if (! $setupService->isInstalled()) {
             warning(__('setup.reset.not_installed'));
             note(__('setup.reset.new_token_generated'));
+
             $token = $setupService->generateToken();
             info($token);
 
@@ -41,11 +43,11 @@ class SetupResetCommand extends Command
         }
 
         if (! $this->option('force')) {
-            error(__('setup.reset.warning_lock_file'));
+            warning(__('setup.reset.warning_lock_file'));
             note(__('setup.reset.warning_records'));
 
             if (! confirm(__('setup.reset.confirm_proceed'), false)) {
-                warning(__('setup.reset.aborted'));
+                error(__('setup.reset.aborted'));
 
                 return self::FAILURE;
             }
@@ -55,9 +57,12 @@ class SetupResetCommand extends Command
         $token = $setupService->reset();
 
         $this->newLine();
-        info(__('setup.reset.success'));
-        note('Setup token: '.$token);
-        note('Visit: '.route('setup', ['setup_token' => $token]));
+        outro(__('setup.reset.success'));
+
+        $signedUrl = route('setup', ['setup_token' => $token]);
+
+        info('URL: <fg=cyan;options=bold,underscore>'.$signedUrl.'</>');
+        note('Token: <fg=white;options=bold>'.$token.'</>');
         warning(__('setup.reset.migration_note'));
 
         return self::SUCCESS;

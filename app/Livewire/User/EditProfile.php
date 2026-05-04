@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\User;
 
-use App\Domain\User\Actions\UpdateUserPasswordAction;
 use App\Domain\User\Actions\UpdateProfileAction;
+use App\Domain\User\Actions\UpdateUserPasswordAction;
 use App\Domain\User\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
@@ -90,6 +92,6 @@ class EditProfile extends Component
     #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.profile.profile-editor');
+        return view('livewire.user.profile-editor');
     }
 }
