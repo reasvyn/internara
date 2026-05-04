@@ -18,7 +18,7 @@ class AcademicController extends Controller
 
         $years = AcademicYear::latest('start_date')->paginate(20);
 
-        return view('livewire.admin.academic-years.index', [
+        return view('livewire.school.academic-year-index', [
             'years' => $years,
         ]);
     }

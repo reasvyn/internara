@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->boolean('setup_required')->default(false);
+            $table->timestamp('locked_at')->nullable();
+            $table->string('locked_reason')->nullable();
             $table->timestamps();
         });
 

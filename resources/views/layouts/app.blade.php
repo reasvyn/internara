@@ -95,7 +95,7 @@
             @else
                 <footer class="mt-auto">
                     <div class="container mx-auto px-4 text-center md:px-6 lg:px-8 py-4">
-                        <livewire:layout.app-signature />
+                        <livewire:core.app-signature />
                     </div>
                 </footer>
             @endisset

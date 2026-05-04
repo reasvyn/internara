@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Domain\Core\Models\Setting;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @extends Factory<Setting>
@@ -90,6 +91,16 @@ class SettingFactory extends Factory
     }
 
     /**
+     * Indicate that the setting should be of type 'encrypted'.
+     *
+     * @param array<string, mixed> $attributes
+     */
+    public function encrypted(array $attributes = []): static
+    {
+        return $this->state(fn () => $this->buildState('encrypted', $attributes));
+    }
+
+    /**
      * Build a state array with default values for a given setting type.
      *
      * @param array<string, mixed> $attributes
@@ -107,6 +118,7 @@ class SettingFactory extends Factory
                 'data_value' => $this->faker->sentence(),
             ],
             'null' => null,
+            'encrypted' => Crypt::encryptString($this->faker->password()),
             default => $this->faker->sentence(),
         };
 
@@ -116,6 +128,7 @@ class SettingFactory extends Factory
             'integer' => 'integer',
             'float' => 'float',
             'null' => 'null',
+            'encrypted' => 'encrypted',
             default => 'string',
         };
 

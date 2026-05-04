@@ -16,7 +16,7 @@
             {{-- Step Navigation Dots (Advanced Visuals) --}}
             <div class="flex items-center justify-between gap-3">
                 @php
-                    $stepKeys = \App\Services\Setup\SetupService::STEPS;
+                    $stepKeys = \App\Domain\Setup\Services\SetupService::STEPS;
                 @endphp
                 @foreach($stepKeys as $index => $stepKey)
                     @php
@@ -27,7 +27,7 @@
                     @endphp
                     <button 
                         wire:click="goToStep('{{ $stepKey }}')"
-                        @disabled($stepNum > $currentStep && !app(\App\Services\Setup\SetupService::class)->isStepCompleted($stepKey))
+                        @disabled($stepNum > $currentStep && !app(\App\Domain\Setup\Services\SetupService::class)->isStepCompleted($stepKey))
                         @class([
                             'flex-1 group transition-all duration-700 outline-none',
                             'opacity-40 hover:opacity-100' => !$isCurrent && !$isCompleted,
@@ -61,7 +61,7 @@
             <x-mary-card shadow class="card-enterprise !bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-visible">
                 {{-- Step 1: Welcome & System Requirements --}}
                 @if($currentStep === 1)
-                    <livewire:setup.components.welcome-step :$auditResults :$auditPassed />
+                    @include('livewire.setup.components.welcome-step', ['auditResults' => $audit, 'auditPassed' => $auditPassed])
                 @endif
 
                 {{-- Step 2: School Information --}}

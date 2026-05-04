@@ -1,9 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Dynamic Mail Configuration Service.
@@ -14,9 +17,6 @@ use Illuminate\Support\Facades\Config;
  */
 final class MailConfiguration
 {
-    /**
-     * Map setting keys to Laravel config keys.
-     */
     private const CONFIG_MAP = [
         'mail_host' => 'mail.mailers.smtp.host',
         'mail_port' => 'mail.mailers.smtp.port',
@@ -32,27 +32,28 @@ final class MailConfiguration
      */
     public static function apply(): void
     {
-        // Skip during testing
         if (app()->runningUnitTests()) {
             return;
         }
 
         try {
-            $host = Settings::get('mail_host');
-        } catch (QueryException) {
-            return;
-        }
+            foreach (self::CONFIG_MAP as $settingKey => $configKey) {
+                $value = Settings::get($settingKey);
 
-        if (empty($host)) {
-            return;
-        }
-
-        foreach (self::CONFIG_MAP as $settingKey => $configKey) {
-            $value = Settings::get($settingKey);
-
-            if (! is_null($value) && $value !== '') {
-                Config::set($configKey, $value);
+                if (! is_null($value) && $value !== '') {
+                    Config::set($configKey, $value);
+                }
             }
+        } catch (QueryException $e) {
+            Log::warning('Failed to apply dynamic mail configuration', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Unexpected error applying dynamic mail configuration', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Exceptions;
+namespace App\Domain\Setup\Exceptions;
 
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;

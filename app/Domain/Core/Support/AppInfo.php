@@ -1,19 +1,19 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Provides access to application metadata from app_info.json.
  *
  * S2 - Sustain: Centralized metadata management.
  */
-class AppInfo
+final class AppInfo
 {
-    /**
-     * Cached application information.
-     */
     private static ?array $info = null;
 
     /**
@@ -27,11 +27,57 @@ class AppInfo
 
         if (self::$info === null) {
             $path = base_path('app_info.json');
+            $isComposer = false;
+
+            if (! File::exists($path)) {
+                $path = base_path('composer.json');
+                $isComposer = true;
+            }
 
             if (! File::exists($path)) {
                 self::$info = [];
             } else {
-                self::$info = json_decode(File::get($path), true) ?? [];
+                try {
+                    $rawContent = File::get($path);
+                    $data = json_decode($rawContent, true);
+
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        Log::error('Failed to parse JSON metadata file', [
+                            'file' => $path,
+                            'json_error' => json_last_error_msg(),
+                        ]);
+
+                        self::$info = [];
+                    } else {
+                        $data = is_array($data) ? $data : [];
+
+                        if ($isComposer) {
+                            $author = $data['authors'][0] ?? [];
+
+                            if (isset($author['homepage']) && ! isset($author['github'])) {
+                                $author['github'] = $author['homepage'];
+                            }
+
+                            self::$info = [
+                                'name' => $data['name'] ?? 'Laravel',
+                                'version' => $data['version'] ?? '1.0.0',
+                                'description' => $data['description'] ?? '',
+                                'license' => $data['license'] ?? '',
+                                'author' => $author,
+                                'support' => $data['support'] ?? [],
+                            ];
+                        } else {
+                            self::$info = $data;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::error('Failed to read application metadata file', [
+                        'file' => $path,
+                        'error' => $e->getMessage(),
+                    ]);
+
+                    self::$info = [];
+                }
             }
         }
 
@@ -51,7 +97,7 @@ class AppInfo
      */
     public static function version(): string
     {
-        return (string) self::get('version', '0.0.0');
+        return (string) self::get('version', '1.0.0');
     }
 
     /**

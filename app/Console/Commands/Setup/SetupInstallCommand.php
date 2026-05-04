@@ -6,9 +6,9 @@ namespace App\Console\Commands\Setup;
 
 use App\Domain\Core\Support\AppInfo;
 use App\Domain\Setup\Actions\InstallSystemAction;
-use App\Exceptions\SetupException;
-use App\Services\Setup\EnvAuditor;
-use App\Services\Setup\SetupService;
+use App\Domain\Setup\Exceptions\SetupException;
+use App\Domain\Setup\Services\EnvAuditor;
+use App\Domain\Setup\Services\SetupService;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\confirm;
@@ -17,7 +17,8 @@ use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\outro;
-use function Laravel\Prompts\spin;
+use function Laravel\Prompts\table;
+use function Laravel\Prompts\task;
 use function Laravel\Prompts\warning;
 
 /**
@@ -61,21 +62,24 @@ class SetupInstallCommand extends Command
         $shouldForceFresh = (bool) $this->option('force') || ! $isInstalled;
 
         // 1. Pre-flight Audit
-        note(__('setup.cli.running_audit'));
+        info(__('setup.cli.running_audit'));
         $audit = $auditor->audit();
 
         foreach ($audit['categories'] as $category) {
             $this->newLine();
-            $this->line(" <fg=gray>●</> <options=bold>{$category['label']}</>");
+            note($category['label']);
 
+            $rows = [];
             foreach ($category['checks'] as $check) {
                 $statusStr = match ($check['status']) {
-                    'pass' => '<fg=green>PASS</>',
-                    'fail' => '<fg=red>FAIL</>',
-                    'warn' => '<fg=yellow>WARN</>',
+                    'pass' => '<fg=green;options=bold>✓ PASS</>',
+                    'fail' => '<fg=red;options=bold>✗ FAIL</>',
+                    'warn' => '<fg=yellow;options=bold>⚠ WARN</>',
                 };
-                $this->line("   [{$statusStr}] {$check['name']}: {$check['message']}");
+                $rows[] = [$statusStr, $check['name'], $check['message']];
             }
+
+            table(['Status', 'Check', 'Message'], $rows);
         }
 
         if (! $audit['passed']) {
@@ -99,37 +103,46 @@ class SetupInstallCommand extends Command
             $force = $shouldForceFresh;
 
             // 1. .env file
-            spin(fn () => $installSystem->ensureEnvFileExists(), __('setup.cli.tasks.ensure_env'));
+            task(
+                __('setup.cli.tasks.ensure_env'),
+                fn () => $installSystem->ensureEnvFileExists()
+            );
 
             // 2. App Key
-            spin(fn () => $installSystem->ensureAppKeyExists(), __('setup.cli.tasks.generate_key'));
+            task(
+                __('setup.cli.tasks.generate_key'),
+                fn () => $installSystem->generateAppKey()
+            );
 
             // 3. Migrations
-            spin(
-                fn () => $installSystem->runMigrations($force),
+            task(
                 __('setup.cli.tasks.run_migrations'),
+                fn () => $installSystem->runMigrations($force)
             );
 
             // 4. Seeders
-            spin(fn () => $installSystem->runSeeders(), __('setup.cli.tasks.run_seeders'));
-
-            // 5. Initial Settings
-            spin(
-                fn () => $installSystem->configureInitialSettings(),
-                __('setup.cli.tasks.system_settings'),
+            task(
+                __('setup.cli.tasks.run_seeders'),
+                fn () => $installSystem->runSeeders()
             );
 
-            // 6. Storage Link
-            spin(fn () => $installSystem->linkStorage(), __('setup.cli.tasks.storage_link'));
+            // 5. Storage Link
+            task(
+                __('setup.cli.tasks.storage_link'),
+                fn () => $installSystem->createStorageSymlink()
+            );
 
-            // 7. Final Optimization
-            spin(fn () => $installSystem->optimize(), __('setup.cli.tasks.optimize'));
+            // 6. Final Optimization
+            task(
+                __('setup.cli.tasks.optimize'),
+                fn () => $installSystem->optimize()
+            );
 
-            // 8. Generate setup token and signed URL
+            // 7. Generate setup token and signed URL
             $token = $setupService->generateCliToken();
             $signedUrl = $this->generateSignedUrl($token);
 
-            // 9. Output results
+            // 8. Output results
             $this->displaySuccess($token, $signedUrl);
 
             return self::SUCCESS;
@@ -157,13 +170,14 @@ class SetupInstallCommand extends Command
      */
     protected function displayPreFlightSummary(): void
     {
-        $this->components->twoColumnDetail(__('setup.cli.php_version'), PHP_VERSION);
-        $this->components->twoColumnDetail(__('setup.cli.environment'), (string) config('app.env'));
-        $this->components->twoColumnDetail(
-            __('setup.cli.db_driver'),
-            (string) config('database.default'),
+        table(
+            ['Property', 'Value'],
+            [
+                [__('setup.cli.php_version'), PHP_VERSION],
+                [__('setup.cli.environment'), (string) config('app.env')],
+                [__('setup.cli.db_driver'), (string) config('database.default')],
+            ]
         );
-        $this->newLine();
     }
 
     /**
@@ -179,17 +193,18 @@ class SetupInstallCommand extends Command
      */
     protected function displaySuccess(string $token, string $signedUrl): void
     {
+        $this->newLine();
         outro(__('setup.cli.installation_completed'));
 
-        note(__('setup.cli.next_steps'));
+        info(__('setup.cli.next_steps'));
         $this->line(' 1. '.__('setup.cli.visit_url'));
-        $this->line('    <fg=cyan>'.$signedUrl.'</>');
+        $this->line('    <fg=cyan;options=bold,underscore>'.$signedUrl.'</>');
         $this->newLine();
         $this->line(' 2. '.__('setup.cli.complete_wizard'));
         $this->newLine();
-        $this->line(' <fg=gray>Token: '.$token.'</>');
-        $this->line(' <fg=gray>'.__('setup.cli.token_expires').'</>');
+
+        note('Token: <fg=white;options=bold>'.$token.'</>');
+        warning(__('setup.cli.token_expires'));
         $this->newLine();
-        warning(__('setup.cli.token_note'));
     }
 }

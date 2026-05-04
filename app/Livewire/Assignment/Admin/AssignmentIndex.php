@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Assignment\Admin;
@@ -5,10 +7,10 @@ namespace App\Livewire\Assignment\Admin;
 use App\Domain\Assignment\Actions\CreateAssignmentAction;
 use App\Domain\Assignment\Actions\DeleteAssignmentAction;
 use App\Domain\Assignment\Actions\UpdateAssignmentAction;
-use App\Domain\Internship\Models\Internship;
-use App\Livewire\BaseRecordManager;
 use App\Domain\Assignment\Models\Assignment;
 use App\Domain\Assignment\Models\AssignmentType;
+use App\Domain\Internship\Models\Internship;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 
@@ -174,6 +176,6 @@ class AssignmentIndex extends BaseRecordManager
 
     public function render()
     {
-        return view('livewire.admin.assignment.index');
+        return view('livewire.assignment.assignment-index');
     }
 }

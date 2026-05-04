@@ -1,8 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
 
-use App\Services\Setup\SetupService;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * Centralized Application Metadata & Branding Service.
@@ -12,12 +16,51 @@ use App\Services\Setup\SetupService;
  */
 final class AppMetadata
 {
+    private const LOCK_FILE = '.installed';
+
     /**
      * Check if the application is installed.
      */
     private static function isInstalled(): bool
     {
-        return app(SetupService::class)->isInstalled();
+        try {
+            return File::exists(storage_path('app/'.self::LOCK_FILE));
+        } catch (Throwable $e) {
+            self::logSettingsWarning('Failed to check installation status', $e);
+
+            return false;
+        }
+    }
+
+    /**
+     * Safely resolve a setting value with automatic fallback on error.
+     *
+     * @template T
+     *
+     * @param callable(): T $resolver
+     * @param T $fallback
+     *
+     * @return T
+     */
+    private static function withFallback(callable $resolver, mixed $fallback, string $context): mixed
+    {
+        try {
+            return $resolver();
+        } catch (Throwable $e) {
+            self::logSettingsWarning($context, $e);
+
+            return $fallback;
+        }
+    }
+
+    /**
+     * Log a warning for settings retrieval failures.
+     */
+    private static function logSettingsWarning(string $context, Throwable $e): void
+    {
+        Log::warning($context, [
+            'error' => $e->getMessage(),
+        ]);
     }
 
     /**
@@ -25,7 +68,7 @@ final class AppMetadata
      */
     public static function appName(): string
     {
-        return AppInfo::get('name', 'Internara');
+        return AppInfo::get('name', 'Laravel');
     }
 
     /**
@@ -38,7 +81,13 @@ final class AppMetadata
             return self::appName();
         }
 
-        return (string) Settings::get('brand_name', self::appName());
+        $value = self::withFallback(
+            fn () => Settings::get('brand_name', self::appName()),
+            self::appName(),
+            'Failed to get brand name from settings',
+        );
+
+        return is_string($value) ? $value : self::appName();
     }
 
     /**
@@ -50,7 +99,13 @@ final class AppMetadata
             return self::appName().' - Setup';
         }
 
-        return (string) Settings::get('site_title', self::brandName());
+        $value = self::withFallback(
+            fn (): mixed => Settings::get('site_title', self::brandName()),
+            self::brandName(),
+            'Failed to get site title from settings',
+        );
+
+        return is_string($value) ? $value : self::brandName();
     }
 
     /**
@@ -63,7 +118,6 @@ final class AppMetadata
 
     /**
      * Get the dynamic brand logo URL.
-     * Returns default logo if not installed, otherwise returns logo from settings.
      */
     public static function brandLogo(): string
     {
@@ -73,9 +127,13 @@ final class AppMetadata
             return $defaultLogo;
         }
 
-        $logo = Settings::get('brand_logo');
+        $logo = self::withFallback(
+            fn () => Settings::get('brand_logo'),
+            null,
+            'Failed to get brand logo from settings',
+        );
 
-        return $logo ? (string) $logo : $defaultLogo;
+        return is_string($logo) && $logo !== '' ? $logo : $defaultLogo;
     }
 
     /**
@@ -89,16 +147,21 @@ final class AppMetadata
             return $defaultFavicon;
         }
 
-        $favicon = Settings::get('site_favicon');
+        return self::withFallback(
+            function () use ($defaultFavicon): string {
+                $favicon = Settings::get('site_favicon');
 
-        if ($favicon) {
-            return (string) $favicon;
-        }
+                if (is_string($favicon) && $favicon !== '') {
+                    return $favicon;
+                }
 
-        // Fallback to logo if favicon is not set
-        $logo = Settings::get('brand_logo');
+                $logo = Settings::get('brand_logo');
 
-        return $logo ? (string) $logo : $defaultFavicon;
+                return is_string($logo) && $logo !== '' ? $logo : $defaultFavicon;
+            },
+            $defaultFavicon,
+            'Failed to get favicon from settings',
+        );
     }
 
     /**
@@ -108,11 +171,21 @@ final class AppMetadata
      */
     public static function colors(): array
     {
-        return [
-            'primary' => Settings::get('primary_color', '#0ea5e9'),
-            'secondary' => Settings::get('secondary_color', '#64748b'),
-            'accent' => Settings::get('accent_color', '#f59e0b'),
+        $defaults = [
+            'primary' => '#0ea5e9',
+            'secondary' => '#64748b',
+            'accent' => '#f59e0b',
         ];
+
+        return self::withFallback(
+            fn () => [
+                'primary' => Settings::get('primary_color', $defaults['primary']),
+                'secondary' => Settings::get('secondary_color', $defaults['secondary']),
+                'accent' => Settings::get('accent_color', $defaults['accent']),
+            ],
+            $defaults,
+            'Failed to get branding colors from settings',
+        );
     }
 
     /**
@@ -130,7 +203,7 @@ final class AppMetadata
     {
         $author = AppInfo::get('author', []);
 
-        return (string) ($author['name'] ?? '');
+        return is_string($author['name'] ?? null) ? $author['name'] : '';
     }
 
     /**
@@ -140,7 +213,7 @@ final class AppMetadata
     {
         $author = AppInfo::get('author', []);
 
-        return (string) ($author['email'] ?? '');
+        return is_string($author['email'] ?? null) ? $author['email'] : '';
     }
 
     /**
@@ -164,8 +237,6 @@ final class AppMetadata
      * 1. If installed: check settings (branding)
      * 2. Fallback to AppInfo (Composer metadata)
      * 3. Use default parameter.
-     *
-     * @param array<string, mixed> $default
      */
     public static function get(string $key, mixed $default = null): mixed
     {
@@ -184,12 +255,10 @@ final class AppMetadata
             'license' => fn () => self::license(),
         ];
 
-        // Dynamic branding values (from settings if installed)
         if (array_key_exists($key, $mapping)) {
             return $mapping[$key]();
         }
 
-        // Fallback to AppInfo (Composer metadata)
         return AppInfo::get($key, $default);
     }
 }

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\School\Models\Department;
 use App\Domain\User\Actions\CreateUserAction;
 use App\Domain\User\Actions\DeleteUserAction;
 use App\Domain\User\Actions\UpdateUserAction;
 use App\Domain\User\Models\Profile;
 use App\Domain\User\Models\User;
-use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 use function Pest\Laravel\actingAs;
@@ -171,16 +171,16 @@ describe('Teacher Manager', function () {
     });
 });
 
-// Mentor Manager Tests
-describe('Mentor Manager', function () {
-    it('can list mentors', function () {
+// Supervisor Manager Tests
+describe('Supervisor Manager', function () {
+    it('can list supervisors', function () {
         actingAs($this->superAdmin)->get('/admin/users/mentors')->assertOk();
     });
 
-    it('can create mentor with phone', function () {
+    it('can create supervisor with phone', function () {
         $data = [
-            'name' => 'New Mentor',
-            'email' => 'mentor@example.com',
+            'name' => 'New Supervisor',
+            'email' => 'supervisor@example.com',
             'username' => 'u99887766',
             'phone' => '08123456789',
         ];

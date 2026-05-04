@@ -1,10 +1,11 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Domain\Document\Jobs;
 
-use App\Jobs\BaseJob;
 use App\Domain\Document\Models\GeneratedReport;
+use App\Jobs\BaseJob;
 use App\Notifications\JobFailedNotification;
 use App\Notifications\ReportGeneratedNotification;
 use Illuminate\Support\Facades\Storage;

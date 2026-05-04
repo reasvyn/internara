@@ -15,7 +15,7 @@ enum Role: string
     case ADMIN = 'admin';
     case TEACHER = 'teacher';
     case STUDENT = 'student';
-    case MENTOR = 'mentor';
+    case SUPERVISOR = 'supervisor';
 
     /**
      * Get the human-readable label for the role.

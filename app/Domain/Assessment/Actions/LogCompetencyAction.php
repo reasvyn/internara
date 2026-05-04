@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Assessment\Actions;
 
-use App\Domain\Mentee\Models\CompetencyLog;
 use App\Domain\Assessment\Models\Competency;
+use App\Domain\Mentee\Models\CompetencyLog;
 
 /**
  * Stateless Action to log student competency assessment.

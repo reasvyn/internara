@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Tests\Feature\Attendance;
+
 use App\Domain\Attendance\Actions\ClockInAction;
 use App\Domain\Attendance\Actions\ClockOutAction;
 use App\Domain\Attendance\Models\AttendanceLog;

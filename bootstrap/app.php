@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Console\Commands\AppInstallCommand;
-use App\Console\Commands\SetupResetCommand;
-use App\Console\Commands\System\AdminPromoteCommand;
-use App\Console\Commands\System\CleanupCommand;
-use App\Console\Commands\System\HealthCommand;
-use App\Domain\Core\Support\Integrity;
+use App\Console\Commands\Admin\AdminPromoteCommand;
+use App\Console\Commands\Core\CleanupCommand;
+use App\Console\Commands\Core\HealthCommand;
+use App\Console\Commands\Setup\SetupInstallCommand;
+use App\Console\Commands\Setup\SetupResetCommand;
 use App\Http\Middleware\CheckRoleMiddleware;
 use App\Http\Middleware\ProtectSetupRouteMiddleware;
 use App\Http\Middleware\SetLocaleMiddleware;
@@ -19,16 +18,6 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
-/*
-|--------------------------------------------------------------------------
-| Integrity & Attribution Verification
-|--------------------------------------------------------------------------
-|
-| This block ensures the application's core metadata is intact and that
-| the original author is properly attributed.
-*/
-Integrity::verify();
-
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -36,7 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withCommands([
-        AppInstallCommand::class,
+        SetupInstallCommand::class,
         SetupResetCommand::class,
         HealthCommand::class,
         CleanupCommand::class,

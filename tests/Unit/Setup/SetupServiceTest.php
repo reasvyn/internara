@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Setup;
 
-use App\Services\Setup\SetupService;
+use App\Domain\Setup\Services\SetupService;
 use Illuminate\Support\Facades\File;
 
 beforeEach(function () {

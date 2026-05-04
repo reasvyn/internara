@@ -1,3 +1,4 @@
+<?php
 
 declare(strict_types=1);
 
@@ -16,7 +17,8 @@ class ActivateAcademicYearAction
     {
         AcademicYear::where('is_active', true)->update(['is_active' => false]);
 
-        $year->update(['is_active' => true]);
+        $year->is_active = true;
+        $year->save();
 
         return $year;
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire\Layout;
+namespace App\Livewire\Core;
 
 use App\Domain\Core\Support\AppInfo;
 use App\Domain\Core\Support\Integrity;
@@ -23,7 +23,7 @@ class AppSignature extends Component
     {
         Integrity::verify();
 
-        return view('livewire.layout.app-signature', [
+        return view('livewire.core.app-signature', [
             'app_name' => AppInfo::get('name', config('app.name')),
             'app_version' => AppInfo::version(),
             'app_license' => AppInfo::get('license', 'MIT'),

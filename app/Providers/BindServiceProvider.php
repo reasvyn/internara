@@ -66,10 +66,10 @@ class BindServiceProvider extends ServiceProvider
             );
         }
 
-        // Scan domain-scoped contracts: App/{Domain}/Contracts/
-        $appPath = app_path();
-        if (is_dir($appPath)) {
-            foreach (File::directories($appPath) as $domainDir) {
+        // Scan domain-scoped contracts: App/Domain/{Domain}/Contracts/
+        $domainPath = app_path('Domain');
+        if (is_dir($domainPath)) {
+            foreach (File::directories($domainPath) as $domainDir) {
                 $contractsDir = $domainDir.DIRECTORY_SEPARATOR.'Contracts';
                 if (! is_dir($contractsDir)) {
                     continue;
@@ -197,14 +197,17 @@ class BindServiceProvider extends ServiceProvider
      */
     protected function extractDomainNamespace(string $abstract): string
     {
-        // Layout: App\{Domain}\Contracts\XxxInterface
-        // e.g., App\Services\Contracts\PaymentServiceInterface → App\Services
+        // Layout: App\Domain\{Domain}\Contracts\XxxInterface
+        if (preg_match('/^(App\\\\Domain\\\\[^\\\\]+)\\\\Contracts\\\\/', $abstract, $matches)) {
+            return $matches[1];
+        }
+
+        // Layout: App\{Domain}\Contracts\XxxInterface (legacy/fallback)
         if (preg_match('/^(App\\\\[^\\\\]+)\\\\Contracts\\\\/', $abstract, $matches)) {
             return $matches[1];
         }
 
         // Layout: App\Contracts\{Domain}\XxxInterface
-        // e.g., App\Contracts\Services\PaymentServiceInterface → App\Services
         if (preg_match('/^App\\\\Contracts\\\\([^\\\\]+)/', $abstract, $matches)) {
             return 'App\\'.$matches[1];
         }

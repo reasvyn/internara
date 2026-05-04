@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Exceptions;
+namespace App\Domain\Auth\Exceptions;
 
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -39,9 +39,5 @@ class AuthExceptionRenderer
         }
 
         flash()->error($message);
-
-        if (app()->runningUnitTests()) {
-            throw $exception;
-        }
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Notifications;
 
-use App\Notifications\Channels\CustomDatabaseChannel;
+use App\Domain\Notification\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

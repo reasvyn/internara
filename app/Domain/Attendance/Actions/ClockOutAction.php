@@ -1,10 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Attendance\Actions;
 
+use App\Domain\Attendance\Models\AttendanceLog;
 use App\Domain\Core\Actions\LogAuditAction;
 use App\Domain\User\Models\User;
-use App\Domain\Attendance\Models\AttendanceLog;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

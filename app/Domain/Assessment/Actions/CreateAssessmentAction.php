@@ -1,10 +1,12 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Assessment\Actions;
 
-use App\Domain\User\Models\User;
-use App\Domain\Internship\Models\Registration;
 use App\Domain\Assessment\Models\Assessment;
+use App\Domain\Internship\Models\Registration;
+use App\Domain\User\Models\User;
 use InvalidArgumentException;
 
 /**

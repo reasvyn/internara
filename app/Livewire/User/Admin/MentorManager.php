@@ -1,13 +1,15 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\User\Admin;
 
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\User\Actions\CreateUserAction;
 use App\Domain\User\Actions\DeleteUserAction;
 use App\Domain\User\Actions\UpdateUserAction;
-use App\Domain\Auth\Enums\Role as RoleEnum;
-use App\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -42,14 +44,14 @@ class MentorManager extends BaseRecordManager
     {
         return [
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
-            ['key' => 'name', 'label' => __('user.mentor.name'), 'sortable' => true],
+            ['key' => 'name', 'label' => __('user.supervisor.name'), 'sortable' => true],
             [
                 'key' => 'username',
                 'label' => __('user.fields.username'),
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
-            ['key' => 'profile.phone', 'label' => __('user.mentor.phone')],
+            ['key' => 'profile.phone', 'label' => __('user.supervisor.phone')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => ''],
         ];
@@ -117,10 +119,10 @@ class MentorManager extends BaseRecordManager
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, $profileData);
-            $this->success(__('user.mentor.success_updated', default: 'Mentor updated.'));
+            $this->success(__('user.supervisor.success_updated', default: 'Supervisor updated.'));
         } else {
             $createAction->execute($this->userData, $profileData, [RoleEnum::SUPERVISOR->value]);
-            $this->success(__('user.mentor.success_created'));
+            $this->success(__('user.supervisor.success_created'));
         }
 
         $this->userModal = false;
@@ -129,7 +131,7 @@ class MentorManager extends BaseRecordManager
     public function delete(User $user, DeleteUserAction $deleteAction): void
     {
         $deleteAction->execute($user);
-        $this->success(__('user.mentor.success_deleted', default: 'Mentor deleted.'));
+        $this->success(__('user.supervisor.success_deleted', default: 'Supervisor deleted.'));
     }
 
     // --- Bulk Actions ---
@@ -146,6 +148,6 @@ class MentorManager extends BaseRecordManager
 
     public function render()
     {
-        return view('livewire.admin.user.mentor-manager');
+        return view('livewire.user.mentor-manager');
     }
 }

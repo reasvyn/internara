@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Domain\School\Models\Department;
+use App\Domain\User\Enums\BloodType;
+use App\Domain\User\Enums\Gender;
 use App\Domain\User\Models\Profile;
 use App\Domain\User\Models\User;
-use App\Enums\BloodType;
-use App\Enums\Gender;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,18 +16,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProfileFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class-string<Profile>
-     */
     protected $model = Profile::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -44,5 +34,41 @@ class ProfileFactory extends Factory
             'registration_number' => $this->faker->unique()->numerify('REG-#####'),
             'department_id' => Department::factory(),
         ];
+    }
+
+    public function forStudent(Department|int|null $department = null): static
+    {
+        return $this->state(fn () => [
+            'national_identifier' => $this->faker->numerify('##############'),
+            'registration_number' => $this->faker->unique()->numerify('STD-#####'),
+            'department_id' => $department instanceof Department ? $department->id : $department ?? Department::factory(),
+        ]);
+    }
+
+    public function forTeacher(): static
+    {
+        return $this->state(fn () => [
+            'national_identifier' => null,
+            'registration_number' => $this->faker->unique()->numerify('NIP-##########'),
+        ]);
+    }
+
+    public function forSupervisor(): static
+    {
+        return $this->state(fn () => [
+            'national_identifier' => null,
+            'registration_number' => null,
+            'department_id' => null,
+        ]);
+    }
+
+    public function male(): static
+    {
+        return $this->state(fn () => ['gender' => Gender::MALE]);
+    }
+
+    public function female(): static
+    {
+        return $this->state(fn () => ['gender' => Gender::FEMALE]);
     }
 }

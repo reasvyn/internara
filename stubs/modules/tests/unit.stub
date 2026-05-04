@@ -1,8 +1,0 @@
-<?php
-
-namespace $NAMESPACE$;
-
-test('that true is true', function () {
-    $this->assertTrue(true);
-});
-

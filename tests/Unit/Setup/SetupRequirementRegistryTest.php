@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Setup;
 
-use App\Services\Setup\SetupRequirementRegistry;
+use App\Domain\Setup\Services\SetupRequirementRegistry;
 
 /**
  * S3 - Scalable: Unit tests for SetupRequirementRegistry.

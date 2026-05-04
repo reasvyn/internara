@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+namespace Tests\Feature\Mentor;
+
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Registration;
 use App\Domain\Mentor\Actions\CreateMonitoringVisitAction;
@@ -12,7 +15,6 @@ use App\Domain\Mentor\Models\SupervisionLog;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
 use App\Domain\User\Models\User;
-use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {

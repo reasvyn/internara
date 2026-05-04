@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\Assignment\Actions;
 
-use App\Enums\AssignmentStatus;
 use App\Domain\Assignment\Models\Assignment;
+use App\Enums\AssignmentStatus;
 use App\Notifications\AssignmentNotification;
 use Illuminate\Support\Facades\Notification;
 

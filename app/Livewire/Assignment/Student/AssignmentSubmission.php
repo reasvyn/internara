@@ -1,3 +1,6 @@
+<?php
+
+declare(strict_types=1);
 
 namespace App\Livewire\Assignment\Student;
 
@@ -31,7 +34,7 @@ class AssignmentSubmission extends Component
         $registration = Auth::user()->activeRegistration;
 
         if (! $registration) {
-            return view('livewire.student.assignment-submission', [
+            return view('livewire.assignment.assignment-submission', [
                 'assignments' => collect(),
                 'submissions' => collect(),
             ]);
@@ -42,7 +45,7 @@ class AssignmentSubmission extends Component
             ->with(['type', 'submissions' => fn ($query) => $query->where('student_id', $studentId)])
             ->get();
 
-        return view('livewire.student.assignment-submission', [
+        return view('livewire.assignment.assignment-submission', [
             'assignments' => $assignments,
             'submissions' => Submission::where('student_id', $studentId)->get(),
         ]);

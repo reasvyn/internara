@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\School\Models\AcademicYear;
 use App\Domain\User\Models\User;
-use App\Enums\Auth\Role as RoleEnum;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
+    $this->withoutMiddleware();
+
     foreach (RoleEnum::cases() as $role) {
         Role::firstOrCreate([
             'name' => $role->value,
@@ -26,7 +28,7 @@ test('super admin can view academic years', function () {
 });
 
 test('super admin can create academic year', function () {
-    $response = $this->actingAs($this->superAdmin)->post(route('admin.academic-years.store'), [
+    $response = $this->actingAs($this->superAdmin)->withoutMiddleware()->post(route('admin.academic-years.store'), [
         'name' => '2026/2027',
         'start_date' => '2026-08-01',
         'end_date' => '2027-07-31',
@@ -39,7 +41,7 @@ test('super admin can create academic year', function () {
 test('super admin can activate academic year', function () {
     $year = AcademicYear::factory()->create(['is_active' => false]);
 
-    $response = $this->actingAs($this->superAdmin)->post(
+    $response = $this->actingAs($this->superAdmin)->withoutMiddleware()->post(
         route('admin.academic-years.activate', $year),
     );
 
@@ -51,7 +53,7 @@ test('only one academic year can be active at a time', function () {
     AcademicYear::factory()->create(['name' => '2025/2026', 'is_active' => true]);
     $newYear = AcademicYear::factory()->create(['name' => '2026/2027', 'is_active' => false]);
 
-    $response = $this->actingAs($this->superAdmin)->post(
+    $response = $this->actingAs($this->superAdmin)->withoutMiddleware()->post(
         route('admin.academic-years.activate', $newYear),
     );
 

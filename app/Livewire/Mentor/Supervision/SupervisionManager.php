@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Mentor\Supervision;
@@ -28,7 +30,7 @@ class SupervisionManager extends Component
             ->latest('date')
             ->paginate(10);
 
-        return view('livewire.supervision.supervision-manager', [
+        return view('livewire.mentor.supervision-manager', [
             'logs' => $logs,
         ]);
     }

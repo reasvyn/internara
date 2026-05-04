@@ -1,8 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\School\Models;
 
 use App\Domain\Core\Concerns\HasUuid;
+use App\Domain\User\Models\Profile;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

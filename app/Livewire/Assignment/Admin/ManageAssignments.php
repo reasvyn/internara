@@ -1,3 +1,4 @@
+<?php
 
 declare(strict_types=1);
 
@@ -41,7 +42,7 @@ class ManageAssignments extends Component
 
     public function render(): View
     {
-        return view('livewire.admin.assignment-manager', [
+        return view('livewire.assignment.manage-assignments', [
             'assignments' => Assignment::with(['type', 'internship'])->get(),
             'types' => AssignmentType::all(),
             'internships' => Internship::all(),

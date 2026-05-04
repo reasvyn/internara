@@ -9,7 +9,7 @@ enum RolePermission: string
     case SUPER_ADMIN = 'super-admin';
     case ADMIN = 'admin';
     case TEACHER = 'teacher';
-    case MENTOR = 'mentor';
+    case SUPERVISOR = 'supervisor';
     case STUDENT = 'student';
 
     /**
@@ -23,7 +23,7 @@ enum RolePermission: string
             self::SUPER_ADMIN => $this->allPermissions(),
             self::ADMIN => $this->adminPermissions(),
             self::TEACHER => $this->teacherPermissions(),
-            self::MENTOR => $this->mentorPermissions(),
+            self::SUPERVISOR => $this->supervisorPermissions(),
             self::STUDENT => $this->studentPermissions(),
         };
     }
@@ -166,9 +166,9 @@ enum RolePermission: string
             Permission::TEACHER_VIEW->value,
             Permission::TEACHER_MANAGE->value,
 
-            // Mentor
-            Permission::MENTOR_VIEW->value,
-            Permission::MENTOR_MANAGE->value,
+            // Supervisor
+            Permission::SUPERVISOR_VIEW->value,
+            Permission::SUPERVISOR_MANAGE->value,
         ];
     }
 
@@ -234,11 +234,11 @@ enum RolePermission: string
     }
 
     /**
-     * Permissions for Mentor.
+     * Permissions for Supervisor.
      *
      * @return list<string>
      */
-    protected function mentorPermissions(): array
+    protected function supervisorPermissions(): array
     {
         return [
             // Core

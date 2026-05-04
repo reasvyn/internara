@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\User\Policies;
 
 use App\Domain\User\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 /**
  * Policy for User model authorization.
@@ -15,8 +14,6 @@ use Illuminate\Auth\Access\HandlesAuthorization;
  */
 class UserPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any users.
      */
@@ -30,7 +27,6 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        // Users can view their own profile
         if ($user->id === $model->id) {
             return true;
         }
@@ -51,7 +47,6 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        // Users can update their own profile (with limitations)
         if ($user->id === $model->id) {
             return true;
         }
@@ -64,7 +59,6 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        // Cannot delete yourself
         if ($user->id === $model->id) {
             return false;
         }
@@ -85,7 +79,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        // Cannot force delete yourself
         if ($user->id === $model->id) {
             return false;
         }

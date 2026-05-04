@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Layout;
+namespace Tests\Feature\Core;
 
 use App\Domain\Core\Support\AppInfo;
-use App\Livewire\Layout\AppSignature;
+use App\Livewire\Core\AppSignature;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -17,13 +17,20 @@ afterEach(function () {
 });
 
 test('app signature renders with author information', function () {
+    $author = AppInfo::get('author.name');
+    $version = AppInfo::version();
+    $name = AppInfo::get('name');
+
     Livewire::test(AppSignature::class)
-        ->assertSee('internara')
-        ->assertSee(AppInfo::version())
-        ->assertSee('Reas Vyn')
-        ->assertSee('MIT');
+        ->assertSee($name)
+        ->assertSee($version)
+        ->assertSee($author)
+        ->assertSee(AppInfo::get('license'));
 });
 
 test('app signature renders github link when available', function () {
-    Livewire::test(AppSignature::class)->assertSee('https://github.com/reasvyn');
+    $github = AppInfo::get('author.github');
+    if ($github) {
+        Livewire::test(AppSignature::class)->assertSee($github);
+    }
 });

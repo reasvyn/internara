@@ -1,12 +1,13 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Domain\Document\Actions;
 
 use App\Domain\Core\Actions\LogAuditAction;
+use App\Domain\Document\Models\GeneratedReport;
 use App\Domain\User\Models\User;
 use App\Jobs\Report\GenerateReportJob;
-use App\Domain\Document\Models\GeneratedReport;
 use Illuminate\Support\Facades\DB;
 
 /**

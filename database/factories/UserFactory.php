@@ -13,18 +13,8 @@ use Illuminate\Support\Facades\Hash;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var class-string<User>
-     */
     protected $model = User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -32,19 +22,33 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'username' => 'u'.$this->faker->unique()->numerify('########'),
             'password' => Hash::make('password'),
+            'email_verified_at' => now(),
             'setup_required' => false,
+            'locked_at' => null,
+            'locked_reason' => null,
         ];
     }
 
-    /**
-     * Indicate that the user requires setup.
-     */
     public function requiresSetup(): static
     {
-        return $this->state(
-            fn () => [
-                'setup_required' => true,
-            ],
-        );
+        return $this->state(fn () => ['setup_required' => true]);
+    }
+
+    public function locked(string $reason = 'too_many_failed_attempts'): static
+    {
+        return $this->state(fn () => [
+            'locked_at' => now(),
+            'locked_reason' => $reason,
+        ]);
+    }
+
+    public function unverified(): static
+    {
+        return $this->state(fn () => ['email_verified_at' => null]);
+    }
+
+    public function withPassword(string $password): static
+    {
+        return $this->state(fn () => ['password' => Hash::make($password)]);
     }
 }

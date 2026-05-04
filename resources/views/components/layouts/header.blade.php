@@ -32,18 +32,18 @@
             <div class="flex items-center gap-4">
                 <!-- Theme Switcher -->
                 <div class="hidden md:flex bg-base-200/50 p-1 rounded-xl border border-base-content/5">
-                    <livewire:theme-switcher />
+                    <livewire:core.theme-switcher />
                 </div>
                 
                 <!-- Language Switcher -->
                 <div class="hidden md:block">
-                    <livewire:language-switcher />
+                    <livewire:core.language-switcher />
                 </div>
                 
                 <!-- Notifications -->
                 @auth
                     <div class="relative">
-                        <livewire:shared.notification-bell />
+                        <livewire:notification.notification-bell />
                     </div>
 
                     <div class="divider divider-horizontal mx-1 opacity-20 h-8 self-center"></div>

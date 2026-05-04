@@ -134,9 +134,9 @@ enum Permission: string
     case TEACHER_VIEW = 'teacher.view';
     case TEACHER_MANAGE = 'teacher.manage';
 
-    // ==================== MENTOR ====================
-    case MENTOR_VIEW = 'mentor.view';
-    case MENTOR_MANAGE = 'mentor.manage';
+    // ==================== SUPERVISOR ====================
+    case SUPERVISOR_VIEW = 'supervisor.view';
+    case SUPERVISOR_MANAGE = 'supervisor.manage';
 
     /**
      * Get all permissions grouped by module.
@@ -244,7 +244,7 @@ enum Permission: string
             'admin' => [self::ADMIN_VIEW, self::ADMIN_MANAGE],
             'student' => [self::STUDENT_VIEW, self::STUDENT_MANAGE],
             'teacher' => [self::TEACHER_VIEW, self::TEACHER_MANAGE],
-            'mentor' => [self::MENTOR_VIEW, self::MENTOR_MANAGE],
+            'supervisor' => [self::SUPERVISOR_VIEW, self::SUPERVISOR_MANAGE],
         ];
     }
 

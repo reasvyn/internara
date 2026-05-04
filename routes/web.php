@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Dashboard\Livewire\AdminDashboard;
-use App\Domain\Dashboard\Livewire\StudentDashboard;
-use App\Domain\Dashboard\Livewire\SupervisorDashboard as MentorDashboard;
-use App\Domain\Dashboard\Livewire\TeacherDashboard;
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
@@ -14,29 +10,31 @@ use App\Http\Controllers\MentorController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TeacherController;
-use App\Livewire\Admin\Company\CompanyIndex;
-use App\Livewire\Admin\Department\DepartmentIndex;
-use App\Livewire\Admin\Internship\DirectPlacementManager;
-use App\Livewire\Admin\Internship\InternshipIndex;
-use App\Livewire\Admin\Internship\PlacementIndex;
-use App\Livewire\Admin\Report\ReportsManager;
-use App\Livewire\Admin\School\SchoolProfile;
 use App\Livewire\Admin\SystemSetting;
-use App\Livewire\Admin\User\AdminManager;
-use App\Livewire\Admin\User\MentorManager;
-use App\Livewire\Admin\User\StudentManager;
-use App\Livewire\Admin\User\TeacherManager;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
-use App\Livewire\Common\NotificationCenter;
+use App\Livewire\Core\Notifications\NotificationCenter;
+use App\Livewire\Dashboard\AdminDashboard;
+use App\Livewire\Dashboard\StudentDashboard;
+use App\Livewire\Dashboard\SupervisorDashboard as MentorDashboard;
+use App\Livewire\Dashboard\TeacherDashboard;
+use App\Livewire\Document\Admin\ReportsManager;
+use App\Livewire\Internship\CompanyIndex;
+use App\Livewire\Internship\DirectPlacementManager;
+use App\Livewire\Internship\InternshipIndex;
+use App\Livewire\Internship\PlacementIndex;
 use App\Livewire\Internship\RegistrationWizard;
-use App\Livewire\Profile\ProfileEditor;
+use App\Livewire\Mentor\Supervision\MonitoringVisitIndex;
+use App\Livewire\Mentor\Supervision\SupervisionManager;
+use App\Livewire\Mentor\Supervision\SupervisorLogManager;
+use App\Livewire\School\DepartmentIndex;
+use App\Livewire\School\SchoolProfile;
 use App\Livewire\Setup\SetupWizard;
-use App\Livewire\Student\JournalManager;
-use App\Livewire\Supervision\MonitoringVisitIndex;
-use App\Livewire\Supervision\SupervisionManager;
-use App\Livewire\Supervision\SupervisorLogManager;
+use App\Livewire\User\Admin\AdminManager;
+use App\Livewire\User\Admin\MentorManager;
+use App\Livewire\User\Admin\StudentManager;
+use App\Livewire\User\Admin\TeacherManager;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -178,7 +176,7 @@ Route::prefix('student')
 */
 Route::prefix('supervision')
     ->name('supervision.')
-    ->middleware(['auth', 'role:teacher|mentor'])
+    ->middleware(['auth', 'role:teacher|supervisor'])
     ->group(function () {
         Route::livewire('/logs', SupervisorLogManager::class)->name('logs');
         Route::livewire('/monitoring', MonitoringVisitIndex::class)->name('monitoring');
@@ -206,7 +204,7 @@ Route::prefix('teacher')
 */
 Route::prefix('mentor')
     ->name('mentor.')
-    ->middleware(['auth', 'role:mentor'])
+    ->middleware(['auth', 'role:supervisor'])
     ->group(function () {
         Route::livewire('/dashboard', MentorDashboard::class)->name('dashboard');
         Route::post('/{mentor}/evaluate', [MentorController::class, 'evaluate'])->name('evaluate');

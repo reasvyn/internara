@@ -1,10 +1,13 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Domain\User\Models;
 
-use App\Enums\BloodType;
-use App\Enums\Gender;
 use App\Domain\Core\Concerns\HasUuid;
+use App\Domain\School\Models\Department;
+use App\Domain\User\Enums\BloodType;
+use App\Domain\User\Enums\Gender;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,10 +21,18 @@ class Profile extends Model
 {
     use HasFactory, HasUuid;
 
-    protected $casts = [
-        'gender' => Gender::class,
-        'blood_type' => BloodType::class,
-    ];
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'gender' => Gender::class,
+            'blood_type' => BloodType::class,
+        ];
+    }
 
     /**
      * Get the user that owns the profile.
@@ -34,7 +45,7 @@ class Profile extends Model
     /**
      * Get the department the profile belongs to.
      */
-    public function department()
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }

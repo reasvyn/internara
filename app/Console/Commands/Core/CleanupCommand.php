@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\System;
+namespace App\Console\Commands\Core;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;

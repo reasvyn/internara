@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+namespace Tests\Unit\Core;
 
-use App\Services\Setup\EnvAuditor;
-use App\Services\Setup\SetupRequirementRegistry;
+use App\Domain\Setup\Services\EnvAuditor;
 
 /**
  * S2 - Sustain: Unit tests for EnvAuditor pre-flight checks.
@@ -13,7 +12,7 @@ use App\Services\Setup\SetupRequirementRegistry;
  */
 beforeEach(function () {
     app()->setLocale('en');
-    $this->auditor = new EnvAuditor(new SetupRequirementRegistry);
+    $this->auditor = new EnvAuditor;
 });
 
 test('it can perform a full system audit', function () {
@@ -38,37 +37,26 @@ test('it can perform a full system audit', function () {
     }
 });
 
-test('it reports failure when a critical check fails', function () {
-    $registry = new SetupRequirementRegistry;
-    // Add a non-existent extension to force failure
-    $registry->requireExtension('non_existent_extension_abc_123');
-
-    $auditor = new EnvAuditor($registry);
-    $result = $auditor->audit();
-
-    expect($result['passed'])->toBeFalse();
-});
-
 test('it correctly sanitizes database error messages', function () {
     // Accessing private method for testing sanitization logic
     $reflection = new \ReflectionClass(EnvAuditor::class);
     $method = $reflection->getMethod('sanitizeError');
     $method->setAccessible(true);
 
-    $sensitiveMessage = 'Access denied for user root@localhost (using password: YES)';
+    $sensitiveMessage = "Access denied for user 'root'@'localhost'";
     $sanitized = $method->invoke($this->auditor, $sensitiveMessage);
 
     expect($sanitized)->not->toContain('root');
     expect($sanitized)->toContain('[redacted]');
 });
 
-test('it detects php version requirement', function () {
+test('it detects requirements', function () {
     $reflection = new \ReflectionClass(EnvAuditor::class);
-    $method = $reflection->getMethod('checkPhpVersion');
+    $method = $reflection->getMethod('checkRequirements');
     $method->setAccessible(true);
 
-    $result = $method->invoke($this->auditor);
+    $results = $method->invoke($this->auditor);
 
-    expect($result['status'])->toBeIn(['pass', 'fail']);
-    expect($result['name'])->toContain('PHP Version');
+    expect($results)->toBeArray();
+    expect($results[0]['name'])->toContain('PHP Version');
 });

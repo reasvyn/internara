@@ -1,9 +1,14 @@
+<?php
 
 declare(strict_types=1);
 
 namespace App\Domain\Setup\Models;
 
 use App\Domain\Core\Concerns\HasUuid;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\School\Models\Department;
+use App\Domain\School\Models\School;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

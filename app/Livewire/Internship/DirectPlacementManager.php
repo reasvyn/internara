@@ -1,11 +1,13 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Domain\Internship\Actions\DirectPlacementAction;
-use App\Domain\User\Models\User;
 use App\Domain\Auth\Enums\Role;
+use App\Domain\Internship\Actions\DirectPlacementAction;
 use App\Domain\Internship\Models\Placement;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;

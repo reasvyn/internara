@@ -32,9 +32,9 @@
                     <!-- Actions -->
                     <div class="flex items-center gap-3">
                         <div class="hidden md:flex items-center gap-1 mr-4 bg-base-200/50 p-1 rounded-xl border border-base-content/5">
-                            <livewire:theme-switcher />
+                            <livewire:core.theme-switcher />
                         </div>
-                        <livewire:language-switcher />
+                        <livewire:core.language-switcher />
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="flex flex-col items-center gap-2">
-                            <livewire:layout.app-signature />
+                            <livewire:core.app-signature />
                             <p class="text-[9px] uppercase font-black tracking-[0.4em] opacity-20">
                                 {{ trans('common.app_tagline') ?: 'Professional Internship Management' }}
                             </p>

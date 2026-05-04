@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
+namespace Tests\Feature\Document;
+
 use App\Domain\Document\Actions\QueueReportGenerationAction;
+use App\Domain\Document\Jobs\GenerateReportJob;
+use App\Domain\Document\Models\GeneratedReport;
 use App\Domain\User\Models\User;
 use App\Enums\Auth\Role as RoleEnum;
-use App\Jobs\Report\GenerateReportJob;
-use App\Livewire\Admin\Report\ReportsManager;
-use App\Models\GeneratedReport;
+use App\Livewire\Document\Admin\ReportsManager;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {

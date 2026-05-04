@@ -1,9 +1,11 @@
+<?php
+
 declare(strict_types=1);
 
-namespace App\Livewire\Core;
+namespace App\Livewire\Admin;
 
-use App\Domain\Core\Actions\LogAuditAction;
 use App\Domain\Admin\Actions\SetSettingAction;
+use App\Domain\Core\Actions\LogAuditAction;
 use App\Domain\Core\Support\Settings;
 use App\Notifications\TestMailNotification;
 use Illuminate\Support\Facades\Config;
@@ -91,13 +93,13 @@ class SystemSetting extends Component
     public function mount(): void
     {
         // General
-        $this->brand_name = Settings::get('brand_name', 'Internara');
-        $this->site_title = Settings::get('site_title', 'Internara - Internship Management');
+        $this->brand_name = Settings::get('brand_name', brand('name'));
+        $this->site_title = Settings::get('site_title', brand('site_title'));
         $this->default_locale = Settings::get('default_locale', 'id');
 
         // Metadata (resolved via AppInfo)
-        $this->app_name = Settings::get('app_name', 'Internara');
-        $this->app_version = Settings::get('app_version', '0.0.0');
+        $this->app_name = Settings::get('app_name', app_info('name'));
+        $this->app_version = Settings::get('app_version', app_info('version'));
 
         // Assets
         $this->current_logo_url = Settings::get('brand_logo');

@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Core;
@@ -59,6 +61,6 @@ class LanguageSwitcher extends Component
      */
     public function render()
     {
-        return view('livewire.language-switcher');
+        return view('livewire.core.language-switcher');
     }
 }

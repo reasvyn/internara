@@ -1,3 +1,5 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Livewire\Internship;
@@ -5,11 +7,11 @@ namespace App\Livewire\Internship;
 use App\Domain\Internship\Actions\CreateInternshipAction;
 use App\Domain\Internship\Actions\DeleteInternshipAction;
 use App\Domain\Internship\Actions\UpdateInternshipAction;
-use App\Enums\InternshipStatus;
-use App\Livewire\BaseRecordManager;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Placement;
 use App\Domain\Internship\Models\Registration;
+use App\Enums\InternshipStatus;
+use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -167,6 +169,6 @@ class InternshipIndex extends BaseRecordManager
     #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.admin.internship.internship-index');
+        return view('livewire.internship.internship-index');
     }
 }
