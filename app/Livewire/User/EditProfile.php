@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\User;
 
-use App\Domain\User\Actions\UpdateProfileAction;
-use App\Domain\User\Actions\UpdateUserPasswordAction;
+use App\Actions\User\UpdateProfileAction;
+use App\Actions\User\UpdateUserPasswordAction;
 use App\Domain\User\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;

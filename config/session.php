@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Str;
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Default Session Driver
@@ -19,9 +20,7 @@ return [
     |
     */
 
-    'driver' => (file_exists(storage_path('app/.installed')))
-        ? env('SESSION_DRIVER', 'database')
-        : 'file',
+    'driver' => env('SESSION_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -130,7 +129,10 @@ return [
     |
     */
 
-    'cookie' => env('SESSION_COOKIE', Str::snake((string) env('APP_NAME', 'laravel')).'_session'),
+    'cookie' => env(
+        'SESSION_COOKIE',
+        Str::snake((string) env('APP_NAME', 'laravel')).'_session'
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -152,7 +154,7 @@ return [
     |
     | This value determines the domain and subdomains the session cookie is
     | available to. By default, the cookie will be available to the root
-    | domain without subdomains. Typically, this shouldn't be changed.
+    | domain and all subdomains. Typically, this shouldn't be changed.
     |
     */
 
@@ -213,4 +215,5 @@ return [
     */
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
+
 ];

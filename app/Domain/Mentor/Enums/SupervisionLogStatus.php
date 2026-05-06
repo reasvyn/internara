@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Mentor\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Processing states of a supervision log.
  */
-enum SupervisionLogStatus: string
+enum SupervisionLogStatus: string implements LabelEnum
 {
     case PENDING = 'pending';
     case IN_PROGRESS = 'in_progress';

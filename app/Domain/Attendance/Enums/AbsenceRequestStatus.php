@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Attendance\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Processing states of an absence request.
  */
-enum AbsenceRequestStatus: string
+enum AbsenceRequestStatus: string implements LabelEnum
 {
     case PENDING = 'pending';
     case APPROVED = 'approved';

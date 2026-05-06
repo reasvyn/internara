@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -16,11 +17,11 @@ return [
     */
 
     'postmark' => [
-        'key' => env('POSTMARK_API_KEY'),
+        'token' => env('POSTMARK_TOKEN'),
     ],
 
     'resend' => [
-        'key' => env('RESEND_API_KEY'),
+        'key' => env('RESEND_KEY'),
     ],
 
     'ses' => [
@@ -36,10 +37,4 @@ return [
         ],
     ],
 
-    'cloudflare' => [
-        'turnstile' => [
-            'site_key' => env('TURNSTILE_SITE_KEY'),
-            'secret_key' => env('TURNSTILE_SECRET_KEY'),
-        ],
-    ],
 ];

@@ -40,6 +40,13 @@ final class SystemUsername implements ValidationRule
         'security',
     ];
 
+    /**
+     * Run the validation rule.
+     *
+     * @param string $attribute The name of the attribute being validated
+     * @param mixed $value The value of the attribute
+     * @param Closure $fail The callback to invoke when validation fails
+     */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! is_string($value)) {

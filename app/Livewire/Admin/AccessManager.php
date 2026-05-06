@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Admin;
 
-use App\Domain\User\Actions\UpdateRolePermissionsAction;
+use App\Actions\User\UpdateRolePermissionsAction;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 use Mary\Traits\Toast;

@@ -10,17 +10,43 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+/**
+ * Notifies users when their account status changes (lock, unlock, suspend, activate).
+ *
+ * Sends notifications via multiple channels to ensure users are informed
+ * of any changes to their account access.
+ */
 class AccountStatusNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * Create a new notification instance.
+     *
+     * @param string $status The new account status (locked, unlocked, suspended, activated)
+     * @param string|null $reason Optional explanation for the status change
+     */
     public function __construct(public string $status, public ?string $reason = null) {}
 
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @param mixed $notifiable The entity being notified
+     *
+     * @return array<int, string>
+     */
     public function via($notifiable): array
     {
         return ['mail', 'broadcast', CustomDatabaseChannel::class];
     }
 
+    /**
+     * Get the broadcastable representation of the notification.
+     *
+     * @param mixed $notifiable The entity being notified
+     *
+     * @return array<string, mixed>
+     */
     public function toBroadcast($notifiable): array
     {
         return [
@@ -32,6 +58,11 @@ class AccountStatusNotification extends Notification implements ShouldQueue
         ];
     }
 
+    /**
+     * Get the mail representation of the notification.
+     *
+     * @param mixed $notifiable The entity being notified
+     */
     public function toMail($notifiable): MailMessage
     {
         $message = new MailMessage()
@@ -52,6 +83,13 @@ class AccountStatusNotification extends Notification implements ShouldQueue
         return $message->action(__('notifications.welcome.mail_action'), url('/login'));
     }
 
+    /**
+     * Get the storable array representation for database storage.
+     *
+     * @param mixed $notifiable The entity being notified
+     *
+     * @return array<string, mixed>
+     */
     public function toCustomDatabase($notifiable): array
     {
         return [

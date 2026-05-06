@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\User\Models;
 
 use App\Domain\Auth\Enums\AccountStatus;
-use App\Domain\Core\Concerns\HasUuid;
 use App\Domain\Document\Models\GeneratedReport;
 use App\Domain\Guidance\Models\HandbookAcknowledgement;
 use App\Domain\Internship\Models\Registration;
+use App\Traits\HasUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -122,11 +122,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return (bool) $this->setup_required;
     }
 
+    /**
+     * Check if the user account is currently locked.
+     */
     public function isLocked(): bool
     {
         return $this->locked_at !== null;
     }
 
+    /**
+     * Lock the user account with an optional reason.
+     */
     public function lock(string $reason = 'too_many_failed_attempts'): void
     {
         $this->update([
@@ -135,6 +141,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
+    /**
+     * Unlock the user account.
+     */
     public function unlock(): void
     {
         $this->update([
@@ -143,21 +152,33 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
+    /**
+     * Scope a query to only include locked users.
+     */
     public function scopeLocked(Builder $query): Builder
     {
         return $query->whereNotNull('locked_at');
     }
 
+    /**
+     * Scope a query to only include unlocked users.
+     */
     public function scopeUnlocked(Builder $query): Builder
     {
         return $query->whereNull('locked_at');
     }
 
+    /**
+     * Scope a query to only include active users (unlocked and setup complete).
+     */
     public function scopeActive(Builder $query): Builder
     {
         return $query->unlocked()->where('setup_required', false);
     }
 
+    /**
+     * Scope a query to only include users with a specific role.
+     */
     public function scopeRoleType(Builder $query, string $role): Builder
     {
         return $query->whereHas('roles', fn ($q) => $q->where('name', $role));

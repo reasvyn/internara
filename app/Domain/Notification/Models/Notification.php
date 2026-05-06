@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Notification\Models;
 
-use App\Domain\Core\Concerns\HasUuid;
+use App\Traits\HasUuid;
 use Database\Factories\NotificationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

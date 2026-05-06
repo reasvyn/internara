@@ -15,9 +15,6 @@
 
             {{-- Step Navigation Dots (Advanced Visuals) --}}
             <div class="flex items-center justify-between gap-3">
-                @php
-                    $stepKeys = \App\Domain\Setup\Services\SetupService::STEPS;
-                @endphp
                 @foreach($stepKeys as $index => $stepKey)
                     @php
                         $stepNum = $index + 1;
@@ -25,9 +22,9 @@
                         $isCurrent = $stepNum === $currentStep;
                         $label = __('setup.wizard.step_labels.' . $stepKey);
                     @endphp
-                    <button 
+                    <button
                         wire:click="goToStep('{{ $stepKey }}')"
-                        @disabled($stepNum > $currentStep && !app(\App\Domain\Setup\Services\SetupService::class)->isStepCompleted($stepKey))
+                        @disabled($stepNum > $currentStep && !\App\Models\Setup::isStepCompleted($stepKey))
                         @class([
                             'flex-1 group transition-all duration-700 outline-none',
                             'opacity-40 hover:opacity-100' => !$isCurrent && !$isCompleted,
@@ -69,14 +66,14 @@
                     @include('livewire.setup.components.school-step')
                 @endif
 
-                {{-- Step 3: Super Admin Account --}}
+                {{-- Step 3: Department --}}
                 @if($currentStep === 3)
-                    @include('livewire.setup.components.admin-step')
+                    @include('livewire.setup.components.department-step')
                 @endif
 
-                {{-- Step 4: Department --}}
+                {{-- Step 4: Super Admin Account --}}
                 @if($currentStep === 4)
-                    @include('livewire.setup.components.department-step')
+                    @include('livewire.setup.components.admin-step')
                 @endif
 
                 {{-- Step 5: Internship Program --}}

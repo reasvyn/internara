@@ -1,9 +1,11 @@
 <?php
 
 declare(strict_types=1);
+
 use Spatie\ModelStatus\Status;
 
 return [
+
     /*
      * The class name of the status model that holds all statuses.
      *

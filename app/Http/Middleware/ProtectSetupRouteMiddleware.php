@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Domain\Setup\Services\SetupService;
+use App\Actions\Setup\ValidateSetupTokenAction;
+use App\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -18,7 +20,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ProtectSetupRouteMiddleware
 {
-    public function __construct(protected SetupService $setupService) {}
+    public function __construct(
+        private ValidateSetupTokenAction $validateToken,
+    ) {}
 
     /**
      * Handle an incoming request.
@@ -26,13 +30,10 @@ class ProtectSetupRouteMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // When installed, only allow access during the 5-minute
-        // finalization window (step 7) so the user can see the completion summary.
+        // finalization window so the user can see the completion summary.
         // After that window, /setup returns 404 as if it never existed.
-        if ($this->setupService->isInstalled()) {
-            if (
-                $this->setupService->getCurrentStep() === 7 &&
-                $this->setupService->isFinalizationWindowActive()
-            ) {
+        if (Setup::isInstalled()) {
+            if ($this->isWithinFinalizationWindow()) {
                 return $next($request);
             }
 
@@ -56,7 +57,7 @@ class ProtectSetupRouteMiddleware
         RateLimiter::hit($key, 60);
 
         // Allow access if session is already authorized
-        if ($this->setupService->isSessionAuthorized()) {
+        if (Session::get('setup.authorized', false)) {
             return $next($request);
         }
 
@@ -64,7 +65,6 @@ class ProtectSetupRouteMiddleware
         $token = $request->query('setup_token')
             ?? $request->session()->get('setup.token_input');
 
-        // S1: If still null, check if this is a Livewire request and try to extract from referer
         if ($token === null && $request->hasHeader('X-Livewire')) {
             $referer = $request->header('referer');
             if ($referer) {
@@ -73,21 +73,44 @@ class ProtectSetupRouteMiddleware
             }
         }
 
-        if ($token === null || ! $this->setupService->validateToken((string) $token)) {
-            if ($request->hasHeader('X-Livewire')) {
-                return response()->json([
-                    'message' => __('setup.invalid_token'),
-                    'redirect' => route('login'),
-                ], 403);
-            }
+        if ($token === null) {
+            return $this->rejectToken($request, __('setup.invalid_token'));
+        }
 
-            abort(Response::HTTP_FORBIDDEN, __('setup.invalid_token'));
+        try {
+            $this->validateToken->execute((string) $token);
+        } catch (\Exception) {
+            return $this->rejectToken($request, __('setup.invalid_token'));
         }
 
         // Authorize session for subsequent requests
-        $this->setupService->authorizeSession((string) $token);
+        Session::put('setup.authorized', true);
+        Session::put('setup.token', $token);
         $request->session()->put('setup.token_input', $token);
 
         return $next($request);
+    }
+
+    private function isWithinFinalizationWindow(int $minutes = 5): bool
+    {
+        $setup = Setup::first();
+
+        if ($setup === null || $setup->updated_at === null) {
+            return false;
+        }
+
+        return $setup->updated_at->diffInMinutes(now()) < $minutes;
+    }
+
+    private function rejectToken(Request $request, string $message): Response
+    {
+        if ($request->hasHeader('X-Livewire')) {
+            return response()->json([
+                'message' => $message,
+                'redirect' => route('login'),
+            ], 403);
+        }
+
+        abort(Response::HTTP_FORBIDDEN, $message);
     }
 }

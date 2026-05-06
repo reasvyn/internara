@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Attendance\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Attendance status for a given day.
  */
-enum AttendanceStatus: string
+enum AttendanceStatus: string implements LabelEnum
 {
     case PRESENT = 'present';
     case LATE = 'late';

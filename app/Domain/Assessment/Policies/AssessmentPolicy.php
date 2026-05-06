@@ -2,24 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Assessment\Policies;
 
 use App\Domain\Assessment\Models\Assessment;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Only teachers can create/update assessments. Students can only view their own.
  */
-class AssessmentPolicy
+class AssessmentPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function view(User $user, Assessment $assessment): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
@@ -34,12 +39,16 @@ class AssessmentPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function update(User $user, Assessment $assessment): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
@@ -48,11 +57,15 @@ class AssessmentPolicy
 
     public function finalize(User $user, Assessment $assessment): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function delete(User $user, Assessment $assessment): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']) && ! $assessment->isFinalized();
+        return $this->isAdmin($user) && ! $assessment->isFinalized();
     }
 }

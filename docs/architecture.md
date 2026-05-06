@@ -1,99 +1,115 @@
-# Architecture & Standards
+# Architecture Overview
 
-## 1. Principles (3S Doctrine)
+Internara uses a **domain-first, action-oriented MVC** architecture:
 
-Internara follows the **3S Doctrine** to ensure code quality and system integrity:
+- **Domain Layer** (`app/Domain/`) — Pure PHP business rules, framework-agnostic
+- **Action Layer** (`app/Actions/`) — Single-purpose use case classes
+- **Presentation Layer** (`app/Livewire/`, `app/Http/`, `app/Console/`) — User interfaces
+- **Models** (`app/Domain/{Feature}/Models/`) — Eloquent persistence within domain boundaries
 
-- **Secure (S1)**: Security is absolute. Input must be validated at the boundary. Business rules must be protected in Models. No hardcoded secrets.
-- **Sustainable (S2)**: Code must be readable and follow domain language. Patterns must be consistent to ensure long-term maintainability.
-- **Scalable (S3)**: Architecture must allow for growth. Components are decoupled via Actions and Events.
-
-## 2. Core Structure
-
-The application uses a **Domain-Driven Structure** where code is organized by business context rather than technical layer.
-
-### Folder Hierarchy
+## Layered Structure
 
 ```
 app/
-├── Domain/              # Backend/Domain Layer (Bounded business contexts)
-│   ├── {Domain}/
-│   │   ├── Actions/    # Stateless use cases
-│   │   ├── Models/     # Rich models with business rules
-│   │   ├── Data/       # DTOs for structured data
-│   │   ├── Enums/      # Domain-specific enums
-│   │   ├── Policies/   # Authorization logic
-│   │   ├── Events/     # Domain events
-│   │   ├── Listeners/  # Domain event listeners
-│   │   ├── Notifications/ # Domain-specific notifications
-│   │   └── Repositories/ # Complex queries
-│
-├── Livewire/            # Frontend/Presentation Layer (Separated by domain)
-│   ├── {Domain}/       # Reactive UI components grouped by domain context
-│
-├── Http/                # Presentation Layer (HTTP)
-│   ├── Controllers/    # Flat controllers for web/API
-│   ├── Requests/       # Form Requests grouped by {Domain}
-│   └── Middleware/     # Shared HTTP infrastructure
-│
-├── Console/             # Presentation Layer (CLI)
-│   └── Commands/       # Artisan Commands grouped by {Domain}
-│
-├── Providers/           # Infrastructure Layer (Service Providers)
-└── Shared/              # Cross-cutting UI components (Components, Layouts)
+├── Actions/                    # Use cases (entry points)
+│   └── {Domain}/               # Grouped by business domain
+│       └── *Action.php         # Single-purpose execute() method
+├── Domain/                     # Business rules (pure PHP)
+│   └── {Domain}/
+│       ├── Data/               # Immutable DTOs (input/output)
+│       ├── Enums/              # Status, type, category definitions
+│       ├── Events/             # Domain events
+│       ├── Exceptions/         # Domain-specific exceptions
+│       ├── Models/             # Eloquent models (persistence)
+│       ├── Notifications/      # Domain notifications
+│       ├── Services/           # Framework-adjacent utilities (audit, etc.)
+│       └── Policies/           # Authorization policies
+├── Livewire/                   # Reactive UI components
+├── Http/
+│   ├── Controllers/            # Thin HTTP controllers
+│   ├── Middleware/             # Request middleware
+│   └── Requests/               # Form request validation
+├── Console/Commands/           # CLI tools
+├── Models/                     # Cross-cutting models (e.g., Setup)
+└── Support/                    # Application-wide helpers (Settings, AppInfo)
 ```
 
-## 3. Layer Standards
+## Key Principles
 
-### Models (Rich State)
-- **Standard**: Must use `HasUuid` trait. Primary keys are UUIDs.
-- **Business Rules**: Logic for "Is this allowed?" or "What is the status?" belongs here.
-- **Modern Syntax**: Use PHP 8 Attributes (`#[Fillable]`, `#[Hidden]`) and the `casts(): array` method.
-- **Strictness**: Lazy loading and silent attribute discarding are disabled in development.
+| Principle | Rule |
+|---|---|
+| Domain purity | No Laravel/Spatie imports in `Domain/{Feature}/Data/`, `Enums/`, `Exceptions/` |
+| Action-DTO pattern | Actions accept DTOs as input, return entities or DTOs as output |
+| Thin controllers | Controllers/Livewire components only handle request/response, delegate to Actions |
+| Single responsibility | Each Action does one thing, named `*Action` with a single `execute()` method |
+| Domain grouping | Actions and Domain classes share the same domain names (`Setup`, `User`, `Auth`, etc.) |
 
-### Actions (Stateless Logic)
-- **Standard**: One class = One use case. Must have an `execute()` method.
-- **Stateless**: Actions must not store state in properties; they are orchestrators.
-- **Dependency**: Inject services and other actions via the constructor.
+## Domain Map
 
-### Livewire (Reactive UI)
-- **Standard**: Components handle UI state and interaction only.
-- **Location**: Located in `app/Livewire/{Domain}/`.
-- **Delegation**: Must delegate all mutations and complex logic to Actions.
-- **Authorization**: Always verify permissions via Policies or Gates.
+| Domain | Purpose | Key Models |
+|---|---|---|
+| `Setup` | System installation & provisioning | `Setup` |
+| `Auth` | Authentication & account lifecycle | — |
+| `User` | User accounts & profiles | `User`, `Profile` |
+| `School` | Institution & department management | `School`, `Department`, `AcademicYear` |
+| `Internship` | Internship placements & tracking | `Internship`, `Placement`, `Company`, `Registration` |
+| `Attendance` | Absence & attendance logging | `AttendanceLog`, `AbsenceRequest` |
+| `Logbook` | Daily activity logs | `LogbookEntry` |
+| `Assessment` | Competency evaluation | `Assessment`, `Competency`, `DepartmentCompetency` |
+| `Assignment` | Tasks & submissions | `Assignment`, `Submission`, `AssignmentType` |
+| `Mentor` | Supervisor monitoring | `SupervisionLog`, `MonitoringVisit` |
+| `Mentee` | Student competency tracking | `CompetencyLog` |
+| `Schedule` | Scheduling | `Schedule` |
+| `Document` | Templates & generated reports | `DocumentTemplate`, `GeneratedReport`, `OfficialDocument` |
+| `Guidance` | Handbooks & acknowledgements | `Handbook`, `HandbookAcknowledgement` |
+| `Notification` | System notifications | `Notification` |
+| `Dashboard` | Analytics & stats | — |
+| `Core` | System-wide concerns | `Setting`, `AuditLog` |
+| `Log` | Activity tracking | `ActivityLog` |
+| `Shared` | Cross-domain contracts, traits, and data objects | — |
 
-### Form Requests (Validation)
-- **Standard**: Located in `app/Http/Requests/{Domain}/`.
-- **Purpose**: Centralized input validation and authorization for Controllers.
+## Action Pattern
 
-### Artisan Commands
-- **Standard**: Located in `app/Console/Commands/{Domain}/`.
-- **Purpose**: CLI interface for domain-specific tasks.
+Every Action is a `final readonly class` with a single public `execute()` method:
 
-### Jobs (Background Work)
-- **Standard**: Located in `app/Domain/{Domain}/Jobs/`.
-- **Usage**: Use for long-running or async tasks (PDF generation, bulk emails).
+```php
+namespace App\Actions\Setup;
 
-### Supplementary Layers
-- **DTOs (Data)**: Located in `app/Domain/{Domain}/Data/`. Use for structured data transfer between layers.
-- **Events/Listeners**: Use to decouple side effects from core logic.
-- **Repositories**: Use **only** for complex, reusable queries. Simple CRUD belongs in Actions/Models.
+final readonly class InstallSystemAction
+{
+    public function __construct(
+        private EnvironmentAuditor $auditor,
+        private ProvisionSystemAction $provision,
+    ) {}
 
-## 4. Communication Rules
+    public function execute(bool $force = false): string
+    {
+        // audit → provision → generate token
+    }
+}
+```
 
-1. **Directional Flow**: `UI (Livewire/Controller)` → `Action` → `Model/Repository`.
-2. **Cross-Domain**: Domains should communicate via **Events** or **Shared Actions** to avoid tight coupling.
-3. **No Side Effects in Models**: Models should not trigger notifications or external calls; dispatch an Event instead.
-4. **Thin Controllers**: Controllers are only for request/response mapping and delegating to Actions.
+Actions are resolved via Laravel's service container and injected into controllers, Livewire components, or CLI commands.
 
-## 5. Coding Conventions
+## Data Flow
 
-- **Naming**: Use domain-specific terms (e.g., `Supervisor` instead of `Mentor` for industry guidance).
-- **Roles**: Standard roles are `SuperAdmin`, `Admin`, `Student`, `Teacher`, `Supervisor`.
-- **Validation**: Always use `FormRequest` classes for input validation.
-- **Fail Early**: Use custom Exceptions (located in `app/Domain/{Domain}/Exceptions/`) to handle invalid business states.
-- **Format**: PHP code must be formatted with `Laravel Pint`.
+```
+Request → Livewire/Controller → Action → Domain Service/Model → Response
+                                    ↓
+                              DTO (input/output)
+                                    ↓
+                              Audit Log (Core)
+```
 
-## 6. Verification
+## Installation Flow
 
-Architectural integrity is enforced via automated **Pest Arch** tests in `tests/Arch/`. These tests prevent layer violations and ensure standards (like UUID usage) are maintained.
+1. **CLI**: `php artisan setup:install` — audits environment, provisions database, generates setup token
+2. **Web**: Token-protected URL → Setup Wizard (Livewire) — school, department, admin account
+3. **CLI**: `php artisan setup:super-admin` — creates first super administrator
+
+## Security
+
+- Setup URLs are token-protected and time-limited
+- Recovery commands require server console access
+- All administrative actions recorded in the audit trail (`audit_logs` table)
+- Domain exceptions are framework-agnostic; rendering handled at presentation layer

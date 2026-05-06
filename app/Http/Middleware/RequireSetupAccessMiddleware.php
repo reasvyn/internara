@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Domain\Setup\Services\SetupService;
+use App\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,14 +17,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RequireSetupAccessMiddleware
 {
-    public function __construct(protected readonly SetupService $setupService) {}
-
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($this->setupService->isInstalled()) {
+        if (Setup::isInstalled()) {
             return $next($request);
         }
 

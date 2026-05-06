@@ -1,46 +1,49 @@
 # Installation Guide
 
-Internara supports both automated CLI initialization and a guided web-based setup wizard.
+## Requirements
 
-## 1. Requirements
+- PHP 8.4 or higher
+- Database: SQLite, MySQL, or PostgreSQL
+- Composer and Node.js
 
-- **PHP**: 8.4+
-- **Extensions**: `mbstring`, `pdo`, `openssl`, `tokenizer`, `xml`, `curl`, `fileinfo`
-- **Database**: SQLite, MySQL 8+, or PostgreSQL 14+
-- **Frontend**: Node.js 20+
+## Installation
 
-## 2. Installation Steps
+Run the installation command from your project directory:
 
-### Automated Setup (Recommended)
 ```bash
-# Clone and install dependencies
-git clone https://github.com/reasvyn/internara.git
-composer install
-npm install
-
-# Initialize environment
-cp .env.example .env
-php artisan key:generate
-
-# Run installer
 php artisan setup:install
 ```
-The installer will generate a **One-Time Setup URL**. Open this URL in your browser to complete the configuration via the Web Wizard.
 
-### Manual Setup
+This command checks your server environment, sets up the database, and generates a one-time URL. Open that URL in your browser to complete the setup wizard.
+
+If the system detects an existing installation, add `--force` to reinstall.
+
+## Creating an Administrator Account
+
+After completing the setup wizard, create your first administrator account:
+
 ```bash
-php artisan migrate --seed
-php artisan storage:link
-php artisan serve
+php artisan setup:super-admin
 ```
 
-## 3. Security
+Follow the prompts to enter an email, name, and password.
 
-- **Lock File**: Once installed, the system creates a lock file (`storage/app/.installed`) that permanently disables setup routes.
-- **One-Time Tokens**: Setup URLs are token-protected and expire after use or timeout.
-- **Audit**: Every installation step is logged for security auditing.
+## Emergency Access Recovery
 
-## 4. Post-Installation
+If you lose access to all administrator accounts, use the recovery command:
 
-After setup, you can access the dashboard at `/login` using the credentials created during the wizard. Ensure your scheduler is running:
-`* * * * * cd /path/to/internara && php artisan schedule:run >> /dev/null 2>&1`
+```bash
+php artisan setup:recover-admin
+```
+
+This lets you reset an existing account or create a new one. Console access to the server is required.
+
+## Resetting Setup
+
+To reset the setup state and run the wizard again:
+
+```bash
+php artisan setup:reset
+```
+
+This clears the installation state without removing any data.

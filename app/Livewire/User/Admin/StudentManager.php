@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\User\Admin;
 
+use App\Actions\User\CreateUserAction;
+use App\Actions\User\DeleteUserAction;
+use App\Actions\User\UpdateUserAction;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\School\Models\Department;
-use App\Domain\User\Actions\CreateUserAction;
-use App\Domain\User\Actions\DeleteUserAction;
-use App\Domain\User\Actions\UpdateUserAction;
 use App\Domain\User\Models\User;
 use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;

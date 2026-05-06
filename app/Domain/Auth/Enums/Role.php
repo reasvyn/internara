@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Enum Role
  *
  * Authoritative identifiers for system-wide user roles.
  */
-enum Role: string
+enum Role: string implements LabelEnum
 {
     case SUPER_ADMIN = 'super_admin';
     case ADMIN = 'admin';

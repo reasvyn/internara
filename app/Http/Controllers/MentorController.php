@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Evaluation\Actions\EvaluateMentorAction;
+use App\Actions\Evaluation\EvaluateMentorAction;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Gate;
 

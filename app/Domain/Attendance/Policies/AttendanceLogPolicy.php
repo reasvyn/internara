@@ -2,29 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Attendance\Policies;
 
 use App\Domain\Attendance\Models\AttendanceLog;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Students can only view their own attendance logs.
  */
-class AttendanceLogPolicy
+class AttendanceLogPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor', 'student']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+            'student',
+        ]);
     }
 
     public function view(User $user, AttendanceLog $log): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
         if (
-            $user->hasRole('teacher') &&
+            $this->isTeacher($user) &&
             $log->registration &&
             $log->registration->teacher_id === $user->id
         ) {
@@ -32,7 +39,7 @@ class AttendanceLogPolicy
         }
 
         if (
-            $user->hasRole('supervisor') &&
+            $this->isSupervisor($user) &&
             $log->registration &&
             $log->registration->mentor_id === $user->id
         ) {
@@ -44,21 +51,25 @@ class AttendanceLogPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $this->isStudent($user);
     }
 
     public function verify(User $user, AttendanceLog $log): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function update(User $user, AttendanceLog $log): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     public function delete(User $user, AttendanceLog $log): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 }

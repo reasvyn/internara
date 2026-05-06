@@ -47,12 +47,5 @@ opencode.json
 /tests/Browser/console/*.log
 /tests/Browser/source/*.txt
 
-# Module-Level Exclusions
-/modules/*/node_modules
-/modules/*/vendor
-/modules/*/composer.lock
-/modules/*/.env
-/modules/*/.env.*
-/modules/*/.phpunit.cache
-/modules/*/.temp
-/modules/*/.tmp
+# Legacy
+/legacy

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Internship\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Types of internship requirements.
  */
-enum RequirementType: string
+enum RequirementType: string implements LabelEnum
 {
     case DOCUMENT = 'document';
     case SKILL = 'skill';

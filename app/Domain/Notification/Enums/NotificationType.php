@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Domain\Shared\Contracts\ColorableEnum;
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Notification types for categorization.
  */
-enum NotificationType: string
+enum NotificationType: string implements ColorableEnum, LabelEnum
 {
     case SUCCESS = 'success';
     case ERROR = 'error';

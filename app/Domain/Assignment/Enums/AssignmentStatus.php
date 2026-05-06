@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Assignment\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Lifecycle states of an assignment.
  */
-enum AssignmentStatus: string
+enum AssignmentStatus: string implements LabelEnum
 {
     case DRAFT = 'draft';
     case PUBLISHED = 'published';

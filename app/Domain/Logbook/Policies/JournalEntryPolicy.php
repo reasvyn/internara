@@ -2,29 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Logbook\Policies;
 
 use App\Domain\Logbook\Models\LogbookEntry;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Students can only view/edit their own journals. Submitted journals are immutable.
  */
-class LogbookEntryPolicy
+class LogbookEntryPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor', 'student']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+            'student',
+        ]);
     }
 
     public function view(User $user, LogbookEntry $entry): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
         if (
-            $user->hasRole('teacher') &&
+            $this->isTeacher($user) &&
             $entry->registration &&
             $entry->registration->teacher_id === $user->id
         ) {
@@ -32,7 +39,7 @@ class LogbookEntryPolicy
         }
 
         if (
-            $user->hasRole('supervisor') &&
+            $this->isSupervisor($user) &&
             $entry->registration &&
             $entry->registration->mentor_id === $user->id
         ) {
@@ -44,12 +51,12 @@ class LogbookEntryPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $this->isStudent($user);
     }
 
     public function update(User $user, LogbookEntry $entry): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
@@ -58,7 +65,7 @@ class LogbookEntryPolicy
 
     public function delete(User $user, LogbookEntry $entry): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 

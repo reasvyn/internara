@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Str;
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Default Cache Store
@@ -28,15 +29,21 @@ return [
     | same cache driver to group types of items stored in your caches.
     |
     | Supported drivers: "array", "database", "file", "memcached",
-    |                    "redis", "dynamodb", "octane",
+    |                    "redis", "dynamodb", "octane", "session",
     |                    "failover", "null"
     |
     */
 
     'stores' => [
+
         'array' => [
             'driver' => 'array',
             'serialize' => false,
+        ],
+
+        'session' => [
+            'driver' => 'session',
+            'key' => env('SESSION_CACHE_KEY', '_cache'),
         ],
 
         'database' => [
@@ -56,7 +63,10 @@ return [
         'memcached' => [
             'driver' => 'memcached',
             'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
-            'sasl' => [env('MEMCACHED_USERNAME'), env('MEMCACHED_PASSWORD')],
+            'sasl' => [
+                env('MEMCACHED_USERNAME'),
+                env('MEMCACHED_PASSWORD'),
+            ],
             'options' => [
                 // Memcached::OPT_CONNECT_TIMEOUT => 2000,
             ],
@@ -90,8 +100,12 @@ return [
 
         'failover' => [
             'driver' => 'failover',
-            'stores' => ['database', 'array'],
+            'stores' => [
+                'database',
+                'array',
+            ],
         ],
+
     ],
 
     /*
@@ -107,17 +121,4 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Serializable Classes
-    |--------------------------------------------------------------------------
-    |
-    | This option controls which PHP classes may be unserialized from cache.
-    | This helps prevent PHP deserialization gadget chain attacks if your
-    | application's APP_KEY is leaked. Set to false to block all object
-    | unserialization, or list specific classes that are allowed.
-    |
-    */
-
-    'serializable_classes' => false,
 ];

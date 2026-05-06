@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Document\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Categories for document templates.
  */
-enum DocumentCategory: string
+enum DocumentCategory: string implements LabelEnum
 {
     case APPLICATION = 'application';
     case PERMIT = 'permit';

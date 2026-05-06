@@ -133,7 +133,7 @@ class SettingFactory extends Factory
         };
 
         $defaults = [
-            'key' => $this->faker->unique()->slug(2),
+            'key' => str_replace('-', '_', $this->faker->unique()->slug(2)),
             'value' => $defaultValue,
             'type' => $dbType,
             'description' => $this->faker->paragraph(),

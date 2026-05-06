@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire\Admin;
 
-use App\Domain\Admin\Actions\SetSettingAction;
-use App\Domain\Core\Actions\LogAuditAction;
-use App\Domain\Core\Support\Settings;
+use App\Actions\Admin\SetSettingAction;
+use App\Actions\Core\LogAuditAction;
 use App\Notifications\TestMailNotification;
+use App\Support\Settings;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;

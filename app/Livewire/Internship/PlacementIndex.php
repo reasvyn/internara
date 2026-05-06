@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Domain\Internship\Actions\CreatePlacementAction;
-use App\Domain\Internship\Actions\DeletePlacementAction;
-use App\Domain\Internship\Actions\UpdatePlacementAction;
+use App\Actions\Internship\CreatePlacementAction;
+use App\Actions\Internship\DeletePlacementAction;
+use App\Actions\Internship\UpdatePlacementAction;
 use App\Domain\Internship\Models\Company;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Placement;

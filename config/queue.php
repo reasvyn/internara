@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Default Queue Connection Name
@@ -26,11 +27,12 @@ return [
     | each backend supported by Laravel. You're also free to add more.
     |
     | Drivers: "sync", "database", "beanstalkd", "sqs", "redis",
-    |          "deferred", "background", "failover", "null"
+    |          "deferred", "failover", "null"
     |
     */
 
     'connections' => [
+
         'sync' => [
             'driver' => 'sync',
         ],
@@ -77,14 +79,14 @@ return [
             'driver' => 'deferred',
         ],
 
-        'background' => [
-            'driver' => 'background',
-        ],
-
         'failover' => [
             'driver' => 'failover',
-            'connections' => ['database', 'deferred'],
+            'connections' => [
+                'database',
+                'deferred',
+            ],
         ],
+
     ],
 
     /*
@@ -121,4 +123,5 @@ return [
         'database' => env('DB_CONNECTION', 'sqlite'),
         'table' => 'failed_jobs',
     ],
+
 ];

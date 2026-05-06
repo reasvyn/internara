@@ -1,35 +1,46 @@
 # Access Control (RBAC) & Lifecycle
 
-## 1. Core Roles
+## Roles
 
-Internara uses 5 core roles to govern system access:
+Defined in `App\Domain\Auth\Enums\Role`:
 
-- **SuperAdmin**: Infrastructure management, global configuration, and user lifecycle oversight.
-- **Admin**: School-level management (departments, schools, settings).
-- **Student**: Daily operations (attendance, logbooks, assignments).
-- **Teacher**: Academic supervision (verification, monitoring, assessment).
-- **Supervisor**: Technical supervision (industry evaluation, site visits).
+| Role | Value | Purpose |
+|---|---|---|
+| SuperAdmin | `super_admin` | Infrastructure, global config, user lifecycle |
+| Admin | `admin` | School-level management (departments, settings) |
+| Teacher | `teacher` | Academic supervision (verification, monitoring, assessment) |
+| Student | `student` | Daily operations (attendance, logbooks, assignments) |
+| Supervisor | `supervisor` | Industry evaluation and site visits |
 
-**Domain Note**: In code, Students are often associated with the **Mentee** domain, while Teachers and Supervisors are associated with the **Mentor** domain. However, the UI and business rules must use the specific roles: `Student`, `Teacher`, and `Supervisor`.
+Domain note: Students map to the **Mentee** domain in code. Teachers and Supervisors map to the **Mentor** domain. UI and business rules use the specific role names above.
 
-## 2. Implementation
+## Enforcement
 
-Access is enforced at multiple layers:
-- **Middleware**: Used for route-level protection (`Route::middleware(['role:admin'])`).
-- **Livewire Authorization**: Components verify permissions via Policies or Gates.
-- **Action Level**: Actions verify that the authenticated user has authority over the specific data being modified.
+| Layer | Mechanism |
+|---|---|
+| Routes | `Route::middleware(['role:super_admin\|admin'])` |
+| Livewire | Policy or Gate checks before mutations |
+| Actions | Authority verification over target data |
 
-## 3. Account Lifecycle
+## Account Lifecycle
 
-Accounts transition through states to ensure security and compliance:
-- **Pending**: Created but not yet claimed by the user.
-- **Active**: Fully functional account.
-- **Idle**: Automatically flagged after a period of inactivity.
-- **Archived**: Restricted access for long-term inactive accounts.
-- **Deactivated**: Explicitly disabled by an administrator.
+Defined in `App\Domain\Auth\Enums\AccountStatus`:
 
-## 4. Security Principles (S1)
+| Status | Description | Login? |
+|---|---|---|
+| `provisioned` | Created, awaiting user claim | No |
+| `activated` | Claimed, completed setup, awaiting verification | Yes (limited) |
+| `verified` | Fully operational | Yes |
+| `protected` | System-critical (Super Admin), immutable | Yes |
+| `restricted` | Functional but access-constrained | Yes (conditional) |
+| `suspended` | Temporarily deactivated | No |
+| `inactive` | Extended period of non-use | Yes (with warning) |
+| `archived` | Logically deleted, retained for compliance | No |
 
-- **IDOR Protection**: Every request must verify ownership of the target resource.
-- **Audit Trail**: All role and permission changes are logged via the Audit system.
-- **Least Privilege**: Users are granted only the permissions necessary for their role.
+Terminal states: `archived`, `protected` — cannot transition out.
+
+## Security Principles
+
+- **IDOR protection**: Every request verifies ownership of the target resource
+- **Audit trail**: All role and permission changes logged via the audit system
+- **Least privilege**: Users receive only permissions required for their role

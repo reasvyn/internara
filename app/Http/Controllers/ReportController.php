@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Document\Actions\DownloadReportAction;
-use App\Domain\Document\Actions\QueueReportGenerationAction;
+use App\Actions\Document\DownloadReportAction;
+use App\Actions\Document\QueueReportGenerationAction;
 use App\Domain\Document\Models\GeneratedReport;
 use App\Http\Requests\GenerateReportRequest;
 use Illuminate\Http\Request;

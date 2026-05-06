@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Attendance\Models;
 
-use App\Domain\Core\Concerns\HasUuid;
 use App\Enums\AbsenceReasonType;
 use App\Enums\AbsenceRequestStatus;
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

@@ -111,6 +111,7 @@ class RolePermissionSeeder extends Seeder
         'dashboard.teacher',
         'dashboard.mentor',
         'dashboard.admin',
+        'dashboard.supervisor',
     ];
 
     /**

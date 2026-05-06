@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Domain\Internship\Actions\RegisterInternshipAction;
+use App\Actions\Internship\RegisterInternshipAction;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\Placement;
 use Illuminate\Database\Eloquent\Collection;

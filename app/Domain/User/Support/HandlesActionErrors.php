@@ -8,17 +8,24 @@ use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 /**
- * Provides consistent error handling for Action classes.
+ * Provides consistent error handling and logging for Action classes.
+ *
+ * Wraps callback execution with standardized try-catch blocks that
+ * log errors and rethrow as RuntimeException, eliminating duplicated
+ * error handling code across multiple Action classes.
  *
  * S2 - Sustain: Reduces code duplication and ensures uniform error logging.
  */
 trait HandlesActionErrors
 {
     /**
-     * Wrap a closure with standardized error handling.
+     * Wrap a callback with standardized error handling.
      *
-     * @param \Closure(): mixed $callback
-     * @param string $context Description of the operation for logging
+     * Catches non-RuntimeException throwables, logs them with the provided
+     * context message, and rethrows as RuntimeException.
+     *
+     * @param callable $callback The operation to execute
+     * @param string $context Description of the operation for logging purposes
      *
      * @throws RuntimeException
      */

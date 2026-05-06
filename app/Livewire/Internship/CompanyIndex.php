@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Domain\Internship\Actions\CreateCompanyAction;
-use App\Domain\Internship\Actions\DeleteCompanyAction;
-use App\Domain\Internship\Actions\UpdateCompanyAction;
+use App\Actions\Internship\CreateCompanyAction;
+use App\Actions\Internship\DeleteCompanyAction;
+use App\Actions\Internship\UpdateCompanyAction;
 use App\Domain\Internship\Models\Company;
 use App\Domain\Internship\Models\Placement;
 use App\Livewire\Core\BaseRecordManager;

@@ -1,9 +1,11 @@
 <?php
 
 declare(strict_types=1);
+
 use Spatie\Activitylog\Models\Activity;
 
 return [
+
     /*
      * If set to false, no activities will be saved to the database.
      */

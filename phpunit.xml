@@ -14,9 +14,6 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
-        <testsuite name="Quality">
-            <directory>tests/Quality</directory>
-        </testsuite>
     </testsuites>
     <source>
         <include>

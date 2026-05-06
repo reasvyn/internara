@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Notification\Channels;
 
-use App\Domain\Notification\Actions\SendNotificationAction;
+use App\Actions\Notification\SendNotificationAction;
 use Illuminate\Notifications\Notification;
 
 /**

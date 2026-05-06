@@ -40,7 +40,7 @@ return [
      */
     'components' => [
         'spotlight' => [
-            'class' => 'App\Domain\Core\Support\Spotlight',
+            'class' => 'App\Support\Spotlight',
         ],
     ],
 ];

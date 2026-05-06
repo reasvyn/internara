@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\School\Policies;
 
 use App\Domain\School\Models\School;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: School deletion restricted to Super Admin only.
  * S2 - Sustain: Clear authorization rules for institutional metadata.
  */
-class SchoolPolicy
+class SchoolPolicy extends BasePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -42,7 +43,7 @@ class SchoolPolicy
      */
     public function update(User $user, ?School $school = null): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     /**

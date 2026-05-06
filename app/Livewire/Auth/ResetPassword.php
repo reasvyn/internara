@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Domain\Auth\Actions\ResetPasswordAction;
+use App\Actions\Auth\ResetPasswordAction;
 use App\Domain\Auth\Exceptions\AuthException;
 use App\Domain\Auth\Exceptions\AuthExceptionRenderer;
 use Illuminate\Support\Facades\RateLimiter;

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Attendance\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Types of absence reasons.
  */
-enum AbsenceReasonType: string
+enum AbsenceReasonType: string implements LabelEnum
 {
     case SICK = 'sick';
     case PERMISSION = 'permission';

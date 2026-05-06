@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Auth\Enums;
 
+use App\Domain\Shared\Contracts\ColorableEnum;
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * AccountStatus Enum
  *
@@ -14,7 +17,7 @@ namespace App\Domain\Auth\Enums;
  * S1 - Secure: Implements login allowance checks and transition rules.
  * S2 - Sustain: Visual mapping (colors) and descriptions for UI.
  */
-enum AccountStatus: string
+enum AccountStatus: string implements ColorableEnum, LabelEnum
 {
     /**
      * PROVISIONED: Account record created, awaiting user claim.

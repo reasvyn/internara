@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Guidance\Policies;
 
 use App\Domain\Guidance\Models\Handbook;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Handbook management restricted to admin roles.
  */
-class HandbookPolicy
+class HandbookPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
@@ -24,12 +25,12 @@ class HandbookPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     public function update(User $user, Handbook $handbook): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     public function delete(User $user, Handbook $handbook): bool

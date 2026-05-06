@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Mentor\Supervision;
 
+use App\Actions\Mentor\CreateSupervisionLogAction;
+use App\Actions\Mentor\VerifySupervisionLogAction;
 use App\Domain\Internship\Models\Registration;
-use App\Domain\Mentor\Actions\CreateSupervisionLogAction;
-use App\Domain\Mentor\Actions\VerifySupervisionLogAction;
 use App\Domain\Mentor\Models\SupervisionLog;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;

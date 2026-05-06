@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire\Notification\Admin;
 
-use App\Domain\Notification\Actions\DeleteNotificationAction;
-use App\Domain\Notification\Actions\GetNotificationsAction;
-use App\Domain\Notification\Actions\MarkAllAsReadAction;
-use App\Domain\Notification\Actions\MarkAsReadAction;
+use App\Actions\Notification\DeleteNotificationAction;
+use App\Actions\Notification\GetNotificationsAction;
+use App\Actions\Notification\MarkAllAsReadAction;
+use App\Actions\Notification\MarkAsReadAction;
 use App\Domain\Notification\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;

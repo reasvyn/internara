@@ -33,13 +33,28 @@ Internara follows a **Domain-Driven Structure** with an **Action-Oriented MVC** 
 
 ## Documentation
 
+### Core
 - [Architecture & Standards](docs/architecture.md)
 - [Database](docs/database.md)
 - [Installation](docs/installation.md)
 - [Configuration](docs/configuration.md)
 - [Testing](docs/testing.md)
+- [Infrastructure & Dependencies](docs/infrastructure.md)
+
+### Security & Access
 - [RBAC & Lifecycle](docs/rbac.md)
+- [Audits](docs/audits.md)
+- [Logging & Observability](docs/logging.md)
+
+### Frontend & UI
 - [UI/UX Design](docs/ui-ux.md)
+
+### Technical Reference
+- [Session Management](docs/session.md)
+- [Cache](docs/cache.md)
+- [Filesystem](docs/filesystem.md)
+- [Notifications](docs/notification.md)
+- [Known Issues](docs/known-issues.md)
 
 ## License
 MIT License.

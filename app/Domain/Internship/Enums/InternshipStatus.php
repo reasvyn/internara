@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Internship\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Lifecycle states of an internship program.
  */
-enum InternshipStatus: string
+enum InternshipStatus: string implements LabelEnum
 {
     case DRAFT = 'draft';
     case PUBLISHED = 'published';

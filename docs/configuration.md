@@ -1,43 +1,46 @@
 # Configuration
 
-Internara uses a **three-tier configuration system** to balance performance, security, and flexibility.
+## Three-Tier System
 
-## 1. The Three-Tier System
+| Tier | Purpose | Source | Access |
+|---|---|---|---|
+| `config()` | Infrastructure defaults | `config/*.php`, `.env` | `config('file.key')` |
+| `setting()` | Dynamic business rules | `settings` table (cached) | `setting('key')` |
+| `app_info()` | App metadata (SSoT) | `composer.json` | `app_info('key')` |
 
-### Tier 1: `config()` - Infrastructure
-- **Purpose**: Static, code-level defaults and infrastructure settings.
-- **Source**: `config/*.php` and `.env`.
-- **Usage**: Use for settings that rarely change (e.g., database connections, cache drivers, encryption keys).
-- **Access**: `config('file.key')`
+## Decision Matrix
 
-### Tier 2: `setting()` - Business Rules
-- **Purpose**: Dynamic, user-configurable values stored in the database.
-- **Source**: `settings` table.
-- **Usage**: Use for branding (logo, colors), feature flags, and institutional policies (e.g., attendance thresholds).
-- **Access**: `setting('key')`
-
-### Tier 3: `AppInfo` - Metadata (SSoT)
-- **Purpose**: Immutable application identity.
-- **Source**: `composer.json`.
-- **Usage**: Use for app version, author, and license information.
-- **Access**: `AppInfo::get('key')`
-
----
-
-## 2. Decision Matrix
-
-| Use Case | Tier |
+| Use case | Tier |
 |---|---|
-| **Database Credentials** | `config()` (Infrastructure) |
-| **Site Logo & Title** | `setting()` (Business) |
-| **Attendance Start Time** | `setting()` (Business) |
-| **App Version** | `AppInfo` (Metadata) |
-| **Debug Mode** | `config()` (Security) |
+| Database credentials | `config()` |
+| Site logo, title, colors | `setting()` |
+| Attendance thresholds | `setting()` |
+| App version, author | `app_info()` |
+| Debug mode | `config()` |
 
----
+## Settings Resolution
 
-## 3. Performance & Caching
+`App\Support\Settings` resolves values through a chain:
 
-- **Settings**: Database settings are cached **forever** until updated. Use `Settings::forget('key')` to invalidate.
-- **Config**: Laravel configuration should be cached in production using `php artisan config:cache`.
-- **Metadata**: `AppInfo` is memoized during the request lifecycle to minimize file reads.
+1. Runtime overrides (testing)
+2. `App\Support\AppInfo` metadata (composer.json)
+3. Database (cached forever)
+4. Laravel config fallback
+5. Provided default
+
+```php
+// Read (auto-cached)
+setting('app_name');
+
+// Write (action-based)
+app(SetSettingAction::class)->execute('app_name', 'Internara');
+
+// Invalidate
+Settings::forget('app_name');
+```
+
+## Performance
+
+- Database settings cached forever until explicitly invalidated
+- `Settings::forget($key)` clears the key, its group cache, and the `all` cache
+- `app_info()` values are memoized per request

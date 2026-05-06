@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Guidance\Models;
 
-use App\Domain\Core\Concerns\HasUuid;
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

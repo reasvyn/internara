@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Policies;
 
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
@@ -12,7 +13,7 @@ use App\Domain\User\Models\User;
  * S1 - Secure: Strict authorization checks for user management.
  * S2 - Sustain: Clear policy rules that match business logic.
  */
-class UserPolicy
+class UserPolicy extends BasePolicy
 {
     /**
      * Determine whether the user can view any users.

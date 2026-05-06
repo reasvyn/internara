@@ -2,30 +2,35 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Assignment\Policies;
 
 use App\Domain\Assignment\Models\Submission;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Students can only view/submit their own submissions.
  */
-class SubmissionPolicy
+class SubmissionPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function view(User $user, Submission $submission): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
         $assignment = $submission->assignment;
 
-        if ($user->hasRole('teacher') && $assignment && $assignment->created_by === $user->id) {
+        if ($this->isTeacher($user) && $assignment && $assignment->created_by === $user->id) {
             return true;
         }
 
@@ -34,7 +39,7 @@ class SubmissionPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $this->isStudent($user);
     }
 
     public function update(User $user, Submission $submission): bool
@@ -44,11 +49,15 @@ class SubmissionPolicy
 
     public function verify(User $user, Submission $submission): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function delete(User $user, Submission $submission): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 }

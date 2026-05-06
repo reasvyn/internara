@@ -57,7 +57,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Domain/Core/Support/helpers.php"
+            "app/Support/helpers.php"
         ],
         "exclude-from-classmap": [
             ".temp"
@@ -71,7 +71,7 @@
     "scripts": {
         "setup": [
             "composer install",
-            "@php artisan app:install",
+            "@php artisan setup:install",
             "npm install",
             "npm run build"
         ],

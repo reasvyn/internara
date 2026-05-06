@@ -2,29 +2,38 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Document\Policies;
 
 use App\Domain\Document\Models\GeneratedReport;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Report access restricted to owner or admin roles.
  */
-class GeneratedReportPolicy
+class GeneratedReportPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function view(User $user, GeneratedReport $report): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']) || $report->user_id === $user->id;
+        return $this->isAdmin($user) || $report->user_id === $user->id;
     }
 
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function download(User $user, GeneratedReport $report): bool

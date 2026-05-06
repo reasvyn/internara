@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use Spatie\ImageOptimizer\Optimizers\Avifenc;
 use Spatie\ImageOptimizer\Optimizers\Cwebp;
 use Spatie\ImageOptimizer\Optimizers\Gifsicle;
@@ -28,6 +29,7 @@ use Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator;
 use Spatie\MediaLibraryPro\Models\TemporaryUpload;
 
 return [
+
     /*
      * The disk on which to store added files and derived images by default. Choose
      * one or more of the disks you've configured in config/filesystems.php.
@@ -44,7 +46,7 @@ return [
      * This queue connection will be used to generate derived and responsive images.
      * Leave empty to use the default queue connection.
      */
-    'queue_connection_name' => env('MEDIA_QUEUE_CONNECTION', 'database'),
+    'queue_connection_name' => env('QUEUE_CONNECTION', 'sync'),
 
     /*
      * This queue will be used to generate derived and responsive images.
@@ -206,7 +208,7 @@ return [
 
     /*
      * The engine that should perform the image conversions.
-     * Should be either `gd` or `imagick`.
+     * Should be either `gd`, `imagick` or `vips`.
      */
     'image_driver' => env('IMAGE_DRIVER', 'gd'),
 

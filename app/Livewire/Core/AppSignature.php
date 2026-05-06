@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Core;
 
-use App\Domain\Core\Support\AppInfo;
-use App\Domain\Core\Support\Integrity;
+use App\Support\AppInfo;
+use App\Support\Integrity;
 use Illuminate\View\View;
 use Livewire\Component;
 

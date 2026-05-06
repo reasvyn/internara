@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\User\Actions\DetectUserAccountCloneAction;
-use App\Domain\User\Actions\LockUserAccountAction;
-use App\Domain\User\Actions\UnlockUserAccountAction;
+use App\Actions\User\DetectUserAccountCloneAction;
+use App\Actions\User\LockUserAccountAction;
+use App\Actions\User\UnlockUserAccountAction;
 use Illuminate\Support\Facades\Gate;
 
 class AccountController extends Controller

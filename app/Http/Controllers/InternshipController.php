@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Internship\Actions\CreateInternshipAction;
-use App\Domain\Internship\Actions\DeleteInternshipAction;
-use App\Domain\Internship\Actions\UpdateInternshipAction;
+use App\Actions\Internship\CreateInternshipAction;
+use App\Actions\Internship\DeleteInternshipAction;
+use App\Actions\Internship\UpdateInternshipAction;
 use App\Domain\Internship\Models\Internship;
 use App\Http\Requests\Internship\CreateInternshipRequest;
 use App\Http\Requests\UpdateInternshipRequest;

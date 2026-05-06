@@ -2,32 +2,39 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Internship\Policies;
 
 use App\Domain\Internship\Models\Registration;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Students can only view/edit their own registrations.
  */
-class RegistrationPolicy
+class RegistrationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor', 'student']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+            'student',
+        ]);
     }
 
     public function view(User $user, Registration $registration): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
-        if ($user->hasRole('teacher') && $registration->teacher_id === $user->id) {
+        if ($this->isTeacher($user) && $registration->teacher_id === $user->id) {
             return true;
         }
 
-        if ($user->hasRole('supervisor') && $registration->mentor_id === $user->id) {
+        if ($this->isSupervisor($user) && $registration->mentor_id === $user->id) {
             return true;
         }
 
@@ -36,12 +43,12 @@ class RegistrationPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $this->isStudent($user);
     }
 
     public function update(User $user, Registration $registration): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
@@ -50,12 +57,12 @@ class RegistrationPolicy
 
     public function approve(User $user, Registration $registration): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     public function delete(User $user, Registration $registration): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
-use App\Domain\Auth\Actions\SendPasswordResetLinkAction;
+use App\Actions\Auth\SendPasswordResetLinkAction;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;

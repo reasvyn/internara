@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Domain\Internship\Actions\SubmitRequirementAction;
+use App\Actions\Internship\SubmitRequirementAction;
 use App\Domain\Internship\Models\Registration;
 use App\Domain\Internship\Models\Requirement;
 use Livewire\Attributes\Computed;

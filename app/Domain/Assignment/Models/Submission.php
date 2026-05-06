@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Assignment\Models;
 
-use App\Domain\Core\Concerns\HasUuid;
 use App\Enums\SubmissionStatus;
+use App\Traits\HasUuid;
 use Database\Factories\SubmissionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

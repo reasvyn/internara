@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Assignment\Models;
 
-use App\Domain\Core\Concerns\HasUuid;
+use App\Traits\HasUuid;
 use Database\Factories\AssignmentTypeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

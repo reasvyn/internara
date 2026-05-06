@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Logbook\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Lifecycle states of a student's journal entry.
  */
-enum LogbookEntryStatus: string
+enum LogbookEntryStatus: string implements LabelEnum
 {
     case DRAFT = 'draft';
     case SUBMITTED = 'submitted';

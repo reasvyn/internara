@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Mentor\Supervision;
 
+use App\Actions\Mentor\CreateMonitoringVisitAction;
 use App\Domain\Internship\Models\Registration;
-use App\Domain\Mentor\Actions\CreateMonitoringVisitAction;
 use App\Domain\Mentor\Models\MonitoringVisit;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;

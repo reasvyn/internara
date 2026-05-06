@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\School;
 
-use App\Domain\School\Actions\CreateDepartmentAction;
-use App\Domain\School\Actions\DeleteDepartmentAction;
-use App\Domain\School\Actions\UpdateDepartmentAction;
+use App\Actions\School\CreateDepartmentAction;
+use App\Actions\School\DeleteDepartmentAction;
+use App\Actions\School\UpdateDepartmentAction;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
 use App\Livewire\Core\BaseRecordManager;

@@ -12,7 +12,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
         <x-mary-input label="{{ __('setup.wizard.full_name') }}" wire:model.live="adminName" class="rounded-2xl py-3" />
         <x-mary-input label="{{ __('setup.wizard.email_address') }}" type="email" wire:model.live="adminEmail" class="rounded-2xl py-3" />
-        
+
         <div class="md:col-span-2 bg-base-200/50 p-8 rounded-[2.5rem] border border-base-content/5 relative overflow-hidden group">
             <div class="absolute -right-12 -top-12 size-48 rounded-full bg-primary/5 blur-3xl transition-transform group-hover:scale-125 duration-1000"></div>
             <div class="flex items-center gap-8 relative z-10">
@@ -35,7 +35,7 @@
         <x-mary-input label="{{ __('setup.wizard.password') }}" type="password" wire:model.live="adminPassword" class="rounded-2xl py-3" />
         <x-mary-input label="{{ __('setup.wizard.confirm_password') }}" type="password" wire:model.live="adminPassword_confirmation" class="rounded-2xl py-3" />
     </div>
-    
+
     <div class="mt-16 flex justify-between items-center pt-8 border-t border-base-content/5">
         <x-mary-button label="{{ __('setup.wizard.back') }}" wire:click="prevStep" class="btn-ghost rounded-2xl font-black uppercase tracking-widest text-[10px] px-8" />
         <x-mary-button label="{{ __('setup.wizard.next_step') }}" icon-right="o-arrow-right" class="btn-primary rounded-2xl font-black uppercase tracking-widest text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="nextStep" spinner="nextStep" />

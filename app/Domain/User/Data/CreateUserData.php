@@ -19,6 +19,13 @@ final readonly class CreateUserData
         public array $roles = [],
     ) {}
 
+    /**
+     * Create a DTO from raw arrays.
+     *
+     * @param array<string, mixed> $userData
+     * @param array<string, mixed> $profileData
+     * @param list<string> $roles
+     */
     public static function fromArray(
         array $userData,
         array $profileData = [],
@@ -35,11 +42,17 @@ final readonly class CreateUserData
         );
     }
 
+    /**
+     * Get the resolved username, falling back to email-based generation.
+     */
     public function resolvedUsername(): string
     {
         return $this->username ?? str($this->email)->before('@')->slug()->toString();
     }
 
+    /**
+     * Determine if a password needs to be auto-generated.
+     */
     public function requiresPasswordGeneration(): bool
     {
         return $this->password === null;

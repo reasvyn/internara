@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\School\Policies;
 
 use App\Domain\School\Models\Department;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Delete blocked if department has student profiles.
  * S2 - Sustain: Clear authorization rules for academic units.
  */
-class DepartmentPolicy
+class DepartmentPolicy extends BasePolicy
 {
     /**
      * Determine whether the user can view any departments.
@@ -34,7 +35,7 @@ class DepartmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     /**
@@ -42,7 +43,7 @@ class DepartmentPolicy
      */
     public function update(User $user, Department $department): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $this->isAdmin($user);
     }
 
     /**
@@ -51,7 +52,7 @@ class DepartmentPolicy
      */
     public function delete(User $user, Department $department): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']) && ! $department->profiles()->exists();
+        return $this->isAdmin($user) && ! $department->profiles()->exists();
     }
 
     /**

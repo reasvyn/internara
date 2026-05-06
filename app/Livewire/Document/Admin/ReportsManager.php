@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Document\Admin;
 
-use App\Domain\Document\Actions\QueueReportGenerationAction;
+use App\Actions\Document\QueueReportGenerationAction;
 use App\Domain\Document\Models\GeneratedReport;
 use App\Livewire\Core\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;

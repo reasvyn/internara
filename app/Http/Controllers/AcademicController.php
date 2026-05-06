@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\School\Actions\ActivateAcademicYearAction;
-use App\Domain\School\Actions\CreateAcademicYearAction;
+use App\Actions\School\ActivateAcademicYearAction;
+use App\Actions\School\CreateAcademicYearAction;
 use App\Domain\School\Models\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;

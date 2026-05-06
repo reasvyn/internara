@@ -1,38 +1,42 @@
 # UI/UX Design System
 
-Internara uses a modern, reactive UI stack designed for speed and clarity.
+## Stack
 
-## 1. Technical Stack
+| Layer | Technology |
+|---|---|
+| CSS | TailwindCSS v4 (OKLCH color system) |
+| Component theme | DaisyUI 5 |
+| Blade components | maryUI 2 |
+| Interactivity | Livewire 4 (server state) + Alpine.js (client behavior) |
+| Typography | Instrument Sans (self-hosted) |
+| Icons | Blade Tabler Icons |
 
-- **Styling**: TailwindCSS v4 with OKLCH color system.
-- **Components**: DaisyUI 5 (Theme engine) and maryUI (Blade components).
-- **Interactivity**: Livewire 4 (Server-side state) and Alpine.js (Instant client-side behavior).
-- **Typography**: Instrument Sans (Self-hosted).
+## Design Tokens
 
-## 2. Design Tokens
+Semantic colors based on OKLCH for contrast and accessibility:
 
-The system uses **semantic colors** based on the OKLCH color space for better contrast and accessibility.
-- **Primary**: Main institutional color.
-- **Base**: Backgrounds (100, 200, 300 levels).
-- **Feedback**: Info, Success, Warning, Error.
+- **Primary** — Institutional brand color
+- **Base** — Backgrounds (100, 200, 300 levels)
+- **Feedback** — Info, success, warning, error
 
-## 3. Layout System
+## Layout
 
-- **Responsive**: Mobile-first design with `md` and `lg` breakpoints.
-- **Theming**: Light and Dark mode with automatic system detection.
-- **SPA Mode**: `wire:navigate` is used for instant page transitions without full reloads.
+- Mobile-first responsive design with `md` and `lg` breakpoints
+- Light and dark mode with automatic system detection
+- SPA-style navigation via `wire:navigate` for instant page transitions
 
-## 4. Interaction Patterns
+## Interaction Patterns
 
-### Alpine.js (Client-Side)
-Used for instant UI feedback like toggling menus, theme switching, or client-side validation.
+| Tool | Use case |
+|---|---|
+| Alpine.js | Instant client-side feedback (menus, toggles, validation) |
+| Livewire | Data-intensive operations, form processing, server-state sync |
 
-### Livewire (Server-Side)
-Used for data-intensive operations, form processing, and syncing server state with the UI.
+## Preferred Components
 
-## 5. Components
+Use maryUI components for consistency:
 
-We prefer using **maryUI** components for consistency:
-- **Tables**: `x-mary-table` for data lists with pagination.
-- **Forms**: `x-mary-input`, `x-mary-select`, etc.
-- **Feedback**: `x-mary-badge` for statuses and `x-mary-toast` for notifications.
+- Tables: `x-mary-table` with pagination
+- Forms: `x-mary-input`, `x-mary-select`, etc.
+- Status: `x-mary-badge`
+- Feedback: `x-mary-toast`

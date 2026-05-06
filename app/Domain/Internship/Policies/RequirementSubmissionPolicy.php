@@ -2,34 +2,40 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Policies;
+namespace App\Domain\Internship\Policies;
 
 use App\Domain\Internship\Models\RequirementSubmission;
+use App\Domain\Shared\Policies\BasePolicy;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Students can only access their own submissions. File access restricted.
  */
-class RequirementSubmissionPolicy
+class RequirementSubmissionPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+        ]);
     }
 
     public function view(User $user, RequirementSubmission $submission): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
         $registration = $submission->registration;
 
-        if ($user->hasRole('teacher') && $registration->teacher_id === $user->id) {
+        if ($this->isTeacher($user) && $registration->teacher_id === $user->id) {
             return true;
         }
 
-        if ($user->hasRole('supervisor') && $registration->mentor_id === $user->id) {
+        if ($this->isSupervisor($user) && $registration->mentor_id === $user->id) {
             return true;
         }
 
@@ -38,12 +44,12 @@ class RequirementSubmissionPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $this->isStudent($user);
     }
 
     public function update(User $user, RequirementSubmission $submission): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 
@@ -53,12 +59,16 @@ class RequirementSubmissionPolicy
 
     public function verify(User $user, RequirementSubmission $submission): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, [
+            'super_admin',
+            'admin',
+            'teacher',
+        ]);
     }
 
     public function delete(User $user, RequirementSubmission $submission): bool
     {
-        if ($user->hasAnyRole(['super_admin', 'admin'])) {
+        if ($this->isAdmin($user)) {
             return true;
         }
 

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Mentor\Enums;
 
+use App\Domain\Shared\Contracts\LabelEnum;
+
 /**
  * Types of supervision activities.
  */
-enum SupervisionType: string
+enum SupervisionType: string implements LabelEnum
 {
     case GUIDANCE = 'guidance';
     case SUPERVISORING = 'mentoring';
