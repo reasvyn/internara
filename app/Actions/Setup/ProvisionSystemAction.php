@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Actions\Setup;
 
-use App\Domain\Setup\Exceptions\SetupException;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use RuntimeException;
 
 /**
  * Provisions the system infrastructure.
  * Now supports granular execution for CLI reporting.
  */
-final class ProvisionSystemAction
+class ProvisionSystemAction
 {
     /**
      * Get the list of provisioning tasks with their localized labels.
@@ -34,7 +34,7 @@ final class ProvisionSystemAction
     /**
      * Execute a specific provisioning task.
      *
-     * @throws SetupException
+     * @throws RuntimeException
      */
     public function executeTask(string $task, bool $force = false): void
     {
@@ -67,7 +67,7 @@ final class ProvisionSystemAction
             $examplePath = base_path('.env.example');
 
             if (! File::exists($examplePath)) {
-                throw SetupException::provisioningFailed('ensureEnvFile');
+                throw new RuntimeException('.env.example file not found');
             }
 
             File::copy($examplePath, $envPath);
@@ -91,7 +91,7 @@ final class ProvisionSystemAction
             : Artisan::call('migrate', ['--force' => true]);
 
         if ($exitCode !== 0) {
-            throw SetupException::provisioningFailed('runMigrations');
+            throw new RuntimeException('Migration failed');
         }
     }
 
@@ -100,7 +100,7 @@ final class ProvisionSystemAction
         $exitCode = Artisan::call('db:seed', ['--force' => true]);
 
         if ($exitCode !== 0) {
-            throw SetupException::provisioningFailed('runSeeders');
+            throw new RuntimeException('Seeding failed');
         }
     }
 
@@ -110,7 +110,7 @@ final class ProvisionSystemAction
             $exitCode = Artisan::call('storage:link');
 
             if ($exitCode !== 0) {
-                throw SetupException::provisioningFailed('createStorageSymlink');
+                throw new RuntimeException('Storage symlink creation failed');
             }
         }
     }

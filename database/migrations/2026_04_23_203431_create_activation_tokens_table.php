@@ -11,10 +11,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('activation_tokens', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('token')->index(); // Hashed token
-            $table->enum('token_type', ['email', 'sms'])->default('email');
+            $table->string('token_type', 20)->default('email');
             $table->dateTime('expires_at')->index();
             $table->integer('attempts')->default(0);
             $table->dateTime('last_attempt_at')->nullable();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Setup;
 
-use App\Domain\Setup\Events\SetupFinalized;
+use App\Events\Setup\SetupFinalized;
 use App\Models\Setup;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Session;

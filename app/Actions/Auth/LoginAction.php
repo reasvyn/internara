@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Actions\Auth;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Auth\Exceptions\AuthException;
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * S1 - Secure: Implements strict authentication logic and auditing.
@@ -22,7 +22,7 @@ class LoginAction
     /**
      * Attempt to authenticate a user.
      *
-     * @throws AuthException when credentials are invalid or account is blocked
+     * @throws RuntimeException when credentials are invalid or account is blocked
      */
     public function execute(
         string $identifier,
@@ -44,7 +44,7 @@ class LoginAction
                 module: 'Auth',
             );
 
-            throw AuthException::invalidCredentials();
+            throw new RuntimeException(__('auth.failed'));
         }
 
         /** @var User $user */
@@ -62,7 +62,7 @@ class LoginAction
                 module: 'Auth',
             );
 
-            throw AuthException::accountSuspended();
+            throw new RuntimeException(__('auth.blocked'));
         }
 
         if ($user->isArchived()) {
@@ -76,7 +76,7 @@ class LoginAction
                 module: 'Auth',
             );
 
-            throw AuthException::accountArchived();
+            throw new RuntimeException(__('auth.blocked'));
         }
 
         if ($user->isInactive()) {
@@ -90,7 +90,7 @@ class LoginAction
                 module: 'Auth',
             );
 
-            throw AuthException::accountInactive();
+            throw new RuntimeException(__('auth.blocked'));
         }
 
         $this->logAuditAction->execute(

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Assignment\Student;
 
 use App\Actions\Assignment\SubmitAssignmentAction;
-use App\Domain\Assignment\Models\Assignment;
-use App\Domain\Assignment\Models\Submission;
+use App\Models\Assignment\Assignment;
+use App\Models\Assignment\Submission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;

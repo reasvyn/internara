@@ -12,25 +12,15 @@ return new class extends Migration
     {
         Schema::create('student_competency_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('registration_id');
-            $table->uuid('competency_id');
-            $table->uuid('evaluator_id');
+            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table->foreignUuid('competency_id')->constrained('competencies')->onDelete('cascade');
+            $table->foreignUuid('evaluator_id')->constrained('users')->onDelete('cascade');
             $table->float('score');
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table
-                ->foreign('registration_id')
-                ->references('id')
-                ->on('internship_registrations')
-                ->onDelete('cascade');
-            $table
-                ->foreign('competency_id')
-                ->references('id')
-                ->on('competencies')
-                ->onDelete('cascade');
-            $table->foreign('evaluator_id')->references('id')->on('users')->onDelete('cascade');
-            $table->index(['registration_id', 'competency_id']);
+            $table->index(['registration_id', 'competency_id'], 'reg_comp_idx');
+            $table->index(['registration_id', 'evaluator_id']);
         });
     }
 

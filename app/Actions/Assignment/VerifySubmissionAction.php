@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions\Assignment;
 
-use App\Domain\Assignment\Models\Submission;
-use App\Domain\User\Models\User;
 use App\Enums\SubmissionStatus;
+use App\Models\Assignment\Submission;
+use App\Models\User;
 use App\Notifications\SubmissionFeedbackNotification;
 use InvalidArgumentException;
 

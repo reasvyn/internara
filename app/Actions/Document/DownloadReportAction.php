@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Document;
 
-use App\Domain\Document\Models\GeneratedReport;
-use App\Domain\User\Models\User;
+use App\Models\Document\GeneratedReport;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 /**

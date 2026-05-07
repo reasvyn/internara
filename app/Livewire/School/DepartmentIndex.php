@@ -7,9 +7,9 @@ namespace App\Livewire\School;
 use App\Actions\School\CreateDepartmentAction;
 use App\Actions\School\DeleteDepartmentAction;
 use App\Actions\School\UpdateDepartmentAction;
-use App\Domain\School\Models\Department;
-use App\Domain\School\Models\School;
 use App\Livewire\Core\BaseRecordManager;
+use App\Models\School\Department;
+use App\Models\School\School;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 

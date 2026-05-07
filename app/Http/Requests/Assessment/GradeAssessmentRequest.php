@@ -2,7 +2,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Assessment;
 
-use App\Domain\Assessment\Models\Assessment;
+use App\Models\Assessment\Assessment;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 

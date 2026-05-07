@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->string('blood_type')->nullable();
 
+            $table->string('pob')->nullable()->comment('Place of Birth');
+            $table->date('dob')->nullable()->comment('Date of Birth');
+
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();
             $table->text('emergency_contact_address')->nullable();
@@ -32,9 +35,12 @@ return new class extends Migration
             $table->string('national_identifier')->nullable();
             $table->string('registration_number')->nullable();
 
-            $table->uuid('department_id')->nullable()->index();
+            $table->foreignUuid('school_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignUuid('department_id')->nullable()->constrained()->onDelete('set null');
 
             $table->timestamps();
+
+            $table->index(['national_identifier', 'registration_number']);
         });
     }
 

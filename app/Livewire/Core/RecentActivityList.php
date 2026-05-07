@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace App\Livewire\Core;
 
-use App\Domain\Core\Models\AuditLog;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
 
 class RecentActivityList extends Component
 {
-    /**
-     * Get recent activities for the current user.
-     */
     #[Computed]
     public function activities()
     {
-        return AuditLog::where('user_id', auth()->id())
+        return Activity::causedBy(auth()->user())
             ->latest()
             ->take(10)
             ->get();
@@ -32,8 +29,8 @@ class RecentActivityList extends Component
                         <x-mary-icon name="o-bolt" class="size-4 opacity-50" />
                     </div>
                     <div>
-                        <div class="text-sm font-medium">{{ str($activity->action)->headline() }}</div>
-                        <div class="text-xs opacity-50">{{ $activity->created_at->diffForHumans() }} • {{ $activity->ip_address }}</div>
+                        <div class="text-sm font-medium">{{ str($activity->description)->headline() }}</div>
+                        <div class="text-xs opacity-50">{{ $activity->created_at->diffForHumans() }} • {{ $activity->properties->get('ip_address', '-') }}</div>
                     </div>
                 </div>
             @empty

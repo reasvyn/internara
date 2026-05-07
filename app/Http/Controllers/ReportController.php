@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\Document\DownloadReportAction;
 use App\Actions\Document\QueueReportGenerationAction;
-use App\Domain\Document\Models\GeneratedReport;
 use App\Http\Requests\GenerateReportRequest;
+use App\Models\Document\GeneratedReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\StreamedResponse;

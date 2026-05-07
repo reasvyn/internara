@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Notification;
 
-use App\Domain\Notification\Models\Notification;
-use App\Domain\User\Models\User;
+use App\Models\Notification\Notification;
+use App\Models\User;
 
 /**
  * Stateless Action to send in-app notification.

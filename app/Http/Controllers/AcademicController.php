@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\School\ActivateAcademicYearAction;
 use App\Actions\School\CreateAcademicYearAction;
-use App\Domain\School\Models\AcademicYear;
+use App\Models\School\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

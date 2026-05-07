@@ -6,23 +6,21 @@ namespace App\Console\Commands;
 
 use App\Actions\Setup\InstallSystemAction;
 use App\Actions\Setup\ProvisionSystemAction;
-use App\Domain\Setup\Data\AuditReport;
-use App\Domain\Setup\Enums\AuditCategory;
-use App\Domain\Setup\Exceptions\SetupException;
-use App\Domain\Setup\Services\EnvironmentAuditor;
-use App\Domain\Shared\Enums\AuditStatus;
-use App\Support\AppInfo;
+use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
+use App\Enums\Setup\AuditCategory;
+use App\Enums\Shared\AuditStatus;
+use App\Models\Setup;
+use App\Services\Setup\EnvironmentAuditor;
+use App\Support\Logger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\error;
-use function Laravel\Prompts\intro;
-use function Laravel\Prompts\outro;
 
 class SetupInstallCommand extends Command
 {
-    use \App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
+    use InteractsWithInstallerCli;
 
     protected $signature = 'setup:install {--force : Force installation even if already installed}';
 
@@ -40,17 +38,29 @@ class SetupInstallCommand extends Command
 
         try {
             // Step 1: Run audit and display results
-            $report = $this->auditor->audit();
-            $this->displayAuditResults($report);
+            $checks = $this->auditor->audit();
+            $this->displayAuditResults($checks);
 
-            if (! $report->passed()) {
+            $failed = array_values(array_filter(
+                $checks,
+                fn (array $check) => $check['category']->isCritical() && $check['status'] === AuditStatus::Fail,
+            ));
+
+            if ($failed !== []) {
+                Logger::error(__('setup.cli.audit_failed'))
+                    ->module('setup')
+                    ->event('audit.failed')
+                    ->save();
+
                 error(__('setup.cli.audit_failed'));
 
                 return self::FAILURE;
             }
 
             // Step 2: Confirmation (unless --force)
-            if (! $this->option('force') && ! $this->confirmProceed()) {
+            if ($this->option('force')) {
+                $this->components->warn(__('setup.cli.force_warning'));
+            } elseif (! $this->confirmProceed()) {
                 error(__('setup.cli.aborted'));
 
                 return self::FAILURE;
@@ -59,6 +69,11 @@ class SetupInstallCommand extends Command
             // Step 3: Execute installation (audits again internally, then provisions + generates token)
             $this->newLine();
             $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.starting_installation').'</>');
+
+            Logger::info(__('setup.cli.starting_installation'))
+                ->module('setup')
+                ->event('installation.started')
+                ->save();
 
             $provisioner = app(ProvisionSystemAction::class);
             $force = (bool) $this->option('force');
@@ -74,20 +89,31 @@ class SetupInstallCommand extends Command
             }
 
             // Generate and store setup token (moved from InstallSystemAction to maintain reporting consistency)
-            $tokenData = \App\Models\Setup::generateToken();
+            $tokenData = Setup::generateToken();
 
             // Step 4: Display success
             $this->displaySuccess($tokenData['plaintext'], $tokenData['expires_at']);
 
+            Logger::success(__('setup.cli.installation_completed'))
+                ->module('setup')
+                ->event('installation.completed')
+                ->save();
+
             return self::SUCCESS;
         } catch (\Throwable $e) {
+            Logger::error(__('setup.cli.installation_failed', ['message' => $e->getMessage()]))
+                ->module('setup')
+                ->event('installation.failed')
+                ->withPayload(['error' => $e->getMessage()])
+                ->save();
+
             $this->handleError($e);
 
             return self::FAILURE;
         }
     }
 
-    protected function displayAuditResults(AuditReport $report): void
+    protected function displayAuditResults(array $checks): void
     {
         $categories = [
             AuditCategory::Requirements,
@@ -98,19 +124,22 @@ class SetupInstallCommand extends Command
         ];
 
         foreach ($categories as $category) {
-            $checks = $report->byCategory($category);
+            $categoryChecks = array_values(array_filter(
+                $checks,
+                fn (array $check) => $check['category'] === $category,
+            ));
 
-            if ($checks === []) {
+            if ($categoryChecks === []) {
                 continue;
             }
 
             $this->newLine();
             $this->components->twoColumnDetail('  <fg=green;options=bold>'.$category->label().'</>');
 
-            foreach ($checks as $check) {
+            foreach ($categoryChecks as $check) {
                 $this->components->twoColumnDetail(
-                    $check->name(),
-                    $this->formatStatusWithMessage($check->status, $check->message()),
+                    __("setup.checks.{$check['nameKey']}", $check['nameParams']),
+                    $this->formatStatusWithMessage($check['status'], __("setup.checks.{$check['messageKey']}", $check['messageParams'])),
                 );
             }
         }
@@ -148,18 +177,14 @@ class SetupInstallCommand extends Command
 
         $this->newLine();
         $this->line("  Token: <fg=white;options=bold>{$token}</>");
-        $this->line("  ".__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s')}</> (in {$expiresAt->diffForHumans()})");
+        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s')}</> (in {$expiresAt->diffForHumans()})");
     }
 
     protected function handleError(\Throwable $e): void
     {
         $this->newLine();
 
-        if ($e instanceof SetupException) {
-            error($e->toCliOutput());
-        } else {
-            error(__('setup.cli.installation_failed', ['message' => $e->getMessage()]));
-        }
+        error($e->getMessage());
 
         if ($this->option('verbose')) {
             $this->line('<fg=gray>'.$e->getTraceAsString().'</>');

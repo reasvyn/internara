@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Mentor;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Mentor\Models\SupervisionLog;
-use App\Domain\User\Models\User;
+use App\Models\Mentor\SupervisionLog;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 

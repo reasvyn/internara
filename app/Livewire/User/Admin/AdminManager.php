@@ -7,9 +7,9 @@ namespace App\Livewire\User\Admin;
 use App\Actions\User\CreateUserAction;
 use App\Actions\User\DeleteUserAction;
 use App\Actions\User\UpdateUserAction;
-use App\Domain\Auth\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\Enums\Auth\Role as RoleEnum;
 use App\Livewire\Core\BaseRecordManager;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

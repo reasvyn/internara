@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Logbook;
 
 use App\Enums\LogbookEntryStatus;
-use App\Domain\Logbook\Models\LogbookEntry;
+use App\Models\Logbook\LogbookEntry;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;

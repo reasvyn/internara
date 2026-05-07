@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Notification;
 
-use App\Domain\Notification\Models\Notification;
+use App\Models\Notification\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 

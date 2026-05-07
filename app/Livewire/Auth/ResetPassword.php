@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\ResetPasswordAction;
-use App\Domain\Auth\Exceptions\AuthException;
-use App\Domain\Auth\Exceptions\AuthExceptionRenderer;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use RuntimeException;
 
 class ResetPassword extends Component
 {
@@ -60,10 +60,13 @@ class ResetPassword extends Component
             flash()->success(__('passwords.reset'));
 
             $this->redirectRoute('login', navigate: true);
-        } catch (AuthException $e) {
+        } catch (RuntimeException $e) {
             RateLimiter::hit($throttleKey, 300);
             $this->addError('email', $e->getMessage());
-            AuthExceptionRenderer::handle($this, $e);
+
+            Log::error('Password reset error: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 

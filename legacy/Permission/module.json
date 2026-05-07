@@ -1,9 +1,0 @@
-{
-    "name": "Permission",
-    "alias": "permission",
-    "description": "",
-    "keywords": [],
-    "priority": 0,
-    "providers": ["Modules\\Permission\\Providers\\PermissionServiceProvider"],
-    "files": []
-}

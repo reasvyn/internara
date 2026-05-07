@@ -7,12 +7,15 @@ Defined in `App\Domain\Auth\Enums\Role`:
 | Role | Value | Purpose |
 |---|---|---|
 | SuperAdmin | `super_admin` | Infrastructure, global config, user lifecycle |
-| Admin | `admin` | School-level management (departments, settings) |
-| Teacher | `teacher` | Academic supervision (verification, monitoring, assessment) |
-| Student | `student` | Daily operations (attendance, logbooks, assignments) |
-| Supervisor | `supervisor` | Industry evaluation and site visits |
+| Admin | `admin` | School-level management (School staff/principals) |
+| Teacher | `teacher` | Academic supervision (School faculty/Teachers) |
+| Student | `student` | Participants (High school students) |
+| Supervisor | `supervisor` | Industry evaluation (Company mentors/Field Supervisors) |
 
-Domain note: Students map to the **Mentee** domain in code. Teachers and Supervisors map to the **Mentor** domain. UI and business rules use the specific role names above.
+Domain note:
+- **Student** maps to the **Mentee** domain in code.
+- **Teacher** and **Supervisor** map to the **Mentor** domain in code.
+UI and business rules use the specific role names above.
 
 ## Enforcement
 

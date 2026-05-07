@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\User;
 
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 

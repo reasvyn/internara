@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Notification;
 
-use App\Domain\Notification\Models\Notification;
+use App\Models\Notification\Notification;
 
 /**
  * Stateless Action to mark notification as read.

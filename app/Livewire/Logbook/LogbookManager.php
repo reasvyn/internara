@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Logbook;
 
 use App\Actions\Logbook\SubmitLogbookEntryAction;
-use App\Domain\Logbook\Models\LogbookEntry;
+use App\Models\Logbook\LogbookEntry;
 use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

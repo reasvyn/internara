@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Logbook;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Logbook\Models\LogbookEntry;
-use App\Domain\User\Models\User;
+use App\Models\Logbook\LogbookEntry;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

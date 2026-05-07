@@ -7,10 +7,10 @@ namespace App\Livewire\Assignment\Admin;
 use App\Actions\Assignment\CreateAssignmentAction;
 use App\Actions\Assignment\DeleteAssignmentAction;
 use App\Actions\Assignment\UpdateAssignmentAction;
-use App\Domain\Assignment\Models\Assignment;
-use App\Domain\Assignment\Models\AssignmentType;
-use App\Domain\Internship\Models\Internship;
 use App\Livewire\Core\BaseRecordManager;
+use App\Models\Assignment\Assignment;
+use App\Models\Assignment\AssignmentType;
+use App\Models\Internship\Internship;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 

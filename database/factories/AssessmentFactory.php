@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assessment\Models\Assessment;
-use App\Domain\Internship\Models\Registration;
-use App\Domain\User\Models\User;
+use App\Models\AcademicYear;
+use App\Models\Assessment;
+use App\Models\Registration;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,11 +20,10 @@ class AssessmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->uuid(),
             'registration_id' => Registration::factory(),
-            'academic_year' => $this->faker->year(),
+            'academic_year_id' => AcademicYear::factory(),
             'evaluator_id' => User::factory(),
-            'type' => $this->faker->randomElement(['midterm', 'final']),
+            'type' => $this->faker->randomElement(['midterm', 'final', 'periodic']),
             'score' => $this->faker->randomFloat(2, 0, 100),
             'content' => [
                 ['criterion' => 'Technical Skills', 'score' => $this->faker->randomFloat(2, 0, 40)],

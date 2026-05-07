@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Assignment;
 
-use App\Domain\Assignment\Models\Assignment;
+use App\Models\Assignment\Assignment;
 
 /**
  * Stateless Action to update an existing assignment.

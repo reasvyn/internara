@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Internship;
 
 use App\Actions\Internship\RegisterInternshipAction;
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Internship\Models\Placement;
+use App\Models\Internship\Internship;
+use App\Models\Internship\Placement;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;

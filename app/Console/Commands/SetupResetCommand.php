@@ -6,21 +6,21 @@ namespace App\Console\Commands;
 
 use App\Actions\Setup\GenerateSetupTokenAction;
 use App\Actions\Setup\ResetSetupStateAction;
+use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Models\Setup;
-use App\Support\AppInfo;
+use App\Support\Logger;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
-use function Laravel\Prompts\intro;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\outro;
 use function Laravel\Prompts\warning;
 
 class SetupResetCommand extends Command
 {
-    use \App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
+    use InteractsWithInstallerCli;
 
     protected $signature = 'setup:reset {--force : Force reset without confirmation}';
 
@@ -35,6 +35,11 @@ class SetupResetCommand extends Command
         $this->displayBanner();
 
         if (! Setup::isInstalled()) {
+            Logger::info(__('setup.reset.not_installed'))
+                ->module('setup')
+                ->event('reset.skipped')
+                ->save();
+
             warning(__('setup.reset.not_installed'));
             $result = app(GenerateSetupTokenAction::class)->execute();
             $signedUrl = route('setup', ['setup_token' => $result['plaintext']]);
@@ -57,6 +62,11 @@ class SetupResetCommand extends Command
         }
 
         $result = $reset->execute();
+
+        Logger::info(__('setup.reset.success'))
+            ->module('setup')
+            ->event('reset.completed')
+            ->save();
 
         $this->newLine();
         outro(__('setup.reset.success'));

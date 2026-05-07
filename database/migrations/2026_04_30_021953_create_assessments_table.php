@@ -12,24 +12,22 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('registration_id');
-            $table->string('academic_year', 9)->nullable();
-            $table->uuid('evaluator_id');
-            $table->string('type', 20)->default('final');
+            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table->foreignUuid('academic_year_id')->nullable()->constrained('academic_years')->onDelete('set null');
+            $table->foreignUuid('evaluator_id')->constrained('users')->onDelete('cascade');
+
+            $table->string('type', 20)->default('final'); // midterm, final, periodic
             $table->float('score')->nullable();
-            $table->json('content')->nullable();
+            $table->json('content')->nullable()->comment('Detailed scores per criteria/competency');
             $table->text('feedback')->nullable();
+
             $table->timestamp('finalized_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
-            $table
-                ->foreign('registration_id')
-                ->references('id')
-                ->on('internship_registrations')
-                ->onDelete('cascade');
-            $table->foreign('evaluator_id')->references('id')->on('users')->onDelete('cascade');
             $table->index(['registration_id', 'type']);
+            $table->index(['registration_id', 'academic_year_id']);
+            $table->index(['evaluator_id', 'type']);
         });
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
 

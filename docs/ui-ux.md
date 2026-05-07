@@ -32,6 +32,11 @@ Semantic colors based on OKLCH for contrast and accessibility:
 | Alpine.js | Instant client-side feedback (menus, toggles, validation) |
 | Livewire | Data-intensive operations, form processing, server-state sync |
 
+## Localization & Accessibility
+
+- **Language Switching**: Real-time language toggling (ID/EN) with instant UI refresh via Livewire.
+- **RTL Support**: Not required for initial release (Ltr only).
+- **Contrast**: OKLCH-based colors ensure accessibility standards across all supported languages.
 ## Preferred Components
 
 Use maryUI components for consistency:

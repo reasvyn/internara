@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Actions\User;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\User\Models\User;
-use App\Domain\User\Rules\SystemUsername;
-use App\Domain\User\Support\HandlesActionErrors;
+use App\Models\User;
+use App\Rules\User\SystemUsername;
+use App\Support\User\HandlesActionErrors;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

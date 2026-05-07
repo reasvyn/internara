@@ -1,9 +1,0 @@
-{
-    "name": "Assignment",
-    "alias": "assignment",
-    "description": "",
-    "keywords": [],
-    "priority": 0,
-    "providers": ["Modules\\Assignment\\Providers\\AssignmentServiceProvider"],
-    "files": []
-}

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Internship;
 
 use App\Actions\Internship\SubmitRequirementAction;
-use App\Domain\Internship\Models\Registration;
-use App\Domain\Internship\Models\Requirement;
+use App\Models\Internship\Registration;
+use App\Models\Internship\Requirement;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;

@@ -13,26 +13,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('journal_entries', function (Blueprint $table) {
+        Schema::create('logbook_entries', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table
-                ->foreignUuid('registration_id')
-                ->constrained('internship_registrations')
-                ->onDelete('cascade');
+            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+
             $table->date('date');
             $table->text('content');
             $table->text('learning_outcomes')->nullable();
+
             $table->string('status')->default('draft'); // draft, submitted, verified, revision_required
             $table->boolean('is_verified')->default(false);
-            $table->foreignUuid('verified_by')->nullable()->constrained('users');
+            $table->foreignUuid('verified_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('verified_at')->nullable();
             $table->text('mentor_feedback')->nullable();
+
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
             $table->index('registration_id');
             $table->index('status');
+            $table->index(['registration_id', 'is_verified']);
+            $table->index(['user_id', 'status']);
         });
     }
 
@@ -41,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('journal_entries');
+        Schema::dropIfExists('logbook_entries');
     }
 };

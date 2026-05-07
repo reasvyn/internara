@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\Dashboard\Services\DashboardService;
+use App\Services\Dashboard\DashboardService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

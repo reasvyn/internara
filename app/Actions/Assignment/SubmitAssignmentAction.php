@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions\Assignment;
 
-use App\Domain\Assignment\Models\Assignment;
-use App\Domain\Assignment\Models\Submission;
 use App\Enums\AssignmentStatus;
 use App\Enums\SubmissionStatus;
+use App\Models\Assignment\Assignment;
+use App\Models\Assignment\Submission;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;

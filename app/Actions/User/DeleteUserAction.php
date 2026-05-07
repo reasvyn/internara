@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Actions\User;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Auth\Exceptions\AuthException;
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 /**
  * Safely deletes a user with pre-deletion guards and audit logging.
@@ -25,16 +25,16 @@ class DeleteUserAction
     /**
      * Delete a user after running safety checks.
      *
-     * @throws AuthException when trying to delete self or last admin
+     * @throws RuntimeException when trying to delete self or last admin
      */
     public function execute(User $user): void
     {
         if (Auth::id() === $user->id) {
-            throw AuthException::cannotDeleteSelf();
+            throw new RuntimeException('You cannot delete your own account.');
         }
 
         if ($user->hasRole('super_admin') && $this->isLastSuperAdmin($user)) {
-            throw AuthException::cannotDeleteLastAdmin();
+            throw new RuntimeException('Cannot delete the last administrator account.');
         }
 
         DB::transaction(function () use ($user) {

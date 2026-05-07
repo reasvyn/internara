@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Dashboard;
 
-use App\Domain\Internship\Models\Registration;
-use App\Domain\Logbook\Models\LogbookEntry;
+use App\Models\Internship\Registration;
+use App\Models\Logbook\LogbookEntry;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 

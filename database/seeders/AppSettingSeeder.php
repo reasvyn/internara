@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Casts\SettingValueCast;
-use App\Domain\Core\Models\Setting;
+use App\Models\Setting;
 use App\Support\AppInfo;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;

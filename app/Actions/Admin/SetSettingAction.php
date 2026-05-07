@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Admin;
 
-use App\Domain\Core\Models\Setting;
+use App\Models\Setting;
 use App\Support\Settings;
 use Illuminate\Support\Collection;
 

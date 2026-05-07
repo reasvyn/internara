@@ -7,9 +7,9 @@ namespace App\Http\Controllers;
 use App\Actions\Schedule\CreateScheduleAction;
 use App\Actions\Schedule\DeleteScheduleAction;
 use App\Actions\Schedule\UpdateScheduleAction;
-use App\Domain\Schedule\Models\Schedule;
 use App\Http\Requests\CreateScheduleRequest;
 use App\Http\Requests\UpdateScheduleRequest;
+use App\Models\Schedule\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

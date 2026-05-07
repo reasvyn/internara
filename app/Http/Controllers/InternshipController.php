@@ -7,9 +7,9 @@ namespace App\Http\Controllers;
 use App\Actions\Internship\CreateInternshipAction;
 use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
-use App\Domain\Internship\Models\Internship;
 use App\Http\Requests\Internship\CreateInternshipRequest;
 use App\Http\Requests\UpdateInternshipRequest;
+use App\Models\Internship\Internship;
 use App\Repositories\Internship\InternshipRepository;
 use Illuminate\Http\JsonResponse;
 
