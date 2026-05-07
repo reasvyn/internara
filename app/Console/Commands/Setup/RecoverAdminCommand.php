@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands\Setup;
 
 use App\Actions\Setup\RecoverAdminAccessAction;
-use App\Domain\Setup\Data\RecoverAdminData;
-use App\Domain\User\Models\User;
+use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Models\Setup;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\error;
@@ -18,7 +18,7 @@ use function Laravel\Prompts\warning;
 
 class RecoverAdminCommand extends Command
 {
-    use \App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
+    use InteractsWithInstallerCli;
 
     protected $signature = 'setup:recover-admin {email?} {--reset} {--role=super_admin}';
 
@@ -33,7 +33,6 @@ class RecoverAdminCommand extends Command
     {
         $this->displayBanner();
 
-        // Check system state
         if (! $this->isInstalled()) {
             error(__('setup.cli.not_installed'));
 
@@ -47,8 +46,6 @@ class RecoverAdminCommand extends Command
         );
 
         $isReset = $this->option('reset');
-
-        // Determine operation
         $userExists = User::where('email', $email)->exists();
 
         if (! $isReset && $userExists) {
@@ -81,14 +78,12 @@ class RecoverAdminCommand extends Command
         }
 
         try {
-            $data = new RecoverAdminData(
+            $user = $this->action->execute(
                 email: $email,
                 password: $password,
                 isReset: (bool) $isReset,
                 role: $this->option('role'),
             );
-
-            $user = $this->action->execute($data);
 
             $this->displayCredentials($user, $password, $isReset);
 

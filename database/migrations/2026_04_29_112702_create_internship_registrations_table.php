@@ -41,6 +41,8 @@ return new class extends Migration
             $table->string('proposed_company_name')->nullable();
             $table->text('proposed_company_address')->nullable();
 
+            $table->string('status')->default('pending')->index(); // pending, approved, rejected, active, completed
+
             $table->timestamps();
 
             $table->index(['student_id', 'internship_id']);

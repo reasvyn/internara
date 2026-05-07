@@ -16,15 +16,6 @@ Enforce layer separation and coding standards automatically:
 - Models do not depend on Actions
 - Controllers are thin (request/response only)
 
-### Quality Tests (`tests/Quality/`)
-
-Detect pitfalls static analysis misses:
-
-- N+1 query patterns
-- Missing pagination on large result sets
-- Insecure mass assignment
-- Hardcoded paths or raw SQL
-
 ### Feature & Unit Tests
 
 - **Feature** — end-to-end user workflows
@@ -38,7 +29,6 @@ php artisan test
 
 # Specific suite
 vendor/bin/pest tests/Arch
-vendor/bin/pest tests/Quality
 
 # Static analysis
 composer analyse           # PHPStan level 8

@@ -7,9 +7,9 @@ namespace App\Livewire\Assignment\Admin;
 use App\Actions\Assignment\CreateAssignmentAction;
 use App\Actions\Assignment\DeleteAssignmentAction;
 use App\Actions\Assignment\PublishAssignmentAction;
-use App\Domain\Assignment\Models\Assignment;
-use App\Domain\Assignment\Models\AssignmentType;
-use App\Domain\Internship\Models\Internship;
+use App\Models\Assignment\Assignment;
+use App\Models\Assignment\AssignmentType;
+use App\Models\Internship\Internship;
 use Illuminate\View\View;
 use Livewire\Component;
 

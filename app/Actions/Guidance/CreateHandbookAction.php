@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Guidance;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Guidance\Models\Handbook;
-use App\Domain\User\Models\User;
+use App\Models\Guidance\Handbook;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 

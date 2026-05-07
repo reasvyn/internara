@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands\Setup;
 
 use App\Actions\Setup\InitializeSuperAdminAction;
-use App\Domain\Setup\Data\InitializeSuperAdminData;
-use App\Domain\User\Models\User;
+use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Models\Setup;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\error;
@@ -18,7 +18,7 @@ use function Laravel\Prompts\warning;
 
 class SuperAdminCommand extends Command
 {
-    use \App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
+    use InteractsWithInstallerCli;
 
     protected $signature = 'setup:super-admin {email?} {password?} {--name=} {--username=}';
 
@@ -32,12 +32,13 @@ class SuperAdminCommand extends Command
     public function handle(): int
     {
         $this->displayBanner();
+
+        if (! $this->isInstalled()) {
             error(__('setup.cli.not_installed'));
 
             return self::FAILURE;
         }
 
-        // Check existing super admins
         if ($this->hasSuperAdmin()) {
             error(__('setup.cli.admin_exists'));
 
@@ -64,14 +65,12 @@ class SuperAdminCommand extends Command
         );
 
         try {
-            $data = new InitializeSuperAdminData(
+            $user = $this->action->execute(
                 email: $email,
                 password: $password,
                 name: $name,
                 username: $username ?: null,
             );
-
-            $user = $this->action->execute($data);
 
             $this->displayCredentials($user, $password);
 

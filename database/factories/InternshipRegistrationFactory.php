@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Internship\Models\Registration;
-use App\Domain\User\Models\User;
+use App\Models\Internship;
+use App\Models\Registration;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,6 +25,7 @@ class RegistrationFactory extends Factory
             'academic_year' => fake()->year().'/'.(fake()->year() + 1),
             'start_date' => fake()->dateTimeBetween('+1 month', '+3 months'),
             'end_date' => fake()->dateTimeBetween('+4 months', '+6 months'),
+            'status' => 'pending',
         ];
     }
 }

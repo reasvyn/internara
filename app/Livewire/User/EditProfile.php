@@ -6,7 +6,7 @@ namespace App\Livewire\User;
 
 use App\Actions\User\UpdateProfileAction;
 use App\Actions\User\UpdateUserPasswordAction;
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

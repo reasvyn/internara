@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Database\Factories\SetupFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
-class Setup extends Model
+class Setup extends BaseModel
 {
-    protected $table = 'setups';
+    use HasFactory;
 
     protected $fillable = [
         'is_installed',
@@ -21,38 +23,50 @@ class Setup extends Model
         'department_id',
     ];
 
-    protected $casts = [
-        'is_installed' => 'boolean',
-        'token_expires_at' => 'datetime',
-        'completed_steps' => 'array',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_installed' => 'boolean',
+            'token_expires_at' => 'datetime',
+            'completed_steps' => 'array',
+        ];
+    }
+
+    protected static function newFactory(): SetupFactory
+    {
+        return SetupFactory::new();
+    }
 
     public static function isInstalled(): bool
     {
-        return File::exists(base_path('.installed')) ||
-            self::where('is_installed', true)->exists();
+        if (File::exists(base_path('.installed'))) {
+            return true;
+        }
+
+        $setup = self::first();
+
+        return $setup !== null && $setup->is_installed;
     }
 
     public static function markInstalled(): void
     {
-        $setup = self::first() ?? new self;
-        $setup->is_installed = true;
-        $setup->save();
+        $setup = self::firstOrCreate([]);
+        $setup->update(['is_installed' => true]);
 
         File::put(base_path('.installed'), now()->toDateTimeString());
     }
 
     public static function generateToken(): array
     {
-        $plaintext = bin2hex(random_bytes(32));
+        $plaintext = Str::random(64);
         $encrypted = Crypt::encryptString($plaintext);
-        $hashed = hash('sha256', $plaintext);
         $expiresAt = now()->addHour();
 
-        $setup = self::first() ?? new self;
-        $setup->setup_token = $hashed;
-        $setup->token_expires_at = $expiresAt;
-        $setup->save();
+        $setup = self::firstOrCreate([]);
+        $setup->update([
+            'setup_token' => $encrypted,
+            'token_expires_at' => $expiresAt,
+        ]);
 
         return [
             'encrypted' => $encrypted,
@@ -69,11 +83,17 @@ class Setup extends Model
             return false;
         }
 
-        if ($setup->token_expires_at !== null && $setup->token_expires_at->isPast()) {
+        if ($setup->token_expires_at === null || now()->greaterThan($setup->token_expires_at)) {
             return false;
         }
 
-        return hash_equals($setup->setup_token, hash('sha256', $token));
+        try {
+            $decrypted = Crypt::decryptString($setup->setup_token);
+        } catch (\Exception) {
+            return false;
+        }
+
+        return hash_equals($decrypted, $token);
     }
 
     public static function invalidateToken(): void
@@ -81,63 +101,74 @@ class Setup extends Model
         $setup = self::first();
 
         if ($setup !== null) {
-            $setup->setup_token = null;
-            $setup->token_expires_at = null;
-            $setup->save();
+            $setup->update([
+                'setup_token' => null,
+                'token_expires_at' => null,
+            ]);
         }
     }
 
     public static function getCurrentStep(): string
     {
         $setup = self::first();
-        $completed = $setup?->completed_steps ?? [];
 
-        return match (count($completed)) {
-            0 => 'welcome',
-            1 => 'school',
-            2 => 'department',
-            default => 'complete',
-        };
+        if ($setup === null || empty($setup->completed_steps)) {
+            return 'welcome';
+        }
+
+        $steps = $setup->completed_steps;
+        $orderedSteps = ['welcome', 'school', 'department'];
+
+        foreach ($orderedSteps as $step) {
+            if (! in_array($step, $steps)) {
+                return $step;
+            }
+        }
+
+        return 'complete';
     }
 
     public static function isStepCompleted(string $step): bool
     {
         $setup = self::first();
-        $completed = $setup?->completed_steps ?? [];
 
-        return in_array($step, $completed, true);
+        return $setup !== null && in_array($step, $setup->completed_steps ?? []);
     }
 
     public static function markStepCompleted(string $step): void
     {
-        $setup = self::first() ?? new self;
-        $completed = $setup->completed_steps ?? [];
+        $setup = self::firstOrCreate([]);
+        $steps = $setup->completed_steps ?? [];
 
-        if (! in_array($step, $completed)) {
-            $completed[] = $step;
-            $setup->completed_steps = $completed;
-            $setup->save();
+        if (! in_array($step, $steps)) {
+            $steps[] = $step;
+            $setup->update(['completed_steps' => $steps]);
         }
     }
 
-    public static function storeCreatedEntity(string $type, string $id): void
+    public static function storeCreatedEntity(string $type, string $uuid): void
     {
-        $setup = self::first() ?? new self;
-        $entities = $setup->{$type.'_id'} ?? [];
+        $setup = self::firstOrCreate([]);
 
-        if (is_array($entities)) {
-            $entities[$type] = $id;
-        } else {
-            $setup->{$type.'_id'} = $id;
-        }
-
-        $setup->save();
+        match ($type) {
+            'school' => $setup->update(['school_id' => $uuid]),
+            'department' => $setup->update(['department_id' => $uuid]),
+            default => null,
+        };
     }
 
     public static function getCreatedEntity(string $type): ?string
     {
         $setup = self::first();
 
-        return $setup?->{$type.'_id'};
+        if ($setup === null) {
+            return null;
+        }
+
+        return match ($type) {
+            'school' => $setup->school_id,
+            'department' => $setup->department_id,
+            default => null,
+        };
     }
 }

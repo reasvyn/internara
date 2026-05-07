@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\School\Models\Department;
-use App\Domain\User\Enums\BloodType;
-use App\Domain\User\Enums\Gender;
-use App\Domain\User\Models\Profile;
-use App\Domain\User\Models\User;
+use App\Enums\User\BloodType;
+use App\Enums\User\Gender;
+use App\Models\Department;
+use App\Models\Profile;
+use App\Models\School;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,12 +27,15 @@ class ProfileFactory extends Factory
             'address' => $this->faker->address(),
             'gender' => $this->faker->randomElement([Gender::MALE, Gender::FEMALE]),
             'blood_type' => $this->faker->randomElement(BloodType::cases()),
+            'pob' => $this->faker->city(),
+            'dob' => $this->faker->date(),
             'emergency_contact_name' => $this->faker->name(),
             'emergency_contact_phone' => $this->faker->phoneNumber(),
             'emergency_contact_address' => $this->faker->address(),
             'bio' => $this->faker->sentence(),
             'national_identifier' => $this->faker->numerify('##############'),
             'registration_number' => $this->faker->unique()->numerify('REG-#####'),
+            'school_id' => School::factory(),
             'department_id' => Department::factory(),
         ];
     }

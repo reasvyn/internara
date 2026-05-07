@@ -8,10 +8,8 @@ use App\Actions\School\SetupDepartmentAction;
 use App\Actions\School\SetupSchoolAction;
 use App\Actions\Setup\FinalizeSetupAction;
 use App\Actions\User\SetupSuperAdminAction;
-use App\Domain\Setup\Exceptions\SetupException;
-use App\Domain\Setup\Exceptions\SetupExceptionRenderer;
-use App\Domain\Setup\Services\EnvironmentAuditor;
 use App\Models\Setup;
+use App\Services\Setup\EnvironmentAuditor;
 use App\Support\AppInfo;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -275,8 +273,11 @@ class SetupWizard extends Component
 
             $this->currentStep = 7;
             $this->success('System installed successfully!');
-        } catch (SetupException $e) {
-            SetupExceptionRenderer::handle($this, $e);
+        } catch (\RuntimeException $e) {
+            $this->error($e->getMessage());
+            logger()->error('Setup error: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
         } catch (\Exception $e) {
             logger()->error('Setup Failed: '.$e->getMessage());
             $this->error('Installation failed: '.$e->getMessage());

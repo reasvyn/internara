@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions\Setup;
 
-use App\Domain\Setup\Exceptions\SetupException;
-use App\Domain\Setup\Services\EnvironmentAuditor;
 use App\Models\Setup;
+use App\Services\Setup\EnvironmentAuditor;
 use Illuminate\Support\Carbon;
+use RuntimeException;
 
 /**
  * Orchestrates the full technical installation:
@@ -23,7 +23,7 @@ final readonly class InstallSystemAction
     ) {}
 
     /**
-     * @throws SetupException If audit fails
+     * @throws RuntimeException If audit fails
      *
      * @return array{plaintext: string, expires_at: Carbon}
      */
@@ -33,7 +33,7 @@ final readonly class InstallSystemAction
         $report = $this->auditor->audit();
 
         if (! $report->passed()) {
-            throw SetupException::auditFailed();
+            throw new RuntimeException('System audit check failed.');
         }
 
         // Step 2: Provision system (outside transaction to avoid SQLite VACUUM issues)

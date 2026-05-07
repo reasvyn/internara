@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Internship;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Internship\Models\Placement;
+use App\Models\Internship\Placement;
 use Illuminate\Support\Facades\DB;
 
 class UpdatePlacementAction

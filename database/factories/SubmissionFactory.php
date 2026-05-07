@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assignment\Models\Assignment;
-use App\Domain\Assignment\Models\Submission;
-use App\Domain\Internship\Models\Registration;
-use App\Domain\User\Models\User;
+use App\Models\Assignment;
+use App\Models\Registration;
+use App\Models\Submission;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -29,6 +29,17 @@ class SubmissionFactory extends Factory
             'submitted_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'status' => 'submitted',
         ];
+    }
+
+    public function graded(?float $score = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'verified',
+            'score' => $score ?? $this->faker->randomFloat(1, 70, 100),
+            'feedback' => $this->faker->sentence(),
+            'graded_by' => User::factory(),
+            'graded_at' => now(),
+        ]);
     }
 
     public function verified(): static

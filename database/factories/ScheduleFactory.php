@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Schedule\Models\Schedule;
-use App\Domain\User\Models\User;
+use App\Models\Internship;
+use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ScheduleFactory extends Factory

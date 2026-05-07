@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Setup;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Auth\Enums\AccountStatus;
-use App\Domain\Setup\Data\RecoverAdminData;
-use App\Domain\User\Models\User;
+use App\Enums\Auth\AccountStatus;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,13 +16,13 @@ final readonly class RecoverAdminAccessAction
         private LogAuditAction $logAudit,
     ) {}
 
-    public function execute(RecoverAdminData $data): User
+    public function execute(string $email, string $password, bool $isReset = false, string $role = 'super_admin'): User
     {
-        return DB::transaction(function () use ($data) {
-            if ($data->isReset) {
-                $user = User::where('email', $data->email)->firstOrFail();
+        return DB::transaction(function () use ($email, $password, $isReset, $role) {
+            if ($isReset) {
+                $user = User::where('email', $email)->firstOrFail();
                 $user->update([
-                    'password' => Hash::make($data->password),
+                    'password' => Hash::make($password),
                     'locked_at' => null,
                     'locked_reason' => null,
                 ]);
@@ -31,17 +30,15 @@ final readonly class RecoverAdminAccessAction
             } else {
                 $user = User::create([
                     'name' => 'Recovery Admin',
-                    'email' => $data->email,
-                    'password' => Hash::make($data->password),
+                    'email' => $email,
+                    'password' => Hash::make($password),
                     'username' => $this->generateUsername(),
                 ]);
-                $user->profile()->create([
-                    'full_name' => 'Recovery Admin',
-                ]);
+                $user->profile()->create();
                 $user->setStatus(AccountStatus::PROTECTED);
             }
 
-            $user->syncRoles([$data->role]);
+            $user->syncRoles([$role]);
 
             $this->logAudit->execute(
                 user: null,
@@ -49,9 +46,9 @@ final readonly class RecoverAdminAccessAction
                 subjectType: User::class,
                 subjectId: $user->id,
                 payload: [
-                    'type' => $data->isReset ? 'reset' : 'create',
-                    'email' => $data->email,
-                    'role' => $data->role,
+                    'type' => $isReset ? 'reset' : 'create',
+                    'email' => $email,
+                    'role' => $role,
                 ],
                 module: 'Setup',
             );
@@ -62,6 +59,6 @@ final readonly class RecoverAdminAccessAction
 
     private function generateUsername(): string
     {
-        return 'admin_'.substr(md5(time()), 0, 8);
+        return 'admin_'.substr(md5((string) time()), 0, 8);
     }
 }

@@ -61,6 +61,7 @@ return [
         'token_note' => 'Keep this URL safe. If it expires, you will need to run this command again.',
         'running_audit' => 'Running system environment audit...',
         'audit_failed' => 'Pre-flight audit failed. Please fix the issues above before proceeding.',
+        'force_warning' => 'Running in force mode. Existing settings will be overwritten.',
         'proceed_confirm' => 'Do you want to proceed with the technical installation?',
         'configure_env_confirm' => 'Do you want to configure the environment (.env) interactively?',
         'env_configured' => 'Environment successfully configured.',

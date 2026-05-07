@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Assignment;
 
 use App\Enums\AssignmentType;
-use App\Domain\Assignment\Models\Assignment;
+use App\Models\Assignment\Assignment;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Notification;
 
-use App\Domain\Notification\Models\Notification;
 use App\Livewire\Core\BaseRecordManager;
+use App\Models\Notification\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 

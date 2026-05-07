@@ -61,6 +61,7 @@ return [
         'token_note' => 'Simpan URL ini dengan aman. Jika kedaluwarsa, Anda perlu menjalankan perintah ini lagi.',
         'running_audit' => 'Menjalankan audit lingkungan sistem...',
         'audit_failed' => 'Audit pre-flight gagal. Silakan perbaiki masalah di atas sebelum melanjutkan.',
+        'force_warning' => 'Berjalan dalam mode paksa. Pengaturan yang ada akan ditimpa.',
         'proceed_confirm' => 'Apakah Anda ingin melanjutkan instalasi teknis?',
         'configure_env_confirm' => 'Apakah Anda ingin mengkonfigurasi lingkungan (.env) secara interaktif?',
         'env_configured' => 'Lingkungan berhasil dikonfigurasi.',

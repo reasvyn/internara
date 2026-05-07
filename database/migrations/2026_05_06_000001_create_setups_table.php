@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('setups', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->boolean('is_installed')->default(false);
             $table->string('setup_token')->nullable();
             $table->timestamp('token_expires_at')->nullable();

@@ -1,6 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "reasvyn/internara",
+    "display_name": "Internara",
     "version": "0.1.0",
     "type": "project",
     "description": "The practical field work management system build with Laravel.",

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Assignment;
 
-use App\Domain\Assignment\Models\Assignment;
 use App\Enums\AssignmentStatus;
+use App\Models\Assignment\Assignment;
 use App\Notifications\AssignmentNotification;
 use Illuminate\Support\Facades\Notification;
 

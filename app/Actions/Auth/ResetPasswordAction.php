@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Actions\Auth;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Auth\Exceptions\AuthException;
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use RuntimeException;
 
 /**
  * S1 - Secure: Implements secure password reset logic.
@@ -22,7 +22,7 @@ class ResetPasswordAction
     /**
      * Reset the user's password.
      *
-     * @throws AuthException when token is invalid or reset fails
+     * @throws RuntimeException when token is invalid or reset fails
      */
     public function execute(
         string $email,
@@ -61,11 +61,13 @@ class ResetPasswordAction
                 module: 'Auth',
             );
 
-            throw match ($status) {
-                Password::INVALID_TOKEN => AuthException::resetTokenInvalid(),
-                Password::INVALID_USER => AuthException::userNotFound($email),
-                default => throw AuthException::resetTokenInvalid(),
+            $message = match ($status) {
+                Password::INVALID_TOKEN => __('passwords.token'),
+                Password::INVALID_USER => __('passwords.user'),
+                default => __('passwords.token'),
             };
+
+            throw new RuntimeException($message);
         }
 
         return true;

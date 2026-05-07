@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\LoginAction;
-use App\Domain\Auth\Exceptions\AuthException;
-use App\Domain\Auth\Exceptions\AuthExceptionRenderer;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use RuntimeException;
 
 class Login extends Component
 {
@@ -53,10 +53,13 @@ class Login extends Component
             flash()->success(__('auth.login.welcome_back', ['name' => $user->name]));
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
-        } catch (AuthException $e) {
+        } catch (RuntimeException $e) {
             RateLimiter::hit($throttleKey, 60);
             $this->addError('identifier', $e->getMessage());
-            AuthExceptionRenderer::handle($this, $e);
+
+            Log::error('Login error: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 

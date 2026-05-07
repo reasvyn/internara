@@ -12,27 +12,25 @@ return new class extends Migration
     {
         Schema::create('submissions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('assignment_id');
-            $table->uuid('registration_id');
-            $table->uuid('student_id');
+            $table->foreignUuid('assignment_id')->constrained('assignments')->onDelete('cascade');
+            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained('users')->onDelete('cascade');
+
             $table->text('content')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamp('submitted_at')->nullable();
             $table->string('status', 20)->default('draft');
+
+            $table->float('score')->nullable();
+            $table->text('feedback')->nullable();
+            $table->foreignUuid('graded_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('graded_at')->nullable();
+
             $table->timestamps();
 
-            $table
-                ->foreign('assignment_id')
-                ->references('id')
-                ->on('assignments')
-                ->onDelete('cascade');
-            $table
-                ->foreign('registration_id')
-                ->references('id')
-                ->on('internship_registrations')
-                ->onDelete('cascade');
-            $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
             $table->index(['student_id', 'status']);
+            $table->index(['assignment_id', 'status']);
+            $table->index(['registration_id', 'status']);
         });
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domain\User\Models\User;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -120,11 +120,11 @@ class RolePermissionSeeder extends Seeder
     private function roles(): array
     {
         return [
-            \App\Domain\Auth\Enums\Role::SUPER_ADMIN->value => [
+            \App\Enums\Auth\Role::SUPER_ADMIN->value => [
                 // Super Admin gets all permissions
                 'all' => true,
             ],
-            \App\Domain\Auth\Enums\Role::ADMIN->value => [
+            \App\Enums\Auth\Role::ADMIN->value => [
                 // Admin gets most permissions except system-level ones
                 'users.view',
                 'users.create',
@@ -171,7 +171,7 @@ class RolePermissionSeeder extends Seeder
                 'settings.edit',
                 'dashboard.admin',
             ],
-            \App\Domain\Auth\Enums\Role::TEACHER->value => [
+            \App\Enums\Auth\Role::TEACHER->value => [
                 'students.view',
                 'students.create',
                 'students.edit',
@@ -199,7 +199,7 @@ class RolePermissionSeeder extends Seeder
                 'notifications.view',
                 'dashboard.teacher',
             ],
-            \App\Domain\Auth\Enums\Role::STUDENT->value => [
+            \App\Enums\Auth\Role::STUDENT->value => [
                 'companies.view',
                 'internships.view',
                 'assignments.view',
@@ -215,7 +215,7 @@ class RolePermissionSeeder extends Seeder
                 'notifications.view',
                 'dashboard.student',
             ],
-            \App\Domain\Auth\Enums\Role::SUPERVISOR->value => [
+            \App\Enums\Auth\Role::SUPERVISOR->value => [
                 'students.view',
                 'companies.view',
                 'internships.view',

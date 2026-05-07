@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Attendance;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Attendance\Models\AttendanceLog;
-use App\Domain\User\Models\User;
+use App\Models\Attendance\AttendanceLog;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

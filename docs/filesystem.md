@@ -8,6 +8,8 @@
 | `public` | `storage/app/public` | Public (via `/storage` symlink) | Brand assets, user-uploaded images |
 | `s3` | Configured via `AWS_*` env vars | Configurable | Cloud storage (optional) |
 
+Note: Some legacy code might refer to a `private` disk. In this project, `local` is the private disk by convention.
+
 Config: `config/filesystems.php`. Default: `local`.
 
 Symlink: `public/storage` → `storage/app/public` (created via `php artisan storage:link`).
@@ -16,7 +18,7 @@ Symlink: `public/storage` → `storage/app/public` (created via `php artisan sto
 
 ### Report Generation
 
-PDF reports stored on the `local` (private) disk:
+PDF reports stored on the `local` disk:
 
 ```php
 // app/Domain/Document/Jobs/GenerateReportJob.php

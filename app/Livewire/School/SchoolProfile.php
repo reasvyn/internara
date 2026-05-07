@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\School;
 
 use App\Actions\School\UpdateSchoolAction;
-use App\Domain\School\Models\School;
+use App\Models\School\School;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 

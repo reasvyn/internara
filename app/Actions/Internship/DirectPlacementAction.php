@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Actions\Internship;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Internship\Models\Placement;
-use App\Domain\Internship\Models\Registration;
-use App\Domain\User\Models\User;
+use App\Models\Internship\Placement;
+use App\Models\Internship\Registration;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**

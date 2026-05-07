@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Document\Admin;
 
 use App\Actions\Document\QueueReportGenerationAction;
-use App\Domain\Document\Models\GeneratedReport;
 use App\Livewire\Core\BaseRecordManager;
+use App\Models\Document\GeneratedReport;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 

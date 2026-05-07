@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Evaluation;
 
-use App\Domain\User\Models\User;
+use App\Models\User;
 
 /**
  * Evaluates a mentor's performance.

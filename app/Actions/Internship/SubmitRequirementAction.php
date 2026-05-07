@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Internship;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Internship\Models\Registration;
-use App\Domain\Internship\Models\RequirementSubmission;
+use App\Models\Internship\Registration;
+use App\Models\Internship\RequirementSubmission;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

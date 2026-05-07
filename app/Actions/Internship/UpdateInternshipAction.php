@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Internship;
 
 use App\Actions\Core\LogAuditAction;
-use App\Domain\Internship\Models\Internship;
+use App\Models\Internship\Internship;
 use Illuminate\Support\Facades\DB;
 
 class UpdateInternshipAction
