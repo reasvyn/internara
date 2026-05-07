@@ -29,7 +29,7 @@ Follow the setup wizard to configure your school and admin account. Access the a
 
 ## Architecture
 
-Internara follows a **Domain-Driven Structure** with an **Action-Oriented MVC** pattern. Business logic is encapsulated in stateless **Actions**, while business rules live in rich **Models**.
+Internara follows a **flat Action-Oriented MVC** architecture. Business logic is encapsulated in stateless **Actions** under `app/Actions/{Context}/`, while business rules live in rich **Models** under `app/Models/`.
 
 ## Documentation
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Entities\Internship\RegistrationState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +25,11 @@ class Registration extends BaseModel
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    public function entity(): RegistrationState
+    {
+        return RegistrationState::fromModel($this);
+    }
 
     public function student(): BelongsTo
     {
@@ -76,79 +81,38 @@ class Registration extends BaseModel
         return $this->hasMany(RequirementSubmission::class, 'registration_id');
     }
 
-    /**
-     * Check if the registration is currently active.
-     */
     public function isActive(): bool
     {
-        return $this->status === 'active';
+        return $this->entity()->isActive();
     }
 
-    /**
-     * Check if the registration is pending approval.
-     */
     public function isPending(): bool
     {
-        return $this->status === 'pending';
+        return $this->entity()->isPending();
     }
 
-    /**
-     * Check if the internship period is currently ongoing.
-     */
     public function isCurrentlyOngoing(): bool
     {
-        if (! $this->start_date || ! $this->end_date) {
-            return false;
-        }
-
-        $now = Carbon::today();
-
-        return $now->between($this->start_date, $this->end_date, true);
+        return $this->entity()->isCurrentlyOngoing();
     }
 
-    /**
-     * Check if the internship period has ended.
-     */
     public function hasEnded(): bool
     {
-        if (! $this->end_date) {
-            return false;
-        }
-
-        return Carbon::today()->isAfter($this->end_date);
+        return $this->entity()->hasEnded();
     }
 
-    /**
-     * Check if the registration can be approved.
-     */
     public function canBeApproved(): bool
     {
-        return $this->isPending() && $this->placement_id !== null;
+        return $this->entity()->canBeApproved();
     }
 
-    /**
-     * Get the number of days remaining in the internship.
-     */
     public function daysRemaining(): int
     {
-        if (! $this->end_date) {
-            return 0;
-        }
-
-        $remaining = Carbon::today()->diffInDays($this->end_date, false);
-
-        return max(0, $remaining);
+        return $this->entity()->daysRemaining();
     }
 
-    /**
-     * Get the total duration of the internship in days.
-     */
     public function totalDuration(): int
     {
-        if (! $this->start_date || ! $this->end_date) {
-            return 0;
-        }
-
-        return $this->start_date->diffInDays($this->end_date);
+        return $this->entity()->totalDuration();
     }
 }

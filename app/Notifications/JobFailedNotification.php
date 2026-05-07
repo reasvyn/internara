@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\System\Notification;
 
-use App\Channels\Notification\CustomDatabaseChannel;
+use App\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;

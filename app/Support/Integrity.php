@@ -25,7 +25,7 @@ final class Integrity
             return;
         }
 
-        self::verifyComposerFile($path);
+        self::verifyOrFatal($path);
     }
 
     private static function isTestingEnvironment(): bool
@@ -61,33 +61,38 @@ final class Integrity
     private static function verifyComposerFile(string $path): void
     {
         if (! file_exists($path)) {
-            self::fatal('Core system metadata (composer.json) is missing.');
+            throw new RuntimeException('Core system metadata (composer.json) is missing.');
         }
 
+        $content = file_get_contents($path);
+
+        if ($content === false) {
+            throw new RuntimeException('Failed to read core system metadata file.');
+        }
+
+        $info = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException('Core system metadata file contains invalid JSON: '.json_last_error_msg());
+        }
+
+        $info = is_array($info) ? $info : [];
+        $authorName = $info['authors'][0]['name'] ?? '';
+
+        if (! hash_equals(self::AUTHOR_NAME, $authorName)) {
+            throw new RuntimeException(
+                'Attribution Error: Unauthorized author modification detected. '.
+                'This system requires attribution to the original author.'
+            );
+        }
+    }
+
+    private static function verifyOrFatal(string $path): void
+    {
         try {
-            $content = file_get_contents($path);
-
-            if ($content === false) {
-                self::fatal('Failed to read core system metadata file.');
-            }
-
-            $info = json_decode($content, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                self::fatal('Core system metadata file contains invalid JSON: '.json_last_error_msg());
-            }
-
-            $info = is_array($info) ? $info : [];
-            $authorName = $info['authors'][0]['name'] ?? '';
-
-            if (! hash_equals(self::AUTHOR_NAME, $authorName)) {
-                self::fatal(
-                    'Attribution Error: Unauthorized author modification detected. '.
-                    'This system requires attribution to the original author.'
-                );
-            }
+            self::verifyComposerFile($path);
         } catch (RuntimeException $e) {
-            self::fatal('System integrity verification failed: '.$e->getMessage());
+            self::fatal($e->getMessage());
         }
     }
 

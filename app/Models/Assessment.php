@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Assessment\AssessmentResult;
 use Database\Factories\AssessmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,29 +52,19 @@ class Assessment extends BaseModel
         return $this->belongsTo(User::class, 'evaluator_id');
     }
 
-    /**
-     * Check if assessment is finalized.
-     */
-    public function isFinalized(): bool
+    public function entity(): AssessmentResult
     {
-        return ! is_null($this->finalized_at);
+        return AssessmentResult::fromModel($this);
     }
 
-    /**
-     * Calculate total score from content array.
-     */
+    public function isFinalized(): bool
+    {
+        return $this->entity()->isFinalized();
+    }
+
     public function calculateTotalScore(): float
     {
-        if (! is_array($this->content)) {
-            return (float) $this->score;
-        }
-
-        $total = 0.0;
-        foreach ($this->content as $criterion) {
-            $total += (float) ($criterion['score'] ?? 0);
-        }
-
-        return $total;
+        return $this->entity()->calculateTotalScore();
     }
 
     /**

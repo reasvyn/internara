@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Internship\InternshipPeriod;
 use App\Enums\Internship\InternshipStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,8 +37,13 @@ class Internship extends BaseModel
         return $this->hasMany(Registration::class);
     }
 
+    public function entity(): InternshipPeriod
+    {
+        return InternshipPeriod::fromModel($this);
+    }
+
     public function isAcceptingRegistrations(): bool
     {
-        return $this->status?->isAcceptingRegistrations() ?? false;
+        return $this->entity()->isAcceptingRegistrations();
     }
 }

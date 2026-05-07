@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\SupervisionLogStatus;
-use App\Enums\SupervisionType;
+use App\Entities\SupervisionLog\SupervisionStatus;
+use App\Enums\Mentor\SupervisionLogStatus;
+use App\Enums\Mentor\SupervisionType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,13 +34,18 @@ class SupervisionLog extends BaseModel
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
+    public function entity(): SupervisionStatus
+    {
+        return SupervisionStatus::fromModel($this);
+    }
+
     public function isCompleted(): bool
     {
-        return $this->status?->isTerminal() ?? false;
+        return $this->entity()->isCompleted();
     }
 
     public function isActive(): bool
     {
-        return $this->status?->isActive() ?? false;
+        return $this->entity()->isActive();
     }
 }

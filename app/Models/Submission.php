@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\SubmissionStatus;
+use App\Entities\Submission\SubmissionState;
+use App\Enums\Assignment\SubmissionStatus;
 use Database\Factories\SubmissionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -63,24 +64,19 @@ class Submission extends BaseModel implements HasMedia
         return $this->belongsTo(User::class, 'graded_by');
     }
 
-    /**
-     * Check if submission can be edited.
-     */
-    public function canBeEdited(): bool
+    public function entity(): SubmissionState
     {
-        return in_array(
-            $this->status,
-            [SubmissionStatus::DRAFT, SubmissionStatus::REVISION_REQUIRED],
-            true,
-        );
+        return SubmissionState::fromModel($this);
     }
 
-    /**
-     * Check if submission is verified.
-     */
+    public function canBeEdited(): bool
+    {
+        return $this->entity()->canBeEdited();
+    }
+
     public function isVerified(): bool
     {
-        return $this->status === SubmissionStatus::VERIFIED;
+        return $this->entity()->isVerified();
     }
 
     /**

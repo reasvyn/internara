@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Channels\Notification;
+namespace App\Channels;
 
 use App\Actions\Notification\SendNotificationAction;
 use Illuminate\Notifications\Notification;
 
 /**
- * Custom Database Channel for DDD-based notifications.
+ * Custom Database Channel for application notifications.
  *
  * S2 - Sustain: Leverages SendNotificationAction for consistency.
  * S3 - Scalable: Decouples notification storage from Laravel's default table.

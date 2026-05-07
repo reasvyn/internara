@@ -4,26 +4,49 @@
 
 ### UUID Primary Keys
 
-All models use UUIDs. Apply the `HasUuid` trait to enable automatic UUID generation:
+All models use UUIDs. Most extend `BaseModel` which includes Laravel's built-in `HasUuids` concern:
 
 ```php
 // Migration
 $table->uuid('id')->primary();
 
-// Model
-use App\Traits\HasUuid;
+// Model (via BaseModel)
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+abstract class BaseModel extends Model
 {
-    use HasUuid;
+    use HasUuids;
+
+    public function getIncrementing(): bool
+    {
+        return false;
+    }
+
+    public function getKeyType(): string
+    {
+        return 'string';
+    }
 }
 ```
 
-The `HasUuid` trait lives outside `app/Domain/` — it is a technical utility, not a business rule.
+Models that extend `Authenticatable` (e.g., `User`) apply `HasUuids` directly.
 
 ### Mass Assignment
 
-Use PHP 8 `#[Fillable]` attributes and `#[Hidden]` attributes. Avoid legacy `$fillable` arrays.
+Use PHP 8 `#[Fillable]` and `#[Hidden]` attributes on all models except legacy exceptions:
+
+```php
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+
+#[Fillable(['name', 'email', ...])]
+class User extends Authenticatable
+{
+    // ...
+}
+```
+
+Some older models (e.g., `Setup`) still use the traditional `$fillable` property.
 
 ### Relationships
 
@@ -33,11 +56,11 @@ Always use constrained UUID foreign keys:
 $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 ```
 
-High-growth tables (audit, attendance, logbook) have compound indexes on common filter columns.
+High-growth tables (activity_log, attendance, logbook) have compound indexes on common filter columns.
 
 ## Model Organization
 
-Models live in `app/Domain/{Domain}/Models/`. Each model belongs to the domain it represents.
+All models live flat in `app/Models/`. There is no sub-namespacing — every model uses `namespace App\Models;`.
 
 ## Spatie Integrations
 
