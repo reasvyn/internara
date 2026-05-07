@@ -1,74 +1,91 @@
 # Architecture Overview: Action-Oriented MVC
 
-Internara uses an **Action-Oriented MVC** architecture designed for rapid prototyping and clean organization. Files are grouped primarily by their **Functional Layer**, and secondarily by their **Business Context (Domain)**.
+Internara uses a **flat Action-Oriented MVC** architecture. Files are grouped by **Functional Layer**, then by **Business Context**.
 
-## Directory Structure
-
-The system is organized under the `app/` directory. Each layer contains sub-directories for specific business contexts.
-
-```text
+```
 app/
-├── Actions/                    # BUSINESS LOGIC (Entry points)
-│   └── {Context}/              # e.g., Internship, User, Auth
-│       └── *Action.php         # Single-purpose classes with execute()
-│
-├── Models/                     # PERSISTENCE (Eloquent)
-│   └── {Context}/              # e.g., Internship, User, School
-│
-├── Livewire/                   # PRESENTATION (Reactive UI)
-│   └── {Context}/
-│
-├── Enums/                      # CONSTANTS & TYPES
-│   └── {Context}/
-│
-├── Data/                       # DATA OBJECTS (DTOs)
-│   └── {Context}/
-│
-├── Exceptions/                 # ERROR HANDLING
-│   └── {Context}/
-│
-├── Notifications/              # COMMUNICATION
-│   └── {Context}/
-│
-├── Policies/                   # AUTHORIZATION
-│   └── {Context}/
-│
-└── Services/                   # INFRASTRUCTURE / UTILITIES
-    └── {Context}/
+├── Entities/         # Business rules (pure PHP, no ORM)
+├── Actions/          # Business logic entry points (single execute())
+├── Models/           # Eloquent persistence (flat, no sub-namespace)
+├── Livewire/         # Reactive UI
+├── Http/Controllers/
+├── Services/         # Infrastructure (PDF, QR, external API)
+├── Support/          # Settings, Logger, helpers
+├── Enums/            # Constants & types
+├── Exceptions/       # AppException, ActionException, etc.
+├── Notifications/    # Mail, broadcast, database channels
+├── Jobs/             # Queued jobs
+├── Events/           # Domain events
+├── Policies/         # Authorization
+├── Channels/         # Custom notification channels
+├── Casts/            # Custom Eloquent casts
+├── Console/Commands/ # Artisan commands
+├── Contracts/        # Interfaces
+├── Rules/            # Validation rules
+└── Providers/        # Service providers
 ```
 
-## Key Principles
+## Principles
 
 | Principle | Rule |
 |---|---|
-| **Layer-First** | Top-level folders represent the type of object (Action, Model, Livewire). |
-| **Context-Grouped** | Inside each layer, files are grouped by business domain (User, Internship). |
-| **Action Pattern** | Logic resides in classes named `*Action` with a single public `execute()` method. |
-| **Thin Controllers** | Controllers and Livewire components delegate all business logic to Actions. |
-| **Direct Models** | Eloquent Models are used directly for database interactions. |
-
-## Role Mapping (Context: High School)
-
-- **Mentee** Context: Refers to **Students** participating in the program.
-- **Mentor** Context: Refers to **Teachers** and **Industry Supervisors**.
-- **System**: strictly Senior/Vocational High School level.
+| **Action Pattern** | Logic in `*Action` classes with a single `execute()` method |
+| **Thin Controllers** | Livewire/Controllers delegate all logic to Actions |
+| **Flat Models** | All models in `app/Models/`, no sub-namespace |
+| **BaseModel** | Abstract base with `HasUuids`, non-incrementing string keys |
+| **Entities** | Pure business rules, no ORM. Exposed via `entity()` or `as{Context}()` |
+| **Auth Boundary** | `User` stays `extends Authenticatable` for Laravel ecosystem |
 
 ## Data Flow
 
 ```
-User Input → Livewire/Controller → Action → Eloquent Model → Database
+User Input → Livewire/Controller → Action → Model → Database
                                     ↓
                               Flash/Notification
 ```
 
-## Naming Convention Examples
+Requests flow through Actions. Actions orchestrate between Entities (rules), Models (persistence), and Services (infrastructure).
 
-- Action: `app/Actions/Internship/ApproveRegistrationAction.php`
-- Model: `app/Models/User/Profile.php`
-- Livewire: `app/Livewire/Internship/RegistrationList.php`
-- Enum: `app/Enums/Internship/InternshipStatus.php`
-- DTO: `app/Data/Internship/RegistrationData.php`
+## Entity Pattern
 
-## Strategic Advantage
+Business rules extracted from Models into plain PHP objects:
 
-This architecture provides the speed of standard Laravel development while maintaining a clear separation of concerns. By isolating logic into Actions, the application remains easy to test and provides a clear roadmap if a future transition to a different technology stack (e.g., Next.js/TypeScript) is desired.
+```php
+class User extends Authenticatable
+{
+    public function asApprentice(): Apprentice
+    {
+        return new Apprentice(
+            status: AccountStatus::tryFrom($this->latestStatus()?->name ?? ''),
+            isLocked: $this->locked_at !== null,
+        );
+    }
+}
+
+final readonly class Apprentice
+{
+    public function isSuspended(): bool
+    {
+        return $this->status === AccountStatus::SUSPENDED;
+    }
+}
+```
+
+Entity rules: no Model imports, no framework dependencies, testable without database.
+
+## Role Mapping
+
+| Role | Domain | Context |
+|---|---|---|
+| Student | Mentee | Participants |
+| Teacher | Mentor | School supervisors |
+| Supervisor | Mentor | Industry supervisors |
+| Admin | Admin | School management |
+| SuperAdmin | Admin | System infrastructure |
+
+## Naming
+
+- Action: `app/Actions/{Context}/{Verb}{Noun}Action.php`
+- Entity: `app/Entities/{Context}/{Name}.php`
+- Model: `app/Models/{Name}.php` (flat)
+- Livewire: `app/Livewire/{Context}/{Name}.php`

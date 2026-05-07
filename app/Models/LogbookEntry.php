@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\LogbookEntryStatus;
+use App\Entities\LogbookEntry\LogbookEntryState;
+use App\Enums\Logbook\LogbookEntryStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,17 +37,18 @@ class LogbookEntry extends BaseModel
         return $this->belongsTo(User::class, 'verified_by');
     }
 
+    public function entity(): LogbookEntryState
+    {
+        return LogbookEntryState::fromModel($this);
+    }
+
     public function isVerified(): bool
     {
-        return $this->status === LogbookEntryStatus::VERIFIED;
+        return $this->entity()->isVerified();
     }
 
     public function canBeEdited(): bool
     {
-        return in_array(
-            $this->status,
-            [LogbookEntryStatus::DRAFT, LogbookEntryStatus::REVISION_REQUIRED],
-            true,
-        );
+        return $this->entity()->canBeEdited();
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Handbook\HandbookPublishState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,8 +35,13 @@ class Handbook extends BaseModel
         return $this->hasMany(HandbookAcknowledgement::class);
     }
 
+    public function entity(): HandbookPublishState
+    {
+        return HandbookPublishState::fromModel($this);
+    }
+
     public function isPublished(): bool
     {
-        return $this->is_active && $this->published_at !== null;
+        return $this->entity()->isPublished();
     }
 }

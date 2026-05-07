@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Placement\PlacementCapacity;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,18 +33,23 @@ class Placement extends BaseModel
         return $this->hasMany(Registration::class, 'placement_id');
     }
 
+    public function entity(): PlacementCapacity
+    {
+        return PlacementCapacity::fromModel($this);
+    }
+
     public function isFull(): bool
     {
-        return $this->filled_quota >= $this->quota;
+        return $this->entity()->isFull();
     }
 
     public function availableSlots(): int
     {
-        return max(0, $this->quota - $this->filled_quota);
+        return $this->entity()->availableSlots();
     }
 
     public function hasAvailableSlots(): bool
     {
-        return $this->availableSlots() > 0;
+        return $this->entity()->hasAvailableSlots();
     }
 }

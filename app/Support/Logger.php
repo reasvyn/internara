@@ -149,15 +149,13 @@ final class Logger
     {
         $causer = $this->causer ?? Auth::user();
 
-        if ($causer === null && $this->toActivity) {
-            $this->toActivity = false;
-        }
-
         if ($this->toSystem) {
             $this->writeSystemLog($causer);
         }
 
-        if ($this->toActivity && $causer !== null) {
+        $canLogActivity = $causer !== null || ($this->toActivity && ! $this->toSystem);
+
+        if ($this->toActivity && $canLogActivity) {
             $this->writeActivityLog($causer);
         }
     }
@@ -187,11 +185,16 @@ final class Logger
         LogFacade::{$level}($this->message, $context);
     }
 
-    private function writeActivityLog(Model $causer): void
+    private function writeActivityLog(?Model $causer = null): void
     {
         try {
-            $activity = activity()
-                ->causedBy($causer)
+            $activity = activity();
+
+            if ($causer !== null) {
+                $activity->causedBy($causer);
+            }
+
+            $activity
                 ->event($this->event ?? $this->face)
                 ->withProperties(array_filter([
                     'payload' => $this->payload !== [] ? $this->payload : null,

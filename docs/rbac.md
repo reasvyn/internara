@@ -2,15 +2,15 @@
 
 ## Roles
 
-Defined in `App\Domain\Auth\Enums\Role`:
+Defined in `App\Enums\Auth\Role`:
 
-| Role | Value | Purpose |
+| Case | Value | Purpose |
 |---|---|---|
-| SuperAdmin | `super_admin` | Infrastructure, global config, user lifecycle |
-| Admin | `admin` | School-level management (School staff/principals) |
-| Teacher | `teacher` | Academic supervision (School faculty/Teachers) |
-| Student | `student` | Participants (High school students) |
-| Supervisor | `supervisor` | Industry evaluation (Company mentors/Field Supervisors) |
+| `SUPER_ADMIN` | `super_admin` | Infrastructure, global config, user lifecycle |
+| `ADMIN` | `admin` | School-level management (School staff/principals) |
+| `TEACHER` | `teacher` | Academic supervision (School faculty/Teachers) |
+| `STUDENT` | `student` | Participants (High school students) |
+| `SUPERVISOR` | `supervisor` | Industry evaluation (Company mentors/Field Supervisors) |
 
 Domain note:
 - **Student** maps to the **Mentee** domain in code.
@@ -27,7 +27,7 @@ UI and business rules use the specific role names above.
 
 ## Account Lifecycle
 
-Defined in `App\Domain\Auth\Enums\AccountStatus`:
+Defined in `App\Enums\Auth\AccountStatus`:
 
 | Status | Description | Login? |
 |---|---|---|

@@ -33,10 +33,9 @@
 setting('app_name');
 
 // Write (action-based)
-app(SetSettingAction::class)->execute('app_name', 'Internara');
+use App\Actions\Admin\SetSettingAction;
 
-// Invalidate
-Settings::forget('app_name');
+app(SetSettingAction::class)->execute('app_name', 'Internara');
 ```
 
 ## Performance

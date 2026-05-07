@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\AcademicYear\AcademicYearState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -23,8 +24,13 @@ class AcademicYear extends BaseModel
         'is_active' => 'boolean',
     ];
 
+    public function entity(): AcademicYearState
+    {
+        return AcademicYearState::fromModel($this);
+    }
+
     public function isActive(): bool
     {
-        return $this->is_active;
+        return $this->entity()->isActive();
     }
 }

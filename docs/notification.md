@@ -4,14 +4,14 @@
 
 Internara uses a dual notification approach:
 
-1. **In-app notifications** — persisted in the `notifications` table, managed via `App\Domain\Notification\Models\Notification`
+1. **In-app notifications** — persisted in the `notifications` table, managed via `App\Models\Notification`
 2. **Laravel notifications** — queued classes that deliver via mail, broadcast, and a custom database channel
 
 ## In-App Notifications
 
 ### Model
 
-`App\Domain\Notification\Models\Notification` — uses `HasUuid`, fillable via `#[Fillable]` attribute.
+`App\Models\Notification` — extends `BaseModel` (inherits `HasUuids`), fillable via `#[Fillable]` attribute.
 
 | Field | Type | Description |
 |---|---|---|
@@ -26,7 +26,7 @@ Internara uses a dual notification approach:
 
 ### Sending Notifications
 
-Use `SendNotificationAction` directly or through `CustomDatabaseChannel`:
+Use `App\Actions\Notification\SendNotificationAction` directly or through `CustomDatabaseChannel`:
 
 ```php
 // Direct action call
@@ -41,7 +41,7 @@ app(SendNotificationAction::class)->execute(
 
 ### Custom Database Channel
 
-`App\Domain\Notification\Channels\CustomDatabaseChannel` bridges Laravel's notification system to the project's in-app notification table. It delegates to `SendNotificationAction` for consistency.
+`App\Channels\CustomDatabaseChannel` bridges Laravel's notification system to the project's in-app notification table. It delegates to `SendNotificationAction` for consistency.
 
 All domain notifications use three channels: `mail`, `broadcast`, and `CustomDatabaseChannel::class`.
 
@@ -64,7 +64,7 @@ Each domain defines its own queued notification classes:
 Each queued notification implements `toCustomDatabase()` to provide data for in-app storage:
 
 ```php
-// app/Domain/Internship/Notifications/RegistrationNotification.php
+// app/Notifications/Internship/RegistrationNotification.php
 public function toCustomDatabase($notifiable): array
 {
     return [

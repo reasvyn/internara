@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\AttendanceStatus;
+use App\Entities\AttendanceLog\AttendanceStatus as AttendanceStatusEntity;
+use App\Enums\Attendance\AttendanceStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,13 +39,18 @@ class AttendanceLog extends BaseModel
         return $this->belongsTo(User::class, 'verified_by');
     }
 
+    public function entity(): AttendanceStatusEntity
+    {
+        return AttendanceStatusEntity::fromModel($this);
+    }
+
     public function hasClockOut(): bool
     {
-        return $this->clock_out !== null;
+        return $this->entity()->hasClockOut();
     }
 
     public function isExcused(): bool
     {
-        return $this->status?->isExcused() ?? false;
+        return $this->entity()->isExcused();
     }
 }

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\AssignmentStatus;
+use App\Entities\Assignment\AssignmentRules;
+use App\Enums\Assignment\AssignmentStatus;
 use Database\Factories\AssignmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,20 +55,19 @@ class Assignment extends BaseModel
         return $this->hasMany(Submission::class);
     }
 
-    /**
-     * Check if assignment is mandatory.
-     */
-    public function isMandatory(): bool
+    public function entity(): AssignmentRules
     {
-        return $this->is_mandatory === true;
+        return AssignmentRules::fromModel($this);
     }
 
-    /**
-     * Check if assignment is overdue.
-     */
+    public function isMandatory(): bool
+    {
+        return $this->entity()->isMandatory();
+    }
+
     public function isOverdue(): bool
     {
-        return $this->due_date && now()->greaterThan($this->due_date);
+        return $this->entity()->isOverdue();
     }
 
     /**

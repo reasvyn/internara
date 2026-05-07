@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\Auth\AccountStatus;
+use App\Entities\User\Apprentice;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -88,11 +88,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Create the domain entity for business rule evaluation.
+     */
+    public function entity(): Apprentice
+    {
+        return Apprentice::fromModel($this);
+    }
+
+    /**
      * Check if the user is suspended.
      */
     public function isSuspended(): bool
     {
-        return $this->latestStatus()?->name === AccountStatus::SUSPENDED->value;
+        return $this->entity()->isSuspended();
     }
 
     /**
@@ -100,7 +108,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isArchived(): bool
     {
-        return $this->latestStatus()?->name === AccountStatus::ARCHIVED->value;
+        return $this->entity()->isArchived();
     }
 
     /**
@@ -108,7 +116,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isInactive(): bool
     {
-        return $this->latestStatus()?->name === AccountStatus::INACTIVE->value;
+        return $this->entity()->isInactive();
     }
 
     /**
@@ -116,7 +124,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function requiresSetup(): bool
     {
-        return (bool) $this->setup_required;
+        return $this->entity()->requiresSetup();
     }
 
     /**
@@ -124,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isLocked(): bool
     {
-        return $this->locked_at !== null;
+        return $this->entity()->isLocked();
     }
 
     /**

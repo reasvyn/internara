@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\AbsenceReasonType;
-use App\Enums\AbsenceRequestStatus;
+use App\Entities\AbsenceRequest\AbsenceRequestStatus as AbsenceRequestStatusEntity;
+use App\Enums\Attendance\AbsenceReasonType;
+use App\Enums\Attendance\AbsenceRequestStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,13 +39,18 @@ class AbsenceRequest extends BaseModel
         return $this->belongsTo(User::class, 'processed_by');
     }
 
+    public function entity(): AbsenceRequestStatusEntity
+    {
+        return AbsenceRequestStatusEntity::fromModel($this);
+    }
+
     public function isPending(): bool
     {
-        return $this->status === AbsenceRequestStatus::PENDING;
+        return $this->entity()->isPending();
     }
 
     public function isProcessed(): bool
     {
-        return $this->status?->isProcessed() ?? false;
+        return $this->entity()->isProcessed();
     }
 }

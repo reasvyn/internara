@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\GeneratedReport\ReportStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,13 +30,18 @@ class GeneratedReport extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    public function entity(): ReportStatus
+    {
+        return ReportStatus::fromModel($this);
+    }
+
     public function isCompleted(): bool
     {
-        return $this->status === 'completed';
+        return $this->entity()->isCompleted();
     }
 
     public function isFailed(): bool
     {
-        return $this->status === 'failed';
+        return $this->entity()->isFailed();
     }
 }

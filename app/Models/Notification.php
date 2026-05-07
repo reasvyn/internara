@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Notification\NotificationStatus;
 use Database\Factories\NotificationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,12 +49,14 @@ class Notification extends BaseModel
         }
     }
 
-    /**
-     * Check if notification is unread.
-     */
+    public function entity(): NotificationStatus
+    {
+        return NotificationStatus::fromModel($this);
+    }
+
     public function isUnread(): bool
     {
-        return ! $this->is_read;
+        return $this->entity()->isUnread();
     }
 
     /**

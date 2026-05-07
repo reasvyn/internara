@@ -17,21 +17,13 @@ While most domains have been scaffolded, the following have specific implementat
 
 | Domain | Current State | Missing / Identified Issue |
 |---|---|---|
-| Evaluation | Action & Livewire Manager exist | **Critical**: `MentorEvaluation` model is missing from `app/Domain/Evaluation/Models/`, causing Livewire component failure. |
-| Audit | Implemented within `Core` domain | The separate `Audit` domain is obsolete; all audit logic now resides in `Core` (Models/Actions) and `Admin` (Livewire). |
 | Mentor | Substantially implemented | Needs further refinement in distinguishing business logic between **School Teachers** and **Industry Supervisors**. |
 | Mentee | Models & Livewire Manager exist | Basic competency tracking is present; requires more integration with the Internship domain. |
 
 ## maryUI Component Usage
 
-Most modern Livewire components (e.g., `AuditLogManager`, `MentorEvaluationManager`) successfully utilize `x-mary-*` components. However, some core system views (like MCP authorization) and older scaffolded pages still use plain HTML/Tailwind.
+Most Livewire components successfully utilize `x-mary-*` components. However, some core system views (like MCP authorization) and older scaffolded pages still use plain HTML/Tailwind.
 
-## Missing Quality Tests
+## Private Disk Naming Inconsistency
 
-The `testing.md` documentation previously referenced a `tests/Quality/` directory for N+1 detection and other checks. This directory does not exist in the current codebase.
-
-## Private Disk Configuration Error
-
-The application code in `DownloadReportAction` and `GenerateReportJob` explicitly calls `Storage::disk('private')`. However, `config/filesystems.php` does not define a `private` disk. 
-
-**Temporary Fix**: The `local` disk points to `storage/app/private` and should be used instead, or a `private` alias should be added to the configuration.
+The application code in `DownloadReportAction` and `GenerateReportJob` calls `Storage::disk('private')`. The `config/filesystems.php` does not define a `private` disk explicitly, but the `local` disk points to `storage/app/private` and serves the same purpose. The code should use `Storage::disk('local')` instead, or a `private` alias should be added to the configuration for clarity.

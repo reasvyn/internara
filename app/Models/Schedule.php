@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Schedule\ScheduleStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,13 +34,18 @@ class Schedule extends BaseModel
         return $this->belongsTo(Placement::class, 'internship_id');
     }
 
+    public function entity(): ScheduleStatus
+    {
+        return ScheduleStatus::fromModel($this);
+    }
+
     public function isOngoing(): bool
     {
-        return $this->start_at <= now() && ($this->end_at === null || $this->end_at >= now());
+        return $this->entity()->isOngoing();
     }
 
     public function isUpcoming(): bool
     {
-        return $this->start_at > now();
+        return $this->entity()->isUpcoming();
     }
 }
