@@ -119,7 +119,7 @@ class TeacherManager extends BaseRecordManager
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, $profileData);
-            $this->success(__('user.teacher.success_updated', default: 'Teacher updated.'));
+            $this->success(__('user.teacher.success_updated'));
         } else {
             $createAction->execute($this->userData, $profileData, [RoleEnum::TEACHER->value]);
             $this->success(__('user.teacher.success_created'));
@@ -131,7 +131,7 @@ class TeacherManager extends BaseRecordManager
     public function delete(User $user, DeleteUserAction $deleteAction): void
     {
         $deleteAction->execute($user);
-        $this->success(__('user.teacher.success_deleted', default: 'Teacher deleted.'));
+        $this->success(__('user.teacher.success_deleted'));
     }
 
     // --- Bulk Actions ---

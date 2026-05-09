@@ -34,18 +34,8 @@ class Schedule extends BaseModel
         return $this->belongsTo(Placement::class, 'internship_id');
     }
 
-    public function entity(): ScheduleStatus
+    public function asScheduleStatus(): ScheduleStatus
     {
         return ScheduleStatus::fromModel($this);
-    }
-
-    public function isOngoing(): bool
-    {
-        return $this->entity()->isOngoing();
-    }
-
-    public function isUpcoming(): bool
-    {
-        return $this->entity()->isUpcoming();
     }
 }

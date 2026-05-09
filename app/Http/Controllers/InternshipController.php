@@ -9,7 +9,7 @@ use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
 use App\Http\Requests\Internship\CreateInternshipRequest;
 use App\Http\Requests\UpdateInternshipRequest;
-use App\Models\Internship\Internship;
+use App\Models\Internship;
 use App\Repositories\Internship\InternshipRepository;
 use Illuminate\Http\JsonResponse;
 

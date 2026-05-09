@@ -7,6 +7,7 @@ namespace App\Actions\Admin;
 use App\Models\Setting;
 use App\Support\Settings;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Stateless Action to set or update system settings.
@@ -71,6 +72,7 @@ class SetSettingAction
     public function executeBatch(array $settings): Collection
     {
         $results = collect();
+        $changed = [];
 
         foreach ($settings as $key => $config) {
             if (is_array($config) && isset($config['value'])) {
@@ -85,7 +87,22 @@ class SetSettingAction
                 $type = null;
             }
 
-            $results->push($this->execute($key, $value, $group, $description, $type));
+            $setting = $this->execute($key, $value, $group, $description, $type);
+
+            if ($setting->wasRecentlyCreated || $setting->wasChanged()) {
+                $changed[] = $key;
+            }
+
+            $results->push($setting);
+        }
+
+        if ($changed !== []) {
+            $groups = $results->pluck('group')->unique()->filter()->values();
+
+            Log::info('Settings updated via batch', [
+                'count' => count($changed),
+                'groups' => $groups->toArray(),
+            ]);
         }
 
         return $results;

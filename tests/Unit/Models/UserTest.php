@@ -87,56 +87,56 @@ it('can check if suspended', function () {
     $user = UserFactory::new()->create();
     $user->setStatus('suspended');
 
-    expect($user->isSuspended())->toBeTrue()
-        ->and($user->isArchived())->toBeFalse()
-        ->and($user->isInactive())->toBeFalse();
+    expect($user->asApprentice()->isSuspended())->toBeTrue()
+        ->and($user->asApprentice()->isArchived())->toBeFalse()
+        ->and($user->asApprentice()->isInactive())->toBeFalse();
 });
 
 it('can check if archived', function () {
     $user = UserFactory::new()->create();
     $user->setStatus('archived');
 
-    expect($user->isArchived())->toBeTrue()
-        ->and($user->isSuspended())->toBeFalse();
+    expect($user->asApprentice()->isArchived())->toBeTrue()
+        ->and($user->asApprentice()->isSuspended())->toBeFalse();
 });
 
 it('can check if inactive', function () {
     $user = UserFactory::new()->create();
     $user->setStatus('inactive');
 
-    expect($user->isInactive())->toBeTrue()
-        ->and($user->isSuspended())->toBeFalse();
+    expect($user->asApprentice()->isInactive())->toBeTrue()
+        ->and($user->asApprentice()->isSuspended())->toBeFalse();
 });
 
 it('requires setup', function () {
     $user = UserFactory::new()->requiresSetup()->create();
 
-    expect($user->requiresSetup())->toBeTrue();
+    expect($user->asApprentice()->requiresSetup())->toBeTrue();
 });
 
 it('does not require setup by default', function () {
     $user = UserFactory::new()->create();
 
-    expect($user->requiresSetup())->toBeFalse();
+    expect($user->asApprentice()->requiresSetup())->toBeFalse();
 });
 
 it('can check if locked', function () {
     $user = UserFactory::new()->locked()->create();
 
-    expect($user->isLocked())->toBeTrue();
+    expect($user->asApprentice()->isLocked())->toBeTrue();
 });
 
 it('is not locked by default', function () {
     $user = UserFactory::new()->create();
 
-    expect($user->isLocked())->toBeFalse();
+    expect($user->asApprentice()->isLocked())->toBeFalse();
 });
 
 it('can lock account', function () {
     $user = UserFactory::new()->create();
     $user->lock('manual_lock');
 
-    expect($user->isLocked())->toBeTrue()
+    expect($user->asApprentice()->isLocked())->toBeTrue()
         ->and($user->locked_reason)->toBe('manual_lock');
 });
 
@@ -144,7 +144,7 @@ it('can unlock account', function () {
     $user = UserFactory::new()->locked()->create();
     $user->unlock();
 
-    expect($user->isLocked())->toBeFalse()
+    expect($user->asApprentice()->isLocked())->toBeFalse()
         ->and($user->locked_reason)->toBeNull();
 });
 
@@ -155,7 +155,7 @@ it('scope locked returns locked users', function () {
     $lockedUsers = User::locked()->get();
 
     expect($lockedUsers)->toHaveCount(1)
-        ->and($lockedUsers->first()->isLocked())->toBeTrue();
+        ->and($lockedUsers->first()->asApprentice()->isLocked())->toBeTrue();
 });
 
 it('scope unlocked returns unlocked users', function () {

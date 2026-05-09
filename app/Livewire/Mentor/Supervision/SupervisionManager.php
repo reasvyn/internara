@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Mentor\Supervision;
 
-use App\Models\Internship\Registration;
 use App\Models\Mentor\SupervisionLog;
+use App\Models\Registration;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;

@@ -76,7 +76,7 @@ class SetupWizard extends Component
 
     public function mount(): void
     {
-        if (Setup::isInstalled()) {
+        if (Setup::state()->isInstalled()) {
             $this->redirect(route('login'));
 
             return;
@@ -151,9 +151,11 @@ class SetupWizard extends Component
             }
 
             $categories[$categoryKey]['checks'][] = [
-                'name' => $check->name,
+                'name' => $check->nameKey,
                 'status' => $check->status->value,
-                'message' => $check->message,
+                'message' => $check->messageKey,
+                'name_params' => $check->nameParams,
+                'message_params' => $check->messageParams,
             ];
         }
 
@@ -219,7 +221,7 @@ class SetupWizard extends Component
 
         $targetStep = $stepIndex + 1;
 
-        if ($targetStep < $this->currentStep || Setup::isStepCompleted($stepKey)) {
+        if ($targetStep < $this->currentStep || Setup::state()->isStepCompleted($stepKey)) {
             $this->currentStep = $targetStep;
         }
     }

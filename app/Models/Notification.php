@@ -49,14 +49,9 @@ class Notification extends BaseModel
         }
     }
 
-    public function entity(): NotificationStatus
+    public function asNotificationStatus(): NotificationStatus
     {
         return NotificationStatus::fromModel($this);
-    }
-
-    public function isUnread(): bool
-    {
-        return $this->entity()->isUnread();
     }
 
     /**

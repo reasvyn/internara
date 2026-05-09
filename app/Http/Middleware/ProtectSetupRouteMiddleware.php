@@ -32,7 +32,7 @@ class ProtectSetupRouteMiddleware
         // When installed, only allow access during the 5-minute
         // finalization window so the user can see the completion summary.
         // After that window, /setup returns 404 as if it never existed.
-        if (Setup::isInstalled()) {
+        if (Setup::state()->isInstalled()) {
             if ($this->isWithinFinalizationWindow()) {
                 return $next($request);
             }

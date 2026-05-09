@@ -62,7 +62,7 @@ class SubmissionFeedbackNotification extends Notification implements ShouldQueue
         }
 
         return $message->action(
-            __('common.setup_required.action', default: 'View Submission'),
+            __('common.setup_required.action') ?: 'View Submission',
             url('/student/dashboard'),
         );
     }

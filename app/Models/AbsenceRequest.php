@@ -39,18 +39,8 @@ class AbsenceRequest extends BaseModel
         return $this->belongsTo(User::class, 'processed_by');
     }
 
-    public function entity(): AbsenceRequestStatusEntity
+    public function asAbsenceRequestStatus(): AbsenceRequestStatusEntity
     {
         return AbsenceRequestStatusEntity::fromModel($this);
-    }
-
-    public function isPending(): bool
-    {
-        return $this->entity()->isPending();
-    }
-
-    public function isProcessed(): bool
-    {
-        return $this->entity()->isProcessed();
     }
 }

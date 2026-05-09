@@ -6,7 +6,8 @@ namespace App\Livewire\Internship;
 
 use App\Actions\Internship\DirectPlacementAction;
 use App\Enums\Auth\Role;
-use App\Models\Internship\Placement;
+use App\Models\Mentor;
+use App\Models\Placement;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
@@ -23,9 +24,8 @@ class DirectPlacementManager extends Component
 
     public string $academic_year = '';
 
-    /**
-     * Get students who are NOT yet registered in any active internship.
-     */
+    public array $mentor_ids = [];
+
     #[Computed]
     public function students(): Collection
     {
@@ -36,15 +36,18 @@ class DirectPlacementManager extends Component
             ->get();
     }
 
-    /**
-     * Get available placements.
-     */
     #[Computed]
     public function placements(): Collection
     {
         return Placement::with(['company', 'internship'])
             ->get()
-            ->filter(fn ($p) => ! $p->isFull());
+            ->filter(fn ($p) => ! $p->asPlacementCapacity()->isFull());
+    }
+
+    #[Computed]
+    public function mentors(): Collection
+    {
+        return Mentor::with('user')->where('is_active', true)->get();
     }
 
     public function submit(DirectPlacementAction $placementAction): void
@@ -53,6 +56,8 @@ class DirectPlacementManager extends Component
             'student_id' => 'required|exists:users,id',
             'placement_id' => 'required|exists:internship_placements,id',
             'academic_year' => 'required',
+            'mentor_ids' => 'nullable|array',
+            'mentor_ids.*' => 'exists:mentors,id',
         ]);
 
         $student = User::findOrFail($this->student_id);
@@ -60,10 +65,11 @@ class DirectPlacementManager extends Component
         $placementAction->execute($student, [
             'placement_id' => $this->placement_id,
             'academic_year' => $this->academic_year,
+            'mentor_ids' => $this->mentor_ids,
         ]);
 
         $this->success('Student placed successfully.');
-        $this->reset(['student_id', 'placement_id']);
+        $this->reset(['student_id', 'placement_id', 'mentor_ids']);
     }
 
     public function render()
@@ -94,6 +100,15 @@ class DirectPlacementManager extends Component
                             placeholder="Select industry partner"
                             class="md:col-span-2"
                             icon="o-briefcase" />
+
+                        <x-mary-select
+                            label="Assigned Mentors"
+                            wire:model="mentor_ids"
+                            :options="$this->mentors"
+                            placeholder="Select mentors"
+                            multiple
+                            class="md:col-span-2"
+                            icon="o-user-group" />
                     </div>
 
                     <x-slot:actions>

@@ -24,13 +24,8 @@ class AcademicYear extends BaseModel
         'is_active' => 'boolean',
     ];
 
-    public function entity(): AcademicYearState
+    public function asAcademicYearState(): AcademicYearState
     {
         return AcademicYearState::fromModel($this);
-    }
-
-    public function isActive(): bool
-    {
-        return $this->entity()->isActive();
     }
 }

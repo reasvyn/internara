@@ -1,50 +1,22 @@
-# Session Management
-
-## Configuration
+# Session
 
 | Setting | Value |
 |---|---|
-| Driver | `database` |
-| Lifetime | 120 minutes |
-| Cookie name | `internara_session` |
-| Test driver | `array` |
+| Driver | `database` (env: `SESSION_DRIVER`) |
+| Lifetime | 120 min (env: `SESSION_LIFETIME`) |
+| Table | `sessions` (uuid `user_id` FK) |
+| Cookie | `internara_session`, HTTP-only, SameSite=Lax |
+| Test driver | `array` (via `phpunit.xml`) |
 
-Config: `config/session.php`. Environment: `SESSION_DRIVER`, `SESSION_LIFETIME`.
+Config: `config/session.php`
 
-## Session Table
+## Usage
 
-Stored in the `sessions` table, created during initial migration.
-
-| Column | Type | Description |
-|---|---|---|
-| `id` | string | Primary key |
-| `user_id` | uuid (nullable) | FK to `users` |
-| `ip_address` | string(45) | Client IP |
-| `user_agent` | text | Browser agent |
-| `payload` | longText | Serialized session data |
-| `last_activity` | integer | Unix timestamp |
-
-## Usage Patterns
-
-### Setup Wizard
-
-Form data persists across wizard steps via `session()->put('setup.form_data', [...])`. The setup token is stored at `setup.token_input` and authorization flag at `setup.authorized`.
-
-### Authentication
-
-Session is regenerated on login to prevent fixation. The intended URL is preserved for post-login redirect.
-
-### Localization
-
-User locale preference stored per-session and applied by middleware.
-
-### Logout
-
-Session invalidated and CSRF token regenerated.
+- **Setup Wizard** — form data persists across steps via `session()->put('setup.form_data', [...])`
+- **Authentication** — session regenerated on login to prevent fixation; intended URL preserved for redirect
+- **Localization** — user locale stored per-session, applied by `SetLocaleMiddleware`
+- **Logout** — session invalidated, CSRF token regenerated
 
 ## Security
 
-- Session ID regenerated after authentication
-- `SESSION_SECURE_COOKIE=true` enforces HTTPS in production
-- `SESSION_HTTPONLY=true` prevents JavaScript cookie access
-- `SESSION_SAME_SITE=lax` provides CSRF protection
+`SESSION_SECURE_COOKIE` enforces HTTPS in production. `SESSION_HTTPONLY=true` prevents JS cookie access.

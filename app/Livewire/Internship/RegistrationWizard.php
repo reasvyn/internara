@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Internship;
 
 use App\Actions\Internship\RegisterInternshipAction;
-use App\Models\Internship\Internship;
-use App\Models\Internship\Placement;
+use App\Models\Internship;
+use App\Models\Placement;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -48,7 +48,7 @@ class RegistrationWizard extends Component
         return Placement::where('internship_id', $this->data['internship_id'])
             ->with('company')
             ->get()
-            ->filter(fn ($p) => ! $p->isFull());
+            ->filter(fn ($p) => ! $p->asPlacementCapacity()->isFull());
     }
 
     public function nextStep(): void
@@ -68,7 +68,15 @@ class RegistrationWizard extends Component
     public function submit(RegisterInternshipAction $registerAction): void
     {
         $this->validate([
-            'data.internship_id' => 'required',
+            'data.internship_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $internship = Internship::find($value);
+                    if ($internship && ! $internship->asInternshipPeriod()->isAcceptingRegistrations()) {
+                        $fail('This internship program is not accepting registrations.');
+                    }
+                },
+            ],
             'data.academic_year' => 'required',
         ]);
 

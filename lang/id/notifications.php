@@ -57,6 +57,18 @@ return [
         'broadcast' => "Tugas ':task' mengalami kesalahan.",
         'database' => "Tugas ':task' gagal: :error",
     ],
+    'admin_recovered' => [
+        'title' => 'Pemulihan Admin Dilakukan',
+        'broadcast' => 'Akun admin :email telah di:mode',
+        'database' => 'Akun admin :email telah di:mode',
+        'mail_subject' => 'Peringatan Keamanan: Pemulihan Akun Admin',
+        'mail_greeting' => 'Halo :name,',
+        'mail_line1' => 'Tindakan pemulihan admin telah dilakukan pada akun: :email',
+        'mail_line2' => 'Jenis tindakan: :mode',
+        'mail_line3' => 'Dimulai dari server: :hostname',
+        'mail_line4' => 'Jika Anda tidak mengotorisasi tindakan ini, hubungi administrator sistem Anda segera.',
+        'mail_action' => 'Lihat Pengguna Admin',
+    ],
     'ui' => [
         'title' => 'Pusat Notifikasi',
         'subtitle' => 'Tetap terinformasi dengan aktivitas sistem',

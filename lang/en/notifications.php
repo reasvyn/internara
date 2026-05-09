@@ -57,6 +57,18 @@ return [
         'broadcast' => "Task ':task' encountered an error.",
         'database' => "Task ':task' failed: :error",
     ],
+    'admin_recovered' => [
+        'title' => 'Admin Recovery Performed',
+        'broadcast' => 'Admin account :email has been :mode',
+        'database' => 'Admin account :email has been :mode',
+        'mail_subject' => 'Security Alert: Admin Account Recovery',
+        'mail_greeting' => 'Hello :name,',
+        'mail_line1' => 'An admin recovery action has been performed on the account: :email',
+        'mail_line2' => 'Action type: :mode',
+        'mail_line3' => 'Initiated from server: :hostname',
+        'mail_line4' => 'If you did not authorize this action, please contact your system administrator immediately.',
+        'mail_action' => 'View Admin Users',
+    ],
     'ui' => [
         'title' => 'Notification Center',
         'subtitle' => 'Stay updated with system activities',

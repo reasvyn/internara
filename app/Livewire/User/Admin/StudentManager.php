@@ -9,7 +9,7 @@ use App\Actions\User\DeleteUserAction;
 use App\Actions\User\UpdateUserAction;
 use App\Enums\Auth\Role as RoleEnum;
 use App\Livewire\Core\BaseRecordManager;
-use App\Models\School\Department;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;

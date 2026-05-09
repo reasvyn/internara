@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Dashboard;
 
 use App\Enums\Auth\Role as RoleEnum;
-use App\Models\Internship\Internship;
+use App\Models\Internship;
 use App\Models\School\Department;
 use App\Models\User;
 use App\Services\SystemAuditService;

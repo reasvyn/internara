@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\User;
 
 use App\Actions\Core\LogAuditAction;
+use App\Models\Profile;
 use App\Models\User;
-use App\Models\User\Profile;
 use App\Support\User\HandlesActionErrors;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;

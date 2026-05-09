@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Setup;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * @extends Factory<Setup>
@@ -23,6 +24,7 @@ class SetupFactory extends Factory
             'completed_steps' => [],
             'school_id' => null,
             'department_id' => null,
+            'recovery_key' => null,
         ];
     }
 
@@ -38,6 +40,13 @@ class SetupFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'setup_token' => hash('sha256', 'test-token'),
             'token_expires_at' => now()->addHour(),
+        ]);
+    }
+
+    public function withRecoveryKey(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'recovery_key' => Crypt::encryptString('admin-recovery-key-2026'),
         ]);
     }
 }

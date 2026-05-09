@@ -16,13 +16,7 @@ final class AppInfo
         Integrity::verify();
 
         if (self::$info === null) {
-            $path = base_path('app_info.json');
-            $isComposer = false;
-
-            if (! File::exists($path)) {
-                $path = base_path('composer.json');
-                $isComposer = true;
-            }
+            $path = base_path('composer.json');
 
             if (! File::exists($path)) {
                 self::$info = [];
@@ -32,7 +26,7 @@ final class AppInfo
                     $data = json_decode($rawContent, true);
 
                     if (json_last_error() !== JSON_ERROR_NONE) {
-                        Log::error('Failed to parse JSON metadata file', [
+                        Log::error('Failed to parse composer.json metadata', [
                             'file' => $path,
                             'json_error' => json_last_error_msg(),
                         ]);
@@ -40,28 +34,23 @@ final class AppInfo
                         self::$info = [];
                     } else {
                         $data = is_array($data) ? $data : [];
+                        $author = $data['authors'][0] ?? [];
 
-                        if ($isComposer) {
-                            $author = $data['authors'][0] ?? [];
-
-                            if (isset($author['homepage']) && ! isset($author['github'])) {
-                                $author['github'] = $author['homepage'];
-                            }
-
-                            self::$info = [
-                                'name' => $data['display_name'] ?? $data['name'] ?? 'Laravel',
-                                'version' => $data['version'] ?? '1.0.0',
-                                'description' => $data['description'] ?? '',
-                                'license' => $data['license'] ?? '',
-                                'author' => $author,
-                                'support' => $data['support'] ?? [],
-                            ];
-                        } else {
-                            self::$info = $data;
+                        if (isset($author['homepage']) && ! isset($author['github'])) {
+                            $author['github'] = $author['homepage'];
                         }
+
+                        self::$info = [
+                            'name' => $data['display_name'] ?? $data['name'] ?? 'Laravel',
+                            'version' => $data['version'] ?? '1.0.0',
+                            'description' => $data['description'] ?? '',
+                            'license' => $data['license'] ?? '',
+                            'author' => $author,
+                            'support' => $data['support'] ?? [],
+                        ];
                     }
                 } catch (\Throwable $e) {
-                    Log::error('Failed to read application metadata file', [
+                    Log::error('Failed to read composer.json metadata', [
                         'file' => $path,
                         'error' => $e->getMessage(),
                     ]);

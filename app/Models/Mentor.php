@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Entities\Mentor\MentorRole;
+use App\Enums\Auth\Role;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+#[Fillable(['user_id', 'type', 'is_active'])]
+class Mentor extends BaseModel
+{
+    use HasFactory;
+
+    const TYPE_SCHOOL_TEACHER = 'school_teacher';
+
+    const TYPE_INDUSTRY_SUPERVISOR = 'industry_supervisor';
+
+    protected $attributes = ['is_active' => true];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function registrations(): BelongsToMany
+    {
+        return $this->belongsToMany(Registration::class, 'registration_mentor', 'mentor_id', 'registration_id')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function asMentorRole(): MentorRole
+    {
+        return MentorRole::fromModel($this);
+    }
+
+    public static function roleForType(string $type): string
+    {
+        return match ($type) {
+            self::TYPE_SCHOOL_TEACHER => Role::TEACHER->value,
+            self::TYPE_INDUSTRY_SUPERVISOR => Role::SUPERVISOR->value,
+            default => Role::TEACHER->value,
+        };
+    }
+}

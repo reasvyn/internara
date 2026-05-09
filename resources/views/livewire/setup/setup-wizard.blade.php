@@ -24,7 +24,7 @@
                     @endphp
                     <button
                         wire:click="goToStep('{{ $stepKey }}')"
-                        @disabled($stepNum > $currentStep && !\App\Models\Setup::isStepCompleted($stepKey))
+                        @disabled($stepNum > $currentStep && !\App\Models\Setup::state()->isStepCompleted($stepKey))
                         @class([
                             'flex-1 group transition-all duration-700 outline-none',
                             'opacity-40 hover:opacity-100' => !$isCurrent && !$isCompleted,

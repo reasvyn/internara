@@ -20,14 +20,4 @@ abstract class BaseModel extends Model
     {
         return 'string';
     }
-
-    /**
-     * Resolve the domain entity for business rule evaluation.
-     *
-     * Override in subclass to return the matching Entity instance.
-     */
-    public function entity(): ?object
-    {
-        return null;
-    }
 }

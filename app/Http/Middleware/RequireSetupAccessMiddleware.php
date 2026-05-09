@@ -19,7 +19,7 @@ class RequireSetupAccessMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Setup::isInstalled()) {
+        if (Setup::state()->isInstalled()) {
             return $next($request);
         }
 

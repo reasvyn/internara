@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Internship\Registration;
-use App\Models\Logbook\LogbookEntry;
+use App\Models\Logbook;
+use App\Models\Registration;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -27,11 +27,11 @@ class Dashboard extends Component
             ->first();
 
         if ($this->registration) {
-            $this->totalJournals = LogbookEntry::where('user_id', $user->id)
+            $this->totalJournals = Logbook::where('user_id', $user->id)
                 ->where('registration_id', $this->registration->id)
                 ->count();
 
-            $this->verifiedJournals = LogbookEntry::where('user_id', $user->id)
+            $this->verifiedJournals = Logbook::where('user_id', $user->id)
                 ->where('registration_id', $this->registration->id)
                 ->where('is_verified', true)
                 ->count();

@@ -18,9 +18,8 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         // Mark app as installed for tests (create lock file)
-        $lockPath = storage_path('app/.installed');
+        $lockPath = base_path('.installed');
         if (! File::exists($lockPath)) {
-            File::ensureDirectoryExists(dirname($lockPath));
             File::put(
                 $lockPath,
                 json_encode(

@@ -11,12 +11,15 @@ use App\Enums\Auth\Role as RoleEnum;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 /**
  * Modernized Admin Manager using BaseRecordManager pattern.
  */
 class AdminManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $userModal = false;
 
     public array $userData = [
@@ -28,12 +31,10 @@ class AdminManager extends BaseRecordManager
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
+        $user = auth()->user();
+
+        if (! $user || ! $user->hasRole('super_admin')) {
+            abort(403);
         }
     }
 
@@ -80,6 +81,8 @@ class AdminManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', User::class);
+
         $this->resetErrorBag();
         $this->userData = [
             'id' => null,
@@ -92,6 +95,8 @@ class AdminManager extends BaseRecordManager
 
     public function edit(User $user): void
     {
+        $this->authorize('update', $user);
+
         $this->resetErrorBag();
         $this->userData = [
             'id' => $user->id,
@@ -111,9 +116,11 @@ class AdminManager extends BaseRecordManager
 
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
+            $this->authorize('update', $user);
             $updateAction->execute($user, $this->userData);
-            $this->success(__('user.admin.success_updated', default: 'Admin updated.'));
+            $this->success(__('user.admin.success_updated'));
         } else {
+            $this->authorize('create', User::class);
             $createAction->execute($this->userData, [], $this->userData['roles']);
             $this->success(__('user.admin.success_created'));
         }
@@ -123,6 +130,8 @@ class AdminManager extends BaseRecordManager
 
     public function delete(User $user, DeleteUserAction $deleteAction): void
     {
+        $this->authorize('delete', $user);
+
         if ($user->id === auth()->id()) {
             $this->error('Cannot delete yourself.');
 
@@ -130,7 +139,7 @@ class AdminManager extends BaseRecordManager
         }
 
         $deleteAction->execute($user);
-        $this->success(__('user.admin.success_deleted', default: 'Admin deleted.'));
+        $this->success(__('user.admin.success_deleted'));
     }
 
     // --- Bulk Actions ---
@@ -143,6 +152,7 @@ class AdminManager extends BaseRecordManager
             }
             $user = User::find($id);
             if ($user) {
+                $this->authorize('delete', $user);
                 $deleteAction->execute($user);
             }
         });

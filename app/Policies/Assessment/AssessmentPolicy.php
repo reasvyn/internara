@@ -52,7 +52,7 @@ class AssessmentPolicy extends BasePolicy
             return true;
         }
 
-        return $assessment->evaluator_id === $user->id && ! $assessment->isFinalized();
+        return $assessment->evaluator_id === $user->id && ! $assessment->asAssessmentResult()->isFinalized();
     }
 
     public function finalize(User $user, Assessment $assessment): bool
@@ -66,6 +66,6 @@ class AssessmentPolicy extends BasePolicy
 
     public function delete(User $user, Assessment $assessment): bool
     {
-        return $this->isAdmin($user) && ! $assessment->isFinalized();
+        return $this->isAdmin($user) && ! $assessment->asAssessmentResult()->isFinalized();
     }
 }

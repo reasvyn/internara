@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Assignment;
 
-use App\Models\Assignment\Submission;
+use App\Models\Submission;
 use App\Models\User;
 use App\Policies\Shared\BasePolicy;
 

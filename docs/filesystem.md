@@ -2,50 +2,31 @@
 
 ## Disks
 
-| Disk | Root path | Visibility | Use case |
+| Disk | Root | Visibility | Use case |
 |---|---|---|---|
-| `local` | `storage/app/private` | Private | Default disk — internal files, PDFs, temp |
-| `public` | `storage/app/public` | Public (via `/storage` symlink) | Brand assets, user-uploaded images |
-| `s3` | Configured via `AWS_*` env vars | Configurable | Cloud storage (optional) |
+| `local` | `storage/app/private` | Private (via route) | Internal files, PDFs, temp |
+| `public` | `storage/app/public` | Public (`/storage` symlink) | Brand assets, user uploads |
+| `s3` | `AWS_*` env vars | Configurable | Cloud storage (optional) |
 
-Note: Some legacy code might refer to a `private` disk. In this project, `local` is the private disk by convention.
+Config: `config/filesystems.php`. Default: `local` (via `FILESYSTEM_DISK`).
 
-Config: `config/filesystems.php`. Default: `local`.
+> **No `private` disk exists** — always use `Storage::disk('local')` for private files.
 
-Symlink: `public/storage` → `storage/app/public` (created via `php artisan storage:link`).
-
-## Usage Patterns
-
-### Report Generation
-
-PDF reports stored on the `local` disk:
+## Usage
 
 ```php
-// app/Domain/Document/Jobs/GenerateReportJob.php
-Storage::disk('local')->put($tempPath, $pdf->output());
+// Store/report files
+Storage::disk('local')->put($path, $content);
+Storage::disk('local')->get($path);
 
-// app/Domain/Document/Actions/DownloadReportAction.php
-Storage::disk('local')->exists($report->file_path);
-Storage::disk('local')->get($report->file_path);
-```
-
-### Brand Assets
-
-Logo and favicon uploaded to the `public` disk:
-
-```php
-// app/Livewire/Admin/SystemSetting.php
+// Brand assets
 $path = $this->brand_logo->store('brand', 'public');
-$path = $this->site_favicon->store('brand', 'public');
 ```
 
-### Spatie Media Library
-
-Models using `HasMedia` and `InteractsWithMedia` manage file attachments with collections and conversions. See `config/media-library.php` for disk and conversion settings.
+Spatie Media Library (`HasMedia` + `InteractsWithMedia`) is used on `School` and `Submission` models for file attachments with collections and conversions.
 
 ## Security
 
-- Validate file uploads with `mimes`, `max`, and `file` rules
+- Validate uploads with `mimes`, `max`, and `file` rules
 - Use `basename()` on user-supplied filenames to prevent path traversal
-- Private files on `local` disk require authorized routes for download
-- Never store credentials or tokens in files
+- Private files require authorized routes for download

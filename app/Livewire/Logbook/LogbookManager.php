@@ -4,80 +4,186 @@ declare(strict_types=1);
 
 namespace App\Livewire\Logbook;
 
-use App\Actions\Logbook\SubmitLogbookEntryAction;
-use App\Models\Logbook\LogbookEntry;
-use Carbon\Carbon;
-use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Mary\Traits\Toast;
+use App\Actions\Logbook\CreateLogbookAction;
+use App\Actions\Logbook\DeleteLogbookAction;
+use App\Actions\Logbook\UpdateLogbookAction;
+use App\Livewire\Core\BaseRecordManager;
+use App\Models\Logbook;
+use App\Models\Registration;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Computed;
 
-class LogbookManager extends Component
+class LogbookManager extends BaseRecordManager
 {
-    use Toast, WithPagination;
-
     public bool $showModal = false;
 
-    public string $date = '';
+    public array $formData = [
+        'id' => null,
+        'user_id' => '',
+        'date' => '',
+        'content' => '',
+        'learning_outcomes' => '',
+        'status' => 'draft',
+        'mentor_feedback' => '',
+    ];
 
-    public string $content = '';
-
-    public string $learning_outcomes = '';
-
-    public string $journalId = '';
-
-    public function mount(): void
+    public function boot(): void
     {
-        $this->date = Carbon::today()->toDateString();
-    }
-
-    public function create(): void
-    {
-        $this->reset(['journalId', 'content', 'learning_outcomes']);
-        $this->date = Carbon::today()->toDateString();
-        $this->showModal = true;
-    }
-
-    public function edit(LogbookEntry $journal): void
-    {
-        $this->journalId = $journal->id;
-        $this->date = $journal->date->toDateString();
-        $this->content = $journal->content;
-        $this->learning_outcomes = $journal->learning_outcomes ?? '';
-        $this->showModal = true;
-    }
-
-    public function save(SubmitLogbookEntryAction $submitJournal): void
-    {
-        $this->validate([
-            'date' => 'required|date',
-            'content' => 'required|min:10',
-            'learning_outcomes' => 'nullable|string',
-        ]);
-
-        try {
-            $submitJournal->execute(auth()->user(), [
-                'date' => $this->date,
-                'content' => $this->content,
-                'learning_outcomes' => $this->learning_outcomes,
-            ]);
-
-            $this->showModal = false;
-            $this->success('Journal entry saved successfully.');
-        } catch (\Exception $e) {
-            $this->error($e->getMessage());
+        if (
+            ! auth()
+                ->user()
+                ?->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor'])
+        ) {
+            abort(403, 'Unauthorized access.');
         }
     }
 
-    #[Layout('layouts::app')]
+    public function headers(): array
+    {
+        return [
+            ['key' => 'user.name', 'label' => __('logbook.student'), 'sortable' => true],
+            ['key' => 'date', 'label' => __('logbook.date'), 'sortable' => true],
+            ['key' => 'content', 'label' => __('logbook.content')],
+            ['key' => 'status', 'label' => __('logbook.status'), 'sortable' => true],
+            ['key' => 'is_verified', 'label' => __('logbook.verified')],
+            ['key' => 'actions', 'label' => ''],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        $user = auth()->user();
+
+        $query = Logbook::query()
+            ->with(['user', 'registration', 'verifier']);
+
+        if ($user->hasRole('teacher')) {
+            $query->whereHas('registration', fn ($q) => $q->where('teacher_id', $user->id));
+        } elseif ($user->hasRole('supervisor')) {
+            $query->whereHas('registration', fn ($q) => $q->where('mentor_id', $user->id));
+        }
+
+        return $query;
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where(function ($q) {
+            $q->where('content', 'like', "%{$this->search}%")
+                ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$this->search}%"));
+        });
+    }
+
+    #[Computed]
+    public function students(): array
+    {
+        $query = User::role('student');
+
+        $user = auth()->user();
+        if ($user->hasRole('teacher')) {
+            $query->whereHas('registrations', fn ($q) => $q->where('teacher_id', $user->id));
+        } elseif ($user->hasRole('supervisor')) {
+            $query->whereHas('registrations', fn ($q) => $q->where('mentor_id', $user->id));
+        }
+
+        return $query->orderBy('name')
+            ->get(['id', 'name', 'email'])
+            ->map(fn ($s) => ['id' => $s->id, 'name' => "{$s->name} ({$s->email})"])
+            ->toArray();
+    }
+
+    // --- Record Actions ---
+
+    public function create(): void
+    {
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => null,
+            'user_id' => '',
+            'date' => now()->toDateString(),
+            'content' => '',
+            'learning_outcomes' => '',
+            'status' => 'draft',
+            'mentor_feedback' => '',
+        ];
+        $this->showModal = true;
+    }
+
+    public function edit(Logbook $entry): void
+    {
+        $this->resetErrorBag();
+        $this->formData = [
+            'id' => $entry->id,
+            'user_id' => $entry->user_id,
+            'date' => $entry->date->format('Y-m-d'),
+            'content' => $entry->content,
+            'learning_outcomes' => $entry->learning_outcomes ?? '',
+            'status' => $entry->status->value,
+            'mentor_feedback' => $entry->mentor_feedback ?? '',
+        ];
+        $this->showModal = true;
+    }
+
+    public function save(CreateLogbookAction $create, UpdateLogbookAction $update): void
+    {
+        $this->validate([
+            'formData.date' => 'required|date',
+            'formData.content' => 'required|string|min:10',
+            'formData.status' => 'required|string',
+        ]);
+
+        if ($this->formData['id']) {
+            $entry = Logbook::findOrFail($this->formData['id']);
+            $update->execute($entry, $this->formData);
+            $this->success(__('logbook.success_updated'));
+        } else {
+            $this->validate(['formData.user_id' => 'required|exists:users,id']);
+
+            $student = User::findOrFail($this->formData['user_id']);
+            $registration = Registration::where('student_id', $student->id)
+                ->where('status', 'active')
+                ->firstOrFail();
+
+            $create->execute($student, array_merge($this->formData, [
+                'registration_id' => $registration->id,
+            ]));
+            $this->success(__('logbook.success_created'));
+        }
+
+        $this->showModal = false;
+    }
+
+    public function delete(Logbook $entry, DeleteLogbookAction $deleteAction): void
+    {
+        $deleteAction->execute($entry);
+        $this->success(__('logbook.success_deleted'));
+    }
+
+    // --- Bulk Actions ---
+
+    public function deleteSelected(DeleteLogbookAction $deleteAction): void
+    {
+        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+            $entry = Logbook::find($id);
+            if ($entry) {
+                $deleteAction->execute($entry);
+            }
+        });
+    }
+
+    // --- Verification ---
+
+    public function verify(Logbook $entry, UpdateLogbookAction $update): void
+    {
+        $update->execute($entry, [
+            'is_verified' => ! $entry->is_verified,
+        ]);
+        $this->success(__('logbook.success_verified'));
+    }
+
     public function render()
     {
-        $journals = LogbookEntry::where('user_id', auth()->id())
-            ->latest('date')
-            ->paginate(10);
-
-        return view('livewire.logbook.logbook-manager', [
-            'journals' => $journals,
-        ]);
+        return view('livewire.logbook.logbook-manager');
     }
 }

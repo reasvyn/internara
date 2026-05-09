@@ -29,28 +29,27 @@ Follow the setup wizard to configure your school and admin account. Access the a
 
 ## Architecture
 
-Internara follows a **flat Action-Oriented MVC** architecture. Business logic is encapsulated in stateless **Actions** under `app/Actions/{Context}/`, while business rules live in rich **Models** under `app/Models/`.
+Internara follows a **flat Action-Oriented MVC** architecture. Business logic is encapsulated in stateless **Actions** under `app/Actions/{Context}/`, business rules live in pure **Entities** under `app/Entities/{Context}/`, and persistence is handled by **Models** under `app/Models/`.
 
 ## Documentation
 
 ### Core
-- [Architecture & Standards](docs/architecture.md)
+- [Architecture](docs/architecture.md)
 - [Database](docs/database.md)
 - [Installation](docs/installation.md)
 - [Configuration](docs/configuration.md)
 - [Testing](docs/testing.md)
-- [Infrastructure & Dependencies](docs/infrastructure.md)
+- [Infrastructure](docs/infrastructure.md)
 
 ### Security & Access
 - [RBAC & Lifecycle](docs/rbac.md)
-- [Audits](docs/audits.md)
-- [Logging & Observability](docs/logging.md)
+- [Observability](docs/observability.md)
 
 ### Frontend & UI
 - [UI/UX Design](docs/ui-ux.md)
 
 ### Technical Reference
-- [Session Management](docs/session.md)
+- [Session](docs/session.md)
 - [Cache](docs/cache.md)
 - [Filesystem](docs/filesystem.md)
 - [Notifications](docs/notification.md)

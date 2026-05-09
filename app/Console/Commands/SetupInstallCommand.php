@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Actions\Setup\InstallSystemAction;
 use App\Actions\Setup\ProvisionSystemAction;
 use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
+use App\Data\Audit\AuditReport;
 use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
 use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
-use App\Support\Logger;
+use App\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 
@@ -26,7 +26,6 @@ class SetupInstallCommand extends Command
 
     public function __construct(
         private EnvironmentAuditor $auditor,
-        private InstallSystemAction $installSystem,
     ) {
         parent::__construct();
         $this->description = __('setup.cli.starting_installation');
@@ -37,17 +36,22 @@ class SetupInstallCommand extends Command
         $this->displayBanner();
 
         try {
-            // Step 1: Run audit and display results
-            $checks = $this->auditor->audit();
-            $this->displayAuditResults($checks);
+            if (Setup::state()->isInstalled()) {
+                error(__('setup.cli.already_installed'));
+
+                return self::FAILURE;
+            }
+
+            $report = $this->auditor->audit();
+            $this->displayAuditResults($report);
 
             $failed = array_values(array_filter(
-                $checks,
-                fn (array $check) => $check['category']->isCritical() && $check['status'] === AuditStatus::Fail,
+                $report->checks,
+                fn ($check) => $check->category->isCritical() && $check->status === AuditStatus::Fail,
             ));
 
             if ($failed !== []) {
-                Logger::error(__('setup.cli.audit_failed'))
+                SmartLogger::error(__('setup.cli.audit_failed'))
                     ->module('setup')
                     ->event('audit.failed')
                     ->save();
@@ -57,7 +61,6 @@ class SetupInstallCommand extends Command
                 return self::FAILURE;
             }
 
-            // Step 2: Confirmation (unless --force)
             if ($this->option('force')) {
                 $this->components->warn(__('setup.cli.force_warning'));
             } elseif (! $this->confirmProceed()) {
@@ -66,11 +69,10 @@ class SetupInstallCommand extends Command
                 return self::FAILURE;
             }
 
-            // Step 3: Execute installation (audits again internally, then provisions + generates token)
             $this->newLine();
             $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.starting_installation').'</>');
 
-            Logger::info(__('setup.cli.starting_installation'))
+            SmartLogger::info(__('setup.cli.starting_installation'))
                 ->module('setup')
                 ->event('installation.started')
                 ->save();
@@ -88,20 +90,18 @@ class SetupInstallCommand extends Command
                 }
             }
 
-            // Generate and store setup token (moved from InstallSystemAction to maintain reporting consistency)
             $tokenData = Setup::generateToken();
 
-            // Step 4: Display success
             $this->displaySuccess($tokenData['plaintext'], $tokenData['expires_at']);
 
-            Logger::success(__('setup.cli.installation_completed'))
+            SmartLogger::success(__('setup.cli.installation_completed'))
                 ->module('setup')
                 ->event('installation.completed')
                 ->save();
 
             return self::SUCCESS;
         } catch (\Throwable $e) {
-            Logger::error(__('setup.cli.installation_failed', ['message' => $e->getMessage()]))
+            SmartLogger::error(__('setup.cli.installation_failed', ['message' => $e->getMessage()]))
                 ->module('setup')
                 ->event('installation.failed')
                 ->withPayload(['error' => $e->getMessage()])
@@ -113,7 +113,7 @@ class SetupInstallCommand extends Command
         }
     }
 
-    protected function displayAuditResults(array $checks): void
+    protected function displayAuditResults(AuditReport $report): void
     {
         $categories = [
             AuditCategory::Requirements,
@@ -124,10 +124,7 @@ class SetupInstallCommand extends Command
         ];
 
         foreach ($categories as $category) {
-            $categoryChecks = array_values(array_filter(
-                $checks,
-                fn (array $check) => $check['category'] === $category,
-            ));
+            $categoryChecks = $report->forCategory($category);
 
             if ($categoryChecks === []) {
                 continue;
@@ -138,8 +135,8 @@ class SetupInstallCommand extends Command
 
             foreach ($categoryChecks as $check) {
                 $this->components->twoColumnDetail(
-                    __("setup.checks.{$check['nameKey']}", $check['nameParams']),
-                    $this->formatStatusWithMessage($check['status'], __("setup.checks.{$check['messageKey']}", $check['messageParams'])),
+                    __("setup.checks.{$check->nameKey}", $check->nameParams),
+                    $this->formatStatusWithMessage($check->status, __("setup.checks.{$check->messageKey}", $check->messageParams)),
                 );
             }
         }
