@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Document\Admin;
 
-use App\Models\Document\DocumentTemplate;
+use App\Models\Document\Document;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
@@ -40,7 +40,7 @@ class TemplateManager extends Component
 
     public function templates(): LengthAwarePaginator
     {
-        return DocumentTemplate::query()
+        return Document::query()
             ->when($this->search, fn (Builder $q) => $q->where('name', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate(10);
@@ -60,7 +60,7 @@ class TemplateManager extends Component
         $this->templateModal = true;
     }
 
-    public function editTemplate(DocumentTemplate $template): void
+    public function editTemplate(Document $template): void
     {
         $this->resetErrorBag();
         $this->templateData = $template->toArray();
@@ -75,7 +75,7 @@ class TemplateManager extends Component
             'templateData.content' => 'required|string',
         ]);
 
-        DocumentTemplate::updateOrCreate(
+        Document::updateOrCreate(
             ['id' => $this->templateData['id']],
             array_merge($this->templateData, [
                 'slug' => str($this->templateData['name'])->slug()->toString(),

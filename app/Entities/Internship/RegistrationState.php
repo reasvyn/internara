@@ -20,7 +20,7 @@ final readonly class RegistrationState extends BaseEntity
     public static function fromModel(Model $model): static
     {
         return new self(
-            status: $model->status,
+            status: $model->getAttribute('status'),
             startDate: $model->start_date,
             endDate: $model->end_date,
             hasPlacement: $model->placement_id !== null,

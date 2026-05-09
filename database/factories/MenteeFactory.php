@@ -4,23 +4,27 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Model;
+use App\Models\Mentee;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Model>
- */
 class MenteeFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Mentee::class;
+
     public function definition(): array
     {
         return [
-            //
+            'id' => $this->faker->uuid(),
+            'user_id' => User::factory(),
+            'is_active' => true,
         ];
+    }
+
+    public function inactive(): self
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
     }
 }

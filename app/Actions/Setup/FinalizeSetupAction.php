@@ -11,10 +11,13 @@ use Illuminate\Support\Facades\Session;
 
 final class FinalizeSetupAction
 {
-    public function execute(): void
+    public function execute(): string
     {
         // Mark as installed
         Setup::markInstalled();
+
+        // Generate recovery key for break-glass admin recovery
+        $recoveryKey = Setup::generateRecoveryKey();
 
         // Invalidate token
         Setup::invalidateToken();
@@ -27,5 +30,7 @@ final class FinalizeSetupAction
 
         // Clear session
         Session::forget(['setup.authorized', 'setup.token', 'setup.token_input', 'setup.form_data']);
+
+        return $recoveryKey;
     }
 }

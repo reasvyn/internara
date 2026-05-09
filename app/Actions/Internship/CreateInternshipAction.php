@@ -7,7 +7,7 @@ namespace App\Actions\Internship;
 use App\Actions\Core\LogAuditAction;
 use App\Events\Internship\InternshipCreated;
 use App\Http\Requests\Internship\CreateInternshipRequest;
-use App\Models\Internship\Internship;
+use App\Models\Internship;
 use Illuminate\Support\Facades\DB;
 
 /**

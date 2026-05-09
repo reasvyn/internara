@@ -11,7 +11,7 @@ final class ValidateSetupTokenAction
 {
     public function execute(string $token): void
     {
-        if (! Setup::validateToken($token)) {
+        if (! Setup::state()->validateToken($token)) {
             throw new RuntimeException('Invalid setup token.');
         }
     }

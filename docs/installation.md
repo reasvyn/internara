@@ -3,7 +3,8 @@
 ## Requirements
 
 - PHP 8.4 or higher
-- Database: SQLite, MySQL, or PostgreSQL
+- Node.js 20+
+- Database: SQLite (default), MySQL 8+, or PostgreSQL 14+
 - Composer and Node.js
 
 ## Installation
@@ -11,6 +12,9 @@
 Run the installation command from your project directory:
 
 ```bash
+composer install && npm install
+cp .env.example .env
+php artisan key:generate
 php artisan setup:install
 ```
 
@@ -47,3 +51,15 @@ php artisan setup:reset
 ```
 
 This clears the installation state without removing any data.
+
+## Available Setup Commands
+
+| Command | Purpose |
+|---|---|
+| `setup:install` | Check environment, setup DB, generate setup URL |
+| `setup:super-admin` | Create a super administrator account |
+| `setup:recover-admin` | Recover access to admin accounts |
+| `setup:reset` | Reset setup state, allow re-running wizard |
+| `setup:health` | Check system health and readiness |
+
+All commands support `--no-interaction` for automated deployments.

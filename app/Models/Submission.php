@@ -64,19 +64,9 @@ class Submission extends BaseModel implements HasMedia
         return $this->belongsTo(User::class, 'graded_by');
     }
 
-    public function entity(): SubmissionState
+    public function asSubmissionState(): SubmissionState
     {
         return SubmissionState::fromModel($this);
-    }
-
-    public function canBeEdited(): bool
-    {
-        return $this->entity()->canBeEdited();
-    }
-
-    public function isVerified(): bool
-    {
-        return $this->entity()->isVerified();
     }
 
     /**

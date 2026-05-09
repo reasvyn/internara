@@ -6,8 +6,8 @@ namespace App\Livewire\Mentor\Supervision;
 
 use App\Actions\Mentor\CreateSupervisionLogAction;
 use App\Actions\Mentor\VerifySupervisionLogAction;
-use App\Models\Internship\Registration;
 use App\Models\Mentor\SupervisionLog;
+use App\Models\Registration;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

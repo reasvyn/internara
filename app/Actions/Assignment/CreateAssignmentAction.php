@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Assignment;
 
-use App\Models\Assignment\Assignment;
-use App\Models\Assignment\AssignmentType;
+use App\Models\Assignment;
+use App\Models\AssignmentType;
 
 /**
  * Stateless Action to create a new assignment.

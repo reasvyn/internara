@@ -34,18 +34,8 @@ class SupervisionLog extends BaseModel
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
-    public function entity(): SupervisionStatus
+    public function asSupervisionStatus(): SupervisionStatus
     {
         return SupervisionStatus::fromModel($this);
-    }
-
-    public function isCompleted(): bool
-    {
-        return $this->entity()->isCompleted();
-    }
-
-    public function isActive(): bool
-    {
-        return $this->entity()->isActive();
     }
 }

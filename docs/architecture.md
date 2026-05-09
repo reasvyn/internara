@@ -1,29 +1,32 @@
-# Architecture Overview: Action-Oriented MVC
+# Architecture: Action-Oriented MVC
 
 Internara uses a **flat Action-Oriented MVC** architecture. Files are grouped by **Functional Layer**, then by **Business Context**.
 
 ```
 app/
-├── Entities/         # Business rules (pure PHP, no ORM)
 ├── Actions/          # Business logic entry points (single execute())
-├── Models/           # Eloquent persistence (flat, no sub-namespace)
-├── Livewire/         # Reactive UI
-├── Http/Controllers/
-├── Services/         # Infrastructure (PDF, QR, external API)
-├── Support/          # Settings, Logger, helpers
-├── Enums/            # Constants & types
-├── Exceptions/       # AppException, ActionException, etc.
-├── Notifications/    # Mail, broadcast, database channels
-├── Jobs/             # Queued jobs
-├── Events/           # Domain events
-├── Policies/         # Authorization
-├── Channels/         # Custom notification channels
 ├── Casts/            # Custom Eloquent casts
+├── Channels/         # Custom notification channels
 ├── Console/Commands/ # Artisan commands
-├── Contracts/        # Interfaces
+├── Contracts/        # Interfaces (ColorableEnum, LabelEnum)
+├── Data/             # Data transfer objects
+├── Entities/         # Business rules (pure PHP, no ORM)
+├── Enums/            # Constants & types
+├── Events/           # Domain events
+├── Exceptions/       # AppException hierarchy
+├── Http/             # Controllers, Middleware, Requests
+├── Jobs/             # Queued jobs
+├── Livewire/         # Reactive UI components
+├── Models/           # Eloquent persistence (flat, no sub-namespace)
+├── Notifications/    # Mail, broadcast, database channels
+├── Policies/         # Authorization (shared BasePolicy + concerns)
+├── Providers/        # Service providers
 ├── Rules/            # Validation rules
-└── Providers/        # Service providers
+├── Services/         # Infrastructure (DashboardService, EnvironmentAuditor)
+└── Support/          # SmartLogger, Settings, AppInfo, helpers
 ```
+
+Each layer groups files by business context (e.g. `Actions/Internship/`, `Entities/Internship/`, `Enums/Internship/`). Browse the codebase for the full listing.
 
 ## Principles
 
@@ -33,7 +36,7 @@ app/
 | **Thin Controllers** | Livewire/Controllers delegate all logic to Actions |
 | **Flat Models** | All models in `app/Models/`, no sub-namespace |
 | **BaseModel** | Abstract base with `HasUuids`, non-incrementing string keys |
-| **Entities** | Pure business rules, no ORM. Exposed via `entity()` or `as{Context}()` |
+| **Entities** | Pure business rules, no ORM. Exposed via `as{EntityName}()` on the model |
 | **Auth Boundary** | `User` stays `extends Authenticatable` for Laravel ecosystem |
 
 ## Data Flow
@@ -44,11 +47,11 @@ User Input → Livewire/Controller → Action → Model → Database
                               Flash/Notification
 ```
 
-Requests flow through Actions. Actions orchestrate between Entities (rules), Models (persistence), and Services (infrastructure).
+Actions orchestrate between Entities (rules), Models (persistence), and Services (infrastructure).
 
 ## Entity Pattern
 
-Business rules extracted from Models into plain PHP objects:
+Business rules extracted from Models into plain PHP objects. Models expose entities via named `as{EntityName}()` methods — never a generic `entity()` method:
 
 ```php
 class User extends Authenticatable
@@ -61,17 +64,25 @@ class User extends Authenticatable
         );
     }
 }
-
-final readonly class Apprentice
-{
-    public function isSuspended(): bool
-    {
-        return $this->status === AccountStatus::SUSPENDED;
-    }
-}
 ```
 
-Entity rules: no Model imports, no framework dependencies, testable without database.
+### Entity Rules
+
+1. **No convenience delegation** — callers go through `$model->as{EntityName}()->method()`.
+2. **No `entity()` method** — each model uses a named accessor matching its entity.
+3. **Pure entities** — no Model imports, no framework dependencies, testable without database.
+4. **BaseEntity** — entities extend `BaseEntity` for shared structure if needed.
+
+## Exception Hierarchy
+
+All exceptions derive from `AppException`:
+
+| Exception | Purpose |
+|---|---|
+| `ActionException` | Business rule violations within Actions |
+| `DomainException` | Domain logic errors |
+| `InfrastructureException` | External service / infrastructure failures |
+| `PresentationException` | UI / presentation layer errors |
 
 ## Role Mapping
 
@@ -83,9 +94,14 @@ Entity rules: no Model imports, no framework dependencies, testable without data
 | Admin | Admin | School management |
 | SuperAdmin | Admin | System infrastructure |
 
-## Naming
+## Naming Conventions
 
-- Action: `app/Actions/{Context}/{Verb}{Noun}Action.php`
-- Entity: `app/Entities/{Context}/{Name}.php`
-- Model: `app/Models/{Name}.php` (flat)
-- Livewire: `app/Livewire/{Context}/{Name}.php`
+| Layer | Pattern |
+|---|---|
+| Action | `app/Actions/{Context}/{Verb}{Noun}Action.php` |
+| Entity | `app/Entities/{Context}/{Name}.php` |
+| Model | `app/Models/{Name}.php` |
+| Livewire | `app/Livewire/{Context}/{Name}.php` |
+| Data | `app/Data/{Context}/{Name}.php` |
+| Policy | `app/Policies/{Context}/{Name}Policy.php` |
+| Enum | `app/Enums/{Context}/{Name}.php` |

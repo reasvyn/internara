@@ -12,7 +12,7 @@
     </div>
 
     <div class="space-y-10 mb-10">
-        @foreach($auditResults['categories'] as $key => $category)
+        @foreach(($auditResults['categories'] ?? []) as $key => $category)
             <div x-data="{ open: true }">
                 <div class="divider uppercase text-[10px] font-bold tracking-[0.2em] opacity-30 mb-6 cursor-pointer hover:opacity-100 transition-opacity" @click="open = !open">
                     {{ $category['label'] }}
@@ -38,8 +38,8 @@
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
-                                <span class="text-xs font-black uppercase tracking-wide block leading-none mb-1">{{ $check['name'] }}</span>
-                                <p class="text-[11px] text-base-content/50 truncate font-medium">{{ $check['message'] }}</p>
+                                <span class="text-xs font-black uppercase tracking-wide block leading-none mb-1">{{ __('setup.checks.' . $check['name'], $check['name_params'] ?? []) }}</span>
+                                <p class="text-[11px] text-base-content/50 truncate font-medium">{{ __('setup.checks.' . $check['message'], $check['message_params'] ?? []) }}</p>
                             </div>
                         </div>
                     @endforeach

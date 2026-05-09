@@ -7,8 +7,12 @@ namespace App\Actions\Setup;
 use App\Actions\Core\LogAuditAction;
 use App\Enums\Auth\AccountStatus;
 use App\Models\User;
+use App\Notifications\Auth\AdminRecoveredNotification;
+use App\Support\SmartLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 final readonly class RecoverAdminAccessAction
 {
@@ -21,6 +25,7 @@ final readonly class RecoverAdminAccessAction
         return DB::transaction(function () use ($email, $password, $isReset, $role) {
             if ($isReset) {
                 $user = User::where('email', $email)->firstOrFail();
+
                 $user->update([
                     'password' => Hash::make($password),
                     'locked_at' => null,
@@ -40,6 +45,12 @@ final readonly class RecoverAdminAccessAction
 
             $user->syncRoles([$role]);
 
+            // Invalidate remember-me tokens so existing sessions are no longer valid
+            $user->forceFill(['remember_token' => Str::random(60)])->save();
+
+            $hostname = gethostname();
+            $serverIp = $_SERVER['SERVER_ADDR'] ?? $_SERVER['HOSTNAME'] ?? 'unknown';
+
             $this->logAudit->execute(
                 user: null,
                 action: 'admin_recovered',
@@ -49,12 +60,45 @@ final readonly class RecoverAdminAccessAction
                     'type' => $isReset ? 'reset' : 'create',
                     'email' => $email,
                     'role' => $role,
+                    'hostname' => $hostname,
+                    'server_ip' => $serverIp,
                 ],
                 module: 'Setup',
+                maskPii: true,
             );
+
+            SmartLogger::info('admin_recovery_'.$user->id)
+                ->module('Setup')
+                ->event($isReset ? 'admin.recovered.reset' : 'admin.recovered.create')
+                ->systemOnly()
+                ->save();
+
+            // Notify existing active admin users about the recovery
+            $this->notifyExistingAdmins($user, $isReset);
 
             return $user;
         });
+    }
+
+    private function notifyExistingAdmins(User $recoveredUser, bool $isReset): void
+    {
+        try {
+            $existingAdmins = User::role(['super_admin', 'admin'])
+                ->where('id', '!=', $recoveredUser->id)
+                ->get();
+
+            if ($existingAdmins->isEmpty()) {
+                return;
+            }
+
+            Notification::send($existingAdmins, new AdminRecoveredNotification(
+                recoveredEmail: $recoveredUser->email,
+                mode: $isReset ? 'reset' : 'create',
+                initiatorHostname: gethostname(),
+            ));
+        } catch (\Throwable) {
+            // Notification failure must not break the recovery flow
+        }
     }
 
     private function generateUsername(): string

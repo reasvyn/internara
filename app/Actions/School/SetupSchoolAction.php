@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\School;
 
 use App\Actions\Core\LogAuditAction;
-use App\Models\School\School;
+use App\Models\School;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -23,7 +23,7 @@ class SetupSchoolAction
      */
     public function execute(array $data): School
     {
-        if (! (new School)->canBeCreated()) {
+        if (! (new School)->asSchoolState()->canBeCreated()) {
             throw new RuntimeException('School already exists.');
         }
 

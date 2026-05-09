@@ -8,7 +8,7 @@ use App\Actions\Setup\GenerateSetupTokenAction;
 use App\Actions\Setup\ResetSetupStateAction;
 use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Models\Setup;
-use App\Support\Logger;
+use App\Support\SmartLogger;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\confirm;
@@ -34,8 +34,8 @@ class SetupResetCommand extends Command
     {
         $this->displayBanner();
 
-        if (! Setup::isInstalled()) {
-            Logger::info(__('setup.reset.not_installed'))
+        if (! Setup::state()->isInstalled()) {
+            SmartLogger::info(__('setup.reset.not_installed'))
                 ->module('setup')
                 ->event('reset.skipped')
                 ->save();
@@ -63,7 +63,7 @@ class SetupResetCommand extends Command
 
         $result = $reset->execute();
 
-        Logger::info(__('setup.reset.success'))
+        SmartLogger::info(__('setup.reset.success'))
             ->module('setup')
             ->event('reset.completed')
             ->save();

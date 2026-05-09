@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Support\AppInfo;
 use App\Support\AppMetadata;
 use App\Support\Settings;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     AppInfo::clearCache();
@@ -12,82 +14,119 @@ beforeEach(function () {
     Cache::clear();
 });
 
-it('can get app name', function () {
-    $name = AppMetadata::appName();
-
-    expect($name)->toBeString();
-    expect($name)->toBe('Internara');
+afterEach(function () {
+    $lockFile = storage_path('app/.installed');
+    if (File::exists($lockFile)) {
+        File::delete($lockFile);
+    }
 });
 
-it('returns app name when not installed', function () {
-    // Mock not installed state
-    Settings::override(['brand_name' => null]);
+describe('appName', function () {
+    it('returns app name from Composer SSoT', function () {
+        $name = AppMetadata::appName();
 
-    $brandName = AppMetadata::brandName();
-
-    expect($brandName)->toBeString();
+        expect($name)->toBe('Internara');
+    });
 });
 
-it('can get site title', function () {
-    $title = AppMetadata::siteTitle();
+describe('brandName', function () {
+    it('returns app name when not installed', function () {
+        $brandName = AppMetadata::brandName();
 
-    expect($title)->toBeString();
+        expect($brandName)->toBe(AppInfo::get('name'));
+    });
 });
 
-it('can get app logo', function () {
-    $logo = AppMetadata::appLogo();
+describe('siteTitle', function () {
+    it('returns string', function () {
+        $title = AppMetadata::siteTitle();
 
-    expect($logo)->toBeString();
-    expect($logo)->toContain('logo.png');
+        expect($title)->toBeString();
+    });
 });
 
-it('can get version', function () {
-    $version = AppMetadata::version();
+describe('appLogo', function () {
+    it('returns URL containing logo.png', function () {
+        $logo = AppMetadata::appLogo();
 
-    expect($version)->toBeString();
+        expect($logo)->toBeString();
+        expect($logo)->toContain('logo.png');
+    });
 });
 
-it('can get author name', function () {
-    $authorName = AppMetadata::authorName();
+describe('version', function () {
+    it('returns version from composer.json', function () {
+        $version = AppMetadata::version();
 
-    expect($authorName)->toBeString();
-    expect($authorName)->toBe('Reas Vyn');
+        expect($version)->toBe('0.1.0');
+    });
 });
 
-it('can get author email', function () {
-    $email = AppMetadata::authorEmail();
+describe('authorName', function () {
+    it('returns author name from composer.json', function () {
+        $authorName = AppMetadata::authorName();
 
-    expect($email)->toBeString();
-    expect($email)->toBe('reasvyn@gmail.com');
+        expect($authorName)->toBe('Reas Vyn');
+    });
 });
 
-it('can get license', function () {
-    $license = AppMetadata::license();
+describe('authorEmail', function () {
+    it('returns author email from composer.json', function () {
+        $email = AppMetadata::authorEmail();
 
-    expect($license)->toBe('MIT');
+        expect($email)->toBe('reasvyn@gmail.com');
+    });
 });
 
-it('can get description', function () {
-    $description = AppMetadata::description();
+describe('license', function () {
+    it('returns license from composer.json', function () {
+        $license = AppMetadata::license();
 
-    expect($description)->toBeString();
-    expect($description)->toContain('field work management system');
+        expect($license)->toBe('MIT');
+    });
 });
 
-it('can get value by key using get method', function () {
-    $name = AppMetadata::get('name');
+describe('description', function () {
+    it('returns description from composer.json', function () {
+        $description = AppMetadata::description();
 
-    expect($name)->toBeString();
+        expect($description)->toContain('field work management system');
+    });
 });
 
-it('returns default when key not found in get method', function () {
-    $value = AppMetadata::get('non_existent', 'default');
-    expect($value)->toBe('default');
+describe('colors', function () {
+    it('returns default colors when no overrides', function () {
+        $colors = AppMetadata::colors();
+
+        expect($colors)->toBeArray();
+        expect($colors)->toHaveKeys(['primary', 'secondary', 'accent']);
+        expect($colors['primary'])->toBe('#0ea5e9');
+        expect($colors['secondary'])->toBe('#64748b');
+        expect($colors['accent'])->toBe('#f59e0b');
+    });
 });
 
-it('can get colors with defaults', function () {
-    $colors = AppMetadata::colors();
+describe('get method', function () {
+    it('returns mapped values by key', function () {
+        expect(AppMetadata::get('name'))->toBeString();
+        expect(AppMetadata::get('app_name'))->toBeString();
+        expect(AppMetadata::get('logo'))->toBeString();
+        expect(AppMetadata::get('app_logo'))->toContain('logo.png');
+        expect(AppMetadata::get('favicon'))->toBeString();
+        expect(AppMetadata::get('site_title'))->toBeString();
+        expect(AppMetadata::get('version'))->toBeString();
+        expect(AppMetadata::get('author_name'))->toBeString();
+        expect(AppMetadata::get('author_email'))->toBeString();
+        expect(AppMetadata::get('description'))->toBeString();
+        expect(AppMetadata::get('license'))->toBeString();
+        expect(AppMetadata::get('colors'))->toBeArray();
+    });
 
-    expect($colors)->toBeArray();
-    expect($colors)->toHaveKeys(['primary', 'secondary', 'accent']);
+    it('returns default for unknown key', function () {
+        expect(AppMetadata::get('non_existent', 'default'))->toBe('default');
+    });
+
+    it('falls through to AppInfo for unmapped keys', function () {
+        expect(AppMetadata::get('support'))->toBe(AppInfo::get('support'));
+    });
 });

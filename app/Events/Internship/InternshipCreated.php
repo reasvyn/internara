@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Events\Internship;
 
-use App\Models\Internship\Internship;
+use App\Models\Internship;
 use App\Models\User;
 use Illuminate\Foundation\Events\Dispatchable;
 
@@ -20,6 +20,6 @@ class InternshipCreated
 
     public function __construct(
         public readonly Internship $internship,
-        public readonly User $createdBy,
+        public readonly ?User $createdBy = null,
     ) {}
 }

@@ -16,6 +16,8 @@ class Company extends BaseModel
 {
     use HasFactory;
 
+    protected $table = 'internship_companies';
+
     public function placements(): HasMany
     {
         return $this->hasMany(Placement::class, 'company_id');

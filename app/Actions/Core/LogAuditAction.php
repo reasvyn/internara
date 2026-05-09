@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Core;
 
-use App\Support\Logger;
+use App\Support\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
@@ -17,6 +17,7 @@ class LogAuditAction
         ?array $payload = null,
         ?string $module = null,
         mixed $user = null,
+        bool $maskPii = false,
     ): void {
         if ($action === '') {
             throw new InvalidArgumentException('Audit action must not be empty.');
@@ -27,12 +28,17 @@ class LogAuditAction
             $subject = $subjectType::find($subjectId);
         }
 
-        Logger::info($action)
+        $log = SmartLogger::info($action)
             ->event($action)
             ->module($module ?? 'system')
             ->withPayload($payload ?? [])
             ->about($subject)
-            ->activityOnly()
-            ->save();
+            ->activityOnly();
+
+        if ($maskPii) {
+            $log->withPiiMasking();
+        }
+
+        $log->save();
     }
 }

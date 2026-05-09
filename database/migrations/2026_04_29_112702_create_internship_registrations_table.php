@@ -8,30 +8,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('internship_registrations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('student_id')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('mentee_id')->nullable()->constrained('mentees')->onDelete('cascade');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
             $table
                 ->foreignUuid('placement_id')
                 ->nullable()
                 ->constrained('internship_placements')
-                ->onDelete('set null');
-
-            $table
-                ->foreignUuid('teacher_id')
-                ->nullable()
-                ->constrained('users')
-                ->onDelete('set null');
-            $table
-                ->foreignUuid('mentor_id')
-                ->nullable()
-                ->constrained('users')
                 ->onDelete('set null');
 
             $table->string('academic_year')->nullable();
@@ -41,21 +27,27 @@ return new class extends Migration
             $table->string('proposed_company_name')->nullable();
             $table->text('proposed_company_address')->nullable();
 
-            $table->string('status')->default('pending')->index(); // pending, approved, rejected, active, completed
+            $table->string('status')->default('pending')->index();
 
             $table->timestamps();
 
-            $table->index(['student_id', 'internship_id']);
-            $table->index(['teacher_id', 'mentor_id']);
+            $table->index(['mentee_id', 'internship_id']);
             $table->index(['start_date', 'end_date']);
+        });
+
+        Schema::create('registration_mentor', function (Blueprint $table) {
+            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table->foreignUuid('mentor_id')->constrained('mentors')->onDelete('cascade');
+            $table->string('role')->nullable();
+            $table->timestamps();
+
+            $table->primary(['registration_id', 'mentor_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        Schema::dropIfExists('registration_mentor');
         Schema::dropIfExists('internship_registrations');
     }
 };

@@ -1,0 +1,95 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entities\Setup;
+
+use App\Entities\BaseEntity;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\File;
+
+final readonly class SetupState extends BaseEntity
+{
+    public function __construct(
+        private bool $fileInstalled,
+        private bool $dbInstalled,
+        private ?string $setupToken,
+        private ?Carbon $tokenExpiresAt,
+        private array $completedSteps,
+    ) {}
+
+    public static function fromModel(Model $model): static
+    {
+        return new self(
+            fileInstalled: File::exists(base_path('.installed')),
+            dbInstalled: (bool) ($model->getAttribute('is_installed') ?? false),
+            setupToken: $model->getAttribute('setup_token'),
+            tokenExpiresAt: $model->getAttribute('token_expires_at'),
+            completedSteps: $model->getAttribute('completed_steps') ?? [],
+        );
+    }
+
+    /**
+     * Check if the application is fully installed.
+     */
+    public function isInstalled(): bool
+    {
+        return $this->fileInstalled || $this->dbInstalled;
+    }
+
+    /**
+     * Validate the provided setup token.
+     */
+    public function validateToken(string $token): bool
+    {
+        if ($this->setupToken === null) {
+            return false;
+        }
+
+        if ($this->tokenExpiresAt === null || now()->greaterThan($this->tokenExpiresAt)) {
+            return false;
+        }
+
+        try {
+            $decrypted = Crypt::decryptString($this->setupToken);
+        } catch (\Exception) {
+            return false;
+        }
+
+        return hash_equals($decrypted, $token);
+    }
+
+    /**
+     * Get the current pending setup step.
+     */
+    public function getCurrentStep(): string
+    {
+        if ($this->isInstalled()) {
+            return 'complete';
+        }
+
+        if (empty($this->completedSteps)) {
+            return 'welcome';
+        }
+
+        $orderedSteps = ['welcome', 'school', 'department'];
+
+        foreach ($orderedSteps as $step) {
+            if (! in_array($step, $this->completedSteps)) {
+                return $step;
+            }
+        }
+
+        return 'complete';
+    }
+
+    /**
+     * Check if a specific step is completed.
+     */
+    public function isStepCompleted(string $step): bool
+    {
+        return in_array($step, $this->completedSteps);
+    }
+}

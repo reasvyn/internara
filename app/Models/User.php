@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,11 +26,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, HasRoles, HasStatuses, HasUuids, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -39,105 +36,76 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    /**
-     * Get the profile associated with the user.
-     */
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
     }
 
-    /**
-     * Get all internship registrations for this user (as student, teacher, or mentor).
-     */
-    public function registrations(): HasMany
+    public function mentees(): HasMany
     {
-        return $this->hasMany(Registration::class, 'student_id');
+        return $this->hasMany(Mentee::class);
     }
 
-    /**
-     * Get registrations where this user is the assigned teacher.
-     */
-    public function teachingRegistrations(): HasMany
+    public function mentors(): HasMany
     {
-        return $this->hasMany(Registration::class, 'teacher_id');
+        return $this->hasMany(Mentor::class);
     }
 
-    /**
-     * Get registrations where this user is the assigned mentor.
-     */
-    public function mentoringRegistrations(): HasMany
+    public function registrations(): HasManyThrough
     {
-        return $this->hasMany(Registration::class, 'mentor_id');
+        return $this->hasManyThrough(Registration::class, Mentee::class, 'user_id', 'mentee_id');
     }
 
-    /**
-     * Get all generated reports for this user.
-     */
-    public function generatedReports(): HasMany
+    public function activeRegistration(): ?Registration
     {
-        return $this->hasMany(GeneratedReport::class);
+        return $this->registrations()
+            ->whereHas('statuses', fn ($q) => $q->where('name', 'active')->latest())
+            ->latest()
+            ->first();
     }
 
-    /**
-     * Get all handbook acknowledgements for this user.
-     */
     public function handbookAcknowledgements(): HasMany
     {
         return $this->hasMany(HandbookAcknowledgement::class);
     }
 
-    /**
-     * Create the domain entity for business rule evaluation.
-     */
-    public function entity(): Apprentice
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class, 'team_user')
+            ->withPivot('role', 'assigned_by', 'assigned_at')
+            ->withTimestamps();
+    }
+
+    public function mentoringTeams(): BelongsToMany
+    {
+        return $this->teams()->wherePivot('role', 'mentor');
+    }
+
+    public function menteeTeams(): BelongsToMany
+    {
+        return $this->teams()->wherePivot('role', 'mentee');
+    }
+
+    public function asApprentice(): Apprentice
     {
         return Apprentice::fromModel($this);
     }
 
-    /**
-     * Check if the user is suspended.
-     */
     public function isSuspended(): bool
     {
-        return $this->entity()->isSuspended();
+        return $this->asApprentice()->isSuspended();
     }
 
-    /**
-     * Check if the user is archived.
-     */
     public function isArchived(): bool
     {
-        return $this->entity()->isArchived();
+        return $this->asApprentice()->isArchived();
     }
 
-    /**
-     * Check if the user is inactive.
-     */
     public function isInactive(): bool
     {
-        return $this->entity()->isInactive();
+        return $this->asApprentice()->isInactive();
     }
 
-    /**
-     * Check if the user requires account setup.
-     */
-    public function requiresSetup(): bool
-    {
-        return $this->entity()->requiresSetup();
-    }
-
-    /**
-     * Check if the user account is currently locked.
-     */
-    public function isLocked(): bool
-    {
-        return $this->entity()->isLocked();
-    }
-
-    /**
-     * Lock the user account with an optional reason.
-     */
     public function lock(string $reason = 'too_many_failed_attempts'): void
     {
         $this->update([
@@ -146,9 +114,6 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
-    /**
-     * Unlock the user account.
-     */
     public function unlock(): void
     {
         $this->update([
@@ -157,33 +122,21 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
     }
 
-    /**
-     * Scope a query to only include locked users.
-     */
     public function scopeLocked(Builder $query): Builder
     {
         return $query->whereNotNull('locked_at');
     }
 
-    /**
-     * Scope a query to only include unlocked users.
-     */
     public function scopeUnlocked(Builder $query): Builder
     {
         return $query->whereNull('locked_at');
     }
 
-    /**
-     * Scope a query to only include active users (unlocked and setup complete).
-     */
     public function scopeActive(Builder $query): Builder
     {
         return $query->unlocked()->where('setup_required', false);
     }
 
-    /**
-     * Scope a query to only include users with a specific role.
-     */
     public function scopeRoleType(Builder $query, string $role): Builder
     {
         return $query->whereHas('roles', fn ($q) => $q->where('name', $role));

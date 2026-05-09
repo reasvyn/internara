@@ -1,32 +1,20 @@
 # Notifications
 
-## System Overview
+## Dual System
 
-Internara uses a dual notification approach:
-
-1. **In-app notifications** — persisted in the `notifications` table, managed via `App\Models\Notification`
-2. **Laravel notifications** — queued classes that deliver via mail, broadcast, and a custom database channel
+| Mechanism | Use case | Lifespan |
+|---|---|---|
+| `flash()` (PHPFlasher) | Action feedback (save, delete, error) | Single request |
+| In-app notification | Important alerts requiring acknowledgment | Until read |
+| Email notification | External communication (approvals, welcomes) | Persistent |
 
 ## In-App Notifications
 
-### Model
+`App\Models\Notification` (extends `BaseModel`, UUID PK) stores notifications in a custom `notifications` table with fields: `user_id`, `type`, `title`, `message`, `data` (json), `link`, `is_read`, `read_at`.
 
-`App\Models\Notification` — extends `BaseModel` (inherits `HasUuids`), fillable via `#[Fillable]` attribute.
+Entity integration: `$notification->asNotificationStatus()` returns a `NotificationStatus` domain entity.
 
-| Field | Type | Description |
-|---|---|---|
-| `user_id` | uuid | Target user |
-| `type` | string | Notification category |
-| `title` | string | Display title |
-| `message` | text (nullable) | Body text |
-| `data` | json (nullable) | Structured payload |
-| `link` | string (nullable) | Navigation path |
-| `is_read` | boolean | Read state |
-| `read_at` | datetime (nullable) | Marked-read timestamp |
-
-### Sending Notifications
-
-Use `App\Actions\Notification\SendNotificationAction` directly or through `CustomDatabaseChannel`:
+### Sending
 
 ```php
 // Direct action call
@@ -39,72 +27,31 @@ app(SendNotificationAction::class)->execute(
 );
 ```
 
-### Custom Database Channel
+`SendNotificationAction` validates the user exists and creates a record with `is_read = false`.
 
-`App\Channels\CustomDatabaseChannel` bridges Laravel's notification system to the project's in-app notification table. It delegates to `SendNotificationAction` for consistency.
+### Laravel Notification Channel
 
-All domain notifications use three channels: `mail`, `broadcast`, and `CustomDatabaseChannel::class`.
+`App\Channels\CustomDatabaseChannel` bridges Laravel notifications to the custom `notifications` table. Each notification class implements `toCustomDatabase($notifiable)` returning an array with keys: `type`, `title`, `message`, `data`, `link`.
+
+All domain notifications route through three channels: `mail`, `broadcast`, and `CustomDatabaseChannel::class`.
 
 ## Domain Notifications
 
-Each domain defines its own queued notification classes:
+| Domain | Notification |
+|---|---|
+| Auth | `WelcomeNotification`, `AdminRecoveredNotification` |
+| Internship | `InternshipRegistrationNotification` |
+| Assignment | `AssignmentNotification`, `SubmissionFeedbackNotification` |
+| Document | `ReportGeneratedNotification`, `JobFailedNotification` |
+| User | `AccountStatusNotification`, `TestMailNotification` |
 
-| Domain | Notification | Triggers |
-|---|---|---|
-| Auth | `WelcomeNotification` | New user created |
-| Internship | `RegistrationNotification` | Registration status change |
-| Assignment | `AssignmentNotification` | New assignment published |
-| Assignment | `SubmissionFeedbackNotification` | Submission reviewed |
-| Document | `ReportGeneratedNotification` | PDF report completed |
-| User | `AccountStatusNotification` | Account state change |
-| Notification | `JobFailedNotification` | Background job failure |
-
-### Notification Structure
-
-Each queued notification implements `toCustomDatabase()` to provide data for in-app storage:
-
-```php
-// app/Notifications/Internship/RegistrationNotification.php
-public function toCustomDatabase($notifiable): array
-{
-    return [
-        'type' => 'internship_registration_update',
-        'title' => __('notifications.internship_registration.title'),
-        'message' => __('notifications.internship_registration.message', [
-            'internship' => $this->internshipName,
-            'status' => strtoupper($this->status),
-        ]),
-        'link' => '/student/dashboard',
-        'data' => [
-            'internship_name' => $this->internshipName,
-            'status' => $this->status,
-        ],
-    ];
-}
-```
+Notification types are defined in `App\Enums\Notification\NotificationType`.
 
 ## Flash Messages
 
-PHPFlasher (`php-flasher/flasher-laravel`) provides transient action feedback.
-
-| Setting | Value |
-|---|---|
-| Theme | Emerald |
-| Timeout | 5000ms |
-| Position | Bottom-right |
-| Dark mode | Enabled |
+PHPFlasher (Emerald theme, 5s timeout, bottom-right, dark mode enabled):
 
 ```php
 flash()->success(__('internship.save_success'));
 flash()->error(__('setup.wizard.requirements_not_met'));
 ```
-
-Rendered via `@flasher_render` in `resources/views/components/layouts/base.blade.php`.
-
-## When to Use Each
-
-| Mechanism | Use case | Lifespan |
-|---|---|---|---|
-| `flash()` | Action feedback (save, delete, error) | Single request |
-| In-app notification | Important alerts requiring acknowledgment | Until read |
-| Email notification | External communication (approvals, welcomes) | Persistent in inbox |

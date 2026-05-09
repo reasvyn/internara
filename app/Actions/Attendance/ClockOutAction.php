@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Attendance;
 
 use App\Actions\Core\LogAuditAction;
-use App\Models\Attendance\AttendanceLog;
+use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -15,12 +15,12 @@ class ClockOutAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    public function execute(User $user, array $data, ?string $requestIp = null): AttendanceLog
+    public function execute(User $user, array $data, ?string $requestIp = null): Attendance
     {
         return DB::transaction(function () use ($user, $data, $requestIp) {
             $now = Carbon::now();
 
-            $log = AttendanceLog::where('user_id', $user->id)
+            $log = Attendance::where('user_id', $user->id)
                 ->whereDate('date', $now->toDateString())
                 ->first();
 
@@ -41,7 +41,7 @@ class ClockOutAction
 
             $this->logAudit->execute(
                 action: 'clock_out',
-                subjectType: AttendanceLog::class,
+                subjectType: Attendance::class,
                 subjectId: $log->id,
                 payload: ['time' => $log->clock_out],
                 module: 'Attendance',

@@ -37,13 +37,8 @@ class Internship extends BaseModel
         return $this->hasMany(Registration::class);
     }
 
-    public function entity(): InternshipPeriod
+    public function asInternshipPeriod(): InternshipPeriod
     {
         return InternshipPeriod::fromModel($this);
-    }
-
-    public function isAcceptingRegistrations(): bool
-    {
-        return $this->entity()->isAcceptingRegistrations();
     }
 }

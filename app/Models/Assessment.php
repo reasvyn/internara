@@ -52,19 +52,9 @@ class Assessment extends BaseModel
         return $this->belongsTo(User::class, 'evaluator_id');
     }
 
-    public function entity(): AssessmentResult
+    public function asAssessmentResult(): AssessmentResult
     {
         return AssessmentResult::fromModel($this);
-    }
-
-    public function isFinalized(): bool
-    {
-        return $this->entity()->isFinalized();
-    }
-
-    public function calculateTotalScore(): float
-    {
-        return $this->entity()->calculateTotalScore();
     }
 
     /**

@@ -8,13 +8,11 @@ use App\Entities\Internship\RegistrationState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\ModelStatus\HasStatuses;
 
-/**
- * Represents a student's registration for a specific internship program.
- */
-#[Fillable(['student_id', 'internship_id', 'placement_id', 'teacher_id', 'mentor_id', 'academic_year', 'start_date', 'end_date', 'proposed_company_name', 'proposed_company_address', 'status'])]
+#[Fillable(['mentee_id', 'internship_id', 'placement_id', 'academic_year', 'start_date', 'end_date', 'proposed_company_name', 'proposed_company_address', 'status'])]
 class Registration extends BaseModel
 {
     protected $table = 'internship_registrations';
@@ -26,14 +24,14 @@ class Registration extends BaseModel
         'end_date' => 'date',
     ];
 
-    public function entity(): RegistrationState
+    public function asRegistrationState(): RegistrationState
     {
         return RegistrationState::fromModel($this);
     }
 
-    public function student(): BelongsTo
+    public function mentee(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(Mentee::class, 'mentee_id');
     }
 
     public function internship(): BelongsTo
@@ -46,73 +44,25 @@ class Registration extends BaseModel
         return $this->belongsTo(Placement::class, 'placement_id');
     }
 
-    public function teacher(): BelongsTo
+    public function mentors(): BelongsToMany
     {
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsToMany(Mentor::class, 'registration_mentor', 'registration_id', 'mentor_id')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
-    public function mentor(): BelongsTo
+    public function logbooks(): HasMany
     {
-        return $this->belongsTo(User::class, 'mentor_id');
+        return $this->hasMany(Logbook::class, 'registration_id');
     }
 
-    public function journalEntries(): HasMany
+    public function attendances(): HasMany
     {
-        return $this->hasMany(LogbookEntry::class, 'registration_id');
-    }
-
-    public function attendanceLogs(): HasMany
-    {
-        return $this->hasMany(AttendanceLog::class, 'registration_id');
+        return $this->hasMany(Attendance::class, 'registration_id');
     }
 
     public function supervisionLogs(): HasMany
     {
         return $this->hasMany(SupervisionLog::class, 'registration_id');
-    }
-
-    public function monitoringVisits(): HasMany
-    {
-        return $this->hasMany(MonitoringVisit::class, 'registration_id');
-    }
-
-    public function requirementSubmissions(): HasMany
-    {
-        return $this->hasMany(RequirementSubmission::class, 'registration_id');
-    }
-
-    public function isActive(): bool
-    {
-        return $this->entity()->isActive();
-    }
-
-    public function isPending(): bool
-    {
-        return $this->entity()->isPending();
-    }
-
-    public function isCurrentlyOngoing(): bool
-    {
-        return $this->entity()->isCurrentlyOngoing();
-    }
-
-    public function hasEnded(): bool
-    {
-        return $this->entity()->hasEnded();
-    }
-
-    public function canBeApproved(): bool
-    {
-        return $this->entity()->canBeApproved();
-    }
-
-    public function daysRemaining(): int
-    {
-        return $this->entity()->daysRemaining();
-    }
-
-    public function totalDuration(): int
-    {
-        return $this->entity()->totalDuration();
     }
 }

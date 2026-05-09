@@ -18,6 +18,8 @@ class Placement extends BaseModel
 {
     use HasFactory;
 
+    protected $table = 'internship_placements';
+
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id');
@@ -33,23 +35,8 @@ class Placement extends BaseModel
         return $this->hasMany(Registration::class, 'placement_id');
     }
 
-    public function entity(): PlacementCapacity
+    public function asPlacementCapacity(): PlacementCapacity
     {
         return PlacementCapacity::fromModel($this);
-    }
-
-    public function isFull(): bool
-    {
-        return $this->entity()->isFull();
-    }
-
-    public function availableSlots(): int
-    {
-        return $this->entity()->availableSlots();
-    }
-
-    public function hasAvailableSlots(): bool
-    {
-        return $this->entity()->hasAvailableSlots();
     }
 }

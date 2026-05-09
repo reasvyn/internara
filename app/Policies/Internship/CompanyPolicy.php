@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Internship;
 
-use App\Models\Internship\Company;
+use App\Models\Company;
 use App\Models\User;
 use App\Policies\Shared\BasePolicy;
 

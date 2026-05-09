@@ -35,13 +35,8 @@ class Handbook extends BaseModel
         return $this->hasMany(HandbookAcknowledgement::class);
     }
 
-    public function entity(): HandbookPublishState
+    public function asHandbookPublishState(): HandbookPublishState
     {
         return HandbookPublishState::fromModel($this);
-    }
-
-    public function isPublished(): bool
-    {
-        return $this->entity()->isPublished();
     }
 }

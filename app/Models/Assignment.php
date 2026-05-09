@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * S1 - Secure: Validates submission requirements.
  * S2 - Sustain: Rich model with business rules.
  */
-#[Fillable(['assignment_type_id', 'internship_id', 'academic_year', 'title', 'group', 'description', 'is_mandatory', 'due_date', 'config'])]
+#[Fillable(['assignment_type_id', 'internship_id', 'academic_year', 'title', 'group', 'description', 'is_mandatory', 'due_date', 'config', 'status', 'created_by', 'document_id'])]
 class Assignment extends BaseModel
 {
     use HasFactory;
@@ -55,19 +55,19 @@ class Assignment extends BaseModel
         return $this->hasMany(Submission::class);
     }
 
-    public function entity(): AssignmentRules
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function document(): BelongsTo
+    {
+        return $this->belongsTo(Document::class, 'document_id');
+    }
+
+    public function asAssignmentRules(): AssignmentRules
     {
         return AssignmentRules::fromModel($this);
-    }
-
-    public function isMandatory(): bool
-    {
-        return $this->entity()->isMandatory();
-    }
-
-    public function isOverdue(): bool
-    {
-        return $this->entity()->isOverdue();
     }
 
     /**

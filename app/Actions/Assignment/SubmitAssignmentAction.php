@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions\Assignment;
 
-use App\Enums\AssignmentStatus;
-use App\Enums\SubmissionStatus;
-use App\Models\Assignment\Assignment;
-use App\Models\Assignment\Submission;
+use App\Enums\Assignment\AssignmentStatus;
+use App\Enums\Assignment\SubmissionStatus;
+use App\Models\Assignment;
+use App\Models\Submission;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -32,7 +32,7 @@ class SubmitAssignmentAction
             throw new InvalidArgumentException('Cannot submit to unpublished assignment.');
         }
 
-        if ($assignment->isOverdue()) {
+        if ($assignment->asAssignmentRules()->isOverdue()) {
             throw new InvalidArgumentException('Assignment is overdue.');
         }
 

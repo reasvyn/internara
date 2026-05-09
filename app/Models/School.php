@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\School\SchoolState;
 use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,7 +38,7 @@ class School extends BaseModel implements HasMedia
 
     public function getLogoUrlAttribute(): ?string
     {
-        return $this->getFirstMediaUrl(self::COLLECTION_LOGO) ?? null;
+        return $this->getFirstMediaUrl(self::COLLECTION_LOGO) ?: null;
     }
 
     public function setLogo(UploadedFile|string $file): bool
@@ -47,8 +48,8 @@ class School extends BaseModel implements HasMedia
         return $this->addMedia($file)->toMediaCollection(self::COLLECTION_LOGO) !== null;
     }
 
-    public function canBeCreated(): bool
+    public function asSchoolState(): SchoolState
     {
-        return config('school.single_record', true) ? $this->newQuery()->doesntExist() : true;
+        return SchoolState::fromModel($this);
     }
 }

@@ -4,44 +4,40 @@
 
 | Layer | Technology |
 |---|---|
-| CSS | TailwindCSS v4 (OKLCH color system) |
-| Component theme | DaisyUI 5 |
-| Blade components | maryUI 2 |
+| CSS | TailwindCSS v4 (CSS-first config, OKLCH monochrome themes) |
+| Components | DaisyUI 5 + maryUI 2 (`x-mary-*` prefix) |
 | Interactivity | Livewire 4 (server state) + Alpine.js (client behavior) |
-| Typography | Instrument Sans (self-hosted) |
+| Typography | Instrument Sans (self-hosted, 400/500/600) |
 | Icons | Blade Tabler Icons |
+| Bundler | Vite 7 |
 
-## Design Tokens
+## Theming
 
-Semantic colors based on OKLCH for contrast and accessibility:
+Two custom DaisyUI themes defined in `resources/css/app.css`:
 
-- **Primary** — Institutional brand color
-- **Base** — Backgrounds (100, 200, 300 levels)
-- **Feedback** — Info, success, warning, error
+| Theme | Default | Notes |
+|---|---|---|
+| `light` | Yes | Monochrome palette, pure white `base-100`, thin borders |
+| `dark` | Prefers-dark | Inverted monochrome, dark gray `base-100` |
 
-## Layout
+Dark mode uses class strategy: `@custom-variant dark (&:where(.dark, .dark *))`.
 
-- Mobile-first responsive design with `md` and `lg` breakpoints
-- Light and dark mode with automatic system detection
-- SPA-style navigation via `wire:navigate` for instant page transitions
+## Layout & Navigation
 
-## Interaction Patterns
+- Mobile-first responsive with `md`/`lg` breakpoints
+- SPA-style navigation via `wire:navigate`
+- Sticky header with theme switcher, language switcher, notification bell, user dropdown
+- 280px sidebar with role-based navigation sections
+- Enterprise data manager layout with search, filters, bulk actions
 
-| Tool | Use case |
-|---|---|
-| Alpine.js | Instant client-side feedback (menus, toggles, validation) |
-| Livewire | Data-intensive operations, form processing, server-state sync |
+## maryUI Components
 
-## Localization & Accessibility
+Use `<x-mary-*>` components for consistency. Commonly used: `x-mary-table`, `x-mary-input`, `x-mary-select`, `x-mary-badge`, `x-mary-card`, `x-mary-header`, `x-mary-icon`, `x-mary-toast`.
 
-- **Language Switching**: Real-time language toggling (ID/EN) with instant UI refresh via Livewire.
-- **RTL Support**: Not required for initial release (Ltr only).
-- **Contrast**: OKLCH-based colors ensure accessibility standards across all supported languages.
-## Preferred Components
+The codebase uses a hybrid approach — structural components use maryUI, custom styling uses plain Tailwind classes.
 
-Use maryUI components for consistency:
+## Localization
 
-- Tables: `x-mary-table` with pagination
-- Forms: `x-mary-input`, `x-mary-select`, etc.
-- Status: `x-mary-badge`
-- Feedback: `x-mary-toast`
+- Real-time language toggling (ID/EN) via `SetLocaleMiddleware`
+- LTR only (no RTL for initial release)
+- OKLCH colors ensure accessibility

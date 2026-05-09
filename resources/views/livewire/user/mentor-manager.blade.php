@@ -66,20 +66,40 @@
                 wire:model="selectedIds"
                 class="table-md w-full whitespace-nowrap"
             >
-                @scope('cell_name', $user)
+                @scope('cell_name', $mentor)
                     <div class="flex items-center gap-4 py-2">
-                        <x-mary-avatar :title="$user->name" class="w-10 h-10 rounded-2xl shadow-sm border border-base-content/5" />
+                        <x-mary-avatar :title="$mentor->user->name" class="w-10 h-10 rounded-2xl shadow-sm border border-base-content/5" />
                         <div class="flex flex-col">
-                            <span class="font-black text-sm tracking-tight text-base-content">{{ $user->name }}</span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mt-1">{{ $user->id }}</span>
+                            <span class="font-black text-sm tracking-tight text-base-content">{{ $mentor->user->name }}</span>
+                            <span class="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mt-1">{{ $mentor->id }}</span>
                         </div>
                     </div>
                 @endscope
 
-                @scope('actions', $user)
+                @scope('cell_email', $mentor)
+                    <span class="font-mono text-xs text-base-content/70">{{ $mentor->user->email }}</span>
+                @endscope
+
+                @scope('cell_type', $mentor)
+                    @if($mentor->type === \App\Models\Mentor::TYPE_SCHOOL_TEACHER)
+                        <x-mary-badge :value="__('user.mentor.school_teacher')" class="badge-primary badge-outline font-black uppercase tracking-widest text-[9px] rounded-xl px-3 py-2" />
+                    @else
+                        <x-mary-badge :value="__('user.mentor.industry_supervisor')" class="badge-secondary badge-outline font-black uppercase tracking-widest text-[9px] rounded-xl px-3 py-2" />
+                    @endif
+                @endscope
+
+                @scope('cell_is_active', $mentor)
+                    @if($mentor->is_active)
+                        <x-mary-icon name="o-check-circle" class="text-success w-5 h-5" />
+                    @else
+                        <x-mary-icon name="o-x-circle" class="text-error w-5 h-5" />
+                    @endif
+                @endscope
+
+                @scope('actions', $mentor)
                     <div class="flex items-center justify-end gap-2 py-2">
-                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="edit('{{ $user->id }}')" tooltip="Edit" />
-                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $user->id }}')" tooltip="Delete" />
+                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="edit('{{ $mentor->id }}')" tooltip="Edit" />
+                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $mentor->id }}')" tooltip="Delete" />
                     </div>
                 @endscope
             </x-mary-table>
@@ -91,7 +111,16 @@
         <div class="grid grid-cols-1 gap-6 pt-4">
             <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.mentor.phone')" wire:model="userData.phone" icon="o-phone" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-select 
+                :label="__('user.mentor.type')" 
+                wire:model="userData.type" 
+                :options="[
+                    ['value' => \App\Models\Mentor::TYPE_SCHOOL_TEACHER, 'label' => __('user.mentor.school_teacher')],
+                    ['value' => \App\Models\Mentor::TYPE_INDUSTRY_SUPERVISOR, 'label' => __('user.mentor.industry_supervisor')],
+                ]" 
+                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3"
+            />
+            <x-mary-toggle :label="__('user.mentor.active')" wire:model="userData.is_active" class="rounded-[1.5rem]" />
         </div>
 
         <x-slot:actions>

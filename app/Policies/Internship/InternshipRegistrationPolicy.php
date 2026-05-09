@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace App\Policies\Internship;
 
-use App\Models\Internship\Registration;
+use App\Models\Registration;
 use App\Models\User;
 use App\Policies\Shared\BasePolicy;
 
-/**
- * S1 - Secure: Students can only view/edit their own registrations.
- */
 class RegistrationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
@@ -30,15 +27,11 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        if ($this->isTeacher($user) && $registration->teacher_id === $user->id) {
+        if ($this->isAssignedMentor($user, $registration)) {
             return true;
         }
 
-        if ($this->isSupervisor($user) && $registration->mentor_id === $user->id) {
-            return true;
-        }
-
-        return $registration->student_id === $user->id;
+        return $registration->mentee?->user_id === $user->id;
     }
 
     public function create(User $user): bool
@@ -52,7 +45,7 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $registration->student_id === $user->id && $registration->isPending();
+        return $this->isOwner($registration, $user) && $registration->isPending();
     }
 
     public function approve(User $user, Registration $registration): bool
@@ -66,6 +59,18 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $registration->student_id === $user->id && $registration->isPending();
+        return $this->isOwner($registration, $user) && $registration->isPending();
+    }
+
+    private function isAssignedMentor(User $user, Registration $registration): bool
+    {
+        return $user->mentors()
+            ->whereHas('registrations', fn ($q) => $q->where('registration_id', $registration->id))
+            ->exists();
+    }
+
+    private function isOwner(Registration $registration, User $user): bool
+    {
+        return $registration->mentee?->user_id === $user->id;
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Attendance;
 
 use App\Actions\Core\LogAuditAction;
-use App\Models\Attendance\AttendanceLog;
+use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -15,13 +15,13 @@ class ClockInAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    public function execute(User $user, array $data, ?string $requestIp = null): AttendanceLog
+    public function execute(User $user, array $data, ?string $requestIp = null): Attendance
     {
         return DB::transaction(function () use ($user, $data, $requestIp) {
             $now = Carbon::now();
 
             // Check if already clocked in today
-            $existingLog = AttendanceLog::where('user_id', $user->id)
+            $existingLog = Attendance::where('user_id', $user->id)
                 ->whereDate('date', $now->toDateString())
                 ->first();
 
@@ -39,7 +39,7 @@ class ClockInAction
                 throw new RuntimeException('No active internship registration found.');
             }
 
-            $log = AttendanceLog::create([
+            $log = Attendance::create([
                 'user_id' => $user->id,
                 'registration_id' => $registration->id,
                 'date' => $now->toDateString(),
@@ -52,7 +52,7 @@ class ClockInAction
 
             $this->logAudit->execute(
                 action: 'clock_in',
-                subjectType: AttendanceLog::class,
+                subjectType: Attendance::class,
                 subjectId: $log->id,
                 payload: ['time' => $log->clock_in],
                 module: 'Attendance',

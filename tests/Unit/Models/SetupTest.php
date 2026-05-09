@@ -41,22 +41,22 @@ it('casts attributes correctly', function () {
 });
 
 it('is not installed by default', function () {
-    expect(Setup::isInstalled())->toBeFalse();
+    expect(Setup::state()->isInstalled())->toBeFalse();
 });
 
 it('detects installed via database', function () {
     SetupFactory::new()->installed()->create();
-    expect(Setup::isInstalled())->toBeTrue();
+    expect(Setup::state()->isInstalled())->toBeTrue();
 });
 
 it('detects installed via file', function () {
     File::put(base_path('.installed'), now()->toDateTimeString());
-    expect(Setup::isInstalled())->toBeTrue();
+    expect(Setup::state()->isInstalled())->toBeTrue();
 });
 
 it('can mark as installed', function () {
     Setup::markInstalled();
-    expect(Setup::isInstalled())->toBeTrue()
+    expect(Setup::state()->isInstalled())->toBeTrue()
         ->and(File::exists(base_path('.installed')))->toBeTrue();
 });
 
@@ -74,12 +74,12 @@ it('can generate token', function () {
 
 it('can validate correct token', function () {
     $result = Setup::generateToken();
-    expect(Setup::validateToken($result['plaintext']))->toBeTrue();
+    expect(Setup::state()->validateToken($result['plaintext']))->toBeTrue();
 });
 
 it('rejects invalid token', function () {
     Setup::generateToken();
-    expect(Setup::validateToken('invalid-token'))->toBeFalse();
+    expect(Setup::state()->validateToken('invalid-token'))->toBeFalse();
 });
 
 it('rejects expired token', function () {
@@ -87,11 +87,11 @@ it('rejects expired token', function () {
     $setup = Setup::first();
     $setup->update(['token_expires_at' => now()->subHour()]);
 
-    expect(Setup::validateToken($result['plaintext']))->toBeFalse();
+    expect(Setup::state()->validateToken($result['plaintext']))->toBeFalse();
 });
 
 it('rejects validation when no token set', function () {
-    expect(Setup::validateToken('some-token'))->toBeFalse();
+    expect(Setup::state()->validateToken('some-token'))->toBeFalse();
 });
 
 it('can invalidate token', function () {
@@ -104,31 +104,31 @@ it('can invalidate token', function () {
 });
 
 it('can get current step', function () {
-    expect(Setup::getCurrentStep())->toBe('welcome');
+    expect(Setup::state()->getCurrentStep())->toBe('welcome');
 
     $setup = SetupFactory::new()->create(['completed_steps' => ['welcome']]);
-    expect(Setup::getCurrentStep())->toBe('school');
+    expect(Setup::state()->getCurrentStep())->toBe('school');
 
     $setup->update(['completed_steps' => ['welcome', 'school']]);
-    expect(Setup::getCurrentStep())->toBe('department');
+    expect(Setup::state()->getCurrentStep())->toBe('department');
 
     $setup->update(['completed_steps' => ['welcome', 'school', 'department']]);
-    expect(Setup::getCurrentStep())->toBe('complete');
+    expect(Setup::state()->getCurrentStep())->toBe('complete');
 });
 
 it('can check step completed', function () {
     $setup = SetupFactory::new()->create(['completed_steps' => ['welcome']]);
 
-    expect(Setup::isStepCompleted('welcome'))->toBeTrue()
-        ->and(Setup::isStepCompleted('school'))->toBeFalse();
+    expect(Setup::state()->isStepCompleted('welcome'))->toBeTrue()
+        ->and(Setup::state()->isStepCompleted('school'))->toBeFalse();
 });
 
 it('can mark step completed', function () {
     Setup::markStepCompleted('welcome');
-    expect(Setup::isStepCompleted('welcome'))->toBeTrue();
+    expect(Setup::state()->isStepCompleted('welcome'))->toBeTrue();
 
     Setup::markStepCompleted('school');
-    expect(Setup::isStepCompleted('school'))->toBeTrue();
+    expect(Setup::state()->isStepCompleted('school'))->toBeTrue();
 });
 
 it('does not duplicate completed steps', function () {

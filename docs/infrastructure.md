@@ -2,36 +2,37 @@
 
 ## Runtime
 
-- PHP 8.4+
-- Laravel 13
-- Livewire 4
-- SQLite (default), MySQL 8+, PostgreSQL 14+
-
-## Frontend
-
-- Vite 7 (bundler)
-- TailwindCSS 4 + DaisyUI 5 (styling)
-- maryUI 2 (Blade components)
-- Alpine.js (client behavior)
-- Axios (HTTP client)
-- Cropperjs (image processing)
+- PHP 8.4+, Laravel 13, Livewire 4
+- Database: SQLite (default), MySQL 8+, PostgreSQL 14+
+- Queue: `database` driver (default)
 
 ## Backend Packages
 
 | Package | Purpose |
 |---|---|
-| `spatie/laravel-permission` | Roles and permissions (RBAC) |
-| `spatie/laravel-medialibrary` | File attachments with collections and conversions |
+| `spatie/laravel-permission` | RBAC with team support |
+| `spatie/laravel-medialibrary` | File attachments (School, Submission models) |
 | `spatie/laravel-activitylog` | Model change tracking |
-| `spatie/laravel-model-states` | State machine transitions |
-| `spatie/laravel-model-status` | Status tracking for complex entities |
+| `spatie/laravel-model-status` | Status tracking (User model) |
+| `spatie/laravel-model-states` | **Installed but unused** — Entities handle state |
 | `spatie/laravel-honeypot` | Spam protection |
 | `barryvdh/laravel-dompdf` | PDF generation |
-| `php-flasher/flasher-laravel` | Flash messages (Emerald theme) |
-| `laravel-lang/lang` | Multi-language support |
+| `php-flasher/flasher-laravel` | Flash messages |
+| `laravel-lang/lang` | Multi-language (ID/EN) |
+| `robsontenorio/mary` | maryUI Blade components |
+| `secondnetwork/blade-tabler-icons` | Icon set |
 | `simplesoftwareio/simple-qrcode` | QR code generation |
-| `robsontenorio/mary` | maryUI Blade component library |
-| `secondnetwork/blade-tabler-icons` | Tabler icon set |
+
+## Frontend
+
+| Package | Purpose |
+|---|---|
+| Vite 7 | Bundler |
+| TailwindCSS 4 | CSS framework (CSS-first config) |
+| DaisyUI 5 | Component theme |
+| Alpine.js | Client behavior (via Livewire) |
+| Cropper.js | Image upload/crop |
+| Prettier | JS/Blade/PHP formatting |
 
 ## Development Tools
 
@@ -40,7 +41,6 @@
 | Pest 4 | Testing framework |
 | PHPStan 2 | Static analysis (level 8) |
 | Laravel Pint | PHP code style |
-| Prettier | JS/Blade/PHP formatting |
 | Laravel Sail | Docker development |
 | Laravel Boost | MCP server for IDE integration |
 | Laravel Pail | Real-time log viewer |
@@ -49,26 +49,17 @@
 
 ```bash
 composer dev             # Start: server, queue, logs, vite
-composer test            # Run all tests
-composer test:coverage   # Tests with 80% minimum coverage
-composer test:arch       # Architectural tests only
-composer quality         # Quick: lint + analyse + arch
-composer quality:full    # Full: format + strict analyse + coverage
-composer analyse         # PHPStan level 8
-composer analyse:strict  # PHPStan level max
+composer test            # All tests
+composer test:coverage   # Tests with 80% min coverage
+composer test:arch       # Architecture tests only
+composer test:feature    # Feature tests only
+composer test:unit       # Unit tests only
+composer quality         # lint + analyse + arch
+composer quality:full    # format + strict analyse + coverage
 composer format          # Pint + Prettier
 composer lint            # Pint check + Prettier check
 ```
 
 ## CI/CD
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on every PR:
-
-| Job | Tools |
-|---|---|
-| quality | Pint, PHPStan |
-| architecture | Pest arch tests |
-| tests | Pest (80% min coverage) |
-| security | Trivy vulnerability scan |
-
-All jobs must pass before merging to `main` or `develop`.
+GitHub Actions runs on every PR: quality (Pint, PHPStan), architecture tests, Pest with 80% coverage, and Trivy security scan. All jobs must pass before merging.

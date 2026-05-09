@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Setup\SetupState;
 use Database\Factories\SetupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Crypt;
@@ -21,6 +22,7 @@ class Setup extends BaseModel
         'completed_steps',
         'school_id',
         'department_id',
+        'recovery_key',
     ];
 
     protected function casts(): array
@@ -32,20 +34,47 @@ class Setup extends BaseModel
         ];
     }
 
+    public static function generateRecoveryKey(): string
+    {
+        $plaintext = Str::random(64);
+        $encrypted = Crypt::encryptString($plaintext);
+
+        $setup = self::firstOrCreate([]);
+        $setup->update(['recovery_key' => $encrypted]);
+
+        return $plaintext;
+    }
+
+    public static function validateRecoveryKey(string $plaintext): bool
+    {
+        $setup = self::first();
+
+        if ($setup === null || $setup->recovery_key === null) {
+            return false;
+        }
+
+        try {
+            $stored = Crypt::decryptString($setup->recovery_key);
+
+            return hash_equals($stored, $plaintext);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
     protected static function newFactory(): SetupFactory
     {
         return SetupFactory::new();
     }
 
-    public static function isInstalled(): bool
+    public function asSetupState(): SetupState
     {
-        if (File::exists(base_path('.installed'))) {
-            return true;
-        }
+        return SetupState::fromModel($this);
+    }
 
-        $setup = self::first();
-
-        return $setup !== null && $setup->is_installed;
+    public static function state(): SetupState
+    {
+        return SetupState::fromModel(self::first() ?? new self);
     }
 
     public static function markInstalled(): void
@@ -75,27 +104,6 @@ class Setup extends BaseModel
         ];
     }
 
-    public static function validateToken(string $token): bool
-    {
-        $setup = self::first();
-
-        if ($setup === null || $setup->setup_token === null) {
-            return false;
-        }
-
-        if ($setup->token_expires_at === null || now()->greaterThan($setup->token_expires_at)) {
-            return false;
-        }
-
-        try {
-            $decrypted = Crypt::decryptString($setup->setup_token);
-        } catch (\Exception) {
-            return false;
-        }
-
-        return hash_equals($decrypted, $token);
-    }
-
     public static function invalidateToken(): void
     {
         $setup = self::first();
@@ -106,33 +114,6 @@ class Setup extends BaseModel
                 'token_expires_at' => null,
             ]);
         }
-    }
-
-    public static function getCurrentStep(): string
-    {
-        $setup = self::first();
-
-        if ($setup === null || empty($setup->completed_steps)) {
-            return 'welcome';
-        }
-
-        $steps = $setup->completed_steps;
-        $orderedSteps = ['welcome', 'school', 'department'];
-
-        foreach ($orderedSteps as $step) {
-            if (! in_array($step, $steps)) {
-                return $step;
-            }
-        }
-
-        return 'complete';
-    }
-
-    public static function isStepCompleted(string $step): bool
-    {
-        $setup = self::first();
-
-        return $setup !== null && in_array($step, $setup->completed_steps ?? []);
     }
 
     public static function markStepCompleted(string $step): void
