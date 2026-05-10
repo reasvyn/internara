@@ -8,6 +8,7 @@ use App\Enums\Document\DocumentCategory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -39,5 +40,10 @@ class Document extends BaseModel implements HasMedia
     public function scopeOfCategory(Builder $query, string $category): Builder
     {
         return $query->where('category', $category);
+    }
+
+    public function internshipRequirements(): HasMany
+    {
+        return $this->hasMany(InternshipDocumentRequirement::class);
     }
 }

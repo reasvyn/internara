@@ -9,6 +9,7 @@ use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
 use App\Enums\Internship\InternshipStatus;
 use App\Livewire\Core\BaseRecordManager;
+use App\Models\AcademicYear;
 use App\Models\Internship;
 use App\Models\Placement;
 use App\Models\Registration;
@@ -24,6 +25,8 @@ class InternshipManager extends BaseRecordManager
         'name' => '',
         'start_date' => '',
         'end_date' => '',
+        'registration_start_date' => '',
+        'registration_end_date' => '',
         'description' => '',
         'status' => 'draft',
     ];
@@ -92,6 +95,8 @@ class InternshipManager extends BaseRecordManager
             'name' => '',
             'start_date' => '',
             'end_date' => '',
+            'registration_start_date' => '',
+            'registration_end_date' => '',
             'description' => '',
             'status' => InternshipStatus::DRAFT->value,
         ];
@@ -106,6 +111,8 @@ class InternshipManager extends BaseRecordManager
             'name' => $internship->name,
             'start_date' => $internship->start_date->format('Y-m-d'),
             'end_date' => $internship->end_date->format('Y-m-d'),
+            'registration_start_date' => $internship->registration_start_date?->format('Y-m-d') ?? '',
+            'registration_end_date' => $internship->registration_end_date?->format('Y-m-d') ?? '',
             'description' => $internship->description ?? '',
             'status' => $internship->status->value,
         ];
@@ -116,6 +123,9 @@ class InternshipManager extends BaseRecordManager
     {
         $validStatuses = collect(InternshipStatus::cases())->map(fn ($s) => $s->value)->toArray();
 
+        $this->formData['registration_start_date'] = $this->formData['registration_start_date'] ?: null;
+        $this->formData['registration_end_date'] = $this->formData['registration_end_date'] ?: null;
+
         $this->validate([
             'formData.name' => [
                 'required',
@@ -125,15 +135,39 @@ class InternshipManager extends BaseRecordManager
             ],
             'formData.start_date' => ['required', 'date'],
             'formData.end_date' => ['required', 'date', 'after:formData.start_date'],
+            'formData.registration_start_date' => ['nullable', 'date'],
+            'formData.registration_end_date' => ['nullable', 'date', 'after_or_equal:formData.registration_start_date'],
             'formData.description' => ['nullable', 'string'],
             'formData.status' => ['required', 'string', 'in:'.implode(',', $validStatuses)],
         ]);
 
         if ($this->formData['id']) {
             $internship = Internship::findOrFail($this->formData['id']);
+
+            $newStatus = InternshipStatus::tryFrom($this->formData['status']);
+            if ($newStatus !== null && $newStatus !== $internship->status) {
+                if (! $internship->status->canTransitionTo($newStatus)) {
+                    $this->error(
+                        __('internship.invalid_status_transition', [
+                            'from' => __("internship.statuses.{$internship->status->value}"),
+                            'to' => __("internship.statuses.{$newStatus->value}"),
+                        ]),
+                    );
+
+                    return;
+                }
+            }
+
             $update->execute($internship, $this->formData);
             $this->success(__('internship.update_success'));
         } else {
+            if (empty($this->formData['academic_year_id'])) {
+                $activeYear = AcademicYear::where('is_active', true)->first();
+                if ($activeYear !== null) {
+                    $this->formData['academic_year_id'] = $activeYear->id;
+                }
+            }
+
             $create->execute($this->formData);
             $this->success(__('internship.save_success'));
         }

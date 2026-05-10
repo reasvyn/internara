@@ -15,7 +15,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
-#[Layout('layouts.auth')]
+#[Layout('layout:setup')]
 class SetupWizard extends Component
 {
     use Toast;

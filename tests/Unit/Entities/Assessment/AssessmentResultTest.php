@@ -17,11 +17,21 @@ it('detects not finalized assessment', function () {
     expect($entity->isFinalized())->toBeFalse();
 });
 
-it('calculates total score from content', function () {
+it('calculates total score from competencies content', function () {
     $entity = new AssessmentResult(null, [
-        ['score' => 80],
-        ['score' => 90],
-        ['score' => 70],
+        'competencies' => [
+            'comp-1' => [
+                'indicators' => [
+                    'ind-1' => 80,
+                    'ind-2' => 90,
+                ],
+            ],
+            'comp-2' => [
+                'indicators' => [
+                    'ind-3' => 70,
+                ],
+            ],
+        ],
     ], 0.0);
 
     expect($entity->calculateTotalScore())->toBe(240.0);
@@ -33,7 +43,7 @@ it('falls back to score when content is not array', function () {
     expect($entity->calculateTotalScore())->toBe(0.0);
 });
 
-it('uses score field when content is empty', function () {
+it('returns zero when content has no competencies', function () {
     $entity = new AssessmentResult(null, [], 75.0);
 
     expect($entity->calculateTotalScore())->toBe(0.0);

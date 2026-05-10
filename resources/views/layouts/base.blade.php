@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ request()->cookie('theme', 'system') }}">
     <head>
-        <x-layouts.base.head :$title />
+        <x-layout:base.head :$title />
         
         {{-- Dynamic Branding Colors --}}
         @php
@@ -42,7 +42,7 @@
     </head>
 
     <body class="{{ $bodyClass }}">
-        <x-layouts.base.preloader />
+        <x-layout:base.preloader />
 
         <script>
             window.isDebugMode = window.isDebugMode || (() => {{ is_debug_mode() ? 'true' : 'false' }});

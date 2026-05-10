@@ -11,6 +11,9 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TeacherController;
 use App\Livewire\Admin\SystemSetting;
+use App\Livewire\Assessment\AssessmentGrading;
+use App\Livewire\Assessment\AssessmentView;
+use App\Livewire\Assessment\RubricManager;
 use App\Livewire\Assignment\Admin\AssignmentManager as AdminAssignmentManager;
 use App\Livewire\Assignment\Student\Submission as StudentSubmission;
 use App\Livewire\Auth\AccountRecovery;
@@ -31,7 +34,10 @@ use App\Livewire\Internship\CompanyIndex;
 use App\Livewire\Internship\DirectPlacementManager;
 use App\Livewire\Internship\InternshipManager;
 use App\Livewire\Internship\PlacementIndex;
+use App\Livewire\Internship\RegistrationCenter;
+use App\Livewire\Internship\RegistrationVerification;
 use App\Livewire\Internship\RegistrationWizard;
+use App\Livewire\Internship\RequirementManager;
 use App\Livewire\Logbook\LogbookEntry;
 use App\Livewire\Logbook\LogbookManager;
 use App\Livewire\Mentor\Supervision\SupervisionManager;
@@ -54,7 +60,9 @@ use Illuminate\Support\Facades\Route;
 | Public & Guest Routes
 |--------------------------------------------------------------------------
 */
-Route::redirect('/', '/login');
+Route::redirect('/', '/register');
+
+Route::livewire('/register', RegistrationCenter::class)->name('register');
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/login', Login::class)->name('login');
@@ -110,6 +118,12 @@ Route::prefix('admin')
         Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name(
             'internships.placements.direct',
         );
+        Route::livewire('/internships/{internship}/requirements', RequirementManager::class)->name(
+            'internships.requirements',
+        );
+        Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name(
+            'internships.registrations.pending',
+        );
         Route::livewire('/applications', ApplicationReview::class)->name('applications');
         Route::livewire('/settings', SystemSetting::class)->name('settings');
 
@@ -136,6 +150,10 @@ Route::prefix('admin')
 
         // Admin -> Submission Grading
         Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
+
+        // Admin -> Assessment
+        Route::livewire('/assessments/rubrics', RubricManager::class)->name('assessments.rubrics');
+        Route::livewire('/assessments/{registration}/grade', AssessmentGrading::class)->name('assessments.grade');
 
         // Admin -> Handbooks
         Route::prefix('handbooks')->name('handbooks.')->group(function () {
@@ -205,6 +223,7 @@ Route::prefix('student')
         Route::livewire('/logbook', LogbookEntry::class)->name('logbook');
         Route::livewire('/assignments', StudentSubmission::class)->name('assignments');
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
+        Route::livewire('/assessments', AssessmentView::class)->name('assessments');
         Route::livewire('/internships/register', RegistrationWizard::class)->name(
             'internships.register',
         );

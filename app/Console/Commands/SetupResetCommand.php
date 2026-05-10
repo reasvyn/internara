@@ -45,7 +45,7 @@ class SetupResetCommand extends Command
             $signedUrl = route('setup', ['setup_token' => $result['plaintext']]);
             note("URL: <fg=cyan;options=bold,underscore>{$signedUrl}</>");
             note("Token: <fg=white;options=bold>{$result['plaintext']}</>");
-            note("Expires: {$result['expires_at']->format('H:i:s')} (in {$result['expires_at']->diffForHumans()})");
+            note("Expires: {$result['expires_at']->format('H:i:s T')} (in {$result['expires_at']->diffForHumans()})");
 
             return self::SUCCESS;
         }
@@ -75,7 +75,7 @@ class SetupResetCommand extends Command
 
         info("URL: <fg=cyan;options=bold,underscore>{$signedUrl}</>");
         note("Token: <fg=white;options=bold>{$result['plaintext']}</>");
-        note("Expires: {$result['expires_at']->format('H:i:s')} (in {$result['expires_at']->diffForHumans()})");
+        note("Expires: {$result['expires_at']->format('H:i:s T')} (in {$result['expires_at']->diffForHumans()})");
         warning(__('setup.reset.migration_note'));
 
         return self::SUCCESS;

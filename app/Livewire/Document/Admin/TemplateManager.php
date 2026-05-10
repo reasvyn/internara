@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Document\Admin;
 
-use App\Models\Document\Document;
+use App\Models\Document;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
