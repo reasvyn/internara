@@ -25,8 +25,14 @@ it('delegates isFinalized to entity', function () {
 it('delegates calculateTotalScore to entity', function () {
     $assessment = Assessment::factory()->create([
         'content' => [
-            ['score' => 10],
-            ['score' => 20],
+            'competencies' => [
+                'comp-1' => [
+                    'indicators' => [
+                        'ind-1' => 10,
+                        'ind-2' => 20,
+                    ],
+                ],
+            ],
         ],
     ]);
 

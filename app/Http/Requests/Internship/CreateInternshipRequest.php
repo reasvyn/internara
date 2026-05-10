@@ -1,8 +1,10 @@
+<?php
+
 declare(strict_types=1);
 
 namespace App\Http\Requests\Internship;
 
-use App\Enums\InternshipStatus;
+use App\Enums\Internship\InternshipStatus;
 use App\Models\Internship;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

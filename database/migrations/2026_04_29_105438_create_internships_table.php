@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
+            $table->date('registration_start_date')->nullable();
+            $table->date('registration_end_date')->nullable();
             $table->text('description')->nullable();
             $table->string('status')->default('draft');
             $table->timestamps();

@@ -24,6 +24,11 @@ trait InteractsWithInstallerCli
         $this->line('  <fg=blue>'.__('setup.cli.banner_subtitle').'</> <fg=gray>v'.AppInfo::version().'</>');
         $this->newLine();
 
+        $this->components->twoColumnDetail(__('setup.cli.php_version'), PHP_VERSION);
+        $this->components->twoColumnDetail(__('setup.cli.environment'), app()->environment());
+        $this->components->twoColumnDetail(__('setup.cli.timezone'), config('app.timezone'));
+        $this->newLine();
+
         intro(__('setup.cli.banner_title').' (v'.AppInfo::version().')');
     }
 

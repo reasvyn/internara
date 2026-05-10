@@ -121,6 +121,11 @@
                 <x-mary-datepicker :label="__('internship.end_date')" wire:model="formData.end_date" icon="o-calendar" class="rounded-xl border-base-300" />
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <x-mary-datepicker :label="__('internship.registration_start_date')" wire:model="formData.registration_start_date" icon="o-clock" class="rounded-xl border-base-300" />
+                <x-mary-datepicker :label="__('internship.registration_end_date')" wire:model="formData.registration_end_date" icon="o-clock" class="rounded-xl border-base-300" />
+            </div>
+
             <x-mary-select :label="__('internship.status')" wire:model="formData.status" :options="$this->statusOptions" icon="o-flag" class="rounded-xl border-base-300" />
 
             <x-mary-textarea :label="__('internship.description')" wire:model="formData.description" :placeholder="__('internship.description_placeholder')" rows="2" icon="o-document-text" class="rounded-xl border-base-300" />

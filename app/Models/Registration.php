@@ -65,4 +65,14 @@ class Registration extends BaseModel
     {
         return $this->hasMany(SupervisionLog::class, 'registration_id');
     }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(RegistrationDocument::class, 'registration_id');
+    }
+
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class, 'registration_id');
+    }
 }

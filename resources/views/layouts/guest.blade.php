@@ -1,6 +1,6 @@
 @props(['title' => null, 'header' => null, 'footer' => null])
 
-<x-layouts.base :$title>
+<x-layout:base :$title>
     <div class="min-h-screen flex flex-col bg-base-300 relative overflow-hidden">
         {{-- Decorative Background Elements (Modern UI Pattern) --}}
         <div class="absolute -top-[10%] -left-[10%] size-[40%] rounded-full bg-primary/5 blur-[120px] animate-pulse"></div>
@@ -32,9 +32,10 @@
                     <!-- Actions -->
                     <div class="flex items-center gap-3">
                         <div class="hidden md:flex items-center gap-1 mr-4 bg-base-200/50 p-1 rounded-xl border border-base-content/5">
-                            <livewire:core.theme-switcher />
+                            <x-ui:theme-switcher class="px-2" />
+                            <div class="divider divider-horizontal mx-0 opacity-10 h-6"></div>
+                            <x-ui:lang-switcher class="px-2" />
                         </div>
-                        <livewire:core.language-switcher />
                     </div>
                 </div>
             </div>
@@ -70,4 +71,4 @@
             </div>
         </footer>
     </div>
-</x-layouts.base>
+</x-layout:base>

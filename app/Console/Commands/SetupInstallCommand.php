@@ -14,6 +14,7 @@ use App\Services\Setup\EnvironmentAuditor;
 use App\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\error;
@@ -36,10 +37,20 @@ class SetupInstallCommand extends Command
         $this->displayBanner();
 
         try {
-            if (Setup::state()->isInstalled()) {
+            if (Setup::state()->isInstalled() && ! $this->option('force')) {
                 error(__('setup.cli.already_installed'));
 
                 return self::FAILURE;
+            }
+
+            if ($this->option('force')) {
+                if (! app()->environment('local', 'dev', 'development', 'testing')) {
+                    error(__('setup.cli.force_restricted'));
+
+                    return self::FAILURE;
+                }
+
+                File::delete(base_path('.installed'));
             }
 
             $report = $this->auditor->audit();
@@ -174,7 +185,7 @@ class SetupInstallCommand extends Command
 
         $this->newLine();
         $this->line("  Token: <fg=white;options=bold>{$token}</>");
-        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s')}</> (in {$expiresAt->diffForHumans()})");
+        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s T')}</> (in {$expiresAt->diffForHumans()})");
     }
 
     protected function handleError(\Throwable $e): void

@@ -37,8 +37,12 @@ final readonly class AssessmentResult extends BaseEntity
         }
 
         $total = 0.0;
-        foreach ($this->content as $criterion) {
-            $total += (float) ($criterion['score'] ?? 0);
+        $competencies = $this->content['competencies'] ?? [];
+        foreach ($competencies as $competency) {
+            $indicators = $competency['indicators'] ?? [];
+            foreach ($indicators as $score) {
+                $total += (float) $score;
+            }
         }
 
         return $total;

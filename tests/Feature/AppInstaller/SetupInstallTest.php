@@ -139,18 +139,43 @@ it('does not provision when audit fails', function () {
         ->assertExitCode(1);
 });
 
-it('fails when already installed via database', function () {
+it('proceeds when already installed if --force is used', function () {
     Setup::factory()->installed()->create();
+    File::put(base_path('.installed'), now()->toDateTimeString());
+
+    $this->mock(EnvironmentAuditor::class)
+        ->shouldReceive('audit')->once()->andReturn(passingAudit());
+
+    mockProvisioner();
 
     artisan('setup:install', ['--force' => true])
+        ->expectsOutputToContain(__('setup.cli.force_warning'))
+        ->assertSuccessful();
+
+    expect(File::exists(base_path('.installed')))->toBeFalse();
+});
+
+it('fails when already installed and --force is not used', function () {
+    Setup::factory()->installed()->create();
+
+    artisan('setup:install')
         ->expectsOutputToContain(__('setup.cli.already_installed'))
         ->assertExitCode(1);
 });
 
-it('fails when already installed via lock file', function () {
-    File::put(base_path('.installed'), now()->toDateTimeString());
+it('fails when --force is used in production environment', function () {
+    // Force environment to production
+    app()->detectEnvironment(fn () => 'production');
 
     artisan('setup:install', ['--force' => true])
+        ->expectsOutputToContain(__('setup.cli.force_restricted'))
+        ->assertExitCode(1);
+});
+
+it('fails when already installed via lock file and --force is not used', function () {
+    File::put(base_path('.installed'), now()->toDateTimeString());
+
+    artisan('setup:install')
         ->expectsOutputToContain(__('setup.cli.already_installed'))
         ->assertExitCode(1);
 });

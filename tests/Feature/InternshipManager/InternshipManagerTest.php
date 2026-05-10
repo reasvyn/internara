@@ -533,6 +533,306 @@ describe('super_admin access', function () {
         expect(Internship::where('status', '!=', 'completed')->count())->toBe(0);
     });
 
+    describe('edge cases', function () {
+
+        it('computes stats correctly', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::ACTIVE]);
+            Internship::factory()->count(3)->create();
+
+            Placement::factory()->count(2)->create(['internship_id' => $internship->id]);
+            Registration::factory()->count(3)->create(['internship_id' => $internship->id]);
+
+            Livewire::test(InternshipManager::class)
+                ->assertSet('stats.total', 4)
+                ->assertSet('stats.active', 1)
+                ->assertSet('stats.total_placements', 2)
+                ->assertSet('stats.total_registrations', 3);
+        });
+
+        it('bulk delete skips internships with children', function () {
+            $internship1 = Internship::factory()->create();
+            $internship2 = Internship::factory()->create();
+            Placement::factory()->create(['internship_id' => $internship1->id]);
+
+            Livewire::test(InternshipManager::class)
+                ->set('selectedIds', [$internship1->id, $internship2->id])
+                ->call('deleteSelected');
+
+            expect(Internship::find($internship1->id))->not->toBeNull();
+            expect(Internship::find($internship2->id))->toBeNull();
+        });
+
+        it('shows warning on mass close when no records match filter', function () {
+            Internship::factory()->create(['name' => 'Keep Me']);
+
+            Livewire::test(InternshipManager::class)
+                ->set('search', 'NonExistent')
+                ->call('closeAllFiltered');
+
+            expect(Internship::where('status', 'completed')->count())->toBe(0);
+        });
+
+        it('creates internship with registration window dates', function () {
+            Livewire::test(InternshipManager::class)
+                ->call('create')
+                ->set('formData.name', 'Batch With Registration Window')
+                ->set('formData.start_date', '2026-07-01')
+                ->set('formData.end_date', '2026-12-31')
+                ->set('formData.registration_start_date', '2026-05-01')
+                ->set('formData.registration_end_date', '2026-06-30')
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $internship = Internship::where('name', 'Batch With Registration Window')->first();
+            expect($internship)->not->toBeNull();
+            expect($internship->registration_start_date->format('Y-m-d'))->toBe('2026-05-01');
+            expect($internship->registration_end_date->format('Y-m-d'))->toBe('2026-06-30');
+        });
+
+        it('creates internship without registration window dates', function () {
+            Livewire::test(InternshipManager::class)
+                ->call('create')
+                ->set('formData.name', 'Batch No Window')
+                ->set('formData.start_date', '2026-07-01')
+                ->set('formData.end_date', '2026-12-31')
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $internship = Internship::where('name', 'Batch No Window')->first();
+            expect($internship)->not->toBeNull();
+            expect($internship->registration_start_date)->toBeNull();
+            expect($internship->registration_end_date)->toBeNull();
+        });
+
+        it('validates registration_end_date after registration_start_date', function () {
+            Livewire::test(InternshipManager::class)
+                ->call('create')
+                ->set('formData.name', 'Invalid Window')
+                ->set('formData.start_date', '2026-07-01')
+                ->set('formData.end_date', '2026-12-31')
+                ->set('formData.registration_start_date', '2026-06-30')
+                ->set('formData.registration_end_date', '2026-05-01')
+                ->call('save')
+                ->assertHasErrors(['formData.registration_end_date' => 'after_or_equal']);
+        });
+
+    });
+
+    describe('status transitions', function () {
+
+        it('allows valid transition from draft to published', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::DRAFT]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::PUBLISHED->value)
+                ->call('save')
+                ->assertHasNoErrors()
+                ->assertSet('showModal', false);
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::PUBLISHED);
+        });
+
+        it('allows valid transition from published to active', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::PUBLISHED]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::ACTIVE->value)
+                ->call('save')
+                ->assertHasNoErrors()
+                ->assertSet('showModal', false);
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::ACTIVE);
+        });
+
+        it('allows valid transition from active to completed', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::ACTIVE]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::COMPLETED->value)
+                ->call('save')
+                ->assertHasNoErrors()
+                ->assertSet('showModal', false);
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::COMPLETED);
+        });
+
+        it('allows valid transition to cancelled from any non-terminal', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::PUBLISHED]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::CANCELLED->value)
+                ->call('save')
+                ->assertHasNoErrors()
+                ->assertSet('showModal', false);
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::CANCELLED);
+        });
+
+        it('blocks invalid transition from draft to active', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::DRAFT]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::ACTIVE->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::DRAFT);
+        });
+
+        it('blocks invalid transition from draft to completed', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::DRAFT]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::COMPLETED->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::DRAFT);
+        });
+
+        it('blocks invalid transition from published to draft', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::PUBLISHED]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::DRAFT->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::PUBLISHED);
+        });
+
+        it('blocks invalid transition from published to completed', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::PUBLISHED]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::COMPLETED->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::PUBLISHED);
+        });
+
+        it('blocks invalid transition from active to draft', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::ACTIVE]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::DRAFT->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::ACTIVE);
+        });
+
+        it('blocks invalid transition from active to published', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::ACTIVE]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::PUBLISHED->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::ACTIVE);
+        });
+
+        it('blocks transition from completed to any status', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::COMPLETED]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::DRAFT->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::COMPLETED);
+        });
+
+        it('blocks transition from cancelled to any status', function () {
+            $internship = Internship::factory()->create(['status' => InternshipStatus::CANCELLED]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.status', InternshipStatus::PUBLISHED->value)
+                ->call('save');
+
+            expect($internship->fresh()->status)->toBe(InternshipStatus::CANCELLED);
+        });
+
+        it('allows saving without changing status', function () {
+            $internship = Internship::factory()->create([
+                'name' => 'Same Status',
+                'status' => InternshipStatus::PUBLISHED,
+            ]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('edit', $internship->id)
+                ->set('formData.name', 'Same Status Updated')
+                ->call('save')
+                ->assertHasNoErrors()
+                ->assertSet('showModal', false);
+
+            expect($internship->fresh()->name)->toBe('Same Status Updated');
+            expect($internship->fresh()->status)->toBe(InternshipStatus::PUBLISHED);
+        });
+
+    });
+
+    describe('academic year auto-assignment', function () {
+
+        it('auto-assigns active academic year on create', function () {
+            $activeYear = AcademicYear::factory()->create(['is_active' => true]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('create')
+                ->set('formData.name', 'Auto-Assigned Batch')
+                ->set('formData.start_date', '2026-07-01')
+                ->set('formData.end_date', '2026-12-31')
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $internship = Internship::where('name', 'Auto-Assigned Batch')->first();
+            expect($internship)->not->toBeNull();
+            expect($internship->academic_year_id)->toBe($activeYear->id);
+        });
+
+        it('does not auto-assign academic year when none is active', function () {
+            AcademicYear::factory()->create(['is_active' => false]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('create')
+                ->set('formData.name', 'No Active Year Batch')
+                ->set('formData.start_date', '2026-07-01')
+                ->set('formData.end_date', '2026-12-31')
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $internship = Internship::where('name', 'No Active Year Batch')->first();
+            expect($internship)->not->toBeNull();
+            expect($internship->academic_year_id)->toBeNull();
+        });
+
+        it('does not override explicitly set academic_year_id on create', function () {
+            $activeYear = AcademicYear::factory()->create(['is_active' => true]);
+            $otherYear = AcademicYear::factory()->create(['is_active' => false]);
+
+            Livewire::test(InternshipManager::class)
+                ->call('create')
+                ->set('formData.name', 'Explicit Year Batch')
+                ->set('formData.start_date', '2026-07-01')
+                ->set('formData.end_date', '2026-12-31')
+                ->set('formData.academic_year_id', $otherYear->id)
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $internship = Internship::where('name', 'Explicit Year Batch')->first();
+            expect($internship)->not->toBeNull();
+            expect($internship->academic_year_id)->toBe($otherYear->id);
+        });
+
+    });
+
 });
 
 describe('admin access', function () {

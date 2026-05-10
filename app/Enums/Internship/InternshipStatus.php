@@ -37,4 +37,23 @@ enum InternshipStatus: string implements LabelEnum
             self::CANCELLED => 'Cancelled',
         };
     }
+
+    /**
+     * @return list<self>
+     */
+    public function validTransitions(): array
+    {
+        return match ($this) {
+            self::DRAFT => [self::PUBLISHED, self::CANCELLED],
+            self::PUBLISHED => [self::ACTIVE, self::CANCELLED],
+            self::ACTIVE => [self::COMPLETED, self::CANCELLED],
+            self::COMPLETED => [],
+            self::CANCELLED => [],
+        };
+    }
+
+    public function canTransitionTo(self $target): bool
+    {
+        return in_array($target, $this->validTransitions(), true);
+    }
 }
