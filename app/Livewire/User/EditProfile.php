@@ -59,16 +59,16 @@ class EditProfile extends Component
             'data.bio' => 'nullable|string|max:1000',
         ]);
 
-        $this->user->update([
-            'name' => $this->data['name'],
-            'email' => $this->data['email'],
-        ]);
-
-        $updateProfile->execute($this->user, [
-            'phone' => $this->data['phone'],
-            'address' => $this->data['address'],
-            'bio' => $this->data['bio'],
-        ]);
+        $updateProfile->execute(
+            $this->user,
+            [
+                'phone' => $this->data['phone'],
+                'address' => $this->data['address'],
+                'bio' => $this->data['bio'],
+            ],
+            name: $this->data['name'],
+            email: $this->data['email'],
+        );
 
         $this->success('Profile updated successfully.');
     }

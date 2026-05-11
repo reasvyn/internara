@@ -1,10 +1,14 @@
 # Database
 
-## Standards
+## Connection
 
-### UUID Primary Keys
+The default database is SQLite. MySQL, MariaDB, and PostgreSQL are also supported. Configure via `DB_CONNECTION` in your `.env` file.
 
-All business models use UUIDs. Most extend `BaseModel` which provides `HasUuids`, non-incrementing keys, and string key type. `User` extends `Authenticatable` and applies `HasUuids` directly.
+Testing uses SQLite `:memory:` with `LazilyRefreshDatabase`.
+
+## UUID Primary Keys
+
+All business models use UUIDs instead of auto-incrementing integers. Most models extend `BaseModel` which provides `HasUuids`, non-incrementing keys, and string key type. The `User` model extends `Authenticatable` and applies `HasUuids` directly.
 
 ```php
 // Migration
@@ -20,11 +24,11 @@ abstract class BaseModel extends Model
 }
 ```
 
-### Mass Assignment
+## Mass Assignment
 
-Use PHP 8 `#[Fillable]` and `#[Hidden]` attributes on all models. Some older models still use `$fillable` (e.g. `Setup`).
+Models use PHP 8 `#[Fillable]` and `#[Hidden]` attributes. Older models may still use the traditional `$fillable` property.
 
-### Foreign Keys
+## Foreign Keys
 
 Always use constrained UUID foreign keys:
 
@@ -32,21 +36,16 @@ Always use constrained UUID foreign keys:
 $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
 ```
 
-## Spatie Integrations
+## Package Integrations
 
-| Package | Purpose | Notes |
-|---|---|---|
-| `laravel-permission` ^6.24 | RBAC (with team support) | |
-| `laravel-medialibrary` ^11.17 | File attachments | Used by `School` and `Submission` |
-| `laravel-activitylog` ^4.10 | Change tracking | Custom `ActivityLog` model with scopes |
-| `laravel-model-status` ^1.18 | Status tracking | Used on `User` model |
-| `laravel-model-states` ^2.14 | State machines | **Installed but not used** — Entities handle state instead |
-| `laravel-honeypot` ^4.6 | Spam protection | |
+| Package | Purpose |
+|---|---|
+| `spatie/laravel-permission` | Role-based access control with team support |
+| `spatie/laravel-medialibrary` | File attachments (used by School and Submission models) |
+| `spatie/laravel-activitylog` | Model change tracking and audit trail |
+| `spatie/laravel-model-status` | Polymorphic status tracking (used on User model) |
+| `spatie/laravel-honeypot` | Spam protection for forms |
 
-## Known Issue: ActivityLog Model
+## Known Config Issue
 
-`App\Models\ActivityLog` extends Spatie's `Activity` with useful scopes (`forUser`, `forSubject`, `ofAction`, `recent`, `forModule`, `groupedByDay`), but `config/activitylog.php` still points to the default `Activity::class`. This means `activity()` and `SmartLogger` create `Activity` instances — the custom scopes are not available through the standard pipeline. See [Known Issues](known-issues.md).
-
-## Testing
-
-Tests use SQLite `:memory:` via `LazilyRefreshDatabase`. Every model has a factory in `database/factories/`.
+See [Known Issues](known-issues.md) for the known `config/activitylog.php` configuration issue where the activity model reference points to the default Spatie class instead of the custom `App\Models\ActivityLog`.

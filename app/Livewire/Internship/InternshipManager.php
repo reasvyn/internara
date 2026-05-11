@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
+use App\Actions\Internship\BatchUpdateInternshipStatusAction;
 use App\Actions\Internship\CreateInternshipAction;
 use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
 use App\Enums\Internship\InternshipStatus;
 use App\Livewire\Core\BaseRecordManager;
-use App\Models\AcademicYear;
 use App\Models\Internship;
 use App\Models\Placement;
 use App\Models\Registration;
@@ -144,32 +144,23 @@ class InternshipManager extends BaseRecordManager
         if ($this->formData['id']) {
             $internship = Internship::findOrFail($this->formData['id']);
 
-            $newStatus = InternshipStatus::tryFrom($this->formData['status']);
-            if ($newStatus !== null && $newStatus !== $internship->status) {
-                if (! $internship->status->canTransitionTo($newStatus)) {
-                    $this->error(
-                        __('internship.invalid_status_transition', [
-                            'from' => __("internship.statuses.{$internship->status->value}"),
-                            'to' => __("internship.statuses.{$newStatus->value}"),
-                        ]),
-                    );
+            try {
+                $update->execute($internship, $this->formData);
+                $this->success(__('internship.update_success'));
+            } catch (\RuntimeException $e) {
+                $this->error($e->getMessage());
 
-                    return;
-                }
+                return;
             }
-
-            $update->execute($internship, $this->formData);
-            $this->success(__('internship.update_success'));
         } else {
-            if (empty($this->formData['academic_year_id'])) {
-                $activeYear = AcademicYear::where('is_active', true)->first();
-                if ($activeYear !== null) {
-                    $this->formData['academic_year_id'] = $activeYear->id;
-                }
-            }
+            try {
+                $create->execute($this->formData);
+                $this->success(__('internship.save_success'));
+            } catch (\RuntimeException $e) {
+                $this->error($e->getMessage());
 
-            $create->execute($this->formData);
-            $this->success(__('internship.save_success'));
+                return;
+            }
         }
 
         $this->showModal = false;
@@ -201,10 +192,10 @@ class InternshipManager extends BaseRecordManager
 
     // --- Mass Actions ---
 
-    public function closeAllFiltered(): void
+    public function closeAllFiltered(BatchUpdateInternshipStatusAction $action): void
     {
-        $this->performMassAction('Close All Filtered', function ($query) {
-            $query->update(['status' => InternshipStatus::COMPLETED->value]);
+        $this->performMassAction('Close All Filtered', function ($query) use ($action) {
+            $action->execute($query, InternshipStatus::COMPLETED);
         });
     }
 

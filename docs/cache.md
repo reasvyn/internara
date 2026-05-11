@@ -3,20 +3,17 @@
 | Setting | Production | Testing |
 |---|---|---|
 | Default store | `database` | `array` |
-| Prefix | `{app}-cache-` | — |
+| Prefix | Auto-generated from app name | — |
 
-Tables: `cache`, `cache_locks`. Config: `config/cache.php`.
+Tables: `cache`, `cache_locks`. Configuration is in `config/cache.php`.
 
 ## Usage
 
-| Pattern | TTL | Method |
-|---|---|---|
-| Settings | Forever | `Cache::rememberForever()` via `Settings` class |
-| Dashboard stats | 10 min | `Cache::remember('managerial_stats', now()->addMinutes(10), ...)` |
-| User activity | Per request | `Cache::put("user.last_activity.{$user->id}", now())` |
+- **Settings** — cached forever via `Cache::rememberForever()`. Invalidated automatically when settings change.
+- **Dashboard stats** — cached with a time-to-live, manually invalidated.
+- **User activity** — per-request cache with short-lived keys.
 
 ## Invalidation
 
-- Settings: `Settings::forget($key)` clears key, its group, and `all` cache
-- Stats: `Cache::forget('managerial_stats')`
-- Full: `Cache::flush()` or `php artisan cache:clear`
+- Settings: cleared automatically when updated via `SetSettingAction`
+- Full flush: `php artisan cache:clear`

@@ -6,33 +6,31 @@ namespace App\Actions\Mentor;
 
 use App\Actions\Core\LogAuditAction;
 use App\Models\Mentor\SupervisionLog;
+use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 class CreateSupervisionLogAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    public function execute(User $teacher, array $data): SupervisionLog
+    public function execute(User $teacher, string $registrationId, array $data): SupervisionLog
     {
-        return DB::transaction(function () use ($teacher, $data) {
-            if (! isset($data['registration_id'])) {
-                throw new RuntimeException('Registration ID is required.');
-            }
+        return DB::transaction(function () use ($teacher, $registrationId, $data) {
+            $registration = Registration::findOrFail($registrationId);
 
-            if (! isset($data['type'])) {
-                throw new RuntimeException('Supervision type is required.');
-            }
+            $type = $registration->teacher_id === $teacher->id ? 'guidance' : 'mentoring';
 
             $log = SupervisionLog::create([
-                'registration_id' => $data['registration_id'],
+                'registration_id' => $registrationId,
                 'supervisor_id' => $teacher->id,
-                'type' => $data['type'],
+                'type' => $type,
                 'date' => $data['date'] ?? now()->toDateString(),
                 'topic' => $data['topic'] ?? null,
                 'notes' => $data['notes'] ?? null,
-                'status' => 'in_progress',
+                'is_verified' => $data['is_verified'] ?? false,
+                'verified_at' => isset($data['is_verified']) && $data['is_verified'] ? now() : null,
+                'status' => $data['status'] ?? 'in_progress',
             ]);
 
             $this->logAudit->execute(

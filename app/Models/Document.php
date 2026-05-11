@@ -27,11 +27,6 @@ class Document extends BaseModel implements HasMedia
         $this->addMediaCollection('file')->singleFile();
     }
 
-    public function fileUrl(): ?string
-    {
-        return $this->getFirstMediaUrl('file');
-    }
-
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);

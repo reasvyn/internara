@@ -7,7 +7,6 @@ namespace App\Livewire\Mentor\Supervision;
 use App\Actions\Mentor\CreateSupervisionLogAction;
 use App\Actions\Mentor\VerifySupervisionLogAction;
 use App\Models\Mentor\SupervisionLog;
-use App\Models\Registration;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -61,20 +60,17 @@ class SupervisorLogManager extends Component
             'notes' => 'required|string',
         ]);
 
-        $registration = Registration::find($this->registrationId);
-        $type = $registration->teacher_id === auth()->id() ? 'guidance' : 'mentoring';
-
-        $createAction->execute([
-            'registration_id' => $this->registrationId,
-            'supervisor_id' => auth()->id(),
-            'type' => $type,
-            'date' => $this->date,
-            'topic' => $this->topic,
-            'notes' => $this->notes,
-            'is_verified' => true,
-            'verified_at' => now(),
-            'status' => 'verified',
-        ]);
+        $createAction->execute(
+            auth()->user(),
+            $this->registrationId,
+            [
+                'date' => $this->date,
+                'topic' => $this->topic,
+                'notes' => $this->notes,
+                'is_verified' => true,
+                'status' => 'verified',
+            ],
+        );
 
         $this->showModal = false;
         $this->success('Supervision log recorded successfully.');

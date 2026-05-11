@@ -56,14 +56,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasManyThrough(Registration::class, Mentee::class, 'user_id', 'mentee_id');
     }
 
-    public function activeRegistration(): ?Registration
-    {
-        return $this->registrations()
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active')->latest())
-            ->latest()
-            ->first();
-    }
-
     public function handbookAcknowledgements(): HasMany
     {
         return $this->hasMany(HandbookAcknowledgement::class);
@@ -89,37 +81,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function asApprentice(): Apprentice
     {
         return Apprentice::fromModel($this);
-    }
-
-    public function isSuspended(): bool
-    {
-        return $this->asApprentice()->isSuspended();
-    }
-
-    public function isArchived(): bool
-    {
-        return $this->asApprentice()->isArchived();
-    }
-
-    public function isInactive(): bool
-    {
-        return $this->asApprentice()->isInactive();
-    }
-
-    public function lock(string $reason = 'too_many_failed_attempts'): void
-    {
-        $this->update([
-            'locked_at' => now(),
-            'locked_reason' => $reason,
-        ]);
-    }
-
-    public function unlock(): void
-    {
-        $this->update([
-            'locked_at' => null,
-            'locked_reason' => null,
-        ]);
     }
 
     public function scopeLocked(Builder $query): Builder

@@ -1,57 +1,59 @@
-# Architecture: Action-Oriented MVC
+# Architecture
 
-Internara uses a **flat Action-Oriented MVC** architecture. Files are grouped by **Functional Layer**, then by **Business Context**.
+Internara follows a **flat Action-Oriented MVC** pattern. Files are grouped by functional layer first, then by business context.
+
+## Layer Overview
 
 ```
 app/
-├── Actions/          # Business logic entry points (single execute())
-├── Casts/            # Custom Eloquent casts
-├── Channels/         # Custom notification channels
-├── Console/Commands/ # Artisan commands
-├── Contracts/        # Interfaces (ColorableEnum, LabelEnum)
-├── Data/             # Data transfer objects
-├── Entities/         # Business rules (pure PHP, no ORM)
-├── Enums/            # Constants & types
-├── Events/           # Domain events
-├── Exceptions/       # AppException hierarchy
-├── Http/             # Controllers, Middleware, Requests
-├── Jobs/             # Queued jobs
-├── Livewire/         # Reactive UI components
-├── Models/           # Eloquent persistence (flat, no sub-namespace)
-├── Notifications/    # Mail, broadcast, database channels
-├── Policies/         # Authorization (shared BasePolicy + concerns)
-├── Providers/        # Service providers
-├── Rules/            # Validation rules
-├── Services/         # Infrastructure (DashboardService, EnvironmentAuditor)
-└── Support/          # SmartLogger, Settings, AppInfo, helpers
+├── Actions/       Business logic entry points (single execute() method)
+├── Casts/         Custom Eloquent attribute casts
+├── Channels/      Custom notification channels
+├── Console/       Artisan commands
+├── Contracts/     Interfaces (ColorableEnum, LabelEnum)
+├── Data/          Data transfer objects
+├── Entities/      Business rules (plain PHP, no framework dependencies)
+├── Enums/         Constants and types grouped by domain
+├── Events/        Domain events
+├── Exceptions/    AppException hierarchy
+├── Http/          Controllers, middleware, form requests
+├── Jobs/          Queued jobs
+├── Livewire/      Reactive UI components
+├── Models/        Eloquent models (flat namespace, no sub-directories)
+├── Notifications/ Mail, broadcast, and database notification classes
+├── Policies/      Authorization policies grouped by domain
+├── Providers/     Service providers
+├── Rules/         Custom validation rules
+├── Services/      Infrastructure services (DashboardService, EnvironmentAuditor)
+└── Support/       Utilities (Settings, SmartLogger, AppInfo, helpers)
 ```
 
-Each layer groups files by business context (e.g. `Actions/Internship/`, `Entities/Internship/`, `Enums/Internship/`). Browse the codebase for the full listing.
+Each layer groups files by business context. For example, `Actions/Internship/`, `Entities/Internship/`, `Enums/Internship/`.
 
-## Principles
+## Design Principles
 
-| Principle | Rule |
+| Principle | Description |
 |---|---|
-| **Action Pattern** | Logic in `*Action` classes with a single `execute()` method |
-| **Thin Controllers** | Livewire/Controllers delegate all logic to Actions |
-| **Flat Models** | All models in `app/Models/`, no sub-namespace |
-| **BaseModel** | Abstract base with `HasUuids`, non-incrementing string keys |
-| **Entities** | Pure business rules, no ORM. Exposed via `as{EntityName}()` on the model |
-| **Auth Boundary** | `User` stays `extends Authenticatable` for Laravel ecosystem |
+| **Action Pattern** | Business logic lives in action classes with a single `execute()` method |
+| **Thin Controllers** | Controllers and Livewire components delegate all logic to actions |
+| **Flat Models** | All Eloquent models live directly in `app/Models/` with no sub-namespace |
+| **BaseModel** | Abstract base class providing UUIDs, non-incrementing string keys |
+| **Entities** | Business rules live in plain PHP objects — no ORM, no framework dependencies |
+| **Auth Boundary** | `User` extends `Authenticatable` for Laravel ecosystem compatibility |
 
 ## Data Flow
 
 ```
 User Input → Livewire/Controller → Action → Model → Database
                                     ↓
-                              Flash/Notification
+                              Flash / Notification
 ```
 
-Actions orchestrate between Entities (rules), Models (persistence), and Services (infrastructure).
+Actions orchestrate between entities (rules), models (persistence), and services (infrastructure).
 
 ## Entity Pattern
 
-Business rules extracted from Models into plain PHP objects. Models expose entities via named `as{EntityName}()` methods — never a generic `entity()` method:
+Models expose domain entities through named accessor methods — never a generic `entity()` method:
 
 ```php
 class User extends Authenticatable
@@ -66,33 +68,15 @@ class User extends Authenticatable
 }
 ```
 
-### Entity Rules
-
-1. **No convenience delegation** — callers go through `$model->as{EntityName}()->method()`.
-2. **No `entity()` method** — each model uses a named accessor matching its entity.
-3. **Pure entities** — no Model imports, no framework dependencies, testable without database.
-4. **BaseEntity** — entities extend `BaseEntity` for shared structure if needed.
+Entity rules:
+- Callers always go through `$model->as{EntityName}()->method()`
+- No `entity()` method — each model uses a named accessor
+- Entities are pure PHP — no Eloquent imports, no framework dependencies, testable without a database
+- Entities may extend `BaseEntity` for shared structure
 
 ## Exception Hierarchy
 
-All exceptions derive from `AppException`:
-
-| Exception | Purpose |
-|---|---|
-| `ActionException` | Business rule violations within Actions |
-| `DomainException` | Domain logic errors |
-| `InfrastructureException` | External service / infrastructure failures |
-| `PresentationException` | UI / presentation layer errors |
-
-## Role Mapping
-
-| Role | Domain | Context |
-|---|---|---|
-| Student | Mentee | Participants |
-| Teacher | Mentor | School supervisors |
-| Supervisor | Mentor | Industry supervisors |
-| Admin | Admin | School management |
-| SuperAdmin | Admin | System infrastructure |
+All exceptions extend `AppException`. See [Conventions](conventions.md#11-exceptions) for the full exception class hierarchy and usage guidelines.
 
 ## Naming Conventions
 

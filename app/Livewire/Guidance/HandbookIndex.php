@@ -6,7 +6,7 @@ namespace App\Livewire\Guidance;
 
 use App\Actions\Guidance\AcknowledgeHandbookAction;
 use App\Actions\Guidance\CreateHandbookAction;
-use App\Models\Guidance\Handbook;
+use App\Models\Handbook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;

@@ -277,7 +277,12 @@ final class Settings
      */
     public static function groups(): Collection
     {
-        return Setting::groups();
+        return Setting::query()
+            ->select('group')
+            ->distinct()
+            ->whereNotNull('group')
+            ->orderBy('group')
+            ->pluck('group');
     }
 
     /**

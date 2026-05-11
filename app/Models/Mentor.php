@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Entities\Mentor\MentorRole;
-use App\Enums\Auth\Role;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,14 +43,5 @@ class Mentor extends BaseModel
     public function asMentorRole(): MentorRole
     {
         return MentorRole::fromModel($this);
-    }
-
-    public static function roleForType(string $type): string
-    {
-        return match ($type) {
-            self::TYPE_SCHOOL_TEACHER => Role::TEACHER->value,
-            self::TYPE_INDUSTRY_SUPERVISOR => Role::SUPERVISOR->value,
-            default => Role::TEACHER->value,
-        };
     }
 }

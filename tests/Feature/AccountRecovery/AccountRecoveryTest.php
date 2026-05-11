@@ -79,7 +79,7 @@ describe('RecoverySlipManager (admin generate)', function () {
 describe('AccountRecovery (user redeem)', function () {
 
     beforeEach(function () {
-        $this->plaintext = AccountRecoveryCode::generateCode();
+        $this->plaintext = strtoupper(str()->random(12));
         AccountRecoveryCode::create([
             'user_id' => $this->user->id,
             'code_hash' => Hash::make($this->plaintext),

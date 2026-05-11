@@ -26,43 +26,51 @@ final readonly class InternshipPeriod extends BaseEntity
         );
     }
 
-    public function isAcceptingRegistrations(): bool
+    public function isAcceptingRegistrations(?Carbon $now = null): bool
     {
+        $now ??= new Carbon;
+
         if (! $this->status?->isAcceptingRegistrations()) {
             return false;
         }
 
-        if ($this->registrationStartDate !== null && now()->lt($this->registrationStartDate)) {
+        if ($this->registrationStartDate !== null && $now->lt($this->registrationStartDate)) {
             return false;
         }
 
-        if ($this->registrationEndDate !== null && now()->gt($this->registrationEndDate)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isRegistrationWindowOpen(): bool
-    {
-        if ($this->registrationStartDate !== null && now()->lt($this->registrationStartDate)) {
-            return false;
-        }
-
-        if ($this->registrationEndDate !== null && now()->gt($this->registrationEndDate)) {
+        if ($this->registrationEndDate !== null && $now->gt($this->registrationEndDate)) {
             return false;
         }
 
         return true;
     }
 
-    public function isBeforeRegistrationWindow(): bool
+    public function isRegistrationWindowOpen(?Carbon $now = null): bool
     {
-        return $this->registrationStartDate !== null && now()->lt($this->registrationStartDate);
+        $now ??= new Carbon;
+
+        if ($this->registrationStartDate !== null && $now->lt($this->registrationStartDate)) {
+            return false;
+        }
+
+        if ($this->registrationEndDate !== null && $now->gt($this->registrationEndDate)) {
+            return false;
+        }
+
+        return true;
     }
 
-    public function isAfterRegistrationWindow(): bool
+    public function isBeforeRegistrationWindow(?Carbon $now = null): bool
     {
-        return $this->registrationEndDate !== null && now()->gt($this->registrationEndDate);
+        $now ??= new Carbon;
+
+        return $this->registrationStartDate !== null && $now->lt($this->registrationStartDate);
+    }
+
+    public function isAfterRegistrationWindow(?Carbon $now = null): bool
+    {
+        $now ??= new Carbon;
+
+        return $this->registrationEndDate !== null && $now->gt($this->registrationEndDate);
     }
 }

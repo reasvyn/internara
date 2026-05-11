@@ -75,17 +75,17 @@
     default: true;
     prefersdark: false;
     color-scheme: 'light';
-    --color-base-100: oklch(100% 0 0); /* Pure White - Cards */
-    --color-base-200: oklch(97% 0 0); /* Light Gray */
-    --color-base-300: oklch(94% 0 0); /* Dashboard Background */
-    --color-base-content: oklch(10% 0 0); /* Near Black */
-    --color-primary: oklch(0% 0 0); /* Pure Black - Primary action */
-    --color-primary-content: oklch(100% 0 0); /* White */
-    --color-secondary: oklch(45% 0 0); /* Medium Gray - Secondary */
-    --color-secondary-content: oklch(100% 0 0); /* White */
-    --color-accent: oklch(25% 0 0); /* Darker Gray - Accent */
+    --color-base-100: oklch(100% 0 0); /* Pure White - Primary Background */
+    --color-base-200: oklch(99% 0 0); /* Near White - Secondary Background */
+    --color-base-300: oklch(98% 0 0); /* Subtle Gray - Tertiary Background */
+    --color-base-content: oklch(15% 0 0); /* Professional Black */
+    --color-primary: oklch(0% 0 0); /* Pure Black - High Contrast Actions */
+    --color-primary-content: oklch(100% 0 0); 
+    --color-secondary: oklch(55% 0 0); 
+    --color-secondary-content: oklch(100% 0 0);
+    --color-accent: oklch(35% 0 0); 
     --color-accent-content: oklch(100% 0 0);
-    --color-neutral: oklch(45% 0 0); /* Neutral Gray */
+    --color-neutral: oklch(50% 0 0); 
     --color-neutral-content: oklch(100% 0 0);
     --color-info: oklch(60% 0.55 250); /* Bold Blue */
     --color-info-content: oklch(100% 0 0);

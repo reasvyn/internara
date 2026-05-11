@@ -15,7 +15,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
-#[Layout('layout:setup')]
+#[Layout('layouts::setup')]
 class SetupWizard extends Component
 {
     use Toast;
@@ -266,9 +266,14 @@ class SetupWizard extends Component
             $this->adminUsername = $admin->username;
 
             // 4. Mark steps completed
-            Setup::markStepCompleted('school');
-            Setup::markStepCompleted('department');
-            Setup::markStepCompleted('account');
+            $setupRecord = Setup::firstOrCreate([]);
+            foreach (['school', 'department', 'account'] as $step) {
+                $steps = $setupRecord->completed_steps ?? [];
+                if (! in_array($step, $steps)) {
+                    $steps[] = $step;
+                }
+                $setupRecord->update(['completed_steps' => $steps]);
+            }
 
             // 5. Finalize
             $finalizeSetup->execute();

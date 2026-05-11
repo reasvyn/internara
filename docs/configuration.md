@@ -2,46 +2,55 @@
 
 ## Three-Tier System
 
-| Tier | Purpose | Source | Access |
-|---|---|---|---|
-| `config()` | Infrastructure defaults | `config/*.php`, `.env` | `config('file.key')` |
-| `setting()` | Dynamic business rules | `settings` table (cached forever) | `setting('key')` |
-| `app_info()` | App metadata (SSoT) | `composer.json` | `app_info('key')` |
+Configuration values come from three sources, each with a specific purpose:
 
-### When to Use Each
+| Source | Purpose | Access |
+|---|---|---|
+| `config()` | Infrastructure defaults (database, queue, drivers) | `config('file.key')` |
+| `setting()` | Dynamic business rules (site name, colors, thresholds) | `setting('key')` |
+| `app_info()` | App metadata from composer.json (version, author) | `app_info('key')` |
 
-- **`config()`** — database credentials, debug mode, queue drivers
-- **`setting()`** — site logo, title, colors, attendance thresholds
-- **`app_info()`** — app version, author, license
+### When to use each
+
+- **`config()`** — database credentials, debug mode, queue drivers, mail settings
+- **`setting()`** — site logo, app title, colors, attendance thresholds, anything changeable at runtime
+- **`app_info()`** — app version, author name, license, support email
 
 ## Settings API
 
-`App\Support\Settings` resolves values through a chain: runtime overrides → AppInfo → cached database → Laravel config → default.
+The `Settings` class resolves values through a chain: runtime overrides → AppInfo metadata → cached database → Laravel config → default value.
 
 ```php
-// Read (auto-cached forever)
+// Read a setting (auto-cached forever)
 setting('app_name');
 
-// Write (invalidates cache automatically)
+// Write settings
 use App\Actions\Admin\SetSettingAction;
 
 app(SetSettingAction::class)->execute('app_name', 'Internara');
 
-// Batch update
+// Bulk update
 app(SetSettingAction::class)->executeBatch([
     'app_name' => 'Internara',
     'app_tagline' => ['value' => 'Manage Internships', 'group' => 'branding'],
 ]);
 ```
 
-Type detection (`boolean`, `integer`, `float`, `json`, `string`) is automatic. Cache invalidation occurs via `Settings::forget($key)` — clears the key, its group, and the `all` cache.
+You can also read settings directly through the `Settings` class for more advanced use:
 
-## Key Environment Defaults
+```php
+// Get all settings
+Settings::all();
 
-| Variable | Default |
-|---|---|
-| `DB_CONNECTION` | `sqlite` |
-| `SESSION_DRIVER` | `database` |
-| `CACHE_STORE` | `database` |
-| `FILESYSTEM_DISK` | `local` |
-| `QUEUE_CONNECTION` | `database` |
+// Get a group of settings
+Settings::group('branding');
+
+// Bypass cache
+setting('app_name', skipCache: true);
+```
+
+Type detection (boolean, integer, float, json, string) is automatic. Cache invalidation happens automatically when settings are updated.
+
+## Environment Defaults
+
+See `.env.example` for the full list of environment variables with their defaults. Key drivers default to database-backed storage for zero-dependency setups.

@@ -5,7 +5,7 @@
     $brandLogo = brand('logo');
 @endphp
 
-<x-layout:base :$title bodyClass="min-h-screen bg-base-300 flex items-center justify-center py-12 relative overflow-hidden">
+<x-layouts::base :$title bodyClass="min-h-screen bg-base-300 flex items-center justify-center py-12 relative overflow-hidden">
     {{-- Decorative Background Elements (Modern UI Pattern) --}}
     <div class="absolute -top-[10%] -left-[10%] size-[40%] rounded-full bg-primary/5 blur-[120px] animate-pulse"></div>
     <div class="absolute -bottom-[10%] -right-[10%] size-[40%] rounded-full bg-secondary/5 blur-[120px] animate-pulse" style="animation-delay: 2s"></div>
@@ -30,8 +30,8 @@
 
         <!-- Footer / Language Toggle -->
         <div class="mt-12 text-center flex items-center justify-center gap-4 animate-in fade-in duration-1000 delay-500">
-            <x-ui:theme-switcher />
-            <x-ui:lang-switcher />
+            <x-ui::theme-switcher />
+            <x-ui::lang-switcher />
         </div>
     </div>
-</x-layout:base>
+</x-layouts::base>

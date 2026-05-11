@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Actions\Setup;
 
-use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
 use Illuminate\Support\Carbon;
 use RuntimeException;
@@ -20,6 +19,7 @@ final readonly class InstallSystemAction
     public function __construct(
         private EnvironmentAuditor $auditor,
         private ProvisionSystemAction $provision,
+        private GenerateSetupTokenAction $generateToken,
     ) {}
 
     /**
@@ -40,11 +40,6 @@ final readonly class InstallSystemAction
         $this->provision->execute($force);
 
         // Step 3: Generate and store setup token
-        $tokenData = Setup::generateToken();
-
-        return [
-            'plaintext' => $tokenData['plaintext'],
-            'expires_at' => $tokenData['expires_at'],
-        ];
+        return $this->generateToken->execute();
     }
 }

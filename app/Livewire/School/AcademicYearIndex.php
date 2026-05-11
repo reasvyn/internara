@@ -7,7 +7,7 @@ namespace App\Livewire\School;
 use App\Actions\School\ActivateAcademicYearAction;
 use App\Actions\School\CreateAcademicYearAction;
 use App\Actions\School\DeleteAcademicYearAction;
-use App\Models\School\AcademicYear;
+use App\Models\AcademicYear;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

@@ -6,8 +6,10 @@ namespace App\Actions\Setup;
 
 use App\Models\Setup;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 final class ResetSetupStateAction
 {
@@ -36,6 +38,19 @@ final class ResetSetupStateAction
         Session::forget(['setup.authorized', 'setup.token', 'setup.token_input', 'setup.form_data']);
 
         // Generate new token
-        return Setup::generateToken();
+        $plaintext = Str::random(64);
+        $encrypted = Crypt::encryptString($plaintext);
+        $expiresAt = now()->addHour();
+
+        $setup = Setup::firstOrCreate([]);
+        $setup->update([
+            'setup_token' => $encrypted,
+            'token_expires_at' => $expiresAt,
+        ]);
+
+        return [
+            'plaintext' => $plaintext,
+            'expires_at' => $expiresAt,
+        ];
     }
 }

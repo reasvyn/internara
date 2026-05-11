@@ -6,11 +6,12 @@ namespace App\Livewire\Assessment;
 
 use App\Actions\Assessment\AutoCalculateAssessmentAction;
 use App\Actions\Assessment\FinalizeAssessmentAction;
+use App\Actions\Assessment\InitializeAssessmentAction;
+use App\Actions\Assessment\UpdateAssessmentScoresAction;
 use App\Models\Assessment;
 use App\Models\Competency;
 use App\Models\Mentor;
 use App\Models\Registration;
-use App\Models\Rubric;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -28,28 +29,16 @@ class AssessmentGrading extends Component
 
     public bool $isFinalized = false;
 
-    public function mount(string $registrationId): void
+    public function mount(string $registrationId, InitializeAssessmentAction $action): void
     {
         $this->registrationId = $registrationId;
 
-        $registration = Registration::with('internship')->findOrFail($registrationId);
+        $result = $action->execute($registrationId);
+        $assessment = $result['assessment'];
 
-        $rubric = Rubric::where('internship_id', $registration->internship_id)
-            ->orWhereNull('internship_id')
-            ->where('is_active', true)
-            ->first();
-
-        if ($rubric === null) {
+        if ($assessment === null) {
             return;
         }
-
-        $assessment = Assessment::firstOrCreate(
-            ['registration_id' => $registrationId],
-            [
-                'rubric_id' => $rubric->id,
-                'type' => 'final',
-            ],
-        );
 
         $this->assessmentId = $assessment->id;
         $this->isFinalized = $assessment->finalized_at !== null;
@@ -143,7 +132,7 @@ class AssessmentGrading extends Component
             ->values();
     }
 
-    public function updatedScores($value, string $key): void
+    public function updatedScores($value, string $key, UpdateAssessmentScoresAction $action): void
     {
         if ($this->isFinalized) {
             return;
@@ -163,21 +152,7 @@ class AssessmentGrading extends Component
 
         $score = is_numeric($value) ? (float) $value : null;
 
-        if ($score === null || $score < 0) {
-            return;
-        }
-
-        $content = $assessment->content ?? [];
-        $content['competencies'][$competencyId]['evaluator_id'] = auth()->id();
-        $content['competencies'][$competencyId]['evaluated_at'] = now()->toIso8601String();
-
-        if ($score === null) {
-            unset($content['competencies'][$competencyId]['indicators'][$indicatorId]);
-        } else {
-            $content['competencies'][$competencyId]['indicators'][$indicatorId] = $score;
-        }
-
-        $assessment->update(['content' => $content]);
+        $action->execute($assessment, $competencyId, $indicatorId, $score);
     }
 
     public function autoImport(AutoCalculateAssessmentAction $action): void

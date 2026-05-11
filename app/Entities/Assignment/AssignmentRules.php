@@ -28,8 +28,8 @@ final readonly class AssignmentRules extends BaseEntity
         return $this->isMandatory;
     }
 
-    public function isOverdue(): bool
+    public function isOverdue(Carbon $now): bool
     {
-        return $this->dueDate && Carbon::now()->greaterThan($this->dueDate);
+        return $this->dueDate && $now->greaterThan($this->dueDate);
     }
 }

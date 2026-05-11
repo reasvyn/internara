@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Logbook;
+use App\Actions\Dashboard\GetStudentDashboardDataAction;
 use App\Models\Registration;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class Dashboard extends Component
+class StudentDashboard extends Component
 {
     public ?Registration $registration = null;
 
@@ -17,25 +17,15 @@ class Dashboard extends Component
 
     public int $verifiedJournals = 0;
 
-    public function mount(): void
+    public function mount(GetStudentDashboardDataAction $action): void
     {
         $user = auth()->user();
-        $this->registration = $user
-            ->registrations()
-            ->with(['placement.company', 'internship'])
-            ->where('status', 'active')
-            ->first();
 
-        if ($this->registration) {
-            $this->totalJournals = Logbook::where('user_id', $user->id)
-                ->where('registration_id', $this->registration->id)
-                ->count();
+        $data = $action->execute($user->id);
 
-            $this->verifiedJournals = Logbook::where('user_id', $user->id)
-                ->where('registration_id', $this->registration->id)
-                ->where('is_verified', true)
-                ->count();
-        }
+        $this->registration = $data['registration'];
+        $this->totalJournals = $data['totalJournals'];
+        $this->verifiedJournals = $data['verifiedJournals'];
     }
 
     #[Layout('layouts::app')]

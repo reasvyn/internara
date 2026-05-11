@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Mentor;
 
-use App\Models\Mentor\Mentor;
+use App\Actions\MentorProfile\CreateMentorProfileAction;
+use App\Actions\MentorProfile\ToggleMentorActiveAction;
+use App\Actions\MentorProfile\UpdateMentorProfileAction;
+use App\Models\Mentor;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -49,7 +50,7 @@ class MentorProfileManager extends Component
         $this->showForm = true;
     }
 
-    public function store(): void
+    public function store(CreateMentorProfileAction $action): void
     {
         $this->validate([
             'userId' => 'required|exists:users,id',
@@ -62,23 +63,16 @@ class MentorProfileManager extends Component
             'specialization' => 'nullable|string|max:1000',
         ]);
 
-        DB::transaction(function () {
-            $user = User::findOrFail($this->userId);
-            $user->assignRole('supervisor');
-
-            Mentor::create([
-                'id' => Str::uuid(),
-                'user_id' => $this->userId,
-                'type' => $this->type,
-                'employee_id' => $this->employeeId,
-                'company_name' => $this->companyName,
-                'position' => $this->position,
-                'phone' => $this->phone,
-                'bio' => $this->bio,
-                'specialization' => $this->specialization,
-                'is_active' => true,
-            ]);
-        });
+        $action->execute(
+            userId: $this->userId,
+            type: $this->type,
+            employeeId: $this->employeeId,
+            companyName: $this->companyName,
+            position: $this->position,
+            phone: $this->phone,
+            bio: $this->bio,
+            specialization: $this->specialization,
+        );
 
         $this->showForm = false;
         $this->resetForm();
@@ -99,7 +93,7 @@ class MentorProfileManager extends Component
         $this->showForm = true;
     }
 
-    public function update(): void
+    public function update(UpdateMentorProfileAction $action): void
     {
         if (! $this->editingMentor) {
             return;
@@ -116,24 +110,25 @@ class MentorProfileManager extends Component
             'specialization' => 'nullable|string|max:1000',
         ]);
 
-        $this->editingMentor->update([
-            'type' => $this->type,
-            'employee_id' => $this->employeeId,
-            'company_name' => $this->companyName,
-            'position' => $this->position,
-            'phone' => $this->phone,
-            'bio' => $this->bio,
-            'specialization' => $this->specialization,
-        ]);
+        $action->execute(
+            mentor: $this->editingMentor,
+            type: $this->type,
+            employeeId: $this->employeeId,
+            companyName: $this->companyName,
+            position: $this->position,
+            phone: $this->phone,
+            bio: $this->bio,
+            specialization: $this->specialization,
+        );
 
         $this->showForm = false;
         $this->resetForm();
         $this->dispatch('notify', type: 'success', message: 'Mentor profile updated successfully.');
     }
 
-    public function toggleStatus(Mentor $mentor): void
+    public function toggleStatus(Mentor $mentor, ToggleMentorActiveAction $action): void
     {
-        $mentor->update(['is_active' => ! $mentor->is_active]);
+        $action->execute($mentor);
         $this->dispatch('notify', type: 'success', message: 'Mentor status updated.');
     }
 

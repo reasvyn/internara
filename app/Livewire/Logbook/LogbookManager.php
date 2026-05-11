@@ -9,8 +9,6 @@ use App\Actions\Logbook\DeleteLogbookAction;
 use App\Actions\Logbook\UpdateLogbookAction;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\Logbook;
-use App\Models\Registration;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 
@@ -140,14 +138,7 @@ class LogbookManager extends BaseRecordManager
         } else {
             $this->validate(['formData.user_id' => 'required|exists:users,id']);
 
-            $student = User::findOrFail($this->formData['user_id']);
-            $registration = Registration::where('student_id', $student->id)
-                ->where('status', 'active')
-                ->firstOrFail();
-
-            $create->execute($student, array_merge($this->formData, [
-                'registration_id' => $registration->id,
-            ]));
+            $create->execute($this->formData['user_id'], $this->formData);
             $this->success(__('logbook.success_created'));
         }
 

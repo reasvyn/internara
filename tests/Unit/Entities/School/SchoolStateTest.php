@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use App\Entities\School\SchoolState;
 use App\Models\School;
-use Illuminate\Support\Facades\Config;
 
 it('can be instantiated from model', function () {
     $model = Mockery::mock(School::class);
-    $model->shouldReceive('newQuery->exists')->andReturn(false);
+    $model->shouldReceive('schoolSingleRecordEnabled')->andReturn(true);
+    $model->shouldReceive('schoolRecordExists')->andReturn(false);
 
     $entity = SchoolState::fromModel($model);
 
@@ -16,10 +16,9 @@ it('can be instantiated from model', function () {
 });
 
 it('can be created when no school exists and single record is enabled', function () {
-    Config::set('school.single_record', true);
-
     $model = Mockery::mock(School::class);
-    $model->shouldReceive('newQuery->exists')->andReturn(false);
+    $model->shouldReceive('schoolSingleRecordEnabled')->andReturn(true);
+    $model->shouldReceive('schoolRecordExists')->andReturn(false);
 
     $entity = SchoolState::fromModel($model);
 
@@ -27,10 +26,9 @@ it('can be created when no school exists and single record is enabled', function
 });
 
 it('cannot be created when school exists and single record is enabled', function () {
-    Config::set('school.single_record', true);
-
     $model = Mockery::mock(School::class);
-    $model->shouldReceive('newQuery->exists')->andReturn(true);
+    $model->shouldReceive('schoolSingleRecordEnabled')->andReturn(true);
+    $model->shouldReceive('schoolRecordExists')->andReturn(true);
 
     $entity = SchoolState::fromModel($model);
 
@@ -38,10 +36,9 @@ it('cannot be created when school exists and single record is enabled', function
 });
 
 it('can be created even if school exists when single record is disabled', function () {
-    Config::set('school.single_record', false);
-
     $model = Mockery::mock(School::class);
-    $model->shouldReceive('newQuery->exists')->andReturn(true);
+    $model->shouldReceive('schoolSingleRecordEnabled')->andReturn(false);
+    $model->shouldReceive('schoolRecordExists')->andReturn(true);
 
     $entity = SchoolState::fromModel($model);
 

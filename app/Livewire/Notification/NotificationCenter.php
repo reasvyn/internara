@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Notification;
 
+use App\Actions\Notification\DeleteNotificationAction;
+use App\Actions\Notification\MarkAllAsReadAction;
+use App\Actions\Notification\MarkAsReadAction;
 use App\Livewire\Core\BaseRecordManager;
-use App\Models\Notification\Notification;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,30 +69,28 @@ class NotificationCenter extends BaseRecordManager
         });
     }
 
-    public function markAsRead(string $id): void
+    public function markAsRead(string $id, MarkAsReadAction $action): void
     {
         $notification = Notification::where('user_id', Auth::id())->findOrFail($id);
-        $notification->markAsRead();
+        $action->execute($notification);
         $this->dispatch('notification-read');
     }
 
-    public function markAllAsRead(): void
+    public function markAllAsRead(MarkAllAsReadAction $action): void
     {
-        Notification::where('user_id', Auth::id())
-            ->where('is_read', false)
-            ->update([
-                'is_read' => true,
-                'read_at' => now(),
-            ]);
+        $action->execute(Auth::id());
 
         $this->success(__('notifications.ui.success_mark_all'));
         $this->dispatch('notifications-read');
     }
 
-    public function deleteSelected(): void
+    public function deleteSelected(DeleteNotificationAction $action): void
     {
-        $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) {
-            Notification::where('user_id', Auth::id())->where('id', $id)->delete();
+        $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) use ($action) {
+            $notification = Notification::where('user_id', Auth::id())->where('id', $id)->first();
+            if ($notification) {
+                $action->execute($notification);
+            }
         });
     }
 

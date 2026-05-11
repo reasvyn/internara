@@ -1,6 +1,6 @@
 @props(['title' => null])
 
-<x-layout:base :$title>
+<x-layouts::base :$title>
     <div class="min-h-screen flex flex-col bg-base-100 relative overflow-hidden">
         {{-- Background Decorations --}}
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
@@ -12,14 +12,14 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-12 max-w-7xl">
                 <div class="flex items-center justify-between h-20">
                     {{-- UI Brand --}}
-                    <x-ui:brand :invert="false" />
+                    <x-ui::brand :invert="false" />
 
                     {{-- Actions Bar --}}
                     <div class="flex items-center gap-2 sm:gap-4">
                         <div class="flex items-center gap-1 p-1 bg-base-200/50 rounded-2xl border border-base-content/5">
-                            <x-ui:theme-switcher class="px-2" />
+                            <x-ui::theme-switcher class="px-2" />
                             <div class="divider divider-horizontal mx-0 opacity-10 h-6"></div>
-                            <x-ui:lang-switcher class="px-2" />
+                            <x-ui::lang-switcher class="px-2" />
                         </div>
                     </div>
                 </div>
@@ -67,4 +67,4 @@
             </div>
         </footer>
     </div>
-</x-layout:base>
+</x-layouts::base>

@@ -2,21 +2,23 @@
 
 | Setting | Value |
 |---|---|
-| Driver | `database` (env: `SESSION_DRIVER`) |
-| Lifetime | 120 min (env: `SESSION_LIFETIME`) |
-| Table | `sessions` (uuid `user_id` FK) |
-| Cookie | `internara_session`, HTTP-only, SameSite=Lax |
+| Driver | `database` (configurable via `SESSION_DRIVER`) |
+| Lifetime | 120 minutes (configurable via `SESSION_LIFETIME`) |
+| Table | `sessions` (UUID `user_id` foreign key) |
+| Cookie | Auto-named based on app name, HTTP-only, SameSite=Lax |
 | Test driver | `array` (via `phpunit.xml`) |
 
-Config: `config/session.php`
+Configuration is in `config/session.php`.
 
 ## Usage
 
-- **Setup Wizard** — form data persists across steps via `session()->put('setup.form_data', [...])`
-- **Authentication** — session regenerated on login to prevent fixation; intended URL preserved for redirect
-- **Localization** — user locale stored per-session, applied by `SetLocaleMiddleware`
-- **Logout** — session invalidated, CSRF token regenerated
+- **Setup wizard** — form data persists across steps via `session()->put('setup.form_data', [...])`
+- **Authentication** — session is regenerated on login to prevent fixation; intended URL is preserved for redirect
+- **Localization** — user locale is stored per-session, applied by `SetLocaleMiddleware`
+- **Logout** — session is invalidated and CSRF token is regenerated
 
 ## Security
 
-`SESSION_SECURE_COOKIE` enforces HTTPS in production. `SESSION_HTTPONLY=true` prevents JS cookie access.
+- `SESSION_SECURE_COOKIE` enforces HTTPS in production
+- `SESSION_HTTPONLY=true` prevents JavaScript from accessing the cookie
+- SameSite is set to `Lax` by default

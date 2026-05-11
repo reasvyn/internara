@@ -7,7 +7,7 @@ namespace App\Livewire\Dashboard;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class Dashboard extends Component
+class TeacherDashboard extends Component
 {
     #[Layout('layouts::app')]
     public function render()

@@ -28,13 +28,16 @@ class LockUserAccountAction
      */
     public function execute(User $user, string $reason = 'too_many_failed_attempts'): void
     {
-        if ($user->isLocked()) {
+        if ($user->locked_at !== null) {
             return;
         }
 
         $this->withErrorHandling(function () use ($user, $reason) {
             DB::transaction(function () use ($user, $reason) {
-                $user->lock($reason);
+                $user->update([
+                    'locked_at' => now(),
+                    'locked_reason' => $reason,
+                ]);
 
                 $this->logAuditAction->execute(
                     action: 'user_account_locked',

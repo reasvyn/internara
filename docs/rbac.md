@@ -1,57 +1,36 @@
-# Access Control (RBAC) & Lifecycle
+# Access Control
+
+Internara uses **role-based access control (RBAC)** powered by `spatie/laravel-permission`.
 
 ## Roles
 
-Defined in `App\Enums\Auth\Role` (implements `LabelEnum`):
-
 | Role | Domain | Purpose |
 |---|---|---|
-| `SUPER_ADMIN` | Admin | Infrastructure, global config, user lifecycle |
-| `ADMIN` | Admin | School-level management |
-| `TEACHER` | Mentor | Academic supervision |
-| `STUDENT` | Mentee | Participants |
-| `SUPERVISOR` | Mentor | Industry evaluation |
+| `super_admin` | Admin | System infrastructure, global configuration, user lifecycle |
+| `admin` | Admin | School-level management |
+| `teacher` | Mentor | Academic supervision and assessment |
+| `student` | Mentee | Internship participants |
+| `supervisor` | Mentor | Industry supervisors and evaluation |
 
-Labels are translatable via `__("permission::role.{$value}")`.
+Role labels are translatable via language files.
 
 ## Enforcement
 
 | Layer | Mechanism |
 |---|---|
-| Routes | `->middleware(['auth', 'role:super_admin\|admin'])` — pipe-delimited OR |
+| Routes | Middleware: `->middleware(['auth', 'role:super_admin|admin'])` |
 | Livewire | Policy or Gate checks before mutations |
 | Actions | Authority verification over target data |
-| Policies | 20 policy classes using shared `BasePolicy`, `AuthorizesRoles`, `AuthorizesOwnership` |
+| Policies | Policy classes using shared `BasePolicy` with `AuthorizesRoles` and `AuthorizesOwnership` traits |
+
+Users with the `super_admin` role bypass all Gate checks via `Gate::before`.
 
 ## Account Lifecycle
 
-`App\Enums\Auth\AccountStatus` defines the full state machine:
-
-```
-provisioned → activated → verified
-                ↓           ↓
-            suspended    restricted → inactive → archived
-                ↓           ↓
-            archived    suspended
-```
-
-| Status | Login? | Notes |
-|---|---|---|
-| `provisioned` | No | Awaiting user claim |
-| `activated` | Limited | Awaiting verification |
-| `verified` | Yes | Fully operational |
-| `protected` | Yes | System-critical (Super Admin), immutable terminal |
-| `restricted` | Conditional | Access-constrained |
-| `suspended` | No | Temporarily deactivated |
-| `inactive` | Yes (warning) | Extended non-use |
-| `archived` | No | Terminal — logically deleted |
-
-Key methods on `AccountStatus`: `allowsLogin()`, `isTerminal()`, `canTransitionTo()`, `validTransitions()`, `color()`, `label()`.
-
-Super Admin users bypass all Gate checks via `Gate::before`.
+User accounts follow a state machine with 8 statuses (PROVISIONED → ACTIVATED → VERIFIED → [RESTRICTED | SUSPENDED | INACTIVE] → ARCHIVED, with PROTECTED as an immutable status for super admins). See [Account Lifecycle](lifecycles/account-lifecycle.md) for the full state definitions and transition rules.
 
 ## Security Principles
 
-- **IDOR protection**: Every request verifies ownership of the target resource
-- **Audit trail**: All role/permission changes logged via audit system
-- **Least privilege**: Users receive only permissions required for their role
+- **IDOR protection** — every request verifies ownership of the target resource
+- **Least privilege** — users receive only the permissions required for their role
+- **Audit trail** — all role and permission changes are logged

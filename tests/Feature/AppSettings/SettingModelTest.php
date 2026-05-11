@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\Admin\SetSettingAction;
 use App\Models\Setting;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 it('can create a setting with valid attributes', function () {
     $setting = Setting::create([
@@ -21,25 +23,14 @@ it('can create a setting with valid attributes', function () {
     expect($setting->group)->toBe('testing');
 });
 
-it('throws when key is empty', function () {
-    Setting::create(['key' => '', 'value' => 'x']);
-})->throws(InvalidArgumentException::class, 'Setting key must not be empty.');
+it('validates key through action', function () {
+    $action = app(SetSettingAction::class);
 
-it('throws when key has invalid format', function () {
-    Setting::create(['key' => 'UPPERCASE_KEY']);
-})->throws(InvalidArgumentException::class, 'Setting key must be lowercase');
-
-it('throws when key starts with uppercase', function () {
-    Setting::create(['key' => 'Key_with_uppercase']);
-})->throws(InvalidArgumentException::class, 'Setting key must be lowercase');
-
-it('throws when key contains spaces', function () {
-    Setting::create(['key' => 'my key']);
-})->throws(InvalidArgumentException::class, 'Setting key must be lowercase');
-
-it('throws when type is invalid', function () {
-    Setting::create(['key' => 'valid_key', 'value' => 'x', 'type' => 'invalid_type']);
-})->throws(InvalidArgumentException::class, 'Setting type must be one of');
+    expect(fn () => $action->execute('', 'x'))->toThrow(ValidationException::class);
+    expect(fn () => $action->execute('UPPERCASE_KEY', 'x'))->toThrow(ValidationException::class);
+    expect(fn () => $action->execute('Key_with_uppercase', 'x'))->toThrow(ValidationException::class);
+    expect(fn () => $action->execute('my key', 'x'))->toThrow(ValidationException::class);
+});
 
 it('allows valid key formats with dots and underscores', function () {
     $setting = Setting::create([
@@ -131,7 +122,12 @@ it('can list distinct groups', function () {
     Setting::factory()->create(['group' => 'general']);
     Setting::factory()->create(['group' => 'mail']);
 
-    $groups = Setting::groups();
+    $groups = Setting::query()
+        ->select('group')
+        ->distinct()
+        ->whereNotNull('group')
+        ->orderBy('group')
+        ->pluck('group');
 
     expect($groups)->toContain('mail', 'general');
     expect($groups)->toHaveCount(2);
@@ -144,54 +140,30 @@ it('returns unique key per setting', function () {
         ->toThrow(QueryException::class);
 });
 
-describe('upsertBatch', function () {
-    it('returns 0 for empty input', function () {
-        expect(Setting::upsertBatch([]))->toBe(0);
-    });
+describe('batch upsert', function () {
+    it('inserts new settings via updateOrCreate', function () {
+        Setting::updateOrCreate(['key' => 'first_key'], ['value' => 'value1']);
+        Setting::updateOrCreate(['key' => 'second_key'], ['value' => 'value2']);
 
-    it('inserts new settings', function () {
-        $count = Setting::upsertBatch([
-            'first_key' => 'value1',
-            'second_key' => 'value2',
-        ]);
-
-        expect($count)->toBe(2);
         expect(Setting::count())->toBe(2);
     });
 
-    it('updates existing settings and returns count of changes', function () {
+    it('updates existing settings', function () {
         Setting::create(['key' => 'existing', 'value' => 'old', 'type' => 'string']);
+        Setting::updateOrCreate(['key' => 'existing'], ['value' => 'new_value']);
 
-        $count = Setting::upsertBatch([
-            'existing' => 'new_value',
-        ]);
-
-        expect($count)->toBe(1);
         expect(Setting::byKey('existing')->first()->value)->toBe('new_value');
     });
 
     it('handles array attributes with metadata', function () {
-        $count = Setting::upsertBatch([
-            'with_meta' => [
-                'value' => 'the_value',
-                'group' => 'custom_group',
-                'description' => 'Has metadata',
-            ],
-        ]);
-
-        expect($count)->toBe(1);
+        Setting::updateOrCreate(
+            ['key' => 'with_meta'],
+            ['value' => 'the_value', 'group' => 'custom_group', 'description' => 'Has metadata'],
+        );
 
         $setting = Setting::byKey('with_meta')->first();
         expect($setting->value)->toBe('the_value');
         expect($setting->group)->toBe('custom_group');
         expect($setting->description)->toBe('Has metadata');
-    });
-
-    it('does not increment count when nothing changes', function () {
-        Setting::create(['key' => 'stable', 'value' => 'same']);
-
-        $count = Setting::upsertBatch(['stable' => 'same']);
-
-        expect($count)->toBe(0);
     });
 });

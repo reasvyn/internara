@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Notification;
 
-use App\Models\Notification\Notification;
+use App\Models\Notification;
 
 /**
  * Stateless Action to mark notification as read.
@@ -16,7 +16,12 @@ class MarkAsReadAction
 {
     public function execute(Notification $notification): Notification
     {
-        $notification->markAsRead();
+        if (! $notification->is_read) {
+            $notification->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+        }
 
         return $notification->fresh();
     }

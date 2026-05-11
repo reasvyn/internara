@@ -1,15 +1,13 @@
-# Installation Guide
+# Installation
 
 ## Requirements
 
 - PHP 8.4 or higher
-- Node.js 20+
-- Database: SQLite (default), MySQL 8+, or PostgreSQL 14+
-- Composer and Node.js
+- Node.js 20 or higher
+- Composer and npm
+- Database: SQLite (default), MySQL 8+, MariaDB, or PostgreSQL 14+
 
-## Installation
-
-Run the installation command from your project directory:
+## Steps
 
 ```bash
 composer install && npm install
@@ -18,13 +16,13 @@ php artisan key:generate
 php artisan setup:install
 ```
 
-This command checks your server environment, sets up the database, and generates a one-time URL. Open that URL in your browser to complete the setup wizard.
+The `setup:install` command checks your environment, sets up the database, and generates a one-time URL. Open that URL in your browser to complete the setup wizard.
 
-If the system detects an existing installation, add `--force` to reinstall.
+If the system detects an existing installation, use `--force` to reinstall.
 
-## Creating an Administrator Account
+## Creating an Admin Account
 
-After completing the setup wizard, create your first administrator account:
+After the setup wizard, create your first super administrator:
 
 ```bash
 php artisan setup:super-admin
@@ -32,9 +30,9 @@ php artisan setup:super-admin
 
 Follow the prompts to enter an email, name, and password.
 
-## Emergency Access Recovery
+## Recovery
 
-If you lose access to all administrator accounts, use the recovery command:
+If you lose access to all administrator accounts:
 
 ```bash
 php artisan setup:recover-admin
@@ -52,14 +50,16 @@ php artisan setup:reset
 
 This clears the installation state without removing any data.
 
-## Available Setup Commands
+## Available Commands
+
+Run `php artisan list` to see all available commands. Key setup-related commands include:
 
 | Command | Purpose |
 |---|---|
-| `setup:install` | Check environment, setup DB, generate setup URL |
+| `setup:install` | Check environment, setup database, generate setup URL |
 | `setup:super-admin` | Create a super administrator account |
 | `setup:recover-admin` | Recover access to admin accounts |
 | `setup:reset` | Reset setup state, allow re-running wizard |
-| `setup:health` | Check system health and readiness |
-
-All commands support `--no-interaction` for automated deployments.
+| `system:health` | Check system health and readiness |
+| `admin:promote` | Promote an existing user to admin role |
+| `cleanup` | Run system cleanup tasks |

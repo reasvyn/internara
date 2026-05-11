@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
+use App\Actions\Internship\BatchUpdateInternshipStatusAction;
 use App\Actions\Internship\CreateInternshipAction;
 use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
-use App\Enums\InternshipStatus;
+use App\Enums\Internship\InternshipStatus;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\Internship;
 use App\Models\Placement;
@@ -159,10 +160,10 @@ class InternshipIndex extends BaseRecordManager
 
     // --- Mass Actions ---
 
-    public function closeAllFiltered(): void
+    public function closeAllFiltered(BatchUpdateInternshipStatusAction $action): void
     {
-        $this->performMassAction('Close All Filtered', function ($query) {
-            $query->update(['status' => InternshipStatus::COMPLETED->value]);
+        $this->performMassAction('Close All Filtered', function ($query) use ($action) {
+            $action->execute($query, InternshipStatus::COMPLETED);
         });
     }
 

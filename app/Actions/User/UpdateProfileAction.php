@@ -29,18 +29,29 @@ class UpdateProfileAction
      *
      * @throws RuntimeException when update fails
      */
-    public function execute(User $user, array $data): Profile
+    public function execute(User $user, array $data, ?string $name = null, ?string $email = null): Profile
     {
         $this->validate($data);
 
         $data = array_filter($data, fn ($v) => $v !== null);
 
-        if ($data === []) {
-            return $user->profile ?? $user->profile()->create([]);
-        }
+        return $this->withErrorHandling(function () use ($user, $data, $name, $email) {
+            return DB::transaction(function () use ($user, $data, $name, $email) {
+                if ($name !== null || $email !== null) {
+                    $userData = [];
+                    if ($name !== null) {
+                        $userData['name'] = $name;
+                    }
+                    if ($email !== null) {
+                        $userData['email'] = $email;
+                    }
+                    $user->update($userData);
+                }
 
-        return $this->withErrorHandling(function () use ($user, $data) {
-            return DB::transaction(function () use ($user, $data) {
+                if ($data === []) {
+                    return $user->profile ?? $user->profile()->create([]);
+                }
+
                 $profile = $user->profile()->updateOrCreate(
                     ['user_id' => $user->id],
                     $data,

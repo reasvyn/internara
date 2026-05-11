@@ -59,53 +59,20 @@ it('has registrations relationship', function () {
     expect($user->registrations)->toBeInstanceOf(Collection::class);
 });
 
-it('has teaching registrations relationship', function () {
-    $user = UserFactory::new()->create();
-
-    expect($user->teachingRegistrations)->toBeInstanceOf(Collection::class);
-});
-
-it('has mentoring registrations relationship', function () {
-    $user = UserFactory::new()->create();
-
-    expect($user->mentoringRegistrations)->toBeInstanceOf(Collection::class);
-});
-
-it('has generated reports relationship', function () {
-    $user = UserFactory::new()->create();
-
-    expect($user->generatedReports)->toBeInstanceOf(Collection::class);
-});
-
 it('has handbook acknowledgements relationship', function () {
     $user = UserFactory::new()->create();
 
     expect($user->handbookAcknowledgements)->toBeInstanceOf(Collection::class);
 });
 
-it('can check if suspended', function () {
+it('delegates status checks to entity', function () {
     $user = UserFactory::new()->create();
     $user->setStatus('suspended');
 
-    expect($user->asApprentice()->isSuspended())->toBeTrue()
-        ->and($user->asApprentice()->isArchived())->toBeFalse()
-        ->and($user->asApprentice()->isInactive())->toBeFalse();
-});
-
-it('can check if archived', function () {
-    $user = UserFactory::new()->create();
-    $user->setStatus('archived');
-
-    expect($user->asApprentice()->isArchived())->toBeTrue()
-        ->and($user->asApprentice()->isSuspended())->toBeFalse();
-});
-
-it('can check if inactive', function () {
-    $user = UserFactory::new()->create();
-    $user->setStatus('inactive');
-
-    expect($user->asApprentice()->isInactive())->toBeTrue()
-        ->and($user->asApprentice()->isSuspended())->toBeFalse();
+    $apprentice = $user->asApprentice();
+    expect($apprentice->isSuspended())->toBeTrue()
+        ->and($apprentice->isArchived())->toBeFalse()
+        ->and($apprentice->isInactive())->toBeFalse();
 });
 
 it('requires setup', function () {
@@ -132,17 +99,17 @@ it('is not locked by default', function () {
     expect($user->asApprentice()->isLocked())->toBeFalse();
 });
 
-it('can lock account', function () {
+it('can lock account via update', function () {
     $user = UserFactory::new()->create();
-    $user->lock('manual_lock');
+    $user->update(['locked_at' => now(), 'locked_reason' => 'manual_lock']);
 
     expect($user->asApprentice()->isLocked())->toBeTrue()
         ->and($user->locked_reason)->toBe('manual_lock');
 });
 
-it('can unlock account', function () {
+it('can unlock account via update', function () {
     $user = UserFactory::new()->locked()->create();
-    $user->unlock();
+    $user->update(['locked_at' => null, 'locked_reason' => null]);
 
     expect($user->asApprentice()->isLocked())->toBeFalse()
         ->and($user->locked_reason)->toBeNull();

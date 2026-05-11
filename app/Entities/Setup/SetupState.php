@@ -5,25 +5,26 @@ declare(strict_types=1);
 namespace App\Entities\Setup;
 
 use App\Entities\BaseEntity;
+use App\Models\Setup;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\File;
 
 final readonly class SetupState extends BaseEntity
 {
     public function __construct(
         private bool $fileInstalled,
         private bool $dbInstalled,
-        private ?string $setupToken,
+        public ?string $setupToken,
         private ?Carbon $tokenExpiresAt,
         private array $completedSteps,
     ) {}
 
     public static function fromModel(Model $model): static
     {
+        assert($model instanceof Setup);
+
         return new self(
-            fileInstalled: File::exists(base_path('.installed')),
+            fileInstalled: $model->installedFileExists(),
             dbInstalled: (bool) ($model->getAttribute('is_installed') ?? false),
             setupToken: $model->getAttribute('setup_token'),
             tokenExpiresAt: $model->getAttribute('token_expires_at'),
@@ -40,49 +41,17 @@ final readonly class SetupState extends BaseEntity
     }
 
     /**
-     * Validate the provided setup token.
+     * Validate the provided input token against the stored token.
      */
-    public function validateToken(string $token): bool
+    public function validateToken(string $decryptedStoredToken, string $inputToken, ?Carbon $now = null): bool
     {
-        if ($this->setupToken === null) {
+        $now ??= new Carbon;
+
+        if ($this->tokenExpiresAt === null || $now->greaterThan($this->tokenExpiresAt)) {
             return false;
         }
 
-        if ($this->tokenExpiresAt === null || now()->greaterThan($this->tokenExpiresAt)) {
-            return false;
-        }
-
-        try {
-            $decrypted = Crypt::decryptString($this->setupToken);
-        } catch (\Exception) {
-            return false;
-        }
-
-        return hash_equals($decrypted, $token);
-    }
-
-    /**
-     * Get the current pending setup step.
-     */
-    public function getCurrentStep(): string
-    {
-        if ($this->isInstalled()) {
-            return 'complete';
-        }
-
-        if (empty($this->completedSteps)) {
-            return 'welcome';
-        }
-
-        $orderedSteps = ['welcome', 'school', 'department'];
-
-        foreach ($orderedSteps as $step) {
-            if (! in_array($step, $this->completedSteps)) {
-                return $step;
-            }
-        }
-
-        return 'complete';
+        return hash_equals($decryptedStoredToken, $inputToken);
     }
 
     /**

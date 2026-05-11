@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Document\Admin;
 
+use App\Actions\Document\SaveDocumentTemplateAction;
 use App\Models\Document;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -67,7 +68,7 @@ class TemplateManager extends Component
         $this->templateModal = true;
     }
 
-    public function saveTemplate(): void
+    public function saveTemplate(SaveDocumentTemplateAction $action): void
     {
         $this->validate([
             'templateData.name' => 'required|string|max:255',
@@ -75,12 +76,7 @@ class TemplateManager extends Component
             'templateData.content' => 'required|string',
         ]);
 
-        Document::updateOrCreate(
-            ['id' => $this->templateData['id']],
-            array_merge($this->templateData, [
-                'slug' => str($this->templateData['name'])->slug()->toString(),
-            ]),
-        );
+        $action->execute($this->templateData);
 
         $this->success('Template saved successfully.');
         $this->templateModal = false;

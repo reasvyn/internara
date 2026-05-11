@@ -6,6 +6,8 @@ namespace App\Actions\Setup;
 
 use App\Models\Setup;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 final class GenerateSetupTokenAction
 {
@@ -14,11 +16,19 @@ final class GenerateSetupTokenAction
      */
     public function execute(): array
     {
-        $tokenData = Setup::generateToken();
+        $plaintext = Str::random(64);
+        $encrypted = Crypt::encryptString($plaintext);
+        $expiresAt = now()->addHour();
+
+        $setup = Setup::firstOrCreate([]);
+        $setup->update([
+            'setup_token' => $encrypted,
+            'token_expires_at' => $expiresAt,
+        ]);
 
         return [
-            'plaintext' => $tokenData['plaintext'],
-            'expires_at' => $tokenData['expires_at'],
+            'plaintext' => $plaintext,
+            'expires_at' => $expiresAt,
         ];
     }
 }

@@ -1,23 +1,20 @@
 # Notifications
 
-## Dual System
+## Channels
 
-| Mechanism | Use case | Lifespan |
-|---|---|---|
-| `flash()` (PHPFlasher) | Action feedback (save, delete, error) | Single request |
-| In-app notification | Important alerts requiring acknowledgment | Until read |
-| Email notification | External communication (approvals, welcomes) | Persistent |
+| Channel | Use case |
+|---|---|
+| Flash messages (PHPFlasher) | Immediate action feedback (save, delete, error) |
+| In-app notifications | Important alerts requiring acknowledgment |
+| Email notifications | External communication (approvals, welcomes) |
 
 ## In-App Notifications
 
-`App\Models\Notification` (extends `BaseModel`, UUID PK) stores notifications in a custom `notifications` table with fields: `user_id`, `type`, `title`, `message`, `data` (json), `link`, `is_read`, `read_at`.
+The custom `notifications` table stores user-specific notifications with read tracking. Each notification has a type, title, message, optional link, and read status.
 
-Entity integration: `$notification->asNotificationStatus()` returns a `NotificationStatus` domain entity.
-
-### Sending
+Sending a notification:
 
 ```php
-// Direct action call
 app(SendNotificationAction::class)->execute(
     userId: $user->id,
     type: 'internship_approved',
@@ -27,29 +24,17 @@ app(SendNotificationAction::class)->execute(
 );
 ```
 
-`SendNotificationAction` validates the user exists and creates a record with `is_read = false`.
+`SendNotificationAction` validates that the user exists and creates an unread notification.
 
 ### Laravel Notification Channel
 
-`App\Channels\CustomDatabaseChannel` bridges Laravel notifications to the custom `notifications` table. Each notification class implements `toCustomDatabase($notifiable)` returning an array with keys: `type`, `title`, `message`, `data`, `link`.
+`CustomDatabaseChannel` bridges Laravel's notification system to the custom `notifications` table. Each notification class implements `toCustomDatabase($notifiable)` returning an array with keys: `type`, `title`, `message`, `data`, `link`.
 
-All domain notifications route through three channels: `mail`, `broadcast`, and `CustomDatabaseChannel::class`.
-
-## Domain Notifications
-
-| Domain | Notification |
-|---|---|
-| Auth | `WelcomeNotification`, `AdminRecoveredNotification` |
-| Internship | `InternshipRegistrationNotification` |
-| Assignment | `AssignmentNotification`, `SubmissionFeedbackNotification` |
-| Document | `ReportGeneratedNotification`, `JobFailedNotification` |
-| User | `AccountStatusNotification`, `TestMailNotification` |
-
-Notification types are defined in `App\Enums\Notification\NotificationType`.
+Domain notifications route through three channels: `mail`, `broadcast`, and `CustomDatabaseChannel`.
 
 ## Flash Messages
 
-PHPFlasher (Emerald theme, 5s timeout, bottom-right, dark mode enabled):
+PHPFlasher displays success and error messages with a 5-second timeout, positioned at the bottom-right:
 
 ```php
 flash()->success(__('internship.save_success'));

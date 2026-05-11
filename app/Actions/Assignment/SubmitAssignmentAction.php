@@ -32,7 +32,7 @@ class SubmitAssignmentAction
             throw new InvalidArgumentException('Cannot submit to unpublished assignment.');
         }
 
-        if ($assignment->asAssignmentRules()->isOverdue()) {
+        if ($assignment->asAssignmentRules()->isOverdue(now())) {
             throw new InvalidArgumentException('Assignment is overdue.');
         }
 

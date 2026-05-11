@@ -29,7 +29,8 @@ class UpdateSchoolAction
 
             // Handle logo if provided
             if ($logoFile !== null) {
-                $school->setLogo($logoFile);
+                $school->clearMediaCollection(School::COLLECTION_LOGO);
+                $school->addMedia($logoFile)->toMediaCollection(School::COLLECTION_LOGO);
             }
 
             $this->logAudit->execute(

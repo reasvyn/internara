@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Admin;
 
 use App\Actions\Admin\SetSettingAction;
+use App\Actions\Admin\UploadBrandAssetAction;
 use App\Actions\Core\LogAuditAction;
-use App\Notifications\TestMailNotification;
 use App\Support\Settings;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -187,13 +184,11 @@ class SystemSetting extends Component
             'accent_color' => $this->accent_color,
         ];
         if ($this->brand_logo) {
-            $path = $this->brand_logo->store('brand', 'public');
-            $settings['brand_logo'] = Storage::url($path);
+            $settings['brand_logo'] = app(UploadBrandAssetAction::class)->execute($this->brand_logo);
         }
 
         if ($this->site_favicon) {
-            $path = $this->site_favicon->store('brand', 'public');
-            $settings['site_favicon'] = Storage::url($path);
+            $settings['site_favicon'] = app(UploadBrandAssetAction::class)->execute($this->site_favicon, 'favicon');
         }
 
         $setSetting->executeBatch($settings);
@@ -215,7 +210,7 @@ class SystemSetting extends Component
      * Send a test email to verify SMTP settings.
      * S3 - Scalable: Empirical verification of configuration.
      */
-    public function testEmail(): void
+    public function testEmail(TestMailSettingsAction $action): void
     {
         $this->validate([
             'mail_host' => 'required',
@@ -225,22 +220,23 @@ class SystemSetting extends Component
             'mail_from_address' => 'required|email',
         ]);
 
-        try {
-            // Apply current UI settings to config temporarily for the test
-            Config::set('mail.mailers.smtp.host', $this->mail_host);
-            Config::set('mail.mailers.smtp.port', (int) $this->mail_port);
-            Config::set('mail.mailers.smtp.encryption', $this->mail_encryption);
-            Config::set('mail.mailers.smtp.username', $this->mail_username);
-            Config::set('mail.mailers.smtp.password', $this->mail_password);
-            Config::set('mail.from.address', $this->mail_from_address);
-            Config::set('mail.from.name', $this->mail_from_name);
+        $sent = $action->execute(
+            auth()->user()->email,
+            [
+                'host' => $this->mail_host,
+                'port' => $this->mail_port,
+                'encryption' => $this->mail_encryption,
+                'username' => $this->mail_username,
+                'password' => $this->mail_password,
+                'from_address' => $this->mail_from_address,
+                'from_name' => $this->mail_from_name,
+            ],
+        );
 
-            Notification::route('mail', auth()->user()->email)->notify(new TestMailNotification);
-
+        if ($sent) {
             $this->success(__('setting.messages.test_email_sent'));
-        } catch (\Exception $e) {
-            logger()->error('SMTP Test Failed: '.$e->getMessage());
-            $this->error(__('setting.messages.test_email_failed').': '.$e->getMessage());
+        } else {
+            $this->error(__('setting.messages.test_email_failed'));
         }
     }
 

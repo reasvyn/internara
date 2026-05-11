@@ -27,9 +27,11 @@ class CheckRoleMiddleware
         $user = $request->user();
 
         if ($user === null) {
-            return $request->expectsJson()
-                ? response()->json(['message' => 'Unauthenticated.'], 401)
-                : redirect()->route('login');
+            if ($request->expectsJson() || $request->hasHeader('X-Livewire')) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+
+            return redirect()->route('login');
         }
 
         // Normalize roles: handle pipe-separated strings ('admin|student') and arrays
