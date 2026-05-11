@@ -6,7 +6,7 @@ namespace App\Livewire\Mentor\Supervision;
 
 use App\Actions\Mentor\CreateSupervisionLogAction;
 use App\Actions\Mentor\VerifySupervisionLogAction;
-use App\Models\Mentor\SupervisionLog;
+use App\Models\SupervisionLog;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -67,8 +67,6 @@ class SupervisorLogManager extends Component
                 'date' => $this->date,
                 'topic' => $this->topic,
                 'notes' => $this->notes,
-                'is_verified' => true,
-                'status' => 'verified',
             ],
         );
 

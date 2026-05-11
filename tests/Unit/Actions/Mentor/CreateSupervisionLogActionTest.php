@@ -3,20 +3,13 @@
 declare(strict_types=1);
 
 use App\Actions\Mentor\CreateSupervisionLogAction;
+use App\Enums\Mentor\SupervisionLogStatus;
 use App\Models\SupervisionLog;
 use Database\Factories\RegistrationFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-beforeAll(function () {
-    require_once getcwd().'/app/Models/SupervisionLog.php';
-    class_alias(
-        SupervisionLog::class,
-        App\Models\Mentor\SupervisionLog::class,
-    );
-});
 
 describe('execute', function () {
     it('creates a supervision log', function () {
@@ -36,6 +29,6 @@ describe('execute', function () {
         expect($log)->toBeInstanceOf(SupervisionLog::class)
             ->and($log->registration_id)->toBe($registration->id)
             ->and($log->supervisor_id)->toBe($teacher->id)
-            ->and($log->status)->toBe('in_progress');
+            ->and($log->status)->toBe(SupervisionLogStatus::SUBMITTED);
     });
 });
