@@ -5,12 +5,16 @@ declare(strict_types=1);
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Livewire\Admin\AccountLifecycleManager;
+use App\Livewire\Admin\GdprDeletionLogs;
 use App\Livewire\Admin\SystemSetting;
 use App\Livewire\Assessment\AssessmentGrading;
 use App\Livewire\Assessment\AssessmentView;
 use App\Livewire\Assessment\RubricManager;
 use App\Livewire\Assignment\Admin\AssignmentManager as AdminAssignmentManager;
 use App\Livewire\Assignment\Student\Submission as StudentSubmission;
+use App\Livewire\Attendance\AbsenceRequestForm;
+use App\Livewire\Attendance\AttendanceManager;
+use App\Livewire\Attendance\StudentClockIn;
 use App\Livewire\Auth\AccountRecovery;
 use App\Livewire\Auth\ConfirmPassword;
 use App\Livewire\Auth\ForgotPassword;
@@ -145,6 +149,8 @@ Route::prefix('admin')
         Route::livewire('/academic-years', AcademicYearIndex::class)->name('academic-years.index');
         Route::livewire('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');
         Route::livewire('/recovery-slips', RecoverySlipManager::class)->name('recovery-slips');
+        Route::livewire('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
+        Route::livewire('/attendance', AttendanceManager::class)->name('attendance');
     });
 
 /*
@@ -171,6 +177,8 @@ Route::prefix('student')
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
         Route::livewire('/assessments', AssessmentView::class)->name('assessments');
         Route::livewire('/internships/register', RegistrationWizard::class)->name('internships.register');
+        Route::livewire('/attendance', StudentClockIn::class)->name('attendance');
+        Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name('attendance.absence');
     });
 
 /*
