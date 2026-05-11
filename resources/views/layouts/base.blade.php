@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ request()->cookie('theme', 'system') }}">
     <head>
-        <x-layout:base.head :$title />
+        <x-layouts::base.head :$title />
         
         {{-- Dynamic Branding Colors --}}
         @php
@@ -42,34 +42,7 @@
     </head>
 
     <body class="{{ $bodyClass }}">
-        <x-layout:base.preloader />
-
-        <script>
-            window.isDebugMode = window.isDebugMode || (() => {{ is_debug_mode() ? 'true' : 'false' }});
-            window.isDevelopment = window.isDevelopment || (() => {{ is_development() ? 'true' : 'false' }});
-            window.isTesting = window.isTesting || (() => {{ is_testing() ? 'true' : 'false' }});
-            window.isMaintenance = window.isMaintenance || (() => {{ is_maintenance() ? 'true' : 'false' }});
-
-            window.hidePreloader = window.hidePreloader || (() => {
-                const preloader = document.getElementById('preloader');
-                if (preloader && !preloader.classList.contains('opacity-0')) {
-                    preloader.classList.add('opacity-0');
-                    setTimeout(() => preloader.remove(), 500);
-                }
-            });
-
-            // Handle initial load
-            window.addEventListener('load', () => {
-                window.hidePreloader();
-            });
-
-            // Handle Livewire SPA navigation
-            document.addEventListener('livewire:navigated', () => {
-                window.hidePreloader();
-            });
-        </script>
-
-        <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-base-100 focus:text-primary">
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-base-100 focus:text-base-content">
             Skip to content
         </a>
 
@@ -118,4 +91,3 @@
         </script>
     </body>
 </html>
-

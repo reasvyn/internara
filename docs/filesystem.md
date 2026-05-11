@@ -4,29 +4,22 @@
 
 | Disk | Root | Visibility | Use case |
 |---|---|---|---|
-| `local` | `storage/app/private` | Private (via route) | Internal files, PDFs, temp |
+| `local` | `storage/app/private` | Private (via authorized routes) | Internal files, PDFs, temporary storage |
 | `public` | `storage/app/public` | Public (`/storage` symlink) | Brand assets, user uploads |
-| `s3` | `AWS_*` env vars | Configurable | Cloud storage (optional) |
+| `s3` | Configured via `AWS_*` env vars | Configurable | Cloud storage (optional) |
 
-Config: `config/filesystems.php`. Default: `local` (via `FILESYSTEM_DISK`).
+The default disk is `local`, configured via `FILESYSTEM_DISK` in your `.env`.
 
-> **No `private` disk exists** — always use `Storage::disk('local')` for private files.
+> There is no `private` disk name — always use `Storage::disk('local')` for private files.
 
-## Usage
+Configuration is in `config/filesystems.php`.
 
-```php
-// Store/report files
-Storage::disk('local')->put($path, $content);
-Storage::disk('local')->get($path);
+## Media Library
 
-// Brand assets
-$path = $this->brand_logo->store('brand', 'public');
-```
-
-Spatie Media Library (`HasMedia` + `InteractsWithMedia`) is used on `School` and `Submission` models for file attachments with collections and conversions.
+`spatie/laravel-medialibrary` handles file attachments on the `School` and `Submission` models, with support for media collections, image conversions, and responsive images.
 
 ## Security
 
-- Validate uploads with `mimes`, `max`, and `file` rules
+- Validate uploads with `mimes`, `max`, and `file` validation rules
 - Use `basename()` on user-supplied filenames to prevent path traversal
 - Private files require authorized routes for download

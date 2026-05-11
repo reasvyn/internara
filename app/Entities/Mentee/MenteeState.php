@@ -22,10 +22,7 @@ final readonly class MenteeState extends BaseEntity
     {
         assert($model instanceof Mentee);
 
-        $registration = $model->registrations()
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
-            ->latest()
-            ->first();
+        $registration = $model->latestActiveRegistration();
 
         return new self(
             hasActiveRegistration: $registration !== null,
@@ -45,23 +42,25 @@ final readonly class MenteeState extends BaseEntity
         return $this->isActive;
     }
 
-    public function isWithinInternshipPeriod(): bool
+    public function isWithinInternshipPeriod(?Carbon $today = null): bool
     {
+        $today ??= new Carbon;
+
         if (! $this->startDate || ! $this->endDate) {
             return false;
         }
 
-        return Carbon::today()->between($this->startDate, $this->endDate, true);
+        return $today->between($this->startDate, $this->endDate, true);
     }
 
-    public function canClockIn(): bool
+    public function canClockIn(?Carbon $today = null): bool
     {
-        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod();
+        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod($today);
     }
 
-    public function canSubmitLogbook(): bool
+    public function canSubmitLogbook(?Carbon $today = null): bool
     {
-        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod();
+        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod($today);
     }
 
     public function canSubmitAssignment(): bool
@@ -69,21 +68,25 @@ final readonly class MenteeState extends BaseEntity
         return $this->hasActiveRegistration;
     }
 
-    public function hasEnded(): bool
+    public function hasEnded(?Carbon $today = null): bool
     {
+        $today ??= new Carbon;
+
         if (! $this->endDate) {
             return false;
         }
 
-        return Carbon::today()->isAfter($this->endDate);
+        return $today->isAfter($this->endDate);
     }
 
-    public function daysRemaining(): int
+    public function daysRemaining(?Carbon $today = null): int
     {
+        $today ??= new Carbon;
+
         if (! $this->endDate) {
             return 0;
         }
 
-        return max(0, (int) Carbon::today()->diffInDays($this->endDate, false));
+        return max(0, (int) $today->diffInDays($this->endDate, false));
     }
 }

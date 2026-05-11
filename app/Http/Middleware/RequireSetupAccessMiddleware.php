@@ -24,7 +24,7 @@ class RequireSetupAccessMiddleware
         }
 
         $isSetupRoute = $request->is('setup');
-        $isLivewire = $request->is('livewire/*');
+        $isLivewire = $request->hasHeader('X-Livewire') || $request->is('livewire/*');
 
         if (! $isSetupRoute && ! $isLivewire) {
             return redirect()->route('setup');

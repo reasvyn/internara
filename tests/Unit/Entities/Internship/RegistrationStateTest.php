@@ -22,20 +22,20 @@ it('detects pending registration', function () {
 it('detects ongoing period', function () {
     $entity = new RegistrationState('active', Carbon::yesterday(), Carbon::tomorrow(), false);
 
-    expect($entity->isCurrentlyOngoing())->toBeTrue();
+    expect($entity->isCurrentlyOngoing(Carbon::today()))->toBeTrue();
 });
 
 it('detects ended period', function () {
     $entity = new RegistrationState('active', Carbon::parse('-10 days'), Carbon::yesterday(), false);
 
-    expect($entity->hasEnded())->toBeTrue()
-        ->and($entity->isCurrentlyOngoing())->toBeFalse();
+    expect($entity->hasEnded(Carbon::today()))->toBeTrue()
+        ->and($entity->isCurrentlyOngoing(Carbon::today()))->toBeFalse();
 });
 
 it('returns false for ongoing when dates missing', function () {
     $entity = new RegistrationState('active', null, null, false);
 
-    expect($entity->isCurrentlyOngoing())->toBeFalse();
+    expect($entity->isCurrentlyOngoing(Carbon::today()))->toBeFalse();
 });
 
 it('can be approved when pending with placement', function () {
@@ -59,19 +59,19 @@ it('cannot be approved when not pending', function () {
 it('calculates days remaining', function () {
     $entity = new RegistrationState('active', Carbon::parse('-10 days'), Carbon::parse('+5 days'), false);
 
-    expect($entity->daysRemaining())->toBe(5);
+    expect($entity->daysRemaining(Carbon::today()))->toBe(5);
 });
 
 it('returns zero days remaining when past end', function () {
     $entity = new RegistrationState('active', Carbon::parse('-10 days'), Carbon::yesterday(), false);
 
-    expect($entity->daysRemaining())->toBe(0);
+    expect($entity->daysRemaining(Carbon::today()))->toBe(0);
 });
 
 it('returns zero days remaining when no end date', function () {
     $entity = new RegistrationState('active', Carbon::yesterday(), null, false);
 
-    expect($entity->daysRemaining())->toBe(0);
+    expect($entity->daysRemaining(Carbon::today()))->toBe(0);
 });
 
 it('calculates total duration', function () {

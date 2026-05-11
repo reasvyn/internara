@@ -6,35 +6,26 @@ namespace App\Actions\Internship;
 
 use App\Actions\Core\LogAuditAction;
 use App\Events\Internship\InternshipCreated;
-use App\Http\Requests\Internship\CreateInternshipRequest;
+use App\Models\AcademicYear;
 use App\Models\Internship;
 use Illuminate\Support\Facades\DB;
 
-/**
- * Action to create a new internship.
- *
- * S1 - Secure: Receives validated data from Form Request.
- * S2 - Sustain: Single responsibility, clear use case.
- * S3 - Scalable: Can be called from Controllers (API) or Livewire (Web).
- */
 class CreateInternshipAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    /**
-     * Execute the internship creation use case.
-     *
-     * @param CreateInternshipRequest|array $input Validated data
-     */
-    public function execute(CreateInternshipRequest|array $input): Internship
+    public function execute(array $data): Internship
     {
-        // Handle both Form Request object and array input
-        $data = is_array($input) ? $input : $input->validated();
+        if (empty($data['academic_year_id'])) {
+            $activeYear = AcademicYear::where('is_active', true)->first();
+            if ($activeYear !== null) {
+                $data['academic_year_id'] = $activeYear->id;
+            }
+        }
 
         return DB::transaction(function () use ($data) {
             $internship = Internship::create($data);
 
-            // Option 1: Direct audit logging (simple case)
             $this->logAudit->execute(
                 action: 'internship_created',
                 subjectType: Internship::class,
@@ -43,7 +34,6 @@ class CreateInternshipAction
                 module: 'Internship',
             );
 
-            // Option 2: Event-driven side effects (complex case)
             event(new InternshipCreated($internship, auth()->user()));
 
             return $internship;

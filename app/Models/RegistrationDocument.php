@@ -26,11 +26,6 @@ class RegistrationDocument extends BaseModel implements HasMedia
         $this->addMediaCollection('file')->singleFile();
     }
 
-    public function fileUrl(): ?string
-    {
-        return $this->getFirstMediaUrl('file');
-    }
-
     public function registration(): BelongsTo
     {
         return $this->belongsTo(Registration::class, 'registration_id');

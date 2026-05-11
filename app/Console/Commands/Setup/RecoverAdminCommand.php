@@ -10,6 +10,8 @@ use App\Models\Setup;
 use App\Models\User;
 use App\Support\SmartLogger;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
@@ -151,7 +153,20 @@ class RecoverAdminCommand extends Command
             return false;
         }
 
-        if (! Setup::validateRecoveryKey($key)) {
+        $storedSetup = Setup::first();
+        $storedKey = $storedSetup?->recovery_key;
+        $keyValid = false;
+
+        if ($storedKey !== null) {
+            try {
+                $keyValid = hash_equals(Crypt::decryptString($storedKey), $key);
+            } catch (\Throwable $e) {
+                Log::warning('Recovery key decryption failed', ['error' => $e->getMessage()]);
+                $keyValid = false;
+            }
+        }
+
+        if (! $keyValid) {
             SmartLogger::warning('admin_recovery_invalid_key')
                 ->module('Setup')
                 ->event('admin.recovery.invalid_key')

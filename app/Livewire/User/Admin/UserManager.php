@@ -6,19 +6,15 @@ namespace App\Livewire\User\Admin;
 
 use App\Actions\User\CreateUserAction;
 use App\Actions\User\DeleteUserAction;
+use App\Actions\User\ResetUserPasswordAction;
+use App\Actions\User\ToggleUserStatusAction;
 use App\Actions\User\UpdateUserAction;
-use App\Enums\Auth\AccountStatus;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\User;
-use App\Notifications\User\AccountStatusNotification;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Computed;
 use Spatie\Permission\Models\Role;
 
-/**
- * Modernized User Manager using BaseRecordManager pattern.
- */
 class UserManager extends BaseRecordManager
 {
     public bool $userModal = false;
@@ -31,9 +27,6 @@ class UserManager extends BaseRecordManager
         'password' => '',
     ];
 
-    /**
-     * Define columns and sorting.
-     */
     public function headers(): array
     {
         return [
@@ -45,17 +38,11 @@ class UserManager extends BaseRecordManager
         ];
     }
 
-    /**
-     * Base query for users.
-     */
     protected function query(): Builder
     {
         return User::query()->with(['roles', 'statuses']);
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
@@ -65,9 +52,6 @@ class UserManager extends BaseRecordManager
         });
     }
 
-    /**
-     * Filter implementation.
-     */
     protected function applyFilters(Builder $query): Builder
     {
         return $query
@@ -84,8 +68,6 @@ class UserManager extends BaseRecordManager
     {
         return Role::all();
     }
-
-    // --- Record Actions ---
 
     public function createUser(): void
     {
@@ -138,7 +120,7 @@ class UserManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function toggleStatus(User $user): void
+    public function toggleStatus(User $user, ToggleUserStatusAction $action): void
     {
         if ($user->id === auth()->id()) {
             $this->error('Cannot change your own status.');
@@ -146,27 +128,17 @@ class UserManager extends BaseRecordManager
             return;
         }
 
-        $currentStatus = $user->latestStatus()?->name;
-        $newStatus =
-            $currentStatus === AccountStatus::VERIFIED->value
-                ? AccountStatus::SUSPENDED->value
-                : AccountStatus::VERIFIED->value;
+        $action->execute($user);
 
-        $user->setStatus($newStatus, 'Changed via User Manager');
-
-        // Notify User
-        $user->notify(new AccountStatusNotification($newStatus, 'Updated by Administrator'));
-
-        $this->success("User status changed to {$newStatus}. Notification sent.");
+        $this->success('User status changed. Notification sent.');
     }
 
-    public function resetPassword(User $user): void
+    public function resetPassword(User $user, ResetUserPasswordAction $action): void
     {
-        $newPassword = str()->random(10);
-        $user->update(['password' => Hash::make($newPassword)]);
+        $result = $action->execute($user);
 
         $this->info(
-            "Password reset to: {$newPassword}",
+            "Password reset to: {$result['new_password']}",
             'Temp Password',
             position: 'toast-bottom-center',
             timeout: 10000,
@@ -184,8 +156,6 @@ class UserManager extends BaseRecordManager
         $deleteAction->execute($user);
         $this->success('User deleted.');
     }
-
-    // --- Bulk Actions ---
 
     public function deleteSelected(DeleteUserAction $deleteAction): void
     {

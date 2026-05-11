@@ -25,9 +25,10 @@ it('has logo_url attribute', function () {
     expect($school->logo_url)->toBeNull();
 
     $file = UploadedFile::fake()->image('logo.png');
-    $school->setLogo($file);
+    $school->clearMediaCollection(School::COLLECTION_LOGO);
+    $school->addMedia($file)->toMediaCollection(School::COLLECTION_LOGO);
 
-    expect($school->logo_url)->not->toBeNull();
+    expect($school->fresh()->logo_url)->not->toBeNull();
 });
 
 it('has many departments', function () {

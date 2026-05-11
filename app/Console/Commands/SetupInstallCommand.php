@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Actions\Setup\GenerateSetupTokenAction;
 use App\Actions\Setup\ProvisionSystemAction;
 use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Data\Audit\AuditReport;
 use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
-use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
 use App\Support\SmartLogger;
 use Illuminate\Console\Command;
@@ -27,6 +27,7 @@ class SetupInstallCommand extends Command
 
     public function __construct(
         private EnvironmentAuditor $auditor,
+        private GenerateSetupTokenAction $generateToken,
     ) {
         parent::__construct();
         $this->description = __('setup.cli.starting_installation');
@@ -101,7 +102,7 @@ class SetupInstallCommand extends Command
                 }
             }
 
-            $tokenData = Setup::generateToken();
+            $tokenData = $this->generateToken->execute();
 
             $this->displaySuccess($tokenData['plaintext'], $tokenData['expires_at']);
 

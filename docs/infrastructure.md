@@ -1,38 +1,38 @@
-# Infrastructure & Dependencies
+# Infrastructure
 
-## Runtime
+## Runtime Requirements
 
-- PHP 8.4+, Laravel 13, Livewire 4
-- Database: SQLite (default), MySQL 8+, PostgreSQL 14+
-- Queue: `database` driver (default)
+- PHP 8.4 or higher
+- Node.js 20 or higher
+- Database: SQLite (default), MySQL 8+, MariaDB, or PostgreSQL 14+
+- Composer and npm
 
 ## Backend Packages
 
 | Package | Purpose |
 |---|---|
-| `spatie/laravel-permission` | RBAC with team support |
+| `spatie/laravel-permission` | Role-based access control with team support |
 | `spatie/laravel-medialibrary` | File attachments (School, Submission models) |
-| `spatie/laravel-activitylog` | Model change tracking |
-| `spatie/laravel-model-status` | Status tracking (User model) |
-| `spatie/laravel-model-states` | **Installed but unused** — Entities handle state |
+| `spatie/laravel-activitylog` | Model change tracking and audit trail |
+| `spatie/laravel-model-status` | Polymorphic status tracking on User model |
 | `spatie/laravel-honeypot` | Spam protection |
 | `barryvdh/laravel-dompdf` | PDF generation |
 | `php-flasher/flasher-laravel` | Flash messages |
-| `laravel-lang/lang` | Multi-language (ID/EN) |
-| `robsontenorio/mary` | maryUI Blade components |
-| `secondnetwork/blade-tabler-icons` | Icon set |
+| `robsontenorio/mary` | maryUI Blade component library |
+| `secondnetwork/blade-tabler-icons` | Tabler icon set |
 | `simplesoftwareio/simple-qrcode` | QR code generation |
+| `laravel-lang/lang` | Multi-language support (ID/EN) |
 
-## Frontend
+## Frontend Stack
 
-| Package | Purpose |
+| Tool | Purpose |
 |---|---|
-| Vite 7 | Bundler |
-| TailwindCSS 4 | CSS framework (CSS-first config) |
-| DaisyUI 5 | Component theme |
-| Alpine.js | Client behavior (via Livewire) |
-| Cropper.js | Image upload/crop |
-| Prettier | JS/Blade/PHP formatting |
+| Vite 7 | Asset bundler |
+| TailwindCSS 4 | CSS framework (CSS-first configuration) |
+| DaisyUI 5 | UI component themes |
+| Alpine.js | Client-side interactivity (bundled with Livewire) |
+| Cropper.js | Image cropping |
+| Prettier | Code formatting (JS, Blade, PHP) |
 
 ## Development Tools
 
@@ -41,25 +41,14 @@
 | Pest 4 | Testing framework |
 | PHPStan 2 | Static analysis (level 8) |
 | Laravel Pint | PHP code style |
-| Laravel Sail | Docker development |
+| Laravel Sail | Docker-based development |
 | Laravel Boost | MCP server for IDE integration |
 | Laravel Pail | Real-time log viewer |
 
 ## Composer Scripts
 
-```bash
-composer dev             # Start: server, queue, logs, vite
-composer test            # All tests
-composer test:coverage   # Tests with 80% min coverage
-composer test:arch       # Architecture tests only
-composer test:feature    # Feature tests only
-composer test:unit       # Unit tests only
-composer quality         # lint + analyse + arch
-composer quality:full    # format + strict analyse + coverage
-composer format          # Pint + Prettier
-composer lint            # Pint check + Prettier check
-```
+Run `composer.json` scripts for common tasks. The minimum coverage threshold and available commands are defined in the `scripts` section of `composer.json`.
 
 ## CI/CD
 
-GitHub Actions runs on every PR: quality (Pint, PHPStan), architecture tests, Pest with 80% coverage, and Trivy security scan. All jobs must pass before merging.
+GitHub Actions runs on every pull request: code quality (Pint, PHPStan), architecture tests, Pest with 80% coverage, and Trivy security scan.

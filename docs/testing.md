@@ -2,182 +2,55 @@
 
 ## Framework
 
-Pest 4 with `LazilyRefreshDatabase` for feature tests. PHPStan level 8 for static analysis. Laravel Pint for code style.
+Internara uses **Pest 4** for testing. Feature tests use `LazilyRefreshDatabase`. PHPStan (level 8) handles static analysis, and Laravel Pint enforces code style.
 
-## Structure
+## Test Structure
 
 ```
 tests/
-├── Arch/          # Architecture enforcement
-├── Unit/          # Isolated logic (no DB by default)
+├── Arch/          Architecture enforcement tests
+├── Unit/          Isolated logic tests (no database by default)
 │   ├── Casts/
-│   ├── Entities/  # Pure PHP domain objects — no database
+│   ├── Entities/  Pure PHP domain objects — no database needed
 │   ├── Exceptions/
-│   ├── Models/    # Eloquent model behavior
+│   ├── Models/    Eloquent model behavior
 │   ├── Services/
 │   └── Support/
-└── Feature/       # End-to-end workflows
-    ├── AdminRecovery/
-    ├── AppInstaller/
-    ├── AppSettings/
-    ├── UserManager/
-    └── ...        # Grouped by domain
+└── Feature/       End-to-end workflow tests grouped by domain
 ```
 
-### Suite Configuration (`tests/Pest.php`)
+### Suite Configuration
 
-- **Feature** — `TestCase` + `LazilyRefreshDatabase` (DB refreshed per test)
-- **Unit** — `TestCase` only (individual tests can opt in with `uses(RefreshDatabase::class)`)
-- **Arch** — no Pest configuration, runs standalone
+- **Feature** — `TestCase` + `LazilyRefreshDatabase` (database refreshed per test)
+- **Unit** — `TestCase` only (individual tests can opt in with `RefreshDatabase`)
+- **Arch** — Standalone, no database configuration
 
 ### Base TestCase
 
-`tests/TestCase.php` sets up two things in `setUp()`:
+`tests/TestCase.php` sets up two things:
 
-1. Creates `storage/app/.installed` lock file — bypasses the setup wizard during tests
-2. Registers `Gate::before` — grants all permissions to `super_admin` role users
+1. Creates a `.installed` lock file at the project root — this bypasses the setup wizard during tests
+2. Registers `Gate::before` — grants all permissions to users with the `super_admin` role
 
 ## Commands
 
 ```bash
-composer test              # Clear cache + all tests
-composer test:coverage     # 80% minimum coverage enforced
+composer test              # Clear cache + run all tests
 composer test:arch         # Architecture tests only
 composer test:feature      # Feature tests only
 composer test:unit         # Unit tests only
-composer quality           # lint + analyse + arch
-composer quality:full      # format + strict analyse + coverage
+composer quality           # Lint + static analysis + architecture tests
 ```
 
 ## Conventions
 
-### File Structure
-
 - `declare(strict_types=1)` at the top of every test file
-- Test files follow the pattern: `tests/{Suite}/{Domain}/{Name}Test.php`
-- Feature tests are grouped by domain context (e.g. `AppSettings/`, `AdminRecovery/`, `UserManager/`)
+- Test files follow: `tests/{Suite}/{Domain}/{Name}Test.php`
+- Feature tests are grouped by domain context (e.g. `AppSettings/`, `UserManager/`)
 
-### Architecture Tests
-
-Use Pest's `arch()` function to enforce structural invariants:
-
-```php
-arch('all domain models must extend BaseModel')
-    ->expect([Assessment::class, Assignment::class, ...])
-    ->toExtend(BaseModel::class);
-
-arch('all models must use HasUuids trait')
-    ->expect([Assessment::class, ...])
-    ->toUseTraits([HasUuids::class]);
-```
-
-### Unit Tests
-
-**Model tests** — create via factory, chain assertions with `and()`:
-
-```php
-it('can be created with factory', function () {
-    $user = UserFactory::new()->create();
-
-    expect($user)->toBeInstanceOf(User::class)
-        ->and($user->id)->toBeUuid();
-});
-```
-
-**Entity tests** — instantiate directly, no database needed:
-
-```php
-it('detects suspended status', function () {
-    $entity = new Apprentice(
-        status: AccountStatus::SUSPENDED,
-        isLocked: false,
-        setupRequired: false,
-    );
-
-    expect($entity->isSuspended())->toBeTrue();
-});
-```
-
-**Support tests** — use `describe()` for grouping, `beforeEach` for setup:
-
-```php
-describe('resolution chain', function () {
-    beforeEach(function () {
-        Settings::clearOverrides();
-        Cache::clear();
-    });
-
-    it('resolves runtime overrides first', function () {
-        Settings::override(['theme' => 'dark']);
-        expect(Settings::get('theme'))->toBe('dark');
-    });
-});
-```
-
-### Feature Tests
-
-**Action tests** — resolve actions from the container:
-
-```php
-it('creates a new admin user', function () {
-    $user = app(RecoverAdminAccessAction::class)->execute(
-        email: 'admin@internara.test',
-        password: 'secure-password',
-    );
-
-    expect($user)->toBeInstanceOf(User::class);
-});
-```
-
-**Livewire tests** — use `Livewire::test(Component::class)`:
-
-```php
-it('renders the user manager page', function () {
-    Livewire::test(UserManager::class)
-        ->assertSuccessful()
-        ->assertSet('search', '');
-});
-
-it('filters users by name', function () {
-    User::factory()->create(['name' => 'Alice']);
-    User::factory()->create(['name' => 'Bob']);
-
-    Livewire::test(UserManager::class)
-        ->set('search', 'Alice')
-        ->assertSee('Alice')
-        ->assertDontSee('Bob');
-});
-```
-
-**Behavior grouping** — use `describe()` to organize related scenarios:
-
-```php
-describe('create mode', function () {
-    it('creates a new admin user', function () { ... });
-    it('assigns the PROTECTED status', function () { ... });
-});
-
-describe('reset mode', function () {
-    it('resets the password', function () { ... });
-});
-```
-
-**Shared setup** — use `beforeEach()` for common test prerequisites:
-
-```php
-beforeEach(function () {
-    Role::create(['name' => 'super_admin', 'guard_name' => 'web']);
-    $this->admin = User::factory()->create();
-    $this->admin->assignRole('super_admin');
-    $this->actingAs($this->admin);
-});
-```
-
-### Factories
+## Factories
 
 Every model has a corresponding factory in `database/factories/`. Use `fake()` or `$this->faker` for test data.
-
-**UserFactory states:**
 
 | State | Purpose |
 |---|---|
@@ -186,40 +59,6 @@ Every model has a corresponding factory in `database/factories/`. Use `fake()` o
 | `->unverified()` | Sets `email_verified_at = null` |
 | `->withPassword($pw)` | Hashes and sets a custom password |
 
-Nested factory creation is supported (e.g. `InternshipFactory` automatically creates an `AcademicYear`).
+## Test Environment
 
-### Seeders
-
-`DatabaseSeeder` calls only:
-
-1. `RolePermissionSeeder` — creates roles and permissions
-2. `AppSettingSeeder` — seeds default application settings
-
-### Assertions Quick Reference
-
-| Pattern | Use for |
-|---|---|
-| `expect($x)->toBeInstanceOf()` | Type checks |
-| `expect($x)->toBeTrue()/toBeFalse()` | Boolean assertions |
-| `expect($x)->and($y)` | Chained assertions |
-| `expect($x)->toBeUuid()` | UUID format validation |
-| `expect($x)->toHaveCount()` | Collection size |
-| `expect($x)->toHaveKey()` | Array key existence |
-| `assertDatabaseHas()` | Database state checks |
-| `Notification::assertSentTo()` | Notification delivery |
-| `Notification::assertNothingSent()` | No notifications sent |
-| `Livewire::test()` | Component testing |
-
-### Test Environment
-
-Configured in `phpunit.xml`:
-
-| Setting | Value |
-|---|---|
-| Database | SQLite `:memory:` |
-| Cache | `array` |
-| Queue | `sync` |
-| Session | `array` |
-| Mail | `array` |
-| Bcrypt rounds | 4 |
-| Pulse/Telescope/Nightwatch | Disabled |
+See `phpunit.xml` for the full test environment configuration. Feature tests use `LazilyRefreshDatabase` with SQLite in-memory, and all external services (cache, queue, mail, session) are replaced with `array`/`sync` drivers. Pulse is disabled during tests.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\AccountRecoveryCode\RecoveryCodeState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -18,25 +19,8 @@ class AccountRecoveryCode extends BaseModel
         'expires_at' => 'datetime',
     ];
 
-    public function isValid(): bool
+    public function asRecoveryCodeState(): RecoveryCodeState
     {
-        return $this->used_at === null
-            && $this->expires_at !== null
-            && $this->expires_at->isFuture();
-    }
-
-    public function markAsUsed(): void
-    {
-        $this->update(['used_at' => now()]);
-    }
-
-    public static function generateCode(): string
-    {
-        $length = 12;
-        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-        return collect(range(1, $length))
-            ->map(fn () => $chars[random_int(0, strlen($chars) - 1)])
-            ->implode('');
+        return RecoveryCodeState::fromModel($this);
     }
 }

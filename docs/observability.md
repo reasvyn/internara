@@ -1,31 +1,31 @@
-# Observability: Logging & Audits
+# Observability
 
 ## SmartLogger
 
-`App\Support\SmartLogger` is the unified fluent logger providing dual-channel output:
+`SmartLogger` is the unified logging interface that writes to both the system log and the activity log:
 
 ```php
 SmartLogger::info('Internship approved')
-    ->for($user)              // Set causer
-    ->about($internship)     // Set subject
-    ->withPayload([...])      // Add context
-    ->module('Internship')    // Set log_name
-    ->event('approved')      // Set event type
-    ->withPiiMasking()       // Mask sensitive data
-    ->save();                // Default: both channels
+    ->for($user)
+    ->about($internship)
+    ->withPayload([...])
+    ->module('Internship')
+    ->event('approved')
+    ->withPiiMasking()
+    ->save();
 ```
 
-| Method | Channel |
+| Method | Channels |
 |---|---|
 | `->both()` (default) | System log + Activity log |
-| `->systemOnly()` | Laravel `Log` facade only |
-| `->activityOnly()` | Spatie `activity()` only |
+| `->systemOnly()` | Laravel Log facade only |
+| `->activityOnly()` | Spatie activity log only |
 
-PII masking via `App\Support\PiiMasker::maskArray()`.
+PII masking is handled by `App\Support\PiiMasker::maskArray()`.
 
 ## Audit Logging
 
-`App\Actions\Core\LogAuditAction` wraps SmartLogger for audit entries. It defaults to **activity-only** logging:
+`LogAuditAction` wraps SmartLogger for audit entries. It defaults to activity-only logging:
 
 ```php
 $logAudit->execute(
@@ -37,32 +37,20 @@ $logAudit->execute(
 );
 ```
 
-Audit logs are immutable — never updated or deleted through the application.
+Audit logs are immutable — they are never updated or deleted through the application.
 
-## Activity Log Schema
+## Activity Log
 
-Spatie `activity_log` table (`App\Models\ActivityLog` extends Spatie's `Activity`):
+The `activity_log` table tracks who did what, when, and on which entity. Each entry records the actor (causer), target (subject), event type, and contextual properties.
 
-| Field | Description |
-|---|---|
-| `log_name` | Business domain (module) |
-| `description` | Event description |
-| `subject_type` / `subject_id` | Target entity |
-| `causer_id` / `causer_type` | User who performed the action |
-| `properties` | Contextual details (payload, ip, user_agent) |
-| `event` | Event type (`created`, `updated`, `deleted`, `login`, etc.) |
-| `batch_uuid` | Groups related activities |
+The custom `App\Models\ActivityLog` model provides scopes for filtering by user, subject, action, log name, date range, and module.
 
-Custom scopes on `ActivityLog`: `forUser()`, `forSubject()`, `ofAction()`, `inLog()`, `recent()`, `lastDays()`, `forModule()`, `groupedByDay()`.
+> **Note**: See [Known Issues](known-issues.md) for the activity model configuration issue.
 
 ## Application Logs
 
-Laravel `Log` facade with daily rotation (14 days) in `storage/logs/`. Levels: `debug`, `info`, `warning`, `error`. Never log raw PII or credentials.
+Laravel's `Log` facade writes to `storage/logs/` with daily rotation. Levels: `debug`, `info`, `warning`, `error`. Raw PII or credentials are never logged.
 
 ## Laravel Pulse
 
-Dashboard at `/pulse` monitors system resources, slow routes/queries/jobs, active users, and cache ratios. Configured via `config/pulse.php`.
-
-## Known Issue
-
-`config/activitylog.php` points to Spatie's default `Activity::class`, not the custom `ActivityLog::class`. This means `activity()` and `SmartLogger` create `Activity` instances — custom scopes on `ActivityLog` are not available through the standard pipeline. See [Known Issues](known-issues.md).
+Pulse is available at `/pulse` for monitoring system resources, slow routes, slow queries, queue health, and more. Configured via `config/pulse.php`.

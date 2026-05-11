@@ -36,19 +36,6 @@ class Notification extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Mark notification as read.
-     */
-    public function markAsRead(): void
-    {
-        if (! $this->is_read) {
-            $this->update([
-                'is_read' => true,
-                'read_at' => now(),
-            ]);
-        }
-    }
-
     public function asNotificationStatus(): NotificationStatus
     {
         return NotificationStatus::fromModel($this);

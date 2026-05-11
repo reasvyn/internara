@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\School;
 
 use App\Actions\Core\LogAuditAction;
-use App\Models\School\AcademicYear;
+use App\Models\AcademicYear;
 use Illuminate\Support\Facades\DB;
 
 /**

@@ -7,7 +7,7 @@ namespace App\Livewire\Schedule;
 use App\Actions\Schedule\CreateScheduleAction;
 use App\Actions\Schedule\DeleteScheduleAction;
 use App\Actions\Schedule\UpdateScheduleAction;
-use App\Models\Schedule\Schedule;
+use App\Models\Schedule;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;

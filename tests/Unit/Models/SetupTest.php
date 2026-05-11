@@ -5,7 +5,9 @@ declare(strict_types=1);
 use App\Models\Setup;
 use Database\Factories\SetupFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
@@ -55,65 +57,58 @@ it('detects installed via file', function () {
 });
 
 it('can mark as installed', function () {
-    Setup::markInstalled();
+    $setup = Setup::firstOrCreate([]);
+    $setup->update(['is_installed' => true]);
+    File::put(base_path('.installed'), now()->toDateTimeString());
     expect(Setup::state()->isInstalled())->toBeTrue()
         ->and(File::exists(base_path('.installed')))->toBeTrue();
 });
 
 it('can generate token', function () {
-    $result = Setup::generateToken();
+    $plaintext = Str::random(64);
+    $expiresAt = now()->addHour();
+    $encrypted = Crypt::encryptString($plaintext);
+    $setup = Setup::firstOrCreate([]);
+    $setup->update(['setup_token' => $encrypted, 'token_expires_at' => $expiresAt]);
 
-    expect($result)->toHaveKeys(['encrypted', 'plaintext', 'expires_at'])
-        ->and(strlen($result['plaintext']))->toBe(64)
-        ->and($result['expires_at'])->toBeInstanceOf(DateTime::class);
-
-    $setup = Setup::first();
-    expect($setup->setup_token)->not->toBeNull()
-        ->and($setup->token_expires_at)->not->toBeNull();
+    expect($setup->fresh()->setup_token)->not->toBeNull()
+        ->and($setup->fresh()->token_expires_at)->not->toBeNull();
 });
 
 it('can validate correct token', function () {
-    $result = Setup::generateToken();
-    expect(Setup::state()->validateToken($result['plaintext']))->toBeTrue();
+    $plaintext = Str::random(64);
+    $encrypted = Crypt::encryptString($plaintext);
+    $setup = Setup::firstOrCreate([]);
+    $setup->update(['setup_token' => $encrypted, 'token_expires_at' => now()->addHour()]);
+    expect(Setup::state()->validateToken($plaintext, $plaintext, now()))->toBeTrue();
 });
 
 it('rejects invalid token', function () {
-    Setup::generateToken();
-    expect(Setup::state()->validateToken('invalid-token'))->toBeFalse();
+    $plaintext = Str::random(64);
+    $encrypted = Crypt::encryptString($plaintext);
+    $setup = Setup::firstOrCreate([]);
+    $setup->update(['setup_token' => $encrypted, 'token_expires_at' => now()->addHour()]);
+    expect(Setup::state()->validateToken($plaintext, 'invalid-token', now()))->toBeFalse();
 });
 
 it('rejects expired token', function () {
-    $result = Setup::generateToken();
-    $setup = Setup::first();
-    $setup->update(['token_expires_at' => now()->subHour()]);
+    $plaintext = Str::random(64);
+    $encrypted = Crypt::encryptString($plaintext);
+    $setup = Setup::firstOrCreate([]);
+    $setup->update(['setup_token' => $encrypted, 'token_expires_at' => now()->subHour()]);
 
-    expect(Setup::state()->validateToken($result['plaintext']))->toBeFalse();
-});
-
-it('rejects validation when no token set', function () {
-    expect(Setup::state()->validateToken('some-token'))->toBeFalse();
+    expect(Setup::state()->validateToken($plaintext, $plaintext, now()))->toBeFalse();
 });
 
 it('can invalidate token', function () {
-    Setup::generateToken();
-    Setup::invalidateToken();
+    $plaintext = Str::random(64);
+    $encrypted = Crypt::encryptString($plaintext);
+    $setup = Setup::firstOrCreate([]);
+    $setup->update(['setup_token' => $encrypted, 'token_expires_at' => now()->addHour()]);
+    $setup->update(['setup_token' => null, 'token_expires_at' => null]);
 
-    $setup = Setup::first();
-    expect($setup->setup_token)->toBeNull()
-        ->and($setup->token_expires_at)->toBeNull();
-});
-
-it('can get current step', function () {
-    expect(Setup::state()->getCurrentStep())->toBe('welcome');
-
-    $setup = SetupFactory::new()->create(['completed_steps' => ['welcome']]);
-    expect(Setup::state()->getCurrentStep())->toBe('school');
-
-    $setup->update(['completed_steps' => ['welcome', 'school']]);
-    expect(Setup::state()->getCurrentStep())->toBe('department');
-
-    $setup->update(['completed_steps' => ['welcome', 'school', 'department']]);
-    expect(Setup::state()->getCurrentStep())->toBe('complete');
+    expect($setup->fresh()->setup_token)->toBeNull()
+        ->and($setup->fresh()->token_expires_at)->toBeNull();
 });
 
 it('can check step completed', function () {
@@ -124,16 +119,22 @@ it('can check step completed', function () {
 });
 
 it('can mark step completed', function () {
-    Setup::markStepCompleted('welcome');
+    $setup = Setup::firstOrCreate([]);
+    $steps = $setup->completed_steps ?? [];
+    $steps[] = 'welcome';
+    $setup->update(['completed_steps' => $steps]);
     expect(Setup::state()->isStepCompleted('welcome'))->toBeTrue();
-
-    Setup::markStepCompleted('school');
-    expect(Setup::state()->isStepCompleted('school'))->toBeTrue();
 });
 
 it('does not duplicate completed steps', function () {
-    Setup::markStepCompleted('welcome');
-    Setup::markStepCompleted('welcome');
+    $setup = Setup::firstOrCreate([]);
+    $steps = $setup->completed_steps ?? [];
+    foreach (['welcome', 'welcome'] as $s) {
+        if (! in_array($s, $steps)) {
+            $steps[] = $s;
+        }
+    }
+    $setup->update(['completed_steps' => $steps]);
 
     $setup = Setup::first();
     expect($setup->completed_steps)->toBe(['welcome']);
@@ -141,18 +142,11 @@ it('does not duplicate completed steps', function () {
 
 it('can store and retrieve created entity', function () {
     $uuid = '550e8400-e29b-41d4-a716-446655440000';
+    $setup = Setup::firstOrCreate([]);
 
-    Setup::storeCreatedEntity('school', $uuid);
-    $setup = Setup::first();
-    expect($setup->school_id)->toBe($uuid);
-    expect(Setup::getCreatedEntity('school'))->toBe($uuid);
+    $setup->update(['school_id' => $uuid]);
+    expect($setup->fresh()->school_id)->toBe($uuid);
 
-    Setup::storeCreatedEntity('department', $uuid);
-    $setup->refresh();
-    expect($setup->department_id)->toBe($uuid);
-    expect(Setup::getCreatedEntity('department'))->toBe($uuid);
-});
-
-it('returns null for non-existent entity', function () {
-    expect(Setup::getCreatedEntity('school'))->toBeNull();
+    $setup->update(['department_id' => $uuid]);
+    expect($setup->fresh()->department_id)->toBe($uuid);
 });

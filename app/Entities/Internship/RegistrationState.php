@@ -37,22 +37,26 @@ final readonly class RegistrationState extends BaseEntity
         return $this->status === 'pending';
     }
 
-    public function isCurrentlyOngoing(): bool
+    public function isCurrentlyOngoing(?Carbon $today = null): bool
     {
+        $today ??= new Carbon;
+
         if (! $this->startDate || ! $this->endDate) {
             return false;
         }
 
-        return Carbon::today()->between($this->startDate, $this->endDate, true);
+        return $today->between($this->startDate, $this->endDate, true);
     }
 
-    public function hasEnded(): bool
+    public function hasEnded(?Carbon $today = null): bool
     {
+        $today ??= new Carbon;
+
         if (! $this->endDate) {
             return false;
         }
 
-        return Carbon::today()->isAfter($this->endDate);
+        return $today->isAfter($this->endDate);
     }
 
     public function canBeApproved(): bool
@@ -60,13 +64,15 @@ final readonly class RegistrationState extends BaseEntity
         return $this->isPending() && $this->hasPlacement;
     }
 
-    public function daysRemaining(): int
+    public function daysRemaining(?Carbon $today = null): int
     {
+        $today ??= new Carbon;
+
         if (! $this->endDate) {
             return 0;
         }
 
-        return max(0, (int) Carbon::today()->diffInDays($this->endDate, false));
+        return max(0, (int) $today->diffInDays($this->endDate, false));
     }
 
     public function totalDuration(): int

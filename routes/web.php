@@ -2,14 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\AcademicController;
-use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HandbookController;
-use App\Http\Controllers\MentorController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\TeacherController;
+use App\Livewire\Admin\AccountLifecycleManager;
 use App\Livewire\Admin\SystemSetting;
 use App\Livewire\Assessment\AssessmentGrading;
 use App\Livewire\Assessment\AssessmentView;
@@ -28,6 +23,8 @@ use App\Livewire\Dashboard\StudentDashboard;
 use App\Livewire\Dashboard\SupervisorDashboard as MentorDashboard;
 use App\Livewire\Dashboard\TeacherDashboard;
 use App\Livewire\Document\Admin\ReportsManager;
+use App\Livewire\Evaluation\MentorEvaluationManager;
+use App\Livewire\Guidance\HandbookIndex;
 use App\Livewire\Internship\AccountApplicationForm;
 use App\Livewire\Internship\ApplicationReview;
 use App\Livewire\Internship\CompanyIndex;
@@ -42,16 +39,20 @@ use App\Livewire\Logbook\LogbookEntry;
 use App\Livewire\Logbook\LogbookManager;
 use App\Livewire\Mentor\Supervision\SupervisionManager;
 use App\Livewire\Mentor\Supervision\SupervisorLogManager;
+use App\Livewire\Schedule\ScheduleIndex;
+use App\Livewire\School\AcademicYearIndex;
 use App\Livewire\School\DepartmentManager;
 use App\Livewire\School\SchoolEditor;
 use App\Livewire\Setup\SetupWizard;
 use App\Livewire\Submission\Grading\SubmissionGrading;
+use App\Livewire\Teacher\AssessInternship;
 use App\Livewire\User\Admin\AdminManager;
 use App\Livewire\User\Admin\MenteeManager;
 use App\Livewire\User\Admin\MentorManager;
 use App\Livewire\User\Admin\StudentManager;
 use App\Livewire\User\Admin\TeacherManager;
 use App\Livewire\User\Admin\UserManager;
+use App\Livewire\User\EditProfile;
 use App\Livewire\User\RecoveryCode;
 use Illuminate\Support\Facades\Route;
 
@@ -85,7 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/user/confirm-password', ConfirmPassword::class)->name('password.confirm');
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::livewire('/profile', ProfileEditor::class)->name('profile');
+    Route::livewire('/profile', EditProfile::class)->name('profile');
     Route::livewire('/profile/recovery', RecoveryCode::class)->name('profile.recovery');
     Route::livewire('/notifications', NotificationCenter::class)->name('notifications');
 
@@ -112,22 +113,13 @@ Route::prefix('admin')
         Route::livewire('/departments', DepartmentManager::class)->name('departments');
         Route::livewire('/companies', CompanyIndex::class)->name('companies');
         Route::livewire('/internships', InternshipManager::class)->name('internships');
-        Route::livewire('/internships/placements', PlacementIndex::class)->name(
-            'internships.placements',
-        );
-        Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name(
-            'internships.placements.direct',
-        );
-        Route::livewire('/internships/{internship}/requirements', RequirementManager::class)->name(
-            'internships.requirements',
-        );
-        Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name(
-            'internships.registrations.pending',
-        );
+        Route::livewire('/internships/placements', PlacementIndex::class)->name('internships.placements');
+        Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
+        Route::livewire('/internships/{internship}/requirements', RequirementManager::class)->name('internships.requirements');
+        Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name('internships.registrations.pending');
         Route::livewire('/applications', ApplicationReview::class)->name('applications');
         Route::livewire('/settings', SystemSetting::class)->name('settings');
 
-        // Admin -> Users
         Route::prefix('users')->name('users.')->group(function () {
             Route::livewire('/', UserManager::class)->name('index');
             Route::livewire('/admins', AdminManager::class)->name('admins');
@@ -137,68 +129,22 @@ Route::prefix('admin')
             Route::livewire('/mentees', MenteeManager::class)->name('mentees');
         });
 
-        // Admin -> Reports
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::livewire('/', ReportsManager::class)->name('index');
-            Route::get('/{report}/download', [ReportController::class, 'download'])->name(
-                'download',
-            );
+            Route::get('/{report}/download', [ReportController::class, 'download'])->name('download');
         });
 
-        // Admin -> Assignments
         Route::livewire('/assignments', AdminAssignmentManager::class)->name('assignments');
-
-        // Admin -> Submission Grading
         Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
 
-        // Admin -> Assessment
         Route::livewire('/assessments/rubrics', RubricManager::class)->name('assessments.rubrics');
         Route::livewire('/assessments/{registration}/grade', AssessmentGrading::class)->name('assessments.grade');
 
-        // Admin -> Handbooks
-        Route::prefix('handbooks')->name('handbooks.')->group(function () {
-            Route::get('/', [HandbookController::class, 'index'])->name('index');
-            Route::post('/', [HandbookController::class, 'store'])->name('store');
-            Route::post('/{handbook}/acknowledge', [HandbookController::class, 'acknowledge'])->name(
-                'acknowledge',
-            );
-        });
-
-        // Admin -> Schedules
-        Route::prefix('schedules')->name('schedules.')->group(function () {
-            Route::get('/', [ScheduleController::class, 'index'])->name('index');
-            Route::post('/', [ScheduleController::class, 'store'])->name('store');
-            Route::put('/{schedule}', [ScheduleController::class, 'update'])->name('update');
-            Route::delete('/{schedule}', [ScheduleController::class, 'destroy'])->name('destroy');
-        });
-
-        // Admin -> Academic Years
-        Route::prefix('academic-years')->name('academic-years.')->group(function () {
-            Route::get('/', [AcademicController::class, 'index'])->name('index');
-            Route::post('/', [AcademicController::class, 'store'])->name('store');
-            Route::post('/{year}/activate', [AcademicController::class, 'activate'])->name(
-                'activate',
-            );
-        });
-
-        // Admin -> Account Lifecycle
-        Route::prefix('accounts')->name('accounts.')->group(function () {
-            Route::get('/lifecycle', [AccountController::class, 'index'])->name(
-                'lifecycle',
-            );
-            Route::post('/{user}/lock', [AccountController::class, 'lock'])->name('lock');
-            Route::post('/{user}/unlock', [AccountController::class, 'unlock'])->name(
-                'unlock',
-            );
-            Route::get('/detect-clones', [AccountController::class, 'detectClones'])->name(
-                'detect-clones',
-            );
-        });
-
-        // Admin -> Recovery Slips
-        Route::livewire('/recovery-slips', RecoverySlipManager::class)->name(
-            'recovery-slips',
-        );
+        Route::livewire('/handbooks', HandbookIndex::class)->name('handbooks.index');
+        Route::livewire('/schedules', ScheduleIndex::class)->name('schedules.index');
+        Route::livewire('/academic-years', AcademicYearIndex::class)->name('academic-years.index');
+        Route::livewire('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');
+        Route::livewire('/recovery-slips', RecoverySlipManager::class)->name('recovery-slips');
     });
 
 /*
@@ -224,9 +170,7 @@ Route::prefix('student')
         Route::livewire('/assignments', StudentSubmission::class)->name('assignments');
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
         Route::livewire('/assessments', AssessmentView::class)->name('assessments');
-        Route::livewire('/internships/register', RegistrationWizard::class)->name(
-            'internships.register',
-        );
+        Route::livewire('/internships/register', RegistrationWizard::class)->name('internships.register');
     });
 
 /*
@@ -253,9 +197,7 @@ Route::prefix('teacher')
     ->group(function () {
         Route::livewire('/dashboard', TeacherDashboard::class)->name('dashboard');
         Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
-        Route::get('/assess-internship', [TeacherController::class, 'assessInternship'])->name(
-            'assess-internship',
-        );
+        Route::livewire('/assess-internship', AssessInternship::class)->name('assess-internship');
     });
 
 /*
@@ -268,5 +210,5 @@ Route::prefix('mentor')
     ->middleware(['auth', 'role:supervisor'])
     ->group(function () {
         Route::livewire('/dashboard', MentorDashboard::class)->name('dashboard');
-        Route::post('/{mentor}/evaluate', [MentorController::class, 'evaluate'])->name('evaluate');
+        Route::livewire('/evaluate', MentorEvaluationManager::class)->name('evaluate');
     });

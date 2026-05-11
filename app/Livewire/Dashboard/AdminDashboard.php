@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Livewire\Dashboard;
 
-use App\Enums\Auth\Role as RoleEnum;
-use App\Models\Internship;
-use App\Models\School\Department;
-use App\Models\User;
+use App\Actions\Dashboard\GetAdminDashboardStatsAction;
 use App\Services\SystemAuditService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class Dashboard extends Component
+class AdminDashboard extends Component
 {
     public int $totalStudents = 0;
 
@@ -24,15 +21,15 @@ class Dashboard extends Component
 
     public array $readiness = [];
 
-    public function mount(SystemAuditService $auditService): void
+    public function mount(GetAdminDashboardStatsAction $statsAction, SystemAuditService $auditService): void
     {
-        $this->totalStudents = User::role(RoleEnum::STUDENT->value)->count();
-        $this->totalTeachers = User::role(RoleEnum::TEACHER->value)->count();
-        $this->totalDepartments = Department::count();
-        $this->activeInternships = Internship::where('status', 'active')->count();
+        $stats = $statsAction->execute();
 
-        // Map old structure to view requirements if SystemAuditService was modified.
-        // Assuming $auditService->run() returns array of checks.
+        $this->totalStudents = $stats['totalStudents'];
+        $this->totalTeachers = $stats['totalTeachers'];
+        $this->totalDepartments = $stats['totalDepartments'];
+        $this->activeInternships = $stats['activeInternships'];
+
         $results = $auditService->run();
         $this->readiness = [
             'database' => ['label' => 'Database Connection', 'passed' => $results['database'] ?? true],

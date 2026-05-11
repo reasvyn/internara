@@ -99,7 +99,7 @@
                             <p class="text-[9px] uppercase font-black tracking-[0.3em] text-primary/40 mt-1">Template / Guide</p>
                         </div>
                     </div>
-                    <a href="{{ $selectedAssignment->document->fileUrl() }}" target="_blank" class="btn btn-primary btn-sm rounded-[1.5rem] font-black uppercase tracking-wider text-[10px] px-6 shadow-lg shadow-primary/20">
+                    <a href="{{ $selectedAssignment->document->getFirstMediaUrl('file') }}" target="_blank" class="btn btn-primary btn-sm rounded-[1.5rem] font-black uppercase tracking-wider text-[10px] px-6 shadow-lg shadow-primary/20">
                         <x-mary-icon name="o-arrow-down-tray" class="size-4" />
                         Download
                     </a>

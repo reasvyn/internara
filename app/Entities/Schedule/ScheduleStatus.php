@@ -23,15 +23,17 @@ final readonly class ScheduleStatus extends BaseEntity
         );
     }
 
-    public function isOngoing(): bool
+    public function isOngoing(?Carbon $now = null): bool
     {
-        $now = Carbon::now();
+        $now ??= new Carbon;
 
         return $this->startAt <= $now && ($this->endAt === null || $this->endAt >= $now);
     }
 
-    public function isUpcoming(): bool
+    public function isUpcoming(?Carbon $now = null): bool
     {
-        return $this->startAt > Carbon::now();
+        $now ??= new Carbon;
+
+        return $this->startAt > $now;
     }
 }

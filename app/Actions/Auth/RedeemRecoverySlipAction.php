@@ -29,7 +29,7 @@ class RedeemRecoverySlipAction
                 ->latest('generated_at')
                 ->first();
 
-            if (! $recoveryCode || ! $recoveryCode->isValid()) {
+            if (! $recoveryCode || ! $recoveryCode->asRecoveryCodeState()->isValid()) {
                 throw new RuntimeException(__('passwords.token'));
             }
 
@@ -45,7 +45,7 @@ class RedeemRecoverySlipAction
             }
 
             $user->update(['password' => Hash::make($newPassword)]);
-            $recoveryCode->markAsUsed();
+            $recoveryCode->update(['used_at' => now()]);
 
             $this->logAudit->execute(
                 action: 'recovery_slip_redeemed',

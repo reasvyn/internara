@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Mentor;
 
 use App\Actions\Core\LogAuditAction;
+use App\Enums\Auth\Role;
 use App\Models\Mentor;
 use App\Models\User;
 use App\Rules\User\SystemUsername;
@@ -20,7 +21,10 @@ class CreateMentorAction
     public function execute(array $userData, array $mentorData, ?string $role = null): Mentor
     {
         $mentorData['type'] ??= Mentor::TYPE_SCHOOL_TEACHER;
-        $role ??= Mentor::roleForType($mentorData['type']);
+        $role ??= match ($mentorData['type']) {
+            Mentor::TYPE_INDUSTRY_SUPERVISOR => Role::SUPERVISOR->value,
+            default => Role::TEACHER->value,
+        };
 
         $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername();
 

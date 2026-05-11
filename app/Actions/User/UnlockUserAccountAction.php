@@ -28,13 +28,16 @@ class UnlockUserAccountAction
      */
     public function execute(User $user): void
     {
-        if (! $user->isLocked()) {
+        if ($user->locked_at === null) {
             return;
         }
 
         $this->withErrorHandling(function () use ($user) {
             DB::transaction(function () use ($user) {
-                $user->unlock();
+                $user->update([
+                    'locked_at' => null,
+                    'locked_reason' => null,
+                ]);
 
                 $this->logAuditAction->execute(
                     action: 'user_account_unlocked',

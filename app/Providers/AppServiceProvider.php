@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::anonymousComponentPath(resource_path('views/layouts'), 'layout');
+        Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
         Blade::anonymousComponentPath(resource_path('views/components/ui'), 'ui');
     }
 }

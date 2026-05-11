@@ -1,21 +1,14 @@
-# Internara: Internship Management System
+# Internara
 
-Internara is a self-hosted internship management system built for schools, vocational programs, and educational institutions. It manages the full internship lifecycle — from registration to final reporting.
+Internara is a self-hosted internship management system for schools, vocational programs, and educational institutions. It manages the full internship lifecycle — from registration to final reporting.
 
-## What It Does
-
-- **For Schools**: Manage departments, academic years, and company partnerships.
-- **For Students**: Log attendance, journals, and track competency progress.
-- **For Teachers & Mentors**: Manage placements, assessments, and supervision visits.
+- **For schools** — manage departments, academic years, and company partnerships
+- **For students** — log attendance, journals, track competency progress, and submit assignments
+- **For teachers** — manage placements, assessments, supervision visits, and grading
+- **For supervisors** — evaluate students and provide industry feedback
 
 ## Quick Start
 
-### Prerequisites
-- PHP 8.4+
-- Node.js 20+
-- SQLite, MySQL, or PostgreSQL
-
-### Installation
 ```bash
 git clone https://github.com/reasvyn/internara.git
 cd internara
@@ -25,11 +18,7 @@ php artisan key:generate
 php artisan setup:install
 ```
 
-Follow the setup wizard to configure your school and admin account. Access the application at `http://localhost:8000`.
-
-## Architecture
-
-Internara follows a **flat Action-Oriented MVC** architecture. Business logic is encapsulated in stateless **Actions** under `app/Actions/{Context}/`, business rules live in pure **Entities** under `app/Entities/{Context}/`, and persistence is handled by **Models** under `app/Models/`.
+Follow the setup wizard to configure your school and admin account. Access the app at `http://localhost:8000`.
 
 ## Documentation
 
@@ -42,7 +31,7 @@ Internara follows a **flat Action-Oriented MVC** architecture. Business logic is
 - [Infrastructure](docs/infrastructure.md)
 
 ### Security & Access
-- [RBAC & Lifecycle](docs/rbac.md)
+- [RBAC](docs/rbac.md)
 - [Observability](docs/observability.md)
 
 ### Frontend & UI
@@ -56,4 +45,5 @@ Internara follows a **flat Action-Oriented MVC** architecture. Business logic is
 - [Known Issues](docs/known-issues.md)
 
 ## License
+
 MIT License.

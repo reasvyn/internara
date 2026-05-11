@@ -6,31 +6,42 @@ namespace App\Actions\Setup;
 
 use App\Events\Setup\SetupFinalized;
 use App\Models\Setup;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 final class FinalizeSetupAction
 {
     public function execute(): string
     {
+        $setup = Setup::firstOrCreate([]);
+
         // Mark as installed
-        Setup::markInstalled();
+        $setup->update(['is_installed' => true]);
+        File::put(base_path('.installed'), now()->toDateTimeString());
 
         // Generate recovery key for break-glass admin recovery
-        $recoveryKey = Setup::generateRecoveryKey();
+        $plaintext = Str::random(64);
+        $encrypted = Crypt::encryptString($plaintext);
+        $setup->update(['recovery_key' => $encrypted]);
 
         // Invalidate token
-        Setup::invalidateToken();
+        $setup->update([
+            'setup_token' => null,
+            'token_expires_at' => null,
+        ]);
 
         // Dispatch domain event
         Event::dispatch(new SetupFinalized(
-            schoolId: Setup::first()?->school_id,
+            schoolId: $setup->school_id,
             installedAt: now()->toDateTimeImmutable(),
         ));
 
         // Clear session
         Session::forget(['setup.authorized', 'setup.token', 'setup.token_input', 'setup.form_data']);
 
-        return $recoveryKey;
+        return $plaintext;
     }
 }

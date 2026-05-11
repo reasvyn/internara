@@ -6,19 +6,23 @@ namespace App\Actions\Logbook;
 
 use App\Actions\Core\LogAuditAction;
 use App\Models\Logbook;
-use App\Models\User;
+use App\Models\Registration;
 use Illuminate\Support\Facades\DB;
 
 class CreateLogbookAction
 {
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    public function execute(User $user, array $data): Logbook
+    public function execute(string $userId, array $data): Logbook
     {
-        return DB::transaction(function () use ($user, $data) {
+        return DB::transaction(function () use ($userId, $data) {
+            $registration = Registration::where('user_id', $userId)
+                ->where('status', 'active')
+                ->firstOrFail();
+
             $entry = Logbook::create([
-                'user_id' => $user->id,
-                'registration_id' => $data['registration_id'],
+                'user_id' => $userId,
+                'registration_id' => $registration->id,
                 'date' => $data['date'],
                 'content' => $data['content'],
                 'learning_outcomes' => $data['learning_outcomes'] ?? null,
@@ -33,7 +37,7 @@ class CreateLogbookAction
                 subjectType: Logbook::class,
                 subjectId: $entry->id,
                 payload: [
-                    'user_id' => $user->id,
+                    'user_id' => $userId,
                     'date' => $entry->date->toDateString(),
                     'status' => $entry->status->value,
                 ],

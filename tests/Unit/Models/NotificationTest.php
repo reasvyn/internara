@@ -39,6 +39,6 @@ it('delegates status checks to entity', function () {
     $notification = Notification::factory()->create(['is_read' => false]);
     expect($notification->asNotificationStatus()->isUnread())->toBeTrue();
 
-    $notification->markAsRead();
-    expect($notification->asNotificationStatus()->isUnread())->toBeFalse();
+    $notification->update(['is_read' => true, 'read_at' => now()]);
+    expect($notification->fresh()->asNotificationStatus()->isUnread())->toBeFalse();
 });

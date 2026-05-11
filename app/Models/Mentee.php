@@ -34,6 +34,14 @@ class Mentee extends BaseModel
         return $this->hasMany(Registration::class, 'mentee_id');
     }
 
+    public function latestActiveRegistration(): ?Registration
+    {
+        return $this->registrations()
+            ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+            ->latest()
+            ->first();
+    }
+
     public function asMenteeState(): MenteeState
     {
         return MenteeState::fromModel($this);

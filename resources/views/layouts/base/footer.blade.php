@@ -23,7 +23,7 @@
                 </p>
                 <div class="flex items-center gap-3 mt-2">
                     @foreach(['o-globe-alt', 'o-chat-bubble-left-right', 'o-envelope'] as $icon)
-                        <button class="size-8 rounded-lg bg-base-200 flex items-center justify-center text-base-content/40 hover:bg-primary hover:text-white transition-all">
+                        <button class="size-8 rounded-lg bg-base-200 flex items-center justify-center text-base-content/40 hover:bg-primary hover:text-primary-content transition-all">
                             <x-mary-icon :name="$icon" class="size-4" />
                         </button>
                     @endforeach

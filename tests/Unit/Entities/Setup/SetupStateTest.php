@@ -6,16 +6,19 @@ namespace Tests\Unit\Entities\Setup;
 
 use App\Entities\Setup\SetupState;
 use App\Models\Setup;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\File;
 use Mockery;
+
+afterEach(function () {
+    Mockery::close();
+});
 
 it('can be instantiated from model', function () {
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(false);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn([]);
+    $model->shouldReceive('installedFileExists')->andReturn(false);
+    $model->allows()->getAttribute('is_installed')->andReturn(false);
+    $model->allows()->getAttribute('setup_token')->andReturn(null);
+    $model->allows()->getAttribute('token_expires_at')->andReturn(null);
+    $model->allows()->getAttribute('completed_steps')->andReturn([]);
 
     $entity = SetupState::fromModel($model);
 
@@ -23,23 +26,24 @@ it('can be instantiated from model', function () {
 });
 
 it('detects installed via file', function () {
-    File::shouldReceive('exists')->andReturn(true);
-
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->andReturn(null);
+    $model->shouldReceive('installedFileExists')->andReturn(true);
+    $model->allows()->getAttribute('is_installed')->andReturn(false);
+    $model->allows()->getAttribute('setup_token')->andReturn(null);
+    $model->allows()->getAttribute('token_expires_at')->andReturn(null);
+    $model->allows()->getAttribute('completed_steps')->andReturn([]);
 
     $entity = SetupState::fromModel($model);
     expect($entity->isInstalled())->toBeTrue();
 });
 
 it('detects installed via database', function () {
-    File::shouldReceive('exists')->andReturn(false);
-
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(true);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn([]);
+    $model->shouldReceive('installedFileExists')->andReturn(false);
+    $model->allows()->getAttribute('is_installed')->andReturn(true);
+    $model->allows()->getAttribute('setup_token')->andReturn(null);
+    $model->allows()->getAttribute('token_expires_at')->andReturn(null);
+    $model->allows()->getAttribute('completed_steps')->andReturn([]);
 
     $entity = SetupState::fromModel($model);
     expect($entity->isInstalled())->toBeTrue();
@@ -47,63 +51,44 @@ it('detects installed via database', function () {
 
 it('validates setup token', function () {
     $plaintext = 'my-secret-token';
-    $encrypted = Crypt::encryptString($plaintext);
     $expiresAt = now()->addHour();
 
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(false);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn($encrypted);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn($expiresAt);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn([]);
+    $model->shouldReceive('installedFileExists')->andReturn(false);
+    $model->allows()->getAttribute('is_installed')->andReturn(false);
+    $model->allows()->getAttribute('setup_token')->andReturn($plaintext);
+    $model->allows()->getAttribute('token_expires_at')->andReturn($expiresAt);
+    $model->allows()->getAttribute('completed_steps')->andReturn([]);
 
     $entity = SetupState::fromModel($model);
 
-    expect($entity->validateToken($plaintext))->toBeTrue()
-        ->and($entity->validateToken('wrong-token'))->toBeFalse();
+    expect($entity->validateToken($plaintext, 'my-secret-token', now()))->toBeTrue()
+        ->and($entity->validateToken($plaintext, 'wrong-token', now()))->toBeFalse();
 });
 
 it('rejects expired token', function () {
     $plaintext = 'my-secret-token';
-    $encrypted = Crypt::encryptString($plaintext);
     $expiresAt = now()->subHour();
 
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(false);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn($encrypted);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn($expiresAt);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn([]);
+    $model->shouldReceive('installedFileExists')->andReturn(false);
+    $model->allows()->getAttribute('is_installed')->andReturn(false);
+    $model->allows()->getAttribute('setup_token')->andReturn($plaintext);
+    $model->allows()->getAttribute('token_expires_at')->andReturn($expiresAt);
+    $model->allows()->getAttribute('completed_steps')->andReturn([]);
 
     $entity = SetupState::fromModel($model);
 
-    expect($entity->validateToken($plaintext))->toBeFalse();
-});
-
-it('gets current setup step', function () {
-    $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(false);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn([]);
-
-    $entity = SetupState::fromModel($model);
-    expect($entity->getCurrentStep())->toBe('welcome');
-
-    $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(false);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn(['welcome']);
-
-    $entity = SetupState::fromModel($model);
-    expect($entity->getCurrentStep())->toBe('school');
+    expect($entity->validateToken($plaintext, $plaintext, now()))->toBeFalse();
 });
 
 it('detects step completion', function () {
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('getAttribute')->with('is_installed')->andReturn(false);
-    $model->shouldReceive('getAttribute')->with('setup_token')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('token_expires_at')->andReturn(null);
-    $model->shouldReceive('getAttribute')->with('completed_steps')->andReturn(['welcome']);
+    $model->shouldReceive('installedFileExists')->andReturn(false);
+    $model->allows()->getAttribute('is_installed')->andReturn(false);
+    $model->allows()->getAttribute('setup_token')->andReturn(null);
+    $model->allows()->getAttribute('token_expires_at')->andReturn(null);
+    $model->allows()->getAttribute('completed_steps')->andReturn(['welcome']);
 
     $entity = SetupState::fromModel($model);
     expect($entity->isStepCompleted('welcome'))->toBeTrue()

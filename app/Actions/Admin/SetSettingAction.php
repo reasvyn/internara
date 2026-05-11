@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Actions\Admin;
 
 use App\Models\Setting;
+use App\Rules\Admin\ValidSettingKey;
 use App\Support\Settings;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Stateless Action to set or update system settings.
@@ -30,6 +32,10 @@ class SetSettingAction
         ?string $description = null,
         ?string $type = null,
     ): Setting {
+        Validator::validate(['key' => $key], [
+            'key' => ['required', new ValidSettingKey],
+        ]);
+
         $detectedType = $type ?? $this->detectType($value);
 
         $setting = Setting::updateOrCreate(
@@ -75,6 +81,9 @@ class SetSettingAction
         $changed = [];
 
         foreach ($settings as $key => $config) {
+            Validator::validate(['key' => $key], [
+                'key' => ['required', new ValidSettingKey],
+            ]);
             if (is_array($config) && isset($config['value'])) {
                 $value = $config['value'];
                 $group = $config['group'] ?? 'general';

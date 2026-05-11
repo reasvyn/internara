@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\School;
 
-use App\Models\School\AcademicYear;
+use App\Models\AcademicYear;
 
 /**
  * Creates a new academic year.

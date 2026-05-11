@@ -15,7 +15,7 @@ class GenerateRecoverySlipAction
 
     public function execute(User $user): array
     {
-        $plaintext = AccountRecoveryCode::generateCode();
+        $plaintext = strtoupper(str()->random(12));
 
         $code = AccountRecoveryCode::create([
             'user_id' => $user->id,

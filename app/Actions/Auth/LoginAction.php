@@ -51,7 +51,9 @@ class LoginAction
         $user = Auth::user();
 
         // Check account status
-        if ($user->isSuspended()) {
+        $apprentice = $user->asApprentice();
+
+        if ($apprentice->isSuspended()) {
             Auth::logout();
 
             $this->logAuditAction->execute(
@@ -65,7 +67,7 @@ class LoginAction
             throw new RuntimeException(__('auth.blocked'));
         }
 
-        if ($user->isArchived()) {
+        if ($apprentice->isArchived()) {
             Auth::logout();
 
             $this->logAuditAction->execute(
@@ -79,7 +81,7 @@ class LoginAction
             throw new RuntimeException(__('auth.blocked'));
         }
 
-        if ($user->isInactive()) {
+        if ($apprentice->isInactive()) {
             Auth::logout();
 
             $this->logAuditAction->execute(

@@ -5,7 +5,7 @@
     'context' => null,
 ])
 
-<x-layout:base :$title>
+<x-layouts::base :$title>
     {{-- Layout Container --}}
     <div class="drawer lg:drawer-open min-h-screen">
         <input id="main-drawer" type="checkbox" class="drawer-toggle" />
@@ -50,7 +50,7 @@
             </main>
 
             {{-- Professional Footer Component --}}
-            <x-layout:base.footer />
+            <x-layouts::base.footer />
         </div>
     </div>
-</x-layout:base>
+</x-layouts::base>
