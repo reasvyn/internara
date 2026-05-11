@@ -14,11 +14,12 @@ enum SubmissionStatus: string implements LabelEnum
     case DRAFT = 'draft';
     case SUBMITTED = 'submitted';
     case VERIFIED = 'verified';
+    case GRADED = 'graded';
     case REVISION_REQUIRED = 'revision_required';
 
     public function isFinalized(): bool
     {
-        return $this === self::VERIFIED;
+        return in_array($this, [self::VERIFIED, self::GRADED], true);
     }
 
     public function requiresAction(): bool
@@ -32,6 +33,7 @@ enum SubmissionStatus: string implements LabelEnum
             self::DRAFT => 'Draft',
             self::SUBMITTED => 'Submitted',
             self::VERIFIED => 'Verified',
+            self::GRADED => 'Graded',
             self::REVISION_REQUIRED => 'Revision Required',
         };
     }

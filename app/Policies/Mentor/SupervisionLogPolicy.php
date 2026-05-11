@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\Mentor;
 
-use App\Models\Mentor\SupervisionLog;
+use App\Models\SupervisionLog;
 use App\Models\User;
 use App\Policies\Shared\BasePolicy;
 

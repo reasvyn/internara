@@ -135,7 +135,7 @@ enum AccountStatus: string implements ColorableEnum, LabelEnum
      */
     public function canTransitionTo(self $target): bool
     {
-        if ($this->isTerminal() || $target->isTerminal()) {
+        if ($this->isTerminal()) {
             return false;
         }
 

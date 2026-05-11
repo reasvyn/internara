@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Actions\Mentor;
 
 use App\Actions\Core\LogAuditAction;
-use App\Enums\SupervisionLogStatus;
-use App\Models\Mentor\SupervisionLog;
+use App\Enums\Mentor\SupervisionLogStatus;
+use App\Models\SupervisionLog;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +25,6 @@ class VerifySupervisionLogAction
         return DB::transaction(function () use ($log, $verifier) {
             $log->update([
                 'is_verified' => true,
-                'verified_by' => $verifier->id,
                 'verified_at' => Carbon::now(),
                 'status' => SupervisionLogStatus::VERIFIED->value,
             ]);

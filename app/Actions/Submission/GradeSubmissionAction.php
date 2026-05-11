@@ -26,6 +26,7 @@ class GradeSubmissionAction
         }
 
         $validStatuses = [
+            SubmissionStatus::GRADED->value,
             SubmissionStatus::VERIFIED->value,
             SubmissionStatus::REVISION_REQUIRED->value,
         ];
