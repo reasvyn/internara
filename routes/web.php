@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentRenderController;
 use App\Http\Controllers\ReportController;
 use App\Livewire\Admin\AccountLifecycleManager;
 use App\Livewire\Admin\GdprDeletionLogs;
@@ -140,6 +141,8 @@ Route::prefix('admin')
         Route::livewire('/assessments/{registration}/grade', AssessmentGrading::class)->name('assessments.grade');
 
         Route::livewire('/handbooks', HandbookIndex::class)->name('handbooks.index');
+        Route::get('/documents/{document}/render/{registration}', [DocumentRenderController::class, 'show'])->name('documents.render');
+        Route::get('/documents/{document}/render/{registration}/save', [DocumentRenderController::class, 'store'])->name('documents.render.store');
         Route::livewire('/schedules', ScheduleIndex::class)->name('schedules.index');
         Route::livewire('/academic-years', AcademicYearIndex::class)->name('academic-years.index');
         Route::livewire('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');
