@@ -6,8 +6,6 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="space-y-6">
-            <livewire:student.attendance-widget />
-
             <x-mary-card class="bg-base-100 border border-base-content/10">
                 @if($registration)
                     <div class="space-y-4">

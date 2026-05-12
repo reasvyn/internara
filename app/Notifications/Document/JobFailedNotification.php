@@ -7,7 +7,6 @@ namespace App\Notifications\Document;
 use App\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class JobFailedNotification extends Notification implements ShouldQueue
@@ -15,47 +14,38 @@ class JobFailedNotification extends Notification implements ShouldQueue
     use Queueable;
 
     public function __construct(
-        public string $title,
-        public string $errorMessage,
-        public string $link = '/dashboard',
+        public string $taskName,
+        public string $errorMessage = 'An unexpected error occurred during processing.',
+        public ?string $link = null,
     ) {}
 
     public function via($notifiable): array
     {
-        return ['mail', 'broadcast', CustomDatabaseChannel::class];
+        return ['broadcast', CustomDatabaseChannel::class];
     }
 
     public function toBroadcast($notifiable): array
     {
         return [
-            'title' => $this->title,
-            'message' => $this->errorMessage,
-            'link' => $this->link,
+            'title' => __('notifications.job_failed.title'),
+            'message' => __('notifications.job_failed.broadcast', ['task' => $this->taskName]),
+            'link' => $this->link ?? '/notifications',
         ];
-    }
-
-    public function toMail($notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->subject(__('notifications.job_failed.mail_subject', ['title' => $this->title]))
-            ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.job_failed.mail_line1', ['title' => $this->title]))
-            ->line(__('notifications.job_failed.mail_error', ['error' => $this->errorMessage]))
-            ->action(
-                __('common.setup_required.action', default: 'View Details'),
-                url($this->link),
-            );
     }
 
     public function toCustomDatabase($notifiable): array
     {
         return [
             'type' => 'job_failed',
-            'title' => $this->title,
-            'message' => $this->errorMessage,
-            'link' => $this->link,
-            'data' => [
+            'title' => __('notifications.job_failed.title'),
+            'message' => __('notifications.job_failed.database', [
+                'task' => $this->taskName,
                 'error' => $this->errorMessage,
+            ]),
+            'link' => $this->link ?? '/notifications',
+            'data' => [
+                'task_name' => $this->taskName,
+                'error_message' => $this->errorMessage,
             ],
         ];
     }

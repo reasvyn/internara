@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Teacher;
 
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;

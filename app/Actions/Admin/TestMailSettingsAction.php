@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Admin;
 
-use App\Notifications\TestMailNotification;
+use App\Notifications\User\TestMailNotification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
