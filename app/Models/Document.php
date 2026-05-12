@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['name', 'slug', 'category', 'description', 'content', 'is_active'])]
+#[Fillable(['name', 'slug', 'category', 'description', 'content', 'file_path', 'is_active'])]
 class Document extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -21,6 +21,11 @@ class Document extends BaseModel implements HasMedia
         'category' => DocumentCategory::class,
         'is_active' => 'boolean',
     ];
+
+    public function getDownloadNameAttribute(): string
+    {
+        return $this->original_name ?? $this->name.'.pdf';
+    }
 
     public function registerMediaCollections(): void
     {

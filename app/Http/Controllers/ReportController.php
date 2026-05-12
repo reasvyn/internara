@@ -19,15 +19,27 @@ class ReportController extends Controller
 
         Gate::authorize('view', $document);
 
-        if (! Storage::disk('local')->exists($document->file_path)) {
-            return redirect()
-                ->route('admin.reports.index')
-                ->with('error', 'Report file not found.');
+        $mediaUrl = $document->getFirstMediaUrl('file');
+
+        if ($mediaUrl) {
+            return redirect()->away($mediaUrl);
         }
 
-        return Storage::disk('local')->download(
-            $document->file_path,
-            $document->original_name ?? $document->name.'.pdf',
-        );
+        if ($document->file_path && Storage::disk('local')->exists($document->file_path)) {
+            return Storage::disk('local')->download(
+                $document->file_path,
+                $document->download_name,
+            );
+        }
+
+        if ($document->file_path) {
+            return redirect()
+                ->route('admin.reports.index')
+                ->with('error', 'Report file not found on disk.');
+        }
+
+        return redirect()
+            ->route('admin.reports.index')
+            ->with('error', 'Report file not found.');
     }
 }
