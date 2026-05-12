@@ -16,7 +16,7 @@ describe('execute', function () {
 
         $result = app(RedeemRecoverySlipAction::class)->execute(
             username: 'testuser',
-            code: $slip['plaintext'],
+            code: $slip['plaintext'][0],
             newPassword: 'new-secure-password',
         );
 

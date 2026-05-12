@@ -6,8 +6,9 @@ namespace App\Actions\Logbook;
 
 use App\Actions\Core\LogAuditAction;
 use App\Models\Logbook;
-use App\Models\Registration;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class CreateLogbookAction
 {
@@ -16,9 +17,12 @@ class CreateLogbookAction
     public function execute(string $userId, array $data): Logbook
     {
         return DB::transaction(function () use ($userId, $data) {
-            $registration = Registration::where('user_id', $userId)
-                ->where('status', 'active')
-                ->firstOrFail();
+            $user = User::findOrFail($userId);
+            $registration = $user->getActiveRegistration();
+
+            if (! $registration) {
+                throw new RuntimeException('No active internship registration found.');
+            }
 
             $entry = Logbook::create([
                 'user_id' => $userId,

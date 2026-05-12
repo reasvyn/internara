@@ -12,14 +12,20 @@ final class ValidateSetupTokenAction
 {
     public function execute(string $token): void
     {
+        $setup = Setup::first();
+
+        if (! $setup || ! $setup->setup_token) {
+            throw new RuntimeException('Invalid setup token.');
+        }
+
         $state = Setup::state();
 
-        if ($state->setupToken === null) {
+        if (! $state->hasStoredToken()) {
             throw new RuntimeException('Invalid setup token.');
         }
 
         try {
-            $decrypted = Crypt::decryptString($state->setupToken);
+            $decrypted = Crypt::decryptString($setup->setup_token);
         } catch (\Exception) {
             throw new RuntimeException('Invalid setup token.');
         }

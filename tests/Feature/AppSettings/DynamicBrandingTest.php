@@ -10,6 +10,7 @@ use App\Support\Settings;
 use Illuminate\Support\Facades\Cache;
 
 beforeEach(function () {
+    app()->setLocale('en');
     Settings::clearOverrides();
     Cache::clear();
     AppInfo::clearCache();
@@ -49,7 +50,7 @@ describe('site title resolution', function () {
     it('returns app name with Setup suffix when not installed', function () {
         $title = AppMetadata::siteTitle();
 
-        expect($title)->toBe(AppInfo::get('name').' - Setup');
+        expect($title)->toBe(__('setup.wizard.page_title', ['app_name' => AppInfo::get('name')]));
     });
 
     it('returns site_title from settings when installed', function () {

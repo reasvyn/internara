@@ -18,6 +18,8 @@ describe('execute', function () {
         expect($result)->toHaveKeys(['code', 'plaintext'])
             ->and($result['code'])->toBeInstanceOf(AccountRecoveryCode::class)
             ->and($result['code']->user_id)->toBe($user->id)
-            ->and($result['plaintext'])->toBeString();
+            ->and($result['plaintext'])->toBeArray()
+            ->and($result['plaintext'])->toHaveCount(10)
+            ->and($result['plaintext'][0])->toBeString();
     });
 });

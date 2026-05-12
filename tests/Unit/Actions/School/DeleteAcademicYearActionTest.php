@@ -30,6 +30,6 @@ describe('execute', function () {
         $year = AcademicYearFactory::new()->active()->create();
 
         expect(fn () => app(DeleteAcademicYearAction::class)->execute($year))
-            ->toThrow(InvalidArgumentException::class, 'Cannot delete an active academic year');
+            ->toThrow(RuntimeException::class, 'Cannot delete an active academic year');
     });
 });
