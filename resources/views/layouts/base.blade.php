@@ -14,14 +14,14 @@
             $themeVars = BrandColors::cssVariables();
         @endphp
         <style>
-            [data-theme="light"],
-            :root {
+            html[data-theme="light"],
+            html:not([data-theme="dark"]) {
                 @foreach ($themeVars['light'] as $var => $value)
                     {{ $var }}: {{ $value }};
                 @endforeach
             }
 
-            [data-theme="dark"] {
+            html[data-theme="dark"] {
                 @foreach ($themeVars['dark'] as $var => $value)
                     {{ $var }}: {{ $value }};
                 @endforeach
