@@ -13,12 +13,9 @@ use App\Models\InternshipDocumentRequirement;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class RequirementManager extends Component
 {
-    use Toast;
-
     public string $internshipId = '';
 
     public bool $requirementModal = false;
@@ -77,32 +74,25 @@ class RequirementManager extends Component
             'formData.is_mandatory' => 'boolean',
         ]);
 
-        $exists = InternshipDocumentRequirement::where('internship_id', $this->internshipId)
-            ->where('document_id', $this->formData['document_id'])
-            ->when($this->formData['id'], fn ($q) => $q->where('id', '!=', $this->formData['id']))
-            ->exists();
+        try {
+            if ($this->formData['id']) {
+                $requirement = InternshipDocumentRequirement::findOrFail($this->formData['id']);
+                $updateAction->execute($requirement, $this->formData['document_id'], $this->formData['is_mandatory']);
+            } else {
+                $createAction->execute($this->internshipId, $this->formData['document_id'], $this->formData['is_mandatory']);
+            }
 
-        if ($exists) {
-            $this->error('This document is already a requirement for this internship.');
-
-            return;
+            flash()->success('Requirement saved successfully.');
+            $this->requirementModal = false;
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
         }
-
-        if ($this->formData['id']) {
-            $requirement = InternshipDocumentRequirement::findOrFail($this->formData['id']);
-            $updateAction->execute($requirement, $this->formData['document_id'], $this->formData['is_mandatory']);
-        } else {
-            $createAction->execute($this->internshipId, $this->formData['document_id'], $this->formData['is_mandatory']);
-        }
-
-        $this->success('Requirement saved successfully.');
-        $this->requirementModal = false;
     }
 
     public function remove(InternshipDocumentRequirement $requirement, DeleteRequirementAction $action): void
     {
         $action->execute($requirement);
-        $this->success('Requirement removed.');
+        flash()->success('Requirement removed.');
     }
 
     public function render()

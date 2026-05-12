@@ -11,12 +11,9 @@ use App\Models\Registration;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class RegistrationVerification extends Component
 {
-    use Toast;
-
     public ?string $processId = null;
 
     public string $placement_id = '';
@@ -93,13 +90,13 @@ class RegistrationVerification extends Component
                 'mentor_ids' => $this->mentor_ids,
             ]);
 
-            $this->success('Registration verified and student placed successfully.');
+            flash()->success('Registration verified and student placed successfully.');
             $this->showProcessModal = false;
             $this->processId = null;
             $this->placement_id = '';
             $this->mentor_ids = [];
         } catch (\RuntimeException $e) {
-            $this->error($e->getMessage());
+            flash()->error($e->getMessage());
         }
     }
 

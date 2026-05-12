@@ -8,11 +8,13 @@ use App\Actions\School\UpdateSchoolAction;
 use App\Models\School;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use Livewire\WithFileUploads;
 
 class SchoolEditor extends Component
 {
-    use Toast;
+    use WithFileUploads;
+
+    public $logo_file;
 
     public School $school;
 
@@ -72,6 +74,7 @@ class SchoolEditor extends Component
             ],
             'phone' => ['nullable', 'string', 'max:20'],
             'fax' => ['nullable', 'string', 'max:20'],
+            'logo_file' => ['nullable', 'image', 'max:2048'],
         ];
     }
 
@@ -79,9 +82,13 @@ class SchoolEditor extends Component
     {
         $validated = $this->validate();
 
+        $validated['logo_file'] = $this->logo_file?->getRealPath() && file_exists($this->logo_file->getRealPath())
+            ? $this->logo_file
+            : null;
+
         $updateSchool->execute($this->school, $validated);
 
-        $this->success(__('school.save_success'));
+        flash()->success(__('school.save_success'));
     }
 
     #[Layout('layouts::app')]

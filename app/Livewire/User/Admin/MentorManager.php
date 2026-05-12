@@ -101,7 +101,7 @@ class MentorManager extends BaseRecordManager
                 'type' => $this->userData['type'],
                 'is_active' => $this->userData['is_active'],
             ]);
-            $this->success(__('user.mentor.success_updated'));
+            flash()->success(__('user.mentor.success_updated'));
         } else {
             $createAction->execute(
                 userData: [
@@ -113,7 +113,7 @@ class MentorManager extends BaseRecordManager
                     'is_active' => $this->userData['is_active'],
                 ],
             );
-            $this->success(__('user.mentor.success_created'));
+            flash()->success(__('user.mentor.success_created'));
         }
 
         $this->userModal = false;
@@ -122,7 +122,7 @@ class MentorManager extends BaseRecordManager
     public function delete(Mentor $mentor, DeleteMentorAction $deleteAction): void
     {
         $deleteAction->execute($mentor);
-        $this->success(__('user.mentor.success_deleted'));
+        flash()->success(__('user.mentor.success_deleted'));
     }
 
     public function deleteSelected(DeleteMentorAction $deleteAction): void

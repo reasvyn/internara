@@ -13,14 +13,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
-class VerifyAccountAction
+class ApproveAccountApplicationAction
 {
     public function __construct(
         protected readonly LogAuditAction $logAuditAction,
-        protected readonly DirectPlacementAction $directPlacementAction,
     ) {}
 
-    public function approve(string $applicationId, User $admin): Registration
+    public function execute(string $applicationId, User $admin): Registration
     {
         $application = AccountApplication::findOrFail($applicationId);
 
@@ -35,7 +34,6 @@ class VerifyAccountAction
                 'processed_at' => now(),
             ]);
 
-            /** @var User $user */
             $user = User::create([
                 'name' => $application->name,
                 'email' => $application->email,
@@ -56,12 +54,10 @@ class VerifyAccountAction
                 'department_id' => $application->department_id,
             ]);
 
-            /** @var Mentee $mentee */
             $mentee = Mentee::create([
                 'user_id' => $user->id,
             ]);
 
-            /** @var Registration $registration */
             $registration = Registration::create([
                 'mentee_id' => $mentee->id,
                 'internship_id' => $application->internship_id,
@@ -88,29 +84,5 @@ class VerifyAccountAction
 
             return $registration;
         });
-    }
-
-    public function reject(string $applicationId, User $admin, string $reason): void
-    {
-        $application = AccountApplication::findOrFail($applicationId);
-
-        if ($application->status !== 'pending') {
-            throw new RuntimeException('Application is not in pending status.');
-        }
-
-        $application->update([
-            'status' => 'rejected',
-            'processed_by' => $admin->id,
-            'processed_at' => now(),
-            'rejection_reason' => $reason,
-        ]);
-
-        $this->logAuditAction->execute(
-            action: 'account_application_rejected',
-            subjectType: AccountApplication::class,
-            subjectId: $application->id,
-            payload: ['reason' => $reason],
-            module: 'Internship',
-        );
     }
 }

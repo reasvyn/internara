@@ -56,20 +56,25 @@ use App\Livewire\User\Admin\MentorManager;
 use App\Livewire\User\Admin\StudentManager;
 use App\Livewire\User\Admin\TeacherManager;
 use App\Livewire\User\Admin\UserManager;
-use App\Livewire\User\EditProfile;
+use App\Livewire\User\ProfileEditor;
 use App\Livewire\User\RecoveryCode;
-use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Setup Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('setup.protected')->group(function () {
+    Route::livewire('/setup', SetupWizard::class)->name('setup');
+});
 
 /*
 |--------------------------------------------------------------------------
 | Public & Guest Routes
 |--------------------------------------------------------------------------
 */
-Route::redirect('/', '/register');
-
-Route::livewire('/register', RegistrationCenter::class)->name('register');
-
 Route::middleware('guest')->group(function () {
+    Route::livewire('/register', RegistrationCenter::class)->name('register');
     Route::livewire('/login', Login::class)->name('login');
     Route::livewire('/forgot-password', ForgotPassword::class)->name('password.request');
     Route::livewire('/reset-password/{token}', ResetPassword::class)->name('password.reset');
@@ -77,20 +82,10 @@ Route::middleware('guest')->group(function () {
     Route::livewire('/apply', AccountApplicationForm::class)->name('apply');
 });
 
-Route::middleware('setup.protected')->group(function () {
-    Route::livewire('/setup', SetupWizard::class)->name('setup');
-});
-
-/*
-|--------------------------------------------------------------------------
-| Authenticated Shared Routes
-|--------------------------------------------------------------------------
-*/
 Route::middleware('auth')->group(function () {
     Route::livewire('/user/confirm-password', ConfirmPassword::class)->name('password.confirm');
-
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::livewire('/profile', EditProfile::class)->name('profile');
+    Route::livewire('/profile', ProfileEditor::class)->name('profile');
     Route::livewire('/profile/recovery', RecoveryCode::class)->name('profile.recovery');
     Route::livewire('/notifications', NotificationCenter::class)->name('notifications');
 

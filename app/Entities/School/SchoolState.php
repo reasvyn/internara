@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entities\School;
 
 use App\Entities\BaseEntity;
-use App\Models\School;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class SchoolState extends BaseEntity
@@ -17,17 +16,12 @@ final readonly class SchoolState extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        assert($model instanceof School);
-
         return new self(
-            singleRecordEnabled: $model->schoolSingleRecordEnabled(),
-            exists: $model->schoolRecordExists(),
+            singleRecordEnabled: (bool) config('school.single_record', true),
+            exists: $model->getAttribute('id') !== null,
         );
     }
 
-    /**
-     * Check if a new school record can be created.
-     */
     public function canBeCreated(): bool
     {
         return $this->singleRecordEnabled ? ! $this->exists : true;

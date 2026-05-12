@@ -151,19 +151,50 @@
                 {{-- Identity Assets --}}
                 <x-mary-card class="bg-base-100 border border-base-content/10">
                     <x-slot:title><span class="font-semibold">{{ __('setting.groups.identity') }}</span></x-slot:title>
-                    <div class="space-y-6">
-                        <x-mary-file
-                            label="{{ __('setting.fields.brand_logo') }}"
-                            wire:model="brand_logo"
-                            accept="image/*"
-                            :preview="$current_logo_url"
-                        />
-                        <x-mary-file
-                            label="{{ __('setting.fields.site_favicon') }}"
-                            wire:model="site_favicon"
-                            accept="image/*"
-                            :preview="$current_favicon_url"
-                        />
+                    <div class="flex flex-col items-center gap-6 pt-4">
+                        {{-- Brand Logo --}}
+                        <div class="flex flex-col items-center">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.fields.brand_logo') }}</p>
+                            <div class="relative group">
+                                <div class="cursor-pointer relative" onclick="document.getElementById('brand-logo-upload').click()">
+                                    <input id="brand-logo-upload" type="file" wire:model="brand_logo" accept="image/png,image/jpeg,image/webp" class="hidden" />
+                                    @if($brand_logo?->temporaryUrl() ?? $current_logo_url)
+                                        <img src="{{ $brand_logo?->temporaryUrl() ?? $current_logo_url }}"
+                                             alt="Brand logo"
+                                             class="size-24 rounded-xl object-contain border border-base-content/10" />
+                                    @else
+                                        <div class="size-24 rounded-xl bg-base-200 flex items-center justify-center border border-dashed border-base-content/20">
+                                            <x-mary-icon name="o-building-office" class="size-8 text-base-content/30" />
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 flex items-center justify-center rounded-xl bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <x-mary-icon name="o-camera" class="size-8 text-base-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Favicon --}}
+                        <div class="flex flex-col items-center">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.fields.site_favicon') }}</p>
+                            <div class="relative group">
+                                <div class="cursor-pointer relative" onclick="document.getElementById('favicon-upload').click()">
+                                    <input id="favicon-upload" type="file" wire:model="site_favicon" accept="image/png,image/jpeg,image/x-icon" class="hidden" />
+                                    @if($site_favicon?->temporaryUrl() ?? $current_favicon_url)
+                                        <img src="{{ $site_favicon?->temporaryUrl() ?? $current_favicon_url }}"
+                                             alt="Favicon"
+                                             class="size-12 rounded-lg object-contain border border-base-content/10" />
+                                    @else
+                                        <div class="size-12 rounded-lg bg-base-200 flex items-center justify-center border border-dashed border-base-content/20">
+                                            <x-mary-icon name="o-globe-alt" class="size-5 text-base-content/30" />
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 flex items-center justify-center rounded-lg bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <x-mary-icon name="o-camera" class="size-5 text-base-100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </x-mary-card>
             </div>

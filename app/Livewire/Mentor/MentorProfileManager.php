@@ -76,7 +76,7 @@ class MentorProfileManager extends Component
 
         $this->showForm = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Mentor profile created successfully.');
+        flash()->success('Mentor profile created successfully.');
     }
 
     public function edit(Mentor $mentor): void
@@ -123,13 +123,13 @@ class MentorProfileManager extends Component
 
         $this->showForm = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Mentor profile updated successfully.');
+        flash()->success('Mentor profile updated successfully.');
     }
 
     public function toggleStatus(Mentor $mentor, ToggleMentorActiveAction $action): void
     {
         $action->execute($mentor);
-        $this->dispatch('notify', type: 'success', message: 'Mentor status updated.');
+        flash()->success('Mentor status updated.');
     }
 
     public function cancel(): void

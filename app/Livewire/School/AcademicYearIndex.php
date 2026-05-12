@@ -8,7 +8,6 @@ use App\Actions\School\ActivateAcademicYearAction;
 use App\Actions\School\CreateAcademicYearAction;
 use App\Actions\School\DeleteAcademicYearAction;
 use App\Models\AcademicYear;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,6 +24,11 @@ class AcademicYearIndex extends Component
 
     public string $end_date = '';
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'admin']), 403);
+    }
+
     public function resetForm(): void
     {
         $this->name = '';
@@ -35,8 +39,6 @@ class AcademicYearIndex extends Component
 
     public function store(CreateAcademicYearAction $action): void
     {
-        Gate::authorize('create', AcademicYear::class);
-
         $this->validate([
             'name' => ['required', 'string', 'max:50'],
             'start_date' => ['required', 'date'],
@@ -52,23 +54,19 @@ class AcademicYearIndex extends Component
 
         $this->showModal = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Academic year created successfully.');
+        flash()->success(__('academic_year.created'));
     }
 
     public function activate(AcademicYear $year, ActivateAcademicYearAction $action): void
     {
-        Gate::authorize('activate', $year);
-
         $action->execute($year);
-        $this->dispatch('notify', type: 'success', message: 'Academic year activated.');
+        flash()->success(__('academic_year.activated'));
     }
 
     public function destroy(AcademicYear $year, DeleteAcademicYearAction $action): void
     {
-        Gate::authorize('delete', $year);
-
         $action->execute($year);
-        $this->dispatch('notify', type: 'success', message: 'Academic year deleted successfully.');
+        flash()->success(__('academic_year.deleted'));
     }
 
     #[Layout('layouts::app')]

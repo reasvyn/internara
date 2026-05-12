@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Company\CompanyState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,5 +22,10 @@ class Company extends BaseModel
     public function placements(): HasMany
     {
         return $this->hasMany(Placement::class, 'company_id');
+    }
+
+    public function asCompanyState(): CompanyState
+    {
+        return CompanyState::fromModel($this);
     }
 }

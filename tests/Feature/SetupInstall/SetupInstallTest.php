@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Actions\Setup\ProvisionSystemAction;
 use App\Data\Audit\AuditCheck;
 use App\Data\Audit\AuditReport;
 use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
 use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
+use App\Support\Setup\SystemProvisioner;
 
 use function Pest\Laravel\artisan;
 
@@ -27,27 +27,27 @@ function passingCheck(AuditCategory $category, string $nameKey, string $messageK
 function passingAudit(): AuditReport
 {
     return new AuditReport([
-        passingCheck(AuditCategory::Requirements, 'php_version', 'php_version_pass', ['required' => '8.4.0'], ['current' => PHP_VERSION, 'required' => '8.4.0']),
-        passingCheck(AuditCategory::Permissions, 'writable_dir', 'writable_pass', ['directory' => 'storage'], ['directory' => 'storage']),
-        passingCheck(AuditCategory::Permissions, 'writable_dir', 'writable_pass', ['directory' => 'bootstrap/cache'], ['directory' => 'bootstrap/cache']),
-        passingCheck(AuditCategory::Database, 'db_connection', 'db_pass', ['driver' => 'sqlite'], ['driver' => 'sqlite']),
-        passingCheck(AuditCategory::Terminal, 'terminal_animations', 'terminal_animations_pass'),
-        passingCheck(AuditCategory::Terminal, 'terminal_interactive', 'terminal_interactive_pass'),
+        passingCheck(AuditCategory::Requirements, 'php_version', 'pass', ['required' => '8.4.0']),
+        passingCheck(AuditCategory::Permissions, 'storage_writable', 'pass'),
+        passingCheck(AuditCategory::Database, 'db_connection', 'pass'),
+        passingCheck(AuditCategory::Terminal, 'shell_exec', 'pass'),
     ]);
 }
 
 function mockProvisioner(): void
 {
-    $provisioner = test()->mock(ProvisionSystemAction::class);
+    $provisioner = Mockery::mock(SystemProvisioner::class);
     $provisioner->shouldReceive('getTasks')->once()->andReturn([
         'ensure_env' => 'Environment file',
         'generate_key' => 'App key',
         'run_migrations' => 'Migrations',
         'run_seeders' => 'Seeders',
         'storage_link' => 'Storage link',
-        'clear_cache' => 'Cache',
+        'clear_cache' => 'Clear cache',
     ]);
     $provisioner->shouldReceive('executeTask')->times(6);
+
+    app()->instance(SystemProvisioner::class, $provisioner);
 }
 
 beforeEach(function () {
@@ -121,7 +121,7 @@ it('does not provision when audit fails', function () {
             ),
         ]));
 
-    $provisioner = $this->mock(ProvisionSystemAction::class);
+    $provisioner = $this->mock(SystemProvisioner::class);
     $provisioner->shouldNotReceive('getTasks');
     $provisioner->shouldNotReceive('executeTask');
 
@@ -171,7 +171,7 @@ it('fails when provisioning throws an exception', function () {
     $this->mock(EnvironmentAuditor::class)
         ->shouldReceive('audit')->once()->andReturn(passingAudit());
 
-    $provisioner = $this->mock(ProvisionSystemAction::class);
+    $provisioner = $this->mock(SystemProvisioner::class);
     $provisioner->shouldReceive('getTasks')->once()->andReturn([
         'ensure_env' => 'Environment file',
         'run_migrations' => 'Migrations',

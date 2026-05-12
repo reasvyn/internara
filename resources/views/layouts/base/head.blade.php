@@ -1,5 +1,5 @@
 @props([
-    'title' => brand('site_title'),
+    'title' => null,
 ])
 
 @php
@@ -18,7 +18,7 @@
 @stack('meta')
 
 <!-- Title -->
-<title>{{ $title }}</title>
+<title>{{ $title ? brand('site_title').' - '.$title : brand('site_title') }}</title>
 
 <!-- Favicon -->
 <link rel="icon" href="{{ $favicon }}" sizes="any" />

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Livewire\Document\Admin;
 
+use App\Actions\Document\DeleteReportAction;
+use App\Actions\Document\GenerateReportAction;
 use App\Models\Document;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class ReportsManager extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public array $reportTypes = [
         'internship_completion' => 'Internship Completion Summary',
@@ -21,24 +22,20 @@ class ReportsManager extends Component
         'mentor_evaluation' => 'Mentor Evaluation Summary',
     ];
 
-    public function generateReport(string $type): void
+    public function generateReport(string $type, GenerateReportAction $action): void
     {
-        $report = Document::create([
+        $report = $action->execute([
             'name' => $this->reportTypes[$type] ?? $type,
-            'slug' => $type.'-'.now()->timestamp,
-            'category' => 'report',
-            'description' => 'Auto-generated report',
-            'content' => json_encode(['type' => $type, 'generated_at' => now()->toIso8601String()]),
-            'is_active' => true,
+            'type' => $type,
         ]);
 
-        $this->success("Report '{$report->name}' generated. Use download to retrieve it.");
+        flash()->success("Report '{$report->name}' generated. Use download to retrieve it.");
     }
 
-    public function deleteReport(Document $report): void
+    public function deleteReport(Document $report, DeleteReportAction $action): void
     {
-        $report->delete();
-        $this->success('Report deleted.');
+        $action->execute($report);
+        flash()->success('Report deleted.');
     }
 
     #[Layout('layouts::app')]

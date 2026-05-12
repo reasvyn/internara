@@ -12,12 +12,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class DirectPlacementManager extends Component
 {
-    use Toast;
-
     public string $student_id = '';
 
     public string $placement_id = '';
@@ -68,7 +65,7 @@ class DirectPlacementManager extends Component
             'mentor_ids' => $this->mentor_ids,
         ]);
 
-        $this->success('Student placed successfully.');
+        flash()->success('Student placed successfully.');
         $this->reset(['student_id', 'placement_id', 'mentor_ids']);
     }
 

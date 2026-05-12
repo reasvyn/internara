@@ -10,12 +10,9 @@ use App\Models\Placement;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class RegistrationWizard extends Component
 {
-    use Toast;
-
     public int $step = 1;
 
     public array $data = [
@@ -82,7 +79,7 @@ class RegistrationWizard extends Component
 
         $registerAction->execute(auth()->user(), $this->data);
 
-        $this->success('Registration submitted successfully.');
+        flash()->success('Registration submitted successfully.');
         $this->redirect('/dashboard');
     }
 

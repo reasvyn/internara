@@ -9,19 +9,16 @@ use App\Actions\Attendance\ClockOutAction;
 use App\Models\Attendance;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class StudentClockIn extends Component
 {
-    use Toast;
-
     public function clockIn(ClockInAction $action): void
     {
         try {
             $action->execute(auth()->user(), []);
-            $this->success('Clocked in successfully.');
+            flash()->success('Clocked in successfully.');
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            flash()->error($e->getMessage());
         }
     }
 
@@ -29,9 +26,9 @@ class StudentClockIn extends Component
     {
         try {
             $action->execute(auth()->user(), []);
-            $this->success('Clocked out successfully.');
+            flash()->success('Clocked out successfully.');
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            flash()->error($e->getMessage());
         }
     }
 

@@ -75,7 +75,7 @@ class ScheduleIndex extends Component
 
         $this->showCreateModal = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Schedule created successfully.');
+        flash()->success('Schedule created successfully.');
     }
 
     public function edit(Schedule $schedule): void
@@ -118,7 +118,7 @@ class ScheduleIndex extends Component
         $this->showEditModal = false;
         $this->resetForm();
         $this->editingSchedule = null;
-        $this->dispatch('notify', type: 'success', message: 'Schedule updated successfully.');
+        flash()->success('Schedule updated successfully.');
     }
 
     public function destroy(Schedule $schedule, DeleteScheduleAction $action): void
@@ -126,7 +126,7 @@ class ScheduleIndex extends Component
         Gate::authorize('delete', $schedule);
 
         $action->execute(auth()->user(), $schedule);
-        $this->dispatch('notify', type: 'success', message: 'Schedule deleted successfully.');
+        flash()->success('Schedule deleted successfully.');
     }
 
     public function render(): View

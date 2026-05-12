@@ -10,11 +10,10 @@ use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class LogbookEntry extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public bool $showModal = false;
 
@@ -70,9 +69,9 @@ class LogbookEntry extends Component
             ]);
 
             $this->showModal = false;
-            $this->success('Journal entry saved successfully.');
+            flash()->success('Journal entry saved successfully.');
         } catch (\Exception $e) {
-            $this->error($e->getMessage());
+            flash()->error($e->getMessage());
         }
     }
 

@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class GdprDeletionLogs extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public string $search = '';
 

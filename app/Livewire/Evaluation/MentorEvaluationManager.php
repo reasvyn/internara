@@ -64,7 +64,7 @@ class MentorEvaluationManager extends Component
 
         $this->showForm = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Mentor evaluation submitted successfully.');
+        flash()->success('Mentor evaluation submitted successfully.');
     }
 
     public function edit(Evaluation $evaluation): void
@@ -105,13 +105,13 @@ class MentorEvaluationManager extends Component
 
         $this->showForm = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Mentor evaluation updated successfully.');
+        flash()->success('Mentor evaluation updated successfully.');
     }
 
     public function delete(Evaluation $evaluation, DeleteEvaluationAction $action): void
     {
         $action->execute($evaluation);
-        $this->dispatch('notify', type: 'success', message: 'Evaluation deleted successfully.');
+        flash()->success('Evaluation deleted successfully.');
     }
 
     public function cancel(): void

@@ -11,6 +11,7 @@ return [
     'save' => 'Save Changes',
     'save_profile' => 'Save Profile',
     'saved' => 'Profile updated successfully.',
+    'avatar_upload_failed' => 'Avatar upload failed. Please try again.',
 
     'password' => 'Update Password',
     'password_desc' => 'Ensure your account is using a strong password.',

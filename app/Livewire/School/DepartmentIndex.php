@@ -8,8 +8,8 @@ use App\Actions\School\CreateDepartmentAction;
 use App\Actions\School\DeleteDepartmentAction;
 use App\Actions\School\UpdateDepartmentAction;
 use App\Livewire\Core\BaseRecordManager;
-use App\Models\School\Department;
-use App\Models\School\School;
+use App\Models\Department;
+use App\Models\School;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
 
@@ -94,11 +94,11 @@ class DepartmentIndex extends BaseRecordManager
         if ($this->formData['id']) {
             $department = Department::findOrFail($this->formData['id']);
             $update->execute($department, $this->formData);
-            $this->success(__('department.save_success_updated'));
+            flash()->success(__('department.save_success_updated'));
         } else {
             $school = School::firstOrFail();
             $create->execute(array_merge($this->formData, ['school_id' => $school->id]));
-            $this->success(__('department.save_success_created'));
+            flash()->success(__('department.save_success_created'));
         }
 
         $this->showModal = false;
@@ -106,16 +106,14 @@ class DepartmentIndex extends BaseRecordManager
 
     public function delete(Department $department, DeleteDepartmentAction $deleteAction): void
     {
-        $profileCount = $department->profiles()->count();
-
-        if ($profileCount > 0) {
-            $this->error(__('department.delete_blocked', ['count' => $profileCount]));
+        if (! $department->asDepartmentState()->canBeDeleted()) {
+            flash()->error(__('department.delete_blocked', ['count' => $department->profiles()->count()]));
 
             return;
         }
 
         $deleteAction->execute($department);
-        $this->success(__('department.delete_success'));
+        flash()->success(__('department.delete_success'));
     }
 
     // --- Bulk Actions ---
@@ -124,7 +122,7 @@ class DepartmentIndex extends BaseRecordManager
     {
         $this->performBulkAction('Delete', function ($id) use ($deleteAction) {
             $department = Department::find($id);
-            if ($department && $department->profiles()->doesntExist()) {
+            if ($department && $department->asDepartmentState()->canBeDeleted()) {
                 $deleteAction->execute($department);
             }
         });

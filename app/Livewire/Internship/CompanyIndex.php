@@ -130,10 +130,10 @@ class CompanyIndex extends BaseRecordManager
         if ($this->formData['id']) {
             $company = Company::findOrFail($this->formData['id']);
             $update->execute($company, $this->formData);
-            $this->success(__('company.update_success'));
+            flash()->success(__('company.update_success'));
         } else {
             $create->execute($this->formData);
-            $this->success(__('company.save_success'));
+            flash()->success(__('company.save_success'));
         }
 
         $this->showModal = false;
@@ -141,14 +141,14 @@ class CompanyIndex extends BaseRecordManager
 
     public function delete(Company $company, DeleteCompanyAction $deleteAction): void
     {
-        if ($company->placements()->exists()) {
-            $this->error(__('company.delete_blocked'));
+        if (! $company->asCompanyState()->canBeDeleted()) {
+            flash()->error(__('company.delete_blocked'));
 
             return;
         }
 
         $deleteAction->execute($company);
-        $this->success(__('company.delete_success'));
+        flash()->success(__('company.delete_success'));
     }
 
     // --- Bulk Actions ---
@@ -157,7 +157,7 @@ class CompanyIndex extends BaseRecordManager
     {
         $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
             $company = Company::find($id);
-            if ($company && ! $company->placements()->exists()) {
+            if ($company && $company->asCompanyState()->canBeDeleted()) {
                 $deleteAction->execute($company);
             }
         });

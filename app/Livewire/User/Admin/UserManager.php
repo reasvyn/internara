@@ -111,10 +111,10 @@ class UserManager extends BaseRecordManager
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, null, $this->userData['roles']);
-            $this->success('User updated.');
+            flash()->success('User updated.');
         } else {
             $createAction->execute($this->userData, [], $this->userData['roles']);
-            $this->success('User created.');
+            flash()->success('User created.');
         }
 
         $this->userModal = false;
@@ -123,38 +123,33 @@ class UserManager extends BaseRecordManager
     public function toggleStatus(User $user, ToggleUserStatusAction $action): void
     {
         if ($user->id === auth()->id()) {
-            $this->error('Cannot change your own status.');
+            flash()->error('Cannot change your own status.');
 
             return;
         }
 
         $action->execute($user);
 
-        $this->success('User status changed. Notification sent.');
+        flash()->success('User status changed. Notification sent.');
     }
 
     public function resetPassword(User $user, ResetUserPasswordAction $action): void
     {
         $result = $action->execute($user);
 
-        $this->info(
-            "Password reset to: {$result['new_password']}",
-            'Temp Password',
-            position: 'toast-bottom-center',
-            timeout: 10000,
-        );
+        flash()->info(__('Password reset to: :password', ['password' => $result['new_password']]));
     }
 
     public function deleteUser(User $user, DeleteUserAction $deleteAction): void
     {
         if ($user->id === auth()->id()) {
-            $this->error('You cannot delete yourself.');
+            flash()->error('You cannot delete yourself.');
 
             return;
         }
 
         $deleteAction->execute($user);
-        $this->success('User deleted.');
+        flash()->success('User deleted.');
     }
 
     public function deleteSelected(DeleteUserAction $deleteAction): void

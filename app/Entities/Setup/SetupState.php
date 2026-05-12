@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entities\Setup;
 
 use App\Entities\BaseEntity;
-use App\Models\Setup;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,15 +12,13 @@ final readonly class SetupState extends BaseEntity
 {
     public function __construct(
         private bool $dbInstalled,
-        public ?string $setupToken,
+        private ?string $setupToken,
         private ?Carbon $tokenExpiresAt,
         private array $completedSteps,
     ) {}
 
     public static function fromModel(Model $model): static
     {
-        assert($model instanceof Setup);
-
         return new self(
             dbInstalled: (bool) ($model->getAttribute('is_installed') ?? false),
             setupToken: $model->getAttribute('setup_token'),

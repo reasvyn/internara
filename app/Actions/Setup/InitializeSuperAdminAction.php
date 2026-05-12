@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 final readonly class InitializeSuperAdminAction
 {
     public function __construct(
-        private LogAuditAction $logAudit,
+        protected readonly LogAuditAction $logAudit,
     ) {}
 
     public function execute(string $email, string $password, ?string $name = null, ?string $username = null): User

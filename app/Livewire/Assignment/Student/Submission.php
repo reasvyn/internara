@@ -53,7 +53,7 @@ class Submission extends Component
             ->first();
 
         if (! $registration) {
-            $this->dispatch('swal:error', message: 'No active internship registration.');
+            flash()->error('No active internship registration.');
 
             return;
         }
@@ -68,7 +68,7 @@ class Submission extends Component
 
         $this->reset(['content', 'file', 'assignmentId']);
         $this->showDetail = false;
-        $this->dispatch('swal:success', message: 'Assignment submitted successfully.');
+        flash()->success('Assignment submitted successfully.');
     }
 
     public function render(): View

@@ -50,13 +50,13 @@ class HandbookIndex extends Component
 
         $this->showModal = false;
         $this->resetForm();
-        $this->dispatch('notify', type: 'success', message: 'Handbook created successfully.');
+        flash()->success('Handbook created successfully.');
     }
 
     public function acknowledge(Handbook $handbook, AcknowledgeHandbookAction $action): void
     {
         $action->execute(auth()->user(), $handbook);
-        $this->dispatch('notify', type: 'success', message: 'Handbook acknowledged.');
+        flash()->success('Handbook acknowledged.');
     }
 
     public function render(): View

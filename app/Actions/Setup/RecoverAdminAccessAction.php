@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 final readonly class RecoverAdminAccessAction
 {
     public function __construct(
-        private LogAuditAction $logAudit,
+        protected readonly LogAuditAction $logAudit,
     ) {}
 
     public function execute(string $email, string $password, bool $isReset = false, string $role = 'super_admin'): User

@@ -10,11 +10,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class TemplateManager extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public string $search = '';
 
@@ -78,7 +77,7 @@ class TemplateManager extends Component
 
         $action->execute($this->templateData);
 
-        $this->success('Template saved successfully.');
+        flash()->success('Template saved successfully.');
         $this->templateModal = false;
     }
 

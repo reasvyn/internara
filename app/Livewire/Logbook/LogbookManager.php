@@ -134,12 +134,12 @@ class LogbookManager extends BaseRecordManager
         if ($this->formData['id']) {
             $entry = Logbook::findOrFail($this->formData['id']);
             $update->execute($entry, $this->formData);
-            $this->success(__('logbook.success_updated'));
+            flash()->success(__('logbook.success_updated'));
         } else {
             $this->validate(['formData.user_id' => 'required|exists:users,id']);
 
             $create->execute($this->formData['user_id'], $this->formData);
-            $this->success(__('logbook.success_created'));
+            flash()->success(__('logbook.success_created'));
         }
 
         $this->showModal = false;
@@ -148,7 +148,7 @@ class LogbookManager extends BaseRecordManager
     public function delete(Logbook $entry, DeleteLogbookAction $deleteAction): void
     {
         $deleteAction->execute($entry);
-        $this->success(__('logbook.success_deleted'));
+        flash()->success(__('logbook.success_deleted'));
     }
 
     // --- Bulk Actions ---
@@ -170,7 +170,7 @@ class LogbookManager extends BaseRecordManager
         $update->execute($entry, [
             'is_verified' => ! $entry->is_verified,
         ]);
-        $this->success(__('logbook.success_verified'));
+        flash()->success(__('logbook.success_verified'));
     }
 
     public function render()

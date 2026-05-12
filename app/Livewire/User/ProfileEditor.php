@@ -10,9 +10,14 @@ use App\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
-class EditProfile extends Component
+class ProfileEditor extends Component
 {
+    use WithFileUploads;
+
+    public $avatar;
+
     public User $user;
 
     public array $data = [];
@@ -46,7 +51,10 @@ class EditProfile extends Component
             'data.phone' => 'nullable|string|max:20',
             'data.address' => 'nullable|string|max:500',
             'data.bio' => 'nullable|string|max:1000',
+            'avatar' => 'nullable|image|max:2048',
         ]);
+
+        $avatar = $this->avatar?->getRealPath() && file_exists($this->avatar->getRealPath()) ? $this->avatar : null;
 
         $updateProfile->execute(
             $this->user,
@@ -57,6 +65,7 @@ class EditProfile extends Component
             ],
             name: $this->data['name'],
             email: $this->data['email'],
+            avatar: $avatar,
         );
 
         flash()->success(__('profile.saved'));
@@ -73,6 +82,11 @@ class EditProfile extends Component
 
         $this->reset('passwordData');
         flash()->success(__('profile.password_updated'));
+    }
+
+    public function avatarUrl(): ?string
+    {
+        return $this->user->getFirstMediaUrl('avatar') ?: null;
     }
 
     #[Layout('layouts::app')]

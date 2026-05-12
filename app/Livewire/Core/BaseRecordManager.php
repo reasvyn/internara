@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 /**
  * Base class for all managerial "Record Manager" components.
@@ -20,7 +19,7 @@ use Mary\Traits\Toast;
  */
 abstract class BaseRecordManager extends Component
 {
-    use Toast, WithPagination, WithRecordSelection, WithSorting;
+    use WithPagination, WithRecordSelection, WithSorting;
 
     /**
      * Search term.
@@ -108,7 +107,7 @@ abstract class BaseRecordManager extends Component
     protected function performBulkAction(string $name, callable $callback): void
     {
         if (empty($this->selectedIds)) {
-            $this->warning(__('No records selected.'));
+            flash()->warning(__('No records selected.'));
 
             return;
         }
@@ -117,7 +116,7 @@ abstract class BaseRecordManager extends Component
             $callback($id);
         }
 
-        $this->success(
+        flash()->success(
             __(':count records updated via :action.', [
                 'count' => count($this->selectedIds),
                 'action' => $name,
@@ -146,14 +145,14 @@ abstract class BaseRecordManager extends Component
         $count = $query->count();
 
         if ($count === 0) {
-            $this->warning(__('No records matching current filters.'));
+            flash()->warning(__('No records matching current filters.'));
 
             return;
         }
 
         $callback($query);
 
-        $this->success(
+        flash()->success(
             __(':count records processed via mass action: :action.', [
                 'count' => $count,
                 'action' => $name,

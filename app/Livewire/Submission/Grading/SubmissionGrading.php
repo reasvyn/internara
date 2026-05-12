@@ -11,11 +11,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class SubmissionGrading extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public string $search = '';
 
@@ -77,7 +76,7 @@ class SubmissionGrading extends Component
             feedback: $this->feedback,
         );
 
-        $this->success('Submission graded successfully.');
+        flash()->success('Submission graded successfully.');
         $this->back();
     }
 

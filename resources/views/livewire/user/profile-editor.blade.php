@@ -50,10 +50,27 @@
 
         {{-- Sidebar --}}
         <div class="space-y-6">
-            <x-mary-card class="bg-base-100 border border-base-content/10 text-center">
+            <x-mary-card class="bg-base-100 border border-base-content/10">
                 <div class="flex flex-col items-center py-4">
-                    <x-mary-avatar placeholder="{{ $user->initials() }}" class="!w-20 !h-20 mb-3" />
-                    <h3 class="font-semibold text-lg">{{ $user->name }}</h3>
+                    <div class="relative mb-3 group">
+                        <div class="cursor-pointer relative" onclick="document.getElementById('avatar-upload').click()">
+                            <input id="avatar-upload" type="file" wire:model="avatar" accept="image/png,image/jpeg,image/webp" class="hidden" />
+                            <x-mary-avatar
+                                :image="$avatar?->temporaryUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') ?: null"
+                                placeholder="{{ $user->initials() }}"
+                                class="!w-20 !h-20"
+                            />
+                            <div class="absolute inset-0 flex items-center justify-center rounded-full bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <x-mary-icon name="o-camera" class="size-6 text-base-100" />
+                            </div>
+                        </div>
+                        @if($avatar || $user->getFirstMediaUrl('avatar'))
+                            <button type="button" wire:click="$set('avatar', null)" class="absolute -top-1 -right-1 size-5 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                                <x-mary-icon name="o-x-mark" class="size-3" />
+                            </button>
+                        @endif
+                    </div>
+                    <h3 class="font-semibold text-lg mt-3">{{ $user->name }}</h3>
                     <p class="text-xs text-base-content/50">{{ '@'.$user->username }}</p>
                     <div class="flex flex-wrap justify-center gap-1 mt-3">
                         @foreach($user->roles as $role)

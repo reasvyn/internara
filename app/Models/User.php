@@ -17,14 +17,17 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\ModelStatus\HasStatuses;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'username', 'password', 'setup_required', 'locked_at', 'locked_reason'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
-    use HasFactory, HasRoles, HasStatuses, HasUuids, Notifiable;
+    use HasFactory, HasRoles, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
 
     protected function casts(): array
     {
@@ -76,6 +79,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function menteeTeams(): BelongsToMany
     {
         return $this->teams()->wherePivot('role', 'mentee');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(200)
+            ->height(200)
+            ->format('webp')
+            ->nonQueued();
     }
 
     public function initials(): string

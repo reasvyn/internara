@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Actions\Internship\ApproveAccountApplicationAction;
 use App\Actions\Internship\DirectPlacementAction;
 use App\Actions\Internship\RegisterInternshipAction;
-use App\Actions\Internship\VerifyAccountAction;
+use App\Actions\Internship\RejectAccountApplicationAction;
 use App\Livewire\Internship\AccountApplicationForm;
 use App\Livewire\Internship\ApplicationReview;
 use App\Livewire\Internship\RegistrationWizard;
@@ -109,8 +110,8 @@ it('admin can approve an application', function () {
         'academic_year' => '2025/2026',
     ]);
 
-    $action = app(VerifyAccountAction::class);
-    $registration = $action->approve($app->id, $this->admin);
+    $action = app(ApproveAccountApplicationAction::class);
+    $registration = $action->execute($app->id, $this->admin);
 
     $app->refresh();
 
@@ -129,8 +130,8 @@ it('admin can reject an application', function () {
         'academic_year' => '2025/2026',
     ]);
 
-    $action = app(VerifyAccountAction::class);
-    $action->reject($app->id, $this->admin, 'Incomplete documentation');
+    $action = app(RejectAccountApplicationAction::class);
+    $action->execute($app->id, $this->admin, 'Incomplete documentation');
 
     $app->refresh();
 
@@ -148,9 +149,9 @@ it('cannot approve already processed application', function () {
         'status' => 'approved',
     ]);
 
-    $action = app(VerifyAccountAction::class);
+    $action = app(ApproveAccountApplicationAction::class);
 
-    expect(fn () => $action->approve($app->id, $this->admin))
+    expect(fn () => $action->execute($app->id, $this->admin))
         ->toThrow(RuntimeException::class, 'not in pending status');
 });
 

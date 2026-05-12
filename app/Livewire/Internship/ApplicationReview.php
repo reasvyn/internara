@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Livewire\Internship;
 
-use App\Actions\Internship\VerifyAccountAction;
+use App\Actions\Internship\ApproveAccountApplicationAction;
+use App\Actions\Internship\RejectAccountApplicationAction;
 use App\Models\AccountApplication;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class ApplicationReview extends Component
 {
-    use Toast;
-
     public ?string $rejectId = null;
 
     public string $rejectionReason = '';
@@ -30,10 +28,10 @@ class ApplicationReview extends Component
             ->get();
     }
 
-    public function approve(string $id, VerifyAccountAction $action): void
+    public function approve(string $id, ApproveAccountApplicationAction $action): void
     {
-        $action->approve($id, auth()->user());
-        $this->success('Application approved. Account and registration created.');
+        $action->execute($id, auth()->user());
+        flash()->success('Application approved. Account and registration created.');
     }
 
     public function confirmReject(string $id): void
@@ -43,13 +41,13 @@ class ApplicationReview extends Component
         $this->showRejectModal = true;
     }
 
-    public function reject(VerifyAccountAction $action): void
+    public function reject(RejectAccountApplicationAction $action): void
     {
         $this->validate(['rejectionReason' => 'required|string|max:1000']);
 
-        $action->reject($this->rejectId, auth()->user(), $this->rejectionReason);
+        $action->execute($this->rejectId, auth()->user(), $this->rejectionReason);
 
-        $this->success('Application rejected.');
+        flash()->success('Application rejected.');
         $this->showRejectModal = false;
         $this->rejectId = null;
         $this->rejectionReason = '';

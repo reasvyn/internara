@@ -28,6 +28,7 @@ return [
     'logo' => 'Logo Resmi',
     'logo_hint' => 'Disarankan 512x512px. Maksimal 2MB (JPG, PNG, WEBP).',
     'save_success' => 'Profil sekolah berhasil diperbarui.',
+    'logo_upload_failed' => 'Gagal mengunggah logo. Silakan coba lagi.',
     'system_context' => 'Konteks Sistem',
     'system_context_desc' => 'Informasi ini digunakan untuk menghasilkan sertifikat, surat resmi, dan laporan magang.',
     'uuid_enabled' => 'UUID Aktif',
