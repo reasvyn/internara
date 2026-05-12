@@ -15,7 +15,11 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    Setup::query()->delete();
+    try {
+        Setup::query()->delete();
+    } catch (\Exception) {
+        // Table may not exist when running unit tests in isolation
+    }
 });
 
 describe('appName', function () {
