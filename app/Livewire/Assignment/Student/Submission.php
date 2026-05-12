@@ -47,10 +47,7 @@ class Submission extends Component
         ]);
 
         $assignment = Assignment::findOrFail($this->assignmentId);
-        $registration = Auth::user()->registrations()
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active')->latest())
-            ->latest()
-            ->first();
+        $registration = Auth::user()->getActiveRegistration();
 
         if (! $registration) {
             flash()->error('No active internship registration.');
@@ -74,10 +71,7 @@ class Submission extends Component
     public function render(): View
     {
         $studentId = Auth::id();
-        $registration = Auth::user()->registrations()
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active')->latest())
-            ->latest()
-            ->first();
+        $registration = Auth::user()->getActiveRegistration();
 
         if (! $registration) {
             return view('livewire.assignment.submission', [

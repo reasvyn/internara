@@ -7,6 +7,7 @@ namespace App\Actions\Internship;
 use App\Actions\Core\LogAuditAction;
 use App\Models\Company;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class DeleteCompanyAction
 {
@@ -14,6 +15,10 @@ class DeleteCompanyAction
 
     public function execute(Company $company): void
     {
+        if (! $company->asCompanyState()->canBeDeleted()) {
+            throw new RuntimeException('Cannot delete company with existing placements.');
+        }
+
         DB::transaction(function () use ($company) {
             $companyId = $company->id;
             $companyName = $company->name;

@@ -123,6 +123,13 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $query->whereNull('locked_at');
     }
 
+    public function getActiveRegistration(): ?Registration
+    {
+        return $this->registrations()
+            ->get()
+            ->first(fn (Registration $reg) => $reg->hasStatus('active'));
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->unlocked()->where('setup_required', false);

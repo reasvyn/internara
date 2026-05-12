@@ -29,11 +29,7 @@ class ClockInAction
                 throw new RuntimeException('Already clocked in for today.');
             }
 
-            // Find active registration (using Spatie HasStatuses)
-            $registration = $user
-                ->registrations()
-                ->get()
-                ->first(fn ($reg) => $reg->hasStatus('active'));
+            $registration = $user->getActiveRegistration();
 
             if (! $registration) {
                 throw new RuntimeException('No active internship registration found.');

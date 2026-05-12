@@ -7,6 +7,7 @@ namespace App\Actions\Internship;
 use App\Actions\Core\LogAuditAction;
 use App\Models\Placement;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class DeletePlacementAction
 {
@@ -14,6 +15,10 @@ class DeletePlacementAction
 
     public function execute(Placement $placement): void
     {
+        if (! $placement->asPlacementState()->canBeDeleted()) {
+            throw new RuntimeException('Cannot delete placement with active registrations.');
+        }
+
         DB::transaction(function () use ($placement) {
             $placementId = $placement->id;
             $placementName = $placement->name;
