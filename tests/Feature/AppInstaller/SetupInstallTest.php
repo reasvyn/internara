@@ -9,7 +9,6 @@ use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
 use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
-use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\artisan;
 
@@ -52,16 +51,7 @@ function mockProvisioner(): void
 }
 
 beforeEach(function () {
-    if (File::exists(base_path('.installed'))) {
-        File::delete(base_path('.installed'));
-    }
     Setup::query()->delete();
-});
-
-afterEach(function () {
-    if (File::exists(base_path('.installed'))) {
-        File::delete(base_path('.installed'));
-    }
 });
 
 it('installs the system with --force when audit passes', function () {
@@ -141,7 +131,6 @@ it('does not provision when audit fails', function () {
 
 it('proceeds when already installed if --force is used', function () {
     Setup::factory()->installed()->create();
-    File::put(base_path('.installed'), now()->toDateTimeString());
 
     $this->mock(EnvironmentAuditor::class)
         ->shouldReceive('audit')->once()->andReturn(passingAudit());
@@ -151,8 +140,6 @@ it('proceeds when already installed if --force is used', function () {
     artisan('setup:install', ['--force' => true])
         ->expectsOutputToContain(__('setup.cli.force_warning'))
         ->assertSuccessful();
-
-    expect(File::exists(base_path('.installed')))->toBeFalse();
 });
 
 it('fails when already installed and --force is not used', function () {
@@ -172,8 +159,8 @@ it('fails when --force is used in production environment', function () {
         ->assertExitCode(1);
 });
 
-it('fails when already installed via lock file and --force is not used', function () {
-    File::put(base_path('.installed'), now()->toDateTimeString());
+it('fails when already installed via db and --force is not used', function () {
+    Setup::factory()->installed()->create();
 
     artisan('setup:install')
         ->expectsOutputToContain(__('setup.cli.already_installed'))

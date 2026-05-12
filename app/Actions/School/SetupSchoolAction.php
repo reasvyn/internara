@@ -7,7 +7,6 @@ namespace App\Actions\School;
 use App\Actions\Core\LogAuditAction;
 use App\Models\School;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 /**
  * Setup the School profile during initial installation.
@@ -18,25 +17,17 @@ class SetupSchoolAction
 
     /**
      * @param array{name: string, institutional_code: string, address?: string, email?: ?string, phone?: ?string, website?: ?string, principal_name?: ?string} $data
-     *
-     * @throws RuntimeException when school already exists
      */
     public function execute(array $data): School
     {
-        if (! (new School)->asSchoolState()->canBeCreated()) {
-            throw new RuntimeException('School already exists.');
-        }
-
         return DB::transaction(function () use ($data) {
-            $school = School::create([
-                'name' => $data['name'],
-                'institutional_code' => $data['institutional_code'],
-                'address' => $data['address'] ?? '-',
-                'email' => $data['email'] ?? null,
-                'phone' => $data['phone'] ?? null,
-                'website' => $data['website'] ?? null,
-                'principal_name' => $data['principal_name'] ?? null,
-            ]);
+            $school = School::first();
+
+            if ($school) {
+                $school->update($data);
+            } else {
+                $school = School::create($data);
+            }
 
             $this->logAudit->execute(
                 action: 'school_setup_completed',

@@ -7,11 +7,11 @@ namespace App\Livewire\Admin;
 use App\Actions\Admin\SetSettingAction;
 use App\Actions\Admin\UploadBrandAssetAction;
 use App\Actions\Core\LogAuditAction;
+use App\Support\BrandColors;
 use App\Support\Settings;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Mary\Traits\Toast;
 
 /**
  * Admin interface for managing system-wide settings.
@@ -21,7 +21,12 @@ use Mary\Traits\Toast;
  */
 class SystemSetting extends Component
 {
-    use Toast, WithFileUploads;
+    use WithFileUploads;
+
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasRole('super_admin'), 403);
+    }
 
     /**
      * General settings.
@@ -71,11 +76,15 @@ class SystemSetting extends Component
     /**
      * Color scheme settings.
      */
-    public string $primary_color = '#0ea5e9'; // sky-500
+    public string $primary_color = '';
 
-    public string $secondary_color = '#64748b'; // slate-500
+    public string $secondary_color = '';
 
-    public string $accent_color = '#f59e0b'; // amber-500
+    public string $accent_color = '';
+
+    public string $base_color = '';
+
+    public ?string $selected_preset = null;
 
     /**
      * Existing URLs for preview.
@@ -103,9 +112,13 @@ class SystemSetting extends Component
         $this->current_favicon_url = Settings::get('site_favicon');
 
         // Color scheme
-        $this->primary_color = Settings::get('primary_color', '#0ea5e9');
-        $this->secondary_color = Settings::get('secondary_color', '#64748b');
-        $this->accent_color = Settings::get('accent_color', '#f59e0b');
+        $defaults = BrandColors::defaults();
+        $this->primary_color = Settings::get('primary_color', $defaults['primary']);
+        $this->secondary_color = Settings::get('secondary_color', $defaults['secondary']);
+        $this->accent_color = Settings::get('accent_color', $defaults['accent']);
+        $this->base_color = Settings::get('base_color', BrandColors::DEFAULT_BASE);
+
+        $this->selected_preset = $this->detectPreset();
 
         // Operational
         $this->active_academic_year = Settings::get(
@@ -120,7 +133,34 @@ class SystemSetting extends Component
         $this->mail_port = Settings::get('mail_port', '587');
         $this->mail_encryption = Settings::get('mail_encryption', 'tls');
         $this->mail_username = Settings::get('mail_username', '');
-        $this->mail_password = Settings::get('mail_password', '');
+        $this->mail_password = '';
+    }
+
+    public function detectPreset(): ?string
+    {
+        $current = ['primary' => $this->primary_color, 'secondary' => $this->secondary_color, 'accent' => $this->accent_color];
+
+        foreach (BrandColors::presets() as $key => $preset) {
+            if ($preset['colors'] === $current) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
+    public function applyPreset(string $key): void
+    {
+        $presets = BrandColors::presets();
+
+        if (! isset($presets[$key])) {
+            return;
+        }
+
+        $this->primary_color = $presets[$key]['colors']['primary'];
+        $this->secondary_color = $presets[$key]['colors']['secondary'];
+        $this->accent_color = $presets[$key]['colors']['accent'];
+        $this->selected_preset = $key;
     }
 
     /**
@@ -142,6 +182,7 @@ class SystemSetting extends Component
             'primary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'secondary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'accent_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
+            'base_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
 
             // Operational
             'active_academic_year' => 'required|string|regex:/^\d{4}\/\d{4}$/',
@@ -182,6 +223,7 @@ class SystemSetting extends Component
             'primary_color' => $this->primary_color,
             'secondary_color' => $this->secondary_color,
             'accent_color' => $this->accent_color,
+            'base_color' => $this->base_color,
         ];
         if ($this->brand_logo) {
             $settings['brand_logo'] = app(UploadBrandAssetAction::class)->execute($this->brand_logo);
@@ -201,7 +243,7 @@ class SystemSetting extends Component
             module: 'Setting',
         );
 
-        $this->success(__('setting.messages.saved'));
+        flash()->success(__('setting.messages.saved'));
 
         $this->redirectRoute('admin.settings', navigate: true);
     }
@@ -234,9 +276,9 @@ class SystemSetting extends Component
         );
 
         if ($sent) {
-            $this->success(__('setting.messages.test_email_sent'));
+            flash()->success(__('setting.messages.test_email_sent'));
         } else {
-            $this->error(__('setting.messages.test_email_failed'));
+            flash()->error(__('setting.messages.test_email_failed'));
         }
     }
 

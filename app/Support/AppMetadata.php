@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
-use Illuminate\Support\Facades\File;
+use App\Models\Setup;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -16,15 +16,13 @@ use Throwable;
  */
 final class AppMetadata
 {
-    private const LOCK_FILE = '.installed';
-
     /**
-     * Check if the application is installed.
+     * Check if the application is installed via database.
      */
     private static function isInstalled(): bool
     {
         try {
-            return File::exists(storage_path('app/'.self::LOCK_FILE));
+            return Setup::state()->isInstalled();
         } catch (Throwable $e) {
             self::logSettingsWarning('Failed to check installation status', $e);
 
@@ -96,7 +94,7 @@ final class AppMetadata
     public static function siteTitle(): string
     {
         if (! self::isInstalled()) {
-            return self::appName().' - Setup';
+            return __('setup.wizard.page_title', ['app_name' => self::appName()]);
         }
 
         $value = self::withFallback(
@@ -171,19 +169,9 @@ final class AppMetadata
      */
     public static function colors(): array
     {
-        $defaults = [
-            'primary' => '#0ea5e9',
-            'secondary' => '#64748b',
-            'accent' => '#f59e0b',
-        ];
-
         return self::withFallback(
-            fn () => [
-                'primary' => Settings::get('primary_color', $defaults['primary']),
-                'secondary' => Settings::get('secondary_color', $defaults['secondary']),
-                'accent' => Settings::get('accent_color', $defaults['accent']),
-            ],
-            $defaults,
+            fn () => BrandColors::all(),
+            BrandColors::defaults(),
             'Failed to get branding colors from settings',
         );
     }

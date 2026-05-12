@@ -2,28 +2,22 @@
 
 declare(strict_types=1);
 
+use App\Models\Setup;
 use App\Models\Setting;
 use App\Support\AppInfo;
 use App\Support\AppMetadata;
 use App\Support\Settings;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     Settings::clearOverrides();
     Cache::clear();
     AppInfo::clearCache();
-    $lockFile = storage_path('app/.installed');
-    if (File::exists($lockFile)) {
-        File::delete($lockFile);
-    }
+    Setup::query()->delete();
 });
 
 afterEach(function () {
-    $lockFile = storage_path('app/.installed');
-    if (File::exists($lockFile)) {
-        File::delete($lockFile);
-    }
+    Setup::query()->delete();
 });
 
 describe('brand name resolution', function () {
@@ -34,7 +28,7 @@ describe('brand name resolution', function () {
     });
 
     it('returns brand_name from settings when installed', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'brand_name', 'value' => 'My Institution']);
 
         $name = AppMetadata::brandName();
@@ -43,7 +37,7 @@ describe('brand name resolution', function () {
     });
 
     it('falls back to app name when brand_name setting is missing', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
 
         $name = AppMetadata::brandName();
 
@@ -59,7 +53,7 @@ describe('site title resolution', function () {
     });
 
     it('returns site_title from settings when installed', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'site_title', 'value' => 'My Site']);
 
         $title = AppMetadata::siteTitle();
@@ -68,7 +62,7 @@ describe('site title resolution', function () {
     });
 
     it('falls back to brand name when site_title setting is missing', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'brand_name', 'value' => 'Institution Name']);
 
         $title = AppMetadata::siteTitle();
@@ -85,7 +79,7 @@ describe('brand logo resolution', function () {
     });
 
     it('returns custom logo from settings when installed', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'brand_logo', 'value' => '/storage/logo.png']);
 
         $logo = AppMetadata::brandLogo();
@@ -94,7 +88,7 @@ describe('brand logo resolution', function () {
     });
 
     it('falls back to default logo when brand_logo is empty string', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'brand_logo', 'value' => '']);
 
         $logo = AppMetadata::brandLogo();
@@ -111,7 +105,7 @@ describe('favicon resolution', function () {
     });
 
     it('returns site_favicon from settings when installed', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'site_favicon', 'value' => '/storage/favicon.ico']);
 
         $favicon = AppMetadata::favicon();
@@ -120,7 +114,7 @@ describe('favicon resolution', function () {
     });
 
     it('falls back to brand_logo when site_favicon is missing', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'brand_logo', 'value' => '/storage/logo.png']);
 
         $favicon = AppMetadata::favicon();
@@ -167,7 +161,7 @@ describe('brand colors resolution', function () {
 
 describe('app name vs brand name', function () {
     it('app_name always returns composer name', function () {
-        File::put(storage_path('app/.installed'), now()->toDateTimeString());
+        Setup::factory()->installed()->create();
         Setting::factory()->create(['key' => 'brand_name', 'value' => 'Custom Brand']);
 
         $appName = AppMetadata::appName();

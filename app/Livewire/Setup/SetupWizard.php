@@ -13,13 +13,10 @@ use App\Services\Setup\EnvironmentAuditor;
 use App\Support\AppInfo;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 #[Layout('layouts::setup')]
 class SetupWizard extends Component
 {
-    use Toast;
-
     public const array STEP_KEYS = ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete'];
 
     public int $currentStep = 1;
@@ -50,15 +47,15 @@ class SetupWizard extends Component
     public string $departmentDescription = '';
 
     // Step 4: Admin Account
-    public string $adminName = '';
+    public string $adminName = 'Administrator';
+
+    public string $adminUsername = 'administrator';
 
     public string $adminEmail = '';
 
     public string $adminPassword = '';
 
     public string $adminPassword_confirmation = '';
-
-    public string $adminUsername = '';
 
     // Step 5: Internship
     public string $internshipName = '';
@@ -84,23 +81,11 @@ class SetupWizard extends Component
 
         $this->runAudit(app(EnvironmentAuditor::class));
         $this->restoreState();
-        $this->generateAdminUsername();
     }
 
     public function updated(string $property): void
     {
-        if ($property === 'adminName') {
-            $this->generateAdminUsername();
-        }
-
         $this->saveState();
-    }
-
-    protected function generateAdminUsername(): void
-    {
-        if ($this->adminName !== '') {
-            $this->adminUsername = strtolower(str_replace(' ', '', substr($this->adminName, 0, 20)));
-        }
     }
 
     protected function saveState(): void
@@ -116,6 +101,7 @@ class SetupWizard extends Component
             'departmentName' => $this->departmentName,
             'departmentDescription' => $this->departmentDescription,
             'adminName' => $this->adminName,
+            'adminUsername' => $this->adminUsername,
             'adminEmail' => $this->adminEmail,
             'internshipName' => $this->internshipName,
             'internshipDescription' => $this->internshipDescription,
@@ -166,7 +152,7 @@ class SetupWizard extends Component
     public function nextStep(): void
     {
         if ($this->currentStep === 1 && ! $this->auditPassed) {
-            $this->error('System audit failed. Please fix issues before proceeding.');
+            flash()->error(__('setup.wizard.audit_must_pass'));
 
             return;
         }
@@ -187,7 +173,6 @@ class SetupWizard extends Component
 
         if ($this->currentStep === 4) {
             $this->validate([
-                'adminName' => 'required|string|max:255',
                 'adminEmail' => 'required|email|max:255',
                 'adminPassword' => 'required|string|min:8|confirmed',
             ]);
@@ -263,8 +248,6 @@ class SetupWizard extends Component
                 'password' => $this->adminPassword,
             ]);
 
-            $this->adminUsername = $admin->username;
-
             // 4. Mark steps completed
             $setupRecord = Setup::firstOrCreate([]);
             foreach (['school', 'department', 'account'] as $step) {
@@ -279,15 +262,15 @@ class SetupWizard extends Component
             $finalizeSetup->execute();
 
             $this->currentStep = 7;
-            $this->success('System installed successfully!');
+            flash()->success(__('setup.wizard.setup_complete'));
         } catch (\RuntimeException $e) {
-            $this->error($e->getMessage());
+            flash()->error($e->getMessage());
             logger()->error('Setup error: '.$e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
         } catch (\Exception $e) {
             logger()->error('Setup Failed: '.$e->getMessage());
-            $this->error('Installation failed: '.$e->getMessage());
+            flash()->error(__('setup.wizard.install_failed', ['message' => $e->getMessage()]));
         }
     }
 

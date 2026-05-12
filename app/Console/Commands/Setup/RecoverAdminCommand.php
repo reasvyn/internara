@@ -139,8 +139,7 @@ class RecoverAdminCommand extends Command
 
     private function isInstalled(): bool
     {
-        return file_exists(base_path('.installed')) ||
-               Setup::where('is_installed', true)->exists();
+        return Setup::where('is_installed', true)->exists();
     }
 
     private function verifyRecoveryKey(): bool

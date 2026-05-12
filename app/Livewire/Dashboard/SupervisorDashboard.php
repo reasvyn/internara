@@ -9,6 +9,11 @@ use Livewire\Component;
 
 class SupervisorDashboard extends Component
 {
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasRole('supervisor'), 403);
+    }
+
     #[Layout('layouts::app')]
     public function render()
     {

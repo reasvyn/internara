@@ -10,11 +10,11 @@ use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Data\Audit\AuditReport;
 use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
+use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
 use App\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\error;
@@ -37,6 +37,10 @@ class SetupInstallCommand extends Command
     {
         $this->displayBanner();
 
+        if ($this->option('force')) {
+            $this->components->warn(__('setup.cli.force_warning'));
+        }
+
         try {
             if (Setup::state()->isInstalled() && ! $this->option('force')) {
                 error(__('setup.cli.already_installed'));
@@ -50,8 +54,6 @@ class SetupInstallCommand extends Command
 
                     return self::FAILURE;
                 }
-
-                File::delete(base_path('.installed'));
             }
 
             $report = $this->auditor->audit();
@@ -73,9 +75,7 @@ class SetupInstallCommand extends Command
                 return self::FAILURE;
             }
 
-            if ($this->option('force')) {
-                $this->components->warn(__('setup.cli.force_warning'));
-            } elseif (! $this->confirmProceed()) {
+            if (! $this->option('force') && ! $this->confirmProceed()) {
                 error(__('setup.cli.aborted'));
 
                 return self::FAILURE;

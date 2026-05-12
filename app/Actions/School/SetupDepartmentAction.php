@@ -21,10 +21,10 @@ class SetupDepartmentAction
     public function execute(string $schoolId, array $data): Department
     {
         return DB::transaction(function () use ($schoolId, $data) {
-            $department = Department::create([
-                ...$data,
-                'school_id' => $schoolId,
-            ]);
+            $department = Department::updateOrCreate(
+                ['school_id' => $schoolId, 'name' => $data['name']],
+                [...$data, 'school_id' => $schoolId],
+            );
 
             $this->logAudit->execute(
                 action: 'department_setup_completed',

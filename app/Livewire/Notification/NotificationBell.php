@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Notification;
 
-use App\Models\Notification\Notification;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -26,10 +26,7 @@ class NotificationBell extends Component
 
     public function getListeners(): array
     {
-        $userId = Auth::id();
-
         return [
-            "echo-private:App.Domain.User.Models.User.{$userId},.Illuminate\Notifications\Events\BroadcastNotificationCreated" => 'updateUnreadCount',
             'notification-read' => 'updateUnreadCount',
             'notifications-read' => 'updateUnreadCount',
         ];

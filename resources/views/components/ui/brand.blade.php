@@ -25,7 +25,7 @@
     };
 @endphp
 
-<div {{ $attributes->merge(['class' => 'flex items-center gap-3 group']) }}>
+<div {{ $attributes->merge(['class' => 'flex items-center gap-3 group min-w-0']) }}>
     <img
         src="{{ brand('logo') }}"
         @class([
@@ -37,11 +37,11 @@
     />
 
     @if($withName)
-        <div class="flex flex-col">
+        <div class="flex flex-col min-w-0">
             <span @class([
-                'font-black tracking-tighter leading-none transition-colors group-hover:text-primary',
+                'font-black tracking-tighter leading-none transition-colors group-hover:text-primary truncate',
                 $nameClasses
-            ])>
+            ]) title="{{ brand('name') }}">
                 {{ brand('name') }}
             </span>
             @if($withTagline)

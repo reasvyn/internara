@@ -10,24 +10,21 @@
         
         {{-- Dynamic Branding Colors --}}
         @php
-            $colors = brand('colors');
+            use App\Support\BrandColors;
+            $themeVars = BrandColors::cssVariables();
         @endphp
         <style>
+            [data-theme="light"],
             :root {
-                --brand-primary: {{ $colors['primary'] }};
-                --brand-secondary: {{ $colors['secondary'] }};
-                --brand-accent: {{ $colors['accent'] }};
-                
-                /* Standard daisyUI variable mapping */
-                --p: {{ $colors['primary'] }};
-                --s: {{ $colors['secondary'] }};
-                --a: {{ $colors['accent'] }};
+                @foreach ($themeVars['light'] as $var => $value)
+                    {{ $var }}: {{ $value }};
+                @endforeach
             }
-            
+
             [data-theme="dark"] {
-                /* In dark mode, we soften the secondary and accent if they are too dark */
-                --s: color-mix(in srgb, var(--brand-secondary), white 20%);
-                --a: color-mix(in srgb, var(--brand-accent), white 20%);
+                @foreach ($themeVars['dark'] as $var => $value)
+                    {{ $var }}: {{ $value }};
+                @endforeach
             }
         </style>
 

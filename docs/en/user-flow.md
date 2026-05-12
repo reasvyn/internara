@@ -80,7 +80,7 @@ The setup wizard walks through:
 5. **Admin account** — set up the first super administrator
 
 After completion, the system:
-- Writes a `.installed` lock file
+- Marks the system as installed in the database
 - Generates a 64-character encrypted recovery key (save this securely)
 - Invalidates the one-time setup URL
 - Dispatches a `SetupFinalized` event
@@ -476,7 +476,7 @@ The system supports mass archival via bulk actions in the user manager.
 Completed or cancelled internships are terminal states:
 - No new registrations or placements can be added
 - Existing records are read-only for reporting
-- The `.installed` lock file prevents re-running the setup wizard
+- The `is_installed` flag prevents re-running the setup wizard
 
 #### 9.3 GDPR Compliance
 

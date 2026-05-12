@@ -78,6 +78,19 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->teams()->wherePivot('role', 'mentee');
     }
 
+    public function initials(): string
+    {
+        $words = explode(' ', trim($this->name));
+
+        if (count($words) >= 2) {
+            return strtoupper(
+                substr($words[0], 0, 1).substr(end($words), 0, 1)
+            );
+        }
+
+        return strtoupper(substr($this->name, 0, 2));
+    }
+
     public function asApprentice(): Apprentice
     {
         return Apprentice::fromModel($this);

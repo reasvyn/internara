@@ -1,28 +1,69 @@
-<div class="p-8 md:p-12">
-    <div class="flex items-center gap-6 mb-12">
-        <div class="size-16 rounded-[2rem] bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shadow-inner">
-            <x-mary-icon name="o-academic-cap" class="size-8" />
-        </div>
-        <div>
-            <h2 class="text-3xl font-black tracking-tighter">{{ __('setup.wizard.school_info') }}</h2>
-            <p class="text-[11px] text-base-content/40 uppercase font-black tracking-[0.2em] mt-1">{{ __('setup.wizard.school_subtitle') }}</p>
-        </div>
+<div class="p-6 sm:p-8">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold mb-1">{{ __('setup.wizard.school_info') }}</h2>
+        <p class="text-sm text-base-content/50">{{ __('setup.wizard.school_subtitle') }}</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
-        <x-mary-input label="{{ __('setup.wizard.school_name') }}" wire:model.live="schoolName" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium py-3" />
-        <x-mary-input label="{{ __('setup.wizard.school_code') }}" wire:model.live="institutionalCode" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium py-3" />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="md:col-span-2">
-            <x-mary-textarea label="{{ __('setup.wizard.school_address') }}" wire:model.live="schoolAddress" rows="4" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium" />
+            <x-mary-input
+                label="{{ __('setup.wizard.school_name') }}"
+                placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
+                wire:model.live="schoolName"
+            />
         </div>
-        <x-mary-input label="{{ __('setup.wizard.school_email') }}" type="email" wire:model.live="schoolEmail" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium py-3" />
-        <x-mary-input label="{{ __('setup.wizard.school_phone') }}" wire:model.live="schoolPhone" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium py-3" />
-        <x-mary-input label="{{ __('setup.wizard.school_website') }}" type="url" wire:model.live="schoolWebsite" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium py-3" />
-        <x-mary-input label="{{ __('setup.wizard.principal_name') }}" wire:model.live="principalName" class="rounded-2xl border-base-200 focus:border-primary/30 transition-all font-medium py-3" />
+
+        <x-mary-input
+            label="{{ __('setup.wizard.school_code') }}"
+            placeholder="{{ __('setup.wizard.school_code_placeholder') }}"
+            wire:model.live="institutionalCode"
+        />
+
+        <x-mary-input
+            label="{{ __('setup.wizard.school_email') }}"
+            type="email"
+            placeholder="{{ __('setup.wizard.school_email_placeholder') }}"
+            wire:model.live="schoolEmail"
+        />
+
+        <x-mary-input
+            label="{{ __('setup.wizard.school_phone') }}"
+            placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
+            wire:model.live="schoolPhone"
+        />
+
+        <x-mary-input
+            label="{{ __('setup.wizard.school_website') }}"
+            type="url"
+            placeholder="{{ __('setup.wizard.school_website_placeholder') }}"
+            wire:model.live="schoolWebsite"
+        />
+
+        <x-mary-input
+            label="{{ __('setup.wizard.school_address') }}"
+            placeholder="{{ __('setup.wizard.school_address') }}"
+            wire:model.live="schoolAddress"
+        />
+
+        <x-mary-input
+            label="{{ __('setup.wizard.principal_name') }}"
+            placeholder="{{ __('setup.wizard.principal_name_placeholder') }}"
+            wire:model.live="principalName"
+        />
     </div>
 
-    <div class="mt-16 flex justify-between items-center pt-8 border-t border-base-content/5">
-        <x-mary-button label="{{ __('setup.wizard.back') }}" wire:click="prevStep" class="btn-ghost rounded-2xl font-black uppercase tracking-widest text-[10px] px-8" />
-        <x-mary-button label="{{ __('setup.wizard.next_step') }}" icon-right="o-arrow-right" class="btn-primary rounded-2xl font-black uppercase tracking-widest text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="nextStep" spinner="nextStep" />
+    <div class="flex items-center justify-between pt-6 mt-8 border-t border-base-content/10">
+        <x-mary-button
+            label="{{ __('setup.wizard.back') }}"
+            wire:click="prevStep"
+            class="btn-ghost btn-sm"
+        />
+        <x-mary-button
+            label="{{ __('setup.wizard.next_step') }}"
+            icon="o-arrow-right"
+            class="btn-primary btn-sm"
+            wire:click="nextStep"
+            spinner="nextStep"
+        />
     </div>
 </div>

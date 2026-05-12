@@ -10,12 +10,9 @@ use App\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class EditProfile extends Component
 {
-    use Toast;
-
     public User $user;
 
     public array $data = [];
@@ -26,14 +23,9 @@ class EditProfile extends Component
         'password_confirmation' => '',
     ];
 
-    /**
-     * Initialize the component.
-     */
-    public function mount()
+    public function mount(): void
     {
-        $this->user = auth()
-            ->user()
-            ->load(['profile', 'roles']);
+        $this->user = auth()->user()->load(['profile', 'roles']);
 
         $profile = $this->user->profile;
 
@@ -46,10 +38,7 @@ class EditProfile extends Component
         ];
     }
 
-    /**
-     * Save the profile changes.
-     */
-    public function save(UpdateProfileAction $updateProfile)
+    public function save(UpdateProfileAction $updateProfile): void
     {
         $this->validate([
             'data.name' => 'required|string|max:255',
@@ -70,13 +59,10 @@ class EditProfile extends Component
             email: $this->data['email'],
         );
 
-        $this->success('Profile updated successfully.');
+        flash()->success(__('profile.saved'));
     }
 
-    /**
-     * Update the user's password.
-     */
-    public function updatePassword(UpdateUserPasswordAction $updatePassword)
+    public function updatePassword(UpdateUserPasswordAction $updatePassword): void
     {
         $this->validate([
             'passwordData.current_password' => ['required', 'current_password'],
@@ -86,7 +72,7 @@ class EditProfile extends Component
         $updatePassword->execute($this->user, $this->passwordData['password']);
 
         $this->reset('passwordData');
-        $this->success('Password updated successfully.');
+        flash()->success(__('profile.password_updated'));
     }
 
     #[Layout('layouts::app')]

@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Enums\Auth\AccountStatus;
 use App\Models\Setup;
 use App\Models\User;
-use Illuminate\Support\Facades\File;
 use Spatie\Permission\Models\Role;
 
 use function Pest\Laravel\artisan;
@@ -18,13 +17,10 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    if (File::exists(base_path('.installed'))) {
-        File::delete(base_path('.installed'));
-    }
+    // Clean up
 });
 
 it('fails when system is not installed', function () {
-    File::delete(base_path('.installed'));
     Setup::query()->delete();
 
     artisan('setup:recover-admin', ['email' => 'admin@test.com'])

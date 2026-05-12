@@ -18,6 +18,7 @@ return new class extends Migration
             $table->json('completed_steps')->nullable();
             $table->foreignUuid('school_id')->nullable();
             $table->foreignUuid('department_id')->nullable();
+            $table->text('recovery_key')->nullable();
             $table->timestamps();
         });
     }

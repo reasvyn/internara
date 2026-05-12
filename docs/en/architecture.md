@@ -25,7 +25,7 @@ app/
 ├── Providers/     Service providers
 ├── Rules/         Custom validation rules
 ├── Services/      Infrastructure services (DashboardService, EnvironmentAuditor)
-└── Support/       Utilities (Settings, SmartLogger, AppInfo, helpers)
+└── Support/       Utilities (Settings, SmartLogger, BrandColors, AppInfo, helpers)
 ```
 
 Each layer groups files by business context. For example, `Actions/Internship/`, `Entities/Internship/`, `Enums/Internship/`.

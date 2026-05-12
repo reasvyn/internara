@@ -35,6 +35,9 @@ brand('license');        // License name
 setting('brand_name');
 setting('site_title');
 setting('primary_color');
+setting('secondary_color');
+setting('accent_color');
+setting('base_color');
 
 // Composer.json metadata (SSoT)
 app_info('name');
@@ -43,6 +46,17 @@ app_info('author.name');
 app_info('author.email');
 app_info('license');
 app_info('description');
+
+// BrandColors helper
+use App\Support\BrandColors;
+
+BrandColors::all();         // [primary, secondary, accent] from settings
+BrandColors::base();        // Base background color from settings
+BrandColors::cssVariables();// All CSS vars for light + dark themes
+BrandColors::presets();     // Available color preset palettes
+BrandColors::contrastColor('#hex');  // #000000 or #ffffff
+BrandColors::lighten('#hex', 40);    // Lighten by percentage
+BrandColors::isValid('#hex');        // Validate hex color
 ```
 
 ### In Blade Templates
@@ -54,15 +68,8 @@ app_info('description');
 <!-- Logo -->
 <img src="{{ brand('logo') }}" alt="{{ brand('name') }}">
 
-<!-- Colors injected as CSS custom properties -->
-@php $colors = brand('colors'); @endphp
-<style>
-    :root {
-        --brand-primary: {{ $colors['primary'] }};
-        --brand-secondary: {{ $colors['secondary'] }};
-        --brand-accent: {{ $colors['accent'] }};
-    }
-</style>
+<!-- Colors are injected automatically via BrandColors::cssVariables() -->
+<!-- in layouts/base.blade.php — no manual style block needed -->
 
 <!-- Reusable brand component -->
 <x-ui::brand
@@ -79,7 +86,7 @@ app_info('description');
 ### What Can Be Branded
 
 | Key | Source | Description |
-|---|---|---|---|
+|---|---|---|
 | `name` | Settings → composer.json | Institution display name |
 | `logo` | Settings → static fallback | Logo image URL |
 | `favicon` | Settings → logo → fallback | Favicon URL |
@@ -104,9 +111,69 @@ Each `brand('key')` call follows a fallback chain:
 - If installed → setting `site_favicon` → if empty, falls back to `brand_logo` → if empty, falls back to `/brand/favicon.ico`
 
 **`brand('colors')`** — returns array `['primary' => '#hex', 'secondary' => '#hex', 'accent' => '#hex']`
-- Each color reads from its respective setting key → falls back to defaults defined in the settings configuration
+- Each color reads from its respective setting key → falls back to defaults defined in `BrandColors::DEFAULTS`
 
 **`brand('description')`, `brand('version')`, `brand('author_name')`, `brand('author_email')`, `brand('license')`** — all delegate directly to `app_info()` (composer.json), no database settings.
+
+---
+
+## Color System
+
+### Brand Colors (Primary, Secondary, Accent)
+
+Three brand colors control the accent palette of the interface:
+
+- **Primary** — main action color (buttons, links, active nav, badges)
+- **Secondary** — secondary elements
+- **Accent** — highlight and accent elements
+
+Each color requires a valid 6-digit hex value (`#rrggbb`). The system automatically computes contrasting text colors (`--color-primary-content`, etc.) for readability.
+
+### Base Color (Background)
+
+A single **Background Color** setting controls the page surface hierarchy. The system computes three shades from it:
+
+- **Base 100** — the chosen color (cards, elevated surfaces)
+- **Base 200** — slightly darker (sidebar, secondary surfaces)
+- **Base 300** — slightly darker (page background, deepest layer)
+- **Base Content** — auto-contrasting text color
+
+Light backgrounds use subtle step increments; dark backgrounds use larger steps to maintain visual separation.
+
+### Color Presets
+
+Six professional preset palettes are available for one-click application:
+
+| Preset | Primary | Secondary | Accent |
+|---|---|---|---|
+| **Sky** (default) | `#0ea5e9` | `#64748b` | `#f59e0b` |
+| **Emerald** | `#059669` | `#6b7280` | `#f97316` |
+| **Violet** | `#7c3aed` | `#71717a` | `#ec4899` |
+| **Rose** | `#e11d48` | `#78716c` | `#f59e0b` |
+| **Ocean** | `#0891b2` | `#64748b` | `#7c3aed` |
+| **Slate** | `#475569` | `#57534e` | `#d97706` |
+
+Selecting a preset populates the three brand color pickers. Manual color changes clear the preset selection. Presets only affect brand colors (primary, secondary, accent), not the base background color.
+
+### How CSS Variables Are Injected
+
+The `BrandColors::cssVariables()` method generates CSS custom properties for both light and dark daisyUI themes:
+
+- `--color-primary`, `--p` — primary brand color
+- `--color-primary-content`, `--pc` — contrasting text on primary
+- `--color-secondary`, `--s`
+- `--color-secondary-content`, `--sc`
+- `--color-accent`, `--a`
+- `--color-accent-content`, `--ac`
+- `--brand-primary`, `--brand-secondary`, `--brand-accent` — legacy variables
+- `--color-base-100/200/300` — background surface hierarchy
+- `--color-base-content` — base text color
+
+These are injected via an inline `<style>` block in `resources/views/layouts/base.blade.php` using the selector `[data-theme="light"]` and `[data-theme="dark"]` (same specificity as daisyUI theme, later in DOM order so they override theme defaults).
+
+### Dark Mode
+
+In dark mode, brand colors are lightened by 40% to remain visible on dark backgrounds. Content colors are white (`#ffffff`). Base colors use fixed dark values optimized for readability.
 
 ---
 
@@ -129,7 +196,7 @@ Dynamic brand values are stored in the `settings` table:
 
 | Group | Purpose | Example Keys |
 |---|---|---|
-| `general` | Institution branding | `brand_name`, `brand_logo`, `site_title`, `default_locale` |
+| `general` | Institution branding & colors | `brand_name`, `primary_color`, `base_color`, `site_title`, `default_locale` |
 | `system` | App metadata & mail | `app_name`, `app_version`, `mail_host`, `mail_password` |
 | `operational` | Business rules | `active_academic_year`, `attendance_check_in_start`, `attendance_late_threshold` |
 
@@ -207,8 +274,10 @@ setting('brand_name', skipCache: true);
 Navigate to **Admin → Settings** (`/admin/settings`). The `SystemSetting` Livewire component provides a form for managing:
 
 - **General** — brand name, site title, default locale
-- **Colors** — primary, secondary, accent (hex validation with regex)
-- **Assets** — brand logo (image upload, max 1MB, stored to `public/brand/`), favicon (max 512KB)
+- **Color Presets** — six professionally designed palettes, one-click apply
+- **Brand Colors** — primary, secondary, accent (individual hex pickers)
+- **Background Color** — single base color, shades computed automatically
+- **Assets** — brand logo (image upload, stored to `public/brand/`), favicon
 - **Operational** — active academic year
 - **Mail** — SMTP host, port, encryption, username, password (stored encrypted), with a test email button
 
@@ -230,7 +299,11 @@ app(SetSettingAction::class)->executeBatch([
     'site_title' => 'My Institution - Portal',
     'primary_color' => '#06b6d4',
     'secondary_color' => '#8b5cf6',
+    'base_color' => '#f8fafc',
 ]);
+
+// Color presets (via SystemSetting Livewire component)
+app(\App\Livewire\Admin\SystemSetting::class)->applyPreset('emerald');
 
 // With explicit type (for encrypted values)
 app(SetSettingAction::class)->executeBatch([
@@ -239,19 +312,11 @@ app(SetSettingAction::class)->executeBatch([
         'type' => 'encrypted',
     ],
 ]);
-
-// Direct model manipulation (bypasses cache invalidation helpers)
-use App\Models\Setting;
-
-Setting::updateOrCreate(
-    ['key' => 'brand_name'],
-    ['value' => 'My Institution', 'type' => 'string', 'group' => 'general'],
-);
 ```
 
 ### Seeding Defaults
 
-When the application is installed, `AppSettingSeeder` populates the settings table with sensible defaults drawn from composer.json metadata.
+When the application is installed, `AppSettingSeeder` populates the settings table with sensible defaults including brand colors and base color.
 
 To reset settings to defaults, re-run the seeder:
 ```bash
@@ -311,6 +376,14 @@ app(UpdateSchoolAction::class)->execute(
 │              AppMetadata (branding facade)                   │
 │  brandName(), brandLogo(), favicon(), colors(), siteTitle()  │
 │  -> resolves by installation state, delegates to Settings    │
+│  -> colors() delegates to BrandColors::all()                 │
+└───────────────────────┬─────────────────────────────────────┘
+                        │
+┌───────────────────────▼─────────────────────────────────────┐
+│                   BrandColors                                │
+│  Defaults, settings resolution, hex/RGB utilities,           │
+│  contrast & shade computation, CSS variable generation,      │
+│  preset palettes                                             │
 └───────────────────────┬─────────────────────────────────────┘
                         │
 ┌───────────────────────▼─────────────────────────────────────┐
@@ -336,6 +409,21 @@ app(UpdateSchoolAction::class)->execute(
                                               └───────────────┘
 ```
 
+### CSS Variable Flow
+
+```
+Admin saves colors
+  → SetSettingAction::executeBatch()
+    → Cache invalidated for affected keys
+      → Next page load
+        → BrandColors::cssVariables()
+          → Generates ['light' => [...], 'dark' => [...]]
+            → layouts/base.blade.php injects inline <style>
+              → [data-theme="light"] { --color-primary: #hex; }
+              → [data-theme="dark"]  { --color-primary: #hex-lightened; }
+                → daisyUI components use var(--color-primary)
+```
+
 ### Author Attribution Guard
 
 `App\Support\Integrity::verify()` is called every time `AppInfo::all()` is accessed (which happens on every `brand()` and `app_info()` call). It checks that `composer.json`'s `authors[0].name` matches the original author. If the check fails, the application terminates with a 403 HTTP response (or CLI error message).
@@ -354,6 +442,7 @@ All `AppMetadata` methods are wrapped in try-catch with `withFallback()`. If the
 |---|---|
 | `app/Support/helpers.php` | Global `brand()`, `setting()`, `app_info()` functions |
 | `app/Support/AppMetadata.php` | Branding facade with all brand resolution logic |
+| `app/Support/BrandColors.php` | Color management: defaults, presets, CSS vars, shade computation |
 | `app/Support/Settings.php` | Multi-tier cached settings resolver |
 | `app/Support/AppInfo.php` | Composer.json metadata parser (in-memory cache) |
 | `app/Support/Integrity.php` | Author attribution tamper guard |
@@ -365,7 +454,7 @@ All `AppMetadata` methods are wrapped in try-catch with `withFallback()`. If the
 | `app/Livewire/School/SchoolEditor.php` | Admin UI for school profile editing |
 | `app/Livewire/Core/AppSignature.php` | Footer component with author credits |
 | `app/Livewire/Core/ThemeSwitcher.php` | Light/dark/system theme toggle |
-| `database/seeders/AppSettingSeeder.php` | Default settings seed data |
+| `database/seeders/AppSettingSeeder.php` | Default settings seed data (incl. colors) |
 | `resources/views/layouts/base.blade.php` | Base shell — injects brand colors as CSS variables |
 | `resources/views/layouts/base/head.blade.php` | Head partial — title + favicon |
 | `resources/views/layouts/base/footer.blade.php` | Footer — logo, name, description, author, version |

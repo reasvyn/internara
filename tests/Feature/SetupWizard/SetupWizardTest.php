@@ -6,24 +6,12 @@ use App\Livewire\Setup\SetupWizard;
 use App\Models\School;
 use App\Models\Setup;
 use App\Models\User;
-use Illuminate\Support\Facades\File;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    $lockPath = base_path('.installed');
-    if (File::exists($lockPath)) {
-        File::delete($lockPath);
-    }
-
+    Setup::query()->delete();
     Setup::factory()->create(['is_installed' => false]);
-});
-
-afterEach(function () {
-    $lockPath = base_path('.installed');
-    if (File::exists($lockPath)) {
-        File::delete($lockPath);
-    }
 });
 
 describe('wizard flow', function () {
