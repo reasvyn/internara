@@ -45,6 +45,8 @@ return [
         'no_registration_hint' => 'Contact your coordinator for placement details.',
         'write_journal' => 'Write Daily Journal',
         'request_absence' => 'Request Absence',
+        'my_documents' => 'My Documents',
+        'handbooks' => 'Handbooks',
         'timeline' => 'Timeline Activity',
         'timeline_empty' => 'No recent activity',
     ],

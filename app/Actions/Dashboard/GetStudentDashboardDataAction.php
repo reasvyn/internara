@@ -6,6 +6,7 @@ namespace App\Actions\Dashboard;
 
 use App\Models\Logbook;
 use App\Models\Registration;
+use App\Models\User;
 
 class GetStudentDashboardDataAction
 {
@@ -14,10 +15,8 @@ class GetStudentDashboardDataAction
      */
     public function execute(string $userId): array
     {
-        $registration = Registration::where('user_id', $userId)
-            ->where('status', 'active')
-            ->with(['placement.company', 'internship'])
-            ->first();
+        $user = User::find($userId);
+        $registration = $user?->getActiveRegistration();
 
         $totalJournals = 0;
         $verifiedJournals = 0;

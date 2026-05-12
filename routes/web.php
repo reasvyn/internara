@@ -28,6 +28,7 @@ use App\Livewire\Dashboard\TeacherDashboard;
 use App\Livewire\Document\Admin\ReportsManager;
 use App\Livewire\Evaluation\MentorEvaluationManager;
 use App\Livewire\Guidance\HandbookIndex;
+use App\Livewire\Guidance\StudentHandbookIndex;
 use App\Livewire\Internship\AccountApplicationForm;
 use App\Livewire\Internship\ApplicationReview;
 use App\Livewire\Internship\CompanyIndex;
@@ -35,6 +36,7 @@ use App\Livewire\Internship\DirectPlacementManager;
 use App\Livewire\Internship\InternshipManager;
 use App\Livewire\Internship\PlacementIndex;
 use App\Livewire\Internship\RegistrationCenter;
+use App\Livewire\Internship\RegistrationDocumentUpload;
 use App\Livewire\Internship\RegistrationVerification;
 use App\Livewire\Internship\RegistrationWizard;
 use App\Livewire\Internship\RequirementManager;
@@ -179,8 +181,10 @@ Route::prefix('student')
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
         Route::livewire('/assessments', AssessmentView::class)->name('assessments');
         Route::livewire('/internships/register', RegistrationWizard::class)->name('internships.register');
+        Route::livewire('/handbooks', StudentHandbookIndex::class)->name('handbooks');
         Route::livewire('/attendance', StudentClockIn::class)->name('attendance');
         Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name('attendance.absence');
+        Route::livewire('/documents', RegistrationDocumentUpload::class)->name('documents');
     });
 
 /*

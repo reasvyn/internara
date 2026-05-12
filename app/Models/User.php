@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Entities\User\Apprentice;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,7 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'username', 'password', 'setup_required', 'locked_at', 'locked_reason'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements HasMedia, MustVerifyEmail
+class User extends Authenticatable implements HasMedia
 {
     use HasFactory, HasRoles, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
 

@@ -60,6 +60,22 @@
                     :label="__('dashboard.student.request_absence')"
                     icon="o-document-plus"
                     class="bg-base-100 border border-base-content/10 hover:bg-base-200 h-20 rounded-xl font-medium shadow-none"
+                    link="{{ route('student.attendance.absence') }}"
+                    wire:navigate
+                />
+                <x-mary-button
+                    :label="__('dashboard.student.my_documents')"
+                    icon="o-document-arrow-up"
+                    class="bg-base-100 border border-base-content/10 hover:bg-base-200 h-20 rounded-xl font-medium shadow-none"
+                    link="{{ route('student.documents') }}"
+                    wire:navigate
+                />
+                <x-mary-button
+                    :label="__('dashboard.student.handbooks')"
+                    icon="o-book-open"
+                    class="bg-base-100 border border-base-content/10 hover:bg-base-200 h-20 rounded-xl font-medium shadow-none"
+                    link="{{ route('student.handbooks') }}"
+                    wire:navigate
                 />
             </div>
 
