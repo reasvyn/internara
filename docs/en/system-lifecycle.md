@@ -163,7 +163,7 @@ The system:
 6. Creates storage symlink (`public/storage → storage/app/public`)
 7. Clears all caches
 
-**Post-state:** Database has schema + seed data. No `.installed` lock file.
+**Post-state:** Database has schema + seed data. No setup record exists yet.
 
 #### Step 2: Setup Token Generation
 
@@ -175,24 +175,25 @@ The system generates a one-time setup token:
 #### Step 3: Wizard Finalization (`FinalizeSetupAction`)
 
 The system:
-1. Writes `.installed` lock file to project root
+1. Sets `setups.is_installed = true` in the database
 2. Encrypts and stores a 64-character recovery key
 3. Invalidates the setup token (prevents re-access)
 4. Clears setup session data
 5. Dispatches `SetupFinalized` domain event
 6. Returns the recovery key in plaintext (shown once, never retrievable)
 
-**Post-state:** System is "installed" — `.installed` exists, setup routes return 404.
+**Post-state:** System is "installed" — `setups.is_installed = true`, setup routes return 404.
 
-### System Guard: `.installed` Lock File
+### System Guard: Database Installation Flag
 
-The `.installed` file at the project root is the system's "is this installed" flag:
+Installation state is tracked in the `setups.is_installed` database column:
 
-- Created by `FinalizeSetupAction`
-- Checked by `AppMetadata::isInstalled()` before reading settings
+- Set to `true` by `FinalizeSetupAction`
+- Checked by `Setup::state()->isInstalled()` (used by `AppMetadata`, middleware, Livewire)
 - Blocks the setup wizard route (`RequireSetupAccessMiddleware`)
-- Bypassed during testing (`TestCase::setUp()` creates it)
-- Removed by `php artisan setup:reset`
+- Bypassed during testing (`TestCase::setUp()` creates a Setup record)
+- Reset to `false` by `php artisan setup:reset`
+- Persists across container/VM duplication since state is in the database
 
 ---
 

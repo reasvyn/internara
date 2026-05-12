@@ -122,8 +122,6 @@ Route::prefix('admin')
         Route::livewire('/internships/{internship}/requirements', RequirementManager::class)->name('internships.requirements');
         Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name('internships.registrations.pending');
         Route::livewire('/applications', ApplicationReview::class)->name('applications');
-        Route::livewire('/settings', SystemSetting::class)->name('settings');
-
         Route::prefix('users')->name('users.')->group(function () {
             Route::livewire('/', UserManager::class)->name('index');
             Route::livewire('/admins', AdminManager::class)->name('admins');
@@ -152,6 +150,15 @@ Route::prefix('admin')
         Route::livewire('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
         Route::livewire('/attendance', AttendanceManager::class)->name('attendance');
     });
+
+/*
+|--------------------------------------------------------------------------
+| Super Admin Only Routes
+|--------------------------------------------------------------------------
+*/
+Route::livewire('/admin/settings', SystemSetting::class)
+    ->name('admin.settings')
+    ->middleware(['auth', 'role:super_admin']);
 
 /*
 |--------------------------------------------------------------------------
@@ -210,13 +217,21 @@ Route::prefix('teacher')
 
 /*
 |--------------------------------------------------------------------------
-| Mentor Portal Routes
+| Supervisor Portal Routes
 |--------------------------------------------------------------------------
 */
-Route::prefix('mentor')
-    ->name('mentor.')
+Route::prefix('supervisor')
+    ->name('supervisor.')
     ->middleware(['auth', 'role:supervisor'])
     ->group(function () {
         Route::livewire('/dashboard', MentorDashboard::class)->name('dashboard');
-        Route::livewire('/evaluate', MentorEvaluationManager::class)->name('evaluate');
     });
+
+/*
+|--------------------------------------------------------------------------
+| Mentor Evaluation (all authenticated users)
+|--------------------------------------------------------------------------
+*/
+Route::livewire('/evaluate', MentorEvaluationManager::class)
+    ->name('mentor.evaluate')
+    ->middleware('auth');

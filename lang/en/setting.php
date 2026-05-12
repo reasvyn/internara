@@ -35,12 +35,18 @@ return [
         'primary_color' => 'Primary Color',
         'secondary_color' => 'Secondary Color',
         'accent_color' => 'Accent Color',
+        'base_color' => 'Background Color',
     ],
 
     'hints' => [
         'brand_logo' => 'Recommended: Square PNG, max 1MB. Used for sidebar and reports.',
         'site_favicon' => 'Recommended: Square PNG or ICO, 32x32px. Used for browser tabs.',
+        'color_scheme' => 'Customize brand colors and background across the entire interface.',
+        'mail' => 'Configure SMTP settings for email notifications.',
     ],
+
+    'presets_title' => 'Preset Palettes',
+    'custom_title' => 'Custom Colors',
 
     'buttons' => [
         'test_mail' => 'Test SMTP Connection',

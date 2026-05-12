@@ -1,94 +1,106 @@
 <div>
-    <x-mary-header title="{{ __('profile.title') }}" subtitle="{{ __('profile.subtitle') }}" separator progress-indicator />
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">{{ __('profile.title') }}</h2>
+        <p class="text-sm text-base-content/50 mt-1">{{ __('profile.subtitle') }}</p>
+    </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {{-- Profile Section --}}
-        <div class="lg:col-span-2 space-y-8">
-            <x-mary-card title="{{ __('profile.information') }}" subtitle="{{ __('profile.information_desc') }}" shadow class="rounded-[2rem] border-base-200">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {{-- Main form --}}
+        <div class="lg:col-span-2 space-y-6">
+            {{-- Profile Information --}}
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title><span class="font-semibold">{{ __('profile.information') }}</span></x-slot:title>
+                <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.information_desc') }}</span></x-slot:subtitle>
+
                 <x-mary-form wire:submit="save">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <x-mary-input label="{{ __('setup.wizard.full_name') }}" wire:model="data.name" icon="o-user" class="rounded-xl border-base-300" />
-                        <x-mary-input label="{{ __('setup.wizard.email_address') }}" wire:model="data.email" icon="o-envelope" class="rounded-xl border-base-300" />
-                        
-                        <div class="md:col-span-2">
-                            <x-mary-input label="{{ __('setup.wizard.school_phone') }}" wire:model="data.phone" icon="o-phone" class="rounded-xl border-base-300" />
-                        </div>
-
-                        <x-mary-textarea label="Bio" wire:model="data.bio" placeholder="Tell us about yourself..." class="md:col-span-2 rounded-xl border-base-300" rows="3" />
-                        <x-mary-textarea label="{{ __('setup.wizard.school_address') }}" wire:model="data.address" class="md:col-span-2 rounded-xl border-base-300" rows="2" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-input label="{{ __('profile.sidebar.username') }}" :value="$user->username" readonly />
+                        <x-mary-input label="{{ __('profile.sidebar.email') }}" wire:model="data.email" type="email" />
+                        <x-mary-input label="{{ __('setup.wizard.full_name') }}" wire:model="data.name" />
+                        <x-mary-input label="{{ __('profile.sidebar.phone') }}" wire:model="data.phone" />
+                        <x-mary-textarea label="{{ __('setup.wizard.school_address') }}" wire:model="data.address" rows="2" class="md:col-span-2" />
+                        <x-mary-textarea label="Bio" wire:model="data.bio" rows="3" class="md:col-span-2" />
                     </div>
-                    
+
                     <x-slot:actions>
-                        <x-mary-button label="{{ __('profile.save_profile') }}" type="submit" icon="o-check" class="btn-primary rounded-xl font-bold uppercase tracking-widest" spinner="save" />
+                        <x-mary-button :label="__('profile.save_profile')" type="submit" class="btn-primary" icon="o-check" spinner="save" />
                     </x-slot:actions>
                 </x-mary-form>
             </x-mary-card>
 
-            <x-mary-card title="{{ __('profile.password') }}" subtitle="{{ __('profile.password_desc') }}" shadow class="rounded-[2rem] border-base-200">
+            {{-- Password --}}
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title><span class="font-semibold">{{ __('profile.password') }}</span></x-slot:title>
+                <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.password_desc') }}</span></x-slot:subtitle>
+
                 <x-mary-form wire:submit="updatePassword">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <x-mary-password label="{{ __('profile.current_password') }}" wire:model="passwordData.current_password" class="rounded-xl border-base-300" />
-                        <div class="hidden md:block"></div>
-                        <x-mary-password label="{{ __('profile.new_password') }}" wire:model="passwordData.password" class="rounded-xl border-base-300" />
-                        <x-mary-password label="{{ __('profile.confirm_password') }}" wire:model="passwordData.password_confirmation" class="rounded-xl border-base-300" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-password :label="__('profile.current_password')" wire:model="passwordData.current_password" />
+                        <div></div>
+                        <x-mary-password :label="__('profile.new_password')" wire:model="passwordData.password" />
+                        <x-mary-password :label="__('profile.confirm_password')" wire:model="passwordData.password_confirmation" />
                     </div>
 
                     <x-slot:actions>
-                        <x-mary-button label="{{ __('profile.update_password') }}" type="submit" icon="o-key" class="btn-primary rounded-xl font-bold uppercase tracking-widest" spinner="updatePassword" />
+                        <x-mary-button :label="__('profile.update_password')" type="submit" class="btn-primary" icon="o-key" spinner="updatePassword" />
                     </x-slot:actions>
                 </x-mary-form>
             </x-mary-card>
         </div>
 
-        {{-- Sidebar / Preview --}}
-        <div class="space-y-8">
-            <x-mary-card class="rounded-[2rem] border-base-200 overflow-hidden shadow-sm">
-                <div class="flex flex-col items-center text-center p-4">
-                    <div class="relative group">
-                        <x-mary-avatar :image="$user->avatar_url" class="!w-32 !h-32 rounded-3xl ring-4 ring-primary/10 mb-6 transition-transform group-hover:scale-105" />
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <x-mary-button icon="o-camera" class="btn-circle btn-primary btn-sm" />
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-black tracking-tight">{{ $user->name }}</h3>
-                    <p class="text-sm text-base-content/50 font-mono mt-1">{{ $user->username }}</p>
-                    
-                    <div class="flex flex-wrap justify-center gap-1 mt-4">
+        {{-- Sidebar --}}
+        <div class="space-y-6">
+            <x-mary-card class="bg-base-100 border border-base-content/10 text-center">
+                <div class="flex flex-col items-center py-4">
+                    <x-mary-avatar placeholder="{{ $user->initials() }}" class="!w-20 !h-20 mb-3" />
+                    <h3 class="font-semibold text-lg">{{ $user->name }}</h3>
+                    <p class="text-xs text-base-content/50">{{ '@'.$user->username }}</p>
+                    <div class="flex flex-wrap justify-center gap-1 mt-3">
                         @foreach($user->roles as $role)
-                            <div class="badge badge-primary badge-outline font-black uppercase text-[10px]">{{ $role->name }}</div>
+                            <x-mary-badge :value="$role->name" class="badge-primary badge-sm" />
                         @endforeach
                     </div>
                 </div>
-                
-                <div class="border-t border-base-200 mt-6 p-6 space-y-4">
-                    <div class="flex items-center gap-3 text-sm">
-                        <x-mary-icon name="o-envelope" class="size-4 text-base-content/40" />
-                        <span class="text-base-content/70">{{ $user->email }}</span>
+                <div class="border-t border-base-content/10 pt-4 pb-2 px-4 space-y-3 text-sm">
+                    <div class="flex items-center gap-3 text-base-content/60">
+                        <x-mary-icon name="o-envelope" class="size-4 shrink-0" />
+                        <span class="truncate">{{ $user->email }}</span>
                     </div>
                     @if($user->profile?->phone)
-                        <div class="flex items-center gap-3 text-sm">
-                            <x-mary-icon name="o-phone" class="size-4 text-base-content/40" />
-                            <span class="text-base-content/70">{{ $user->profile->phone }}</span>
+                        <div class="flex items-center gap-3 text-base-content/60">
+                            <x-mary-icon name="o-phone" class="size-4 shrink-0" />
+                            <span>{{ $user->profile->phone }}</span>
                         </div>
                     @endif
-                    <div class="flex items-center gap-3 text-sm">
-                        <x-mary-icon name="o-calendar" class="size-4 text-base-content/40" />
-                        <span class="text-base-content/70 italic text-xs">Joined {{ $user->created_at->format('M Y') }}</span>
+                    <div class="flex items-center gap-3 text-base-content/40 text-xs">
+                        <x-mary-icon name="o-calendar" class="size-4 shrink-0" />
+                        <span>{{ __('profile.sidebar.joined', ['date' => $user->created_at->format('M Y')]) }}</span>
                     </div>
                 </div>
             </x-mary-card>
 
-            <div class="p-8 bg-warning/5 border border-warning/20 rounded-[2rem] text-warning">
-                <div class="flex items-start gap-4">
-                    <x-mary-icon name="o-exclamation-triangle" class="size-6 shrink-0" />
+            <x-mary-card class="bg-warning/5 border border-warning/20">
+                <div class="flex items-start gap-3">
+                    <x-mary-icon name="o-shield-exclamation" class="size-5 text-warning shrink-0 mt-0.5" />
                     <div>
-                        <h4 class="font-bold text-sm mb-1">Critical Account Access</h4>
-                        <p class="text-xs opacity-70 leading-relaxed">
-                            Your account has administrative privileges. Ensure your password is secure and do not share your credentials.
-                        </p>
+                        <h4 class="text-sm font-semibold text-warning mb-1">{{ __('profile.password') }}</h4>
+                        <p class="text-xs text-warning/70">{{ __('profile.password_desc') }}</p>
                     </div>
                 </div>
-            </div>
+            </x-mary-card>
+
+            <a href="{{ route('profile.recovery') }}" wire:navigate>
+                <x-mary-card class="bg-base-100 border border-base-content/10 hover:bg-base-200/50 transition-colors cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <x-mary-icon name="o-key" class="size-5 text-base-content/40 shrink-0" />
+                        <div>
+                            <p class="text-sm font-medium">{{ __('profile.recovery.title') }}</p>
+                            <p class="text-xs text-base-content/50">{{ __('profile.recovery.subtitle') }}</p>
+                        </div>
+                        <x-mary-icon name="o-chevron-right" class="size-4 text-base-content/20 ml-auto shrink-0" />
+                    </div>
+                </x-mary-card>
+            </a>
         </div>
     </div>
 </div>

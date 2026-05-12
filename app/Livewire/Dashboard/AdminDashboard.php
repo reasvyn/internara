@@ -11,6 +11,11 @@ use Livewire\Component;
 
 class AdminDashboard extends Component
 {
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'admin']), 403);
+    }
+
     public int $totalStudents = 0;
 
     public int $totalTeachers = 0;
@@ -32,11 +37,11 @@ class AdminDashboard extends Component
 
         $results = $auditService->run();
         $this->readiness = [
-            'database' => ['label' => 'Database Connection', 'passed' => $results['database'] ?? true],
-            'mail' => ['label' => 'Mail Configuration', 'passed' => $results['mail'] ?? true],
-            'cache' => ['label' => 'Cache System', 'passed' => $results['cache'] ?? true],
-            'queue' => ['label' => 'Queue Worker', 'passed' => $results['queue'] ?? true],
-            'storage' => ['label' => 'Storage Link', 'passed' => $results['storage'] ?? true],
+            'database' => ['label' => __('dashboard.readiness.database'), 'passed' => $results['database'] ?? true],
+            'mail' => ['label' => __('dashboard.readiness.mail'), 'passed' => $results['mail'] ?? true],
+            'cache' => ['label' => __('dashboard.readiness.cache'), 'passed' => $results['cache'] ?? true],
+            'queue' => ['label' => __('dashboard.readiness.queue'), 'passed' => $results['queue'] ?? true],
+            'storage' => ['label' => __('dashboard.readiness.storage'), 'passed' => $results['storage'] ?? true],
         ];
     }
 

@@ -8,7 +8,7 @@ use App\Actions\Notification\DeleteNotificationAction;
 use App\Actions\Notification\GetNotificationsAction;
 use App\Actions\Notification\MarkAllAsReadAction;
 use App\Actions\Notification\MarkAsReadAction;
-use App\Models\Notification\Notification;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 

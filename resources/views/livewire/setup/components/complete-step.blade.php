@@ -1,40 +1,38 @@
-<div class="p-12 md:p-24 text-center relative overflow-hidden rounded-[3rem]">
-    <div class="absolute inset-0 bg-success/5 animate-pulse"></div>
-    
-    <div class="relative z-10">
-        <div class="inline-flex items-center justify-center size-32 rounded-[2.5rem] bg-success text-white mb-12 shadow-2xl shadow-success/40 animate-bounce-slow">
-            <x-mary-icon name="o-check-badge" class="size-16" />
-        </div>
-        <h2 class="text-5xl font-black tracking-tightest mb-6 uppercase">{{ __('setup.wizard.setup_complete') }}</h2>
-        <p class="text-lg text-base-content/50 mb-16 max-w-lg mx-auto leading-relaxed font-semibold">
-            {{ __('setup.wizard.ready_desc') }}
-        </p>
+<div class="p-8 sm:p-12 text-center">
+    <div class="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6">
+        <x-mary-icon name="o-check" class="size-8" />
+    </div>
 
-        {{-- Admin Credentials Summary (High-End Card) --}}
-        <div class="max-w-md mx-auto bg-base-100 rounded-[3rem] p-10 mb-16 shadow-2xl shadow-base-content/5 border border-success/20 relative">
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-6 py-2 rounded-full bg-success text-white font-black uppercase text-[9px] tracking-[0.3em]">Access Granted</div>
-            
-            <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-base-content/30">{{ __('setup.wizard.username') }}</span>
-                    <span class="text-xl font-black text-primary tracking-tight">{{ $adminUsername }}</span>
-                </div>
-                <div class="divider opacity-5 my-0"></div>
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-base-content/30">{{ __('setup.wizard.email') }}</span>
-                    <span class="text-sm font-black">{{ $adminEmail }}</span>
-                </div>
-                
-                <div class="bg-base-200/50 p-4 rounded-2xl mt-8">
-                    <p class="text-[10px] font-bold text-base-content/40 leading-relaxed uppercase tracking-wider">
-                        {{ __('setup.wizard.login_notice') }}
-                    </p>
-                </div>
+    <h2 class="text-2xl font-bold mb-3">{{ __('setup.wizard.setup_complete') }}</h2>
+    <p class="text-sm text-base-content/60 max-w-md mx-auto mb-10">
+        {{ __('setup.wizard.ready_desc') }}
+    </p>
+
+    <div class="max-w-sm mx-auto bg-base-200/40 border border-base-content/10 rounded-xl p-6 mb-10 text-left">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-4 text-center">{{ __('setup.wizard.access_summary') }}</h4>
+        <dl class="space-y-3 text-sm">
+            <div class="flex items-center justify-between">
+                <dt class="text-base-content/50">{{ __('setup.wizard.username') }}</dt>
+                <dd class="font-mono font-semibold text-primary">{{ $adminUsername }}</dd>
             </div>
-        </div>
+            <div class="border-t border-base-content/10"></div>
+            <div class="flex items-center justify-between">
+                <dt class="text-base-content/50">{{ __('setup.wizard.email') }}</dt>
+                <dd class="font-medium">{{ $adminEmail }}</dd>
+            </div>
+        </dl>
 
-        <div class="flex justify-center">
-            <x-mary-button label="{{ __('setup.wizard.go_to_login') }}" icon-right="o-arrow-right" class="btn-success btn-wide h-16 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] text-white shadow-2xl shadow-success/30" wire:click="finishSession" />
+        <div class="mt-5 bg-warning/5 border border-warning/20 rounded-lg px-4 py-3">
+            <p class="text-xs text-warning/70 leading-relaxed">
+                {{ __('setup.wizard.login_notice') }}
+            </p>
         </div>
     </div>
+
+    <x-mary-button
+        label="{{ __('setup.wizard.go_to_login') }}"
+        icon="o-arrow-right"
+        class="btn-primary"
+        wire:click="finishSession"
+    />
 </div>

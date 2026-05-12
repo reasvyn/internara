@@ -15,6 +15,8 @@ return [
     'skip_to_content' => 'Lompat ke konten',
     'open_menu' => 'Buka menu',
     'app_tagline' => 'Sistem Manajemen Magang Profesional',
+    'all_rights_reserved' => 'Hak cipta dilindungi.',
+    'built_with_love' => 'Dibuat dengan ❤️ oleh',
 
     'setup_required' => [
         'title' => 'Pengaturan Akun Diperlukan',

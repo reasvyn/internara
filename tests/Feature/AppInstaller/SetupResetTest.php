@@ -3,21 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\Setup;
-use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\artisan;
-
-beforeEach(function () {
-    if (File::exists(base_path('.installed'))) {
-        File::delete(base_path('.installed'));
-    }
-});
-
-afterEach(function () {
-    if (File::exists(base_path('.installed'))) {
-        File::delete(base_path('.installed'));
-    }
-});
 
 it('generates a new token when not installed and --force is used', function () {
     Setup::factory()->create();
@@ -33,7 +20,6 @@ it('generates a new token when not installed and --force is used', function () {
 
 it('resets state and generates token when installed and --force is used', function () {
     Setup::factory()->installed()->create();
-    File::put(base_path('.installed'), now()->toDateTimeString());
 
     artisan('setup:reset', ['--force' => true])
         ->assertSuccessful();
@@ -43,7 +29,6 @@ it('resets state and generates token when installed and --force is used', functi
     expect($setup->completed_steps)->toBe([]);
     expect($setup->setup_token)->not->toBeNull();
     expect($setup->token_expires_at)->not->toBeNull();
-    expect(File::exists(base_path('.installed')))->toBeFalse();
 });
 
 it('returns success when not installed without --force', function () {

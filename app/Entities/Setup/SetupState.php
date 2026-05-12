@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 final readonly class SetupState extends BaseEntity
 {
     public function __construct(
-        private bool $fileInstalled,
         private bool $dbInstalled,
         public ?string $setupToken,
         private ?Carbon $tokenExpiresAt,
@@ -24,7 +23,6 @@ final readonly class SetupState extends BaseEntity
         assert($model instanceof Setup);
 
         return new self(
-            fileInstalled: $model->installedFileExists(),
             dbInstalled: (bool) ($model->getAttribute('is_installed') ?? false),
             setupToken: $model->getAttribute('setup_token'),
             tokenExpiresAt: $model->getAttribute('token_expires_at'),
@@ -37,7 +35,7 @@ final readonly class SetupState extends BaseEntity
      */
     public function isInstalled(): bool
     {
-        return $this->fileInstalled || $this->dbInstalled;
+        return $this->dbInstalled;
     }
 
     /**

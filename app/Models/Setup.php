@@ -7,7 +7,6 @@ namespace App\Models;
 use App\Entities\Setup\SetupState;
 use Database\Factories\SetupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\File;
 
 class Setup extends BaseModel
 {
@@ -35,11 +34,6 @@ class Setup extends BaseModel
     protected static function newFactory(): SetupFactory
     {
         return SetupFactory::new();
-    }
-
-    public function installedFileExists(): bool
-    {
-        return File::exists(base_path('.installed'));
     }
 
     public function asSetupState(): SetupState

@@ -1,65 +1,63 @@
-<div class="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-    <div class="flex items-center justify-between mb-8">
-        <div>
-            <h2 class="text-3xl font-black tracking-tightest text-base-content">{{ __('dashboard.title') ?? 'Mentor Dashboard' }}</h2>
-            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/40 mt-2">Welcome back, {{ auth()->user()->name }}</p>
-        </div>
+<div>
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
+        <p class="text-sm text-base-content/50">{{ __('dashboard.subtitle', ['name' => auth()->user()->name]) }}</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <x-mary-stat 
-            title="Active Interns"
-            value="0" 
-            icon="o-users" 
-            class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 rounded-[2rem] hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-            color="text-primary" 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <x-mary-stat
+            :title="__('dashboard.stats.active_interns')"
+            value="0"
+            icon="o-users"
+            class="bg-base-100 border border-base-content/10 rounded-xl"
+            color="text-primary"
         />
-        <x-mary-stat 
-            title="Pending Evaluations"
-            value="0" 
-            icon="o-star" 
-            class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 rounded-[2rem] hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-            color="text-warning" 
+        <x-mary-stat
+            :title="__('dashboard.stats.pending_evaluations')"
+            value="0"
+            icon="o-star"
+            class="bg-base-100 border border-base-content/10 rounded-xl"
+            color="text-warning"
         />
-        <x-mary-stat 
-            title="Verified Journals"
-            value="0" 
-            icon="o-check-badge" 
-            class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 rounded-[2rem] hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-            color="text-success" 
+        <x-mary-stat
+            :title="__('dashboard.stats.verified_journals')"
+            value="0"
+            icon="o-check-badge"
+            class="bg-base-100 border border-base-content/10 rounded-xl"
+            color="text-success"
         />
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {{-- Main Task Area --}}
-        <div class="lg:col-span-2 space-y-8">
-            <x-mary-card shadow class="card-enterprise !bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+            <x-mary-card class="bg-base-100 border border-base-content/10">
                 <x-slot:title>
-                    <span class="text-xl font-black tracking-tightest">Internship Verification Queue</span>
+                    <span class="font-semibold">{{ __('dashboard.supervisor.verification_queue') }}</span>
                 </x-slot:title>
-                <div class="flex flex-col items-center justify-center py-16 opacity-20">
-                    <div class="size-20 rounded-[2.5rem] bg-base-200 flex items-center justify-center mb-4 shadow-inner">
-                        <x-mary-icon name="o-clipboard-document-check" class="size-10" />
-                    </div>
-                    <span class="font-black uppercase tracking-[0.3em] text-[9px]">No pending verifications</span>
+                <div class="flex flex-col items-center justify-center py-12 text-base-content/20">
+                    <x-mary-icon name="o-clipboard-document-check" class="size-12 mb-3" />
+                    <span class="text-xs font-medium">{{ __('dashboard.supervisor.no_verifications') }}</span>
                 </div>
             </x-mary-card>
         </div>
 
-        {{-- Right Column --}}
-        <div class="flex flex-col gap-8">
-            <x-mary-card shadow class="card-enterprise !bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 size-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="flex flex-col items-center py-4 relative z-10">
-                    <x-mary-avatar :title="auth()->user()->name" class="!w-24 !h-24 rounded-[2rem] mb-6 border-4 border-base-100 shadow-xl transition-transform hover:scale-105 duration-500" />
-                    <h3 class="text-2xl font-black tracking-tightest">{{ auth()->user()->name }}</h3>
-                    <p class="text-[10px] font-black text-primary uppercase tracking-[0.3em] mt-2">{{ auth()->user()->getRoleNames()->first() }}</p>
-                    
-                    <div class="w-full mt-8">
-                        <x-mary-button :label="__('common.actions.edit')" icon="o-user-circle" class="btn-ghost bg-base-200/50 hover:bg-primary hover:text-white w-full h-12 rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] transition-all" link="{{ route('profile') }}" />
+        <div class="flex flex-col gap-4">
+            <x-mary-card class="bg-base-100 border border-base-content/10 text-center">
+                <div class="flex flex-col items-center py-4">
+                    <x-mary-avatar placeholder="{{ auth()->user()->initials() }}" class="!w-16 !h-16 mb-3" />
+                    <h3 class="font-semibold">{{ auth()->user()->name }}</h3>
+                    <p class="text-xs text-base-content/50 mt-0.5">{{ auth()->user()->getRoleNames()->first() }}</p>
+                    <div class="w-full mt-4">
+                        <x-mary-button :label="__('dashboard.profile.edit')" icon="o-user" class="btn-ghost btn-sm w-full" link="{{ route('profile') }}" />
                     </div>
                 </div>
             </x-mary-card>
+
+            <x-mary-button
+                :label="__('dashboard.read_docs')"
+                icon="o-book-open"
+                class="btn-ghost bg-base-200/50 h-16 rounded-xl font-medium"
+            />
         </div>
     </div>
 </div>

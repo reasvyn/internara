@@ -1,33 +1,62 @@
-<div class="p-8 md:p-12">
-    <div class="flex items-center gap-6 mb-12">
-        <div class="size-16 rounded-[2rem] bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shadow-inner">
-            <x-mary-icon name="o-clipboard-document-check" class="size-8" />
-        </div>
-        <div>
-            <h2 class="text-3xl font-black tracking-tighter">{{ __('setup.wizard.finalize') }}</h2>
-            <p class="text-[11px] text-base-content/40 uppercase font-black tracking-[0.2em] mt-1">{{ __('setup.wizard.finalize_subtitle') }}</p>
-        </div>
+<div class="p-6 sm:p-8">
+    <div class="mb-8">
+        <h2 class="text-xl font-bold mb-1">{{ __('setup.wizard.finalize') }}</h2>
+        <p class="text-sm text-base-content/50">{{ __('setup.wizard.finalize_subtitle') }}</p>
     </div>
 
-    <div class="space-y-6 mb-12">
-        <label class="flex items-center gap-6 p-8 bg-base-200/50 hover:bg-base-200 rounded-[2.5rem] cursor-pointer transition-all border border-transparent hover:border-primary/20 group">
-            <input type="checkbox" wire:model.live="dataVerified" class="checkbox checkbox-primary checkbox-lg rounded-xl" />
+    <div class="space-y-4 mb-8">
+        <label class="flex items-start gap-4 p-5 rounded-lg border border-base-content/10 cursor-pointer transition-colors hover:bg-base-200/30">
+            <input type="checkbox" wire:model.live="dataVerified" class="checkbox checkbox-primary checkbox-sm mt-0.5 rounded" />
             <div>
-                <span class="text-lg font-black tracking-tight block mb-1 group-hover:text-primary transition-colors">{{ __('setup.wizard.data_verified') }}</span>
-                <p class="text-xs font-medium text-base-content/40 uppercase tracking-widest leading-relaxed">I have double-checked all provided information for accuracy.</p>
+                <span class="font-semibold text-sm block mb-0.5">{{ __('setup.wizard.data_verified') }}</span>
+                <span class="text-xs text-base-content/50">{{ __('setup.wizard.data_verified_long') }}</span>
             </div>
         </label>
-        <label class="flex items-center gap-6 p-8 bg-base-200/50 hover:bg-base-200 rounded-[2.5rem] cursor-pointer transition-all border border-transparent hover:border-primary/20 group">
-            <input type="checkbox" wire:model.live="securityAware" class="checkbox checkbox-primary checkbox-lg rounded-xl" />
+
+        <label class="flex items-start gap-4 p-5 rounded-lg border border-base-content/10 cursor-pointer transition-colors hover:bg-base-200/30">
+            <input type="checkbox" wire:model.live="securityAware" class="checkbox checkbox-primary checkbox-sm mt-0.5 rounded" />
             <div>
-                <span class="text-lg font-black tracking-tight block mb-1 group-hover:text-primary transition-colors">{{ __('setup.wizard.security_aware') }}</span>
-                <p class="text-xs font-medium text-base-content/40 uppercase tracking-widest leading-relaxed">I understand that these settings are critical for system operation.</p>
+                <span class="font-semibold text-sm block mb-0.5">{{ __('setup.wizard.security_aware') }}</span>
+                <span class="text-xs text-base-content/50">{{ __('setup.wizard.security_aware_long') }}</span>
             </div>
         </label>
     </div>
 
-    <div class="mt-16 flex justify-between items-center pt-8 border-t border-base-content/5">
-        <x-mary-button label="{{ __('setup.wizard.back') }}" wire:click="prevStep" class="btn-ghost rounded-2xl font-black uppercase tracking-widest text-[10px] px-8" />
-        <x-mary-button label="{{ __('setup.wizard.finish_setup') }}" icon-right="o-check" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-12 h-14 shadow-2xl shadow-primary/30" wire:click="finish" spinner="finish" />
+    <div class="bg-base-200/30 rounded-lg px-5 py-4 mb-6">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setup.wizard.summary') }}</h4>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            <div class="flex justify-between">
+                <dt class="text-base-content/50">{{ __('setup.wizard.school_name') }}</dt>
+                <dd class="font-medium text-right">{{ $schoolName ?: '—' }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-base-content/50">{{ __('setup.wizard.department_name') }}</dt>
+                <dd class="font-medium text-right">{{ $departmentName ?: '—' }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-base-content/50">{{ __('setup.wizard.full_name') }}</dt>
+                <dd class="font-medium text-right">{{ $adminName }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="text-base-content/50">{{ __('setup.wizard.program_name') }}</dt>
+                <dd class="font-medium text-right">{{ $internshipName ?: '—' }}</dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="flex items-center justify-between pt-6 border-t border-base-content/10">
+        <x-mary-button
+            label="{{ __('setup.wizard.back') }}"
+            wire:click="prevStep"
+            class="btn-ghost btn-sm"
+        />
+        <x-mary-button
+            label="{{ __('setup.wizard.finish_setup') }}"
+            icon="o-check"
+            class="btn-primary"
+            wire:click="finish"
+            spinner="finish"
+            x-bind:disabled="!($wire.dataVerified && $wire.securityAware)"
+        />
     </div>
 </div>

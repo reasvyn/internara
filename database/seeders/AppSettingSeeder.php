@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Casts\SettingValueCast;
 use App\Models\Setting;
 use App\Support\AppInfo;
+use App\Support\BrandColors;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -163,6 +164,36 @@ class AppSettingSeeder extends Seeder
                 'type' => 'string',
                 'description' => 'SMTP encryption (tls/ssl/none)',
                 'group' => 'system',
+            ],
+
+            // Color scheme
+            [
+                'key' => 'primary_color',
+                'value' => BrandColors::DEFAULTS['primary'],
+                'type' => 'string',
+                'description' => 'Primary brand color (hex)',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'secondary_color',
+                'value' => BrandColors::DEFAULTS['secondary'],
+                'type' => 'string',
+                'description' => 'Secondary brand color (hex)',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'accent_color',
+                'value' => BrandColors::DEFAULTS['accent'],
+                'type' => 'string',
+                'description' => 'Accent brand color (hex)',
+                'group' => 'general',
+            ],
+            [
+                'key' => 'base_color',
+                'value' => BrandColors::DEFAULT_BASE,
+                'type' => 'string',
+                'description' => 'Page base background color (hex)',
+                'group' => 'general',
             ],
 
             // Operational group

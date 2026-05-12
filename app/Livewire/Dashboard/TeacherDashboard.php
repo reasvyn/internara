@@ -9,6 +9,11 @@ use Livewire\Component;
 
 class TeacherDashboard extends Component
 {
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasRole('teacher'), 403);
+    }
+
     #[Layout('layouts::app')]
     public function render()
     {

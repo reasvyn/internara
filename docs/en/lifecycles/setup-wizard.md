@@ -26,7 +26,7 @@ http://localhost:8000/setup?setup_token={64-char-token}
 
 - [System Installation](system-installation.md) has completed successfully
 - Setup token is valid (not expired, not yet used)
-- No `.installed` lock file exists
+- No setup record with `is_installed = true` exists yet
 - No existing setup session is in progress
 - Database is migrated and seeded
 
@@ -144,7 +144,7 @@ When the administrator submits Step 6, the `finish()` method executes this seque
    └── Setup::markStepCompleted('account')
 
 5. FinalizeSetupAction::execute()
-   └── Setup::markInstalled() → writes .installed lock file
+   └── Setup::update(['is_installed' => true])
    └── Setup::generateRecoveryKey() → 64-char encrypted key
    └── Setup::invalidateToken() → setup URL no longer works
    └── Dispatches SetupFinalized domain event
@@ -174,7 +174,7 @@ The recovery key is displayed once:
 | School | Not created | Created with profile data |
 | Departments | Not created | 1 department created (more can be added later) |
 | Super Admin User | Not created | Created with VERIFIED status, super_admin role |
-| `.installed` lock file | Not present | Created at project root |
+| `setups.is_installed` | `false` | `true` |
 | Setup token | Valid (1-hour window) | Invalidated (preventing re-use) |
 | Recovery key | Not generated | Generated (encrypted in DB, shown once) |
 | Setup session data | Present in session | Cleared |
@@ -189,7 +189,7 @@ The setup wizard does NOT set account status to `PROTECTED`. The super admin acc
 - The setup token is encrypted and time-limited (1-hour expiry, enforced by `SetupState::validateToken()`)
 - After finalization, the `/setup` URL returns HTTP 404 after a 5-minute grace window (`ProtectSetupRouteMiddleware`)
 - The recovery key is displayed **once** and cannot be retrieved later
-- The `.installed` lock file prevents re-running the wizard
+- The `is_installed` flag prevents re-running the wizard
 - Rate limiting: 20 attempts per 60 seconds per IP on the setup route
 - Session-based authorization: once the token is validated, the session is authorized for subsequent requests
 - If forced reinstallation is needed: `php artisan setup:reset`
@@ -203,7 +203,7 @@ The setup wizard does NOT set account status to `PROTECTED`. The super admin acc
 | Email already exists | `SetupSuperAdminAction` → Validator | Validation error on the form |
 | Weak password | `nextStep()` → `min:8` + `confirmed` | Form validation error |
 | Database write failure | Any action → DB::transaction | Rollback, error message displayed |
-| `.installed` already exists | `mount()` → `Setup::state()->isInstalled()` | Redirect to login page |
+| `setups.is_installed = true` | `mount()` → `Setup::state()->isInstalled()` | Redirect to login page |
 | Rate limit exceeded | `ProtectSetupRouteMiddleware` → RateLimiter | HTTP 429 with retry message |
 
 ## Post-conditions
@@ -212,7 +212,7 @@ The setup wizard does NOT set account status to `PROTECTED`. The super admin acc
 - One department exists (more can be added through admin panel)
 - Super administrator account is active and ready (email verified, no setup required)
 - Recovery key has been generated and displayed on screen (save immediately)
-- Setup is locked: `.installed` exists, setup token invalidated, setup route returns 404
+- Setup is locked: `is_installed = true`, setup token invalidated, setup route returns 404
 - System is ready for regular operation
 
 ## Seamless Connection

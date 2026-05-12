@@ -14,7 +14,6 @@ afterEach(function () {
 
 it('can be instantiated from model', function () {
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('installedFileExists')->andReturn(false);
     $model->allows()->getAttribute('is_installed')->andReturn(false);
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);
@@ -25,21 +24,8 @@ it('can be instantiated from model', function () {
     expect($entity)->toBeInstanceOf(SetupState::class);
 });
 
-it('detects installed via file', function () {
-    $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('installedFileExists')->andReturn(true);
-    $model->allows()->getAttribute('is_installed')->andReturn(false);
-    $model->allows()->getAttribute('setup_token')->andReturn(null);
-    $model->allows()->getAttribute('token_expires_at')->andReturn(null);
-    $model->allows()->getAttribute('completed_steps')->andReturn([]);
-
-    $entity = SetupState::fromModel($model);
-    expect($entity->isInstalled())->toBeTrue();
-});
-
 it('detects installed via database', function () {
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('installedFileExists')->andReturn(false);
     $model->allows()->getAttribute('is_installed')->andReturn(true);
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);
@@ -49,12 +35,22 @@ it('detects installed via database', function () {
     expect($entity->isInstalled())->toBeTrue();
 });
 
+it('detects not installed', function () {
+    $model = Mockery::mock(Setup::class);
+    $model->allows()->getAttribute('is_installed')->andReturn(false);
+    $model->allows()->getAttribute('setup_token')->andReturn(null);
+    $model->allows()->getAttribute('token_expires_at')->andReturn(null);
+    $model->allows()->getAttribute('completed_steps')->andReturn([]);
+
+    $entity = SetupState::fromModel($model);
+    expect($entity->isInstalled())->toBeFalse();
+});
+
 it('validates setup token', function () {
     $plaintext = 'my-secret-token';
     $expiresAt = now()->addHour();
 
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('installedFileExists')->andReturn(false);
     $model->allows()->getAttribute('is_installed')->andReturn(false);
     $model->allows()->getAttribute('setup_token')->andReturn($plaintext);
     $model->allows()->getAttribute('token_expires_at')->andReturn($expiresAt);
@@ -71,7 +67,6 @@ it('rejects expired token', function () {
     $expiresAt = now()->subHour();
 
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('installedFileExists')->andReturn(false);
     $model->allows()->getAttribute('is_installed')->andReturn(false);
     $model->allows()->getAttribute('setup_token')->andReturn($plaintext);
     $model->allows()->getAttribute('token_expires_at')->andReturn($expiresAt);
@@ -84,7 +79,6 @@ it('rejects expired token', function () {
 
 it('detects step completion', function () {
     $model = Mockery::mock(Setup::class);
-    $model->shouldReceive('installedFileExists')->andReturn(false);
     $model->allows()->getAttribute('is_installed')->andReturn(false);
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);

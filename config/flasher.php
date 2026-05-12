@@ -31,10 +31,10 @@ return Configuration::from([
     ],
 
     // Global notification options
-    // 'options' => [
-    //     'timeout' => 5000,
-    //     'position' => 'top-right',
-    // ],
+    'options' => [
+        'timeout' => 5000,
+        'position' => 'bottom-right',
+    ],
 
     // Auto-inject assets into responses
     'inject_assets' => true,

@@ -22,6 +22,8 @@ return new class extends Migration
             $table->timestamp('due_date')->nullable();
             $table->json('config')->nullable();
             $table->string('status', 20)->default('draft');
+            $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignUuid('document_id')->nullable()->constrained('documents')->nullOnDelete();
             $table->timestamps();
 
             $table

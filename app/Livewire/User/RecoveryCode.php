@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace App\Livewire\User;
 
 use App\Actions\Auth\GenerateRecoverySlipAction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class RecoveryCode extends Component
 {
-    use Toast;
-
-    public ?string $generatedCode = null;
+    /** @var array<int, string> */
+    public array $codes = [];
 
     public ?string $expiresAt = null;
 
@@ -23,15 +22,40 @@ class RecoveryCode extends Component
 
         $result = $action->execute($user);
 
-        $this->generatedCode = $result['plaintext'];
-        $this->expiresAt = $result['code']->expires_at->format('d M Y H:i');
+        $this->codes = $result['plaintext'];
+        $this->expiresAt = $result['expires_at'];
 
-        $this->success('Recovery code generated successfully.');
+        session()->put('recovery_codes', $this->codes);
+        session()->put('recovery_codes_expires_at', $this->expiresAt);
+
+        flash()->success(__('profile.recovery.code_generated'));
     }
 
     public function resetCode(): void
     {
-        $this->reset(['generatedCode', 'expiresAt']);
+        $this->reset('codes', 'expiresAt');
+        session()->forget(['recovery_codes', 'recovery_codes_expires_at']);
+    }
+
+    public function downloadPdf()
+    {
+        $codes = session('recovery_codes', []);
+        $expiresAt = session('recovery_codes_expires_at', now()->addHours(24)->format('d M Y H:i'));
+
+        if (empty($codes)) {
+            flash()->error(__('profile.recovery.no_codes'));
+
+            return redirect()->back();
+        }
+
+        $pdf = Pdf::loadView('pdf.recovery-codes', [
+            'codes' => $codes,
+            'username' => auth()->user()->username,
+            'generatedAt' => now()->format('d M Y H:i'),
+            'expiresAt' => $expiresAt,
+        ]);
+
+        return $pdf->download('recovery-codes-'.auth()->user()->username.'.pdf');
     }
 
     #[Layout('layouts::app')]

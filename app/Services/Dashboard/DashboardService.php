@@ -11,11 +11,11 @@ class DashboardService
     public function getDashboardForUser(User $user): string
     {
         return match (true) {
-            $user->hasAnyRole(['super_admin', 'admin']) => 'dashboard.admin-dashboard',
-            $user->hasRole('student') => 'dashboard.student-dashboard',
-            $user->hasRole('teacher') => 'dashboard.teacher-dashboard',
-            $user->hasRole('supervisor') => 'dashboard.supervisor-dashboard',
-            default => 'dashboard.user-dashboard',
+            $user->hasAnyRole(['super_admin', 'admin']) => 'admin.dashboard',
+            $user->hasRole('student') => 'student.dashboard',
+            $user->hasRole('teacher') => 'teacher.dashboard',
+            $user->hasRole('supervisor') => 'supervisor.dashboard',
+            default => 'admin.dashboard',
         };
     }
 

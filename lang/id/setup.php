@@ -135,6 +135,7 @@ return [
 
     'wizard' => [
         'title' => 'Setup',
+        'page_title' => 'Pengaturan :app_name',
         'requirements' => 'Persyaratan',
         'permissions' => 'Izin',
         'database' => 'Database',
@@ -199,10 +200,17 @@ return [
         'back' => 'Kembali',
         'finish_setup' => 'Selesaikan Setup',
         'setup_complete' => 'Setup Selesai!',
+        'install_failed' => 'Instalasi gagal: :message',
         'ready_desc' => 'Sistem siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
         'go_to_login' => 'Ke Halaman Login',
         'data_verified' => 'Saya menyatakan bahwa data yang dimasukkan sudah benar',
+        'data_verified_long' => 'Periksa kembali semua informasi sebelum melanjutkan. Tindakan ini tidak dapat dibatalkan.',
         'security_aware' => 'Saya memahami persyaratan keamanan sistem ini',
+        'security_aware_long' => 'Kredensial admin sangat penting. Simpan di tempat yang aman.',
+        'summary' => 'Ringkasan Setup',
+        'email' => 'Email',
+        'login_notice' => 'Simpan username dan email Anda — Anda akan membutuhkannya untuk masuk. Informasi ini tidak akan ditampilkan lagi.',
+        'access_summary' => 'Kredensial Login',
         'step_labels' => [
             'welcome' => 'Selamat Datang',
             'school' => 'Sekolah',

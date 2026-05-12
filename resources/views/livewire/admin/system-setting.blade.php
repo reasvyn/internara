@@ -1,135 +1,168 @@
-<div class="p-8">
-    <x-mary-header title="{{ __('setting.title') }}" subtitle="{{ __('setting.subtitle') }}" separator progress-indicator />
+<div class="py-4">
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">{{ __('setting.title') }}</h2>
+        <p class="text-sm text-base-content/50 mt-1">{{ __('setting.subtitle') }}</p>
+    </div>
 
     <x-mary-form wire:submit="save">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 space-y-8">
-                {{-- General & Branding --}}
-                <x-mary-card title="{{ __('setting.groups.general') }}" shadow separator class="card-enterprise">
-                    <div class="grid grid-cols-1 gap-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-input label="{{ __('setting.fields.brand_name') }}" icon="o-identification" wire:model="brand_name" class="rounded-2xl" />
-                            <x-mary-select
-                                label="{{ __('setting.fields.default_locale') }}"
-                                icon="o-language"
-                                wire:model="default_locale"
-                                :options="[
-                                    ['id' => 'id', 'name' => 'Bahasa Indonesia'],
-                                    ['id' => 'en', 'name' => 'English'],
-                                ]"
-                                class="rounded-2xl"
-                            />
-                            <x-mary-input
-                                label="{{ __('setting.fields.active_academic_year') }}"
-                                icon="o-calendar"
-                                wire:model="active_academic_year"
-                                placeholder="e.g. 2025/2026"
-                                class="md:col-span-2 rounded-2xl"
-                            />
-                        </div>
-                        <x-mary-input label="{{ __('setting.fields.site_title') }}" icon="o-globe-alt" wire:model="site_title" class="rounded-2xl" />
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-6">
+                {{-- General --}}
+                <x-mary-card class="bg-base-100 border border-base-content/10">
+                    <x-slot:title><span class="font-semibold">{{ __('setting.groups.general') }}</span></x-slot:title>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-input label="{{ __('setting.fields.brand_name') }}" wire:model="brand_name" />
+                        <x-mary-select
+                            label="{{ __('setting.fields.default_locale') }}"
+                            wire:model="default_locale"
+                            :options="[
+                                ['id' => 'id', 'name' => 'Bahasa Indonesia'],
+                                ['id' => 'en', 'name' => 'English'],
+                            ]"
+                        />
+                        <x-mary-input
+                            label="{{ __('setting.fields.site_title') }}"
+                            wire:model="site_title"
+                            class="md:col-span-2"
+                        />
+                        <x-mary-input
+                            label="{{ __('setting.fields.active_academic_year') }}"
+                            wire:model="active_academic_year"
+                            placeholder="2025/2026"
+                        />
                     </div>
                 </x-mary-card>
 
                 {{-- Color Scheme --}}
-                <x-mary-card title="{{ __('setting.groups.color_scheme') }}" shadow separator class="card-enterprise">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <x-mary-input 
-                             label="{{ __('setting.fields.primary_color') }}" 
-                             icon="o-swatch" 
-                             type="color" 
-                             wire:model="primary_color" 
-                             class="rounded-2xl"
-                         />
-                         <x-mary-input 
-                             label="{{ __('setting.fields.secondary_color') }}" 
-                             icon="o-swatch" 
-                             type="color" 
-                             wire:model="secondary_color" 
-                             class="rounded-2xl"
-                         />
-                         <x-mary-input 
-                             label="{{ __('setting.fields.accent_color') }}" 
-                             icon="o-swatch" 
-                             type="color" 
-                             wire:model="accent_color" 
-                             class="rounded-2xl"
-                         />
+                <x-mary-card class="bg-base-100 border border-base-content/10">
+                    <x-slot:title><span class="font-semibold">{{ __('setting.groups.color_scheme') }}</span></x-slot:title>
+                    <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('setting.hints.color_scheme') }}</span></x-slot:subtitle>
+
+                    {{-- Presets --}}
+                    <div class="mb-6">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.presets_title') }}</p>
+                        <div class="flex flex-wrap gap-3">
+                            @php $presets = App\Support\BrandColors::presets(); @endphp
+                            @foreach($presets as $key => $preset)
+                                <button type="button"
+                                    wire:click="applyPreset('{{ $key }}')"
+                                    @class([
+                                        'relative flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:scale-105',
+                                        'border-primary shadow-md shadow-primary/10' => $selected_preset === $key,
+                                        'border-base-content/10 hover:border-base-content/30' => $selected_preset !== $key,
+                                    ])>
+                                    {{-- Color swatches --}}
+                                    <div class="flex -space-x-1.5">
+                                        <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['primary'] }}"></span>
+                                        <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['secondary'] }}"></span>
+                                        <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['accent'] }}"></span>
+                                    </div>
+                                    <span class="text-xs font-medium whitespace-nowrap">{{ $preset['label'] }}</span>
+                                    @if($selected_preset === $key)
+                                        <span class="absolute -top-1.5 -right-1.5 size-4 bg-primary text-primary-content rounded-full flex items-center justify-center">
+                                            <x-mary-icon name="o-check" class="size-2.5" />
+                                        </span>
+                                    @endif
+                                </button>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Manual pickers --}}
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.custom_title') }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <x-mary-input
+                            label="{{ __('setting.fields.primary_color') }}"
+                            type="color"
+                            wire:model.live="primary_color"
+                            wire:change="$set('selected_preset', null)"
+                        />
+                        <x-mary-input
+                            label="{{ __('setting.fields.secondary_color') }}"
+                            type="color"
+                            wire:model.live="secondary_color"
+                            wire:change="$set('selected_preset', null)"
+                        />
+                        <x-mary-input
+                            label="{{ __('setting.fields.accent_color') }}"
+                            type="color"
+                            wire:model.live="accent_color"
+                            wire:change="$set('selected_preset', null)"
+                        />
+                        <x-mary-input
+                            label="{{ __('setting.fields.base_color') }}"
+                            type="color"
+                            wire:model.live="base_color"
+                        />
                     </div>
                 </x-mary-card>
 
-                {{-- Mail Services --}}
-                <x-mary-card title="{{ __('setting.groups.mail') }}" shadow separator class="card-enterprise">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <x-mary-input label="{{ __('setting.fields.mail_from_address') }}" icon="o-envelope" type="email" wire:model="mail_from_address" class="rounded-2xl" />
-                        <x-mary-input label="{{ __('setting.fields.mail_from_name') }}" icon="o-user" wire:model="mail_from_name" class="rounded-2xl" />
+                {{-- Mail --}}
+                <x-mary-card class="bg-base-100 border border-base-content/10">
+                    <x-slot:title><span class="font-semibold">{{ __('setting.groups.mail') }}</span></x-slot:title>
+                    <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('setting.hints.mail') }}</span></x-slot:subtitle>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-input label="{{ __('setting.fields.mail_from_address') }}" type="email" wire:model="mail_from_address" />
+                        <x-mary-input label="{{ __('setting.fields.mail_from_name') }}" wire:model="mail_from_name" />
+                        <x-mary-input label="{{ __('setting.fields.mail_host') }}" wire:model="mail_host" />
+                        <x-mary-input label="{{ __('setting.fields.mail_port') }}" wire:model="mail_port" />
+                        <x-mary-select
+                            label="{{ __('setting.fields.mail_encryption') }}"
+                            wire:model="mail_encryption"
+                            :options="[
+                                ['id' => 'tls', 'name' => 'TLS'],
+                                ['id' => 'ssl', 'name' => 'SSL'],
+                                ['id' => 'none', 'name' => 'None'],
+                            ]"
+                        />
+                        <x-mary-input label="{{ __('setting.fields.mail_username') }}" wire:model="mail_username" />
+                        <x-mary-input label="{{ __('setting.fields.mail_password') }}" type="password" wire:model="mail_password" />
+                    </div>
 
-                        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-base-200 pt-6 mt-2">
-                            <x-mary-input label="{{ __('setting.fields.mail_host') }}" icon="o-server" wire:model="mail_host" class="md:col-span-2 rounded-2xl" />
-                            <x-mary-input label="{{ __('setting.fields.mail_port') }}" icon="o-arrow-right-end-on-rectangle" wire:model="mail_port" class="rounded-2xl" />
-
-                            <x-mary-select
-                                label="{{ __('setting.fields.mail_encryption') }}"
-                                icon="o-lock-closed"
-                                wire:model="mail_encryption"
-                                :options="[
-                                    ['id' => 'tls', 'name' => 'TLS'],
-                                    ['id' => 'ssl', 'name' => 'SSL'],
-                                    ['id' => 'none', 'name' => 'None'],
-                                ]"
-                                class="rounded-2xl"
-                            />
-                            <x-mary-input label="{{ __('setting.fields.mail_username') }}" icon="o-user" wire:model="mail_username" class="rounded-2xl" />
-                            <x-mary-input label="{{ __('setting.fields.mail_password') }}" icon="o-key" type="password" wire:model="mail_password" class="rounded-2xl" />
-                        </div>
-                        
-                        <div class="md:col-span-2 flex justify-end mt-4">
-                            <x-mary-button 
-                                label="{{ __('setting.buttons.test_mail') ?? 'Test SMTP Connection' }}" 
-                                icon="o-paper-airplane" 
-                                class="btn-ghost btn-sm text-primary font-black uppercase tracking-widest" 
-                                wire:click="testEmail" 
-                                spinner="testEmail" 
-                            />
-                        </div>
+                    <div class="mt-4 flex justify-end">
+                        <x-mary-button
+                            label="{{ __('setting.buttons.test_mail') }}"
+                            icon="o-paper-airplane"
+                            class="btn-ghost btn-sm"
+                            wire:click="testEmail"
+                            spinner="testEmail"
+                        />
                     </div>
                 </x-mary-card>
             </div>
 
-            <div class="lg:col-span-1 space-y-6">
-                {{-- System Information (Read-only) --}}
-                <x-mary-card title="{{ __('setting.groups.system') }}" shadow separator class="bg-base-200/50 rounded-3xl border-none">
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-base-content/60 font-medium">{{ __('setting.fields.app_name') }}</span>
-                            <span class="font-black text-base-content">{{ $app_name }}</span>
+            {{-- Sidebar --}}
+            <div class="space-y-6">
+                {{-- System Info --}}
+                <x-mary-card class="bg-base-200/30 border border-base-content/10">
+                    <x-slot:title><span class="font-semibold">{{ __('setting.groups.system') }}</span></x-slot:title>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-base-content/50">{{ __('setting.fields.app_name') }}</span>
+                            <span class="font-medium">{{ $app_name }}</span>
                         </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-base-content/60 font-medium">{{ __('setting.fields.app_version') }}</span>
-                            <x-mary-badge value="{{ $app_version }}" class="badge-neutral font-black" />
+                        <div class="flex items-center justify-between">
+                            <span class="text-base-content/50">{{ __('setting.fields.app_version') }}</span>
+                            <x-mary-badge :value="$app_version" class="badge-neutral badge-sm" />
                         </div>
                     </div>
                 </x-mary-card>
 
-                {{-- Visual Identity Assets --}}
-                <x-mary-card title="{{ __('setting.groups.identity') }}" shadow separator class="card-enterprise">
-                    <div class="space-y-8">
+                {{-- Identity Assets --}}
+                <x-mary-card class="bg-base-100 border border-base-content/10">
+                    <x-slot:title><span class="font-semibold">{{ __('setting.groups.identity') }}</span></x-slot:title>
+                    <div class="space-y-6">
                         <x-mary-file
                             label="{{ __('setting.fields.brand_logo') }}"
                             wire:model="brand_logo"
                             accept="image/*"
                             :preview="$current_logo_url"
-                            hint="{{ __('setting.hints.brand_logo') }}"
-                            class="rounded-2xl"
                         />
-
                         <x-mary-file
                             label="{{ __('setting.fields.site_favicon') }}"
                             wire:model="site_favicon"
                             accept="image/*"
                             :preview="$current_favicon_url"
-                            hint="{{ __('setting.hints.site_favicon') }}"
-                            class="rounded-2xl"
                         />
                     </div>
                 </x-mary-card>
@@ -137,7 +170,7 @@
         </div>
 
         <x-slot:actions>
-            <x-mary-button label="{{ __('setting.buttons.save') }}" type="submit" class="btn-primary px-8 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-primary/20" icon="o-check" spinner="save" />
+            <x-mary-button :label="__('setting.buttons.save')" type="submit" class="btn-primary" icon="o-check" spinner="save" />
         </x-slot:actions>
     </x-mary-form>
 </div>

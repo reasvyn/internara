@@ -135,6 +135,7 @@ return [
 
     'wizard' => [
         'title' => 'Setup',
+        'page_title' => ':app_name Setup',
         'requirements' => 'Requirements',
         'permissions' => 'Permissions',
         'database' => 'Database',
@@ -199,10 +200,17 @@ return [
         'back' => 'Back',
         'finish_setup' => 'Finish Setup',
         'setup_complete' => 'Setup Complete!',
+        'install_failed' => 'Installation failed: :message',
         'ready_desc' => 'The system is ready to manage your internship programs. You can now log in with your administrator account.',
         'go_to_login' => 'Go to Login Page',
         'data_verified' => 'I declare that the data entered is correct',
+        'data_verified_long' => 'Double-check all information before proceeding. This action cannot be undone.',
         'security_aware' => 'I understand the security requirements of this system',
+        'security_aware_long' => 'The admin credentials are critical. Store them in a secure location.',
+        'summary' => 'Setup Summary',
+        'email' => 'Email',
+        'login_notice' => 'Save your username and email — you will need them to sign in. This information will not be shown again.',
+        'access_summary' => 'Login Credentials',
         'step_labels' => [
             'welcome' => 'Welcome',
             'school' => 'School',

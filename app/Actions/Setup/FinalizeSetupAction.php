@@ -8,7 +8,6 @@ use App\Events\Setup\SetupFinalized;
 use App\Models\Setup;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -20,7 +19,6 @@ final class FinalizeSetupAction
 
         // Mark as installed
         $setup->update(['is_installed' => true]);
-        File::put(base_path('.installed'), now()->toDateTimeString());
 
         // Generate recovery key for break-glass admin recovery
         $plaintext = Str::random(64);

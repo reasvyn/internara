@@ -15,6 +15,8 @@ return [
     'skip_to_content' => 'Skip to content',
     'open_menu' => 'Open menu',
     'app_tagline' => 'Professional Internship Management System',
+    'all_rights_reserved' => 'All rights reserved.',
+    'built_with_love' => 'Built with ❤️ by',
 
     'setup_required' => [
         'title' => 'Account Setup Required',

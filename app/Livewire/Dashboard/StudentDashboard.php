@@ -11,6 +11,11 @@ use Livewire\Component;
 
 class StudentDashboard extends Component
 {
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasRole('student'), 403);
+    }
+
     public ?Registration $registration = null;
 
     public int $totalJournals = 0;

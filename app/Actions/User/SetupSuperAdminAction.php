@@ -7,9 +7,7 @@ namespace App\Actions\User;
 use App\Actions\Core\LogAuditAction;
 use App\Enums\Auth\Role as RoleEnum;
 use App\Models\User;
-use App\Rules\User\SystemUsername;
 use App\Support\User\HandlesActionErrors;
-use App\Support\User\UserIdentifierGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -28,32 +26,30 @@ class SetupSuperAdminAction
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     /**
-     * @param array{name: string, email: string, username?: string, password: string} $data
+     * @param array{name: string, email: string, username: string, password: string} $data
      *
      * @throws RuntimeException when setup fails
      */
     public function execute(array $data): User
     {
-        if (empty($data['username'])) {
-            $data['username'] = UserIdentifierGenerator::generateUsername();
-        }
-
         Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'unique:users,username', new SystemUsername],
-            'email' => ['required', 'email', 'unique:users,email'],
+            'username' => ['required', 'string'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string', 'min:8'],
         ])->validate();
 
         return $this->withErrorHandling(function () use ($data) {
             return DB::transaction(function () use ($data) {
-                $user = User::create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'username' => $data['username'],
-                    'password' => Hash::make($data['password']),
-                    'setup_required' => false,
-                ]);
+                $user = User::updateOrCreate(
+                    ['username' => $data['username']],
+                    [
+                        'name' => $data['name'],
+                        'email' => $data['email'],
+                        'password' => Hash::make($data['password']),
+                        'setup_required' => false,
+                    ],
+                );
 
                 $user->markEmailAsVerified();
 

@@ -26,7 +26,7 @@ class RedeemRecoverySlipAction
 
             $recoveryCode = AccountRecoveryCode::where('user_id', $user->id)
                 ->whereNull('used_at')
-                ->latest('generated_at')
+                ->where('expires_at', '>', now())
                 ->first();
 
             if (! $recoveryCode || ! $recoveryCode->asRecoveryCodeState()->isValid()) {

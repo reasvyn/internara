@@ -33,7 +33,7 @@ php artisan setup:install
 - **Database** accessible (SQLite, MySQL 8+, MariaDB, or PostgreSQL 14+)
 - **Server** meets minimum requirements: BCmath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, cURL, GD, intl, zip extensions
 - **Storage directories** are writable (`storage/`, `bootstrap/cache/`)
-- No existing `.installed` lock file (prevents re-installation)
+- No existing setup record with `is_installed = true` (prevents re-installation)
 
 ## Actors
 
@@ -127,7 +127,7 @@ Compiles Vite assets (TailwindCSS, Alpine.js, Cropper.js) for production.
 | Database | Empty | 64 tables created, seeded with roles/permissions/settings |
 | `.env` | Copied from example | App key generated |
 | Storage symlink | Missing | Created (`storage → public/storage`) |
-| `.installed` | Not present | **Not yet created** (setup wizard must complete first via `FinalizeSetupAction`) |
+| `setups.is_installed` | `false` | **Not yet set** (setup wizard must complete first via `FinalizeSetupAction`) |
 | Setup token | — | Generated with 1-hour expiry, stored encrypted |
 
 ## Seeded Default Settings
@@ -160,7 +160,7 @@ See `database/seeders/RolePermissionSeeder.php` for the complete role and permis
 - Roles and permissions are configured
 - Default application settings are populated
 - A one-time setup URL with encrypted token is available (valid for 1 hour)
-- The `.installed` lock file does NOT exist yet (created by setup wizard)
+- `setups.is_installed` is still `false` (set to `true` by setup wizard finalization)
 - Frontend assets are compiled (if `npm run build` was run)
 
 ## Next Steps

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Models\Setup;
 use App\Support\AppInfo;
 use App\Support\AppMetadata;
 use App\Support\Settings;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     AppInfo::clearCache();
@@ -15,10 +15,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    $lockFile = storage_path('app/.installed');
-    if (File::exists($lockFile)) {
-        File::delete($lockFile);
-    }
+    Setup::query()->delete();
 });
 
 describe('appName', function () {

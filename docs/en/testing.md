@@ -29,7 +29,7 @@ tests/
 
 `tests/TestCase.php` sets up two things:
 
-1. Creates a `.installed` lock file at the project root — this bypasses the setup wizard during tests
+1. Creates or updates a `Setup` record with `is_installed = true` — this bypasses the setup wizard during tests
 2. Registers `Gate::before` — grants all permissions to users with the `super_admin` role
 
 ## Commands

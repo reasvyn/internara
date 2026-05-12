@@ -35,12 +35,18 @@ return [
         'primary_color' => 'Warna Utama',
         'secondary_color' => 'Warna Sekunder',
         'accent_color' => 'Warna Aksen',
+        'base_color' => 'Warna Latar',
     ],
 
     'hints' => [
         'brand_logo' => 'Disarankan: PNG persegi, maks 1MB. Digunakan untuk sidebar dan laporan.',
         'site_favicon' => 'Disarankan: PNG atau ICO persegi, 32x32px. Digunakan untuk tab browser.',
+        'color_scheme' => 'Sesuaikan warna brand dan latar di seluruh antarmuka.',
+        'mail' => 'Konfigurasi pengaturan SMTP untuk notifikasi email.',
     ],
+
+    'presets_title' => 'Palet Prasetel',
+    'custom_title' => 'Warna Kustom',
 
     'buttons' => [
         'test_mail' => 'Uji Koneksi SMTP',

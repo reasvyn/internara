@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Models\Setup;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Throwable;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -17,19 +18,15 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Mark app as installed for tests (create lock file)
-        $lockPath = base_path('.installed');
-        if (! File::exists($lockPath)) {
-            File::put(
-                $lockPath,
-                json_encode(
-                    [
-                        'installed_at' => now()->toIso8601String(),
-                        'version' => 'testing',
-                    ],
-                    JSON_PRETTY_PRINT,
-                ),
-            );
+        try {
+            $setup = Setup::first();
+            if ($setup === null) {
+                $setup = new Setup;
+            }
+            $setup->is_installed = true;
+            $setup->save();
+        } catch (Throwable) {
+            // Database table may not exist yet
         }
 
         Gate::before(function ($user, $ability) {

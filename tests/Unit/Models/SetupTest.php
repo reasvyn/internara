@@ -6,13 +6,11 @@ use App\Models\Setup;
 use Database\Factories\SetupFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    File::delete(base_path('.installed'));
     Setup::query()->delete();
 });
 
@@ -51,17 +49,10 @@ it('detects installed via database', function () {
     expect(Setup::state()->isInstalled())->toBeTrue();
 });
 
-it('detects installed via file', function () {
-    File::put(base_path('.installed'), now()->toDateTimeString());
-    expect(Setup::state()->isInstalled())->toBeTrue();
-});
-
 it('can mark as installed', function () {
     $setup = Setup::firstOrCreate([]);
     $setup->update(['is_installed' => true]);
-    File::put(base_path('.installed'), now()->toDateTimeString());
-    expect(Setup::state()->isInstalled())->toBeTrue()
-        ->and(File::exists(base_path('.installed')))->toBeTrue();
+    expect(Setup::state()->isInstalled())->toBeTrue();
 });
 
 it('can generate token', function () {
