@@ -21,7 +21,7 @@ class ActivityLog extends Activity
         return $query->where('causer_id', $userId);
     }
 
-    public function scopeForSubject(Builder $query, string $type, string|int|null $id = null): Builder
+    public function scopeWhereSubject(Builder $query, string $type, string|int|null $id = null): Builder
     {
         $query->where('subject_type', $type);
 
