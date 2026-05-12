@@ -37,11 +37,9 @@ class ActivityLog extends Activity
         return $query->where('event', $action);
     }
 
-    public function scopeInLog(Builder $query, string|array $names): Builder
+    public function scopeInLog(Builder $query, ...$logNames): Builder
     {
-        $names = is_array($names) ? $names : func_get_args();
-
-        return $query->whereIn('log_name', $names);
+        return $query->whereIn('log_name', $logNames);
     }
 
     public function scopeRecent(Builder $query, int $limit = 50): Builder
