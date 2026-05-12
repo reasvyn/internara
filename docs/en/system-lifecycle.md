@@ -99,14 +99,14 @@ The system defines these terminal (irreversible) states:
 The system manages state across 8 interrelated entities. Each entity's state machine is defined in an Enum class with transition rules:
 
 | Entity | Enum / Status Source | States | Transitions defined in |
-|---|---|---|---|
-| **User Account** | `AccountStatus` | 8 states | `AccountStatus::validTransitions()` |
-| **Internship** | `InternshipStatus` | 5 states | `InternshipStatus::canTransitionTo()` |
+|---|---|---|---|---|
+| **User Account** | `AccountStatus` | Multiple states (PROVISIONED → ACTIVATED → VERIFIED → ...) | `AccountStatus::validTransitions()` |
+| **Internship** | `InternshipStatus` | DRAFT → PUBLISHED → ACTIVE → COMPLETED / CANCELLED | `InternshipStatus::canTransitionTo()` |
 | **Registration** | Spatie Model Status | pending → active → completed | `RegistrationState` entity |
-| **Logbook** | `LogbookStatus` | 4 states | `LogbookStatus::isFinalized()`, `requiresAction()` |
-| **Assignment** | `AssignmentStatus` | 3 states | `AssignmentStatus::isActive()` |
-| **Submission** | `SubmissionStatus` | 4 states | Mirror of LogbookStatus |
-| **Attendance** | `AttendanceStatus` | 6 values (not a state machine) | `isOnTime()`, `isExcused()` |
+| **Logbook** | `LogbookStatus` | DRAFT → SUBMITTED → VERIFIED (with REVISION_REQUIRED loop) | `LogbookStatus::isFinalized()`, `requiresAction()` |
+| **Assignment** | `AssignmentStatus` | DRAFT → PUBLISHED → CLOSED | `AssignmentStatus::isActive()` |
+| **Submission** | `SubmissionStatus` | DRAFT → SUBMITTED → VERIFIED / GRADED (or REVISION_REQUIRED) | Mirror of LogbookStatus |
+| **Attendance** | `AttendanceStatus` | PRESENT, LATE, EARLY_OUT, ABSENT, PERMISSION, SICK | `isOnTime()`, `isExcused()` |
 | **Assessment** | `AssessmentResult` | open → finalized | `AssessmentResult::isFinalized()` |
 
 ### State Coupling Map
@@ -157,9 +157,9 @@ The system starts in a "clean slate" state — no database, no configuration, no
 The system:
 1. Verifies server environment (PHP 8.4+, extensions, writable paths)
 2. Generates application key (if not present)
-3. Runs 57 migrations creating all tables
-4. Seeds 5 roles with permissions via `RolePermissionSeeder`
-5. Seeds 18 default settings via `AppSettingSeeder`
+3. Runs all migrations creating the database tables
+4. Seeds roles with permissions via `RolePermissionSeeder`
+5. Seeds default settings via `AppSettingSeeder`
 6. Creates storage symlink (`public/storage → storage/app/public`)
 7. Clears all caches
 
@@ -697,9 +697,9 @@ gdpr_deletion_logs
 The system dispatches domain events for key state transitions:
 
 | Event | Trigger | Listeners |
-|---|---|---|
-| `InternshipCreated` | Internship created | (reserved for future: notifications, integrations) |
-| `SetupFinalized` | Setup wizard completes | (reserved: post-setup actions) |
+|---|---|---|---|
+| `InternshipCreated` | Internship created | `NotifyAdminsInternshipCreated` — sends notification to super_admin and admin roles |
+| `SetupFinalized` | Setup wizard completes | `LogSetupFinalized` — records completion timestamp |
 
 ### Notification System
 
@@ -714,6 +714,7 @@ The system sends notifications for these events:
 | `SubmissionFeedbackNotification` | Submission graded/verified | Mail, broadcast, database |
 | `AccountStatusNotification` | Account status changed | Mail, broadcast, database |
 | `ReportGeneratedNotification` | Report generated | Mail, broadcast, database |
+| `InternshipCreatedNotification` | Internship created by admin | Mail, broadcast, database |
 
 ### Audit Logging
 
@@ -733,11 +734,11 @@ activity_log
 ### Caching Strategy
 
 | What | Cache Key | TTL | Invalidation |
-|---|---|---|---|
+|---|---|---|---|---|
 | Settings | `settings.{key}` | Forever | On setting update |
 | Settings group | `settings.group.{name}` | Forever | On group update |
 | All settings | `settings.all` | Forever | On any setting update |
-| Dashboard stats | `managerial_stats` | 10 minutes | Manual |
+| Dashboard stats | `managerial_stats` | Configurable minutes | Manual |
 
 ### Authorization System
 

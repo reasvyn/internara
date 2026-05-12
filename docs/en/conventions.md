@@ -143,7 +143,7 @@ Within a class, members appear in this order:
 | Notification | `{Name}Notification.php` | `WelcomeNotification.php` |
 | Test | `{Name}Test.php` | `UserManagerTest.php` |
 | Request | `{Verb}{Noun}Request.php` | `CreateAssignmentRequest.php` |
-| Migration | `YYYY_MM_DD_HHMMSS_create_{table}_table.php` | `2026_04_29_092750_create_users_table.php` |
+| Migration | `YYYY_MM_DD_HHMMSS_create_{table}_table.php` | `YYYY_MM_DD_HHMMSS_create_users_table.php` |
 
 ### PHP Identifiers
 
