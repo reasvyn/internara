@@ -57,6 +57,14 @@ return [
         'broadcast' => "Task ':task' encountered an error.",
         'database' => "Task ':task' failed: :error",
     ],
+    'internship_created' => [
+        'title' => 'New Internship Created',
+        'broadcast' => "New internship ':name' has been created",
+        'database' => "Internship ':name' has been created and is ready for registration.",
+        'mail_subject' => 'New Internship Created',
+        'mail_line1' => "A new internship ':name' has been created in the system.",
+        'mail_action' => 'View Internships',
+    ],
     'admin_recovered' => [
         'title' => 'Admin Recovery Performed',
         'broadcast' => 'Admin account :email has been :mode',

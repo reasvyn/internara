@@ -7,6 +7,7 @@ namespace App\Actions\School;
 use App\Actions\Core\LogAuditAction;
 use App\Models\Department;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 /**
  * Action to delete a department.
@@ -17,6 +18,10 @@ class DeleteDepartmentAction
 
     public function execute(Department $department): void
     {
+        if (! $department->asDepartmentState()->canBeDeleted()) {
+            throw new RuntimeException('Cannot delete department with active profiles.');
+        }
+
         DB::transaction(function () use ($department) {
             $departmentId = $department->id;
             $departmentName = $department->name;

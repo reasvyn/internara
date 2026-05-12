@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\Internship\InternshipCreated;
+use App\Events\Setup\SetupFinalized;
+use App\Listeners\Internship\NotifyAdminsInternshipCreated;
+use App\Listeners\Setup\LogSetupFinalized;
 use App\Models\AcademicYear;
 use App\Models\Assessment;
 use App\Models\Assignment;
@@ -39,6 +43,7 @@ use App\Policies\School\DepartmentPolicy;
 use App\Policies\School\SchoolPolicy;
 use App\Policies\User\UserPolicy;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -57,6 +62,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(
+            InternshipCreated::class,
+            [NotifyAdminsInternshipCreated::class, 'handle'],
+        );
+
+        Event::listen(
+            SetupFinalized::class,
+            [LogSetupFinalized::class, 'handle'],
+        );
+
         Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
         Blade::anonymousComponentPath(resource_path('views/components/ui'), 'ui');
 

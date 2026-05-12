@@ -57,6 +57,14 @@ return [
         'broadcast' => "Tugas ':task' mengalami kesalahan.",
         'database' => "Tugas ':task' gagal: :error",
     ],
+    'internship_created' => [
+        'title' => 'Magang Baru Dibuat',
+        'broadcast' => "Magang baru ':name' telah dibuat",
+        'database' => "Magang ':name' telah dibuat dan siap untuk pendaftaran.",
+        'mail_subject' => 'Magang Baru Dibuat',
+        'mail_line1' => "Magang baru ':name' telah dibuat di sistem.",
+        'mail_action' => 'Lihat Magang',
+    ],
     'admin_recovered' => [
         'title' => 'Pemulihan Admin Dilakukan',
         'broadcast' => 'Akun admin :email telah di:mode',

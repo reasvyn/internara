@@ -20,11 +20,7 @@ class SubmitLogbookAction
         return DB::transaction(function () use ($user, $data) {
             $date = Carbon::now()->toDateString();
 
-            // Find active registration (using Spatie HasStatuses)
-            $registration = $user
-                ->registrations()
-                ->get()
-                ->first(fn ($reg) => $reg->hasStatus('active'));
+            $registration = $user->getActiveRegistration();
 
             if (! $registration) {
                 throw new RuntimeException('No active internship registration found.');

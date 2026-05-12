@@ -9,10 +9,14 @@ use App\Actions\Schedule\DeleteScheduleAction;
 use App\Actions\Schedule\UpdateScheduleAction;
 use App\Models\Schedule;
 use Illuminate\Contracts\View\View;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * @property-read LengthAwarePaginator $schedules
+ */
 class ScheduleIndex extends Component
 {
     use WithPagination;
