@@ -54,6 +54,11 @@ final readonly class SetupState extends BaseEntity
      */
     public function isStepCompleted(string $step): bool
     {
-        return in_array($step, $this->completedSteps);
+        return in_array($step, $this->completedSteps, true);
+    }
+
+    public function hasStoredToken(): bool
+    {
+        return $this->setupToken !== null;
     }
 }

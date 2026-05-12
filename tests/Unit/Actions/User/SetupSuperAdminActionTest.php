@@ -19,6 +19,7 @@ describe('execute', function () {
         $admin = app(SetupSuperAdminAction::class)->execute([
             'name' => 'System Admin',
             'email' => 'sysadmin@school.edu',
+            'username' => 'sysadmin',
             'password' => 'very-secure-password',
         ]);
 

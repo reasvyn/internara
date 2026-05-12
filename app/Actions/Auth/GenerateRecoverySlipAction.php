@@ -15,20 +15,25 @@ class GenerateRecoverySlipAction
 
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
-    /** @return array{plaintext: array<int, string>, expires_at: string} */
+    /** @return array{code: AccountRecoveryCode, plaintext: array<int, string>, expires_at: string} */
     public function execute(User $user): array
     {
         $codes = [];
+        $firstCode = null;
 
         for ($i = 0; $i < self::CODE_COUNT; $i++) {
             $plaintext = strtoupper(str()->random(12));
 
-            AccountRecoveryCode::create([
+            $recoveryCode = AccountRecoveryCode::create([
                 'user_id' => $user->id,
                 'code_hash' => Hash::make($plaintext),
                 'generated_at' => now(),
                 'expires_at' => now()->addHours(24),
             ]);
+
+            if ($i === 0) {
+                $firstCode = $recoveryCode;
+            }
 
             $codes[] = $plaintext;
         }
@@ -42,6 +47,7 @@ class GenerateRecoverySlipAction
         );
 
         return [
+            'code' => $firstCode,
             'plaintext' => $codes,
             'expires_at' => now()->addHours(24)->format('d M Y H:i'),
         ];

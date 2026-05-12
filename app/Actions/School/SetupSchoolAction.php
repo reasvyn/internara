@@ -7,6 +7,7 @@ namespace App\Actions\School;
 use App\Actions\Core\LogAuditAction;
 use App\Models\School;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 /**
  * Setup the School profile during initial installation.
@@ -24,6 +25,10 @@ class SetupSchoolAction
             $school = School::first();
 
             if ($school) {
+                if (! $school->asSchoolState()->canBeCreated()) {
+                    throw new RuntimeException('School already exists.');
+                }
+
                 $school->update($data);
             } else {
                 $school = School::create($data);
