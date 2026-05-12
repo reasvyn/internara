@@ -30,7 +30,8 @@ use App\Actions\Admin\SetSettingAction;
 app(SetSettingAction::class)->execute('app_name', 'Internara');
 
 // Bulk update
-app(SetSettingAction::class)->executeBatch([
+use App\Actions\Admin\BatchSetSettingAction;
+app(BatchSetSettingAction::class)->execute([
     'app_name' => 'Internara',
     'app_tagline' => ['value' => 'Manage Internships', 'group' => 'branding'],
 ]);

@@ -231,13 +231,13 @@ The `composer.json` file serves as the single source of truth for static metadat
 
 | composer.json Field | `app_info()` Key | Example Value |
 |---|---|---|
-| `display_name` | `name` | `Internara` |
-| `version` | `version` | `0.1.0` |
-| `description` | `description` | `The practical field work management...` |
-| `license` | `license` | `MIT` |
-| `authors[0].name` | `author.name` | `Reas Vyn` |
-| `authors[0].email` | `author.email` | `reasvyn@gmail.com` |
-| `authors[0].homepage` | `author.github` | `https://github.com/reasvyn` |
+| `display_name` | `name` | App name from composer.json |
+| `version` | `version` | Version from composer.json |
+| `description` | `description` | Description from composer.json |
+| `license` | `license` | License from composer.json |
+| `authors[0].name` | `author.name` | Author name from composer.json |
+| `authors[0].email` | `author.email` | Author email from composer.json |
+| `authors[0].homepage` | `author.github` | Author homepage from composer.json |
 
 Metadata is parsed once and cached in-memory. The `Integrity::verify()` guard checks the author attribution on every access — if `authors[0].name` has been altered from the original, the application exits with a 403 error.
 

@@ -124,11 +124,11 @@ Compiles Vite assets (TailwindCSS, Alpine.js, Cropper.js) for production.
 
 | Component | Before | After |
 |---|---|---|
-| Database | Empty | 64 tables created, seeded with roles/permissions/settings |
+| Database | Empty | Tables created via migrations, seeded with roles/permissions/settings |
 | `.env` | Copied from example | App key generated |
 | Storage symlink | Missing | Created (`storage → public/storage`) |
 | `setups.is_installed` | `false` | **Not yet set** (setup wizard must complete first via `FinalizeSetupAction`) |
-| Setup token | — | Generated with 1-hour expiry, stored encrypted |
+| Setup token | — | Generated with time-limited expiry, stored encrypted |
 
 ## Seeded Default Settings
 
@@ -136,7 +136,7 @@ See `database/seeders/AppSettingSeeder.php` for the authoritative list of seeded
 
 ## Seeded Roles & Permissions
 
-See `database/seeders/RolePermissionSeeder.php` for the complete role and permission definitions. The 5 roles (`super_admin`, `admin`, `teacher`, `student`, `supervisor`) are seeded with their associated permissions at installation time.
+See `database/seeders/RolePermissionSeeder.php` for the complete role and permission definitions. All roles (`super_admin`, `admin`, `teacher`, `student`, `supervisor`) are seeded with their associated permissions at installation time.
 
 ## Error Handling
 
@@ -156,10 +156,10 @@ See `database/seeders/RolePermissionSeeder.php` for the complete role and permis
 ## Post-conditions
 
 - Server environment is verified and ready
-- Database has full schema with seed data (64 tables)
+- Database has full schema with all migrations applied and seed data populated
 - Roles and permissions are configured
 - Default application settings are populated
-- A one-time setup URL with encrypted token is available (valid for 1 hour)
+- A one-time setup URL with encrypted token is available (time-limited expiry)
 - `setups.is_installed` is still `false` (set to `true` by setup wizard finalization)
 - Frontend assets are compiled (if `npm run build` was run)
 

@@ -145,7 +145,7 @@ When the administrator submits Step 6, the `finish()` method executes this seque
 
 5. FinalizeSetupAction::execute()
    └── Setup::update(['is_installed' => true])
-   └── Setup::generateRecoveryKey() → 64-char encrypted key
+   └── Setup::generateRecoveryKey() → encrypted key
    └── Setup::invalidateToken() → setup URL no longer works
    └── Dispatches SetupFinalized domain event
    └── Clears setup session data
@@ -162,7 +162,7 @@ The recovery key is displayed once:
 ║  It is the only way to recover admin access             ║
 ║  if all administrator accounts are locked out.          ║
 ║                                                         ║
-║  KEY: Xa7p... (64 characters)                           ║
+║  KEY: Xa7p... (auto-generated)                          ║
 ║                                                         ║
 ╚══════════════════════════════════════════════════════════╝
 ```
