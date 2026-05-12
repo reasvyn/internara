@@ -45,6 +45,8 @@ return [
         'no_registration_hint' => 'Hubungi koordinator Anda untuk info penempatan.',
         'write_journal' => 'Tulis Jurnal Harian',
         'request_absence' => 'Ajukan Izin',
+        'my_documents' => 'Dokumen Saya',
+        'handbooks' => 'Buku Panduan',
         'timeline' => 'Aktivitas Terbaru',
         'timeline_empty' => 'Belum ada aktivitas',
     ],

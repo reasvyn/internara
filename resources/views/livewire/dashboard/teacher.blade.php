@@ -7,21 +7,21 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <x-mary-stat
             :title="__('dashboard.stats.supervised_students')"
-            value="0"
+            value="{{ $this->supervisedStudents }}"
             icon="o-users"
             class="bg-base-100 border border-base-content/10 rounded-xl"
             color="text-primary"
         />
         <x-mary-stat
             :title="__('dashboard.stats.pending_journals')"
-            value="0"
+            value="{{ $this->pendingJournals }}"
             icon="o-book-open"
             class="bg-base-100 border border-base-content/10 rounded-xl"
             color="text-warning"
         />
         <x-mary-stat
             :title="__('dashboard.stats.active_companies')"
-            value="0"
+            value="{{ $this->activeCompanies }}"
             icon="o-building-office"
             class="bg-base-100 border border-base-content/10 rounded-xl"
             color="text-secondary"
