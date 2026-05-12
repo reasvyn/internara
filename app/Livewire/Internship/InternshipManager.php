@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Internship;
 
 use App\Actions\Internship\BatchUpdateInternshipStatusAction;
+use App\Actions\Internship\CheckCloseReadinessAction;
 use App\Actions\Internship\CreateInternshipAction;
 use App\Actions\Internship\DeleteInternshipAction;
 use App\Actions\Internship\UpdateInternshipAction;
@@ -19,6 +20,10 @@ use Livewire\Attributes\Computed;
 class InternshipManager extends BaseRecordManager
 {
     public bool $showModal = false;
+
+    public ?array $readinessResults = null;
+
+    public ?string $readinessInternshipId = null;
 
     public array $formData = [
         'id' => null,
@@ -188,6 +193,21 @@ class InternshipManager extends BaseRecordManager
                 $deleteAction->execute($internship);
             }
         });
+    }
+
+    // --- Pre-Close Readiness ---
+
+    public function checkReadiness(string $internshipId, CheckCloseReadinessAction $action): void
+    {
+        $internship = Internship::findOrFail($internshipId);
+        $this->readinessResults = $action->execute($internship);
+        $this->readinessInternshipId = $internshipId;
+    }
+
+    public function dismissReadiness(): void
+    {
+        $this->readinessResults = null;
+        $this->readinessInternshipId = null;
     }
 
     // --- Mass Actions ---

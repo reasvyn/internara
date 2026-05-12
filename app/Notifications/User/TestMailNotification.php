@@ -19,10 +19,14 @@ class TestMailNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
+        $appName = brand('name');
+
         return (new MailMessage)
-            ->subject(__('notifications.test_mail.subject'))
-            ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.test_mail.line1'))
-            ->line(__('notifications.test_mail.line2'));
+            ->subject("{$appName}: Test SMTP Configuration")
+            ->greeting('Hello, Admin!')
+            ->line("This is a test email sent from {$appName} to verify your SMTP configuration.")
+            ->line('If you are reading this, your email settings are working correctly.')
+            ->action('Go to Dashboard', url('/dashboard'))
+            ->line("Thank you for using {$appName}!");
     }
 }

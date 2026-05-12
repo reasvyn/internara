@@ -13,10 +13,10 @@ use Illuminate\Console\Command;
 class AutoInactivateAccounts extends Command
 {
     protected $signature = 'accounts:auto-inactivate
-        {--days=90 : Number of days without login before marking inactive}
+        {--days=90 : Number of days since last activity before marking inactive}
         {--dry-run : List accounts that would be inactivated without making changes}';
 
-    protected $description = 'Transition VERIFIED accounts to INACTIVE after extended non-use';
+    protected $description = 'Transition VERIFIED accounts to INACTIVE after extended inactivity';
 
     public function __construct(
         private readonly LogAuditAction $logAudit,
@@ -30,8 +30,16 @@ class AutoInactivateAccounts extends Command
         $dryRun = (bool) $this->option('dry-run');
 
         $users = User::query()
-            ->whereDoesntHave('statuses', fn ($q) => $q->whereNot('name', AccountStatus::VERIFIED->value))
-            ->whereDoesntHave('loginHistory', fn ($q) => $q->where('created_at', '>=', $threshold))
+            ->whereHas('statuses', fn ($q) => $q->where('name', AccountStatus::VERIFIED->value))
+            ->whereDoesntHave('statuses', fn ($q) => $q->whereIn('name', [
+                AccountStatus::INACTIVE->value,
+                AccountStatus::ARCHIVED->value,
+                AccountStatus::PROTECTED->value,
+            ]))
+            ->where(function ($q) use ($threshold) {
+                $q->whereNull('last_activity_at')
+                    ->orWhere('last_activity_at', '<', $threshold);
+            })
             ->get();
 
         if ($users->isEmpty()) {

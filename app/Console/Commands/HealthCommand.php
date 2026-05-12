@@ -85,7 +85,7 @@ class HealthCommand extends Command
 
             return ['OK', "Connected ({$tables} tables)"];
         } catch (\Exception $e) {
-            return ['FAIL', 'Connection failed: '.$exception->getMessage()];
+            return ['FAIL', 'Connection failed: '.$e->getMessage()];
         }
     }
 

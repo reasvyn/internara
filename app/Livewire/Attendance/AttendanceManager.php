@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Livewire\Attendance;
 
 use App\Actions\Attendance\CreateAttendanceAction;
+use App\Actions\Attendance\ProcessAbsenceAction;
 use App\Actions\Attendance\VerifyAttendanceAction;
+use App\Enums\Attendance\AbsenceRequestStatus;
 use App\Enums\Attendance\AttendanceStatus;
+use App\Models\AbsenceRequest;
 use App\Models\Attendance;
 use App\Models\Registration;
 use Livewire\Attributes\Computed;
@@ -22,6 +25,8 @@ class AttendanceManager extends Component
 
     public array $records = [];
 
+    public string $tab = 'attendance';
+
     public function mount(): void
     {
         $this->date = now()->toDateString();
@@ -35,6 +40,16 @@ class AttendanceManager extends Component
             ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
             ->whereHas('mentors', fn ($q) => $q->where('user_id', auth()->id()))
             ->get();
+    }
+
+    #[Computed]
+    public function pendingAbsences()
+    {
+        return AbsenceRequest::with(['user', 'registration.placement.company'])
+            ->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($q) => $q->where('user_id', auth()->id())))
+            ->where('status', AbsenceRequestStatus::PENDING)
+            ->latest()
+            ->paginate(20);
     }
 
     public function markAttendance(CreateAttendanceAction $action): void
@@ -72,6 +87,20 @@ class AttendanceManager extends Component
     {
         $action->execute($log);
         flash()->success('Attendance verified.');
+    }
+
+    public function approveAbsence(string $id, ProcessAbsenceAction $action): void
+    {
+        $absence = AbsenceRequest::findOrFail($id);
+        $action->execute($absence, auth()->user(), AbsenceRequestStatus::APPROVED);
+        flash()->success('Absence request approved.');
+    }
+
+    public function rejectAbsence(string $id, ProcessAbsenceAction $action): void
+    {
+        $absence = AbsenceRequest::findOrFail($id);
+        $action->execute($absence, auth()->user(), AbsenceRequestStatus::REJECTED);
+        flash()->success('Absence request rejected.');
     }
 
     #[Layout('layouts::app')]

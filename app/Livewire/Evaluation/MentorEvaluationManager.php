@@ -99,9 +99,7 @@ class MentorEvaluationManager extends Component
             'overall_score' => $this->overallScore,
             'feedback' => $this->feedback,
             'criteria_scores' => array_filter($this->criteriaScores, fn ($score) => $score > 0),
-        ]);
-
-        app(DeleteEvaluationAction::class)->execute($this->editingEvaluation);
+        ], $this->editingEvaluation);
 
         $this->showForm = false;
         $this->resetForm();
