@@ -8,6 +8,7 @@ use App\Actions\Core\LogAuditAction;
 use App\Models\Profile;
 use App\Models\User;
 use App\Support\User\HandlesActionErrors;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;
@@ -29,14 +30,14 @@ class UpdateProfileAction
      *
      * @throws RuntimeException when update fails
      */
-    public function execute(User $user, array $data, ?string $name = null, ?string $email = null): Profile
+    public function execute(User $user, array $data, ?string $name = null, ?string $email = null, ?UploadedFile $avatar = null): Profile
     {
         $this->validate($data);
 
         $data = array_filter($data, fn ($v) => $v !== null);
 
-        return $this->withErrorHandling(function () use ($user, $data, $name, $email) {
-            return DB::transaction(function () use ($user, $data, $name, $email) {
+        return $this->withErrorHandling(function () use ($user, $data, $name, $email, $avatar) {
+            return DB::transaction(function () use ($user, $data, $name, $email, $avatar) {
                 if ($name !== null || $email !== null) {
                     $userData = [];
                     if ($name !== null) {
@@ -46,6 +47,10 @@ class UpdateProfileAction
                         $userData['email'] = $email;
                     }
                     $user->update($userData);
+                }
+
+                if ($avatar !== null) {
+                    $user->addMedia($avatar)->toMediaCollection('avatar');
                 }
 
                 if ($data === []) {

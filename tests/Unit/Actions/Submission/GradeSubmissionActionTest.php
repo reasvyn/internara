@@ -7,7 +7,6 @@ use Database\Factories\SubmissionFactory;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use InvalidArgumentException;
 use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);

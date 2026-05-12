@@ -118,11 +118,11 @@ class AdminManager extends BaseRecordManager
             $user = User::findOrFail($this->userData['id']);
             $this->authorize('update', $user);
             $updateAction->execute($user, $this->userData);
-            $this->success(__('user.admin.success_updated'));
+            flash()->success(__('user.admin.success_updated'));
         } else {
             $this->authorize('create', User::class);
             $createAction->execute($this->userData, [], $this->userData['roles']);
-            $this->success(__('user.admin.success_created'));
+            flash()->success(__('user.admin.success_created'));
         }
 
         $this->userModal = false;
@@ -133,13 +133,13 @@ class AdminManager extends BaseRecordManager
         $this->authorize('delete', $user);
 
         if ($user->id === auth()->id()) {
-            $this->error('Cannot delete yourself.');
+            flash()->error('Cannot delete yourself.');
 
             return;
         }
 
         $deleteAction->execute($user);
-        $this->success(__('user.admin.success_deleted'));
+        flash()->success(__('user.admin.success_deleted'));
     }
 
     // --- Bulk Actions ---

@@ -20,12 +20,9 @@ use App\Models\Rubric;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class RubricManager extends Component
 {
-    use Toast;
-
     public bool $rubricModal = false;
 
     public bool $competencyModal = false;
@@ -111,14 +108,14 @@ class RubricManager extends Component
                 description: $this->rubricForm['description'],
                 isActive: $this->rubricForm['is_active'],
             );
-            $this->success('Rubric updated.');
+            flash()->success('Rubric updated.');
         } else {
             $createAction->execute(
                 name: $this->rubricForm['name'],
                 description: $this->rubricForm['description'],
                 isActive: $this->rubricForm['is_active'],
             );
-            $this->success('Rubric created.');
+            flash()->success('Rubric created.');
         }
 
         $this->rubricModal = false;
@@ -127,7 +124,7 @@ class RubricManager extends Component
     public function removeRubric(Rubric $rubric, DeleteRubricAction $action): void
     {
         $action->execute($rubric);
-        $this->success('Rubric removed.');
+        flash()->success('Rubric removed.');
     }
 
     public function addCompetency(string $rubricId): void
@@ -175,7 +172,7 @@ class RubricManager extends Component
                 evaluatorRole: $evaluatorRole,
                 order: (int) $this->competencyForm['order'],
             );
-            $this->success('Competency updated.');
+            flash()->success('Competency updated.');
         } else {
             $createAction->execute(
                 rubricId: $this->selectedRubricId,
@@ -185,7 +182,7 @@ class RubricManager extends Component
                 evaluatorRole: $evaluatorRole,
                 order: (int) $this->competencyForm['order'],
             );
-            $this->success('Competency created.');
+            flash()->success('Competency created.');
         }
 
         $this->competencyModal = false;
@@ -194,7 +191,7 @@ class RubricManager extends Component
     public function removeCompetency(Competency $competency, DeleteCompetencyAction $action): void
     {
         $action->execute($competency);
-        $this->success('Competency removed.');
+        flash()->success('Competency removed.');
     }
 
     public function addIndicator(string $competencyId): void
@@ -240,7 +237,7 @@ class RubricManager extends Component
                 weight: (int) $this->indicatorForm['weight'],
                 order: (int) $this->indicatorForm['order'],
             );
-            $this->success('Indicator updated.');
+            flash()->success('Indicator updated.');
         } else {
             $createAction->execute(
                 competencyId: $this->selectedCompetencyId,
@@ -250,7 +247,7 @@ class RubricManager extends Component
                 weight: (int) $this->indicatorForm['weight'],
                 order: (int) $this->indicatorForm['order'],
             );
-            $this->success('Indicator created.');
+            flash()->success('Indicator created.');
         }
 
         $this->indicatorModal = false;
@@ -259,7 +256,7 @@ class RubricManager extends Component
     public function removeIndicator(Indicator $indicator, DeleteIndicatorAction $action): void
     {
         $action->execute($indicator);
-        $this->success('Indicator removed.');
+        flash()->success('Indicator removed.');
     }
 
     public function render()

@@ -99,10 +99,10 @@ class SupervisorManager extends BaseRecordManager
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData);
-            $this->success(__('user.supervisor.success_updated'));
+            flash()->success(__('user.supervisor.success_updated'));
         } else {
             $createAction->execute($this->userData, [], [RoleEnum::SUPERVISOR->value]);
-            $this->success(__('user.supervisor.success_created'));
+            flash()->success(__('user.supervisor.success_created'));
         }
 
         $this->userModal = false;
@@ -111,7 +111,7 @@ class SupervisorManager extends BaseRecordManager
     public function delete(User $user, DeleteUserAction $deleteAction): void
     {
         $deleteAction->execute($user);
-        $this->success(__('user.supervisor.success_deleted'));
+        flash()->success(__('user.supervisor.success_deleted'));
     }
 
     // --- Bulk Actions ---

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\School;
 
-use App\Models\School\AcademicYear;
+use App\Models\AcademicYear;
 use App\Models\User;
 use App\Policies\Shared\BasePolicy;
 

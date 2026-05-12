@@ -137,10 +137,10 @@ class InternshipIndex extends BaseRecordManager
         if ($this->formData['id']) {
             $internship = Internship::findOrFail($this->formData['id']);
             $update->execute($internship, $this->formData);
-            $this->success(__('internship.update_success'));
+            flash()->success(__('internship.update_success'));
         } else {
             $create->execute($this->formData);
-            $this->success(__('internship.save_success'));
+            flash()->success(__('internship.save_success'));
         }
 
         $this->showModal = false;
@@ -148,14 +148,14 @@ class InternshipIndex extends BaseRecordManager
 
     public function delete(Internship $internship, DeleteInternshipAction $deleteAction): void
     {
-        if ($internship->placements()->exists() || $internship->registrations()->exists()) {
-            $this->error(__('internship.delete_blocked'));
+        if (! $internship->asInternshipState()->canBeDeleted()) {
+            flash()->error(__('internship.delete_blocked'));
 
             return;
         }
 
         $deleteAction->execute($internship);
-        $this->success(__('internship.delete_success'));
+        flash()->success(__('internship.delete_success'));
     }
 
     // --- Mass Actions ---

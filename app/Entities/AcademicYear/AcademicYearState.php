@@ -16,12 +16,22 @@ final readonly class AcademicYearState extends BaseEntity
     public static function fromModel(Model $model): static
     {
         return new self(
-            isActive: $model->is_active,
+            isActive: (bool) ($model->is_active ?? false),
         );
     }
 
     public function isActive(): bool
     {
         return $this->isActive;
+    }
+
+    public function canBeActivated(): bool
+    {
+        return ! $this->isActive;
+    }
+
+    public function canBeDeleted(): bool
+    {
+        return ! $this->isActive;
     }
 }

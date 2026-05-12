@@ -7,14 +7,11 @@ namespace App\Livewire\Admin;
 use App\Actions\User\UpdateRolePermissionsAction;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
-use Mary\Traits\Toast;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AccessManager extends Component
 {
-    use Toast;
-
     public bool $roleModal = false;
 
     public ?Role $selectedRole = null;
@@ -58,7 +55,7 @@ class AccessManager extends Component
 
         $updateAction->execute($this->selectedRole, $this->selectedPermissions);
 
-        $this->success('Permissions updated successfully.');
+        flash()->success('Permissions updated successfully.');
         $this->roleModal = false;
     }
 

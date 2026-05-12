@@ -146,18 +146,18 @@ class InternshipManager extends BaseRecordManager
 
             try {
                 $update->execute($internship, $this->formData);
-                $this->success(__('internship.update_success'));
+                flash()->success(__('internship.update_success'));
             } catch (\RuntimeException $e) {
-                $this->error($e->getMessage());
+                flash()->error($e->getMessage());
 
                 return;
             }
         } else {
             try {
                 $create->execute($this->formData);
-                $this->success(__('internship.save_success'));
+                flash()->success(__('internship.save_success'));
             } catch (\RuntimeException $e) {
-                $this->error($e->getMessage());
+                flash()->error($e->getMessage());
 
                 return;
             }
@@ -168,14 +168,14 @@ class InternshipManager extends BaseRecordManager
 
     public function delete(Internship $internship, DeleteInternshipAction $deleteAction): void
     {
-        if ($internship->placements()->exists() || $internship->registrations()->exists()) {
-            $this->error(__('internship.delete_blocked'));
+        if (! $internship->asInternshipState()->canBeDeleted()) {
+            flash()->error(__('internship.delete_blocked'));
 
             return;
         }
 
         $deleteAction->execute($internship);
-        $this->success(__('internship.delete_success'));
+        flash()->success(__('internship.delete_success'));
     }
 
     // --- Bulk Actions ---
@@ -184,7 +184,7 @@ class InternshipManager extends BaseRecordManager
     {
         $this->performBulkAction('Delete', function ($id) use ($deleteAction) {
             $internship = Internship::find($id);
-            if ($internship && ! $internship->placements()->exists() && ! $internship->registrations()->exists()) {
+            if ($internship && $internship->asInternshipState()->canBeDeleted()) {
                 $deleteAction->execute($internship);
             }
         });

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Entities\Mentee;
 
 use App\Entities\BaseEntity;
-use App\Models\Mentee;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 final readonly class MenteeState extends BaseEntity
 {
@@ -20,15 +20,16 @@ final readonly class MenteeState extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        assert($model instanceof Mentee);
-
-        $registration = $model->latestActiveRegistration();
+        $registrations = $model->getRelationValue('registrations');
+        $active = $registrations instanceof Collection
+            ? $registrations->first(fn ($reg) => $reg->getAttribute('status') === 'active')
+            : null;
 
         return new self(
-            hasActiveRegistration: $registration !== null,
-            startDate: $registration?->start_date,
-            endDate: $registration?->end_date,
-            isActive: (bool) $model->is_active,
+            hasActiveRegistration: $active !== null,
+            startDate: $active?->getAttribute('start_date'),
+            endDate: $active?->getAttribute('end_date'),
+            isActive: (bool) $model->getAttribute('is_active'),
         );
     }
 

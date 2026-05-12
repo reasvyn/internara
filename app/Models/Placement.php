@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Entities\Placement\PlacementCapacity;
+use App\Entities\Placement\PlacementState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,5 +39,10 @@ class Placement extends BaseModel
     public function asPlacementCapacity(): PlacementCapacity
     {
         return PlacementCapacity::fromModel($this);
+    }
+
+    public function asPlacementState(): PlacementState
+    {
+        return PlacementState::fromModel($this);
     }
 }

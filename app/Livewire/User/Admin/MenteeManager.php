@@ -99,7 +99,7 @@ class MenteeManager extends BaseRecordManager
                 'internal_notes' => $this->userData['internal_notes'],
                 'is_active' => $this->userData['is_active'],
             ]);
-            $this->success(__('user.mentee.success_updated'));
+            flash()->success(__('user.mentee.success_updated'));
         } else {
             $createAction->execute(
                 userData: [
@@ -111,7 +111,7 @@ class MenteeManager extends BaseRecordManager
                     'is_active' => $this->userData['is_active'],
                 ],
             );
-            $this->success(__('user.mentee.success_created'));
+            flash()->success(__('user.mentee.success_created'));
         }
 
         $this->userModal = false;
@@ -120,7 +120,7 @@ class MenteeManager extends BaseRecordManager
     public function delete(Mentee $mentee, DeleteMenteeAction $deleteAction): void
     {
         $deleteAction->execute($mentee);
-        $this->success(__('user.mentee.success_deleted'));
+        flash()->success(__('user.mentee.success_deleted'));
     }
 
     public function deleteSelected(DeleteMenteeAction $deleteAction): void

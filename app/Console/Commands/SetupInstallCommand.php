@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Actions\Setup\GenerateSetupTokenAction;
-use App\Actions\Setup\ProvisionSystemAction;
 use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Data\Audit\AuditReport;
 use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
 use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
+use App\Support\Setup\SystemProvisioner;
 use App\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -89,7 +89,7 @@ class SetupInstallCommand extends Command
                 ->event('installation.started')
                 ->save();
 
-            $provisioner = app(ProvisionSystemAction::class);
+            $provisioner = app(SystemProvisioner::class);
             $force = (bool) $this->option('force');
 
             foreach ($provisioner->getTasks() as $key => $label) {

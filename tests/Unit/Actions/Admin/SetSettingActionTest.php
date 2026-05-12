@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\Admin\BatchSetSettingAction;
 use App\Actions\Admin\SetSettingAction;
 use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -93,7 +94,7 @@ describe('execute', function () {
 
 describe('executeBatch', function () {
     it('creates multiple settings from simple key-value pairs', function () {
-        $results = app(SetSettingAction::class)->executeBatch([
+        $results = app(BatchSetSettingAction::class)->execute([
             'key_one' => 'value_one',
             'key_two' => 'value_two',
         ]);
@@ -105,7 +106,7 @@ describe('executeBatch', function () {
     });
 
     it('creates settings with metadata from array values', function () {
-        $results = app(SetSettingAction::class)->executeBatch([
+        $results = app(BatchSetSettingAction::class)->execute([
             'db_host' => [
                 'value' => 'localhost',
                 'group' => 'database',
@@ -130,7 +131,7 @@ describe('executeBatch', function () {
     });
 
     it('returns collection of Setting models', function () {
-        $results = app(SetSettingAction::class)->executeBatch(['k1' => 'v1']);
+        $results = app(BatchSetSettingAction::class)->execute(['k1' => 'v1']);
 
         expect($results)->toBeInstanceOf(Collection::class)
             ->and($results->first())->toBeInstanceOf(Setting::class);

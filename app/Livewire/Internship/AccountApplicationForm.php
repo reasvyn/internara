@@ -11,12 +11,9 @@ use App\Models\School;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class AccountApplicationForm extends Component
 {
-    use Toast;
-
     public string $name = '';
 
     public string $email = '';
@@ -123,7 +120,7 @@ class AccountApplicationForm extends Component
 
         $action->execute($data);
 
-        $this->success('Application submitted successfully. You will be notified once reviewed.');
+        flash()->success('Application submitted successfully. You will be notified once reviewed.');
         $this->reset();
     }
 

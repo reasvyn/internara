@@ -11,6 +11,7 @@ return [
     'save' => 'Simpan Perubahan',
     'save_profile' => 'Simpan Profil',
     'saved' => 'Profil berhasil diperbarui.',
+    'avatar_upload_failed' => 'Gagal mengunggah avatar. Silakan coba lagi.',
 
     'password' => 'Perbarui Kata Sandi',
     'password_desc' => 'Pastikan akun Anda menggunakan kata sandi yang kuat.',

@@ -24,7 +24,7 @@ class EvaluateMentor extends Component
         Gate::authorize('evaluateMentor', $this->mentor);
 
         $action->execute(auth()->user(), $this->mentor, []);
-        $this->dispatch('notify', type: 'success', message: 'Mentor evaluation submitted.');
+        flash()->success('Mentor evaluation submitted.');
     }
 
     public function render(): View

@@ -17,9 +17,9 @@ use RuntimeException;
 final readonly class InstallSystemAction
 {
     public function __construct(
-        private EnvironmentAuditor $auditor,
-        private ProvisionSystemAction $provision,
-        private GenerateSetupTokenAction $generateToken,
+        protected readonly EnvironmentAuditor $auditor,
+        protected readonly ProvisionSystemAction $provision,
+        protected readonly GenerateSetupTokenAction $generateToken,
     ) {}
 
     /**

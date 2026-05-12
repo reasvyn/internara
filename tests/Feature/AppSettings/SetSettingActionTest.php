@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Actions\Admin\BatchSetSettingAction;
 use App\Actions\Admin\SetSettingAction;
 use App\Models\Setting;
 use App\Support\Settings;
@@ -106,62 +107,48 @@ describe('execute', function () {
 });
 
 describe('executeBatch', function () {
-    it('creates multiple settings from simple values', function () {
-        $action = app(SetSettingAction::class);
-
-        $results = $action->executeBatch([
-            'batch_key_1' => 'value1',
-            'batch_key_2' => 'value2',
+    it('creates multiple settings from simple key-value pairs', function () {
+        $results = app(BatchSetSettingAction::class)->execute([
+            'key_one' => 'value_one',
+            'key_two' => 'value_two',
         ]);
 
-        expect($results)->toHaveCount(2);
-        expect(Setting::byKey('batch_key_1')->exists())->toBeTrue();
-        expect(Setting::byKey('batch_key_2')->exists())->toBeTrue();
+        expect($results)->toHaveCount(2)
+            ->and($results)->toBeInstanceOf(Collection::class);
+        expect(Setting::byKey('key_one')->exists())->toBeTrue();
+        expect(Setting::byKey('key_two')->exists())->toBeTrue();
+        expect(Settings::get('key_one'))->toBe('value_one');
     });
 
     it('creates settings with metadata from array values', function () {
-        $action = app(SetSettingAction::class);
-
-        $results = $action->executeBatch([
-            'mail_driver' => [
-                'value' => 'smtp',
-                'group' => 'mail',
-                'description' => 'Mail driver',
+        $results = app(BatchSetSettingAction::class)->execute([
+            'db_host' => [
+                'value' => 'localhost',
+                'group' => 'database',
+                'description' => 'Database hostname',
             ],
-            'mail_port' => [
-                'value' => 587,
-                'group' => 'mail',
+            'db_port' => [
+                'value' => 3306,
+                'group' => 'database',
                 'type' => 'integer',
             ],
         ]);
 
         expect($results)->toHaveCount(2);
 
-        $driver = Setting::byKey('mail_driver')->first();
-        expect($driver->value)->toBe('smtp');
-        expect($driver->group)->toBe('mail');
+        $host = Setting::byKey('db_host')->first();
+        expect($host->value)->toBe('localhost')
+            ->and($host->group)->toBe('database');
 
-        $port = Setting::byKey('mail_port')->first();
-        expect($port->value)->toBe(587);
-        expect($port->type)->toBe('integer');
-    });
-
-    it('invalidates cache after batch update', function () {
-        Setting::factory()->create(['key' => 'batch_cache', 'value' => 'old']);
-        Settings::get('batch_cache');
-        $action = app(SetSettingAction::class);
-
-        $action->executeBatch(['batch_cache' => 'new']);
-
-        expect(Settings::get('batch_cache'))->toBe('new');
+        $port = Setting::byKey('db_port')->first();
+        expect($port->value)->toBe(3306)
+            ->and($port->type)->toBe('integer');
     });
 
     it('returns collection of Setting models', function () {
-        $action = app(SetSettingAction::class);
+        $results = app(BatchSetSettingAction::class)->execute(['k1' => 'v1']);
 
-        $results = $action->executeBatch(['k1' => 'v1']);
-
-        expect($results)->toBeInstanceOf(Collection::class);
-        expect($results->first())->toBeInstanceOf(Setting::class);
+        expect($results)->toBeInstanceOf(Collection::class)
+            ->and($results->first())->toBeInstanceOf(Setting::class);
     });
 });

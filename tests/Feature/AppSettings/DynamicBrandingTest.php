@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Models\Setup;
 use App\Models\Setting;
+use App\Models\Setup;
 use App\Support\AppInfo;
 use App\Support\AppMetadata;
 use App\Support\Settings;

@@ -151,10 +151,10 @@ class PlacementIndex extends BaseRecordManager
         if ($this->formData['id']) {
             $placement = Placement::findOrFail($this->formData['id']);
             $update->execute($placement, $this->formData);
-            $this->success(__('placement.update_success'));
+            flash()->success(__('placement.update_success'));
         } else {
             $create->execute($this->formData);
-            $this->success(__('placement.save_success'));
+            flash()->success(__('placement.save_success'));
         }
 
         $this->showModal = false;
@@ -164,14 +164,14 @@ class PlacementIndex extends BaseRecordManager
         Placement $placement,
         DeletePlacementAction $deleteAction,
     ): void {
-        if ($placement->registrations()->exists()) {
-            $this->error(__('placement.delete_blocked'));
+        if (! $placement->asPlacementState()->canBeDeleted()) {
+            flash()->error(__('placement.delete_blocked'));
 
             return;
         }
 
         $deleteAction->execute($placement);
-        $this->success(__('placement.delete_success'));
+        flash()->success(__('placement.delete_success'));
     }
 
     // --- Bulk Actions ---
@@ -180,7 +180,7 @@ class PlacementIndex extends BaseRecordManager
     {
         $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
             $placement = Placement::find($id);
-            if ($placement && ! $placement->registrations()->exists()) {
+            if ($placement && $placement->asPlacementState()->canBeDeleted()) {
                 $deleteAction->execute($placement);
             }
         });

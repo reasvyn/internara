@@ -7,24 +7,10 @@ namespace App\Actions\Admin;
 use App\Models\Setting;
 use App\Rules\Admin\ValidSettingKey;
 use App\Support\Settings;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-/**
- * Stateless Action to set or update system settings.
- *
- * S1 - Secure: Centralized control over system configurations.
- * S2 - Sustain: Automatic cache invalidation with typed value storage.
- */
 class SetSettingAction
 {
-    /**
-     * Execute the setting update.
-     *
-     * The value's PHP type is automatically detected and stored with the
-     * correct database type via SettingValueCast, unless $type is explicitly provided.
-     */
     public function execute(
         string $key,
         mixed $value,
@@ -53,9 +39,6 @@ class SetSettingAction
         return $setting;
     }
 
-    /**
-     * Detect the PHP type of a value for storage.
-     */
     protected function detectType(mixed $value): string
     {
         return match (true) {
@@ -65,55 +48,5 @@ class SetSettingAction
             is_array($value) => 'json',
             default => 'string',
         };
-    }
-
-    /**
-     * Set multiple settings in a single operation.
-     *
-     * @param array<string, mixed> $settings Key-value pairs, optionally with
-     *                                       metadata: ['key' => 'value'] or ['key' => ['value' => 'x', 'group' => 'y']]
-     *
-     * @return Collection<int, Setting>
-     */
-    public function executeBatch(array $settings): Collection
-    {
-        $results = collect();
-        $changed = [];
-
-        foreach ($settings as $key => $config) {
-            Validator::validate(['key' => $key], [
-                'key' => ['required', new ValidSettingKey],
-            ]);
-            if (is_array($config) && isset($config['value'])) {
-                $value = $config['value'];
-                $group = $config['group'] ?? 'general';
-                $description = $config['description'] ?? null;
-                $type = $config['type'] ?? null;
-            } else {
-                $value = $config;
-                $group = 'general';
-                $description = null;
-                $type = null;
-            }
-
-            $setting = $this->execute($key, $value, $group, $description, $type);
-
-            if ($setting->wasRecentlyCreated || $setting->wasChanged()) {
-                $changed[] = $key;
-            }
-
-            $results->push($setting);
-        }
-
-        if ($changed !== []) {
-            $groups = $results->pluck('group')->unique()->filter()->values();
-
-            Log::info('Settings updated via batch', [
-                'count' => count($changed),
-                'groups' => $groups->toArray(),
-            ]);
-        }
-
-        return $results;
     }
 }

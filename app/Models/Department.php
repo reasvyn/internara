@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Entities\Department\DepartmentState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,5 +25,10 @@ class Department extends BaseModel
     public function profiles(): HasMany
     {
         return $this->hasMany(Profile::class);
+    }
+
+    public function asDepartmentState(): DepartmentState
+    {
+        return DepartmentState::fromModel($this);
     }
 }

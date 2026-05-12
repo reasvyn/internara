@@ -128,7 +128,7 @@ class AssignmentManager extends BaseRecordManager
                 isMandatory: $this->formData['is_mandatory'],
                 dueDate: $this->formData['due_date'],
             );
-            $this->success('Assignment updated.');
+            flash()->success('Assignment updated.');
         } else {
             $createAction->execute(
                 assignmentTypeId: $this->formData['assignment_type_id'],
@@ -138,7 +138,7 @@ class AssignmentManager extends BaseRecordManager
                 isMandatory: $this->formData['is_mandatory'],
                 dueDate: $this->formData['due_date'],
             );
-            $this->success('Assignment created.');
+            flash()->success('Assignment created.');
         }
 
         $this->assignmentModal = false;
@@ -148,14 +148,14 @@ class AssignmentManager extends BaseRecordManager
     {
         $this->authorize('publish', $assignment);
         $action->execute($assignment);
-        $this->success('Assignment published.');
+        flash()->success('Assignment published.');
     }
 
     public function delete(Assignment $assignment, DeleteAssignmentAction $action): void
     {
         $this->authorize('delete', $assignment);
         $action->execute($assignment);
-        $this->success('Assignment deleted.');
+        flash()->success('Assignment deleted.');
     }
 
     public function deleteSelected(DeleteAssignmentAction $action): void

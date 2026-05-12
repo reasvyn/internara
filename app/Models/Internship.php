@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Entities\Internship\InternshipPeriod;
+use App\Entities\Internship\InternshipState;
 use App\Enums\Internship\InternshipStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,5 +48,10 @@ class Internship extends BaseModel
     public function asInternshipPeriod(): InternshipPeriod
     {
         return InternshipPeriod::fromModel($this);
+    }
+
+    public function asInternshipState(): InternshipState
+    {
+        return InternshipState::fromModel($this);
     }
 }

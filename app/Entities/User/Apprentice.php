@@ -6,14 +6,9 @@ namespace App\Entities\User;
 
 use App\Entities\BaseEntity;
 use App\Enums\Auth\AccountStatus;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
-/**
- * Pure business rules for a user/apprentice account.
- *
- * No Eloquent, no framework dependencies — only domain logic.
- */
 final readonly class Apprentice extends BaseEntity
 {
     public function __construct(
@@ -24,12 +19,13 @@ final readonly class Apprentice extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        assert($model instanceof User);
+        $statuses = $model->getRelationValue('statuses');
+        $latestName = $statuses instanceof Collection ? $statuses->last()?->name : null;
 
         return new self(
-            status: AccountStatus::tryFrom($model->latestStatus()?->name ?? '') ?? AccountStatus::PROVISIONED,
-            isLocked: $model->locked_at !== null,
-            setupRequired: (bool) $model->setup_required,
+            status: AccountStatus::tryFrom($latestName ?? '') ?? AccountStatus::PROVISIONED,
+            isLocked: $model->getAttribute('locked_at') !== null,
+            setupRequired: (bool) $model->getAttribute('setup_required'),
         );
     }
 

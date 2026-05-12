@@ -40,7 +40,6 @@ yarn-error.log
 .phpunit.result.cache
 opencode.json
 .gemini/
-.agents/
 
 # Testing & Browser Verification
 /tests/Browser/screenshots/*.png

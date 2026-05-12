@@ -13,11 +13,10 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class AttendanceManager extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public string $date = '';
 
@@ -61,18 +60,18 @@ class AttendanceManager extends Component
                     'notes' => $data['notes'] ?? null,
                 ]);
             } catch (\Exception $e) {
-                $this->error("Failed to record attendance: {$e->getMessage()}");
+                flash()->error("Failed to record attendance: {$e->getMessage()}");
             }
         }
 
-        $this->success('Attendance recorded successfully.');
+        flash()->success('Attendance recorded successfully.');
         $this->records = [];
     }
 
     public function verifyAttendance(Attendance $log, VerifyAttendanceAction $action): void
     {
         $action->execute($log);
-        $this->success('Attendance verified.');
+        flash()->success('Attendance verified.');
     }
 
     #[Layout('layouts::app')]

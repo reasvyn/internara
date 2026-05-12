@@ -24,7 +24,7 @@ class AccountLifecycleManager extends Component
         Gate::authorize('lockAccount', $user);
 
         $action->execute($user);
-        $this->dispatch('notify', type: 'success', message: 'Account locked successfully.');
+        flash()->success('Account locked successfully.');
     }
 
     public function unlock(User $user, UnlockUserAccountAction $action): void
@@ -32,7 +32,7 @@ class AccountLifecycleManager extends Component
         Gate::authorize('unlockAccount', $user);
 
         $action->execute($user);
-        $this->dispatch('notify', type: 'success', message: 'Account unlocked successfully.');
+        flash()->success('Account unlocked successfully.');
     }
 
     public function detectClones(DetectUserAccountCloneAction $action): array

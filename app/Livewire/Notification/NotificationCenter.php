@@ -80,7 +80,7 @@ class NotificationCenter extends BaseRecordManager
     {
         $action->execute(Auth::id());
 
-        $this->success(__('notifications.ui.success_mark_all'));
+        flash()->success(__('notifications.ui.success_mark_all'));
         $this->dispatch('notifications-read');
     }
 

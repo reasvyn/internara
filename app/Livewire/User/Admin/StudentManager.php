@@ -149,10 +149,10 @@ class StudentManager extends BaseRecordManager
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, $profileData);
-            $this->success(__('user.student.success_updated'));
+            flash()->success(__('user.student.success_updated'));
         } else {
             $createAction->execute($this->userData, $profileData, [RoleEnum::STUDENT->value]);
-            $this->success(__('user.student.success_created'));
+            flash()->success(__('user.student.success_created'));
         }
 
         $this->userModal = false;
@@ -161,7 +161,7 @@ class StudentManager extends BaseRecordManager
     public function deleteUser(User $user, DeleteUserAction $deleteAction): void
     {
         $deleteAction->execute($user);
-        $this->success(__('user.student.success_deleted'));
+        flash()->success(__('user.student.success_deleted'));
     }
 
     // --- Bulk Actions (Selected Rows) ---

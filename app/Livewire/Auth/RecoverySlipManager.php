@@ -8,12 +8,9 @@ use App\Actions\Auth\GenerateRecoverySlipAction;
 use App\Models\User;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class RecoverySlipManager extends Component
 {
-    use Toast;
-
     public string $search = '';
 
     public ?User $selectedUser = null;
@@ -44,7 +41,7 @@ class RecoverySlipManager extends Component
         $this->generatedCode = $result['plaintext'];
         $this->expiresAt = $result['code']->expires_at->format('d M Y H:i');
 
-        $this->success('Recovery slip generated successfully.');
+        flash()->success('Recovery slip generated successfully.');
     }
 
     public function resetForm(): void

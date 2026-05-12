@@ -13,9 +13,18 @@ use Illuminate\Support\Str;
 
 final class FinalizeSetupAction
 {
-    public function execute(): string
+    public function execute(array $stepsToComplete = ['school', 'department', 'account']): string
     {
         $setup = Setup::firstOrCreate([]);
+
+        // Mark requested steps as completed
+        $completedSteps = $setup->completed_steps ?? [];
+        foreach ($stepsToComplete as $step) {
+            if (! in_array($step, $completedSteps)) {
+                $completedSteps[] = $step;
+            }
+        }
+        $setup->update(['completed_steps' => $completedSteps]);
 
         // Mark as installed
         $setup->update(['is_installed' => true]);

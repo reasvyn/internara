@@ -15,12 +15,9 @@ use App\Models\Registration;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class AssessmentGrading extends Component
 {
-    use Toast;
-
     public string $registrationId = '';
 
     public ?string $assessmentId = null;
@@ -163,7 +160,7 @@ class AssessmentGrading extends Component
         }
 
         $action->execute($assessment);
-        $this->success('Submission & logbook scores imported.');
+        flash()->success('Submission & logbook scores imported.');
     }
 
     public function finalize(FinalizeAssessmentAction $action): void
@@ -176,9 +173,9 @@ class AssessmentGrading extends Component
         try {
             $action->execute($assessment, auth()->user());
             $this->isFinalized = true;
-            $this->success('Assessment finalized.');
+            flash()->success('Assessment finalized.');
         } catch (\RuntimeException $e) {
-            $this->error($e->getMessage());
+            flash()->error($e->getMessage());
         }
     }
 

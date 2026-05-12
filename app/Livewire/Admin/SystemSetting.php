@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Admin;
 
-use App\Actions\Admin\SetSettingAction;
+use App\Actions\Admin\BatchSetSettingAction;
 use App\Actions\Admin\UploadBrandAssetAction;
 use App\Actions\Core\LogAuditAction;
 use App\Support\BrandColors;
@@ -201,7 +201,7 @@ class SystemSetting extends Component
     /**
      * Save all system settings.
      */
-    public function save(SetSettingAction $setSetting, LogAuditAction $logAudit): void
+    public function save(BatchSetSettingAction $batchSetSetting, LogAuditAction $logAudit): void
     {
         $validated = $this->validate();
 
@@ -233,7 +233,7 @@ class SystemSetting extends Component
             $settings['site_favicon'] = app(UploadBrandAssetAction::class)->execute($this->site_favicon, 'favicon');
         }
 
-        $setSetting->executeBatch($settings);
+        $batchSetSetting->execute($settings);
 
         $logAudit->execute(
             action: 'settings_updated',

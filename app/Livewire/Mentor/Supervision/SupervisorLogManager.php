@@ -11,11 +11,10 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Mary\Traits\Toast;
 
 class SupervisorLogManager extends Component
 {
-    use Toast, WithPagination;
+    use WithPagination;
 
     public bool $showModal = false;
 
@@ -71,13 +70,13 @@ class SupervisorLogManager extends Component
         );
 
         $this->showModal = false;
-        $this->success('Supervision log recorded successfully.');
+        flash()->success('Supervision log recorded successfully.');
     }
 
     public function verify(SupervisionLog $log, VerifySupervisionLogAction $verifyAction): void
     {
         $verifyAction->execute($log, auth()->user());
-        $this->success('Log verified successfully.');
+        flash()->success('Log verified successfully.');
     }
 
     #[Layout('layouts::app')]

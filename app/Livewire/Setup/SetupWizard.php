@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Setup;
 
+use App\Actions\Internship\CreateInternshipAction;
 use App\Actions\School\SetupDepartmentAction;
 use App\Actions\School\SetupSchoolAction;
 use App\Actions\Setup\FinalizeSetupAction;
@@ -215,6 +216,7 @@ class SetupWizard extends Component
         SetupSchoolAction $setupSchool,
         SetupDepartmentAction $setupDept,
         SetupSuperAdminAction $setupAdmin,
+        CreateInternshipAction $createInternship,
         FinalizeSetupAction $finalizeSetup
     ): void {
         $this->validate([
@@ -248,18 +250,19 @@ class SetupWizard extends Component
                 'password' => $this->adminPassword,
             ]);
 
-            // 4. Mark steps completed
-            $setupRecord = Setup::firstOrCreate([]);
-            foreach (['school', 'department', 'account'] as $step) {
-                $steps = $setupRecord->completed_steps ?? [];
-                if (! in_array($step, $steps)) {
-                    $steps[] = $step;
-                }
-                $setupRecord->update(['completed_steps' => $steps]);
+            // 4. Create initial internship
+            if ($this->internshipName) {
+                $createInternship->execute([
+                    'name' => $this->internshipName,
+                    'description' => $this->internshipDescription ?: null,
+                    'start_date' => $this->startDate,
+                    'end_date' => $this->endDate,
+                    'status' => 'draft',
+                ]);
             }
 
-            // 5. Finalize
-            $finalizeSetup->execute();
+            // 5. Finalize (marks steps completed, installs, generates recovery key)
+            $finalizeSetup->execute(['school', 'department', 'account']);
 
             $this->currentStep = 7;
             flash()->success(__('setup.wizard.setup_complete'));

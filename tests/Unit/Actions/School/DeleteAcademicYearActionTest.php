@@ -6,7 +6,6 @@ use App\Actions\School\DeleteAcademicYearAction;
 use App\Models\AcademicYear;
 use Database\Factories\AcademicYearFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use InvalidArgumentException;
 
 uses(RefreshDatabase::class);
 

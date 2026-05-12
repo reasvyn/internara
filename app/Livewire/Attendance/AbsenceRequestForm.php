@@ -9,12 +9,9 @@ use App\Enums\Attendance\AbsenceReasonType;
 use App\Models\AbsenceRequest;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
 
 class AbsenceRequestForm extends Component
 {
-    use Toast;
-
     public string $startDate = '';
 
     public string $endDate = '';
@@ -42,7 +39,7 @@ class AbsenceRequestForm extends Component
             ->first(fn ($reg) => $reg->hasStatus('active'));
 
         if (! $registration) {
-            $this->error('No active internship registration found.');
+            flash()->error('No active internship registration found.');
 
             return;
         }
@@ -56,7 +53,7 @@ class AbsenceRequestForm extends Component
         ]);
 
         $this->reset(['startDate', 'endDate', 'reasonType', 'reasonDescription']);
-        $this->success('Absence request submitted successfully.');
+        flash()->success('Absence request submitted successfully.');
     }
 
     #[Layout('layouts::app')]
