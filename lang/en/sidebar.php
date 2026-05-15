@@ -36,4 +36,6 @@ return [
     'handbooks' => 'Handbooks',
     'schedules' => 'Schedules',
     'recovery_slips' => 'Recovery Slips',
+    'notifications' => 'Notifications',
+    'announcements' => 'Announcements',
 ];

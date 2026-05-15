@@ -56,6 +56,7 @@
                                         <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['primary'] }}"></span>
                                         <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['secondary'] }}"></span>
                                         <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['accent'] }}"></span>
+                                        <span class="size-5 rounded-full ring-2 ring-base-100" style="background: {{ $preset['colors']['base'] }}"></span>
                                     </div>
                                     <span class="text-xs font-medium whitespace-nowrap">{{ $preset['label'] }}</span>
                                     @if($selected_preset === $key)

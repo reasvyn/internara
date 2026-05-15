@@ -111,4 +111,4 @@ Evaluators or admins can delete evaluations. `DeleteEvaluationAction` removes th
 Mentor evaluations feed into:
 
 - **[Period Closing](period-closing.md)** — evaluations should be collected before the period ends
-- **[Report Generation](report-generation.md)** — evaluation summaries appear in mentor performance reports
+- **Report Generation** — evaluation summaries appear in mentor performance reports

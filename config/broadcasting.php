@@ -17,7 +17,9 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_CONNECTION', 'null'),
+    'default' => in_array(env('APP_ENV', 'production'), ['local', 'dev', 'development', 'testing'])
+        ? 'log'
+        : env('BROADCAST_CONNECTION', 'log'),
 
     /*
     |--------------------------------------------------------------------------

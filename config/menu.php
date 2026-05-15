@@ -81,6 +81,8 @@ return [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.operations',
             'items' => [
+                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
+                ['route' => 'admin.announcements', 'icon' => 'o-megaphone', 'label' => 'sidebar.announcements'],
                 ['route' => 'admin.attendance', 'icon' => 'o-clock', 'label' => 'sidebar.attendance'],
                 ['route' => 'admin.assignments', 'icon' => 'o-document-duplicate', 'label' => 'sidebar.assignments'],
                 ['route' => 'admin.logbook', 'icon' => 'o-book-open', 'label' => 'sidebar.logbook'],
@@ -92,6 +94,7 @@ return [
             'roles' => ['student'],
             'title' => 'sidebar.student_portal',
             'items' => [
+                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'student.logbook', 'icon' => 'o-book-open', 'label' => 'sidebar.logbook'],
                 ['route' => 'student.attendance', 'icon' => 'o-clock', 'label' => 'sidebar.attendance'],
                 ['route' => 'student.attendance.absence', 'icon' => 'o-exclamation-circle', 'label' => 'sidebar.absence'],
@@ -107,6 +110,7 @@ return [
             'roles' => ['teacher'],
             'title' => 'sidebar.teacher_portal',
             'items' => [
+                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'teacher.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
                 ['route' => 'teacher.assess-internship', 'icon' => 'o-clipboard-document-list', 'label' => 'sidebar.assess'],
                 ['route' => 'supervision.logs', 'icon' => 'o-clipboard-check', 'label' => 'sidebar.guidance_logs'],
@@ -118,6 +122,7 @@ return [
             'roles' => ['supervisor'],
             'title' => 'sidebar.supervisor_portal',
             'items' => [
+                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'supervision.logs', 'icon' => 'o-clipboard-check', 'label' => 'sidebar.guidance_logs'],
                 ['route' => 'supervision.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
             ],

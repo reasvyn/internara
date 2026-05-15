@@ -32,7 +32,7 @@ use App\Livewire\Guidance\HandbookIndex;
 use App\Livewire\Guidance\StudentHandbookIndex;
 use App\Livewire\Internship\AccountApplicationForm;
 use App\Livewire\Internship\ApplicationReview;
-use App\Livewire\Internship\CompanyIndex;
+use App\Livewire\Internship\CompanyManager;
 use App\Livewire\Internship\DirectPlacementManager;
 use App\Livewire\Internship\InternshipManager;
 use App\Livewire\Internship\PlacementIndex;
@@ -45,6 +45,7 @@ use App\Livewire\Logbook\LogbookEntry;
 use App\Livewire\Logbook\LogbookManager;
 use App\Livewire\Mentor\Supervision\SupervisionManager;
 use App\Livewire\Mentor\Supervision\SupervisorLogManager;
+use App\Livewire\Notification\Admin\AnnouncementManager;
 use App\Livewire\Notification\NotificationCenter;
 use App\Livewire\Schedule\ScheduleIndex;
 use App\Livewire\School\AcademicYearIndex;
@@ -113,7 +114,7 @@ Route::prefix('admin')
         Route::livewire('/dashboard', AdminDashboard::class)->name('dashboard');
         Route::livewire('/school', SchoolEditor::class)->name('school');
         Route::livewire('/departments', DepartmentManager::class)->name('departments');
-        Route::livewire('/companies', CompanyIndex::class)->name('companies');
+        Route::livewire('/companies', CompanyManager::class)->name('companies');
         Route::livewire('/internships', InternshipManager::class)->name('internships');
         Route::livewire('/internships/placements', PlacementIndex::class)->name('internships.placements');
         Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
@@ -158,6 +159,10 @@ Route::prefix('admin')
 */
 Route::livewire('/admin/settings', SystemSetting::class)
     ->name('admin.settings')
+    ->middleware(['auth', 'role:super_admin']);
+
+Route::livewire('/admin/announcements', AnnouncementManager::class)
+    ->name('admin.announcements')
     ->middleware(['auth', 'role:super_admin']);
 
 /*

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Setup;
 
 use App\Actions\Internship\CreateInternshipAction;
+use App\Actions\Notification\SendNotificationAction;
 use App\Actions\School\SetupDepartmentAction;
 use App\Actions\School\SetupSchoolAction;
 use App\Actions\Setup\FinalizeSetupAction;
@@ -217,7 +218,8 @@ class SetupWizard extends Component
         SetupDepartmentAction $setupDept,
         SetupSuperAdminAction $setupAdmin,
         CreateInternshipAction $createInternship,
-        FinalizeSetupAction $finalizeSetup
+        FinalizeSetupAction $finalizeSetup,
+        SendNotificationAction $sendNotification
     ): void {
         $this->validate([
             'dataVerified' => 'accepted',
@@ -263,6 +265,15 @@ class SetupWizard extends Component
 
             // 5. Finalize (marks steps completed, installs, generates recovery key)
             $finalizeSetup->execute(['school', 'department', 'account']);
+
+            // 6. Notify admin that the system is installed
+            $sendNotification->execute(
+                userId: $admin->id,
+                type: 'system',
+                title: __('notifications.system_installed.title'),
+                message: __('notifications.system_installed.message'),
+                link: route('admin.dashboard'),
+            );
 
             $this->currentStep = 7;
             flash()->success(__('setup.wizard.setup_complete'));

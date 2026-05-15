@@ -1,6 +1,6 @@
 # System Lifecycle
 
-This document describes the PKL (Praktik Kerja Lapangan / internship) management lifecycle from the **system's perspective**. Where the [User Flow](user-flow.md) focuses on actors and their actions, this document focuses on how the system orchestrates state, enforces rules, manages data, and connects events seamlessly.
+This document describes the PKL (Praktik Kerja Lapangan / internship) management lifecycle from the **system's perspective**. Where the [Requirements](requirements.md) focuses on actors and their actions, this document focuses on how the system orchestrates state, enforces rules, manages data, and connects events seamlessly.
 
 **Every event links to its detailed document in `docs/lifecycles/`.**
 
@@ -195,6 +195,49 @@ Installation state is tracked in the `setups.is_installed` database column:
 - Reset to `false` by `php artisan setup:reset`
 - Persists across container/VM duplication since state is in the database
 
+### User Installation Flow
+
+The administrator interacts with the system through CLI commands and a browser-based wizard:
+
+#### CLI Installation
+
+```bash
+composer install && npm install
+cp .env.example .env
+php artisan key:generate
+php artisan setup:install
+```
+
+`setup:install` checks the server environment, creates the database, runs migrations, and seeds default settings. It outputs a one-time URL that opens the setup wizard.
+
+#### Setup Wizard Steps
+
+1. **Environment check** — verifies PHP version (8.4+), extensions, database connection, writable paths
+2. **Database configuration** — confirms or configures the database connection
+3. **School profile** — enter institution name, address, contact details, and logo
+4. **Department setup** — create initial academic departments
+5. **Admin account** — set up the first super administrator
+
+After completion:
+- System marked installed in the database
+- 64-character encrypted recovery key generated (shown once)
+- One-time setup URL invalidated
+- `SetupFinalized` domain event dispatched
+
+#### Post-Installation
+
+```bash
+php artisan setup:super-admin       # Create additional super admin
+php artisan setup:recover-admin     # Recover lost admin access
+php artisan system:health           # Check system readiness
+```
+
+Apply core settings through the admin panel:
+- Brand name, site title, logo, favicon
+- Primary/secondary/accent colors
+- Default locale
+- SMTP mail configuration
+
 ---
 
 ## 4. Phase 1: Foundation
@@ -254,6 +297,55 @@ COMMIT
 
 If any step fails, all changes are rolled back.
 
+### User Configuration Flow
+
+The administrator manages foundational entities through the admin panel:
+
+#### School Profile
+
+Configure the institution's identity:
+- **Name**, institutional code, address, phone, email, website, fax
+- **Logo** — uploaded via media library, displayed site-wide
+- **Principal name** — for official documents
+
+Only one school record can exist (enforced by `SchoolState::canBeCreated()`).
+
+#### Academic Years
+
+Define the academic calendar. Each year has:
+- **Name** — e.g., "2025/2026"
+- **Start date** and **end date**
+- **Active flag** — only one academic year can be active at a time
+
+The active academic year is used as the default for new internships.
+
+#### Departments
+
+Create academic departments (e.g., Computer Science, Accounting, Engineering). Departments group students and are referenced in profile data.
+
+#### User Roles
+
+Five system roles control access:
+
+| Role | Purpose |
+|---|---|
+| **Super Admin** | System infrastructure, global settings, user lifecycle management |
+| **Admin** | School-level management, internship oversight |
+| **Teacher** | Academic supervision, assessment, grading, verification |
+| **Student** | Internship participants — log journal, attendance, assignments |
+| **Supervisor** | Industry-side evaluation and mentoring |
+
+Roles are managed through the admin panel using Spatie Laravel Permission.
+
+#### User Accounts
+
+Users can be created:
+- **By admin** — through the user management panel (assign any role)
+- **By self-registration** — through the account application flow (student role)
+- **Through setup wizard** — super admin during installation
+
+New accounts follow a status lifecycle defined in the [Account Lifecycle](lifecycles/account-lifecycle.md) state machine, from PROVISIONED through ACTIVATED and VERIFIED, with possible transitions to SUSPENDED, RESTRICTED, INACTIVE, or ARCHIVED.
+
 ---
 
 ## 5. Phase 2: Internship Planning
@@ -298,6 +390,40 @@ Capacity is:
 - **Checked** before any registration activation (`hasAvailableSlots()`)
 - **Protected** against reduction below current fill level (update validation)
 - **Never decremented** automatically (manual adjustment via update)
+
+### User Planning Flow
+
+The administrator creates and manages the internship program through the admin panel:
+
+#### Create Internship Program
+
+An internship is a time-bounded program with:
+- **Name** — e.g., "PKL 2025/2026 - Computer Science"
+- **Period** — start date and end date
+- **Registration window** — when students can register
+- **Description** — program details
+- **Status** — managed through the internship state machine (DRAFT → PUBLISHED → ACTIVE → COMPLETED / CANCELLED)
+
+When creating, the system automatically assigns the active academic year.
+
+#### Register Partner Companies
+
+Each company record holds:
+- Company name, address, contact person, phone, email
+- Industry type or sector
+
+#### Define Placement Slots
+
+For each company, define:
+- **Quota** — maximum number of students
+- **Start date** and **end date** (may differ from the internship period)
+- **Requirements** — special skills or prerequisites
+
+Capacity is enforced: once the quota is filled, no more students can be assigned.
+
+#### Set Document Requirements
+
+Specify what documents students must submit (e.g., application letter, insurance proof, parental consent). Each requirement can be mandatory or optional, and documents are verified during registration.
 
 ---
 
@@ -387,6 +513,39 @@ DirectPlacementAction
 | **Registration window** | `InternshipPeriod::isAcceptingRegistrations()` | Error: "Not accepting registrations" |
 | **Duplicate application** | `ApplyAccountAction` checks email uniqueness | Error: "Application already exists" |
 | **Mentor assignment** | `registration_mentor` pivot attached on activation | System warning if no mentors |
+
+### User Registration Flow
+
+Three paths exist depending on the student's situation:
+
+#### Path A: Account Application (New Students)
+
+A prospective student who does not yet have an account:
+
+1. **Apply** — fills out a public application form with personal data, school/department, internship preferences, and proposed company
+2. **Pending review** — application is queued for admin review
+3. **Admin approves** — the system creates User account, Profile, Mentee record, active Registration, attaches mentors, and sends welcome notification
+4. **Student logs in** — claims the account, completes setup, changes password
+
+If rejected, the application is marked with a reason.
+
+#### Path B: Self-Registration (Existing Students)
+
+A student with an existing account:
+
+1. **Browse internships** — views published/open internships
+2. **Register** — selects an internship, submits registration
+3. **Pending** — registration awaits admin verification
+4. **Admin verifies** — checks registration, assigns placement with available capacity, attaches mentors (teacher + supervisor)
+5. **Active** — registration becomes active, student can begin internship activities
+
+#### Path C: Direct Placement (Admin-Initiated)
+
+1. **Admin selects** — student, internship, placement
+2. **System creates** — Mentee record, active Registration (skips pending), increments placement quota, attaches mentors
+3. **Ready** — student can begin immediately
+
+Used for bulk placements or special arrangements.
 
 ---
 
@@ -478,6 +637,41 @@ IN_PROGRESS ──► SUBMITTED ──► (if by teacher) ──► COMPLETED (a
 if auth()->id() === registration.teacher_id → type = 'guidance' → auto-verified
 if auth()->id() === registration.mentor_id  → type = 'mentoring' → needs verification
 ```
+
+### User Operations Flow
+
+#### Logbook (Daily Journal)
+
+1. **Student writes** — creates a daily log entry with description and learning outcomes
+2. **Saves as draft** — can edit and continue later
+3. **Submits** — finalizes the entry for the day (one submitted entry per day)
+4. **Teacher reviews** — school teacher can verify or request revision
+
+#### Attendance
+
+Teachers record daily attendance with six status values:
+- **Present** — attended on time
+- **Late** — arrived after the threshold time
+- **Early Out** — left before the end time
+- **Absent** — did not attend
+- **Permission** — excused with notice
+- **Sick** — excused with medical reason
+
+Students can also submit absence requests in advance.
+
+#### Assignments
+
+1. **Teacher creates** — defines title, description, due date, and attaches reference documents
+2. **Publishes** — transitions from DRAFT to PUBLISHED, notifying all enrolled students
+3. **Student submits** — uploads work, adds notes; can save as DRAFT or submit as SUBMITTED
+4. **Teacher reviews** — can verify, request revision, or grade
+5. **Finalized** — once VERIFIED or GRADED, the submission is closed
+
+#### Supervision
+
+1. **Create log** — records date, topic, discussion notes
+2. **Type** — determined automatically: `Guidance` (teacher) or `Mentoring` (supervisor)
+3. **Verify** — school teacher verifies supervision logs created by industry supervisors
 
 ### Attendance Value Set
 
@@ -642,6 +836,30 @@ The system does not enforce a mandatory pre-close check, but best practice is to
 | All supervision logs verified | Ensures mentor documentation is complete |
 | Attendance reconciled | Ensures accurate attendance records |
 
+### User Closure Flow
+
+#### Transition Internship to Completed
+
+An admin or teacher transitions the internship from `Active` to `Completed`:
+- Terminal status — students can no longer submit logbooks, assignments, or attendance
+- All pending verifications should be completed beforehand
+- System validates the transition against allowed status changes
+
+#### Batch Operations
+
+- **Close all filtered** — transitions a filtered set of internships to `Completed`
+- **Archive filtered accounts** — batch archive selected student accounts
+
+#### Reports
+
+Generate institutional reports through the Reports Manager:
+- Internship completion summaries
+- Student performance reports
+- Company participation records
+- Mentor evaluation summaries
+
+Reports can be downloaded as PDFs.
+
 ---
 
 ## 10. Phase 7: Archival Engine
@@ -687,6 +905,34 @@ gdpr_deletion_logs
 ├── data_scope (what was deleted/archived)
 └── audit_reference (link to activity_log)
 ```
+
+### User Archival Flow
+
+#### Account Archival
+
+User accounts can be moved to the `Archived` status — a terminal state:
+- **Login blocked** — archived users cannot log in
+- **Data preserved** — all related records remain in the database
+- **Immutable** — no further transitions possible
+- **Compliance** — records retained per institutional policy
+
+The system supports mass archival via bulk actions in the user manager.
+
+#### Internship Period Lock
+
+Completed or cancelled internships are terminal states:
+- No new registrations or placements can be added
+- Existing records are read-only for reporting
+- The `is_installed` flag prevents re-running the setup wizard
+
+#### Preparing for a New Cycle
+
+To start a new internship cycle:
+1. Create a new **Academic Year** (set it as active)
+2. Create new **Internship Programs** (draft)
+3. Update **Company partnerships** if needed
+4. Define new **Placement Slots** with updated quotas
+5. Repeat from Phase 2
 
 ---
 
@@ -810,13 +1056,30 @@ PROVISIONED ──► ACTIVATED ──► VERIFIED ──► [RESTRICTED | SUSPE
   │                │              ▼
   │                │         ARCHIVED (terminal)
   │                │
-  │                └──► [SUSPENDED │ ARCHIVED]
+  │                ├──► [SUSPENDED │ ARCHIVED]
   │
-  └──► [SUSPENDED]
+  ├──► [SUSPENDED]
+  │
+  │   RESTRICTED ──► [VERIFIED | SUSPENDED | ARCHIVED]
+  │   SUSPENDED  ──► [VERIFIED | ARCHIVED]
+  │   INACTIVE   ──► [VERIFIED | ARCHIVED | SUSPENDED]
+  │
+  └── (full transition table below)
 
 PROTECTED  → (immutable, no transitions in or out)
 ARCHIVED   → (terminal, no transitions out)
 ```
+
+| From | To |
+|---|---|
+| PROVISIONED | ACTIVATED, SUSPENDED |
+| ACTIVATED | VERIFIED, SUSPENDED, ARCHIVED |
+| VERIFIED | RESTRICTED, SUSPENDED, ARCHIVED, INACTIVE |
+| RESTRICTED | VERIFIED, SUSPENDED, ARCHIVED |
+| SUSPENDED | VERIFIED, ARCHIVED |
+| INACTIVE | VERIFIED, ARCHIVED, SUSPENDED |
+| PROTECTED | (none) |
+| ARCHIVED | (none) |
 
 ### Entity: Logbook Entry (`LogbookStatus`)
 
@@ -883,6 +1146,6 @@ Phase 7:     [Archiving]──────────────────�
 
 | Document | Focus |
 |---|---|
-| [User Flow](user-flow.md) | Actor-centric flow — who does what |
+| [Requirements](requirements.md) | Actor-centric flow — who does what |
 | [Architecture](architecture.md) | Code structure and layering |
 | [Lifecycle Events](lifecycles/system-installation.md) | Detailed event specifications |

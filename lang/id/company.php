@@ -33,7 +33,9 @@ return [
     'update_success' => 'Perusahaan berhasil diperbarui.',
     'delete_success' => 'Perusahaan berhasil dihapus.',
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus perusahaan ini?',
+    'delete_selected_confirm' => 'Hapus perusahaan yang dipilih? Hanya perusahaan tanpa penempatan aktif yang akan dihapus.',
     'delete_blocked' => 'Tidak dapat menghapus perusahaan: masih memiliki penempatan aktif.',
+    'selected_count' => '{0} perusahaan dipilih|{1} perusahaan dipilih|[2,*] perusahaan dipilih',
     'actions' => 'Aksi',
     'stats' => [
         'total' => 'Total Perusahaan',

@@ -132,6 +132,8 @@ describe('brand colors resolution', function () {
             'primary' => '#0ea5e9',
             'secondary' => '#64748b',
             'accent' => '#f59e0b',
+            'base' => '#ffffff',
+            'content' => '#1a1a1a',
         ]);
     });
 
@@ -146,6 +148,8 @@ describe('brand colors resolution', function () {
             'primary' => '#ff0000',
             'secondary' => '#00ff00',
             'accent' => '#0000ff',
+            'base' => '#ffffff',
+            'content' => '#1a1a1a',
         ]);
     });
 

@@ -60,6 +60,11 @@ class MenteeManager extends BaseRecordManager
         });
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['is_active'] ?? null, fn ($q, $v) => $q->where('is_active', $v === 'yes'));
+    }
+
     public function create(): void
     {
         $this->resetErrorBag();

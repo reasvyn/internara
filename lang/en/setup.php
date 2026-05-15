@@ -123,7 +123,9 @@ return [
     ],
 
     'reset' => [
+        'description' => 'Regenerate the setup token (pre-installation only).',
         'not_installed' => 'Setup is not completed yet. No need to reset.',
+        'protected' => 'Cannot reset: the system is already installed. This command can only be used during pre-installation setup.',
         'new_token_generated' => 'A new setup token has been generated:',
         'warning_lock_file' => 'This will DELETE the installation lock file and allow the setup wizard to be run again.',
         'warning_records' => 'Existing database records will NOT be deleted. Run migrations manually if needed.',

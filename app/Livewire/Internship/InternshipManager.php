@@ -68,6 +68,11 @@ class InternshipManager extends BaseRecordManager
         return $query->where('name', 'like', "%{$this->search}%");
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v));
+    }
+
     #[Computed]
     public function statusOptions(): array
     {

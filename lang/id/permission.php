@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 return [
     'role' => [
-        'super_admin' => 'Super Administrator',
-        'admin' => 'Administrator',
-        'teacher' => 'Guru',
+        'super_admin' => 'Super Admin',
+        'admin' => 'Admin',
+        'teacher' => 'Guru Pembimbing',
         'student' => 'Siswa',
-        'supervisor' => 'Pembimbing',
+        'supervisor' => 'Pembimbing Industri',
     ],
 
     'permission' => [

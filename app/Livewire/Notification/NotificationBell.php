@@ -34,14 +34,6 @@ class NotificationBell extends Component
 
     public function render()
     {
-        return <<<'HTML'
-        <div>
-            <x-mary-button icon="o-bell" class="btn-ghost btn-sm relative" link="/notifications">
-                @if($unreadCount > 0)
-                    <span class="badge badge-error badge-xs absolute top-0 right-0 animate-pulse">{{ $unreadCount }}</span>
-                @endif
-            </x-mary-button>
-        </div>
-        HTML;
+        return view('livewire.notification.notification-bell');
     }
 }

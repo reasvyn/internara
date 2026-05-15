@@ -102,7 +102,7 @@ BrandColors::isValid('#hex');        // Validate hex color
 
 Each `brand('key')` call follows a fallback chain:
 
-**`brand('name')`** — if not installed → composer.json name → fallback to `'Laravel'`
+**`brand('name')`** — if not installed → composer.json `display_name` → composer.json `name` → fallback to `'Laravel'`
 
 **`brand('logo')`** — if not installed → fallback to `/brand/logo.png`
 - If installed → setting `brand_logo` (URL string) → fallback to `/brand/logo.png`
@@ -169,7 +169,7 @@ The `BrandColors::cssVariables()` method generates CSS custom properties for bot
 - `--color-base-100/200/300` — background surface hierarchy
 - `--color-base-content` — base text color
 
-These are injected via an inline `<style>` block in `resources/views/layouts/base.blade.php` using the selector `[data-theme="light"]` and `[data-theme="dark"]` (same specificity as daisyUI theme, later in DOM order so they override theme defaults).
+These are injected via an inline `<style>` block in `resources/views/layouts/base.blade.php` using the selector `html[data-theme="light"]` and `html[data-theme="dark"]` (same specificity as daisyUI theme, later in DOM order so they override theme defaults).
 
 ### Dark Mode
 

@@ -77,6 +77,13 @@ class AdminManager extends BaseRecordManager
         });
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query
+            ->when($this->filters['setup_required'] ?? null, fn ($q, $v) => $q->where('setup_required', $v === 'yes'))
+            ->when($this->filters['locked'] ?? null, fn ($q, $v) => $v === 'yes' ? $q->whereNotNull('locked_at') : $q->whereNull('locked_at'));
+    }
+
     // --- Record Actions ---
 
     public function create(): void

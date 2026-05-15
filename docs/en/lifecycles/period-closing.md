@@ -6,7 +6,7 @@
 
 **Previous Event:** [Assessment & Scoring](assessment-scoring.md)
 
-**Next Events:** [Report Generation](report-generation.md), [Account Archiving](account-archiving.md)
+**Next Events:** Report Generation, [Account Archiving](account-archiving.md)
 
 ---
 
@@ -138,5 +138,5 @@ The internship can be closed normally. Placements are not required for the close
 
 After closing:
 
-- **[Report Generation](report-generation.md)** — generate completion reports, student transcripts, and institutional summaries
+- **Report Generation** — generate completion reports, student transcripts, and institutional summaries
 - **[Account Archiving](account-archiving.md)** — archive graduated students and prepare for the next cycle

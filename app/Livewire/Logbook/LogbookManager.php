@@ -73,6 +73,13 @@ class LogbookManager extends BaseRecordManager
         });
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query
+            ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->when($this->filters['is_verified'] ?? null, fn ($q, $v) => $q->where('is_verified', $v === 'yes'));
+    }
+
     #[Computed]
     public function students(): array
     {
