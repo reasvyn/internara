@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@prettier/plugin-php": "^0.24.0",
-        "@tailwindcss/vite": "^4.1.18",
+        "@tailwindcss/vite": "^4.3.0",
         "daisyui": "^5.5.19",
         "laravel-echo": "^2.3.4",
         "prettier": "^3.8.1",
