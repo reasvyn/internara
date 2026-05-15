@@ -36,4 +36,6 @@ return [
     'handbooks' => 'Panduan',
     'schedules' => 'Jadwal',
     'recovery_slips' => 'Kode Pemulihan',
+    'notifications' => 'Notifikasi',
+    'announcements' => 'Pengumuman',
 ];

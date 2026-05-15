@@ -65,6 +65,14 @@ return [
         'mail_line1' => "A new internship ':name' has been created in the system.",
         'mail_action' => 'View Internships',
     ],
+    'system_installed' => [
+        'title' => 'System Installed',
+        'message' => 'The internship management system has been successfully installed. Welcome aboard!',
+    ],
+    'welcome_to_dashboard' => [
+        'title' => 'Welcome to the Dashboard!',
+        'message' => 'You are now logged in as Super Administrator. Explore the system and start configuring your internship programs.',
+    ],
     'admin_recovered' => [
         'title' => 'Admin Recovery Performed',
         'broadcast' => 'Admin account :email has been :mode',
@@ -89,5 +97,8 @@ return [
         'message_col' => 'Message',
         'received_col' => 'Received',
         'success_mark_all' => 'All notifications marked as read.',
+        'success_mark_selected' => 'Selected notifications marked as read.',
+        'mark_read_batch' => 'Mark as Read',
+        'selected_count' => '{0} notifications selected|{1} notification selected|[2,*] notifications selected',
     ],
 ];

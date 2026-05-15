@@ -17,7 +17,7 @@ app/
 ├── Events/        Domain events
 ├── Exceptions/    AppException hierarchy
 ├── Http/          Controllers, middleware, form requests
-├── Jobs/          Queued jobs
+├── Listeners/     Event listeners
 ├── Livewire/      Reactive UI components
 ├── Models/        Eloquent models (flat namespace, no sub-directories)
 ├── Notifications/ Mail, broadcast, and database notification classes

@@ -190,7 +190,7 @@ class AppSettingSeeder extends Seeder
             ],
             [
                 'key' => 'base_color',
-                'value' => BrandColors::DEFAULT_BASE,
+                'value' => BrandColors::DEFAULTS['base'],
                 'type' => 'string',
                 'description' => 'Page base background color (hex)',
                 'group' => 'general',

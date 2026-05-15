@@ -61,7 +61,7 @@ describe('brand() helper', function () {
         $colors = brand('colors');
 
         expect($colors)->toBeArray();
-        expect($colors)->toHaveKeys(['primary', 'secondary', 'accent']);
+        expect($colors)->toHaveKeys(['primary', 'secondary', 'accent', 'base', 'content']);
     });
 });
 

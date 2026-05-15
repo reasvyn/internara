@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Dashboard;
 
 use App\Actions\Dashboard\GetAdminDashboardStatsAction;
+use App\Actions\Notification\SendNotificationAction;
+use App\Models\Notification;
 use App\Services\SystemAuditService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -26,14 +28,35 @@ class AdminDashboard extends Component
 
     public array $readiness = [];
 
-    public function mount(GetAdminDashboardStatsAction $statsAction, SystemAuditService $auditService): void
-    {
+    public function mount(
+        GetAdminDashboardStatsAction $statsAction,
+        SystemAuditService $auditService,
+        SendNotificationAction $sendNotification,
+    ): void {
         $stats = $statsAction->execute();
 
         $this->totalStudents = $stats['totalStudents'];
         $this->totalTeachers = $stats['totalTeachers'];
         $this->totalDepartments = $stats['totalDepartments'];
         $this->activeInternships = $stats['activeInternships'];
+
+        // Send welcome notification on first dashboard visit for Super Admin
+        $user = auth()->user();
+        if ($user->hasRole('super_admin')) {
+            $hasWelcome = Notification::where('user_id', $user->id)
+                ->where('type', 'welcome')
+                ->exists();
+
+            if (! $hasWelcome) {
+                $sendNotification->execute(
+                    userId: $user->id,
+                    type: 'welcome',
+                    title: __('notifications.welcome_to_dashboard.title'),
+                    message: __('notifications.welcome_to_dashboard.message'),
+                    link: route('admin.dashboard'),
+                );
+            }
+        }
 
         $results = $auditService->run();
         $this->readiness = [

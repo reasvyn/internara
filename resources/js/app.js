@@ -7,6 +7,34 @@ import 'flatpickr/dist/flatpickr.min.css'
 window.flatpickr = flatpickr
 
 /**
+ * Echo / Broadcasting
+ */
+import Echo from 'laravel-echo'
+import Pusher from 'pusher-js'
+window.Pusher = Pusher
+
+/**
+ * Markdown Editor
+ */
+import { marked } from 'marked'
+window.marked = marked
+
+const appKey = import.meta.env.VITE_REVERB_APP_KEY
+
+if (appKey) {
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: appKey,
+        wsHost: import.meta.env.VITE_REVERB_HOST,
+        wsPort: import.meta.env.VITE_REVERB_PORT ?? 80,
+        wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+        wsPath: import.meta.env.VITE_REVERB_PATH ?? '/',
+        forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+        enabledTransports: ['ws', 'wss'],
+    })
+}
+
+/**
  * Alpine Helper Functions
  */
 const getAlpineData = (element) => {

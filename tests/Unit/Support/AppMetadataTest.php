@@ -17,7 +17,7 @@ beforeEach(function () {
 afterEach(function () {
     try {
         Setup::query()->delete();
-    } catch (\Exception) {
+    } catch (Exception) {
         // Table may not exist when running unit tests in isolation
     }
 });
@@ -100,10 +100,12 @@ describe('colors', function () {
         $colors = AppMetadata::colors();
 
         expect($colors)->toBeArray();
-        expect($colors)->toHaveKeys(['primary', 'secondary', 'accent']);
+        expect($colors)->toHaveKeys(['primary', 'secondary', 'accent', 'base', 'content']);
         expect($colors['primary'])->toBe('#0ea5e9');
         expect($colors['secondary'])->toBe('#64748b');
         expect($colors['accent'])->toBe('#f59e0b');
+        expect($colors['base'])->toBe('#ffffff');
+        expect($colors['content'])->toBe('#1a1a1a');
     });
 });
 

@@ -215,4 +215,4 @@ Assessment scores represent the student's final performance measurement:
 
 - **[Mentor Evaluation](mentor-evaluation.md)** — evaluates the mentor's performance
 - **[Period Closing](period-closing.md)** — all assessments should be finalized before closure
-- **[Report Generation](report-generation.md)** — scores feed into completion reports
+- **Report Generation** — scores feed into completion reports

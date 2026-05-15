@@ -55,6 +55,27 @@ enum Role: string implements LabelEnum
         ];
     }
 
+    /** @return array<int, self> All user roles except SUPER_ADMIN. */
+    public static function excludeSuperAdmin(): array
+    {
+        return [
+            self::ADMIN,
+            self::TEACHER,
+            self::STUDENT,
+            self::SUPERVISOR,
+        ];
+    }
+
+    /** @return array<int, self> All user roles except SUPER_ADMIN and ADMIN. */
+    public static function excludeAdmin(): array
+    {
+        return [
+            self::TEACHER,
+            self::STUDENT,
+            self::SUPERVISOR,
+        ];
+    }
+
     /** @return array<int, self> All functional roles (contextual). */
     public static function functionalRoles(): array
     {
@@ -121,6 +142,6 @@ enum Role: string implements LabelEnum
 
     public function label(): string
     {
-        return __("permission::role.{$this->value}");
+        return __("permission.role.{$this->value}");
     }
 }

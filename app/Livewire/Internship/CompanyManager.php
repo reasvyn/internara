@@ -17,7 +17,7 @@ use Livewire\Attributes\Layout;
 /**
  * Modernized Company Manager using BaseRecordManager pattern.
  */
-class CompanyIndex extends BaseRecordManager
+class CompanyManager extends BaseRecordManager
 {
     public bool $showModal = false;
 
@@ -62,6 +62,11 @@ class CompanyIndex extends BaseRecordManager
         return $query
             ->where('name', 'like', "%{$this->search}%")
             ->orWhere('industry_sector', 'like', "%{$this->search}%");
+    }
+
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['industry_sector'] ?? null, fn ($q, $v) => $q->where('industry_sector', $v));
     }
 
     #[Computed]
@@ -166,6 +171,6 @@ class CompanyIndex extends BaseRecordManager
     #[Layout('layouts::app')]
     public function render()
     {
-        return view('livewire.internship.company-index');
+        return view('livewire.internship.company-manager');
     }
 }

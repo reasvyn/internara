@@ -65,6 +65,11 @@ class SupervisorManager extends BaseRecordManager
         });
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['setup_required'] ?? null, fn ($q, $v) => $q->where('setup_required', $v === 'yes'));
+    }
+
     // --- Record Actions ---
 
     public function create(): void

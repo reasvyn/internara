@@ -123,7 +123,9 @@ return [
     ],
 
     'reset' => [
+        'description' => 'Buat ulang token setup (hanya pra-instalasi).',
         'not_installed' => 'Setup belum selesai. Tidak perlu reset.',
+        'protected' => 'Tidak dapat mereset: sistem sudah terinstal. Perintah ini hanya dapat digunakan selama fase pra-instalasi.',
         'new_token_generated' => 'Token setup baru telah dibuat:',
         'warning_lock_file' => 'Ini akan MENGHAPUS file kunci instalasi dan memungkinkan wizard setup dijalankan kembali.',
         'warning_records' => 'Catatan database yang ada TIDAK akan dihapus. Jalankan migrasi secara manual jika diperlukan.',

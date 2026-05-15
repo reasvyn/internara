@@ -79,6 +79,13 @@ class TeacherManager extends BaseRecordManager
         });
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query
+            ->when($this->filters['department_id'] ?? null, fn ($q, $v) => $q->whereHas('profile', fn ($q) => $q->where('department_id', $v)))
+            ->when($this->filters['setup_required'] ?? null, fn ($q, $v) => $q->where('setup_required', $v === 'yes'));
+    }
+
     // --- Record Actions ---
 
     public function create(): void

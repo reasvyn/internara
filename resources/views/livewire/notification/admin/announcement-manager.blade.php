@@ -1,0 +1,89 @@
+<div class="py-4">
+    <div class="mb-6 flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4">
+        <div>
+            <h2 class="text-xl font-bold">{{ __('announcement.title') }}</h2>
+            <p class="text-sm text-base-content/50 mt-1">{{ __('announcement.subtitle') }}</p>
+        </div>
+        <x-mary-button :label="__('announcement.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="$set('showForm', true)" />
+    </div>
+
+    @if($showForm)
+        <x-mary-card class="bg-base-100 border border-base-content/10 mb-6">
+            <x-mary-form wire:submit="save">
+                <div class="space-y-5">
+                    <x-mary-input :label="__('announcement.fields.title')" wire:model="title" />
+                    <x-ui::markdown-editor :label="__('announcement.fields.message')" model="message" rows="6" :hint="__('announcement.markdown_hint')" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-select :label="__('announcement.fields.type')" wire:model="type"
+                            :options="[
+                                ['id' => 'info', 'name' => 'Info'],
+                                ['id' => 'success', 'name' => 'Success'],
+                                ['id' => 'warning', 'name' => 'Warning'],
+                                ['id' => 'error', 'name' => 'Error'],
+                            ]"
+                        />
+                        <x-mary-input :label="__('announcement.fields.link')" wire:model="link" placeholder="https://..." />
+                    </div>
+
+                    <div class="border-t border-base-content/10 pt-4">
+                        <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="sendToAll" />
+
+                        @if(!$sendToAll)
+                            <div class="mt-4">
+                                <x-mary-choices :label="__('announcement.fields.target_roles')" wire:model="target_roles" :options="$roles" multiple :hint="__('announcement.roles_hint')" />
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <x-slot:actions>
+                    <x-mary-button :label="__('common.actions.cancel')" wire:click="resetForm" class="btn-ghost btn-sm" />
+                    <x-mary-button :label="__('announcement.send')" type="submit" class="btn-primary btn-sm" icon="o-paper-airplane" spinner="save" />
+                </x-slot:actions>
+            </x-mary-form>
+        </x-mary-card>
+    @endif
+
+    <x-mary-card class="bg-base-100 border border-base-content/10">
+        @if($announcements->isEmpty())
+            <div class="text-center py-12 text-sm text-base-content/40">
+                {{ __('announcement.empty') }}
+            </div>
+        @else
+            <div class="divide-y divide-base-content/10">
+                @foreach($announcements as $announcement)
+                    <div class="py-4 flex items-start justify-between gap-4">
+                        <div class="flex items-start gap-3 min-w-0">
+                            <div @class([
+                                'size-8 rounded-lg flex items-center justify-center shrink-0',
+                                'bg-info/10 text-info' => $announcement->type === 'info',
+                                'bg-success/10 text-success' => $announcement->type === 'success',
+                                'bg-warning/10 text-warning' => $announcement->type === 'warning',
+                                'bg-error/10 text-error' => $announcement->type === 'error',
+                            ])>
+                                <x-mary-icon :name="match($announcement->type) {
+                                    'success' => 'o-check-circle',
+                                    'warning' => 'o-exclamation-triangle',
+                                    'error' => 'o-x-circle',
+                                    default => 'o-information-circle',
+                                }" class="size-4" />
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium">{{ $announcement->title }}</h4>
+                                <div class="text-xs text-base-content/60 mt-0.5 line-clamp-2 prose prose-sm max-w-none">{!! Str::markdown($announcement->message) !!}</div>
+                                <p class="text-[10px] text-base-content/40 mt-1.5">
+                                    {{ $announcement->created_at->format('d M Y H:i') }}
+                                    @if($announcement->target_roles)
+                                        &middot; {{ implode(', ', $announcement->target_roles) }}
+                                    @else
+                                        &middot; {{ __('announcement.all_users') }}
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </x-mary-card>
+</div>

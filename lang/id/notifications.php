@@ -65,6 +65,14 @@ return [
         'mail_line1' => "Magang baru ':name' telah dibuat di sistem.",
         'mail_action' => 'Lihat Magang',
     ],
+    'system_installed' => [
+        'title' => 'Sistem Terinstal',
+        'message' => 'Sistem manajemen magang telah berhasil diinstal. Selamat bergabung!',
+    ],
+    'welcome_to_dashboard' => [
+        'title' => 'Selamat Datang di Dashboard!',
+        'message' => 'Anda sekarang login sebagai Super Administrator. Jelajahi sistem dan mulailah mengonfigurasi program magang Anda.',
+    ],
     'admin_recovered' => [
         'title' => 'Pemulihan Admin Dilakukan',
         'broadcast' => 'Akun admin :email telah di:mode',
@@ -89,5 +97,8 @@ return [
         'message_col' => 'Pesan',
         'received_col' => 'Diterima',
         'success_mark_all' => 'Semua notifikasi telah ditandai sebagai dibaca.',
+        'success_mark_selected' => 'Notifikasi terpilih telah ditandai sebagai dibaca.',
+        'mark_read_batch' => 'Tandai Dibaca',
+        'selected_count' => '{0} notifikasi dipilih|{1} notifikasi dipilih|[2,*] notifikasi dipilih',
     ],
 ];

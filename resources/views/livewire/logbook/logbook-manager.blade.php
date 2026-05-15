@@ -8,14 +8,31 @@
 
     {{-- Controls Section --}}
     <div class="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-        <div class="w-full lg:max-w-md">
+        <div class="w-full lg:max-w-md flex items-center gap-3">
             <x-mary-input 
                 wire:model.live.debounce.300ms="search" 
                 placeholder="{{ __('Search records...') }}" 
                 icon="o-magnifying-glass" 
                 clearable 
-                class="rounded-2xl border-base-300 focus:border-primary transition-all duration-300 shadow-sm"
+                class="rounded-2xl border-base-300 focus:border-primary transition-all duration-300 shadow-sm flex-1"
             />
+            <x-mary-dropdown>
+                <x-slot:trigger>
+                    <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" />
+                </x-slot:trigger>
+                <div class="p-4 space-y-4 w-72">
+                    <x-mary-select
+                        wire:model.live="filters.status"
+                        :placeholder="__('logbook.status')"
+                        :options="['draft' => 'Draft', 'submitted' => 'Submitted', 'verified' => 'Verified']"
+                    />
+                    <x-mary-select
+                        wire:model.live="filters.is_verified"
+                        :placeholder="__('logbook.verified')"
+                        :options="['yes' => 'Verified', 'no' => 'Unverified']"
+                    />
+                </div>
+            </x-mary-dropdown>
         </div>
     </div>
 

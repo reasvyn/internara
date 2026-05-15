@@ -84,6 +84,23 @@ class NotificationCenter extends BaseRecordManager
         $this->dispatch('notifications-read');
     }
 
+    public function markSelectedAsRead(): void
+    {
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        Notification::whereIn('id', $this->selectedIds)
+            ->where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true, 'read_at' => now()]);
+
+        $this->dispatch('notifications-read');
+        $this->clearSelection();
+
+        flash()->success(__('notifications.ui.success_mark_selected'));
+    }
+
     public function deleteSelected(DeleteNotificationAction $action): void
     {
         $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) use ($action) {

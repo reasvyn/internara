@@ -9,7 +9,9 @@ return [
     'edit' => 'Edit Jurusan',
     'new' => 'Jurusan Baru',
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus jurusan ini? Tindakan ini tidak dapat dibatalkan.',
+    'delete_selected_confirm' => 'Apakah Anda yakin ingin menghapus jurusan yang dipilih? Hanya jurusan tanpa siswa yang akan dihapus.',
     'delete_blocked' => 'Tidak dapat menghapus: jurusan ini memiliki :count profil siswa terkait.',
+    'selected_count' => '{0} jurusan dipilih|{1} jurusan dipilih|[2,*] jurusan dipilih',
     'stats' => [
         'total' => 'Total Jurusan',
         'with_internships' => 'Dengan Magang',

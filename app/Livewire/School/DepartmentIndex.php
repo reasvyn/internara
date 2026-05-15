@@ -55,6 +55,11 @@ class DepartmentIndex extends BaseRecordManager
         return $query->where('name', 'like', "%{$this->search}%");
     }
 
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query;
+    }
+
     // --- Record Actions ---
 
     public function create(): void

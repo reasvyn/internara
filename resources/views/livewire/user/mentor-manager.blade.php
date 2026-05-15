@@ -10,15 +10,32 @@
 
     {{-- Controls Section --}}
     <div class="mb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div class="w-full lg:max-w-md relative group">
+        <div class="w-full lg:max-w-md relative group flex items-center gap-3">
             <div class="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-md transition-opacity duration-300 opacity-0 group-focus-within:opacity-100"></div>
             <x-mary-input 
                 wire:model.live.debounce.300ms="search" 
                 placeholder="{{ __('Search records...') }}" 
                 icon="o-magnifying-glass" 
                 clearable 
-                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10"
+                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10 flex-1"
             />
+            <x-mary-dropdown>
+                <x-slot:trigger>
+                    <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" />
+                </x-slot:trigger>
+                <div class="p-4 space-y-4 w-72">
+                    <x-mary-select
+                        wire:model.live="filters.type"
+                        :placeholder="__('user.mentor.type')"
+                        :options="['school_teacher' => 'School Teacher', 'industry_supervisor' => 'Industry Supervisor']"
+                    />
+                    <x-mary-select
+                        wire:model.live="filters.is_active"
+                        :placeholder="__('user.mentor.is_active')"
+                        :options="['yes' => 'Active', 'no' => 'Inactive']"
+                    />
+                </div>
+            </x-mary-dropdown>
         </div>
     </div>
 

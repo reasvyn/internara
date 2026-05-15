@@ -22,6 +22,7 @@
 | `secondnetwork/blade-tabler-icons` | Tabler icon set |
 | `simplesoftwareio/simple-qrcode` | QR code generation |
 | `laravel-lang/lang` | Multi-language support (ID/EN) |
+| `laravel/reverb` | WebSocket broadcasting for real-time features |
 
 ## Frontend Stack
 
@@ -39,8 +40,9 @@
 | Tool | Purpose |
 |---|---|
 | Pest 4 | Testing framework |
-| PHPStan 2 | Static analysis (level 8) |
+| PHPStan 2 | Static analysis (`--level=max`) |
 | Laravel Pint | PHP code style |
+| Laravel Reverb | WebSocket server |
 | Laravel Sail | Docker-based development |
 | Laravel Boost | MCP server for IDE integration |
 | Laravel Pail | Real-time log viewer |

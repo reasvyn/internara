@@ -389,7 +389,7 @@ enum Role: string implements LabelEnum
 
     public function label(): string
     {
-        return __('permission::role.'.$this->value);
+        return __('permission.role.'.$this->value);
     }
 }
 ```
@@ -477,6 +477,7 @@ Layouts use double-colon syntax referencing anonymous component paths:
 Registered paths in `AppServiceProvider`:
 - `resources/views/layouts` → `layouts::`
 - `resources/views/components/ui` → `ui::`
+- `resources/views/components/widget` → `widget::`
 
 ### Properties
 
@@ -596,10 +597,11 @@ Route names use dot-separated hierarchical naming: `{prefix}.{resource}.{action}
 
 ### Component Namespacing
 
-Two anonymous component paths are registered:
+Three anonymous component paths are registered:
 
 - `resources/views/layouts/` → `x-layouts::*`
 - `resources/views/components/ui/` → `x-ui::*`
+- `resources/views/components/widget/` → `x-widget::*`
 
 ### Props
 

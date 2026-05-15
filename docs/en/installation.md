@@ -60,6 +60,6 @@ Run `php artisan list` to see all available commands. Key setup-related commands
 | `setup:super-admin` | Create a super administrator account |
 | `setup:recover-admin` | Recover access to admin accounts |
 | `setup:reset` | Reset setup state, allow re-running wizard |
-| `system:health` | Check system health and readiness |
+| `system:health` | Check system health and readiness (also accessible as `setup:health` for convenience) |
 | `admin:promote` | Promote an existing user to admin role |
 | `cleanup` | Run system cleanup tasks |

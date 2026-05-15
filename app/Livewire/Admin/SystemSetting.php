@@ -116,7 +116,7 @@ class SystemSetting extends Component
         $this->primary_color = Settings::get('primary_color', $defaults['primary']);
         $this->secondary_color = Settings::get('secondary_color', $defaults['secondary']);
         $this->accent_color = Settings::get('accent_color', $defaults['accent']);
-        $this->base_color = Settings::get('base_color', BrandColors::DEFAULT_BASE);
+        $this->base_color = Settings::get('base_color', BrandColors::DEFAULTS['base']);
 
         $this->selected_preset = $this->detectPreset();
 
@@ -138,10 +138,20 @@ class SystemSetting extends Component
 
     public function detectPreset(): ?string
     {
-        $current = ['primary' => $this->primary_color, 'secondary' => $this->secondary_color, 'accent' => $this->accent_color];
+        $current = [
+            'primary' => $this->primary_color,
+            'secondary' => $this->secondary_color,
+            'accent' => $this->accent_color,
+            'base' => $this->base_color,
+        ];
 
         foreach (BrandColors::presets() as $key => $preset) {
-            if ($preset['colors'] === $current) {
+            $presetColors = $preset['colors'];
+
+            if ($presetColors['primary'] === $current['primary']
+                && $presetColors['secondary'] === $current['secondary']
+                && $presetColors['accent'] === $current['accent']
+                && $presetColors['base'] === $current['base']) {
                 return $key;
             }
         }
@@ -160,6 +170,7 @@ class SystemSetting extends Component
         $this->primary_color = $presets[$key]['colors']['primary'];
         $this->secondary_color = $presets[$key]['colors']['secondary'];
         $this->accent_color = $presets[$key]['colors']['accent'];
+        $this->base_color = $presets[$key]['colors']['base'];
         $this->selected_preset = $key;
     }
 
