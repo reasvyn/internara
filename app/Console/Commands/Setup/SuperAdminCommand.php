@@ -6,7 +6,6 @@ namespace App\Console\Commands\Setup;
 
 use App\Actions\Setup\InitializeSuperAdminAction;
 use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
-use App\Models\Setup;
 use App\Models\User;
 use Illuminate\Console\Command;
 
@@ -80,11 +79,6 @@ class SuperAdminCommand extends Command
 
             return self::FAILURE;
         }
-    }
-
-    private function isInstalled(): bool
-    {
-        return Setup::where('is_installed', true)->exists();
     }
 
     private function hasSuperAdmin(): bool

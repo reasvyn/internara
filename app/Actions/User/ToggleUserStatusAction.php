@@ -12,6 +12,10 @@ class ToggleUserStatusAction
 {
     public function execute(User $user, ?string $reason = null): User
     {
+        if ($user->id === auth()->id()) {
+            throw new \RuntimeException('Cannot change your own status.');
+        }
+
         $currentStatus = $user->latestStatus()?->name;
         $newStatus = $currentStatus === AccountStatus::VERIFIED->value
             ? AccountStatus::SUSPENDED->value

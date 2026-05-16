@@ -56,7 +56,7 @@
                         <div class="cursor-pointer relative" onclick="document.getElementById('avatar-upload').click()">
                             <input id="avatar-upload" type="file" wire:model="avatar" accept="image/png,image/jpeg,image/webp" class="hidden" />
                             <x-mary-avatar
-                                :image="$avatar?->temporaryUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') ?: null"
+                                :image="$this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') ?: null"
                                 placeholder="{{ $user->initials() }}"
                                 class="!w-20 !h-20"
                             />

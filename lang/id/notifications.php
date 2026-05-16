@@ -73,16 +73,15 @@ return [
         'title' => 'Selamat Datang di Dashboard!',
         'message' => 'Anda sekarang login sebagai Super Administrator. Jelajahi sistem dan mulailah mengonfigurasi program magang Anda.',
     ],
-    'admin_recovered' => [
-        'title' => 'Pemulihan Admin Dilakukan',
-        'broadcast' => 'Akun admin :email telah di:mode',
-        'database' => 'Akun admin :email telah di:mode',
-        'mail_subject' => 'Peringatan Keamanan: Pemulihan Akun Admin',
+    'super_admin_recovered' => [
+        'title' => 'Pemulihan Super Admin Dilakukan',
+        'broadcast' => 'Akun super admin :email telah di:mode',
+        'database' => 'Akun super admin :email telah di:mode',
+        'mail_subject' => 'Peringatan Keamanan: Pemulihan Akun Super Admin',
         'mail_greeting' => 'Halo :name,',
-        'mail_line1' => 'Tindakan pemulihan admin telah dilakukan pada akun: :email',
+        'mail_line1' => 'Tindakan pemulihan super admin telah dilakukan pada akun: :email',
         'mail_line2' => 'Jenis tindakan: :mode',
-        'mail_line3' => 'Dimulai dari server: :hostname',
-        'mail_line4' => 'Jika Anda tidak mengotorisasi tindakan ini, hubungi administrator sistem Anda segera.',
+        'mail_line3' => 'Jika Anda tidak mengotorisasi tindakan ini, hubungi administrator sistem Anda segera.',
         'mail_action' => 'Lihat Pengguna Admin',
     ],
     'ui' => [

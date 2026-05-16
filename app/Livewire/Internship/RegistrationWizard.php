@@ -7,6 +7,7 @@ namespace App\Livewire\Internship;
 use App\Actions\Internship\RegisterInternshipAction;
 use App\Models\Internship;
 use App\Models\Placement;
+use App\Rules\Internship\OpenForRegistration;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -23,18 +24,12 @@ class RegistrationWizard extends Component
         'proposed_company_address' => '',
     ];
 
-    /**
-     * Get available internship programs.
-     */
     #[Computed]
     public function internships(): Collection
     {
         return Internship::where('status', 'active')->get();
     }
 
-    /**
-     * Get available placements for the selected internship.
-     */
     #[Computed]
     public function placements(): Collection
     {
@@ -65,21 +60,13 @@ class RegistrationWizard extends Component
     public function submit(RegisterInternshipAction $registerAction): void
     {
         $this->validate([
-            'data.internship_id' => [
-                'required',
-                function ($attribute, $value, $fail) {
-                    $internship = Internship::find($value);
-                    if ($internship && ! $internship->asInternshipPeriod()->isAcceptingRegistrations()) {
-                        $fail('This internship program is not accepting registrations.');
-                    }
-                },
-            ],
+            'data.internship_id' => ['required', new OpenForRegistration],
             'data.academic_year' => 'required',
         ]);
 
         $registerAction->execute(auth()->user(), $this->data);
 
-        flash()->success('Registration submitted successfully.');
+        flash()->success(__('internship.registration_wizard.success'));
         $this->redirect('/dashboard');
     }
 
@@ -87,60 +74,60 @@ class RegistrationWizard extends Component
     {
         return <<<'HTML'
         <div>
-            <x-mary-header title="Internship Registration" subtitle="Register for your upcoming internship program" separator />
+            <x-mary-header :title="__('internship.registration_wizard.title')" :subtitle="__('internship.registration_wizard.subtitle')" separator />
 
             <ul class="steps steps-vertical lg:steps-horizontal w-full mb-8">
-                <li class="step {{ $step >= 1 ? 'step-primary' : '' }}">Program Selection</li>
-                <li class="step {{ $step >= 2 ? 'step-primary' : '' }}">Placement Choice</li>
-                <li class="step {{ $step >= 3 ? 'step-primary' : '' }}">Finalize</li>
+                <li class="step {{ $step >= 1 ? 'step-primary' : '' }}">{{ __('internship.registration_wizard.step_program') }}</li>
+                <li class="step {{ $step >= 2 ? 'step-primary' : '' }}">{{ __('internship.registration_wizard.step_placement') }}</li>
+                <li class="step {{ $step >= 3 ? 'step-primary' : '' }}">{{ __('internship.registration_wizard.step_finalize') }}</li>
             </ul>
 
             <x-mary-card>
                 @if($step === 1)
                     <div class="grid grid-cols-1 gap-4">
                         <x-mary-select
-                            label="Select Internship Program"
+                            :label="__('internship.registration_wizard.step_program')"
                             wire:model.live="data.internship_id"
                             :options="$this->internships"
-                            placeholder="Choose a program" />
+                            :placeholder="__('internship.registration_wizard.step_program')" />
 
-                        <x-mary-input label="Academic Year" wire:model="data.academic_year" placeholder="e.g. 2025/2026" />
+                        <x-mary-input :label="__('internship.registration_wizard.label_academic_year')" wire:model="data.academic_year" placeholder="e.g. 2025/2026" />
                     </div>
                 @elseif($step === 2)
                     <div class="grid grid-cols-1 gap-4">
                         <x-mary-select
-                            label="Industry Partner (Optional)"
+                            :label="__('internship.registration_wizard.step_placement')"
                             wire:model="data.placement_id"
                             :options="$this->placements"
-                            placeholder="Choose a placement"
-                            hint="Leave empty if you want to propose your own company" />
+                            :placeholder="__('internship.registration_wizard.step_placement')"
+                            :hint="__('internship.registration_wizard.propose_hint')" />
 
-                        <div class="divider">OR</div>
+                        <div class="divider">{{ __('common.or') }}</div>
 
-                        <x-mary-input label="Proposed Company Name" wire:model="data.proposed_company_name" />
-                        <x-mary-textarea label="Proposed Company Address" wire:model="data.proposed_company_address" />
+                        <x-mary-input :label="__('internship.registration_wizard.proposed_company')" wire:model="data.proposed_company_name" />
+                        <x-mary-textarea :label="__('internship.registration_wizard.proposed_address')" wire:model="data.proposed_company_address" />
                     </div>
                 @elseif($step === 3)
                     <div class="prose max-w-none">
-                        <h3>Review Your Registration</h3>
-                        <p>Please confirm that all information provided is correct before submitting.</p>
+                        <h3>{{ __('internship.registration_wizard.review_title') }}</h3>
+                        <p>{{ __('internship.registration_wizard.review_desc') }}</p>
                         <ul>
-                            <li><strong>Program:</strong> {{ $this->internships->find($data['internship_id'])?->name }}</li>
-                            <li><strong>Academic Year:</strong> {{ $data['academic_year'] }}</li>
-                            <li><strong>Placement:</strong> {{ $this->placements->find($data['placement_id'])?->name ?? 'Proposed Own Company' }}</li>
+                            <li><strong>{{ __('internship.registration_wizard.label_program') }}:</strong> {{ $this->internships->find($data['internship_id'])?->name }}</li>
+                            <li><strong>{{ __('internship.registration_wizard.label_academic_year') }}:</strong> {{ $data['academic_year'] }}</li>
+                            <li><strong>{{ __('internship.registration_wizard.label_placement') }}:</strong> {{ $this->placements->find($data['placement_id'])?->name ?? __('internship.registration_wizard.proposed_own') }}</li>
                         </ul>
                     </div>
                 @endif
 
                 <x-slot:actions>
                     @if($step > 1)
-                        <x-mary-button label="Previous" wire:click="previousStep" />
+                        <x-mary-button :label="__('internship.registration_wizard.previous')" wire:click="previousStep" />
                     @endif
 
                     @if($step < 3)
-                        <x-mary-button label="Next" wire:click="nextStep" class="btn-primary" />
+                        <x-mary-button :label="__('internship.registration_wizard.next')" wire:click="nextStep" class="btn-primary" />
                     @else
-                        <x-mary-button label="Submit Registration" wire:click="submit" icon="o-check" class="btn-primary" />
+                        <x-mary-button :label="__('internship.registration_wizard.submit')" wire:click="submit" icon="o-check" class="btn-primary" />
                     @endif
                 </x-slot:actions>
             </x-mary-card>

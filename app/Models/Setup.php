@@ -7,6 +7,8 @@ namespace App\Models;
 use App\Entities\Setup\SetupState;
 use Database\Factories\SetupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class Setup extends BaseModel
 {
@@ -43,6 +45,16 @@ class Setup extends BaseModel
 
     public static function state(): SetupState
     {
-        return SetupState::fromModel(self::first() ?? new self);
+        try {
+            $model = self::latest('created_at')->first() ?? new self;
+        } catch (QueryException $e) {
+            Log::warning('Setups table does not exist yet, assuming not installed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            $model = new self;
+        }
+
+        return SetupState::fromModel($model);
     }
 }

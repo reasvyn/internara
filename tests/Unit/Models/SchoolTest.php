@@ -6,7 +6,6 @@ use App\Models\Department;
 use App\Models\School;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
@@ -37,16 +36,4 @@ it('has many departments', function () {
 
     expect($school->departments)->toHaveCount(2)
         ->and($school->departments->first())->toBeInstanceOf(Department::class);
-});
-
-it('delegates canBeCreated to entity', function () {
-    Config::set('school.single_record', true);
-
-    // First school
-    School::factory()->create();
-
-    expect((new School)->asSchoolState()->canBeCreated())->toBeFalse();
-
-    Config::set('school.single_record', false);
-    expect((new School)->asSchoolState()->canBeCreated())->toBeTrue();
 });

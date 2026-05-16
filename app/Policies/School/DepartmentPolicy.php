@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies\School;
 
-use App\Models\School\Department;
+use App\Models\Department;
 use App\Models\User;
 use App\Policies\Shared\BasePolicy;
 
@@ -49,10 +49,11 @@ class DepartmentPolicy extends BasePolicy
     /**
      * Determine whether the user can delete the department.
      * Cannot delete if student profiles are associated.
+     * Business rule is enforced by DepartmentState::canBeDeleted().
      */
     public function delete(User $user, Department $department): bool
     {
-        return $this->isAdmin($user) && ! $department->profiles()->exists();
+        return $this->isAdmin($user) && $department->asDepartmentState()->canBeDeleted();
     }
 
     /**

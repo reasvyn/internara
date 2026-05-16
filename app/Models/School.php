@@ -49,16 +49,6 @@ class School extends BaseModel implements HasMedia
         return $this->getFirstMediaUrl(self::COLLECTION_LOGO) ?: null;
     }
 
-    public function schoolSingleRecordEnabled(): bool
-    {
-        return (bool) config('school.single_record', true);
-    }
-
-    public function schoolRecordExists(): bool
-    {
-        return static::query()->exists();
-    }
-
     public function asSchoolState(): SchoolState
     {
         return SchoolState::fromModel($this);

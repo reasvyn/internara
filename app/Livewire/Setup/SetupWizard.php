@@ -4,12 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Setup;
 
-use App\Actions\Internship\CreateInternshipAction;
-use App\Actions\Notification\SendNotificationAction;
-use App\Actions\School\SetupDepartmentAction;
-use App\Actions\School\SetupSchoolAction;
 use App\Actions\Setup\FinalizeSetupAction;
-use App\Actions\User\SetupSuperAdminAction;
 use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
 use App\Support\AppInfo;
@@ -19,56 +14,42 @@ use Livewire\Component;
 #[Layout('layouts::setup')]
 class SetupWizard extends Component
 {
-    public const array STEP_KEYS = ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete'];
-
     public int $currentStep = 1;
 
-    // Step 1: Welcome
     public array $audit = [];
 
     public bool $auditPassed = false;
 
-    // Step 2: School
-    public string $schoolName = '';
+    public array $schoolData = [
+        'name' => '',
+        'institutional_code' => '',
+        'address' => '',
+        'email' => '',
+        'phone' => '',
+        'website' => '',
+        'principal_name' => '',
+    ];
 
-    public string $institutionalCode = '';
+    public array $departmentData = [
+        'name' => '',
+        'description' => '',
+    ];
 
-    public string $schoolAddress = '';
+    public array $adminData = [
+        'name' => '',
+        'username' => '',
+        'email' => '',
+        'password' => '',
+        'password_confirmation' => '',
+    ];
 
-    public string $schoolEmail = '';
+    public array $internshipData = [
+        'name' => '',
+        'description' => '',
+        'start_date' => '',
+        'end_date' => '',
+    ];
 
-    public string $schoolPhone = '';
-
-    public string $schoolWebsite = '';
-
-    public string $principalName = '';
-
-    // Step 3: Department
-    public string $departmentName = '';
-
-    public string $departmentDescription = '';
-
-    // Step 4: Admin Account
-    public string $adminName = 'Administrator';
-
-    public string $adminUsername = 'administrator';
-
-    public string $adminEmail = '';
-
-    public string $adminPassword = '';
-
-    public string $adminPassword_confirmation = '';
-
-    // Step 5: Internship
-    public string $internshipName = '';
-
-    public string $internshipDescription = '';
-
-    public string $startDate = '';
-
-    public string $endDate = '';
-
-    // Step 6: Finalize
     public bool $dataVerified = false;
 
     public bool $securityAware = false;
@@ -81,8 +62,15 @@ class SetupWizard extends Component
             return;
         }
 
+        $this->initDefaults();
         $this->runAudit(app(EnvironmentAuditor::class));
         $this->restoreState();
+    }
+
+    protected function initDefaults(): void
+    {
+        $this->adminData['name'] = config('setup.defaults.admin_name', 'Administrator');
+        $this->adminData['username'] = config('setup.defaults.admin_username', 'administrator');
     }
 
     public function updated(string $property): void
@@ -93,22 +81,14 @@ class SetupWizard extends Component
     protected function saveState(): void
     {
         session()->put('setup.form_data', [
-            'schoolName' => $this->schoolName,
-            'institutionalCode' => $this->institutionalCode,
-            'schoolAddress' => $this->schoolAddress,
-            'schoolEmail' => $this->schoolEmail,
-            'schoolPhone' => $this->schoolPhone,
-            'schoolWebsite' => $this->schoolWebsite,
-            'principalName' => $this->principalName,
-            'departmentName' => $this->departmentName,
-            'departmentDescription' => $this->departmentDescription,
-            'adminName' => $this->adminName,
-            'adminUsername' => $this->adminUsername,
-            'adminEmail' => $this->adminEmail,
-            'internshipName' => $this->internshipName,
-            'internshipDescription' => $this->internshipDescription,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
+            'schoolData' => $this->schoolData,
+            'departmentData' => $this->departmentData,
+            'adminData' => [
+                'name' => $this->adminData['name'],
+                'username' => $this->adminData['username'],
+                'email' => $this->adminData['email'],
+            ],
+            'internshipData' => $this->internshipData,
         ]);
     }
 
@@ -116,10 +96,24 @@ class SetupWizard extends Component
     {
         $data = session()->get('setup.form_data', []);
 
-        foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
+        if (isset($data['schoolData'])) {
+            $this->schoolData = array_merge($this->schoolData, $data['schoolData']);
+        }
+
+        if (isset($data['departmentData'])) {
+            $this->departmentData = array_merge($this->departmentData, $data['departmentData']);
+        }
+
+        if (isset($data['adminData'])) {
+            foreach ($data['adminData'] as $key => $value) {
+                if (array_key_exists($key, $this->adminData)) {
+                    $this->adminData[$key] = $value;
+                }
             }
+        }
+
+        if (isset($data['internshipData'])) {
+            $this->internshipData = array_merge($this->internshipData, $data['internshipData']);
         }
     }
 
@@ -161,30 +155,30 @@ class SetupWizard extends Component
 
         if ($this->currentStep === 2) {
             $this->validate([
-                'schoolName' => 'required|string|max:255',
-                'institutionalCode' => 'required|string|max:50',
-                'schoolEmail' => 'required|email|max:255',
+                'schoolData.name' => 'required|string|max:255',
+                'schoolData.institutional_code' => 'required|string|max:50',
+                'schoolData.email' => 'required|email|max:255',
             ]);
         }
 
         if ($this->currentStep === 3) {
             $this->validate([
-                'departmentName' => 'required|string|max:255',
+                'departmentData.name' => 'required|string|max:255',
             ]);
         }
 
         if ($this->currentStep === 4) {
             $this->validate([
-                'adminEmail' => 'required|email|max:255',
-                'adminPassword' => 'required|string|min:8|confirmed',
+                'adminData.email' => 'required|email|max:255',
+                'adminData.password' => 'required|string|min:8',
             ]);
         }
 
         if ($this->currentStep === 5) {
             $this->validate([
-                'internshipName' => 'required|string|max:255',
-                'startDate' => 'required|date',
-                'endDate' => 'required|date|after:startDate',
+                'internshipData.name' => 'required|string|max:255',
+                'internshipData.start_date' => 'required|date',
+                'internshipData.end_date' => 'required|date|after:internshipData.start_date',
             ]);
         }
 
@@ -200,7 +194,8 @@ class SetupWizard extends Component
 
     public function goToStep(string $stepKey): void
     {
-        $stepIndex = array_search($stepKey, self::STEP_KEYS, true);
+        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete']);
+        $stepIndex = array_search($stepKey, $stepKeys, true);
 
         if ($stepIndex === false) {
             return;
@@ -213,66 +208,30 @@ class SetupWizard extends Component
         }
     }
 
-    public function finish(
-        SetupSchoolAction $setupSchool,
-        SetupDepartmentAction $setupDept,
-        SetupSuperAdminAction $setupAdmin,
-        CreateInternshipAction $createInternship,
-        FinalizeSetupAction $finalizeSetup,
-        SendNotificationAction $sendNotification
-    ): void {
+    public function finish(FinalizeSetupAction $finalizeSetup): void
+    {
         $this->validate([
             'dataVerified' => 'accepted',
             'securityAware' => 'accepted',
         ]);
 
         try {
-            // 1. Setup School
-            $school = $setupSchool->execute([
-                'name' => $this->schoolName,
-                'institutional_code' => $this->institutionalCode,
-                'address' => $this->schoolAddress ?: '-',
-                'email' => $this->schoolEmail ?: null,
-                'phone' => $this->schoolPhone ?: null,
-                'website' => $this->schoolWebsite ?: null,
-                'principal_name' => $this->principalName ?: null,
-            ]);
+            $internshipData = $this->internshipData['name']
+                ? [
+                    'name' => $this->internshipData['name'],
+                    'description' => $this->internshipData['description'] ?: null,
+                    'start_date' => $this->internshipData['start_date'],
+                    'end_date' => $this->internshipData['end_date'],
+                ]
+                : null;
 
-            // 2. Setup Department
-            $department = $setupDept->execute($school->id, [
-                'name' => $this->departmentName,
-                'description' => $this->departmentDescription ?: null,
-            ]);
+            $this->adminData['password_confirmation'] = $this->adminData['password'];
 
-            // 3. Setup Super Admin
-            $admin = $setupAdmin->execute([
-                'name' => $this->adminName,
-                'email' => $this->adminEmail,
-                'username' => $this->adminUsername,
-                'password' => $this->adminPassword,
-            ]);
-
-            // 4. Create initial internship
-            if ($this->internshipName) {
-                $createInternship->execute([
-                    'name' => $this->internshipName,
-                    'description' => $this->internshipDescription ?: null,
-                    'start_date' => $this->startDate,
-                    'end_date' => $this->endDate,
-                    'status' => 'draft',
-                ]);
-            }
-
-            // 5. Finalize (marks steps completed, installs, generates recovery key)
-            $finalizeSetup->execute(['school', 'department', 'account']);
-
-            // 6. Notify admin that the system is installed
-            $sendNotification->execute(
-                userId: $admin->id,
-                type: 'system',
-                title: __('notifications.system_installed.title'),
-                message: __('notifications.system_installed.message'),
-                link: route('admin.dashboard'),
+            $finalizeSetup->execute(
+                schoolData: $this->schoolData,
+                departmentData: $this->departmentData,
+                adminData: $this->adminData,
+                internshipData: $internshipData,
             );
 
             $this->currentStep = 7;
@@ -295,10 +254,12 @@ class SetupWizard extends Component
 
     public function render()
     {
+        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete']);
+
         return view('livewire.setup.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),
             'appVersion' => AppInfo::version(),
-            'stepKeys' => self::STEP_KEYS,
+            'stepKeys' => $stepKeys,
         ]);
     }
 }

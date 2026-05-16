@@ -6,12 +6,18 @@ return [
     'manager' => [
         'title' => 'User Manager',
         'subtitle' => 'MANAGE ALL SYSTEM USERS',
+        'name' => 'Name',
+        'email' => 'Account Info',
+        'roles' => 'Roles',
+        'status' => 'Status',
         'new' => 'New User',
         'edit' => 'Edit User',
         'save' => 'Save User',
         'success_created' => 'User created successfully.',
         'success_updated' => 'User updated successfully.',
         'success_deleted' => 'User deleted successfully.',
+        'status_changed' => 'User status changed. Notification sent.',
+        'password_reset' => 'Password reset to: :password',
     ],
     'fields' => [
         'full_name' => 'Full Name',

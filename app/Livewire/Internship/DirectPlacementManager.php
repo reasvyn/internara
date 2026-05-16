@@ -59,57 +59,61 @@ class DirectPlacementManager extends Component
 
         $student = User::findOrFail($this->student_id);
 
-        $placementAction->execute($student, [
-            'placement_id' => $this->placement_id,
-            'academic_year' => $this->academic_year,
-            'mentor_ids' => $this->mentor_ids,
-        ]);
+        try {
+            $placementAction->execute($student, [
+                'placement_id' => $this->placement_id,
+                'academic_year' => $this->academic_year,
+                'mentor_ids' => $this->mentor_ids,
+            ]);
 
-        flash()->success('Student placed successfully.');
-        $this->reset(['student_id', 'placement_id', 'mentor_ids']);
+            flash()->success(__('internship.direct_placement.success'));
+            $this->reset(['student_id', 'placement_id', 'mentor_ids']);
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     public function render()
     {
         return <<<'HTML'
         <div>
-            <x-mary-header title="Direct Placement" subtitle="Manually assign students to industry partners" separator />
+            <x-mary-header :title="__('internship.direct_placement.title')" :subtitle="__('internship.direct_placement.subtitle')" separator />
 
             <x-mary-card>
                 <x-mary-form wire:submit="submit">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-mary-select
-                            label="Target Student"
+                            :label="__('internship.direct_placement.student')"
                             wire:model="student_id"
                             :options="$this->students"
-                            placeholder="Search and select student"
+                            :placeholder="__('internship.direct_placement.select_student')"
                             icon="o-user" />
 
                         <x-mary-input
-                            label="Academic Year"
+                            :label="__('internship.registration_wizard.label_academic_year')"
                             wire:model="academic_year"
                             placeholder="e.g. 2025/2026" />
 
                         <x-mary-select
-                            label="Target Placement"
+                            :label="__('internship.direct_placement.placement')"
                             wire:model="placement_id"
                             :options="$this->placements"
-                            placeholder="Select industry partner"
+                            :placeholder="__('internship.direct_placement.select_placement')"
                             class="md:col-span-2"
                             icon="o-briefcase" />
 
                         <x-mary-select
-                            label="Assigned Mentors"
+                            :label="__('internship.direct_placement.mentors')"
                             wire:model="mentor_ids"
                             :options="$this->mentors"
-                            placeholder="Select mentors"
+                            :placeholder="__('internship.direct_placement.select_mentors')"
                             multiple
                             class="md:col-span-2"
                             icon="o-user-group" />
                     </div>
 
                     <x-slot:actions>
-                        <x-mary-button label="Assign Placement" type="submit" icon="o-check" class="btn-primary" />
+                        <x-mary-button :label="__('internship.direct_placement.assign')" type="submit" icon="o-check" class="btn-primary" />
                     </x-slot:actions>
                 </x-mary-form>
             </x-mary-card>

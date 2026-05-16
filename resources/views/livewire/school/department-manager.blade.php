@@ -8,9 +8,10 @@
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" />
-        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" />
+        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" onclick="document.getElementById('import-csv').click()" />
+        <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" wire:click="downloadTemplate" />
     </x-slot:extraMenu>
 
     <x-slot:stats>
@@ -24,9 +25,11 @@
                 <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
             </x-slot:trigger>
             <div class="p-1.5 w-48">
+                <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray"
+                    wire:click="exportSelected" />
+                <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
-                    wire:confirm="{{ __('department.delete_selected_confirm') }}"
-                    wire:click="deleteSelected" />
+                    wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
     </x-ui::selection-bar>
@@ -57,13 +60,21 @@
                 <div class="flex justify-end gap-1">
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $department->id }}')" :aria-label="__('common.actions.edit')" />
                     <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                        wire:confirm="{{ __('department.delete_confirm') }}"
-                        wire:click="delete('{{ $department->id }}')"
+                        wire:click="askDelete('{{ $department->id }}')"
                         :aria-label="__('common.actions.delete')" />
                 </div>
             @endscope
         </x-mary-table>
     </div>
+
+    {{-- Confirm Dialog --}}
+    <x-ui::confirm
+        wire:model="showConfirm"
+        :message="$confirmMessage"
+        confirmText="{{ __('common.actions.confirm') }}"
+        cancelText="{{ __('common.actions.cancel') }}"
+        confirmClass="btn-error"
+    />
 
     <x-slot:modal>
         <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('department.edit') : __('department.new')" class="backdrop-blur-sm">

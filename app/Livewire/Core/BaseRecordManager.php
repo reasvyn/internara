@@ -44,6 +44,12 @@ abstract class BaseRecordManager extends Component
         $this->resetPage();
     }
 
+    public function resetFilters(): void
+    {
+        $this->filters = [];
+        $this->resetPage();
+    }
+
     /**
      * Define table headers.
      */
@@ -107,7 +113,7 @@ abstract class BaseRecordManager extends Component
     protected function performBulkAction(string $name, callable $callback): void
     {
         if (empty($this->selectedIds)) {
-            flash()->warning(__('No records selected.'));
+            flash()->warning(__('common.actions.no_records_selected'));
 
             return;
         }
@@ -117,10 +123,7 @@ abstract class BaseRecordManager extends Component
         }
 
         flash()->success(
-            __(':count records updated via :action.', [
-                'count' => count($this->selectedIds),
-                'action' => $name,
-            ]),
+            __('common.actions.bulk_action_done', ['count' => count($this->selectedIds), 'action' => $name]),
         );
         $this->clearSelection();
     }
@@ -145,7 +148,7 @@ abstract class BaseRecordManager extends Component
         $count = $query->count();
 
         if ($count === 0) {
-            flash()->warning(__('No records matching current filters.'));
+            flash()->warning(__('common.actions.no_records_matching'));
 
             return;
         }
@@ -153,10 +156,7 @@ abstract class BaseRecordManager extends Component
         $callback($query);
 
         flash()->success(
-            __(':count records processed via mass action: :action.', [
-                'count' => $count,
-                'action' => $name,
-            ]),
+            __('common.actions.mass_action_done', ['count' => $count, 'action' => $name]),
         );
         $this->clearSelection();
     }

@@ -29,7 +29,7 @@ class NotificationCenter extends BaseRecordManager
                 'label' => __('notifications.ui.received_col'),
                 'sortable' => true,
             ],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

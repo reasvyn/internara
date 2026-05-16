@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\Setup;
 
-use App\Actions\Setup\RecoverAdminAccessAction;
+use App\Actions\Setup\RecoverSuperAdminAction;
 use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Models\Setup;
 use App\Models\User;
@@ -19,17 +19,17 @@ use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
 use function Laravel\Prompts\warning;
 
-class RecoverAdminCommand extends Command
+class RecoverSuperAdminCommand extends Command
 {
     use InteractsWithInstallerCli;
 
-    protected $signature = 'setup:recover-admin {email?} {--reset} {--role=super_admin} {--key=}';
+    protected $signature = 'setup:recover-super-admin {email?} {--reset} {--key=}';
 
     public function __construct(
-        private RecoverAdminAccessAction $action,
+        private RecoverSuperAdminAction $action,
     ) {
         parent::__construct();
-        $this->description = __('setup.cli.banner_subtitle');
+        $this->description = __('setup.cli.recover_description');
     }
 
     public function handle(): int
@@ -56,9 +56,9 @@ class RecoverAdminCommand extends Command
         $userExists = User::where('email', $email)->exists();
 
         if (! $isReset && $userExists) {
-            SmartLogger::warning('admin_recovery_blocked_exists')
-                ->module('Setup')
-                ->event('admin.recovery.blocked_already_exists')
+            SmartLogger::warning('super_admin_recovery_blocked_exists')
+                ->module('setup')
+                ->event('super_admin.recovery.blocked_already_exists')
                 ->withPayload(['email' => $email])
                 ->withPiiMasking()
                 ->systemOnly()
@@ -70,9 +70,9 @@ class RecoverAdminCommand extends Command
         }
 
         if ($isReset && ! $userExists) {
-            SmartLogger::warning('admin_recovery_blocked_not_found')
-                ->module('Setup')
-                ->event('admin.recovery.blocked_not_found')
+            SmartLogger::warning('super_admin_recovery_blocked_not_found')
+                ->module('setup')
+                ->event('super_admin.recovery.blocked_not_found')
                 ->withPayload(['email' => $email])
                 ->withPiiMasking()
                 ->systemOnly()
@@ -100,7 +100,7 @@ class RecoverAdminCommand extends Command
             return self::FAILURE;
         }
 
-        if (! $this->confirmRecovery($email, $isReset, $this->option('role'))) {
+        if (! $this->confirmRecovery($email, $isReset)) {
             return self::FAILURE;
         }
 
@@ -109,13 +109,12 @@ class RecoverAdminCommand extends Command
                 email: $email,
                 password: $password,
                 isReset: (bool) $isReset,
-                role: $this->option('role'),
             );
 
-            SmartLogger::success('admin_recovered')
-                ->module('Setup')
-                ->event('admin.recovery.succeeded')
-                ->withPayload(['email' => $email, 'role' => $this->option('role'), 'mode' => $isReset ? 'reset' : 'create'])
+            SmartLogger::success('super_admin_recovered')
+                ->module('setup')
+                ->event('super_admin.recovery.succeeded')
+                ->withPayload(['email' => $email, 'mode' => $isReset ? 'reset' : 'create'])
                 ->withPiiMasking()
                 ->systemOnly()
                 ->save();
@@ -124,9 +123,9 @@ class RecoverAdminCommand extends Command
 
             return self::SUCCESS;
         } catch (\Throwable $e) {
-            SmartLogger::error('admin_recovery_failed')
-                ->module('Setup')
-                ->event('admin.recovery.failed')
+            SmartLogger::error('super_admin_recovery_failed')
+                ->module('setup')
+                ->event('super_admin.recovery.failed')
                 ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();
@@ -135,11 +134,6 @@ class RecoverAdminCommand extends Command
 
             return self::FAILURE;
         }
-    }
-
-    private function isInstalled(): bool
-    {
-        return Setup::where('is_installed', true)->exists();
     }
 
     private function verifyRecoveryKey(): bool
@@ -152,7 +146,7 @@ class RecoverAdminCommand extends Command
             return false;
         }
 
-        $storedSetup = Setup::first();
+        $storedSetup = Setup::latest('created_at')->first();
         $storedKey = $storedSetup?->recovery_key;
         $keyValid = false;
 
@@ -166,9 +160,9 @@ class RecoverAdminCommand extends Command
         }
 
         if (! $keyValid) {
-            SmartLogger::warning('admin_recovery_invalid_key')
-                ->module('Setup')
-                ->event('admin.recovery.invalid_key')
+            SmartLogger::warning('super_admin_recovery_invalid_key')
+                ->module('setup')
+                ->event('super_admin.recovery.invalid_key')
                 ->systemOnly()
                 ->save();
 
@@ -180,11 +174,11 @@ class RecoverAdminCommand extends Command
         return true;
     }
 
-    private function confirmRecovery(string $email, bool $isReset, string $role): bool
+    private function confirmRecovery(string $email, bool $isReset): bool
     {
         $mode = $isReset ? __('setup.cli.reset_mode') : __('setup.cli.create_mode');
 
-        warning(__('setup.cli.recovery_confirmation_warning', ['mode' => $mode, 'email' => $email, 'role' => $role]));
+        warning(__('setup.cli.recovery_confirmation_warning', ['mode' => $mode, 'email' => $email]));
 
         $confirmation = text(
             label: __('setup.cli.recovery_confirmation_prompt'),

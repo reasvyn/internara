@@ -6,12 +6,18 @@ return [
     'manager' => [
         'title' => 'Manajemen Pengguna',
         'subtitle' => 'KELOLA SEMUA PENGGUNA SISTEM',
+        'name' => 'Nama',
+        'email' => 'Info Akun',
+        'roles' => 'Peran',
+        'status' => 'Status',
         'new' => 'Pengguna Baru',
         'edit' => 'Ubah Pengguna',
         'save' => 'Simpan Pengguna',
         'success_created' => 'Pengguna berhasil dibuat.',
         'success_updated' => 'Pengguna berhasil diperbarui.',
         'success_deleted' => 'Pengguna berhasil dihapus.',
+        'status_changed' => 'Status pengguna berubah. Notifikasi terkirim.',
+        'password_reset' => 'Password direset ke: :password',
     ],
     'mentor' => [
         'title' => 'Manajemen Mentor',

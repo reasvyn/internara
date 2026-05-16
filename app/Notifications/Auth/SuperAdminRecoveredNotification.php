@@ -10,14 +10,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AdminRecoveredNotification extends Notification implements ShouldQueue
+class SuperAdminRecoveredNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public function __construct(
         public string $recoveredEmail,
         public string $mode,
-        public string $initiatorHostname,
     ) {}
 
     public function via($notifiable): array
@@ -28,8 +27,8 @@ class AdminRecoveredNotification extends Notification implements ShouldQueue
     public function toBroadcast($notifiable): array
     {
         return [
-            'title' => __('notifications.admin_recovered.title'),
-            'message' => __('notifications.admin_recovered.broadcast', [
+            'title' => __('notifications.super_admin_recovered.title'),
+            'message' => __('notifications.super_admin_recovered.broadcast', [
                 'email' => $this->recoveredEmail,
                 'mode' => $this->mode,
             ]),
@@ -40,27 +39,24 @@ class AdminRecoveredNotification extends Notification implements ShouldQueue
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('notifications.admin_recovered.mail_subject'))
-            ->greeting(__('notifications.admin_recovered.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.admin_recovered.mail_line1', [
+            ->subject(__('notifications.super_admin_recovered.mail_subject'))
+            ->greeting(__('notifications.super_admin_recovered.mail_greeting', ['name' => $notifiable->name]))
+            ->line(__('notifications.super_admin_recovered.mail_line1', [
                 'email' => $this->recoveredEmail,
             ]))
-            ->line(__('notifications.admin_recovered.mail_line2', [
+            ->line(__('notifications.super_admin_recovered.mail_line2', [
                 'mode' => $this->mode,
             ]))
-            ->line(__('notifications.admin_recovered.mail_line3', [
-                'hostname' => $this->initiatorHostname,
-            ]))
-            ->line(__('notifications.admin_recovered.mail_line4'))
-            ->action(__('notifications.admin_recovered.mail_action'), url('/admin/users'));
+            ->line(__('notifications.super_admin_recovered.mail_line3'))
+            ->action(__('notifications.super_admin_recovered.mail_action'), url('/admin/users'));
     }
 
     public function toCustomDatabase($notifiable): array
     {
         return [
-            'type' => 'admin_recovery',
-            'title' => __('notifications.admin_recovered.title'),
-            'message' => __('notifications.admin_recovered.database', [
+            'type' => 'super_admin_recovery',
+            'title' => __('notifications.super_admin_recovered.title'),
+            'message' => __('notifications.super_admin_recovered.database', [
                 'email' => $this->recoveredEmail,
                 'mode' => $this->mode,
             ]),
@@ -68,7 +64,6 @@ class AdminRecoveredNotification extends Notification implements ShouldQueue
             'data' => [
                 'recovered_email' => $this->recoveredEmail,
                 'mode' => $this->mode,
-                'hostname' => $this->initiatorHostname,
             ],
         ];
     }

@@ -61,6 +61,7 @@ return [
             'items' => [
                 ['route' => 'admin.users.admins', 'icon' => 'o-user-circle', 'label' => 'user.admin.title'],
                 ['route' => 'admin.users.teachers', 'icon' => 'o-academic-cap', 'label' => 'user.teacher.title'],
+                ['route' => 'admin.users.supervisors', 'icon' => 'o-eye', 'label' => 'user.supervisor.title'],
                 ['route' => 'admin.users.mentors', 'icon' => 'o-user-plus', 'label' => 'user.mentor.title'],
                 ['route' => 'admin.users.students', 'icon' => 'o-user-group', 'label' => 'user.student.title'],
                 ['route' => 'admin.users.mentees', 'icon' => 'o-user', 'label' => 'user.mentee.title'],

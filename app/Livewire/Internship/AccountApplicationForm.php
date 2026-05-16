@@ -8,6 +8,7 @@ use App\Actions\Internship\ApplyAccountAction;
 use App\Models\Internship;
 use App\Models\Placement;
 use App\Models\School;
+use App\Rules\Internship\OpenForRegistration;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -46,8 +47,6 @@ class AccountApplicationForm extends Component
 
     public bool $use_placement = true;
 
-    protected const array LISTENER_PLACEMENTS = ['data.internship_id'];
-
     #[Computed]
     public function internships(): Collection
     {
@@ -78,16 +77,7 @@ class AccountApplicationForm extends Component
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:account_applications,email|unique:users,email',
-            'internship_id' => [
-                'required',
-                'exists:internships,id',
-                function ($attribute, $value, $fail) {
-                    $internship = Internship::find($value);
-                    if ($internship && ! $internship->asInternshipPeriod()->isAcceptingRegistrations()) {
-                        $fail('This internship program is not accepting registrations.');
-                    }
-                },
-            ],
+            'internship_id' => ['required', 'exists:internships,id', new OpenForRegistration],
             'academic_year' => 'required|string|max:20',
         ];
 
@@ -120,7 +110,7 @@ class AccountApplicationForm extends Component
 
         $action->execute($data);
 
-        flash()->success('Application submitted successfully. You will be notified once reviewed.');
+        flash()->success(__('internship.account_application.success'));
         $this->reset();
     }
 
@@ -128,64 +118,64 @@ class AccountApplicationForm extends Component
     {
         return <<<'HTML'
         <div>
-            <x-mary-header title="Account & Internship Application" subtitle="Apply for an account and register for your internship" separator />
+            <x-mary-header :title="__('internship.account_application.title')" :subtitle="__('internship.account_application.subtitle')" separator />
 
             <x-mary-card>
                 <x-mary-form wire:submit="submit" no-separator>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="md:col-span-2 mt-4">
-                            <h2 class="text-lg font-semibold">Personal Information</h2>
+                            <h2 class="text-lg font-semibold">{{ __('internship.account_application.personal_info') }}</h2>
                             <hr class="my-2" />
                         </div>
 
-                        <x-mary-input label="Full Name" wire:model="name" required />
-                        <x-mary-input label="Email" wire:model="email" type="email" required />
-                        <x-mary-input label="Phone" wire:model="phone" />
-                        <x-mary-textarea label="Address" wire:model="address" class="md:col-span-2" />
+                        <x-mary-input :label="__('internship.account_application.full_name')" wire:model="name" required />
+                        <x-mary-input :label="__('internship.account_application.email')" wire:model="email" type="email" required />
+                        <x-mary-input :label="__('internship.account_application.phone')" wire:model="phone" />
+                        <x-mary-textarea :label="__('internship.account_application.address')" wire:model="address" class="md:col-span-2" />
 
                         <div class="md:col-span-2 mt-4">
-                            <h2 class="text-lg font-semibold">School Information</h2>
+                            <h2 class="text-lg font-semibold">{{ __('internship.account_application.school_info') }}</h2>
                             <hr class="my-2" />
                         </div>
 
-                        <x-mary-select label="School" wire:model.live="school_id" :options="$this->schools" placeholder="Select your school" />
-                        <x-mary-input label="NISN" wire:model="national_identifier" placeholder="National Student ID" />
-                        <x-mary-input label="NIS" wire:model="registration_number" placeholder="School Student ID" />
-                        <x-mary-input label="Class" wire:model="class_name" placeholder="e.g. XII-RPL-1" />
-                        <x-mary-input label="Entry Year" wire:model="entry_year" placeholder="e.g. 2024" />
+                        <x-mary-select :label="__('internship.account_application.school')" wire:model.live="school_id" :options="$this->schools" :placeholder="__('internship.account_application.select_school')" />
+                        <x-mary-input :label="__('internship.account_application.nisn')" wire:model="national_identifier" placeholder="National Student ID" />
+                        <x-mary-input :label="__('internship.account_application.nis')" wire:model="registration_number" placeholder="School Student ID" />
+                        <x-mary-input :label="__('internship.account_application.class')" wire:model="class_name" placeholder="e.g. XII-RPL-1" />
+                        <x-mary-input :label="__('internship.account_application.entry_year')" wire:model="entry_year" placeholder="e.g. 2024" />
 
                         <div class="md:col-span-2 mt-4">
-                            <h2 class="text-lg font-semibold">Internship Registration</h2>
+                            <h2 class="text-lg font-semibold">{{ __('internship.account_application.internship_registration') }}</h2>
                             <hr class="my-2" />
                         </div>
 
-                        <x-mary-select label="Internship Program" wire:model.live="internship_id" :options="$this->internships" placeholder="Select program" required class="md:col-span-2" />
-                        <x-mary-input label="Academic Year" wire:model="academic_year" placeholder="e.g. 2025/2026" required />
+                        <x-mary-select :label="__('internship.registration_wizard.step_program')" wire:model.live="internship_id" :options="$this->internships" :placeholder="__('internship.account_application.select_program')" required class="md:col-span-2" />
+                        <x-mary-input :label="__('internship.registration_wizard.label_academic_year')" wire:model="academic_year" placeholder="e.g. 2025/2026" required />
 
                         <div class="md:col-span-2">
-                            <label class="font-medium text-sm">Placement Option</label>
+                            <label class="font-medium text-sm">{{ __('internship.account_application.placement_option') }}</label>
                             <div class="flex gap-6 mt-1">
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" wire:model="use_placement" :value="true" />
-                                    <span>Choose from available placements</span>
+                                    <span>{{ __('internship.account_application.choose_placement') }}</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer">
                                     <input type="radio" wire:model="use_placement" :value="false" />
-                                    <span>Propose my own company</span>
+                                    <span>{{ __('internship.account_application.propose_company') }}</span>
                                 </label>
                             </div>
                         </div>
 
                         @if($use_placement)
-                            <x-mary-select label="Available Placement" wire:model="placement_id" :options="$this->placements" placeholder="Select a placement" class="md:col-span-2" />
+                            <x-mary-select :label="__('internship.account_application.available_placement')" wire:model="placement_id" :options="$this->placements" :placeholder="__('internship.account_application.select_placement')" class="md:col-span-2" />
                         @else
-                            <x-mary-input label="Proposed Company Name" wire:model="proposed_company_name" class="md:col-span-2" />
-                            <x-mary-textarea label="Proposed Company Address" wire:model="proposed_company_address" class="md:col-span-2" />
+                            <x-mary-input :label="__('internship.account_application.proposed_company')" wire:model="proposed_company_name" class="md:col-span-2" />
+                            <x-mary-textarea :label="__('internship.account_application.proposed_address')" wire:model="proposed_company_address" class="md:col-span-2" />
                         @endif
                     </div>
 
                     <x-slot:actions>
-                        <x-mary-button label="Submit Application" type="submit" icon="o-paper-airplane" class="btn-primary" />
+                        <x-mary-button :label="__('internship.account_application.submit')" type="submit" icon="o-paper-airplane" class="btn-primary" />
                     </x-slot:actions>
                 </x-mary-form>
             </x-mary-card>

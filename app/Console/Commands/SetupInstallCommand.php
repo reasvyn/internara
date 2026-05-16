@@ -9,7 +9,6 @@ use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Data\Audit\AuditReport;
 use App\Enums\Setup\AuditCategory;
 use App\Enums\Shared\AuditStatus;
-use App\Models\Setup;
 use App\Services\Setup\EnvironmentAuditor;
 use App\Support\Setup\SystemProvisioner;
 use App\Support\SmartLogger;
@@ -42,14 +41,15 @@ class SetupInstallCommand extends Command
         }
 
         try {
-            if (Setup::state()->isInstalled() && ! $this->option('force')) {
+            if ($this->isInstalled() && ! $this->option('force')) {
                 error(__('setup.cli.already_installed'));
 
                 return self::FAILURE;
             }
 
             if ($this->option('force')) {
-                if (! app()->environment('local', 'dev', 'development', 'testing')) {
+                $allowed = config('setup.force_allowed_environments', ['local', 'dev', 'development', 'testing']);
+                if (! in_array(app()->environment(), $allowed, true)) {
                     error(__('setup.cli.force_restricted'));
 
                     return self::FAILURE;
@@ -61,7 +61,7 @@ class SetupInstallCommand extends Command
 
             $failed = array_values(array_filter(
                 $report->checks,
-                fn ($check) => $check->category->isCritical() && $check->status === AuditStatus::Fail,
+                fn ($check) => $this->isCriticalCategory($check->category) && $check->status === AuditStatus::Fail,
             ));
 
             if ($failed !== []) {
@@ -127,13 +127,13 @@ class SetupInstallCommand extends Command
 
     protected function displayAuditResults(AuditReport $report): void
     {
-        $categories = [
+        $categories = config('setup.audit_categories', [
             AuditCategory::Requirements,
             AuditCategory::Permissions,
             AuditCategory::Database,
             AuditCategory::Terminal,
             AuditCategory::Recommendations,
-        ];
+        ]);
 
         foreach ($categories as $category) {
             $categoryChecks = $report->forCategory($category);
@@ -165,6 +165,11 @@ class SetupInstallCommand extends Command
         };
 
         return "<fg={$color}>{$message}</>";
+    }
+
+    private function isCriticalCategory(AuditCategory $category): bool
+    {
+        return in_array($category, config('setup.critical_categories', []), true);
     }
 
     protected function confirmProceed(): bool

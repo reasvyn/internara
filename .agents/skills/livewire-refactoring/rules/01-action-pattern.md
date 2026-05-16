@@ -40,7 +40,7 @@ class CreateUserAction
 ### 2. Validation Lives Here
 - All `Validator::make()` / `Validator::validate()` calls belong in the Action
 - The component may repeat rules for Livewire inline validation (UX), but the Action is the authoritative source
-- Throw `RuntimeException` on validation failure
+- Throw `RejectedException` on validation failure
 
 ### 3. Transactions + Side Effects
 - Wrap DB mutations in `DB::transaction()`
@@ -48,8 +48,30 @@ class CreateUserAction
 - Domain events are dispatched by the Action
 
 ### 4. Error Handling
-- Use `HandlesActionErrors` trait for consistent try-catch-log-rethrow
-- Business rule violations throw `RuntimeException` (caught by component → shown as flash)
+- Business rule violations throw `RejectedException` (extends `DomainException` → `RuntimeException`)
+- Component catches `RejectedException` → shown as flash message
+- Never throw bare `RuntimeException` from Actions — always use `RejectedException`
+- Use `HandlesActionErrors` trait for wrapping non-business errors (infrastructure failures)
+
+```php
+class DeleteAcademicYearAction
+{
+    public function execute(AcademicYear $year): void
+    {
+        $state = $year->asAcademicYearState();
+
+        if (! $state->canBeDeleted()) {
+            throw new RejectedException(
+                $state->isActive()
+                    ? __('academic_year.cannot_delete_active', ['name' => $year->name])
+                    : __('academic_year.cannot_delete_has_data', ['name' => $year->name])
+            );
+        }
+
+        DB::transaction(function () use ($year) { ... });
+    }
+}
+```
 
 ### 5. Location
 - `app/Actions/{Domain}/{Verb}{Noun}Action.php`
@@ -75,13 +97,25 @@ class UserManager extends Component
 ```
 
 ```php
+// ❌ WRONG: Bare RuntimeException instead of RejectedException
+throw new RuntimeException('Cannot delete active academic year.');
+
+// ✅ CORRECT: Use RejectedException
+throw new RejectedException('Cannot delete active academic year.');
+```
+
+```php
 // ✅ CORRECT: Delegated to Action
 class UserManager extends Component
 {
     public function delete(User $user, DeleteUserAction $action): void
     {
-        $action->execute($user);
-        flash()->success(__('user.deleted'));
+        try {
+            $action->execute($user);
+            flash()->success(__('user.deleted'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
     }
 }
 ```

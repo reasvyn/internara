@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentRenderController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
 use App\Livewire\Admin\AccountLifecycleManager;
 use App\Livewire\Admin\GdprDeletionLogs;
@@ -62,6 +63,13 @@ use App\Livewire\User\Admin\TeacherManager;
 use App\Livewire\User\Admin\UserManager;
 use App\Livewire\User\ProfileEditor;
 use App\Livewire\User\RecoveryCode;
+
+/*
+|--------------------------------------------------------------------------
+| Home — Auto-redirect
+|--------------------------------------------------------------------------
+*/
+Route::get('/', HomeController::class)->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -126,6 +134,7 @@ Route::prefix('admin')
             Route::livewire('/admins', AdminManager::class)->name('admins');
             Route::livewire('/students', StudentManager::class)->name('students');
             Route::livewire('/teachers', TeacherManager::class)->name('teachers');
+            Route::livewire('/supervisors', SupervisorManager::class)->name('supervisors');
             Route::livewire('/mentors', MentorManager::class)->name('mentors');
             Route::livewire('/mentees', MenteeManager::class)->name('mentees');
         });

@@ -11,7 +11,7 @@
         <div class="w-full lg:max-w-md flex items-center gap-3">
             <x-mary-input 
                 wire:model.live.debounce.300ms="search" 
-                placeholder="{{ __('Search records...') }}" 
+                placeholder="{{ __('common.actions.search') }}" 
                 icon="o-magnifying-glass" 
                 clearable 
                 class="rounded-2xl border-base-300 focus:border-primary transition-all duration-300 shadow-sm flex-1"

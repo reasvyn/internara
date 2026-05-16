@@ -53,7 +53,7 @@ class AdminManager extends BaseRecordManager
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

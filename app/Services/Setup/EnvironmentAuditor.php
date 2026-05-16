@@ -11,22 +11,16 @@ use App\Enums\Shared\AuditStatus;
 
 /**
  * Pure domain service that audits system requirements.
- * Zero Laravel dependencies — uses only native PHP functions.
+ * Requirements sourced from config/setup.php.
  */
 class EnvironmentAuditor
 {
-    public const string REQUIRED_PHP_VERSION = '8.4.0';
-
-    public const array REQUIRED_EXTENSIONS = ['bcmath', 'ctype', 'fileinfo', 'mbstring', 'openssl', 'pdo', 'tokenizer', 'xml', 'curl', 'gd', 'intl', 'zip'];
-
-    public const array RECOMMENDED_EXTENSIONS = ['redis', 'pcntl', 'posix'];
-
     public function audit(): AuditReport
     {
         return new AuditReport([
             ...$this->checkPhpVersion(),
-            ...$this->checkExtensions(self::REQUIRED_EXTENSIONS, critical: true),
-            ...$this->checkExtensions(self::RECOMMENDED_EXTENSIONS, critical: false),
+            ...$this->checkExtensions(config('setup.requirements.extensions'), critical: true),
+            ...$this->checkExtensions(config('setup.requirements.recommended_extensions'), critical: false),
             ...$this->checkPermissions(),
             ...$this->checkDatabaseConnection(),
             ...$this->checkTerminalSupport(),
@@ -36,15 +30,16 @@ class EnvironmentAuditor
     /** @return AuditCheck[] */
     private function checkPhpVersion(): array
     {
-        $pass = version_compare(PHP_VERSION, self::REQUIRED_PHP_VERSION, '>=');
+        $required = config('setup.requirements.php_version');
+        $pass = version_compare(PHP_VERSION, $required, '>=');
 
         return [new AuditCheck(
             category: AuditCategory::Requirements,
             nameKey: 'php_version',
             status: $pass ? AuditStatus::Pass : AuditStatus::Fail,
             messageKey: $pass ? 'php_version_pass' : 'php_version_fail',
-            nameParams: ['required' => self::REQUIRED_PHP_VERSION],
-            messageParams: ['current' => PHP_VERSION, 'required' => self::REQUIRED_PHP_VERSION],
+            nameParams: ['required' => $required],
+            messageParams: ['current' => PHP_VERSION, 'required' => $required],
         )];
     }
 
@@ -93,7 +88,7 @@ class EnvironmentAuditor
     /** @return AuditCheck[] */
     private function checkDatabaseConnection(): array
     {
-        $driver = getenv('DB_CONNECTION') ?: 'mysql';
+        $driver = config('database.default', 'mysql');
         $connected = $this->testDatabaseConnection($driver);
 
         return [new AuditCheck(
@@ -104,6 +99,29 @@ class EnvironmentAuditor
             nameParams: ['driver' => $driver],
             messageParams: ['driver' => $driver],
         )];
+    }
+
+    /** @return AuditCheck[] */
+    private function testDatabaseConnection(string $driver): bool
+    {
+        $host = config('database.connections.'.$driver.'.host') ?: '127.0.0.1';
+        $port = config('database.connections.'.$driver.'.port') ?: '3306';
+        $database = config('database.connections.'.$driver.'.database') ?: 'forge';
+        $username = config('database.connections.'.$driver.'.username') ?: 'forge';
+        $password = config('database.connections.'.$driver.'.password') ?: '';
+
+        try {
+            if ($driver === 'sqlite') {
+                return file_exists($database) || is_writable(dirname($database));
+            }
+
+            $dsn = "{$driver}:host={$host};port={$port};dbname={$database}";
+            new \PDO($dsn, $username, $password, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+
+            return true;
+        } catch (\Exception) {
+            return false;
+        }
     }
 
     /** @return AuditCheck[] */
@@ -127,29 +145,5 @@ class EnvironmentAuditor
                 messageParams: [],
             ),
         ];
-    }
-
-    private function testDatabaseConnection(string $driver): bool
-    {
-        $host = getenv('DB_HOST') ?: '127.0.0.1';
-        $port = getenv('DB_PORT') ?: '3306';
-        $database = getenv('DB_DATABASE') ?: 'forge';
-        $username = getenv('DB_USERNAME') ?: 'forge';
-        $password = getenv('DB_PASSWORD') ?: '';
-
-        try {
-            if ($driver === 'sqlite') {
-                $path = database_path($database);
-
-                return file_exists($path) || is_writable(dirname($path));
-            }
-
-            $dsn = "{$driver}:host={$host};port={$port};dbname={$database}";
-            new \PDO($dsn, $username, $password, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
-
-            return true;
-        } catch (\Exception) {
-            return false;
-        }
     }
 }

@@ -16,15 +16,18 @@ final class GenerateSetupTokenAction
      */
     public function execute(): array
     {
-        $plaintext = Str::random(64);
+        $length = (int) config('setup.token.length', 64);
+        $expiryMinutes = (int) config('setup.token.expiry_minutes', 60);
+
+        $plaintext = Str::random($length);
         $encrypted = Crypt::encryptString($plaintext);
-        $expiresAt = now()->addHour();
+        $expiresAt = now()->addMinutes($expiryMinutes);
 
         $setup = Setup::firstOrCreate([]);
-        $setup->update([
+        $setup->forceFill([
             'setup_token' => $encrypted,
             'token_expires_at' => $expiresAt,
-        ]);
+        ])->save();
 
         return [
             'plaintext' => $plaintext,

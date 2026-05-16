@@ -228,7 +228,7 @@ After completion:
 
 ```bash
 php artisan setup:super-admin       # Create additional super admin
-php artisan setup:recover-admin     # Recover lost admin access
+php artisan setup:recover-super-admin # Recover lost super admin access
 php artisan system:health           # Check system readiness
 ```
 

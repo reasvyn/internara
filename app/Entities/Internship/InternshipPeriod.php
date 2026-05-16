@@ -15,14 +15,20 @@ final readonly class InternshipPeriod extends BaseEntity
         private ?InternshipStatus $status,
         private ?Carbon $registrationStartDate = null,
         private ?Carbon $registrationEndDate = null,
+        private ?Carbon $academicYearStart = null,
+        private ?Carbon $academicYearEnd = null,
     ) {}
 
     public static function fromModel(Model $model): static
     {
+        $academicYear = $model->relationLoaded('academicYear') ? $model->academicYear : null;
+
         return new self(
             status: $model->status,
             registrationStartDate: $model->registration_start_date,
             registrationEndDate: $model->registration_end_date,
+            academicYearStart: $academicYear?->start_date,
+            academicYearEnd: $academicYear?->end_date,
         );
     }
 
@@ -72,5 +78,30 @@ final readonly class InternshipPeriod extends BaseEntity
         $now ??= new Carbon;
 
         return $this->registrationEndDate !== null && $now->gt($this->registrationEndDate);
+    }
+
+    public function hasAcademicYear(): bool
+    {
+        return $this->academicYearStart !== null && $this->academicYearEnd !== null;
+    }
+
+    public function isWithinAcademicYear(?Carbon $date = null): bool
+    {
+        if (! $this->hasAcademicYear()) {
+            return true;
+        }
+
+        $date ??= new Carbon;
+
+        return $date->between($this->academicYearStart, $this->academicYearEnd, true);
+    }
+
+    public function datesSpanOutsideAcademicYear(?Carbon $start = null, ?Carbon $end = null): bool
+    {
+        if (! $this->hasAcademicYear() || $start === null || $end === null) {
+            return false;
+        }
+
+        return $start->lt($this->academicYearStart) || $end->gt($this->academicYearEnd);
     }
 }

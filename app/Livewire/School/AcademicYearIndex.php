@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Livewire\School;
 
 use App\Actions\School\ActivateAcademicYearAction;
+use App\Actions\School\BulkDeleteAcademicYearsAction;
 use App\Actions\School\CreateAcademicYearAction;
 use App\Actions\School\DeleteAcademicYearAction;
+use App\Exceptions\RejectedException;
 use App\Models\AcademicYear;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,11 +21,24 @@ class AcademicYearIndex extends Component
 
     public bool $showModal = false;
 
-    public string $name = '';
+    public bool $showConfirm = false;
 
-    public string $start_date = '';
+    public string $confirmMessage = '';
 
-    public string $end_date = '';
+    public string $confirmType = '';
+
+    public ?string $confirmTarget = null;
+
+    public array $formData = [
+        'name' => '',
+        'start_date' => '',
+        'end_date' => '',
+    ];
+
+    #[Url(as: 'q', history: true)]
+    public string $search = '';
+
+    public array $selectedIds = [];
 
     public function boot(): void
     {
@@ -31,24 +47,27 @@ class AcademicYearIndex extends Component
 
     public function resetForm(): void
     {
-        $this->name = '';
-        $this->start_date = '';
-        $this->end_date = '';
+        $this->formData = [
+            'name' => '',
+            'start_date' => '',
+            'end_date' => '',
+        ];
+
         $this->resetErrorBag();
     }
 
     public function store(CreateAcademicYearAction $action): void
     {
         $this->validate([
-            'name' => ['required', 'string', 'max:50'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
+            'formData.name' => ['required', 'string', 'max:50', 'unique:academic_years,name'],
+            'formData.start_date' => ['required', 'date'],
+            'formData.end_date' => ['required', 'date', 'after:formData.start_date'],
         ]);
 
         $action->execute([
-            'name' => $this->name,
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
+            'name' => $this->formData['name'],
+            'start_date' => $this->formData['start_date'],
+            'end_date' => $this->formData['end_date'],
             'is_active' => false,
         ]);
 
@@ -57,25 +76,111 @@ class AcademicYearIndex extends Component
         flash()->success(__('academic_year.created'));
     }
 
-    public function activate(AcademicYear $year, ActivateAcademicYearAction $action): void
+    public function askActivate(string $id): void
     {
-        $action->execute($year);
-        flash()->success(__('academic_year.activated'));
+        $year = AcademicYear::findOrFail($id);
+
+        $this->confirmTarget = $id;
+        $this->confirmType = 'activate';
+        $this->confirmMessage = __('academic_year.confirm_activate', ['name' => $year->name]);
+        $this->showConfirm = true;
     }
 
-    public function destroy(AcademicYear $year, DeleteAcademicYearAction $action): void
+    public function askDestroy(string $id): void
     {
-        $action->execute($year);
-        flash()->success(__('academic_year.deleted'));
+        $year = AcademicYear::findOrFail($id);
+
+        $this->confirmTarget = $id;
+        $this->confirmType = 'delete';
+        $this->confirmMessage = __('academic_year.confirm_delete', ['name' => $year->name]);
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(
+        ActivateAcademicYearAction $activateAction,
+        DeleteAcademicYearAction $deleteAction,
+    ): void {
+        if ($this->confirmTarget === null) {
+            return;
+        }
+
+        $year = AcademicYear::findOrFail($this->confirmTarget);
+
+        match ($this->confirmType) {
+            'activate' => $this->executeActivate($year, $activateAction),
+            'delete' => $this->executeDelete($year, $deleteAction),
+            default => null,
+        };
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmType = '';
+    }
+
+    private function executeActivate(AcademicYear $year, ActivateAcademicYearAction $action): void
+    {
+        try {
+            $action->execute($year);
+            flash()->success(__('academic_year.activated'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    private function executeDelete(AcademicYear $year, DeleteAcademicYearAction $action): void
+    {
+        try {
+            $action->execute($year);
+            flash()->success(__('academic_year.deleted'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selectedIds = [];
+    }
+
+    public function toggleSelectAll(): void
+    {
+        $ids = $this->yearsQuery()->paginate(10)->pluck('id')->toArray();
+
+        if (count($this->selectedIds) === count($ids)) {
+            $this->selectedIds = [];
+        } else {
+            $this->selectedIds = $ids;
+        }
+    }
+
+    public function deleteSelected(BulkDeleteAcademicYearsAction $action): void
+    {
+        if ($this->selectedIds === []) {
+            return;
+        }
+
+        try {
+            $count = $action->execute($this->selectedIds);
+
+            $this->clearSelection();
+            flash()->success(__('academic_year.deleted_selected', ['count' => $count]));
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     #[Layout('layouts::app')]
     public function render()
     {
-        $years = AcademicYear::latest('start_date')->paginate(10);
-
         return view('livewire.school.academic-year-index', [
-            'years' => $years,
+            'years' => $this->yearsQuery()->paginate(10),
         ]);
+    }
+
+    private function yearsQuery()
+    {
+        return AcademicYear::when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'))
+            ->orderByDesc('is_active')
+            ->orderBy('name');
     }
 }

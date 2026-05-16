@@ -18,6 +18,8 @@ it('can be instantiated from model', function () {
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);
     $model->allows()->getAttribute('completed_steps')->andReturn([]);
+    $model->allows()->getAttribute('recovery_key')->andReturn(null);
+    $model->allows()->getAttribute('updated_at')->andReturn(null);
 
     $entity = SetupState::fromModel($model);
 
@@ -30,6 +32,8 @@ it('detects installed via database', function () {
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);
     $model->allows()->getAttribute('completed_steps')->andReturn([]);
+    $model->allows()->getAttribute('recovery_key')->andReturn(null);
+    $model->allows()->getAttribute('updated_at')->andReturn(null);
 
     $entity = SetupState::fromModel($model);
     expect($entity->isInstalled())->toBeTrue();
@@ -41,6 +45,8 @@ it('detects not installed', function () {
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);
     $model->allows()->getAttribute('completed_steps')->andReturn([]);
+    $model->allows()->getAttribute('recovery_key')->andReturn(null);
+    $model->allows()->getAttribute('updated_at')->andReturn(null);
 
     $entity = SetupState::fromModel($model);
     expect($entity->isInstalled())->toBeFalse();
@@ -55,6 +61,8 @@ it('validates setup token', function () {
     $model->allows()->getAttribute('setup_token')->andReturn($plaintext);
     $model->allows()->getAttribute('token_expires_at')->andReturn($expiresAt);
     $model->allows()->getAttribute('completed_steps')->andReturn([]);
+    $model->allows()->getAttribute('recovery_key')->andReturn(null);
+    $model->allows()->getAttribute('updated_at')->andReturn(null);
 
     $entity = SetupState::fromModel($model);
 
@@ -71,6 +79,8 @@ it('rejects expired token', function () {
     $model->allows()->getAttribute('setup_token')->andReturn($plaintext);
     $model->allows()->getAttribute('token_expires_at')->andReturn($expiresAt);
     $model->allows()->getAttribute('completed_steps')->andReturn([]);
+    $model->allows()->getAttribute('recovery_key')->andReturn(null);
+    $model->allows()->getAttribute('updated_at')->andReturn(null);
 
     $entity = SetupState::fromModel($model);
 
@@ -83,6 +93,8 @@ it('detects step completion', function () {
     $model->allows()->getAttribute('setup_token')->andReturn(null);
     $model->allows()->getAttribute('token_expires_at')->andReturn(null);
     $model->allows()->getAttribute('completed_steps')->andReturn(['welcome']);
+    $model->allows()->getAttribute('recovery_key')->andReturn(null);
+    $model->allows()->getAttribute('updated_at')->andReturn(null);
 
     $entity = SetupState::fromModel($model);
     expect($entity->isStepCompleted('welcome'))->toBeTrue()

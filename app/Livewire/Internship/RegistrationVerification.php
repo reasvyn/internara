@@ -90,7 +90,7 @@ class RegistrationVerification extends Component
                 'mentor_ids' => $this->mentor_ids,
             ]);
 
-            flash()->success('Registration verified and student placed successfully.');
+            flash()->success(__('internship.registration_verification.success'));
             $this->showProcessModal = false;
             $this->processId = null;
             $this->placement_id = '';
@@ -104,21 +104,21 @@ class RegistrationVerification extends Component
     {
         return <<<'HTML'
         <div>
-            <x-mary-header title="Registration Verification" subtitle="Review and process pending student registrations" separator />
+            <x-mary-header :title="__('internship.registration_verification.title')" :subtitle="__('internship.registration_verification.subtitle')" separator />
 
             <x-mary-card>
                 @if($this->pendingRegistrations->isEmpty())
-                    <x-mary-alert title="No pending registrations" description="All student registrations have been processed." icon="o-check-circle" />
+                    <x-mary-alert :title="__('internship.registration_verification.empty')" :description="__('internship.registration_verification.empty_desc')" icon="o-check-circle" />
                 @else
                     <div class="overflow-x-auto">
                         <table class="table table-zebra">
                             <thead>
                                 <tr>
-                                    <th>Student</th>
-                                    <th>Program</th>
-                                    <th>Documents</th>
-                                    <th>Submitted</th>
-                                    <th>Actions</th>
+                                    <th>{{ __('internship.registration_verification.student') }}</th>
+                                    <th>{{ __('internship.registration_verification.program') }}</th>
+                                    <th>{{ __('internship.registration_verification.documents') }}</th>
+                                    <th>{{ __('internship.registration_verification.submitted') }}</th>
+                                    <th>{{ __('internship.registration_verification.subtitle') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,19 +138,19 @@ class RegistrationVerification extends Component
                                         <td>
                                             @if($total > 0)
                                                 <div class="flex gap-2 text-xs">
-                                                    <span class="badge badge-success badge-sm">{{ $verified }} verified</span>
-                                                    <span class="badge badge-warning badge-sm">{{ $pending }} pending</span>
+                                                    <span class="badge badge-success badge-sm">{{ $verified }} {{ __('internship.registration_verification.verified') }}</span>
+                                                    <span class="badge badge-warning badge-sm">{{ $pending }} {{ __('internship.registration_verification.pending') }}</span>
                                                     @if($rejected > 0)
-                                                        <span class="badge badge-error badge-sm">{{ $rejected }} rejected</span>
+                                                        <span class="badge badge-error badge-sm">{{ $rejected }} {{ __('internship.registration_verification.rejected') }}</span>
                                                     @endif
                                                 </div>
                                             @else
-                                                <span class="text-xs text-gray-400">No docs</span>
+                                                <span class="text-xs text-gray-400">{{ __('internship.registration_verification.no_docs') }}</span>
                                             @endif
                                         </td>
                                         <td>{{ $reg->created_at->diffForHumans() }}</td>
                                         <td>
-                                            <x-mary-button label="Process" wire:click="process('{{ $reg->id }}')" icon="o-chevron-right" class="btn-primary btn-sm" />
+                                            <x-mary-button :label="__('internship.registration_verification.process')" wire:click="process('{{ $reg->id }}')" icon="o-chevron-right" class="btn-primary btn-sm" />
                                         </td>
                                     </tr>
                                 @endforeach
@@ -160,7 +160,7 @@ class RegistrationVerification extends Component
                 @endif
             </x-mary-card>
 
-            <x-mary-modal wire:model="showProcessModal" title="Process Registration">
+            <x-mary-modal wire:model="showProcessModal" :title="__('internship.registration_verification.process_title')">
                 @if($this->selectedRegistration)
                     <div class="mb-4 p-3 bg-base-200 rounded-box">
                         <p class="font-medium">{{ $this->selectedRegistration->mentee?->user?->name }}</p>
@@ -169,23 +169,23 @@ class RegistrationVerification extends Component
 
                     <x-mary-form wire:submit="confirmProcess">
                         <x-mary-select
-                            label="Placement"
+                            :label="__('internship.registration_verification.placement')"
                             wire:model="placement_id"
                             :options="$this->availablePlacements"
-                            placeholder="Select placement"
+                            :placeholder="__('internship.registration_verification.select_placement')"
                             icon="o-briefcase" />
 
                         <x-mary-select
-                            label="Assigned Mentors"
+                            :label="__('internship.registration_verification.assigned_mentors')"
                             wire:model="mentor_ids"
                             :options="$this->mentors"
-                            placeholder="Select mentors"
+                            :placeholder="__('internship.registration_verification.select_mentors')"
                             multiple
                             icon="o-user-group" />
 
                         <x-slot:actions>
-                            <x-mary-button label="Cancel" wire:click="$set('showProcessModal', false)" />
-                            <x-mary-button label="Verify & Place" type="submit" icon="o-check" class="btn-primary" />
+                            <x-mary-button :label="__('internship.registration_verification.cancel')" wire:click="$set('showProcessModal', false)" />
+                            <x-mary-button :label="__('internship.registration_verification.verify_place')" type="submit" icon="o-check" class="btn-primary" />
                         </x-slot:actions>
                     </x-mary-form>
                 @endif

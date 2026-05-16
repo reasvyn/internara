@@ -9,46 +9,46 @@
             <x-mary-input
                 label="{{ __('setup.wizard.school_name') }}"
                 placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
-                wire:model.live="schoolName"
+                wire:model.live="schoolData.name"
             />
         </div>
 
         <x-mary-input
             label="{{ __('setup.wizard.school_code') }}"
             placeholder="{{ __('setup.wizard.school_code_placeholder') }}"
-            wire:model.live="institutionalCode"
+            wire:model.live="schoolData.institutional_code"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_email') }}"
             type="email"
             placeholder="{{ __('setup.wizard.school_email_placeholder') }}"
-            wire:model.live="schoolEmail"
+            wire:model.live="schoolData.email"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_phone') }}"
             placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
-            wire:model.live="schoolPhone"
+            wire:model.live="schoolData.phone"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_website') }}"
             type="url"
             placeholder="{{ __('setup.wizard.school_website_placeholder') }}"
-            wire:model.live="schoolWebsite"
+            wire:model.live="schoolData.website"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_address') }}"
             placeholder="{{ __('setup.wizard.school_address') }}"
-            wire:model.live="schoolAddress"
+            wire:model.live="schoolData.address"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.principal_name') }}"
             placeholder="{{ __('setup.wizard.principal_name_placeholder') }}"
-            wire:model.live="principalName"
+            wire:model.live="schoolData.principal_name"
         />
     </div>
 

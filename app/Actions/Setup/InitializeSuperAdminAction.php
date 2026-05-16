@@ -10,6 +10,7 @@ use App\Enums\Auth\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 final readonly class InitializeSuperAdminAction
 {
@@ -20,7 +21,8 @@ final readonly class InitializeSuperAdminAction
     public function execute(string $email, string $password, ?string $name = null, ?string $username = null): User
     {
         return DB::transaction(function () use ($email, $password, $name, $username) {
-            $name = $name ?? 'Super Administrator';
+            $defaultName = config('setup.defaults.super_admin_default_name', 'Super Administrator');
+            $name = $name ?? $defaultName;
 
             $user = User::create([
                 'name' => $name,
@@ -52,8 +54,9 @@ final readonly class InitializeSuperAdminAction
 
     private function generateUsername(string $name): string
     {
-        $base = strtolower(str_replace(' ', '', $name));
+        $base = Str::slug($name, '');
+        $maxLength = (int) config('setup.defaults.username_max_length', 20);
 
-        return substr($base, 0, 20);
+        return Str::limit($base, $maxLength, '');
     }
 }

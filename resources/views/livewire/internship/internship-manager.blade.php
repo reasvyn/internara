@@ -8,9 +8,10 @@
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" />
-        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" />
+        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" onclick="document.getElementById('import-csv').click()" />
+        <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" wire:click="downloadTemplate" />
     </x-slot:extraMenu>
 
     <x-slot:stats>
@@ -21,26 +22,44 @@
     </x-slot:stats>
 
     <x-slot:filters>
-        <x-mary-select
-            wire:model.live="filters.status"
-            :placeholder="__('internship.status')"
-            :options="['active' => 'Active', 'published' => 'Published', 'completed' => 'Completed', 'draft' => 'Draft', 'cancelled' => 'Cancelled']"
-            class="sm:max-w-xs"
-        />
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('internship.status') }}</label>
+        <select wire:model.live="filters.status" class="select select-bordered select-sm w-full text-sm">
+            <option value="">{{ __('internship.all_statuses') }}</option>
+            <option value="active">{{ __('internship.statuses.active') }}</option>
+            <option value="published">{{ __('internship.statuses.published') }}</option>
+            <option value="completed">{{ __('internship.statuses.completed') }}</option>
+            <option value="draft">{{ __('internship.statuses.draft') }}</option>
+            <option value="cancelled">{{ __('internship.statuses.cancelled') }}</option>
+        </select>
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('internship.filter_academic_year') }}</label>
+        <select wire:model.live="filters.academic_year_id" class="select select-bordered select-sm w-full text-sm">
+            <option value="">{{ __('internship.select_academic_year') }}</option>
+            @foreach($this->academicYears as $year)
+                <option value="{{ $year['id'] }}">{{ $year['name'] }}</option>
+            @endforeach
+        </select>
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('internship.filter_date_from') }}</label>
+        <input wire:model.live="filters.date_from" type="date" class="input input-bordered input-sm w-full text-sm" />
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('internship.filter_date_to') }}</label>
+        <input wire:model.live="filters.date_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
     <x-ui::selection-bar>
         <x-mary-dropdown>
             <x-slot:trigger>
-                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" label="Actions" />
+                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
             </x-slot:trigger>
             <div class="p-1.5 w-48">
-                <x-mary-menu-item title="Delete Selected" icon="o-trash" class="text-error"
-                    wire:confirm="Delete selected internship batches? Only empty batches will be deleted."
-                    wire:click="deleteSelected" />
-                <x-mary-menu-item title="Complete All Filtered" icon="o-check-circle"
-                    wire:confirm="Set all filtered internship batches to COMPLETED? Continue?"
-                    wire:click="closeAllFiltered" />
+                <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray"
+                    wire:click="exportSelected" />
+                <hr class="border-base-content/10" />
+                <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
+                    wire:click="askDeleteSelected" />
+                <x-mary-menu-item :title="__('internship.complete_filtered')" icon="o-check-circle"
+                    wire:click="askCloseFiltered" />
             </div>
         </x-mary-dropdown>
     </x-ui::selection-bar>
@@ -80,17 +99,26 @@
                 <div class="flex justify-end gap-1">
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $internship->id }}')" />
                     <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                        wire:confirm="{{ __('internship.delete_confirm') }}"
-                        wire:click="delete('{{ $internship->id }}')" />
+                        wire:click="askDelete('{{ $internship->id }}')" />
                 </div>
             @endscope
         </x-mary-table>
     </div>
 
+    {{-- Confirm Dialog --}}
+    <x-ui::confirm
+        wire:model="showConfirm"
+        :message="$confirmMessage"
+        confirmText="{{ __('common.actions.confirm') }}"
+        cancelText="{{ __('common.actions.cancel') }}"
+        :confirmClass="$confirmType === 'close_filtered' ? 'btn-primary' : 'btn-error'"
+    />
+
     <x-slot:modal>
         <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('internship.edit_batch') : __('internship.new_batch')" separator class="backdrop-blur-sm">
             <div class="space-y-6">
                 <x-mary-input :label="__('internship.name')" wire:model="formData.name" :placeholder="__('internship.name_placeholder')" icon="o-academic-cap" class="rounded-xl border-base-300" />
+                <x-mary-select :label="__('internship.academic_year')" wire:model="formData.academic_year_id" :options="$this->academicYears" icon="o-calendar-days" class="rounded-xl border-base-300" />
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <x-mary-datepicker :label="__('internship.start_date')" wire:model="formData.start_date" icon="o-calendar" class="rounded-xl border-base-300" />
                     <x-mary-datepicker :label="__('internship.end_date')" wire:model="formData.end_date" icon="o-calendar" class="rounded-xl border-base-300" />

@@ -30,8 +30,12 @@ class ApplicationReview extends Component
 
     public function approve(string $id, ApproveAccountApplicationAction $action): void
     {
-        $action->execute($id, auth()->user());
-        flash()->success('Application approved. Account and registration created.');
+        try {
+            $action->execute($id, auth()->user());
+            flash()->success(__('internship.applications.success_approved'));
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     public function confirmReject(string $id): void
@@ -45,9 +49,13 @@ class ApplicationReview extends Component
     {
         $this->validate(['rejectionReason' => 'required|string|max:1000']);
 
-        $action->execute($this->rejectId, auth()->user(), $this->rejectionReason);
+        try {
+            $action->execute($this->rejectId, auth()->user(), $this->rejectionReason);
+            flash()->success(__('internship.applications.success_rejected'));
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
+        }
 
-        flash()->success('Application rejected.');
         $this->showRejectModal = false;
         $this->rejectId = null;
         $this->rejectionReason = '';
@@ -57,22 +65,22 @@ class ApplicationReview extends Component
     {
         return <<<'HTML'
         <div>
-            <x-mary-header title="Account Applications" subtitle="Review and manage pending applications" separator />
+            <x-mary-header :title="__('internship.applications.title')" :subtitle="__('internship.applications.subtitle')" separator />
 
             <x-mary-card>
                 @if($this->pendingApplications->isEmpty())
-                    <x-mary-alert title="No pending applications" description="All applications have been processed." icon="o-check-circle" />
+                    <x-mary-alert :title="__('internship.applications.empty')" :description="__('internship.applications.empty_desc')" icon="o-check-circle" />
                 @else
                     <div class="overflow-x-auto">
                         <table class="table table-zebra">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Program</th>
-                                    <th>School</th>
-                                    <th>Submitted</th>
-                                    <th>Actions</th>
+                                    <th>{{ __('internship.applications.name') }}</th>
+                                    <th>{{ __('internship.applications.email') }}</th>
+                                    <th>{{ __('internship.applications.program') }}</th>
+                                    <th>{{ __('internship.applications.school') }}</th>
+                                    <th>{{ __('internship.applications.submitted') }}</th>
+                                    <th>{{ __('internship.applications.subtitle') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,8 +93,8 @@ class ApplicationReview extends Component
                                         <td>{{ $app->created_at->diffForHumans() }}</td>
                                         <td>
                                             <div class="flex gap-2">
-                                                <x-mary-button label="Approve" wire:click="approve('{{ $app->id }}')" icon="o-check" class="btn-success btn-sm" />
-                                                <x-mary-button label="Reject" wire:click="confirmReject('{{ $app->id }}')" icon="o-x-mark" class="btn-error btn-sm" />
+                                                <x-mary-button :label="__('internship.applications.approve')" wire:click="approve('{{ $app->id }}')" icon="o-check" class="btn-success btn-sm" />
+                                                <x-mary-button :label="__('internship.applications.reject')" wire:click="confirmReject('{{ $app->id }}')" icon="o-x-mark" class="btn-error btn-sm" />
                                             </div>
                                         </td>
                                     </tr>
@@ -97,12 +105,12 @@ class ApplicationReview extends Component
                 @endif
             </x-mary-card>
 
-            <x-mary-modal wire:model="showRejectModal" title="Reject Application">
+            <x-mary-modal wire:model="showRejectModal" :title="__('internship.applications.reject_title')">
                 <x-mary-form wire:submit="reject">
-                    <x-mary-textarea label="Rejection Reason" wire:model="rejectionReason" required />
+                    <x-mary-textarea :label="__('internship.applications.rejection_reason')" wire:model="rejectionReason" required />
                     <x-slot:actions>
-                        <x-mary-button label="Cancel" wire:click="$set('showRejectModal', false)" />
-                        <x-mary-button label="Reject" type="submit" icon="o-x-mark" class="btn-error" />
+                        <x-mary-button :label="__('internship.applications.cancel')" wire:click="$set('showRejectModal', false)" />
+                        <x-mary-button :label="__('internship.applications.reject')" type="submit" icon="o-x-mark" class="btn-error" />
                     </x-slot:actions>
                 </x-mary-form>
             </x-mary-modal>

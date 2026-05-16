@@ -127,7 +127,7 @@ it('admin can view pending registrations', function () {
 it('shows empty state when no pending registrations', function () {
     Livewire::actingAs($this->admin)
         ->test(RegistrationVerification::class)
-        ->assertSee('No pending registrations');
+        ->assertSee(__('internship.registration_verification.empty'));
 });
 
 it('cannot be accessed by non-admin', function () {

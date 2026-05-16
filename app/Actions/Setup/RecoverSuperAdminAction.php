@@ -7,22 +7,22 @@ namespace App\Actions\Setup;
 use App\Actions\Core\LogAuditAction;
 use App\Enums\Auth\AccountStatus;
 use App\Models\User;
-use App\Notifications\Auth\AdminRecoveredNotification;
+use App\Notifications\Auth\SuperAdminRecoveredNotification;
 use App\Support\SmartLogger;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
-final readonly class RecoverAdminAccessAction
+final readonly class RecoverSuperAdminAction
 {
     public function __construct(
         protected readonly LogAuditAction $logAudit,
     ) {}
 
-    public function execute(string $email, string $password, bool $isReset = false, string $role = 'super_admin'): User
+    public function execute(string $email, string $password, bool $isReset = false): User
     {
-        return DB::transaction(function () use ($email, $password, $isReset, $role) {
+        return DB::transaction(function () use ($email, $password, $isReset) {
             if ($isReset) {
                 $user = User::where('email', $email)->firstOrFail();
 
@@ -33,8 +33,10 @@ final readonly class RecoverAdminAccessAction
                 ]);
                 $user->setStatus(AccountStatus::VERIFIED);
             } else {
+                $defaultName = config('setup.defaults.recovery_admin_name', 'Recovery Admin');
+
                 $user = User::create([
-                    'name' => 'Recovery Admin',
+                    'name' => $defaultName,
                     'email' => $email,
                     'password' => Hash::make($password),
                     'username' => $this->generateUsername(),
@@ -43,47 +45,39 @@ final readonly class RecoverAdminAccessAction
                 $user->setStatus(AccountStatus::PROTECTED);
             }
 
-            $user->syncRoles([$role]);
+            $user->syncRoles(['super_admin']);
 
-            // Invalidate remember-me tokens so existing sessions are no longer valid
             $user->forceFill(['remember_token' => Str::random(60)])->save();
-
-            $hostname = gethostname();
-            $serverIp = $_SERVER['SERVER_ADDR'] ?? $_SERVER['HOSTNAME'] ?? 'unknown';
 
             $this->logAudit->execute(
                 user: null,
-                action: 'admin_recovered',
+                action: 'super_admin_recovered',
                 subjectType: User::class,
                 subjectId: $user->id,
                 payload: [
                     'type' => $isReset ? 'reset' : 'create',
                     'email' => $email,
-                    'role' => $role,
-                    'hostname' => $hostname,
-                    'server_ip' => $serverIp,
                 ],
                 module: 'Setup',
                 maskPii: true,
             );
 
-            SmartLogger::info('admin_recovery_'.$user->id)
-                ->module('Setup')
-                ->event($isReset ? 'admin.recovered.reset' : 'admin.recovered.create')
+            SmartLogger::info('super_admin_recovery_'.$user->id)
+                ->module('setup')
+                ->event($isReset ? 'super_admin.recovered.reset' : 'super_admin.recovered.create')
                 ->systemOnly()
                 ->save();
 
-            // Notify existing active admin users about the recovery
-            $this->notifyExistingAdmins($user, $isReset);
+            $this->notifyExistingSuperAdmins($user, $isReset);
 
             return $user;
         });
     }
 
-    private function notifyExistingAdmins(User $recoveredUser, bool $isReset): void
+    private function notifyExistingSuperAdmins(User $recoveredUser, bool $isReset): void
     {
         try {
-            $existingAdmins = User::role(['super_admin', 'admin'])
+            $existingAdmins = User::role('super_admin')
                 ->where('id', '!=', $recoveredUser->id)
                 ->get();
 
@@ -91,10 +85,9 @@ final readonly class RecoverAdminAccessAction
                 return;
             }
 
-            Notification::send($existingAdmins, new AdminRecoveredNotification(
+            Notification::send($existingAdmins, new SuperAdminRecoveredNotification(
                 recoveredEmail: $recoveredUser->email,
                 mode: $isReset ? 'reset' : 'create',
-                initiatorHostname: gethostname(),
             ));
         } catch (\Throwable) {
             // Notification failure must not break the recovery flow

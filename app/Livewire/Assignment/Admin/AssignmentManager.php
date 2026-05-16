@@ -38,7 +38,7 @@ class AssignmentManager extends BaseRecordManager
             ['key' => 'is_mandatory', 'label' => 'Mandatory'],
             ['key' => 'status', 'label' => 'Status'],
             ['key' => 'due_date', 'label' => 'Due Date', 'sortable' => true],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

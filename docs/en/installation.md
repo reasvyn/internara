@@ -35,10 +35,10 @@ Follow the prompts to enter an email, name, and password.
 If you lose access to all administrator accounts:
 
 ```bash
-php artisan setup:recover-admin
+php artisan setup:recover-super-admin
 ```
 
-This lets you reset an existing account or create a new one. Console access to the server is required.
+This lets you reset an existing super admin account or create a new one. Console access to the server is required.
 
 ## Resetting Setup
 
@@ -58,7 +58,7 @@ Run `php artisan list` to see all available commands. Key setup-related commands
 |---|---|
 | `setup:install` | Check environment, setup database, generate setup URL |
 | `setup:super-admin` | Create a super administrator account |
-| `setup:recover-admin` | Recover access to admin accounts |
+| `setup:recover-super-admin` | Recover access to super admin accounts |
 | `setup:reset` | Reset setup state, allow re-running wizard |
 | `system:health` | Check system health and readiness (also accessible as `setup:health` for convenience) |
 | `admin:promote` | Promote an existing user to admin role |
