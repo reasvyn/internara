@@ -42,7 +42,7 @@ class CompanyManager extends BaseRecordManager
             ['key' => 'industry_sector', 'label' => __('company.industry'), 'sortable' => true],
             ['key' => 'address', 'label' => __('company.address')],
             ['key' => 'placements_count', 'label' => __('company.placements_count')],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

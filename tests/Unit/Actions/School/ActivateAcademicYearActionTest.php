@@ -19,8 +19,8 @@ beforeAll(function () {
 
 describe('execute', function () {
     it('activates a year and deactivates others', function () {
-        $year1 = AcademicYearFactory::new()->active()->create();
-        $year2 = AcademicYearFactory::new()->create(['is_active' => false]);
+        $year1 = AcademicYearFactory::new()->active()->create(['name' => '2023/2024']);
+        $year2 = AcademicYearFactory::new()->create(['name' => '2024/2025', 'is_active' => false]);
 
         app(ActivateAcademicYearAction::class)->execute($year2);
 

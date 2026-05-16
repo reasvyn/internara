@@ -7,8 +7,8 @@ namespace App\Livewire\Admin;
 use App\Actions\Admin\BatchSetSettingAction;
 use App\Actions\Admin\UploadBrandAssetAction;
 use App\Actions\Core\LogAuditAction;
-use App\Support\BrandColors;
 use App\Support\Settings;
+use App\Support\Theme;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -112,11 +112,11 @@ class SystemSetting extends Component
         $this->current_favicon_url = Settings::get('site_favicon');
 
         // Color scheme
-        $defaults = BrandColors::defaults();
+        $defaults = Theme::defaults();
         $this->primary_color = Settings::get('primary_color', $defaults['primary']);
         $this->secondary_color = Settings::get('secondary_color', $defaults['secondary']);
         $this->accent_color = Settings::get('accent_color', $defaults['accent']);
-        $this->base_color = Settings::get('base_color', BrandColors::DEFAULTS['base']);
+        $this->base_color = Settings::get('base_color', $defaults['base']);
 
         $this->selected_preset = $this->detectPreset();
 
@@ -145,7 +145,7 @@ class SystemSetting extends Component
             'base' => $this->base_color,
         ];
 
-        foreach (BrandColors::presets() as $key => $preset) {
+        foreach (Theme::presets() as $key => $preset) {
             $presetColors = $preset['colors'];
 
             if ($presetColors['primary'] === $current['primary']
@@ -161,7 +161,7 @@ class SystemSetting extends Component
 
     public function applyPreset(string $key): void
     {
-        $presets = BrandColors::presets();
+        $presets = Theme::presets();
 
         if (! isset($presets[$key])) {
             return;
@@ -212,6 +212,32 @@ class SystemSetting extends Component
     /**
      * Save all system settings.
      */
+    public function brandLogoPreviewUrl(): ?string
+    {
+        if ($this->brand_logo === null) {
+            return null;
+        }
+
+        try {
+            return $this->brand_logo->temporaryUrl();
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
+    public function faviconPreviewUrl(): ?string
+    {
+        if ($this->site_favicon === null) {
+            return null;
+        }
+
+        try {
+            return $this->site_favicon->temporaryUrl();
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
     public function save(BatchSetSettingAction $batchSetSetting, LogAuditAction $logAudit): void
     {
         $validated = $this->validate();

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Actions\Setup\RecoverAdminAccessAction;
+use App\Actions\Setup\RecoverSuperAdminAction;
 use App\Models\User;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,8 +17,8 @@ beforeEach(function () {
 });
 
 describe('execute', function () {
-    it('creates a recovery admin account', function () {
-        $admin = app(RecoverAdminAccessAction::class)->execute(
+    it('creates a recovery super admin account', function () {
+        $admin = app(RecoverSuperAdminAction::class)->execute(
             email: 'recovery@school.edu',
             password: 'new-secure-password',
         );
@@ -28,11 +28,11 @@ describe('execute', function () {
             ->and($admin->hasRole('super_admin'))->toBeTrue();
     });
 
-    it('resets an existing admin account', function () {
+    it('resets an existing super admin account', function () {
         $existing = UserFactory::new()->create(['email' => 'admin@school.edu']);
         $existing->assignRole('super_admin');
 
-        $admin = app(RecoverAdminAccessAction::class)->execute(
+        $admin = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@school.edu',
             password: 'reset-password',
             isReset: true,

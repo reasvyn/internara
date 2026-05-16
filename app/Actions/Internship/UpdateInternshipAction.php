@@ -6,6 +6,7 @@ namespace App\Actions\Internship;
 
 use App\Actions\Core\LogAuditAction;
 use App\Enums\Internship\InternshipStatus;
+use App\Exceptions\RejectedException;
 use App\Models\Internship;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,7 @@ class UpdateInternshipAction
             $newStatus = InternshipStatus::tryFrom($data['status']);
             if ($newStatus !== null && $newStatus !== $internship->status) {
                 if (! $internship->status->canTransitionTo($newStatus)) {
-                    throw new \RuntimeException(
+                    throw new RejectedException(
                         __('internship.invalid_status_transition', [
                             'from' => __("internship.statuses.{$internship->status->value}"),
                             'to' => __("internship.statuses.{$newStatus->value}"),

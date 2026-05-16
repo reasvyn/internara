@@ -15,6 +15,6 @@
     </div>
     <p class="text-sm shrink-0 text-base-content/70">
         <span class="font-semibold" x-text="$wire.selectedIds.length"></span>
-        <span>{{ __('records selected') }}</span>
+        <span>{{ __('common.actions.x_selected') }}</span>
     </p>
 </div>

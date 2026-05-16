@@ -26,4 +26,8 @@ return [
     'delete_success' => 'Department deleted successfully.',
     'cancel' => 'Cancel',
     'save' => 'Save',
+    'import_invalid' => 'Invalid CSV format. The file must have a "name" column.',
+    'import_summary' => ':created departments imported, :skipped skipped (duplicates).',
+    'template_example_name' => 'e.g. Software Engineering',
+    'template_example_description' => 'e.g. Department focused on software development',
 ];

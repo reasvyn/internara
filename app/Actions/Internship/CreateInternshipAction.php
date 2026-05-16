@@ -20,6 +20,8 @@ class CreateInternshipAction
             $activeYear = AcademicYear::where('is_active', true)->first();
             if ($activeYear !== null) {
                 $data['academic_year_id'] = $activeYear->id;
+            } else {
+                unset($data['academic_year_id']);
             }
         }
 
@@ -30,7 +32,7 @@ class CreateInternshipAction
                 action: 'internship_created',
                 subjectType: Internship::class,
                 subjectId: $internship->id,
-                payload: ['name' => $internship->name],
+                payload: ['name' => $internship->name, 'academic_year_id' => $internship->academic_year_id],
                 module: 'Internship',
             );
 

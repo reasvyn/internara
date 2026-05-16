@@ -30,11 +30,11 @@ class UserManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'email', 'label' => 'Account Info'],
-            ['key' => 'roles_list', 'label' => 'Roles'],
-            ['key' => 'status', 'label' => 'Status'],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'name', 'label' => __('user.manager.name'), 'sortable' => true],
+            ['key' => 'email', 'label' => __('user.manager.email')],
+            ['key' => 'roles_list', 'label' => __('user.manager.roles')],
+            ['key' => 'status', 'label' => __('user.manager.status')],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 
@@ -111,10 +111,10 @@ class UserManager extends BaseRecordManager
         if ($this->userData['id']) {
             $user = User::findOrFail($this->userData['id']);
             $updateAction->execute($user, $this->userData, null, $this->userData['roles']);
-            flash()->success('User updated.');
+            flash()->success(__('user.manager.success_updated'));
         } else {
             $createAction->execute($this->userData, [], $this->userData['roles']);
-            flash()->success('User created.');
+            flash()->success(__('user.manager.success_created'));
         }
 
         $this->userModal = false;
@@ -122,34 +122,28 @@ class UserManager extends BaseRecordManager
 
     public function toggleStatus(User $user, ToggleUserStatusAction $action): void
     {
-        if ($user->id === auth()->id()) {
-            flash()->error('Cannot change your own status.');
-
-            return;
+        try {
+            $action->execute($user);
+            flash()->success(__('user.manager.status_changed'));
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
         }
-
-        $action->execute($user);
-
-        flash()->success('User status changed. Notification sent.');
     }
 
     public function resetPassword(User $user, ResetUserPasswordAction $action): void
     {
         $result = $action->execute($user);
-
-        flash()->info(__('Password reset to: :password', ['password' => $result['new_password']]));
+        flash()->info(__('user.manager.password_reset', ['password' => $result['new_password']]));
     }
 
     public function deleteUser(User $user, DeleteUserAction $deleteAction): void
     {
-        if ($user->id === auth()->id()) {
-            flash()->error('You cannot delete yourself.');
-
-            return;
+        try {
+            $deleteAction->execute($user);
+            flash()->success(__('user.manager.success_deleted'));
+        } catch (\RuntimeException $e) {
+            flash()->error($e->getMessage());
         }
-
-        $deleteAction->execute($user);
-        flash()->success('User deleted.');
     }
 
     public function deleteSelected(DeleteUserAction $deleteAction): void

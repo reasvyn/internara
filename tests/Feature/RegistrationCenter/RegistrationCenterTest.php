@@ -20,7 +20,7 @@ it('shows no open registration when none exist', function () {
     Internship::factory()->create(['status' => 'cancelled']);
 
     Livewire::test(RegistrationCenter::class)
-        ->assertSee('Tidak Ada Pendaftaran Terbuka');
+        ->assertSee(__('internship.registration_center.empty'));
 });
 
 it('shows open registrations when within window', function () {
@@ -45,7 +45,7 @@ it('hides internships when outside registration window', function () {
     ]);
 
     Livewire::test(RegistrationCenter::class)
-        ->assertSee('Tidak Ada Pendaftaran Terbuka')
+        ->assertSee(__('internship.registration_center.empty'))
         ->assertDontSee('PKL Masa Lalu');
 });
 
@@ -58,7 +58,7 @@ it('hides internships when before window opens', function () {
     ]);
 
     Livewire::test(RegistrationCenter::class)
-        ->assertSee('Tidak Ada Pendaftaran Terbuka')
+        ->assertSee(__('internship.registration_center.empty'))
         ->assertDontSee('PKL Mendatang');
 });
 
@@ -82,7 +82,7 @@ it('shows register button for guest users', function () {
     ]);
 
     Livewire::test(RegistrationCenter::class)
-        ->assertSee('Daftar (Belum Punya Akun)');
+        ->assertSee(__('internship.registration_center.register_guest'));
 });
 
 it('shows different button for authenticated student', function () {
@@ -97,7 +97,7 @@ it('shows different button for authenticated student', function () {
 
     Livewire::actingAs($student)
         ->test(RegistrationCenter::class)
-        ->assertSee('Daftar Sekarang');
+        ->assertSee(__('internship.registration_center.register_now'));
 });
 
 it('redirects root to registration center', function () {

@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
+/**
+ * Handles serialization/deserialization of typed setting values.
+ * Types sourced from config/settings.php.
+ */
 class SettingValueCast implements CastsAttributes
 {
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed

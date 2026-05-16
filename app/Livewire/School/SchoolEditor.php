@@ -78,13 +78,24 @@ class SchoolEditor extends Component
         ];
     }
 
+    public function logoPreviewUrl(): ?string
+    {
+        if ($this->logo_file === null) {
+            return null;
+        }
+
+        try {
+            return $this->logo_file->temporaryUrl();
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
     public function save(UpdateSchoolAction $updateSchool): void
     {
         $validated = $this->validate();
 
-        $validated['logo_file'] = $this->logo_file?->getRealPath() && file_exists($this->logo_file->getRealPath())
-            ? $this->logo_file
-            : null;
+        $validated['logo_file'] = $this->logo_file;
 
         $updateSchool->execute($this->school, $validated);
 

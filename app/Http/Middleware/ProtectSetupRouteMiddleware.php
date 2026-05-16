@@ -29,21 +29,23 @@ class ProtectSetupRouteMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // When installed, only allow access during the 5-minute
-        // finalization window so the user can see the completion summary.
-        // After that window, /setup returns 404 as if it never existed.
-        if (Setup::state()->isInstalled()) {
-            if ($this->isWithinFinalizationWindow()) {
+        $rateAttempts = (int) config('setup.security.rate_limit_attempts', 20);
+        $rateDecay = (int) config('setup.security.rate_limit_decay_seconds', 60);
+        $finalizationMinutes = (int) config('setup.security.finalization_window_minutes', 5);
+
+        $state = Setup::state();
+
+        if ($state->isInstalled()) {
+            if ($state->isWithinFinalizationWindow($finalizationMinutes)) {
                 return $next($request);
             }
 
             abort(Response::HTTP_NOT_FOUND);
         }
 
-        // Rate limit: 20 attempts per 60 seconds per IP
         $key = 'setup:'.$request->ip();
 
-        if (RateLimiter::tooManyAttempts($key, 20)) {
+        if (RateLimiter::tooManyAttempts($key, $rateAttempts)) {
             $seconds = RateLimiter::availableIn($key);
 
             return response()->json(
@@ -54,7 +56,7 @@ class ProtectSetupRouteMiddleware
             );
         }
 
-        RateLimiter::hit($key, 60);
+        RateLimiter::hit($key, $rateDecay);
 
         // Allow access if session is already authorized
         if (Session::get('setup.authorized', false)) {
@@ -89,17 +91,6 @@ class ProtectSetupRouteMiddleware
         $request->session()->put('setup.token_input', $token);
 
         return $next($request);
-    }
-
-    private function isWithinFinalizationWindow(int $minutes = 5): bool
-    {
-        $setup = Setup::first();
-
-        if ($setup === null || $setup->updated_at === null) {
-            return false;
-        }
-
-        return $setup->updated_at->diffInMinutes(now()) < $minutes;
     }
 
     private function rejectToken(Request $request, string $message): Response

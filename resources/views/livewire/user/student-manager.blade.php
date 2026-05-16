@@ -5,7 +5,7 @@
             <h2 class="text-3xl font-black tracking-tightest text-base-content">{{ __('user.student.title') }}</h2>
             <p class="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/40 mt-2">{{ __('user.student.subtitle') }}</p>
         </div>
-        <x-mary-button :label="__('user.student.new')" icon="o-plus" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-8 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform" wire:click="createUser" />
+        <x-mary-button :label="__('user.student.new')" icon="o-plus" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-8 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform" wire:click="create" />
     </div>
 
     {{-- Controls Section --}}
@@ -14,7 +14,7 @@
             <div class="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-md transition-opacity duration-300 opacity-0 group-focus-within:opacity-100"></div>
             <x-mary-input 
                 wire:model.live.debounce.300ms="search" 
-                placeholder="{{ __('Search records...') }}" 
+                placeholder="{{ __('common.actions.search') }}" 
                 icon="o-magnifying-glass" 
                 clearable 
                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10"
@@ -89,8 +89,8 @@
 
                 @scope('actions', $user)
                     <div class="flex items-center justify-end gap-2 py-2">
-                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="editUser('{{ $user->id }}')" tooltip="Edit User" />
-                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteUser('{{ $user->id }}')" tooltip="Delete User" />
+                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="edit('{{ $user->id }}')" tooltip="Edit User" />
+                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $user->id }}')" tooltip="Delete User" />
                     </div>
                 @endscope
             </x-mary-table>
@@ -120,7 +120,7 @@
         <x-slot:actions>
             <div class="flex gap-4 pt-6 border-t border-base-content/5 w-full justify-end">
                 <x-mary-button :label="__('common.actions.cancel')" @click="$wire.userModal = false" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] px-8" />
-                <x-mary-button :label="__('user.student.save')" class="btn-primary rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="saveUser" spinner="saveUser" />
+                <x-mary-button :label="__('user.student.save')" class="btn-primary rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="save" spinner="save" />
             </div>
         </x-slot:actions>
     </x-mary-modal>

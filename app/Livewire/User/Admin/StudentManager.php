@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\User\Admin;
 
+use App\Actions\User\ArchiveStudentAccountsAction;
 use App\Actions\User\CreateUserAction;
 use App\Actions\User\DeleteUserAction;
 use App\Actions\User\UpdateUserAction;
@@ -14,11 +15,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 
-/**
- * Modernized Student Manager using BaseRecordManager pattern.
- *
- * S2 - Sustain: Clean, reusable, and follows architecture guidelines.
- */
 class StudentManager extends BaseRecordManager
 {
     public bool $userModal = false;
@@ -43,9 +39,6 @@ class StudentManager extends BaseRecordManager
         }
     }
 
-    /**
-     * Define columns and sorting.
-     */
     public function headers(): array
     {
         return [
@@ -59,13 +52,10 @@ class StudentManager extends BaseRecordManager
             ['key' => 'profile.registration_number', 'label' => __('user.student.nis')],
             ['key' => 'profile.department.name', 'label' => __('user.student.department')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 
-    /**
-     * Base query for students.
-     */
     protected function query(): Builder
     {
         return User::query()
@@ -73,9 +63,6 @@ class StudentManager extends BaseRecordManager
             ->with(['profile.department']);
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
@@ -85,9 +72,6 @@ class StudentManager extends BaseRecordManager
         });
     }
 
-    /**
-     * Filter implementation.
-     */
     protected function applyFilters(Builder $query): Builder
     {
         return $query->when($this->filters['department_id'] ?? null, function ($q, $deptId) {
@@ -101,9 +85,7 @@ class StudentManager extends BaseRecordManager
         return Department::orderBy('name')->get();
     }
 
-    // --- Record Actions ---
-
-    public function createUser(): void
+    public function create(): void
     {
         $this->resetErrorBag();
         $this->userData = [
@@ -117,7 +99,7 @@ class StudentManager extends BaseRecordManager
         $this->userModal = true;
     }
 
-    public function editUser(User $user): void
+    public function edit(User $user): void
     {
         $this->resetErrorBag();
         $this->userData = [
@@ -131,7 +113,7 @@ class StudentManager extends BaseRecordManager
         $this->userModal = true;
     }
 
-    public function saveUser(CreateUserAction $createAction, UpdateUserAction $updateAction): void
+    public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
         $this->validate([
             'userData.name' => 'required|string|max:255',
@@ -158,13 +140,11 @@ class StudentManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function deleteUser(User $user, DeleteUserAction $deleteAction): void
+    public function delete(User $user, DeleteUserAction $deleteAction): void
     {
         $deleteAction->execute($user);
         flash()->success(__('user.student.success_deleted'));
     }
-
-    // --- Bulk Actions (Selected Rows) ---
 
     public function deleteSelected(DeleteUserAction $deleteAction): void
     {
@@ -176,14 +156,10 @@ class StudentManager extends BaseRecordManager
         });
     }
 
-    // --- Mass Actions (Active Query) ---
-
-    public function archiveAllFiltered(): void
+    public function archiveAllFiltered(ArchiveStudentAccountsAction $action): void
     {
-        $this->performMassAction('Archive Filtered', function ($query) {
-            $query->each(
-                fn ($user) => $user->setStatus('archived', 'Mass archived via Student Manager'),
-            );
+        $this->performMassAction('Archive Filtered', function ($query) use ($action) {
+            $action->execute($query);
         });
     }
 

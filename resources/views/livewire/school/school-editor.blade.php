@@ -88,8 +88,8 @@
                     <div class="relative mb-2 group">
                         <div class="cursor-pointer relative" onclick="document.getElementById('school-logo-upload').click()">
                             <input id="school-logo-upload" type="file" wire:model="logo_file" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                            @if($logo_file?->temporaryUrl() ?? $school->getFirstMediaUrl('logo', 'thumb'))
-                                <img src="{{ $logo_file?->temporaryUrl() ?? $school->getFirstMediaUrl('logo', 'thumb') }}"
+                            @if($this->logoPreviewUrl() ?? $school->getFirstMediaUrl('logo', 'thumb'))
+                                <img src="{{ $this->logoPreviewUrl() ?? $school->getFirstMediaUrl('logo', 'thumb') }}"
                                      alt="School logo"
                                      class="size-24 rounded-xl object-contain border border-base-content/10" />
                             @else

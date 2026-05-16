@@ -26,4 +26,8 @@ return [
     'delete_success' => 'Jurusan berhasil dihapus.',
     'cancel' => 'Batal',
     'save' => 'Simpan',
+    'import_invalid' => 'Format CSV tidak valid. File harus memiliki kolom "name".',
+    'import_summary' => ':created jurusan diimpor, :skip dilewati (duplikat).',
+    'template_example_name' => 'contoh: Rekayasa Perangkat Lunak',
+    'template_example_description' => 'contoh: Jurusan yang berfokus pada pengembangan perangkat lunak',
 ];

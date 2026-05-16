@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Entities\AcademicYear\AcademicYearState;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Represents an academic year for organizing internship cohorts.
@@ -23,6 +24,16 @@ class AcademicYear extends BaseModel
         'end_date' => 'date',
         'is_active' => 'boolean',
     ];
+
+    public function internships(): HasMany
+    {
+        return $this->hasMany(Internship::class);
+    }
+
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class);
+    }
 
     public function asAcademicYearState(): AcademicYearState
     {

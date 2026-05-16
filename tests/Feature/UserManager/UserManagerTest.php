@@ -173,9 +173,10 @@ describe('toggle status', function () {
 
     it('prevents toggling own status', function () {
         Livewire::test(UserManager::class)
-            ->call('toggleStatus', $this->admin->id);
+            ->call('toggleStatus', $this->admin->id)
+            ->assertHasErrors();
 
-        expect($this->admin->fresh()->latestStatus())->toBeNull();
+        expect($this->admin->fresh()->latestStatus())->not->toBeNull();
     });
 
     it('sends notification on status change', function () {

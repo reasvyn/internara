@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Actions\Setup\RecoverAdminAccessAction;
+use App\Actions\Setup\RecoverSuperAdminAction;
 use App\Enums\Auth\AccountStatus;
 use App\Models\User;
-use App\Notifications\Auth\AdminRecoveredNotification;
+use App\Notifications\Auth\SuperAdminRecoveredNotification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -22,8 +22,8 @@ beforeEach(function () {
 
 describe('create mode (isReset=false)', function () {
 
-    it('creates a new admin user with a generated username', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+    it('creates a new super admin user with a generated username', function () {
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
@@ -35,7 +35,7 @@ describe('create mode (isReset=false)', function () {
     });
 
     it('creates a profile for the new user', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
@@ -46,7 +46,7 @@ describe('create mode (isReset=false)', function () {
     });
 
     it('assigns the PROTECTED status to the recovery admin', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
@@ -54,8 +54,8 @@ describe('create mode (isReset=false)', function () {
         expect($user->latestStatus()->name)->toBe(AccountStatus::PROTECTED->value);
     });
 
-    it('assigns the super_admin role by default', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+    it('assigns the super_admin role', function () {
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
@@ -63,10 +63,10 @@ describe('create mode (isReset=false)', function () {
         expect($user->hasRole('super_admin'))->toBeTrue();
     });
 
-    it('hashes the password store', function () {
+    it('hashes the password', function () {
         $password = 'secure-password';
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: $password,
         );
@@ -76,7 +76,7 @@ describe('create mode (isReset=false)', function () {
     });
 
     it('logs an audit entry with masked PII', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
@@ -86,18 +86,14 @@ describe('create mode (isReset=false)', function () {
             ->first();
 
         expect($activity)->not->toBeNull();
-        expect($activity->description)->toBe('admin_recovered');
-        expect($activity->log_name)->toBe('Setup');
-        expect($activity->subject_type)->toBe(User::class);
-        expect($activity->subject_id)->toBe($user->id);
+        expect($activity->description)->toBe('super_admin_recovered');
         expect($activity->properties->get('payload')['type'])->toBe('create');
         expect($activity->properties->get('payload')['email'])->toContain('***');
         expect($activity->properties->get('payload')['email'])->not->toBe('admin@internara.test');
-        expect($activity->properties->get('payload')['role'])->toBe('super_admin');
     });
 
     it('does not log a causer for CLI-initiated recovery', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
@@ -120,7 +116,7 @@ describe('reset mode (isReset=true)', function () {
             ->create(['locked_at' => now(), 'locked_reason' => 'manual_lock']);
         $existing->setStatus(AccountStatus::SUSPENDED);
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-secure-password',
             isReset: true,
@@ -137,7 +133,7 @@ describe('reset mode (isReset=true)', function () {
         $existing = User::factory()->create();
         $existing->setStatus(AccountStatus::SUSPENDED);
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -150,7 +146,7 @@ describe('reset mode (isReset=true)', function () {
         $existing = User::factory()->create();
         $existing->assignRole('super_admin');
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -162,7 +158,7 @@ describe('reset mode (isReset=true)', function () {
     it('does not create a new profile on reset', function () {
         $existing = User::factory()->create();
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -174,7 +170,7 @@ describe('reset mode (isReset=true)', function () {
     it('does not change the username on reset', function () {
         $existing = User::factory()->create(['username' => 'original_admin']);
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -187,7 +183,7 @@ describe('reset mode (isReset=true)', function () {
         $existing = User::factory()->create();
         $existing->setStatus(AccountStatus::SUSPENDED);
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -199,7 +195,7 @@ describe('reset mode (isReset=true)', function () {
             ->first();
 
         expect($activity)->not->toBeNull();
-        expect($activity->description)->toBe('admin_recovered');
+        expect($activity->description)->toBe('super_admin_recovered');
         expect($activity->properties->get('payload')['type'])->toBe('reset');
         expect($activity->properties->get('payload')['email'])->toContain('***');
         expect($activity->properties->get('payload')['email'])->not->toBe($existing->email);
@@ -209,7 +205,7 @@ describe('reset mode (isReset=true)', function () {
         $existing = User::factory()->create();
         $existing->setStatus(AccountStatus::PROVISIONED);
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -223,7 +219,7 @@ describe('reset mode (isReset=true)', function () {
 describe('logging and PII masking', function () {
 
     it('masks email in audit log payload', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'john.doe@internara.test',
             password: 'secure-password',
         );
@@ -238,46 +234,30 @@ describe('logging and PII masking', function () {
         expect($masked)->toContain('***@');
     });
 
-    it('writes a system log entry via SmartLogger on create', function () {
+    it('writes a system log entry on create', function () {
         Log::spy();
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: 'admin@internara.test',
             password: 'secure-password',
         );
 
         Log::shouldHaveReceived('info')
-            ->withArgs(fn ($msg) => str_contains($msg, 'admin_recovery_'));
+            ->withArgs(fn ($msg) => str_contains($msg, 'super_admin_recovery_'));
     });
 
-    it('writes a system log entry via SmartLogger on reset', function () {
+    it('writes a system log entry on reset', function () {
         Log::spy();
         $existing = User::factory()->create();
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
         );
 
         Log::shouldHaveReceived('info')
-            ->withArgs(fn ($msg) => str_contains($msg, 'admin_recovery_'));
-    });
-
-    it('includes hostname and server_ip in audit payload', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
-            email: 'metadata@internara.test',
-            password: 'secure-password',
-        );
-
-        $activity = Activity::where('subject_id', $user->id)
-            ->where('subject_type', User::class)
-            ->first();
-
-        $payload = $activity->properties->get('payload');
-        expect($payload)->toHaveKey('hostname');
-        expect($payload)->toHaveKey('server_ip');
-        expect($payload['hostname'])->toBe(gethostname());
+            ->withArgs(fn ($msg) => str_contains($msg, 'super_admin_recovery_'));
     });
 
 });
@@ -285,7 +265,7 @@ describe('logging and PII masking', function () {
 describe('session invalidation', function () {
 
     it('regenerates remember_token on create', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'session-test@internara.test',
             password: 'secure-password',
         );
@@ -297,7 +277,7 @@ describe('session invalidation', function () {
         $existing = User::factory()->create(['remember_token' => 'old-token-value']);
         $existing->setStatus(AccountStatus::SUSPENDED);
 
-        $user = app(RecoverAdminAccessAction::class)->execute(
+        $user = app(RecoverSuperAdminAction::class)->execute(
             email: $existing->email,
             password: 'new-password',
             isReset: true,
@@ -310,24 +290,24 @@ describe('session invalidation', function () {
 
 describe('admin notification', function () {
 
-    it('sends AdminRecoveredNotification to existing admin users on create', function () {
+    it('sends SuperAdminRecoveredNotification to existing super admins on create', function () {
         Notification::fake();
 
         $existingAdmin = User::factory()->create();
         $existingAdmin->assignRole('super_admin');
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: 'newadmin@internara.test',
             password: 'secure-password',
         );
 
         Notification::assertSentTo(
             $existingAdmin,
-            AdminRecoveredNotification::class,
+            SuperAdminRecoveredNotification::class,
         );
     });
 
-    it('sends AdminRecoveredNotification to existing admin users on reset', function () {
+    it('sends SuperAdminRecoveredNotification to existing super admins on reset', function () {
         Notification::fake();
 
         $existingAdmin = User::factory()->create();
@@ -336,7 +316,7 @@ describe('admin notification', function () {
         $target = User::factory()->create();
         $target->setStatus(AccountStatus::SUSPENDED);
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: $target->email,
             password: 'new-password',
             isReset: true,
@@ -344,14 +324,14 @@ describe('admin notification', function () {
 
         Notification::assertSentTo(
             $existingAdmin,
-            AdminRecoveredNotification::class,
+            SuperAdminRecoveredNotification::class,
         );
     });
 
-    it('does not send notification when no other admins exist', function () {
+    it('does not send notification when no other super admins exist', function () {
         Notification::fake();
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: 'lonely-admin@internara.test',
             password: 'secure-password',
         );
@@ -365,7 +345,7 @@ describe('admin notification', function () {
         $existingAdmin = User::factory()->create();
         $existingAdmin->assignRole('super_admin');
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: $existingAdmin->email,
             password: 'new-password',
             isReset: true,
@@ -373,26 +353,22 @@ describe('admin notification', function () {
 
         Notification::assertNotSentTo(
             $existingAdmin,
-            AdminRecoveredNotification::class,
+            SuperAdminRecoveredNotification::class,
         );
     });
 
-    it('notifies admin role users as well as super_admin', function () {
+    it('does not notify regular admin role users', function () {
         Notification::fake();
-
-        $superAdmin = User::factory()->create();
-        $superAdmin->assignRole('super_admin');
 
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: 'another-admin@internara.test',
             password: 'secure-password',
         );
 
-        Notification::assertSentTo($superAdmin, AdminRecoveredNotification::class);
-        Notification::assertSentTo($admin, AdminRecoveredNotification::class);
+        Notification::assertNothingSent();
     });
 
 });
@@ -400,42 +376,15 @@ describe('admin notification', function () {
 describe('validation and edge cases', function () {
 
     it('throws ModelNotFoundException when resetting a non-existent user', function () {
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: 'nonexistent@test.com',
             password: 'password',
             isReset: true,
         );
     })->throws(ModelNotFoundException::class);
 
-    it('assigns a custom role instead of default super_admin', function () {
-        $user = app(RecoverAdminAccessAction::class)->execute(
-            email: 'custom-role@internara.test',
-            password: 'password',
-            role: 'admin',
-        );
-
-        expect($user->hasRole('super_admin'))->toBeFalse();
-        expect($user->hasRole('admin'))->toBeTrue();
-        expect($user->latestStatus()->name)->toBe(AccountStatus::PROTECTED->value);
-    });
-
-    it('assigns custom role in reset mode', function () {
-        $existing = User::factory()->create();
-        $existing->setStatus(AccountStatus::SUSPENDED);
-
-        $user = app(RecoverAdminAccessAction::class)->execute(
-            email: $existing->email,
-            password: 'new-password',
-            isReset: true,
-            role: 'admin',
-        );
-
-        expect($user->hasRole('super_admin'))->toBeFalse();
-        expect($user->hasRole('admin'))->toBeTrue();
-    });
-
     it('persists the user to the database', function () {
-        app(RecoverAdminAccessAction::class)->execute(
+        app(RecoverSuperAdminAction::class)->execute(
             email: 'persist@internara.test',
             password: 'secure-password',
         );

@@ -46,7 +46,7 @@ beforeEach(function () {
 it('guest can see application form', function () {
     $this->get(route('apply'))
         ->assertSuccessful()
-        ->assertSee('Account & Internship Application');
+        ->assertSee(__('internship.account_application.title'));
 });
 
 it('guest can submit an application', function () {

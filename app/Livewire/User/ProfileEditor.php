@@ -84,6 +84,19 @@ class ProfileEditor extends Component
         flash()->success(__('profile.password_updated'));
     }
 
+    public function avatarPreviewUrl(): ?string
+    {
+        if ($this->avatar === null) {
+            return null;
+        }
+
+        try {
+            return $this->avatar->temporaryUrl();
+        } catch (\Exception) {
+            return null;
+        }
+    }
+
     public function avatarUrl(): ?string
     {
         return $this->user->getFirstMediaUrl('avatar') ?: null;

@@ -10,8 +10,8 @@
         
         {{-- Dynamic Branding Colors --}}
         @php
-            use App\Support\BrandColors;
-            $themeVars = BrandColors::cssVariables();
+            use App\Support\Theme;
+            $themeVars = Theme::cssVariables();
         @endphp
         <style>
             html[data-theme="light"],

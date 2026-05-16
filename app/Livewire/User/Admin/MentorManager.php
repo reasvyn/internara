@@ -43,7 +43,7 @@ class MentorManager extends BaseRecordManager
             ['key' => 'type', 'label' => __('user.mentor.type'), 'sortable' => true],
             ['key' => 'is_active', 'label' => __('user.mentor.active')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

@@ -40,6 +40,7 @@ use App\Policies\School\AcademicYearPolicy;
 use App\Policies\School\DepartmentPolicy;
 use App\Policies\School\SchoolPolicy;
 use App\Policies\User\UserPolicy;
+use App\Support\LangChecker;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -52,7 +53,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if ($this->app->hasDebugModeEnabled()) {
+            $this->app->extend('translator', fn ($translator) => tap(
+                new LangChecker($translator->getLoader(), $translator->getLocale()),
+                fn (LangChecker $checker) => $checker->setFallback($translator->getFallback()),
+            ));
+        }
     }
 
     /**

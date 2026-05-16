@@ -81,7 +81,7 @@
                 <div class="py-2">
                     <h4 class="font-semibold mb-1">{{ __('dashboard.help_title') }}</h4>
                     <p class="text-xs text-white/80 mb-4">{{ __('dashboard.help_desc', ['app' => config('app.name')]) }}</p>
-                    <x-mary-button :label="__('dashboard.read_docs')" class="btn-sm bg-white text-primary border-none hover:bg-white/90" />
+                    <x-mary-button :label="__('dashboard.read_docs')" link="https://github.com/reasvyn/internara" class="btn-sm bg-white text-primary border-none hover:bg-white/90" />
                 </div>
             </x-mary-card>
         </div>

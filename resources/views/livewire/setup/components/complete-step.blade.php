@@ -13,12 +13,12 @@
         <dl class="space-y-3 text-sm">
             <div class="flex items-center justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.username') }}</dt>
-                <dd class="font-mono font-semibold text-primary">{{ $adminUsername }}</dd>
+                <dd class="font-mono font-semibold text-primary">{{ $adminData['username'] }}</dd>
             </div>
             <div class="border-t border-base-content/10"></div>
             <div class="flex items-center justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.email') }}</dt>
-                <dd class="font-medium">{{ $adminEmail }}</dd>
+                <dd class="font-medium">{{ $adminData['email'] }}</dd>
             </div>
         </dl>
 

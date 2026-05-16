@@ -135,20 +135,20 @@ describe('create', function () {
 
     it('opens the create modal', function () {
         Livewire::test(StudentManager::class)
-            ->call('createUser')
+            ->call('create')
             ->assertSet('userModal', true)
             ->assertSet('userData.id', null);
     });
 
     it('creates a new student with profile', function () {
         Livewire::test(StudentManager::class)
-            ->call('createUser')
+            ->call('create')
             ->set('userData.name', 'New Student')
             ->set('userData.email', 'newstudent@example.com')
             ->set('userData.national_identifier', '1234567890')
             ->set('userData.registration_number', 'NIS001')
             ->set('userData.department_id', $this->department->id)
-            ->call('saveUser')
+            ->call('save')
             ->assertHasNoErrors();
 
         $user = User::where('email', 'newstudent@example.com')->first();
@@ -161,8 +161,8 @@ describe('create', function () {
 
     it('validates required fields on create', function () {
         Livewire::test(StudentManager::class)
-            ->call('createUser')
-            ->call('saveUser')
+            ->call('create')
+            ->call('save')
             ->assertHasErrors([
                 'userData.name' => 'required',
                 'userData.email' => 'required',
@@ -175,23 +175,23 @@ describe('create', function () {
         User::factory()->create(['email' => 'existing@example.com']);
 
         Livewire::test(StudentManager::class)
-            ->call('createUser')
+            ->call('create')
             ->set('userData.name', 'Test')
             ->set('userData.email', 'existing@example.com')
             ->set('userData.national_identifier', '1234567890')
             ->set('userData.department_id', $this->department->id)
-            ->call('saveUser')
+            ->call('save')
             ->assertHasErrors(['userData.email' => 'unique']);
     });
 
     it('validates department exists', function () {
         Livewire::test(StudentManager::class)
-            ->call('createUser')
+            ->call('create')
             ->set('userData.name', 'Test')
             ->set('userData.email', 'test@example.com')
             ->set('userData.national_identifier', '1234567890')
             ->set('userData.department_id', 'non-existent-id')
-            ->call('saveUser')
+            ->call('save')
             ->assertHasErrors(['userData.department_id' => 'exists']);
     });
 
@@ -203,7 +203,7 @@ describe('edit', function () {
         $user = User::factory()->create(['name' => 'Edit Student'])->assignRole('student');
 
         Livewire::test(StudentManager::class)
-            ->call('editUser', $user->id)
+            ->call('edit', $user->id)
             ->assertSet('userModal', true)
             ->assertSet('userData.id', $user->id)
             ->assertSet('userData.name', 'Edit Student');
@@ -216,12 +216,12 @@ describe('edit', function () {
         ])->assignRole('student');
 
         Livewire::test(StudentManager::class)
-            ->call('editUser', $user->id)
+            ->call('edit', $user->id)
             ->set('userData.name', 'After Edit')
             ->set('userData.email', 'after@example.com')
             ->set('userData.national_identifier', '9876543210')
             ->set('userData.department_id', $this->department->id)
-            ->call('saveUser')
+            ->call('save')
             ->assertHasNoErrors();
 
         expect($user->fresh()->name)->toBe('After Edit');
@@ -236,7 +236,7 @@ describe('delete', function () {
         $user = User::factory()->create()->assignRole('student');
 
         Livewire::test(StudentManager::class)
-            ->call('deleteUser', $user->id);
+            ->call('delete', $user->id);
 
         expect(User::find($user->id))->toBeNull();
     });

@@ -485,7 +485,7 @@ describe('super_admin access', function () {
         $internship = Internship::factory()->create();
 
         Livewire::test(InternshipManager::class)
-            ->call('delete', $internship->id);
+            ->call('askDelete', $internship->id)->call('confirmAction');
 
         expect(Internship::find($internship->id))->toBeNull();
     });
@@ -495,7 +495,7 @@ describe('super_admin access', function () {
         $internship = $placement->internship;
 
         Livewire::test(InternshipManager::class)
-            ->call('delete', $internship->id);
+            ->call('askDelete', $internship->id)->call('confirmAction');
 
         expect(Internship::find($internship->id))->not->toBeNull();
     });
@@ -505,7 +505,7 @@ describe('super_admin access', function () {
         $internship = $registration->internship;
 
         Livewire::test(InternshipManager::class)
-            ->call('delete', $internship->id);
+            ->call('askDelete', $internship->id)->call('confirmAction');
 
         expect(Internship::find($internship->id))->not->toBeNull();
     });
@@ -516,7 +516,7 @@ describe('super_admin access', function () {
 
         Livewire::test(InternshipManager::class)
             ->set('selectedIds', [$internship1->id, $internship2->id])
-            ->call('deleteSelected');
+            ->call('askDeleteSelected')->call('confirmAction');
 
         expect(Internship::find($internship1->id))->toBeNull();
         expect(Internship::find($internship2->id))->toBeNull();
@@ -528,7 +528,7 @@ describe('super_admin access', function () {
         Internship::factory()->create(['status' => 'published']);
 
         Livewire::test(InternshipManager::class)
-            ->call('closeAllFiltered');
+            ->call('askCloseFiltered')->call('confirmAction');
 
         expect(Internship::where('status', '!=', 'completed')->count())->toBe(0);
     });
@@ -556,7 +556,7 @@ describe('super_admin access', function () {
 
             Livewire::test(InternshipManager::class)
                 ->set('selectedIds', [$internship1->id, $internship2->id])
-                ->call('deleteSelected');
+                ->call('askDeleteSelected')->call('confirmAction');
 
             expect(Internship::find($internship1->id))->not->toBeNull();
             expect(Internship::find($internship2->id))->toBeNull();
@@ -567,7 +567,7 @@ describe('super_admin access', function () {
 
             Livewire::test(InternshipManager::class)
                 ->set('search', 'NonExistent')
-                ->call('closeAllFiltered');
+                ->call('askCloseFiltered')->call('confirmAction');
 
             expect(Internship::where('status', 'completed')->count())->toBe(0);
         });
@@ -879,7 +879,7 @@ describe('admin access', function () {
         $internship = Internship::factory()->create();
 
         Livewire::test(InternshipManager::class)
-            ->call('delete', $internship->id);
+            ->call('askDelete', $internship->id)->call('confirmAction');
 
         expect(Internship::find($internship->id))->toBeNull();
     });

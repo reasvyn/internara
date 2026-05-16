@@ -18,7 +18,7 @@
                 @if(isset($extraMenu))
                     <x-mary-dropdown>
                         <x-slot:trigger>
-                            <x-mary-button icon="o-ellipsis-horizontal" class="btn-ghost btn-sm" :aria-label="__('common.actions.more')" />
+                            <x-mary-button icon="o-ellipsis-vertical" class="btn-ghost btn-sm [&>span>svg]:!stroke-[2.5]" :aria-label="__('common.actions.more')" />
                         </x-slot:trigger>
                         <div class="p-1.5 w-48">
                             {{ $extraMenu }}
@@ -45,21 +45,21 @@
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <x-mary-input
                 wire:model.live.debounce.300ms="search"
-                :placeholder="__('Search records...')"
+                :placeholder="__('common.actions.search')"
                 icon="o-magnifying-glass"
                 clearable
                 class="sm:max-w-xs"
-                aria-label="{{ __('Search records...') }}"
+                aria-label="{{ __('common.actions.search') }}"
             />
             @if(isset($filters))
-                <x-mary-dropdown>
-                    <x-slot:trigger>
-                        <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" />
-                    </x-slot:trigger>
-                    <div class="p-4 space-y-4 w-72">
+                <div x-data="{ filtersOpen: false }" class="relative">
+                    <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" x-on:click="filtersOpen = !filtersOpen" x-bind:aria-expanded="filtersOpen" />
+                    <div x-show="filtersOpen" x-on:click.outside="filtersOpen = false" class="absolute right-0 mt-2 p-4 space-y-4 w-80 bg-base-100 border border-base-content/10 rounded-xl shadow-xl z-50" x-cloak>
                         {{ $filters }}
+
+                        <x-mary-button :label="__('common.actions.reset_filters')" icon="o-x-mark" class="btn-ghost btn-sm w-full" wire:click="resetFilters" x-on:click="filtersOpen = false" />
                     </div>
-                </x-mary-dropdown>
+                </div>
             @endif
         </div>
     </x-mary-card>

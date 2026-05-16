@@ -170,8 +170,8 @@ final class AppMetadata
     public static function colors(): array
     {
         return self::withFallback(
-            fn () => BrandColors::all(),
-            BrandColors::defaults(),
+            fn () => Theme::all(),
+            Theme::defaults(),
             'Failed to get branding colors from settings',
         );
     }

@@ -7,7 +7,7 @@ namespace Database\Seeders;
 use App\Casts\SettingValueCast;
 use App\Models\Setting;
 use App\Support\AppInfo;
-use App\Support\BrandColors;
+use App\Support\Theme;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -169,28 +169,28 @@ class AppSettingSeeder extends Seeder
             // Color scheme
             [
                 'key' => 'primary_color',
-                'value' => BrandColors::DEFAULTS['primary'],
+                'value' => Theme::defaults()['primary'],
                 'type' => 'string',
                 'description' => 'Primary brand color (hex)',
                 'group' => 'general',
             ],
             [
                 'key' => 'secondary_color',
-                'value' => BrandColors::DEFAULTS['secondary'],
+                'value' => Theme::defaults()['secondary'],
                 'type' => 'string',
                 'description' => 'Secondary brand color (hex)',
                 'group' => 'general',
             ],
             [
                 'key' => 'accent_color',
-                'value' => BrandColors::DEFAULTS['accent'],
+                'value' => Theme::defaults()['accent'],
                 'type' => 'string',
                 'description' => 'Accent brand color (hex)',
                 'group' => 'general',
             ],
             [
                 'key' => 'base_color',
-                'value' => BrandColors::DEFAULTS['base'],
+                'value' => Theme::defaults()['base'],
                 'type' => 'string',
                 'description' => 'Page base background color (hex)',
                 'group' => 'general',

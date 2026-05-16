@@ -45,7 +45,7 @@ class LogbookManager extends BaseRecordManager
             ['key' => 'content', 'label' => __('logbook.content')],
             ['key' => 'status', 'label' => __('logbook.status'), 'sortable' => true],
             ['key' => 'is_verified', 'label' => __('logbook.verified')],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

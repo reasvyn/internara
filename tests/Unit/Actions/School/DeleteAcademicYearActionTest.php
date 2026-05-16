@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\School\DeleteAcademicYearAction;
+use App\Exceptions\RejectedException;
 use App\Models\AcademicYear;
 use Database\Factories\AcademicYearFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,6 +31,6 @@ describe('execute', function () {
         $year = AcademicYearFactory::new()->active()->create();
 
         expect(fn () => app(DeleteAcademicYearAction::class)->execute($year))
-            ->toThrow(RuntimeException::class, 'Cannot delete an active academic year');
+            ->toThrow(RejectedException::class);
     });
 });

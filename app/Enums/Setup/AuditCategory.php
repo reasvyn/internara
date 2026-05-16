@@ -19,6 +19,12 @@ enum AuditCategory: string
 
     public function isCritical(): bool
     {
-        return in_array($this, [self::Requirements, self::Permissions, self::Database], true);
+        $critical = config('setup.critical_categories', [
+            self::Requirements,
+            self::Permissions,
+            self::Database,
+        ]);
+
+        return in_array($this, $critical, true);
     }
 }

@@ -12,15 +12,15 @@ final class ValidateSetupTokenAction
 {
     public function execute(string $token): void
     {
-        $setup = Setup::first();
+        $setup = Setup::latest('created_at')->first();
 
-        if (! $setup || ! $setup->setup_token) {
+        if (! $setup) {
             throw new RuntimeException('Invalid setup token.');
         }
 
         $state = Setup::state();
 
-        if (! $state->hasStoredToken()) {
+        if (! $state->hasStoredToken() || $state->isTokenExpired(now())) {
             throw new RuntimeException('Invalid setup token.');
         }
 
@@ -30,7 +30,7 @@ final class ValidateSetupTokenAction
             throw new RuntimeException('Invalid setup token.');
         }
 
-        if (! $state->validateToken($decrypted, $token, now())) {
+        if (! hash_equals($decrypted, $token)) {
             throw new RuntimeException('Invalid setup token.');
         }
     }

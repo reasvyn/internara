@@ -73,16 +73,15 @@ return [
         'title' => 'Welcome to the Dashboard!',
         'message' => 'You are now logged in as Super Administrator. Explore the system and start configuring your internship programs.',
     ],
-    'admin_recovered' => [
-        'title' => 'Admin Recovery Performed',
-        'broadcast' => 'Admin account :email has been :mode',
-        'database' => 'Admin account :email has been :mode',
-        'mail_subject' => 'Security Alert: Admin Account Recovery',
+    'super_admin_recovered' => [
+        'title' => 'Super Admin Recovery Performed',
+        'broadcast' => 'Super admin account :email has been :mode',
+        'database' => 'Super admin account :email has been :mode',
+        'mail_subject' => 'Security Alert: Super Admin Account Recovery',
         'mail_greeting' => 'Hello :name,',
-        'mail_line1' => 'An admin recovery action has been performed on the account: :email',
+        'mail_line1' => 'A super admin recovery action has been performed on the account: :email',
         'mail_line2' => 'Action type: :mode',
-        'mail_line3' => 'Initiated from server: :hostname',
-        'mail_line4' => 'If you did not authorize this action, please contact your system administrator immediately.',
+        'mail_line3' => 'If you did not authorize this action, please contact your system administrator immediately.',
         'mail_action' => 'View Admin Users',
     ],
     'ui' => [

@@ -42,7 +42,7 @@ class MenteeManager extends BaseRecordManager
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             ['key' => 'is_active', 'label' => __('user.mentee.active')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => ''],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

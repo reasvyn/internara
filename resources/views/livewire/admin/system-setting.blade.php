@@ -42,7 +42,7 @@
                     <div class="mb-6">
                         <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.presets_title') }}</p>
                         <div class="flex flex-wrap gap-3">
-                            @php $presets = App\Support\BrandColors::presets(); @endphp
+                            @php $presets = App\Support\Theme::presets(); @endphp
                             @foreach($presets as $key => $preset)
                                 <button type="button"
                                     wire:click="applyPreset('{{ $key }}')"
@@ -159,8 +159,8 @@
                             <div class="relative group">
                                 <div class="cursor-pointer relative" onclick="document.getElementById('brand-logo-upload').click()">
                                     <input id="brand-logo-upload" type="file" wire:model="brand_logo" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                                    @if($brand_logo?->temporaryUrl() ?? $current_logo_url)
-                                        <img src="{{ $brand_logo?->temporaryUrl() ?? $current_logo_url }}"
+                                    @if($this->brandLogoPreviewUrl() ?? $current_logo_url)
+                                        <img src="{{ $this->brandLogoPreviewUrl() ?? $current_logo_url }}"
                                              alt="Brand logo"
                                              class="size-24 rounded-xl object-contain border border-base-content/10" />
                                     @else
@@ -181,8 +181,8 @@
                             <div class="relative group">
                                 <div class="cursor-pointer relative" onclick="document.getElementById('favicon-upload').click()">
                                     <input id="favicon-upload" type="file" wire:model="site_favicon" accept="image/png,image/jpeg,image/x-icon" class="hidden" />
-                                    @if($site_favicon?->temporaryUrl() ?? $current_favicon_url)
-                                        <img src="{{ $site_favicon?->temporaryUrl() ?? $current_favicon_url }}"
+                                    @if($this->faviconPreviewUrl() ?? $current_favicon_url)
+                                        <img src="{{ $this->faviconPreviewUrl() ?? $current_favicon_url }}"
                                              alt="Favicon"
                                              class="size-12 rounded-lg object-contain border border-base-content/10" />
                                     @else

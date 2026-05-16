@@ -14,7 +14,7 @@
             <div class="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-md transition-opacity duration-300 opacity-0 group-focus-within:opacity-100"></div>
             <x-mary-input 
                 wire:model.live.debounce.300ms="search" 
-                placeholder="{{ __('Search records...') }}" 
+                placeholder="{{ __('common.actions.search') }}" 
                 icon="o-magnifying-glass" 
                 clearable 
                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10 flex-1"

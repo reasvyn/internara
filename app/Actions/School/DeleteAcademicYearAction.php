@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Actions\School;
 
 use App\Actions\Core\LogAuditAction;
+use App\Exceptions\RejectedException;
 use App\Models\AcademicYear;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 /**
  * Deletes an academic year.
@@ -19,12 +19,18 @@ class DeleteAcademicYearAction
     public function __construct(protected readonly LogAuditAction $logAudit) {}
 
     /**
-     * @throws RuntimeException when attempting to delete active year
+     * @throws RuntimeException when the year is active or has linked data
      */
     public function execute(AcademicYear $year): void
     {
-        if (! $year->asAcademicYearState()->canBeDeleted()) {
-            throw new RuntimeException('Cannot delete an active academic year. Deactivate it first.');
+        $state = $year->asAcademicYearState();
+
+        if (! $state->canBeDeleted()) {
+            if ($state->isActive()) {
+                throw new RejectedException(__('academic_year.cannot_delete_active', ['name' => $year->name]));
+            }
+
+            throw new RejectedException(__('academic_year.cannot_delete_has_data', ['name' => $year->name]));
         }
 
         DB::transaction(function () use ($year) {
