@@ -24,6 +24,11 @@ class Company extends BaseModel
         return $this->hasMany(Placement::class, 'company_id');
     }
 
+    public function partnerships(): HasMany
+    {
+        return $this->hasMany(Partnership::class, 'company_id');
+    }
+
     public function asCompanyState(): CompanyState
     {
         return CompanyState::fromModel($this);

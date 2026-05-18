@@ -26,6 +26,7 @@ return [
     'description_placeholder' => 'Additional information about this company',
     'placements' => 'Placements',
     'placements_count' => 'Placements',
+    'partnerships_count' => 'Partnerships',
     'search_placeholder' => 'Search by company name...',
     'cancel' => 'Cancel',
     'save' => 'Save',
@@ -33,8 +34,8 @@ return [
     'update_success' => 'Company updated successfully.',
     'delete_success' => 'Company deleted successfully.',
     'delete_confirm' => 'Are you sure you want to delete this company?',
-    'delete_selected_confirm' => 'Delete selected companies? Only companies without active placements will be deleted.',
-    'delete_blocked' => 'Cannot delete company: it has active placements.',
+    'delete_selected_confirm' => 'Delete selected companies? Only companies without active placements or partnerships will be deleted.',
+    'delete_blocked' => 'Cannot delete company: it has active placements or partnerships.',
     'selected_count' => '{0} companies selected|{1} company selected|[2,*] companies selected',
     'actions' => 'Actions',
     'stats' => [
