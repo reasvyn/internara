@@ -11,12 +11,16 @@ use App\Exceptions\RejectedException;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\Company;
 use App\Models\Placement;
+use App\Support\CsvHandler;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\WithFileUploads;
 
 class CompanyManager extends BaseRecordManager
 {
+    use WithFileUploads;
+
     public bool $showModal = false;
 
     public bool $showConfirm = false;
@@ -26,6 +30,8 @@ class CompanyManager extends BaseRecordManager
     public string $confirmType = '';
 
     public ?string $confirmTarget = null;
+
+    public $importFile = null;
 
     public array $formData = [
         'id' => null,
@@ -217,6 +223,92 @@ class CompanyManager extends BaseRecordManager
         }
 
         $this->clearSelection();
+    }
+
+    // --- Import / Export ---
+
+    public function import(CsvHandler $csv): void
+    {
+        $this->validate([
+            'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+        ]);
+
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) {
+            $name = trim($row[0] ?? '');
+
+            if ($name === '') {
+                return null;
+            }
+
+            if (Company::where('name', $name)->exists()) {
+                return 'skipped';
+            }
+
+            Company::create([
+                'name' => $name,
+                'address' => trim($row[1] ?? '') ?: null,
+                'phone' => trim($row[2] ?? '') ?: null,
+                'email' => trim($row[3] ?? '') ?: null,
+                'website' => trim($row[4] ?? '') ?: null,
+                'description' => trim($row[5] ?? '') ?: null,
+                'industry_sector' => trim($row[6] ?? '') ?: null,
+            ]);
+
+            return 'created';
+        });
+
+        $this->importFile = null;
+
+        if ($result['invalid']) {
+            flash()->error(__('common.actions.import_invalid'));
+
+            return;
+        }
+
+        flash()->success(__('common.actions.import_summary', [
+            'created' => $result['created'],
+            'skipped' => $result['skipped'],
+        ]));
+    }
+
+    public function export(CsvHandler $csv)
+    {
+        $companies = Company::query()
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->orderBy('name')
+            ->get();
+
+        return $csv->export(
+            $companies,
+            [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
+            fn ($c) => [$c->name, $c->address ?? '', $c->phone ?? '', $c->email ?? '', $c->website ?? '', $c->description ?? '', $c->industry_sector ?? ''],
+        )->send();
+    }
+
+    public function exportSelected(CsvHandler $csv)
+    {
+        if ($this->selectedIds === []) {
+            flash()->warning(__('common.actions.no_records_selected'));
+
+            return;
+        }
+
+        $companies = Company::whereIn('id', $this->selectedIds)->orderBy('name')->get();
+
+        return $csv->export(
+            $companies,
+            [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
+            fn ($c) => [$c->name, $c->address ?? '', $c->phone ?? '', $c->email ?? '', $c->website ?? '', $c->description ?? '', $c->industry_sector ?? ''],
+        )->send();
+    }
+
+    public function downloadTemplate(CsvHandler $csv)
+    {
+        return $csv->downloadTemplate(
+            [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
+            [__('company.name_placeholder'), __('company.address_placeholder'), __('company.phone_placeholder'), __('company.email_placeholder'), __('company.website_placeholder'), '', __('company.industry_sector_placeholder')],
+            'companies-template.csv',
+        )->send();
     }
 
     #[Layout('layouts::app')]

@@ -6,6 +6,13 @@
         <x-mary-button :label="__('partnership.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
+    <x-slot:extraMenu>
+        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" onclick="document.getElementById('import-csv').click()" />
+        <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" wire:click="downloadTemplate" />
+    </x-slot:extraMenu>
+
     <x-slot:stats>
         <x-widget::stat icon="o-hand-raised" :label="__('partnership.stats_active')" :value="$this->stats['active']" />
         <x-widget::stat icon="o-exclamation-triangle" :label="__('partnership.stats_expiring_soon', ['days' => 30])" :value="$this->stats['expiring_soon']" class="text-warning" />
@@ -16,7 +23,10 @@
         <x-mary-select
             wire:model.live="filters.status"
             :placeholder="__('partnership.status')"
-            :options="['active' => 'Active', 'expired' => 'Expired', 'terminated' => 'Terminated']"
+            :options="$this->statusOptions"
+            option-label="name"
+            option-value="id"
+            clearable
         />
         <x-mary-select
             wire:model.live="filters.company_id"
@@ -24,6 +34,7 @@
             :options="$this->companies"
             option-label="name"
             option-value="id"
+            clearable
         />
     </x-slot:filters>
 
@@ -34,8 +45,7 @@
             </x-slot:trigger>
             <div class="p-1.5 w-48">
                 <x-mary-menu-item title="Delete Selected" icon="o-trash" class="text-error"
-                    wire:confirm="{{ __('partnership.delete_selected_confirm') }}"
-                    wire:click="deleteSelected" />
+                    wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
     </x-ui::selection-bar>
@@ -75,19 +85,26 @@
                 <div class="flex justify-end gap-1">
                     @if($p->status->value === 'active')
                         <x-mary-button icon="o-x-circle" class="btn-ghost btn-sm text-warning"
-                            wire:confirm="{{ __('partnership.terminate_confirm') }}"
-                            wire:click="terminate('{{ $p->id }}')"
+                            wire:click="askTerminate('{{ $p->id }}')"
                             :aria-label="__('partnership.terminate')" />
                     @endif
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $p->id }}')" :aria-label="__('common.actions.edit')" />
                     <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                        wire:confirm="{{ __('partnership.delete_confirm') }}"
-                        wire:click="delete('{{ $p->id }}')"
+                        wire:click="askDelete('{{ $p->id }}')"
                         :aria-label="__('common.actions.delete')" />
                 </div>
             @endscope
         </x-mary-table>
     </div>
+
+    {{-- Confirm Dialog --}}
+    <x-ui::confirm
+        wire:model="showConfirm"
+        :message="$confirmMessage"
+        confirmText="{{ __('common.actions.confirm') }}"
+        cancelText="{{ __('common.actions.cancel') }}"
+        :confirmClass="$confirmType === 'terminate' ? 'btn-warning' : 'btn-error'"
+    />
 
     <x-slot:modal>
         <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('partnership.edit') : __('partnership.new')" class="backdrop-blur-sm">
@@ -103,7 +120,7 @@
                     />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-mary-input :label="__('partnership.agreement_number')" wire:model="formData.agreement_number" :placeholder="__('partnership.agreement_number_placeholder')" />
-                        <x-mary-input :label="__('partnership.title')" wire:model="formData.title" :placeholder="__('partnership.title_placeholder')" />
+                        <x-mary-input :label="__('partnership.title_field')" wire:model="formData.title" :placeholder="__('partnership.title_placeholder')" />
                         <x-mary-input :label="__('partnership.start_date')" wire:model="formData.start_date" type="date" />
                         <x-mary-input :label="__('partnership.end_date')" wire:model="formData.end_date" type="date" />
                     </div>

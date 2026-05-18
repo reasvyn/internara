@@ -8,9 +8,12 @@ use App\Actions\Internship\CreatePartnershipAction;
 use App\Actions\Internship\DeletePartnershipAction;
 use App\Actions\Internship\TerminatePartnershipAction;
 use App\Actions\Internship\UpdatePartnershipAction;
+use App\Enums\Shared\PartnershipStatus;
+use App\Exceptions\RejectedException;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\Company;
 use App\Models\Partnership;
+use App\Support\CsvHandler;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -21,6 +24,16 @@ class PartnershipManager extends BaseRecordManager
     use WithFileUploads;
 
     public bool $showModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmMessage = '';
+
+    public string $confirmType = '';
+
+    public ?string $confirmTarget = null;
+
+    public $importFile = null;
 
     public $mouDocument = null;
 
@@ -46,7 +59,7 @@ class PartnershipManager extends BaseRecordManager
         return [
             ['key' => 'agreement_number', 'label' => __('partnership.agreement_number'), 'sortable' => true],
             ['key' => 'company_name', 'label' => __('partnership.company'), 'sortable' => true],
-            ['key' => 'title', 'label' => __('partnership.title'), 'sortable' => true],
+            ['key' => 'title', 'label' => __('partnership.title_field'), 'sortable' => true],
             ['key' => 'start_date', 'label' => __('partnership.start_date'), 'sortable' => true],
             ['key' => 'end_date', 'label' => __('partnership.end_date'), 'sortable' => true],
             ['key' => 'status', 'label' => __('partnership.status'), 'sortable' => true],
@@ -106,6 +119,14 @@ class PartnershipManager extends BaseRecordManager
         return Company::query()
             ->orderBy('name')
             ->get(['id', 'name'])
+            ->toArray();
+    }
+
+    #[Computed]
+    public function statusOptions(): array
+    {
+        return collect(PartnershipStatus::cases())
+            ->map(fn ($s) => ['id' => $s->value, 'name' => $s->label()])
             ->toArray();
     }
 
@@ -187,6 +208,189 @@ class PartnershipManager extends BaseRecordManager
         $this->showModal = false;
     }
 
+    // --- Confirm Dialog ---
+
+    public function askDelete(string $id): void
+    {
+        $partnership = Partnership::findOrFail($id);
+        $this->confirmTarget = $id;
+        $this->confirmType = 'delete';
+        $this->confirmMessage = __('partnership.delete_confirm');
+        $this->showConfirm = true;
+    }
+
+    public function askTerminate(string $id): void
+    {
+        $partnership = Partnership::findOrFail($id);
+        $this->confirmTarget = $id;
+        $this->confirmType = 'terminate';
+        $this->confirmMessage = __('partnership.terminate_confirm');
+        $this->showConfirm = true;
+    }
+
+    public function askDeleteSelected(): void
+    {
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        $this->confirmType = 'delete_selected';
+        $this->confirmMessage = __('partnership.delete_selected_confirm');
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(
+        DeletePartnershipAction $deleteAction,
+        TerminatePartnershipAction $terminateAction,
+    ): void {
+        if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
+            return;
+        }
+
+        try {
+            match ($this->confirmType) {
+                'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
+                'terminate' => $this->executeTerminate($this->confirmTarget, $terminateAction),
+                'delete_selected' => $this->executeDeleteSelected($deleteAction),
+                default => null,
+            };
+        } catch (RejectedException) {
+            flash()->error(__('partnership.delete_blocked'));
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmType = '';
+    }
+
+    private function executeDelete(string $id, DeletePartnershipAction $action): void
+    {
+        $partnership = Partnership::findOrFail($id);
+
+        if (! $partnership->asPartnershipState()->canBeDeleted()) {
+            flash()->error(__('partnership.delete_blocked'));
+
+            return;
+        }
+
+        $action->execute($partnership);
+        flash()->success(__('partnership.delete_success'));
+    }
+
+    private function executeTerminate(string $id, TerminatePartnershipAction $action): void
+    {
+        $partnership = Partnership::findOrFail($id);
+        $action->execute($partnership);
+        flash()->success(__('partnership.terminate_success'));
+    }
+
+    private function executeDeleteSelected(DeletePartnershipAction $action): void
+    {
+        $count = 0;
+
+        foreach ($this->selectedIds as $id) {
+            $partnership = Partnership::find($id);
+
+            if ($partnership && $partnership->asPartnershipState()->canBeDeleted()) {
+                $action->execute($partnership);
+                $count++;
+            }
+        }
+
+        if ($count > 0) {
+            flash()->success(__('common.actions.bulk_action_done', ['count' => $count, 'action' => __('common.actions.delete')]));
+        }
+
+        $this->clearSelection();
+    }
+
+    // --- Import / Export ---
+
+    public function import(CsvHandler $csv): void
+    {
+        $this->validate([
+            'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+        ]);
+
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) {
+            $agreementNumber = trim($row[0] ?? '');
+
+            if ($agreementNumber === '') {
+                return null;
+            }
+
+            if (Partnership::where('agreement_number', $agreementNumber)->exists()) {
+                return 'skipped';
+            }
+
+            Partnership::create([
+                'agreement_number' => $agreementNumber,
+                'title' => trim($row[1] ?? ''),
+                'start_date' => trim($row[2] ?? '') ?: now(),
+                'end_date' => trim($row[3] ?? '') ?: now()->addYear(),
+                'scope' => trim($row[4] ?? '') ?: null,
+            ]);
+
+            return 'created';
+        });
+
+        $this->importFile = null;
+
+        if ($result['invalid']) {
+            flash()->error(__('common.actions.import_invalid'));
+
+            return;
+        }
+
+        flash()->success(__('common.actions.import_summary', [
+            'created' => $result['created'],
+            'skipped' => $result['skipped'],
+        ]));
+    }
+
+    public function export(CsvHandler $csv)
+    {
+        $partnerships = Partnership::with('company')
+            ->when($this->search, fn ($q) => $q->where('agreement_number', 'like', "%{$this->search}%"))
+            ->orderBy('agreement_number')
+            ->get();
+
+        return $csv->export(
+            $partnerships,
+            [__('partnership.agreement_number'), __('partnership.title_field'), __('partnership.company'), __('partnership.start_date'), __('partnership.end_date')],
+            fn ($p) => [$p->agreement_number, $p->title, $p->company?->name ?? '', $p->start_date?->format('Y-m-d') ?? '', $p->end_date?->format('Y-m-d') ?? ''],
+        )->send();
+    }
+
+    public function exportSelected(CsvHandler $csv)
+    {
+        if ($this->selectedIds === []) {
+            flash()->warning(__('common.actions.no_records_selected'));
+
+            return;
+        }
+
+        $partnerships = Partnership::with('company')
+            ->whereIn('id', $this->selectedIds)
+            ->orderBy('agreement_number')
+            ->get();
+
+        return $csv->export(
+            $partnerships,
+            [__('partnership.agreement_number'), __('partnership.title_field'), __('partnership.company'), __('partnership.start_date'), __('partnership.end_date')],
+            fn ($p) => [$p->agreement_number, $p->title, $p->company?->name ?? '', $p->start_date?->format('Y-m-d') ?? '', $p->end_date?->format('Y-m-d') ?? ''],
+        )->send();
+    }
+
+    public function downloadTemplate(CsvHandler $csv)
+    {
+        return $csv->downloadTemplate(
+            [__('partnership.agreement_number'), __('partnership.title_field'), __('partnership.start_date'), __('partnership.end_date')],
+            ['421/PKS/2025', __('partnership.title_placeholder'), now()->format('Y-m-d'), now()->addYear()->format('Y-m-d')],
+            'partnerships-template.csv',
+        )->send();
+    }
+
     private function uploadMouDocument(Partnership $partnership): void
     {
         if ($this->mouDocument) {
@@ -195,34 +399,6 @@ class PartnershipManager extends BaseRecordManager
                 ->toMediaCollection(Partnership::COLLECTION_MOU);
             $this->mouDocument = null;
         }
-    }
-
-    public function delete(Partnership $partnership, DeletePartnershipAction $deleteAction): void
-    {
-        if (! $partnership->asPartnershipState()->canBeDeleted()) {
-            flash()->error(__('partnership.delete_blocked'));
-
-            return;
-        }
-
-        $deleteAction->execute($partnership);
-        flash()->success(__('partnership.delete_success'));
-    }
-
-    public function deleteSelected(DeletePartnershipAction $deleteAction): void
-    {
-        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
-            $partnership = Partnership::find($id);
-            if ($partnership && $partnership->asPartnershipState()->canBeDeleted()) {
-                $deleteAction->execute($partnership);
-            }
-        });
-    }
-
-    public function terminate(Partnership $partnership, TerminatePartnershipAction $terminateAction): void
-    {
-        $terminateAction->execute($partnership);
-        flash()->success(__('partnership.terminate_success'));
     }
 
     #[Layout('layouts::app')]
