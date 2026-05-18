@@ -53,7 +53,7 @@
             with-pagination
             selectable
             wire:model="selectedIds"
-            class="table-sm"
+            class="table-sm max-sm:table-xs"
         >
             @scope('cell_title', $notification)
                 @php $isRead = $notification->is_read; @endphp
@@ -64,7 +64,7 @@
                         x-on:toggle="if($el.open && !read) { read = true; $wire.markAsRead('{{ $notification->id }}'); }"
                     >
                         <summary class="flex items-start gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                            <div role="status" x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'" class="size-8 rounded-lg flex items-center justify-center shrink-0" aria-hidden="true">
+                            <div role="status" x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'" class="size-8 max-sm:hidden rounded-lg flex items-center justify-center shrink-0" aria-hidden="true">
                                 <x-mary-icon x-show="!read" name="o-envelope" class="size-4" />
                                 <x-mary-icon x-show="read" name="o-envelope-open" class="size-4" />
                             </div>
@@ -79,7 +79,7 @@
                                     {{ $notification->message }}
                                 </div>
                             </div>
-                            <div class="text-base-content/30 shrink-0 self-start mt-1 transition-transform group-open:rotate-180" aria-hidden="true">
+                            <div class="text-base-content/30 shrink-0 max-sm:hidden self-start mt-1 transition-transform group-open:rotate-180" aria-hidden="true">
                                 <x-mary-icon name="o-chevron-down" class="size-4" />
                             </div>
                         </summary>
@@ -94,7 +94,7 @@
                         aria-label="{{ $notification->title }}"
                         x-on:click="if(!read) { read = true; $wire.markAsRead('{{ $notification->id }}'); }"
                     >
-                        <div role="status" x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'" class="size-8 rounded-lg flex items-center justify-center shrink-0" aria-hidden="true">
+                        <div role="status" x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'" class="size-8 max-sm:hidden rounded-lg flex items-center justify-center shrink-0" aria-hidden="true">
                             <x-mary-icon x-show="!read" name="o-envelope" class="size-4" />
                             <x-mary-icon x-show="read" name="o-envelope-open" class="size-4" />
                         </div>
@@ -110,7 +110,7 @@
             @endscope
 
             @scope('cell_created_at', $notification)
-                <time datetime="{{ $notification->created_at->toIso8601String() }}" class="text-xs text-base-content/40 whitespace-nowrap">
+                <time datetime="{{ $notification->created_at->toIso8601String() }}" class="text-xs text-base-content/40 whitespace-nowrap max-sm:hidden">
                     {{ $notification->created_at->diffForHumans() }}
                 </time>
             @endscope
