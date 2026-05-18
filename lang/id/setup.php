@@ -216,6 +216,8 @@ return [
         'access_summary' => 'Kredensial Login',
         'recovery_key_title' => 'Kunci Pemulihan',
         'recovery_key_desc' => 'Simpan kunci ini di tempat yang aman. Anda akan membutuhkannya untuk memulihkan akses administrator jika kata sandi hilang.',
+        'copy' => 'Salin',
+        'copied' => 'Tersalin!',
         'step_labels' => [
             'welcome' => 'Selamat Datang',
             'school' => 'Sekolah',

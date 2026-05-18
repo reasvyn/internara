@@ -35,8 +35,24 @@
         <p class="text-xs text-error/70 leading-relaxed mb-3">
             {{ __('setup.wizard.recovery_key_desc') }}
         </p>
-        <div class="bg-base-100 rounded-lg px-3 py-2.5 border border-error/10">
-            <code class="text-sm font-mono font-bold text-error break-all select-all">{{ $recoveryKey }}</code>
+        <div
+            class="bg-base-100 rounded-lg px-3 py-2.5 border border-error/10 flex items-center gap-2"
+            x-data="{ copied: false }"
+        >
+            <code class="text-sm font-mono font-bold text-error break-all select-all flex-1">{{ $recoveryKey }}</code>
+            <button
+                type="button"
+                class="btn btn-xs btn-ghost text-error/60 hover:text-error shrink-0"
+                x-on:click="
+                    navigator.clipboard.writeText('{{ $recoveryKey }}');
+                    copied = true;
+                    setTimeout(() => copied = false, 2000);
+                "
+                x-bind:title="copied ? '{{ __('setup.wizard.copied') }}' : '{{ __('setup.wizard.copy') }}'"
+            >
+                <x-mary-icon name="o-clipboard-document" x-show="!copied" class="size-4" />
+                <x-mary-icon name="o-check" x-show="copied" class="size-4 text-success" />
+            </button>
         </div>
     </div>
     @endif
