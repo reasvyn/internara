@@ -164,6 +164,13 @@ return [
     '(and :count more errors)' => '(dan :count kesalahan lainnya)',
 
     'attributes' => [
+        'formData.name' => 'nama perusahaan',
+        'formData.address' => 'alamat perusahaan',
+        'formData.phone' => 'telepon',
+        'formData.email' => 'email',
+        'formData.website' => 'situs web',
+        'formData.description' => 'deskripsi',
+        'formData.industry_sector' => 'sektor industri',
         'schoolData.name' => 'nama sekolah',
         'schoolData.institutional_code' => 'kode institusi',
         'schoolData.address' => 'alamat sekolah',

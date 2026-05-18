@@ -163,6 +163,13 @@ return [
     '(and :count more errors)' => '(and :count more errors)',
 
     'attributes' => [
+        'formData.name' => 'company name',
+        'formData.address' => 'company address',
+        'formData.phone' => 'phone',
+        'formData.email' => 'email',
+        'formData.website' => 'website',
+        'formData.description' => 'description',
+        'formData.industry_sector' => 'industry sector',
         'schoolData.name' => 'school name',
         'schoolData.institutional_code' => 'institutional code',
         'schoolData.address' => 'school address',
