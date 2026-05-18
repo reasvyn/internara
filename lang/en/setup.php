@@ -216,6 +216,8 @@ return [
         'access_summary' => 'Login Credentials',
         'recovery_key_title' => 'Recovery Key',
         'recovery_key_desc' => 'Save this key in a secure place. You will need it to recover administrator access if the password is lost.',
+        'copy' => 'Copy',
+        'copied' => 'Copied!',
         'step_labels' => [
             'welcome' => 'Welcome',
             'school' => 'School',
