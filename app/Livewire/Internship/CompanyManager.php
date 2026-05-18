@@ -66,7 +66,7 @@ class CompanyManager extends BaseRecordManager
 
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['industry_sector'] ?? null, fn ($q, $v) => $q->where('industry_sector', $v));
+        return $query->when($this->filters['industry_sector'] ?? null, fn ($q, $v) => $q->where('industry_sector', 'like', "%{$v}%"));
     }
 
     #[Computed]
