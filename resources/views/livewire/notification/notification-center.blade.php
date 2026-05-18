@@ -75,7 +75,7 @@
                                     </span>
                                     <span x-show="!read" class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
                                 </div>
-                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-1 whitespace-pre-wrap break-words max-w-none">
+                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-1 break-words max-w-none truncate">
                                     {{ $notification->message }}
                                 </div>
                             </div>
@@ -83,8 +83,8 @@
                                 <x-mary-icon name="o-chevron-down" class="size-4" />
                             </div>
                         </summary>
-                        <div class="mt-2 pl-11 text-xs max-w-none text-base-content/70 whitespace-pre-wrap">
-                            {{ $notification->message }}
+                        <div class="mt-2 text-xs max-w-none text-base-content/70 leading-relaxed">
+                            {!! nl2br(e($notification->message)) !!}
                         </div>
                     </details>
                 @else
