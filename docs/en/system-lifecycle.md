@@ -13,13 +13,20 @@ This document describes the PKL (Praktik Kerja Lapangan / internship) management
 3. [Phase 0: System Bootstrap](#3-phase-0-system-bootstrap)
 4. [Phase 1: Foundation](#4-phase-1-foundation)
 5. [Phase 2: Internship Planning](#5-phase-2-internship-planning)
-6. [Phase 3: Registration Engine](#6-phase-3-registration-engine)
-7. [Phase 4: Operations Engine](#7-phase-4-operations-engine)
-8. [Phase 5: Assessment Engine](#8-phase-5-assessment-engine)
-9. [Phase 6: Closure Engine](#9-phase-6-closure-engine)
-10. [Phase 7: Archival Engine](#10-phase-7-archival-engine)
-11. [Cross-Cutting Systems](#11-cross-cutting-systems)
-12. [Complete State Transition Map](#12-complete-state-transition-map)
+6. [Phase 2a: Partnership Management](#6-phase-2a-partnership-management)
+7. [Phase 3: Registration Engine](#7-phase-3-registration-engine)
+8. [Phase 3a: Pre-Departure Briefing](#8-phase-3a-pre-departure-briefing)
+9. [Phase 4: Operations Engine](#9-phase-4-operations-engine)
+10. [Phase 4a: Final Report Workflow](#10-phase-4a-final-report-workflow)
+11. [Phase 4b: Placement Change](#11-phase-4b-placement-change)
+12. [Phase 4c: Incident Reporting](#12-phase-4c-incident-reporting)
+13. [Phase 5: Assessment Engine](#13-phase-5-assessment-engine)
+14. [Phase 5a: Presentation & Seminar](#14-phase-5a-presentation--seminar)
+15. [Phase 6: Closure Engine](#15-phase-6-closure-engine)
+16. [Phase 6a: Certificate Generation](#16-phase-6a-certificate-generation)
+17. [Phase 7: Archival Engine](#17-phase-7-archival-engine)
+18. [Cross-Cutting Systems](#18-cross-cutting-systems)
+19. [Complete State Transition Map](#19-complete-state-transition-map)
 
 ---
 
@@ -427,7 +434,35 @@ Specify what documents students must submit (e.g., application letter, insurance
 
 ---
 
-## 6. Phase 3: Registration Engine
+## 6. Phase 2a: Partnership Management
+
+**Event:** [`mou-partnership`](lifecycles/mou-partnership.md)
+
+Partnership management tracks formal agreements (MoU/PKS) between the school and host companies. Partnerships are informational — they are never a hard prerequisite for placing students.
+
+### Partnership Status Machine
+
+```
+ACTIVE ──► EXPIRED (end date reached or manual)
+ACTIVE ──► TERMINATED (manual)
+```
+
+### Expiry Warning
+
+The system warns when a partnership is within 30 days of its `end_date` (configurable threshold). This is purely informational — no operations are blocked.
+
+### Key Points
+
+- A company can have multiple partnerships across different academic years
+- MoU document can be attached via media library (PDF/image, optional)
+- Placements do **not** require an active partnership
+- Partnerships are managed by admin only (supervisor not involved)
+
+See the full specification in [MoU & Partnership Management](lifecycles/mou-partnership.md).
+
+---
+
+## 7. Phase 3: Registration Engine
 
 **Event:** [`student-registration`](lifecycles/student-registration.md)
 
@@ -549,11 +584,38 @@ Used for bulk placements or special arrangements.
 
 ---
 
-## 7. Phase 4: Operations Engine
+## 8. Phase 3a: Pre-Departure Briefing
 
-**Events:** [`logbook-workflow`](lifecycles/logbook-workflow.md), [`attendance-tracking`](lifecycles/attendance-tracking.md), [`assignment-workflow`](lifecycles/assignment-workflow.md), [`supervision-process`](lifecycles/supervision-process.md)
+**Event:** [`internship-briefing`](lifecycles/internship-briefing.md)
 
-During the operations phase, four parallel activity streams are managed by the system. Each has its own state machine but shares the common precondition: **Registration must be ACTIVE**.
+Before beginning operational activities, students may be required to attend a pre-departure briefing session (Pembekalan PKL) covering workplace ethics, safety, and administrative procedures.
+
+### Briefing Status Machine
+
+```
+Briefing: SCHEDULED → COMPLETED / CANCELLED
+```
+
+### Optional Gate
+
+When `is_mandatory = true` on a briefing session, students must be marked `attended` before they can create their first logbook entry or attendance record. If no mandatory briefing exists, no gate applies.
+
+### Key Design Decisions
+
+- Briefing attendance is recorded by teacher/admin — not self-service
+- Supervisor is not involved in briefing management
+- Admin can override attendance (logged in audit trail)
+- Configurable per internship — internships without the briefing flag skip this check entirely
+
+See the full specification in [Internship Briefing](lifecycles/internship-briefing.md).
+
+---
+
+## 9. Phase 4: Operations Engine
+
+**Events:** [`logbook-workflow`](lifecycles/logbook-workflow.md), [`attendance-tracking`](lifecycles/attendance-tracking.md), [`assignment-workflow`](lifecycles/assignment-workflow.md), [`supervision-process`](lifecycles/supervision-process.md), [`final-report`](lifecycles/final-report.md), [`placement-change`](lifecycles/placement-change.md), [`incident-reporting`](lifecycles/incident-reporting.md)
+
+During the operations phase, seven activity streams are managed by the system. Each has its own state machine but shares the common precondition: **Registration must be ACTIVE**.
 
 ### Concurrency Model
 
@@ -575,16 +637,26 @@ During the operations phase, four parallel activity streams are managed by the s
 │ (or REVISION) │    │ PERMISSION/SICK │    │ (or REVISION)   │
 └───────────────┘    └─────────────────┘    └─────────────────┘
 
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Supervision    │    │  Final Report   │    │ Placement       │
+│  (per session)  │    │  (per student)  │    │ Change (ad-hoc) │
+├─────────────────┤    ├─────────────────┤    ├─────────────────┤
+│ GUIDANCE: auto- │    │ DRAFT → SUBMIT→ │    │ REQUEST →       │
+│ verified if by  │    │ APPROVED        │    │ APPROVED/       │
+│ teacher         │    │ (or REVISION)   │    │ REJECTED        │
+│ MENTORING:      │    │                 │    │                 │
+│ needs teacher   │    │ Supervisor notes│    │ Admin approves  │
+│ verification    │    │ OPTIONAL        │    │ only            │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+
 ┌─────────────────┐
-│  Supervision    │
-│  (per session)  │
+│  Incident       │
+│  (ad-hoc)       │
 ├─────────────────┤
-│ GUIDANCE: auto- │
-│ verified if by  │
-│ teacher         │
-│ MENTORING:      │
-│ needs teacher   │
-│ verification    │
+│ REPORT →        │
+│ INVESTIGATE →   │
+│ RESOLVE → CLOSE │
+│ Non-blocking    │
 └─────────────────┘
 ```
 
@@ -700,9 +772,83 @@ The system checks these conditions before allowing any operation:
 
 ---
 
-## 8. Phase 5: Assessment Engine
+## 10. Phase 4a: Final Report Workflow
 
-**Events:** [`assessment-scoring`](lifecycles/assessment-scoring.md), [`mentor-evaluation`](lifecycles/mentor-evaluation.md)
+**Event:** [`final-report`](lifecycles/final-report.md)
+
+The final internship report (Laporan PKL) is a structured document written by students summarising their internship experience. It runs in parallel with daily operations.
+
+### Report Status Machine
+
+```
+DRAFT ──► SUBMITTED ──► APPROVED (terminal)
+              │
+              └──► REVISION_REQUIRED ──► DRAFT (resubmit loop)
+```
+
+### Key Design Decisions
+
+- Chapter structure is configurable per internship (admin-defined template)
+- Score is optional — teacher can approve without a numeric grade
+- Supervisor notes are purely optional — never block approval
+- Report score can be auto-imported into the assessment rubric as a system-role competency indicator
+
+See the full specification in [Final Report](lifecycles/final-report.md).
+
+---
+
+## 11. Phase 4b: Placement Change
+
+**Event:** [`placement-change`](lifecycles/placement-change.md)
+
+Students may need to change their company placement mid-internship due to company closure, relocation, or other circumstances.
+
+### Placement Change Status Machine
+
+```
+PENDING ──► APPROVED (terminal)
+PENDING ──► REJECTED (terminal)
+```
+
+### Key Design Decisions
+
+- Registration stays ACTIVE throughout — no operational downtime
+- Filled quotas are atomically adjusted (old decremented, new incremented)
+- Target placement capacity is re-checked on approval
+- Only admin can approve placement changes (supervisor not involved)
+- Historical placement data is preserved in audit trail
+
+See the full specification in [Placement Change](lifecycles/placement-change.md).
+
+---
+
+## 12. Phase 4c: Incident Reporting
+
+**Event:** [`incident-reporting`](lifecycles/incident-reporting.md)
+
+Workplace incidents (accidents, safety violations, harassment, etc.) can be reported by anyone and tracked to resolution.
+
+### Incident Status Machine
+
+```
+REPORTED ──► INVESTIGATING ──► RESOLVED ──► CLOSED (terminal)
+```
+
+### Key Design Decisions
+
+- **Non-blocking**: Incidents never gate any operational activity
+- Anyone can report (student, teacher, supervisor)
+- Only teacher/admin can resolve/close
+- HIGH/CRITICAL severity triggers instant notifications
+- Admin suspends registration separately if needed (incident itself is documentation)
+
+See the full specification in [Incident Reporting](lifecycles/incident-reporting.md).
+
+---
+
+## 13. Phase 5: Assessment Engine
+
+**Events:** [`assessment-scoring`](lifecycles/assessment-scoring.md), [`mentor-evaluation`](lifecycles/mentor-evaluation.md), [`presentation-seminar`](lifecycles/presentation-seminar.md)
 
 ### Rubric Structure
 
@@ -789,9 +935,41 @@ Evaluation
 
 ---
 
-## 9. Phase 6: Closure Engine
+## 14. Phase 5a: Presentation & Seminar
 
-**Event:** [`period-closing`](lifecycles/period-closing.md)
+**Event:** [`presentation-seminar`](lifecycles/presentation-seminar.md)
+
+Oral presentations (Sidang PKL) allow students to defend their internship results before a panel of teacher/admins. This is an optional component configurable per internship.
+
+### Presentation Status Machine
+
+```
+SCHEDULED ──► COMPLETED (terminal)
+               └──► CANCELLED (terminal)
+```
+
+### Composite Scoring
+
+If both report and presentation exist:
+```
+final_score = (report_weight × report_score) + (presentation_weight × presentation_score)
+```
+Weights are configurable per internship (default 50/50).
+
+### Key Design Decisions
+
+- Examiners are teachers/admins only — supervisor not required
+- Each examiner scores independently; final score is the average
+- Presentation is optional per internship — no gate if disabled
+- Supervisor is not involved in any part of the process
+
+See the full specification in [Presentation & Seminar](lifecycles/presentation-seminar.md).
+
+---
+
+## 15. Phase 6: Closure Engine
+
+**Event:** [`period-closing`](lifecycles/period-closing.md), [`certificate-generation`](lifecycles/certificate-generation.md)
 
 ### Internship Closure
 
@@ -862,7 +1040,33 @@ Reports can be downloaded as PDFs.
 
 ---
 
-## 10. Phase 7: Archival Engine
+## 16. Phase 6a: Certificate Generation
+
+**Event:** [`certificate-generation`](lifecycles/certificate-generation.md)
+
+Internship completion certificates (Sertifikat PKL) can be issued as auto-generated PDFs using configurable templates with placeholder substitution.
+
+### Certificate Status Machine
+
+```
+ISSUED ──► REVOKED (terminal)
+```
+
+### Key Design Decisions
+
+- Templates are configurable HTML with placeholders (`{student_name}`, `{company_name}`, `{score}`, etc.)
+- Certificate numbers are auto-generated with configurable format
+- One certificate per registration (revoke + reissue allowed)
+- Certificates can be issued individually or in batch
+- Score is optional — certificate can be issued without finalized assessment
+- Certificate issuance is optional — internship can close without certificates issued
+- Supervisor is not involved
+
+See the full specification in [Certificate Generation](lifecycles/certificate-generation.md).
+
+---
+
+## 17. Phase 7: Archival Engine
 
 **Event:** [`account-archiving`](lifecycles/account-archiving.md)
 
@@ -936,7 +1140,7 @@ To start a new internship cycle:
 
 ---
 
-## 11. Cross-Cutting Systems
+## 18. Cross-Cutting Systems
 
 ### Event System
 
@@ -1006,7 +1210,7 @@ Layer 3: Action-level
 
 ---
 
-## 12. Complete State Transition Map
+## 19. Complete State Transition Map
 
 ### Entity: Internship (`InternshipStatus`)
 
@@ -1121,23 +1325,71 @@ IN_PROGRESS ──► SUBMITTED ──► (if by teacher) COMPLETED (auto-verifi
                                                   VERIFIED (by teacher)
 ```
 
+### Entity: Partnership (`PartnershipStatus`)
+
+```
+ACTIVE ──► EXPIRED
+ACTIVE ──► TERMINATED
+```
+
+EXPIRED and TERMINATED are terminal (no transitions out). Partnership records are preserved for historical reference.
+
+### Entity: Report (`ReportStatus`)
+
+```
+DRAFT ──► SUBMITTED ──► APPROVED (terminal)
+              │
+              └──► REVISION_REQUIRED ──► DRAFT (resubmit loop)
+```
+
+### Entity: Presentation (`PresentationStatus`)
+
+```
+SCHEDULED ──► COMPLETED (terminal)
+SCHEDULED ──► CANCELLED (terminal)
+```
+
+### Entity: Certificate (`CertificateStatus`)
+
+```
+ISSUED ──► REVOKED (terminal)
+```
+
+### Entity: Placement Change Request (`PlacementChangeStatus`)
+
+```
+PENDING ──► APPROVED (terminal)
+PENDING ──► REJECTED (terminal)
+```
+
+### Entity: Incident Report (`IncidentStatus`)
+
+```
+REPORTED ──► INVESTIGATING ──► RESOLVED ──► CLOSED (terminal)
+```
+
 ### Cross-Entity Lifecycle Timeline
 
 ```
-Time ──────────────────────────────────────────────────────────────────►
+Time ───────────────────────────────────────────────────────────────────────►
 
-Phase 0:     [Install]────[Setup Wizard]────────────────────────────────
-Phase 1:     [School Config]────[User Creation]─────────────────────────
-Phase 2:     [Internship Creation]────[Company/Placement]───────────────
-Phase 3:     [Student Registration]─────────────────────────────────────
-Phase 4:     [Logbook][Attendance][Assignments][Supervision]━━━━━━━━━━━
-Phase 5:     [Assessment]────[Mentor Eval]──────────────────────────────
-Phase 6:     [Period Close]─────────────────────────────────────────────
-Phase 7:     [Archiving]────────────────────────────────────────────────
-                │                                                    │
-                ▼                                                    ▼
-           Start of cycle                                       End of cycle
-           (Phase 2 repeats)                                    (data preserved)
+Phase 0:     [Install]────[Setup Wizard]───────────────────────────────────
+Phase 1:     [School Config]────[User Creation]────────────────────────────
+Phase 2:     [Internship]────[Company/Placement]────────[Partnership]──────
+Phase 2a:    [Partnership MoU]─────────────────────────────────────────────
+Phase 3:     [Student Registration]────[Briefing]──────────────────────────
+Phase 3a:    [Pre-Departure Briefing]──────────────────────────────────────
+Phase 4:     [Logbook][Attend][Assign][Supervise][Report][Incident]━━━━━━━
+Phase 4a-c:  [Final Report][Placement Change][Incident Reporting]──────────
+Phase 5:     [Assessment]────[Presentation]────[Mentor Eval]───────────────
+Phase 5a:    [Presentation/Seminar]────────────────────────────────────────
+Phase 6:     [Period Close]────[Certificate]────────────────────────────────
+Phase 6a:    [Certificate Issuance]────────────────────────────────────────
+Phase 7:     [Archiving]───────────────────────────────────────────────────
+                │                                                       │
+                ▼                                                       ▼
+           Start of cycle                                          End of cycle
+           (Phase 2 repeats)                                       (data preserved)
 ```
 
 ---
@@ -1148,4 +1400,10 @@ Phase 7:     [Archiving]──────────────────�
 |---|---|
 | [Requirements](requirements.md) | Actor-centric flow — who does what |
 | [Architecture](architecture.md) | Code structure and layering |
-| [Lifecycle Events](lifecycles/system-installation.md) | Detailed event specifications |
+| [MoU & Partnership](lifecycles/mou-partnership.md) | Partnership agreement management |
+| [Internship Briefing](lifecycles/internship-briefing.md) | Pre-departure orientation |
+| [Final Report](lifecycles/final-report.md) | Report writing and grading workflow |
+| [Presentation & Seminar](lifecycles/presentation-seminar.md) | Oral examination process |
+| [Certificate Generation](lifecycles/certificate-generation.md) | Certificate PDF issuance |
+| [Placement Change](lifecycles/placement-change.md) | Mid-internship mutation |
+| [Incident Reporting](lifecycles/incident-reporting.md) | Workplace incident documentation |

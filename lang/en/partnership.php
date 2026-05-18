@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'title' => 'Partnerships',
+    'subtitle' => 'Manage formal partnership agreements with host companies',
+    'add' => 'Add Partnership',
+    'new' => 'New Partnership',
+    'edit' => 'Edit Partnership',
+    'save' => 'Save Partnership',
+
+    'company' => 'Company',
+    'company_placeholder' => 'Select a company',
+    'agreement_number' => 'Agreement No.',
+    'agreement_number_placeholder' => 'e.g. 421/PKS/2025',
+    'title_field' => 'Title',
+    'title_placeholder' => 'e.g. PKL Partnership 2025/2026',
+    'start_date' => 'Start Date',
+    'end_date' => 'End Date',
+    'scope' => 'Scope',
+    'scope_placeholder' => 'Scope of cooperation',
+    'contact_person_name' => 'Contact Person',
+    'contact_person_name_placeholder' => 'Company PIC name',
+    'contact_person_phone' => 'Phone',
+    'contact_person_phone_placeholder' => 'Company PIC phone',
+    'contact_person_email' => 'Email',
+    'contact_person_email_placeholder' => 'Company PIC email',
+    'signed_by_school' => 'Signed by (School)',
+    'signed_by_school_placeholder' => 'School representative name',
+    'signed_by_company' => 'Signed by (Company)',
+    'signed_by_company_placeholder' => 'Company representative name',
+    'signed_at' => 'Signing Date',
+    'notes' => 'Notes',
+    'notes_placeholder' => 'Internal notes',
+    'mou_document' => 'MoU Document (PDF/Image, max 5MB)',
+    'status' => 'Status',
+
+    'stats_active' => 'Active',
+    'stats_expiring_soon' => 'Expiring in :days days',
+    'stats_expired' => 'Expired',
+
+    'save_success' => 'Partnership created successfully.',
+    'update_success' => 'Partnership updated successfully.',
+    'delete_success' => 'Partnership deleted successfully.',
+    'delete_blocked' => 'Only expired or terminated partnerships can be deleted.',
+    'delete_confirm' => 'Delete this partnership?',
+    'delete_selected_confirm' => 'Delete selected partnerships?',
+    'terminate' => 'Terminate',
+    'terminate_success' => 'Partnership terminated successfully.',
+    'terminate_confirm' => 'Terminate this partnership? This action cannot be undone.',
+];

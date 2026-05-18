@@ -38,7 +38,10 @@ return [
             'items' => [
                 ['route' => 'admin.internships', 'icon' => 'o-briefcase', 'label' => 'internship.title'],
                 ['route' => 'admin.companies', 'icon' => 'o-building-office', 'label' => 'company.title'],
+                ['route' => 'admin.partnerships', 'icon' => 'o-hand-raised', 'label' => 'sidebar.partnerships'],
                 ['route' => 'admin.internships.placements', 'icon' => 'o-map-pin', 'label' => 'sidebar.placements'],
+                ['route' => 'admin.internships.placements.changes', 'icon' => 'o-arrows-right-left', 'label' => 'sidebar.placement_changes'],
+                ['route' => 'admin.internships.briefings', 'icon' => 'o-academic-cap', 'label' => 'sidebar.briefings'],
                 ['route' => 'admin.internships.requirements', 'icon' => 'o-document-text', 'label' => 'sidebar.requirements'],
             ],
         ],
@@ -75,6 +78,7 @@ return [
             'items' => [
                 ['route' => 'admin.assessments.rubrics', 'icon' => 'o-clipboard-document-list', 'label' => 'sidebar.rubrics'],
                 ['route' => 'admin.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
+                ['route' => 'admin.presentations', 'icon' => 'o-presentation-chart-line', 'label' => 'sidebar.presentations'],
             ],
         ],
 
@@ -87,6 +91,8 @@ return [
                 ['route' => 'admin.attendance', 'icon' => 'o-clock', 'label' => 'sidebar.attendance'],
                 ['route' => 'admin.assignments', 'icon' => 'o-document-duplicate', 'label' => 'sidebar.assignments'],
                 ['route' => 'admin.logbook', 'icon' => 'o-book-open', 'label' => 'sidebar.logbook'],
+                ['route' => 'admin.reports', 'icon' => 'o-document-text', 'label' => 'sidebar.final_reports'],
+                ['route' => 'admin.incidents', 'icon' => 'o-exclamation-triangle', 'label' => 'sidebar.incidents'],
             ],
         ],
 
@@ -103,6 +109,10 @@ return [
                 ['route' => 'student.supervision', 'icon' => 'o-user-group', 'label' => 'sidebar.supervision'],
                 ['route' => 'student.assessments', 'icon' => 'o-clipboard-document-check', 'label' => 'sidebar.assessments'],
                 ['route' => 'student.internships.register', 'icon' => 'o-document-plus', 'label' => 'sidebar.register_internship'],
+                ['route' => 'student.incidents.report', 'icon' => 'o-exclamation-triangle', 'label' => 'sidebar.report_incident'],
+                ['route' => 'student.reports', 'icon' => 'o-document-text', 'label' => 'sidebar.my_report'],
+                ['route' => 'student.internships.placement-change', 'icon' => 'o-arrows-right-left', 'label' => 'sidebar.request_placement_change'],
+                ['route' => 'student.certificates', 'icon' => 'o-document-check', 'label' => 'sidebar.my_certificates'],
             ],
         ],
 
@@ -126,6 +136,7 @@ return [
                 ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'supervision.logs', 'icon' => 'o-clipboard-check', 'label' => 'sidebar.guidance_logs'],
                 ['route' => 'supervision.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
+                ['route' => 'supervisor.reports.notes', 'icon' => 'o-document-text', 'label' => 'sidebar.report_notes'],
             ],
         ],
 
@@ -135,6 +146,8 @@ return [
             'title' => 'sidebar.reports',
             'items' => [
                 ['route' => 'admin.reports.index', 'icon' => 'o-document-chart-bar', 'label' => 'sidebar.reports'],
+                ['route' => 'admin.certificates', 'icon' => 'o-document-check', 'label' => 'sidebar.certificates'],
+                ['route' => 'admin.certificates.templates', 'icon' => 'o-document-duplicate', 'label' => 'sidebar.certificate_templates'],
                 ['route' => 'admin.accounts.lifecycle', 'icon' => 'o-arrow-path', 'label' => 'sidebar.account_lifecycle'],
                 ['route' => 'admin.gdpr-logs', 'icon' => 'o-shield-exclamation', 'label' => 'sidebar.gdpr_logs'],
             ],

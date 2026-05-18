@@ -30,11 +30,49 @@ class FinalizeAssessmentAction
             $competencies = $rubric->competencies()->with('indicators')->get();
             $content = $assessment->content ?? [];
             $competencyScores = $content['competencies'] ?? [];
-            $totalWeightedScore = 0.0;
-            $totalCompetencyWeight = 0;
+
+            // Phase 1: Separate scored and unscored competencies.
+            // Competencies with evaluator_role = 'supervisor' that have no scores
+            // are excluded; their weight is redistributed.
+            $scoredCompetencies = [];
 
             foreach ($competencies as $competency) {
-                $competencyWeight = $competency->weight;
+                $indicatorsData = $competencyScores[$competency->id]['indicators'] ?? [];
+                $hasAnyScore = false;
+
+                foreach ($competency->indicators as $indicator) {
+                    if (($indicatorsData[$indicator->id] ?? null) !== null) {
+                        $hasAnyScore = true;
+                        break;
+                    }
+                }
+
+                if (! $hasAnyScore && $competency->evaluator_role?->value === 'supervisor') {
+                    continue;
+                }
+
+                $scoredCompetencies[] = $competency;
+            }
+
+            if (empty($scoredCompetencies)) {
+                throw new RuntimeException('No competencies have been scored.');
+            }
+
+            // Phase 2: Redistribute weights proportionally.
+            $originalTotalWeight = (int) $competencies->sum('weight');
+            $scoredTotalWeight = (int) collect($scoredCompetencies)->sum('weight');
+
+            if ($scoredTotalWeight === 0) {
+                throw new RuntimeException('No competencies have been scored.');
+            }
+
+            $totalWeightedScore = 0.0;
+
+            foreach ($scoredCompetencies as $competency) {
+                $effectiveWeight = $originalTotalWeight > 0
+                    ? ($competency->weight / $scoredTotalWeight) * $originalTotalWeight
+                    : $competency->weight;
+
                 $indicatorsData = $competencyScores[$competency->id]['indicators'] ?? [];
                 $competencyScore = 0.0;
                 $totalIndicatorWeight = 0;
@@ -49,13 +87,8 @@ class FinalizeAssessmentAction
                 }
 
                 if ($totalIndicatorWeight > 0) {
-                    $totalWeightedScore += $competencyScore * ($competencyWeight / 100);
-                    $totalCompetencyWeight += $competencyWeight;
+                    $totalWeightedScore += $competencyScore * ($effectiveWeight / 100);
                 }
-            }
-
-            if ($totalCompetencyWeight === 0) {
-                throw new RuntimeException('No competencies have been scored.');
             }
 
             $finalScore = round($totalWeightedScore, 1);

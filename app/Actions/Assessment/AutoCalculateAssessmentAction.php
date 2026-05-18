@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Assessment;
 
 use App\Models\Assessment;
+use App\Models\Report;
 use App\Models\Submission;
 use Illuminate\Support\Facades\DB;
 
@@ -36,10 +37,15 @@ class AutoCalculateAssessmentAction
             ? round(($submittedLogbooks / $totalLogbooks) * 100, 1)
             : 0;
 
+        $report = Report::where('registration_id', $registrationId)
+            ->where('status', 'approved')
+            ->first();
+
         $content = $assessment->content ?? [];
         $content['auto'] = [
             'avg_submission_score' => $avgSubmissionScore ? round((float) $avgSubmissionScore, 1) : null,
             'logbook_completeness' => $logbookCompleteness,
+            'report_score' => $report?->score,
         ];
 
         $assessment->update(['content' => $content]);

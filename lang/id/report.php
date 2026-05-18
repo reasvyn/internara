@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'title' => 'Laporan Akhir',
+    'subtitle' => 'Tinjau dan nilai laporan PKL siswa',
+    'my_report' => 'Laporan Saya',
+    'my_report_subtitle' => 'Tulis laporan PKL akhir Anda',
+    'registration' => 'PKL',
+    'registration_placeholder' => 'Pilih PKL Anda',
+    'title_field' => 'Judul',
+    'title_placeholder' => 'Contoh: Laporan PKL Saya',
+    'content' => 'Konten (JSON: per bab)',
+    'content_placeholder' => 'Tulis konten laporan Anda di sini...',
+    'status' => 'Status',
+    'student' => 'Siswa',
+    'submitted_at' => 'Dikumpulkan Pada',
+    'score' => 'Nilai',
+    'feedback' => 'Umpan Balik',
+    'save_draft' => 'Simpan Draft',
+    'submit' => 'Kumpulkan',
+    'submit_confirm' => 'Kumpulkan laporan? Anda tidak bisa mengedit setelah dikumpulkan.',
+    'save_first' => 'Simpan draft terlebih dahulu sebelum mengumpulkan.',
+    'saved' => 'Draft tersimpan.',
+    'created' => 'Laporan dibuat.',
+    'submitted' => 'Laporan berhasil dikumpulkan.',
+    'approve' => 'Setujui & Nilai',
+    'approve_success' => 'Laporan berhasil disetujui.',
+    'grade_title' => 'Nilai Laporan',
+    'revision_requested' => 'Revisi diminta.',
+    'request_revision' => 'Minta Revisi',
+
+    'supervisor_notes_title' => 'Catatan Laporan Siswa',
+    'supervisor_notes_subtitle' => 'Tambahkan catatan opsional pada laporan PKL siswa',
+    'supervisor_notes' => 'Catatan',
+    'supervisor_notes_info' => 'Catatan Anda bersifat opsional dan tidak memengaruhi proses persetujuan laporan.',
+    'supervisor_notes_placeholder' => 'Tulis pengamatan Anda tentang kinerja siswa...',
+    'supervisor_notes_saved' => 'Catatan berhasil disimpan.',
+    'save_notes' => 'Simpan Catatan',
+    'no_mentored_students' => 'Anda tidak ditugaskan sebagai pembimbing untuk registrasi aktif mana pun.',
+];

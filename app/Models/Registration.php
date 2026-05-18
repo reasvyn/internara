@@ -61,6 +61,11 @@ class Registration extends BaseModel
         return $this->hasMany(Attendance::class, 'registration_id');
     }
 
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class, 'registration_id');
+    }
+
     public function supervisionLogs(): HasMany
     {
         return $this->hasMany(SupervisionLog::class, 'registration_id');

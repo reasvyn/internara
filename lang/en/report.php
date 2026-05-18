@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'title' => 'Final Reports',
+    'subtitle' => 'Review and grade student internship reports',
+    'my_report' => 'My Report',
+    'my_report_subtitle' => 'Write your final internship report',
+    'registration' => 'Internship',
+    'registration_placeholder' => 'Select your internship',
+    'title_field' => 'Title',
+    'title_placeholder' => 'e.g. My Internship Report',
+    'content' => 'Content (JSON: chapter-by-chapter)',
+    'content_placeholder' => 'Write your report content here...',
+    'status' => 'Status',
+    'student' => 'Student',
+    'submitted_at' => 'Submitted At',
+    'score' => 'Score',
+    'feedback' => 'Feedback',
+    'save_draft' => 'Save Draft',
+    'submit' => 'Submit',
+    'submit_confirm' => 'Submit your report? You cannot edit after submission.',
+    'save_first' => 'Save a draft first before submitting.',
+    'saved' => 'Draft saved.',
+    'created' => 'Report created.',
+    'submitted' => 'Report submitted successfully.',
+    'approve' => 'Approve & Grade',
+    'approve_success' => 'Report approved successfully.',
+    'grade_title' => 'Grade Report',
+    'revision_requested' => 'Revision requested.',
+    'request_revision' => 'Request Revision',
+
+    'supervisor_notes_title' => 'Student Report Notes',
+    'supervisor_notes_subtitle' => 'Add optional notes to student internship reports',
+    'supervisor_notes' => 'Notes',
+    'supervisor_notes_info' => 'Your notes are optional. They are visible to the teacher but do not affect the approval process.',
+    'supervisor_notes_placeholder' => 'Write your observations about the student\'s performance...',
+    'supervisor_notes_saved' => 'Notes saved successfully.',
+    'save_notes' => 'Save Notes',
+    'no_mentored_students' => 'You are not assigned as a supervisor for any active registrations.',
+];
