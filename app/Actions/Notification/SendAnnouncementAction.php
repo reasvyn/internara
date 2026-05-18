@@ -43,13 +43,14 @@ class SendAnnouncementAction
                     'created_by' => auth()->id(),
                 ]);
 
-                $senderRoles = auth()->user()->roles->pluck('name')->toArray();
-
-                $users = User::query()
-                    ->whereDoesntHave('roles', fn ($q) => $q->whereIn('name', $senderRoles));
+                $users = User::query();
 
                 if (! empty($validated['target_roles'])) {
-                    $users->whereHas('roles', fn ($q) => $q->whereIn('name', $validated['target_roles']));
+                    $senderRoles = auth()->user()->roles->pluck('name')->toArray();
+
+                    $users
+                        ->whereDoesntHave('roles', fn ($q) => $q->whereIn('name', $senderRoles))
+                        ->whereHas('roles', fn ($q) => $q->whereIn('name', $validated['target_roles']));
                 }
 
                 Notification::send($users->get(), new AnnouncementNotification(
