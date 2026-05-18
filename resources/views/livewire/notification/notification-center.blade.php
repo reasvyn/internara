@@ -75,16 +75,16 @@
                                     </span>
                                     <span x-show="!read" class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
                                 </div>
-                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-1 break-words prose prose-sm max-w-none">
-                                    {!! Str::markdown($notification->message) !!}
+                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-3 whitespace-pre-wrap break-words max-w-none">
+                                    {{ $notification->message }}
                                 </div>
                             </div>
                             <div class="text-base-content/30 shrink-0 self-start mt-1 transition-transform group-open:rotate-180" aria-hidden="true">
                                 <x-mary-icon name="o-chevron-down" class="size-4" />
                             </div>
                         </summary>
-                        <div class="mt-2 pl-11 text-xs prose prose-sm max-w-none text-base-content/70">
-                            {!! Str::markdown($notification->message) !!}
+                        <div class="mt-2 pl-11 text-xs max-w-none text-base-content/70 whitespace-pre-wrap">
+                            {{ $notification->message }}
                         </div>
                     </details>
                 @else
