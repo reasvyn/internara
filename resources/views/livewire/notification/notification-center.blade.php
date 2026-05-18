@@ -129,7 +129,7 @@
             @scope('actions', $notification)
                 <div class="flex justify-end gap-1">
                     @if($notification->link)
-                        <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" :aria-label="__('View details')" />
+                        <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" :aria-label="__('notifications.view_details')" />
                     @endif
                     @if(!$notification->is_read)
                         <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" wire:click="markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.ui.mark_all_read')" />

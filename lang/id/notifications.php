@@ -100,4 +100,6 @@ return [
         'mark_read_batch' => 'Tandai Dibaca',
         'selected_count' => '{0} notifikasi dipilih|{1} notifikasi dipilih|[2,*] notifikasi dipilih',
     ],
+
+    'view_details' => 'Lihat detail',
 ];

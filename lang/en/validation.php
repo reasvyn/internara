@@ -161,4 +161,26 @@ return [
     ],
 
     '(and :count more errors)' => '(and :count more errors)',
+
+    'attributes' => [
+        'schoolData.name' => 'school name',
+        'schoolData.institutional_code' => 'institutional code',
+        'schoolData.address' => 'school address',
+        'schoolData.email' => 'school email',
+        'schoolData.phone' => 'school phone',
+        'schoolData.website' => 'school website',
+        'schoolData.principal_name' => 'principal name',
+        'departmentData.name' => 'department name',
+        'departmentData.description' => 'department description',
+        'adminData.name' => 'full name',
+        'adminData.email' => 'email address',
+        'adminData.username' => 'username',
+        'adminData.password' => 'password',
+        'internshipData.name' => 'program name',
+        'internshipData.description' => 'program description',
+        'internshipData.start_date' => 'start date',
+        'internshipData.end_date' => 'end date',
+        'dataVerified' => 'data verification',
+        'securityAware' => 'security awareness',
+    ],
 ];

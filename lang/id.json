@@ -11,5 +11,8 @@
     "setting.groups.color_scheme": "Skema Warna",
     "setting.fields.primary_color": "Warna Utama",
     "setting.fields.secondary_color": "Warna Sekunder",
-    "setting.fields.accent_color": "Warna Aksen"
+    "setting.fields.accent_color": "Warna Aksen",
+    "Setup Selesai!": "Setup Selesai!",
+    "Audit sistem harus lulus sebelum melanjutkan.": "Audit sistem harus lulus sebelum melanjutkan.",
+    "Selamat datang kembali, Administrator!": "Selamat datang kembali, Administrator!"
 }
