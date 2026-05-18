@@ -16,7 +16,7 @@ class DeleteCompanyAction
     public function execute(Company $company): void
     {
         if (! $company->asCompanyState()->canBeDeleted()) {
-            throw new RuntimeException('Cannot delete company with existing placements.');
+            throw new RuntimeException('Cannot delete company with existing placements or partnerships.');
         }
 
         DB::transaction(function () use ($company) {

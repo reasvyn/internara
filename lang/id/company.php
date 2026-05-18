@@ -26,6 +26,7 @@ return [
     'description_placeholder' => 'Informasi tambahan mengenai perusahaan ini',
     'placements' => 'Penempatan',
     'placements_count' => 'Penempatan',
+    'partnerships_count' => 'Kemitraan',
     'search_placeholder' => 'Cari berdasarkan nama perusahaan...',
     'cancel' => 'Batal',
     'save' => 'Simpan',
@@ -33,8 +34,8 @@ return [
     'update_success' => 'Perusahaan berhasil diperbarui.',
     'delete_success' => 'Perusahaan berhasil dihapus.',
     'delete_confirm' => 'Apakah Anda yakin ingin menghapus perusahaan ini?',
-    'delete_selected_confirm' => 'Hapus perusahaan yang dipilih? Hanya perusahaan tanpa penempatan aktif yang akan dihapus.',
-    'delete_blocked' => 'Tidak dapat menghapus perusahaan: masih memiliki penempatan aktif.',
+    'delete_selected_confirm' => 'Hapus perusahaan yang dipilih? Hanya perusahaan tanpa penempatan atau kemitraan aktif yang akan dihapus.',
+    'delete_blocked' => 'Tidak dapat menghapus perusahaan: masih memiliki penempatan atau kemitraan aktif.',
     'selected_count' => '{0} perusahaan dipilih|{1} perusahaan dipilih|[2,*] perusahaan dipilih',
     'actions' => 'Aksi',
     'stats' => [
