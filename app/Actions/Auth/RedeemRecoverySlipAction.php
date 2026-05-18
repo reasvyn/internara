@@ -22,11 +22,14 @@ class RedeemRecoverySlipAction
 
             if (! $user) {
                 throw new RuntimeException(__('auth.failed'));
+            }
 
-            case 'recovery_code.expired':
-                throw new RuntimeException(__('passwords.token'));
+            $recoveryCode = AccountRecoveryCode::where('user_id', $user->id)
+                ->whereNull('used_at')
+                ->where('expires_at', '>', now())
+                ->first();
 
-            case 'recovery_code.already_used':
+            if (! $recoveryCode || ! $recoveryCode->asRecoveryCodeState()->isValid()) {
                 throw new RuntimeException(__('passwords.token'));
             }
 
