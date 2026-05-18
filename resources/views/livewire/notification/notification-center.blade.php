@@ -57,7 +57,7 @@
         >
             @scope('cell_title', $notification)
                 @if($notification->message)
-                    <details class="group py-2">
+                    <details class="group py-2" @if(!$notification->is_read) wire:click="markAsRead('{{ $notification->id }}')" @endif>
                         <summary class="flex items-start gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
                             <div @class([
                                 'size-8 rounded-lg flex items-center justify-center shrink-0',
@@ -96,7 +96,7 @@
                         </div>
                     </details>
                 @else
-                    <div class="flex items-start gap-3 py-2" role="group" aria-label="{{ $notification->title }}">
+                    <div class="flex items-start gap-3 py-2 cursor-pointer" role="group" aria-label="{{ $notification->title }}" @if(!$notification->is_read) wire:click="markAsRead('{{ $notification->id }}')" @endif>
                         <div @class([
                             'size-8 rounded-lg flex items-center justify-center shrink-0',
                             'bg-primary/10 text-primary' => !$notification->is_read,
@@ -129,7 +129,7 @@
             @scope('actions', $notification)
                 <div class="flex justify-end gap-1">
                     @if($notification->link)
-                        <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" :aria-label="__('notifications.view_details')" />
+                        <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" x-data x-on:click="$wire.markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.view_details')" />
                     @endif
                     @if(!$notification->is_read)
                         <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" wire:click="markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.ui.mark_all_read')" />
