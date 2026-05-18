@@ -56,34 +56,26 @@
             class="table-sm"
         >
             @scope('cell_title', $notification)
+                @php $isRead = $notification->is_read; @endphp
+                <div x-data="{ read: {{ $isRead ? 'true' : 'false' }} }">
                 @if($notification->message)
-                    <details class="group py-2" @if(!$notification->is_read) wire:click="markAsRead('{{ $notification->id }}')" @endif>
+                    <details
+                        class="group py-2"
+                        x-on:toggle="if($el.open && !read) { read = true; $wire.markAsRead('{{ $notification->id }}'); }"
+                    >
                         <summary class="flex items-start gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                            <div @class([
-                                'size-8 rounded-lg flex items-center justify-center shrink-0',
-                                'bg-primary/10 text-primary' => !$notification->is_read,
-                                'bg-base-200 text-base-content/40' => $notification->is_read
-                            ]) aria-hidden="true">
-                                <x-mary-icon :name="$notification->is_read ? 'o-envelope-open' : 'o-envelope'" class="size-4" />
+                            <div role="status" x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'" class="size-8 rounded-lg flex items-center justify-center shrink-0" aria-hidden="true">
+                                <x-mary-icon x-show="!read" name="o-envelope" class="size-4" />
+                                <x-mary-icon x-show="read" name="o-envelope-open" class="size-4" />
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center gap-2">
-                                    <span @class([
-                                        'text-sm font-medium',
-                                        'text-base-content' => !$notification->is_read,
-                                        'text-base-content/50' => $notification->is_read
-                                    ])>
+                                    <span x-bind:class="read ? 'text-base-content/50' : 'text-base-content'" class="text-sm font-medium">
                                         {{ $notification->title }}
                                     </span>
-                                    @if(!$notification->is_read)
-                                        <span class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
-                                    @endif
+                                    <span x-show="!read" class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
                                 </div>
-                                <div @class([
-                                    'text-xs line-clamp-1 break-words prose prose-sm max-w-none',
-                                    'text-base-content/40' => $notification->is_read,
-                                    'text-base-content/50' => !$notification->is_read,
-                                ])>
+                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-1 break-words prose prose-sm max-w-none">
                                     {!! Str::markdown($notification->message) !!}
                                 </div>
                             </div>
@@ -96,28 +88,25 @@
                         </div>
                     </details>
                 @else
-                    <div class="flex items-start gap-3 py-2 cursor-pointer" role="group" aria-label="{{ $notification->title }}" @if(!$notification->is_read) wire:click="markAsRead('{{ $notification->id }}')" @endif>
-                        <div @class([
-                            'size-8 rounded-lg flex items-center justify-center shrink-0',
-                            'bg-primary/10 text-primary' => !$notification->is_read,
-                            'bg-base-200 text-base-content/40' => $notification->is_read
-                        ]) aria-hidden="true">
-                            <x-mary-icon :name="$notification->is_read ? 'o-envelope-open' : 'o-envelope'" class="size-4" />
+                    <div
+                        class="flex items-start gap-3 py-2 cursor-pointer"
+                        role="button"
+                        aria-label="{{ $notification->title }}"
+                        x-on:click="if(!read) { read = true; $wire.markAsRead('{{ $notification->id }}'); }"
+                    >
+                        <div role="status" x-bind:class="read ? 'bg-base-200 text-base-content/40' : 'bg-primary/10 text-primary'" class="size-8 rounded-lg flex items-center justify-center shrink-0" aria-hidden="true">
+                            <x-mary-icon x-show="!read" name="o-envelope" class="size-4" />
+                            <x-mary-icon x-show="read" name="o-envelope-open" class="size-4" />
                         </div>
                         <div class="flex items-center gap-2 min-w-0">
-                            <span @class([
-                                'text-sm font-medium',
-                                'text-base-content' => !$notification->is_read,
-                                'text-base-content/50' => $notification->is_read
-                            ])>
+                            <span x-bind:class="read ? 'text-base-content/50' : 'text-base-content'" class="text-sm font-medium">
                                 {{ $notification->title }}
                             </span>
-                            @if(!$notification->is_read)
-                                <span class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
-                            @endif
+                            <span x-show="!read" class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
                         </div>
                     </div>
                 @endif
+                </div>
             @endscope
 
             @scope('cell_created_at', $notification)
@@ -129,10 +118,10 @@
             @scope('actions', $notification)
                 <div class="flex justify-end gap-1">
                     @if($notification->link)
-                        <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" x-data x-on:click="$wire.markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.view_details')" />
+                        <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" x-on:click.prevent="$wire.markAsRead('{{ $notification->id }}'); window.open('{{ $notification->link }}', '_blank')" :aria-label="__('notifications.view_details')" />
                     @endif
                     @if(!$notification->is_read)
-                        <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" wire:click="markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.ui.mark_all_read')" />
+                        <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" x-on:click="$wire.markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.ui.mark_all_read')" />
                     @endif
                 </div>
             @endscope
