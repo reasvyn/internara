@@ -75,7 +75,7 @@
                                     </span>
                                     <span x-show="!read" class="size-1.5 rounded-full bg-error shrink-0" aria-label="{{ __('notifications.ui.unread') }}"></span>
                                 </div>
-                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-3 whitespace-pre-wrap break-words max-w-none">
+                                <div x-bind:class="read ? 'text-base-content/40' : 'text-base-content/50'" class="text-xs line-clamp-1 whitespace-pre-wrap break-words max-w-none">
                                     {{ $notification->message }}
                                 </div>
                             </div>
