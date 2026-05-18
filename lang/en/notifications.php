@@ -100,4 +100,6 @@ return [
         'mark_read_batch' => 'Mark as Read',
         'selected_count' => '{0} notifications selected|{1} notification selected|[2,*] notifications selected',
     ],
+
+    'view_details' => 'View details',
 ];
