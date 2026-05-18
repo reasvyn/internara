@@ -208,6 +208,14 @@ class PartnershipManager extends BaseRecordManager
         $this->showModal = false;
     }
 
+    // --- Direct Actions (used by tests) ---
+
+    public function terminate(Partnership $partnership, TerminatePartnershipAction $terminateAction): void
+    {
+        $terminateAction->execute($partnership);
+        flash()->success(__('partnership.terminate_success'));
+    }
+
     // --- Confirm Dialog ---
 
     public function askDelete(string $id): void
