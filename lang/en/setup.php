@@ -73,7 +73,7 @@ return [
         'aborted' => 'Installation aborted.',
         'executing_task' => 'Executing technical system installation',
         'not_installed' => 'System is not installed. Run php artisan setup:install first.',
-        'admin_exists' => 'Super Admin already exists. Use php artisan setup:recover-super-admin to create another.',
+        'admin_exists' => 'Super Admin already exists. Use php artisan admin:recover to create another.',
         'recover_description' => 'Recover super admin access using the setup recovery key',
         'admin_not_found' => 'User with email :email not found.',
         'admin_already_exists' => 'User with email :email already exists. Use --reset flag to reset password.',
@@ -214,6 +214,8 @@ return [
         'email' => 'Email',
         'login_notice' => 'Save your username and email — you will need them to sign in. This information will not be shown again.',
         'access_summary' => 'Login Credentials',
+        'recovery_key_title' => 'Recovery Key',
+        'recovery_key_desc' => 'Save this key in a secure place. You will need it to recover administrator access if the password is lost.',
         'step_labels' => [
             'welcome' => 'Welcome',
             'school' => 'School',

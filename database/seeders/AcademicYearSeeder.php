@@ -19,11 +19,13 @@ class AcademicYearSeeder extends Seeder
             ? [$year - 1, $year]
             : [$year, $year + 1];
 
-        AcademicYear::create([
-            'name' => "{$startYear}/{$endYear}",
-            'start_date' => "{$startYear}-07-01",
-            'end_date' => "{$endYear}-06-30",
-            'is_active' => true,
-        ]);
+        AcademicYear::updateOrCreate(
+            ['name' => "{$startYear}/{$endYear}"],
+            [
+                'start_date' => "{$startYear}-07-01",
+                'end_date' => "{$endYear}-06-30",
+                'is_active' => true,
+            ],
+        );
     }
 }

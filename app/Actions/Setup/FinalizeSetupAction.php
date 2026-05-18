@@ -11,8 +11,8 @@ use App\Actions\School\SetupSchoolAction;
 use App\Actions\User\SetupSuperAdminAction;
 use App\Events\Setup\SetupFinalized;
 use App\Models\Setup;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -54,14 +54,14 @@ final class FinalizeSetupAction
 
         $keyLength = (int) config('setup.recovery_key.length', 64);
         $plaintext = Str::random($keyLength);
-        $encrypted = Crypt::encryptString($plaintext);
+        $hashed = Hash::make($plaintext);
 
         $setup->forceFill([
             'is_installed' => true,
             'completed_steps' => $completedSteps,
             'setup_token' => null,
             'token_expires_at' => null,
-            'recovery_key' => $encrypted,
+            'recovery_key' => $hashed,
         ])->save();
 
         Event::dispatch(new SetupFinalized(

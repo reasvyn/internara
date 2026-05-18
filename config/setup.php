@@ -57,7 +57,7 @@ return [
 
     'defaults' => [
         'admin_name' => 'Administrator',
-        'admin_username' => 'administrator',
+        'admin_username' => 'admin',
         'super_admin_default_name' => 'Super Administrator',
         'recovery_admin_name' => 'Recovery Admin',
         'username_max_length' => 20,
@@ -122,5 +122,15 @@ return [
     */
 
     'force_allowed_environments' => ['local', 'dev', 'development', 'testing'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Recovery Key Settings
+    |--------------------------------------------------------------------------
+    */
+
+    'recovery_key' => [
+        'length' => 64,
+    ],
 
 ];

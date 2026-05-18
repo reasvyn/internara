@@ -73,7 +73,7 @@ return [
         'aborted' => 'Instalasi dibatalkan.',
         'executing_task' => 'Mengeksekusi instalasi sistem teknis',
         'not_installed' => 'Sistem belum terinstal. Jalankan php artisan setup:install terlebih dahulu.',
-        'admin_exists' => 'Super Admin sudah ada. Gunakan php artisan setup:recover-super-admin untuk membuat yang lain.',
+        'admin_exists' => 'Super Admin sudah ada. Gunakan php artisan admin:recover untuk membuat yang lain.',
         'recover_description' => 'Pulihkan akses super admin menggunakan kunci pemulihan',
         'admin_not_found' => 'User dengan email :email tidak ditemukan.',
         'admin_already_exists' => 'User dengan email :email sudah ada. Gunakan flag --reset untuk mereset password.',
@@ -214,6 +214,8 @@ return [
         'email' => 'Email',
         'login_notice' => 'Simpan username dan email Anda — Anda akan membutuhkannya untuk masuk. Informasi ini tidak akan ditampilkan lagi.',
         'access_summary' => 'Kredensial Login',
+        'recovery_key_title' => 'Kunci Pemulihan',
+        'recovery_key_desc' => 'Simpan kunci ini di tempat yang aman. Anda akan membutuhkannya untuk memulihkan akses administrator jika kata sandi hilang.',
         'step_labels' => [
             'welcome' => 'Selamat Datang',
             'school' => 'Sekolah',
