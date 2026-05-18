@@ -20,9 +20,9 @@ return [
 
     'colors' => [
         'defaults' => [
-            'primary' => '#0ea5e9',
-            'secondary' => '#64748b',
-            'accent' => '#f59e0b',
+            'primary' => '#059669',
+            'secondary' => '#6b7280',
+            'accent' => '#f97316',
             'base' => '#ffffff',
             'content' => '#1a1a1a',
         ],
