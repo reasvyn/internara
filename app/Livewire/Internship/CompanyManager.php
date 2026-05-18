@@ -7,6 +7,7 @@ namespace App\Livewire\Internship;
 use App\Actions\Internship\CreateCompanyAction;
 use App\Actions\Internship\DeleteCompanyAction;
 use App\Actions\Internship\UpdateCompanyAction;
+use App\Exceptions\RejectedException;
 use App\Livewire\Core\BaseRecordManager;
 use App\Models\Company;
 use App\Models\Placement;
@@ -14,12 +15,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 
-/**
- * Modernized Company Manager using BaseRecordManager pattern.
- */
 class CompanyManager extends BaseRecordManager
 {
     public bool $showModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmMessage = '';
+
+    public string $confirmType = '';
+
+    public ?string $confirmTarget = null;
 
     public array $formData = [
         'id' => null,
@@ -32,9 +38,6 @@ class CompanyManager extends BaseRecordManager
         'industry_sector' => '',
     ];
 
-    /**
-     * Define columns and sorting.
-     */
     public function headers(): array
     {
         return [
@@ -47,17 +50,11 @@ class CompanyManager extends BaseRecordManager
         ];
     }
 
-    /**
-     * Base query for companies.
-     */
     protected function query(): Builder
     {
         return Company::query()->withCount(['placements', 'partnerships']);
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query
@@ -75,14 +72,14 @@ class CompanyManager extends BaseRecordManager
     {
         return [
             'total' => Company::count(),
-            'with_placements' => Company::whereHas('placements')->count(),
+            'with_placements' => Company::whereHas('placements')->orWhereHas('partnerships')->count(),
             'available_slots' => Placement::query()
                 ->selectRaw('SUM(quota - filled_quota) as available')
                 ->value('available') ?? 0,
         ];
     }
 
-    // --- Record Actions ---
+    // --- CRUD ---
 
     public function create(): void
     {
@@ -145,28 +142,81 @@ class CompanyManager extends BaseRecordManager
         $this->showModal = false;
     }
 
-    public function delete(Company $company, DeleteCompanyAction $deleteAction): void
+    // --- Confirm Dialog ---
+
+    public function askDelete(string $id): void
     {
+        $company = Company::findOrFail($id);
+        $this->confirmTarget = $id;
+        $this->confirmType = 'delete';
+        $this->confirmMessage = __('company.confirm_delete', ['name' => $company->name]);
+        $this->showConfirm = true;
+    }
+
+    public function askDeleteSelected(): void
+    {
+        if (empty($this->selectedIds)) {
+            return;
+        }
+
+        $this->confirmType = 'delete_selected';
+        $this->confirmMessage = __('company.delete_selected_confirm', ['count' => count($this->selectedIds)]);
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeleteCompanyAction $deleteAction): void
+    {
+        if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
+            return;
+        }
+
+        try {
+            match ($this->confirmType) {
+                'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
+                'delete_selected' => $this->executeDeleteSelected($deleteAction),
+                default => null,
+            };
+        } catch (RejectedException) {
+            flash()->error(__('company.delete_blocked'));
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmType = '';
+    }
+
+    private function executeDelete(string $id, DeleteCompanyAction $action): void
+    {
+        $company = Company::findOrFail($id);
+
         if (! $company->asCompanyState()->canBeDeleted()) {
             flash()->error(__('company.delete_blocked'));
 
             return;
         }
 
-        $deleteAction->execute($company);
+        $action->execute($company);
         flash()->success(__('company.delete_success'));
     }
 
-    // --- Bulk Actions ---
-
-    public function deleteSelected(DeleteCompanyAction $deleteAction): void
+    private function executeDeleteSelected(DeleteCompanyAction $action): void
     {
-        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+        $count = 0;
+
+        foreach ($this->selectedIds as $id) {
             $company = Company::find($id);
+
             if ($company && $company->asCompanyState()->canBeDeleted()) {
-                $deleteAction->execute($company);
+                $action->execute($company);
+                $count++;
             }
-        });
+        }
+
+        if ($count > 0) {
+            flash()->success(__('common.actions.bulk_action_done', ['count' => $count, 'action' => __('common.actions.delete')]));
+        }
+
+        $this->clearSelection();
     }
 
     #[Layout('layouts::app')]
