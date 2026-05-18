@@ -6,6 +6,7 @@ namespace App\Actions\Attendance;
 
 use App\Actions\Core\LogAuditAction;
 use App\Models\Attendance;
+use App\Models\Briefing;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,16 @@ class ClockInAction
         return DB::transaction(function () use ($user, $data, $requestIp) {
             $now = Carbon::now();
 
+            $registration = $user->getActiveRegistration();
+
+            if (! $registration) {
+                throw new RuntimeException('No active internship registration found.');
+            }
+
+            if (! Briefing::hasStudentCompletedMandatoryBriefing($user->id, $registration->internship_id)) {
+                throw new RuntimeException('You must attend the mandatory briefing before clocking in.');
+            }
+
             // Check if already clocked in today
             $existingLog = Attendance::where('user_id', $user->id)
                 ->whereDate('date', $now->toDateString())
@@ -27,12 +38,6 @@ class ClockInAction
 
             if ($existingLog) {
                 throw new RuntimeException('Already clocked in for today.');
-            }
-
-            $registration = $user->getActiveRegistration();
-
-            if (! $registration) {
-                throw new RuntimeException('No active internship registration found.');
             }
 
             $log = Attendance::create([

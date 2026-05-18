@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions\Logbook;
 
 use App\Actions\Core\LogAuditAction;
+use App\Models\Briefing;
 use App\Models\Logbook;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,10 @@ class CreateLogbookAction
 
             if (! $registration) {
                 throw new RuntimeException('No active internship registration found.');
+            }
+
+            if (! Briefing::hasStudentCompletedMandatoryBriefing($user->id, $registration->internship_id)) {
+                throw new RuntimeException('You must attend the mandatory briefing before submitting logbook entries.');
             }
 
             $entry = Logbook::create([

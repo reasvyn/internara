@@ -192,6 +192,47 @@ Teachers also verify they are assigned as a mentor to the student before they ca
 
 ---
 
+## Supervisor Competencies: Optional by Design
+
+Competencies assigned to the `supervisor` evaluator role follow a special rule, enforced in `App\Actions\Assessment\FinalizeAssessmentAction`:
+
+- If the supervisor **has submitted scores**: their scores are included as expected
+- If the supervisor **has not submitted scores**: their competencies are **excluded** from the calculation. The weights of remaining competencies are proportionally redistributed to sum to 100%
+
+### Implementation Logic
+
+```php
+// Phase 1: Filter. Skip unscored supervisor competencies.
+foreach ($competencies as $competency) {
+    if (! $hasAnyScore && $competency->evaluator_role?->value === 'supervisor') {
+        continue; // excluded — weight will be redistributed
+    }
+    $scoredCompetencies[] = $competency;
+}
+
+// Phase 2: Redistribute weights proportionally.
+$effectiveWeight = ($competency->weight / $scoredTotalWeight) * $originalTotalWeight;
+```
+
+### Example
+
+```
+Original:  A(teacher,40) + B(supervisor,30) + C(teacher,30) = 100%
+Redistributed (B excluded):
+  A: 40 / (40+30) × 100 = 57.1%
+  C: 30 / (40+30) × 100 = 42.9%
+```
+
+### Admin Override
+
+Admins can score `supervisor`-role competencies as a fallback. The action does not distinguish who entered the score — any non-null score means the competency is considered "scored" and included.
+
+### Rationale
+
+Industry supervisors are often busy or unresponsive. The system never blocks finalization due to missing supervisor scores. The teacher has full control to proceed.
+
+---
+
 ## Key Rules
 
 | Rule | Enforcement |
@@ -202,6 +243,7 @@ Teachers also verify they are assigned as a mentor to the student before they ca
 | **At least one competency scored** | Finalization validates this |
 | **Score bounds** | Each indicator score ≤ max_score |
 | **No changes after finalization** | `isFinalized` guard on all mutations |
+| **Supervisor competencies optional** | Unscored supervisor competencies excluded; weights redistributed proportionally in `FinalizeAssessmentAction` |
 
 ## Assessment Result Entity
 

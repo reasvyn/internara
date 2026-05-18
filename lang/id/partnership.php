@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'title' => 'Kemitraan',
+    'subtitle' => 'Kelola perjanjian kerjasama formal dengan perusahaan mitra',
+    'add' => 'Tambah Kemitraan',
+    'new' => 'Kemitraan Baru',
+    'edit' => 'Edit Kemitraan',
+    'save' => 'Simpan Kemitraan',
+
+    'company' => 'Perusahaan',
+    'company_placeholder' => 'Pilih perusahaan',
+    'agreement_number' => 'No. Perjanjian',
+    'agreement_number_placeholder' => 'Contoh: 421/PKS/2025',
+    'title_field' => 'Judul',
+    'title_placeholder' => 'Contoh: Kemitraan PKL 2025/2026',
+    'start_date' => 'Tanggal Mulai',
+    'end_date' => 'Tanggal Berakhir',
+    'scope' => 'Ruang Lingkup',
+    'scope_placeholder' => 'Ruang lingkup kerjasama',
+    'contact_person_name' => 'Kontak Person',
+    'contact_person_name_placeholder' => 'Nama PIC perusahaan',
+    'contact_person_phone' => 'Telepon',
+    'contact_person_phone_placeholder' => 'Telepon PIC perusahaan',
+    'contact_person_email' => 'Email',
+    'contact_person_email_placeholder' => 'Email PIC perusahaan',
+    'signed_by_school' => 'Ditandatangani (Sekolah)',
+    'signed_by_school_placeholder' => 'Nama perwakilan sekolah',
+    'signed_by_company' => 'Ditandatangani (Perusahaan)',
+    'signed_by_company_placeholder' => 'Nama perwakilan perusahaan',
+    'signed_at' => 'Tanggal Penandatanganan',
+    'notes' => 'Catatan',
+    'notes_placeholder' => 'Catatan internal',
+    'mou_document' => 'Dokumen MoU (PDF/Gambar, max 5MB)',
+    'status' => 'Status',
+
+    'stats_active' => 'Aktif',
+    'stats_expiring_soon' => 'Kadaluwarsa :days hari',
+    'stats_expired' => 'Kadaluwarsa',
+
+    'save_success' => 'Kemitraan berhasil dibuat.',
+    'update_success' => 'Kemitraan berhasil diperbarui.',
+    'delete_success' => 'Kemitraan berhasil dihapus.',
+    'delete_blocked' => 'Hanya kemitraan yang kedaluwarsa atau diakhiri yang dapat dihapus.',
+    'delete_confirm' => 'Hapus kemitraan ini?',
+    'delete_selected_confirm' => 'Hapus kemitraan yang dipilih?',
+    'terminate' => 'Akhiri',
+    'terminate_success' => 'Kemitraan berhasil diakhiri.',
+    'terminate_confirm' => 'Akhiri kemitraan ini? Tindakan ini tidak dapat dibatalkan.',
+];

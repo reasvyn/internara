@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\CertificateDownloadController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentRenderController;
 use App\Http\Controllers\HomeController;
@@ -23,31 +24,44 @@ use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\RecoverySlipManager;
 use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Certificate\CertificateList;
+use App\Livewire\Certificate\StudentCertificates;
 use App\Livewire\Dashboard\AdminDashboard;
 use App\Livewire\Dashboard\StudentDashboard;
 use App\Livewire\Dashboard\SupervisorDashboard as MentorDashboard;
 use App\Livewire\Dashboard\TeacherDashboard;
 use App\Livewire\Document\Admin\ReportsManager;
+use App\Livewire\Document\CertificateTemplateManager;
 use App\Livewire\Evaluation\MentorEvaluationManager;
 use App\Livewire\Guidance\HandbookIndex;
 use App\Livewire\Guidance\StudentHandbookIndex;
+use App\Livewire\Incident\IncidentForm;
+use App\Livewire\Incident\IncidentManager;
 use App\Livewire\Internship\AccountApplicationForm;
 use App\Livewire\Internship\ApplicationReview;
+use App\Livewire\Internship\BriefingManager;
 use App\Livewire\Internship\CompanyManager;
 use App\Livewire\Internship\DirectPlacementManager;
 use App\Livewire\Internship\InternshipManager;
+use App\Livewire\Internship\PartnershipManager;
+use App\Livewire\Internship\PlacementChangeManager;
 use App\Livewire\Internship\PlacementIndex;
 use App\Livewire\Internship\RegistrationCenter;
 use App\Livewire\Internship\RegistrationDocumentUpload;
 use App\Livewire\Internship\RegistrationVerification;
 use App\Livewire\Internship\RegistrationWizard;
 use App\Livewire\Internship\RequirementManager;
+use App\Livewire\Internship\StudentPlacementChangeRequest;
 use App\Livewire\Logbook\LogbookEntry;
 use App\Livewire\Logbook\LogbookManager;
 use App\Livewire\Mentor\Supervision\SupervisionManager;
 use App\Livewire\Mentor\Supervision\SupervisorLogManager;
 use App\Livewire\Notification\Admin\AnnouncementManager;
 use App\Livewire\Notification\NotificationCenter;
+use App\Livewire\Presentation\PresentationSchedule;
+use App\Livewire\Report\Student\ReportWriter;
+use App\Livewire\Report\Supervisor\ReportNotes as SupervisorReportNotes;
+use App\Livewire\Report\Teacher\ReportReview;
 use App\Livewire\Schedule\ScheduleIndex;
 use App\Livewire\School\AcademicYearIndex;
 use App\Livewire\School\DepartmentManager;
@@ -108,6 +122,9 @@ Route::middleware('auth')->group(function () {
 
         return redirect()->route('login');
     })->name('logout');
+
+    Route::get('/certificates/{certificate}/download', CertificateDownloadController::class)
+        ->name('certificates.download');
 });
 
 /*
@@ -123,9 +140,12 @@ Route::prefix('admin')
         Route::livewire('/school', SchoolEditor::class)->name('school');
         Route::livewire('/departments', DepartmentManager::class)->name('departments');
         Route::livewire('/companies', CompanyManager::class)->name('companies');
+        Route::livewire('/companies/partnerships', PartnershipManager::class)->name('partnerships');
         Route::livewire('/internships', InternshipManager::class)->name('internships');
         Route::livewire('/internships/placements', PlacementIndex::class)->name('internships.placements');
         Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
+        Route::livewire('/internships/placements/changes', PlacementChangeManager::class)->name('internships.placements.changes');
+        Route::livewire('/internships/briefings', BriefingManager::class)->name('internships.briefings');
         Route::livewire('/internships/{internship}/requirements', RequirementManager::class)->name('internships.requirements');
         Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name('internships.registrations.pending');
         Route::livewire('/applications', ApplicationReview::class)->name('applications');
@@ -146,6 +166,7 @@ Route::prefix('admin')
 
         Route::livewire('/assignments', AdminAssignmentManager::class)->name('assignments');
         Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
+        Route::livewire('/reports', ReportReview::class)->name('reports');
 
         Route::livewire('/assessments/rubrics', RubricManager::class)->name('assessments.rubrics');
         Route::livewire('/assessments/{registration}/grade', AssessmentGrading::class)->name('assessments.grade');
@@ -159,6 +180,10 @@ Route::prefix('admin')
         Route::livewire('/recovery-slips', RecoverySlipManager::class)->name('recovery-slips');
         Route::livewire('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
         Route::livewire('/attendance', AttendanceManager::class)->name('attendance');
+        Route::livewire('/incidents', IncidentManager::class)->name('incidents');
+        Route::livewire('/presentations', PresentationSchedule::class)->name('presentations');
+        Route::livewire('/certificates/templates', CertificateTemplateManager::class)->name('certificates.templates');
+        Route::livewire('/certificates', CertificateList::class)->name('certificates');
     });
 
 /*
@@ -202,6 +227,10 @@ Route::prefix('student')
         Route::livewire('/attendance', StudentClockIn::class)->name('attendance');
         Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name('attendance.absence');
         Route::livewire('/documents', RegistrationDocumentUpload::class)->name('documents');
+        Route::livewire('/incidents/report', IncidentForm::class)->name('incidents.report');
+        Route::livewire('/reports', ReportWriter::class)->name('reports');
+        Route::livewire('/internships/placement-change', StudentPlacementChangeRequest::class)->name('internships.placement-change');
+        Route::livewire('/certificates', StudentCertificates::class)->name('certificates');
     });
 
 /*
@@ -241,6 +270,7 @@ Route::prefix('supervisor')
     ->middleware(['auth', 'role:supervisor'])
     ->group(function () {
         Route::livewire('/dashboard', MentorDashboard::class)->name('dashboard');
+        Route::livewire('/reports/notes', SupervisorReportNotes::class)->name('reports.notes');
     });
 
 /*
