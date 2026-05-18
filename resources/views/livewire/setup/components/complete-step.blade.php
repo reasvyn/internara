@@ -8,7 +8,7 @@
         {{ __('setup.wizard.ready_desc') }}
     </p>
 
-    <div class="max-w-sm mx-auto bg-base-200/40 border border-base-content/10 rounded-xl p-6 mb-10 text-left">
+    <div class="max-w-sm mx-auto bg-base-200/40 border border-base-content/10 rounded-xl p-6 mb-6 text-left">
         <h4 class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-4 text-center">{{ __('setup.wizard.access_summary') }}</h4>
         <dl class="space-y-3 text-sm">
             <div class="flex items-center justify-between">
@@ -28,6 +28,18 @@
             </p>
         </div>
     </div>
+
+    @if($recoveryKey)
+    <div class="max-w-sm mx-auto bg-error/5 border border-error/20 rounded-xl p-6 mb-6 text-left">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-error/60 mb-2">{{ __('setup.wizard.recovery_key_title') }}</h4>
+        <p class="text-xs text-error/70 leading-relaxed mb-3">
+            {{ __('setup.wizard.recovery_key_desc') }}
+        </p>
+        <div class="bg-base-100 rounded-lg px-3 py-2.5 border border-error/10">
+            <code class="text-sm font-mono font-bold text-error break-all select-all">{{ $recoveryKey }}</code>
+        </div>
+    </div>
+    @endif
 
     <x-mary-button
         label="{{ __('setup.wizard.go_to_login') }}"

@@ -54,6 +54,8 @@ class SetupWizard extends Component
 
     public bool $securityAware = false;
 
+    public string $recoveryKey = '';
+
     public function mount(): void
     {
         if (Setup::state()->isInstalled()) {
@@ -227,7 +229,7 @@ class SetupWizard extends Component
 
             $this->adminData['password_confirmation'] = $this->adminData['password'];
 
-            $finalizeSetup->execute(
+            $this->recoveryKey = $finalizeSetup->execute(
                 schoolData: $this->schoolData,
                 departmentData: $this->departmentData,
                 adminData: $this->adminData,

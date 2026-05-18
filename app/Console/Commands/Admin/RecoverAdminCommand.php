@@ -2,55 +2,51 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands\Setup;
+namespace App\Console\Commands\Admin;
 
 use App\Actions\Setup\RecoverSuperAdminAction;
-use App\Console\Commands\Setup\Traits\InteractsWithInstallerCli;
 use App\Models\Setup;
 use App\Models\User;
+use App\Support\AppInfo;
 use App\Support\SmartLogger;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
+use function Laravel\Prompts\intro;
+use function Laravel\Prompts\note;
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
 use function Laravel\Prompts\warning;
 
-class RecoverSuperAdminCommand extends Command
+class RecoverAdminCommand extends Command
 {
-    use InteractsWithInstallerCli;
-
-    protected $signature = 'setup:recover-super-admin {email?} {--reset} {--key=}';
+    protected $signature = 'admin:recover {email?} {--reset} {--key=}';
 
     public function __construct(
         private RecoverSuperAdminAction $action,
     ) {
         parent::__construct();
-        $this->description = __('setup.cli.recover_description');
+        $this->description = __('admin.recover.description');
     }
 
     public function handle(): int
     {
-        $this->displayBanner();
-
-        if (! $this->isInstalled()) {
-            error(__('setup.cli.not_installed'));
-
-            return self::FAILURE;
-        }
-
-        $email = $this->argument('email') ?? text(
-            label: __('setup.cli.admin.email'),
-            required: true,
-            validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL) ? __('setup.cli.validation.invalid_email') : null,
-        );
+        $this->displayHeader();
 
         if (! $this->verifyRecoveryKey()) {
             return self::FAILURE;
         }
+
+        $this->displayGuide();
+        note(__('admin.section_account'));
+
+        $email = $this->argument('email') ?? text(
+            label: __('admin.field_email'),
+            required: true,
+            validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL) ? __('admin.recover.invalid_email') : null,
+        );
 
         $isReset = $this->option('reset');
         $userExists = User::where('email', $email)->exists();
@@ -64,7 +60,7 @@ class RecoverSuperAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('setup.cli.admin_already_exists', ['email' => $email]));
+            error(__('admin.recover.already_exists', ['email' => $email]));
 
             return self::FAILURE;
         }
@@ -78,27 +74,31 @@ class RecoverSuperAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('setup.cli.admin_not_found', ['email' => $email]));
+            error(__('admin.recover.not_found', ['email' => $email]));
 
             return self::FAILURE;
         }
 
+        note($isReset ? __('admin.recover.section_reset') : __('admin.recover.section_set_password'));
+
         $password = password(
-            label: $isReset ? __('setup.cli.admin.new_password') : __('setup.cli.admin.password'),
+            label: $isReset ? __('admin.field_new_password') : __('admin.field_password'),
             required: true,
-            validate: fn (string $value) => strlen($value) < 8 ? __('setup.cli.validation.password_min') : null,
+            validate: fn (string $value) => strlen($value) < 8 ? __('admin.recover.password_min') : null,
         );
 
         $confirmPassword = password(
-            label: __('setup.cli.admin.confirm_password'),
+            label: __('admin.field_confirm_password'),
             required: true,
         );
 
         if ($password !== $confirmPassword) {
-            error(__('setup.cli.password_mismatch'));
+            error(__('admin.recover.password_mismatch'));
 
             return self::FAILURE;
         }
+
+        $this->displaySeparator();
 
         if (! $this->confirmRecovery($email, $isReset)) {
             return self::FAILURE;
@@ -119,7 +119,7 @@ class RecoverSuperAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            $this->displayCredentials($user, $password, $isReset);
+            $this->displayResult($user, $isReset);
 
             return self::SUCCESS;
         } catch (\Throwable $e) {
@@ -136,28 +136,40 @@ class RecoverSuperAdminCommand extends Command
         }
     }
 
+    private function displayHeader(): void
+    {
+        $this->newLine();
+        intro(__('admin.title'));
+        $this->line('  <fg=gray>'.__('admin.recover.subtitle').'  '.__('admin.version', ['version' => AppInfo::version()]).'</>');
+        $this->newLine();
+    }
+
+    private function displayGuide(): void
+    {
+        $this->line('  <fg=gray>'.__('admin.recover.guide').'</>');
+        $this->newLine();
+    }
+
+    private function displaySeparator(): void
+    {
+        $this->newLine();
+        $this->line('  <fg=gray>'.str_repeat('─', 48).'</>');
+        $this->newLine();
+    }
+
     private function verifyRecoveryKey(): bool
     {
         $key = $this->option('key');
 
         if ($key === null || $key === '') {
-            error(__('setup.cli.recovery_key_required'));
+            error(__('admin.recover.key_required'));
 
             return false;
         }
 
         $storedSetup = Setup::latest('created_at')->first();
-        $storedKey = $storedSetup?->recovery_key;
-        $keyValid = false;
-
-        if ($storedKey !== null) {
-            try {
-                $keyValid = hash_equals(Crypt::decryptString($storedKey), $key);
-            } catch (\Throwable $e) {
-                Log::warning('Recovery key decryption failed', ['error' => $e->getMessage()]);
-                $keyValid = false;
-            }
-        }
+        $storedHash = $storedSetup?->recovery_key;
+        $keyValid = $storedHash !== null && Hash::check($key, $storedHash);
 
         if (! $keyValid) {
             SmartLogger::warning('super_admin_recovery_invalid_key')
@@ -166,7 +178,7 @@ class RecoverSuperAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('setup.cli.recovery_key_invalid'));
+            error(__('admin.recover.key_invalid'));
 
             return false;
         }
@@ -176,17 +188,20 @@ class RecoverSuperAdminCommand extends Command
 
     private function confirmRecovery(string $email, bool $isReset): bool
     {
-        $mode = $isReset ? __('setup.cli.reset_mode') : __('setup.cli.create_mode');
+        $mode = $isReset
+            ? __('admin.recover.confirm_mode_reset')
+            : __('admin.recover.confirm_mode_create');
 
-        warning(__('setup.cli.recovery_confirmation_warning', ['mode' => $mode, 'email' => $email]));
+        $this->newLine();
+        warning(__('admin.recover.confirm_warning', ['mode' => $mode, 'email' => $email]));
 
         $confirmation = text(
-            label: __('setup.cli.recovery_confirmation_prompt'),
+            label: __('admin.recover.confirm_prompt'),
             required: true,
         );
 
         if ($confirmation !== $email) {
-            error(__('setup.cli.recovery_aborted'));
+            error(__('admin.recover.aborted'));
 
             return false;
         }
@@ -194,15 +209,15 @@ class RecoverSuperAdminCommand extends Command
         return true;
     }
 
-    private function displayCredentials(User $user, string $password, bool $isReset): void
+    private function displayResult(User $user, bool $isReset): void
     {
         $this->newLine();
-        $message = $isReset ? __('setup.cli.recovery_success') : __('setup.cli.creation_success');
+        $message = $isReset ? __('admin.recover.success_reset') : __('admin.recover.success_create');
         info($message);
-        $this->line("  Email: <fg=cyan>{$user->email}</>");
-        $this->line("  Username: <fg=cyan>{$user->username}</>");
-        $this->line("  Password: <fg=yellow>{$password}</>");
         $this->newLine();
-        warning(__('setup.cli.change_password_warning'));
+        $this->line('  <fg=yellow>'.__('admin.field_email_result').'</>  <fg=cyan>'.$user->email.'</>');
+        $this->line('  <fg=yellow>'.__('admin.field_username').'</> <fg=cyan>'.$user->username.'</>');
+        $this->newLine();
+        warning(__('admin.recover.change_password'));
     }
 }

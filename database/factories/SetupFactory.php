@@ -6,7 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Setup;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends Factory<Setup>
@@ -46,7 +46,7 @@ class SetupFactory extends Factory
     public function withRecoveryKey(): static
     {
         return $this->state(fn (array $attributes) => [
-            'recovery_key' => Crypt::encryptString('admin-recovery-key-2026'),
+            'recovery_key' => Hash::make('admin-recovery-key-2026'),
         ]);
     }
 }

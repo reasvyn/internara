@@ -145,7 +145,7 @@ When the administrator submits Step 6, the `finish()` method executes this seque
 
 5. FinalizeSetupAction::execute()
    └── Setup::update(['is_installed' => true])
-   └── Setup::generateRecoveryKey() → encrypted key
+   └── Setup::generateRecoveryKey() → hashed key
    └── Setup::invalidateToken() → setup URL no longer works
    └── Dispatches SetupFinalized domain event
    └── Clears setup session data

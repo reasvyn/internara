@@ -227,15 +227,15 @@ php artisan setup:install
 
 After completion:
 - System marked installed in the database
-- 64-character encrypted recovery key generated (shown once)
+- 64-character hashed recovery key generated (shown once)
 - One-time setup URL invalidated
 - `SetupFinalized` domain event dispatched
 
 #### Post-Installation
 
 ```bash
-php artisan setup:super-admin       # Create additional super admin
-php artisan setup:recover-super-admin # Recover lost super admin access
+php artisan admin:create       # Create additional super admin
+php artisan admin:recover       # Recover lost super admin access
 php artisan system:health           # Check system readiness
 ```
 
