@@ -7,7 +7,12 @@
         <x-mary-button :label="__('company.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
-    <x-slot:extraMenu></x-slot:extraMenu>
+    <x-slot:extraMenu>
+        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" onclick="document.getElementById('import-csv').click()" />
+        <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" wire:click="downloadTemplate" />
+    </x-slot:extraMenu>
 
     <x-slot:stats>
         <x-widget::stat icon="o-building-office-2" :label="__('company.stats.total')" :value="$this->stats['total']" />

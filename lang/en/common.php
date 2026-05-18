@@ -44,6 +44,8 @@ return [
         'filter' => 'Filter',
         'filters' => 'Filters',
         'import' => 'Import',
+        'import_invalid' => 'Invalid CSV format. The file must have a "name" column.',
+        'import_summary' => ':created created, :skipped skipped.',
         'export' => 'Export',
         'export_selected' => 'Export Selected',
         'template' => 'Download Template',
@@ -72,4 +74,11 @@ return [
         'verified' => 'Verified',
         'revision_required' => 'Revision Required',
     ],
+
+    'name' => 'Name',
+    'address' => 'Address',
+    'phone' => 'Phone',
+    'email' => 'Email',
+    'website' => 'Website',
+    'description' => 'Description',
 ];

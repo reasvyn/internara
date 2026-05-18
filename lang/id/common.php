@@ -44,6 +44,8 @@ return [
         'filter' => 'Filter',
         'filters' => 'Filter',
         'import' => 'Impor',
+        'import_invalid' => 'Format CSV tidak valid. File harus memiliki kolom "name".',
+        'import_summary' => ':created dibuat, :skipped dilewati.',
         'export' => 'Ekspor',
         'export_selected' => 'Ekspor Terpilih',
         'template' => 'Unduh Template',
@@ -72,4 +74,11 @@ return [
         'verified' => 'Terverifikasi',
         'revision_required' => 'Butuh Revisi',
     ],
+
+    'name' => 'Nama',
+    'address' => 'Alamat',
+    'phone' => 'Telepon',
+    'email' => 'Email',
+    'website' => 'Situs Web',
+    'description' => 'Deskripsi',
 ];
