@@ -7,11 +7,7 @@
         <x-mary-button :label="__('company.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
-    <x-slot:extraMenu>
-        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" />
-        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" />
-    </x-slot:extraMenu>
+    <x-slot:extraMenu></x-slot:extraMenu>
 
     <x-slot:stats>
         <x-widget::stat icon="o-building-office-2" :label="__('company.stats.total')" :value="$this->stats['total']" />
@@ -20,10 +16,12 @@
     </x-slot:stats>
 
     <x-slot:filters>
-        <x-mary-select
+        <x-mary-input
             wire:model.live="filters.industry_sector"
             :placeholder="__('company.industry_sector')"
-            :options="['Technology' => 'Technology', 'Manufacturing' => 'Manufacturing', 'Finance' => 'Finance', 'Healthcare' => 'Healthcare', 'Education' => 'Education', 'Retail' => 'Retail', 'Other' => 'Other']"
+            icon="o-magnifying-glass"
+            clearable
+            class="sm:max-w-xs"
         />
     </x-slot:filters>
 
