@@ -120,11 +120,11 @@ class RolePermissionSeeder extends Seeder
     private function roles(): array
     {
         return [
-            \App\Enums\Auth\Role::SUPER_ADMIN->value => [
+            \App\Domain\Auth\Enums\Role::SUPER_ADMIN->value => [
                 // Super Admin gets all permissions
                 'all' => true,
             ],
-            \App\Enums\Auth\Role::ADMIN->value => [
+            \App\Domain\Auth\Enums\Role::ADMIN->value => [
                 // Admin gets most permissions except system-level ones
                 'users.view',
                 'users.create',
@@ -171,7 +171,7 @@ class RolePermissionSeeder extends Seeder
                 'settings.edit',
                 'dashboard.admin',
             ],
-            \App\Enums\Auth\Role::TEACHER->value => [
+            \App\Domain\Auth\Enums\Role::TEACHER->value => [
                 'students.view',
                 'students.create',
                 'students.edit',
@@ -199,7 +199,7 @@ class RolePermissionSeeder extends Seeder
                 'notifications.view',
                 'dashboard.teacher',
             ],
-            \App\Enums\Auth\Role::STUDENT->value => [
+            \App\Domain\Auth\Enums\Role::STUDENT->value => [
                 'companies.view',
                 'internships.view',
                 'assignments.view',
@@ -215,7 +215,7 @@ class RolePermissionSeeder extends Seeder
                 'notifications.view',
                 'dashboard.student',
             ],
-            \App\Enums\Auth\Role::SUPERVISOR->value => [
+            \App\Domain\Auth\Enums\Role::SUPERVISOR->value => [
                 'students.view',
                 'companies.view',
                 'internships.view',
