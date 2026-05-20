@@ -1,109 +1,83 @@
-# Access Control
+# Role-Based Access Control
 
-Internara uses **role-based access control (RBAC)** powered by `spatie/laravel-permission`.
+## Role Hierarchy Design
 
-## Two Role Families
+The application defines five user roles in a flat hierarchy: super_admin,
+admin, teacher, supervisor, and student. These are not arranged in a tree
+where each role inherits the permissions of the roles below it. Instead,
+each role has its own explicit set of permissions, and the super_admin role
+bypasses all permission checks entirely.
 
-Roles are categorized into two families, each serving a distinct purpose:
+Super admins manage the application infrastructure — they configure settings,
+manage all user accounts, and have unrestricted access. There should be very
+few super admin accounts.
 
-| Family | Role | Used for |
-|--------|------|----------|
-| **User Role** | `super_admin` | Route middleware, authentication, permission assignment |
-| **User Role** | `admin` | Route middleware, authentication, permission assignment |
-| **User Role** | `teacher` | Route middleware, authentication, permission assignment |
-| **User Role** | `student` | Route middleware, authentication, permission assignment |
-| **User Role** | `supervisor` | Route middleware, authentication, permission assignment |
-| **Functional Role** | `admin` (contextual) | Business logic grouping — resolves to `super_admin` + `admin` |
-| **Functional Role** | `mentor` | Business logic grouping — resolves to `teacher` + `supervisor` |
-| **Functional Role** | `mentee` | Business logic grouping — resolves to `student` |
+Admins handle school-level operations: manage users, internships, companies,
+departments, and the operational aspects of the internship program. They have
+broad but not unrestricted access.
 
-### When to Use Each Family
+Teachers provide academic supervision: they can view and manage student
+assignments and assessments, verify journals, and mentor students during
+their internship.
 
-| Context | Use | Example |
-|---------|-----|---------|
-| **Route middleware** | User Roles only | `->middleware(['auth', 'role:teacher'])` |
-| **Policy/Gate checks** | User Roles | `$user->hasRole('super_admin')` |
-| **Permission assignment** | User Roles only | `$user->assignRole('student')` |
-| **DB queries scoping** | User Roles | `User::role('supervisor')->get()` |
-| **Business logic in Actions** | Functional Roles preferred | `$role->is(Role::MENTOR)` |
-| **Feature gating by phase** | Functional Roles | `Period::current()->participants(Role::MENTEE)` |
-| **Dashboard/route redirect** | Functional Roles | `getDashboardForUser()` returns per-functional-role |
-| **Entity/business rules** | Functional Roles | `MentorRole::canVerifySupervisionLog()` |
+Supervisors provide industry-side supervision: they register attendance,
+verify journals from the company perspective, and evaluate student
+performance at the placement site.
 
-### Key Principle
+Students are the participants: they submit assignments, write journals,
+clock attendance, and view their own records.
 
-> **Functional Roles never appear in route middleware.** They are logical groupings resolved at runtime. Route security always uses concrete User Roles.
+A second family of functional roles (Admin, Mentor, Mentee) exists for
+business logic only. These are logical groupings resolved at runtime — they
+are never stored in the database and never used in route middleware. A Mentor
+resolves to teacher + supervisor; a Mentee resolves to student. This
+separation keeps the route security layer simple (concrete roles only) while
+allowing Actions to write role-agnostic business logic.
 
-```php
-// ✅ CORRECT — route uses User Roles
-Route::prefix('teacher')
-    ->middleware(['auth', 'role:teacher'])
-    ->group(fn () => /* ... */);
+## Why Flat Roles Instead of Hierarchical Permissions
 
-// ✅ CORRECT — business logic uses Functional Roles
-if (Role::functionalRolesFor($user->role())->contains(Role::MENTOR)) {
-    // mentor-specific logic
-}
+A hierarchical permission system (where each role inherits from a parent) is
+tempting but leads to unexpected behavior. When a permission is added to a
+higher role, all subordinate roles implicitly gain it — which may or may not
+be desired. When a permission is removed from a higher role, the effect on
+child roles is unclear. Explicit flat role definitions eliminate this
+ambiguity. Each role's capabilities are enumerated and reviewed.
 
-// ❌ WRONG — never use Functional Roles in middleware
-// ->middleware(['auth', 'role:mentor'])  // 'mentor' is not a DB role
-```
+## How Gate::before Bypass Works
 
-## Role Definitions
+Laravel's authorization system evaluates policies for each ability check.
+The `Gate::before` callback intercepts every authorization check before the
+policy is consulted. For super_admin users, this callback returns `true`,
+granting access to everything. For all other users, it returns `null`,
+which means "I have no opinion — let the policy decide." This is distinct
+from returning `false`, which would deny access even if the policy would
+grant it.
 
-| User Role | Domain | Functional Role | Purpose |
-|-----------|--------|-----------------|---------|
-| `super_admin` | Admin | Admin | System infrastructure, global configuration, user lifecycle |
-| `admin` | Admin | Admin | School-level management |
-| `teacher` | Mentor | Mentor | Academic supervision and assessment |
-| `student` | Mentee | Mentee | Internship participants |
-| `supervisor` | Mentor | Mentor | Industry supervisors and evaluation |
+This pattern means super_admin is not a role that has "all permissions"
+assigned to it in the database. It simply skips the permission system
+entirely. This is more efficient and guarantees that super_admin never
+accidentally lacks a permission.
 
-Role labels are translatable via language files.
+## What CheckRoleMiddleware Does
 
-## Enforcement Layers
+Route-level role verification is handled by `CheckRoleMiddleware`. This
+middleware intercepts requests after authentication and checks whether the
+authenticated user has at least one of the required roles. It accepts
+pipe-delimited role names (e.g., `super_admin|admin`). If the user lacks any
+of the required roles, the middleware returns a 403 response for
+authenticated users or redirects to login for unauthenticated requests.
 
-| Layer | Mechanism |
-|-------|-----------|
-| Routes | Middleware: `->middleware(['auth', 'role:super_admin|admin'])` |
-| Livewire | Policy, Gate checks, or `boot()` authorization before mutations |
-| Actions | Authority verification over target data |
-| Policies | Policy classes using shared `BasePolicy` with `AuthorizesRoles` and `AuthorizesOwnership` traits |
+The middleware logs unauthorized access attempts for security monitoring.
+It is applied to route groups in `routes/web.php` — each domain's routes are
+gated by the roles that should have access.
 
-Users with the `super_admin` role bypass all Gate checks via `Gate::before`.
+## Where to Find It
 
-## Enum Reference
-
-Both role families are defined in `App\Enums\Auth\Role`:
-
-```php
-// User Roles
-Role::SUPER_ADMIN  // 'super_admin'
-Role::ADMIN        // 'admin'
-Role::TEACHER      // 'teacher'
-Role::STUDENT      // 'student'
-Role::SUPERVISOR   // 'supervisor'
-
-// Functional Roles
-Role::MENTOR       // 'func_mentor' → resolves to [teacher, supervisor]
-Role::MENTEE       // 'func_mentee' → resolves to [student]
-
-// Grouping methods
-Role::userRoles()        // all 5 user roles
-Role::functionalRoles()  // [admin, mentor, mentee]
-$role->isUserRole()      // true for user roles, false for functional
-$role->isFunctionalRole()
-$role->resolvesTo()      // underlying user roles
-Role::functionalRolesFor($userRole)  // e.g., TEACHER → [MENTOR]
-$role->is(Role::MENTOR)  // true if this role resolves to MENTOR
-```
-
-## Account Lifecycle
-
-User accounts follow a state machine with 8 statuses (PROVISIONED → ACTIVATED → VERIFIED → [RESTRICTED | SUSPENDED | INACTIVE] → ARCHIVED, with PROTECTED as an immutable status for super admins). See [Account Lifecycle](lifecycles/account-lifecycle.md) for the full state definitions and transition rules.
-
-## Security Principles
-
-- **IDOR protection** — every request verifies ownership of the target resource
-- **Least privilege** — users receive only the permissions required for their role
-- **Audit trail** — all role and permission changes are logged
+Roles and permissions are defined in
+`app/Domain/Auth/Enums/Role.php` and
+`app/Domain/Auth/Enums/Permission.php`. The seeder is at
+`database/seeders/RolePermissionSeeder.php`. The middleware is at
+`app/Domain/Auth/Http/Middleware/CheckRoleMiddleware.php`. The
+`Gate::before` registration is in `app/Providers/AppServiceProvider.php`.
+Policies are in `app/Domain/*/Policies/`. The spatie package configuration
+is in `config/permission.php`.

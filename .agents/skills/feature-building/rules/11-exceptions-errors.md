@@ -1,58 +1,27 @@
-# Exceptions & Errors
+# Exception & Error Handling
 
-## Hierarchy
+## What It Enforces
 
-All exceptions extend `AppException` (abstract, extends `RuntimeException`):
+The project uses a structured exception hierarchy: `ValidationException` for format/constraint validation, `RejectedException` for business rule violations, and `RuntimeException` for infrastructure failures. Debug functions (`dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()`) are forbidden in application code.
 
-```
-AppException
-├── ActionException       // Action execution failures
-├── DomainException       // Business rule violations
-├── InfrastructureException  // DB, filesystem, external service failures
-└── PresentationException    // UI/rendering errors
-```
+## Why It Matters
 
-## Error Handling in Actions
+Different failure modes propagate to different layers:
+- `ValidationException` is caught by Livewire's error bag and shown as inline field errors
+- `RejectedException` is caught by component try/catch and shown as user-friendly flash messages
+- `RuntimeException` indicates an infrastructure problem that should be logged and shown as a generic error
 
-Use the `HandlesActionErrors` trait for consistent wrapping:
+A clear exception chain means every layer knows what to expect. Components don't need to parse error messages to determine the failure type — the exception class tells them.
 
-```php
-class CreateUserAction
-{
-    use HandlesActionErrors;
+## When It Applies
 
-    public function execute(array $data): User
-    {
-        return $this->withErrorHandling(function () use ($data) {
-            return DB::transaction(function () use ($data) {
-                // ...
-            });
-        }, 'Failed to create user');
-    }
-}
-```
+The full exception chain during a request:
+1. Livewire validates (UX layer, inline errors)
+2. Action validates authoritatively (`ValidationException` if format fails)
+3. Action checks Entity rules (`RejectedException` if business rule fails)
+4. Action wraps persistence in transaction (`HandlesActionErrors` catches infrastructure failures)
+5. Component catches exceptions and shows appropriate feedback
 
-## Business Rule Violations
+Architecture tests enforce the debug function ban. Never use `dd()`, `dump()`, `ray()`, or similar in committed code.
 
-Throw `RuntimeException` (or `DomainException`) from Actions when a business rule is violated:
-
-```php
-if (! $year->asAcademicYearState()->canBeDeleted()) {
-    throw new RuntimeException('Cannot delete an active academic year.');
-}
-```
-
-The Livewire component catches these and shows a flash message:
-
-```php
-try {
-    $action->execute($year);
-    flash()->success(__('deleted'));
-} catch (RuntimeException $e) {
-    flash()->error($e->getMessage());
-}
-```
-
-## Debug Functions
-
-Never use `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, or `die()` in application code (enforced by architecture tests).
+Exceptions: Debug functions are acceptable in test files and local-only development. The `RejectedException` is only for business rule violations — infrastructure problems should use `RuntimeException`.

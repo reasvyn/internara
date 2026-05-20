@@ -1,65 +1,28 @@
-# Routing & Menus
+# Routing & Menu Registration
 
-## Route Naming
+## What It Enforces
 
-All routes use dot-separated hierarchical names via `->name()`:
-```php
-Route::livewire('/users', UserManager::class)->name('admin.users');
-Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
-```
+Routes are organized by domain in `routes/web/{domain}.php` files, required from `routes/web.php`. Routes use dot-separated hierarchical names via `->name()`. Menu items are defined in `config/menu.php` grouped by internship lifecycle phase.
 
-Format: `{prefix}.{resource}.{action}`
+## Why It Matters
 
-## Route Organization
+Domain-split route files keep routing concerns close to their domain. Dot-separated names provide a predictable, hierarchical naming scheme. Role-based route groups enforce authorization at the routing layer, reducing per-method checks.
 
-Routes are organized by domain in `routes/web.php`:
+## When It Applies
 
-```php
-// Public (guest)
-Route::middleware('guest')->group(function () { ... });
+Every new feature with a UI route must:
+- Define the route in the appropriate `routes/web/{domain}.php` file
+- Use dot-separated name: `{prefix}.{resource}.{action}`
+- Place the route in the correct role group (guest, auth, admin, student, mentor)
+- Register a menu item in `config/menu.php` with route name, icon, and translation key
 
-// Authenticated
-Route::middleware('auth')->group(function () { ... });
+Route organization by role:
+- Guest routes: no middleware beyond `web`
+- Authenticated routes: `auth` middleware
+- Admin routes: `prefix('admin')` + `role:super_admin|admin` middleware
+- Student routes: `prefix('student')` + `role:student` middleware
+- Mentor routes: `prefix('supervision')` + `role:teacher|supervisor` middleware
 
-// Admin
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:super_admin|admin'])->group(function () { ... });
+Livewire components use `Route::livewire()` for direct component binding without a Controller.
 
-// Student
-Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])->group(function () { ... });
-
-// Teacher
-Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:teacher'])->group(function () { ... });
-
-// Supervisor
-Route::prefix('supervisor')->name('supervisor.')->middleware(['auth', 'role:supervisor'])->group(function () { ... });
-
-// Supervision (teacher + supervisor)
-Route::prefix('supervision')->name('supervision.')->middleware(['auth', 'role:teacher|supervisor'])->group(function () { ... });
-```
-
-## Middleware
-
-| Middleware | Purpose |
-|---|---|
-| `auth` | Authenticated sessions |
-| `guest` | Non-authenticated |
-| `setup.protected` | Setup wizard flow |
-| `role:{role1\|role2}` | Role-based gating (pipe-delimited OR) |
-
-## Sidebar Menu
-
-Menu items are defined in `config/menu.php`. Groups ordered by internship lifecycle:
-
-```php
-'foundation' => [/* School, Academic Years, Departments */],
-'internship' => [/* Programs, Companies, Placements */],
-'registration' => [/* Applications, Registrations */],
-'people' => [/* Users by role */],
-'assessment' => [/* Rubrics, Submissions */],
-'operations' => [/* Attendance, Assignments, Logbook */],
-// Role-specific portals...
-'reports' => [/* Reports, Lifecycle, GDPR */],
-'system' => [/* Settings, Handbooks, Schedules */],  // Config at bottom
-```
-
-Each menu item: `['route' => 'route.name', 'icon' => 'o-icon-name', 'label' => 'translation.key']`
+Exceptions: API routes (if any) follow their own conventions with API versioning.

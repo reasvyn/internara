@@ -1,70 +1,23 @@
-# Caching Best Practices
+# Caching
 
-## Use `Cache::remember()` Instead of Manual Get/Put
+## What It Enforces
 
-Cleaner cache-aside pattern that removes boilerplate. use `Cache::lock()` for race conditions.
+`Cache::remember()` replaces manual get/put patterns. `Cache::flexible()` provides stale-while-revalidate for high-traffic keys. `Cache::add()` handles atomic conditional writes. Cache tags enable grouped invalidation. Read operations are cached; write operations invalidate affected caches.
 
-Incorrect:
-```php
-$val = Cache::get('stats');
-if (! $val) {
-    $val = $this->computeStats();
-    Cache::put('stats', $val, 60);
-}
-```
+## Why It Matters
 
-Correct:
-```php
-$val = Cache::remember('stats', 60, fn () => $this->computeStats());
-```
+Manual get/put patterns have a race condition: two requests can both miss the cache and simultaneously recompute the value. `Cache::remember()` atomically checks, computes, and stores. `Cache::flexible()` goes further by serving stale data while a background process refreshes the cache — preventing the thundering herd problem where every concurrent user hits a cold cache.
 
-## Use `Cache::flexible()` for Stale-While-Revalidate
+`Cache::add()` atomically checks and sets — preventing race conditions in mutex-like scenarios. `Cache::memo()` deduplicates within a single request, reducing cache store round trips.
 
-On high-traffic keys, one user always gets a slow response when the cache expires. `flexible()` serves slightly stale data while refreshing in the background.
+## When It Applies
 
-Incorrect: `Cache::remember('users', 300, fn () => User::all());`
+- Cache expensive queries and computations: `Cache::remember('key', $seconds, $callback)`
+- High-traffic keys: `Cache::flexible('key', [300, 600], $callback)` for stale-while-revalidate
+- Atomic locks: `Cache::lock('key', $seconds)->block($seconds, $callback)`
+- Grouped invalidation: `Cache::tags(['group'])->flush()` (Redis/Memcached/DynamoDB only)
+- Per-request memoization: `once(fn () => ...)` without cache store
+- Invalidate on write: `Cache::forget('key')` in Actions after mutations
+- Paginated results: only cache when data is stale-tolerant
 
-Correct: `Cache::flexible('users', [300, 600], fn () => User::all());` — fresh for 5 min, stale-but-served up to 10 min, refreshes via deferred function.
-
-## Use `Cache::memo()` to Avoid Redundant Hits Within a Request
-
-If the same cache key is read multiple times per request (e.g., a service called from multiple places), `memo()` stores the resolved value in memory.
-
-`Cache::memo()->get('settings');` — 5 calls = 1 Redis round-trip instead of 5.
-
-## Use Cache Tags to Invalidate Related Groups
-
-Without tags, invalidating a group of entries requires tracking every key. Tags let you flush atomically. Only works with `redis`, `memcached`, `dynamodb` — not `file` or `database`.
-
-```php
-Cache::tags(['user-1'])->flush();
-```
-
-## Use `Cache::add()` for Atomic Conditional Writes
-
-`add()` only writes if the key does not exist — atomic, no race condition between checking and writing.
-
-Incorrect: `if (! Cache::has('lock')) { Cache::put('lock', true, 10); }`
-
-Correct: `Cache::add('lock', true, 10);`
-
-## Use `once()` for Per-Request Memoization
-
-`once()` memoizes a function's return value for the lifetime of the object (or request for closures). Unlike `Cache::memo()`, it doesn't hit the cache store at all — pure in-memory.
-
-```php
-public function roles(): Collection
-{
-    return once(fn () => $this->loadRoles());
-}
-```
-
-Multiple calls return the cached result without re-executing. Use `once()` for expensive computations called multiple times per request. Use `Cache::memo()` when you also want cross-request caching.
-
-## Configure Failover Cache Stores in Production
-
-If Redis goes down, the app falls back to a secondary store automatically.
-
-```php
-'failover' => ['driver' => 'failover', 'stores' => ['redis', 'database']],
-```
+Exceptions: User-specific or highly dynamic data may not benefit from caching.

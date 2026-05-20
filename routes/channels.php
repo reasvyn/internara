@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.Domain.User.Models.User.{userId}', function (User $user, string $userId) {

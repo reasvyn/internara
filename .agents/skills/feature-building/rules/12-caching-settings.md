@@ -1,43 +1,25 @@
 # Caching & Settings
 
-## Three-Tier Configuration
+## What It Enforces
 
-| Source | Purpose | Access |
-|---|---|---|
-| `config()` | Infrastructure defaults (DB, queue, drivers) | `config('file.key')` |
-| `setting()` | Dynamic business rules | `setting('key')` |
-| `app_info()` | Composer.json metadata | `app_info('key')` |
+Settings are read through `setting()` helper (which uses cached storage), written through `SetSettingAction` (which handles cache invalidation). Configuration values use `config()` for infrastructure defaults. Cache read operations and invalidate on writes.
 
-## Settings Resolution Chain
+## Why It Matters
 
-```
-Runtime Overrides → AppInfo → Settings DB (cached) → Laravel Config → Default
-```
+Settings need to be fast (cached) and consistent (invalidated on write). The `SetSettingAction` ensures that updating a single setting clears all affected caches (`settings.{key}`, `settings.all`, and group caches). Direct table writes bypass this invalidation and cause stale data to be served.
 
-## Caching Behavior
+## When It Applies
 
-- Settings are cached forever via `Cache::rememberForever()`
-- Individual keys: `settings.{key}`
-- All settings: `settings.all`
-- Group queries: `settings.group.{name}`
+- Read settings: use `setting('key', 'default')` or `setting('key', 'default', skipCache: true)`
+- Write settings: use `SetSettingAction::execute()` or `executeBatch()` — never write to the settings table directly
+- Configuration values: use `config('app.name')` for Laravel config, never `env()` outside config files
 
-## Cache Invalidation
+Cache strategy:
+- `Cache::remember()` for standard caching
+- `Cache::flexible()` for stale-while-revalidate on high-traffic data
+- Cache tags for grouped invalidation (Redis/Memcached/DynamoDB only)
+- Invalidate on write in Actions
+- `Cache::memo()` for same-request deduplication
+- `once()` for per-request memoization without cache store
 
-- **Single setting update**: clears `{key}`, group, and `all` caches
-- **Group update**: clears all keys in the group + group + all caches
-- **Full flush**: `php artisan cache:clear`
-
-## Writing Settings
-
-Always use `SetSettingAction` — never write to the `settings` table directly:
-
-```php
-app(SetSettingAction::class)->execute('key', 'value');
-app(SetSettingAction::class)->executeBatch(['key1' => 'value1', 'key2' => 'value2']);
-```
-
-## Bypassing Cache
-
-```php
-setting('key', skipCache: true);
-```
+Exceptions: Bypassing cache with `skipCache: true` is acceptable for admin interfaces where freshness matters more than performance.

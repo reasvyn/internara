@@ -1,69 +1,28 @@
 # Notifications & Events
 
-## Flash Messages
+## What It Enforces
 
-Use PHPFlasher for immediate action feedback (save, delete, error):
+Flash messages use PHPFlasher (`flash()->success()`) — never maryUI Toast methods. Notifications implement `ShouldQueue` and use `Queueable`. Domain events are dispatched from Actions, never from Livewire components.
 
-```php
-flash()->success(__('internship.save_success'));
-flash()->error(__('setup.wizard.requirements_not_met'));
-flash()->warning(__('No records selected.'));
-```
+## Why It Matters
 
-Never use maryUI Toast methods (`$this->success()`, `$this->error()`, etc.).
+PHPFlasher provides consistent, styled flash messages across the application. Queuing notifications prevents user-facing requests from waiting on email delivery or broadcast. Dispatching events from Actions ensures side effects are atomic with the operation that triggered them.
 
-## Notification Classes
+## When It Applies
 
-All notifications implement `ShouldQueue` and use `Queueable`:
+Every notification should:
+- Implement `ShouldQueue` for async delivery
+- Route through channels: mail, broadcast, and database (CustomDatabaseChannel)
+- Use public constructor promotion (not private/protected) for notification parameters
 
-```php
-class WelcomeNotification extends Notification implements ShouldQueue
-{
-    use Queueable;
+Every event should:
+- Be dispatched from the Action's transaction, not from the Livewire component
+- Use public readonly properties for event data
+- Use `ShouldDispatchAfterCommit` when inside a transaction to prevent listeners from reading uncommitted data
 
-    public function __construct(
-        public string $password,  // public promotion
-    ) {}
+Flash messages:
+- `flash()->success(__('domain.created'))` for success
+- `flash()->error(__('domain.cannot_delete'))` for errors
+- `flash()->warning(__('common.no_records_selected'))` for warnings
 
-    public function via($notifiable): array
-    {
-        return ['mail', 'broadcast', CustomDatabaseChannel::class];
-    }
-}
-```
-
-### Channels
-
-Every domain notification routes through three channels:
-1. `mail` — external email
-2. `broadcast` — real-time browser notification
-3. `CustomDatabaseChannel::class` — in-app notification table
-
-### Constructor
-
-Use `public` promotion for notification constructor parameters (not `private`/`protected`).
-
-## Domain Events
-
-Dispatch events for key state transitions:
-
-```php
-event(new InternshipCreated($internship, auth()->user()));
-event(new SetupFinalized(schoolId: $id, installedAt: now()));
-```
-
-Events are dispatched from Actions, never from Livewire components.
-
-## In-App Notifications
-
-Use `SendNotificationAction` for custom in-app notifications:
-
-```php
-app(SendNotificationAction::class)->execute(
-    userId: $user->id,
-    type: 'internship_approved',
-    title: 'Internship Approved',
-    message: 'Your internship has been approved.',
-    link: route('internships.show', $internship->id),
-);
-```
+Exceptions: None. These are universal conventions.

@@ -1,77 +1,29 @@
 # Structure & Naming
 
-## File Location
+## What It Enforces
 
-```
-app/Actions/
-├── {Domain}/
-│   ├── {Verb}{Noun}Action.php
-│   └── ...
-├── Core/
-│   └── LogAuditAction.php
-└── Shared/
-    └── ...
-```
+Actions follow a strict naming convention: `{Verb}{Noun}Action.php` in `app/Domain/{Domain}/Actions/`. The verb describes the operation (Create, Update, Delete, Activate, Finalize, Verify, etc.) and the noun describes the subject. All Actions extend `BaseAction` (which provides `transaction()`, `log()`, and `withErrorHandling()`).
 
-Examples:
-- `app/Actions/User/CreateUserAction.php`
-- `app/Actions/School/ActivateAcademicYearAction.php`
-- `app/Actions/Internship/UpdateInternshipAction.php`
-- `app/Actions/Core/LogAuditAction.php`
+## Why It Matters
 
-## Naming Conventions
+Consistent naming makes Actions discoverable by name alone. When you need to find "the thing that deletes an academic year," you know it's `DeleteAcademicYearAction` in `app/Domain/School/Actions/`. This predictability reduces search time and makes the codebase navigable without documentation.
 
-| Pattern | Example |
-|---|---|
-| `{Verb}{Noun}Action` | `CreateUserAction`, `DeleteAcademicYearAction` |
-| `{Verb}{Noun}Action` | `ActivateAcademicYearAction`, `FinalizeAssessmentAction` |
-| `{Verb}{Noun}Action` | `UploadBrandAssetAction`, `SetSettingAction` |
+The convention also prevents ambiguity. `AcademicYearAction` (without a verb) could contain multiple methods — and that violates single responsibility. `DeleteAcademicYearAction` is unambiguous about its purpose.
 
-Verbs: `Create`, `Update`, `Delete`, `Activate`, `Deactivate`, `Finalize`, `Verify`, `Submit`, `Approve`, `Reject`, `Upload`, `Set`, `Reset`, `Generate`, `Validate`, `Provision`, `Setup`, `Install`, `Recover`, `Initialize`
+## When It Applies
 
-## Method Signature
+Always. Every Action must follow the `{Verb}{Noun}Action` pattern.
 
-```php
-// Create → returns the created model
-public function execute(array $data): Model
+The file header order is also prescribed:
+1. `declare(strict_types=1)`
+2. Namespace
+3. Use statements (BaseAction, RejectedException, Model, Validator, dependencies)
+4. Class declaration extending BaseAction
+5. Constructor with `protected readonly` promotion for injected dependencies
+6. Single `execute()` method
 
-// Update → returns the updated model
-public function execute(Model $model, array $data): Model
+Return type conventions: Create returns the model, Update returns the model, Delete returns void, Toggle/activate returns the model, Complex results return array or DTO.
 
-// Delete → returns void
-public function execute(Model $model): void
+Common verbs in this project: Create, Update, Delete, Activate, Deactivate, Finalize, Verify, Submit, Approve, Reject, Upload, Set, Reset, Generate, Validate, Provision, Setup, Install, Recover, Initialize, Toggle, Lock, Unlock, Score, Evaluate, Renew, Terminate, Batch.
 
-// Action with side effects → returns result data
-public function execute(array $data): array
-
-// Toggle/activate → returns the model
-public function execute(Model $model): Model
-```
-
-## File Header Order
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Actions\{Domain};
-
-use App\Models\ModelName;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-
-class {Verb}{Noun}Action
-{
-    use HandlesActionErrors;
-
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction,
-    ) {}
-
-    public function execute(...): ...
-    {
-        // ...
-    }
-}
-```
+Exceptions: None. This is a universal convention for the project.

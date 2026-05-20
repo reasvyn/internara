@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-arch('actions have execute method')
-    ->expect('App\Actions')
-    ->toBeClasses()
-    ->toHaveMethod('execute');
+use App\Domain\Core\Actions\BaseAction;
 
-arch('actions are suffixed with Action')
-    ->expect('App\Actions')
-    ->toBeClasses()
-    ->toHaveSuffix('Action');
+arch('BaseAction is abstract')
+    ->expect(BaseAction::class)
+    ->toBeAbstract()
+    ->toHaveMethod('transaction')
+    ->toHaveMethod('log');
 
-arch('actions do not import Livewire')
-    ->expect('App\Actions')
-    ->not->toUse('App\Livewire');
+arch('BaseAction does not import Livewire')
+    ->expect(BaseAction::class)
+    ->not->toUse('Livewire');

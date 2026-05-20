@@ -1,43 +1,27 @@
-# Testing Best Practices
+# Testing
 
-## Use `LazilyRefreshDatabase` Over `RefreshDatabase`
+## What It Enforces
 
-`RefreshDatabase` migrates once per process and wraps each test in a rolled-back transaction. `LazilyRefreshDatabase` skips even that first migration if the schema is already up to date.
+Tests use Pest v4 with domain-first structure. `LazilyRefreshDatabase` over `RefreshDatabase` for speed. `assertModelExists()` over `assertDatabaseHas()` for clarity. Factory states and sequences over manual model creation. `Event::fake()` and `Http::fake()` after factory setup.
 
-## Use Model Assertions Over Raw Database Assertions
+## Why It Matters
 
-Incorrect: `$this->assertDatabaseHas('users', ['id' => $user->id]);`
+`LazilyRefreshDatabase` skips migration replay if the schema is current, saving significant time in test suites. Model assertions are clearer than raw database assertions — `assertModelExists($model)` says exactly what it checks. Factory states encapsulate common model setup patterns, reducing duplication.
 
-Correct: `$this->assertModelExists($user);`
+## When It Applies
 
-More expressive, type-safe, and fails with clearer messages.
+- Entity tests: direct instantiation, no database, no RefreshDatabase
+- Action tests: resolve from container, call execute, assert result or exception
+- Livewire tests: simulate interactions with `Livewire::test()`, assert state changes
+- Architecture tests: enforce structural rules via `arch()` expectations
 
-## Use Factory States and Sequences
+Best practices:
+- `Event::fake()` after factory creation (UUID events need to fire)
+- `Exceptions::fake()` to assert exception reporting
+- `Http::preventStrayRequests()` + `Http::fake()` for HTTP client tests
+- `Mail::assertQueued()` over `assertSent()` for queued mailables
+- `throws(RejectedException::class)` for Action tests that expect rejection
+- Datasets for repetitive validation rule testing
+- `recycle()` to share relationship instances across factories
 
-Named states make tests self-documenting. Sequences eliminate repetitive setup.
-
-Incorrect: `User::factory()->create(['email_verified_at' => null]);`
-
-Correct: `User::factory()->unverified()->create();`
-
-## Use `Exceptions::fake()` to Assert Exception Reporting
-
-Instead of `withoutExceptionHandling()`, use `Exceptions::fake()` to assert the correct exception was reported while the request completes normally.
-
-## Call `Event::fake()` After Factory Setup
-
-Model factories rely on model events (e.g., `creating` to generate UUIDs). Calling `Event::fake()` before factory calls silences those events, producing broken models.
-
-Incorrect: `Event::fake(); $user = User::factory()->create();`
-
-Correct: `$user = User::factory()->create(); Event::fake();`
-
-## Use `recycle()` to Share Relationship Instances Across Factories
-
-Without `recycle()`, nested factories create separate instances of the same conceptual entity.
-
-```php
-Ticket::factory()
-    ->recycle(Airline::factory()->create())
-    ->create();
-```
+Exceptions: `RefreshDatabase` may be needed if `LazilyRefreshDatabase` causes issues with specific test scenarios.

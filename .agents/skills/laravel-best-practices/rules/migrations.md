@@ -1,121 +1,23 @@
-# Migration Best Practices
+# Migrations
 
-## Generate Migrations with Artisan
+## What It Enforces
 
-Always use `php artisan make:migration` for consistent naming and timestamps.
+Migrations are generated via Artisan (not created manually). Foreign keys use `constrained()` for automatic naming and referential integrity. Once deployed, migrations are immutable — always create new migrations to change tables. Indexes are added in the same migration as table creation. Each migration has one concern.
 
-Incorrect (manually created file):
-```php
-// database/migrations/posts_migration.php  ← wrong naming, no timestamp
-```
+## Why It Matters
 
-Correct (Artisan-generated):
-```bash
-php artisan make:migration create_posts_table
-php artisan make:migration add_slug_to_posts_table
-```
+Artisan-generated migrations have correct timestamps and naming. `constrained()` eliminates guesswork in FK naming and ensures referential integrity. Immutability of deployed migrations means you never have to guess whether a migration was modified after running. Adding indexes at creation time prevents "deployed without indexes" performance issues.
 
-## Use `constrained()` for Foreign Keys
+## When It Applies
 
-Automatic naming and referential integrity.
+Every migration should:
+- Be generated with `php artisan make:migration`
+- Use `constrained()` for foreign keys with explicit table name when non-standard
+- Add indexes in the same migration as the column
+- Implement a reversible `down()` method
+- Separate DDL (schema changes) from DML (data manipulation) into different migrations
+- Mirror database defaults in Model `$attributes` array
 
-```php
-$table->foreignId('user_id')->constrained()->cascadeOnDelete();
+Creating a migration: `php artisan make:migration create_{table}_table` or `php artisan make:migration add_{column}_to_{table}_table`.
 
-// Non-standard names
-$table->foreignId('author_id')->constrained('users');
-```
-
-## Never Modify Deployed Migrations
-
-Once a migration has run in production, treat it as immutable. Create a new migration to change the table.
-
-Incorrect (editing a deployed migration):
-```php
-// 2024_01_01_create_posts_table.php — already in production
-$table->string('slug')->unique(); // ← added after deployment
-```
-
-Correct (new migration to alter):
-```php
-// 2024_03_15_add_slug_to_posts_table.php
-Schema::table('posts', function (Blueprint $table) {
-    $table->string('slug')->unique()->after('title');
-});
-```
-
-## Add Indexes in the Migration
-
-Add indexes when creating the table, not as an afterthought. Columns used in `WHERE`, `ORDER BY`, and `JOIN` clauses need indexes.
-
-Incorrect:
-```php
-Schema::create('orders', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained();
-    $table->string('status');
-    $table->timestamps();
-});
-```
-
-Correct:
-```php
-Schema::create('orders', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->index();
-    $table->string('status')->index();
-    $table->timestamp('shipped_at')->nullable()->index();
-    $table->timestamps();
-});
-```
-
-## Mirror Defaults in Model `$attributes`
-
-When a column has a database default, mirror it in the model so new instances have correct values before saving.
-
-```php
-// Migration
-$table->string('status')->default('pending');
-
-// Model
-protected $attributes = [
-    'status' => 'pending',
-];
-```
-
-## Write Reversible `down()` Methods by Default
-
-Implement `down()` for schema changes that can be safely reversed so `migrate:rollback` works in CI and failed deployments.
-
-```php
-public function down(): void
-{
-    Schema::table('posts', function (Blueprint $table) {
-        $table->dropColumn('slug');
-    });
-}
-```
-
-For intentionally irreversible migrations (e.g., destructive data backfills), leave a clear comment and require a forward fix migration instead of pretending rollback is supported.
-
-## Keep Migrations Focused
-
-One concern per migration. Never mix DDL (schema changes) and DML (data manipulation).
-
-Incorrect (partial failure creates unrecoverable state):
-```php
-public function up(): void
-{
-    Schema::create('settings', function (Blueprint $table) { ... });
-    DB::table('settings')->insert(['key' => 'version', 'value' => '1.0']);
-}
-```
-
-Correct (separate migrations):
-```php
-// Migration 1: create_settings_table
-Schema::create('settings', function (Blueprint $table) { ... });
-
-// Migration 2: seed_default_settings
-DB::table('settings')->insert(['key' => 'version', 'value' => '1.0']);
-```
+Exceptions: Intentionally irreversible migrations (destructive backfills) should document this clearly. Their `down()` may throw an exception explaining the fix-forward approach.

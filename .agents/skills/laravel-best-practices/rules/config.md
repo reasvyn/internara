@@ -1,73 +1,23 @@
-# Configuration Best Practices
+# Configuration
 
-## `env()` Only in Config Files
+## What It Enforces
 
-Direct `env()` calls may return `null` when config is cached.
+`env()` is called only inside `config/*.php` files. Application code uses `config()` helper. Environment checks use `App::environment()` or `app()->isProduction()`. Class constants or Enums replace magic strings. Config validation at boot catches misconfiguration early.
 
-Incorrect:
-```php
-$key = env('API_KEY');
-```
+## Why It Matters
 
-Correct:
-```php
-// config/services.php
-'key' => env('API_KEY'),
+When config is cached (`php artisan config:cache`), `env()` calls return `null` because the `.env` file is no longer loaded. All `env()` calls must be in config files so that config caching works correctly. `App::environment()` is a helper that reads from config, making it cache-safe.
 
-// Application code
-$key = config('services.key');
-```
+## When It Applies
 
-## Use Encrypted Env or External Secrets
+- `env()`: only in `config/*.php` files, never in application code
+- `config()`: everywhere else, with fallback defaults: `config('app.name', 'Internara')`
+- Environment checks: `app()->isProduction()` or `App::environment('production')`
+- Magic strings: use class constants or Enums instead of raw strings
+- Config validation: use `Config::validate()` in AppServiceProvider::boot() for critical values
+- Typed config: cast env values with `(int)`, `(bool)` in config files
+- `.env.example`: include comments explaining where to get values
 
-Never store production secrets in plain `.env` files in version control.
+Use `.env.encrypted` for production secrets or the platform's native secret store.
 
-Incorrect:
-```bash
-
-# .env committed to repo or shared in Slack
-
-STRIPE_SECRET=sk_live_abc123
-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
-```
-
-Correct:
-```bash
-php artisan env:encrypt --env=production --readable
-php artisan env:decrypt --env=production
-```
-
-For cloud deployments, prefer the platform's native secret store (AWS Secrets Manager, Vault, etc.) and inject at runtime.
-
-## Use `App::environment()` for Environment Checks
-
-Incorrect:
-```php
-if (env('APP_ENV') === 'production') {
-```
-
-Correct:
-```php
-if (app()->isProduction()) {
-// or
-if (App::environment('production')) {
-```
-
-## Use Constants and Language Files
-
-Use class constants instead of hardcoded magic strings for model states, types, and statuses.
-
-```php
-// Incorrect
-return $this->type === 'normal';
-
-// Correct
-return $this->type === self::TYPE_NORMAL;
-```
-
-If the application already uses language files for localization, use `__()` for user-facing strings too. Do not introduce language files purely for English-only apps — simple string literals are fine there.
-
-```php
-// Only when lang files already exist in the project
-return back()->with('message', __('app.article_added'));
-```
+Exceptions: None. These are universal Laravel security best practices.

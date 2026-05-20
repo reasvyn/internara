@@ -1,83 +1,19 @@
 # Entity Purity
 
-Entities are `final readonly` classes with zero framework dependencies.
+## What It Enforces
 
-## Structure
+Entities are `final readonly` classes with zero framework dependencies. No Eloquent, no Facades, no Service Container references. The only allowed framework import is `Illuminate\Database\Eloquent\Model` — and only in the `fromModel()` factory method. All state is passed in through the constructor as typed properties.
 
-```php
-final readonly class Apprentice extends BaseEntity
-{
-    public function __construct(
-        private AccountStatus $status,
-        private bool $isLocked,
-    ) {}
+## Why It Matters
 
-    public static function fromModel(Model $model): static
-    {
-        return new self(
-            status: AccountStatus::tryFrom($model->latestStatus()?->name ?? ''),
-            isLocked: $model->locked_at !== null,
-        );
-    }
+Framework dependencies make classes harder to test (they require mocking), harder to reason about (hidden side effects via Facades), and harder to reuse across contexts. A pure PHP Entity can be instantiated in a unit test with no setup, no database, and no service container. Its behavior is fully determined by its constructor arguments.
 
-    public function isSuspended(): bool
-    {
-        return $this->status === AccountStatus::SUSPENDED;
-    }
-}
-```
+The `final readonly` constraint enforces immutability. An Entity's state is set once at construction and never changes. This eliminates an entire class of bugs (accidental mutation) and makes the business rules predictable: given the same state, an Entity method always returns the same answer.
 
-## Rules
+## When It Applies
 
-### 1. Final + Readonly
-```php
-final readonly class MyEntity extends BaseEntity
-```
+Always when creating Entity classes. The factory method `fromModel(Model): static` is the only bridge between the framework world and the pure domain world. It extracts only the values the Entity needs from the Model — never passes the whole Model to the Entity.
 
-### 2. No Framework Imports
-```php
-// ❌ NOT allowed
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
-use App\Models\SomeModel;
+Entity methods return business answers, not raw data: `canLogin()`, `isTerminal()`, `requiresAction()`, `canTransitionTo()`, `canBeDeleted()`. Simple getters for Entity-owned state (like `status(): AccountStatus`) are acceptable.
 
-// ✅ Allowed (only in BaseEntity for the bridge)
-use Illuminate\Database\Eloquent\Model;
-```
-
-### 3. Constructor = All Dependencies
-```php
-public function __construct(
-    private AccountStatus $status,
-    private bool $isLocked,
-    private ?Carbon $expiresAt,
-) {}
-```
-
-All state is passed in via constructor. No hidden dependencies.
-
-### 4. Factory Method
-```php
-public static function fromModel(Model $model): static
-{
-    return new self(
-        // Extract only what the Entity needs
-        status: AccountStatus::tryFrom($model->latestStatus()?->name ?? ''),
-        isLocked: $model->locked_at !== null,
-    );
-}
-```
-
-### 5. Methods Return Business Answers
-```php
-// ✅ Good
-public function canLogin(): bool { ... }
-public function isTerminal(): bool { ... }
-public function requiresAction(): bool { ... }
-public function canTransitionTo(self $target): bool { ... }
-
-// ❌ Bad — just returns raw data
-public function status(): string { ... }
-public function isLocked(): bool { ... }  // Simple getter is fine
-```
+Exceptions: The `fromModel()` method may import `Illuminate\Database\Eloquent\Model`. That is the only exception.

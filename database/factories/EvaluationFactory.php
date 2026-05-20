@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Evaluation;
-use App\Models\Registration;
-use App\Models\User;
+use App\Domain\Evaluation\Models\Evaluation;
+use App\Domain\Registration\Models\Registration;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

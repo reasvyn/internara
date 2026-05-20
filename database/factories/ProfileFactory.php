@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Domain\School\Models\Department;
+use App\Domain\School\Models\School;
+use App\Domain\User\Models\Profile;
+use App\Domain\User\Models\User;
 use App\Enums\User\BloodType;
 use App\Enums\User\Gender;
-use App\Models\Department;
-use App\Models\Profile;
-use App\Models\School;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

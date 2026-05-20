@@ -1,36 +1,24 @@
-# Blade & Views Best Practices
+# Blade & Views
 
-## Use `$attributes->merge()` in Component Templates
+## What It Enforces
 
-Hardcoding classes prevents consumers from adding their own. `merge()` combines class attributes cleanly.
+Views mirror domain structure in `resources/views/{domain}/`. maryUI components are preferred over raw HTML. Translation keys replace hardcoded strings. Queries are never executed in views — data is passed from the component/controller.
 
-```blade
-<div {{ $attributes->merge(['class' => 'alert alert-'.$type]) }}>
-    {{ $message }}
-</div>
-```
+## Why It Matters
 
-## Use `@pushOnce` for Per-Component Scripts
+Domain-mirrored views keep template files discoverable. maryUI components provide consistent, accessible UI without reinventing HTML patterns. Translation keys make the application localizable. Prohibiting queries in views prevents N+1 and keeps presentation logic separate from data access.
 
-If a component renders inside a `@foreach`, `@push` inserts the script N times. `@pushOnce` guarantees it's included exactly once.
+## When It Applies
 
-## Prefer Blade Components Over `@include`
+Every Blade view should:
+- Live in `resources/views/{domain}/{component-name}.blade.php`
+- Use maryUI components (`x-mary-*`) for forms, tables, buttons, modals
+- Use `__('domain.key')` for all user-facing strings
+- Receive data from the component/controller — never call Eloquent directly
+- Use `@json()` for PHP-to-JS data transfer (not inline JSON encoding)
+- Use Blade components over `@include` (components have explicit props)
+- Use Blade Fragments for partial re-renders in live-updating views
 
-`@include` shares all parent variables implicitly (hidden coupling). Components have explicit props, attribute bags, and slots.
+The confirm dialog pattern uses `<x-ui::confirm>` with `wire:model`, `message`, `confirmText`, and `cancelText` props.
 
-## Use View Composers for Shared View Data
-
-If every controller rendering a sidebar must pass `$categories`, that's duplicated code. A View Composer centralizes it.
-
-## Use Blade Fragments for Partial Re-Renders (htmx/Turbo)
-
-A single view can return either the full page or just a fragment, keeping routing clean.
-
-```php
-return view('dashboard', compact('users'))
-    ->fragmentIf($request->hasHeader('HX-Request'), 'user-list');
-```
-
-## Use `@aware` for Deeply Nested Component Props
-
-Avoids re-passing parent props through every level of nested components.
+Exceptions: None. These conventions apply universally.

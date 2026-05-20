@@ -1,63 +1,26 @@
 # Translations
 
-## Dual Language
+## What It Enforces
 
-Every user-facing string must have translations in both languages:
+Every user-facing string must have translations in both English (`lang/en/{domain}.php`) and Indonesian (`lang/id/{domain}.php`). Translation keys use dot notation with `snake_case` and are referenced via `__('domain.key')`.
 
-| File | Language |
-|---|---|
-| `lang/en/{domain}.php` | English |
-| `lang/id/{domain}.php` | Indonesian |
+## Why It Matters
 
-## Usage
+Bilingual support is a hard requirement — every user-facing string must be available in both languages. A consistent key naming convention makes translations predictable: `domain.key`, `domain.subkey.key`. Grouping related keys (`fields.name`, `fields.start_date`) keeps files organized.
 
-```php
-// In PHP/Blade
-__('domain.key')
-__('domain.subkey.key')
-__('domain.key', ['param' => $value])
+## When It Applies
 
-// With locale override
-__('domain.key', [], 'en')
-__('domain.key', [], 'id')
-```
+Every new feature with user-facing strings must:
+- Create or update `lang/en/{domain}.php` with English translations
+- Create or update `lang/id/{domain}.php` with Indonesian translations
+- Use `__('domain.key')` in all PHP and Blade contexts
+- Use `snake_case` for multi-word keys
+- Group related keys: `fields.name`, `actions.create`, `messages.created`
 
-## File Convention
+Key naming patterns:
+- Labels: `{domain}.{field}` or `{domain}.fields.{field}`
+- Actions: `{domain}.created`, `{domain}.deleted`, `{domain}.saved`
+- Errors: `{domain}.cannot_delete_active`, `{domain}.not_found`
+- UI elements: `{domain}.title`, `{domain}.subtitle`, `{domain}.search_placeholder`
 
-One file per domain: `lang/{lang}/{domain}.php`
-
-```php
-<?php
-
-declare(strict_types=1);
-
-return [
-    'title' => 'Page Title',
-    'subtitle' => 'Page description.',
-    'create' => 'Create New',
-    'save_success' => 'Saved successfully.',
-    'delete_success' => 'Deleted successfully.',
-];
-```
-
-## Key Naming
-
-- Dot notation: `domain.key`, `domain.subkey.key`
-- snake_case for multi-word keys: `save_success`, `delete_blocked`
-- Group related keys under sub-arrays: `statuses.draft`, `statuses.active`
-
-## Existing Domain Files
-
-| Domain | File | Key Prefix |
-|---|---|---|
-| School | `school.php` | `school.*` |
-| Department | `department.php` | `department.*` |
-| Internship | `internship.php` | `internship.*` |
-| Company | `company.php` | `company.*` |
-| User | `user.php` | `user.admin.*`, `user.teacher.*` |
-| Setting | `setting.php` | `setting.*` |
-| Sidebar | `sidebar.php` | `sidebar.*` |
-| Setup | `setup.php` | `setup.wizard.*`, `setup.cli.*` |
-| Common | `common.php` | `common.actions.*`, `common.status.*` |
-| Profile | `profile.php` | `profile.*` |
-| Academic Year | `academic_year.php` | `academic_year.*` |
+Exceptions: System-level log messages that are never shown to users do not need translations. Debug and internal messages are always in English.

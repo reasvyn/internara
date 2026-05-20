@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\AcademicYear;
+use App\Domain\School\Models\AcademicYear;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 

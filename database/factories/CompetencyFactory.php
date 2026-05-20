@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Domain\Assessment\Models\Competency;
+use App\Domain\Assessment\Models\Rubric;
 use App\Enums\Assessment\EvaluatorRole;
-use App\Models\Competency;
-use App\Models\Rubric;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CompetencyFactory extends Factory

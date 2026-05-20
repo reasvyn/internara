@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Competency;
-use App\Models\Indicator;
+use App\Domain\Assessment\Models\Competency;
+use App\Domain\Assessment\Models\Indicator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class IndicatorFactory extends Factory

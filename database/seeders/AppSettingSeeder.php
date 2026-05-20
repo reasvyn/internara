@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Casts\SettingValueCast;
-use App\Models\Setting;
-use App\Support\AppInfo;
-use App\Support\Theme;
+use App\Domain\Settings\Casts\SettingValueCast;
+use App\Domain\Settings\Models\Setting;
+use App\Domain\Settings\Support\AppInfo;
+use App\Domain\Shared\Support\Theme;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

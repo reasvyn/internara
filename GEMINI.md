@@ -34,19 +34,15 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
 
-## Verification Scripts
-
-- Do not create verification scripts or tinker when tests cover that functionality and prove they work. Unit and feature tests are more important.
-
 ## Application Structure & Architecture
 
 - Stick to the established directory structure:
-    - Backend: `app/Domain/{Domain}/` (Models, Actions, Enums, Policies, Data, Events).
-    - Frontend (Livewire): `app/Livewire/{Domain}/`.
-    - Presentation (HTTP): `app/Http/Controllers/` and `app/Http/Requests/{Domain}/`.
-    - Presentation (CLI): `app/Console/Commands/{Domain}/`.
+    - Backend: `app/Domain/{Domain}/` — Actions, Models, Livewire, Policies, Enums, Entities, etc.
+    - Views: `resources/views/{domain}/{component}.blade.php`
+    - Routes: `routes/web/{domain}.php`, master `routes/web.php` requires all
+    - Tests: `tests/{Feature,Unit}/{Domain}/{Name}Test.php`
 - Role-Based Access Control (RBAC):
-    - Use standard roles: `SuperAdmin`, `Admin`, `Student`, `Teacher`, `Supervisor`.
+    - Use standard roles: `super_admin`, `admin`, `student`, `teacher`, `supervisor`.
     - Avoid using "Mentor" in industry contexts; use "Supervisor" instead.
 - Do not change the application's dependencies without approval.
 
@@ -135,7 +131,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ### Model Creation
 
-- When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `php artisan make:model --help` to check the available options.
+- When creating new models, place them inside `app/Domain/{Domain}/Models/`. Create useful factories and seeders for them too.
 
 ## APIs & Eloquent Resources
 
@@ -159,7 +155,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 # Livewire
 
-- Livewire allow to build dynamic, reactive interfaces in PHP without writing JavaScript.
+- Livewire allows building dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
 

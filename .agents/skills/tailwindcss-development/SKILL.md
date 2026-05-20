@@ -1,119 +1,35 @@
----
-name: tailwindcss-development
-description: "Always invoke when the user's message includes 'tailwind' in any form. Also invoke for: building responsive grid layouts (multi-column card grids, product grids), flex/grid page structures (dashboards with sidebars, fixed topbars, mobile-toggle navs), styling UI components (cards, tables, navbars, pricing sections, forms, inputs, badges), adding dark mode variants, fixing spacing or typography, and Tailwind v3/v4 work. The core use case: writing or fixing Tailwind utility classes in HTML templates (Blade, JSX, Vue). Skip for backend PHP logic, database queries, API routes, JavaScript with no HTML/CSS component, CSS file audits, build tool configuration, and vanilla CSS."
-license: MIT
-metadata:
-  author: laravel
----
+# Tailwind CSS Development Skill
 
-# Tailwind CSS Development
+## When to Activate
 
-## Documentation
+Apply this skill whenever styling Blade templates, building responsive layouts, implementing dark mode, fixing spacing or typography, or working with daisyUI and maryUI components. Always invoke when the task involves Tailwind utility classes in HTML/Blade/JSX templates.
 
-Use `search-docs` for detailed Tailwind CSS v4 patterns and documentation.
+## Core Principles
 
-## Basic Usage
+### Tech Stack
 
-- Use Tailwind CSS classes to style HTML. Check and follow existing Tailwind conventions in the project before introducing new patterns.
-- Offer to extract repeated patterns into components that match the project's conventions (e.g., Blade, JSX, Vue).
-- Consider class placement, order, priority, and defaults. Remove redundant classes, add classes to parent or child elements carefully to reduce repetition, and group elements logically.
+The project uses Tailwind CSS v4 with CSS-first configuration (no `tailwind.config.js`), daisyUI component classes (`btn`, `card`, `modal`, `table`), and maryUI Livewire components (`x-mary-button`, `x-mary-card`, `x-mary-table`). Icons come from Blade Tabler Icons (`o-` prefix). Dark mode is class-based (`.dark` on `<html>`).
 
-## Tailwind CSS v4 Specifics
+### Tailwind v4 Configuration
 
-- Always use Tailwind CSS v4 and avoid deprecated utilities.
-- `corePlugins` is not supported in Tailwind v4.
+All configuration is in `resources/css/app.css` using `@import "tailwindcss"` and `@theme` directives. Custom colors, fonts, and spacing are defined in `@theme` blocks. No `@tailwind` directives are used. v3 utilities like `bg-opacity-*` are replaced with modern slash syntax (`bg-black/50`).
 
-### CSS-First Configuration
+## Layout Architecture
 
-In Tailwind v4, configuration is CSS-first using the `@theme` directive — no separate `tailwind.config.js` file is needed:
+Pages follow consistent patterns: a flex header with title and action button, a search/filter bar, a selection bar (shown when items are selected), and the main content (table or grid). Layouts are responsive using standard breakpoints (sm/md/lg/xl/2xl).
 
-<!-- CSS-First Config -->
-```css
-@theme {
-  --color-brand: oklch(0.72 0.11 178);
-}
-```
+CRUD tables use maryUI's `x-mary-table` inside `x-mary-card`. Modal forms use `x-mary-modal` with `x-mary-input` and `x-mary-button` for actions. Buttons use `btn-primary`, `btn-ghost`, or `btn-error` classes with custom border radius.
 
-### Import Syntax
+## Translation and Localization
 
-In Tailwind v4, import Tailwind with a regular CSS `@import` statement instead of the `@tailwind` directives used in v3:
+All user-facing strings use `__()` translation helpers. No hardcoded text in Blade templates. This applies to labels, placeholders, titles, and button text.
 
-<!-- v4 Import Syntax -->
-```diff
-- @tailwind base;
-- @tailwind components;
-- @tailwind utilities;
-+ @import "tailwindcss";
-```
+## Verification Before Finalizing
 
-### Replaced Utilities
-
-Tailwind v4 removed deprecated utilities. Use the replacements shown below. Opacity values remain numeric.
-
-| Deprecated | Replacement |
-|------------|-------------|
-| bg-opacity-* | bg-black/* |
-| text-opacity-* | text-black/* |
-| border-opacity-* | border-black/* |
-| divide-opacity-* | divide-black/* |
-| ring-opacity-* | ring-black/* |
-| placeholder-opacity-* | placeholder-black/* |
-| flex-shrink-* | shrink-* |
-| flex-grow-* | grow-* |
-| overflow-ellipsis | text-ellipsis |
-| decoration-slice | box-decoration-slice |
-| decoration-clone | box-decoration-clone |
-
-## Spacing
-
-Use `gap` utilities instead of margins for spacing between siblings:
-
-<!-- Gap Utilities -->
-```html
-<div class="flex gap-8">
-    <div>Item 1</div>
-    <div>Item 2</div>
-</div>
-```
-
-## Dark Mode
-
-If existing pages and components support dark mode, new pages and components must support it the same way, typically using the `dark:` variant:
-
-<!-- Dark Mode -->
-```html
-<div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-    Content adapts to color scheme
-</div>
-```
-
-## Common Patterns
-
-### Flexbox Layout
-
-<!-- Flexbox Layout -->
-```html
-<div class="flex items-center justify-between gap-4">
-    <div>Left content</div>
-    <div>Right content</div>
-</div>
-```
-
-### Grid Layout
-
-<!-- Grid Layout -->
-```html
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div>Card 1</div>
-    <div>Card 2</div>
-    <div>Card 3</div>
-</div>
-```
-
-## Common Pitfalls
-
-- Using deprecated v3 utilities (bg-opacity-*, flex-shrink-*, etc.)
-- Using `@tailwind` directives instead of `@import "tailwindcss"`
-- Trying to use `tailwind.config.js` instead of CSS `@theme` directive
-- Using margins for spacing between siblings instead of gap utilities
-- Forgetting to add dark mode variants when the project uses dark mode
+- Are `@import "tailwindcss"` and `@theme` used instead of `@tailwind` and `tailwind.config.js`?
+- Are deprecated v3 utilities avoided (no `bg-opacity-*`, `flex-shrink-*`)?
+- Is `wire:key` present on all `@foreach` loops?
+- Are translations used instead of hardcoded strings?
+- Is `gap` used on parent flex/grid containers instead of margins on children?
+- Does the layout work at responsive breakpoints?
+- Is dark mode handled if the project uses it?

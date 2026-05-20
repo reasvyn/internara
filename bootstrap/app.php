@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\CheckRoleMiddleware;
-use App\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Http\Middleware\RequireSetupAccessMiddleware;
-use App\Http\Middleware\SetLocaleMiddleware;
+use App\Domain\Auth\Http\Middleware\CheckRoleMiddleware;
+use App\Domain\Settings\Http\Middleware\SetLocaleMiddleware;
+use App\Domain\Setup\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Domain\Setup\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

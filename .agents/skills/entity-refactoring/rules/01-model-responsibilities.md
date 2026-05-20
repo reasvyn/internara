@@ -1,83 +1,21 @@
 # Model Responsibilities
 
-Models handle data access only — relationships, scopes, attributes, and the entity bridge.
+## What It Enforces
 
-## Structure
+Models are strictly data access objects. They define relationships, scopes, casts, attributes, the entity bridge accessor, and factory configuration. They explicitly must NOT contain business rule checks (canX, isY methods), static utility methods, or any logic that answers business questions.
 
-```php
-#[Fillable(['name', 'email', 'password'])]
-class User extends Authenticatable implements HasMedia, MustVerifyEmail
-{
-    use HasFactory, HasRoles, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
+## Why It Matters
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'locked_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+Models already carry significant framework responsibility: serialization, relationship loading, event dispatching, attribute casting, and more. Adding business rules overloads them with concerns that change for different reasons. A business rule changes because the business requirement changes. A relationship changes because the data model changes. These should not live in the same class.
 
-    // ─── Relationships ───────────────────────────
-    public function profile(): HasOne { ... }
-    public function mentees(): HasMany { ... }
-    public function roles(): BelongsToMany { ... }
+Moving business rules to Entities also makes them testable without a database and reusable across multiple data sources. The model becomes thinner, more focused, and easier to reason about.
 
-    // ─── Scopes ─────────────────────────────────
-    public function scopeActive(Builder $query): Builder { ... }
-    public function scopeLocked(Builder $query): Builder { ... }
+## When It Applies
 
-    // ─── Entity Bridge ──────────────────────────
-    public function asApprentice(): Apprentice
-    {
-        return Apprentice::fromModel($this);
-    }
+Always when defining Model classes. The litmus test: "Would this method still make sense if I swapped the database for an API?" If yes (it's about data access — a relationship, a scope, a cast), keep it in the Model. If no (it's about business logic — can this user do X, is this record in the right state), move it to the Entity.
 
-    // ─── Media ──────────────────────────────────
-    public function registerMediaCollections(): void { ... }
-    public function registerMediaConversions(?Media $media = null): void { ... }
-}
-```
+Allowed in Models: relationships (hasMany, belongsTo), scopes (scopeActive), casts, accessors (getXAttribute), entity bridge (as{EntityName}()), media collections/conversions, HasFactory, formatting helpers (pure string formatting only).
 
-## Allowed in Models
+Not allowed in Models: canLogin(), isActive(), canBeDeleted(), hasAvailableSlots(), or any static utility methods.
 
-| Concern | Example |
-|---|---|
-| **Relationships** | `hasMany`, `belongsTo`, `belongsToMany` |
-| **Scopes** | `scopeActive()`, `scopeByRole()` |
-| **Casts** | `protected function casts(): array` |
-| **Accessors** | `getXAttribute()` |
-| **Appends** | `#[Appends(['logo_url'])]` |
-| **Entity bridge** | `as{EntityName}()` |
-| **Media collections** | `registerMediaCollections()` |
-| **Media conversions** | `registerMediaConversions()` |
-| **Factory** | `HasFactory` trait, `newFactory()` method |
-| **Simple helpers** | `initials()`, `avatarUrl()` — only if pure string/formatting |
-
-## NOT Allowed in Models
-
-```php
-// ❌ Business rules in Model
-public function canLogin(): bool  // → Entity
-public function isActive(): bool  // → Entity (if complex)
-public function hasAvailableSlots(): bool  // → Entity
-
-// ❌ Static utility methods
-public static function formatSomething(...): string  // → Support
-```
-
-## Rule of Thumb
-
-Ask: "Would this method still make sense if I swapped the database for an API?"
-
-- If YES (it's about data): keep in Model
-- If NO (it's about business logic): move to Entity
-
-```
-Data question: "How many students are in this department?"
-    → Model scope or relationship
-
-Business question: "Can this student submit a logbook entry?"
-    → Entity method (MenteeState::canSubmitLogbook())
-```
+Exceptions: Pure formatting convenience methods (e.g., `initials()`, `avatarUrl()`) that only transform existing data without business logic are acceptable on Models.

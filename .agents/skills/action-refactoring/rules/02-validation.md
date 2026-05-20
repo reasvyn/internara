@@ -1,65 +1,26 @@
 # Validation
 
-The Action is the **authoritative source** of validation. The Livewire component may repeat rules for UX, but the Action is the safety net.
+## What It Enforces
 
-## Structure
+The Action is the authoritative source of validation. Livewire components may repeat validation rules for UX (inline error display), but the Action always re-validates independently before performing any operation. The Action uses `Validator::validate()` or `Validator::make()->validate()` to enforce format and constraint rules.
 
-```php
-class CreateAcademicYearAction
-{
-    public function execute(array $data): AcademicYear
-    {
-        $validated = Validator::validate($data, [
-            'name' => ['required', 'string', 'max:50'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
-            'is_active' => ['boolean'],
-        ]);
+## Why It Matters
 
-        return AcademicYear::create($validated);
-    }
-}
-```
+Defense in depth. Livewire validation runs in the browser context and can be bypassed — either accidentally (JavaScript disabled) or intentionally (crafted requests). The Action runs server-side and cannot be circumvented because it's the last validation gate before persistence.
 
-## Rules
+Separating UX validation (component) from authoritative validation (Action) also clarifies intent. The component validates for user experience — showing inline errors, disabling submit buttons. The Action validates for data integrity — ensuring only valid data reaches the database.
 
-- Use `Validator::validate()` — throws `ValidationException` automatically
-- Use `Validator::make()` + `->validate()` for custom error messages
-- Throw `RuntimeException` for business rule violations (not validation errors)
-- Keep validation rules in the Action, NOT in Form Requests (unless shared across multiple Actions)
-- The Action validates the final input before persistence — the component's `$this->validate()` is only for UX
+## When It Applies
 
-## What NOT to do
+Always validate in Actions. The component may optionally validate for UX, but the Action always validates.
 
-```php
-// ❌ Validation in Livewire component only
-class UserManager extends Component
-{
-    public function save()
-    {
-        $this->validate(['name' => 'required']); // No Action validation
-        User::create($this->formData); // Direct DB access
-    }
-}
+The distinction between validation and business rules matters:
+- Format validation (required fields, email format, string length) → `Validator::validate()` throws `ValidationException`
+- Uniqueness constraints → included in Validator rules → `ValidationException`
+- State-based business rules (can this record be deleted?) → Entity check + throw `RejectedException`
+- Authorization → Policy `Gate` check → `AuthorizationException`
 
-// ❌ No validation in Action
-class CreateUserAction
-{
-    public function execute(array $data): User
-    {
-        return User::create($data); // No validation!
-    }
-}
-```
-
-```php
-// ✅ Validation in both (component for UX, Action for safety)
-class UserManager extends Component
-{
-    public function save(CreateUserAction $action): void
-    {
-        $this->validate(); // UX: inline errors
-        $action->execute($this->formData); // Action validates again
-    }
-}
-```
+Exceptions: None for the principle itself. The validation approach varies by context:
+- Simple Actions with no HTTP context: `Validator::make()` inside the Action
+- Actions called from Controllers: FormRequest classes shared across endpoints
+- The validation rules themselves should be kept in the Action (not extracted to FormRequest) unless the same rules are needed by multiple Actions

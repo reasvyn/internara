@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Handbook;
-use App\Models\User;
+use App\Domain\Guidance\Models\Handbook;
+use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HandbookFactory extends Factory

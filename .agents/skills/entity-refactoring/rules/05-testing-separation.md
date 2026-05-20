@@ -1,62 +1,23 @@
 # Testing Separation
 
-Model tests need a database. Entity tests don't. Keep them separate.
+## What It Enforces
 
-## Model Tests (need DB)
+Model tests require a database (RefreshDatabase). Entity tests do not. These are kept in separate directories: `tests/Unit/{Domain}/Entities/` for Entity tests (pure PHP, no DB), and `tests/Feature/{Domain}/` or `tests/Unit/{Domain}/Models/` for tests that need a database.
 
-```php
-uses(RefreshDatabase::class);
+## Why It Matters
 
-it('scopes active users', function () {
-    User::factory()->active()->create();
-    User::factory()->locked()->create();
+Entity tests that don't need a database are faster, simpler, and more reliable. Instantiating `new AcademicYearState(isActive: true, hasRelatedRecords: false)` and calling `canBeDeleted()` is a pure function call — no database setup, no migrations, no mocking. A test that runs in milliseconds encourages more tests and faster feedback.
 
-    $active = User::active()->get();
+The separation also clarifies what each test covers. An Entity test tests business rules in isolation. A Model test tests data access. An Action test tests orchestration. The distinction makes it obvious where to add a test for a given failure.
 
-    expect($active)->toHaveCount(1);
-});
-```
+## When It Applies
 
-## Entity Tests (no DB)
+Always. When testing business rules, create Entity tests without RefreshDatabase. When testing data access (relationships, scopes, casts), create Model tests with RefreshDatabase.
 
-```php
-it('suspended user cannot log in', function () {
-    $entity = new Apprentice(
-        status: AccountStatus::SUSPENDED,
-        isLocked: false,
-    );
+The test locations and their database requirements:
+- `tests/Unit/{Domain}/Entities/{Name}Test.php`: Business rules, state transitions, capability checks — NO DB needed
+- `tests/Unit/{Domain}/Models/{Name}Test.php`: Relationships, scopes, casts, accessors — DB needed
+- `tests/Feature/{Domain}/{Action}Test.php`: Action orchestration, validation, side effects — DB needed
+- `tests/Feature/{Domain}/{Component}Test.php`: Full Livewire component integration — DB needed
 
-    expect($entity->canLogin())->toBeFalse();
-});
-
-it('active year cannot be deleted', function () {
-    $state = new AcademicYearState(isActive: true);
-
-    expect($state->canBeDeleted())->toBeFalse();
-});
-```
-
-## File Location
-
-```
-tests/
-├── Unit/
-│   ├── Entities/        ← Pure PHP, no DB needed
-│   │   ├── User/ApprenticeTest.php
-│   │   ├── AcademicYear/AcademicYearStateTest.php
-│   │   └── ...
-│   └── Models/          ← Use RefreshDatabase
-│       ├── UserTest.php
-│       └── ...
-└── Feature/             ← Integration tests
-    └── ...
-```
-
-## What Each Tests
-
-| Test | What It Covers | DB Needed |
-|---|---|---|
-| `Entities/*Test.php` | Business rules, state transitions, capability checks | No |
-| `Models/*Test.php` | Relationships, scopes, casts, accessors | Yes |
-| `Actions/*Test.php` | Action orchestration, validation, side effects | Yes (opt-in) |
-| `Feature/*Test.php` | End-to-end workflows | Yes |
+Exceptions: If an Entity method somehow depends on a service that requires the container (which should not happen with pure Entities), you may need to reconsider the Entity's design rather than add a database dependency to the test.

@@ -24,6 +24,54 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - prettier (PRETTIER) - v3
 - tailwindcss (TAILWINDCSS) - v4
 
+## Architecture (IMPORTANT)
+
+This project uses a **Domain-first, Action-based MVC** architecture:
+
+```
+app/Domain/{Domain}/
+├── Actions/        Business logic (single execute() method)
+├── Models/         Eloquent data access
+├── Livewire/       Reactive UI components
+├── Policies/       Authorization gates
+├── Enums/          Constants with behavior
+├── Entities/       Pure business rules (no ORM)
+├── Http/           Controllers, middleware, requests
+├── Notifications/  Multi-channel alerts
+├── Events/         Domain events
+├── Listeners/      Event subscribers
+├── Console/        Artisan commands
+├── Support/        Domain utilities
+├── Contracts/      Interfaces
+└── Data/           Data transfer objects
+```
+
+- Backend: `app/Domain/{Domain}/` — all code for a business concept lives in one directory
+- Views: `resources/views/{domain}/{component}.blade.php` — Blade views mirror domain structure
+- Routes: `routes/web/{domain}.php` — routes split by domain, master `routes/web.php` requires all
+- Tests: `tests/{Feature,Unit}/{Domain}/{Name}Test.php` — tests organized by domain
+
+### MANDATORY: Use Core Base Classes
+
+The Core domain provides base classes for every layer. You MUST use them:
+
+| Layer | Base Class | Location |
+|---|---|---|
+| Model | `BaseModel` (or `Authenticatable`) | `app/Domain/Core/Models/BaseModel.php` |
+| Action | `BaseAction` | `app/Domain/Core/Actions/BaseAction.php` |
+| Entity | `BaseEntity` (final readonly) | `app/Domain/Core/Entities/BaseEntity.php` |
+| Policy | `BasePolicy` | `app/Domain/Core/Policies/BasePolicy.php` |
+| Livewire CRUD | `BaseRecordManager` | `app/Domain/Core/Livewire/BaseRecordManager.php` |
+| Controller | `BaseController` | `app/Domain/Core/Http/Controllers/BaseController.php` |
+| Form Request | `FormRequest` (Core's, not Laravel's) | `app/Domain/Core/Http/Requests/FormRequest.php` |
+| State | `BaseState` | `app/Domain/Core/States/BaseState.php` |
+| DTO | `Data` | `app/Domain/Core/Data/Data.php` |
+| Exception | `AppException` or `DomainException` | `app/Domain/Core/Exceptions/` |
+| Enum | Must implement `LabelEnum` | `app/Domain/Core/Contracts/LabelEnum.php` |
+| Logging | Use `SmartLogger` | `app/Domain/Core/Support/SmartLogger.php` |
+
+Do NOT create custom patterns. Architecture tests enforce these rules and will fail if violated.
+
 ## Skills Activation
 
 This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
@@ -33,23 +81,24 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
+- Actions are single-responsibility classes with one `execute()` method. Livewire components delegate all business logic to Actions.
+- Entities are `final readonly` classes with zero framework dependencies. Models expose them via `as{EntityName}()` accessors.
+- All enums are string-backed and implement `LabelEnum`. State machine enums implement `StatusEnum`.
+- UUID primary keys on all models (via BaseModel/HasUuids). Foreign keys use `foreignUuid()->constrained()`.
 
 ## Verification Scripts
 
 - Do not create verification scripts or tinker when tests cover that functionality and prove they work. Unit and feature tests are more important.
 
-## Application Structure & Architecture
-
-- Stick to existing directory structure; don't create new base folders without approval.
-- Do not change the application's dependencies without approval.
-
 ## Frontend Bundling
 
 - If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
 
-## Documentation Files
+## Documentation
 
-- You must only create documentation files if explicitly requested by the user.
+- Comprehensive docs are available at `docs/en/`. Always refer to them before making changes.
+- Domain-specific docs at `docs/en/domain/{domain}.md`.
+- Architecture and conventions at `docs/en/architecture.md` and `docs/en/conventions.md`.
 
 ## Replies
 
@@ -104,12 +153,17 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Follow existing application Enum naming conventions.
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
+- All files must begin with `declare(strict_types=1)`.
+- Use `protected readonly` promotion for Action constructor dependencies.
 
 === deployments rules ===
 
 # Deployment
 
 - Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
+- Ensure queue worker is running: `php artisan queue:work`
+- Ensure scheduler is configured: `* * * * * cd /path && php artisan schedule:run >> /dev/null 2>&1`
+- Storage link must exist: `php artisan storage:link`
 
 === tests rules ===
 
@@ -117,6 +171,8 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
+- Tests follow domain-first structure: `tests/{Feature,Unit}/{Domain}/{Name}Test.php`.
+- Arch tests enforce structural rules and must pass for any code change.
 
 === laravel/core rules ===
 
@@ -125,6 +181,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Use `php artisan make:` commands to create new files (i.e. migrations, controllers, models, etc.). You can list available Artisan commands using `php artisan list` and check their parameters with `php artisan [command] --help`.
 - If you're creating a generic PHP class, use `php artisan make:class`.
 - Pass `--no-interaction` to all Artisan commands to ensure they work without user input. You should also pass the correct `--options` to ensure correct behavior.
+- Always place new models inside `app/Domain/{Domain}/Models/`, not the root `app/Models/`.
 
 ### Model Creation
 
@@ -152,9 +209,13 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 # Livewire
 
-- Livewire allow to build dynamic, reactive interfaces in PHP without writing JavaScript.
+- Livewire allows building dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
+- Livewire components are auto-discovered by DomainServiceProvider from `app/Domain/*/Livewire/`.
+- Component alias pattern: `{kebab-domain}.{kebab-class-name}` (e.g., `admin.user-manager`).
+- Views are located at `resources/views/{domain}/{component-name}.blade.php`.
+- CRUD table components extend `BaseRecordManager`.
 
 === pint/core rules ===
 
@@ -171,6 +232,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
+- Structure tests by domain: `tests/Feature/{Domain}/{Name}Test.php` and `tests/Unit/{Domain}/{Layer}/{Name}Test.php`.
 
 === spatie/laravel-medialibrary rules ===
 
@@ -178,5 +240,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - `spatie/laravel-medialibrary` associates files with Eloquent models, with support for collections, conversions, and responsive images.
 - Always activate the `medialibrary-development` skill when working with media uploads, conversions, collections, responsive images, or any code that uses the `HasMedia` interface or `InteractsWithMedia` trait.
+- Media collections are defined in the domain's Models. Storage is handled through the media library's integration with Laravel filesystem.
 
 </laravel-boost-guidelines>

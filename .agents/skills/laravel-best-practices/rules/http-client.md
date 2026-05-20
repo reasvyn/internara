@@ -1,160 +1,22 @@
-# HTTP Client Best Practices
+# HTTP Client
 
-## Always Set Explicit Timeouts
+## What It Enforces
 
-The default timeout is 30 seconds — too long for most API calls. Always set explicit `timeout` and `connectTimeout` to fail fast.
+Every HTTP request sets explicit timeouts. Retries use exponential backoff. Errors are handled explicitly with `throw()` or conditional checks. `Http::pool()` enables concurrent requests. Tests use `Http::fake()` with `preventStrayRequests()`.
 
-Incorrect:
-```php
-$response = Http::get('https://api.example.com/users');
-```
+## Why It Matters
 
-Correct:
-```php
-$response = Http::timeout(5)
-    ->connectTimeout(3)
-    ->get('https://api.example.com/users');
-```
+Default timeout (30 seconds) is too long for most API calls — a slow external service could tie up workers for 30 seconds before failing. Explicit timeouts (5s with 3s connect timeout) fail fast. Retries with backoff handle transient failures without hammering the service. Pooling reduces sequential wait time for independent requests.
 
-For service-specific clients, define timeouts in a macro:
+## When It Applies
 
-```php
-Http::macro('github', function () {
-    return Http::baseUrl('https://api.github.com')
-        ->timeout(10)
-        ->connectTimeout(3)
-        ->withToken(config('services.github.token'));
-});
+Every HTTP client request should:
+- Set `timeout()` and `connectTimeout()` explicitly
+- Define service-specific macros in AppServiceProvider for base URL, auth, and defaults
+- Use `retry()` with backoff array for transient failures
+- Handle errors with `throw()` or explicit `successful()/failed()` checks
+- Use `Http::pool()` for concurrent independent requests
 
-$response = Http::github()->get('/repos/laravel/framework');
-```
+Testing: always use `Http::preventStrayRequests()` to catch un-faked HTTP calls, then `Http::fake()` with response fixtures. Assert specific requests were sent.
 
-## Use Retry with Backoff for External APIs
-
-External APIs have transient failures. Use `retry()` with increasing delays.
-
-Incorrect:
-```php
-$response = Http::post('https://api.stripe.com/v1/charges', $data);
-
-if ($response->failed()) {
-    throw new PaymentFailedException('Charge failed');
-}
-```
-
-Correct:
-```php
-$response = Http::retry([100, 500, 1000])
-    ->timeout(10)
-    ->post('https://api.stripe.com/v1/charges', $data);
-```
-
-Only retry on specific errors:
-
-```php
-$response = Http::retry(3, 100, function (Throwable $exception, PendingRequest $request) {
-    return $exception instanceof ConnectionException
-        || ($exception instanceof RequestException && $exception->response->serverError());
-})->post('https://api.example.com/data');
-```
-
-## Handle Errors Explicitly
-
-The HTTP Client does not throw on 4xx/5xx by default. Always check status or use `throw()`.
-
-Incorrect:
-```php
-$response = Http::get('https://api.example.com/users/1');
-$user = $response->json(); // Could be an error body
-```
-
-Correct:
-```php
-$response = Http::timeout(5)
-    ->get('https://api.example.com/users/1')
-    ->throw();
-
-$user = $response->json();
-```
-
-For graceful degradation:
-
-```php
-$response = Http::get('https://api.example.com/users/1');
-
-if ($response->successful()) {
-    return $response->json();
-}
-
-if ($response->notFound()) {
-    return null;
-}
-
-$response->throw();
-```
-
-## Use Request Pooling for Concurrent Requests
-
-When making multiple independent API calls, use `Http::pool()` instead of sequential calls.
-
-Incorrect:
-```php
-$users = Http::get('https://api.example.com/users')->json();
-$posts = Http::get('https://api.example.com/posts')->json();
-$comments = Http::get('https://api.example.com/comments')->json();
-```
-
-Correct:
-```php
-use Illuminate\Http\Client\Pool;
-
-$responses = Http::pool(fn (Pool $pool) => [
-    $pool->as('users')->get('https://api.example.com/users'),
-    $pool->as('posts')->get('https://api.example.com/posts'),
-    $pool->as('comments')->get('https://api.example.com/comments'),
-]);
-
-$users = $responses['users']->json();
-$posts = $responses['posts']->json();
-```
-
-## Fake HTTP Calls in Tests
-
-Never make real HTTP requests in tests. Use `Http::fake()` and `preventStrayRequests()`.
-
-Incorrect:
-```php
-it('syncs user from API', function () {
-    $service = new UserSyncService;
-    $service->sync(1); // Hits the real API
-});
-```
-
-Correct:
-```php
-it('syncs user from API', function () {
-    Http::preventStrayRequests();
-
-    Http::fake([
-        'api.example.com/users/1' => Http::response([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-        ]),
-    ]);
-
-    $service = new UserSyncService;
-    $service->sync(1);
-
-    Http::assertSent(function (Request $request) {
-        return $request->url() === 'https://api.example.com/users/1';
-    });
-});
-```
-
-Test failure scenarios too:
-
-```php
-Http::fake([
-    'api.example.com/*' => Http::failedConnection(),
-]);
-```
+Exceptions: Internal service calls on the same network may use longer timeouts.
