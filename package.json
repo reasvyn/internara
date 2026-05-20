@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "autoprefixer": "^10.4.23",
-        "axios": "^1.15.0",
+        "axios": "^1.16.1",
         "concurrently": "^9.2.1",
         "flatpickr": "^4.6.13",
         "laravel-vite-plugin": "^2.1",
