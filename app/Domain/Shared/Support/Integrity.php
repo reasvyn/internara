@@ -57,7 +57,7 @@ final class Integrity
 
     private static function fatal(string $message): never
     {
-        SmartLogger::critical('System integrity check failed')
+        SmartLogger::error('System integrity check failed')
             ->withPayload(['message' => $message])
             ->systemOnly()
             ->save();
