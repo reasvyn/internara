@@ -17,7 +17,7 @@ final class Integrity
             return;
         }
 
-        $path = dirname(__DIR__, 3).'/composer.json';
+        $path = dirname(__DIR__, 4).'/composer.json';
 
         try {
             self::verifyComposerFile($path);
@@ -80,7 +80,7 @@ final class Integrity
 
     private static function resolveAppName(): string
     {
-        $path = dirname(__DIR__, 3).'/composer.json';
+        $path = dirname(__DIR__, 4).'/composer.json';
 
         if (! file_exists($path)) {
             return 'Application';
