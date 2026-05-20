@@ -32,8 +32,8 @@ Not every domain needs every layer. `Mentee` might only need Models + Livewire +
 
 | Domain | Boundary | Key Concept |
 |--------|----------|-------------|
-| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException` |
-| **Shared** | Utilities shared across domains, no business logic | `Integrity`, `Theme`, `CsvHandler` |
+| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException`, `Integrity` |
+| **Shared** | Utilities shared across domains, no business logic | `Theme`, `CsvHandler`, `Environment`, `Locale` |
 | **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery |
 | **User** | User profile & identity | Profile editing, dashboard routing |
 | **School** | Institution configuration | Departments, academic years |

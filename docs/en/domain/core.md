@@ -12,7 +12,7 @@ Core is the architectural foundation — every domain depends on it, it depends 
 | **Models/Concerns** | `HasAuditTrail` (trait — auto-logs created/updated/deleted/restored/forceDeleted via SmartLogger, configurable event selection and PII masking) |
 | **Entities** | `BaseEntity` (abstract readonly class, `fromModel(Model): static` — the single framework dependency) |
 | **Actions** | `BaseAction` (abstract — `execute()`, `transaction()` wrapping, `log()` via SmartLogger, `moduleName()` auto-detection from namespace) |
-| **Support** | `SmartLogger` (fluent dual-channel logger — system + activity, PII masking, context enrichment), `PiiMasker` (static masker for passwords, tokens, emails, phones, names, credit cards, SSNs), `HandlesActionErrors` (trait — try-catch-log-rethrow) |
+| **Support** | `SmartLogger` (fluent dual-channel logger — system + activity, PII masking, context enrichment), `PiiMasker` (static masker for passwords, tokens, emails, phones, names, credit cards, SSNs), `HandlesActionErrors` (trait — try-catch-log-rethrow), `Integrity` (final static — `verify()` checks `composer.json` author at boot, attribution protection) |
 | **Policies** | `BasePolicy` (abstract, bundles `AuthorizesOwnership` + `AuthorizesRoles` traits) |
 | **Policies/Concerns** | `AuthorizesOwnership` (trait — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()`), `AuthorizesRoles` (trait — `isAdmin()`, `isTeacher()`, `isStudent()`, `isSupervisor()`, `hasAnyOfRoles()`) |
 | **Exceptions** | `AppException` (abstract, extends RuntimeException, uses `HasExceptionContext`), `DomainException` (abstract, parallel tree, deliberately NOT a child of AppException), 4 abstract branches + 6 concrete exceptions |

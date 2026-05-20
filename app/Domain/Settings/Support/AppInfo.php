@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Settings\Support;
 
+use App\Domain\Core\Support\Integrity;
 use App\Domain\Core\Support\SmartLogger;
-use App\Domain\Shared\Support\Integrity;
 use Illuminate\Support\Facades\File;
 
 final class AppInfo

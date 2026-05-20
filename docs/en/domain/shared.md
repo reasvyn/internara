@@ -10,7 +10,6 @@ Shared has no Models, Livewire, Controllers, Routes, or Views. Pure support code
 
 | Class | Type | Purpose |
 |---|---|---|
-| `Integrity` | Final static | `verify()` — checks `composer.json` author at boot. Shows a fatal error page if the author doesn't match "Reas Vyn". Attribution protection, not a security measure. Called from `public/index.php`. |
 | `Environment` | Final static | `isDebugMode()`, `isDevelopment()`, `isStaging()`, `isTesting()`, `isMaintenance()`, `isProduction()` — centralized environment detection instead of scattered `app()->environment()` calls. |
 | `Locale` | Final class | Bilingual locale management (Indonesian default, English). `set()`, `current()`, `all()`, `keys()`, `isSupported()`, `metadata()`. Stores preference in session. Provides locale metadata (name, native name, flag icon). |
 | `Theme` | Final static | Color/theme resolution system. `defaults()`, `presets()`, `all()`, `get(key)`, `cssVariables()` — resolves colors from the settings key-value store into CSS custom properties for both light and dark modes. |
@@ -21,8 +20,6 @@ Shared has no Models, Livewire, Controllers, Routes, or Views. Pure support code
 | `HasModelStatuses` | Trait | Bridges Spatie's generic `HasStatuses` with the application's typed `StatusEnum`. `setStatusEnum(StatusEnum)`, `hasStatusEnum(StatusEnum)`, `currentStatus(): ?StatusEnum` — type-safe status management for stateful models. |
 
 ## Key Concepts
-
-**Integrity check** runs before Laravel fully boots. It verifies the `composer.json` author is "Reas Vyn". On failure (e.g., repository cloned without authorization), it prints a red error page and exits. This is attribution protection, not authentication.
 
 **Environment detection** (`Environment`) provides semantic methods that are clearer than raw config checks and centralizes environment logic. If a new environment needs to be supported, only this file changes.
 

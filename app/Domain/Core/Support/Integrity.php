@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Shared\Support;
+namespace App\Domain\Core\Support;
 
-use App\Domain\Core\Support\SmartLogger;
 use RuntimeException;
 
 final class Integrity
