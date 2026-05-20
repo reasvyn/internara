@@ -1,73 +1,22 @@
 # Action Pattern
 
-All business logic lives in Action classes with a single `execute()` method.
+## What It Enforces
 
-## Location
+All business logic is encapsulated in Action classes with a single `execute()` method. Actions live in `app/Domain/{Domain}/Actions/{Verb}{Noun}Action.php` and extend `BaseAction`. They are the sole orchestrators of validation, persistence, and side effects.
 
-```
-app/Actions/{Domain}/{Verb}{Noun}Action.php
-```
+## Why It Matters
 
-Examples: `app/Actions/User/CreateUserAction.php`, `app/Actions/School/ActivateAcademicYearAction.php`
+The Action pattern creates a predictable, testable boundary around every business operation. Callers (Livewire components, Controllers, Artisan commands) always interact the same way: inject the Action via dependency injection, call `execute()` with the required parameters, and handle the result. This eliminates scattered business logic and makes every operation independently verifiable.
 
-## Structure
+## When It Applies
 
-```php
-<?php
+Every business operation that involves validation, persistence, or side effects must be an Action. This includes CRUD operations, state transitions, imports/exports, batch operations, and any custom business process.
 
-declare(strict_types=1);
+The `execute()` method follows these conventions:
+- Create: `execute(array $data): Model`
+- Update: `execute(Model $model, array $data): Model`
+- Delete: `execute(Model $model): void`
+- Toggle/state change: `execute(Model $model): Model`
+- Complex operations: `execute(array $data): array`
 
-namespace App\Actions\User;
-
-use App\Actions\Core\LogAuditAction;
-use App\Models\User;
-use App\Support\User\HandlesActionErrors;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use RuntimeException;
-
-class CreateUserAction
-{
-    use HandlesActionErrors;
-
-    public function __construct(
-        protected readonly LogAuditAction $logAuditAction,
-    ) {}
-
-    public function execute(array $data): User
-    {
-        $validated = Validator::validate($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-        ]);
-
-        return DB::transaction(function () use ($validated) {
-            $user = User::create($validated);
-            $this->logAuditAction->execute(
-                action: 'user_created',
-                subjectType: User::class,
-                subjectId: $user->id,
-                module: 'User',
-            );
-            event(new UserCreated($user));
-            return $user;
-        });
-    }
-}
-```
-
-## Rules
-
-- One Action = one business operation
-- Constructor: `protected readonly` dependency injection
-- `execute()`: validation → transaction → side effects → return
-- Validation via `Validator::validate()` (authoritative source)
-- DB mutations wrapped in `DB::transaction()`
-- Side effects (audit, events) inside the transaction
-- `HandlesActionErrors` trait for consistent try-catch
-
-## Throwing Errors
-
-- Validation errors: `Validator::validate()` handles automatically
-- Business rule violations: `throw new RuntimeException('message')`
-- The Livewire component catches and displays via `flash()->error()`
+Exceptions: Read-only queries for display purposes (the query in a Livewire component's `render()` method) do not need to be Actions.

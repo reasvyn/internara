@@ -1,99 +1,27 @@
-# Routing & Controllers Best Practices
+# Routing & Controllers
 
-## Use Implicit Route Model Binding
+## What It Enforces
 
-Let Laravel resolve models automatically from route parameters.
+Routes are split by domain into `routes/web/{domain}.php` files, required from `routes/web.php`. Livewire components use `Route::livewire()` for direct binding. Controllers, when used, delegate business logic to Actions. Routes use named dot notation and implicit model binding.
 
-Incorrect:
-```php
-public function show(int $id)
-{
-    $post = Post::findOrFail($id);
-}
-```
+## Why It Matters
 
-Correct:
-```php
-public function show(Post $post)
-{
-    return view('posts.show', ['post' => $post]);
-}
-```
+Domain-split route files keep routing organized and co-located with the domain they serve. `Route::livewire()` eliminates the Controller layer for Livewire-backed pages. Named routes with dot notation provide a hierarchical, predictable naming scheme. Implicit model binding eliminates manual `findOrFail()` calls.
 
-## Use Scoped Bindings for Nested Resources
+## When It Applies
 
-Enforce parent-child relationships automatically.
+Every route definition should:
+- Live in the appropriate `routes/web/{domain}.php` file
+- Use `Route::livewire()` for Livewire component pages
+- Use named routes with `snake_case.dotted` convention
+- Use implicit route model binding for model parameters
+- Apply authorization middleware at the route group level
 
-```php
-Route::get('/users/{user}/posts/{post}', function (User $user, Post $post) {
-    // $post is automatically scoped to $user
-})->scopeBindings();
-```
+Controller pattern (when used):
+- Keep Controllers thin — extract business logic to Actions
+- Type-hint FormRequest classes (not `Request`) for validation
+- Delegate to Actions via method injection
 
-## Use Resource Controllers
+Route organization by role group: guest, auth, admin (prefix + role middleware), student, mentor.
 
-Use `Route::resource()` or `apiResource()` for RESTful endpoints.
-
-```php
-Route::resource('posts', PostController::class);
-// In routes/api.php — the /api prefix is applied automatically
-Route::apiResource('posts', Api\PostController::class);
-```
-
-## Keep Controllers Thin
-
-Aim for under 10 lines per method. Extract business logic to action or service classes.
-
-Incorrect:
-```php
-public function store(Request $request)
-{
-    $validated = $request->validate([...]);
-    if ($request->hasFile('image')) {
-        $request->file('image')->move(public_path('images'));
-    }
-    $post = Post::create($validated);
-    $post->tags()->sync($validated['tags']);
-    event(new PostCreated($post));
-    return redirect()->route('posts.show', $post);
-}
-```
-
-Correct:
-```php
-public function store(StorePostRequest $request, CreatePostAction $create)
-{
-    $post = $create->execute($request->validated());
-
-    return redirect()->route('posts.show', $post);
-}
-```
-
-## Type-Hint Form Requests
-
-Type-hinting Form Requests triggers automatic validation and authorization before the method executes.
-
-Incorrect:
-```php
-public function store(Request $request): RedirectResponse
-{
-    $validated = $request->validate([
-        'title' => ['required', 'max:255'],
-        'body' => ['required'],
-    ]);
-
-    Post::create($validated);
-
-    return redirect()->route('posts.index');
-}
-```
-
-Correct:
-```php
-public function store(StorePostRequest $request): RedirectResponse
-{
-    Post::create($request->validated());
-
-    return redirect()->route('posts.index');
-}
-```
+Exceptions: API routes (if added later) would follow their own versioned structure.

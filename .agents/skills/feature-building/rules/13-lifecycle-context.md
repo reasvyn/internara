@@ -1,51 +1,26 @@
-# Lifecycle Context
+# Feature Lifecycle Context
 
-Internara manages internships through 8 sequential phases. Every feature belongs to one of these phases.
+## What It Enforces
 
-## Phase Map
+Every feature belongs to one of 8 sequential lifecycle phases: System Setup, Foundation, Internship Planning, Registration, Operations, Assessment, Period Closing, and Archiving. Major entities follow validated state transitions defined in Enum classes. Features are routed and placed in sidebar menus according to their phase.
 
-```
-Phase 0: System Setup       → Install, wizard, admin creation
-Phase 1: Foundation          → School, departments, academic years, users
-Phase 2: Internship Planning → Programs, companies, placements, requirements
-Phase 3: Registration        → Applications, registrations, direct placement
-Phase 4: Operations          → Logbook, attendance, assignments, supervision
-Phase 5: Assessment          → Rubrics, scoring, finalization, mentor evaluation
-Phase 6: Period Closing      → Complete internships, reports, data lock
-Phase 7: Archiving           → Archive accounts, lock periods, GDPR
-```
+## Why It Matters
 
-## State Machine Pattern
+The lifecycle provides a mental model for where features fit in the internship management process. When building a new feature, knowing its phase helps determine:
+- Which existing Entities may have reusable business rules
+- Which route group it belongs to
+- Which sidebar group it goes in
+- Which roles have access
 
-Major entities follow validated state transitions via Enums:
+State machines define valid transitions explicitly. An Internship moves through DRAFT → PUBLISHED → ACTIVE → COMPLETED (or CANCELLED at any point). Transition validation is in Enum `canTransitionTo()`. Business rules around transitions (checking preconditions beyond the state) are in Entity classes.
 
-```
-Internship:  DRAFT → PUBLISHED → ACTIVE → COMPLETED (↘ CANCELLED)
-Logbook:     DRAFT → SUBMITTED → VERIFIED (↘ REVISION_REQUIRED → DRAFT)
-Submission:  DRAFT → SUBMITTED → VERIFIED/GRADED (↘ REVISION_REQUIRED)
-Account:     PROVISIONED → ACTIVATED → VERIFIED → [RESTRICTED|SUSPENDED|INACTIVE] → ARCHIVED
-Assessment:  OPEN → FINALIZED
-```
+## When It Applies
 
-Transition validation is defined in **Enum classes** (e.g., `InternshipStatus::canTransitionTo()`).
-Business rules around transitions are in **Entity classes** (e.g., `RegistrationState::canBeApproved()`).
+When adding any new feature, identify its lifecycle phase first. Then check existing Entities for reusable rules, create the full stack (Action → Entity → Model → Migration → Livewire → View), register in the correct route group and sidebar menu group, translate in both languages, and test at the appropriate levels.
 
-## RBAC Context
+The role context table clarifies who does what:
+- `super_admin` and `admin`: all phases
+- `teacher` and `supervisor`: phases 4-5 (logbook, assessment, supervision)
+- `student`: phases 3-5 (registration, operations, assessment)
 
-| User Role | Functional Role | Participates In |
-|---|---|---|
-| `super_admin` | Admin | All phases, system config |
-| `admin` | Admin | Phases 1-7 |
-| `teacher` | Mentor | Phases 4-5 (verify logbook, grade, supervise) |
-| `student` | Mentee | Phases 3-5 (register, logbook, attendance, assignments) |
-| `supervisor` | Mentor | Phases 4-5 (supervision, evaluation) |
-
-## Adding a New Feature
-
-1. Identify which lifecycle phase it belongs to
-2. Check existing Entities for reusable business rules
-3. Follow the Action → Entity → Model → Livewire → View pipeline
-4. Register in the appropriate route group and sidebar menu group
-5. Add translations for both EN and ID
-6. Consider what state transitions are needed
-7. Determine which roles should have access
+Exceptions: Cross-cutting features (search, notifications, system settings) span multiple phases and should be placed in the most appropriate phase for their primary concern.

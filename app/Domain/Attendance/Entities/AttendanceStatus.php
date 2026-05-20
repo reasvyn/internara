@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Attendance\Entities;
+
+use App\Domain\Attendance\Enums\AttendanceStatus as AttendanceStatusEnum;
+use App\Domain\Core\Entities\BaseEntity;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+
+final readonly class AttendanceStatus extends BaseEntity
+{
+    public function __construct(
+        private ?AttendanceStatusEnum $status,
+        private ?Carbon $clockOut,
+    ) {}
+
+    public static function fromModel(Model $model): static
+    {
+        return new self(
+            status: $model->status,
+            clockOut: $model->clock_out,
+        );
+    }
+
+    public function hasClockOut(): bool
+    {
+        return $this->clockOut !== null;
+    }
+
+    public function isExcused(): bool
+    {
+        return $this->status?->isExcused() ?? false;
+    }
+}

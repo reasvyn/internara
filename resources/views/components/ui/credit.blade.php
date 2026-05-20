@@ -1,7 +1,7 @@
 @props(['showVersion' => false])
 
 @php
-    $author = App\Support\AppInfo::author();
+    $author = app_info('author');
     $authorName = $author['name'] ?? '';
     $authorUrl = $author['github'] ?? '';
 @endphp
@@ -11,7 +11,7 @@
 
     @if($showVersion)
         <span class="w-px h-4 bg-base-content/10 hidden sm:block"></span>
-        <span class="font-mono">v{{ App\Support\AppInfo::version() }}</span>
+        <span class="font-mono">v{{ app_info('version') }}</span>
     @endif
 
     <span class="w-px h-4 bg-base-content/10 hidden sm:block"></span>

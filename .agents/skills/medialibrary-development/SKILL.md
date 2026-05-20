@@ -1,106 +1,36 @@
----
-name: medialibrary-development
-description: Build and work with spatie/laravel-medialibrary features including associating files with Eloquent models, defining media collections and conversions, generating responsive images, and retrieving media URLs and paths.
-license: MIT
-metadata:
-  author: Spatie
----
-
-# Media Library Development
-
-## Overview
-
-Use spatie/laravel-medialibrary to associate files with Eloquent models. Supports image/video conversions, responsive images, multiple collections, and various storage disks.
+# Media Library Development Skill
 
 ## When to Activate
 
-- Activate when working with file uploads, media attachments, or image processing in Laravel.
-- Activate when code references `HasMedia`, `InteractsWithMedia`, the `Media` model, or media collections/conversions.
-- Activate when the user wants to add, retrieve, convert, or manage files attached to Eloquent models.
+Apply this skill when implementing file uploads, managing media collections and conversions, generating responsive images, or retrieving media URLs and paths. Activate whenever a Model needs to accept file attachments or when working with spatie/laravel-medialibrary in any form.
 
-## Scope
+## Core Principles
 
-- In scope: media uploads, collections, conversions, responsive images, custom properties, file retrieval, path/URL generation.
-- Out of scope: general file storage without Eloquent association, non-Laravel frameworks.
+### Model Integration
 
-## Workflow
+Models that accept file uploads must implement the `HasMedia` interface and use the `InteractsWithMedia` trait. Media collections and conversions are defined directly on the Model in `registerMediaCollections()` and `registerMediaConversions()`. Collections can be single-file (replacing on re-upload) or multi-file. Conversions generate derived image sizes and formats.
 
-1. Identify the task (model setup, adding media, defining conversions, retrieving files, etc.).
-2. Read `references/medialibrary-guide.md` and focus on the relevant section.
-3. Apply the patterns from the reference, keeping code minimal and Laravel-native.
+### Separation of Concerns
 
-## Core Concepts
+File upload flows follow the Action pattern: the Livewire component handles the file input using `WithFileUploads` and validates type/size. The Action handles the actual upload via `$model->addMedia($file)->toMediaCollection($collection)` within a transaction. The Action also logs the upload as a side effect.
 
-### Model Setup
+This separation ensures that upload validation is defense-in-depth (Livewire for UX, Action for authority) and that uploads are atomic with other mutations.
 
-Every model that should have media must implement `HasMedia` and use the `InteractsWithMedia` trait:
+## Media Lifecycle
 
-```php
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
+Collections are defined at the Model level with `registerMediaCollections()`. Each collection can restrict MIME types, limit count, designate a storage disk, and set fallback URLs. Conversions are defined at the Model level with `registerMediaConversions()` and can be queued or synchronous, scoped to specific collections, and configured with fit/crop/resize parameters.
 
-class BlogPost extends Model implements HasMedia
-{
-    use InteractsWithMedia;
-}
-```
+Responsive images generate multiple sizes from a single source for optimal loading. They can be enabled per-file, per-conversion, or per-collection.
 
-### Adding Media
+## Retrieval and Display
 
-```php
-$blogPost->addMedia($file)->toMediaCollection('images');
-$blogPost->addMediaFromUrl($url)->toMediaCollection('images');
-$blogPost->addMediaFromRequest('file')->toMediaCollection('images');
-```
+Media URLs and paths are retrieved through the Model: `getFirstMediaUrl('collection')`, `getFirstMediaUrl('collection', 'conversion')`. Blade templates use these methods directly in img tags. Fallback URLs handle missing media gracefully. Temporary URLs support S3 with expiry.
 
-### Defining Collections
+## Verification Before Finalizing
 
-```php
-public function registerMediaCollections(): void
-{
-    $this->addMediaCollection('avatar')->singleFile();
-    $this->addMediaCollection('downloads')->useDisk('s3');
-}
-```
-
-### Defining Conversions
-
-```php
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Image\Enums\Fit;
-
-public function registerMediaConversions(?Media $media = null): void
-{
-    $this->addMediaConversion('thumb')
-        ->fit(Fit::Contain, 300, 300)
-        ->nonQueued();
-}
-```
-
-### Retrieving Media
-
-```php
-$url = $model->getFirstMediaUrl('images');
-$thumbUrl = $model->getFirstMediaUrl('images', 'thumb');
-$allMedia = $model->getMedia('images');
-```
-
-## Do and Don't
-
-Do:
-- Always implement the `HasMedia` interface alongside the `InteractsWithMedia` trait.
-- Use `?Media $media = null` as the parameter for `registerMediaConversions()`.
-- Call `->toMediaCollection()` to finalize adding media.
-- Use `->nonQueued()` for conversions that should run synchronously.
-- Use `->singleFile()` on collections that should only hold one file.
-- Use `Spatie\Image\Enums\Fit` enum values for fit methods.
-
-Don't:
-- Don't forget to run `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"` before migrating.
-- Don't use `env()` for disk configuration; use `config()` or set it in `config/media-library.php`.
-- Don't call `addMedia()` without calling `toMediaCollection()` — the media won't be saved.
-- Don't reference conversion names that aren't registered in `registerMediaConversions()`.
-
-## References
-
-- `references/medialibrary-guide.md`
+- Does the Model implement `HasMedia` AND use `InteractsWithMedia`?
+- Are collections and conversions defined in the dedicated register methods?
+- Is `registerMediaConversions` parameter typed as `?Media $media = null`?
+- Is every `addMedia()` followed by `toMediaCollection()`?
+- Are collection names using constants or config (not hardcoded strings)?
+- Has the media migration been run?

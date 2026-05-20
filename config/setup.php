@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Enums\Setup\AuditCategory;
+use App\Domain\Core\Enums\AuditCategory;
 
 return [
 
@@ -115,22 +115,6 @@ return [
         AuditCategory::Database,
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Force Install Allowed Environments
-    |--------------------------------------------------------------------------
-    */
-
     'force_allowed_environments' => ['local', 'dev', 'development', 'testing'],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Recovery Key Settings
-    |--------------------------------------------------------------------------
-    */
-
-    'recovery_key' => [
-        'length' => 64,
-    ],
 
 ];

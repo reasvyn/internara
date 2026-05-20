@@ -1,101 +1,97 @@
 # Database
 
-## Connection
-The default database is SQLite. MySQL, MariaDB, and PostgreSQL are also supported. Configure via `DB_CONNECTION` in your `.env` file.
-Testing uses SQLite `:memory:` with `LazilyRefreshDatabase`.
+## Design Philosophy
+
+The database is organized around the concept that every piece of persistent
+state belongs to a domain. Tables are not flat or arbitrary; they are grouped
+into five conceptual categories that mirror the application's architecture:
+core, operational, assessment, security, and supporting. This structure makes
+it obvious where data lives and how it relates.
 
 ## UUID Primary Keys
-All business models use UUIDs instead of auto-incrementing integers. Most models extend `BaseModel` which provides `HasUuids`, non-incrementing keys, and string key type. The `User` model extends `Authenticatable` and applies `HasUuids` directly.
 
-## Mass Assignment
-Models use PHP 8 `#[Fillable]` and `#[Hidden]` attributes. Older models may still use the traditional `$fillable` property.
+Every business model uses a UUID primary key instead of an auto-incrementing
+integer. This choice is deliberate: UUIDs are globally unique without a central
+sequence, which makes database merging, seeding across environments, and
+distributed deployment safe. There is no risk of ID collision when restoring a
+backup alongside production data, or when records are created offline and
+synced later. UUIDs also prevent information leakage — unlike sequential IDs,
+they reveal nothing about the total number of records or the order of creation.
 
-## Foreign Keys
-Always use constrained UUID foreign keys: `$table->foreignUuid('user_id')->constrained()->cascadeOnDelete();`
+The trade-off is larger index size and slightly slower joins compared to
+integers, but at this application's scale the benefits of distribution safety
+and information hiding outweigh the costs. All foreign key columns use UUIDs
+to match their parent primary keys, and every foreign key is explicitly
+indexed to mitigate the performance difference.
 
-## Package Integrations
-| Package | Purpose |
-|---|---|
-| `spatie/laravel-permission` | Role-based access control |
-| `spatie/laravel-medialibrary` | File attachments (User avatar, School logo, Document files, RegistrationDocument uploads, Submission files) |
-| `spatie/laravel-activitylog` | Model change tracking and audit trail |
-| `spatie/laravel-model-status` | Polymorphic status tracking (used on Registration model) |
-| `spatie/laravel-honeypot` | Spam protection for forms |
+Models extending the base `BaseModel` class automatically gain UUID support.
+The `User` model applies it manually since it extends Laravel's
+`Authenticatable` directly. UUID generation is handled by Laravel's built-in
+`HasUuids` trait using ordered UUIDs, which keeps B-tree index insertion
+efficient.
 
-## Core Tables
+## SQLite as Default
 
-| Table | Purpose |
-|---|---|
-| `users` | User accounts (all roles) |
-| `profiles` | Extended user profile data |
-| `schools` | Institution profile (single record) |
-| `departments` | Academic departments |
-| `academic_years` | Academic calendar periods |
-| `internships` | Internship programs |
-| `internship_companies` | Partner companies |
-| `internship_placements` | Placement slots with quotas |
-| `internship_registrations` | Student internship enrollment |
-| `internship_document_requirements` | Required documents per internship |
-| `registration_documents` | Uploaded documents per registration |
-| `registration_mentor` | Mentor assignments (pivot) |
-| `mentees` | Student role extension |
-| `mentors` | Mentor role extension (teacher/supervisor) |
-| `roles` / `permissions` | RBAC (spatie/laravel-permission) |
-| `model_has_roles` / `model_has_permissions` | Role/permission assignments |
+The default database driver is SQLite. This was chosen because it requires
+zero configuration — no server process, no credentials, no port management.
+A single file is all that is needed. For development and single-server
+deployments, this eliminates operational friction. Testing also uses SQLite
+(in-memory mode), which makes the test suite fast and self-contained.
 
-## Operational Tables
+The trade-off is that SQLite has limited concurrent write capacity and does not
+support all SQL features. For production deployments with multiple concurrent
+users, MySQL 8+, MariaDB, or PostgreSQL 14+ is recommended. The application
+abstracts database access through Eloquent, so switching drivers requires
+changing only the environment variable.
 
-| Table | Purpose |
-|---|---|
-| `logbooks` | Daily student journals |
-| `attendances` | Daily attendance records |
-| `assignments` | Teacher-created tasks |
-| `assignment_types` | Assignment categorization |
-| `submissions` | Student assignment submissions |
-| `supervision_logs` | Mentoring/guidance session records |
-| `schedules` | Event scheduling |
-| `handbooks` | Internship handbook versions |
-| `handbook_acknowledgements` | Student handbook sign-off |
-| `announcements` | System-wide announcements |
+## Key Table Categories
 
-## Assessment Tables
+Core tables are the foundation: users, profiles, schools, departments, and
+academic years. These define who the participants are and what organizational
+structure they belong to.
 
-| Table | Purpose |
-|---|---|
-| `rubrics` | Evaluation rubrics |
-| `competencies` | Rubric competencies (weighted) |
-| `indicators` | Competency scoring indicators |
-| `assessments` | Student assessment records |
-| `evaluations` | Mentor evaluation records |
+Operational tables track the primary workflows: internships, placements,
+registrations, attendances, logbooks, assignments, and submissions. These
+tables record what happens during the internship lifecycle.
 
-## Account & Security Tables
+Assessment tables handle evaluation: rubrics, competencies, indicators,
+assessments, evaluations, presentations, and reports. These are separated
+because evaluation has its own data lifecycle and access patterns distinct
+from operational tracking.
 
-| Table | Purpose |
-|---|---|
-| `account_applications` | New student account requests |
-| `account_status_history` | Status change audit trail |
-| `account_recovery_codes` | Account recovery tokens |
-| `account_restrictions` | Functional restrictions per user |
-| `activation_tokens` | Account activation/setup tokens |
-| `super_admin_approvals` | Multi-approval workflow for sensitive changes |
-| `login_history` | Login attempt records |
-| `suspicious_login_attempts` | Flagged login anomalies |
-| `password_reset_tokens` | Password reset flow |
-| `sessions` | Active user sessions |
+Security tables manage access and auditing: roles, permissions,
+activity_log, login_history, sessions, and account status history. Every
+mutating action is logged immutably, producing an audit trail that can be
+traced back to a specific user and request.
 
-## Supporting Tables
+Supporting tables enable the application to function: settings (key-value
+configuration), media (file attachments), notifications, and setups
+(installation state). These are consumed by the framework and infrastructure
+rather than by business workflows directly.
 
-| Table | Purpose |
-|---|---|
-| `settings` | Key-value configuration store |
-| `setups` | Installation state tracking |
-| `statuses` | Polymorphic status history (spatie/laravel-model-status) |
-| `media` | File attachments (spatie/laravel-medialibrary) |
-| `activity_log` | Audit trail (spatie/laravel-activitylog) |
-| `notifications` | In-app notification records |
-| `absence_requests` | Student absence submissions |
-| `documents` | Reference document library |
-| `teams` / `team_user` | Team management |
-| `gdpr_deletion_logs` | GDPR compliance deletion records |
-| `schedules` | Calendar events |
-| `cache` / `cache_locks` | Cache driver tables |
+## Schema Organization Principles
+
+Migrations are organized by domain, not by chronological order. Each domain
+has its own migration directory, and the naming convention makes it clear
+which table a migration creates or modifies. Every migration is reversible.
+
+Foreign key delete behaviors follow a simple rule: cascade when the child
+record cannot exist without the parent, nullify when the relationship is
+optional, and restrict when deletion should be prevented. Composite indexes
+are created for the specific query patterns each domain uses, not
+speculatively for every column combination.
+
+Factories and seeders mirror this domain structure. Each model has a
+factory, and seeders are idempotent — they can be run multiple times without
+duplicating data. The seeding order respects domain dependencies: school
+data before user data, permissions before role assignments, internships
+before registrations.
+
+## Where to Find It
+
+All migrations live in `database/migrations/` organized by domain.
+Factories are in `database/factories/`, seeders in `database/seeders/`.
+The base model class is in `app/Domain/Core/Models/BaseModel.php`.
+Database configuration is in `config/database.php`, overridable via `.env`.
+The complete list of tables, their columns, and their purposes is documented
+in this file below (the full table reference follows this section).

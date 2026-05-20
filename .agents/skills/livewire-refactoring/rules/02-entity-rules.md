@@ -1,70 +1,21 @@
-# Entity Rules
+# Entity Rules (Refactoring)
 
-Business rules live in Entity classes — plain PHP objects with no framework dependencies.
+## What It Enforces
 
-## Structure
+Inline business rule conditionals in Livewire components and Actions must be extracted into Entity classes. Status comparisons (`if ($x->status === 'active')`), date calculations, and multi-field conditionals are moved to named boolean methods on `final readonly` Entity classes.
 
-```php
-final readonly class Apprentice extends BaseEntity
-{
-    public function __construct(
-        private AccountStatus $status,
-        private bool $isLocked,
-    ) {}
+## Why It Matters
 
-    public static function fromModel(Model $model): static
-    {
-        return new self(
-            status: AccountStatus::tryFrom($model->latestStatus()?->name ?? ''),
-            isLocked: $model->locked_at !== null,
-        );
-    }
+Inline conditionals scatter business knowledge across the codebase. A status check like `if ($year->is_active && $year->internships()->exists())` appears in multiple places, each potentially with subtle differences. Extract it once as `$year->asAcademicYearState()->canBeDeleted()` and every caller asks the same question the same way. The Entity is testable without a database and becomes the single source of truth for that business rule.
 
-    public function isSuspended(): bool
-    {
-        return $this->status === AccountStatus::SUSPENDED;
-    }
+## When It Applies
 
-    public function canTransitionTo(AccountStatus $target): bool
-    {
-        return in_array($target, $this->status->validTransitions(), true);
-    }
-}
-```
+When refactoring, look for these inline patterns in components and Actions:
+- `if ($model->status === 'x')` → Entity method
+- `if ($model->end_date < now())` → Entity method
+- Nested conditionals checking multiple fields → Entity method
+- `if ($status->value === 'suspended')` → Enum method `$status->isTerminal()`
 
-## Rules
+The Entity is `final readonly`, extends `BaseEntity`, and has a `fromModel(Model): static` factory. The Model exposes it through a named accessor (`asAcademicYearState()`). Actions and components call `$model->asEntity()->canX()` — never inline the condition.
 
-### 1. Pure PHP
-- No `use Illuminate\*` imports (except in `BaseEntity` for `Model` bridge)
-- No Eloquent, no Facades, no Service Container
-- Only PHP primitives, Enums, and other Entities
-
-### 2. Bridge via `fromModel()`
-- The only connection to the ORM is the `static fromModel(Model $model)` factory
-- Callers go through `$model->as{EntityName}()->method()`
-- No generic `entity()` method — each model has a named accessor
-
-### 3. Final + Readonly
-- All entities are `final readonly` classes extending `BaseEntity`
-- Constructor property promotion with `private` visibility
-
-### 4. Testable Without Database
-```php
-// Unit test — no database needed
-test('suspended user cannot log in', function () {
-    $entity = new Apprentice(
-        status: AccountStatus::SUSPENDED,
-        isLocked: false,
-    );
-    expect($entity->isSuspended())->toBeTrue();
-});
-```
-
-## What to Move to Entities
-
-| Instead of this in Component/Action | Put it in Entity |
-|---|---|
-| `if ($user->is_active && !$user->locked_at)` | `$user->asApprentice()->canLogin()` |
-| `if ($year->is_active) throw ...` | `$year->asAcademicYearState()->canBeDeleted()` |
-| `$status->value === 'suspended'` | `$status->isTerminal()` (on the Enum) |
-| Complex permission checks | Entity method with clear name |
+Exceptions: Trivial single-property reads without conditional logic: `if ($user->email === null)` can stay inline.

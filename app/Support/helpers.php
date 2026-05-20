@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Support\AppInfo;
-use App\Support\AppMetadata;
-use App\Support\Environment;
-use App\Support\Settings;
+use App\Domain\Settings\Support\AppInfo;
+use App\Domain\Settings\Support\AppMetadata;
+use App\Domain\Settings\Support\Settings;
+use App\Domain\Shared\Support\Environment;
 
 if (! function_exists('setting')) {
     /**

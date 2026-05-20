@@ -1,62 +1,23 @@
 # Entity Delegation
 
-Business rules belong in Entities, not in Actions. Actions call Entity methods to check rules.
+## What It Enforces
 
-## Structure
+Business rules — any logic that answers "can this operation proceed?" — must be delegated to Entity methods, not checked inline in Actions. The Action calls the Entity's named boolean method (e.g., `$year->asAcademicYearState()->canBeDeleted()`) and throws `RejectedException` if the rule fails.
 
-```php
-// ✅ Entity encapsulates the rule
-final readonly class AcademicYearState extends BaseEntity
-{
-    public function canBeDeleted(): bool
-    {
-        return ! $this->isActive;
-    }
-}
+## Why It Matters
 
-// ✅ Action delegates to Entity
-class DeleteAcademicYearAction
-{
-    public function execute(AcademicYear $year): void
-    {
-        if (! $year->asAcademicYearState()->canBeDeleted()) {
-            throw new RuntimeException('Cannot delete active academic year.');
-        }
+Inline business rules scatter conditionals across Actions, making them hard to find, test, and change. When the rule lives in an Entity, it has:
+- A single location that is the source of truth for that business decision
+- Testability without a database (Entities are pure PHP)
+- Reusability across multiple Actions that need to check the same rule
+- A readable name that documents the business intent (`canBeDeleted()` vs `if ($active && $hasRecords)`)
 
-        // ... proceed with deletion
-    }
-}
-```
+The Entity pattern also surfaces implicit business knowledge. A scattered `if ($year->is_active && $year->internships()->exists())` becomes the explicit concept `AcademicYearState::canBeDeleted()`.
 
-## What to Delegate
+## When It Applies
 
-| Instead of inline check in Action | Entity method |
-|---|---|
-| `if ($user->locked_at !== null)` | `$user->asApprentice()->isLocked()` |
-| `if ($year->is_active)` | `$year->asAcademicYearState()->canBeDeleted()` |
-| `if ($internship->status === 'draft')` | `$internship->asPeriod()->isDraft()` |
-| Complex date calculations | `$period->isAcceptingRegistrations()` |
-| Multi-field state checks | `$registration->asState()->canBeApproved()` |
+Any time an Action needs to check whether an operation is valid before proceeding. If the check involves more than a single property read, it belongs in an Entity.
 
-## When NOT to Use an Entity
+Simple property reads that don't encapsulate logic can stay inline: `if ($user->email === null)` is fine. But `if ($user->locked_at !== null && $user->hasRole('student'))` combines two fields into a business concept (`canLogin()`) and belongs in an Entity.
 
-Simple property checks that don't encapsulate business logic can stay inline:
-
-```php
-// ✅ Simple check, no entity needed
-if ($user->email === null) { ... }
-
-// ❌ Business rule disguised as simple check
-if ($user->locked_at !== null && $user->hasRole('student')) { ... }
-// → Should be: $user->asApprentice()->canLogin()
-```
-
-## Testing Benefit
-
-```php
-// Entity test — no database needed
-test('active year cannot be deleted', function () {
-    $state = new AcademicYearState(isActive: true);
-    expect($state->canBeDeleted())->toBeFalse();
-});
-```
+Exceptions: Trivial single-field null checks or boolean property reads that have no business meaning beyond the raw value.

@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Mentor\Actions;
+
+use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Mentor\Models\Mentor;
+
+class DeleteMentorAction extends BaseAction
+{
+    public function execute(Mentor $mentor): void
+    {
+        $this->transaction(function () use ($mentor) {
+            $this->log('mentor_deleted', $mentor, [
+                'user_id' => $mentor->user_id,
+                'email' => $mentor->user->email,
+                'type' => $mentor->type,
+            ]);
+
+            $mentor->user->delete();
+        });
+    }
+}

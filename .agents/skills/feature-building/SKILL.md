@@ -1,60 +1,40 @@
----
-name: feature-building
-description: "Apply when building any new feature, component, or modifying existing code in the Internara codebase. This skill encodes the project's architecture, conventions, standards, and lifecycle knowledge into a step-by-step feature building workflow."
-license: MIT
-metadata:
-  author: internara
----
+# Feature Building Skill
 
-# Feature Building: Internara Development Standards
+## When to Activate
 
-Complete reference for building features that follow Internara's architecture, conventions, and quality standards.
+Apply this skill when building any new feature, modifying existing code, or adding a new domain concept. This skill encodes the full feature lifecycle — from understanding domain context through testing and quality checks.
 
-## Quick Start
+## Core Principles
 
-```
-1. Understand the domain → read docs/en/ for lifecycle context
-2. Plan the layers → Action, Entity, Model, Livewire, View
-3. Write Actions (business logic) + Entities (business rules)
-4. Write Livewire (thin) + Blade (maryUI + Tailwind)
-5. Write tests (Pest)
-6. Add translations (EN + ID)
-7. Register routes + sidebar menu (config/menu.php)
-8. Run lint (Pint) + build (Vite)
-```
+Every feature follows a layered architecture where each layer has a distinct responsibility:
 
-## Architecture Overview
+Livewire Components handle UI state (form bindings, modal visibility) and delegate to Actions. Actions handle validation, orchestrate persistence in transactions, and dispatch side effects. Models handle data access (queries, relationships, scopes). Entities handle pure business rules without framework dependencies. Enums define labeled constants and state machines with transition validation.
 
-```
-User Input → Livewire → Action → Model → Database
-                              ↓
-                        Audit / Event / Flash
-```
+Data flows unidirectionally: User input enters through a Livewire component, which calls an Action, which reads/writes through a Model, checks business rules through an Entity, and emits audit/event side effects.
 
-| Layer | Directory | Responsibility |
-|---|---|---|
-| **Action** | `app/Actions/{Domain}/` | Business logic, validation, persistence, side effects |
-| **Entity** | `app/Entities/{Domain}/` | Business rules, pure PHP |
-| **Model** | `app/Models/` | Data queries, relationships, scopes |
-| **Livewire** | `app/Livewire/{Domain}/` | UI state, form binding, delegation |
-| **View** | `resources/views/livewire/{domain}/` | Blade templates, maryUI, Tailwind |
-| **Support** | `app/Support/` | Static utilities, helpers |
-| **Enum** | `app/Enums/{Domain}/` | Constants with business logic |
+## Feature Workflow
 
-## Rules
+1. Understand the domain: read `docs/en/domain/{domain}.md` for lifecycle context
+2. Create migration and Model (UUID PK, BaseModel, Fillable attribute, HasFactory)
+3. Create Entity if business rules exist (final readonly, BaseEntity, fromModel bridge)
+4. Create Enum if state machine (string-backed, LabelEnum/StatusEnum)
+5. Create Action (BaseAction, single execute, validation, transaction, entity delegation)
+6. Create Policy if authorization needed (BasePolicy, role/ownership gates)
+7. Create Livewire component (thin, delegates to Actions, BaseRecordManager for CRUD tables)
+8. Create Blade view (maryUI, Tailwind, translation keys)
+9. Register routes in `routes/web/{domain}.php`
+10. Add translations in `lang/en/{domain}.php` and `lang/id/{domain}.php`
+11. Write tests: Entity tests (no DB), Feature tests (Action/Livewire with DB)
+12. Quality: run Pint, build assets, run test suite
 
-| # | Rule | File | Key Points |
-|---|------|------|------------|
-| 1 | [Action Pattern](rules/01-action-pattern.md) | Actions | Single `execute()`, validation, transactions, audit |
-| 2 | [Entity Rules](rules/02-entity-rules.md) | Entities | `final readonly`, no Eloquent/Facades, `fromModel()` bridge |
-| 3 | [Model Conventions](rules/03-model-conventions.md) | Models | UUIDs, `#[Fillable]`, `HasFactory`, `as{Name}()` accessor |
-| 4 | [Livewire Components](rules/04-livewire-components.md) | Livewire | Thin, delegate to Actions, `WithFileUploads` |
-| 5 | [Blade & UI](rules/05-blade-ui.md) | Views | maryUI, Tailwind v4, daisyUI, dual-language |
-| 6 | [Database & Migrations](rules/06-database-migrations.md) | DB | UUID PKs, `foreignUuid()`, anonymous migrations |
-| 7 | [Routing & Menus](rules/07-routing-menus.md) | Routes | Named routes, sidebar in `config/menu.php`, middleware |
-| 8 | [Testing](rules/08-testing.md) | Tests | Pest 4, `LazilyRefreshDatabase`, Entity tests sans DB |
-| 9 | [Translations](rules/09-translations.md) | Lang | EN + ID, `__()` helper, domain-key convention |
-| 10 | [Notifications & Events](rules/10-notifications-events.md) | Events | ShouldQueue, 3 channels, domain events for state changes |
-| 11 | [Exceptions & Errors](rules/11-exceptions-errors.md) | Errors | `AppException` hierarchy, `HandlesActionErrors` trait |
-| 12 | [Caching & Settings](rules/12-caching-settings.md) | Cache | `Cache::rememberForever()`, invalidation on write |
-| 13 | [Lifecycle Context](rules/13-lifecycle-context.md) | Domain | Internship lifecycle phases, entity state machines |
+## Layer Reference
+
+Every layer has a canonical directory: Actions, Models, Entities, Enums, Livewire, Policies, Views, Routes, Tests, Support, Data, Contracts — all under `app/Domain/{Domain}/`. Views mirror under `resources/views/{domain}/`. Routes are per-domain in `routes/web/{domain}.php`.
+
+## Verification Before Finalizing
+
+- Does the feature follow the data flow: Component → Action → Model/Entity?
+- Are there no inline DB mutations, business rules, or side effects in Livewire?
+- Are translations provided in both English and Indonesian?
+- Are tests written at the appropriate level (Entity unit vs Action feature)?
+- Has Pint formatting been applied and the test suite run?

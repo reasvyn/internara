@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\AssignmentType;
+use App\Domain\Assignment\Models\AssignmentType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

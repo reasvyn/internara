@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Policies\Shared\BasePolicy;
+use App\Domain\Core\Policies\BasePolicy;
 
-arch('domain policies extend BasePolicy')
-    ->expect('App\Policies')
-    ->classes()
-    ->toExtend(BasePolicy::class);
+arch('BasePolicy is abstract')
+    ->expect(BasePolicy::class)
+    ->toBeAbstract();
 
-arch('shared policy concerns are traits')
-    ->expect('App\Policies\Shared\Concerns')
-    ->toBeTraits();
+arch('BasePolicy uses AuthorizesRoles and AuthorizesOwnership')
+    ->expect(BasePolicy::class)
+    ->toUse('App\Domain\Core\Policies\Concerns\AuthorizesRoles')
+    ->toUse('App\Domain\Core\Policies\Concerns\AuthorizesOwnership');

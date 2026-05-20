@@ -1,60 +1,25 @@
-# Entity Rules
+# Entity Business Rules
 
-Business rules live in pure PHP Entity classes — no Eloquent, no Facades.
+## What It Enforces
 
-## Location
+Business rules are encapsulated in pure PHP Entity classes — `final readonly` classes extending `BaseEntity` with zero framework dependencies. Entities live in `app/Domain/{Domain}/Entities/` and are instantiated through a `fromModel(Model): static` factory method.
 
-```
-app/Entities/{Domain}/{Name}.php
-```
+## Why It Matters
 
-Example: `app/Entities/User/Apprentice.php`, `app/Entities/AcademicYear/AcademicYearState.php`
+Entities separate business logic from data access. This means:
+- Business rules can be tested without a database (pure function calls)
+- The same business logic is reused everywhere it's needed
+- Rules are centralized — changing a business requirement means changing one class
+- Rules are explicit and named, not hidden in conditionals
 
-## Structure
+## When It Applies
 
-```php
-<?php
+Create an Entity when a Model accumulates boolean capability checks (`canX()`), state transition logic, date-based business rules, or multi-field validation. The Entity extracts only the state it needs from the Model through `fromModel()`.
 
-declare(strict_types=1);
+Entity vs Enum decision:
+- Use an Enum for simple constants with light methods (`isTerminal()`, `canTransitionTo()`)
+- Use an Entity for multiple fields, complex logic, and date calculations
 
-namespace App\Entities\User;
+The Entity constructor receives all state as typed properties. Methods return business answers: `canLogin()`, `isSuspended()`, `requiresSetup()`, `canBeDeleted()`.
 
-use App\Entities\BaseEntity;
-use App\Enums\Auth\AccountStatus;
-use Illuminate\Database\Eloquent\Model;
-
-final readonly class Apprentice extends BaseEntity
-{
-    public function __construct(
-        private AccountStatus $status,
-        private bool $isLocked,
-    ) {}
-
-    public static function fromModel(Model $model): static
-    {
-        return new self(
-            status: AccountStatus::tryFrom($model->latestStatus()?->name ?? ''),
-            isLocked: $model->locked_at !== null,
-        );
-    }
-
-    public function isSuspended(): bool
-    {
-        return $this->status === AccountStatus::SUSPENDED;
-    }
-}
-```
-
-## Rules
-
-- `final readonly` class extending `BaseEntity`
-- No `use Illuminate\*` imports (except `BaseEntity` may use `Model`)
-- Only bridge to ORM is `static fromModel(Model $model): static`
-- Pure business logic methods only — no queries, no persistence
-- Testable without a database
-- Callers use `$model->as{EntityName}()->method()`
-
-## Entity vs Enum
-
-- **Enum**: Simple constants with light logic (`isTerminal()`, `canTransitionTo()`)
-- **Entity**: Complex business rules involving multiple fields or cross-entity checks
+Exceptions: If a Model has no business rules, it doesn't need an Entity. Create one only when rules accumulate.

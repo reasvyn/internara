@@ -1,46 +1,36 @@
----
-name: entity-refactoring
-description: "Apply when creating or refactoring Eloquent Models and Entity classes. Models handle data access (queries, relationships, scopes). Entities handle business rules (state checks, capability decisions) as pure PHP objects. Enforces separation between persistence and business logic."
-license: MIT
-metadata:
-  author: internara
----
+# Entity Refactoring Skill
 
-# Entity Refactoring: Model + Entity Architecture
+## When to Activate
 
-Separation between data access (Model) and business rules (Entity).
+Apply this skill when creating new Models, when a Model accumulates boolean capability checks or conditional logic that feels out of place, when you see inline business rules in Controllers or Livewire components, or when writing tests for business logic that currently require a database.
+
+## Core Principles
+
+The Model and Entity layers serve two fundamentally different concerns. Models handle data access — relationships, scopes, casts, and queries. Entities handle business rules — canX checks, state transitions, and capability decisions — as pure PHP objects with zero framework dependencies.
+
+This separation exists because:
+- Business rules are easier to test without a database
+- Models already have many responsibilities (serialization, relationships, events)
+- Business rules change for different reasons than data access patterns
+- Entities can be reused across different data sources
 
 ## Layer Responsibilities
 
-```
-┌─────────────────────────────────────────────────────┐
-│                   Model (Eloquent)                    │
-│                                                       │
-│  • Relationships (hasMany, belongsTo, etc.)           │
-│  • Scopes (scopeActive, scopeLocked)                  │
-│  • Attributes (casts, accessors, appends)             │
-│  • Named entity accessor (as{EntityName}())           │
-│  • Data queries only — NO business rules              │
-└───────────────────────┬─────────────────────────────┘
-                        │ callers go through
-                        ▼
-┌─────────────────────────────────────────────────────┐
-│                  Entity (Pure PHP)                    │
-│                                                       │
-│  • Business rules (canLogin, canTransitionTo, etc.)   │
-│  • State checks (isSuspended, isTerminal, isActive)   │
-│  • Factory method fromModel(Model $model)             │
-│  • Zero framework dependencies                        │
-│  • Testable without a database                        │
-└─────────────────────────────────────────────────────┘
-```
+Models own: relationships, scopes, attribute casting, the entity bridge accessor (`as{Name}State()`), media collections, and factory definitions. They explicitly do NOT own: `canX()`, `isY()`, state transition logic, date calculations based on business rules, or any conditional that combines multiple fields into a decision.
 
-## Rules
+Entities own: all business rules as `final readonly` classes extending `BaseEntity`. They receive extracted state through a `fromModel(Model): static` factory. They import nothing from the framework except `Illuminate\Database\Eloquent\Model` in that single factory method.
 
-| # | Rule | File |
-|---|------|------|
-| 1 | [Model Responsibilities](rules/01-model-responsibilities.md) | Queries, relationships, scopes — NOT business rules |
-| 2 | [Entity Purity](rules/02-entity-purity.md) | `final readonly`, no Eloquent, no Facades |
-| 3 | [Bridge Pattern](rules/03-bridge-pattern.md) | `as{EntityName}()` accessor on Model |
-| 4 | [Business Rules in Entities](rules/04-business-rules.md) | What to move from Model to Entity |
-| 5 | [Testing Separation](rules/05-testing-separation.md) | Model tests need DB, Entity tests don't |
+## Bridge Pattern
+
+Every Model exposes its Entity through a named accessor: `as{EntityName}(): EntityType`. The accessor name describes the business role, not just the class name. For example, `User` has `asApprentice()` rather than `asUserState()`, because in this context the user acts as an apprentice.
+
+## Verification Before Finalizing
+
+- Does the Model use `#[Fillable]` attribute, not `$fillable` property?
+- Does the Model extend BaseModel (UUID PK)?
+- Is the Entity `final readonly` and extending BaseEntity?
+- Does the Entity have `fromModel(Model): static`?
+- Does the Entity have zero Eloquent/Facade/ServiceProvider imports?
+- Do business rules live in the Entity, not the Model or Action?
+- Do all Enums implement `LabelEnum` or `StatusEnum`?
+- Does `declare(strict_types=1)` appear on every file?

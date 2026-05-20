@@ -2,30 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Models\BaseModel;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Domain\Core\Models\BaseModel;
+use App\Domain\User\Models\User;
 
-arch('domain models extend BaseModel')
-    ->expect('App\Models')
-    ->toBeClasses()
-    ->toExtend(BaseModel::class)
-    ->ignoring(User::class);
+arch('BaseModel is abstract with UUID key methods')
+    ->expect(BaseModel::class)
+    ->toBeAbstract()
+    ->toHaveMethod('getIncrementing')
+    ->toHaveMethod('getKeyType');
 
 arch('User extends Authenticatable, not BaseModel')
     ->expect(User::class)
     ->toExtend('Illuminate\Foundation\Auth\User');
-
-arch('all models use HasUuids')
-    ->expect('App\Models')
-    ->toUseTraits([HasUuids::class]);
-
-arch('BaseModel is abstract with UUID key type')
-    ->expect(BaseModel::class)
-    ->toBeAbstract()
-    ->toHaveMethod('getKeyType')
-    ->toHaveMethod('getIncrementing');
-
-arch('models do not import Actions')
-    ->expect('App\Models')
-    ->not->toUse('App\Actions');

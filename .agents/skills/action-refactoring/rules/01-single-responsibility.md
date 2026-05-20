@@ -1,48 +1,25 @@
 # Single Responsibility
 
-One Action class = one business operation. Named `{Verb}{Noun}Action`.
+## What It Enforces
 
-## Structure
+Every Action class represents exactly one business operation. The class is named `{Verb}{Noun}Action` (e.g., `CreateAcademicYearAction`) and exposes exactly one public method called `execute()`. There must never be multiple public methods on an Action class.
 
-```php
-class CreateUserAction
-{
-    public function execute(array $data): User
-    {
-        // validate → persist → audit → return
-    }
-}
-```
+## Why It Matters
 
-## Do
+Single-responsibility Actions create a predictable, discoverable codebase. When every operation lives in its own class, you can find any business operation by name, test it in isolation, and change it without affecting other operations. An Action with multiple methods inevitably accumulates branching logic and conditional paths that make testing harder and refactoring riskier.
 
-- One `execute()` method with a clearly named return type
-- Constructor injection for dependencies (always `protected readonly`)
-- Focused on ONE operation: "create user", not "create user and send email and update settings"
+The `execute()` convention means every Action has the same entry point. Callers (Livewire components, Controllers, Artisan commands) always call `$action->execute(...)` regardless of what the Action does. This consistency reduces cognitive load.
 
-## Don't
+## When It Applies
 
-```php
-// ❌ Multiple operations in one Action
-class UserAction
-{
-    public function create(array $data): User { ... }
-    public function update(User $user, array $data): User { ... }
-    public function delete(User $user): void { ... }
-}
-```
+Always. This is the foundational rule of the Action pattern.
 
-```php
-// ✅ Separate Actions
-class CreateUserAction { public function execute(...): User { ... } }
-class UpdateUserAction { public function execute(...): User { ... } }
-class DeleteUserAction { public function execute(...): void { ... } }
-```
+Signals that an Action needs splitting:
+- More than 3 constructor-injected dependencies (it's doing too much)
+- An `if` or `switch` on operation type inside execute
+- Multiple distinct return paths with different meanings
+- A method name that isn't `execute()` (the class name already describes the operation)
 
-## When to Split
+Return type conventions reinforce single responsibility: Create Actions return the created model. Update Actions return the updated model. Delete Actions return void. Complex operations return an array or DTO.
 
-| Signal | Action |
-|---|---|
-| More than 3 dependencies | Extract smaller Actions |
-| Conditional flows (`if` on operation type) | Split into separate Actions |
-| Multiple return paths with different meanings | Split |
+Exceptions: None. If you need multiple operations, create multiple Action classes.

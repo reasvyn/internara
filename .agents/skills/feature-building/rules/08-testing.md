@@ -1,77 +1,27 @@
-# Testing
+# Testing New Features
 
-## Framework
+## What It Enforces
 
-Pest v4. Feature tests use `LazilyRefreshDatabase`. PHPStan level 8 for static analysis. Laravel Pint for code style.
+Tests follow domain-first structure: `tests/{Suite}/{Domain}/{Name}Test.php`. Entity tests need no database. Action and Livewire tests use `RefreshDatabase` or `LazilyRefreshDatabase`. All tests use Pest v4.
 
-## File Structure
+## Why It Matters
 
-```
-tests/{Suite}/{Domain}/{Name}Test.php
-```
+Testing at the right level reduces feedback time. Entity tests run in milliseconds without a database. Action tests verify the full orchestration with a database. Livewire tests validate the UI integration. This layered approach means business rules are tested quickly and thoroughly, while integration tests confirm everything works together.
 
-- `tests/Feature/{Domain}/{Name}Test.php` — integration tests
-- `tests/Unit/{Layer}/{Domain}/{Name}Test.php` — isolated logic
-- `tests/Arch/{Name}ArchTest.php` — structure enforcement
+## When It Applies
 
-## Test Patterns
+Every new feature must have tests at the appropriate level:
+- Entity: test business rules directly — instantiate the Entity, call methods, assert booleans
+- Action: test validation, persistence, side effects — resolve Action, call execute, assert model exists or exception thrown
+- Livewire: test component interactions — set properties, call methods, assert state changes
 
-```php
-declare(strict_types=1);
+Test recommendations:
+- `LazilyRefreshDatabase` over `RefreshDatabase` for speed
+- `assertModelExists()` over `assertDatabaseHas()` for clarity
+- Factory states over manual model creation
+- `Event::fake()` after factory setup (not before)
+- `Exceptions::fake()` to assert exception reporting
+- `Http::preventStrayRequests()` to catch unexpected HTTP calls
+- `Mail::assertQueued()` over `assertSent()`
 
-use function Pest\Laravel\artisan;
-
-describe('CreateUserAction', function () {
-    it('creates a user with minimal data', function () {
-        $user = app(CreateUserAction::class)->execute(
-            name: 'John',
-            email: 'john@example.com',
-        );
-
-        expect($user)->toBeInstanceOf(User::class);
-    });
-});
-```
-
-## Entity Testing (No DB)
-
-```php
-it('suspended user cannot log in', function () {
-    $entity = new Apprentice(
-        status: AccountStatus::SUSPENDED,
-        isLocked: false,
-    );
-
-    expect($entity->isSuspended())->toBeTrue();
-});
-```
-
-## Livewire Testing
-
-```php
-Livewire::test(UserManager::class)
-    ->assertSuccessful()
-    ->set('search', 'Alice')
-    ->assertSee('Alice')
-    ->assertDontSee('Bob');
-```
-
-## Commands
-
-```bash
-composer test              # Clear cache + run all tests
-composer test:feature      # Feature tests only
-composer test:unit         # Unit tests only
-composer test:arch         # Architecture tests only
-```
-
-## Base TestCase
-
-`tests/TestCase.php` creates a Setup record with `is_installed = true` and registers `Gate::before` for super_admin bypass.
-
-## Conventions
-
-- `declare(strict_types=1)` at the top of every test file
-- Factories for model creation with custom states
-- Feature tests grouped by domain context
-- Architecture tests enforce layer separation rules
+Exceptions: Trivial views or read-only pages may not need dedicated tests if the underlying Actions are already tested.

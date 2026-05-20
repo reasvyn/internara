@@ -1,75 +1,27 @@
-# Validation & Forms Best Practices
+# Validation
 
-## Use Form Request Classes
+## What It Enforces
 
-Extract validation from controllers into dedicated Form Request classes.
+Form Request classes handle validation for Controller endpoints. Actions validate their own inputs independently (`Validator::validate()`) as the authoritative source. Array syntax is used for validation rules (not pipe `|` syntax). Custom validation rule classes encapsulate reusable business validation.
 
-Incorrect:
-```php
-public function store(Request $request)
-{
-    $request->validate([
-        'title' => 'required|max:255',
-        'body' => 'required',
-    ]);
-}
-```
+## Why It Matters
 
-Correct:
-```php
-public function store(StorePostRequest $request)
-{
-    Post::create($request->validated());
-}
-```
+Defense in depth: Livewire validates for UX (inline errors), FormRequest validates for Controller endpoints, and the Action always validates authoritatively. Each layer is independent — if a caller skips the outer layers, the Action still enforces rules.
 
-## Array vs. String Notation for Rules
+Array syntax (`['required', 'email']`) is preferred over pipe syntax (`'required|email'`) because it composes cleanly with `Rule::` objects, is easier to read for complex rules, and doesn't require escaping within strings.
 
-Array syntax is more readable and composes cleanly with `Rule::` objects. Prefer it in new code, but check existing Form Requests first and match whatever notation the project already uses.
+## When It Applies
 
-```php
-// Preferred for new code
-'email' => ['required', 'email', Rule::unique('users')],
+- Controller endpoints: FormRequest classes handle validation + authorization
+- Actions: `Validator::validate()` or `Validator::make()->validate()` for authoritative validation
+- Livewire components: `$this->validate()` for UX inline errors (Action re-validates)
+- Reusable business rules: custom ValidationRule classes
 
-// Follow existing convention if the project uses string notation
-'email' => 'required|email|unique:users',
-```
+Use `validated()` on FormRequest results — never `$request->all()`. Use `after()` for cross-field validation. Use `Rule::unique()->ignore()` for update scenarios.
 
-## Always Use `validated()`
+Business rules vs validation:
+- Format/constraint validation: Validator rules → throws ValidationException
+- State-based business rules: Entity check + RejectedException
+- Authorization: Policy Gate → AuthorizationException
 
-Get only validated data. Never use `$request->all()` for mass operations.
-
-Incorrect:
-```php
-Post::create($request->all());
-```
-
-Correct:
-```php
-Post::create($request->validated());
-```
-
-## Use `Rule::when()` for Conditional Validation
-
-```php
-'company_name' => [
-    Rule::when($this->account_type === 'business', ['required', 'string', 'max:255']),
-],
-```
-
-## Use the `after()` Method for Custom Validation
-
-Use `after()` instead of `withValidator()` for custom validation logic that depends on multiple fields.
-
-```php
-public function after(): array
-{
-    return [
-        function (Validator $validator) {
-            if ($this->quantity > Product::find($this->product_id)?->stock) {
-                $validator->errors()->add('quantity', 'Not enough stock.');
-            }
-        },
-    ];
-}
-```
+Exceptions: Simple Actions with only one caller may duplicate rules instead of creating a shared FormRequest. The Action's validation is never optional.

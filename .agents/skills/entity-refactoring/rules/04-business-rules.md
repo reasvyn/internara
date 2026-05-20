@@ -1,79 +1,27 @@
 # Business Rules in Entities
 
-Move ALL business rules from Models/Actions/Components into Entities.
+## What It Enforces
 
-## What to Move
+ALL business rules — any conditional logic that makes a business decision — must be centralized in Entity classes. Scattered conditionals in Actions, Livewire components, and Blade templates must be extracted into named Entity methods.
 
-| Inline Code → | Entity Method | Why Entity |
-|---|---|---|
-| `$user->locked_at !== null` | `$user->asApprentice()->isLocked()` | Lock logic may change |
-| `$year->is_active && !$hasRegistrations` | `$year->asAcademicYearState()->canBeDeleted()` | Multiple fields involved |
-| `$status->value === 'suspended'` | `$status->isTerminal()` | Enum method is fine too |
-| `$internship->status !== 'draft' && !$withinWindow` | `$internship->asPeriod()->isAcceptingRegistrations()` | Date calc + status check |
-| `$registration->status === 'pending' && $mentors->count() >= 2` | `$registration->asState()->canBeApproved()` | Cross-entity check |
+## Why It Matters
 
-## Example: Before → After
+Business rules scattered across the codebase create several problems:
+- The same rule is implemented differently in different places (inconsistency)
+- Changing a rule requires finding and updating every location (maintenance cost)
+- Rules are tested only incidentally through integration tests (test fragility)
+- New developers can't find where a business decision is made (discoverability)
 
-### Before (logic scattered)
+Centralizing rules in Entities means the same business decision is always asked the same way: `$model->asEntity()->canX()`. The rule has one home, one test, and one point of change.
 
-```php
-// In Livewire component
-if ($internship->status->value === 'active' && $internship->registration_end_date > now()) {
-    // allow registration
-}
+## When It Applies
 
-// In Action
-if ($internship->status !== 'draft') {
-    throw new \Exception('Only draft can be edited');
-}
-```
+Any time you see:
+- Boolean capability checks: `if ($year->is_active && !$year->internships()->exists())` → `$year->asAcademicYearState()->canBeDeleted()`
+- State transition logic: `if ($registration->status === 'pending' && $registration->placement_id)` → `$registration->asRegistrationState()->canBeApproved()`
+- Date calculations with status checks → `$period->isAcceptingRegistrations()`
+- Complex permissions combining multiple fields → Entity method with clear name
 
-### After (logic in Entity)
+Enum methods (like `$status->isTerminal()`, `$status->canTransitionTo($target)`) follow the same principle — they centralize rules that would otherwise be scattered as string comparisons.
 
-```php
-// Entity encapsulates both rules
-final readonly class InternshipPeriod extends BaseEntity
-{
-    public function isAcceptingRegistrations(): bool
-    {
-        return in_array($this->status, [InternshipStatus::PUBLISHED, InternshipStatus::ACTIVE])
-            && now()->between($this->regStart, $this->regEnd);
-    }
-
-    public function isEditable(): bool
-    {
-        return $this->status === InternshipStatus::DRAFT;
-    }
-}
-
-// Component and Action just call the Entity
-if ($internship->asPeriod()->isAcceptingRegistrations()) { ... }
-if (! $internship->asPeriod()->isEditable()) { throw ...; }
-```
-
-## Enum Business Rules
-
-Enums can also contain business rules. This is valid and follows the same principle:
-
-```php
-enum InternshipStatus: string implements LabelEnum
-{
-    case DRAFT = 'draft';
-    case PUBLISHED = 'published';
-    case ACTIVE = 'active';
-
-    public function canTransitionTo(self $target): bool
-    {
-        return in_array($target, $this->validTransitions(), true);
-    }
-
-    public function validTransitions(): array
-    {
-        return match ($this) {
-            self::DRAFT => [self::PUBLISHED, self::CANCELLED],
-            self::PUBLISHED => [self::ACTIVE, self::CANCELLED],
-            self::ACTIVE => [self::COMPLETED, self::CANCELLED],
-        };
-    }
-}
-```
+Exceptions: Trivial single-field reads that have no conditional logic (`if ($user->email === null)`). Additionally, the Entity is not for data queries — use scopes on the Model for that.

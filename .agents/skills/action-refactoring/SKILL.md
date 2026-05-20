@@ -1,41 +1,31 @@
----
-name: action-refactoring
-description: "Apply when creating or refactoring Action classes in the Action-Oriented MVC pattern. Ensures Actions are single-responsibility, handle validation, persistence, side effects, and use proper error handling. Also covers when business rules should be delegated to Entities and static utilities to Support."
-license: MIT
-metadata:
-  author: internara
----
+# Action Refactoring Skill
 
-# Action Refactoring: Action Layer Architecture
+## When to Activate
 
-Blueprint for keeping Action classes focused, consistent, and properly layered.
+Apply this skill whenever creating, modifying, or reviewing Action classes or when refactoring business logic out of Livewire components or Controllers into proper Action classes. Trigger on any operation that involves validation, persistence, side effects, or business rule enforcement.
 
-## Action Responsibilities
+## Core Principles
 
-```
-┌─────────────────────────────────────────────────────┐
-│                   Action Layer                        │
-│                                                       │
-│  • Validate input (Validator facade)                  │
-│  • Orchestrate persistence (DB::transaction)          │
-│  • Dispatch side effects (audit, events, notifs)      │
-│  • Delegate business RULES to Entities                │
-│  • Delegate static UTILITIES to Support               │
-│                                                       │
-│  NOT responsible for:                                 │
-│  • Business rules / state checks → Entity             │
-│  • UI state / form binding → Livewire Component       │
-│  • Static helpers / formatting → Support              │
-└─────────────────────────────────────────────────────┘
-```
+Actions are the orchestration layer — they coordinate what happens during a business operation without making business decisions themselves. An Action receives input, validates it, asks an Entity whether the operation is allowed, persists changes in a transaction, and emits side effects (logs, events, notifications).
 
-## Rules
+Key constraints:
+- One Action = one business operation, expressed as a single `execute()` method
+- Validation is authoritative here — not just a UX concern
+- Business rule questions go to Entities, not inline conditionals
+- All persistence and side effects happen inside a database transaction
+- Dependencies are injected via constructor promotion
 
-| # | Rule | File |
-|---|------|------|
-| 1 | [Single Responsibility](rules/01-single-responsibility.md) | One Action = one operation |
-| 2 | [Validation](rules/02-validation.md) | Authoritative validation lives here |
-| 3 | [Side Effects](rules/03-side-effects.md) | Audit, events, notifications |
-| 4 | [Entity Delegation](rules/04-entity-delegation.md) | Delegate rules to Entities |
-| 5 | [Error Handling](rules/05-error-handling.md) | Consistent exceptions |
-| 6 | [Structure & Naming](rules/06-structure-naming.md) | File location and conventions |
+## Layer Boundaries
+
+Actions sit between Livewire/Controllers (which handle UI state) and Models (which handle data access). Entities sit beside Actions as pure business-rule objects. Actions must never contain inline `canX()` checks — those belong in Entities. Actions must never contain raw SQL queries or direct static helper logic — those belong in Support.
+
+## Verification Before Finalizing
+
+- Does the Action have exactly one `execute()` method?
+- Does it extend BaseAction or use the HandlesActionErrors trait?
+- Are business rule checks delegated to Entity methods?
+- Are all DB writes wrapped in a transaction?
+- Are side effects (logging, events, notifications) inside the transaction?
+- Does it throw RejectedException for rule violations, not RuntimeException?
+- Is validation run before business logic?
+- Are static utilities (formatting, generation, parsing) delegated to Support classes?

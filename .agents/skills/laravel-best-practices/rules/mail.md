@@ -1,27 +1,19 @@
-# Mail Best Practices
+# Mail
 
-## Implement `ShouldQueue` on the Mailable Class
+## What It Enforces
 
-Makes queueing the default regardless of how the mailable is dispatched. No need to remember `Mail::queue()` at every call site — `Mail::send()` also queues it.
+All mailables implement `ShouldQueue` to make queueing the default. `afterCommit()` prevents queued mail from processing before the transaction commits. Tests use `Mail::assertQueued()` over `assertSent()`. Markdown templates for transactional emails. Dedicated queues per notification channel.
 
-## Use `afterCommit()` on Mailables Inside Transactions
+## Why It Matters
 
-A queued mailable dispatched inside a transaction may process before the commit. Use `$this->afterCommit()` in the constructor.
+Sending email synchronously blocks the response until the SMTP conversation completes — potentially seconds of latency. Implementing `ShouldQueue` on a mailable makes it queued by default regardless of how it's dispatched. `afterCommit()` prevents the queued mail from being processed before the DB transaction commits, avoiding reads of non-existent data.
 
-## Use `assertQueued()` Not `assertSent()` for Queued Mailables
+## When It Applies
 
-`Mail::assertSent()` only catches synchronous mail. Queued mailables fail `assertSent` with a "Did you mean to use assertQueued()?" hint.
+Every mailable and notification with a mail channel should implement `ShouldQueue` + `Queueable`. Use `afterCommit()` when dispatching inside a transaction. Use `Mail::assertQueued()` in tests (not `assertSent()`) since the mailable is queued.
 
-Incorrect: `Mail::assertSent(OrderShipped::class);` when mailable implements `ShouldQueue`.
+Generate markdown mailables: `php artisan make:mail OrderConfirmation --markdown=emails.order-confirmation`. Use `viaQueues()` to route specific channels to dedicated queue connections.
 
-Correct: `Mail::assertQueued(OrderShipped::class);`
+Content tests instantiate the mailable directly and assert on the rendered output. Sending tests use `Mail::fake()` and assert the mailable was queued.
 
-## Use Markdown Mailables for Transactional Emails
-
-Markdown mailables auto-generate both HTML and plain-text versions, use responsive components, and allow global style customization. Generate with `--markdown` flag.
-
-## Separate Content Tests from Sending Tests
-
-Content tests: instantiate the mailable directly, call `assertSeeInHtml()`.
-Sending tests: use `Mail::fake()` and `assertSent()`/`assertQueued()`.
-Don't mix them — it conflates concerns and makes tests brittle.
+Exceptions: Immediate, critical emails (password reset) may send synchronously, but using queues with a low-latency connection (e.g., `sync` driver in development) is preferred.

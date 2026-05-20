@@ -1,39 +1,25 @@
-# Livewire 4 JavaScript Integration
+# Livewire JavaScript Integration
 
-## Interceptor System (v4)
+## What It Covers
 
-### Intercept Messages
+Livewire v4's JavaScript interceptor system allows hooking into component message processing and HTTP request lifecycle. Three main integrations exist: intercepting messages (component-level communication), intercepting requests (HTTP-level), and Alpine.js co-existence.
 
-```js
-Livewire.interceptMessage(({ component, message, onFinish, onSuccess, onError }) => {
-    onFinish(() => { /* After response, before processing */ });
-    onSuccess(({ payload }) => { /* payload.snapshot, payload.effects */ });
-    onError(() => { /* Server errors */ });
-});
-```
+## Interceptor System
 
-### Intercept Requests
+`Livewire.interceptMessage()` provides hooks for component message lifecycle: `onFinish()` runs after response received but before DOM processing, `onSuccess()` has access to the component snapshot and DOM diff payload, `onError()` handles server errors.
 
-```js
-Livewire.interceptRequest(({ request, onResponse, onSuccess, onError, onFailure }) => {
-    onResponse(({ response }) => { /* When received */ });
-    onSuccess(({ response, responseJson }) => { /* Success */ });
-    onError(({ response, responseBody, preventDefault }) => { /* 4xx/5xx */ });
-    onFailure(({ error }) => { /* Network failures */ });
-});
-```
+`Livewire.interceptRequest()` provides hooks for the raw HTTP request lifecycle: `onResponse()` for raw response access, `onSuccess()` for 2xx responses, `onError()` for 4xx/5xx (with `preventDefault()` to suppress default handling), and `onFailure()` for network-level failures.
 
-### Component-Scoped Interceptors
+Component-scoped interceptors use `$intercept` within Blade: `this.$intercept('actionName', { onSuccess: ... })` — scoped to a specific component instance and action.
 
-```blade
-<script>
-    this.$intercept('save', ({ component, onSuccess }) => {
-        onSuccess(() => console.log('Saved!'));
-    });
-</script>
-```
+## Alpine.js Integration
 
-## Magic Properties
+Alpine.js and Livewire co-exist naturally. Alpine manages client-side state (`x-data`, `x-show`, `x-transition`) while Livewire manages server state (`wire:model`, `wire:click`). They communicate through `$wire` (access component properties and methods from Alpine) and `$errors` (access validation errors from JavaScript).
 
-- `$errors` - Access validation errors from JavaScript
-- `$intercept` - Component-scoped interceptors
+## When to Use
+
+- Interceptors: for analytics, logging, custom error handling, or DOM manipulation after Livewire updates
+- Alpine.js: for client-side-only UI behavior (expanding panels, tab switching, dropdown menus) that doesn't need server state
+- `$wire`: for hybrid interactions where Alpine reads or writes Livewire component state
+
+Exceptions: Most application code will not need interceptors. Prefer Livewire's built-in loading states (`wire:loading`) and flash messages for user feedback.

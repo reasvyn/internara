@@ -1,65 +1,25 @@
 # Model Conventions
 
-Models handle data access only: relationships, scopes, casts, and the entity bridge.
+## What It Enforces
 
-## Location
+Models handle data access only: relationships, scopes, casts, and the entity bridge. Business models extend `BaseModel` (UUID primary keys). The User model extends `Illuminate\Foundation\Auth\User` directly. Mass assignment uses the `#[Fillable]` attribute.
 
-All models live directly in `app/Models/` with no sub-namespace.
+## Why It Matters
 
-## Base Class
+Consistent model conventions ensure every Model in the codebase follows the same patterns. UUID primary keys are used across all business tables. The `#[Fillable]` attribute is preferred over the `$fillable` property for modern Laravel conventions. The `casts()` method is preferred over the `$casts` property.
 
-Business models extend `BaseModel` (UUIDs, non-incrementing string keys).
-`User` extends `Authenticatable` directly (applies `HasUuids` on its own).
+## When It Applies
 
-## Structure
+Every Model creation follows these rules:
+- Business models extend `App\Domain\Core\Models\BaseModel` (UUID PK)
+- User extends `Illuminate\Foundation\Auth\User` (applies `HasUuids` independently)
+- Mass assignment uses `#[Fillable([...])]` attribute
+- Hidden fields use `#[Hidden([...])]` attribute
+- Factory uses `HasFactory` trait with `newFactory()` method
+- All timestamps included
+- Entity bridge via `as{EntityName()}()` accessor
+- Relationships use singular names for BelongsTo/HasOne, plural for HasMany/BelongsToMany
 
-```php
-<?php
+Media-related methods go on the Model: `registerMediaCollections()`, `registerMediaConversions()`.
 
-declare(strict_types=1);
-
-namespace App\Models;
-
-use App\Entities\User\Apprentice;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-
-#[Fillable(['name', 'email', 'password'])]
-class User extends Authenticatable
-{
-    use HasFactory, HasUuids;
-
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-        ];
-    }
-
-    // ─── Relationships ─────────────────────
-    public function profile(): HasOne { ... }
-
-    // ─── Scopes ────────────────────────────
-    public function scopeActive(Builder $query): Builder { ... }
-
-    // ─── Entity Bridge ─────────────────────
-    public function asApprentice(): Apprentice
-    {
-        return Apprentice::fromModel($this);
-    }
-}
-```
-
-## Rules
-
-| Concern | Implementation |
-|---|---|
-| Mass assignment | `#[Fillable([...])]` attribute (not `$fillable`) |
-| Hidden fields | `#[Hidden([...])]` attribute on `User` |
-| Factories | `use HasFactory` (convention-based resolution) |
-| Primary keys | UUID via `HasUuids` or `BaseModel` |
-| Timestamps | Always include `->timestamps()` in migrations |
-| Entity bridge | Named `as{EntityName()}()` method |
-| Relationships | Singular for BelongsTo/HasOne, plural for HasMany/BelongsToMany |
+Exceptions: The User model does not extend BaseModel because it extends the framework's Authentication base class. All other domain models extend BaseModel.
