@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('logbooks', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
 
             $table->date('date');
             $table->text('content');

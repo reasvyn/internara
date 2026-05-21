@@ -17,7 +17,7 @@ class ReportIncidentAction extends BaseAction
     public function execute(array $data): IncidentReport
     {
         $validated = Validator::validate($data, [
-            'registration_id' => 'required|exists:internship_registrations,id',
+            'registration_id' => 'required|exists:registrations,id',
             'reported_by' => 'required|exists:users,id',
             'incident_date' => 'required|date',
             'type' => 'required|string|in:accident,safety_violation,harassment,disciplinary,other',

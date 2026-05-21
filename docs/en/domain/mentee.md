@@ -82,6 +82,34 @@ acknowledgement page (Guidance domain), "My Schedule" opens the calendar view (S
 and "Edit Profile" opens the profile editor (User domain). The dashboard does not duplicate these 
 tools — it only provides entry points.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Student | As a student, I want to see a personalized dashboard so that I have an overview of my internship status |
+| Student | As a student, I want to see upcoming deadlines and pending actions so that I know what needs my attention |
+| Student | As a student, I want to view my mentor's contact information so that I know who to reach out to |
+| Student | As a student, I want to track my progress against program requirements so that I can self-manage |
+| Student | As a student, I want quick links to all internship tools (logbook, clock-in, assignments) so that I navigate efficiently |
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateMenteeAction` | Creates a mentee enrollment record |
+| `UpdateMenteeAction` | Updates a mentee's profile or status |
+| `DeleteMenteeAction` | Removes a mentee enrollment |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Mentee` (enrollment link between user and internship) |
+| **Entity** | `MenteeState` (active registration checks, clock-in/logbook/assignment gating, duration calculations) |
+| **Livewire** | `StudentDashboard` |
+
 ## Dependencies
 
 | Dependency | Reason |

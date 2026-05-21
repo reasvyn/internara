@@ -30,9 +30,9 @@ class EnvironmentAuditor
         $pass = version_compare(PHP_VERSION, $required, '>=');
 
         return [new AuditCheck(
-            category: AuditCategory::Requirements,
+            category: AuditCategory::REQUIREMENTS,
             nameKey: 'php_version',
-            status: $pass ? AuditStatus::Pass : AuditStatus::Fail,
+            status: $pass ? AuditStatus::PASS : AuditStatus::FAIL,
             messageKey: $pass ? 'php_version_pass' : 'php_version_fail',
             nameParams: ['required' => $required],
             messageParams: ['current' => PHP_VERSION, 'required' => $required],
@@ -46,12 +46,12 @@ class EnvironmentAuditor
 
         foreach ($extensions as $extension) {
             $loaded = extension_loaded($extension);
-            $failStatus = $critical ? AuditStatus::Fail : AuditStatus::Warn;
+            $failStatus = $critical ? AuditStatus::FAIL : AuditStatus::WARN;
 
             $checks[] = new AuditCheck(
-                category: $critical ? AuditCategory::Requirements : AuditCategory::Recommendations,
+                category: $critical ? AuditCategory::REQUIREMENTS : AuditCategory::RECOMMENDATIONS,
                 nameKey: $critical ? 'extension' : 'recommended_extension',
-                status: $loaded ? AuditStatus::Pass : $failStatus,
+                status: $loaded ? AuditStatus::PASS : $failStatus,
                 messageKey: $loaded ? ($critical ? 'extension_pass' : 'recommended_pass') : ($critical ? 'extension_fail' : 'recommended_fail'),
                 nameParams: ['extension' => $extension],
                 messageParams: ['extension' => $extension],
@@ -69,9 +69,9 @@ class EnvironmentAuditor
         foreach (['storage', 'bootstrap/cache'] as $path) {
             $writable = is_writable(base_path($path));
             $checks[] = new AuditCheck(
-                category: AuditCategory::Permissions,
+                category: AuditCategory::PERMISSIONS,
                 nameKey: 'writable_dir',
-                status: $writable ? AuditStatus::Pass : AuditStatus::Fail,
+                status: $writable ? AuditStatus::PASS : AuditStatus::FAIL,
                 messageKey: $writable ? 'writable_pass' : 'writable_fail',
                 nameParams: ['directory' => $path],
                 messageParams: ['directory' => $path],
@@ -88,9 +88,9 @@ class EnvironmentAuditor
         $connected = $this->testDatabaseConnection($driver);
 
         return [new AuditCheck(
-            category: AuditCategory::Database,
+            category: AuditCategory::DATABASE,
             nameKey: 'db_connection',
-            status: $connected ? AuditStatus::Pass : AuditStatus::Fail,
+            status: $connected ? AuditStatus::PASS : AuditStatus::FAIL,
             messageKey: $connected ? 'db_pass' : 'db_fail',
             nameParams: ['driver' => $driver],
             messageParams: ['driver' => $driver],
@@ -125,17 +125,17 @@ class EnvironmentAuditor
     {
         return [
             new AuditCheck(
-                category: AuditCategory::Terminal,
+                category: AuditCategory::TERMINAL,
                 nameKey: 'terminal_animations',
-                status: function_exists('pcntl_fork') ? AuditStatus::Pass : AuditStatus::Warn,
+                status: function_exists('pcntl_fork') ? AuditStatus::PASS : AuditStatus::WARN,
                 messageKey: function_exists('pcntl_fork') ? 'terminal_animations_pass' : 'terminal_animations_fail',
                 nameParams: [],
                 messageParams: [],
             ),
             new AuditCheck(
-                category: AuditCategory::Terminal,
+                category: AuditCategory::TERMINAL,
                 nameKey: 'terminal_interactive',
-                status: function_exists('posix_isatty') ? AuditStatus::Pass : AuditStatus::Warn,
+                status: function_exists('posix_isatty') ? AuditStatus::PASS : AuditStatus::WARN,
                 messageKey: function_exists('posix_isatty') ? 'terminal_interactive_pass' : 'terminal_interactive_fail',
                 nameParams: [],
                 messageParams: [],

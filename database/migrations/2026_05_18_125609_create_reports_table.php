@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
+            $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->string('title');
             $table->string('status')->default('draft')->index();
             $table->json('chapter_structure')->nullable();

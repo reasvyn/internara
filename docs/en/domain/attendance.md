@@ -72,6 +72,74 @@ program coordinator or admin. Compliance reports are available at the individual
 student's attendance record), cohort level (how is this group doing), and program level (overall 
 attendance health). Reports can be filtered by date range, status, and demographic attributes.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Student | As a student, I want to clock in and clock out so that my attendance is recorded |
+| Student | As a student, I want to submit an absence request so that I am excused for planned or unplanned absences |
+| Student | As a student, I want to view my attendance record so that I can track my compliance |
+| Mentor | As a mentor, I want to view my mentees' attendance so that I can monitor their participation |
+| Mentor | As a mentor, I want to approve or reject absence requests so that absences are properly managed |
+| Admin | As an admin, I want to configure attendance policies per program (grace period, minimum hours) so that rules fit each program's needs |
+| Admin | As an admin, I want to generate attendance reports so that I can assess program compliance |
+| System | As the system, I want to compute attendance status automatically from clock-in/out data so that results are deterministic and auditable |
+| System | As the system, I want to notify mentors when attendance drops below thresholds so that issues are addressed early |
+
+### Process Flow
+
+```
+Daily Attendance Status Computation:
+
+Clock-in/out data ──→ Status Engine ──→ PRESENT
+                          │                LATE
+                          │                EARLY_OUT
+                          │                ABSENT
+                          │                PERMISSION (approved absence)
+                          │                SICK (approved sick leave)
+
+Absence Request:
+
+PENDING ──→ APPROVED
+     │
+     ↓
+  REJECTED
+```
+
+- **PRESENT**: Clock-in within grace period, minimum hours met
+- **LATE**: Clock-in after grace period, otherwise valid
+- **EARLY_OUT**: Clocked in but clocked out before minimum hours
+- **ABSENT**: No clock-in and no approved absence
+- **PERMISSION/SICK**: Approved absence covers the day
+- Absence requests flow: PENDING → APPROVED or REJECTED
+- Attendance records are immutable after a configurable window (default 24 hours)
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `ClockInAction` | Records a student's clock-in with timestamp and optional location data |
+| `ClockOutAction` | Records a student's clock-out and computes attendance duration |
+| `CreateAttendanceAction` | Manually creates an attendance record (admin override) |
+| `UpdateAttendanceAction` | Updates an attendance record within the editable window |
+| `DeleteAttendanceAction` | Removes an incorrect attendance record |
+| `VerifyAttendanceAction` | Verifies attendance records for accuracy |
+| `SubmitAbsenceAction` | Submits an absence request (planned or unplanned) |
+| `ProcessAbsenceAction` | Approves or rejects a pending absence request |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Attendance`, `AbsenceRequest` |
+| **Entities** | `AttendanceStatus` (clock-out checks, excused status); `AbsenceRequestStatus` (pending/processed state) |
+| **Enums** | `AttendanceStatus` — `PRESENT`, `LATE`, `EARLY_OUT`, `ABSENT`, `PERMISSION`, `SICK`; `AbsenceRequestStatus` — `PENDING`, `APPROVED`, `REJECTED`; `AbsenceReasonType` — `SICK`, `PERMISSION`, `EMERGENCY`, `OTHER` |
+| **Livewire** | `AttendanceManager`, `StudentClockIn`, `AbsenceRequestForm` |
+| **Policy** | `AttendancePolicy` |
+| **Form Requests** | `ClockInRequest`, `ClockOutRequest`, `SubmitAbsenceRequest` |
+
 ## Dependencies
 
 | Dependency | Reason |

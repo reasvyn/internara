@@ -39,7 +39,7 @@ class CreateInternshipRequest extends FormRequest
             'start_date' => ['required', 'date', 'after:today'],
             'end_date' => ['required', 'date', 'after:start_date'],
             'status' => ['sometimes', 'string', new Enum(InternshipStatus::class)],
-            'company_id' => ['required', 'uuid', 'exists:internship_companies,id'],
+            'company_id' => ['required', 'uuid', 'exists:companies,id'],
             'department_id' => ['required', 'uuid', 'exists:departments,id'],
         ];
     }

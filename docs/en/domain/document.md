@@ -86,6 +86,49 @@ preview output for browser display without file download. The driver contract de
 rendering, saving, and stream/download responses. New drivers can be added by any domain that 
 needs a new output format — just implement the driver contract and register it.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to manage document templates so that generated documents have the correct layout and branding |
+| Admin | As an admin, I want to generate a document (certificate, report, letter) from a template so that output is consistent and auditable |
+| Admin | As an admin, I want to configure output formats (PDF, XLSX, HTML) per document type so that each use case gets the right format |
+| User | As a user, I want to download a generated document so that I can print or share it |
+| Developer | As a developer, I want to register a domain-specific renderer so that my domain can produce documents through the pipeline |
+
+### Rendering Pipeline Flow
+
+```
+1. Resolve template (by type + locale)
+2. Discover registered domain renderer
+3. Renderer gathers domain data
+4. Inject data into template
+5. Invoke output driver (PDF/XLSX/HTML)
+6. Store file via media library
+7. Create Document record with metadata
+```
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `SaveDocumentTemplateAction` | Uploads and saves a new document template version |
+| `RenderDocumentAction` | Executes the rendering pipeline for a document type |
+| `GenerateReportAction` | Generates a specific report document |
+| `DeleteReportAction` | Removes a generated report |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Document` (generated document metadata with media library reference) |
+| **Enums** | `DocumentCategory` — `APPLICATION`, `PERMIT`, `CERTIFICATE`, `REPORT`, `LETTER` |
+| **Livewire** | `TemplateManager`, `ReportsManager` |
+| **Support** | `DocumentRenderer` (rendering pipeline orchestration) |
+| **Controllers** | `DocumentRenderController` (download endpoint) |
+
 ## Dependencies
 
 | Dependency | Reason |

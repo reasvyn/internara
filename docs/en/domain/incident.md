@@ -89,6 +89,52 @@ outcome. CRITICAL incidents additionally notify all admins, the department head,
 coordinator. Notifications are sent through multiple channels (in-app notification plus email) to 
 ensure attention.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Any User | As any user, I want to report an incident so that issues are formally documented |
+| Any User | As any user, I want to report an incident anonymously so that I can raise concerns without fear |
+| Admin | As an admin, I want to be assigned as investigator so that I can examine reported incidents |
+| Admin | As an admin, I want to document investigation findings so that the incident has a complete record |
+| Admin | As an admin, I want to resolve and close incidents with documented outcomes so that the case is properly concluded |
+| Student | As a student, I want to be notified of incidents involving me so that I am aware of the process |
+| Manager | As a manager, I want to view incident statistics so that I can identify trends and improve safety |
+
+### Process Flow
+
+```
+Incident Lifecycle:
+
+REPORTED ──→ INVESTIGATING ──→ RESOLVED ──→ CLOSED (immutable)
+```
+
+- **REPORTED**: Incident submitted, awaiting investigator assignment
+- **INVESTIGATING**: Investigator assigned, actively gathering information
+- **RESOLVED**: Investigation complete, outcome determined and documented
+- **CLOSED**: Permanently immutable — no reopening possible
+- Every action during investigation is recorded on an immutable timeline
+- CRITICAL severity triggers immediate out-of-band notifications to all administrators
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `ReportIncidentAction` | Submits a new incident report (supports anonymous reporting) |
+| `UpdateIncidentAction` | Updates incident details during investigation |
+| `ResolveIncidentAction` | Resolves an incident with outcome classification and written summary |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `IncidentReport` |
+| **Enums** | `IncidentSeverity` — `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`; `IncidentStatus` — `REPORTED`, `INVESTIGATING`, `RESOLVED`, `CLOSED`; `IncidentType` — `ACCIDENT`, `SAFETY_VIOLATION`, `HARASSMENT`, `DISCIPLINARY`, `OTHER` |
+| **Livewire** | `IncidentForm`, `IncidentManager` |
+| **Notifications** | `IncidentReportedNotification` |
+
 ## Dependencies
 
 | Dependency | Reason |

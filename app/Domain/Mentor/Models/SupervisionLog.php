@@ -15,18 +15,24 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['registration_id', 'supervisor_id', 'type', 'date', 'topic', 'notes', 'status', 'is_verified', 'verified_at', 'attachment_path'])]
+#[Fillable(['registration_id', 'supervisor_id', 'type', 'date', 'topic', 'notes', 'status', 'verified_at', 'verified_by'])]
 class SupervisionLog extends BaseModel
 {
     use HasFactory;
 
-    protected $casts = [
-        'date' => 'date',
-        'type' => SupervisionType::class,
-        'status' => SupervisionLogStatus::class,
-        'is_verified' => 'boolean',
-        'verified_at' => 'datetime',
+    protected $attributes = [
+        'status' => SupervisionLogStatus::Pending->value,
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'type' => SupervisionType::class,
+            'status' => SupervisionLogStatus::class,
+            'verified_at' => 'datetime',
+        ];
+    }
 
     public function registration(): BelongsTo
     {
@@ -36,6 +42,11 @@ class SupervisionLog extends BaseModel
     public function supervisor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'supervisor_id');
+    }
+
+    public function verifier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 
     public function asSupervisionStatus(): SupervisionStatus

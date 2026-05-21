@@ -71,8 +71,8 @@ class PartnershipManager extends BaseRecordManager
     protected function query(): Builder
     {
         return Partnership::query()
-            ->select(['partnerships.*', 'internship_companies.name as company_name'])
-            ->join('internship_companies', 'partnerships.company_id', '=', 'internship_companies.id');
+            ->select(['partnerships.*', 'companies.name as company_name'])
+            ->join('companies', 'partnerships.company_id', '=', 'companies.id');
     }
 
     protected function applySearch(Builder $query): Builder
@@ -81,7 +81,7 @@ class PartnershipManager extends BaseRecordManager
             ->where(function (Builder $q) {
                 $q->where('partnerships.agreement_number', 'like', "%{$this->search}%")
                     ->orWhere('partnerships.title', 'like', "%{$this->search}%")
-                    ->orWhere('internship_companies.name', 'like', "%{$this->search}%");
+                    ->orWhere('companies.name', 'like', "%{$this->search}%");
             });
     }
 
@@ -179,7 +179,7 @@ class PartnershipManager extends BaseRecordManager
     public function save(CreatePartnershipAction $create, UpdatePartnershipAction $update): void
     {
         $this->validate([
-            'formData.company_id' => ['required', 'exists:internship_companies,id'],
+            'formData.company_id' => ['required', 'exists:companies,id'],
             'formData.agreement_number' => ['required', 'string', 'max:100', 'unique:partnerships,agreement_number,'.($this->formData['id'] ?? 'NULL')],
             'formData.title' => ['required', 'string', 'max:255'],
             'formData.start_date' => ['required', 'date'],

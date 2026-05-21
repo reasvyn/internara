@@ -17,13 +17,20 @@ class AbsenceRequest extends BaseModel
 {
     use HasFactory;
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'status' => AbsenceRequestStatus::class,
-        'reason_type' => AbsenceReasonType::class,
-        'processed_at' => 'datetime',
+    protected $attributes = [
+        'status' => AbsenceRequestStatus::Pending->value,
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'date',
+            'end_date' => 'date',
+            'status' => AbsenceRequestStatus::class,
+            'reason_type' => AbsenceReasonType::class,
+            'processed_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {

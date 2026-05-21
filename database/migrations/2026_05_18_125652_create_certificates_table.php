@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
+            $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->string('certificate_number')->unique();
             $table->foreignUuid('template_id')->constrained('certificate_templates')->nullOnDelete();
             $table->string('status')->default('issued')->index();

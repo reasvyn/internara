@@ -77,6 +77,62 @@ revoked; NOT_FOUND — serial number does not exist), holder name, program title
 and if revoked, the revocation date and reason category. No additional personal data is exposed. 
 The verification endpoint is rate-limited to prevent abuse but otherwise unrestricted.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create certificate templates with branding and layout so that certificates reflect the institution's identity |
+| Admin | As an admin, I want to issue certificates individually or in batch so that completed students receive their credentials |
+| Admin | As an admin, I want to revoke a certificate when necessary so that the credentialing system remains trustworthy |
+| Student | As a student, I want to download my certificate so that I can present it to employers |
+| Third-party | As an employer, I want to verify a certificate's authenticity via a public endpoint so that I can confirm a candidate's credentials |
+| System | As the system, I want to generate unique serial numbers so that every certificate is unambiguously identifiable |
+| System | As the system, I want to permanently retire revoked serial numbers so that verification remains unambiguous |
+
+### Process Flow
+
+```
+Issuance Sequence:
+
+1. Verify registration is COMPLETED
+2. Resolve active certificate template
+3. Generate unique serial number
+4. Render PDF via Document domain
+5. Store rendered file via media library
+6. Create Certificate record
+
+Certificate Lifecycle:
+
+ISSUED ──→ REVOKED (terminal, irreversible)
+```
+
+- Certificates can only be issued for registrations with COMPLETED status
+- Serial numbers are unique, strictly sequential, and never reused after revocation
+- Issued certificates are entirely immutable — corrections require revocation + new issuance
+- Revocation is irreversible — no un-revoke mechanism exists
+- Public verification endpoint requires no authentication, exposes limited metadata
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateCertificateTemplateAction` | Creates a new certificate template with layout and field mapping |
+| `IssueCertificateAction` | Issues a single certificate for a completed registration |
+| `BatchIssueCertificateAction` | Issues certificates for multiple completed registrations in one operation |
+| `RevokeCertificateAction` | Revokes a certificate with required reason category and explanation |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Certificate`, `CertificateTemplate` |
+| **Enums** | `CertificateStatus` — `ISSUED`, `REVOKED` (terminal) |
+| **Livewire** | `CertificateTemplateManager`, `CertificateList`, `StudentCertificates` |
+| **Controller** | `CertificateDownloadController` (authenticated download) |
+| **Support** | `CertificateRenderer` (PDF rendering pipeline) |
+
 ## Dependencies
 
 | Dependency | Reason |

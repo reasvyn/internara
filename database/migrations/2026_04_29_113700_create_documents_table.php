@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('category')->index();
             $table->text('description')->nullable();
             $table->longText('content')->nullable();
-            $table->string('file_path')->nullable();
             $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
             $table->index(['category', 'is_active']);

@@ -83,6 +83,58 @@ both the outgoing and incoming mentors' identities, the date, and any transfer n
 transition, the student always has at least one mentor assigned — the outgoing mentor remains 
 assigned until the new mentor confirms acceptance.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to assign primary and co-mentors to students so that every student has proper supervision |
+| Mentor | As a mentor, I want to see my assigned students and their progress at a glance so that I can prioritize my attention |
+| Mentor | As a mentor, I want to keep private supervision notes so that I can track observations and concerns |
+| Mentor | As a mentor, I want to manage my supervision schedule so that students can book sessions with me |
+| Mentor | As a mentor, I want to hand over my students to another mentor when needed so that supervision continues seamlessly |
+| Student | As a student, I want to see who my mentors are so that I know who to contact |
+| System | As the system, I want to ensure each student has exactly one primary mentor at all times during an active internship |
+
+### Process Flow
+
+```
+Supervision Log Lifecycle:
+
+PENDING ──→ IN_PROGRESS ──→ SUBMITTED ──→ VERIFIED ──→ COMPLETED
+                  │                            │
+                  ↓                            ↓
+              CANCELLED                    CANCELLED
+```
+
+- Supervision logs are strictly confidential — visible only to the creating mentor and administrators
+- Mentor handover requires new mentor's explicit acceptance
+- Primary mentors have full data access; co-mentors have configurable access scope
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateMentorAction` | Creates a new mentor profile |
+| `UpdateMentorAction` | Updates mentor details |
+| `DeleteMentorAction` | Removes a mentor |
+| `ToggleMentorActiveAction` | Toggles a mentor's active status |
+| `CreateMentorProfileAction` | Creates a mentor's extended profile |
+| `UpdateMentorProfileAction` | Updates the extended mentor profile |
+| `CreateSupervisionLogAction` | Creates a private supervision note |
+| `VerifySupervisionLogAction` | Verifies a supervision log entry |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Mentor`, `SupervisionLog`, `Team` |
+| **Entities** | `MentorRole` (role-based capability checks — verify attendance, logbook, grade, etc.); `SupervisionStatus` (completed/active checks) |
+| **Enums** | `SupervisionLogStatus` — `PENDING`, `IN_PROGRESS`, `SUBMITTED`, `VERIFIED`, `COMPLETED`, `CANCELLED`; `SupervisionType` — `GUIDANCE`, `SUPERVISORING`, `MONITORING` |
+| **Livewire** | `SupervisorDashboard`, `TeacherDashboard`, `MentorProfileManager`, `AssessInternship`, `EvaluateMentor`, `ReportNotes`, `ReportReview` |
+| **Policy** | `SupervisionLogPolicy` |
+
 ## Dependencies
 
 | Dependency | Reason |

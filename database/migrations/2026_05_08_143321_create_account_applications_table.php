@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('entry_year')->nullable();
 
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->foreignUuid('placement_id')->nullable()->constrained('internship_placements')->onDelete('set null');
+            $table->foreignUuid('placement_id')->nullable()->constrained('placements')->onDelete('set null');
             $table->string('academic_year')->nullable();
             $table->string('proposed_company_name')->nullable();
             $table->text('proposed_company_address')->nullable();

@@ -54,7 +54,7 @@ class SupervisorLogManager extends Component
     public function save(CreateSupervisionLogAction $createAction): void
     {
         $this->validate([
-            'registrationId' => 'required|exists:internship_registrations,id',
+            'registrationId' => 'required|exists:registrations,id',
             'date' => 'required|date',
             'topic' => 'required|string|max:255',
             'notes' => 'required|string',

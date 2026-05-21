@@ -14,15 +14,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['name', 'slug', 'category', 'description', 'content', 'file_path', 'is_active'])]
+#[Fillable(['name', 'slug', 'category', 'description', 'content', 'is_active'])]
 class Document extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $casts = [
-        'category' => DocumentCategory::class,
-        'is_active' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'category' => DocumentCategory::class,
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function getDownloadNameAttribute(): string
     {

@@ -10,14 +10,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('internship_registrations', function (Blueprint $table) {
+        Schema::create('registrations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('mentee_id')->nullable()->constrained('mentees')->onDelete('cascade');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
             $table
                 ->foreignUuid('placement_id')
                 ->nullable()
-                ->constrained('internship_placements')
+                ->constrained('placements')
                 ->onDelete('set null');
 
             $table->string('academic_year')->nullable();
@@ -36,7 +36,7 @@ return new class extends Migration
         });
 
         Schema::create('registration_mentor', function (Blueprint $table) {
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->onDelete('cascade');
+            $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
             $table->foreignUuid('mentor_id')->constrained('mentors')->onDelete('cascade');
             $table->string('role')->nullable();
             $table->timestamps();
@@ -48,6 +48,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('registration_mentor');
-        Schema::dropIfExists('internship_registrations');
+        Schema::dropIfExists('registrations');
     }
 };

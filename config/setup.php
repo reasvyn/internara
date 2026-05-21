@@ -96,11 +96,11 @@ return [
     */
 
     'audit_categories' => [
-        AuditCategory::Requirements,
-        AuditCategory::Permissions,
-        AuditCategory::Database,
-        AuditCategory::Terminal,
-        AuditCategory::Recommendations,
+        AuditCategory::REQUIREMENTS,
+        AuditCategory::PERMISSIONS,
+        AuditCategory::DATABASE,
+        AuditCategory::TERMINAL,
+        AuditCategory::RECOMMENDATIONS,
     ],
 
     /*
@@ -108,12 +108,6 @@ return [
     | Audit Critical Categories
     |--------------------------------------------------------------------------
     */
-
-    'critical_categories' => [
-        AuditCategory::Requirements,
-        AuditCategory::Permissions,
-        AuditCategory::Database,
-    ],
 
     'force_allowed_environments' => ['local', 'dev', 'development', 'testing'],
 

@@ -6,6 +6,123 @@ Internara organizes code by **business domain**, not by technical layer. Each bu
 
 This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across 8+ directories, making it hard to reason about boundaries, impossible to enforce encapsulation, and expensive to refactor. Domain colocation solves this by ensuring everything related to "Registration" lives under `app/Domain/Registration/`.
 
+## Layered Architecture
+
+The system is built in **12 layers**, bottom to top. Each layer depends only on layers below it.
+The domain directories are vertical slices that cross all layers below Layer 11.
+
+```
+ Layer 12 ┌──────────────────────────────────────────────────────────┐
+  Business│  24 Domains: Auth, School, Internship, Registration...   │
+  Domains │  Each domain is a vertical slice of layers 1–11          │
+          │  app/Domain/{Domain}/                                    │
+          │  ├── Models/  ├── Actions/  ├── Livewire/  ├── Http/     │
+          │  ├── Enums/   ├── Entities/ ├── Policies/ ├── ...        │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+ Layer 11 ┌──────────────────────────────────────────────────────────┐
+  UI /    │  Livewire 4 components (87)    Blade templates           │
+  Present.│  maryUI  +  DaisyUI  +  Alpine.js  +  Tailwind CSS v4   │
+          │  resources/views/{domain}/     static assets             │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+ Layer 10 ┌──────────────────────────────────────────────────────────┐
+  HTTP    │  Controllers / Form Requests / Middleware / Routes       │
+  Layer   │  23 domain route files → routes/web/{domain}.php        │
+          │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 9 ┌──────────────────────────────────────────────────────────┐
+  Comm.   │  Events + Listeners + Notifications + Console Commands  │
+          │  Cross-domain communication via events                  │
+          │  system:health, system:cleanup, system:cache-warm        │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 8 ┌──────────────────────────────────────────────────────────┐
+  Author. │  Policies (18)  RBAC (5 roles)  Functional roles        │
+          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership    │
+          │  spatie/laravel-permission.  Gate::before(super_admin)   │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 7 ┌──────────────────────────────────────────────────────────┐
+  Business│  Actions (151)  → 1 class = 1 use case  →  execute()   │
+  Ops     │  BaseAction → transaction() + log() + error handling    │
+          │  app/Domain/*/Actions/ delegating all persistence       │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 6 ┌──────────────────────────────────────────────────────────┐
+  Domain  │  Enums  (LabelEnum, StatusEnum, ColorableEnum)          │
+  Rules   │  Entities (25, final readonly, zero framework deps)    │
+          │  States  (BaseState, InternshipState, PartnershipState) │
+          │  Data DTOs (AuditCheck, AuditReport)                    │
+          │  app/Domain/*/Enums/  Entities/  States/  Data/         │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 5 ┌──────────────────────────────────────────────────────────┐
+  Domain  │  Eloquent Models (50)  →  extend BaseModel              │
+  Models  │  UUID primary keys (HasUuids), HasFactory               │
+          │  Relationships, Scopes, Accessors, Mutators             │
+          │  app/Domain/*/Models/  +  factories + seeders           │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 4 ┌──────────────────────────────────────────────────────────┐
+  Core    │  BaseModel  BaseAction  BaseEntity  BasePolicy           │
+  Base    │  BaseRecordManager  BaseController  FormRequest          │
+  Classes │  BaseState  Data (DTO)                                   │
+          │  SmartLogger  PiiMasker  HandlesActionErrors             │
+          │  app/Domain/Core/{Actions,Models,Policies,etc}          │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 3 ┌──────────────────────────────────────────────────────────┐
+  Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum         │
+  Contracts│  DomainEvent, Filterable, Searchable, Sortable          │
+          │  Exception: AppException → Action/Presentation/...     │
+          │  app/Domain/Core/{Contracts,Exceptions}                 │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 2 ┌──────────────────────────────────────────────────────────┐
+  Persist.│  Database: SQLite/MySQL, 75 tables, migrations          │
+          │  Config: .env, config/*.php, Runtime settings table     │
+          │  Files: Spatie Media Library (polymorphic attachments)  │
+          │  Cache: Laravel cache + queue (jobs) + session          │
+          │  database/migrations/  config/  storage/                │
+          └──────────────────────────────────────────────────────────┘
+                                         ▲ depends on
+  Layer 1 ┌──────────────────────────────────────────────────────────┐
+  Infra   │  PHP 8.4  +  Laravel 13  +  Composer packages           │
+          │  Spatie: activitylog, medialibrary, permission, states  │
+          │  Livewire 4  +  Tailwind CSS 4  +  Alpine.js            │
+          │  npm packages: Vite, Reverb, Echo, flatpickr, marked    │
+          └──────────────────────────────────────────────────────────┘
+```
+
+### Layer Dependency Rules
+
+1. A layer may only depend on layers **below** it. Layer 12 depends on 1–11, Layer 7 depends on 1–6.
+2. **Core** (layers 3–4) depends on nothing except Laravel/Spatie. No business domain imports Core.
+3. **No sibling imports.** `School` domain must not import `Internship` domain. Cross-domain communication goes through Events (Layer 9) or shared contracts in Core.
+4. **Persistence isolation.** Actions never call Eloquent directly — they delegate to Models. Entities never import Models.
+5. **UI isolation.** Livewire components never import other domains' Livewire components. Communication uses events or redirects.
+
+### How Domain Directories Map to Layers
+
+A domain directory `app/Domain/{Domain}/` combines multiple layers:
+
+| Layer | Directory within Domain | Example |
+|---|---|---|
+| 12 | `app/Domain/Registration/` | The domain itself |
+| 11 | `resources/views/registration/` | Blade views |
+| 10 | `routes/web/registration.php` | Route definitions |
+| 9 | `Listeners/`, `Notifications/`, `Console/` | Communication |
+| 8 | `Policies/` | Authorization |
+| 7 | `Actions/` | Business operations |
+| 6 | `Enums/`, `Entities/`, `States/`, `Data/` | Domain rules |
+| 5 | `Models/` | Persistence |
+| 4 | (uses Core's base classes) | |
+| 3 | (uses Core's contracts) | |
+| 2 | (uses database/config) | |
+| 1 | (uses PHP/Laravel) | |
+
 ## Domain Structure
 
 ```
@@ -95,20 +212,32 @@ A single `routes/web.php` with 200+ lines creates merge conflicts and makes it h
 
 ## Data Flow
 
-All writes follow the same path:
+All writes follow the same path through the layers:
 
 ```
+Layer 10/11          Layer 7           Layer 5/6          Layer 2
 Input → Livewire/Controller → Action → Model/Entity → Database
 ```
 
-Actions are the only entry point for mutations. Livewire components never call `Model::create()` directly. This ensures consistency: every write is logged, validated, and wrapped in a transaction.
+Actions (Layer 7) are the only entry point for mutations. Livewire components (Layer 11) never call `Model::create()` directly. This ensures consistency: every write is logged, validated, and wrapped in a transaction.
+
+Reads may skip Layers 6–7 for simple queries (Livewire → Model directly), but must still pass through authorization (Layer 8).
 
 ## Dependency Rules
 
-- **Core depends on nothing.** Everything depends on Core.
-- **No sibling imports.** `School` must not import `Internship`. Cross-domain communication goes through Events.
-- **Persistence isolation.** Models are never imported by Entities. Livewire may query Models for reads but never writes.
-- **UI isolation.** Livewire never imports other domains' Livewire components. Communication uses events or redirects.
+| Rule | Explanation | Violation Example |
+|---|---|---|
+| **Downward only** | Layer N may only use layers < N | A Controller (10) importing from another domain's Livewire (11) |
+| **Core independence** | Core (Layers 3–4) must not import any business domain | Core importing a School model |
+| **No sibling imports** | Domains at Layer 12 must not import each other | `School` importing `Internship` models |
+| **Persistence isolation** | Entities (Layer 6) never import Models (Layer 5) | An Entity calling `User::find()` |
+| **Action gate** | All mutations go through Actions (Layer 7). No `Model::save()` outside Actions | A Livewire component calling `$user->save()` |
+| **Authorize first** | Every Action must be preceded by a policy check (Layer 8) | An Action that modifies data without calling `$this->authorize()` |
+
+Cross-domain communication (when one domain needs data from another) must use:
+1. **Events** (Layer 9) for fire-and-forget notifications
+2. **Core contracts** (Layer 3) for shared interfaces
+3. **Action delegation** — calling another domain's Action through its public `execute()`
 
 ## Exceptions
 

@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('partnerships', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('company_id')->constrained('internship_companies')->cascadeOnDelete();
+            $table->foreignUuid('company_id')->constrained('companies')->cascadeOnDelete();
             $table->string('agreement_number')->unique();
             $table->string('title');
             $table->date('start_date');

@@ -17,6 +17,13 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
+    ->withCommands([
+        __DIR__.'/../app/Domain/Core/Console/Commands',
+        __DIR__.'/../app/Domain/Setup/Console/Commands',
+        __DIR__.'/../app/Domain/Auth/Console/Commands',
+        __DIR__.'/../app/Domain/Admin/Console/Commands',
+        __DIR__.'/../app/Domain/User/Console/Commands',
+    ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'setup.protected' => ProtectSetupRouteMiddleware::class,

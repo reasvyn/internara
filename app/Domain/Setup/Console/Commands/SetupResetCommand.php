@@ -32,6 +32,8 @@ class SetupResetCommand extends Command
         if (Setup::state()->isInstalled()) {
             error(__('setup.reset.protected'));
 
+            $this->info(__('setup.cli.try_health_check'));
+
             SmartLogger::info(__('setup.reset.protected'))
                 ->module('setup')
                 ->event('reset.blocked')

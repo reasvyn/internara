@@ -7,24 +7,24 @@ use App\Domain\Core\Enums\AuditStatus;
 
 describe('AuditStatus', function () {
     it('is string-backed', function () {
-        expect(AuditStatus::Pass->value)->toBe('pass')
-            ->and(AuditStatus::Fail->value)->toBe('fail')
-            ->and(AuditStatus::Warn->value)->toBe('warn');
+        expect(AuditStatus::PASS->value)->toBe('pass')
+            ->and(AuditStatus::FAIL->value)->toBe('fail')
+            ->and(AuditStatus::WARN->value)->toBe('warn');
     });
 
     it('returns labels', function () {
-        expect(AuditStatus::Pass->label())->toBe('Pass')
-            ->and(AuditStatus::Fail->label())->toBe('Fail')
-            ->and(AuditStatus::Warn->label())->toBe('Warn');
+        expect(AuditStatus::PASS->label())->toBe('Pass')
+            ->and(AuditStatus::FAIL->label())->toBe('Fail')
+            ->and(AuditStatus::WARN->label())->toBe('Warn');
     });
 
     it('returns symbols', function () {
-        expect(AuditStatus::Pass->symbol())->not->toBeEmpty()
-            ->and(AuditStatus::Fail->symbol())->not->toBeEmpty()
-            ->and(AuditStatus::Warn->symbol())->not->toBeEmpty();
+        expect(AuditStatus::PASS->symbol())->not->toBeEmpty()
+            ->and(AuditStatus::FAIL->symbol())->not->toBeEmpty()
+            ->and(AuditStatus::WARN->symbol())->not->toBeEmpty();
     });
 
     it('implements LabelEnum', function () {
-        expect(AuditStatus::Pass)->toBeInstanceOf(LabelEnum::class);
+        expect(AuditStatus::PASS)->toBeInstanceOf(LabelEnum::class);
     });
 });

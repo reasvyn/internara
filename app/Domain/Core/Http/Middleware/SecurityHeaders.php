@@ -19,7 +19,7 @@ class SecurityHeaders
         }
 
         if (config('security-headers.csp_enabled', true)) {
-            $csp = (string) config('security-headers.csp');
+            $csp = (string) (config('security-headers.csp') ?? "default-src 'self'");
             $response->headers->set('Content-Security-Policy', $csp);
         }
 

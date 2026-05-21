@@ -25,7 +25,7 @@ return [
         'writable_fail' => ':directory is not writable',
 
         'db_connection' => 'Database Connection',
-        'db_pass' => 'Connected via :driver (v:version)',
+        'db_pass' => 'Connected via :driver',
         'db_fail' => 'Failed to connect to database',
         'db_fail_message' => 'Connection failed: :error',
 
@@ -70,6 +70,8 @@ return [
         'create_super_admin_confirm' => 'Do you want to create a Super Admin account now?',
         'admin_created' => 'Super Admin account successfully created.',
         'admin_creation_failed' => 'Failed to create Super Admin: :message',
+        'check_only_complete' => 'Environment audit passed. Run without --check-only to provision.',
+        'try_health_check' => 'Run php artisan system:health to check system status.',
         'aborted' => 'Installation aborted.',
         'executing_task' => 'Executing technical system installation',
         'not_installed' => 'System is not installed. Run php artisan setup:install first.',

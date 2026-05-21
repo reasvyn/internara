@@ -24,7 +24,7 @@ class IncidentReport extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => 'reported',
+        'status' => IncidentStatus::REPORTED->value,
     ];
 
     protected function casts(): array

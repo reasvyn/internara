@@ -1,26 +1,53 @@
 <div class="p-8">
-    <x-mary-header title="Mentor Evaluations" subtitle="Evaluate and track mentor performance" separator progress-indicator>
+    <x-mary-header title="{{ __('evaluation.page_title') }}" subtitle="{{ __('evaluation.page_subtitle') }}" separator progress-indicator>
         <x-slot:actions>
-            <x-mary-button label="New Evaluation" icon="o-plus" class="btn-primary" wire:click="create" />
+            <x-mary-button label="{{ __('evaluation.new_evaluation') }}" icon="o-plus" class="btn-primary" wire:click="create" />
         </x-slot:actions>
     </x-mary-header>
+
+    {{-- Type filter --}}
+    <div class="mb-4 flex gap-2">
+        <x-mary-button
+            label="{{ __('evaluation.all_types') }}"
+            wire:click="$set('filterType', '')"
+            :class="!$filterType ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'"
+        />
+        @foreach ($this->typeOptions as $opt)
+            <x-mary-button
+                :label="$opt['name']"
+                wire:click="$set('filterType', '{{ $opt['id'] }}')"
+                :class="$filterType === $opt['id'] ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'"
+            />
+        @endforeach
+    </div>
 
     @if ($showForm)
         <x-mary-card shadow class="bg-base-100 border border-base-200 mb-6">
             <form wire:submit="{{ $editingEvaluation ? 'update' : 'store' }}">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <x-mary-select
-                        label="Mentor"
-                        wire:model="mentorId"
-                        :options="$mentors->map(fn ($m) => ['id' => $m->id, 'name' => $m->name])"
+                        label="{{ __('evaluation.evaluation_type') }}"
+                        wire:model.live="evaluationType"
+                        :options="$this->typeOptions"
                         option-value="id"
                         option-label="name"
-                        placeholder="Select a mentor"
                         required
                     />
 
+                    @if ($evaluationType === 'mentor')
+                        <x-mary-select
+                            label="{{ __('evaluation.mentor') }}"
+                            wire:model="mentorId"
+                            :options="$mentors->map(fn ($m) => ['id' => $m->id, 'name' => $m->name])"
+                            option-value="id"
+                            option-label="name"
+                            placeholder="{{ __('evaluation.select_mentor') }}"
+                            required
+                        />
+                    @endif
+
                     <x-mary-input
-                        label="Overall Score"
+                        label="{{ __('evaluation.overall_score') }}"
                         type="number"
                         step="0.1"
                         min="0"
@@ -33,50 +60,34 @@
 
                 <div class="mt-4">
                     <label class="label">
-                        <span class="label-text font-medium">Criteria Scores</span>
+                        <span class="label-text font-medium">{{ __('evaluation.criteria_scores') }} <span class="text-xs opacity-50">(0 - 100)</span></span>
                     </label>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <x-mary-input
-                            label="Communication"
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="100"
-                            wire:model="criteriaScores.communication"
-                        />
-
-                        <x-mary-input
-                            label="Responsiveness"
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="100"
-                            wire:model="criteriaScores.responsiveness"
-                        />
-
-                        <x-mary-input
-                            label="Guidance Quality"
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="100"
-                            wire:model="criteriaScores.guidance_quality"
-                        />
+                        @foreach ($this->criteriaLabels as $key => $label)
+                            <x-mary-input
+                                :label="$label"
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="100"
+                                wire:model="criteriaScores.{{ $key }}"
+                            />
+                        @endforeach
                     </div>
                 </div>
 
                 <x-mary-textarea
-                    label="Feedback"
+                    label="{{ __('evaluation.feedback') }}"
                     wire:model="feedback"
-                    placeholder="Detailed feedback about the mentor's performance..."
+                    placeholder="{{ __('evaluation.feedback_placeholder') }}"
                     rows="4"
                     class="mt-4"
                 />
 
                 <div class="flex justify-end gap-2 mt-4">
-                    <x-mary-button label="Cancel" wire:click="cancel" />
+                    <x-mary-button label="{{ __('evaluation.cancel') }}" wire:click="cancel" />
                     <x-mary-button
-                        label="{{ $editingEvaluation ? 'Update' : 'Submit' }}"
+                        :label="$editingEvaluation ? __('evaluation.update') : __('evaluation.submit')"
                         type="submit"
                         class="btn-primary"
                         spinner
@@ -90,26 +101,40 @@
         @if ($evaluations->isEmpty())
             <div class="text-center py-8 opacity-60">
                 <x-mary-icon name="o-clipboard-document-check" class="w-12 h-12 mx-auto mb-3" />
-                <p class="text-lg">No mentor evaluations yet.</p>
-                <p class="text-sm">Click "New Evaluation" to assess a mentor's performance.</p>
+                <p class="text-lg">{{ __('evaluation.no_evaluations') }}</p>
+                <p class="text-sm">{{ __('evaluation.no_evaluations_hint') }}</p>
             </div>
         @else
             @php
                 $headers = [
-                    ['key' => 'mentor', 'label' => 'Mentor'],
-                    ['key' => 'overall_score', 'label' => 'Score'],
-                    ['key' => 'evaluator', 'label' => 'Evaluated By'],
-                    ['key' => 'created_at', 'label' => 'Date'],
+                    ['key' => 'type', 'label' => __('evaluation.type')],
+                    ['key' => 'target', 'label' => __('evaluation.target')],
+                    ['key' => 'overall_score', 'label' => __('evaluation.score')],
+                    ['key' => 'evaluator', 'label' => __('evaluation.evaluator')],
+                    ['key' => 'created_at', 'label' => __('evaluation.date')],
                     ['key' => 'actions', 'label' => ''],
                 ];
             @endphp
 
             <x-mary-table :headers="$headers" :rows="$evaluations" with-pagination>
-                @scope('cell_mentor', $evaluation)
-                    <div>
-                        <div class="font-medium">{{ $evaluation->mentor->name }}</div>
-                        <div class="text-xs opacity-50">{{ $evaluation->mentor->email }}</div>
-                    </div>
+                @scope('cell_type', $evaluation)
+                    <x-mary-badge :value="$evaluation->evaluation_type?->label() ?? $evaluation->evaluation_type" class="badge-outline badge-sm" />
+                @endscope
+
+                @scope('cell_target', $evaluation)
+                    @if ($evaluation->evaluation_type->value === 'mentor' && $evaluation->mentor)
+                        <div>
+                            <div class="font-medium">{{ $evaluation->mentor->name }}</div>
+                            <div class="text-xs opacity-50">{{ __('evaluation.mentor') }}</div>
+                        </div>
+                    @elseif ($evaluation->evaluation_type->value === 'program')
+                        <div>
+                            <div class="font-medium">{{ __('evaluation.program') }}</div>
+                            <div class="text-xs opacity-50">{{ $evaluation->registration?->internship?->name ?? '-' }}</div>
+                        </div>
+                    @else
+                        <span class="opacity-50">-</span>
+                    @endif
                 @endscope
 
                 @scope('cell_overall_score', $evaluation)
@@ -134,7 +159,7 @@
                             icon="o-trash"
                             class="btn-ghost btn-sm text-error"
                             wire:click="delete('{{ $evaluation->id }}')"
-                            wire:confirm="Are you sure you want to delete this evaluation?"
+                            wire:confirm="{{ __('evaluation.confirm_delete') }}"
                         />
                     </div>
                 @endscope

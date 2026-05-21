@@ -17,7 +17,7 @@ class Presentation extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => 'scheduled',
+        'status' => PresentationStatus::SCHEDULED->value,
     ];
 
     protected function casts(): array

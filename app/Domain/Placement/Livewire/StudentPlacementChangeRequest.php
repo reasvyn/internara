@@ -47,7 +47,7 @@ class StudentPlacementChangeRequest extends Component
     public function submit(RequestPlacementChangeAction $action): void
     {
         $this->validate([
-            'toPlacementId' => ['required', 'exists:internship_placements,id'],
+            'toPlacementId' => ['required', 'exists:placements,id'],
             'reason' => ['required', 'string', 'min:20', 'max:2000'],
         ]);
 

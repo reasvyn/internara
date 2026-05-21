@@ -88,6 +88,39 @@ nearly every page load — branding colors, locale, pagination size) will re-fet
 database and rebuild the cache. This ensures that configuration changes take effect instantly 
 across the entire application.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to change the application name and branding colors so that the system reflects my institution's identity |
+| Admin | As an admin, I want to upload a logo and favicon so that the application looks professional |
+| Admin | As an admin, I want to configure localization (language, timezone, date format) so that the system matches regional preferences |
+| Admin | As an admin, I want to toggle feature flags so that I can enable or disable functionality without deployment |
+| Admin | As an admin, I want to modify system defaults (pagination, session lifetime) so that operational behavior is tuned |
+| Admin | As an admin, I want to test email configuration so that I can verify notifications are delivered |
+| System | As the system, I want to invalidate the settings cache on every change so that updates take effect immediately |
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `SetSettingAction` | Sets a single setting value |
+| `BatchSetSettingAction` | Sets multiple settings in one operation |
+| `UploadBrandAssetAction` | Uploads a branding asset (logo, favicon) |
+| `TestMailSettingsAction` | Sends a test email to verify mail configuration |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Setting` (key-value store with type enforcement) |
+| **Livewire** | `SystemSetting`, `AppSignature` |
+| **Support** | `Color` (color computation), `Settings` (cached setting retrieval), `AppInfo`, `AppMetadata` |
+| **Middleware** | `SetLocaleMiddleware` |
+| **Rules** | `ValidSettingKey` |
+
 ## Dependencies
 
 | Dependency | Reason |

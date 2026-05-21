@@ -53,8 +53,8 @@ class PresentationSchedule extends BaseRecordManager
     {
         return Presentation::query()
             ->select(['presentations.*', 'users.name as student_name'])
-            ->join('internship_registrations', 'presentations.registration_id', '=', 'internship_registrations.id')
-            ->join('mentees', 'internship_registrations.mentee_id', '=', 'mentees.id')
+            ->join('registrations', 'presentations.registration_id', '=', 'registrations.id')
+            ->join('mentees', 'registrations.mentee_id', '=', 'mentees.id')
             ->join('users', 'mentees.user_id', '=', 'users.id');
     }
 
@@ -84,7 +84,7 @@ class PresentationSchedule extends BaseRecordManager
     public function saveSchedule(SchedulePresentationAction $action): void
     {
         $this->validate([
-            'scheduleData.registration_id' => ['required', 'exists:internship_registrations,id'],
+            'scheduleData.registration_id' => ['required', 'exists:registrations,id'],
             'scheduleData.scheduled_at' => ['required', 'date'],
             'scheduleData.examiner_ids' => ['required', 'array', 'min:1', 'max:5'],
             'scheduleData.examiner_ids.*' => ['exists:users,id'],

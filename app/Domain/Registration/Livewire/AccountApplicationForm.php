@@ -83,7 +83,7 @@ class AccountApplicationForm extends Component
         ];
 
         if ($this->use_placement) {
-            $rules['placement_id'] = 'required|exists:internship_placements,id';
+            $rules['placement_id'] = 'required|exists:placements,id';
         } else {
             $rules['proposed_company_name'] = 'required|string|max:255';
             $rules['proposed_company_address'] = 'required|string|max:1000';

@@ -127,7 +127,7 @@ class CompanyManager extends BaseRecordManager
                 'required',
                 'string',
                 'max:255',
-                'unique:internship_companies,name,'.($this->formData['id'] ?? 'NULL'),
+                'unique:companies,name,'.($this->formData['id'] ?? 'NULL'),
             ],
             'formData.address' => ['required', 'string'],
             'formData.phone' => ['nullable', 'string', 'max:20'],

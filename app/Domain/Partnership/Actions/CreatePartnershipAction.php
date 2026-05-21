@@ -13,7 +13,7 @@ class CreatePartnershipAction extends BaseAction
     public function execute(array $data): Partnership
     {
         $validated = Validator::validate($data, [
-            'company_id' => 'required|exists:internship_companies,id',
+            'company_id' => 'required|exists:companies,id',
             'agreement_number' => 'required|string|max:100|unique:partnerships,agreement_number',
             'title' => 'required|string|max:255',
             'start_date' => 'required|date',

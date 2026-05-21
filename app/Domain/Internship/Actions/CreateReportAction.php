@@ -13,7 +13,7 @@ class CreateReportAction extends BaseAction
     public function execute(array $data): Report
     {
         $validated = Validator::validate($data, [
-            'registration_id' => 'required|exists:internship_registrations,id',
+            'registration_id' => 'required|exists:registrations,id',
             'title' => 'required|string|max:255',
             'chapter_structure' => 'nullable|array',
         ]);

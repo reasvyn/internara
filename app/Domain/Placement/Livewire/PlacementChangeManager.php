@@ -41,12 +41,12 @@ class PlacementChangeManager extends BaseRecordManager
                 'from_company.name as from_company',
                 'to_company.name as to_company',
             ])
-            ->join('internship_registrations', 'placement_change_requests.registration_id', '=', 'internship_registrations.id')
+            ->join('registrations', 'placement_change_requests.registration_id', '=', 'registrations.id')
             ->join('users as students', 'placement_change_requests.requested_by', '=', 'students.id')
-            ->join('internship_placements as from_p', 'placement_change_requests.from_placement_id', '=', 'from_p.id')
-            ->join('internship_companies as from_company', 'from_p.company_id', '=', 'from_company.id')
-            ->leftJoin('internship_placements as to_p', 'placement_change_requests.to_placement_id', '=', 'to_p.id')
-            ->leftJoin('internship_companies as to_company', 'to_p.company_id', '=', 'to_company.id');
+            ->join('placements as from_p', 'placement_change_requests.from_placement_id', '=', 'from_p.id')
+            ->join('companies as from_company', 'from_p.company_id', '=', 'from_company.id')
+            ->leftJoin('placements as to_p', 'placement_change_requests.to_placement_id', '=', 'to_p.id')
+            ->leftJoin('companies as to_company', 'to_p.company_id', '=', 'to_company.id');
     }
 
     public function approve(string $id, ApprovePlacementChangeAction $action): void

@@ -12,9 +12,9 @@ return new class extends Migration
     {
         Schema::create('placement_change_requests', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
-            $table->foreignUuid('from_placement_id')->constrained('internship_placements')->cascadeOnDelete();
-            $table->foreignUuid('to_placement_id')->nullable()->constrained('internship_placements')->nullOnDelete();
+            $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
+            $table->foreignUuid('from_placement_id')->constrained('placements')->cascadeOnDelete();
+            $table->foreignUuid('to_placement_id')->nullable()->constrained('placements')->nullOnDelete();
             $table->text('reason');
             $table->foreignUuid('requested_by')->constrained('users')->cascadeOnDelete();
             $table->string('status')->default('pending')->index();

@@ -105,6 +105,62 @@ number. The format is configurable per institution (e.g., INST-YYYY-NNNNNN). Num
 generated atomically upon first submission and are immutable thereafter. Registration numbers are 
 used in all official correspondence, on certificates, and in external verification.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Student | As a student, I want to create a registration application so that I can enroll in an internship program |
+| Student | As a student, I want to upload the required documents during registration so that my application is complete |
+| Student | As a student, I want to track my registration status so that I know what is happening with my application |
+| Student | As a student, I want to revise my application when asked so that I can correct issues and proceed |
+| Admin | As an admin, I want to review submitted applications so that I can approve or reject them |
+| Admin | As an admin, I want to verify uploaded documents so that all program requirements are met |
+| Admin | As an admin, I want to request revisions with specific change requests so that students know exactly what to fix |
+| Admin | As an admin, I want to batch-process applications so that I can handle large applicant pools efficiently |
+| System | As the system, I want to enforce the state machine so that no invalid transitions occur |
+| System | As the system, I want to perform a holistic completion check across all domains so that certification eligibility is accurate |
+
+### Process Flow
+
+```
+DRAFT ──→ SUBMITTED ──→ UNDER_REVIEW ──→ APPROVED ──→ ACTIVE ──→ COMPLETED
+  ↑                        │                 │            │
+  └── resubmit             │                 │            │
+                    ┌──────┘                 │            │
+                    ↓                       ↓            ↓
+                REJECTED              WITHDRAWN     WITHDRAWN
+```
+
+- **DRAFT**: Wizard started, not yet submitted — student edits freely
+- **SUBMITTED**: Student completed wizard and submitted — locked for editing
+- **UNDER_REVIEW**: Admin examining the application — locked for student
+- **APPROVED**: Documents verified and accepted — moves to placement phase
+- **ACTIVE**: Placement confirmed — operational state, gates all other domain activities
+- **COMPLETED**: All requirements met — eligible for certification
+- **WITHDRAWN**: Student left the program early — no further activity
+- **REJECTED**: Application denied — may or may not allow resubmission
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `RegisterInternshipAction` | Initiates a new registration for a student in a program |
+| `VerifyRegistrationAction` | Verifies a registration, transitioning it toward active status |
+| `ApplyAccountAction` | Handles account application submission |
+| `ApproveAccountApplicationAction` | Approves a pending account application |
+| `RejectAccountApplicationAction` | Rejects a pending account application with a reason |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Registration` (`registrations`), `AccountApplication`, `RegistrationDocument` |
+| **Entity** | `RegistrationState` (status checks, date calculations, approval gating) |
+| **Enums** | `RegistrationDocumentStatus` — `PENDING`, `VERIFIED`, `REJECTED` |
+| **Livewire** | `RegistrationWizard`, `AccountApplicationForm`, `RegistrationCenter`, `RegistrationDocumentUpload`, `RegistrationVerification` |
+
 ## Dependencies
 
 | Dependency | Reason |

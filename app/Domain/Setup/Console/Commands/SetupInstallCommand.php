@@ -22,7 +22,9 @@ class SetupInstallCommand extends Command
 {
     use InteractsWithInstallerCli;
 
-    protected $signature = 'setup:install {--force : Force installation even if already installed}';
+    protected $signature = 'setup:install
+        {--force : Force installation even if already installed}
+        {--check-only : Run environment audit without provisioning}';
 
     public function __construct(
         private EnvironmentAuditor $auditor,
@@ -43,6 +45,7 @@ class SetupInstallCommand extends Command
         try {
             if ($this->isInstalled() && ! $this->option('force')) {
                 error(__('setup.cli.already_installed'));
+                $this->info(__('setup.cli.try_health_check'));
 
                 return self::FAILURE;
             }
@@ -61,7 +64,7 @@ class SetupInstallCommand extends Command
 
             $failed = array_values(array_filter(
                 $report->checks,
-                fn ($check) => $this->isCriticalCategory($check->category) && $check->status === AuditStatus::Fail,
+                fn ($check) => $this->isCriticalCategory($check->category) && $check->status === AuditStatus::FAIL,
             ));
 
             if ($failed !== []) {
@@ -73,6 +76,12 @@ class SetupInstallCommand extends Command
                 error(__('setup.cli.audit_failed'));
 
                 return self::FAILURE;
+            }
+
+            if ($this->option('check-only')) {
+                $this->info(__('setup.cli.check_only_complete'));
+
+                return self::SUCCESS;
             }
 
             if (! $this->option('force') && ! $this->confirmProceed()) {
@@ -128,11 +137,11 @@ class SetupInstallCommand extends Command
     protected function displayAuditResults(AuditReport $report): void
     {
         $categories = config('setup.audit_categories', [
-            AuditCategory::Requirements,
-            AuditCategory::Permissions,
-            AuditCategory::Database,
-            AuditCategory::Terminal,
-            AuditCategory::Recommendations,
+            AuditCategory::REQUIREMENTS,
+            AuditCategory::PERMISSIONS,
+            AuditCategory::DATABASE,
+            AuditCategory::TERMINAL,
+            AuditCategory::RECOMMENDATIONS,
         ]);
 
         foreach ($categories as $category) {
@@ -159,9 +168,9 @@ class SetupInstallCommand extends Command
     private function formatStatusWithMessage(AuditStatus $status, string $message): string
     {
         $color = match ($status) {
-            AuditStatus::Pass => 'green',
-            AuditStatus::Fail => 'red',
-            AuditStatus::Warn => 'yellow',
+            AuditStatus::PASS => 'green',
+            AuditStatus::FAIL => 'red',
+            AuditStatus::WARN => 'yellow',
         };
 
         return "<fg={$color}>{$message}</>";
@@ -169,7 +178,7 @@ class SetupInstallCommand extends Command
 
     private function isCriticalCategory(AuditCategory $category): bool
     {
-        return in_array($category, config('setup.critical_categories', []), true);
+        return $category->isCritical();
     }
 
     protected function confirmProceed(): bool

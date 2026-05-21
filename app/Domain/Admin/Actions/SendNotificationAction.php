@@ -6,6 +6,7 @@ namespace App\Domain\Admin\Actions;
 
 use App\Domain\Admin\Models\Notification;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\User\Models\User;
 
 /**
@@ -14,7 +15,7 @@ use App\Domain\User\Models\User;
  * S1 - Secure: Validates user exists.
  * S2 - Sustain: Single-purpose action.
  */
-class SendNotificationAction extends BaseAction
+class SendNotificationAction extends BaseAction implements SendsNotifications
 {
     public function execute(
         string $userId,
