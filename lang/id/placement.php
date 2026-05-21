@@ -6,6 +6,7 @@ return [
     'title' => 'Penempatan Magang',
     'subtitle' => 'Kelola kuota dan posisi yang tersedia untuk siswa',
     'add' => 'Tambah Penempatan',
+    'add_placement' => 'Tambah Penempatan',
     'edit' => 'Ubah Penempatan',
     'new' => 'Penempatan Baru',
     'company' => 'Perusahaan',
