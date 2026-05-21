@@ -20,7 +20,7 @@ Core is the architectural foundation — every domain depends on it, it depends 
 | **Contracts** | `LabelEnum` (`label(): string`), `StatusEnum` (extends LabelEnum — `canTransitionTo()`, `isTerminal()`, `validTransitions()`), `ColorableEnum` (`color(): string`), `DomainEvent` (`occurredAt(): DateTimeImmutable`), `Filterable`, `Searchable`, `Sortable` |
 | **Data** | `Data` (abstract readonly DTO — `toArray()`, `fromArray()`, `from()`), `AuditCheck` (category + status + message keys), `AuditReport` (aggregates checks, `passed()`, `forCategory()`) |
 | **Enums** | `AuditCategory` (Requirements, Permissions, Database, Terminal, Recommendations — `isCritical()`), `AuditStatus` (Pass, Fail, Warn — `symbol()`) |
-| **States** | `BaseState` (extends Spatie ModelStates\State — `label()`, `isTerminal()`, `toEnum()`) |
+| **States** | `StatusEnum` contract + Entity classes — states are managed via enums implementing `canTransitionTo()`, `isTerminal()`, `validTransitions()` |
 | **Http/Controllers** | `BaseController` (abstract marker — no methods yet, available for cross-cutting HTTP concerns) |
 | **Http/Requests** | `FormRequest` (extends Laravel's FormRequest — throws `ValidationFailedException` instead of redirect/JSON) |
 | **Http/Concerns** | `RespondsWithHttp` (trait — `respondSuccess()` 200, `respondCreated()` 201, `respondError()`, `respondNoContent()` 204, `respondValidationError()` 422) |

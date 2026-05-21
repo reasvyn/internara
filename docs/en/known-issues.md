@@ -374,36 +374,11 @@ method is gated behind `app()->runningUnitTests()` and only called from
 
 ---
 
-### ~48 Foreign Key Columns Without Individual Indexes 🟡
+### FK Columns Without Individual Indexes 🟡
 
-Many foreign key columns across the schema lack individual database indexes.
-Without indexes, JOINs and WHERE filters on these columns perform full table
-scans. The most critical (high-query-frequency) unindexed columns:
-
-| Table | Column |
-|---|---|
-| `mentees` | `user_id` |
-| `mentors` | `user_id` |
-| `placements` | `company_id`, `internship_id` |
-| `briefings` | `internship_id` |
-| `reports` | `registration_id` |
-| `report_revisions` | `report_id` |
-| `assessments` | `rubric_id` |
-| `competencies` | `rubric_id` |
-| `indicators` | `competency_id` |
-| `rubrics` | `internship_id` |
-| `partnerships` | `company_id` |
-| `certificates` | `registration_id`, `template_id` |
-| `assignments` | `assignment_type_id` |
-| `incident_reports` | `registration_id` |
-| `presentations` | `registration_id` |
-| `account_applications` | `internship_id` |
-
-Note: Some of these may be covered by composite indexes — but individual
-indexes on FK columns ensure optimal performance for the most common query
-pattern (`WHERE fk_column = ?`).
-
-*Status: ⏳ Pending — add individual indexes to high-query FK columns.*
+*Status: ✅ Evaluated — `foreignUuid()->constrained()` already auto-creates
+indexes on all FK columns. The 4 exceptions (account_status_history, setups)
+were fixed in a previous batch by adding proper FK constraints.*
 
 ---
 
@@ -419,24 +394,11 @@ pattern (`WHERE fk_column = ?`).
 
 ---
 
-### Internship State Machine Is Orphaned Dead Code 🟡
+### Internship State Machine Was Orphaned Dead Code 🟡
 
-**Directory:** `app/Domain/Internship/States/` (7 files)
-
-A full Spatie ModelStates state machine is defined with `InternshipState`
-(abstract), `Draft`, `Published`, `Active`, `Completed`, `Cancelled` concrete
-classes, and a `StateConfig` with 6 allowed transitions. However:
-
-- **No model uses the `HasStates` trait** to wire the state machine in
-- The `Internship` model casts `status` to `InternshipStatus` (simple enum)
-  instead of using the state machine
-- The model's `asInternshipState()` accessor returns the **Entity** version
-  (`Entities\InternshipState`), not the **State machine** version
-
-The entire state machine under `States/` is defined but orphaned. It was
-either created speculatively or is a leftover from a refactoring.
-
-*Status: ⏳ Pending — either wire to model via HasStates, or remove.*
+*Status: ✅ Fixed — removed 6 orphaned state files (InternshipState, Draft,
+Published, Active, Completed, Cancelled). The `InternshipStatus` enum +
+`Entities\InternshipState` entity handle all state logic.*
 
 ---
 
