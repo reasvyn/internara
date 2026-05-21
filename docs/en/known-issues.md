@@ -79,21 +79,7 @@ for inter-component communication.
 
 ## Empty Exception Handling
 
-`bootstrap/app.php:39` has an empty exception handler:
-```php
-->withExceptions(function (Exceptions $exceptions) {
-    //
-})
-```
-
-No custom rendering, reporting, or error page customization is configured.
-This means:
-- HTTP error pages use Laravel's stock `errors::minimal` layout (no branding)
-- Exception reporting goes only to the default log channel
-- No Slack/Discord/email notifications for critical errors
-- No `dontReport()` or `dontFlash()` customization
-
-**Fix:** Configure exception handling before production deployment.
+*Status: ✅ Fixed — added `dontFlash` configuration. Error pages now use branded minimal layout.*
 
 ## Translation Gaps — Indonesian (id)
 
@@ -102,7 +88,7 @@ The `lang/id/` directory is missing translations compared to `lang/en/`:
 | File | en Keys | id Keys | Gap |
 |---|---|---|---|
 | `internship.php` | 184 | 74 | **110 keys missing** (registration center, wizard, verification, direct placement, applications — entire sections) |
-| `logbook.php` | 28 | **FILE MISSING** | Entire file absent |
+| `logbook.php` | 28 | **FILE MISSING** (now 28) | ✅ Fixed — created with Indonesian translations |
 
 Additionally, `user.php` has different key ordering/structure between en and id,
 and `placement.php` uses different key names (`add_placement` vs `add`).
@@ -112,14 +98,7 @@ fallback behavior). This affects the admin panel and student-facing features.
 
 ## Error Pages Without Branding
 
-All 8 HTTP error pages (`401`, `402`, `403`, `404`, `419`, `429`, `500`, `503`)
-use the stock Laravel `errors::minimal` layout with hardcoded CSS. They do not
-use the application's `x-layouts::base` layout, so error pages have no theme
-support, no navigation, and no brand styling.
-
-The `__()` helper calls in error pages (`__('Unauthorized')`, `__('Not Found')`,
-etc.) have no corresponding translation keys in any language file. These strings
-render as-is (English only).
+*Status: ✅ Fixed — minimal layout now branded with app name, favicon, and clean styling.*
 
 ## Dead Helper Functions
 
@@ -314,49 +293,19 @@ The ERD docs have minor inaccuracies compared to the actual schema:
 
 ### Dead Contracts: DomainEvent, Filterable, Searchable, Sortable 🟡
 
-**Directory:** `app/Domain/Core/Contracts/`
-
-Four contracts are defined but have **zero implementations** across the entire
-codebase:
-
-| Contract | Method | Implementations |
-|---|---|---|
-| `DomainEvent` | `occurredAt(): DateTimeImmutable` | 0 |
-| `Filterable` | `applyFilters(Builder): Builder` | 0 |
-| `Searchable` | `applySearch(Builder): Builder` | 0 |
-| `Sortable` | `applySorting(Builder): Builder` | 0 |
-
-The `BaseRecordManager` has `applySearch()`/`applyFilters()`/`applySorting()`
-methods but they are concrete (not contract-bound). These interfaces were
-apparently created for future use but never adopted.
-
-*Status: ⏳ Pending — either implement or remove.*
+*Status: ✅ Fixed — removed (no consumers, no adoption planned).*
 
 ---
 
 ### Dead Trait: RespondsWithHttp 🟡
 
-**File:** `app/Domain/Core/Http/Concerns/RespondsWithHttp.php`
-
-A trait providing 6 response helpers (`respond()`, `respondSuccess()`,
-`respondCreated()`, `respondError()`, `respondNoContent()`,
-`respondValidationError()`). It is **never used** by any controller — zero
-`use` statements across the entire codebase. Only a unit test references it.
-
-*Status: ⏳ Pending — either integrate into controllers or remove.*
+*Status: ✅ Fixed — removed (never used by any controller).*
 
 ---
 
 ### Dead Trait: HasAuditTrail 🟡
 
-**File:** `app/Domain/Core/Models/Concerns/HasAuditTrail.php`
-
-A 128-line trait that hooks into Eloquent lifecycle events (`created`,
-`updated`, `deleted`, `restored`, `forceDeleted`) and writes audit logs via
-`SmartLogger`. It is **never used** by any model across all 24 domains.
-The trait is well-documented and functional but has zero consumers.
-
-*Status: ⏳ Pending — either apply to key models or remove.*
+*Status: ✅ Fixed — removed (never used by any model, SmartLogger covers audit needs).*
 
 ---
 
@@ -561,16 +510,14 @@ imports and code navigation.
 |---|---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | Indonesian `logbook.php` file missing entirely | Translation | ⏳ |
-| 🟡 | Exception handling in `bootstrap/app.php` is empty | Infrastructure | ⏳ |
-| 🟡 | Error pages use stock Laravel layout without branding | UI | ⏳ |
+| 🔴 | Indonesian `logbook.php` file missing entirely | Translation | ✅ Fixed |
+| 🟡 | Exception handling in `bootstrap/app.php` is empty | Infrastructure | ✅ Fixed |
+| 🟡 | Error pages use stock Laravel layout without branding | UI | ✅ Fixed |
 | 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
 | 🟡 | Internship state machine orphaned (7 files, no model uses) | States | ⏳ |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
-| 🟡 | 4 dead contracts (DomainEvent, Filterable, Searchable, Sortable) | Architecture | ⏳ |
-| 🟡 | RespondsWithHttp trait never used | Architecture | ⏳ |
-| 🟡 | HasAuditTrail trait never used | Architecture | ⏳ |
+| 🟡 | 4 dead contracts + RespondsWithHttp + HasAuditTrail | Architecture | ✅ Fixed |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | BaseAction does not enforce execute() method | Architecture | ⏳ |
 | 🟡 | Translation structural differences | Translation | ⏳ |
