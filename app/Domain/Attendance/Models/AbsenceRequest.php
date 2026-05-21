@@ -8,6 +8,7 @@ use App\Domain\Attendance\Entities\AbsenceRequestStatus as AbsenceRequestStatusE
 use App\Domain\Attendance\Enums\AbsenceReasonType;
 use App\Domain\Attendance\Enums\AbsenceRequestStatus;
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\User\Models\User;
 use Database\Factories\AbsenceRequestFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

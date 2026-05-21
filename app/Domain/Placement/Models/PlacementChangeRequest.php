@@ -6,6 +6,7 @@ namespace App\Domain\Placement\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Placement\Enums\PlacementChangeStatus;
+use App\Domain\User\Models\User;
 use Database\Factories\PlacementChangeRequestFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

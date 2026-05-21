@@ -7,6 +7,7 @@ namespace App\Domain\Assignment\Models;
 use App\Domain\Assignment\Entities\AssignmentRules;
 use App\Domain\Assignment\Enums\AssignmentStatus;
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\User\Models\User;
 use Database\Factories\AssignmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['academic_year_id', 'name', 'start_date', 'end_date', 'registration_start_date', 'registration_end_date', 'description', 'status'])]
+#[Fillable(['academic_year_id', 'name', 'start_date', 'end_date', 'registration_start_date', 'registration_end_date', 'description', 'status', 'requires_presentation', 'presentation_weight', 'report_weight'])]
 class Internship extends BaseModel
 {
     use HasFactory;
@@ -28,6 +28,9 @@ class Internship extends BaseModel
         'registration_start_date' => 'date',
         'registration_end_date' => 'date',
         'status' => InternshipStatus::class,
+        'requires_presentation' => 'boolean',
+        'presentation_weight' => 'integer',
+        'report_weight' => 'integer',
     ];
 
     public function academicYear(): BelongsTo

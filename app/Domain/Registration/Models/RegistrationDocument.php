@@ -6,6 +6,7 @@ namespace App\Domain\Registration\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Registration\Enums\RegistrationDocumentStatus;
+use App\Domain\User\Models\User;
 use Database\Factories\RegistrationDocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -6,6 +6,7 @@ namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Internship\Enums\ReportStatus;
+use App\Domain\User\Models\User;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

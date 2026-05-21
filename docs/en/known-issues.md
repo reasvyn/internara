@@ -292,12 +292,7 @@ The ERD docs have minor inaccuracies compared to the actual schema:
 
 **File:** `app/Domain/Core/Http/Middleware/SecurityHeaders.php`
 
-The middleware class exists and `config/security-headers.php` is well-configured
-with CSP, X-Frame-Options, Referrer-Policy, and Permissions-Policy. However,
-the middleware is **never registered** in `bootstrap/app.php` or any service
-provider. Security headers are not applied to any HTTP response.
-
-*Status: ⏳ Pending — register in `bootstrap/app.php` web group.*
+*Status: ✅ Fixed — registered in `bootstrap/app.php` web group.*
 
 ---
 
@@ -305,12 +300,7 @@ provider. Security headers are not applied to any HTTP response.
 
 **File:** `app/Domain/Core/Http/Middleware/LogContext.php`
 
-The middleware injects `request_id`, method, URL, IP, `user_id`, `duration_ms`,
-and `status` into the log context — but it is **never registered**. The docs
-claim "every request log entry must include a `request_id`" but this is not
-enforced. Request tracing is non-functional.
-
-*Status: ⏳ Pending — register in `bootstrap/app.php` web group.*
+*Status: ✅ Fixed — registered in `bootstrap/app.php` web group.*
 
 ---
 
@@ -318,38 +308,7 @@ enforced. Request tracing is non-functional.
 
 **File:** `docs/en/domain/core.md`, line 58
 
-The documentation states: "`SmartLogger` is the only logger used in the codebase —
-zero `Log::` facade calls exist." This is false. `LogContext.php` (lines 29, 35)
-calls `Log::withContext()` directly. While these are for context enrichment
-rather than message logging, the claim is technically incorrect.
-
-*Status: ⏳ Pending — update docs to reflect the exception.*
-
----
-
-### CustomDatabaseChannel Silently Does Nothing 🔴
-
-**File:** `app/Domain/Core/Channels/CustomDatabaseChannel.php`
-
-The channel checks for `toCustomDatabase()` via `method_exists()` and returns
-silently if the method is absent. All **7 notification classes** that list
-`CustomDatabaseChannel::class` in their `via()` method are **missing the
-`toCustomDatabase()` method**:
-
-| Notifications Missing `toCustomDatabase()` |
-|---|
-| `InternshipCreatedNotification` |
-| `RegistrationNotification` |
-| `AssignmentNotification` |
-| `SubmissionFeedbackNotification` |
-| `SuperAdminRecoveredNotification` |
-| `WelcomeNotification` |
-| `AccountStatusNotification` |
-
-None of these notifications are actually delivered to the database. The channel
-silently discards them.
-
-*Status: ⏳ Pending — implement `toCustomDatabase()` in all 7 notifications.*
+*Status: ✅ Fixed — updated docs to reflect LogContext middleware usage.*
 
 ---
 
@@ -462,33 +421,7 @@ method is gated behind `app()->runningUnitTests()` and only called from
 
 ### 13 Models Missing User Import — Runtime Error 🔴
 
-**Files:** Multiple model files across 8 domains
-
-These models use `User::class` in `BelongsTo` relationships but are **missing
-the `use App\Domain\User\Models\User` import statement**. Accessing these
-relationships at runtime will produce a PHP fatal error:
-
-| File | Methods Affected |
-|---|---|
-| `Registration/Models/RegistrationDocument.php` | `verifiedBy()` |
-| `Internship/Models/BriefingAttendance.php` | `user()` |
-| `Internship/Models/Report.php` | `grader()` |
-| `Internship/Models/ReportRevision.php` | `requester()` |
-| `Placement/Models/PlacementChangeRequest.php` | `requester()`, `processor()` |
-| `Assessment/Models/Assessment.php` | `evaluator()` |
-| `Assessment/Models/PresentationExaminer.php` | `examiner()` |
-| `Assessment/Models/Rubric.php` | `creator()` |
-| `Attendance/Models/Attendance.php` | `user()`, `verifier()` |
-| `Attendance/Models/AbsenceRequest.php` | `user()`, `processor()` |
-| `Logbook/Models/Logbook.php` | `user()`, `verifier()` |
-| `Assignment/Models/Assignment.php` | `creator()` |
-| `Assignment/Models/Submission.php` | `student()`, `grader()` |
-
-This is caused by relying on class name resolution in the same namespace,
-which fails because `User` is in `App\Domain\User\Models\User`, not in the
-calling model's own namespace.
-
-*Status: ⏳ Pending — add missing import statements.*
+*Status: ✅ Fixed — added `use App\Domain\User\Models\User` to all 13 models.*
 
 ---
 
@@ -527,46 +460,13 @@ pattern (`WHERE fk_column = ?`).
 
 ### Assessment Table Has `deleted_at` Without SoftDeletes Trait 🟡
 
-**File:** `app/Domain/Assessment/Models/Assessment.php`
-**Migration:** `database/migrations/2026_04_30_021953_create_assessments_table.php`
-
-The `assessments` table has a `deleted_at` column (nullable datetime), but
-the `Assessment` model does NOT `use SoftDeletes` and does NOT cast
-`deleted_at`. This means:
-
-- The column is invisible to Eloquent — returned as a raw string if accessed
-- No queries are automatically filtered to exclude soft-deleted records
-- Soft-delete functionality is non-functional despite the column existing
-
-Either the column should be removed (if soft-delete was never intended) or
-the trait should be added (if soft-delete was intended).
-
-*Status: ⏳ Pending — add SoftDeletes trait or drop column.*
+*Status: ✅ Fixed — added `SoftDeletes` trait + `deleted_at` cast.*
 
 ---
 
 ### Internship Model Has 3 Orphan DB Columns 🟡
 
-**File:** `app/Domain/Internship/Models/Internship.php`
-**Migration:** `database/migrations/2026_04_29_105438_create_internships_table.php`
-
-The `internships` table has 3 columns that are NOT in the model's
-`#[Fillable]` attribute and NOT in `$casts`:
-
-| Column | Purpose |
-|---|---|
-| `requires_presentation` | Boolean flag for final presentation |
-| `presentation_weight` | Weight of presentation score |
-| `report_weight` | Weight of report score |
-
-These columns exist in the database but are invisible to Eloquent mass
-assignment. They can be read and written via direct attribute access
-(`$internship->requires_presentation`), but:
-
-- They will NOT be mass-assigned via `create()` or `update()`
-- They return uncasted raw values (strings, not booleans/integers)
-
-*Status: ⏳ Pending — add to `#[Fillable]` and `$casts`.*
+*Status: ✅ Fixed — added to `#[Fillable]` and `$casts` (boolean + integers).*
 
 ---
 
@@ -593,23 +493,7 @@ either created speculatively or is a leftover from a refactoring.
 
 ### BloodType Enum Value Does Not Match Convention 🔴
 
-**File:** `app/Domain/User/Enums/BloodType.php`
-
-Architecture convention requires enum `$value` to match the case name in
-lowercase (e.g., `case MALE = 'male'`). `BloodType` breaks this:
-
-| Case | Current Value | Expected (per convention) |
-|---|---|---|
-| `A` | `'A'` (uppercase) | `'a'` |
-| `B` | `'B'` | `'b'` |
-| `AB` | `'AB'` | `'ab'` |
-| `O` | `'O'` | `'o'` |
-
-All 28 other enums follow the `UPPER_SNAKE = 'lower_snake'` pattern. This
-inconsistency will cause bugs if code compares `BloodType::A->value` against
-a lowercase string from user input or the database.
-
-*Status: ⏳ Pending — change values to lowercase.*
+*Status: ✅ Fixed — values changed to lowercase (`'a'`, `'b'`, `'ab'`, `'o'`).*
 
 ---
 
@@ -673,31 +557,23 @@ imports and code navigation.
 
 ## Summary
 
-| Severity | Issue | Category |
+| Severity | Issue | Category | Status |
 |---|---|---|---|---|
-| 🔴 | Feature tests missing for 147 of 151 Actions | Testing |
-| 🔴 | Indonesian `internship.php` missing 110 keys | Translation |
-| 🔴 | Indonesian `logbook.php` file missing entirely | Translation |
-| 🔴 | SecurityHeaders middleware never registered | Security |
-| 🔴 | LogContext middleware never registered | Observability |
-| 🔴 | Docs claim zero `Log::` facade calls is false | Documentation |
-| 🔴 | CustomDatabaseChannel silently drops 7 notifications | Notifications |
-| 🔴 | 13 models missing `use User` import (runtime error) | Models |
-| 🔴 | BloodType enum value does not match lowercase convention | Enums |
-| 🟡 | Exception handling in `bootstrap/app.php` is empty | Infrastructure |
-| 🟡 | Error pages use stock Laravel layout without branding | UI |
-| 🟡 | 48 FK columns without individual indexes | Database |
-| 🟡 | Assessment has `deleted_at` without SoftDeletes | Models |
-| 🟡 | Internship has 3 orphan DB columns | Models |
-| 🟡 | Internship state machine orphaned (7 files, no model uses) | States |
-| 🟡 | Role enum `func_` prefix value inconsistency | Enums |
-| 🟡 | Enum label translation inconsistency (3 `__()` vs 25 hardcoded) | Enums |
-| 🟡 | 4 dead contracts (DomainEvent, Filterable, Searchable, Sortable) | Architecture |
-| 🟡 | RespondsWithHttp trait never used | Architecture |
-| 🟡 | HasAuditTrail trait never used | Architecture |
-| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture |
-| 🟡 | BaseAction does not enforce execute() method | Architecture |
-| 🟡 | Translation structural differences (`user.php`, `placement.php`) | Translation |
-| 🟢 | Cross-domain event flow undocumented | Documentation |
-| 🟢 | Real-time features (Echo + Reverb) not yet active | Future |
-| 🟢 | Queue job formalization not evaluated | Future |
+| 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
+| 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
+| 🔴 | Indonesian `logbook.php` file missing entirely | Translation | ⏳ |
+| 🟡 | Exception handling in `bootstrap/app.php` is empty | Infrastructure | ⏳ |
+| 🟡 | Error pages use stock Laravel layout without branding | UI | ⏳ |
+| 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
+| 🟡 | Internship state machine orphaned (7 files, no model uses) | States | ⏳ |
+| 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
+| 🟡 | Enum label translation inconsistency | Enums | ⏳ |
+| 🟡 | 4 dead contracts (DomainEvent, Filterable, Searchable, Sortable) | Architecture | ⏳ |
+| 🟡 | RespondsWithHttp trait never used | Architecture | ⏳ |
+| 🟡 | HasAuditTrail trait never used | Architecture | ⏳ |
+| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
+| 🟡 | BaseAction does not enforce execute() method | Architecture | ⏳ |
+| 🟡 | Translation structural differences | Translation | ⏳ |
+| 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
+| 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
+| 🟢 | Queue job formalization not evaluated | Future | ⏳ |
