@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Assessment\Livewire\AssessmentView;
-use App\Domain\Assignment\Livewire\Submission;
+use App\Domain\Assignment\Livewire\SubmitAssignment;
 use App\Domain\Attendance\Livewire\AbsenceRequestForm;
 use App\Domain\Attendance\Livewire\StudentClockIn;
 use App\Domain\Certificate\Livewire\StudentCertificates;
@@ -23,7 +23,7 @@ Route::prefix('student')
     ->group(function () {
         Route::livewire('/dashboard', StudentDashboard::class)->name('dashboard');
         Route::livewire('/logbook', LogbookEntry::class)->name('logbook');
-        Route::livewire('/assignments', Submission::class)->name('assignments');
+        Route::livewire('/assignments', SubmitAssignment::class)->name('assignments');
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
         Route::livewire('/assessments', AssessmentView::class)->name('assessments');
         Route::livewire('/internships/register', RegistrationWizard::class)->name('internships.register');

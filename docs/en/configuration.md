@@ -64,6 +64,30 @@ dot-notation and each key belongs to a logical group (general, system,
 operational). The group is used for organization in the admin panel and for
 selective cache invalidation.
 
+## Notable Config Files
+
+| File | Purpose |
+|---|---|
+| `config/security-headers.php` | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy. Applied by `SecurityHeaders` middleware. |
+| `config/setup.php` | Wizard steps, default values, audit categories, extension requirements. Consumed by setup commands. |
+| `config/menu.php` | Sidebar navigation structure. Each entry maps to a named route and role requirement. |
+| `config/flasher.php` | Flash message configuration (timeout, position, styling). Used by `flash()` helper. |
+
+## The `setting()` Helper
+
+```php
+$value = setting('app_name', 'Internara');          // with default fallback
+$value = setting('primary_color');                    // returns null if missing
+setting(['app_name' => 'Internara Baru'], $cacheTtl); // write (optional TTL override)
+```
+
+The helper reads from the database `settings` table. Values are cached
+indefinitely with `Cache::rememberForever()`. On write, the cache key is
+invalidated immediately so the new value is visible on the next read.
+
+The companion `brand()` helper reads brand-specific settings and returns
+structured arrays (colors, logo paths, etc.) for use in Blade templates.
+
 ## Where to Find It
 
 All configuration files are in `config/`. The settings model is at

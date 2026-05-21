@@ -26,10 +26,10 @@ Two route types exist:
 Routes pass through this middleware stack:
 
 1. `web` (Laravel core) — session, CSRF, encryption, cookies
-2. `RequireSetupAccessMiddleware` — redirect to setup wizard if not installed
+2. `ProtectSetupRouteMiddleware` — token-gates the setup wizard
 3. `SetLocaleMiddleware` — language preference from user/session
 4. `Authenticate` — session-based auth (Laravel core)
-5. `CheckRoleMiddleware` — role gating (`role:{role1|role2}` syntax)
+5. `CheckRoleMiddleware` — role gating via Spatie (`role:{role1|role2}` syntax)
 6. Route handler
 
 Key middleware aliases:
@@ -38,8 +38,8 @@ Key middleware aliases:
 |-------|---------|
 | `guest` | Blocks authenticated users (login, register, forgot-password) |
 | `auth` | Requires authenticated session |
-| `setup.protected` | Token-gates the installation wizard |
-| `role:{roles}` | Aborts 403 if user lacks any of the pipe-delimited roles |
+| `setup.protected` | Token-gates the installation wizard via `ProtectSetupRouteMiddleware` |
+| `role:{roles}` | Aborts 403 if user lacks any of the pipe-delimited roles via `CheckRoleMiddleware` |
 
 ## Route Naming Convention
 

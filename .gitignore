@@ -16,6 +16,7 @@
 .env
 .env.*
 !.env.example
+!.env.sharing
 .env.backup*
 .env.production
 /auth.json
@@ -41,10 +42,22 @@ yarn-error.log
 opencode.json
 .gemini/
 
+# Docker Sail — only keep 8.4
+/docker/8.0/
+/docker/8.1/
+/docker/8.2/
+/docker/8.3/
+/docker/8.5/
+/docker/mariadb/
+/docker/mysql/
+/docker/pgsql/
+
+
 # Testing & Browser Verification
 /tests/Browser/screenshots/*.png
 /tests/Browser/console/*.log
 /tests/Browser/source/*.txt
+/storage/framework/testing/
 
 # Legacy Files
 /legacy

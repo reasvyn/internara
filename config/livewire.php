@@ -91,7 +91,7 @@ return [
     |
     */
 
-    'class_namespace' => 'App\\Livewire',
+    'class_namespace' => 'App\\Domain',
 
     /*
     |---------------------------------------------------------------------------
@@ -104,7 +104,7 @@ return [
     |
     */
 
-    'class_path' => app_path('Livewire'),
+    'class_path' => app_path('Domain'),
 
     /*
     |---------------------------------------------------------------------------

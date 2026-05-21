@@ -10,6 +10,7 @@ use App\Domain\Incident\Enums\IncidentStatus;
 use App\Domain\Incident\Enums\IncidentType;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
+use Database\Factories\IncidentReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,5 +52,10 @@ class IncidentReport extends BaseModel
     public function resolver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'resolved_by');
+    }
+
+    protected static function newFactory(): IncidentReportFactory
+    {
+        return IncidentReportFactory::new();
     }
 }

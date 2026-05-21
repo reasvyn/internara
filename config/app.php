@@ -125,4 +125,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cron Secret
+    |--------------------------------------------------------------------------
+    |
+    | Secret token used by the web-based scheduler trigger (/cron/{secret})
+    | for environments where minute-level cron is not available (shared hosting).
+    | Generate with: php -r "echo bin2hex(random_bytes(16));"
+    |
+    */
+
+    'cron_secret' => env('CRON_SECRET'),
+
 ];

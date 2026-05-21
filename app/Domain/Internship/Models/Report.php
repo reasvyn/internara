@@ -6,6 +6,7 @@ namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Internship\Enums\ReportStatus;
+use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,5 +46,10 @@ class Report extends BaseModel
     public function revisions(): HasMany
     {
         return $this->hasMany(ReportRevision::class, 'report_id');
+    }
+
+    protected static function newFactory(): ReportFactory
+    {
+        return ReportFactory::new();
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Domain\Settings\Support\AppInfo;
 use App\Domain\Settings\Support\AppMetadata;
 use App\Domain\Settings\Support\Settings;
-use App\Domain\Shared\Support\Environment;
 
 if (! function_exists('setting')) {
     /**
@@ -35,34 +34,6 @@ if (! function_exists('setting')) {
         }
 
         return $default;
-    }
-}
-
-if (! function_exists('is_debug_mode')) {
-    function is_debug_mode(): bool
-    {
-        return Environment::isDebugMode();
-    }
-}
-
-if (! function_exists('is_development')) {
-    function is_development(): bool
-    {
-        return Environment::isDevelopment();
-    }
-}
-
-if (! function_exists('is_testing')) {
-    function is_testing(): bool
-    {
-        return Environment::isTesting();
-    }
-}
-
-if (! function_exists('is_maintenance')) {
-    function is_maintenance(): bool
-    {
-        return Environment::isMaintenance();
     }
 }
 

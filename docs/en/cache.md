@@ -67,9 +67,30 @@ lifetime. Cache backends can be swapped independently from session backends —
 production may use Redis for cache (performance) and database for sessions
 (durability, no single point of failure).
 
+## Redis Configuration
+
+When using Redis as the cache backend, configure these `.env` variables:
+
+```env
+CACHE_STORE=redis
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=null
+REDIS_CLIENT=phpredis
+```
+
+Redis offers better performance than the database driver, especially under
+concurrent load, and is the recommended backend for production. The same
+Redis instance can serve cache, session, and queue simultaneously by using
+separate databases (`REDIS_DB=0`, `REDIS_CACHE_DB=1`, `REDIS_QUEUE_DB=2`).
+
+In the Docker Compose setup, a Redis 7 container is included by default.
+See `docker-compose.yml` for the service definition.
+
 ## Where to Find It
 
 Cache configuration is in `config/cache.php` with environment overrides in
 `.env`. The cache migration creates the `cache` and `cache_locks` tables.
 Settings caching is managed in `app/Domain/Settings/Support/Settings.php`.
 Cache warming commands are in `app/Domain/Core/Console/Commands/`.
+Redis connection settings are in `config/database.php` under the `redis` key.

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\ReportRevisionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,5 +31,10 @@ class ReportRevision extends BaseModel
     public function requester(): BelongsTo
     {
         return $this->belongsTo(User::class, 'requested_by');
+    }
+
+    protected static function newFactory(): ReportRevisionFactory
+    {
+        return ReportRevisionFactory::new();
     }
 }

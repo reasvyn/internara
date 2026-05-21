@@ -6,6 +6,7 @@ namespace App\Domain\Assessment\Models;
 
 use App\Domain\Assessment\Enums\PresentationStatus;
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\PresentationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,5 +41,10 @@ class Presentation extends BaseModel
     public function examiners(): HasMany
     {
         return $this->hasMany(PresentationExaminer::class, 'presentation_id');
+    }
+
+    protected static function newFactory(): PresentationFactory
+    {
+        return PresentationFactory::new();
     }
 }
